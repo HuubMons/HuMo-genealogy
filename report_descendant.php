@@ -1076,4 +1076,3 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	echo '<div style="position:absolute;left:1px;top:'.$putit.'px;">&nbsp; </div>';
 
 }
-?>

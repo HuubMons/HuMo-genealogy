@@ -1,23 +1,15 @@
 <?php
-/*
- * Statistics
- * First version: René Janssen.
- * Updated by: Huub.
- *
- * April 2015, Huub: added tab menu, and Yossi's new freqently firstnames and surnames pages.
- */
-//error_reporting(E_ALL);
 
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ . '/header.php';
+include_once __DIR__ . '/menu.php';
 // *** Standard function for names ***
-include_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/date_place.php");
-include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
+include_once __DIR__ . '/include/person_cls.php';
+include_once __DIR__ . '/include/language_date.php';
+include_once __DIR__ . '/include/date_place.php';
+include_once __DIR__ . '/include/calculate_age_cls.php';
 
 // *** Get general data from family tree ***
-$dataDb=$db_functions->get_tree($tree_prefix_quoted);
+$dataDb = $db_functions->get_tree($tree_prefix_quoted);
 
 $tree_date=$dataDb->tree_date;
 $month=''; // *** empty date ***
@@ -44,9 +36,6 @@ if (isset($_GET['menu_tab']) and $_GET['menu_tab']=='stats_firstnames') $menu_ta
 
 echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="">';
 echo '<div class="pageHeading">';
-	// <div class="pageHeadingText">Configuratie gegevens</div>
-	// <div class="pageHeadingWidgets" aria-hidden="true" style="display: none;"></div>
-
 	echo '<div class="pageTabsContainer" aria-hidden="false" style="">';
 		echo '<ul class="pageTabs">';
 			$select_item=''; if ($menu_tab=='stats_tree'){ $select_item=' pageTab-active'; }
@@ -64,7 +53,6 @@ echo '<div class="pageHeading">';
 	echo '</div>';
 echo '</div>';
 echo '</div>';
-
 
 // *** Align content to the left ***
 echo '<div id="statistics_screen">';
@@ -132,10 +120,8 @@ echo '<div id="statistics_screen">';
 			else{
 				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
 				//$url=$person_cls->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
-				$url=$person_cls->person_url2($tree_id,$fam_gedcomnumber,'','');
-
+				$url = $person_cls->person_url2($tree_id, $fam_gedcomnumber,'','');
 				echo '<td align="center"><a href="'.$url.'"><i><b>'.$man.__(' and ').$woman.'</b></i> </a></td></tr>';
-
 			}
 		}
 		else {
@@ -146,7 +132,6 @@ echo '<div id="statistics_screen">';
 		echo "<tr><td>".__('No. of persons')."</td>\n";
 		echo "<td align='center'><i>$nr_persons</i></td>\n";
 		echo '<td><br></td></tr>';
-
 		echo '</table>';
 	}
 
@@ -776,10 +761,11 @@ echo '<div id="statistics_screen">';
 
 		$baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
 		echo '</table>';
-		echo '
+		?>
 		<script>
 		var tbl = document.getElementsByClassName("nametbl")[0];
-		var rws = tbl.rows; var baseperc = '.$baseperc.';
+		var rws = tbl.rows; 
+		var baseperc = <?= $baseperc ?? null; ?>; // TODO: @Devs I dont like php in js....
 		for(var i = 0; i < rws.length; i ++) {
 			var tbs =  rws[i].getElementsByClassName("namenr");
 			var nms = rws[i].getElementsByClassName("namelst");
@@ -787,15 +773,15 @@ echo '<div id="statistics_screen">';
 				var percentage = parseInt(tbs[x].innerHTML, 10);
 				percentage = (percentage * 100)/baseperc;  
 				if(percentage > 0.1) {
-					nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
+					nms[x].style.backgroundImage= "url(styles/images/lightgray.png)"; 
 					nms[x].style.backgroundSize = percentage + "%" + " 100%";
 					nms[x].style.backgroundRepeat = "no-repeat";
 					nms[x].style.color = "rgb(0, 140, 200)";
 				}
 			}
 		}
-		</script>';
-
+		</script>
+		<?php
 	}
 
 	// *** Show frequent firstnames ***
@@ -958,10 +944,12 @@ echo '<div id="statistics_screen">';
 		$f_baseperc = $baseperc_arr[1];    // nr of occurrences for most frequent female name - becomes 100%
 		echo '</table><br>';  
 
-		echo '
+		?>
 		<script>
 		var tbl = document.getElementsByClassName("nametbl")[0];
-		var rws = tbl.rows; var m_baseperc = '.$m_baseperc.'; var f_baseperc = '.$f_baseperc.';
+		var rws = tbl.rows; 
+		var m_baseperc = <?= $m_baseperc; ?>; // TODO: @Devs I dont like php in js....
+		var f_baseperc = <?= $f_baseperc; ?>; // TODO: @Devs I dont like php in js....
 		for(var i = 0; i < rws.length; i ++) {
 			var m_tbs =  rws[i].getElementsByClassName("m_namenr");
 			var m_nms = rws[i].getElementsByClassName("m_namelst");
@@ -971,7 +959,7 @@ echo '<div id="statistics_screen">';
 				if(parseInt(m_tbs[x].innerHTML, 10) != NaN && parseInt(m_tbs[x].innerHTML, 10) > 0) {
 						var percentage = parseInt(m_tbs[x].innerHTML, 10);
 						percentage = (percentage * 100)/m_baseperc;
-						m_nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
+						m_nms[x].style.backgroundImage= "url(styles/images/lightgray.png)"; 
 						m_nms[x].style.backgroundSize = percentage + "%" + " 100%";
 						m_nms[x].style.backgroundRepeat = "no-repeat";
 						m_nms[x].style.color = "rgb(0, 140, 200)";
@@ -981,16 +969,16 @@ echo '<div id="statistics_screen">';
 				if(parseInt(m_tbs[x].innerHTML, 10) != NaN && parseInt(m_tbs[x].innerHTML, 10) > 0) {
 						var percentage = parseInt(f_tbs[x].innerHTML, 10);
 					percentage = (percentage * 100)/f_baseperc;
-						f_nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
+						f_nms[x].style.backgroundImage= "url(styles/images/lightgray.png)"; 
 						f_nms[x].style.backgroundSize = percentage + "%" + " 100%";
 						f_nms[x].style.backgroundRepeat = "no-repeat";
 						f_nms[x].style.color = "rgb(0, 140, 200)";
 				}
 			}
 		}
-		</script>';
+		</script>
+		<?php
 	}
 	
 echo '</div>'; // *** End of tab menu div ***
-include_once(CMS_ROOTPATH."footer.php");
-?>
+include_once __DIR__ . '/footer.php';

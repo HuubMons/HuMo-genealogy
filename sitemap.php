@@ -7,15 +7,15 @@ header ('Content-type: text/plain; charset=UTF-8');
 
 define("CMS_ROOTPATH", '');
 
-include_once(CMS_ROOTPATH."include/db_login.php"); //Inloggen database.
-include_once(CMS_ROOTPATH."include/safe.php"); //Variabelen
+include_once __DIR__ . '/include/db_login.php'; //Inloggen database.
+include_once __DIR__ . '/include/safe.php'; //Variabelen
 
 // *** Needed for privacy filter ***
-include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
-include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
-include_once(CMS_ROOTPATH."include/person_cls.php");
+include_once __DIR__ . '/include/settings_global.php'; //Variables
+include_once __DIR__ . '/include/settings_user.php'; // USER variables
+include_once __DIR__ . '/include/person_cls.php';
 
-include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+include_once __DIR__ . '/include/db_functions_cls.php';
 $db_functions = New db_functions;
 
 $person_cls = New person_cls;
@@ -151,4 +151,3 @@ foreach($datasql as $dataDb){
 unset ($datasql);
 
 echo '</urlset>';
-?>

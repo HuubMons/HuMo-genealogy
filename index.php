@@ -29,13 +29,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
 
 // ***********************************************************************************************
 // ** Main index class ***
 // ***********************************************************************************************
-include_once(CMS_ROOTPATH."include/mainindex_cls.php");
+include_once __DIR__ . '/include/mainindex_cls.php';
 $mainindex = new mainindex_cls();
 
 // *** Replace the main index by an own CMS page ***
@@ -79,5 +79,4 @@ else{
 // *** Show HuMo-genealogy footer ***
 echo $mainindex->show_footer();
 
-include_once(CMS_ROOTPATH."footer.php");
-?>
+include_once __DIR__ . '/footer.php';
