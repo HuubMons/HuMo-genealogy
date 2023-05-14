@@ -20,13 +20,13 @@
 
 global $maxperson, $treeid, $chosengen, $fontsize, $date_display, $person_id, $printing, $fan_style, $fanw, $fanh, $indexnr;
 
-include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
-include_once __DIR__ . '/include/language_date.php';
-include_once __DIR__ . '/include/language_event.php';
-include_once __DIR__ . '/include/calculate_age_cls.php';
-include_once __DIR__ . '/include/person_cls.php';
-include_once __DIR__ . '/menu.php';
-require_once __DIR__ . '/include/fanchart/persian_log2vis.php';
+include_once("header.php"); // returns CMS_ROOTPATH constant
+include_once(CMS_ROOTPATH."include/language_date.php");
+include_once(CMS_ROOTPATH."include/language_event.php");
+include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
+include_once(CMS_ROOTPATH."include/person_cls.php");
+include_once(CMS_ROOTPATH."menu.php");
+require_once(CMS_ROOTPATH."include/fanchart/persian_log2vis.php");
 
 $person_id='I1'; // *** Show 1st person if file is called directly. ***
 if (isset($_GET["id"])){ $person_id=$_GET["id"]; }
@@ -352,16 +352,16 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 				
 				//if(preg_match('/(*UTF8)\p{Han}/',$name)!==0) {	// String is Chinese so use a Chinese ttf font if present in the folder
 				if(preg_match('/(*UTF8)\p{Han}/',$name)===1) {	// String is Chinese so use a Chinese ttf font if present in the folder
-					if(is_dir( __DIR__ . '/include/fanchart/chinese')) {
-						$dh=opendir( __DIR__ . '/include/fanchart/chinese'); 
+					if(is_dir(CMS_ROOTPATH."include/fanchart/chinese")) {
+						$dh=opendir(CMS_ROOTPATH."include/fanchart/chinese"); 
 						while (false !== ($filename = readdir($dh))) {
 							//if (strtolower(substr($filename, -3)) == "ttf"){
 							if (strtolower(substr($filename, -3)) == "otf" OR strtolower(substr($filename, -3)) == "ttf"){
-								$fontfile = __DIR__ . "/include/fanchart/chinese/".$filename;
+								$fontfile = CMS_ROOTPATH."include/fanchart/chinese/".$filename;
 							}
 						}
 					}
-					if($fontfile == __DIR__ . "/include/fanchart/dejavusans.ttf") { //no Chinese ttf file found
+					if($fontfile==CMS_ROOTPATH."include/fanchart/dejavusans.ttf") { //no Chinese ttf file found
 						$china_message=1;
 					}
 				}
@@ -506,7 +506,7 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 	echo "<p align=\"center\" >";
 
 	if(CMS_SPECIFIC == "Joomla") {
-		ImagePng($image, __DIR__ ."/include/fanchart/tmpimg.png");
+		ImagePng($image,CMS_ROOTPATH."include/fanchart/tmpimg.png");
 		$ext="?".time(); // add random string to file to prevent loading from cache and then replacing which is not nice
 		echo "<img src=\"index.php?option=com_humo-gen&task=fanimage&format=raw&nochache=".$ext."\" width=\"$fanw\" height=\"$fanh\" border=\"0\" alt=\"$image_title\" title=\"$image_title\" usemap=\"#fanmap\">";
 	}
@@ -809,4 +809,5 @@ if(CMS_SPECIFIC == "Joomla") {
 }
 
 echo '<div style="left:135px; height:520px; width:10px"></div>';
-include_once __DIR__ .'/footer.php';
+include_once(CMS_ROOTPATH."footer.php");
+?>

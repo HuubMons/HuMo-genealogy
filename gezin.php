@@ -1,4 +1,3 @@
-<!-- TODO: @Devs: is it still used? -->
 <head>
 <!-- THIS SCRIPT IS FOR BACKWARDS COMPATIBLY AND GENDEX SITES ONLY!!!! -->
 

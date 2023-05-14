@@ -67,12 +67,12 @@ global $fampath;
 // *** Only needed for dutch relation names ***
 global $hoog, $opper, $aarts, $voor, $edel, $stam, $oud, $rest;
 
-include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
-include_once __DIR__ . '/menu.php';
-require_once __DIR__ . '/include/person_cls.php';
-include_once __DIR__ . '/include/marriage_cls.php';
-include_once __DIR__ . '/include/language_date.php';
-include_once __DIR__ . '/include/date_place.php';
+include_once("header.php"); // returns CMS_ROOTPATH constant
+include_once(CMS_ROOTPATH."menu.php");
+require_once(CMS_ROOTPATH."include/person_cls.php");
+include_once(CMS_ROOTPATH."include/marriage_cls.php");
+include_once(CMS_ROOTPATH."include/language_date.php");
+include_once(CMS_ROOTPATH."include/date_place.php");
 
 if(CMS_SPECIFIC == "Joomla") {
 	$fampath = "index.php?option=com_humo-gen&amp;task=family&amp"; // path to family.php for joomla (used some 20 times in this code
@@ -286,7 +286,7 @@ function calculate_rel ($arr_x, $arr_y, $genX, $genY) {
 	}
 	elseif ( $genX > 1 AND $genY == 1 ) {  // x is nephew, great-nephew etc of y
 		$table=4;
-		calculate_nephews ($genX, $genY);
+		calculate_nephews ($genX);
 	}
 	else {  // x and y are cousins of any number (2nd, 3rd etc) and any distance removed (once removed, twice removed etc)
 		$table=5;
@@ -815,15 +815,15 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function calculate_nephews($generX, $generY) { // handed generations x is removed from common ancestor
-global $db_functions, $reltext, $sexe, $sexe2, $spantext, $selected_language, $foundX_nr, $rel_arrayX, $rel_arrayspouseX, $spouse;
+function calculate_nephews($generX) { // handed generations x is removed from common ancestor
+global $db_functions, $reltext, $sexe, $sexe2, $language, $spantext, $selected_language, $foundX_nr, $rel_arrayX, $rel_arrayspouseX, $spouse;
 global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 
 	if($selected_language=="es"){
 		if($sexe=="m") { $neph=__('nephew'); $span_postfix="o "; $grson='nieto'; }
 		else { $neph=__('niece'); $span_postfix="a "; $grson='nieta'; }
 		//$gendiff = abs($generX - $generY); // FOUT
-		$gendiff = abs($generX - $generY) - 1; // TODO: @DEVS: $generY is undefined here!
+		$gendiff = abs($generX - $generY) - 1;
 		$gennr=$gendiff-1;
 		$degree=$grson." ".$gennr.$span_postfix;
 		if($gendiff ==1) { $reltext=$neph.__(' of ');}
@@ -3067,7 +3067,7 @@ ob_implicit_flush(true);
 
 
 if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
-	echo '<br><div id="geargif"><img src="styles/images/gear.gif">&nbsp;&nbsp;&nbsp;'.__('Calculating relations').'</div>';
+	echo '<br><div id="geargif"><img src="images/gear.gif">&nbsp;&nbsp;&nbsp;'.__('Calculating relations').'</div>';
 }
 
 if(CMS_SPECIFIC == "Joomla") {
@@ -3086,7 +3086,7 @@ echo '<br><table class="humo relmenu">';
 			echo '<a href="#" style="display:inline" ';
 			echo 'onmouseover="mopen(event,\'help_address_address\',100,200)"';
 			echo 'onmouseout="mclosetime()">';
-				echo '<img src="styles/images/help.png" height="16" width="16">';
+				echo '<img src="images/help.png" height="16" width="16">';
 			echo '</a>';
 			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_address_address" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo __('This calculator will find the following relationships:<br>
@@ -3320,8 +3320,8 @@ Directions for use:<br>
 		echo '<select size="1" name="person" style="width:'.$len.'px"><option></option></select>';
 	}
 	echo '</td>';
-	//echo '<td rowspan=2><input type="image" src="'.ROOTPATH.'styles/images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
-	echo '<td rowspan=2><input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'styles/images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
+	//echo '<td rowspan=2><input type="image" src="'.ROOTPATH.'images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
+	echo '<td rowspan=2><input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
 	echo '</td><td rowspan=2>';
 	echo '<input type="submit" name="calculator" value="'.__('Calculate relationships').'" style="font-size:115%;">';
 	echo '</td></tr><tr><td>';
@@ -3529,4 +3529,5 @@ if(isset($_POST["calculator"]) OR isset($_POST["switch"])) { // calculate or swi
 }
 echo '</form>';
 echo '<br><br><br><br><br><br><br><br>';
-include_once __DIR__ .'/footer.php';
+include_once(CMS_ROOTPATH."footer.php");
+?>
