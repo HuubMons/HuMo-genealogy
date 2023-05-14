@@ -1,6 +1,14 @@
 <?php
+
+require __DIR__ . '/../../nextlib/DateValidator.php';
 class editor_cls
 {
+	private DateValidator $dateValidator;
+
+	public function __construct()
+	{
+		$this->dateValidator = new DateValidator();
+	}
 
 	// *** Date functions ***
 	// 13 OCT 1813 = 13 okt 1813
@@ -16,7 +24,7 @@ class editor_cls
 		if (!isset($process_date)) $process_date = '';
 
 		// *** Process BEF, ABT, AFT and BET in a easier pulldown menu ***
-		global $language, $field_date, $humo_option;
+		global $field_date, $humo_option;
 		$text = '';
 		$style = '';
 		$placeholder = '';
@@ -193,9 +201,6 @@ class editor_cls
 
 	function valid_date($date)
 	{
-		include_once __DIR__ . '/../../include/validate_date_cls.php';
-		$check = new validate_date_cls;
-
 		// German date input: 01.02.2016 or Scandinavian input: 01,02,2016
 		$date2 = str_replace(" B.C.", "", $date); // Don't check . in B.C.!
 		if (strpos($date2, ".") !== false) $date = str_replace(".", "-", $date);
@@ -272,7 +277,7 @@ class editor_cls
 		} else {
 			$this_date = $date;
 		}
-		$result = $check->check_date(strtoupper($this_date));
+		$result = $this->dateValidator->check_date(strtoupper($this_date));
 		if ($result == null) {
 			return null;
 		} else return $this_date;
