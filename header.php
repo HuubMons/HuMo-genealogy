@@ -1,82 +1,18 @@
 <?php
-// *** For testing purposes ***
-//error_reporting(E_ALL | E_STRICT);
-//error_reporting(E_ALL);
-//error_reporting(0);
 
-// *** Check if HuMo-genealogy is in a CMS system ***
-//	Names:
-//		- CMS names used for now are 'Joomla' and 'CMSMS'.
-//	Usage:
-//		- Code for all CMS: if (CMS_SPECIFIC) {}
-//		- Code for one CMS: if (CMS_SPECIFIC == 'Joomla') {}
-//		- Code NOT for CMS: if (!CMS_SPECIFIC) {}
-if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
+require __DIR__ . '/config/bootstrap.php';
 
-// *** When run from CMS, the path to the map (that contains this file) should be given ***
 if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "");
-
 if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
-
-// *** Disabled 18-01-2023 ***
-//ini_set('url_rewriter.tags','');
-
-if (!CMS_SPECIFIC) {
-	// session_cache_limiter('private, must-revalidate'); //TODO: @DEVS: Nonsense here, "must-revalidate" is for "nocache", "private" need a "max-age" to be unvalid, see https://www.php.net/manual/en/function.session-cache-limiter.php
-	session_cache_limiter('nocache, must-revalidate'); 
-	session_start();
-	// *** Regenerate session id regularly to prevent session hacking *** 
-	//TODO: @DEVS: will be revalidate only in authentification, see https://www.php.net/session_regenerate_id and confirmed here: https://stackoverflow.com/questions/22965067/when-and-why-i-should-use-session-regenerate-id
-	// session_regenerate_id();  
-}
-
-if (isset($_GET['log_off'])) {
-	/*
-	// THIS CODE DOESN'T WORK IN RECENT PHP VERSIONS:
-
-	if (isset($_SESSION["user_name_admin"])) {
-		// *** DO NOT REMOVE data if logged in as administrator! ***
-		unset($_SESSION['user_name']);
-		unset($_SESSION['user_id']);
-		unset($_SESSION['user_group_id']);
-		unset($_SESSION['tree_prefix']);
-	}
-	else{
-		session_unset(); // *** Clear all variables ***
-		session_destroy(); // *** Remove session ***
-		session_write_close();
-		session_start();
-		// *** Regenerate session id regularly to prevent session hacking ***
-		session_regenerate_id();
-	}
-	*/
-	unset($_SESSION['user_name']);
-	unset($_SESSION['user_id']);
-	unset($_SESSION['user_group_id']);
-	unset($_SESSION['tree_prefix']);
-	session_destroy();
-}
 
 include_once __DIR__ . '/include/db_login.php'; //Inloggen database.
 include_once __DIR__ . '/include/show_tree_text.php';
 include_once __DIR__ . '/include/db_functions_cls.php';
 $db_functions = new db_functions;
 
-// *** Use UTF-8 database connection ***
-//$dbh->query("SET NAMES 'utf8'");
-
 // *** Show a message at NEW installation. Use "try" for PHP 8.1. ***
-//$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-//if (!$result OR $result->rowCount() ==0) {
-//	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
-//	exit();
-//}
 try {
 	$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-	//if (!$result OR $result->rowCount() ==0) {
-	//	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
-	//	exit();
-	//}
 } catch (PDOException $e) {
 	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
 	exit();
@@ -86,28 +22,6 @@ include_once __DIR__ . '/include/safe.php';
 include_once __DIR__ . '/include/settings_global.php'; //Variables
 include_once __DIR__ . '/include/settings_user.php'; // USER variables
 
-// *** Debug HuMo-genealogy`front pages ***
-if ($humo_option["debug_front_pages"] == 'y') {
-	error_reporting(E_ALL);
-	ini_set('display_errors', 1);
-}
-
-// *** Check if visitor is allowed ***
-if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'], 'partial')) {
-	echo 'Access to website is blocked.';
-	exit;
-}
-
-// *** Set timezone ***
-include_once __DIR__ . '/include/timezone.php'; // set timezone 
-timezone();
-// *** TIMEZONE TEST ***
-//echo date("Y-m-d H:i");
-
-// *** Check if visitor is a bot or crawler ***
-$bot_visit = preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['HTTP_USER_AGENT']);
-// *** Line for bot test! ***
-//$bot_visit=true;
 
 $language_folder = opendir( __DIR__ . '/languages/');
 while (false !== ($file = readdir($language_folder))) {

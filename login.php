@@ -7,12 +7,6 @@ include_once __DIR__ . '/menu.php';
 
 //echo '<div class="standard_header fonts">'.__('Login').'</div>';
 
-// *** Check if visitor is allowed ***
-if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])){
-	echo 'Access to website is blocked.';
-	exit;
-}
-
 if ($user['group_menu_login']!='j'){
 	echo 'Access to this page is blocked.';
 	exit;
