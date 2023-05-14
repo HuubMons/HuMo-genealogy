@@ -7,10 +7,10 @@ class Authenticator
 	{
 		$secret = '';
 		$validChars = array(
-			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
-			'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 
-			'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 
-			'Y', 'Z', '2', '3', '4', '5', '6', '7', 
+			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+			'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+			'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+			'Y', 'Z', '2', '3', '4', '5', '6', '7',
 			'=',
 		);
 
@@ -48,7 +48,7 @@ class Authenticator
 
 		$secretkey = $this->debase32($secret);
 
-		$time = chr(0).chr(0).chr(0).chr(0).pack('N*', $timeSlice);
+		$time = chr(0) . chr(0) . chr(0) . chr(0) . pack('N*', $timeSlice);
 		$hm = hash_hmac('SHA1', $time, $secretkey, true);
 		$offset = ord(substr($hm, -1)) & 0x0F;
 		$hashpart = substr($hm, $offset, 4);
@@ -68,12 +68,12 @@ class Authenticator
 		$height = !empty($params['height']) && (int) $params['height'] > 0 ? (int) $params['height'] : 200;
 		$level = !empty($params['level']) && array_search($params['level'], array('L', 'M', 'Q', 'H')) !== false ? $params['level'] : 'M';
 
-		$urlencoded = urlencode('otpauth://totp/'.$name.'?secret='.$secret.'');
+		$urlencoded = urlencode('otpauth://totp/' . $name . '?secret=' . $secret . '');
 		if (isset($title)) {
-			$urlencoded .= urlencode('&issuer='.urlencode($title));
+			$urlencoded .= urlencode('&issuer=' . urlencode($title));
 		}
 
-		return 'https://chart.googleapis.com/chart?chs='.$width.'x'.$height.'&chld='.$level.'|0&cht=qr&chl='.$urlencoded.'';
+		return 'https://chart.googleapis.com/chart?chs=' . $width . 'x' . $height . '&chld=' . $level . '|0&cht=qr&chl=' . $urlencoded . '';
 	}
 
 	public function verifyCode($secret, $code, $discrepancy = 1, $currentTimeSlice = null)
@@ -109,10 +109,10 @@ class Authenticator
 		}
 
 		$base32chars =  array(
-			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
-			'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 
-			'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 
-			'Y', 'Z', '2', '3', '4', '5', '6', '7', 
+			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+			'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+			'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+			'Y', 'Z', '2', '3', '4', '5', '6', '7',
 			'=',
 		);
 		$base32charsFlipped = array_flip($base32chars);
@@ -123,8 +123,10 @@ class Authenticator
 			return false;
 		}
 		for ($i = 0; $i < 4; ++$i) {
-			if ($paddingCharCount == $allowedValues[$i] &&
-				substr($secret, -($allowedValues[$i])) != str_repeat($base32chars[32], $allowedValues[$i])) {
+			if (
+				$paddingCharCount == $allowedValues[$i] &&
+				substr($secret, - ($allowedValues[$i])) != str_repeat($base32chars[32], $allowedValues[$i])
+			) {
 				return false;
 			}
 		}
@@ -167,6 +169,4 @@ class Authenticator
 		}
 		return $result === 0;
 	}
-
 }
-?>
