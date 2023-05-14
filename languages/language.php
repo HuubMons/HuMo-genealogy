@@ -23,3 +23,4 @@ include_once(CMS_ROOTPATH."languages/gettext.php");
 $_SESSION["language_selected"]=$selected_language;
 Load_default_textdomain();
 //Load_textdomain('customer_domain', 'languages/'.$selected_language.'/'.$selected_language.'.mo');
+?>

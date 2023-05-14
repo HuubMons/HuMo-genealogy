@@ -1,6 +1,6 @@
 <?php
-include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
-include_once __DIR__ . '/menu.php';
+include_once("header.php"); // returns CMS_ROOTPATH constant
+include_once(CMS_ROOTPATH."menu.php");
 
 echo '<p class="fonts">';
 
@@ -330,15 +330,12 @@ echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
 		echo '</tr>';
 	}
 echo '</table>';
-?>
 
-<script>
 // *** Show number of names with gray background bar ***
-// TODO: Devs: innerHTML is not safe!
-// TODO: Devs: $number_high can be null and cause warning in console js!
+echo '
+<script>
 var tbl = document.getElementsByClassName("nametbl")[0];
-var rws = tbl.rows; 
-var baseperc = '<?= $number_high; ?>';
+var rws = tbl.rows; var baseperc = '.$number_high.';
 for(var i = 0; i < rws.length; i ++) {
 	var tbs =  rws[i].getElementsByClassName("namenr");
 	var nms = rws[i].getElementsByClassName("namelst");
@@ -346,14 +343,14 @@ for(var i = 0; i < rws.length; i ++) {
 		var percentage = parseInt(tbs[x].innerHTML, 10);
 		percentage = (percentage * 100)/baseperc;
 		if(percentage > 0.1) {
-			nms[x].style.backgroundImage= "url(styles/images/lightgray.png)";
+			nms[x].style.backgroundImage= "url(images/lightgray.png)";
 			nms[x].style.backgroundSize = percentage + "%" + " 100%";
 			nms[x].style.backgroundRepeat = "no-repeat";
 			nms[x].style.color = "rgb(0, 140, 200)";
 		}
 	}
 }
-</script>
-<br>
+</script><br>';
 
-<?php include_once __DIR__ . '/footer.php';
+include_once(CMS_ROOTPATH."footer.php");
+?>

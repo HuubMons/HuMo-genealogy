@@ -607,3 +607,5 @@ function load_default_textdomain() {
 	$mofile=CMS_ROOTPATH.'languages/'.$locale.'/'.$locale.'.mo';
 	load_textdomain('default', $mofile);
 }
+
+?>
