@@ -1,21 +1,9 @@
-<?php
-// *** Script by Yossi Beck ***
-// finds the following invalid dates:
-// - impossible dates (31 apr 2003, 30 feb 2003, 29 feb 2003 (not a leap year!), 43 mar 2003)
-// - years in the future (31 apr 2020)
-// - partial dates (1 feb,  mar)
-// - invalid GEDCOM year entries ( 1820? )
-// - invalid GEDCOM month entries (12 april 2003, 23 feb. 2003, 12 december 2003)
-// - prefixes before last (or only) date that are not BEF, AFT, ABT, EST, CAL, INT, AND, TO or valid combinations like EST ABT
-// - lack of BET or FROM in string if AND or TO (respectively) where found
-// - invalid GEDCOM entries such as use of dash (1845-1847) or slash (23/4/1990) etc
-// - and of course any junk that was entered in the date field instead of elsewhere...   ;-)
-// - does not (yet) validate the first date in a "BET ... AND ..." or "FROM ... TO ..." two-date string. Maybe we'll add that later
+<?php 
 
-class validate_date_cls
+
+class DateValidator 
 {
-
-	function check_date($date)
+    public function check_date($date)
 	{
 		// *** Remove B.C. (before christ) addition, for further tests of date ***
 		//if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.') return "finished";
@@ -53,7 +41,7 @@ class validate_date_cls
 		return 1;
 	}
 
-	function check_month($date)
+	private function check_month($date)
 	{
 		$year = $this->check_year($date);
 		$strlen = strlen($year);
@@ -90,15 +78,15 @@ class validate_date_cls
 		} // if we found "BET" or "FROM" that is also invalid - they can't occur before the last date!
 	}
 
-	function check_day($date)
+	private function check_day($date)
 	{
 		$year = $this->check_year($date);
 		$month = $this->check_month($date);
 		$strlen = strlen($year) + 6;
 		/*
-	if($year >999) { $strlen=10; }
-	elseif($year >99) { $strlen=9; }
-*/
+        if($year >999) { $strlen=10; }
+        elseif($year >99) { $strlen=9; }
+        */
 		$day_len = 1; // to be added to strlen later. if day is "8" (and not "12" or "08") $day_len will be set to 0
 
 		if (substr($month, 0, 5) == "month") {
@@ -181,7 +169,7 @@ class validate_date_cls
 		} else return 1;
 	}
 
-	function check_year($date)
+	private function check_year($date)
 	{
 		$year = substr($date, -4, 4);
 		// If only year is given, this will work with any year from 0 till today.
@@ -214,4 +202,4 @@ class validate_date_cls
 			}
 		}
 	}
-} // *** End of class ***
+}
