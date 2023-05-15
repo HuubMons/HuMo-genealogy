@@ -3,6 +3,10 @@
 // *** Disabled 18-01-2023 ***
 //@ini_set('auto_detect_line_endings', TRUE);
 
+// *** Still needed in april 2023 ***
+// *** Will be deprecated in PHP 9.0! ***
+@ini_set('auto_detect_line_endings', TRUE);
+
 /**
  * This is the GEDCOM processing file for HuMo-genealogy.
  *
