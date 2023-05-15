@@ -28,7 +28,7 @@ if (!CMS_SPECIFIC) {
 	session_cache_limiter('nocache, must-revalidate'); 
 	session_start();
 	// *** Regenerate session id regularly to prevent session hacking *** 
-	//TODO: @DEVS: will be revalidate only in authentification, see https://www.php.net/session_regenerate_id and confirmed here: https://stackoverflow.com/questions/22965067/when-and-why-i-should-use-session-regenerate-id
+	// TODO: @DEVS: will be revalidate only in authentification, see https://www.php.net/session_regenerate_id and confirmed here: https://stackoverflow.com/questions/22965067/when-and-why-i-should-use-session-regenerate-id
 	// session_regenerate_id();  
 }
 

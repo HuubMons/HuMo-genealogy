@@ -1926,8 +1926,12 @@ if ($index_list=='patronym'){
 		echo '</td></tr></table></form>';
 	}
 
-	if (CMS_SPECIFIC=='Joomla'){ $uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;"; }
-	else { $uri_path_string = $uri_path."list.php?"; }
+	if (CMS_SPECIFIC=='Joomla')
+	{ 
+		$uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;"; 
+	} else { 
+		$uri_path_string = "list.php?"; // $uri_path."list.php?"; 
+	}
 
 	// *** Check for search results ***
 	if (@$person_result->rowCount()==0) {

@@ -91,7 +91,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 			$fault = true;
 			require __DIR__ . '/nextlib/Authenticator2fa.php';
 
-			if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
+			if ($_POST['2fa_code'] && is_numeric($_POST['2fa_code'])) {
 				$Authenticator = new Authenticator2fa();
 				$checkResult = $Authenticator->verifyCode($user->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
 				if ($checkResult) {
@@ -342,7 +342,6 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 } else {
 	// *** Cookie for "show descendant chart below fanchart"
-
 	// Set default ("0" is OFF, "1" is ON):
 	$showdesc = "0";
 
@@ -350,11 +349,11 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		if ($_POST['show_desc'] == "1") {
 			$showdesc = "1";
 			$_SESSION['save_show_desc'] = "1";
-			setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
+			// setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
 		} else {
 			$showdesc = "0";
 			$_SESSION['save_show_desc'] = "0";
-			setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
+			// setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
 			// we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
 		}
 	}
@@ -363,7 +362,6 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		// *** Generate header of HTML pages ***
 		
 		// Prevent validator faults. It's not working good... Replace all & characters in the links by &amp;
-		// ini_set('arg_separator.output','&amp;');
 
 		$robots_option = $humo_option["searchengine"] == "j" ? $humo_option["robots_option"] : ""
 		?>
@@ -384,9 +382,10 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	// REQUEST_URI: /url_test/index/1abcd2345/
 	// REQUEST_URI: /url_test/index.php?variabele=1
 	// *** No url_rewrite ***
-	$url_path = $_SERVER['PHP_SELF']; // TODO: @Devs not safe!
+/* 	$url_path = $_SERVER['PHP_SELF']; // TODO: @Devs not safe!
 	$position = strrpos($_SERVER['PHP_SELF'], '/');
 	$uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';
+	
 	// *** url_rewrite ***
 	if ($humo_option["url_rewrite"] == "j") {
 		$uri_path = $_SERVER['REQUEST_URI'];
@@ -453,7 +452,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 			// *** Use standard uri ***
 			$uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';
 		}
-	}
+	} */
 
 	if (CMS_SPECIFIC !== 'CMSMS') {
 		echo '<link href="' . CMS_ROOTPATH . 'styles/gedcom.css" rel="stylesheet" type="text/css">';

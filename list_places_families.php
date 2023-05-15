@@ -430,8 +430,12 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 		//***************** end search of places **********************************
 	//}
 
-	if (CMS_SPECIFIC=='Joomla'){ $uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;"; }
-	else { $uri_path_string = $uri_path."list_places_families.php?"; }
+	if (CMS_SPECIFIC=='Joomla')
+	{ 
+		$uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;"; 
+	} else { 
+		$uri_path_string = "list_places_families.php?"; // $uri_path."list_places_families.php?"; 
+	}
 
 	// *** Check for search results ***
 	if (@$person_result->rowCount()==0) {
