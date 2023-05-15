@@ -1,4 +1,6 @@
 <?php
+@set_time_limit(3000);
+//@ini_set('memory_limit','-1');
 
 if (!defined('ADMIN_PAGE')) {
 	exit;

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class to read GEDCOM file and save genealogical data in database.
+ * Items to be processed: persons, relations, sources, addresses, etc.
+ */
+
 class gedcom_cls
 {
 
