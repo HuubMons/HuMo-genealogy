@@ -1,4 +1,9 @@
 <?php
+/**
+ * Calculate birth date for persons.
+ * These dates will be used for privacy filter (to calculate if person is alive).
+ */
+
 @set_time_limit(3000);
 //@ini_set('memory_limit','-1');
 

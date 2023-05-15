@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Prefix file. These prefixes will be used to process name prefix when GEDCOM file is read.
  * Please be aware of the order of items! It does matter if you change the order of items...
  * First proces prefixes like: "van_der" and after that: "van_"

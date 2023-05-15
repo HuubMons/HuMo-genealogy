@@ -1,4 +1,7 @@
 <?php
+/**
+ * Use drag and drop for images (not in use at this moment) or children in genealogy editor.
+ */
 session_start();
 //error_reporting(E_ALL);
 

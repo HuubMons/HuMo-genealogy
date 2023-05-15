@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edit CMS pages. These pages can be shown in HuMo-genealogy.
+ * It's also possible to replace homepage with your own CMS page.
+ */
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
 	exit;
