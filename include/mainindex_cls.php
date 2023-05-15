@@ -4,7 +4,7 @@ class mainindex_cls
 
 	function show_tree_index()
 	{
-		global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
+		global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $dirmark2, $bot_visit, $humo_option;
 
 		include_once(CMS_ROOTPATH . "include/person_cls.php");
 
@@ -99,7 +99,7 @@ class mainindex_cls
 				}
 
 				// *** Just for sure, probably not necessary here: re-get selected family tree data ***
-				@$dataDb = $db_functions->get_tree($tree_prefix_quoted);
+				// @$dataDb = $db_functions->get_tree($tree_prefix_quoted);
 				//*** Today in history ***
 				if ($module_item[$i] == 'history') $temp .= $this->today_in_history($module_option_1[$i]);
 
