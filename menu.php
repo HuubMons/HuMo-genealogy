@@ -889,7 +889,7 @@ if ($user['group_menu_login'] == 'j' and !$user["user_name"]) {
 	if (CMS_SPECIFIC == 'Joomla') {
 		$path_tmp = 'index.php?option=com_humo-gen&amp;task=login';
 	} else {
-		$path_tmp = $uri_path . 'login.php';
+		$path_tmp = 'login.php'; // $uri_path . 'login.php';
 	}
 
 	$select_top = '';
@@ -916,7 +916,7 @@ if ($user['group_menu_login'] == 'j' and !$user["user_name"]) {
 	if (CMS_SPECIFIC == 'Joomla') {
 		$path_tmp = 'index.php?option=com_humo-gen&amp;task=login';
 	} else {
-		$path_tmp = $uri_path . 'login.php';
+		$path_tmp = 'login.php'; //$uri_path . 'login.php';
 	}
 	echo '<li' . $select_menu . '><a href="' . $path_tmp . '">' . __('Login') . '</a></li>';
 	//}
