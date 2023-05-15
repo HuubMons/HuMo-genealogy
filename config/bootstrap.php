@@ -19,7 +19,6 @@ $request = new Request();
 
 if (isset($app_config['app_env']) && $app_config['app_env'] === 'DEV') {
     error_reporting(E_ALL);
-    ini_set('display_errors', 1);
 }
 
 date_default_timezone_set($app_config['timezone']);

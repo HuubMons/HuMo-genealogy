@@ -1,16 +1,12 @@
 <?php
-/**
- * Calculate birth date for persons.
- * These dates will be used for privacy filter (to calculate if person is alive).
- */
-
 @set_time_limit(3000);
 //@ini_set('memory_limit','-1');
 
-// *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
 	exit;
 }
+
+$trees = $db_functions->get_trees();
 
 echo '<h1 class="center">' . __('Calculated birth date') . '</h1>';
 
@@ -27,14 +23,14 @@ echo '<td>';
 echo '<form method="POST" action="index.php">';
 echo '<input type="hidden" name="page" value="cal_date">';
 echo '<select size="1" name="tree_id">';
-$tree_result = $db_functions->get_trees();
-foreach ($tree_result as $treeDb) {
-	$treetext = show_tree_text($treeDb->tree_id, $selected_language);
+
+foreach ($trees as $tree) {
+	$treetext = show_tree_text($tree->tree_id, $selected_language);
 	$selected = '';
-	if (isset($tree_id) and ($treeDb->tree_id == $tree_id)) {
+	if (isset($tree_id) and ($tree->tree_id == $tree_id)) {
 		$selected = ' SELECTED';
 	}
-	echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
+	echo '<option value="' . $tree->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
 }
 echo '</select>';
 
