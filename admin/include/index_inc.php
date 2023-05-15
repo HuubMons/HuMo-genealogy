@@ -1,4 +1,8 @@
 ﻿<?php
+/**
+ * Shows Admin index page.
+ */
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
 	exit;
