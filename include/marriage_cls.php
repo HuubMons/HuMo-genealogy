@@ -39,7 +39,7 @@ class marriage_cls
 	// ***************************************************
 	// *** Show marriage                               ***
 	// ***************************************************
-	function marriage_data($marriageDb, $number = '0', $presentation = 'standard')
+	function marriage_data($marriageDb = null, $number = '0', $presentation = 'standard')
 	{
 		global $dbh, $db_functions, $tree_prefix_quoted, $url_path, $dataDb, $uri_path, $humo_option;
 		global $language, $user, $screen_mode;
@@ -47,7 +47,7 @@ class marriage_cls
 		global $relation_check;
 
 		// TODO: @devs: something wrong here!
-		if ($marriageDb == '') {
+		if ($marriageDb == null) {
 			$marriageDb = $this->cls_marriage_Db;
 		}
 
