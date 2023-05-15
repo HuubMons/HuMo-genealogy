@@ -1,4 +1,10 @@
 <?php
+/**
+ * Almost all queries that will save persons/ relations/ sources/ adresses/ events/ etc.
+ * when "Save" is clicked in genealogy editor.
+ */
+
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
 	exit;
