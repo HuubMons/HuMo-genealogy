@@ -1,5 +1,10 @@
 <?php
-//*** Prefix file. Please be aware of the order of items! It does matter if you change the order of items... First proces prefixes like: "van_der" and after that: "van_" ***
+/**
+ * Prefix file. These prefixes will be used to process name prefix when GEDCOM file is read.
+ * Please be aware of the order of items! It does matter if you change the order of items...
+ * First proces prefixes like: "van_der" and after that: "van_"
+ */
+
 $pers_prefix[] = "aan_den_";
 $pers_prefix[] = "aan_'t_";
 $pers_prefix[] = "aan_";
