@@ -28,8 +28,6 @@ include_once("header.php"); // returns CMS_ROOTPATH constant
 $last_visited=$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 $_SESSION['save_last_visitid']=$last_visited;
 
-@set_time_limit(300);
-
 $menu=0;
 if(isset($_GET['menu']) AND $_GET['menu']=="1") { $menu = 1; }  // called from fanchart iframe with &menu=1-> no menu!
 
