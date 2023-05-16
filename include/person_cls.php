@@ -213,10 +213,8 @@ class person_cls
 	{
 		global $humo_option, $uri_path;
 
-		$pers_family = '';
-		if ($pers_famc) {
-			$pers_family = $pers_famc;
-		}
+		$pers_family = $pers_famc ?? '';
+
 		if ($pers_fams) {
 			$pers_fams = explode(';', $pers_fams);
 			$pers_family = $pers_fams[0];

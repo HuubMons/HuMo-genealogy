@@ -382,6 +382,10 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	// REQUEST_URI: /url_test/index/1abcd2345/
 	// REQUEST_URI: /url_test/index.php?variabele=1
 	// *** No url_rewrite ***
+
+/**
+ * @deprecated but if some rewriting problem we need to uncomment this part
+ */
 /* 	$url_path = $_SERVER['PHP_SELF']; // TODO: @Devs not safe!
 	$position = strrpos($_SERVER['PHP_SELF'], '/');
 	$uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';

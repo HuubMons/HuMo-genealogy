@@ -1,4 +1,5 @@
 <?php
+// TODO: @Devs add a button link for PDF to /pdf_source
 
 /**
  * source.php is called from show_sources.php, sources.php
@@ -9,7 +10,6 @@ if (isset($_GET["id"])) {
 
 /**
  * Show a single source.
- * RETURNS: shows a single source.
  */
 function source_display(int $sourcenum)
 {
@@ -21,221 +21,79 @@ function source_display(int $sourcenum)
 		exit();
 	}
 
-	if ($screen_mode != "PDF") {
-		include_once __DIR__ . '/header.php';
-		include_once __DIR__ . '/menu.php';
-		include_once __DIR__ . '/include/date_place.php';
-		include_once __DIR__ . '/include/process_text.php';
-		include_once __DIR__ . '/include/show_picture.php';// Needed for pictures by a source
-		include_once __DIR__ . '/include/show_sources.php';
-		include_once __DIR__ . '/include/language_date.php';
-		include_once __DIR__ . '/include/person_cls.php';
-		echo '<table class="humo standard">';
-		echo "<tr><td><h2>" . __('Sources') . "</h2>";
-	}
-
 	$sourceDb = $db_functions->get_source($sourcenum);
 
 	// *** Check if visitor tries to see restricted sources ***
-	if ($user['group_show_restricted_source'] == 'n' && $sourceDb->source_status == 'restricted') exit(__('No valid source number.'));
+	if ($user['group_show_restricted_source'] == 'n' && $sourceDb->source_status == 'restricted') {
+		exit(__('No valid source number.'));
+	}
 
 	// *** If an unknown source ID is choosen, exit function ***
-	if (!isset($sourceDb->source_id)) exit(__('No valid source number.'));
-
-	if ($sourceDb->source_title) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Title') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_title . "\n");
-		} else {
-			echo '<b>' . __('Title') . ":</b> $sourceDb->source_title<br>";
-		}
-	}
-	if ($sourceDb->source_date) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Date') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, language_date(strtolower($sourceDb->source_date)) . "\n");
-		} else {
-			echo '<b>' . __('Date') . ":</b> " . language_date(strtolower($sourceDb->source_date)) . "<br>";
-		}
-	}
-	if ($sourceDb->source_publ) {
-		$source_publ = $sourceDb->source_publ;
-		/*
-		$pdflink=1;
-		if (substr($source_publ,0,7)=='http://'){
-			$link=$source_publ;
-			$source_publ='<a href="'.$link.'">'.$link.'</a>';
-			$pdflink=1;
-		}
-		if (substr($source_publ,0,8)=='https://'){
-			$link=$source_publ;
-			$source_publ='<a href="'.$link.'">'.$link.'</a>';
-			$pdflink=1;
-		}
-		*/
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Publication') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			//if($pdflink==1) {
-			if (substr($source_publ, 0, 7) == 'http://' or substr($source_publ, 0, 8) == 'https://') {
-				$pdf->SetFont('DejaVu', 'B', 10);
-				$pdf->SetTextColor(28, 28, 255);
-				$pdf->Write(6, strip_tags($source_publ) . "\n", strip_tags($source_publ));
-				$pdf->SetFont('DejaVu', '', 10);
-				$pdf->SetTextColor(0);
-			} else {
-				$pdf->Write(6, strip_tags($source_publ) . "\n");
-			}
-		} else {
-			// *** Convert all url's in a text to clickable links ***
-			$source_publ = preg_replace("#(^|[ \n\r\t])www.([a-z\-0-9]+).([a-z]{2,4})($|[ \n\r\t])#mi", "\\1<a href=\"http://www.\\2.\\3\" target=\"_blank\">www.\\2.\\3</a>\\4", $source_publ);
-			//$source_publ = preg_replace("#(^|[ \n\r\t])(((ftp://)|(http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $source_publ);
-			$source_publ = preg_replace("#(^|[ \n\r\t])(((http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $source_publ);
-
-			echo '<b>' . __('Publication') . ':</b> ' . $source_publ . '<br>';
-		}
-	}
-	if ($sourceDb->source_place) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Place') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_place . "\n");
-		} else {
-			print '<b>' . __('Place') . ":</b> $sourceDb->source_place<br>";
-		}
-	}
-	if ($sourceDb->source_refn) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Own code') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_refn . "\n");
-		} else {
-			print '<b>' . __('Own code') . ":</b> $sourceDb->source_refn<br>";
-		}
-	}
-	if ($sourceDb->source_auth) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Author') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_auth . "\n");
-		} else {
-			print '<b>' . __('Author') . ":</b> $sourceDb->source_auth<br>";
-		}
-	}
-	if ($sourceDb->source_subj) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Subject') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_subj . "\n");
-		} else {
-			print '<b>' . __('Subject') . ":</b> $sourceDb->source_subj<br>";
-		}
-	}
-	if ($sourceDb->source_item) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Nr.') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_item . "\n");
-		} else {
-			print '<b>' . __('Nr.') . ":</b> $sourceDb->source_item<br>";
-		}
-	}
-	if ($sourceDb->source_kind) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Kind') . ": ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_kind . "\n");
-		} else {
-			print '<b>' . __('Kind') . ":</b> $sourceDb->source_kind<br>";
-		}
-	}
-	if ($sourceDb->source_repo_caln) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Archive') . " ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_repo_caln . "\n");
-		} else {
-			print '<b>' . __('Archive') . ":</b> $sourceDb->source_repo_caln<br>";
-		}
-	}
-	if ($sourceDb->source_repo_page) {
-		if ($screen_mode == "PDF") {
-			$pdf->SetFont('DejaVu', 'B', 10);
-			$pdf->Write(6, __('Page') . " ");
-			$pdf->SetFont('DejaVu', '', 10);
-			$pdf->Write(6, $sourceDb->source_repo_page . "\n");
-		} else {
-			print '<b>' . __('Page') . ":</b> $sourceDb->source_repo_page<br>";
-		}
+	if (!isset($sourceDb->source_id)) {
+		exit(__('No valid source number.'));
 	}
 
-	if ($sourceDb->source_text) {
-		if ($screen_mode == "PDF") {
-			$source_text = $sourceDb->source_text;
-			$source_text = str_replace('<br>', '', $source_text);
-			//$pdf->Write(6,html_entity_decode($source_text)."\n");
-			$pdf->Write(6, $source_text . "\n");
-		} else {
-			print '</td></tr><tr><td>' . process_text($sourceDb->source_text);
-		}
-	}
+	// *** Convert all url's in a text to clickable links ***  ____old code
+	/* $source_publ = $sourceDb->source_publ;
+	$source_publ = preg_replace("#(^|[ \n\r\t])www.([a-z\-0-9]+).([a-z]{2,4})($|[ \n\r\t])#mi", 
+						"\\1<a href=\"http://www.\\2.\\3\" target=\"_blank\">www.\\2.\\3</a>\\4", 
+						$source_publ); 
+	$source_publ = preg_replace("#(^|[ \n\r\t])(((http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", 
+						"\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", 
+						$source_publ); */
+	
+	$repository = $db_functions->get_repository($sourceDb->source_repo_gedcomnr);
 
-
-	// *** Pictures by source ***
-	if ($screen_mode == "PDF") {
-		//
-	} else {
-		$result = show_media('source', $sourceDb->source_gedcomnr); // *** This function can be found in file: show_picture.php! ***
-		echo $result[0];
-	}
-
-	// *** Show repository ***
-	$repoDb = $db_functions->get_repository($sourceDb->source_repo_gedcomnr);
-	if ($repoDb) {
-		if ($screen_mode == "PDF") {
-			// NO REPOSITORIES IN PDF YET...
-		} else {
-			echo '</td></tr><tr><td>';
-
-			echo '<h3>' . __('Repository') . '</h3>';
-
-			echo '<b>' . __('Title') . ':</b> ' . $repoDb->repo_name . '<br>';
-
-			//if ($user['group_addresses']=='j'){
-			//if ($user['group_living_place']=='j'){
-			echo '<b>' . __('Zip code') . ':</b> ' . $repoDb->repo_zip . '<br>';
-			echo '<b>' . __('Address') . ':</b> ' . $repoDb->repo_address . '<br>';
-			//}
-
-			if ($repoDb->repo_date) {
-				echo '<b>' . __('Date') . ':</b> ' . $repoDb->repo_date . '<br>';
-			}
-			if ($repoDb->repo_place) {
-				echo '<b>' . __('Place') . ':</b> ' . $repoDb->repo_place . '<br>';
-			}
-			echo nl2br($repoDb->repo_text);
-		}
-	}
-
-	if ($screen_mode != "PDF") { // we do not want all persons in the database as given online so
-		// in the pdf file so we'll take just the above details
-		// and leave references to persons
-
-		echo '</td></tr>';
-		echo '<tr><td>';
-
+	include_once __DIR__ . '/header.php';
+	include_once __DIR__ . '/menu.php';
+	include_once __DIR__ . '/include/date_place.php';
+	include_once __DIR__ . '/include/process_text.php';
+	include_once __DIR__ . '/include/show_picture.php';// Needed for pictures by a source
+	include_once __DIR__ . '/include/show_sources.php';
+	include_once __DIR__ . '/include/language_date.php';
+	include_once __DIR__ . '/include/person_cls.php';
+	
+	?>
+	<table class="humo standard">
+		<tr>
+			<td>
+				<h2><?= __('Sources'); ?></h2>
+				<b><?= __('Title'); ?>:</b> <?= $sourceDb->source_title; ?><br>
+				<b><?= __('Date'); ?>:</b> <?= language_date(strtolower($sourceDb->source_date)); ?><br>
+				<b><?= __('Publication'); ?>:</b> <a href="<?= $sourceDb->$source_publ; ?>" target="_blank"></a><br>
+				<b><?= __('Place'); ?>:</b> <?= $sourceDb->source_place; ?><br>
+				<b><?= __('Own code'); ?>:</b> <?= $sourceDb->source_refn; ?><br>
+				<b><?= __('Author'); ?>:</b> <?= $sourceDb->source_auth; ?><br>
+				<b><?= __('Subject'); ?>:</b> <?= $sourceDb->source_subj; ?><br>
+				<b><?= __('Nr.'); ?>:</b> <?= $sourceDb->source_item; ?><br>
+				<b><?= __('Kind'); ?>:</b> <?= $sourceDb->source_kind; ?><br>
+				<b><?= __('Archive'); ?>:</b> <?= $sourceDb->source_repo_caln; ?><br>
+				<b><?= __('Page'); ?>:</b> <?= $sourceDb->source_repo_page; ?><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?= process_text($sourceDb->source_text); ?>
+				<?php
+				// *** Pictures by source ***
+				$result = show_media('source', $sourceDb->source_gedcomnr); // *** This function can be found in file: show_picture.php! ***
+				echo $result[0];
+				?>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h3><?= __('Repository'); ?></h3>
+				<b><?= __('Title'); ?>:</b> <?= $repository->repo_name; ?><br>
+				<b><?= __('Zip code'); ?>:</b> <?= $repository->repo_zip; ?><br>
+				<b><?= __('Address'); ?>:</b> <?= $repository->repo_address; ?><br>
+				<b><?= __('Date'); ?>:</b> <?= $repository->repo_date; ?><br>
+				<b><?= __('Place'); ?>:</b> <?= $repository->repo_place; ?><br>
+				<?= nl2br($repository->repo_text); ?>
+			</td>
+		</tr>
+		<tr><td>
+		<?php
 		$person_cls = new person_cls;
 
 		// *** Find person data if source is connected to a family item ***
@@ -283,7 +141,6 @@ function source_display(int $sourcenum)
 				if ($connectDb->connect_sub_kind == 'pers_sexe_source') {
 					echo __('Source for sex:');
 				}
-				//else { echo 'TEST'; }
 
 				if ($connectDb->connect_sub_kind == 'pers_event_source') {
 					// *** Sources by event ***
@@ -437,13 +294,11 @@ function source_display(int $sourcenum)
 				echo ', <b>' . __('page') . '</b>: ' . $connectDb->connect_page;
 			}
 			echo '<br>';
-		}
+		} ?>
+			</td>
+		</tr>
+	</table>
 
-		echo '</td></tr>';
-
-		echo '</table><br>';
-
-		include_once __DIR__ . '/footer.php';
-	} // end if not PDF
-
-} // end function source_display
+	<?php include_once __DIR__ . '/footer.php';
+	
+}
