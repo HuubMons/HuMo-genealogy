@@ -40,10 +40,6 @@
 	<ul><li>Aldfaer photo's and text.
 	<li>Order children and marriages for Aldfaer gedcom.
 	</ul>
-<li>Louis Ywema:
-	<ul><li>Birthday list
-	<li>Birthday RSS list
-	</ul>
 <li>René Janssen:
 	<ul><li>Graphical ancestor chart: better lay-out (colours) and pictures
 	<li>Statistics for visitors.
