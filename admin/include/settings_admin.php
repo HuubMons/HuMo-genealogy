@@ -201,7 +201,7 @@ include __DIR__ . '/../../include/settings_global.php'; //variables
 // *** Read languages in language array ***
 $arr_count = 0;
 $arr_count_admin = 0;
-$folder = opendir(CMS_ROOTPATH . 'languages/');
+$folder = opendir(__DIR__ . '/../../languages/');
 while (false !== ($file = readdir($folder))) {
 	if (strlen($file) < 6 and $file != '.' and $file != '..') {
 		// *** Get language name ***
@@ -209,7 +209,7 @@ while (false !== ($file = readdir($folder))) {
 		$langs[$arr_count][0] = $language["name"];
 		$langs[$arr_count][1] = $file;
 		$arr_count++;
-		if (file_exists(CMS_ROOTPATH . 'languages/' . $file . '/' . $file . '.mo')) {
+		if (file_exists(__DIR__ . '/../../languages/' . $file . '/' . $file . '.mo')) {
 			$langs_admin[$arr_count_admin][0] = $language["name"];
 			$langs_admin[$arr_count_admin][1] = $file;
 			$arr_count_admin++;
@@ -644,7 +644,7 @@ if (isset($menu_admin) and $menu_admin == 'settings') {
 		//echo '<option value="default_timelines"'.$select.'>English</option>'; // *** Don't add "English" in translation file! ***
 		echo '<option value="default_timelines"' . $select . '>' . __('Default') . '</option>'; // *** Don't add "English" in translation file! ***
 		for ($i = 0; $i < count($langs); $i++) {
-			if (is_dir(CMS_ROOTPATH . 'languages/' . $langs[$i][1] . '/timelines/')) {
+			if (is_dir(__DIR__ . '/../../languages/' . $langs[$i][1] . '/timelines/')) {
 				$select = '';
 				if ($time_lang == $langs[$i][1]) {
 					$select = ' SELECTED';
@@ -658,9 +658,9 @@ if (isset($menu_admin) and $menu_admin == 'settings') {
 	echo "&nbsp;&nbsp;";
 
 	// *** First select language, then the timeline files of that language is shown ***
-	$folder = @opendir(CMS_ROOTPATH . 'languages/' . $time_lang . '/timelines/');
+	$folder = @opendir(__DIR__ . '/../../languages/' . $time_lang . '/timelines/');
 	// *** Default language = english ***
-	if ($time_lang == 'default_timelines') $folder = @opendir(CMS_ROOTPATH . 'languages/' . $time_lang);
+	if ($time_lang == 'default_timelines') $folder = @opendir(__DIR__ . '/../../languages/' . $time_lang);
 	if ($folder !== false) {  // no use showing the option if we can't access the timeline folder
 		while (false !== ($file = readdir($folder))) {
 			if (substr($file, -4, 4) == '.txt') {

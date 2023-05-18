@@ -1043,25 +1043,16 @@ if ($popup == false) {
 		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=admin">' . __('Administration') . ' - ' . __('Main menu') . '</a>';
 	}
 
-	if (CMS_SPECIFIC == 'Joomla') {
-		$path_tmp2 = 'index.php?option=com_humo-gen';
-	} else {
-		$path_tmp2 = CMS_ROOTPATH . 'index.php';
-	}
 
-	echo '<li><a href="' . $path_tmp2 . '">' . __('Website') . '</a>';
+	echo '<li><a href="index.php">' . __('Website') . '</a>';
 
 	if (isset($_SESSION["user_name_admin"])) {
-		if (CMS_SPECIFIC == 'Joomla') {
-			$path_tmp2 = 'index.php?option=com_humo-gen&amp;task=admin&amp;log_off=1';
-		} else {
-			$path_tmp2 = 'index.php?log_off=1';
-		}
+		$path_tmp2 = 'index.php?log_off=1';
 		$menu_item = '';
 		if ($page == 'check') {
 			$menu_item = ' id="current"';
 		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp2 . '">' . __('Logoff') . '</a>';
+		echo '<li' . $menu_item . '><a href="index.php?log_off=1">' . __('Logoff') . '</a>';
 	}
 
 	echo '</ul>';

@@ -51,25 +51,14 @@ if (!defined('ADMIN_PAGE')) {
 //globals for joomla
 global $tree_prefix, $gedcom_date, $gedcom_time, $pers_gedcomnumber;
 
-if (CMS_SPECIFIC == "Joomla") {
-	$phpself = 'index.php?option=com_humo-gen&amp;task=admin&amp;page=editor';
-	$joomlastring = 'option=com_humo-gen&amp;task=admin&amp;';  // can be placed after existing index?
-	$family_string = 'index.php?option=com_humo-gen&task=family&amp;';
-	$sourcestring = 'index.php?option=com_humo-gen&task=source&amp;';
-	$addresstring = 'index.php?option=com_humo-gen&task=address&amp;';
-	$path_prefix = ''; // in joomla we are already in main joomla map and do not have to "get out of admin"
-} else {
-	$phpself = 'index.php';
+$phpself = 'index.php';
 	$joomlastring = '';
 	$family_string = '../family.php?';
 	$sourcestring = '../source.php?';
 	$addresstring = '../address.php?';
 	$path_prefix = '../';
-}
 
-$joomlapath = CMS_ROOTPATH_ADMIN . 'include/';
-
-include_once($joomlapath . "editor_cls.php");
+include_once __DIR__ . '/editor_cls.php';
 $editor_cls = new editor_cls;
 
 include_once __DIR__ . '/../../include/language_date.php';
@@ -252,7 +241,7 @@ if (isset($_GET['add_person'])) {
 
 if (isset($tree_id)) {
 	// *** Process queries ***
-	include_once($joomlapath . "editor_inc.php");
+	include_once __DIR__ . "/editor_inc.php";
 
 	// *** New family tree: no default or selected pers_gedcomnumer, add new person ***
 	if ($pers_gedcomnumber == '') {
@@ -1645,7 +1634,7 @@ if ($check_person) {
 				$error_color = '';
 				$show_message = '&nbsp;';
 				if (($person->pers_bapt_date or $person->pers_birth_date) and $person->pers_death_date) {
-					include_once(CMS_ROOTPATH . "include/calculate_age_cls.php");
+					include_once __DIR__ . "/../../include/calculate_age_cls.php";
 					$process_age = new calculate_year_cls;
 					$age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
 					if ($age and ($age < 0 or $age > 120)) {

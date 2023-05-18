@@ -460,11 +460,7 @@ if (isset($_POST['step2'])) {
 	if (!isset($_POST['add_tree']) or (isset($_POST['add_tree']) and $_POST['add_tree'] == 'no')) {
 		$_SESSION['add_tree'] = false;
 		$limit = 2500;
-		if (CMS_SPECIFIC == "Joomla") {
-			$rootpathinclude = CMS_ROOTPATH_ADMIN . "include/";
-		} else {
-			$rootpathinclude = '';
-		}
+		$rootpathinclude = '';
 
 		echo '<b>' . __('STEP 2) Remove old family tree:') . '</b><br>';
 

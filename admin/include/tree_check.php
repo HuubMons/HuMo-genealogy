@@ -18,11 +18,7 @@ echo '<h1 class="center">' . __('Family tree data check') . '</h1>';
 $direction = "left";
 if ($rtlmarker == "rtl") $direction = "right";
 
-if (CMS_SPECIFIC == "Joomla") {
-	echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
-} else {
-	echo '<form method="POST" action="index.php" style="display : inline;">';
-}
+echo '<form method="POST" action="index.php" style="display : inline;">';
 $page = 'check'; // *** Otherwise the direct link to page "Latest changes" doesn't work properly ***
 echo '<input type="hidden" name="page" value="' . $page . '">';
 

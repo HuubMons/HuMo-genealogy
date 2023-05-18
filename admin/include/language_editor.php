@@ -18,15 +18,13 @@ echo __('Translate into the right column. The untranslated items appear first.')
 
 echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 $language_editor = 'en';
-if (
-	isset($_GET['language_editor']) and
-	(file_exists(CMS_ROOTPATH . 'languages/' . $_GET['language_editor'] . '/' . $_GET['language_editor'] . '.mo'))
+if ( isset($_GET['language_editor']) and
+	(file_exists(__DIR__ . '/../../languages/' . $_GET['language_editor'] . '/' . $_GET['language_editor'] . '.mo'))
 ) {
 	$language_editor = $_GET['language_editor'];
 }
-if (
-	isset($_POST['language_editor']) and
-	(file_exists(CMS_ROOTPATH . 'languages/' . $_POST['language_editor'] . '/' . $_POST['language_editor'] . '.mo'))
+if ( isset($_POST['language_editor']) and
+	(file_exists(__DIR__ . '/../../languages/' . $_POST['language_editor'] . '/' . $_POST['language_editor'] . '.mo'))
 ) {
 	$language_editor = $_POST['language_editor'];
 }
@@ -36,8 +34,8 @@ echo __('Language') . ': ';
 for ($i = 0; $i < count($language_select); $i++) {
 	// *** Get language name ***
 	include __DIR__ . '/../../languages/' . $language_select[$i] . '/language_data.php';
-	echo '<a href="' . CMS_ROOTPATH . 'admin/index.php?page=language_editor&amp;language_editor=' . $language_select[$i] . '" style="border-right:none; background:none;">';
-	echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_select[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '"';
+	echo '<a href="/admin/index.php?page=language_editor&amp;language_editor=' . $language_select[$i] . '" style="border-right:none; background:none;">';
+	echo '<img src="/languages/' . $language_select[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '"';
 
 	if ($language_editor == $language_select[$i]) {
 		echo ' style="	border: solid 2px #999999;"';
@@ -51,7 +49,7 @@ for ($i = 0; $i < count($language_select); $i++) {
 echo '</td>';
 echo '<td style="width:50%;text-align:center;border-left:none;">';
 
-$file = CMS_ROOTPATH . 'languages/' . $language_editor . '/' . $language_editor . '.po';
+$file = __DIR__ . '/../../languages/' . $language_editor . '/' . $language_editor . '.po';
 $message = '';
 
 // here php will place the "saved file xx" message en javascript will put the "saving..." message
@@ -75,7 +73,7 @@ if (isset($_POST['save_button']) and $_POST['save_button'] == "pressed") {
 		}
 	}
 
-	$handle_write = @fopen(CMS_ROOTPATH . 'languages/' . $language_editor . '/' . $language_editor . ".po", "w+");
+	$handle_write = @fopen(__DIR__ . '/../../languages/' . $language_editor . '/' . $language_editor . ".po", "w+");
 	if ($handle_write) {
 		for ($i = 0; $i < count($_SESSION['line_array']); $i++) {
 			// #~ remarks need \n at end, except for last one:

@@ -372,7 +372,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 				include __DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php';
 				echo '<li style="float:left; width:124px;">';
 				echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
-				echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+				echo '<img src="/languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
 				echo $language["name"];
 				echo '</a>';
 				echo '</li>';
@@ -2956,8 +2956,9 @@ After a merge you can switch to "relatives merge" and after that return to dupli
 		$dbh->query($qry);
 		// CLEANUP: This person's I may still exist in the humo_events table under "event_event",
 		// in case of birth/death declaration or bapt/burial witness. If so, change the GEDCOM to the left person's I:
+		$fackedevent = "@$result1Db->pers_gedcomnumber@";
 		$qry = "UPDATE humo_events
-		SET event_event = '@" . $result1Db->pers_gedcomnumber . "@'
+		SET event_event = $fackedevent
 		WHERE event_tree_id='" . $tree_id . "' AND event_event ='@" . $result2Db->pers_gedcomnumber . "@'";
 		$dbh->query($qry);
 

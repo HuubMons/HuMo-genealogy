@@ -317,12 +317,7 @@ function iptocountry($ip, $path)
 {
 	global $language;
 	$numbers = preg_split("/\./", $ip);
-	//if(CMS_SPECIFIC == "Joomla") {   // include_once doesn't work in joomla
 	include($path . $numbers[0] . ".php");
-	//}
-	//else {
-	//   include_once($path.$numbers[0].".php");
-	//}
 	$code = ($numbers[0] * 16777216) + ($numbers[1] * 65536) + ($numbers[2] * 256) + ($numbers[3]);
 
 	foreach ($ranges as $key => $value) {
@@ -984,11 +979,7 @@ if ($statistics_screen == 'statistics_old') {
 			WHERE fam_tree_id='" . $tree_id . "' AND fam_counter ORDER BY fam_counter desc LIMIT 0,50");
 	while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
 		echo $familyDb->fam_counter . " ";
-		if (CMS_SPECIFIC == "Joomla") {
-			echo '<a href="index.php?option=com_humo-gen&amp;task=family&amp;id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
-		} else {
-			echo '<a href="../family.php?id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
-		}
+		echo '<a href="../family.php?id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
 
 		//*** Man ***
 		$personDb = $db_functions->get_person($familyDb->fam_man);

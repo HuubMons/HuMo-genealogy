@@ -465,7 +465,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
 	// *** Use your own favicon.ico in media folder ***
 	if (file_exists('media/favicon.ico')) {
-		echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'media/favicon.ico" type="image/x-icon">';
+		echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
 	} else {
 		echo '<link rel="shortcut icon" href="theme/favicon.ico" type="image/x-icon">';
 	}
@@ -612,8 +612,8 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	include_once __DIR__ . '/theme/sss1.php';
 
 	// *** Pop-up menu ***
-	echo '<link rel="stylesheet" type="text/css" href="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.css">';
-	echo '<script type="text/javascript" src="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.js"></script>';
+	echo '<link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">';
+	echo '<script type="text/javascript" src="include/popup_menu/popup_menu.js"></script>';
 
 	// *** Always load script, because of "Random photo" at homepage ***
 	// *** Photo lightbox effect using GLightbox ***

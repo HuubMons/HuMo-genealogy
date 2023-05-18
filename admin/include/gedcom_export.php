@@ -1868,7 +1868,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
 	echo '<p>' . __('GEDCOM file is generated') . '<br>';
 
-	echo '<form method="POST" action="include/gedcom_download.php" target="_blank">';
+	echo '<form method="POST" action="/admin/include/gedcom_download.php" target="_blank">';
 	echo ' <input type="Submit" name="something" value="' . __('Download GEDCOM file') . '">';
 	echo '<input type="hidden" name="page" value="' . $page . '">';
 	echo '<input type="hidden" name="file_name" value="' . $myFile . '">';
