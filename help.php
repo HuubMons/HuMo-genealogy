@@ -76,7 +76,7 @@ include_once __DIR__ . '/menu.php';
 		<p class="help_text"><img src="languages/en/flag.gif"> <?= __('Language Flags'); ?><br>
 			<span class="help_explanation"><?= __('On the menu bar, to the right of the menu buttons, you will notice several national flags, that allow you to change the display language.'); ?><br>
 		</p>
-		<p class="help_text"><img src="/thme/images/settings.png"> <?= __('User settings'); ?><br>
+		<p class="help_text"><img src="/theme/images/settings.png"> <?= __('User settings'); ?><br>
 			<span class="help_explanation"><?= __('This page contains several user settings: selecting a theme and changing password (if allowed).'); ?><br>
 		</p>
 	</div>
