@@ -7,3 +7,4 @@ HuMo-genealogy Changelog
 * Removed birthday RSS option.
 * Removed old Joomla module items.
 * Removed country flags option in visitor statistics.
+* Removed Docker folder from HuMo-genealogy.
