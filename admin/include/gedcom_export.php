@@ -87,7 +87,7 @@ if (isset($_POST['part_tree']) and $_POST['part_tree'] == 'part') {
 }
 echo '<select ' . $onchange . ' size="1" name="tree_id">';
 while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-	$treetext = show_tree_text($treeDb->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($treeDb->tree_id, $selected_language);
 	$selected = '';
 	if ($treeDb->tree_id == $tree_id) {
 		$selected = ' SELECTED';

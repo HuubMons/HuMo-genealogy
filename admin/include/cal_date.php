@@ -1,6 +1,4 @@
 <?php
-@set_time_limit(3000);
-//@ini_set('memory_limit','-1');
 
 if (!defined('ADMIN_PAGE')) {
 	exit;
@@ -25,7 +23,7 @@ echo '<input type="hidden" name="page" value="cal_date">';
 echo '<select size="1" name="tree_id">';
 
 foreach ($trees as $tree) {
-	$treetext = show_tree_text($tree->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($tree->tree_id, $selected_language);
 	$selected = '';
 	if (isset($tree_id) and ($tree->tree_id == $tree_id)) {
 		$selected = ' SELECTED';

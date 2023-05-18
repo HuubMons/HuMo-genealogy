@@ -6,9 +6,11 @@ if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "");
 if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
 
 include_once __DIR__ . '/include/db_login.php'; //Inloggen database.
-include_once __DIR__ . '/include/show_tree_text.php';
+include_once __DIR__ . '/include/db_tree_text.php';
 include_once __DIR__ . '/include/db_functions_cls.php';
-$db_functions = new db_functions();
+
+$db_functions = new db_functions($dbh);
+$db_tree_text = new db_tree_text($dbh);
 
 // *** Show a message at NEW installation. Use "try" for PHP 8.1. ***
 try {
@@ -22,8 +24,7 @@ include_once __DIR__ . '/include/safe.php';
 include_once __DIR__ . '/include/settings_global.php'; //Variables
 include_once __DIR__ . '/include/settings_user.php'; // USER variables
 
-
-$language_folder = opendir( __DIR__ . '/languages/');
+$language_folder = opendir(__DIR__ . '/languages/');
 while (false !== ($file = readdir($language_folder))) {
 	if (strlen($file) < 6 and $file != '.' and $file != '..') {
 		$language_file[] = $file;
@@ -360,18 +361,19 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
 	if (!CMS_SPECIFIC) {
 		// *** Generate header of HTML pages ***
-		
+
 		// Prevent validator faults. It's not working good... Replace all & characters in the links by &amp;
 
 		$robots_option = $humo_option["searchengine"] == "j" ? $humo_option["robots_option"] : ""
-		?>
+?>
 		<!DOCTYPE html>
 		<html lang="<?= $selected_language; ?>">
-			<head>
-				<meta http-equiv="content-type" content="text/html; charset=utf-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<title><?= $head_text; ?></title>
-				<?= $robots_option; ?>
+
+		<head>
+			<meta http-equiv="content-type" content="text/html; charset=utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title><?= $head_text; ?></title>
+			<?= $robots_option; ?>
 
 	<?php }
 
@@ -383,10 +385,10 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	// REQUEST_URI: /url_test/index.php?variabele=1
 	// *** No url_rewrite ***
 
-/**
- * @deprecated but if some rewriting problem we need to uncomment this part
- */
-/* 	$url_path = $_SERVER['PHP_SELF']; // TODO: @Devs not safe!
+	/**
+	 * @deprecated but if some rewriting problem we need to uncomment this part
+	 */
+	/* 	$url_path = $_SERVER['PHP_SELF']; // TODO: @Devs not safe!
 	$position = strrpos($_SERVER['PHP_SELF'], '/');
 	$uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';
 	
@@ -458,24 +460,16 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		}
 	} */
 
-	if (CMS_SPECIFIC !== 'CMSMS') {
-		echo '<link href="' . CMS_ROOTPATH . 'styles/gedcom.css" rel="stylesheet" type="text/css">';
-		echo '<link href="' . CMS_ROOTPATH . 'styles/print.css" rel="stylesheet" type="text/css" media="print">';
+	echo '<link href="theme/gedcom.css" rel="stylesheet" type="text/css">';
+	echo '<link href="theme/print.css" rel="stylesheet" type="text/css" media="print">';
 
-		// *** Use your own favicon.ico in media folder ***
-		if (file_exists('media/favicon.ico'))
-			echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'media/favicon.ico" type="image/x-icon">';
-		else
-			echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'styles/favicon.ico" type="image/x-icon">';
+	// *** Use your own favicon.ico in media folder ***
+	if (file_exists('media/favicon.ico')) {
+		echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'media/favicon.ico" type="image/x-icon">';
+	} else {
+		echo '<link rel="shortcut icon" href="theme/favicon.ico" type="image/x-icon">';
 	}
 
-	if (isset($user["group_birthday_rss"]) and $user["group_birthday_rss"] == "j") {
-		$language_rss = 'en';
-		if (isset($_SESSION["language_humo"])) {
-			$language_rss = $_SESSION["language_humo"];
-		}
-		echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="' . CMS_ROOTPATH . 'birthday_rss.php?lang=' . $language_rss . '" >';
-	}
 
 	/*
 	// *** url_rewrite variabele ***
@@ -502,25 +496,6 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	$database = '';
 	if (isset($_GET["database"])) $database = $_GET["database"];
 	if (isset($_POST["database"])) $database = $_POST["database"];
-	/*
-	if (isset($urlpart[0]) AND $urlpart[0]!='' AND $urlpart[0]!='standaard'){
-		// backwards compatible: humo2_
-		$database=$urlpart[0]; // *** url_rewrite ***
-		$_GET["database"]=$database; // *** Needed to check for CMS page if url-rewrite is used ***
-
-		// numeric value
-		if (is_numeric($urlpart[0])){
-			// *** Check if family tree really exists ***
-			$dataDb=$db_functions->get_tree($urlpart[0]);
-			if ($dataDb){
-				if ($urlpart[0]==$dataDb->tree_id){
-					$_SESSION['tree_prefix']=$dataDb->tree_prefix;
-					$database=$dataDb->tree_prefix;
-				}
-			}
-		}
-	}
-	*/
 
 	// *** New option, use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
 	if (isset($_GET["tree_id"])) $temp_tree_id = $_GET["tree_id"];
@@ -628,45 +603,37 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		strpos($_SERVER['REQUEST_URI'], "HOUR") !== false or
 		strpos($_SERVER['REQUEST_URI'], "maps") !== false
 	) {
-		echo '<script src="' . CMS_ROOTPATH . 'include/jquery/jquery.min.js"></script> ';
-		echo '<link rel="stylesheet" href="' . CMS_ROOTPATH . 'include/jqueryui/jquery-ui.min.css"> ';
-		echo '<script src="' . CMS_ROOTPATH . 'include/jqueryui/jquery-ui.min.js"></script>';
+		echo '<script src="externals/jquery/jquery.min.js"></script> ';
+		echo '<link rel="stylesheet" href="externals/jqueryui/jquery-ui.min.css"> ';
+		echo '<script src="externals/jqueryui/jquery-ui.min.js"></script>';
 	}
-
-	// *** Was needed to change fontsize ***
-	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'fontsize.js"></script>';
 
 	// *** Style sheet select ***
-	include_once __DIR__ . '/styles/sss1.php';
+	include_once __DIR__ . '/theme/sss1.php';
 
 	// *** Pop-up menu ***
+	echo '<link rel="stylesheet" type="text/css" href="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.css">';
 	echo '<script type="text/javascript" src="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.js"></script>';
-	if (CMS_SPECIFIC !== 'CMSMS') {
-		echo '<link rel="stylesheet" type="text/css" href="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.css">';
-	}
 
 	// *** Always load script, because of "Random photo" at homepage ***
 	// *** Photo lightbox effect using GLightbox ***
-	echo '<link rel="stylesheet" href="' . CMS_ROOTPATH . 'externals/glightbox/css/glightbox.css" />';
-	echo '<script src="' . CMS_ROOTPATH . 'externals/glightbox/js/glightbox.min.js"></script>';
+	echo '<link rel="stylesheet" href="externals/glightbox/css/glightbox.css" />';
+	echo '<script src="externals/glightbox/js/glightbox.min.js"></script>';
 	// *** There is also a script in footer.php, otherwise GLightbox doesn't work ***
 
 	// *** CSS changes for mobile devices ***
-	echo '<link rel="stylesheet" media="(max-width: 640px)" href="styles/gedcom_mobile.css">';
+	echo '<link rel="stylesheet" media="(max-width: 640px)" href="theme/gedcom_mobile.css">';
 
 	// *** Extra items in header added by admin ***
 	if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];
 
-	if (!CMS_SPECIFIC) {
-		echo "</head>\n";
-		//echo "<body onload='checkCookie()'>\n";  // *** Was needed to change fontsize ***
-		echo "<body>\n";
-	}
+	echo "</head>\n";
+	echo "<body>\n";
 
 	$db_functions->set_tree_id($_SESSION['tree_id']);
 
 	if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
-		$str = file_get_contents(CMS_ROOTPATH . "languages/en/en.po");
+		$str = file_get_contents(__DIR__ . "/languages/en/en.po");
 		if (strpos($str, 'msgstr "&#134;"') or strpos($str, 'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
 			$humo_option['death_char'] = "n"; // fool "change_all.php" into thinking a change was requested from cross to infinity
 			include __DIR__ . '/languages/change_all.php';

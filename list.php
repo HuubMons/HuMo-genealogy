@@ -3,8 +3,9 @@ include_once __DIR__ . '/header.php'; //returns CMS_ROOTPATH constant
 include_once __DIR__ . '/include/language_date.php';
 include_once __DIR__ . '/include/date_place.php';
 include_once __DIR__ . '/include/person_cls.php';
-//error_reporting(E_ALL);
-@set_time_limit(300);
+include_once __DIR__ . '/include/mainindex_cls.php';
+
+$mainindex = new mainindex_cls($dbh);
 
 // *** show person ***
 function show_person($personDb){
@@ -12,7 +13,7 @@ function show_person($personDb){
 	global $bot_visit, $humo_option, $uri_path, $search_database, $list_expanded;
 	global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
 	global $select_birth, $select_bapt, $select_place, $select_death, $select_buried, $select_event;
-	global $selectsort;
+	global $db_tree_text;
 
 	$db_functions->set_tree_id($personDb->pers_tree_id);
 
@@ -241,7 +242,7 @@ function show_person($personDb){
 		// *** Show name of family tree, if search in multiple family trees is used ***
 		if ($search_database=='all_trees' OR $search_database=='all_but_this'){
 			//$treetext=show_tree_text($pers_tree_id, $selected_language);
-			$treetext=show_tree_text($personDb->pers_tree_id, $selected_language);
+			$treetext= $db_tree_text->show_tree_text($personDb->pers_tree_id, $selected_language);
 			echo '</td><td>';
 			echo '<i><font size="-1">'.$treetext['name'].'</font></i>';
 		}
@@ -1926,12 +1927,7 @@ if ($index_list=='patronym'){
 		echo '</td></tr></table></form>';
 	}
 
-	if (CMS_SPECIFIC=='Joomla')
-	{ 
-		$uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;"; 
-	} else { 
-		$uri_path_string = "list.php?"; // $uri_path."list.php?"; 
-	}
+	$uri_path_string = "list.php?"; // $uri_path."list.php?";
 
 	// *** Check for search results ***
 	if (@$person_result->rowCount()==0) {
@@ -2267,6 +2263,7 @@ echo '<script type="text/javascript">
 	}
 </script>';
 
+// TODO: @ Devs: innerHTML is not safe, use val, value, text .... insteed
 echo '<script type="text/javascript"> 
 	document.getElementById("found_div").innerHTML = \''.$pers_counter.__(' persons found.').'\';
 </script>';
@@ -2277,4 +2274,4 @@ echo '<script type="text/javascript">
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;
 
-include_once __DIR__ . '/footer.php';
+require __DIR__ . '/footer.php';

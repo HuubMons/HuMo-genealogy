@@ -1,6 +1,15 @@
+<?php 
+include_once __DIR__ . '/include/mainindex_cls.php';
+$mainindex = new mainindex_cls($dbh);
+
+// *** Show HuMo-genealogy footer ***
+echo $mainindex->show_footer();
+?>
+
 
 		</div> <!-- End of div: Content. -->
 	</div> <!-- End of div: Silverline. -->
+	
 <?php if (!empty($humo_option["text_footer"])) { ?>
 	<br> <?= $humo_option["text_footer"]; ?>
 <?php } ?>
@@ -75,7 +84,6 @@ if (isset($_SESSION['user_group_id']) AND $_SESSION['user_group_id']=='1') { ?>
 	});
 </script>
 
-<?php if (!CMS_SPECIFIC) { ?>
 	</body>
 </html>
-<?php }
+

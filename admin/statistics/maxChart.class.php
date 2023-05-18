@@ -14,7 +14,7 @@ class maxChart
 	var $metaSpaceHorizontal = 60; // Total space needed for chart title + bar title + bar value
 	var $metaSpaceVertical = 60; // Total space needed for chart title + bar title + bar value
 	var $variousColors = false;
-
+	var $thismonth;
 	//function maxChart($data){
 	function __construct($data)
 	{
@@ -32,12 +32,7 @@ class maxChart
 		$this->thismonth = $thismonth;
 		//echo '<div class="chartbox" style="width:'.$this->width.'px; height:'.$this->height.'px;"> <h2>'.$this->title.'</h2>'."\r\n";
 		//echo '<div class="chartbox" style="width:100%; height:'.$this->height.'px;"> <h2>'.$this->title.'</h2>'."\r\n";
-		if (CMS_SPECIFIC == "Joomla") {
-			$chartwidth = "1000px";
-		} else {
-			// $chartwidth = "100%";
-			$chartwidth = "80%";
-		}
+		$chartwidth = "80%";
 		echo '<div class="chartbox" style="width:' . $chartwidth . '; height:' . $this->height . 'px;"> <h2>' . $this->title . '</h2>' . "\r\n";
 		if ($this->type == 1)  $this->drawVertical();
 		else $this->drawHorizontal();
@@ -90,7 +85,7 @@ class maxChart
 			echo '  <div class="barv">' . "\r\n";
 			//echo '    <div class="barvvalue" style="margin-top:'.$b.'px; width:'.$barw.'px;">'.$value.'</div>'."\r\n";
 			echo '    <div class="' . $valuetextclass . '" style="margin-top:' . $b . 'px; width:' . $barw . 'px;">' . $value . '</div>' . "\r\n";
-			echo '    <div><img src="' . CMS_ROOTPATH_ADMIN . 'statistics/images/bar' . $color . '.png" style="width:' . $barw . 'px; height:' . $a . 'px;" alt="bar"> </div>' . "\r\n";
+			echo '    <div><img src="/admin/statistics/images/bar' . $color . '.png" style="width:' . $barw . 'px; height:' . $a . 'px;" alt="bar"> </div>' . "\r\n";
 			$today = date("d");
 			$dezedag = $key;
 			if ($key < 10) {
@@ -118,7 +113,7 @@ class maxChart
 			$i++;
 			echo '  <div class="barh" style="height:' . $barh . 'px;">' . "\r\n";
 			echo '    <div class="barhcaption" style="line-height:' . $barh . 'px; width:90px;">' . $key . '</div>' . "\r\n";
-			echo '    <div class="barhimage"><img src="' . CMS_ROOTPATH_ADMIN . 'statistics/images/barh' . $color . '.png" style="width:' . $b . 'px; height:' . $barh . 'px;" alt="barh"></div>' . "\r\n";
+			echo '    <div class="barhimage"><img src="/admin/statistics/images/barh' . $color . '.png" style="width:' . $b . 'px; height:' . $barh . 'px;" alt="barh"></div>' . "\r\n";
 			echo '    <div class="barhvalue" style="line-height:' . $barh . 'px; width:30px;">' . $value . '</div>' . "\r\n";
 			echo '  </div>';
 		}

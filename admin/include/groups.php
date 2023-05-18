@@ -898,7 +898,7 @@ echo '<tr class="table_header"><th>' . __('Family tree') . '</th><th>' . __('Sho
 
 $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
-	$treetext = show_tree_text($data3Db->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($data3Db->tree_id, $selected_language);
 	$treetext_name = $treetext['name'];
 	echo '<tr><td>' . $data3Db->tree_id . ' ' . $treetext_name . '</td>';
 

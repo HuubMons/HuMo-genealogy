@@ -30,12 +30,6 @@ function getLastestChanges(int $tree_id, string $search_name = '')
 
 	if (!null == $search_name) 
 	{
-		// *** EXAMPLE of a UNION querie ***
-		//$qry = "(SELECT * FROM humo1_person ".$query.') ';
-		//$qry.= " UNION (SELECT * FROM humo2_person ".$query.')';
-		//$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
-		//$qry.= " ORDER BY pers_lastname, pers_firstname";
-
 		// *** Renewed querie because of ONLY_FULL_GROUP_BY in MySQL 5.7 ***
 		$person_qry = "
 		SELECT humo_persons2.*, humo_persons1.pers_id

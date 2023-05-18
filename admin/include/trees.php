@@ -330,7 +330,7 @@ while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
 	if ($tree_searchDb->tree_id == $tree_id) {
 		$selected = ' SELECTED';
 	}
-	$treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($tree_searchDb->tree_id, $selected_language);
 	echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
 }
 echo '</select>';

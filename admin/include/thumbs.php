@@ -5,13 +5,8 @@ if (!defined('ADMIN_PAGE')) {
 }
 //ini_set('memory_limit', '-1');
 
-if (CMS_SPECIFIC == "Joomla") {
-	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-genealogy admin map
-	$joomlastring = "option=com_humo-gen&amp;task=admin&amp;";
-} else {
-	$prefx = '../'; // to get out of the admin map
-	$joomlastring = "";
-}
+$prefx = '../'; // to get out of the admin map
+$joomlastring = "";
 
 // *** Tab menu ***
 $menu_admin = 'picture_settings';
@@ -113,7 +108,7 @@ if ($show_table) {
 	echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
 	echo '<select size="1" name="tree_id" onChange="this.form.submit();">';
 	while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-		$treetext = show_tree_text($treeDb->tree_id, $selected_language);
+		$treetext = $db_tree_text->show_tree_text($treeDb->tree_id, $selected_language);
 		$selected = '';
 		//if (isset($tree) AND ($treeDb->tree_id==$tree)){
 		if (isset($tree_id) and ($treeDb->tree_id == $tree_id)) {
@@ -597,7 +592,7 @@ function categories()
 	include __DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php';
 	echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
 	$select_top = '';
-	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'styles/images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="/theme/images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
 
 	echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
 	echo '<ul class="humo_menu_item2">';
@@ -657,14 +652,14 @@ function categories()
 			echo '<td>';
 		}
 		if ($catDb->photocat_order != $minorder) {
-			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_up=' . $catDb->photocat_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif"></a>&nbsp;&nbsp;';
+			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_up=' . $catDb->photocat_order . '"><img src="/theme/admin/images/arrow_up.gif"></a>&nbsp;&nbsp;';
 		}
 		if ($catDb->photocat_order != $maxorder) {
-			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_down=' . $catDb->photocat_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif"></a>';
+			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_down=' . $catDb->photocat_order . '"><img src="/theme/admin/images/arrow_down.gif"></a>';
 		}
 		echo '</td><td>';
 		if ($catDb->photocat_prefix != 'none') {
-			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_order=' . $catDb->photocat_order . '&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_drop=1"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png"></a>';
+			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_order=' . $catDb->photocat_order . '&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_drop=1"><img src="/theme/admin/images/button_drop.png"></a>';
 		}
 		$prefname = $catDb->photocat_prefix;
 		if ($catDb->photocat_prefix == 'none') $prefname = __('default - without prefix');  // display default in the display language, so it is clear to everyone

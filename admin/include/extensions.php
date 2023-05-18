@@ -7,7 +7,7 @@ if (!defined('ADMIN_PAGE')) {
 echo '<h1 class="center">' . __('Extensions') . '</h1>';
 
 // *** Read theme's ***
-$folder = opendir(CMS_ROOTPATH . 'styles/');
+$folder = opendir(__DIR__ . '/../../theme/');
 while (false !== ($file = readdir($folder))) {
 	if (substr($file, -4, 4) == '.css') {
 		$theme_folder[] = $file;
@@ -52,28 +52,12 @@ if (isset($_POST['save_option'])) {
 
 // *** Re-read variables after changing them ***
 // *** Don't use include_once! Otherwise the old value will be shown ***
-include(CMS_ROOTPATH . "include/settings_global.php"); //variables
+require_once __DIR__ . "/../../include/settings_global.php"; //variables
 
-if (CMS_SPECIFIC == "Joomla") {
-	echo '<form method="post" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=settings">';
-} else {
-	echo '<form method="post" action="index.php">';
-}
+echo '<form method="post" action="/admin/index.php">';
 echo '<input type="hidden" name="page" value="' . $page . '">';
 echo '<table class="humo standard" border="1">';
-
 echo '<tr class="table_header"><th colspan="2">' . __('Extensions') . '</th></tr>';
-echo '<tr><td width="50%">' . __('Show statistics per country') . '</td><td>';
-$file_pointer = 'ip_files';
-if (file_exists($file_pointer))
-	echo __('Extension is installed.');
-else {
-	echo '<b>' . __('Extension is not installed.') . '</b><br>';
-	echo '<a href="https://sourceforge.net/projects/humo-gen/files/HuMo-gen_EXTENSIONS/" target="_blank">';
-	echo __('Go to: Sourceforge country statistics') . '</a>';
-}
-echo '</td></tr>';
-
 echo '<tr class="table_header"><th colspan="2">' . __('Languages') . ' <input type="Submit" name="save_option" value="' . __('Change') . '"></th></tr>';
 echo '<tr><td>' . __('Show/ hide languages') . '</td><td>';
 $hide_languages_array = explode(";", $humo_option["hide_languages"]);
@@ -81,7 +65,7 @@ $hide_languages_array = explode(";", $humo_option["hide_languages"]);
 // *** Language choice ***
 for ($i = 0; $i < count($language_file); $i++) {
 	// *** Get language name ***
-	include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+	include __DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php';
 
 	$checked = ' checked';
 	if (in_array($language_file[$i], $hide_languages_array)) $checked = '';
@@ -97,7 +81,7 @@ for ($i = 0; $i < count($language_file); $i++) {
 	}
 
 	echo '<input type="checkbox" id="language" value="y" name="' . $language_file[$i] . '" ' . $checked . $disabled . '>';
-	echo ' <img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+	echo ' <img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
 	echo $language["name"] . '<br>';
 }
 echo '</td></tr>';

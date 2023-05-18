@@ -9,11 +9,8 @@ include_once __DIR__ . '/menu.php';
 // ** Main index class ***
 // ***********************
 include_once __DIR__ . '/include/mainindex_cls.php';
-$mainindex = new mainindex_cls();
+$mainindex = new mainindex_cls($dbh);
 
 echo $mainindex->show_tree_index();
-
-// *** Show HuMo-genealogy footer ***
-echo $mainindex->show_footer();
 
 include_once __DIR__ . '/footer.php';

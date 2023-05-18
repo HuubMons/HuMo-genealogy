@@ -38,6 +38,10 @@ global $parent1Db, $parent2Db;
 global $templ_name;
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/include/db_functions_cls.php';
+include_once __DIR__ . '/include/db_tree_text.php';
+$db_functions = new db_functions($dbh);
+$db_tree_text = new db_tree_text($dbh);
 
 // *** "Last visited" id is used for contact form ***
 $last_visited = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
@@ -53,8 +57,8 @@ if ($screen_mode != 'PDF' and $menu != 1) {  //we can't have a menu in pdf... an
 }
 
 if ($screen_mode == 'PDF') {  // if PDF: necessary parts from menu.php
-	include_once __DIR__ . '/include/db_functions_cls.php';
-	$db_functions = new db_functions;
+	
+	
 
 	if (isset($_SESSION['tree_prefix'])) {
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
@@ -87,15 +91,15 @@ function topline()
 {
 	global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker, $family_id, $main_person;
 	global $alignmarker, $language, $uri_path, $descendant_report, $family_expanded;
-	global $user, $source_presentation, $swap_parent1_parent2, $maps_presentation, $picture_presentation, $text_presentation;
+	global $user, $source_presentation, $maps_presentation, $picture_presentation, $text_presentation;
 	global $database, $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
-	global $tree_id, $humo_option;
+	global $tree_id, $humo_option, $db_tree_text;
 
 	//$text='<tr class="table_headline"><td class="table_header" width="65%">';
 	$text = '<tr class="table_headline"><td class="table_header">';
 
 	// *** Text above family ***
-	$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 	$text .= '<div class="family_page_toptext fonts">' . $treetext['family_top'] . '<br></div>';
 
 	//$text.='</td><td class="table_header fonts" width="12%" style="text-align:center";>';
@@ -698,7 +702,7 @@ if (!$family_id) {
 		$pdf->SetFont($pdf_font, 'BI', 12);
 		$pdf->SetFillColor(196, 242, 107);
 
-		$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+		$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 		$family_top = $treetext['family_top'];
 		if ($family_top != '') {
 			$pdf->Cell(0, 6, pdf_convert($family_top), 0, 1, 'L', true);
@@ -1006,7 +1010,7 @@ else {
 							$pdf->SetFont($pdf_font, 'BI', 12);
 							$pdf->SetFillColor(186, 244, 193);
 
-							$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+							$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 							$family_top = $treetext['family_top'];
 							if ($family_top != '') {
 								$pdf->SetLeftMargin(10);
@@ -1019,7 +1023,7 @@ else {
 						} elseif ($screen_mode == 'RTF') {
 							$sect->addEmptyParagraph($fontSmall, $parBlack);
 
-							$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+							$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 							$rtf_text = $treetext['family_top'];
 							if ($rtf_text != '')
 								$sect->writeText($rtf_text, $arial14, $parHead);
@@ -2144,7 +2148,7 @@ if ($screen_mode == '' and $user['group_citation_generation'] == 'y') {
 if ($screen_mode == '') {
 	if ($descendant_report == false) {
 		// *** Show extra footer text in family screen ***
-		$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+		$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 		echo $treetext['family_footer'];
 
 		if ($user['group_user_notes_show'] == 'y') {

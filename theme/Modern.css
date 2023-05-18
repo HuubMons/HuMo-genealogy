@@ -1,0 +1,141 @@
+body {
+	background:none;
+}
+
+#humo_menu {
+	background:none;
+	background-color: #5bc1af;
+	border-top: none;
+	border-bottom: none;
+
+}
+
+/* Border pop-up menu */
+div.ltrsddm div {
+	border:none;
+}
+div.rtlsddm div {
+	border:none;
+}
+
+#humo_menu a {
+	color:#FFFFFF;
+}
+
+#humo_menu ul.humo_menu_item2 li a{
+	background:none;
+	background-color: #5bc1af;
+}
+
+/* Main menu */
+ul.humo_menu_item li {
+	border-left: none;
+	/* border-right: none; */
+	border-right: 1px dotted #eee;
+}
+/* Pop-up menu */
+ul.humo_menu_item2 li {
+	border-right:none;
+}
+
+/* Main menu */
+ul.humo_menu_item li a{
+	border-right:none;
+}
+/* Pop-up menu */
+ul.humo_menu_item2 li a{
+	border-right: none;
+}
+
+#top_menu li:hover{
+	background:#2980b9;
+}
+
+#humo_menu a:hover, #humo_menu ul.humo_menu_item2 li a:hover {
+	background:#2980b9;
+	color:#FFFFFF;
+}
+#humo_menu #current a, #humo_menu #current_top {
+	background:none;
+	background:#2980b9;
+	color:#FFFFFF;
+}
+
+
+#mainmenu_centerbox{
+	background: #ffffff;
+	border: none;
+	margin:10px 15px 0px 15px;
+	padding:5px;
+	line-height:150%;
+	overflow:hidden;
+	height:auto;
+	min-height:380px;
+	-moz-border-radius: none;
+	-webkit-border-radius: none;
+	border-radius: none;  
+	box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+}
+
+
+/* For main menu: left - center - right */
+#mainmenu_left{
+	background: #2980b9;
+	color:#FFFFFF;
+	min-height:380px;
+}
+#mainmenu_center{
+	background: #00b9c7;
+	color:#FFFFFF;
+	min-height:380px;
+}
+#mainmenu_center_alt{
+	background: #00b9c7;
+	color:#FFFFFF;
+	min-height:380px;
+}
+#mainmenu_right{
+	background: #9d479d;
+	color:#FFFFFF;
+	min-height:380px;
+	float:left;
+}
+#mainmenu_right form {
+}
+
+/* top bar in left - content - right boxes: only in main menu */
+.mainmenu_bar{
+	background:none;
+}
+
+table.humo td, table.humo th, table.reltable td {
+	border: 0px;
+}
+
+table.humo tr:first-of-type td, table.relmenu tr:first-of-type td, table.humo tr:first-of-type th, table.relmenu tr:first-of-type th {
+	border-top:0px;
+}
+
+table.humo, table.ext {
+	background-color:#FAF1EB;
+	color:#000000;
+	border-spacing: 0;
+	border-width: 0px; 
+
+	box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+
+	-moz-border-radius: none;
+	-webkit-border-radius: none;
+	border-radius: none;
+}
+
+/* Headline in table */
+.table_headline{
+	color:#000000;
+	background-color: transparent;
+	background-image: none;
+}

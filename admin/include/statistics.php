@@ -18,7 +18,7 @@ $person_cls = new person_cls;
 // *** Show 1 statistics line ***
 function statistics_line($familyDb)
 {
-	global $dbh, $language, $person_cls, $selected_language, $db_functions;
+	global $person_cls, $selected_language, $db_functions, $db_tree_text;
 
 	$tree_id = $familyDb->tree_id;
 	if (isset($tree_id) and $tree_id) $db_functions->set_tree_id($tree_id);
@@ -28,7 +28,7 @@ function statistics_line($familyDb)
 		echo '<td>' . $familyDb->count_lines . '</td>';
 	}
 
-	$treetext = show_tree_text($familyDb->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($familyDb->tree_id, $selected_language);
 	echo '<td>' . $treetext['name'] . '</td>';
 
 	if (!isset($familyDb->count_lines)) {
@@ -532,7 +532,7 @@ if ($statistics_screen == 'general_statistics') {
 		if ($familyDb->tree_prefix) {
 			$tree_id = $familyDb->tree_id;
 			// *** Show family tree name ***
-			$treetext = show_tree_text($familyDb->tree_id, $selected_language);
+			$treetext = $db_tree_text->show_tree_text($familyDb->tree_id, $selected_language);
 			echo '<tr><td>' . $treetext['name'] . '</td>';
 		} else {
 			echo '<tr><td><b>' . __('FAMILY TREE ERASED') . '</b></td>';
@@ -961,7 +961,7 @@ if ($statistics_screen == 'statistics_old') {
 				}
 				$date = substr($date, 8, 2) . $month . substr($date, 0, 4);
 
-				$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+				$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 				if ($dataDb->tree_id == $tree_id) {
 					echo '<b>' . $treetext['name'] . '</b>';
 				} else {

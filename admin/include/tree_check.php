@@ -31,7 +31,7 @@ $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_o
 $tree_result = $dbh->query($tree_sql);
 echo ' <select size="1" name="tree_id" onChange="this.form.submit();">';
 while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-	$treetext = show_tree_text($treeDb->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($treeDb->tree_id, $selected_language);
 	$selected = '';
 	if ($treeDb->tree_id == $tree_id) {
 		$selected = ' SELECTED';

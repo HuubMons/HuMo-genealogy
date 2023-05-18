@@ -15,10 +15,11 @@ global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $tree
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
 include_once __DIR__ . '/../include/db_login.php'; // *** Database login ***
 include_once __DIR__ . '/../include/safe.php'; // Variables
-include_once __DIR__ . '/../include/show_tree_text.php'; // to show family tree texts
+include_once __DIR__ . '/../include/db_tree_text.php'; // to show family tree texts
 include_once __DIR__ . '/../include/db_functions_cls.php';
 
-$db_functions = new db_functions();
+$db_functions = new db_functions($dbh);
+$db_tree_text = new db_tree_text($dbh);
 
 // *** Added juli 2019: Person functions ***
 include_once __DIR__ . '/../include/person_cls.php';
@@ -214,96 +215,6 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 			}
 		}
 
-		if (!isset($humo_option['cleanup_status'])) {
-			// *** Remove old files ***
-			$remove_file[] = '../admin/include/ckeditor/.htaccess';
-			$remove_file[] = '../admin/include/kcfinder/.htaccess';
-			$remove_file[] = 'gedcom_files/HuMo-gen 2020_05_02 UTF-8.ged';
-			$remove_file[] = 'gedcom_files/HuMo-gen test gedcomfile.ged'; // *** File is renamed to HuMo-genealogy ***
-			$remove_file[] = '../include/.htaccess'; // *** This file blocks loading of several js scripts ***
-			$remove_file[] = '../languages/.htaccess'; // *** This file blocks showing of language flag icons ***
-			$remove_file[] = '../styles/Blauw.css';
-			$remove_file[] = '../styles/Blue.css';
-			$remove_file[] = '../styles/Brown.css';
-			$remove_file[] = '../styles/Clear White.css';
-			$remove_file[] = '../styles/Donkerbruin.css';
-			$remove_file[] = '../styles/Elegant Blue.css';
-			$remove_file[] = '../styles/Elegant Corsiva.css';
-			$remove_file[] = '../styles/Elegant Green.css';
-			$remove_file[] = '../styles/Elegant Mauve.css';
-			$remove_file[] = '../styles/Elegant_Blue.css';
-			$remove_file[] = '../styles/Elegant_Green.css';
-			$remove_file[] = '../styles/Experiment_HTML5.css';
-			$remove_file[] = '../styles/Green.css';
-			$remove_file[] = '../styles/Groen.css';
-			$remove_file[] = '../styles/Heelal.css';
-			$remove_file[] = '../styles/Mauve fixed menu.css';
-			$remove_file[] = '../styles/Mauve left menu.css';
-			$remove_file[] = '../styles/Orange.css';
-			$remove_file[] = '../styles/Oranje.css';
-			$remove_file[] = '../styles/Paars.css';
-			$remove_file[] = '../styles/Purple.css';
-
-			foreach ($remove_file as $rfile) {
-				if (file_exists($rfile)) {
-					//echo $rfile.'<br>';
-					unlink($rfile);
-				}
-			}
-
-			// *** Remove old folders ***
-			$remove_folders[] = '../fanchart';
-			$remove_folders[] = '../fpdf16';
-			$remove_folders[] = '../humo_mobile';
-			$remove_folders[] = '../include/fpdf16';
-			$remove_folders[] = '../externals/jqueryui/css';
-			$remove_folders[] = '../externals/jqueryui/development-bundle';
-			$remove_folders[] = '../externals/jqueryui/js';
-			$remove_folders[] = '../include/lightbox';
-			$remove_folders[] = '../include/sliderbar';
-			$remove_folders[] = '../languages/fa DISABLED';
-			$remove_folders[] = '../lightbox';
-			$remove_folders[] = '../menu';
-			$remove_folders[] = '../popup_menu';
-			$remove_folders[] = '../sliderbar';
-			$remove_folders[] = '../styles/images_blue';
-			$remove_folders[] = '../styles/images_green';
-			$remove_folders[] = '../styles/imagesantique';
-			$remove_folders[] = '../styles/imagesblauw';
-			$remove_folders[] = '../styles/imagesdonkerbruin';
-			$remove_folders[] = '../styles/imagesgroen';
-			$remove_folders[] = '../styles/imagesheelal';
-			$remove_folders[] = '../styles/imagesoranje';
-			$remove_folders[] = '../styles/imagesoriginal';
-			$remove_folders[] = '../styles/imagespaars';
-			$remove_folders[] = '../styles/imagessilverline';
-			$remove_folders[] = '../styles/imageswhite';
-			$remove_folders[] = '../styles/imagesyossi';
-			$remove_folders[] = '../talen';
-			$remove_folders[] = 'include/kcfinder/themes/oxygen';
-			$remove_folders[] = 'languages';		// admin/languages
-			$remove_folders[] = 'menu';			// admin/languages
-			$remove_folders[] = 'statistieken';	// admin/statistieken
-
-			remove_the_folders($remove_folders);
-
-			// *** First cleanup, insert cleanup status into settings ***
-			$sql = "INSERT INTO humo_settings SET
-				setting_variable='cleanup_status',
-				setting_value='1'";
-			@$dbh->query($sql);
-		}
-
-		// *** Second cleanup of files ***
-		if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] == '1') {
-			unset($remove_folders, $update_dir, $update_files);
-
-			$remove_folders[] = '../include/securimage';
-			remove_the_folders($remove_folders);
-
-			// *** Update "update_status" to number 2 ***
-			$result = $dbh->query("UPDATE humo_settings SET setting_value='2' WHERE setting_variable='cleanup_status'");
-		}
 
 		$show_menu_left = true;
 
@@ -357,11 +268,11 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 }
 
 // *** Language selection for admin ***
-$map = opendir(CMS_ROOTPATH . 'languages/');
+$map = opendir(__DIR__ . '/../languages/');
 while (false !== ($file = readdir($map))) {
 	if (strlen($file) < 6 and $file != '.' and $file != '..') {
 		$language_select[] = $file;
-		if (file_exists(CMS_ROOTPATH . 'languages/' . $file . '/' . $file . '.mo')) {
+		if (file_exists(__DIR__ . '/../languages/' . $file . '/' . $file . '.mo')) {
 			$language_file[] = $file;
 			// *** Order of languages ***
 			if ($file == 'cn') $language_order[] = 'Chinese';
@@ -601,7 +512,7 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
 	$_SESSION['current_ip_address'] = $_SERVER['REMOTE_ADDR'];
 }
 
-if (!CMS_SPECIFIC) { ?>
+?>
 
 <!DOCTYPE html>
 <html lang="<?= $selected_language; ?>">
@@ -610,16 +521,16 @@ if (!CMS_SPECIFIC) { ?>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?= __('Administration'); ?></title>
-	<link href="<?= CMS_ROOTPATH; ?>styles/favicon.ico" rel="shortcut icon" type="image/x-icon">
-	<link href="theme/css/admin.css" rel="stylesheet" type="text/css">
-	<link href="statistics/style.css" rel="stylesheet" type="text/css">
-	<link href="theme/css/admin_print.css" rel="stylesheet" type="text/css" media="print">
-	<link rel="stylesheet" media="(max-width: 640px)" href="theme/css/admin_mobile.css">
-	<script src="<?= CMS_ROOTPATH; ?>externals/jquery/jquery.min.js"></script>
-	<script src="<?= CMS_ROOTPATH; ?>externals/jqueryui/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="include/popup_merge.js"></script>
-	<link rel="stylesheet" type="text/css" href="<?= CMS_ROOTPATH; ?>include/popup_menu/popup_menu.css">
-	<script type="text/javascript" src="<?= CMS_ROOTPATH; ?>include/popup_menu/popup_menu.js"></script>
+	<link href="../theme/favicon.ico" rel="shortcut icon" type="image/x-icon">
+	<link href="../theme/admin/css/admin.css" rel="stylesheet" type="text/css">
+	<link href="../admin/statistics/style.css" rel="stylesheet" type="text/css">
+	<link href="../theme/admin/css/admin_print.css" rel="stylesheet" type="text/css" media="print">
+	<link rel="stylesheet" media="(max-width: 640px)" href="../theme/admin/css/admin_mobile.css">
+	<script src="../externals/jquery/jquery.min.js"></script>
+	<script src="../externals/jqueryui/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../theme/admin/js/popup_merge.js"></script>
+	<link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
+	<script type="text/javascript" src="../include/popup_menu/popup_menu.js"></script>
 </head>
 <?php
 	// *** Close pop-up screen and update main screen ***
@@ -660,14 +571,10 @@ if (!CMS_SPECIFIC) { ?>
 	} else {
 		echo '<body class="humo">';
 	}
-}
+
 
 // *** Show top menu ***
-if (CMS_SPECIFIC == 'Joomla') {
-	$path_tmp = 'index.php?option=com_humo-gen&amp;task=admin&amp;';
-} else {
-	$path_tmp = 'index.php?';
-}
+$path_tmp = 'index.php?';
 
 $top_dir = $language["dir"] == "rtl" ? 'style="text-align:right"' : '';
 
@@ -1123,7 +1030,7 @@ if ($popup == false) {
 
 	echo '<a href="' . $path_tmp . 'page=admin"';
 	echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="../styles/images/menu_mobile.png" width="18"></a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/images/menu_mobile.png" width="18"></a>';
 
 	echo '<div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
@@ -1224,7 +1131,7 @@ if ($show_menu_left == true and $page != 'login') {
 		echo '<a href="' . $path_tmp . 'page=admin"';
 		echo ' onmouseover="mopen(event,\'m2x\',\'?\',\'?\')"';
 		//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Control').'</a>';
-		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="../styles/images/settings.png" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Control') . '</a>';
+		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/images/settings.png" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Control') . '</a>';
 		echo '<div id="m2x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';
 
@@ -1322,7 +1229,7 @@ if ($show_menu_left == true and $page != 'login') {
 	echo '<a href="' . $path_tmp . 'page=tree"';
 	echo ' onmouseover="mopen(event,\'m3x\',\'?\',\'?\')"';
 	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Family trees').'</a>';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/family_connect.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Family trees') . '</a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/admin/images/family_connect.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Family trees') . '</a>';
 
 	echo '<div id="m3x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
@@ -1410,7 +1317,7 @@ if ($show_menu_left == true and $page != 'login') {
 	echo '<a href="' . $path_tmp . 'page=editor"';
 	echo ' onmouseover="mopen(event,\'m3xa\',\'?\',\'?\')"';
 	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Editor').'</a>';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/edit.jpg" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Editor') . '</a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/admin/images/edit.jpg" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Editor') . '</a>';
 
 
 	echo '<div id="m3xa" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -1472,7 +1379,7 @@ if ($show_menu_left == true and $page != 'login') {
 		echo '<a href="' . $path_tmp . 'page=users"';
 		echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
 		//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Users').'</a>';
-		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/person_edit.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Users') . '</a>';
+		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/admin/images/person_edit.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Users') . '</a>';
 
 		echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';
@@ -1543,8 +1450,7 @@ if ($popup == false) {
 	include __DIR__ . '/../languages/' . $selected_language . '/language_data.php';
 	echo '<a href="index.php?option=com_humo-gen"';
 	echo ' onmouseover="mopen(event,\'m40x\',\'?\',\'?\')"';
-	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'</a>';
-	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $selected_language . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:18px"> </a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="/languages/' . $selected_language . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:18px"> </a>';
 	//echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
@@ -1556,7 +1462,7 @@ if ($popup == false) {
 			//echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
 			echo '<li><a href="' . $path_tmp . 'language_choice=' . $language_file[$i] . '">';
 
-			echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+			echo '<img src="/languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
 			echo '<span class="mobile_hidden">' . $language["name"] . '</span>';
 			echo '</a>';
 			echo '</li>';

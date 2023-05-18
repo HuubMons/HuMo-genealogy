@@ -1,6 +1,14 @@
 <?php
+
+require_once __DIR__ . '/db_tree_text.php';
 class mainindex_cls
 {
+	private db_tree_text $db_tree_text;
+
+	public function __construct($dbconnection)
+	{
+		$this->db_tree_text = new db_tree_text($dbconnection);
+	}
 
 	function show_tree_index()
 	{
@@ -17,7 +25,7 @@ class mainindex_cls
 		if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 			$left_column = '';
 
-			$temp = $this->selected_family_tree();
+			$temp = $this->selected_family_tree($tree_id, $selected_language);
 			$center_column = $temp;
 
 			$right_column = '';
@@ -26,7 +34,7 @@ class mainindex_cls
 		elseif ($tree_prefix_quoted == '' or $tree_prefix_quoted == 'EMPTY') {
 			$left_column = '';
 
-			$temp = $this->selected_family_tree();
+			$temp = $this->selected_family_tree($tree_id, $selected_language);
 			$temp .= '<h2><a href="' . CMS_ROOTPATH . 'login.php">' . __('Select another family tree, or login for the selected family tree.') . '</a></h2>';
 			$center_column = $temp;
 
@@ -115,7 +123,7 @@ class mainindex_cls
 
 				// *** Show name of selected family tree ***
 				if ($module_item[$i] == 'selected_family_tree') {
-					$temp .= $this->selected_family_tree();
+					$temp .= $this->selected_family_tree($tree_id, $selected_language);
 
 					// use seperate modules for these items?
 					// *** Date and number of persons/ families ***
@@ -128,7 +136,7 @@ class mainindex_cls
 					$temp .= $this->owner();
 
 					// *** Prepare mainmenu text and source ***
-					$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+					$treetext = $this->db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 					// *** Show mainmenu text ***
 					//$mainmenu_text=$treetext['mainmenu_text']; if ($mainmenu_text!='') $temp.='<p>'.nl2br($mainmenu_text).$dirmark2.'</p>';
 					$mainmenu_text = $treetext['mainmenu_text'];
@@ -241,24 +249,26 @@ class mainindex_cls
 
 
 	// *** Show name of selected family tree ***
-	function selected_family_tree()
+	function selected_family_tree(int $tree_id, string $selected_language)
 	{
-		global $dbh, $num_rows, $selected_language;
-		$text = '<div class="mainmenu_bar fonts">';
+		global $num_rows, $selected_language;
+		$widget = '<div class="mainmenu_bar fonts">';
+
 		if ($num_rows > 1) {
-			$text .= __('Selected family tree') . ': ';
+			$widget .= __('Selected family tree') . ': ';
 		}
 		// *** Variable $treetext_name used from menu.php ***
-		$treetext = show_tree_text($_SESSION['tree_id'], $selected_language);
-		$text .= $treetext['name'];
-		$text .= '</div>';
-		return $text;
+		$treetext = $this->db_tree_text->show_tree_text($tree_id, $selected_language);
+		$widget .= $treetext['name'];
+		$widget .= '</div>';
+
+		return $widget;
 	}
 
 	// *** List family trees ***
 	function tree_list($datasql)
 	{
-		global $dbh, $humo_option, $uri_path, $user, $language, $selected_language;
+		global $humo_option, $uri_path, $user, $selected_language;
 		$text = '';
 		while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 
@@ -267,7 +277,7 @@ class mainindex_cls
 			$hide_tree = false;
 			if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
 			if ($hide_tree == false) {
-				$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+				$treetext = $this->db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 				$treetext_name = $treetext['name'];
 
 				// *** Name family tree ***
@@ -307,7 +317,8 @@ class mainindex_cls
 	// *** Family tree data ***
 	function tree_data()
 	{
-		global $dataDb, $language;
+		global $dataDb;
+
 		$tree_date = $dataDb->tree_date;
 
 		$month = ''; // *** empty date ***
@@ -356,7 +367,7 @@ class mainindex_cls
 	// *** Owner family tree ***
 	function owner()
 	{
-		global $language, $dataDb;
+		global $dataDb;
 		$tree_owner = '';
 
 		if (isset($dataDb->tree_owner) and $dataDb->tree_owner) {
@@ -379,7 +390,7 @@ class mainindex_cls
 	//*** Most frequent names ***
 	function last_names($columns, $rows)
 	{
-		global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $maxcols, $text;
+		global $maxcols, $text;
 
 		// MAIN SETTINGS
 		$maxcols = 2; // number of name&nr colums in table. For example 3 means 3x name col + nr col
@@ -398,13 +409,8 @@ class mainindex_cls
 				// $nr is the array number of the name set created in function last_names
 				// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
 				global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $text;
-				if (CMS_SPECIFIC == 'Joomla') {
-					//$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
-					$path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;tree_id=' . $_SESSION['tree_id'];
-				} else {
-					//$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
-					$path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $_SESSION['tree_id'];
-				}
+
+				$path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $_SESSION['tree_id'];
 				$text .= '<td class="namelst">';
 				if (isset($freq_last_names[$nr])) {
 					$top_pers_lastname = '';
@@ -442,7 +448,7 @@ class mainindex_cls
 		if (!function_exists('last_names')) {
 			function last_names($max)
 			{
-				global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
+				global $dbh, $dataDb, $tree_id, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
 
 				// *** Read cache (only used in large family trees) ***
 				$cache = '';

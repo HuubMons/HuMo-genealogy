@@ -5,8 +5,6 @@
 // Graphical part: improved lay-out by: Huub Mons.
 // Ancestor sheet, PDF export for ancestor report and ancestor sheet, image generation for chart made by: Yossi Beck.
 // July 2011: translated all variables to english by: Huub Mons.
-//error_reporting(E_ALL);
-@set_time_limit(3000);
 
 //==========================
 global $humo_option, $user, $marr_date_array, $marr_place_array;
@@ -47,7 +45,7 @@ if (isset($hourglass) and $hourglass === true) {
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 // see end of this code 
 
-include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/header.php';
 include_once __DIR__ . '/include/language_date.php';
 include_once __DIR__ . '/include/language_event.php';
 include_once __DIR__ . '/include/calculate_age_cls.php';
@@ -65,9 +63,6 @@ include_once __DIR__ . '/include/show_quality.php';
 if ($screen_mode != 'PDF' and $screen_mode != 'ASPDF') {  //we can't have a menu in pdf...
 	include_once __DIR__ . '/menu.php';
 } else {
-	include_once __DIR__ . '/include/db_functions_cls.php';
-	$db_functions = new db_functions;
-
 	if (isset($_SESSION['tree_prefix'])) {
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id

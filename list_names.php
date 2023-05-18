@@ -33,14 +33,7 @@ if (isset($_GET['item'])) {
 if (isset($_GET["start"])) {
 	$start = $_GET["start"];
 }
-
-// DEFINED AFTER REQUEST
-
-
-echo '<p class="fonts">';
-
 //*** Find first first_character of last name ***
-print '<div style="text-align:center">';
 $person_qry = "SELECT UPPER(substring(pers_lastname,1,1)) as first_character
 		FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
 
@@ -49,28 +42,33 @@ if ($user['group_kindindex'] == "j") {
 	$person_qry = "SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character
 			FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
 }
-@$person_result = $dbh->query($person_qry);
-while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
-	if (CMS_SPECIFIC == 'Joomla') {
-		$path_tmp = 'index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
-	} elseif ($humo_option["url_rewrite"] == "j") {
-		// *** url_rewrite ***
-		// *** $uri_path is made header.php ***
-		//$path_tmp=$uri_path.'list_names/'.$_SESSION['tree_prefix'].'/'.$personDb->first_character.'/';
-		$path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $personDb->first_character . '/';
-	} else {
-		$path_tmp = CMS_ROOTPATH . 'list_names.php?tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
-	}
-	echo ' <a href="' . $path_tmp . '">' . $personDb->first_character . '</a>';
-}
 
-if (CMS_SPECIFIC == 'Joomla') {
-	$path_tmp = 'index.php?option=com_humo-gen&amp;task=list_names&amp;last_name=all';
-} else {
-	$path_tmp = CMS_ROOTPATH . "list_names.php?last_name=all";
-}
-echo ' <a href="' . $path_tmp . '">' . __('All names') . "</a>\n";
-echo '</div><br>';
+?>
+<p class="fonts">
+<div style="text-align:center">
+	<?php @$person_result = $dbh->query($person_qry);
+	while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
+		if (CMS_SPECIFIC == 'Joomla') {
+			$path_tmp = 'index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
+		} elseif ($humo_option["url_rewrite"] == "j") {
+			$path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $personDb->first_character . '/';
+		} else {
+			$path_tmp = CMS_ROOTPATH . 'list_names.php?tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
+		} ?>
+
+		<a href="<?= $path_tmp; ?>"><?= $personDb->first_character; ?></a>
+	<?php }
+
+	if (CMS_SPECIFIC == 'Joomla') {
+		$path_tmp = 'index.php?option=com_humo-gen&amp;task=list_names&amp;last_name=all';
+	} else {
+		$path_tmp = CMS_ROOTPATH . "list_names.php?last_name=all";
+	} ?>
+	
+	<a href="<?= $path_tmp; ?>"><?= __('All names'); ?></a>
+</div><br>
+
+<?php
 
 function tablerow($nr, $lastcol = false)
 {
@@ -84,40 +82,45 @@ function tablerow($nr, $lastcol = false)
 	//else{
 	$path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id;
 	//}
-	echo '<td class="namelst">';
-	if (isset($freq_last_names[$nr])) {
-		$top_pers_lastname = '';
-		if ($freq_pers_prefix[$nr]) {
-			$top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
-		}
-		$top_pers_lastname .= $freq_last_names[$nr];
-		if ($user['group_kindindex'] == "j") {
-			echo '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
-		} else {
-			$top_pers_lastname = $freq_last_names[$nr];
+?>
+	<td class="namelst">
+		<?php if (isset($freq_last_names[$nr])) {
+			$top_pers_lastname = '';
 			if ($freq_pers_prefix[$nr]) {
-				$top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
+				$top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
 			}
-			echo '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
-			if ($freq_pers_prefix[$nr]) {
-				echo '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
+
+			$top_pers_lastname .= $freq_last_names[$nr];
+
+			if ($user['group_kindindex'] == "j") {
+				$path_tmp .= '&amp;pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace('&', '|', $freq_last_names[$nr]) . '&amp;part_lastname=equals';
 			} else {
-				echo '&amp;pers_prefix=EMPTY';
-			}
-		}
-		echo '&amp;part_lastname=equals">' . $top_pers_lastname . "</a>";
-	} else { ?>
-		-
-	<?php } ?>
+				$path_tmp .= '&amp;pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
+
+				if ($freq_pers_prefix[$nr]) {
+					$path_tmp .= '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
+					$top_pers_lastname = ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
+				} else {
+					$path_tmp .= '&amp;pers_prefix=EMPTY';
+				}
+				$path_tmp .= '&amp;part_lastname=equals';
+		?>
+			<?php } ?>
+
+			<a href="<?= $path_tmp; ?>"><?= $top_pers_lastname; ?></a>
+
+		<?php } else { ?>
+			-
+		<?php } ?>
 	</td>
 
 	<?php if ($lastcol == false) { ?>
 		<td class="namenr" style="text-align:center;border-right-width:3px">
-	<?php } else { ?>
+		<?php } else { ?>
 		</td>
 		<td class="namenr" style="text-align:center">
-	<?php } ?>
-			<?= isset($freq_last_names[$nr]) ? $freq_count_last_names[$nr] : '-'; ?>
+		<?php } ?>
+		<?= isset($freq_last_names[$nr]) ? $freq_count_last_names[$nr] : '-'; ?>
 		</td>
 	<?php }
 

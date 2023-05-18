@@ -19,24 +19,31 @@ if (CMS_SPECIFIC == 'Joomla') {
 }
 
 // form to enter username and mail in order to receive reset link
-if (isset($_POST['forgotpw'])) {
-	echo '<form name="pw_email_form" method="post" action="' . $path_tmp . '">';
-	echo '<br><table class="humo" cellspacing="0" align="center">';
-	echo '<tr class="table_headline"><th class="fonts" colspan="2">' . __('Password retrieval') . '</th></tr>';
-	// *** An e-mail adres is necessary for password retreival, option Username is disabled ***
-	//echo '<tr><td>'.__('Username').':</td><td><input class="fonts" name="pw_username" type="text" size="20" maxlength="25"></td></tr>';
-	echo '<tr><td>' . __('Email') . ':</td><td><input class="fonts" name="got_email" type="email" size="20" maxlength="50"></td></tr>';
-
-	//if ($humo_option["registration_use_spam_question"]=='y'){
-	echo '<tr><td>' . __('Please answer the block-spam-question:') . '</td>';
-	echo '<td>' . $humo_option["block_spam_question"] . '<br>';
-	echo '<input type="text" class="fonts" name="register_block_spam" size="80" style="background-color:#FFFFFF"></td></tr>';
-	//}
-
-	echo '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="' . __('Send') . '"></td></tr>';
-	echo '</table>';
-	echo '</form>';
-}
+if (isset($_POST['forgotpw'])) { ?>
+	<form name="pw_email_form" method="post" action="<?= $path_tmp; ?>">
+		<br>
+		<table class="humo" cellspacing="0" align="center">
+			<tr class="table_headline">
+				<th class="fonts" colspan="2"><?= __('Password retrieval'); ?></th>
+			</tr>
+			<tr>
+				<td><?= __('Email'); ?>:</td>
+				<td><input class="fonts" name="got_email" type="email" size="20" maxlength="50"></td>
+			</tr>
+			<tr>
+				<td><?= __('Please answer the block-spam-question:'); ?></td>
+				<td>
+					<?= $humo_option["block_spam_question"]; ?><br>
+					<input type="text" class="fonts" name="register_block_spam" size="80" style="background-color:#FFFFFF">
+				</td>
+			</tr>
+			<tr>
+				<td><br></td>
+				<td><input class="fonts" type="submit" name="Submit" value="<?= __('Send'); ?>"></td>
+			</tr>
+		</table>
+	</form>
+<?php }
 
 // process email address and username, create random key and mail its link to user
 elseif (isset($_POST['got_email'])) {
@@ -67,10 +74,6 @@ elseif (isset($_POST['got_email'])) {
 		$msg = __('Your email address is not correct') . "<br>";
 		$status = "NOTOK";
 	}
-	//if($pw_username==''){ 
-	//	$msg .=__('You have to enter your username')."<br>"; 
-	//	$status= "NOTOK";
-	//}
 
 	if (isset($_POST['register_block_spam']) and strtolower($_POST['register_block_spam']) == strtolower($humo_option["block_spam_answer"])) {
 		//$register_allowed=true;
@@ -106,15 +109,6 @@ elseif (isset($_POST['got_email'])) {
 			if ($no_mail == 0) { // mail doesn't exist, username does
 				echo __('This email address was not found in our database.') . "&nbsp;" . __('Please contact the site owner.');
 			}
-			//elseif ($no_mail != 0 AND $no_user ==0) { // username doesn't exist, mail does
-			//	echo __('This username was not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
-			//}
-			//elseif ($no_mail == 0 AND $no_user ==0) { // username and mail don't exist
-			//	echo __('This username and mail were not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
-			//}
-			//else  { // username and mail both exist, but not together
-			//	echo __('This combination of username and email was not found in our database.')."&nbsp;".__('Please contact the site owner.');
-			//}
 			echo "</td></tr><tr><td style='text-align:center'><input type='button' value='" . __('Retry') . "' onClick='history.go(-1)'></td>";
 			echo "</tr></table>";
 			exit;

@@ -26,8 +26,6 @@
 // "non" = person with no own family (i.e. only child status)
 // *********************************************************************************************
 
-//error_reporting(E_ALL);
-
 // for png image generating
 echo '<script type="text/javascript" src="include/html2canvas/html2canvas.min.js"></script>';
 
