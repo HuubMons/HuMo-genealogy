@@ -11,20 +11,20 @@ include_once __DIR__ . '/menu.php';
 	<div class="help_box">
 		<!-- *** Icons *** -->
 		<p class="help_header"><?= __('Icons'); ?></p><br>
-		<span class="help_explanation"><img src="<?= CMS_ROOTPATH; ?>styles/images/reports.gif" alt="Reports">&nbsp;<b><?= __('Reports'); ?></b><br>
+		<span class="help_explanation"><img src="/theme/images/reports.gif" alt="Reports">&nbsp;<b><?= __('Reports'); ?></b><br>
 			<?= __('This icon is shown to the left of names of persons in lists or reports. When you hover over this icon with your mouse, a pop-up will be displayed. In the pop-up list you will find several icons with names of reports and charts that you can create from this person (the exact number of icons on the list varies according to the presence of ancestors and/or descendants). Following is a list of those icons and their meaning.'); ?>
 		</span><br><br>
-		<span class="help_explanation"><img src="<?= CMS_ROOTPATH; ?>styles/images/ancestor_report.gif" alt="Pedigree">&nbsp;<b><?= __('Ancestor report'); ?></b>
+		<span class="help_explanation"><img src="/theme/images/ancestor_report.gif" alt="Pedigree">&nbsp;<b><?= __('Ancestor report'); ?></b>
 			<br><?= __('A pedigree is a genealogical report of a person\'s ancestors. A pedigree uses a special method of numbering: the base person is number 1, his father number 2 and his mother number 3. The number of a father is ways twice that of his son and the mother is one number higher. Thus, number 40 is the father of number 20 and 41 is the mother of number 20. <br>From amongst the icons in the pop-up menu you can also choose a graphical display of the ancestor report.'); ?></span><br><br>
 		<!-- REMOVED: <br>You can read more about pedigrees <a href="http://en.wikipedia.org/wiki/Pedigree_chart" target="blank"><b>here</b></a> and <a href="http://en.wikipedia.org/wiki/Ahnentafel" target="blank"><b>here.</b></a> -->
-		<span class="help_explanation"><img src="<?= CMS_ROOTPATH; ?>styles/images/descendant.gif" alt="Parenteel">&nbsp;<b><?= __('Descendant report'); ?></b><br><?= __('A descendant report is a genealogical report of a patriarchal couple or of one patriarch (generation I) with their children (generation II) and all further descendants, both along male and female lines. <br>From amongst the icons in the pop-up menu you can also choose a graphical display of the descendant report.'); ?></span><br><br>
-		<span class="help_explanation"><img src="<?= CMS_ROOTPATH; ?>styles/images/outline.gif" alt="Outline report">&nbsp;<b><?= __('Outline report'); ?></b>
+		<span class="help_explanation"><img src="/theme/images/descendant.gif" alt="Parenteel">&nbsp;<b><?= __('Descendant report'); ?></b><br><?= __('A descendant report is a genealogical report of a patriarchal couple or of one patriarch (generation I) with their children (generation II) and all further descendants, both along male and female lines. <br>From amongst the icons in the pop-up menu you can also choose a graphical display of the descendant report.'); ?></span><br><br>
+		<span class="help_explanation"><img src="/theme/images/outline.gif" alt="Outline report">&nbsp;<b><?= __('Outline report'); ?></b>
 			<br><?= __('An outline report is a clear summary of all descendants of one person (and his/her partners), where each generation gets its own (ascending) number.'); ?></span><br><br>
-		<span class="help_explanation"><img src="<?= CMS_ROOTPATH; ?>styles/images/ancestor_chart.gif" alt="ancestor sheet">&nbsp;<b><?= __('Ancestor sheet'); ?></b>
+		<span class="help_explanation"><img src="/theme/images/ancestor_chart.gif" alt="ancestor sheet">&nbsp;<b><?= __('Ancestor sheet'); ?></b>
 			<br><?= __('An ancestor sheet lists 5 generations in table layout, with the base person at the bottom and the ancestors above him/her in increasingly smaller boxes.'); ?></span><br><br>
-		<span class="help_explanation"><img src="<?= CMS_ROOTPATH; ?>styles/images/fanchart.gif" alt="Fanchart">&nbsp;<b><?= __('Fanchart'); ?></b>
+		<span class="help_explanation"><img src="/theme/images/fanchart.gif" alt="Fanchart">&nbsp;<b><?= __('Fanchart'); ?></b>
 			<br><?= __('A fanchart is a circular chart that shows the ancestors in circles around the base person. This allows for a very clear view of the ancestry of any specific person. The box for each person on the chart is clickable to enable fast access to that person\'s family sheet. <br> The size of the fanchart and some other settings may be adjusted from the menu to the left of the chart.'); ?></span><br><br>
-		<span class="help_explanation"><img src="<?= CMS_ROOTPATH; ?>styles/images/timeline.gif" alt="Timeline chart">&nbsp;<b><?= __('Timeline'); ?></b><br><?= __('The timeline chart displays historic events alongside a person\'s life events to give a context of the time in which the person lived.<br>This chart has its own dedicated help which you can view by hovering the cursor over the word "Help" to the left of screen.'); ?></span><br><br></p>
+		<span class="help_explanation"><img src="/theme/images/timeline.gif" alt="Timeline chart">&nbsp;<b><?= __('Timeline'); ?></b><br><?= __('The timeline chart displays historic events alongside a person\'s life events to give a context of the time in which the person lived.<br>This chart has its own dedicated help which you can view by hovering the cursor over the word "Help" to the left of screen.'); ?></span><br><br></p>
 	</div>
 	<!-- *** Top ribbon *** -->
 	<p>

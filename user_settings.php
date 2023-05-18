@@ -307,7 +307,7 @@ if ($show_theme_select == true) {
 		if (!in_array($theme, $hide_themes_array)) {
 			echo '<span style="float: left; margin: 3px; border: solid 1px #999999;">';
 			echo '<b>' . $theme . '</b><br>';
-			echo '<input type="image" name="submit" value="submit" alt="theme" src="styles/' . $theme . '.png" width="360" height="250" onclick="chooseStyle(\'' . $theme . '\', 365)">';
+			echo '<input type="image" name="submit" value="submit" alt="theme" src="/theme/' . $theme . '.png" width="360" height="250" onclick="chooseStyle(\'' . $theme . '\', 365)">';
 			echo '</span>';
 		}
 	}
