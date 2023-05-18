@@ -2306,7 +2306,7 @@ echo '</tr>';
 			echo '<a href="#" style="display:inline" ';
 			echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
 			echo 'onmouseout="mclosetime()">';
-			echo '<img src="../styles/images/help.png" height="16" width="16">';
+			echo '<img src="/theme/images/help.png" height="16" width="16">';
 			echo '</a>';
 			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			echo '<b>' . __('If death year and age are used, then birth year is calculated automatically (when empty).') . '</b><br>';
@@ -2972,7 +2972,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 					echo __('Select person 2') . ' <input class="fonts" type="text" name="connect_woman" value="' . $woman_gedcomnumber . '" size="5">';
 
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=woman&person=' . $woman_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/styles/images/search.png" border="0"></a>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=woman&person=' . $woman_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
 
 					$person = $db_functions->get_person($woman_gedcomnumber);
 
