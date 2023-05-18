@@ -351,7 +351,7 @@ class editor_cls
 
 	function select_tree($page)
 	{
-		global $dbh, $phpself, $group_edit_trees, $group_administrator, $tree_id, $selected_language;
+		global $dbh, $phpself, $group_edit_trees, $group_administrator, $tree_id, $selected_language, $db_tree_text;
 
 		// *** Select family tree ***
 		echo '<form method="POST" action="' . $phpself . '" style="display : inline;">';
@@ -370,7 +370,7 @@ class editor_cls
 				if (isset($tree_id) and $tree_searchDb->tree_id == $tree_id) {
 					$selected = ' SELECTED';
 				}
-				$treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+				$treetext = $db_tree_text->show_tree_text($tree_searchDb->tree_id, $selected_language);
 				echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
 			}
 		}

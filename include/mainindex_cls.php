@@ -1,12 +1,19 @@
 <?php
+
+require_once __DIR__ . '/db_tree_text.php';
+require_once __DIR__ . "/person_cls.php";
 class mainindex_cls
 {
+	private db_tree_text $db_tree_text;
+
+	public function __construct($dbconnection)
+	{
+		$this->db_tree_text = new db_tree_text($dbconnection);
+	}
 
 	function show_tree_index()
 	{
 		global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $dirmark2, $bot_visit, $humo_option;
-
-		include_once(CMS_ROOTPATH . "include/person_cls.php");
 
 		// *** Was needed to change fontsize ***
 		//echo '<script type="text/javascript">';
@@ -17,7 +24,7 @@ class mainindex_cls
 		if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 			$left_column = '';
 
-			$temp = $this->selected_family_tree();
+			$temp = $this->selected_family_tree($tree_id, $selected_language);
 			$center_column = $temp;
 
 			$right_column = '';
@@ -26,8 +33,8 @@ class mainindex_cls
 		elseif ($tree_prefix_quoted == '' or $tree_prefix_quoted == 'EMPTY') {
 			$left_column = '';
 
-			$temp = $this->selected_family_tree();
-			$temp .= '<h2><a href="' . CMS_ROOTPATH . 'login.php">' . __('Select another family tree, or login for the selected family tree.') . '</a></h2>';
+			$temp = $this->selected_family_tree($tree_id, $selected_language);
+			$temp .= '<h2><a href="/login.php">' . __('Select another family tree, or login for the selected family tree.') . '</a></h2>';
 			$center_column = $temp;
 
 			$right_column = '';
@@ -115,7 +122,7 @@ class mainindex_cls
 
 				// *** Show name of selected family tree ***
 				if ($module_item[$i] == 'selected_family_tree') {
-					$temp .= $this->selected_family_tree();
+					$temp .= $this->selected_family_tree($tree_id, $selected_language);
 
 					// use seperate modules for these items?
 					// *** Date and number of persons/ families ***
@@ -128,7 +135,7 @@ class mainindex_cls
 					$temp .= $this->owner();
 
 					// *** Prepare mainmenu text and source ***
-					$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+					$treetext = $this->db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 					// *** Show mainmenu text ***
 					//$mainmenu_text=$treetext['mainmenu_text']; if ($mainmenu_text!='') $temp.='<p>'.nl2br($mainmenu_text).$dirmark2.'</p>';
 					$mainmenu_text = $treetext['mainmenu_text'];
@@ -241,24 +248,26 @@ class mainindex_cls
 
 
 	// *** Show name of selected family tree ***
-	function selected_family_tree()
+	function selected_family_tree(int $tree_id, string $selected_language)
 	{
-		global $dbh, $num_rows, $selected_language;
-		$text = '<div class="mainmenu_bar fonts">';
+		global $num_rows, $selected_language;
+		$widget = '<div class="mainmenu_bar fonts">';
+
 		if ($num_rows > 1) {
-			$text .= __('Selected family tree') . ': ';
+			$widget .= __('Selected family tree') . ': ';
 		}
 		// *** Variable $treetext_name used from menu.php ***
-		$treetext = show_tree_text($_SESSION['tree_id'], $selected_language);
-		$text .= $treetext['name'];
-		$text .= '</div>';
-		return $text;
+		$treetext = $this->db_tree_text->show_tree_text($tree_id, $selected_language);
+		$widget .= $treetext['name'];
+		$widget .= '</div>';
+
+		return $widget;
 	}
 
 	// *** List family trees ***
 	function tree_list($datasql)
 	{
-		global $dbh, $humo_option, $uri_path, $user, $language, $selected_language;
+		global $humo_option, $uri_path, $user, $selected_language;
 		$text = '';
 		while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 
@@ -267,7 +276,7 @@ class mainindex_cls
 			$hide_tree = false;
 			if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
 			if ($hide_tree == false) {
-				$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+				$treetext = $this->db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 				$treetext_name = $treetext['name'];
 
 				// *** Name family tree ***
@@ -277,19 +286,7 @@ class mainindex_cls
 				} elseif (isset($_SESSION['tree_prefix']) and $_SESSION['tree_prefix'] == $dataDb->tree_prefix) {
 					$tree_name = '<span class="tree_link fonts">' . $treetext_name . '</span>';
 				} else {
-					if (CMS_SPECIFIC == 'Joomla') {
-						//$path_tmp='index.php?option=com_humo-gen&amp;database='.$dataDb->tree_prefix;
-						$path_tmp = 'index.php?option=com_humo-gen&amp;tree_id=' . $dataDb->tree_id;
-					}
-					// *** url_rewrite ***
-					elseif ($humo_option["url_rewrite"] == "j") {
-						// *** $uri_path is made in header.php ***
-						$path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id . '/';
-						//$path_tmp=$uri_path.'index/'.$dataDb->tree_id.'/';
-					} else {
-						$path_tmp = 'tree_index.php?tree_id=' . $dataDb->tree_id;
-						//$path_tmp='index.php?tree_id='.$dataDb->tree_id;
-					}
+					$path_tmp = 'tree_index.php?tree_id=' . $dataDb->tree_id;
 					$tree_name = '<span class="tree_link fonts"><a href="' . $path_tmp . '">' . $treetext_name . '</a></span>';
 				}
 				if ($text != '') $text .= '<br>';
@@ -307,7 +304,8 @@ class mainindex_cls
 	// *** Family tree data ***
 	function tree_data()
 	{
-		global $dataDb, $language;
+		global $dataDb;
+
 		$tree_date = $dataDb->tree_date;
 
 		$month = ''; // *** empty date ***
@@ -356,19 +354,14 @@ class mainindex_cls
 	// *** Owner family tree ***
 	function owner()
 	{
-		global $language, $dataDb;
+		global $dataDb;
 		$tree_owner = '';
 
 		if (isset($dataDb->tree_owner) and $dataDb->tree_owner) {
 			$tree_owner = __('Owner family tree:') . ' ';
 			// *** Show owner e-mail address ***
 			if ($dataDb->tree_email) {
-				if (CMS_SPECIFIC == 'Joomla') {
-					$path_tmp = 'index.php?option=com_humo-gen&amp;task=mailform';
-				} else {
-					$path_tmp = CMS_ROOTPATH . 'mailform.php';
-				}
-				$tree_owner .= '<a href="' . $path_tmp . '">' . $dataDb->tree_owner . "</a>\n";
+				$tree_owner .= '<a href="/mailform.php">' . $dataDb->tree_owner . "</a>\n";
 			} else {
 				$tree_owner .= $dataDb->tree_owner . "\n";
 			}
@@ -379,7 +372,7 @@ class mainindex_cls
 	//*** Most frequent names ***
 	function last_names($columns, $rows)
 	{
-		global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $maxcols, $text;
+		global $maxcols, $text;
 
 		// MAIN SETTINGS
 		$maxcols = 2; // number of name&nr colums in table. For example 3 means 3x name col + nr col
@@ -398,13 +391,8 @@ class mainindex_cls
 				// $nr is the array number of the name set created in function last_names
 				// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
 				global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $text;
-				if (CMS_SPECIFIC == 'Joomla') {
-					//$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
-					$path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;tree_id=' . $_SESSION['tree_id'];
-				} else {
-					//$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
-					$path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $_SESSION['tree_id'];
-				}
+
+				$path_tmp = '/list.php?tree_id=' . $_SESSION['tree_id'];
 				$text .= '<td class="namelst">';
 				if (isset($freq_last_names[$nr])) {
 					$top_pers_lastname = '';
@@ -442,7 +430,7 @@ class mainindex_cls
 		if (!function_exists('last_names')) {
 			function last_names($max)
 			{
-				global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
+				global $dbh, $dataDb, $tree_id, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
 
 				// *** Read cache (only used in large family trees) ***
 				$cache = '';
@@ -633,12 +621,7 @@ class mainindex_cls
 			$search_database = $_SESSION["save_search_database"];
 		}
 
-		if (CMS_SPECIFIC == 'Joomla') {
-			$path_tmp = 'index.php?option=com_humo-gen&amp;task=list';
-		} else {
-			$path_tmp = CMS_ROOTPATH . 'list.php';
-		}
-		$text .= '<form method="post" action="' . $path_tmp . '">';
+		$text .= '<form method="post" action="/list.php">';
 
 		$text .= '<p>';
 		if ($humo_option['one_name_study'] == 'n') {
@@ -685,12 +668,8 @@ class mainindex_cls
 			$text .= '<input type="hidden" name="search_database" value="all_trees">';
 		}
 		$text .= '<p><input type="submit" value="' . __('Search') . '"></p>';
-		if (CMS_SPECIFIC == 'Joomla') {
-			$path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1&index_list=search';
-		} else {
-			$path_tmp = CMS_ROOTPATH . 'list.php?adv_search=1&index_list=search';
-		}
-		$text .= '<p><a href="' . $path_tmp . '"><img src="styles/images/advanced-search.jpg" width="25px"> ' . __('Advanced search') . '</a></p>';
+		$path_tmp = '/list.php?adv_search=1&index_list=search';
+		$text .= '<p><a href="' . $path_tmp . '"><img src="/theme/images/advanced-search.jpg" width="25px"> ' . __('Advanced search') . '</a></p>';
 
 		$text .= "</form>\n";
 		return $text;
@@ -885,36 +864,17 @@ class mainindex_cls
 		// *** Show character line ***
 		if (isset($first_character)) {
 			for ($i = 0; $i < count($first_character); $i++) {
-				if (CMS_SPECIFIC == 'Joomla') {
-					$path_tmp = 'index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id=' . $tree_id .
-						'&amp;last_name=' . $first_character[$i];
-				} elseif ($humo_option["url_rewrite"] == "j") {
-					// *** url_rewrite ***
-					// *** $uri_path is gemaakt in header.php ***
-					$path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $first_character[$i] . '/';
-				} else {
-					$path_tmp = CMS_ROOTPATH . 'list_names.php?tree_id=' . $tree_id . '&amp;last_name=' . $first_character[$i];
-				}
+				$path_tmp = '/list_names.php?tree_id=' . $tree_id . '&amp;last_name=' . $first_character[$i];
 				$text .= ' <a href="' . $path_tmp . '">' . $first_character[$i] . '</a>';
 			}
 		}
-
-		//if (CMS_SPECIFIC=='Joomla'){
-		//	$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;pers_lastname=...';
-		//} else{
-		//	$path_tmp=CMS_ROOTPATH.'list.php?pers_lastname=...';
-		//}
-		//$text.=' <a href="'.$path_tmp. '">'.__('Other')."</a>\n";
 
 		$person = "SELECT pers_patronym FROM humo_persons
 		WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
 		@$personDb = $dbh->query($person);
 		if ($personDb->rowCount() > 0) {
-			$text .= ' <a href="' . CMS_ROOTPATH . 'list.php?index_list=patronym">' . __('Patronyms') . '</a>';
+			$text .= ' <a href="/list.php?index_list=patronym">' . __('Patronyms') . '</a>';
 		}
-
-		//ob_flush();
-		//flush(); // IE
 
 		return $text;
 	}
@@ -923,8 +883,8 @@ class mainindex_cls
 	{
 		global $dbh, $dataDb;
 		//include_once(CMS_ROOTPATH."include/person_cls.php");
-		include_once(CMS_ROOTPATH . "include/language_date.php");
-		include_once(CMS_ROOTPATH . "include/date_place.php");
+		include_once __DIR__ . "/language_date.php";
+		include_once __DIR__ . "/date_place.php";
 
 		// *** Backwards compatible, value is empty ***
 		if ($view == '') $view = 'with_table';
@@ -1087,51 +1047,96 @@ class mainindex_cls
 		global $humo_option;
 
 		// *** Used inline CSS, so it will be possible to use other CSS style (can be used for future slideshow options) ***
+?>
+		<style>
+			/* CSS3 slider for mainmenu */
+			/* @import url(http://fonts.googleapis.com/css?family=Istok+Web); */
+			@keyframes slidy {
+				0% {
+					left: 0%;
+				}
 
-		echo '<style>
-	/* CSS3 slider for mainmenu */
-	/* @import url(http://fonts.googleapis.com/css?family=Istok+Web); */
-	@keyframes slidy {
-		0% { left: 0%; }
-		20% { left: 0%; }
-		25% { left: -100%; }
-		45% { left: -100%; }
-		50% { left: -200%; }
-		70% { left: -200%; }
-		75% { left: -300%; }
-		95% { left: -300%; }
-		100% { left: -400%; }
-	}
-	/* body, figure { */
-	figure {
-		margin: 0;
-		/*	font-family: Istok Web, sans-serif; */
-		font-weight: 100;
-		
-		/* height:250px; */
-	}
-	div#captioned-gallery {
-		width: 100%; overflow: hidden; 
-		margin-top: -17px;
-	}
-	figure.slider { 
-		position: relative; width: 500%; 
-		font-size: 0; animation: 30s slidy infinite; 
-	}
-	figure.slider figure { 
-		width: 20%; height: auto;
-		display: inline-block;  position: inherit; 
-	}
-	figure.slider img { width: 100%; height: auto; }
-	figure.slider figure figcaption {
-		position: absolute; bottom: 10px;
-		background: rgba(0,0,0,0.4);
-		color: #fff; width: 100%;
-		font-size: 1.2rem; padding: .6rem;
-		text-shadow: 2px 2px 4px #000000; 
-	}
-	/* end of CSS3 slider */
-	</style>';
+				20% {
+					left: 0%;
+				}
+
+				25% {
+					left: -100%;
+				}
+
+				45% {
+					left: -100%;
+				}
+
+				50% {
+					left: -200%;
+				}
+
+				70% {
+					left: -200%;
+				}
+
+				75% {
+					left: -300%;
+				}
+
+				95% {
+					left: -300%;
+				}
+
+				100% {
+					left: -400%;
+				}
+			}
+
+			/* body, figure { */
+			figure {
+				margin: 0;
+				/*	font-family: Istok Web, sans-serif; */
+				font-weight: 100;
+
+				/* height:250px; */
+			}
+
+			div#captioned-gallery {
+				width: 100%;
+				overflow: hidden;
+				margin-top: -17px;
+			}
+
+			figure.slider {
+				position: relative;
+				width: 500%;
+				font-size: 0;
+				animation: 30s slidy infinite;
+			}
+
+			figure.slider figure {
+				width: 20%;
+				height: auto;
+				display: inline-block;
+				position: inherit;
+			}
+
+			figure.slider img {
+				width: 100%;
+				height: auto;
+			}
+
+			figure.slider figure figcaption {
+				position: absolute;
+				bottom: 10px;
+				background: rgba(0, 0, 0, 0.4);
+				color: #fff;
+				width: 100%;
+				font-size: 1.2rem;
+				padding: .6rem;
+				text-shadow: 2px 2px 4px #000000;
+			}
+
+			/* end of CSS3 slider */
+		</style>
+<?php
 
 		echo '<div id="captioned-gallery">';
 
@@ -1142,7 +1147,7 @@ class mainindex_cls
 			echo '<img src="' . $slideshow_01[0] . '" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">' . $slideshow_01[1] . '</figcaption>';
 		} else {
-			echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+			echo '<img src="/theme/images/missing-image_large.jpg" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">Missing image 01</figcaption>';
 		}
 		echo '</figure>';
@@ -1153,7 +1158,7 @@ class mainindex_cls
 			echo '<img src="' . $slideshow_02[0] . '" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">' . $slideshow_02[1] . '</figcaption>';
 		} else {
-			echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+			echo '<img src="/theme/images/missing-image_large.jpg" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">Missing image 02</figcaption>';
 		}
 		echo '</figure>';
@@ -1164,7 +1169,7 @@ class mainindex_cls
 			echo '<img src="' . $slideshow_03[0] . '" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">' . $slideshow_03[1] . '</figcaption>';
 		} else {
-			echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+			echo '<img src="/theme/images/missing-image_large.jpg" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">Missing image 03</figcaption>';
 		}
 		echo '</figure>';
@@ -1175,7 +1180,7 @@ class mainindex_cls
 			echo '<img src="' . $slideshow_04[0] . '" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">' . $slideshow_04[1] . '</figcaption>';
 		} else {
-			echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+			echo '<img src="/theme/images/missing-image_large.jpg" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">Missing image 04</figcaption>';
 		}
 		echo '</figure>';
@@ -1187,7 +1192,7 @@ class mainindex_cls
 			echo '<img src="' . $slideshow_01[0] . '" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">' . $slideshow_01[1] . '</figcaption>';
 		} else {
-			echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+			echo '<img src="/theme/images/missing-image_large.jpg" height="174" width="946" alt="">';
 			echo '<figcaption class="mobile_hidden">Missing image 01</figcaption>';
 		}
 		echo '</figure>';

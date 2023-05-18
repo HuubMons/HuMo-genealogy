@@ -4,13 +4,7 @@ if (!defined('ADMIN_PAGE')) {
 	exit;
 }
 
-if (CMS_SPECIFIC == "Joomla") {
-	$phpself2 = 'index.php?option=com_humo-gen&amp;task=admin&amp;page=prefix_editor';
-} else {
-	$phpself2 = CMS_ROOTPATH . 'admin/index.php?page=prefix_editor';
-}
-
-$file = CMS_ROOTPATH . 'admin/prefixes.php';
+$file = __DIR__ . '/../prefixes.php';
 $message = '';
 if (isset($_POST['save_language'])) {
 	$message = '<b>' . __('Saved') . ' ';
@@ -32,7 +26,7 @@ echo '<p>';
 printf(__('This is the (name) prefix editor.<br>
 These prefixes are used to process name-prefixes if a GEDCOM file is read.'), 'HuMo-genealogy');
 
-echo '<form method="POST" action="' . $phpself2 . '" style="display : inline;">';
+echo '<form method="POST" action="/admin/index.php?page=prefix_editor" style="display : inline;">';
 echo '<p><table class="humo" border="1" cellspacing="0">';
 
 echo '<tr class="table_header_large"><th>';

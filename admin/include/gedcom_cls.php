@@ -2365,7 +2365,9 @@ class gedcom_cls
 				}
 			}
 			if (strpos($humo_option['geo_trees'], "@" . $tree_id . ";") === false) {
-				$dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $tree_id . ";') WHERE setting_variable = 'geo_trees'");
+				$fackedobject = "@" . $tree_id . ";";
+				$sql = "UPDATE humo_settings SET setting_value=CONCAT( setting_value, $fackedobject) WHERE setting_variable = 'geo_trees'";
+				$dbh->query($sql);
 				$humo_option['geo_trees'] .= "@" . $tree_id . ";";
 			}
 		}

@@ -51,25 +51,14 @@ if (!defined('ADMIN_PAGE')) {
 //globals for joomla
 global $tree_prefix, $gedcom_date, $gedcom_time, $pers_gedcomnumber;
 
-if (CMS_SPECIFIC == "Joomla") {
-	$phpself = 'index.php?option=com_humo-gen&amp;task=admin&amp;page=editor';
-	$joomlastring = 'option=com_humo-gen&amp;task=admin&amp;';  // can be placed after existing index?
-	$family_string = 'index.php?option=com_humo-gen&task=family&amp;';
-	$sourcestring = 'index.php?option=com_humo-gen&task=source&amp;';
-	$addresstring = 'index.php?option=com_humo-gen&task=address&amp;';
-	$path_prefix = ''; // in joomla we are already in main joomla map and do not have to "get out of admin"
-} else {
-	$phpself = 'index.php';
+$phpself = 'index.php';
 	$joomlastring = '';
 	$family_string = '../family.php?';
 	$sourcestring = '../source.php?';
 	$addresstring = '../address.php?';
 	$path_prefix = '../';
-}
 
-$joomlapath = CMS_ROOTPATH_ADMIN . 'include/';
-
-include_once($joomlapath . "editor_cls.php");
+include_once __DIR__ . '/editor_cls.php';
 $editor_cls = new editor_cls;
 
 include_once __DIR__ . '/../../include/language_date.php';
@@ -252,7 +241,7 @@ if (isset($_GET['add_person'])) {
 
 if (isset($tree_id)) {
 	// *** Process queries ***
-	include_once($joomlapath . "editor_inc.php");
+	include_once __DIR__ . "/editor_inc.php";
 
 	// *** New family tree: no default or selected pers_gedcomnumer, add new person ***
 	if ($pers_gedcomnumber == '') {
@@ -330,7 +319,7 @@ if (isset($tree_id)) {
 			$editor_cls->select_tree($page);
 
 			// *** Favourites ***
-			echo '&nbsp;&nbsp;&nbsp; <img src="' . CMS_ROOTPATH . 'styles/images/favorite_blue.png"> ';
+			echo '&nbsp;&nbsp;&nbsp; <img src="/theme/images/favorite_blue.png"> ';
 			echo '<form method="POST" action="' . $phpself . '?menu_tab=person" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="' . $page . '">';
 			echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
@@ -596,7 +585,7 @@ if (isset($tree_id)) {
 
 			// *** Add new person ***
 			echo '&nbsp;&nbsp;&nbsp; <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=person&amp;add_person=1">
-			<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/person_connect.gif" border="0" title="' . __('Add person') . '" alt="' . __('Add person') . '"> ' .
+			<img src="/theme/images/person_connect.gif" border="0" title="' . __('Add person') . '" alt="' . __('Add person') . '"> ' .
 				__('Add person') . '</a>';
 
 			// HELP POPUP
@@ -605,7 +594,7 @@ if (isset($tree_id)) {
 			echo '<a href="#" style="display:inline" ';
 			echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
 			echo 'onmouseout="mclosetime()">';
-			echo '<img src="../styles/images/help.png" height="16" width="16">';
+			echo '<img src="/themeimages/help.png" height="16" width="16">';
 			echo '</a>';
 			//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -613,7 +602,7 @@ if (isset($tree_id)) {
 			echo '<b>' . __('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.') . '</b><br>';
 			echo __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#') . '<br>';
 
-			echo '<img src="../styles/images/search.png" border="0"> ' . __('= click to open selection popup screen.') . '<br>';
+			echo '<img src="/theme/images/search.png" border="0"> ' . __('= click to open selection popup screen.') . '<br>';
 			echo ' <b>[+]</b> ' . __('= click to open extended editor items.');
 			echo '</div>';
 			echo '</div>';
@@ -1545,7 +1534,7 @@ if ($check_person) {
 					echo '<a href="#" style="display:inline" ';
 					echo 'onmouseover="mopen(event,\'help_prefix\',100,400)"';
 					echo 'onmouseout="mclosetime()">';
-					echo '<img src="../styles/images/help.png" height="16" width="16">';
+					echo '<img src="/theme/images/help.png" height="16" width="16">';
 					echo '</a>';
 					echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<b>' . __("For example: d\' or:  van_ (use _ for a space)") . '</b><br>';
@@ -1557,7 +1546,7 @@ if ($check_person) {
 					echo '<a href="#" style="display:inline" ';
 					echo 'onmouseover="mopen(event,\'help_prefix\',100,400)"';
 					echo 'onmouseout="mclosetime()">';
-					echo '<img src="../styles/images/help.png" height="16" width="16">';
+					echo '<img src="/theme/images/help.png" height="16" width="16">';
 					echo '</a>';
 					//echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					//	echo '<b>'.__("For example: d\' or:  van_ (use _ for a space)").'</b><br>';
@@ -1630,9 +1619,9 @@ if ($check_person) {
 
 					echo '<input class="fonts" type="text" name="add_parents" placeholder="' . __('GEDCOM number (ID)') . '" value="" size="20">';
 
-					//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&amp;place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
-					//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a>';
+					//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&amp;place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
+					//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a>';
 
 					echo ' <input type="Submit" name="dummy2" value="' . __('Select') . '">';
 
@@ -1645,7 +1634,7 @@ if ($check_person) {
 				$error_color = '';
 				$show_message = '&nbsp;';
 				if (($person->pers_bapt_date or $person->pers_birth_date) and $person->pers_death_date) {
-					include_once(CMS_ROOTPATH . "include/calculate_age_cls.php");
+					include_once __DIR__ . "/../../include/calculate_age_cls.php";
 					$process_age = new calculate_year_cls;
 					$age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
 					if ($age and ($age < 0 or $age > 120)) {
@@ -1691,9 +1680,9 @@ if ($check_person) {
 				$fav_result = $dbh->query($fav_qry);
 				$rows = $fav_result->rowCount();
 				if ($rows > 0)
-					echo '<a href="' . $phpself . '?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=0"><img src="' . CMS_ROOTPATH . 'styles/images/favorite_blue.png" style="border: 0px"></a>';
+					echo '<a href="' . $phpself . '?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=0"><img src="/theme/images/favorite_blue.png" style="border: 0px"></a>';
 				else
-					echo '<a href="' . $phpself . '?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=1"><img src="' . CMS_ROOTPATH . 'styles/images/favorite.png" style="border: 0px"></a>';
+					echo '<a href="' . $phpself . '?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=1"><img src="/theme/images/favorite.png" style="border: 0px"></a>';
 				echo '<br>';
 			}
 			echo '</th><td>';
@@ -1738,7 +1727,7 @@ if ($check_person) {
 			if ($pers_gedcomnumber) {
 				echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');"><b>';
 				echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
-				if ($pers_name_text) echo ' <img src="styles/images/text.png" height="16px">';
+				if ($pers_name_text) echo ' <img src="/theme/images/text.png" height="16px">';
 				echo '</b></span><br>';
 			}
 			echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
@@ -1985,7 +1974,7 @@ echo '</tr>';
 			//echo 'onmouseover="mopen(event,\'help_date\',10,400)"';
 			echo 'onmouseover="mopen(event,\'help_date\')"';
 			echo 'onmouseout="mclosetime()">';
-			echo '<img src="../styles/images/help.png" height="16" width="16">';
+			echo '<img src="/theme/images/help.png" height="16" width="16">';
 			echo '</a>';
 			//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_date" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -2016,8 +2005,8 @@ echo '</tr>';
 			// *** Auto complete doesn't work properly yet... ***
 			//echo __('place').' <input list="place_auto_complete" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
 
-			//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+			//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 			//echo editor_label(__('birth time'));
 			echo '<input type="text" placeholder="' . __('birth time') . '" name="pers_birth_time" value="' . $pers_birth_time . '" size="' . $field_date . '">';
@@ -2098,7 +2087,7 @@ echo '</tr>';
 				echo '<textarea rows="1" placeholder="' . __('text') . '" name="even_brit_text" ' . $field_text_selected . '>' . $text . '</textarea>';
 
 				echo '<br>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"');
-				// echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_brit_place","","'.$field_popup.'");><img src="../styles/images/search.png" border="0"></a>';
+				// echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_brit_place","","'.$field_popup.'");><img src="/theme/images/search.png" border="0"></a>';
 				// *** End of hideshow_editor span ***
 				echo '</span>';
 				echo '</td>';
@@ -2154,7 +2143,7 @@ echo '</tr>';
 
 				echo $editor_cls->date_show($bardate, 'even_barm_date');
 				echo ' ' . __('place') . '  <input type="text" name="even_barm_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($barplace) . '" size="' . $field_place . '"><br>';
-				//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_barm_place","","'.$field_popup.'");><img src="../styles/images/search.png" border="0"></a>';
+				//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_barm_place","","'.$field_popup.'");><img src="/theme/images/search.png" border="0"></a>';
 
 				// *** Check if there are multiple lines in text ***
 				$text = $editor_cls->text_show($bartext);
@@ -2206,7 +2195,7 @@ echo '</tr>';
 			echo hideshow_editor($hideshow, $hideshow_text, $pers_bapt_text);
 
 			echo $editor_cls->date_show($pers_bapt_date, 'pers_bapt_date') . ' ' . __('place') . '  <input type="text" name="pers_bapt_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_bapt_place) . '" size="' . $field_place . '">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 			$text = htmlspecialchars($pers_religion);
 			echo '<input type="text" name="pers_religion" placeholder="' . __('religion') . '" value="' . $text . '" size="20"><br>';
@@ -2308,7 +2297,7 @@ echo '</tr>';
 
 			echo $editor_cls->date_show($pers_death_date, 'pers_death_date', '', '', $pers_death_date_hebnight, 'pers_death_date_hebnight');
 			echo ' ' . __('place') . '  <input type="text" name="pers_death_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_death_place) . '" size="' . $field_place . '">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 			// *** Age by death ***
 			echo ' <input type="text" name="pers_death_age" placeholder="' . __('Age') . '" value="' . $pers_death_age . '" size="3">';
@@ -2317,7 +2306,7 @@ echo '</tr>';
 			echo '<a href="#" style="display:inline" ';
 			echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
 			echo 'onmouseout="mclosetime()">';
-			echo '<img src="../styles/images/help.png" height="16" width="16">';
+			echo '<img src="/theme/images/help.png" height="16" width="16">';
 			echo '</a>';
 			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			echo '<b>' . __('If death year and age are used, then birth year is calculated automatically (when empty).') . '</b><br>';
@@ -2462,7 +2451,7 @@ echo '</tr>';
 			echo hideshow_editor($hideshow, $hideshow_text, $pers_buried_text);
 			echo $editor_cls->date_show($pers_buried_date, 'pers_buried_date', '', '', $pers_buried_date_hebnight, 'pers_buried_date_hebnight');
 			echo ' ' . __('place') . ' <input type="text" name="pers_buried_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_buried_place) . '" size="' . $field_place . '">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 			echo '<select size="1" name="pers_cremation">';
 			echo '<option value="">' . __('buried') . '</option>';
@@ -2550,7 +2539,7 @@ echo '</tr>';
 			echo '<a href="#" style="display:inline" ';
 			echo 'onmouseover="mopen(event,\'help_menu3\',100,400)"';
 			echo 'onmouseout="mclosetime()">';
-			echo '<img src="../styles/images/help.png" height="16" width="16">';
+			echo '<img src="/theme/images/help.png" height="16" width="16">';
 			echo '</a>';
 			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_menu3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			echo '<b>' . __('Use own code for your own remarks.<br>
@@ -2752,12 +2741,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 							echo '</td><td id="chtd2" valign="top">';
 
 							if ($i < ($fam_count - 1)) {
-								echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_down=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="fam_down"></a> ';
+								echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_down=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="fam_down"></a> ';
 							} else {
 								echo '&nbsp;&nbsp;&nbsp;';
 							}
 							if ($i > 0) {
-								echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_up=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="fam_up"></a> ';
+								echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_up=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="fam_up"></a> ';
 							} else {
 								//echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							}
@@ -2781,7 +2770,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				if ($menu_tab != 'children') {
 					$hideshow = '700';
 					//echo '<tr><td><b>'.__('Add relation').'</b></td><td></td><td><a href="#" onclick="hideShow('.$hideshow.');">'.__('Add relation').'</a>'; 
-					echo '<tr><td><b>' . __('Add relation') . '</b></td><td></td><td><a href="#" onclick="hideShow(' . $hideshow . ');"><img src="theme/images/family_connect.gif"> ' . __('Add new relation to this person') . '</a>';
+					echo '<tr><td><b>' . __('Add relation') . '</b></td><td></td><td><a href="#" onclick="hideShow(' . $hideshow . ');"><img src="/theme/images/family_connect.gif"> ' . __('Add new relation to this person') . '</a>';
 					echo ' (' . trim(show_person($person->pers_gedcomnumber, false, false)) . ')';
 					echo '</td></tr>';
 
@@ -2806,8 +2795,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 					echo __('Or add relation with existing person:') . ' <input class="fonts" type="text" name="relation_add2" value="" size="17" placeholder="' . __('GEDCOM number (ID)') . '" required>';
 
-					//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id=' . $tree_id . '","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a>';
+					//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id=' . $tree_id . '","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a>';
 
 					echo ' <input type="Submit" name="dummy4" value="' . __('Add relation') . '">';
 					echo '</form>';
@@ -2954,7 +2943,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 					echo __('Select person 1') . ' <input class="fonts" type="text" name="connect_man" value="' . $man_gedcomnumber . '" size="5">';
 
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=man&person=' . $man_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=man&person=' . $man_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
 
 					$person = $db_functions->get_person($man_gedcomnumber);
 
@@ -2977,13 +2966,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '<br>' . __('and');
 
 					if (!isset($_GET['add_marriage'])) {
-						echo ' <BUTTON TYPE="submit" name="parents_switch" title="Switch Persons" class="button"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/turn_around.gif" width="17"></BUTTON>';
+						echo ' <BUTTON TYPE="submit" name="parents_switch" title="Switch Persons" class="button"><img src="/theme/admin/images/turn_around.gif" width="17"></BUTTON>';
 					}
 					echo '<br>';
 
 					echo __('Select person 2') . ' <input class="fonts" type="text" name="connect_woman" value="' . $woman_gedcomnumber . '" size="5">';
 
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=woman&person=' . $woman_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=woman&person=' . $woman_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
 
 					$person = $db_functions->get_person($woman_gedcomnumber);
 
@@ -3038,7 +3027,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo hideshow_editor($hideshow, $hideshow_text, $fam_relation_text);
 
 					echo $editor_cls->date_show($fam_relation_date, 'fam_relation_date') . ' ' . __('place') . ' <input type="text" name="fam_relation_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_relation_place) . '" size="' . $field_place . '">';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_relation_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_relation_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 					// *** End of living together ***
 					echo $editor_cls->date_show($fam_relation_end_date, "fam_relation_end_date") . '<br>';
@@ -3080,7 +3069,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					$hideshow_text = hideshow_date_place($fam_marr_notice_date, $fam_marr_notice_place);
 					echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_notice_text);
 					echo $editor_cls->date_show($fam_marr_notice_date, "fam_marr_notice_date", "", "", $fam_marr_notice_date_hebnight, "fam_marr_notice_date_hebnight") . ' ' . __('place') . ' <input type="text" name="fam_marr_notice_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_notice_place) . '" size="' . $field_place . '">';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_notice_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_notice_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 					// *** Check if there are multiple lines in text ***
 					$field_text_selected = $field_text;
@@ -3145,7 +3134,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_text);
 
 					echo $editor_cls->date_show($fam_marr_date, "fam_marr_date", "", "", $fam_marr_date_hebnight, "fam_marr_date_hebnight") . ' ' . __('place') . ' <input type="text" name="fam_marr_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_place) . '" size="' . $field_place . '">';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 					// *** Age of man by marriage ***
 					echo __('Age person 1') . ' <input type="text" name="fam_man_age" placeholder="' . __('Age') . '" value="' . $fam_man_age . '" size="3">';
@@ -3159,7 +3148,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '<a href="#" style="display:inline" ';
 					echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
 					echo 'onmouseout="mclosetime()">';
-					echo '<img src="../styles/images/help.png" height="16" width="16">';
+					echo '<img src="/theme/images/help.png" height="16" width="16">';
 					echo '</a>';
 					echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<b>' . __('If birth year of man or woman is empty it will be calculated automatically using age by marriage.') . '</b><br>';
@@ -3279,7 +3268,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					$hideshow_text = hideshow_date_place($fam_marr_church_notice_date, $fam_marr_church_notice_place);
 					echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_notice_text);
 					echo $editor_cls->date_show($fam_marr_church_notice_date, "fam_marr_church_notice_date", "", "", $fam_marr_church_notice_date_hebnight, "fam_marr_church_notice_date_hebnight") . ' ' . __('place') . ' <input type="text" name="fam_marr_church_notice_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_church_notice_place) . '" size="' . $field_place . '">';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_notice_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_notice_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 					// *** Check if there are multiple lines in text ***
 					$field_text_selected = $field_text;
@@ -3320,7 +3309,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					$hideshow_text = hideshow_date_place($fam_marr_church_date, $fam_marr_church_place);
 					echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_text);
 					echo $editor_cls->date_show($fam_marr_church_date, "fam_marr_church_date", "", "", $fam_marr_church_date_hebnight, "fam_marr_church_date_hebnight") . ' ' . __('place') . ' <input type="text" name="fam_marr_church_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_church_place) . '" size="' . $field_place . '">';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 					// *** Check if there are multiple lines in text ***
 					$field_text_selected = $field_text;
@@ -3377,7 +3366,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 					echo hideshow_editor($hideshow, $hideshow_text, $fam_div_text);
 					echo $editor_cls->date_show($fam_div_date, "fam_div_date") . ' ' . __('place') . ' <input type="text" name="fam_div_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_div_place) . '" size="' . $field_place . '">';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_div_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a><br>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_div_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a><br>';
 
 					$text = '';
 					if ($fam_div_authority) $text = htmlspecialchars($fam_div_authority);
@@ -3594,7 +3583,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						$familyDb = $family->fetch(PDO::FETCH_OBJ);
 						if ($familyDb->fam_children) {
 							echo '<a name="children"></a>';
-							echo __('Use this icon to order children (drag and drop)') . ': <img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/drag-icon.gif" border="0">';
+							echo __('Use this icon to order children (drag and drop)') . ': <img src="/theme/admin/images/drag-icon.gif" border="0">';
 
 							echo '<br>' . __('Or automatically order children:') . ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_tab=marriage&amp;marriage_nr=' . $marriage . '&amp;order_children=1#children">' . __('Automatic order children') . '</a>';
 
@@ -3613,11 +3602,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 								}
 								$fam_children = substr($fam_children, 0, -1); // *** strip last ; character ***
 
-								echo '<li><span style="cursor:move;" id="' . $fam_children_array[$j] . '" class="handle' . $i . '" ><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
+								echo '<li><span style="cursor:move;" id="' . $fam_children_array[$j] . '" class="handle' . $i . '" ><img src="/theme/admin/images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
 
 								echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=' . $fam_children .
 									'&amp;child_disconnect_gedcom=' . $fam_children_array[$j] . '">
-						<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
+						<img src="/theme/admin/images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
 								echo '&nbsp;&nbsp;<span id="chldnum' . $fam_children_array[$j] . '">' . ($j + 1) . '</span>. ' . show_person($fam_children_array[$j], true) . '</li>';
 							}
 							echo '</ul>';
@@ -3637,8 +3626,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						echo '<input type="hidden" name="family_id" value="' . $familyDb->fam_gedcomnumber . '">';
 						echo __('Or add existing person as a child:') . ' <input class="fonts" type="text" name="child_connect2" value="" size="17" placeholder="' . __('GEDCOM number (ID)') . '" required>';
 
-						//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
-						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id=' . $tree_id . '","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a>';
+						//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
+						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id=' . $tree_id . '","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a>';
 
 						echo ' <input type="Submit" name="dummy4" value="' . __('Select child') . '">';
 						echo '</form><br>';
@@ -4748,7 +4737,7 @@ function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_conn
 		if (isset($marriage)) {
 			$text .= '&amp;marriage_nr=' . $marriage;
 		}
-		$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="remove"></a>';
+		$text .= '"><img src="/theme/admin/images/button_drop.png" border="0" alt="remove"></a>';
 
 		if ($connectDb->connect_order < $nr_sources) {
 			$text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page .
@@ -4766,7 +4755,7 @@ function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_conn
 			if (isset($marriage)) {
 				$text .= '&amp;marriage_nr=' . $marriage;
 			}
-			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+			$text .= '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="down"></a>';
 		} else {
 			//$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			$text .= '&nbsp;&nbsp;&nbsp;';
@@ -4788,7 +4777,7 @@ function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_conn
 			if (isset($marriage)) {
 				$text .= '&amp;marriage_nr=' . $marriage;
 			}
-			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="down"></a>';
+			$text .= '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="down"></a>';
 		} else {
 			//$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		}
@@ -4999,7 +4988,7 @@ function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_conn
 			//$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',100,400)"';
 			$text .= 'onmouseover="mopen(event,\'' . $connectDb->connect_id . 'help_sourcerole\',1,150)"';
 			$text .= 'onmouseout="mclosetime()">';
-			$text .= '<img src="../images/help.png" height="16" width="16">';
+			$text .= '<img src="/theme/images/help.png" height="16" width="16">';
 			$text .= '</a>';
 			//$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			$text .= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="' . $connectDb->connect_id . 'help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -5015,7 +5004,7 @@ function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_conn
 			//$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',100,400)"';
 			$text .= 'onmouseover="mopen(event,\'' . $connectDb->connect_id . 'help_sourcepage\',1,150)"';
 			$text .= 'onmouseout="mclosetime()">';
-			$text .= '<img src="../images/help.png" height="16" width="16">';
+			$text .= '<img src="/theme/images/help.png" height="16" width="16">';
 			$text .= '</a>';
 			//$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			$text .= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="' . $connectDb->connect_id . 'help_sourcepage" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -5165,8 +5154,8 @@ function witness_edit($event_text, $witness, $multiple_rows = '')
 	if (!$witness) $style = 'style="background-color:#FFAA80"';
 
 	$text .= '<input class="fonts" ' . $style . ' type="text" name="text_event2' . substr($multiple_rows, 1, -1) . '" value="' . $value . '" size="17" placeholder="' . __('GEDCOM number (ID)') . '">';
-	//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item='.$person_item.'&event_row='.substr($multiple_rows,1,-1).'&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
-	$text .= '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=' . $person_item . '&event_row=' . substr($multiple_rows, 1, -1) . '&tree_id=' . $tree_id . '","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a>';
+	//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item='.$person_item.'&event_row='.substr($multiple_rows,1,-1).'&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="/theme/images/search.png" border="0"></a>';
+	$text .= '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=' . $person_item . '&event_row=' . substr($multiple_rows, 1, -1) . '&tree_id=' . $tree_id . '","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a>';
 
 	// *** Witness: text field ***
 	$witness_value = $witness;
@@ -5242,7 +5231,7 @@ function add_person($person_kind, $pers_sexe)
 	//echo '<a href="#" style="display:inline" ';
 	//echo 'onmouseover="mopen(event,\'help_prefix\',100,400)"';
 	//echo 'onmouseout="mclosetime()">';
-	//	echo '<img src="../styles/images/help.png" height="16" width="16">';
+	//	echo '<img src="/theme/images/help.png" height="16" width="16">';
 	//echo '</a>';
 	//echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo __("For example: d\' or:  van_ (use _ for a space)") . '<br>';
@@ -5284,7 +5273,7 @@ function add_person($person_kind, $pers_sexe)
 	echo '<tr><td>' . ucfirst(__('born')) . '</td><td>';
 	echo $editor_cls->date_show('', 'pers_birth_date', '', '', '', 'pers_birth_date_hebnight') . ' ';
 	echo ' <input type="text" name="pers_birth_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
-	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_birth_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a></td></tr>';
+	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_birth_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a></td></tr>';
 
 	// *** Birth time and stillborn option ***
 	if ($person_kind == 'child') {
@@ -5299,19 +5288,19 @@ function add_person($person_kind, $pers_sexe)
 	echo '<tr><td>' . ucfirst(__('baptised')) . '</td><td>';
 	echo $editor_cls->date_show('', 'pers_bapt_date', '', '', '', 'pers_bapt_date_hebnight') . ' ';
 	echo ' <input type="text" name="pers_bapt_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
-	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_bapt_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a></td></tr>';
+	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_bapt_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a></td></tr>';
 
 	// *** Died ***
 	echo '<tr><td>' . ucfirst(__('died')) . '</td><td>';
 	echo $editor_cls->date_show('', 'pers_death_date', '', '', '', 'pers_death_date_hebnight') . ' ';
 	echo '  <input type="text" name="pers_death_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
-	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_death_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a></td></tr>';
+	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_death_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a></td></tr>';
 
 	// *** Buried ***
 	echo '<tr><td>' . ucfirst(__('buried')) . '</td><td>';
 	echo $editor_cls->date_show('', 'pers_buried_date', '', '', '', 'pers_buried_date_hebnight') . ' ';
 	echo '  <input type="text" name="pers_buried_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
-	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_buried_place","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a></td></tr>';
+	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_buried_place","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a></td></tr>';
 
 	// *** Profession ***
 	echo '<tr>';
@@ -5408,7 +5397,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 	echo '<a href="#" style="display:inline" ';
 	echo 'onmouseover="mopen(event,\'help_address_shared\',0,0)"';
 	echo 'onmouseout="mclosetime()">';
-	echo '<img src="../styles/images/help.png" height="16" width="16">';
+	echo '<img src="/theme/images/help.png" height="16" width="16">';
 	echo '</a>';
 	echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<b>' . __('A shared address can be connected to multiple persons or relations.') . '</b><br>';
@@ -5453,7 +5442,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 		// *** Remove address ***
 		$text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page .
 			'&amp;person_place_address=1&amp;connect_drop=' . $addressDb->connect_id . '">
-				<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="drop"></a>';
+				<img src="/theme/admin/images/button_drop.png" border="0" alt="drop"></a>';
 
 		// *** Order addresses ***
 		if ($addressDb->connect_order < $count) {
@@ -5463,7 +5452,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 				'&amp;connect_sub_kind=' . $addressDb->connect_sub_kind .
 				'&amp;connect_connect_id=' . $addressDb->connect_connect_id .
 				'&amp;connect_order=' . $addressDb->connect_order;
-			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
+			$text .= '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="down"></a>';
 		} else {
 			$text .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		}
@@ -5475,7 +5464,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 				'&amp;connect_sub_kind=' . $addressDb->connect_sub_kind .
 				'&amp;connect_connect_id=' . $addressDb->connect_connect_id .
 				'&amp;connect_order=' . $addressDb->connect_order;
-			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
+			$text .= '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="up"></a>';
 		} else {
 			$text .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		}
@@ -5525,7 +5514,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 			if ($addressDb->connect_date) $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
 
 			echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $address;
-			if ($address3Db->address_text or $addressDb->connect_text) echo ' <img src="theme/images/text.png" height="16" alt="' . __('text') . '">';
+			if ($address3Db->address_text or $addressDb->connect_text) echo ' <img src="/theme/images/text.png" height="16" alt="' . __('text') . '">';
 			echo '</span>';
 
 			echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
@@ -5557,7 +5546,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 						echo '<a href="#" style="display:inline" ';
 						echo 'onmouseover="mopen(event,\'help_address_shared\',0,0)"';
 						echo 'onmouseout="mclosetime()">';
-							echo '<img src="../styles/images/help.png" height="16" width="16">';
+							echo '<img src="/theme/images/help.png" height="16" width="16">';
 						echo '</a>';
 						echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 							echo '<b>'.__('A shared address can be connected to multiple persons or relations.').'</b><br>';
@@ -5576,7 +5565,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 				$form = 2;
 				//$place_item='place_relation';
 			}
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=address_place&amp;address_id=' . $address3Db->address_id . '","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=address_place&amp;address_id=' . $address3Db->address_id . '","","' . $field_popup . '");><img src="/theme/images/search.png" border="0"></a>';
 
 			// *** Save latest place in table humo_persons as person_place_index (in use for place index) ***
 			if ($connect_kind == 'person') {
@@ -5856,7 +5845,7 @@ function show_editor_notes($note_connect_kind)
 
 		// *** Link to remove note ***
 		echo '<a href="index.php?page=editor&amp;menu_admin=person&amp;note_drop=' . $noteDb->note_id . '">';
-		echo '<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="down"></a>';
+		echo '<img src="/theme/admin/images/button_drop.png" border="0" alt="down"></a>';
 
 		echo '</td><td style="border-right:0px;"></td>';
 		echo '<td style="border-left:0px;">';
@@ -5957,7 +5946,7 @@ function hideshow_editor($hideshow, $text, $check_text)
 	if (!$text) $text = '[' . __('Add') . ']';
 
 	$return_text = '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
-	if ($check_text) $return_text .= ' <img src="theme/images/text.png" height="16" alt="' . __('text') . '">';
+	if ($check_text) $return_text .= ' <img src="/theme/images/text.png" height="16" alt="' . __('text') . '">';
 	$return_text .= '</span>';
 
 	$return_text .= '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';

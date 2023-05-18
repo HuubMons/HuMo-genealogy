@@ -174,11 +174,11 @@ if (isset($menu_admin) and $menu_admin == 'log_blacklist') {
 
 			if ($dataDb->setting_order != '1') {
 				echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;up=1&amp;link_order=' . $dataDb->setting_order .
-					'&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
+					'&amp;id=' . $dataDb->setting_id . '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="up"></a>';
 			}
 			if ($dataDb->setting_order != $count_links) {
 				echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;down=1&amp;link_order=' . $dataDb->setting_order . '&amp;id=' .
-					$dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
+					$dataDb->setting_id . '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="down"></a>';
 			}
 			echo '</td>';
 			echo '<td><input type="text" name="' . $dataDb->setting_id . 'own_code" value="' . $lijst[0] . '" size="5"></td>';

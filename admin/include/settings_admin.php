@@ -201,7 +201,7 @@ include __DIR__ . '/../../include/settings_global.php'; //variables
 // *** Read languages in language array ***
 $arr_count = 0;
 $arr_count_admin = 0;
-$folder = opendir(CMS_ROOTPATH . 'languages/');
+$folder = opendir(__DIR__ . '/../../languages/');
 while (false !== ($file = readdir($folder))) {
 	if (strlen($file) < 6 and $file != '.' and $file != '..') {
 		// *** Get language name ***
@@ -209,7 +209,7 @@ while (false !== ($file = readdir($folder))) {
 		$langs[$arr_count][0] = $language["name"];
 		$langs[$arr_count][1] = $file;
 		$arr_count++;
-		if (file_exists(CMS_ROOTPATH . 'languages/' . $file . '/' . $file . '.mo')) {
+		if (file_exists(__DIR__ . '/../../languages/' . $file . '/' . $file . '.mo')) {
 			$langs_admin[$arr_count_admin][0] = $language["name"];
 			$langs_admin[$arr_count_admin][1] = $file;
 			$arr_count_admin++;
@@ -644,7 +644,7 @@ if (isset($menu_admin) and $menu_admin == 'settings') {
 		//echo '<option value="default_timelines"'.$select.'>English</option>'; // *** Don't add "English" in translation file! ***
 		echo '<option value="default_timelines"' . $select . '>' . __('Default') . '</option>'; // *** Don't add "English" in translation file! ***
 		for ($i = 0; $i < count($langs); $i++) {
-			if (is_dir(CMS_ROOTPATH . 'languages/' . $langs[$i][1] . '/timelines/')) {
+			if (is_dir(__DIR__ . '/../../languages/' . $langs[$i][1] . '/timelines/')) {
 				$select = '';
 				if ($time_lang == $langs[$i][1]) {
 					$select = ' SELECTED';
@@ -658,9 +658,9 @@ if (isset($menu_admin) and $menu_admin == 'settings') {
 	echo "&nbsp;&nbsp;";
 
 	// *** First select language, then the timeline files of that language is shown ***
-	$folder = @opendir(CMS_ROOTPATH . 'languages/' . $time_lang . '/timelines/');
+	$folder = @opendir(__DIR__ . '/../../languages/' . $time_lang . '/timelines/');
 	// *** Default language = english ***
-	if ($time_lang == 'default_timelines') $folder = @opendir(CMS_ROOTPATH . 'languages/' . $time_lang);
+	if ($time_lang == 'default_timelines') $folder = @opendir(__DIR__ . '/../../languages/' . $time_lang);
 	if ($folder !== false) {  // no use showing the option if we can't access the timeline folder
 		while (false !== ($file = readdir($folder))) {
 			if (substr($file, -4, 4) == '.txt') {
@@ -874,7 +874,7 @@ if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
 			//	echo '<input type="hidden" name="'.$dataDb->setting_id.'id" value="'.$dataDb->setting_id.'">';
 
 			//	echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_module='.$dataDb->setting_id.'">
-			//		<img src="'.CMS_ROOTPATH_ADMIN.'theme/images/button_drop.png" border="0" alt="remove"></a>&nbsp;&nbsp;&nbsp;';
+			//		<img src="/theme/admin/images/button_drop.png" border="0" alt="remove"></a>&nbsp;&nbsp;&nbsp;';
 			//echo '</td>';
 
 			// *** Active/ inactive with background colour ***
@@ -901,11 +901,11 @@ if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
 
 			if ($dataDb->setting_order != '1') {
 				echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;mod_up=1&amp;module_order=' . $dataDb->setting_order .
-					'&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
+					'&amp;id=' . $dataDb->setting_id . '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="up"></a>';
 			}
 			if ($dataDb->setting_order != $count_links) {
 				echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;mod_down=1&amp;module_order=' . $dataDb->setting_order . '&amp;id=' .
-					$dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
+					$dataDb->setting_id . '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="down"></a>';
 			}
 			echo '</td>';
 
@@ -1075,7 +1075,7 @@ if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
 
 			//echo '<td><br></td>';
 			echo '<td><a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_module=' . $dataDb->setting_id . '">
-							<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="remove"></a></td>';
+							<img src="/theme/admin/images/button_drop.png" border="0" alt="remove"></a></td>';
 			echo '</tr>';
 			$teller++;
 		}
@@ -1225,17 +1225,17 @@ if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
 			echo '<td>';
 
 			echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_link=' . $dataDb->setting_id . '">
-						<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="remove"></a> ';
+						<img src="/theme/admin/images/button_drop.png" border="0" alt="remove"></a> ';
 
 			echo '<input type="hidden" name="' . $dataDb->setting_id . 'id" value="' . $dataDb->setting_id . '">' . __('Link') . ' ' . $teller;
 
 			if ($dataDb->setting_order != '1') {
 				echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;up=1&amp;link_order=' . $dataDb->setting_order .
-					'&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
+					'&amp;id=' . $dataDb->setting_id . '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="up"></a>';
 			}
 			if ($dataDb->setting_order != $count_links) {
 				echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;down=1&amp;link_order=' . $dataDb->setting_order . '&amp;id=' .
-					$dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
+					$dataDb->setting_id . '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="down"></a>';
 			}
 			echo '</td>';
 			echo '<td><input type="text" name="' . $dataDb->setting_id . 'own_code" value="' . $lijst[0] . '" size="5"></td>';

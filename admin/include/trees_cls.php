@@ -42,7 +42,7 @@ class tree_cls
 		include __DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php';
 		echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
 		$select_top = '';
-		echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'styles/images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+		echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="/theme/images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
 		echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
 		echo '<ul class="humo_menu_item2">';
 		for ($i = 0; $i < count($language_file); $i++) {
@@ -91,27 +91,27 @@ class tree_cls
 				$new_number = $dataDb->tree_order + 1;
 				if ($dataDb->tree_order != '1') {
 					echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;up=1&amp;tree_order=' . $dataDb->tree_order .
-						'&amp;id=' . $dataDb->tree_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
+						'&amp;id=' . $dataDb->tree_id . '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="up"></a>';
 				}
 				if ($dataDb->tree_order != $count_lines) {
 					echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;down=1&amp;tree_order=' . $dataDb->tree_order . '&amp;id=' .
-						$dataDb->tree_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
+						$dataDb->tree_id . '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="down"></a>';
 				}
 				echo '</td>';
 
 				echo '<td>';
 				// *** Show/ Change family tree name ***
-				$treetext = show_tree_text($dataDb->tree_id, $language_tree);
+				$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $language_tree);
 				if ($dataDb->tree_prefix == 'EMPTY')
 					echo '* ' . __('EMPTY LINE') . ' *';
 				else {
-					echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $dataDb->tree_id . '"><img src="theme/images/edit.jpg" title="edit" alt="edit"></a> ' . $treetext['name'];
+					echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $dataDb->tree_id . '"><img src="/theme/images/edit.jpg" title="edit" alt="edit"></a> ' . $treetext['name'];
 				}
 				echo '</td>';
 
 				echo '<td>';
 				if ($dataDb->tree_prefix != 'EMPTY') {
-					echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="theme/images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
+					echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="/theme/images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
 				}
 
 				if ($dataDb->tree_prefix == 'EMPTY') {
@@ -171,7 +171,7 @@ class tree_cls
 				// *** If there is only one family tree, prevent it can be removed ***
 				if ($count_trees > 1 or $dataDb->tree_prefix == 'EMPTY') {
 					echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;remove_tree=' . $dataDb->tree_id . '&amp;treetext_name=' . $treetext['name'] . '">';
-					echo '<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" alt="' . __('Remove tree') . '" border="0"></a>';
+					echo '<img src="/theme/admin/images/button_drop.png" alt="' . __('Remove tree') . '" border="0"></a>';
 				}
 				echo '</td>';
 
@@ -363,7 +363,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 		include __DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php';
 		echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
 		$select_top = '';
-		echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'styles/images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+		echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="/theme/images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
 		echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
 		echo '<ul class="humo_menu_item2">';
 		for ($i = 0; $i < count($language_file); $i++) {
@@ -372,7 +372,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 				include __DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php';
 				echo '<li style="float:left; width:124px;">';
 				echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
-				echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+				echo '<img src="/languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
 				echo $language["name"];
 				echo '</a>';
 				echo '</li>';
@@ -1051,7 +1051,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 				echo '<select size="1" name="left" style="width:' . $len . 'px"><option></option></select>';
 			}
 			echo '</td><td rowspan=2>';
-			echo '<input type="submit" alt="' . __('Switch persons') . '" title="' . __('Switch persons') . '" value=" " name="switch" style="background: #fff url(\'' . CMS_ROOTPATH . 'styles/images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
+			echo '<input type="submit" alt="' . __('Switch persons') . '" title="' . __('Switch persons') . '" value=" " name="switch" style="background: #fff url(\'/theme/images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
 			echo '</td><td rowspan=2>';
 			echo '<input type="submit" name="manual_compare" value="' . __('Show details') . '" style="font-size:115%;">';
 			echo '</td></tr><tr><td  style="white-space:nowrap">';
@@ -2956,8 +2956,9 @@ After a merge you can switch to "relatives merge" and after that return to dupli
 		$dbh->query($qry);
 		// CLEANUP: This person's I may still exist in the humo_events table under "event_event",
 		// in case of birth/death declaration or bapt/burial witness. If so, change the GEDCOM to the left person's I:
+		$fackedevent = "@$result1Db->pers_gedcomnumber@";
 		$qry = "UPDATE humo_events
-		SET event_event = '@" . $result1Db->pers_gedcomnumber . "@'
+		SET event_event = $fackedevent
 		WHERE event_tree_id='" . $tree_id . "' AND event_event ='@" . $result2Db->pers_gedcomnumber . "@'";
 		$dbh->query($qry);
 

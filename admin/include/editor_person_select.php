@@ -141,7 +141,7 @@ if ($search_quicksearch_man != '') {
 	//$person = $db_functions->get_person($man_gedcomnumber);
 }
 
-include('include/editor_cls.php');
+include __DIR__ .'/editor_cls.php';
 $editor_cls = new editor_cls;
 
 if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10) != 'add_child_') {

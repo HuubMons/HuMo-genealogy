@@ -18,7 +18,7 @@ if ($adoption_id) {
 	$form = 'form1';
 }
 
-include('include/editor_cls.php');
+include __DIR__ .'/editor_cls.php';
 $editor_cls = new editor_cls;
 
 echo '

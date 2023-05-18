@@ -1,6 +1,5 @@
 <?php
 include_once __DIR__ .'/header.php';
-include_once __DIR__ .'/menu.php';
 
 // *** Check user ***
 if ($user['group_addresses']!='j'){
@@ -8,6 +7,8 @@ if ($user['group_addresses']!='j'){
 	exit();
 }
 
+
+include_once __DIR__ .'/menu.php';
 include_once __DIR__ .'/include/language_date.php';
 include_once __DIR__ .'/include/person_cls.php';
 include_once __DIR__ .'/include/show_sources.php';
@@ -38,7 +39,7 @@ echo '</td></tr><tr><td>';
 
 	$person_cls = New person_cls;
 	// *** Search address in connections table ***
-	$event_qry = $db_functions->get_connections('person_address',$_GET['gedcomnumber']);
+	$event_qry = $db_functions->get_connections('person_address', $_GET['gedcomnumber']);
 	foreach($event_qry as $eventDb){
 		// *** Person address ***
 		if ($eventDb->connect_connect_id){

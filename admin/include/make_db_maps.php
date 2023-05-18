@@ -8,8 +8,6 @@ Original script: Yossi.
 if (!defined('ADMIN_PAGE')) {
 	exit;
 }
-//error_reporting(E_ALL);
-@set_time_limit(3000);
 
 echo '<h1 align=center>' . __('World map administration') . '</h1>';
 echo '<table class="humo standard" border="1" style="width:900px;">';
@@ -724,7 +722,7 @@ else {  // main screen
 				$tree_search_sql2 = "SELECT * FROM humo_trees WHERE tree_id='" . $_SESSION['geo_tree'] . "'";
 				$tree_search_result2 = $dbh->query($tree_search_sql2);
 				$tree_searchDb2 = $tree_search_result2->fetch(PDO::FETCH_OBJ);
-				$treetext2 = show_tree_text($tree_searchDb2->tree_id, $selected_language);
+				$treetext2 = $db_tree_text->show_tree_text($tree_searchDb2->tree_id, $selected_language);
 				$one_tree = "<b>" . __('Family tree') . " " . @$treetext2['name'] . ": </b>";
 			}
 			echo $one_tree;
@@ -790,7 +788,7 @@ else {  // main screen
 					$selected = ' SELECTED';
 				}
 			}
-			$treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+			$treetext = $db_tree_text->show_tree_text($tree_searchDb->tree_id, $selected_language);
 			echo '<option value="' . $tree_searchDb->tree_prefix . '"' . $selected . '>' . @$treetext['name'] . '</option>';
 			$count++;
 		}
@@ -1175,7 +1173,7 @@ else {  // main screen
 				}
 			}
 
-			$treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+			$treetext = $db_tree_text->show_tree_text($tree_searchDb->tree_id, $selected_language);
 			echo "<tr><td>" . $treetext['name'] . "</td>";
 			echo "<td><input style='text-align:center' type='text' name='" . $offset . "' value='${"slider_choice" .$tree_searchDb->tree_prefix}'></td>";
 			$interval = round((2010 - ${"slider_choice" . $tree_searchDb->tree_prefix}) / 9);

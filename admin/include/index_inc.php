@@ -55,7 +55,7 @@ if (isset($_POST['save_settings_database'])) {
 	}
 
 	// *** Check if db_login.php is writable, and change database lines in db_login.php file ***
-	$login_file = CMS_ROOTPATH . "include/db_login.php";
+	$login_file = __DIR__ . '/../../include/db_login.php';
 	if (!is_writable($login_file)) {
 		$result_message = '<b> *** ' . __('The configuration file is not writable! Please change the include/db_login.php file manually.') . ' ***</b>';
 	} else {
@@ -551,7 +551,7 @@ The file .htpasswd will look something like this:<br>');
 				} else {
 					echo '<td class="line_nok">';
 				}
-				$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+				$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 				//echo $dirmark1.$treetext['name'];
 				echo $dirmark1 . '<a href="index.php?page=tree">' . $treetext['name'] . '</a>';
 

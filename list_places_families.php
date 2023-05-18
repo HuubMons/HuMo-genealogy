@@ -27,7 +27,7 @@ function show_person($familyDb){
 	$personDb = $db_functions->get_person($selected_person1);
 
 	// *** Person class used for name and person pop-up data ***
-	$person_cls = New person_cls;
+	$person_cls = new person_cls();
 	$person_cls->construct($personDb);
 	$privacy=$person_cls->privacy;
 
@@ -199,14 +199,11 @@ function show_person($familyDb){
 
 $make_date=''; // we only need this when sorting by date
 
-$desc_asc=" ASC "; $sort_desc=0;
-if(isset($_SESSION['sort_desc'])) {
-	if($_SESSION['sort_desc'] == 1){ $desc_asc=" DESC "; $sort_desc=1; }
-		else{ $desc_asc=" ASC "; $sort_desc=0; }
-}
-if(isset($_GET['sort_desc'])) {
-	if($_GET['sort_desc'] == 1) { $desc_asc=" DESC "; $sort_desc=1; $_SESSION['sort_desc']=1; }
-		else { $desc_asc=" ASC "; $sort_desc=0; $_SESSION['sort_desc']=0; }
+$desc_asc=" ASC "; 
+$sort_desc=0;
+
+if(isset($_GET['sort_desc']) && $_GET['sort_desc'] == 1) {
+	$desc_asc=" DESC "; $sort_desc=1;
 }
 
 

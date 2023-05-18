@@ -74,12 +74,7 @@ include_once __DIR__ . '/include/marriage_cls.php';
 include_once __DIR__ . '/include/language_date.php';
 include_once __DIR__ . '/include/date_place.php';
 
-if(CMS_SPECIFIC == "Joomla") {
-	$fampath = "index.php?option=com_humo-gen&amp;task=family&amp"; // path to family.php for joomla (used some 20 times in this code
-}
-else {
-	$fampath = CMS_ROOTPATH."family.php?";
-}
+$fampath = CMS_ROOTPATH."family.php?";
 
 function create_rel_array ($gednr)  {
 	// creates array of ancestors of person with GEDCOM nr. $gednr
@@ -282,7 +277,7 @@ function calculate_rel ($arr_x, $arr_y, $genX, $genY) {
 	}
 	elseif ( $genX == 1 AND $genY > 1 ) {  // x is uncle, great-uncle etc of y
 		$table=3;
-		calculate_uncles ($genY);
+		calculate_uncles ($genX, $genY);
 	}
 	elseif ( $genX > 1 AND $genY == 1 ) {  // x is nephew, great-nephew etc of y
 		$table=4;
@@ -1027,7 +1022,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function calculate_uncles($generY) { // handed generations y is removed from common ancestor
+function calculate_uncles($generX, $generY) { // handed generations y is removed from common ancestor
 global $db_functions, $reltext,  $sexe, $sexe2, $language, $ancestortext, $dutchtext, $selected_language, $spantext, $rel_arrayspouseY, $spouse;
 global $foundY_nr, $rel_arrayY, $fampath;  // only for Finnish paragraph
 global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
@@ -3070,12 +3065,7 @@ if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 	echo '<br><div id="geargif"><img src="styles/images/gear.gif">&nbsp;&nbsp;&nbsp;'.__('Calculating relations').'</div>';
 }
 
-if(CMS_SPECIFIC == "Joomla") {
-	echo '<form method="POST" action="'.'index.php?option=com_humo-gen&task=relations'.'" style="display : inline;">';
-}
-else {
-	echo '<form method="POST" action="relations.php" style="display : inline;">';
-}
+echo '<form method="POST" action="relations.php" style="display : inline;">';
 echo '<input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
 
 echo '<br><table class="humo relmenu">';
@@ -3109,9 +3099,7 @@ Directions for use:<br>
 		echo '<th>'.__('Calculate relationships').'</th></tr>';
 
 	echo '<tr><td>';
-		$language_person=__('Person').' ';
-		if(CMS_SPECIFIC == "Joomla") { $language_person=''; }  // for joomla keep it short...
-		echo $language_person.'1:';
+		echo __('Person').' 1:';
 	echo '</td>';
 
 	// *** Person 1 ***
@@ -3222,12 +3210,8 @@ Directions for use:<br>
 	echo '<td><input class="fonts relboxes" type="text" name="search_gednr" value="'.safe_text_show($search_gednr).'" size="8">';
 	echo '&nbsp;<input class="fonts" type="submit" name="search_id1" value="'.__('Search').'"></td>';
 
-	$len=230;  // length of name pulldown box
-	if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
-
-
-	// *** Limit results ***
-	$limit=500;
+	$len=200;  // length of name pulldown box
+	$limit=200; // Limit results
 
 	echo '<td>';
 	if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
@@ -3327,7 +3311,7 @@ Directions for use:<br>
 	echo '</td></tr><tr><td>';
 
 	// *** Second person ***
-	echo $language_person.'2:';
+	echo __('Person').' 2:';
 	echo '</td>';
 
 	echo '<td>';

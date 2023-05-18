@@ -1,8 +1,5 @@
 <?php
-if (CMS_SPECIFIC == 'Joomla')
-	$path_tmp = 'index.php?option=com_humo-gen&amp;task=admin';
-else
-	$path_tmp = 'index.php';
+$path_tmp = 'index.php';
 
 echo '<h2 align=center>' . __('Administration menu login') . '</h2>';
 

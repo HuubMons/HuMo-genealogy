@@ -228,29 +228,19 @@ while (@$sourceDb = $source->fetch(PDO::FETCH_OBJ)) {
 		$url = $uri_path . 'source/' . $tree_id . '/' . $sourceDb->source_gedcomnr;
 	} else {
 		$url = $uri_path . 'source.php?tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
-	}
+	} ?>
 
-	echo ' <a href="' . $url . '">';
-	//echo __('source').': ';
-	// *** Aldfaer sources don't have a title! ***
-	if ($sourceDb->source_title) {
-		echo $sourceDb->source_title;
-	} else {
-		if ($sourceDb->source_text) {
-			echo substr($sourceDb->source_text, 0, 40);
-			if (strlen($sourceDb->source_text) > 40) echo '...';
-		} else
-			// *** No title, no text. Could be an empty source ***
-			echo '...';
-	}
-	echo '</a></td>';
+			<a href="<?= $url; ?>">
+				<?= $sourceDb->source_title ?? substr_replace($sourceDb->source_text, "...", 40); ?>
+			</a>
+		</td>
+		<td><?= date_place($sourceDb->source_date, ''); ?></td>
+		<td><?= $sourceDb->source_place; ?></td>
+	</tr>
+<?php } ?>
 
-	echo '<td>' . date_place($sourceDb->source_date, '') . '</td>';
-	echo '<td>' . $sourceDb->source_place . '</td>';
-	echo '</tr>';
-}
+</table>
+<br>
+<div class=index_list1><?= $line_pages; ?></div>
 
-echo '</table>';
-echo '<br><div class=index_list1>' . $line_pages . '</div>';
-//echo '</div>';
-include_once __DIR__ . '/footer.php';
+<?php include_once __DIR__ . '/footer.php';

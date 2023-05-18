@@ -396,7 +396,7 @@ if (isset($step1)) {
 	$nr_persons = $db_functions->count_persons($tree_id);
 	if ($nr_persons > 0) {
 		// *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
-		$treetext = show_tree_text($tree_id, $selected_language);
+		$treetext = $db_tree_text->show_tree_text($tree_id, $selected_language);
 		$treetext2 = '';
 		if ($treetext['name']) $treetext2 = $treetext['name'];
 		$checked1 = '';
@@ -464,11 +464,7 @@ if (isset($_POST['step2'])) {
 	if (!isset($_POST['add_tree']) or (isset($_POST['add_tree']) and $_POST['add_tree'] == 'no')) {
 		$_SESSION['add_tree'] = false;
 		$limit = 2500;
-		if (CMS_SPECIFIC == "Joomla") {
-			$rootpathinclude = CMS_ROOTPATH_ADMIN . "include/";
-		} else {
-			$rootpathinclude = '';
-		}
+		$rootpathinclude = '';
 
 		echo '<b>' . __('STEP 2) Remove old family tree:') . '</b><br>';
 

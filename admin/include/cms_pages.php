@@ -11,16 +11,14 @@ if (!defined('ADMIN_PAGE')) {
 
 global $selected_language;
 
-if (CMS_SPECIFIC == "Joomla")
-	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
-else
-	$phpself = 'index.php';
+$phpself = 'index.php';
+	
 
 echo '<h1 class="center">' . __('CMS Own pages') . '</h1>';
 
 printf(__('Here you can add your own pages to %s! It\'s possible to use categories in the menu (like "Family history", "Family stories").'), 'HuMo-genealogy');
 
-echo '<p><form method="post" action="' . $phpself . '" style="display : inline;">';
+echo '<p><form method="post" action="index.php" style="display : inline;">';
 echo '<input type="hidden" name="page" value="' . $page . '">';
 echo '<table class="humo" style="width:95%;text-align:center;border:1px solid black;"><tr class="table_header_large">';
 echo '<td><input type="Submit" name="cms_pages" value="' . __('Pages') . '"></td>';
@@ -271,14 +269,14 @@ if ($cms_item == 'pages') {
 
 		$page_nr++;
 		echo '<tr><td width="60px">';
-		echo '<a href="index.php?page=' . $page . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;page_remove=' . $cms_pagesDb->page_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" alt="' . __('Remove page') . '" border="0"></a>';
+		echo '<a href="index.php?page=' . $page . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;page_remove=' . $cms_pagesDb->page_id . '"><img src="/theme/admin/images/button_drop.png" alt="' . __('Remove page') . '" border="0"></a>';
 
 		// *** Show ID numbers for test ***
 		if ($page_nr != '1') {
-			echo ' <a href="index.php?page=' . $page . '&amp;page_up=' . $previous_page . '&amp;select_page=' . $cms_pagesDb->page_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
+			echo ' <a href="index.php?page=' . $page . '&amp;page_up=' . $previous_page . '&amp;select_page=' . $cms_pagesDb->page_id . '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="up"></a>';
 		}
 		if ($page_nr != $pages_in_category[$cms_pagesDb->page_menu_id]) {
-			echo ' <a href="index.php?page=' . $page . '&amp;page_down=' . $cms_pagesDb->page_order . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;menu_id=' . $cms_pagesDb->page_menu_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
+			echo ' <a href="index.php?page=' . $page . '&amp;page_down=' . $cms_pagesDb->page_order . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;menu_id=' . $cms_pagesDb->page_menu_id . '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="down"></a>';
 		}
 		echo '</td><td>';
 		$page_title = '[' . __('No page title') . ']';
@@ -417,7 +415,7 @@ if ($cms_item == 'pages') {
 	*/
 
 	// *** Updated CKEditor ***
-	echo '<script src="include/ckeditor/ckeditor.js"></script>';
+	echo '<script src="/externals/ckeditor/ckeditor.js"></script>';
 }
 
 // *** Show and edit menu's ***
@@ -445,13 +443,13 @@ if ($cms_item == 'menu') {
 		//if ($cms_pagesDb->menu_order<10){ echo '0'; }
 		//echo $cms_pagesDb->menu_order;
 
-		echo '<a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_remove=' . $cms_pagesDb->menu_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" alt="' . __('Remove menu') . '" border="0"></a>';
+		echo '<a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_remove=' . $cms_pagesDb->menu_id . '"><img src="/theme/admin/images/button_drop.png" alt="' . __('Remove menu') . '" border="0"></a>';
 
 		if ($cms_pagesDb->menu_order != '1') {
-			echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_up=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
+			echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_up=' . $cms_pagesDb->menu_order . '"><img src="/theme/admin/images/arrow_up.gif" border="0" alt="up"></a>';
 		}
 		if ($cms_pagesDb->menu_order != $count_menu) {
-			echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_down=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
+			echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_down=' . $cms_pagesDb->menu_order . '"><img src="/theme/admin/images/arrow_down.gif" border="0" alt="down"></a>';
 		}
 		echo '</td>';
 
@@ -613,8 +611,8 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
 	if ($checked1 == '') {
 		echo '<br><table style="border:none">';
 		for ($i = 0; $i < count($language_file); $i++) {
-			include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
-			echo '<tr><td><img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+			include __DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php';
+			echo '<tr><td><img src="/languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
 			echo $language["name"];
 			echo '</td><td>';
 			$select_page = 'dummy';
@@ -646,10 +644,4 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
 	echo '</td></tr></table>';
 
 	echo '</form>';
-
-	echo '<h2>In some cases the picture-path setting doesn\'t work...</h2>';
-	echo '<b>First try renaming or removing file: admin\php.ini.</b><br><br>';
-	echo '<b>If you need this setting, you can manual set this picture path in this file: admin/include/kcfinder/conf/config.php<br>';
-	echo 'Change "upload" into your picture path: \'uploadURL\' => "upload",<br>';
-	echo 'Change "true" into "false": \'disabled\' => true,</b>';
 }

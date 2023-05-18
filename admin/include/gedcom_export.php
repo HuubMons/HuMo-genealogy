@@ -87,7 +87,7 @@ if (isset($_POST['part_tree']) and $_POST['part_tree'] == 'part') {
 }
 echo '<select ' . $onchange . ' size="1" name="tree_id">';
 while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-	$treetext = show_tree_text($treeDb->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($treeDb->tree_id, $selected_language);
 	$selected = '';
 	if ($treeDb->tree_id == $tree_id) {
 		$selected = ' SELECTED';
@@ -1868,7 +1868,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
 	echo '<p>' . __('GEDCOM file is generated') . '<br>';
 
-	echo '<form method="POST" action="include/gedcom_download.php" target="_blank">';
+	echo '<form method="POST" action="/admin/include/gedcom_download.php" target="_blank">';
 	echo ' <input type="Submit" name="something" value="' . __('Download GEDCOM file') . '">';
 	echo '<input type="hidden" name="page" value="' . $page . '">';
 	echo '<input type="hidden" name="file_name" value="' . $myFile . '">';

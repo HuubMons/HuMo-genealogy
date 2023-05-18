@@ -1,0 +1,28 @@
+#top_website_name {
+	font-weight:bold;
+	font-family:Baskerville Old Face;
+	font-style:italic;
+	font-size:22px;
+}
+
+#top_familytree_name {
+	color:#333;
+	font-size:26px;
+	font-weight:normal;
+	font-style:italic;
+	font-family:Monotype Corsiva
+}
+
+#switchform {
+	font-family: Rockwell, Verdana, Arial, Sans-Serif; color: #000000;
+	font-weight:bold; font-style:italic;
+	font-family:Old Century; font-size:16px;
+}
+
+#humo_menu {
+	font-style:italic;
+	font-family:Monotype Corsiva;
+	font-size: 20px;
+}
+
+table.reltable td { border:0px; }

@@ -11,12 +11,12 @@
 */
 function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
 {
-	global $dbh, $db_functions, $tree_id, $user, $humo_option, $language, $family_id, $url_path, $uri_path;
-	global $main_person, $descendant_report, $pdf_source;
+	global $db_functions, $tree_id, $user, $humo_option, $uri_path;
+	global $pdf_source;
 	global $source_footnotes, $screen_mode, $pdf_footnotes, $pdf;
 	global $source_footnote_connect_id;
 	global $source_combiner;
-	global $temp, $templ_person, $templ_relation; // *** PDF export ***
+	global $templ_person, $templ_relation; // *** PDF export ***
 	global $family_expanded;
 	$source_array['text'] = '';
 
@@ -255,7 +255,7 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
 
 	} // *** End of show sources ***
 
-	//return $source_array;
+	//return $source_array; // TODO I don't understand... array or string output?
 	if ($source_array['text']) return $source_array;
 	else return '';
 }

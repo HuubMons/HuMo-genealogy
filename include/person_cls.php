@@ -8,11 +8,11 @@
 class person_cls
 {
 
-	public $personDb = '';  // Database record
+	public $personDb = null;  // Database record
 	public $privacy = false;  // Person privacy
 
 	// *** Simple constructor, will work in all PHP versions, I hope :-)) ***
-	function construct($personDb)
+	function construct($personDb = null)
 	{
 		$this->personDb = $personDb;	// Database record
 		$this->privacy = $this->set_privacy($personDb); // Set privacy
@@ -110,19 +110,6 @@ class person_cls
 					}
 				}
 
-				/*
-			// *** Privacy filter: date ***
-			if ($user["group_death_date_act"]=="j"){
-				if ($personDb->pers_death_date){
-					if (substr($personDb->pers_death_date,-4) < $user["group_death_date"]){ $privacy_person=false; }
-						else $privacy_person=true; // *** overwrite pers_alive status ***
-				}
-				if ($personDb->pers_buried_date){
-					if (substr($personDb->pers_buried_date,-4) < $user["group_death_date"]){ $privacy_person=false; }
-						else $privacy_person=true; // *** overwrite pers_alive status ***
-				}
-			}
-			*/
 				// *** Privacy filter: date ***
 				if ($user["group_death_date_act"] == "j") {
 					if ($personDb->pers_death_date) {
@@ -213,10 +200,8 @@ class person_cls
 	{
 		global $humo_option, $uri_path;
 
-		$pers_family = '';
-		if ($pers_famc) {
-			$pers_family = $pers_famc;
-		}
+		$pers_family = $pers_famc ?? '';
+
 		if ($pers_fams) {
 			$pers_fams = explode(';', $pers_fams);
 			$pers_family = $pers_fams[0];

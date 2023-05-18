@@ -18,7 +18,7 @@ $person_cls = new person_cls;
 // *** Show 1 statistics line ***
 function statistics_line($familyDb)
 {
-	global $dbh, $language, $person_cls, $selected_language, $db_functions;
+	global $person_cls, $selected_language, $db_functions, $db_tree_text;
 
 	$tree_id = $familyDb->tree_id;
 	if (isset($tree_id) and $tree_id) $db_functions->set_tree_id($tree_id);
@@ -28,7 +28,7 @@ function statistics_line($familyDb)
 		echo '<td>' . $familyDb->count_lines . '</td>';
 	}
 
-	$treetext = show_tree_text($familyDb->tree_id, $selected_language);
+	$treetext = $db_tree_text->show_tree_text($familyDb->tree_id, $selected_language);
 	echo '<td>' . $treetext['name'] . '</td>';
 
 	if (!isset($familyDb->count_lines)) {
@@ -317,12 +317,7 @@ function iptocountry($ip, $path)
 {
 	global $language;
 	$numbers = preg_split("/\./", $ip);
-	//if(CMS_SPECIFIC == "Joomla") {   // include_once doesn't work in joomla
 	include($path . $numbers[0] . ".php");
-	//}
-	//else {
-	//   include_once($path.$numbers[0].".php");
-	//}
 	$code = ($numbers[0] * 16777216) + ($numbers[1] * 65536) + ($numbers[2] * 256) + ($numbers[3]);
 
 	foreach ($ranges as $key => $value) {
@@ -532,7 +527,7 @@ if ($statistics_screen == 'general_statistics') {
 		if ($familyDb->tree_prefix) {
 			$tree_id = $familyDb->tree_id;
 			// *** Show family tree name ***
-			$treetext = show_tree_text($familyDb->tree_id, $selected_language);
+			$treetext = $db_tree_text->show_tree_text($familyDb->tree_id, $selected_language);
 			echo '<tr><td>' . $treetext['name'] . '</td>';
 		} else {
 			echo '<tr><td><b>' . __('FAMILY TREE ERASED') . '</b></td>';
@@ -961,7 +956,7 @@ if ($statistics_screen == 'statistics_old') {
 				}
 				$date = substr($date, 8, 2) . $month . substr($date, 0, 4);
 
-				$treetext = show_tree_text($dataDb->tree_id, $selected_language);
+				$treetext = $db_tree_text->show_tree_text($dataDb->tree_id, $selected_language);
 				if ($dataDb->tree_id == $tree_id) {
 					echo '<b>' . $treetext['name'] . '</b>';
 				} else {
@@ -984,11 +979,7 @@ if ($statistics_screen == 'statistics_old') {
 			WHERE fam_tree_id='" . $tree_id . "' AND fam_counter ORDER BY fam_counter desc LIMIT 0,50");
 	while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
 		echo $familyDb->fam_counter . " ";
-		if (CMS_SPECIFIC == "Joomla") {
-			echo '<a href="index.php?option=com_humo-gen&amp;task=family&amp;id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
-		} else {
-			echo '<a href="../family.php?id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
-		}
+		echo '<a href="../family.php?id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
 
 		//*** Man ***
 		$personDb = $db_functions->get_person($familyDb->fam_man);
