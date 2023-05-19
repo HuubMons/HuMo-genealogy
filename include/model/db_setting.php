@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * Setting Model
+ * 
+ * Modeler of database humo_settings table
+ */
 class db_setting
 {
 	private $db;
-	
+
 	public function __construct($databaseConnection)
 	{
 		$this->db = $databaseConnection;

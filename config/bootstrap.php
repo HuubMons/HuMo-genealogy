@@ -12,7 +12,7 @@ if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
 
 require __DIR__ . '/../nextlib/Request.php';
 require __DIR__ . '/../include/db_login.php';
-require __DIR__ . '/../include/db_setting.php';
+require __DIR__ . '/../include/model/db_setting.php';
 
 $app_config = require __DIR__ . '/application.php';
 $blacklistedIp = require __DIR__ . '/blacklist_ip.php';
@@ -44,6 +44,7 @@ if (!CMS_SPECIFIC) {
 // *** logout ***
 if (isset($_GET['log_off'])) {
 	session_destroy();
+	header('Location: /');
 }
 
 // *** blacklisted ip ***
