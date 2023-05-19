@@ -76,7 +76,7 @@ class Authenticator2fa
 		return 'https://chart.googleapis.com/chart?chs=' . $width . 'x' . $height . '&chld=' . $level . '|0&cht=qr&chl=' . $urlencoded . '';
 	}
 
-	public function verifyCode($secret, $code, $discrepancy = 1, $currentTimeSlice = null)
+	public function verifyCode(string $secret, string $code, int $discrepancy = 1, $currentTimeSlice = null): bool
 	{
 		if ($currentTimeSlice === null) {
 			$currentTimeSlice = floor(time() / 30);

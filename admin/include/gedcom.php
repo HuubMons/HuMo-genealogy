@@ -49,19 +49,7 @@ include_once __DIR__ . '/gedcom_asciihtml.php';
 include_once __DIR__ . '/gedcom_anselhtml.php';
 include_once __DIR__ . '/gedcom_ansihtml.php';
 
-@set_time_limit(4000);
-
-//*** TEST TIME LIMIT ***
-//set_time_limit(10);
-//set_time_limit(120);
-//set_time_limit(30000000);
-
-if (CMS_SPECIFIC == "Joomla") {
-	$phpself = "index.php?option=com_humo-gen&amp;task=admin";
-	global $gen_program, $gen_program_version, $not_processed;
-} else {
-	$phpself = 'index.php';
-}
+$phpself = 'index.php';
 
 // *** Step 1 ***
 if (isset($_POST['step1'])) {
@@ -94,7 +82,7 @@ if (isset($step1)) {
 	if (CMS_SPECIFIC == "Joomla")
 		$gedcom_directory = substr(CMS_ROOTPATH_ADMIN, 0, -1); // take away the / at the end
 	else
-		$gedcom_directory = "gedcom_files";
+		$gedcom_directory = "../__storage/gedcom_files";
 
 	// *** Only needed for Huub's test server ***
 	if (@file_exists("../../gedcom-bestanden")) {
@@ -122,11 +110,7 @@ if (isset($step1)) {
 		} elseif (file_exists("gedcom_files")) {
 			$gedcom_directory = "gedcom_files";
 		} else {
-			if (CMS_SPECIFIC == "Joomla") {
-				$gedcom_directory = substr(CMS_ROOTPATH_ADMIN, 0, -1); // take away the / at the end
-			} else {
-				$gedcom_directory = ".";
-			}
+			$gedcom_directory = ".";
 		}
 
 		// *** Only upload .ged or .zip files ***

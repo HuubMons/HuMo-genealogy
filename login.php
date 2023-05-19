@@ -1,7 +1,6 @@
 <?php
-//adapted from code found on: http://www.plus2net.com/
 
-$fault = false;
+
 include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
 include_once __DIR__ . '/menu.php';
 
@@ -12,11 +11,8 @@ if ($user['group_menu_login'] != 'j') {
 	exit;
 }
 
-if (CMS_SPECIFIC == 'Joomla') {
-	$path_tmp = 'index.php?option=com_humo-gen&amp;task=login';
-} else {
-	$path_tmp = CMS_ROOTPATH . 'login.php';
-}
+$fault = false;
+$path_tmp = '/login.php';
 
 // form to enter username and mail in order to receive reset link
 if (isset($_POST['forgotpw'])) { ?>

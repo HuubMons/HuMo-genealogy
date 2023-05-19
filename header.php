@@ -5,23 +5,17 @@ require __DIR__ . '/config/bootstrap.php';
 if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "");
 if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
 
-include_once __DIR__ . '/include/db_login.php'; //Inloggen database.
+
 include_once __DIR__ . '/include/db_tree_text.php';
 include_once __DIR__ . '/include/db_functions_cls.php';
+include_once __DIR__ . '/include/model/db_user_log.php';
 
 $db_functions = new db_functions($dbh);
 $db_tree_text = new db_tree_text($dbh);
-
-// *** Show a message at NEW installation. Use "try" for PHP 8.1. ***
-try {
-	$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-} catch (PDOException $e) {
-	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
-	exit();
-}
+$db_user_log = new db_user_log($dbh);
 
 include_once __DIR__ . '/include/safe.php';
-include_once __DIR__ . '/include/settings_global.php'; //Variables
+
 include_once __DIR__ . '/include/settings_user.php'; // USER variables
 
 $language_folder = opendir(__DIR__ . '/languages/');
@@ -80,62 +74,24 @@ array_multisort($language_order, $language_file);
 
 
 // *** Log in ***
-$valid_user = false;
 if (isset($_POST["username"]) && isset($_POST["password"])) {
-	$user = $db_functions->get_user($_POST["username"], $_POST["password"]);
-	if ($user) {
-		$valid_user = true;
+	require __DIR__ . '/nextlib/Authenticator.php';
+	$auth = new Authenticator($dbh);
+	$auth = $auth->login(safe_text_db($_POST["username"]), safe_text_db($_POST["password"]), safe_text_db($_POST['2fa_code']) ?? null);
+	if ($auth) 
+	{
+		$fault = false;
 
-		// *** 2FA is enabled, so check 2FA code ***
-		if (isset($user->user_2fa_enabled) and $user->user_2fa_enabled) {
-			$valid_user = false;
-			$fault = true;
-			require __DIR__ . '/nextlib/Authenticator2fa.php';
+		$_SESSION['user_name'] = $auth->user_name;
+		$_SESSION['user_id'] = $auth->user_id;
+		$_SESSION['user_group_id'] = $auth->user_group_id;
 
-			if ($_POST['2fa_code'] && is_numeric($_POST['2fa_code'])) {
-				$Authenticator = new Authenticator2fa();
-				$checkResult = $Authenticator->verifyCode($user->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
-				if ($checkResult) {
-					$valid_user = true;
-					$fault = false;
-				}
-			}
-		}
-
-		if ($valid_user) {
-			$_SESSION['user_name'] = $user->user_name;
-			$_SESSION['user_id'] = $user->user_id;
-			$_SESSION['user_group_id'] = $user->user_group_id;
-
-			// *** Save succesful login into log! ***
-			$sql = "INSERT INTO humo_user_log SET
-				log_date='" . date("Y-m-d H:i") . "',
-				log_username='" . $user->user_name . "',
-				log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
-				log_user_admin='user',
-				log_status='success'";
-			$dbh->query($sql);
-
-			// *** Send to secured page ***
-			if (CMS_SPECIFIC == 'Joomla') {
-				header("Location: index.php?option=com_humo-gen&amp;menu_choice=main_index");
-			} else {
-				header("Location: " . CMS_ROOTPATH . "index.php?menu_choice=main_index");
-			}
-			exit();
-		}
+		// *** Send to secured page ***
+		header("Location: /index.php?menu_choice=main_index");
+		exit();
+		
 	} else {
-		// *** No valid user found ***
 		$fault = true;
-
-		// *** Save failed login into log! ***
-		$sql = "INSERT INTO humo_user_log SET
-			log_date='" . date("Y-m-d H:i") . "',
-			log_username='" . safe_text_db($_POST["username"]) . "',
-			log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
-			log_user_admin='user',
-			log_status='failed'";
-		$dbh->query($sql);
 	}
 }
 
@@ -154,6 +110,7 @@ if ($language["dir"] == "rtl") {
 	$rtlmarker = "rtl";
 	$alignmarker = "right";
 }
+
 if (isset($screen_mode) and $screen_mode == "PDF") {
 	$dirmark1 = '';
 	$dirmark2 = '';
@@ -257,6 +214,9 @@ if (isset($_SESSION["save_menu_choice"])) {
 
 // *** Page title ***
 $head_text = $humo_option["database_name"];
+$extra_css = '';
+$extra_js = '';
+
 if ($menu_choice == 'main_index') {
 	$head_text .= ' - ' . __('Main index');
 }
@@ -317,179 +277,6 @@ if ($menu_choice == 'register') {
 if ($menu_choice == 'settings') {
 	$head_text .= ' - ' . __('Settings');
 }
-
-// *** For PDF reports: remove html tags en decode ' characters ***
-function pdf_convert($text)
-{
-	$text = html_entity_decode(strip_tags($text), ENT_QUOTES);
-	//$text=@iconv("UTF-8","cp1252//IGNORE//TRANSLIT",$text);	// Only needed if FPDF is used. We now use TFPDF.
-	return $text;
-}
-
-// *** Set default PDF font ***
-$pdf_font = 'DejaVu';
-
-// *** Don't generate a HTML header in a PDF report ***
-if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) {
-	//require(CMS_ROOTPATH.'include/fpdf/fpdf.php');
-	//require(CMS_ROOTPATH.'include/fpdf/fpdfextend.php');
-
-	// *** june 2022: FPDF supports romanian and greek characters ***
-	//define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
-	require __DIR__ . '/externals/tfpdf/tfpdf.php';
-	require __DIR__ . '/externals/tfpdf/tfpdfextend.php';
-
-	// *** Set variabele for queries ***
-	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
-} else {
-	// *** Cookie for "show descendant chart below fanchart"
-	// Set default ("0" is OFF, "1" is ON):
-	$showdesc = "0";
-
-	if (isset($_POST['show_desc'])) {
-		if ($_POST['show_desc'] == "1") {
-			$showdesc = "1";
-			$_SESSION['save_show_desc'] = "1";
-			// setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
-		} else {
-			$showdesc = "0";
-			$_SESSION['save_show_desc'] = "0";
-			// setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
-			// we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
-		}
-	}
-
-	if (!CMS_SPECIFIC) {
-		// *** Generate header of HTML pages ***
-
-		// Prevent validator faults. It's not working good... Replace all & characters in the links by &amp;
-
-		$robots_option = $humo_option["searchengine"] == "j" ? $humo_option["robots_option"] : ""
-?>
-		<!DOCTYPE html>
-		<html lang="<?= $selected_language; ?>">
-
-		<head>
-			<meta http-equiv="content-type" content="text/html; charset=utf-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title><?= $head_text; ?></title>
-			<?= $robots_option; ?>
-
-	<?php }
-
-	// *** Generate BASE HREF for use in url_rewrite ***
-	// SERVER_NAME   127.0.0.1
-	//     PHP_SELF: /url_test/index/1abcd2345/
-	// OF: PHP_SELF: /url_test/index.php
-	// REQUEST_URI: /url_test/index/1abcd2345/
-	// REQUEST_URI: /url_test/index.php?variabele=1
-	// *** No url_rewrite ***
-
-	/**
-	 * @deprecated but if some rewriting problem we need to uncomment this part
-	 */
-	/* 	$url_path = $_SERVER['PHP_SELF']; // TODO: @Devs not safe!
-	$position = strrpos($_SERVER['PHP_SELF'], '/');
-	$uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';
-	
-	// *** url_rewrite ***
-	if ($humo_option["url_rewrite"] == "j") {
-		$uri_path = $_SERVER['REQUEST_URI'];
-
-		if (substr_count($uri_path, 'tree_index') > 0) {
-			$uri_path = str_replace("tree_index", "!", $uri_path);
-			$url_path = 'tree_index.php';
-		}
-
-		if (substr_count($uri_path, 'index') > 0) {
-			$uri_path = str_replace("index", "!", $uri_path);
-			$url_path = 'index.php';
-		}
-
-		// *** First long items like "birthday_list", "list_names" here before testing "list" ***
-		if (substr_count($uri_path, 'birthday_list') > 0) {
-			$uri_path = str_replace("birthday_list", "!", $uri_path);
-			$url_path = 'birthday_list.php';
-		}
-
-		if (substr_count($uri_path, 'list_names') > 0) {
-			$uri_path = str_replace("list_names", "!", $uri_path);
-			$url_path = 'list_names.php';
-		}
-
-		if (substr_count($uri_path, 'list') > 0) {
-			$uri_path = str_replace("list", "!", $uri_path);
-			$url_path = 'list.php';
-		}
-
-		if (substr_count($uri_path, 'family') > 0) {
-			$uri_path = str_replace("family", "!", $uri_path);
-			$url_path = 'family.php';  // *** Needed for show_sources ***
-		}
-
-		if (substr_count($uri_path, 'cms_pages') > 0) {
-			$uri_path = str_replace("cms_pages", "!", $uri_path);
-			$url_path = 'cms_pages';
-		}
-
-		if (substr_count($uri_path, 'source') > 0) {
-			$uri_path = str_replace("source", "!", $uri_path);
-			$url_path = 'source';
-		}
-
-		if (substr_count($uri_path, 'report_ancestor') > 0) {
-			$uri_path = str_replace("report_ancestor", "!", $uri_path);
-			$url_path = 'report_ancestor.php';  // *** needed for show_sources ***
-		}
-
-		$url_position = strpos($uri_path, '!');
-		if ($url_position) {
-			//$uri_path= 'http://'.$_SERVER['SERVER_NAME'].substr($uri_path,0,$url_position);
-			if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-				$uri_path = 'https://' . $_SERVER['SERVER_NAME'] . substr($uri_path, 0, $url_position);
-			} else {
-				$uri_path = 'http://' . $_SERVER['SERVER_NAME'] . substr($uri_path, 0, $url_position);
-			}
-
-			echo '<base href="' . $uri_path . '">';
-
-			$url_path = $uri_path . $url_path;
-		} else {
-			// *** Use standard uri ***
-			$uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';
-		}
-	} */
-
-	echo '<link href="theme/gedcom.css" rel="stylesheet" type="text/css">';
-	echo '<link href="theme/print.css" rel="stylesheet" type="text/css" media="print">';
-
-	// *** Use your own favicon.ico in media folder ***
-	if (file_exists('media/favicon.ico')) {
-		echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
-	} else {
-		echo '<link rel="shortcut icon" href="theme/favicon.ico" type="image/x-icon">';
-	}
-
-
-	/*
-	// *** url_rewrite variabele ***
-	// *** urlpart[0] = (family) database, urlpart[1] = next variabale, etc. ***
-	if ($humo_option["url_rewrite"]=="j"){
-		// *** Search variables in: http://127.0.0.1/humo-php/family/F100/humo2_/I10 ***
-		$url_path2=$_SERVER['REQUEST_URI'];
-		$url_path2 = str_replace("/family/", "~!", $url_path2);
-		$url_path2 = str_replace("/tree_index/", "~!", $url_path2);
-		$url_path2 = str_replace("/index/", "~!", $url_path2);
-		$url_path2 = str_replace("/list/", "~!", $url_path2);
-		$url_path2 = str_replace("/list_names/", "~!", $url_path2);
-		$url_path2 = str_replace("/cms_pages/", "~!", $url_path2);
-		$url_position=strpos($url_path2,'!');
-		if ($url_position){
-			$urlpart1=substr($url_path2,$url_position+1,-1);   // humo2_/F100/I10
-			$urlpart = explode("/", $urlpart1);
-		}
-	}
-	*/
 
 	// *** Family tree choice ***
 	global $database;
@@ -578,6 +365,75 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	// *** Set variabele for queries ***
 	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 
+// *** For PDF reports: remove html tags en decode ' characters ***
+function pdf_convert($text)
+{
+	$text = html_entity_decode(strip_tags($text), ENT_QUOTES);
+	//$text=@iconv("UTF-8","cp1252//IGNORE//TRANSLIT",$text);	// Only needed if FPDF is used. We now use TFPDF.
+	return $text;
+}
+
+// *** Set default PDF font ***
+$pdf_font = 'DejaVu';
+
+// *** Don't generate a HTML header in a PDF report ***
+if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) {
+	//require(CMS_ROOTPATH.'include/fpdf/fpdf.php');
+	//require(CMS_ROOTPATH.'include/fpdf/fpdfextend.php');
+
+	// *** june 2022: FPDF supports romanian and greek characters ***
+	//define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
+	require __DIR__ . '/externals/tfpdf/tfpdf.php';
+	require __DIR__ . '/externals/tfpdf/tfpdfextend.php';
+
+	// *** Set variabele for queries ***
+	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
+} else {
+	// *** Cookie for "show descendant chart below fanchart"
+	// Set default ("0" is OFF, "1" is ON):
+	$showdesc = "0";
+
+	if (isset($_POST['show_desc'])) {
+		if ($_POST['show_desc'] == "1") {
+			$showdesc = "1";
+			$_SESSION['save_show_desc'] = "1";
+			// setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
+		} else {
+			$showdesc = "0";
+			$_SESSION['save_show_desc'] = "0";
+			// setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
+			// we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
+		}
+	}
+
+	if (!CMS_SPECIFIC) {
+		// *** Generate header of HTML pages ***	
+		
+		// *** Use your own favicon.ico in media folder ***
+		if (file_exists(__DIR__ . '/media/favicon.ico')) {
+			$favicon = "/media/favicon.ico";
+		} else {
+			$favicon = "/theme/favicon.ico";
+		}
+
+		$robots_option = $humo_option["searchengine"] == "j" ? $humo_option["robots_option"] : ""
+?>
+		<!DOCTYPE html>
+		<html lang="<?= $selected_language; ?>">
+
+		<head>
+			<meta charset="UTF-8">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title><?= $head_text; ?></title>
+			<link rel="shortcut icon" href="<?= $favicon; ?>" type="image/x-icon">
+			<link href="/theme/gedcom.css" rel="stylesheet" type="text/css">
+			<link href="/theme/print.css" rel="stylesheet" type="text/css" media="print">
+
+			<?= $robots_option; ?>
+
+	<?php }
+
 	/*
 	// *****************************************************************
 	// Use these lines to show a background picture for EACH FAMILY TREE
@@ -603,26 +459,26 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		strpos($_SERVER['REQUEST_URI'], "HOUR") !== false or
 		strpos($_SERVER['REQUEST_URI'], "maps") !== false
 	) {
-		echo '<script src="externals/jquery/jquery.min.js"></script> ';
-		echo '<link rel="stylesheet" href="externals/jqueryui/jquery-ui.min.css"> ';
-		echo '<script src="externals/jqueryui/jquery-ui.min.js"></script>';
+		echo '<script src="/externals/jquery/jquery.min.js"></script> ';
+		echo '<link rel="stylesheet" href="/externals/jqueryui/jquery-ui.min.css"> ';
+		echo '<script src="/externals/jqueryui/jquery-ui.min.js"></script>';
 	}
 
 	// *** Style sheet select ***
 	include_once __DIR__ . '/theme/sss1.php';
 
 	// *** Pop-up menu ***
-	echo '<link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">';
-	echo '<script type="text/javascript" src="include/popup_menu/popup_menu.js"></script>';
+	echo '<link rel="stylesheet" type="text/css" href="/include/popup_menu/popup_menu.css">';
+	echo '<script type="text/javascript" src="/include/popup_menu/popup_menu.js"></script>';
 
 	// *** Always load script, because of "Random photo" at homepage ***
 	// *** Photo lightbox effect using GLightbox ***
-	echo '<link rel="stylesheet" href="externals/glightbox/css/glightbox.css" />';
-	echo '<script src="externals/glightbox/js/glightbox.min.js"></script>';
+	echo '<link rel="stylesheet" href="/externals/glightbox/css/glightbox.css" />';
+	echo '<script src="/externals/glightbox/js/glightbox.min.js"></script>';
 	// *** There is also a script in footer.php, otherwise GLightbox doesn't work ***
 
 	// *** CSS changes for mobile devices ***
-	echo '<link rel="stylesheet" media="(max-width: 640px)" href="theme/gedcom_mobile.css">';
+	echo '<link rel="stylesheet" media="(max-width: 640px)" href="/theme/gedcom_mobile.css">';
 
 	// *** Extra items in header added by admin ***
 	if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];
@@ -646,7 +502,8 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	//		REPLACE(@@sql_mode,'NO_ZERO_DATE','')
 	//	,'NO_ZERO_IN_DATE',''));");
 	// *** This query is probably better ***
-	$result = $dbh->query("SET SESSION sql_mode=(SELECT
+	// TODO: bad choice, overriding mysql server errors has never been a solution.
+	/* $result = $dbh->query("SET SESSION sql_mode=(SELECT
 		REPLACE(
 			REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE','')
 		,'NO_ZERO_IN_DATE',''));");
@@ -657,7 +514,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	$result = $dbh->query("SET SESSION sql_mode=(SELECT
 		REPLACE(
 			REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY','')
-		,'NO_ZERO_IN_DATE',''));");
+		,'NO_ZERO_IN_DATE',''));"); */
 
 	echo '<div class="silverbody">';
 	// *** End of PDF export check ***

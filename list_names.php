@@ -179,7 +179,7 @@ if ($user['group_kindindex'] == "j") {
 
 // *** Add limit to query (results per page) ***
 if ($maxnames != 'ALL') $personqry .= " LIMIT " . $item . "," . $maxnames;
-
+$row = null;
 $person = $dbh->query($personqry);
 while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
 	if ($personDb->pers_lastname == '') $personDb->pers_lastname = '...';

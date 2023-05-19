@@ -12,15 +12,11 @@ class tree_cls
 	{
 		global $language, $language_tree, $language_file, $selected_language;
 		global $dbh, $page, $menu_admin, $tree_id;
-		global $phpself, $phpself2, $joomlastring;
+		global $phpself, $phpself2, $joomlastring , $db_tree_text;
 
 		echo '<br>';
 
 		echo __('Administration of the family tree(s), i.e. the name can be changed here, and trees can be added or removed.') . '<br>';
-
-		// *** Read settings here to be shure radio buttons show proper values. ***
-		include_once __DIR__ . '/../../include/settings_global.php'; // *** Read settings ***
-
 		echo '<table class="humo" border="1" cellspacing="0" width="100%">';
 		echo '<tr class="table_header"><th>' . __('Order') . '</th>';
 		echo '<th>' . __('Name of family tree') . '</th>';
