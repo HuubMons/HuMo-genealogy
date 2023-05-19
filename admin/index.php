@@ -358,21 +358,24 @@ if ($language["dir"] == "rtl") {
 $fault = false;
 $valid_user = false;
 if (isset($_POST["username"]) && isset($_POST["password"])) {
-	$resultDb = $db_functions->get_user($_POST["username"], $_POST["password"]);
-	if ($resultDb) {
+	require __DIR__ . '/../nextlib/Authenticator.php';
+	$auth = new Authenticator($dbh);
+	$user = $auth->login(safe_text_db($_POST["username"]), safe_text_db($_POST["password"]), safe_text_db($_POST['2fa_code']) ?? null);
+	if ($user) {
 		$valid_user = true;
+		$fault = false;
 
 		// *** FIRST CHECK IF USER IS ADMIN OR EDITOR ***
 		// *** Edit family trees [GROUP SETTING] ***
-		$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $resultDb->user_group_id . "'");
+		$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $user->user_group_id . "'");
 		@$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
 		if (isset($groepDb->group_edit_trees)) {
 			$group_edit_trees = $groepDb->group_edit_trees;
 		}
 		// *** Edit family trees [USER SETTING] ***
-		if (isset($resultDb->user_edit_trees) and $resultDb->user_edit_trees) {
-			if ($group_edit_trees) $group_edit_trees .= ';' . $resultDb->user_edit_trees;
-			else $group_edit_trees = $resultDb->user_edit_trees;
+		if (isset($user->user_edit_trees) and $user->user_edit_trees) {
+			if ($group_edit_trees) $group_edit_trees .= ';' . $user->user_edit_trees;
+			else $group_edit_trees = $user->user_edit_trees;
 		}
 		if ($groepDb->group_admin != 'j' and $group_edit_trees == '') {
 			// *** User is not an administrator or editor ***
@@ -380,49 +383,15 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 			exit;
 		}
 
-		// *** 2FA is enabled, so check 2FA code ***
-		if (isset($resultDb->user_2fa_enabled) and $resultDb->user_2fa_enabled) {
-			$valid_user = false;
-			$fault = true;
-			require_once __DIR__ . "/nextlib/Authenticator2fa";
-			if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
-				$Authenticator = new Authenticator2fa();
-				$checkResult = $Authenticator->verifyCode($resultDb->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
-				if ($checkResult) {
-					$valid_user = true;
-					$fault = false;
-				}
-			}
-		}
-
 		if ($valid_user) {
-			$_SESSION['user_name_admin'] = $resultDb->user_name;
-			$_SESSION['user_id_admin'] = $resultDb->user_id;
-			$_SESSION['group_id_admin'] = $resultDb->user_group_id;
+			$_SESSION['user_name_admin'] = $user->user_name;
+			$_SESSION['user_id_admin'] = $user->user_id;
+			$_SESSION['group_id_admin'] = $user->user_group_id;
 
-			// *** Add login in logbook ***
-			$log_date = date("Y-m-d H:i");
-			$sql = "INSERT INTO humo_user_log SET
-				log_date='$log_date',
-				log_username='" . $resultDb->user_name . "',
-				log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
-				log_user_admin='admin',
-				log_status='success'";
-			@$dbh->query($sql);
 		}
 	} else {
-		// *** No valid user or password ***
-		//$fault='<p align="center"><font color="red">'.__('Please enter a valid username or password. ').'</font>';
+		$valid_user = false;
 		$fault = true;
-
-		// *** Save log! ***
-		$sql = "INSERT INTO humo_user_log SET
-			log_date='" . date("Y-m-d H:i") . "',
-			log_username='" . safe_text_db($_POST["username"]) . "',
-			log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
-			log_user_admin='admin',
-			log_status='failed'";
-		$dbh->query($sql);
 	}
 }
 

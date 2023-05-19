@@ -45,8 +45,13 @@ $user['group_edit_trees'] = '';
 if (isset($_SESSION["user_name"]) and is_numeric($_SESSION["user_id"])) {
 	$user["user_name"] = $_SESSION["user_name"];
 	$this_user = $user_model->findId($_SESSION["user_id"]);
-	$this_group = $group_model->findId($this_user->user_group_id);
+	
+	
+} else {
+	$this_user = $user_model->findOneByCriteria(['user_name' => 'guest']);
+}
 
+$this_group = $group_model->findId($this_user->user_group_id);
 
 	$user['group_statistics'] = $this_group->group_statistics;
 	$user['group_birthday_rss'] = $this_group->group_birthday_rss;
@@ -141,10 +146,10 @@ if (isset($_SESSION["user_name"]) and is_numeric($_SESSION["user_id"])) {
 	$user['group_edit_trees'] = $this_group->group_edit_trees; // Edit family trees [GROUP SETTING], saved as ; separated id numbers (NOT USED FOR ADMINISTRATOR)
 
 	// *** Edit family trees [USER SETTING] ***
-	if (isset($this_user->user_edit_trees) and $this_user->user_edit_trees) {
-		if ($user['group_edit_trees'])
-			$user['group_edit_trees'] .= ';' . $this_user->user_edit_trees;
-		else
-			$user['group_edit_trees'] = $this_user->user_edit_trees;
-	}
+if (isset($this_user->user_edit_trees) and $this_user->user_edit_trees) {
+	if ($user['group_edit_trees'])
+		$user['group_edit_trees'] .= ';' . $this_user->user_edit_trees;
+	else
+		$user['group_edit_trees'] = $this_user->user_edit_trees;
 }
+

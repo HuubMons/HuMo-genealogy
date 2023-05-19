@@ -54,8 +54,10 @@ class db_functions
 		return $allowed;
 	}
 
-
-	public function get_user($user_name, $user_password)
+	/**
+	 * @deprecated Use Authenticator insteed
+	 */
+	/* public function get_user($user_name, $user_password)
 	{
 		$sql = "SELECT * FROM humo_users WHERE (user_name=:user_name OR user_mail=:user_name) AND user_password_salted!=''";
 		$stmt = $this->db->prepare($sql);
@@ -85,7 +87,7 @@ class db_functions
 			}
 		}
 		return $qryDb;
-	}
+	} */
 
 	public function get_tree($tree_prefix)
 	{

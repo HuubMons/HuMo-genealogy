@@ -8,9 +8,11 @@ if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
 
 include_once __DIR__ . '/include/db_tree_text.php';
 include_once __DIR__ . '/include/db_functions_cls.php';
+include_once __DIR__ . '/include/model/db_user_log.php';
 
 $db_functions = new db_functions($dbh);
 $db_tree_text = new db_tree_text($dbh);
+$db_user_log = new db_user_log($dbh);
 
 include_once __DIR__ . '/include/safe.php';
 
@@ -72,58 +74,26 @@ array_multisort($language_order, $language_file);
 
 
 // *** Log in ***
-$valid_user = false;
 if (isset($_POST["username"]) && isset($_POST["password"])) {
-	$user = $db_functions->get_user($_POST["username"], $_POST["password"]);
-	if ($user) {
+	require __DIR__ . '/nextlib/Authenticator.php';
+	$auth = new Authenticator($dbh);
+	$user = $auth->login(safe_text_db($_POST["username"]), safe_text_db($_POST["password"]), safe_text_db($_POST['2fa_code']) ?? null);
+	if ($user) 
+	{
 		$valid_user = true;
+		$fault = false;
 
-		// *** 2FA is enabled, so check 2FA code ***
-		if (isset($user->user_2fa_enabled) and $user->user_2fa_enabled) {
-			$valid_user = false;
-			$fault = true;
-			require __DIR__ . '/nextlib/Authenticator2fa.php';
+		$_SESSION['user_name'] = $user->user_name;
+		$_SESSION['user_id'] = $user->user_id;
+		$_SESSION['user_group_id'] = $user->user_group_id;
 
-			if ($_POST['2fa_code'] && is_numeric($_POST['2fa_code'])) {
-				$Authenticator = new Authenticator2fa();
-				$checkResult = $Authenticator->verifyCode($user->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
-				if ($checkResult) {
-					$valid_user = true;
-					$fault = false;
-				}
-			}
-		}
-
-		if ($valid_user) {
-			$_SESSION['user_name'] = $user->user_name;
-			$_SESSION['user_id'] = $user->user_id;
-			$_SESSION['user_group_id'] = $user->user_group_id;
-
-			// *** Save succesful login into log! ***
-			$sql = "INSERT INTO humo_user_log SET
-				log_date='" . date("Y-m-d H:i") . "',
-				log_username='" . $user->user_name . "',
-				log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
-				log_user_admin='user',
-				log_status='success'";
-			$dbh->query($sql);
-
-			// *** Send to secured page ***
-			header("Location: /index.php?menu_choice=main_index");
-			exit();
-		}
+		// *** Send to secured page ***
+		header("Location: /index.php?menu_choice=main_index");
+		exit();
+		
 	} else {
-		// *** No valid user found ***
+		$valid_user = false;
 		$fault = true;
-
-		// *** Save failed login into log! ***
-		$sql = "INSERT INTO humo_user_log SET
-			log_date='" . date("Y-m-d H:i") . "',
-			log_username='" . safe_text_db($_POST["username"]) . "',
-			log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
-			log_user_admin='user',
-			log_status='failed'";
-		$dbh->query($sql);
 	}
 }
 
