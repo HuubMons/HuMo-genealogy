@@ -77,22 +77,20 @@ array_multisort($language_order, $language_file);
 if (isset($_POST["username"]) && isset($_POST["password"])) {
 	require __DIR__ . '/nextlib/Authenticator.php';
 	$auth = new Authenticator($dbh);
-	$user = $auth->login(safe_text_db($_POST["username"]), safe_text_db($_POST["password"]), safe_text_db($_POST['2fa_code']) ?? null);
-	if ($user) 
+	$auth = $auth->login(safe_text_db($_POST["username"]), safe_text_db($_POST["password"]), safe_text_db($_POST['2fa_code']) ?? null);
+	if ($auth) 
 	{
-		$valid_user = true;
 		$fault = false;
 
-		$_SESSION['user_name'] = $user->user_name;
-		$_SESSION['user_id'] = $user->user_id;
-		$_SESSION['user_group_id'] = $user->user_group_id;
+		$_SESSION['user_name'] = $auth->user_name;
+		$_SESSION['user_id'] = $auth->user_id;
+		$_SESSION['user_group_id'] = $auth->user_group_id;
 
 		// *** Send to secured page ***
 		header("Location: /index.php?menu_choice=main_index");
 		exit();
 		
 	} else {
-		$valid_user = false;
 		$fault = true;
 	}
 }

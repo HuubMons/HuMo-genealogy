@@ -360,22 +360,22 @@ $valid_user = false;
 if (isset($_POST["username"]) && isset($_POST["password"])) {
 	require __DIR__ . '/../nextlib/Authenticator.php';
 	$auth = new Authenticator($dbh);
-	$user = $auth->login(safe_text_db($_POST["username"]), safe_text_db($_POST["password"]), safe_text_db($_POST['2fa_code']) ?? null);
-	if ($user) {
+	$auth = $auth->login(safe_text_db($_POST["username"]), safe_text_db($_POST["password"]), safe_text_db($_POST['2fa_code']) ?? null);
+	if ($auth) {
 		$valid_user = true;
 		$fault = false;
 
 		// *** FIRST CHECK IF USER IS ADMIN OR EDITOR ***
 		// *** Edit family trees [GROUP SETTING] ***
-		$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $user->user_group_id . "'");
+		$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $auth->user_group_id . "'");
 		@$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
 		if (isset($groepDb->group_edit_trees)) {
 			$group_edit_trees = $groepDb->group_edit_trees;
 		}
 		// *** Edit family trees [USER SETTING] ***
-		if (isset($user->user_edit_trees) and $user->user_edit_trees) {
-			if ($group_edit_trees) $group_edit_trees .= ';' . $user->user_edit_trees;
-			else $group_edit_trees = $user->user_edit_trees;
+		if (isset($auth->user_edit_trees) and $auth->user_edit_trees) {
+			if ($group_edit_trees) $group_edit_trees .= ';' . $auth->user_edit_trees;
+			else $group_edit_trees = $auth->user_edit_trees;
 		}
 		if ($groepDb->group_admin != 'j' and $group_edit_trees == '') {
 			// *** User is not an administrator or editor ***
@@ -384,9 +384,9 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 		}
 
 		if ($valid_user) {
-			$_SESSION['user_name_admin'] = $user->user_name;
-			$_SESSION['user_id_admin'] = $user->user_id;
-			$_SESSION['group_id_admin'] = $user->user_group_id;
+			$_SESSION['user_name_admin'] = $auth->user_name;
+			$_SESSION['user_id_admin'] = $auth->user_id;
+			$_SESSION['group_id_admin'] = $auth->user_group_id;
 
 		}
 	} else {

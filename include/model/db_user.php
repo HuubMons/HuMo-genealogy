@@ -24,10 +24,10 @@ class db_user
 			return $user;
 		}
 
-		throw new Exception("No user found.", 1);
+		return null;
 	}
 
-	public function findOneByCriteria(array $criteria): object
+	public function findOneByCriteria(array $criteria): object|null
 	{
 		$i = 0;
 		$params = '';
@@ -47,6 +47,6 @@ class db_user
 			return $user;
 		}
 
-		throw new Exception("No user found with those criteria.", 1);
+		return null;
 	}
 }

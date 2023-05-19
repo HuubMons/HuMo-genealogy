@@ -1,6 +1,6 @@
 <?php
 
-$fault = false;
+
 include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
 include_once __DIR__ . '/menu.php';
 
@@ -11,6 +11,7 @@ if ($user['group_menu_login'] != 'j') {
 	exit;
 }
 
+$fault = false;
 $path_tmp = '/login.php';
 
 // form to enter username and mail in order to receive reset link

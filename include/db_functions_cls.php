@@ -89,7 +89,10 @@ class db_functions
 		return $qryDb;
 	} */
 
-	public function get_tree($tree_prefix)
+	/**
+	 * Get tree with tree_prefix
+	 */
+	public function get_tree(string $tree_prefix)
 	{
 		if (substr($tree_prefix, 0, 4) == 'humo') {
 			// *** Found tree_prefix humox_ ***
