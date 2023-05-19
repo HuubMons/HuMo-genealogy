@@ -11,9 +11,18 @@ if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
  */
 
 require __DIR__ . '/../nextlib/Request.php';
+require __DIR__ . '/../include/db_login.php';
+require __DIR__ . '/../include/db_setting.php';
 
 $app_config = require __DIR__ . '/application.php';
 $blacklistedIp = require __DIR__ . '/blacklist_ip.php';
+
+
+$db_settings = new db_setting($dbh); // app settings in database
+$humo_option = $db_settings->dataToArrayKey();
+
+$humo_option["version"] = '6.1.2';
+$humo_option["version_date"] = '2023-04-24';
 
 $request = new Request();
 
@@ -21,7 +30,7 @@ if (isset($app_config['app_env']) && $app_config['app_env'] === 'DEV') {
     error_reporting(E_ALL);
 }
 
-date_default_timezone_set($app_config['timezone']);
+date_default_timezone_set($humo_option['timezone']);
 
 if (!CMS_SPECIFIC) {
 	// session_cache_limiter('private, must-revalidate'); //TODO: @DEVS: Nonsense here, "must-revalidate" is for "nocache", "private" need a "max-age" to be unvalid, see https://www.php.net/manual/en/function.session-cache-limiter.php

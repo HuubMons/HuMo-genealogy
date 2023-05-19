@@ -177,8 +177,8 @@ if (!isset($humo_option["text_footer"])) {
 }
 
 if (!isset($humo_option["timezone"])) {
-	$humo_option["timezone"] = 'Europe/Amsterdam';
-	$sql = "INSERT INTO humo_settings SET setting_variable='timezone', setting_value='Europe/Amsterdam'";
+	$humo_option["timezone"] = 'Europe/London';
+	$sql = "INSERT INTO humo_settings SET setting_variable='timezone', setting_value='Europe/London'";
 	@$result = $dbh->query($sql);
 }
 

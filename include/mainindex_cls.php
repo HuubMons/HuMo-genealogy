@@ -4,16 +4,18 @@ require_once __DIR__ . '/db_tree_text.php';
 require_once __DIR__ . "/person_cls.php";
 class mainindex_cls
 {
+	private $db;
 	private db_tree_text $db_tree_text;
 
 	public function __construct($dbconnection)
 	{
+		$this->db = $dbconnection;
 		$this->db_tree_text = new db_tree_text($dbconnection);
 	}
 
 	function show_tree_index()
 	{
-		global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $dirmark2, $bot_visit, $humo_option;
+		global $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $dirmark2, $bot_visit, $humo_option;
 
 		// *** Was needed to change fontsize ***
 		//echo '<script type="text/javascript">';
@@ -54,7 +56,7 @@ class mainindex_cls
 		}
 		// *** Standard family tree template page ***
 		else {
-			$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
+			$datasql = $this->db->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
 			while (@$data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
 				$item = explode("|", $data2Db->setting_value);
 				if ($item[0] == 'active') {
@@ -90,7 +92,7 @@ class mainindex_cls
 				// *** Select family tree ***
 				if ($module_item[$i] == 'select_family_tree') {
 					//move these 2 rows at top of template script?
-					$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+					$data2sql = $this->db->query("SELECT * FROM humo_trees ORDER BY tree_order");
 					$num_rows = $data2sql->rowCount();
 					//if ($num_rows>1 AND $humo_option["one_name_study"]=='n'){
 					if ($num_rows > 1) {
@@ -171,7 +173,7 @@ class mainindex_cls
 
 				// *** CMS page ***
 				if ($module_item[$i] == 'cms_page') {
-					$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='" . $module_option_1[$i] . "' AND page_status!=''");
+					$page_qry = $this->db->query("SELECT * FROM humo_cms_pages WHERE page_id='" . $module_option_1[$i] . "' AND page_status!=''");
 					$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
 					if ($cms_pagesDb->page_title) $temp .= '<div class="mainmenu_bar fonts">' . $cms_pagesDb->page_title . '</div>';
 					$temp .= $cms_pagesDb->page_text;
@@ -368,6 +370,144 @@ class mainindex_cls
 		}
 		return $tree_owner;
 	}
+	private function tablerow($nr, $lastcol = false)
+	{
+		// displays one set of name & nr column items in the row
+		// $nr is the array number of the name set created in function last_names
+		// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
+		global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $text;
+
+		$path_tmp = '/list.php?tree_id=' . $_SESSION['tree_id'];
+		$text .= '<td class="namelst">';
+		if (isset($freq_last_names[$nr])) {
+			$top_pers_lastname = '';
+			if ($freq_pers_prefix[$nr]) {
+				$top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
+			}
+			$top_pers_lastname .= $freq_last_names[$nr];
+			if ($user['group_kindindex'] == "j") {
+				$text .= '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
+			} else {
+				$top_pers_lastname = $freq_last_names[$nr];
+				if ($freq_pers_prefix[$nr]) {
+					$top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
+				}
+				$text .= '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
+				if ($freq_pers_prefix[$nr]) {
+					$text .= '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
+				} else {
+					$text .= '&amp;pers_prefix=EMPTY';
+				}
+			}
+			$text .= '&amp;part_lastname=equals">' . $top_pers_lastname . "</a>";
+		} else $text .= '~';
+		$text .= '</td>';
+
+		if ($lastcol == false)  $text .= '<td class="namenr" style="text-align:center;border-right-width:3px">'; // not last column numbers
+		else $text .= '</td><td class="namenr" style="text-align:center">'; // no thick border
+
+		if (isset($freq_last_names[$nr])) $text .= $freq_count_last_names[$nr];
+		else $text .= '~';
+		$text .= '</td>';
+	}
+
+	private function _last_names($max)
+	{
+		global $dataDb, $tree_id, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
+
+		// *** Read cache (only used in large family trees) ***
+		$cache = '';
+		$cache_count = 0;
+		$cache_exists = false;
+		$cache_check = false; // *** Use cache for large family trees ***
+		$cacheqry = $this->db->query("SELECT * FROM humo_settings
+				WHERE setting_variable='cache_surnames' AND setting_tree_id='" . $tree_id . "'");
+		$cacheDb = $cacheqry->fetch(PDO::FETCH_OBJ);
+		if ($cacheDb) {
+			$cache_exists = true;
+			$cache_array = explode("|", $cacheDb->setting_value);
+			foreach ($cache_array as $cache_line) {
+				$cacheDb = json_decode(unserialize($cache_line));
+
+				$cache_check = true;
+				$test_time = time() - 7200; // *** 86400 = 1 day, 7200 = 2 hours ***
+				// TEST LINE
+				//$test_time=time()-20; // *** 86400 = 1 day, 7200 = 2 hours ***
+				if ($cacheDb->time < $test_time) {
+					$cache_check = false;
+				} else {
+					$freq_last_names[] = $cacheDb->pers_lastname;
+					$freq_pers_prefix[] = $cacheDb->pers_prefix;
+					$freq_count_last_names[] = $cacheDb->count_last_names;
+				}
+			}
+		}
+
+		if ($cache_check == false) {
+			// TEST LINE
+			//echo 'NO CACHE';
+			/*
+				$personqry="SELECT pers_lastname, pers_prefix,
+					CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
+					FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
+					GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
+				*/
+			// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+			$personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
+					FROM humo_persons
+					WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname NOT LIKE ''
+					GROUP BY pers_lastname, pers_prefix ORDER BY count_last_names DESC LIMIT 0," . $max;
+			$person = $this->db->query($personqry);
+
+			while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
+				// *** Cache: only use cache if there are > 5.000 persons in database ***
+				if (isset($dataDb->tree_persons) and $dataDb->tree_persons > 5000) {
+					$personDb->time = time(); // *** Add linux time to array ***
+					if ($cache) $cache .= '|';
+					$cache .= serialize(json_encode($personDb));
+					$cache_count++;
+				}
+
+				$freq_last_names[] = $personDb->pers_lastname;
+				$freq_pers_prefix[] = $personDb->pers_prefix;
+				$freq_count_last_names[] = $personDb->count_last_names;
+			}
+
+			// *** Add or renew cache in database (only if cache_count is valid) ***
+			if ($cache and ($cache_count == $max)) {
+				if ($cache_exists) {
+					// *** Update existing cache item ***
+					$sql = "UPDATE humo_settings SET
+							setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "'
+							WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
+					$result = $this->db->query($sql);
+				} else {
+					// *** Add new cache item ***
+					$sql = "INSERT INTO humo_settings SET
+							setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "',
+							setting_tree_id='" . safe_text_db($tree_id) . "'";
+					$result = $this->db->query($sql);
+				}
+			}
+		} // *** End of cache ***
+
+		$row = 0;
+		if ($freq_last_names) $row = round(count($freq_last_names) / $maxcols);
+
+		for ($i = 0; $i < $row; $i++) {
+			$text .= '<tr>';
+			for ($n = 0; $n < $maxcols; $n++) {
+				if ($n == $maxcols - 1) {
+					tablerow($i + ($row * $n), true); // last col
+				} else {
+					tablerow($i + ($row * $n)); // other cols
+				}
+			}
+			$text .= '</tr>';
+		}
+		if (isset($freq_count_last_names)) return $freq_count_last_names[0];
+	}
 
 	//*** Most frequent names ***
 	function last_names($columns, $rows)
@@ -383,153 +523,8 @@ class mainindex_cls
 
 		//$table2_width="500";
 		$text = '';
-
-		if (!function_exists('tablerow')) {
-			function tablerow($nr, $lastcol = false)
-			{
-				// displays one set of name & nr column items in the row
-				// $nr is the array number of the name set created in function last_names
-				// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
-				global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $text;
-
-				$path_tmp = '/list.php?tree_id=' . $_SESSION['tree_id'];
-				$text .= '<td class="namelst">';
-				if (isset($freq_last_names[$nr])) {
-					$top_pers_lastname = '';
-					if ($freq_pers_prefix[$nr]) {
-						$top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
-					}
-					$top_pers_lastname .= $freq_last_names[$nr];
-					if ($user['group_kindindex'] == "j") {
-						$text .= '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
-					} else {
-						$top_pers_lastname = $freq_last_names[$nr];
-						if ($freq_pers_prefix[$nr]) {
-							$top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
-						}
-						$text .= '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
-						if ($freq_pers_prefix[$nr]) {
-							$text .= '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
-						} else {
-							$text .= '&amp;pers_prefix=EMPTY';
-						}
-					}
-					$text .= '&amp;part_lastname=equals">' . $top_pers_lastname . "</a>";
-				} else $text .= '~';
-				$text .= '</td>';
-
-				if ($lastcol == false)  $text .= '<td class="namenr" style="text-align:center;border-right-width:3px">'; // not last column numbers
-				else $text .= '</td><td class="namenr" style="text-align:center">'; // no thick border
-
-				if (isset($freq_last_names[$nr])) $text .= $freq_count_last_names[$nr];
-				else $text .= '~';
-				$text .= '</td>';
-			}
-		}
-
-		if (!function_exists('last_names')) {
-			function last_names($max)
-			{
-				global $dbh, $dataDb, $tree_id, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
-
-				// *** Read cache (only used in large family trees) ***
-				$cache = '';
-				$cache_count = 0;
-				$cache_exists = false;
-				$cache_check = false; // *** Use cache for large family trees ***
-				$cacheqry = $dbh->query("SELECT * FROM humo_settings
-				WHERE setting_variable='cache_surnames' AND setting_tree_id='" . $tree_id . "'");
-				$cacheDb = $cacheqry->fetch(PDO::FETCH_OBJ);
-				if ($cacheDb) {
-					$cache_exists = true;
-					$cache_array = explode("|", $cacheDb->setting_value);
-					foreach ($cache_array as $cache_line) {
-						$cacheDb = json_decode(unserialize($cache_line));
-
-						$cache_check = true;
-						$test_time = time() - 7200; // *** 86400 = 1 day, 7200 = 2 hours ***
-						// TEST LINE
-						//$test_time=time()-20; // *** 86400 = 1 day, 7200 = 2 hours ***
-						if ($cacheDb->time < $test_time) {
-							$cache_check = false;
-						} else {
-							$freq_last_names[] = $cacheDb->pers_lastname;
-							$freq_pers_prefix[] = $cacheDb->pers_prefix;
-							$freq_count_last_names[] = $cacheDb->count_last_names;
-						}
-					}
-				}
-
-				if ($cache_check == false) {
-					// TEST LINE
-					//echo 'NO CACHE';
-					/*
-				$personqry="SELECT pers_lastname, pers_prefix,
-					CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-					FROM humo_persons
-					WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
-					GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
-				*/
-					// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-					$personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
-					FROM humo_persons
-					WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname NOT LIKE ''
-					GROUP BY pers_lastname, pers_prefix ORDER BY count_last_names DESC LIMIT 0," . $max;
-					$person = $dbh->query($personqry);
-
-					while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
-						// *** Cache: only use cache if there are > 5.000 persons in database ***
-						if (isset($dataDb->tree_persons) and $dataDb->tree_persons > 5000) {
-							$personDb->time = time(); // *** Add linux time to array ***
-							if ($cache) $cache .= '|';
-							$cache .= serialize(json_encode($personDb));
-							$cache_count++;
-						}
-
-						$freq_last_names[] = $personDb->pers_lastname;
-						$freq_pers_prefix[] = $personDb->pers_prefix;
-						$freq_count_last_names[] = $personDb->count_last_names;
-					}
-
-					// *** Add or renew cache in database (only if cache_count is valid) ***
-					if ($cache and ($cache_count == $max)) {
-						if ($cache_exists) {
-							// *** Update existing cache item ***
-							$sql = "UPDATE humo_settings SET
-							setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "'
-							WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
-							$result = $dbh->query($sql);
-						} else {
-							// *** Add new cache item ***
-							$sql = "INSERT INTO humo_settings SET
-							setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "',
-							setting_tree_id='" . safe_text_db($tree_id) . "'";
-							$result = $dbh->query($sql);
-						}
-					}
-				} // *** End of cache ***
-
-				$row = 0;
-				if ($freq_last_names) $row = round(count($freq_last_names) / $maxcols);
-
-				for ($i = 0; $i < $row; $i++) {
-					$text .= '<tr>';
-					for ($n = 0; $n < $maxcols; $n++) {
-						if ($n == $maxcols - 1) {
-							tablerow($i + ($row * $n), true); // last col
-						} else {
-							tablerow($i + ($row * $n)); // other cols
-						}
-					}
-					$text .= '</tr>';
-				}
-				if (isset($freq_count_last_names)) return $freq_count_last_names[0];
-			}
-		}
-
 		//	$text.=__('Most frequent surnames:')."<br>";
 		$text .= '<div class="mainmenu_bar fonts">' . __('Names') . '</div>';
-
 		// *** nametbl = used for javascript to show graphical lightgray bar to show number of persons ***
 		//$text.='<table width=500 class="humo nametbl" align="center">';
 		$text .= '<table width="90%" class="humo nametbl" align="center">';
@@ -542,7 +537,7 @@ class mainindex_cls
 		$text .= '<td width="' . $col_width . '"><b>' . __('Surname') . '</b></td><td width:6%"><b>' . __('Total') . '</b></td>';
 		$text .= '</tr>';
 
-		$baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
+		$baseperc = $this->_last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
 
 		//$text.='<tr class=table_headline>';
 		//	$text.='<td colspan="2" style="border-right-width:3px;"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_surnames">'.__('More frequent surnames').'</a></td>';
@@ -582,7 +577,7 @@ class mainindex_cls
 	// *** Search field ***
 	function search_box()
 	{
-		global $language, $dbh, $humo_option;
+		global $humo_option;
 		$text = '';
 
 		// *** Reset search field if a new genealogy is selected ***
@@ -644,7 +639,7 @@ class mainindex_cls
 		$text .= '<input type="text" name="quicksearch" placeholder="' . __('Name') . '" value="' . $quicksearch . '" size="30" pattern=".{3,}" title="' . __('Minimum: 3 characters.') . '"></p>';
 
 		// Check if there are multiple family trees.
-		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
+		$datasql2 = $this->db->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
 		if ($num_rows2 > 1 and $humo_option['one_name_study'] == 'n') {
 			$checked = '';
@@ -678,7 +673,7 @@ class mainindex_cls
 	// *** Random photo ***
 	function random_photo()
 	{
-		global $dataDb, $tree_id, $dbh, $db_functions;
+		global $dataDb, $tree_id, $db_functions;
 		$text = '';
 
 		$tree_pict_path = $dataDb->tree_pict_path;
@@ -688,7 +683,7 @@ class mainindex_cls
 		$qry = "SELECT * FROM humo_events
 		WHERE event_tree_id='" . $tree_id . "' AND event_kind='picture' AND event_connect_kind='person' AND event_connect_id NOT LIKE ''
 		ORDER BY RAND()";
-		$picqry = $dbh->query($qry);
+		$picqry = $this->db->query($qry);
 		while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
 			$picname = str_replace(" ", "_", $picqryDb->event_event);
 			$check_file = strtolower(substr($picname, -3, 3));
@@ -741,11 +736,11 @@ class mainindex_cls
 	// *** Favourites ***
 	function extra_links()
 	{
-		global $dbh, $tree_id, $humo_option, $uri_path;
+		global $tree_id;
 		$text = '';
 
 		// *** Check if there are extra links ***
-		$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
+		$datasql = $this->db->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
 		@$num_rows = $datasql->rowCount();
 		if ($num_rows > 0) {
 			while (@$data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
@@ -755,7 +750,7 @@ class mainindex_cls
 				$link_order[] = $data2Db->setting_order;
 			}
 			//include_once(CMS_ROOTPATH.'include/person_cls.php');
-			$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_own_code NOT LIKE ''");
+			$person = $this->db->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_own_code NOT LIKE ''");
 			while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
 				if (in_array($personDb->pers_own_code, $pers_own_code)) {
 					$person_cls = new person_cls;
@@ -788,7 +783,7 @@ class mainindex_cls
 	// *** Alphabet line ***
 	function alphabet()
 	{
-		global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path;
+		global $dataDb, $tree_id, $user;
 		$text = '';
 
 		//*** Find first first_character of last name ***
@@ -799,7 +794,7 @@ class mainindex_cls
 		$cache_count = 0;
 		$cache_exists = false;
 		$cache_check = false; // *** Use cache for large family trees ***
-		$cacheqry = $dbh->query("SELECT * FROM humo_settings
+		$cacheqry = $this->db->query("SELECT * FROM humo_settings
 		WHERE setting_variable='cache_alphabet' AND setting_tree_id='" . $tree_id . "'");
 		$cacheDb = $cacheqry->fetch(PDO::FETCH_OBJ);
 		if ($cacheDb) {
@@ -831,7 +826,7 @@ class mainindex_cls
 				GROUP BY first_character ORDER BY first_character";
 			}
 
-			@$person = $dbh->query($personqry);
+			@$person = $this->db->query($personqry);
 			$count_first_character = $person->rowCount();
 			while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
 				// *** Cache: only use cache if there are > 5.000 persons in database ***
@@ -851,12 +846,12 @@ class mainindex_cls
 					$sql = "UPDATE humo_settings SET
 					setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "'
 					WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
-					$result = $dbh->query($sql);
+					$result = $this->db->query($sql);
 				} else {
 					$sql = "INSERT INTO humo_settings SET
 					setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "',
 					setting_tree_id='" . safe_text_db($tree_id) . "'";
-					$result = $dbh->query($sql);
+					$result = $this->db->query($sql);
 				}
 			}
 		}
@@ -871,7 +866,7 @@ class mainindex_cls
 
 		$person = "SELECT pers_patronym FROM humo_persons
 		WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
-		@$personDb = $dbh->query($person);
+		@$personDb = $this->db->query($person);
 		if ($personDb->rowCount() > 0) {
 			$text .= ' <a href="/list.php?index_list=patronym">' . __('Patronyms') . '</a>';
 		}
@@ -881,7 +876,7 @@ class mainindex_cls
 
 	function today_in_history($view = 'with_table')
 	{
-		global $dbh, $dataDb;
+		global $dataDb;
 		//include_once(CMS_ROOTPATH."include/person_cls.php");
 		include_once __DIR__ . "/language_date.php";
 		include_once __DIR__ . "/date_place.php";
@@ -906,7 +901,7 @@ class mainindex_cls
 		LIMIT 0,30
 		";
 		try {
-			$birth_qry = $dbh->prepare($sql);
+			$birth_qry = $this->db->prepare($sql);
 			$birth_qry->bindValue(':tree_id', $dataDb->tree_id, PDO::PARAM_STR);
 			$birth_qry->bindValue(':today', $today, PDO::PARAM_STR);
 			$birth_qry->bindValue(':today2', $today2, PDO::PARAM_STR);

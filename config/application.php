@@ -3,7 +3,6 @@
 
 return [
     'app_env' => 'DEV',
-    'timezone' => 'Europe/London',
     'database' => [
         'host' => 'localhost:3306',
         'dbname' => 'humogen',

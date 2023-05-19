@@ -8,7 +8,7 @@ if (isset($_POST["screen_mode"]) and (($_POST["screen_mode"] !== 'PDF-L' or $_PO
 	exit('This page is for pdf only'); // TODO: need redirection here
 }
 
-include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/header.php';
 
 include_once __DIR__ . '/include/language_date.php';
 include_once __DIR__ . '/include/language_event.php';
@@ -35,8 +35,6 @@ if (isset($_SESSION['tree_prefix'])) {
 	$tree_id = $dataDb->tree_id;
 }
 
-include_once __DIR__ . '/include/db_functions_cls.php';
-$db_functions = new db_functions;
 $db_functions->set_tree_id($tree_id);
 
 

@@ -5,23 +5,15 @@ require __DIR__ . '/config/bootstrap.php';
 if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "");
 if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
 
-include_once __DIR__ . '/include/db_login.php'; //Inloggen database.
+
 include_once __DIR__ . '/include/db_tree_text.php';
 include_once __DIR__ . '/include/db_functions_cls.php';
 
 $db_functions = new db_functions($dbh);
 $db_tree_text = new db_tree_text($dbh);
 
-// *** Show a message at NEW installation. Use "try" for PHP 8.1. ***
-try {
-	$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-} catch (PDOException $e) {
-	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
-	exit();
-}
-
 include_once __DIR__ . '/include/safe.php';
-include_once __DIR__ . '/include/settings_global.php'; //Variables
+
 include_once __DIR__ . '/include/settings_user.php'; // USER variables
 
 $language_folder = opendir(__DIR__ . '/languages/');
@@ -117,11 +109,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 			$dbh->query($sql);
 
 			// *** Send to secured page ***
-			if (CMS_SPECIFIC == 'Joomla') {
-				header("Location: index.php?option=com_humo-gen&amp;menu_choice=main_index");
-			} else {
-				header("Location: " . CMS_ROOTPATH . "index.php?menu_choice=main_index");
-			}
+			header("Location: /index.php?menu_choice=main_index");
 			exit();
 		}
 	} else {
@@ -464,10 +452,10 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	echo '<link href="theme/print.css" rel="stylesheet" type="text/css" media="print">';
 
 	// *** Use your own favicon.ico in media folder ***
-	if (file_exists('media/favicon.ico')) {
-		echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
+	if (file_exists(__DIR__ . '/media/favicon.ico')) {
+		echo '<link rel="shortcut icon" href="/media/favicon.ico" type="image/x-icon">';
 	} else {
-		echo '<link rel="shortcut icon" href="theme/favicon.ico" type="image/x-icon">';
+		echo '<link rel="shortcut icon" href="/theme/favicon.ico" type="image/x-icon">';
 	}
 
 
@@ -603,26 +591,26 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		strpos($_SERVER['REQUEST_URI'], "HOUR") !== false or
 		strpos($_SERVER['REQUEST_URI'], "maps") !== false
 	) {
-		echo '<script src="externals/jquery/jquery.min.js"></script> ';
-		echo '<link rel="stylesheet" href="externals/jqueryui/jquery-ui.min.css"> ';
-		echo '<script src="externals/jqueryui/jquery-ui.min.js"></script>';
+		echo '<script src="/externals/jquery/jquery.min.js"></script> ';
+		echo '<link rel="stylesheet" href="/externals/jqueryui/jquery-ui.min.css"> ';
+		echo '<script src="/externals/jqueryui/jquery-ui.min.js"></script>';
 	}
 
 	// *** Style sheet select ***
 	include_once __DIR__ . '/theme/sss1.php';
 
 	// *** Pop-up menu ***
-	echo '<link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">';
-	echo '<script type="text/javascript" src="include/popup_menu/popup_menu.js"></script>';
+	echo '<link rel="stylesheet" type="text/css" href="/include/popup_menu/popup_menu.css">';
+	echo '<script type="text/javascript" src="/include/popup_menu/popup_menu.js"></script>';
 
 	// *** Always load script, because of "Random photo" at homepage ***
 	// *** Photo lightbox effect using GLightbox ***
-	echo '<link rel="stylesheet" href="externals/glightbox/css/glightbox.css" />';
-	echo '<script src="externals/glightbox/js/glightbox.min.js"></script>';
+	echo '<link rel="stylesheet" href="/externals/glightbox/css/glightbox.css" />';
+	echo '<script src="/externals/glightbox/js/glightbox.min.js"></script>';
 	// *** There is also a script in footer.php, otherwise GLightbox doesn't work ***
 
 	// *** CSS changes for mobile devices ***
-	echo '<link rel="stylesheet" media="(max-width: 640px)" href="theme/gedcom_mobile.css">';
+	echo '<link rel="stylesheet" media="(max-width: 640px)" href="/theme/gedcom_mobile.css">';
 
 	// *** Extra items in header added by admin ***
 	if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];
@@ -646,7 +634,8 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	//		REPLACE(@@sql_mode,'NO_ZERO_DATE','')
 	//	,'NO_ZERO_IN_DATE',''));");
 	// *** This query is probably better ***
-	$result = $dbh->query("SET SESSION sql_mode=(SELECT
+	// TODO: bad choice, overriding mysql server errors has never been a solution.
+	/* $result = $dbh->query("SET SESSION sql_mode=(SELECT
 		REPLACE(
 			REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE','')
 		,'NO_ZERO_IN_DATE',''));");
@@ -657,7 +646,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	$result = $dbh->query("SET SESSION sql_mode=(SELECT
 		REPLACE(
 			REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY','')
-		,'NO_ZERO_IN_DATE',''));");
+		,'NO_ZERO_IN_DATE',''));"); */
 
 	echo '<div class="silverbody">';
 	// *** End of PDF export check ***

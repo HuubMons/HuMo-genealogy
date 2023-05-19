@@ -49,11 +49,6 @@ if (isset($_POST['save_option'])) {
 	$result = $db_functions->update_settings('hide_themes', $theme_total);
 }
 
-
-// *** Re-read variables after changing them ***
-// *** Don't use include_once! Otherwise the old value will be shown ***
-require_once __DIR__ . "/../../include/settings_global.php"; //variables
-
 echo '<form method="post" action="/admin/index.php">';
 echo '<input type="hidden" name="page" value="' . $page . '">';
 echo '<table class="humo standard" border="1">';

@@ -13,7 +13,7 @@ global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $tree
 
 
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
-include_once __DIR__ . '/../include/db_login.php'; // *** Database login ***
+
 include_once __DIR__ . '/../include/safe.php'; // Variables
 include_once __DIR__ . '/../include/db_tree_text.php'; // to show family tree texts
 include_once __DIR__ . '/../include/db_functions_cls.php';
@@ -39,8 +39,6 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 	}
 
 	if ($check_tables) {
-		include_once __DIR__ . '/../include/settings_global.php';
-
 		// *** Added may 2020, needed for some user settings in admin section ***
 		// *** At this moment there is no separation for front user and admin user... ***
 		include_once __DIR__ . '/../include/settings_user.php'; // USER variables
@@ -241,7 +239,7 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 			$show_menu_left = false;
 		}
 	} catch (Exception $e) {
-		//
+		// exit('no humo_instellingen table found.');
 	}
 
 	// *** Check HuMo-genealogy database status ***

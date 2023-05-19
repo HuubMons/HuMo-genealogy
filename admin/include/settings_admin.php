@@ -194,10 +194,6 @@ if (isset($_POST['save_option3'])) {
 	}
 }
 
-// *** Re-read variables after changing them ***
-// *** Don't use include_once! Otherwise the old value will be shown ***
-include __DIR__ . '/../../include/settings_global.php'; //variables
-
 // *** Read languages in language array ***
 $arr_count = 0;
 $arr_count_admin = 0;
