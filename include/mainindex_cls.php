@@ -269,7 +269,7 @@ class mainindex_cls
 	// *** List family trees ***
 	function tree_list($datasql)
 	{
-		global $humo_option, $uri_path, $user, $selected_language;
+		global $user, $selected_language;
 		$text = '';
 		while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 

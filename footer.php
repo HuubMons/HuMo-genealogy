@@ -32,7 +32,7 @@ if (isset($_SESSION['user_group_id']) AND $_SESSION['user_group_id']=='1') { ?>
 */
  ?>
  <!-- Script for GLightbox -->
-<script>
+<!-- <script>
 	var lightbox = GLightbox();
 	lightbox.on('open', (target) => {
 		// console.log('lightbox opened');
@@ -82,7 +82,7 @@ if (isset($_SESSION['user_group_id']) AND $_SESSION['user_group_id']=='1') { ?>
 	var lightboxInlineIframe = GLightbox({
 		selector: '.glightbox4'
 	});
-</script>
+</script> -->
 
 	</body>
 </html>

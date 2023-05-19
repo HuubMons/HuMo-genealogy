@@ -3,6 +3,7 @@ include_once __DIR__ . '/header.php';
 include_once  __DIR__ . '/menu.php';
 include_once  __DIR__ . '/nextlib/Authenticator2fa.php';
 
+
 $two_fa_change = false;
 
 if (isset($_SESSION['user_id']) and is_numeric($_SESSION['user_id'])) {
@@ -250,25 +251,23 @@ if (isset($userDb->user_name)) {
 	echo '</form>';
 }
 
-
+// include_once __DIR__ . '/theme/sss1.php';
 // *** Theme select ***
 // *** Hide theme select if there is only one theme, AND it is the default theme ***
 $show_theme_select = true;
-if (count($theme_folder) == 1) {
-	if (isset($humo_option['default_skin']) and $humo_option['default_skin'] . '.css' == $theme_folder[0]) {
+if (count($themes) == 1) {
+	if (isset($humo_option['default_skin']) and $humo_option['default_skin'] . '.css' == $themes[0]) {
 		$show_theme_select = false;
 	}
 }
 
-if ($bot_visit) {
-	$show_theme_select = false;
-}
+if ($bot_visit) { $show_theme_select = false; }
 
 if ($show_theme_select == true) {
-	$hide_themes_array = explode(";", $humo_option["hide_themes"]);
-	$hide_themes_array[] = 'gedcom';
-	$hide_themes_array[] = 'gedcom_mobile';
-	$hide_themes_array[] = 'print';
+	$hidden_themes = explode(";", $humo_option["hide_themes"]);
+	$hidden_themes[] = 'gedcom';
+	$hidden_themes[] = 'gedcom_mobile';
+	$hidden_themes[] = 'print';
 	
 	//echo '<br><table class="humo small">';
 	echo '<br><table class="humo">';
@@ -286,11 +285,11 @@ if ($show_theme_select == true) {
 		echo '<option value="none">' . __('Standard-colours') . '</option>';
 	}
 
-	sort($theme_folder);
-	for ($i = 0; $i < count($theme_folder); $i++) {
-		$theme = $theme_folder[$i];
+	sort($themes);
+	for ($i = 0; $i < count($themes); $i++) {
+		$theme = $themes[$i];
 		$theme = str_replace(".css", "", $theme);
-		if (!in_array($theme, $hide_themes_array)) {
+		if (!in_array($theme, $hidden_themes)) {
 			echo '<option value="' . $theme . '">' . $theme . '</option>';
 		}
 	}
@@ -301,10 +300,10 @@ if ($show_theme_select == true) {
 	// *** Screen shots about 725x500 (but resized to smaller pictures) ***
 	echo '<br>';
 	echo '<form title="' . __('Select a colour theme (a cookie will be used to remember the theme)') . '" action="">';
-	for ($i = 0; $i < count($theme_folder); $i++) {
-		$theme = $theme_folder[$i];
+	for ($i = 0; $i < count($themes); $i++) {
+		$theme = $themes[$i];
 		$theme = str_replace(".css", "", $theme);
-		if (!in_array($theme, $hide_themes_array)) {
+		if (!in_array($theme, $hidden_themes)) {
 			echo '<span style="float: left; margin: 3px; border: solid 1px #999999;">';
 			echo '<b>' . $theme . '</b><br>';
 			echo '<input type="image" name="submit" value="submit" alt="theme" src="/theme/' . $theme . '.png" width="360" height="250" onclick="chooseStyle(\'' . $theme . '\', 365)">';

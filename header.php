@@ -110,6 +110,7 @@ if ($language["dir"] == "rtl") {
 	$rtlmarker = "rtl";
 	$alignmarker = "right";
 }
+
 if (isset($screen_mode) and $screen_mode == "PDF") {
 	$dirmark1 = '';
 	$dirmark2 = '';
@@ -213,6 +214,9 @@ if (isset($_SESSION["save_menu_choice"])) {
 
 // *** Page title ***
 $head_text = $humo_option["database_name"];
+$extra_css = '';
+$extra_js = '';
+
 if ($menu_choice == 'main_index') {
 	$head_text .= ' - ' . __('Main index');
 }
@@ -273,179 +277,6 @@ if ($menu_choice == 'register') {
 if ($menu_choice == 'settings') {
 	$head_text .= ' - ' . __('Settings');
 }
-
-// *** For PDF reports: remove html tags en decode ' characters ***
-function pdf_convert($text)
-{
-	$text = html_entity_decode(strip_tags($text), ENT_QUOTES);
-	//$text=@iconv("UTF-8","cp1252//IGNORE//TRANSLIT",$text);	// Only needed if FPDF is used. We now use TFPDF.
-	return $text;
-}
-
-// *** Set default PDF font ***
-$pdf_font = 'DejaVu';
-
-// *** Don't generate a HTML header in a PDF report ***
-if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) {
-	//require(CMS_ROOTPATH.'include/fpdf/fpdf.php');
-	//require(CMS_ROOTPATH.'include/fpdf/fpdfextend.php');
-
-	// *** june 2022: FPDF supports romanian and greek characters ***
-	//define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
-	require __DIR__ . '/externals/tfpdf/tfpdf.php';
-	require __DIR__ . '/externals/tfpdf/tfpdfextend.php';
-
-	// *** Set variabele for queries ***
-	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
-} else {
-	// *** Cookie for "show descendant chart below fanchart"
-	// Set default ("0" is OFF, "1" is ON):
-	$showdesc = "0";
-
-	if (isset($_POST['show_desc'])) {
-		if ($_POST['show_desc'] == "1") {
-			$showdesc = "1";
-			$_SESSION['save_show_desc'] = "1";
-			// setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
-		} else {
-			$showdesc = "0";
-			$_SESSION['save_show_desc'] = "0";
-			// setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
-			// we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
-		}
-	}
-
-	if (!CMS_SPECIFIC) {
-		// *** Generate header of HTML pages ***
-
-		// Prevent validator faults. It's not working good... Replace all & characters in the links by &amp;
-
-		$robots_option = $humo_option["searchengine"] == "j" ? $humo_option["robots_option"] : ""
-?>
-		<!DOCTYPE html>
-		<html lang="<?= $selected_language; ?>">
-
-		<head>
-			<meta http-equiv="content-type" content="text/html; charset=utf-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title><?= $head_text; ?></title>
-			<?= $robots_option; ?>
-
-	<?php }
-
-	// *** Generate BASE HREF for use in url_rewrite ***
-	// SERVER_NAME   127.0.0.1
-	//     PHP_SELF: /url_test/index/1abcd2345/
-	// OF: PHP_SELF: /url_test/index.php
-	// REQUEST_URI: /url_test/index/1abcd2345/
-	// REQUEST_URI: /url_test/index.php?variabele=1
-	// *** No url_rewrite ***
-
-	/**
-	 * @deprecated but if some rewriting problem we need to uncomment this part
-	 */
-	/* 	$url_path = $_SERVER['PHP_SELF']; // TODO: @Devs not safe!
-	$position = strrpos($_SERVER['PHP_SELF'], '/');
-	$uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';
-	
-	// *** url_rewrite ***
-	if ($humo_option["url_rewrite"] == "j") {
-		$uri_path = $_SERVER['REQUEST_URI'];
-
-		if (substr_count($uri_path, 'tree_index') > 0) {
-			$uri_path = str_replace("tree_index", "!", $uri_path);
-			$url_path = 'tree_index.php';
-		}
-
-		if (substr_count($uri_path, 'index') > 0) {
-			$uri_path = str_replace("index", "!", $uri_path);
-			$url_path = 'index.php';
-		}
-
-		// *** First long items like "birthday_list", "list_names" here before testing "list" ***
-		if (substr_count($uri_path, 'birthday_list') > 0) {
-			$uri_path = str_replace("birthday_list", "!", $uri_path);
-			$url_path = 'birthday_list.php';
-		}
-
-		if (substr_count($uri_path, 'list_names') > 0) {
-			$uri_path = str_replace("list_names", "!", $uri_path);
-			$url_path = 'list_names.php';
-		}
-
-		if (substr_count($uri_path, 'list') > 0) {
-			$uri_path = str_replace("list", "!", $uri_path);
-			$url_path = 'list.php';
-		}
-
-		if (substr_count($uri_path, 'family') > 0) {
-			$uri_path = str_replace("family", "!", $uri_path);
-			$url_path = 'family.php';  // *** Needed for show_sources ***
-		}
-
-		if (substr_count($uri_path, 'cms_pages') > 0) {
-			$uri_path = str_replace("cms_pages", "!", $uri_path);
-			$url_path = 'cms_pages';
-		}
-
-		if (substr_count($uri_path, 'source') > 0) {
-			$uri_path = str_replace("source", "!", $uri_path);
-			$url_path = 'source';
-		}
-
-		if (substr_count($uri_path, 'report_ancestor') > 0) {
-			$uri_path = str_replace("report_ancestor", "!", $uri_path);
-			$url_path = 'report_ancestor.php';  // *** needed for show_sources ***
-		}
-
-		$url_position = strpos($uri_path, '!');
-		if ($url_position) {
-			//$uri_path= 'http://'.$_SERVER['SERVER_NAME'].substr($uri_path,0,$url_position);
-			if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-				$uri_path = 'https://' . $_SERVER['SERVER_NAME'] . substr($uri_path, 0, $url_position);
-			} else {
-				$uri_path = 'http://' . $_SERVER['SERVER_NAME'] . substr($uri_path, 0, $url_position);
-			}
-
-			echo '<base href="' . $uri_path . '">';
-
-			$url_path = $uri_path . $url_path;
-		} else {
-			// *** Use standard uri ***
-			$uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';
-		}
-	} */
-
-	echo '<link href="theme/gedcom.css" rel="stylesheet" type="text/css">';
-	echo '<link href="theme/print.css" rel="stylesheet" type="text/css" media="print">';
-
-	// *** Use your own favicon.ico in media folder ***
-	if (file_exists(__DIR__ . '/media/favicon.ico')) {
-		echo '<link rel="shortcut icon" href="/media/favicon.ico" type="image/x-icon">';
-	} else {
-		echo '<link rel="shortcut icon" href="/theme/favicon.ico" type="image/x-icon">';
-	}
-
-
-	/*
-	// *** url_rewrite variabele ***
-	// *** urlpart[0] = (family) database, urlpart[1] = next variabale, etc. ***
-	if ($humo_option["url_rewrite"]=="j"){
-		// *** Search variables in: http://127.0.0.1/humo-php/family/F100/humo2_/I10 ***
-		$url_path2=$_SERVER['REQUEST_URI'];
-		$url_path2 = str_replace("/family/", "~!", $url_path2);
-		$url_path2 = str_replace("/tree_index/", "~!", $url_path2);
-		$url_path2 = str_replace("/index/", "~!", $url_path2);
-		$url_path2 = str_replace("/list/", "~!", $url_path2);
-		$url_path2 = str_replace("/list_names/", "~!", $url_path2);
-		$url_path2 = str_replace("/cms_pages/", "~!", $url_path2);
-		$url_position=strpos($url_path2,'!');
-		if ($url_position){
-			$urlpart1=substr($url_path2,$url_position+1,-1);   // humo2_/F100/I10
-			$urlpart = explode("/", $urlpart1);
-		}
-	}
-	*/
 
 	// *** Family tree choice ***
 	global $database;
@@ -533,6 +364,75 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
 	// *** Set variabele for queries ***
 	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
+
+// *** For PDF reports: remove html tags en decode ' characters ***
+function pdf_convert($text)
+{
+	$text = html_entity_decode(strip_tags($text), ENT_QUOTES);
+	//$text=@iconv("UTF-8","cp1252//IGNORE//TRANSLIT",$text);	// Only needed if FPDF is used. We now use TFPDF.
+	return $text;
+}
+
+// *** Set default PDF font ***
+$pdf_font = 'DejaVu';
+
+// *** Don't generate a HTML header in a PDF report ***
+if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) {
+	//require(CMS_ROOTPATH.'include/fpdf/fpdf.php');
+	//require(CMS_ROOTPATH.'include/fpdf/fpdfextend.php');
+
+	// *** june 2022: FPDF supports romanian and greek characters ***
+	//define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
+	require __DIR__ . '/externals/tfpdf/tfpdf.php';
+	require __DIR__ . '/externals/tfpdf/tfpdfextend.php';
+
+	// *** Set variabele for queries ***
+	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
+} else {
+	// *** Cookie for "show descendant chart below fanchart"
+	// Set default ("0" is OFF, "1" is ON):
+	$showdesc = "0";
+
+	if (isset($_POST['show_desc'])) {
+		if ($_POST['show_desc'] == "1") {
+			$showdesc = "1";
+			$_SESSION['save_show_desc'] = "1";
+			// setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
+		} else {
+			$showdesc = "0";
+			$_SESSION['save_show_desc'] = "0";
+			// setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
+			// we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
+		}
+	}
+
+	if (!CMS_SPECIFIC) {
+		// *** Generate header of HTML pages ***	
+		
+		// *** Use your own favicon.ico in media folder ***
+		if (file_exists(__DIR__ . '/media/favicon.ico')) {
+			$favicon = "/media/favicon.ico";
+		} else {
+			$favicon = "/theme/favicon.ico";
+		}
+
+		$robots_option = $humo_option["searchengine"] == "j" ? $humo_option["robots_option"] : ""
+?>
+		<!DOCTYPE html>
+		<html lang="<?= $selected_language; ?>">
+
+		<head>
+			<meta charset="UTF-8">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title><?= $head_text; ?></title>
+			<link rel="shortcut icon" href="<?= $favicon; ?>" type="image/x-icon">
+			<link href="/theme/gedcom.css" rel="stylesheet" type="text/css">
+			<link href="/theme/print.css" rel="stylesheet" type="text/css" media="print">
+
+			<?= $robots_option; ?>
+
+	<?php }
 
 	/*
 	// *****************************************************************

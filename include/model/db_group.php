@@ -24,7 +24,8 @@ class db_group
 			return $user;
 		}
 
-		throw new Exception("No group found.", 1);
+		// throw new Exception("No group found.", 1);
+		return null;
 	}
 
 	public function findOneByCriteria(array $criteria): object
@@ -47,6 +48,7 @@ class db_group
 			return $user;
 		}
 
-		throw new Exception("No group found with those criteria.", 1);
+		// throw new Exception("No group found with those criteria.", 1);
+		return null;
 	}
 }
