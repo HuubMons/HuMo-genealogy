@@ -409,11 +409,6 @@ if ($database_check) {
 	}
 }
 
-// *** Save ip address in session to prevent session hijacking ***
-if (isset($_SESSION['current_ip_address']) == FALSE) {
-	$_SESSION['current_ip_address'] = $_SERVER['REMOTE_ADDR'];
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -830,7 +825,7 @@ if ($database_check && $group_administrator == 'j') { // Otherwise we can't make
 
 // *** Don't check for group_administrator, because of family tree editors ***
 //if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
-if (isset($database_check) and $database_check) { // Otherwise we can't make $dbh statements
+if ($database_check) { // Otherwise we can't make $dbh statements
 	$check_tree_id = '';
 	// *** admin_tree_id must be numeric ***
 	if (isset($_SESSION['admin_tree_id']) and is_numeric($_SESSION['admin_tree_id'])) {
@@ -915,10 +910,6 @@ echo '<ul class="humo_menu_item">';
 
 // *** Menu ***
 if ($popup == false) {
-	$select_top = '';
-	if ($page == 'admin') {
-		$select_top = ' id="current_top"';
-	}
 	echo '<li>';
 	echo '<div class="' . $rtlmarker . 'sddm">';
 	//echo '<a href="'.$path_tmp.'page=admin"';
@@ -927,29 +918,18 @@ if ($popup == false) {
 
 	echo '<a href="' . $path_tmp . 'page=admin"';
 	echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/images/menu_mobile.png" width="18"></a>';
-
+	echo ' onmouseout="mclosetime()"' . $page == 'admin' ? ' id="current_top"' : '' . '><img src="/theme/images/menu_mobile.png" width="18"></a>';
 	echo '<div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
 
 	if ($group_administrator == 'j') {
-		$menu_item = '';
-		if ($page == 'admin') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=admin">' . __('Administration') . ' - ' . __('Main menu') . '</a>';
+		echo '<li' . $page == 'admin' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=admin">' . __('Administration') . ' - ' . __('Main menu') . '</a></li>';
 	}
 
-
-	echo '<li><a href="/index.php">' . __('Website') . '</a>';
+	echo '<li><a href="/index.php">' . __('Website') . '</a></li>';
 
 	if (isset($_SESSION["user_name_admin"])) {
-		$path_tmp2 = '/index.php?log_off=1';
-		$menu_item = '';
-		if ($page == 'check') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="/index.php?log_off=1">' . __('Logoff') . '</a>';
+		echo '<li' . $page == 'check' ? ' id="current"' : '' . '><a href="/index.php?log_off=1">' . __('Logoff') . '</a></li>';
 	}
 
 	echo '</ul>';
@@ -957,61 +937,15 @@ if ($popup == false) {
 	echo '</div>';
 	echo '</li>';
 }
-/*
-		elseif ($page=='editor_sources'){
-			// *** Pop-up screen is shown, show button to close pop-up screen ***
-			$select_top='';
-			if ($page=='backup'){ $select_top=' id="current_top"'; }
-			echo '<li>';
-			echo '<div class="'.$rtlmarker.'sddm">';
-				echo '<a href="'.$path_tmp.'page=close_popup';
-
-				// *** Return link to addresses ***
-				if (isset($_GET['connect_sub_kind']) AND $_GET['connect_sub_kind']=='address_source')
-					echo '&connect_sub_kind=address_source';
-
-				// *** Added may 2021 ***
-				if (isset($_GET['connect_sub_kind']))
-					echo '&connect_sub_kind='.$_GET['connect_sub_kind'];
-
-				// *** Return link to person events ***
-				if (isset($_GET['event_person']) AND $_GET['event_person']=='1') echo '&amp;event_person=1';
-				// *** Return link to family events ***
-				if (isset($_GET['event_family']) AND $_GET['event_family']=='1') echo '&amp;event_family=1';
-
-				echo '">'.__('Close source editor').'</a>';
-			echo '</div>';
-			echo '</li>';
-		}
-		*/
 
 if ($show_menu_left == true and $page != 'login') {
 
 	// POP-UP MENU
 	if ($group_administrator == 'j') {
 		$select_top = '';
-		if ($page == 'install') {
-			$select_top = ' id="current_top"';
-		}
-		if ($page == 'extensions') {
-			$select_top = ' id="current_top"';
-		}
-		if ($page == 'settings') {
-			$select_top = ' id="current_top"';
-		}
-		if ($page == 'cms_pages') {
-			$select_top = ' id="current_top"';
-		}
-		if ($page == 'favorites') {
-			$select_top = ' id="current_top"';
-		}
-		if ($page == 'language_editor') {
-			$select_top = ' id="current_top"';
-		}
-		if ($page == 'prefix_editor') {
-			$select_top = ' id="current_top"';
-		}
-		if ($page == 'google_maps') {
+		if (in_array($page, ['install', 'extensions', 'settings', 'cms_pages', 'favorites',  
+				'language_editor', 'prefix_editor', 'google_maps'])
+		) {
 			$select_top = ' id="current_top"';
 		}
 		echo '<li>';
@@ -1022,63 +956,16 @@ if ($show_menu_left == true and $page != 'login') {
 		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/images/settings.png" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Control') . '</a>';
 		echo '<div id="m2x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';
-
-		$menu_item = '';
-		if ($page == 'install') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=install">' . __('Install') . '</a></li>';
-
-		$menu_item = '';
-		if ($page == 'extensions') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=extensions">' . __('Extensions') . '</a></li>';
-
-		$menu_item = '';
-		if ($page == 'settings') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=settings">' . __('Settings') . '</a></li>';
-
-		$menu_item = '';
-		if ($page == 'favorites') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=settings&amp;menu_admin=settings_homepage">' . __('Homepage') . '</a></li>';
-
-		$menu_item = '';
-		if ($page == 'favorites') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=settings&amp;menu_admin=settings_special">' . __('Special settings') . '</a></li>';
-
-		$menu_item = '';
-		if ($page == 'cms_pages') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=cms_pages">' . __('CMS Own pages') . '</a></li>';
-
-		// *** Language Editor ***
-		$menu_item = '';
-		if ($page == 'language_editor') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=language_editor">' . __('Language editor') . '</a></li>';
-
-		// *** Prefix Editor ***
-		$menu_item = '';
-		if ($page == 'prefix_editor') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=prefix_editor">' . __('Prefix editor') . '</a></li>';
-
-		// *** Language Editor ***
-		$menu_item = '';
-		if ($page == 'google_maps') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=google_maps">' . __('World map') . '</a></li>';
+		
+		echo '<li' . $page == 'install' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=install">' . __('Install') . '</a></li>';
+		echo '<li' . $page == 'extensions' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=extensions">' . __('Extensions') . '</a></li>';
+		echo '<li' . $page == 'settings' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=settings">' . __('Settings') . '</a></li>';
+		echo '<li' . $page == 'favorites' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=settings&amp;menu_admin=settings_homepage">' . __('Homepage') . '</a></li>';
+		echo '<li' . $page == 'favorites' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=settings&amp;menu_admin=settings_special">' . __('Special settings') . '</a></li>';
+		echo '<li' . $page == 'cms_pages' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=cms_pages">' . __('CMS Own pages') . '</a></li>';
+		echo '<li' . $page == 'language_editor' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=language_editor">' . __('Language editor') . '</a></li>';
+		echo '<li' . $page == 'prefix_editor' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=prefix_editor">' . __('Prefix editor') . '</a></li>';
+		echo '<li' . $page == 'google_maps' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=google_maps">' . __('World map') . '</a></li>';
 
 		echo '</ul>';
 		echo '</div>';
@@ -1088,28 +975,7 @@ if ($show_menu_left == true and $page != 'login') {
 
 	// POP-UP MENU family tree
 	$select_top = '';
-	if ($page == 'tree') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'thumbs') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'user_notes') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'check') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'cal_date') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'export') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'backup') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'statistics') {
+	if (in_array($page, ['tree', 'thumbs', 'user_notes', 'check', 'cal_date', 'export', 'backup', 'statistics'])) {
 		$select_top = ' id="current_top"';
 	}
 	echo '<li>';
@@ -1122,60 +988,15 @@ if ($show_menu_left == true and $page != 'login') {
 	echo '<div id="m3x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
 	if ($group_administrator == 'j') {
-		$menu_item = '';
-		if ($page == 'tree') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=tree">' . __('Family trees') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'thumbs') {
-			$menu_item = ' id="current"';
-		}
-		//echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Create thumbnails').'</a>';
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=thumbs">' . __('Pictures/ create thumbnails') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'user_notes') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=user_notes">' . __('Notes') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'check') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=check">' . __('Family tree data check') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'check') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=view_latest_changes">' . __('View latest changes') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'cal_date') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=cal_date">' . __('Calculated birth date') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'export') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=export">' . __('Gedcom export') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'backup') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=backup">' . __('Database backup') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'statistics') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=statistics">' . __('Statistics') . '</a>';
+		echo '<li' . $page == 'tree' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=tree">' . __('Family trees') . '</a></li>';
+		echo '<li' . $page == 'thumbs' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=thumbs">' . __('Pictures/ create thumbnails') . '</a></li>';
+		echo '<li' . $page == 'user_notes' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=user_notes">' . __('Notes') . '</a></li>';
+		echo '<li' . $page == 'check' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=check">' . __('Family tree data check') . '</a></li>';
+		echo '<li' . $page == 'check' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=view_latest_changes">' . __('View latest changes') . '</a></li>';
+		echo '<li' . $page == 'cal_date' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=cal_date">' . __('Calculated birth date') . '</a></li>';
+		echo '<li' . $page == 'export' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=export">' . __('Gedcom export') . '</a></li>';
+		echo '<li' . $page == 'backup' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=backup">' . __('Database backup') . '</a></li>';
+		echo '<li' . $page == 'statistics' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=statistics">' . __('Statistics') . '</a></li>';
 	}
 
 	echo '</ul>';
@@ -1185,65 +1006,24 @@ if ($show_menu_left == true and $page != 'login') {
 
 	// POP-UP MENU editor
 	$select_top = '';
-	if ($page == 'editor') {
+	if (in_array($page, ['editor', 'edit_sources', 'edit_repositories', 'edit_addresses', 'edit_places'])) {
 		$select_top = ' id="current_top"';
 	}
-	if ($page == 'edit_sources') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'edit_repositories') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'edit_addresses') {
-		$select_top = ' id="current_top"';
-	}
-	if ($page == 'edit_places') {
-		$select_top = ' id="current_top"';
-	}
+
 	echo '<li>';
 	echo '<div class="' . $rtlmarker . 'sddm">';
 	echo '<a href="' . $path_tmp . 'page=editor"';
 	echo ' onmouseover="mopen(event,\'m3xa\',\'?\',\'?\')"';
 	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Editor').'</a>';
 	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/admin/images/edit.jpg" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Editor') . '</a>';
-
-
 	echo '<div id="m3xa" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
 
-	$menu_item = '';
-	if ($page == 'editor') {
-		$menu_item = ' id="current"';
-	}
-	echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=editor">' . __('Persons and families') . '</a>';
-
-	// *** Sources ***
-	$menu_item = '';
-	if ($page == 'edit_sources') {
-		$menu_item = ' id="current"';
-	}
-	echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=edit_sources">' . __('Sources') . "</a>";
-
-	// *** Repositories ***
-	$menu_item = '';
-	if ($page == 'edit_repositories') {
-		$menu_item = ' id="current"';
-	}
-	echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=edit_repositories">' . __('Repositories') . "</a>";
-
-	// *** Addresses ***
-	$menu_item = '';
-	if ($page == 'edit_addresses') {
-		$menu_item = ' id="current"';
-	}
-	echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=edit_addresses">' . __('Shared addresses') . "</a>";
-
-	// *** Place editor ***
-	$menu_item = '';
-	if ($page == 'edit_places') {
-		$menu_item = ' id="current"';
-	}
-	echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=edit_places">' . __('Rename places') . "</a>";
+	echo '<li' . $page == 'editor' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=editor">' . __('Persons and families') . '</a></li>';
+	echo '<li' . $page == 'edit_sources' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=edit_sources">' . __('Sources') . "</a></li>";
+	echo '<li' . $page == 'edit_repositories' ?  ' id="current"' : '' . '><a href="' . $path_tmp . 'page=edit_repositories">' . __('Repositories') . "</a></li>";
+	echo '<li' . $page == 'edit_addresses' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=edit_addresses">' . __('Shared addresses') . "</a></li>";
+	echo '<li' . $page == 'edit_places' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=edit_places">' . __('Rename places') . "</a></li>";
 
 	echo '</ul>';
 	echo '</div>';
@@ -1252,75 +1032,30 @@ if ($show_menu_left == true and $page != 'login') {
 
 	// POP-UP MENU for users and usergroups
 	if ($group_administrator == 'j') {
+
 		$select_top = '';
-		if ($page == 'users') {
+		if (in_array($page, ['users', 'groups', 'log'])) {
 			$select_top = ' id="current_top"';
 		}
-		if ($page == 'groups') {
-			$select_top = ' id="current_top"';
-		}
-		if ($page == 'log') {
-			$select_top = ' id="current_top"';
-		}
+
 		echo '<li>';
 		echo '<div class="' . $rtlmarker . 'sddm">';
 		echo '<a href="' . $path_tmp . 'page=users"';
 		echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
-		//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Users').'</a>';
 		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="/theme/admin/images/person_edit.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Users') . '</a>';
 
 		echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';
 
-		$menu_item = '';
-		if ($page == 'users') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=users">' . __('Users') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'groups') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=groups">' . __('Groups') . '</a>';
-
-		$menu_item = '';
-		if ($page == 'log') {
-			$menu_item = ' id="current"';
-		}
-		echo '<li' . $menu_item . '><a href="' . $path_tmp . 'page=log">' . __('Log') . '</a>';
+		echo '<li' . $page == 'users' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=users">' . __('Users') . '</a>';
+		echo '<li' . $page == 'groups' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=groups">' . __('Groups') . '</a>';
+		echo '<li' . $page == 'log' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=log">' . __('Log') . '</a>';
 
 		echo '</ul>';
 		echo '</div>';
 		echo '</div>';
 		echo '</li>';
 	}
-
-	// POP-UP MENU for logs
-	/*
-			if ($group_administrator=='j'){
-				$select_top='';
-				if ($page=='log'){ $select_top=' id="current_top"'; }
-				if ($page=='statistics'){ $select_top=' id="current_top"'; }
-				echo '<li>';
-				echo '<div class="'.$rtlmarker.'sddm">';
-					echo '<a href="'.$path_tmp.'page=log"';
-					echo ' onmouseover="mopen(event,\'m6x\',\'?\',\'?\')"';
-					echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Logs').'</a>';
-					echo '<div id="m6x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-						echo '<ul class="humo_menu_item2">';
-
-							$menu_item=''; if ($page=='log'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=log">'.__('Log').'</a>';
-
-							$menu_item=''; if ($page=='statistics'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=statistics">'.__('Statistics').'</a>';
-						echo '</ul>';
-					echo '</div>';
-				echo '</div>';
-				echo '</li>';
-			}
-			*/
 }
 
 if ($popup == false) {
@@ -1344,10 +1079,10 @@ if ($popup == false) {
 	echo '<ul class="humo_menu_item2">';
 	for ($i = 0; $i < count($language_file); $i++) {
 		// *** Get language name ***
-		//if ($language_file[$i] != $selected_language) {
 		if ($language_file[$i] != $selected_language and !in_array($language_file[$i], $hide_languages_array)) {
+			
 			include __DIR__ . '/../languages/' . $language_file[$i] . '/language_data.php';
-			//echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
+
 			echo '<li><a href="' . $path_tmp . 'language_choice=' . $language_file[$i] . '">';
 
 			echo '<img src="/languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
@@ -1485,10 +1220,8 @@ elseif ($group_administrator != 'j' and $group_edit_trees) {
 else {
 	include_once __DIR__ . '/include/index_inc.php';
 }
+?>
+</div>
+	</body>
+</html>
 
-echo '</div>';
-
-if (!CMS_SPECIFIC) { ?>
-		</body>
-	</html>
-<?php }
