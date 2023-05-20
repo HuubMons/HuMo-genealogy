@@ -80,7 +80,7 @@ function tablerow($nr, $lastcol = false)
 	//	$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;tree_id='.$tree_id;
 	//}
 	//else{
-	$path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id;
+	$path_tmp = '/list.php?tree_id=' . $tree_id;
 	//}
 ?>
 	<td class="namelst">

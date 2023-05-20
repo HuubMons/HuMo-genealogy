@@ -7,11 +7,6 @@ require __DIR__ . '/../config/bootstrap.php';
 
 $page = 'index';
 
-// *** Globals needed for Joomla ***
-global $menu_admin, $tree_id, $language_file, $page, $language_tree, $data2Db;
-global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id;
-
-
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
 
 include_once __DIR__ . '/../include/safe.php'; // Variables
@@ -321,7 +316,6 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 			$_SESSION['user_name_admin'] = $auth->user_name;
 			$_SESSION['user_id_admin'] = $auth->user_id;
 			$_SESSION['group_id_admin'] = $auth->user_group_id;
-
 		}
 	} else {
 		$valid_user = false;
@@ -938,7 +932,6 @@ if ($popup == false) {
 }
 
 if ($show_menu_left == true and $page != 'login') {
-
 	// POP-UP MENU
 	if ($group_administrator == 'j') {
 		$select_top = '';

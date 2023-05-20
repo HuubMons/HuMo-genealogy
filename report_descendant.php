@@ -490,11 +490,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:'.$boxwidth.'px; text-align:left;">';
 
 		echo '<div style="display:inline;">';
-		if(CMS_SPECIFIC=='Joomla') {
-			echo '<form method="POST" name="desc_form" action="index.php?option=com_humo-gen&task=family&chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
-		}	else {
-			echo '<form method="POST" name="desc_form" action="'.CMS_ROOTPATH.'family.php?chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
-		}
+		echo '<form method="POST" name="desc_form" action="/family.php?chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
+		
 		echo '<input type="hidden" name="id" value="'.$keepfamily_id.'">';
 		echo '<input type="hidden" name="chosengen" value="'.$chosengen.'">';
 		echo '<input type="hidden" name="main_person" value="'.$keepmain_person.'">';
@@ -639,7 +636,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 				$("#slider").on("slidestop", function(event, ui) {
 					endPos = ui.value;
 					if (startPos != endPos) {
-						window.location.href = "family.php?tree_id='.$tree_id.'&id='.$keepfamily_id.'&main_person='.$keepmain_person.
+						window.location.href = "/family.php?tree_id='.$tree_id.'&id='.$keepfamily_id.'&main_person='.$keepmain_person.
 							'&screen_mode=STAR&chosensize="+((endPos+1)*5)+"&chosengen='.$chosengen.
 							'&direction='.$direction.'&dnachart='.$dna.'&screen_mode=STARSIZE'.$dna_params.'";
 					}

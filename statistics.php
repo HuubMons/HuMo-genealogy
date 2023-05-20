@@ -96,12 +96,7 @@ echo '<div id="statistics_screen">';
 // *** Show tree statistics ***
 if ($menu_tab == 'stats_tree') {
 
-	if (CMS_SPECIFIC == "Joomla") {
-		$table1_width = "100%";
-	} else {
-		// $table1_width="800";
-		$table1_width = "80%";
-	}
+	$table1_width = "80%";
 	//echo '<br><table width='.$table1_width.' class="humo" align="center">';
 	echo '<br><table class="humo small" align="center">';
 
@@ -149,14 +144,10 @@ if ($menu_tab == 'stats_tree') {
 		$name = $person_cls->person_name($record);
 		$woman = $name["standard_name"];
 
-		if (CMS_SPECIFIC == "Joomla") {
-			echo '<td align="center"><a href="index.php?option=com_humo-gen&task=family&id=' . $fam_gedcomnumber . '"><i><b>' . $man . __(' and ') . $woman . '</b></i> </a></td></tr>';
-		} else {
-			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+		// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
 			//$url=$person_cls->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
 			$url = $person_cls->person_url2($tree_id, $fam_gedcomnumber, '', '');
 			echo '<td align="center"><a href="' . $url . '"><i><b>' . $man . __(' and ') . $woman . '</b></i> </a></td></tr>';
-		}
 	} else {
 		echo '<td></td></tr>';
 	}
@@ -274,12 +265,7 @@ if ($menu_tab == 'stats_persons') {
 		return $line;
 	}
 
-	if (CMS_SPECIFIC == "Joomla") {
-		$table2_width = "100%";
-	} else {
-		// $table2_width="900";
-		$table2_width = "80%";
-	}
+	$table2_width = "80%";
 	echo '<br><table width=' . $table2_width . ' class="humo" align="center">';
 
 	echo '<tr class=table_headline><th width="20%">' . __('Item') . '</th><th colspan="2" width="40%">' . __('Male') . '</th><th colspan="2" width="40%">' . __('Female') . '</th></tr>';
@@ -669,11 +655,7 @@ if ($menu_tab == 'stats_surnames') {
 		// $nr is the array number of the name set created in function last_names
 		// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
 		global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id;
-		if (CMS_SPECIFIC == 'Joomla') {
-			$path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;tree_id=' . $tree_id;
-		} else {
-			$path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id;
-		}
+		$path_tmp = '/list.php?tree_id=' . $tree_id;
 		echo '<td class="namelst">';
 		if (isset($freq_last_names[$nr])) {
 			$top_pers_lastname = '';
@@ -746,7 +728,7 @@ if ($menu_tab == 'stats_surnames') {
 		$maxnames = $_POST['freqsurnames'];
 	}
 	//echo ' <form method="POST" action="frequent_surnames.php" style="display:inline;" id="frqnames">';
-	echo ' <form method="POST" action="' . CMS_ROOTPATH . 'statistics.php?menu_tab=stats_surnames&amp;tree_id=' . $tree_id . '" style="display:inline;" id="frqnames">';
+	echo ' <form method="POST" action="/statistics.php?menu_tab=stats_surnames&amp;tree_id=' . $tree_id . '" style="display:inline;" id="frqnames">';
 
 	echo __('Number of displayed surnames');
 	echo ': <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
@@ -784,12 +766,7 @@ if ($menu_tab == 'stats_surnames') {
 	echo '</form>';
 	echo '</div>';
 
-	if (CMS_SPECIFIC == "Joomla") {
-		$table2_width = "100%";
-	} else {
-		// $table2_width="900";
-		$table2_width = "90%";
-	}
+	$table2_width = "90%";
 
 	echo '<br><table width=' . $table2_width . ' class="humo nametbl" align="center">';
 
@@ -893,11 +870,7 @@ if ($menu_tab == 'stats_firstnames') {
 			}
 		);
 
-		if (CMS_SPECIFIC == 'Joomla') {
-			$path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;tree_id=' . $tree_id;
-		} else {
-			$path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id;
-		}
+		$path_tmp = '/list.php?tree_id=' . $tree_id;
 
 		count($m_first_names) < count($f_first_names) ? $most = count($f_first_names) : $most = count($m_first_names);
 		if ($most > $max) $most = $max;
@@ -962,7 +935,7 @@ if ($menu_tab == 'stats_firstnames') {
 		$maxnames = $_POST['freqfirstnames'];
 	}
 	//echo ' <form method="POST" action="frequent_firstnames.php" style="display:inline;" id="frqfirnames">';
-	echo ' <form method="POST" action="' . CMS_ROOTPATH . 'statistics.php?menu_tab=stats_firstnames&amp;tree_id=' . $tree_id . '" style="display:inline;" id="frqfirnames">';
+	echo ' <form method="POST" action="/statistics.php?menu_tab=stats_firstnames&amp;tree_id=' . $tree_id . '" style="display:inline;" id="frqfirnames">';
 	echo __('Number of displayed first names');
 	echo ': <select size=1 name="freqfirstnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
 	$selected = '';
@@ -991,12 +964,7 @@ if ($menu_tab == 'stats_firstnames') {
 	echo '</div>';
 
 
-	if (CMS_SPECIFIC == "Joomla") {
-		$table2_width = "100%";
-	} else {
-		// $table2_width="1000";
-		$table2_width = "90%";
-	}
+	$table2_width = "90%";
 
 	echo '<br><table width=' . $table2_width . ' class="humo nametbl" align="center">';
 

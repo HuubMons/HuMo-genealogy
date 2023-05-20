@@ -28,7 +28,7 @@ if (!$bot_visit) {
 	$num_rows = $tree_search_result2->rowCount();
 	if ($num_rows > 1) {
 
-		echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';
+		echo ' <form method="POST" action="/tree_index.php" style="display : inline;" id="top_tree_select">';
 		echo __('Family tree') . ': ';
 		//echo '<select size="1" name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
 		echo '<select size="1" name="tree_id" onChange="this.form.submit();" style="width: 150px; height:20px;">';
@@ -95,9 +95,6 @@ if (!$bot_visit) {
 	echo "</form>";
 }
 
-//TEST Line to see all cookies...
-//print_r($_COOKIE);
-
 // *** Favourite list for family pages ***
 if (!$bot_visit) {
 
@@ -105,16 +102,7 @@ if (!$bot_visit) {
 	// *** Use session if session is available ***
 	if (isset($_SESSION["save_favorites"]) and $_SESSION["save_favorites"]) {
 		$favorites_array = $_SESSION["save_favorites"];
-	} else {
-		// *** Get favourites from cookie (only if session is empty) ***
-		if (isset($_COOKIE['humo_favorite'])) {
-			foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-				$favorites_array[] = $value;
-			}
-			// *** Save cookie array in session ***
-			$_SESSION["save_favorites"] = $favorites_array;
-		}
-	}
+	} 
 
 	// *** Add new favorite to list of favourites ***
 	if (isset($_POST['favorite'])) {
@@ -126,7 +114,6 @@ if (!$bot_visit) {
 		$favorite_array2 = explode("|", $_POST['favorite']);
 		// *** Combine tree prefix and family number as unique array id, for example: humo_F4 ***
 		$i = $favorite_array2['2'] . $favorite_array2['1'];
-		setcookie("humo_favorite[$i]", $_POST['favorite'], time() + 60 * 60 * 24 * 365);
 	}
 
 	// *** Remove favourite from favorite list ***
@@ -141,19 +128,10 @@ if (!$bot_visit) {
 			}
 			$_SESSION["save_favorites"] = $favorites_array;
 		}
-
-		// *** Remove cookie ***
-		if (isset($_COOKIE['humo_favorite'])) {
-			foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-				if ($value == $_POST['favorite_remove']) {
-					setcookie("humo_favorite[$name]", "", time() - 3600);
-				}
-			}
-		}
 	}
 
 	// *** Show favorites in selection list ***
-	echo ' <form method="POST" action="family.php' . '" style="display : inline;" id="top_favorites_select">';
+	echo ' <form method="POST" action="/family.php' . '" style="display : inline;" id="top_favorites_select">';
 	echo '<img src="theme/images/favorite_blue.png"> ';
 	echo '<select size=1 name="humo_favorite_id" onChange="this.form.submit();" style="width: 115px; height:20px;">';
 	echo '<option value="">' . __('Favourites list:') . '</option>';
@@ -180,51 +158,16 @@ if (!$bot_visit) {
 	echo '</form>';
 }
 
-// *** Show "A+ A- Reset" ***
-/*
-	echo '<span id="top_font_size">';
-		echo '   <a href="javascript:decreaseFontSize(0);" title="decrease font size">'.$dirmark1.'A- </a>';
-		echo ' <a href="javascript:increaseFontSize(0);" title="increase font size">A+</a>';
-
-		$navigator_user_agent = ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) ? strtolower( $_SERVER['HTTP_USER_AGENT'] ) : '';
-		if ((stristr($navigator_user_agent, "chrome")) OR (stristr($navigator_user_agent, "safari"))) {
-			// Chrome and Safari: reset is not working good... So skip this code.
-		}
-		else {  // all other browsers
-			echo ' <a href="javascript:delCookie();" title="reset font size">Reset</a>';
-		}
-	echo '</span>';
-	*/
-
 echo '</div>'; // End of Top
 
 // *** Menu ***
 echo '<div id="humo_menu">';
-
 echo '<ul class="humo_menu_item">';
-// *** You can use this link, for an extra link to another main homepage ***
-//echo '<li><a href="'.$humo_option["homepage"].'">'.__('Homepage')."</a></li>";
-
-// *** Home ***
-$select_menu = '';
-if ($menu_choice == 'main_index') {
-	$select_menu = ' id="current"';
-}
-
-echo '<li' . $select_menu . ' class="mobile_hidden"><a href="index.php?tree_id=' . $tree_id . '"><img src="theme/images/menu_mobile.png" width="18" class="mobile_icon"> ' . __('Home') . "</a></li>\n";
+echo '<li' . ($menu_choice == 'main_index' ? ' id="current"' : '') . ' class="mobile_hidden"><a href="index.php?tree_id=' . $tree_id . '"><img src="theme/images/menu_mobile.png" width="18" class="mobile_icon"> ' . __('Home') . "</a></li>";
 
 // *** Mobile menu ***
 $select_top = '';
-if ($menu_choice == 'help') {
-	$select_top = ' id="current_top"';
-}
-if ($menu_choice == 'info') {
-	$select_top = ' id="current_top"';
-}
-if ($menu_choice == 'credits') {
-	$select_top = ' id="current_top"';
-}
-if ($menu_choice == 'info_cookies') {
+if (in_array($menu_choice, ['help', 'info', 'info_cookies'])) {
 	$select_top = ' id="current_top"';
 }
 
@@ -236,70 +179,32 @@ echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/menu_
 echo '<div id="m0x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 echo '<ul class="humo_menu_item2">';
 
-echo '<li' . $select_menu . '><a href="index.php?tree_id=' . $tree_id . '">' . __('Home') . "</a></li>\n";
+echo '<li' . $select_menu . '><a href="index.php?tree_id=' . $tree_id . '">' . __('Home') . "</a></li>";
 
-// *** Login - Logoff ***
 if ($user['group_menu_login'] == 'j') {
 	if (!$user["user_name"]) {
-		$select_menu = '';
-		if ($menu_choice == 'login') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . '><a href="login.php">' . __('Login') . "</a></li>\n";
+		echo '<li' . ($menu_choice == 'login' ? ' id="current"' : '') . '><a href="login.php">' . __('Login') . "</a></li>";
 	} else {
 
-		// *** Link to administration ***
-		//if  ($user['group_editor']=='j' OR $user['group_admin']=='j') {
 		if ($user['group_edit_trees'] or $user['group_admin'] == 'j') {
-			$select_menu = '';
-			echo '<li' . $select_menu . '><a href="admin/index.php" target="_blank">' . __('Admin') . '</a></li>';
+			echo '<li><a href="admin/index.php" target="_blank">' . __('Admin') . '</a></li>';
 		}
-		$select_menu = '';
-		echo '<li' . $select_menu . '><a href="index.php?log_off=1">' . __('Logoff') . '</a></li>';
+
+		echo '<li><a href="index.php?log_off=1">' . __('Logoff') . '</a></li>';
 	}
 }
 
-// *** Link to registration form ***
 if (!$user["user_name"] and $humo_option["visitor_registration"] == 'y') {
-	$select_menu = '';
-	if ($menu_choice == 'register') {
-		$select_menu = ' id="current"';
-	}
-	echo '<li' . $select_menu . '><a href="register.php">' . __('Register') . '</a></li>';
+	echo '<li' . ($menu_choice == 'register' ? ' id="current"' : '') . '><a href="register.php">' . __('Register') . '</a></li>';
 }
 
-// *** Help items ***
-$select_menu = '';
-if ($menu_choice == 'help') {
-	$select_menu = ' id="current"';
-}
-echo '<li' . $select_menu . '><a href="help.php">' . __('Help') . '</a></li>';
-
-// *** Info ***
-$select_menu = '';
-if ($menu_choice == 'info') {
-	$select_menu = ' id="current"';
-}
-echo '<li' . $select_menu . '><a href="info.php">';
+echo '<li' . ($menu_choice == 'help' ? ' id="current"' : '') . '><a href="help.php">' . __('Help') . '</a></li>';
+echo '<li' . ($menu_choice == 'info' ? ' id="current"' : '') . '><a href="info.php">';
 printf(__('%s info'), 'HuMo-genealogy');
 echo '</a></li>';
 
-$select_menu = '';
-if ($menu_choice == 'credits') {
-	$select_menu = ' id="current"';
-}
-
-echo '<li' . $select_menu . '><a href="credits.php">';
-printf(__('%s credits'), 'HuMo-genealogy');
-echo '</a></li>';
-
 if (!$bot_visit) {
-	$select_menu = '';
-	if ($menu_choice == 'info_cookies') {
-		$select_menu = ' id="current"';
-	}
-	echo '<li' . $select_menu . '><a href="cookies.php">';
-	//echo '<li'.$select_menu.' class="mobile_visible"><a href="'.$path_tmp.'">';
+	echo '<li' . ($menu_choice == 'info_cookies' ? ' id="current"' : '') . '><a href="cookies.php">';
 	printf(__('%s cookies'), 'HuMo-genealogy');
 	echo '</a></li>';
 }
@@ -315,11 +220,7 @@ echo '</li>';
 if ($user['group_menu_cms'] == 'y') {
 	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
 	if ($cms_qry->rowCount() > 0) {
-		$select_menu = '';
-		if ($menu_choice == 'cms_pages') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . '><a href="cms_pages.php"><img src="theme/images/reports.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Information') . "</a></li>\n";
+		echo '<li' . ($menu_choice == 'cms_pages' ? ' id="current"' : '') . '><a href="cms_pages.php"><img src="theme/images/reports.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Information') . "</a></li>";
 	}
 }
 
@@ -330,37 +231,11 @@ if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 	// *** Menu genealogy (for CMS pages) ***
 	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
 	if ($cms_qry->rowCount() > 0) {
-		$select_menu = '';
-		if ($menu_choice == 'cms_pages') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . '><a href="cms_pages.php?tree_id=' . $tree_id . '">' . __('Information') . "</a></li>\n";
+		echo '<li' . ($menu_choice == 'cms_pages' ? ' id="current"' : '') . '><a href="cms_pages.php?tree_id=' . $tree_id . '">' . __('Information') . "</a></li>";
 	}
 } else {
 	$select_top = '';
-	if ($menu_choice == 'tree_index') {
-		$select_top = ' id="current_top"';
-	}
-	//if ($menu_choice=='cms_pages'){ $select_top=' id="current_top"'; }
-	if ($menu_choice == 'persons') {
-		$select_top = ' id="current_top"';
-	}
-	if ($menu_choice == 'names') {
-		$select_top = ' id="current_top"';
-	}
-	if ($menu_choice == 'sources') {
-		$select_top = ' id="current_top"';
-	}
-	if ($menu_choice == 'places') {
-		$select_top = ' id="current_top"';
-	}
-	if ($menu_choice == 'places_families') {
-		$select_top = ' id="current_top"';
-	}
-	if ($menu_choice == 'pictures') {
-		$select_top = ' id="current_top"';
-	}
-	if ($menu_choice == 'addresses') {
+	if (in_array($menu_choice, ['tree_index', 'persons', 'names', 'sources', 'places', 'places_families', 'pictures', 'addresses'])) {
 		$select_top = ' id="current_top"';
 	}
 
@@ -372,78 +247,34 @@ if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 	echo '<div id="mft" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
 
-	$select_menu = '';
-	if ($menu_choice == 'tree_index') {
-		$select_menu = ' id="current"';
-	}
-	echo '<li' . $select_menu . '><a href="tree_index.php?tree_id=' . $tree_id . '">' . __('Family tree index') . '</a></li>';
-
-	// *** Persons ***
+	echo '<li' . ($menu_choice == 'tree_index' ? ' id="current"' : '') . '><a href="tree_index.php?tree_id=' . $tree_id . '">' . __('Family tree index') . '</a></li>';
 	if ($user['group_menu_persons'] == "j") {
-		$select_menu = '';
-		if ($menu_choice == 'persons') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . '><a href="list.php?tree_id=' . $tree_id . '&amp;reset=1">' . __('Persons') . '</a></li>';
+		echo '<li' . ($menu_choice == 'persons' ? ' id="current"' : '') . '><a href="list.php?tree_id=' . $tree_id . '&amp;reset=1">' . __('Persons') . '</a></li>';
 	}
-	// *** Names ***
 	if ($user['group_menu_names'] == "j") {
-		$select_menu = '';
-		if ($menu_choice == 'names') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . '><a href="list_names.php?tree_id=' . $tree_id . '">' . __('Names') . "</a></li>\n";
+		echo '<li' . ($menu_choice == 'names' ? ' id="current"' : '') . '><a href="list_names.php?tree_id=' . $tree_id . '">' . __('Names') . "</a></li>";
 	}
-
 	// *** Places ***
 	if ($user['group_menu_places'] == "j") {
-		$select_menu = '';
-		if ($menu_choice == 'places') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . '><a href="list.php?tree_id=' . $tree_id . '&amp;index_list=places&amp;reset=1">' . __('Places (by persons)') . "</a></li>\n";
-
-		$select_menu = '';
-		if ($menu_choice == 'places_families') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . '><a href="list_places_families.php?tree_id=' . $tree_id . '&amp;index_list=places&amp;reset=1">' . __('Places (by families)') . "</a></li>\n";
+		echo '<li' . ($menu_choice == 'places' ? ' id="current"' : '') . '><a href="list.php?tree_id=' . $tree_id . '&amp;index_list=places&amp;reset=1">' . __('Places (by persons)') . "</a></li>";
+		echo '<li' . ($menu_choice == 'places_families' ? ' id="current"' : '') . '><a href="list_places_families.php?tree_id=' . $tree_id . '&amp;index_list=places&amp;reset=1">' . __('Places (by families)') . "</a></li>";
 	}
-
 	if ($user['group_photobook'] == 'j') {
-		$select_menu = '';
-		if ($menu_choice == 'pictures') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . '><a href="photoalbum.php?tree_id=' . $tree_id . '">' . __('Photobook') . "</a></li>\n";
+		echo '<li' . ($menu_choice == 'pictures' ? ' id="current"' : '') . '><a href="photoalbum.php?tree_id=' . $tree_id . '">' . __('Photobook') . "</a></li>";
 	}
-
-	//if ($user['group_sources']=='j'){
 	if ($user['group_sources'] == 'j' and $tree_prefix_quoted != '' and $tree_prefix_quoted != 'EMPTY') {
-		// *** Check if there are sources in the database ***
-		//$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'AND source_shared='1'");
 		$source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
 		@$sourceDb = $source_qry->rowCount();
 		if ($sourceDb > 0) {
-			$select_menu = '';
-			if ($menu_choice == 'sources') {
-				$select_menu = ' id="current"';
-			}
-			echo '<li' . $select_menu . '><a href="sources.php?tree_id=' . $tree_id . '">' . __('Sources') . "</a></li>\n";
+			echo '<li' . ($menu_choice == 'sources' ? ' id="current"' : '') . '><a href="sources.php?tree_id=' . $tree_id . '">' . __('Sources') . "</a></li>";
 		}
 	}
-
 	if ($user['group_addresses'] == 'j' and $tree_prefix_quoted != '' and $tree_prefix_quoted != 'EMPTY') {
-		// *** Check for addresses in the database ***
 		$address_qry = $dbh->query("SELECT * FROM humo_addresses
 							WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'");
 		@$addressDb = $address_qry->rowCount();
 		if ($addressDb > 0) {
-			$select_menu = '';
-			if ($menu_choice == 'addresses') {
-				$select_menu = ' id="current"';
-			}
-			echo '<li' . $select_menu . '><a href="addresses.php?tree_id=' . $tree_id . '">' . __('Addresses') . "</a></li>\n";
+			echo '<li' . ($menu_choice == 'addresses' ? ' id="current"' : '') . '><a href="addresses.php?tree_id=' . $tree_id . '">' . __('Addresses') . "</a></li>";
 		}
 	}
 
@@ -473,22 +304,7 @@ if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 		echo '<div class="' . $rtlmarker . 'sddm">';
 
 		$select_top = '';
-		if ($menu_choice == 'birthday') {
-			$select_top = ' id="current_top"';
-		}
-		if ($menu_choice == 'statistics') {
-			$select_top = ' id="current_top"';
-		}
-		if ($menu_choice == 'relations') {
-			$select_top = ' id="current_top"';
-		}
-		if ($menu_choice == 'maps') {
-			$select_top = ' id="current_top"';
-		}
-		if ($menu_choice == 'mailform') {
-			$select_top = ' id="current_top"';
-		}
-		if ($menu_choice == 'latest_changes') {
+		if (in_array($menu_choice, ['birthday', 'statistics', 'relations', 'maps', 'mailform', 'latest_changes'])) {
 			$select_top = ' id="current_top"';
 		}
 
@@ -499,56 +315,30 @@ if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 		echo '<ul class="humo_menu_item2">';
 
 		if ($user["group_birthday_list"] == 'j') {
-			$select_menu = '';
-			if ($menu_choice == 'birthday') {
-				$select_menu = ' id="current"';
-			}
-			echo '<li' . $select_menu . '><a href="birthday_list.php">' . __('Anniversary list') . '</a></li>';
+			echo '<li' . ($menu_choice == 'birthday' ? ' id="current"' : '') . '><a href="birthday_list.php">' . __('Anniversary list') . '</a></li>';
 		}
 		if ($user["group_showstatistics"] == 'j') {
-			$select_menu = '';
-			if ($menu_choice == 'statistics') {
-				$select_menu = ' id="current"';
-			}
-			echo '<li' . $select_menu . '><a href="statistics.php">' . __('Statistics') . '</a></li>';
+			echo '<li' . ($menu_choice == 'statistics' ? ' id="current"' : '') . '><a href="statistics.php">' . __('Statistics') . '</a></li>';
 		}
 		if ($user["group_relcalc"] == 'j') {
-			$select_menu = '';
-			if ($menu_choice == 'relations') {
-				$select_menu = ' id="current"';
-			}
-			echo '<li' . $select_menu . '><a href="relations.php">' . __('Relationship calculator') . "</a></li>\n";
+			echo '<li' . ($menu_choice == 'relations' ? ' id="current"' : '') . '><a href="relations.php">' . __('Relationship calculator') . "</a></li>";
 		}
 		if ($user["group_googlemaps"] == 'j') {
 			//	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
 			//		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0) {  // this tree has been indexed
 			if (!$bot_visit and $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) {
-				$select_menu = '';
-				if ($menu_choice == 'maps') {
-					$select_menu = ' id="current"';
-				}
-				echo '<li' . $select_menu . '><a href="maps.php">' . __('World map') . "</a></li>\n";
+				echo '<li' . ($menu_choice == 'maps' ? ' id="current"' : '') . '><a href="maps.php">' . __('World map') . "</a></li>";
 			}
 		}
 		if ($user["group_contact"] == 'j') {
-			// *** Show link to contact form ***
 			if (@$dataDb->tree_owner) {
 				if ($dataDb->tree_email) {
-					$select_menu = '';
-					if ($menu_choice == 'mailform') {
-						$select_menu = ' id="current"';
-					}
-					echo '<li' . $select_menu . '><a href="mailform.php">' . __('Contact') . "</a></li>\n";
+					echo '<li' . ($menu_choice == 'mailform' ? ' id="current"' : '') . '><a href="mailform.php">' . __('Contact') . "</a></li>";
 				}
 			}
 		}
 		if ($user["group_latestchanges"] == 'j') {
-			// *** Latest changes ***
-			$select_menu = '';
-			if ($menu_choice == 'latest_changes') {
-				$select_menu = ' id="current"';
-			}
-			echo '<li' . $select_menu . '><a href="latest_changes.php">' . __('Latest changes') . '</a></li>';
+			echo '<li' . ($menu_choice == 'latest_changes' ? ' id="current"' : '') . '><a href="latest_changes.php">' . __('Latest changes') . '</a></li>';
 		}
 		echo '</ul>';
 		echo '</div>';
@@ -559,47 +349,25 @@ if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 } // *** End of bot check
 
 $select_top = '';
-if ($menu_choice == 'help') {
+if (in_array($menu_choice, ['help', 'info', 'info_cookies'])) {
 	$select_top = ' id="current_top"';
 }
-if ($menu_choice == 'info') {
-	$select_top = ' id="current_top"';
-}
-if ($menu_choice == 'credits') {
-	$select_top = ' id="current_top"';
-}
-if ($menu_choice == 'info_cookies') {
-	$select_top = ' id="current_top"';
-}
+
 echo '<li class="mobile_hidden">';
 echo '<div class="' . $rtlmarker . 'sddm">';
-
 echo '<a href="help.php"';
 echo ' onmouseover="mopen(event,\'m2x\',\'?\',\'?\')"';
 echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/help.png" width="15"> ' . __('Help') . '</a>';
 
 echo '<div id="m2x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 echo '<ul class="humo_menu_item2">';
-$select_menu = '';
-if ($menu_choice == 'help') {
-	$select_menu = ' id="current"';
-}
-echo '<li' . $select_menu . '><a href="help.php">' . __('Help') . '</a></li>';
 
-$select_menu = '';
-if ($menu_choice == 'info') {
-	$select_menu = ' id="current"';
-}
-echo '<li' . $select_menu . '><a href="info.php">';
+echo '<li' . ($menu_choice == 'help' ? ' id="current"' : '') . '><a href="help.php">' . __('Help') . '</a></li>';
+echo '<li' . ($menu_choice == 'info' ? ' id="current"' : '') . '><a href="info.php">';
 printf(__('%s info'), 'HuMo-genealogy');
 echo '</a></li>';
-
 if (!$bot_visit) {
-	$select_menu = '';
-	if ($menu_choice == 'info_cookies') {
-		$select_menu = ' id="current"';
-	}
-	echo '<li' . $select_menu . '><a href="cookies.php">';
+	echo '<li' . ($menu_choice == 'info_cookies' ? ' id="current"' : '') . '><a href="cookies.php">';
 	printf(__('%s cookies'), 'HuMo-genealogy');
 	echo '</a></li>';
 }
@@ -618,33 +386,19 @@ if ($user['group_menu_login'] == 'j' and !$user["user_name"]) {
 	echo '<div class="' . $rtlmarker . 'sddm">';
 
 	$select_top = '';
-	if ($menu_choice == 'login') {
+	if (in_array($menu_choice, ['login', 'register'])) {
 		$select_top = ' id="current_top"';
 	}
-	if ($menu_choice == 'register') {
-		$select_top = ' id="current_top"';
-	}
+
 	echo '<a href="login.php"';
 	echo ' onmouseover="mopen(event,\'m6x\',\'?\',\'?\')"';
 	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/man.gif" width="15"> ' . __('Login') . '</a>';
 	echo '<div id="m6x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
 
-	//if ($user["group_birthday_list"]=='j'){
-	$select_menu = '';
-	if ($menu_choice == 'login') {
-		$select_menu = ' id="current"';
-	}
-	echo '<li' . $select_menu . '><a href="login.php">' . __('Login') . '</a></li>';
-	//}
-
-	// *** Link to registration form ***
+	echo '<li' . ($menu_choice == 'login' ? ' id="current"' : '') . '><a href="login.php">' . __('Login') . '</a></li>';
 	if (!$user["user_name"] and $humo_option["visitor_registration"] == 'y') {
-		$select_menu = '';
-		if ($menu_choice == 'register') {
-			$select_menu = ' id="current"';
-		}
-		echo '<li' . $select_menu . ' class="mobile_hidden"><a href="register.php">' . __('Register') . '</a></li>';
+		echo '<li' . ($menu_choice == 'register' ? ' id="current"' : '') . ' class="mobile_hidden"><a href="register.php">' . __('Register') . '</a></li>';
 	}
 
 	echo '</ul>';
@@ -670,25 +424,12 @@ if (!$bot_visit) {
 	echo '<div id="m5x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
 
-	//if ($user["group_birthday_list"]=='j'){
-	$select_menu = '';
-	if ($menu_choice == 'user_settings') {
-		$select_menu = ' id="current"';
-	}
-	echo '<li' . $select_menu . '><a href="user_settings.php">' . __('User settings') . '</a></li>';
-	//}
-
-	// *** Link to administration ***
+	echo '<li' . ($menu_choice == 'user_settings' ? ' id="current"' : '') . '><a href="user_settings.php">' . __('User settings') . '</a></li>';
 	if ($user['group_edit_trees'] or $user['group_admin'] == 'j') {
-		$select_menu = '';
-		echo '<li' . $select_menu . '><a href="admin/index.php" target="_blank">' . __('Admin') . '</a></li>';
+		echo '<li><a href="admin/index.php" target="_blank">' . __('Admin') . '</a></li>';
 	}
-
-	// *** Login - Logoff ***
 	if ($user['group_menu_login'] == 'j' and $user["user_name"]) {
-		$select_menu = ''; //if ($menu_choice=='help'){ $select_menu=' id="current"'; }
-		// *** Log off ***
-		echo '<li' . $select_menu . '><a href="index.php?log_off=1">' . __('Logoff');
+		echo '<li><a href="index.php?log_off=1">' . __('Logoff');
 		echo ' <span style="color:#0101DF; font-weight:bold;">[' . ucfirst($_SESSION["user_name"]) . ']</span>';
 		echo '</a></li>';
 	}
@@ -706,10 +447,7 @@ if (!$bot_visit) {
 	echo '<div class="' . $rtlmarker . 'sddm">';
 	echo '<a href="index.php?option=com_humo-gen"';
 	echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
-	$select_top = '';
-
-	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="languages/' . $selected_language . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:18px"></a>';
-
+	echo ' onmouseout="mclosetime()">' . '<img src="languages/' . $selected_language . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:18px"></a>';
 	// *** In gedcom.css special adjustment (width) for m4x! ***
 	echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';

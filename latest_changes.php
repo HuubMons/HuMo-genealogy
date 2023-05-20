@@ -72,11 +72,11 @@ function getLastestChanges(int $tree_id, string $search_name = '')
 function sexeDataToIcone(string $sexe)
 {
 	if ($sexe == "M") {
-		return '<img src="' . CMS_ROOTPATH . 'styles/images/man.gif" alt="man">';
+		return '<img src="/theme/images/man.gif" alt="man">';
 	} elseif ($sexe == "F") {
-		return '<img src="' . CMS_ROOTPATH . 'styles/images/woman.gif" alt="woman">';
+		return '<img src="/theme/images/woman.gif" alt="woman">';
 	} else {
-		return '<img src="' . CMS_ROOTPATH . 'styles/images/unknown.gif" alt="unknown">';
+		return '<img src="/theme/images/unknown.gif" alt="unknown">';
 	}
 }
 
@@ -89,7 +89,7 @@ $latestChanges = getLastestChanges($tree_id, $search_name);
 
 <h2 class="center"><?= __('Recently changed persons and new persons'); ?></h2>
 <div style="text-align: center; margin-bottom: 16px">
-	<form action="<?= CMS_ROOTPATH . 'latest_changes.php'; ?>" method="post">
+	<form action="/latest_changes.php'; ?>" method="post">
 		<input type="text" name="search_name" id="part_of_name" value="<?= safe_text_show($search_name); ?>">
 		<input type="submit" value="<?= __('Search'); ?>">
 	</form>

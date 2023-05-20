@@ -656,11 +656,11 @@ if ($screen_mode != 'ancestor_chart' and $screen_mode != 'ancestor_sheet' and $s
 					$cell = $table->getCell(1, 2);
 
 					if ($person_manDb and $person_manDb->pers_sexe == "M")
-						$cell->addImage('styles/images/man.jpg', null);
+						$cell->addImage('/theme/images/man.jpg', null);
 					elseif ($person_manDb and $person_manDb->pers_sexe == "F")
-						$cell->addImage(CMS_ROOTPATH . 'styles/images/woman.jpg', null);
+						$cell->addImage('/theme/images/woman.jpg', null);
 					else
-						$cell->addImage(CMS_ROOTPATH . 'styles/images/unknown.jpg', null);
+						$cell->addImage('/theme/images/unknown.jpg', null);
 
 					$rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
 					$cell = $table->getCell(1, 3);
@@ -938,7 +938,7 @@ else {  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	// Specific code for ancestor chart:
 
 	if ($screen_mode != "ancestor_sheet" and $screen_mode != "ASPDF" and $hourglass === false) {
-		echo '<script type="text/javascript" src="include/html2canvas/html2canvas.min.js"></script>';
+		echo '<script type="text/javascript" src="/include/html2canvas/html2canvas.min.js"></script>';
 
 		echo '<div style="text-align:center;">';
 		echo '<br><input type="button" id="imgbutton" value="' . __('Get image of chart for printing (allow popup!)') . '" onClick="showimg();">';
@@ -1351,7 +1351,7 @@ else {  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 
 		function data_array($id, $width, $height)
 		{
-			global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $gedcomnumber, $dsign;
+			global $db_functions, $data_array, $gedcomnumber, $dsign;
 
 			if (isset($gedcomnumber[$id]) and $gedcomnumber[$id] != "") {
 				@$personDb = $db_functions->get_person($gedcomnumber[$id]);

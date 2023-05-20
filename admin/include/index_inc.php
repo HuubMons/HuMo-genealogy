@@ -1,4 +1,5 @@
 ﻿<?php
+
 /**
  * Shows Admin index page.
  */
@@ -10,12 +11,7 @@ if (!defined('ADMIN_PAGE')) {
 
 echo '<h1 align=center>' . __('Administration') . '</h1>';
 
-// variable $path_tmp for all urls in this file
-if (CMS_SPECIFIC == 'Joomla') {
-	$path_tmp = 'index.php?option=com_humo-gen&amp;task=admin';
-} else {
-	$path_tmp = "index.php";
-}
+$path_tmp = "index.php";
 
 $result_message = '';
 if (isset($_POST['save_settings_database'])) {
@@ -122,19 +118,23 @@ if (isset($humogen["version"])) {
 	echo '<tr><td class="line_item">';
 	printf(__('%s version'), 'HuMo-genealogy');
 	echo '</td><td class="line_ok">' . $humogen["version"];
-
-	echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=extensions">';
+	echo '</td></tr>';
+	echo '<tr><td class="line_item">';
 	printf(__('%s extensions'), 'HuMo-genealogy');
+	echo '</td><td class="line_ok">';
+	echo '<a href="index.php?page=extensions">';
+	echo __('Extensions');
 	echo '</a></td></tr>';
 }
 
 // *** PHP Version ***
 $version = explode('.', phpversion());
-if ($version[0] > 4) {
+/* if ($version[0] > 4) { // TODO: the php version will be tchecked at install not here it's to late.
 	echo '<tr><td class="line_item">' . __('PHP Version') . '</td><td class="line_ok">' . phpversion() . '</td></tr>';
 } else {
 	echo '<tr><td class="line_item">' . __('PHP Version') . '</td><td class="line_nok">' . phpversion() . ' ' . __('It is recommended to update PHP!') . '</td></tr>';
-}
+} */
+echo '<tr><td class="line_item">' . __('PHP Version') . '</td><td class="line_ok">' . phpversion() . '</td></tr>';
 
 // *** MySQL Version ***
 if (isset($dbh)) {
@@ -143,11 +143,12 @@ if (isset($dbh)) {
 	// as of Jan 2014 mysql_get_server_info still works but once deprecated will give errors, so better so without.
 	$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);
 	$version = explode('.', $mysqlversion);
-	if ($version[0] > 4) {
+	/* if ($version[0] > 4) { // TODO: the mysql version will be tchecked at install not here it's to late and if you use mariadb or postgres this code is false.
 		echo '<tr><td class="line_item">' . __('MySQL Version') . '</td><td class="line_ok">' . $mysqlversion . '</td></tr>';
 	} else {
 		echo '<tr><td class="line_item">' . __('MySQL Version') . '</td><td class="line_nok">' . $mysqlversion . ' ' . __('It is recommended to update MySQL!') . '</td></tr>';
-	}
+	} */
+	echo '<tr><td class="line_item">' . __('MySQL Version') . '</td><td class="line_ok">' . $mysqlversion . '</td></tr>';
 }
 
 // *** Check if database and tables are ok ***
@@ -155,7 +156,7 @@ $install_status = true;
 
 // *** Check database, if needed install local database ***
 echo '<tr><td class="line_item">' . __('Database') . '</td>';
-if (@$database_check) {
+if ($database_check) {
 	echo '<td class="line_ok">' . __('OK');
 	echo ' <font size=-1>(' . __('Database name') . ': ' . DATABASE_NAME . ')</font>';
 } else {
@@ -231,14 +232,12 @@ if (@$database_check) {
 }
 
 if (isset($_POST['install_database'])) {
-	if (isset($database_check) and @$database_check) {
-		//
-	} else {
-		//if (!$database_check){
+	if (!$database_check) {
 		echo '<p><b>' . __('The database has NOT been created!') . '</b>';
 		$install_status = false;
 	}
 }
+
 echo '</td></tr>';
 
 // *** Show button to continue installation (otherwise the tables are not recognised) ***

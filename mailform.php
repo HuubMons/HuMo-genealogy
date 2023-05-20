@@ -16,7 +16,7 @@ if ($humo_option["use_spam_question"] != 'y') {
 if (isset($_POST['send_mail']) and $mail_allowed == true) {
 	$mail_address = $dataDb->tree_email;
 
-	$treetext = show_tree_text($_SESSION['tree_id'], $selected_language);
+	$treetext = $db_tree_text->show_tree_text($_SESSION['tree_id'], $selected_language);
 	$mail_subject = sprintf(__('%s Mail form.'), 'HuMo-genealogy');
 	$mail_subject .= " (" . $treetext['name'] . "): " . $_POST['mail_subject'] . "\n";
 

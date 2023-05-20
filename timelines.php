@@ -452,22 +452,11 @@ echo '<tr><td>';
 	}
 
 	//======== HELP POPUP ========================
-	if(CMS_SPECIFIC=="Joomla") {
-		echo '<div class="fonts '.$rtlmarker.'sddm" style="postion:absolute; top:32; left:7;">';
-		$popwidth="width:700px;";
-	}
-	else {
-		echo '<div class="fonts '.$rtlmarker.'sddm" style="display:inline">';
+	echo '<div class="fonts '.$rtlmarker.'sddm" style="display:inline">';
 		$popwidth="";
-	}
 	echo '&nbsp;&nbsp;&nbsp;<a href="#"';
 	echo ' style="display:inline" ';
-	if(CMS_SPECIFIC=="Joomla") {
-		echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-	}
-	else {
-		echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
-	}
+	echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
 	echo 'onmouseout="mclosetime()">';
 	echo '<strong>'.__('Help').'</strong>';
 	echo '</a>&nbsp;';
@@ -795,20 +784,7 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 
 echo "</table>";
 echo "<br><br><br><br>";
-//echo "</div>";
 
-// the following javascript reads height of table and adds a fake div with this height
-// so that the joomla page will stretch down to allow for the whole table
-if(CMS_SPECIFIC=="Joomla") {
-	echo '<script type="text/javascript">';
-	echo 'var tabheight = document.getElementById("timetable").offsetHeight;';
-	echo 'tabheight += 80;';
-	echo 'document.write(\'<div style="height:\' + tabheight + \'px">&nbsp;</div>\');';
-	echo 'tabheight = 0;';
-	echo '</script>';
-}
-
-// END DISPLAY
 if(file_exists($filenames[0][0])) {
 	fclose($handle);
 }

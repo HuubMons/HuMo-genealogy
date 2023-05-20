@@ -1,6 +1,7 @@
 <?php
-//ini_set('display_errors', '1');
-//error_reporting(E_ALL);  // neergezet door yossi voor debuggen
+/**
+ * TODO: need to build translations (hard stuff here)
+ */
 //=================================================================
 // relations.php - checks relationships between person X and person Y
 //
@@ -74,7 +75,7 @@ include_once __DIR__ . '/include/marriage_cls.php';
 include_once __DIR__ . '/include/language_date.php';
 include_once __DIR__ . '/include/date_place.php';
 
-$fampath = CMS_ROOTPATH."family.php?";
+$fampath = '/family.php?';
 
 function create_rel_array ($gednr)  {
 	// creates array of ancestors of person with GEDCOM nr. $gednr

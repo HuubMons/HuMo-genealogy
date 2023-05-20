@@ -135,16 +135,7 @@ if (!$show_details) {
 	// ******** Button: Show date  ***********
 	// ***************************************
 
-	if (CMS_SPECIFIC == 'Joomla') {
-		$qstr = '';
-		if ($_SERVER['QUERY_STRING'] != '') {
-			$qstr = '?' . $_SERVER['QUERY_STRING'];
-		}
-		echo '<form method="POST" action="report_outline.php' . $qstr . '" style="display : inline;">';
-	} else {
-		//echo '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-		echo '<form method="POST" action="report_outline.php" style="display : inline;">';
-	}
+	echo '<form method="POST" action="/report_outline.php" style="display : inline;">';
 	echo '<input type="hidden" name="id" value="' . $family_id . '">';
 	echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
 	echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
@@ -162,15 +153,7 @@ if (!$show_details) {
 	// ******** Show button: date after or below each other ************
 	// *****************************************************************
 
-	if (CMS_SPECIFIC == 'Joomla') {
-		$qstr = '';
-		if ($_SERVER['QUERY_STRING'] != '') {
-			$qstr = '?' . $_SERVER['QUERY_STRING'];
-		}
-		echo '<form method="POST" action="report_outline.php' . $qstr . '" style="display : inline;">';
-	} else {
-		echo ' <form method="POST" action="report_outline.php" style="display : inline;">';
-	}
+	echo '<form method="POST" action="/report_outline.php" style="display : inline;">';
 	echo '<input type="hidden" name="id" value="' . $family_id . '">';
 	echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
 	echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
@@ -199,22 +182,15 @@ for ($i = 2; $i < 20; $i++) {
 	if ($nr_gen == $nr_generations) {
 		echo ' SELECTED';
 	}
-	if (CMS_SPECIFIC == 'Joomla') {
-		echo ' value="report_outline.php?' . $_SERVER['QUERY_STRING'] . '&amp;nr_generations=' . $nr_gen . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
-	} else {
-		echo ' value="report_outline.php?nr_generations=' . $nr_gen . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
-	}
+	echo ' value="/report_outline.php?nr_generations=' . $nr_gen . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
+	
 }
 echo '<option';
 if ($nr_generations == 50) {
 	echo ' SELECTED';
 }
 
-if (CMS_SPECIFIC == 'Joomla') {
-	echo ' value="report_outline.php?' . $_SERVER['QUERY_STRING'] . '&amp;nr_generations=50&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . 'ALL' . '</option>';
-} else {
-	echo ' value="report_outline.php?nr_generations=50&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
-}
+echo ' value="/report_outline.php?nr_generations=50&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
 echo '</select>';
 echo '</span>';
 

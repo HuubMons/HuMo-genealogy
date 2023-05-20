@@ -64,7 +64,7 @@ while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
 				$db_functions->set_tree_id($tree_id);
 			}
 		}
-		$treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+		$treetext = $db_tree_text->show_tree_text($tree_searchDb->tree_id, $selected_language);
 		echo '<option value="' . $tree_searchDb->tree_prefix . '"' . $selected . '>' . @$treetext['name'] . '</option>';
 		$count++;
 	}
@@ -266,24 +266,14 @@ echo '</div>';
 */
 
 	// HELP POPUP
-	if (CMS_SPECIFIC == "Joomla") {
-		echo '<div class="fonts ' . $rtlmarker . 'sddm" style="z-index:400; position:absolute; top:20px; left:10px;">';
-		$popwidth = "width:700px;";
-	} else {
-		echo '<div class="fonts ' . $rtlmarker . 'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline; float:left;">';
-		$popwidth = "";
-	}
+	echo '<div class="fonts ' . $rtlmarker . 'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline; float:left;">';
 	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"';
 	echo ' style="display:inline" ';
-	if (CMS_SPECIFIC == "Joomla") {
-		echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-	} else {
-		echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
-	}
+	echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
 	echo 'onmouseout="mclosetime()">';
 	echo '<strong>' . __('Help') . '</strong>';
 	echo '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	echo '<div class="sddm_fixed" style="' . $popwidth . ' z-index:400; text-align:' . $alignmarker . '; padding:4px; direction:' . $rtlmarker . '" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+	echo '<div class="sddm_fixed" style="z-index:400; text-align:' . $alignmarker . '; padding:4px; direction:' . $rtlmarker . '" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
 	echo __('<b>Top menu line:</b>
 <ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>
@@ -1027,12 +1017,6 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
 		}
 	}
 
-	//echo '<script type="text/javascript">
-	//	function hide() {
-	//		document.getElementById(\'wait\').style.display = "none";
-	//	}
-	//</script>';
-
 	echo '<link rel="stylesheet" href="include/leaflet/leaflet.css" />';
 	echo '<script src="include/leaflet/leaflet.js"></script>';
 
@@ -1043,11 +1027,6 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
 	echo '<script type="text/javascript">
 		var map = L.map("map").setView([48.85, 2.35], 10);
 		var markers = [';
-
-	//echo 'L.marker([51,5, -0.09]) .bindPopup(\'Test\')';
-
-
-	//include_once(CMS_ROOTPATH."googlemaps/google_initiate.php");
 
 	// *** Add all markers from array ***
 	for ($i = 1; $i < count($location_array); $i++) {
@@ -1068,68 +1047,62 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
 
 	// *** Google Maps ***
 	echo '<div id="map_canvas" style="width:1000px; height:520px"></div>'; // placeholder div for map generated below
+?>
 
-	// function to read multiple values from location search bar and zoom to map location:
-	echo '
-	<script type="text/javascript">
-	function findPlace () {
-		infoWindow.close();
-		var e = document.getElementById("loc_search");
-		var locSearch = e.options[e.selectedIndex].value;
-		if(locSearch != "toptext") {   // if not default text "find location on map"
-			var opt_array = new Array();
-			opt_array = locSearch.split(",",3);
-			map.setZoom(11);
-			var ltln = new google.maps.LatLng(opt_array[1],opt_array[2]);
-			map.setCenter(ltln);
-		}
-	}
-	</script>';
-
+	<?php
 
 	$api_key = '';
 	if (isset($humo_option['google_api_key']) and $humo_option['google_api_key'] != '') {
 		$api_key = '?key=' . $humo_option['google_api_key'] . '&callback=Function.prototype'; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
 	}
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
-	} else {
-		echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
-	}
+
 	$maptype = "ROADMAP";
 	if (isset($humo_option['google_map_type'])) {
 		$maptype = $humo_option['google_map_type'];
 	}
 
-	echo '
+	include_once __DIR__ . '/googlemaps/google_initiate.php';
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
+	} else {
+		echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
+	}
+
+	?>
 	<script type="text/javascript">
 		var map;
+
 		function initialize() {
 			var latlng = new google.maps.LatLng(22, -350);
 			var myOptions = {
 				zoom: 2,
 				center: latlng,
-				mapTypeId: google.maps.MapTypeId.' . $maptype . '
+				mapTypeId: google.maps.MapTypeId. + <?= $maptype; ?>
 			};
 			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 		}
-	</script>';
 
-	echo '<script type="text/javascript">
-		initialize();
-	</script>';
-
-	echo '<script type="text/javascript">
-		function hide() {
-			document.getElementById(\'wait\').style.display = "none";
+		// function to read multiple values from location search bar and zoom to map location:
+		function findPlace() {
+			infoWindow.close();
+			var e = document.getElementById("loc_search");
+			var locSearch = e.options[e.selectedIndex].value;
+			if (locSearch != "toptext") { // if not default text "find location on map"
+				var opt_array = new Array();
+				opt_array = locSearch.split(",", 3);
+				map.setZoom(11);
+				var ltln = new google.maps.LatLng(opt_array[1], opt_array[2]);
+				map.setCenter(ltln);
+			}
 		}
-	</script>';
 
-	include_once __DIR__ . '/googlemaps/google_initiate.php';
+		initialize();
 
-	echo '<script type="text/javascript">
+		function hide() {
+			document.getElementById('wait').style.display = "none";
+		}
 		window.onload = hide;
-	</script>';
-}
+	</script>
+<?php }
 
 include_once __DIR__ . '/footer.php';
