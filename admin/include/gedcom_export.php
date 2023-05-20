@@ -494,7 +494,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 		//if ($gedcom_char_set=='UTF-8') $buffer.= "\xEF\xBB\xBF"; // *** Add BOM header to UTF-8 file ***
 		$buffer .= "0 HEAD\r\n";
 		$buffer .= "1 SOUR HuMo-genealogy\r\n";
-		$buffer .= "2 VERS " . $humo_option["version"] . "\r\n";
+		$buffer .= "2 VERS " . $humogen["version"] . "\r\n";
 		$buffer .= "2 NAME HuMo-genealogy\r\n";
 		$buffer .= "2 CORP HuMo-genealogy software\r\n";
 		$buffer .= "3 ADDR https://humo-gen.com\r\n";
@@ -524,7 +524,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 		$buffer .= "1 GEDC\r\n";
 		$buffer .= "2 VERS 7.0\r\n";
 		$buffer .= "1 SOUR https://humo-gen.com\r\n";
-		$buffer .= "2 VERS " . $humo_option["version"] . "\r\n";
+		$buffer .= "2 VERS " . $humogen["version"] . "\r\n";
 		$buffer .= "2 NAME HuMo-genealogy\r\n";
 		$buffer .= "2 CORP HuMo-genealogy software\r\n";
 	}

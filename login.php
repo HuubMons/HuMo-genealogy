@@ -11,7 +11,7 @@ if ($user['group_menu_login'] != 'j') {
 	exit;
 }
 
-$fault = false;
+$fault = $_GET['fault'] ?? false;
 $path_tmp = '/login.php';
 
 // form to enter username and mail in order to receive reset link

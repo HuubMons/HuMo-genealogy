@@ -4,14 +4,10 @@ if (!defined('ADMIN_PAGE')) {
 	exit;
 }
 
-@set_time_limit(300);
 global $selected_language;
 
-if (CMS_SPECIFIC == "Joomla") {
-	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
-} else {
-	$phpself = 'index.php';
-}
+$phpself = 'index.php';
+
 echo '<h1 class="center">';
 printf(__('%s Update'), 'HuMo-genealogy');
 echo '</h1>';
@@ -31,8 +27,8 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 	// *** Show HuMo-genealogy version number ***
 	echo '<h2>HuMo-genealogy</h2>';
 	echo __('Version:') . ' ';
-	if (isset($humo_option["version"])) {
-		echo $humo_option["version"] . '.';
+	if (isset($humogen["version"])) {
+		echo $humogen["version"] . '.';
 	} else {
 		echo __('no version number available...');
 	}
@@ -48,7 +44,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 	printf(__('%s beta version'), 'HuMo-genealogy');
 	echo '</h2>';
 	echo __('Sometimes there is a beta version available.');
-	if (strtotime($update['beta_version_date']) - strtotime($humo_option["version_date"]) > 0) {
+	if (strtotime($update['beta_version_date']) - strtotime($humogen["version_date"]) > 0) {
 		echo ' <a href="' . $path_tmp . 'page=install_update&install_beta=1&auto=1&update_check=1">';
 		printf(__('%s beta version available'), 'HuMo-genealogy');
 		echo ' (' . $update['beta_version'] . ')!</a>';
@@ -460,9 +456,9 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 		}
 	} else {
 
-		if (isset($humo_option["version"])) {
+		if (isset($humogen["version"])) {
 			printf(__('Current %s version:'), 'HuMo-genealogy');
-			echo ' ' . $humo_option["version"] . '.<br>';
+			echo ' ' . $humogen["version"] . '.<br>';
 
 			printf(__('Available %s version:'), 'HuMo-genealogy');
 			echo ' ' . $update['version'] . '.<br><br>';
@@ -541,7 +537,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 	printf(__('%s version history'), 'HuMo-genealogy');
 	echo '</h2>';
 	printf(__('%s version'), 'HuMo-genealogy');
-	echo ' ' . $humo_option["version"];
+	echo ' ' . $humogen["version"];
 	echo '<p><iframe height="300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe>';
 
 

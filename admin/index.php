@@ -30,13 +30,9 @@ $popup = false;
 
 $update_message = '';
 
-if (isset($database_check) and @$database_check) {  // otherwise we can't make $dbh statements
+if ($database_check) {  // otherwise we can't make $dbh statements
 	$check_tables = false;
-	try {
-		$check_tables = $dbh->query("SELECT * FROM humo_settings");
-	} catch (Exception $e) {
-		//
-	}
+	$check_tables = $db_settings->findAll();
 
 	if ($check_tables) {
 		// *** Added may 2020, needed for some user settings in admin section ***
@@ -162,58 +158,6 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 			$result = $dbh->query($sql);
 		}
 
-		// ***************************************************
-		// *** Aug. 2022: Cleanup old HuMo-genealogy files ***
-		// ***************************************************
-		global $update_dir, $update_files;
-
-		function remove_the_folders($remove_folders)
-		{
-			global $update_dir, $update_files;
-			foreach ($remove_folders as $rf) {
-				if (is_dir($rf)) {
-					// *** Remove these old HuMo-genealogy files, a__ is just some random text (skip items)... ***
-					listFolderFiles2($rf, array('a__', 'a__'), 'update_files');
-					//echo $update_dir[0].' '.$update_files[0];
-					// *** Count down, because files must be removed first before removing directories ***
-					if (is_array($update_files)) {
-						for ($i = count($update_files) - 1; $i >= 0; $i--) {
-							if (!is_dir($update_dir[$i] . '/' . $update_files[$i])) {
-								unlink($update_dir[$i] . '/' . $update_files[$i]);
-							} else {
-								rmdir($update_dir[$i] . '/' . $update_files[$i]);
-							}
-							//echo $update_dir[$i].'/'.$update_files[$i].'<br>';
-						}
-					}
-					rmdir($rf);
-					unset($update_dir, $update_files);
-				}
-			}
-		}
-
-		function listFolderFiles2($dir, $exclude, $file_array)
-		{
-			global $update_dir, $update_files;
-			$ffs = scandir($dir);
-			foreach ($ffs as $ff) {
-				if (is_array($exclude) and !in_array($ff, $exclude)) {
-					if ($ff != '.' && $ff != '..') {
-						// *** Skip media files in ../media/, ../media/cms/ etc.
-						//if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
-						//	// skip media files
-						//}
-						//else{
-						$update_dir[] = $dir;
-						$update_files[] = $ff;
-						if (is_dir($dir . '/' . $ff)) listFolderFiles2($dir . '/' . $ff, $exclude, $file_array);
-						//}
-					}
-				}
-			}
-		}
-
-
 		$show_menu_left = true;
 
 		// *** Added in mar. 2023. To prevent double results in search results ***
@@ -230,18 +174,8 @@ if (isset($_POST['install_tables2'])) {
 	$show_menu_left = true;
 }
 
-if (isset($database_check) and @$database_check) {  // otherwise we can't make $dbh statements
-	// *** Update to version 4.6, in older version there is a dutch-named table: humo_instellingen ***
-	try {
-		$check_update = @$dbh->query("SELECT * FROM humo_instellingen");
-		if ($check_update) {
-			$page = 'update';
-			$show_menu_left = false;
-		}
-	} catch (Exception $e) {
-		// exit('no humo_instellingen table found.');
-	}
-
+if ($database_check) 
+{  
 	// *** Check HuMo-genealogy database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])) {
@@ -320,14 +254,14 @@ $selected_language = "en";
 // *** Saved default language ***
 if (
 	isset($humo_option['default_language_admin'])
-	and file_exists(CMS_ROOTPATH . 'languages/' . $humo_option['default_language_admin'] . '/' . $humo_option['default_language_admin'] . '.mo')
+	and file_exists(__DIR__ . '/../languages/' . $humo_option['default_language_admin'] . '/' . $humo_option['default_language_admin'] . '.mo')
 ) {
 	$selected_language = $humo_option['default_language_admin'];
 }
 // *** Safety: extra check if language exists ***
 if (
 	isset($_SESSION["save_language_admin"])
-	and file_exists(CMS_ROOTPATH . 'languages/' . $_SESSION["save_language_admin"] . '/' . $_SESSION["save_language_admin"] . '.mo')
+	and file_exists(__DIR__ . '/../languages/' . $_SESSION["save_language_admin"] . '/' . $_SESSION["save_language_admin"] . '.mo')
 ) {
 	$selected_language = $_SESSION["save_language_admin"];
 }
@@ -398,7 +332,8 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 // *** Login check ***
 $group_administrator = '';
 $group_edit_trees = '';
-if (isset($database_check) and $database_check) {
+
+if ($database_check) {
 	if (isset($_SERVER["PHP_AUTH_USER"])) {
 		// *** Logged in using .htacess ***
 
@@ -541,23 +476,23 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
 
 
 // *** Show top menu ***
-$path_tmp = 'index.php?';
+$path_tmp = '/admin/index.php?';
 
 $top_dir = $language["dir"] == "rtl" ? 'style="text-align:right"' : '';
 
 if ($popup == false) { ?>
-	<div id="humo_top" ' . $top_dir . '>
+	<div id="humo_top <?= $top_dir; ?>">
 <?php } else { ?>
 	<div id="humo_top" style="height:auto;">
 <?php }
 
 if ($popup == false) { ?>
 	<span id="top_website_name">
-		<a href="index.php" style="color:brown;">HuMo-genealogy</a>
+		<a href="/admin/" style="color:brown;">HuMo-genealogy</a>
 	</span>
 <?php }
 
-if (isset($database_check) and $database_check and $group_administrator == 'j') { // Otherwise we can't make $dbh statements
+if ($database_check && $group_administrator == 'j') { // Otherwise we can't make $dbh statements
 	// *** Enable/ disable HuMo-genealogy update check ***
 	if (isset($_POST['enable_update_check_change'])) {
 		if (isset($_POST['enable_update_check'])) {
@@ -589,16 +524,11 @@ if (isset($database_check) and $database_check and $group_administrator == 'j') 
 			$humo_option['update_last_check'] = '2012-01-01';
 		}
 
-		// *** Update file, example ***
-		// echo "version=4.8.4\r\n";
-		// echo "version_date=2012-09-02\r\n";
-		// echo "test=testline";
-
 		// *** Update check, once a day ***
 		// 86400 = 1 day. yyyy-mm-dd
 		if ($humo_option['update_last_check'] != 'DISABLED' and strtotime("now") - strtotime($humo_option['update_last_check']) > 86400) {
 			$link_name = str_replace(' ', '_', $_SERVER['SERVER_NAME']);
-			$link_version = str_replace(' ', '_', $humo_option["version"]);
+			$link_version = str_replace(' ', '_', $humogen["version"]);
 
 			if (function_exists('curl_exec')) {
 
@@ -825,35 +755,35 @@ if (isset($database_check) and $database_check and $group_administrator == 'j') 
 				}
 				//fclose($f);
 
-				//$humo_option["version"]='0'; // *** Test line ***
+				//$humogen["version"]='0'; // *** Test line ***
 				// *** 1) Standard status ***
 				$update['up_to_date'] = 'yes';
 				$update_text = ' ' . __('Update check failed.');
 				$update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
 
 				//NEW
-				if ($humo_option["version"] == $update['version']) {
+				if ($humogen["version"] == $update['version']) {
 					$update['up_to_date'] = 'yes';
 					$update_text = ' ' . __('is up-to-date!');
 					$update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
 				}
 
 				// *** 2) HuMo-genealogy up-to-date (checking version numbers) ***
-				//if ($humo_option["version"]==$update['version']){
+				//if ($humogen["version"]==$update['version']){
 				// *** If GitHub numbering isn't up-to-date yet, just ignore version check. Could happen while updating sites! ***
-				if (strtotime($update['version_date']) - strtotime($humo_option["version_date"]) < 0) {
+				if (strtotime($update['version_date']) - strtotime($humogen["version_date"]) < 0) {
 					$update['up_to_date'] = 'yes';
 					$update_text = ' ' . __('is up-to-date!');
 					$update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
 				}
 
 				// *** 3) First priority: check for normal HuMo-genealogy update ***
-				if (strtotime($update['version_date']) - strtotime($humo_option["version_date"]) > 0) {
+				if (strtotime($update['version_date']) - strtotime($humogen["version_date"]) > 0) {
 					$update['up_to_date'] = 'no';
 					$update_text = ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update available') . ' (' . $update['version'] . ')!</a>';
 				}
 				// *** 4) Second priority: check for Beta version update ***
-				elseif (strtotime($update['beta_version_date']) - strtotime($humo_option["version_date"]) > 0) {
+				elseif (strtotime($update['beta_version_date']) - strtotime($humogen["version_date"]) > 0) {
 					$update['up_to_date'] = 'yes';
 					$update_text = ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Beta version available') . ' (' . $update['beta_version'] . ')!</a>';
 				}
@@ -1011,15 +941,15 @@ if ($popup == false) {
 	}
 
 
-	echo '<li><a href="index.php">' . __('Website') . '</a>';
+	echo '<li><a href="/index.php">' . __('Website') . '</a>';
 
 	if (isset($_SESSION["user_name_admin"])) {
-		$path_tmp2 = 'index.php?log_off=1';
+		$path_tmp2 = '/index.php?log_off=1';
 		$menu_item = '';
 		if ($page == 'check') {
 			$menu_item = ' id="current"';
 		}
-		echo '<li' . $menu_item . '><a href="index.php?log_off=1">' . __('Logoff') . '</a>';
+		echo '<li' . $menu_item . '><a href="/index.php?log_off=1">' . __('Logoff') . '</a>';
 	}
 
 	echo '</ul>';

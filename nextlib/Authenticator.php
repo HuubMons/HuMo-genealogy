@@ -41,7 +41,8 @@ class Authenticator
 
     public function logout()
     {
-        # code...
+        session_destroy();
+        header("Location: /");
     }
 
     /**
@@ -54,7 +55,7 @@ class Authenticator
                 'log_username' => $username,
                 'log_date' => date("Y-m-d H:i"),
                 'log_ip_address' => $_SERVER['REMOTE_ADDR'],
-                'log_user_admin' => 'user',
+                'log_user_admin' => strpos($_SERVER['REQUEST_URI'], 'admin') ? 'admin' : 'front',
                 'log_status' => 'success'
             ]
         );
@@ -70,7 +71,7 @@ class Authenticator
 				'log_username' => $username,
 				'log_date' => date("Y-m-d H:i"),
 				'log_ip_address' => $_SERVER['REMOTE_ADDR'],
-				'log_user_admin' => 'user',
+				'log_user_admin' => strpos($_SERVER['REQUEST_URI'], 'admin') ? 'admin' : 'front',
 				'log_status' => 'failed'
 			]
 		);

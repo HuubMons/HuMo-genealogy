@@ -118,10 +118,10 @@ printf(__('%s status'), 'HuMo-genealogy');
 echo '</th></tr>';
 
 // *** HuMo-genealogy version ***
-if (isset($humo_option["version"])) {
+if (isset($humogen["version"])) {
 	echo '<tr><td class="line_item">';
 	printf(__('%s version'), 'HuMo-genealogy');
-	echo '</td><td class="line_ok">' . $humo_option["version"];
+	echo '</td><td class="line_ok">' . $humogen["version"];
 
 	echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=extensions">';
 	printf(__('%s extensions'), 'HuMo-genealogy');

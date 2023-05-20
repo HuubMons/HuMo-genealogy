@@ -91,7 +91,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 		exit();
 		
 	} else {
-		$fault = true;
+		header("Location: /login.php?fault=1");
 	}
 }
 

@@ -1,9 +1,8 @@
 <?php 
 
-// *** Check if HuMo-genealogy is in a CMS system ***
-//	- Code for all CMS: if (CMS_SPECIFIC) {}
-//	- Code for one CMS: if (CMS_SPECIFIC == 'Joomla') {}
-//	- Code NOT for CMS: if (!CMS_SPECIFIC) {}
+$humogen["version"] = '6.1.2';
+$humogen["version_date"] = '2023-04-24';
+
 if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
 
 /**
@@ -21,8 +20,7 @@ $blacklistedIp = require __DIR__ . '/blacklist_ip.php';
 $db_settings = new db_setting($dbh); // app settings in database
 $humo_option = $db_settings->dataToArrayKey();
 
-$humo_option["version"] = '6.1.2';
-$humo_option["version_date"] = '2023-04-24';
+
 
 $request = new Request();
 
