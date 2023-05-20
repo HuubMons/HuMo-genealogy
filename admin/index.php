@@ -507,9 +507,8 @@ if ($database_check && $group_administrator == 'j') { // Otherwise we can't make
 		//$humo_option['update_text']=$update_text;
 	}
 
-	// *** Check if installation is completed, before checking for an update ***
-	$check_update = @$dbh->query("SELECT * FROM humo_settings");
-	if ($check_update and $page != 'login' and $page != 'update' and $popup == false) {
+	// *** Check for an update ***
+	if ($humo_option and $page != 'login' and $page != 'update' and $popup == false) {
 		$debug_update = 'Start. ';
 
 		// *** Manual check for update ***
@@ -923,13 +922,13 @@ if ($popup == false) {
 	echo '<ul class="humo_menu_item2">';
 
 	if ($group_administrator == 'j') {
-		echo '<li' . $page == 'admin' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=admin">' . __('Administration') . ' - ' . __('Main menu') . '</a></li>';
+		echo '<li' . ($page == 'admin' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=admin">' . __('Administration') . ' - ' . __('Main menu') . '</a></li>';
 	}
 
 	echo '<li><a href="/index.php">' . __('Website') . '</a></li>';
 
 	if (isset($_SESSION["user_name_admin"])) {
-		echo '<li' . $page == 'check' ? ' id="current"' : '' . '><a href="/index.php?log_off=1">' . __('Logoff') . '</a></li>';
+		echo '<li' . ($page == 'check' ? ' id="current"' : '') . '><a href="/index.php?log_off=1">' . __('Logoff') . '</a></li>';
 	}
 
 	echo '</ul>';
@@ -957,15 +956,15 @@ if ($show_menu_left == true and $page != 'login') {
 		echo '<div id="m2x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';
 		
-		echo '<li' . $page == 'install' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=install">' . __('Install') . '</a></li>';
-		echo '<li' . $page == 'extensions' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=extensions">' . __('Extensions') . '</a></li>';
-		echo '<li' . $page == 'settings' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=settings">' . __('Settings') . '</a></li>';
-		echo '<li' . $page == 'favorites' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=settings&amp;menu_admin=settings_homepage">' . __('Homepage') . '</a></li>';
-		echo '<li' . $page == 'favorites' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=settings&amp;menu_admin=settings_special">' . __('Special settings') . '</a></li>';
-		echo '<li' . $page == 'cms_pages' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=cms_pages">' . __('CMS Own pages') . '</a></li>';
-		echo '<li' . $page == 'language_editor' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=language_editor">' . __('Language editor') . '</a></li>';
-		echo '<li' . $page == 'prefix_editor' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=prefix_editor">' . __('Prefix editor') . '</a></li>';
-		echo '<li' . $page == 'google_maps' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=google_maps">' . __('World map') . '</a></li>';
+		echo '<li' . ($page == 'install' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=install">' . __('Install') . '</a></li>';
+		echo '<li' . ($page == 'extensions' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=extensions">' . __('Extensions') . '</a></li>';
+		echo '<li' . ($page == 'settings' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=settings">' . __('Settings') . '</a></li>';
+		echo '<li' . ($page == 'favorites' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=settings&amp;menu_admin=settings_homepage">' . __('Homepage') . '</a></li>';
+		echo '<li' . ($page == 'favorites' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=settings&amp;menu_admin=settings_special">' . __('Special settings') . '</a></li>';
+		echo '<li' . ($page == 'cms_pages' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=cms_pages">' . __('CMS Own pages') . '</a></li>';
+		echo '<li' . ($page == 'language_editor' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=language_editor">' . __('Language editor') . '</a></li>';
+		echo '<li' . ($page == 'prefix_editor' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=prefix_editor">' . __('Prefix editor') . '</a></li>';
+		echo '<li' . ($page == 'google_maps' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=google_maps">' . __('World map') . '</a></li>';
 
 		echo '</ul>';
 		echo '</div>';
@@ -988,15 +987,15 @@ if ($show_menu_left == true and $page != 'login') {
 	echo '<div id="m3x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
 	if ($group_administrator == 'j') {
-		echo '<li' . $page == 'tree' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=tree">' . __('Family trees') . '</a></li>';
-		echo '<li' . $page == 'thumbs' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=thumbs">' . __('Pictures/ create thumbnails') . '</a></li>';
-		echo '<li' . $page == 'user_notes' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=user_notes">' . __('Notes') . '</a></li>';
-		echo '<li' . $page == 'check' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=check">' . __('Family tree data check') . '</a></li>';
-		echo '<li' . $page == 'check' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=view_latest_changes">' . __('View latest changes') . '</a></li>';
-		echo '<li' . $page == 'cal_date' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=cal_date">' . __('Calculated birth date') . '</a></li>';
-		echo '<li' . $page == 'export' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=export">' . __('Gedcom export') . '</a></li>';
-		echo '<li' . $page == 'backup' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=backup">' . __('Database backup') . '</a></li>';
-		echo '<li' . $page == 'statistics' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=statistics">' . __('Statistics') . '</a></li>';
+		echo '<li' . ($page == 'tree' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=tree">' . __('Family trees') . '</a></li>';
+		echo '<li' . ($page == 'thumbs' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=thumbs">' . __('Pictures/ create thumbnails') . '</a></li>';
+		echo '<li' . ($page == 'user_notes' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=user_notes">' . __('Notes') . '</a></li>';
+		echo '<li' . ($page == 'check' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=check">' . __('Family tree data check') . '</a></li>';
+		echo '<li' . ($page == 'check' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=view_latest_changes">' . __('View latest changes') . '</a></li>';
+		echo '<li' . ($page == 'cal_date' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=cal_date">' . __('Calculated birth date') . '</a></li>';
+		echo '<li' . ($page == 'export' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=export">' . __('Gedcom export') . '</a></li>';
+		echo '<li' . ($page == 'backup' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=backup">' . __('Database backup') . '</a></li>';
+		echo '<li' . ($page == 'statistics' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=statistics">' . __('Statistics') . '</a></li>';
 	}
 
 	echo '</ul>';
@@ -1019,11 +1018,11 @@ if ($show_menu_left == true and $page != 'login') {
 	echo '<div id="m3xa" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
 
-	echo '<li' . $page == 'editor' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=editor">' . __('Persons and families') . '</a></li>';
-	echo '<li' . $page == 'edit_sources' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=edit_sources">' . __('Sources') . "</a></li>";
-	echo '<li' . $page == 'edit_repositories' ?  ' id="current"' : '' . '><a href="' . $path_tmp . 'page=edit_repositories">' . __('Repositories') . "</a></li>";
-	echo '<li' . $page == 'edit_addresses' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=edit_addresses">' . __('Shared addresses') . "</a></li>";
-	echo '<li' . $page == 'edit_places' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=edit_places">' . __('Rename places') . "</a></li>";
+	echo '<li' . ($page == 'editor' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=editor">' . __('Persons and families') . '</a></li>';
+	echo '<li' . ($page == 'edit_sources' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=edit_sources">' . __('Sources') . "</a></li>";
+	echo '<li' . ($page == 'edit_repositories' ?  ' id="current"' : '') . '><a href="' . $path_tmp . 'page=edit_repositories">' . __('Repositories') . "</a></li>";
+	echo '<li' . ($page == 'edit_addresses' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=edit_addresses">' . __('Shared addresses') . "</a></li>";
+	echo '<li' . ($page == 'edit_places' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=edit_places">' . __('Rename places') . "</a></li>";
 
 	echo '</ul>';
 	echo '</div>';
@@ -1047,9 +1046,9 @@ if ($show_menu_left == true and $page != 'login') {
 		echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';
 
-		echo '<li' . $page == 'users' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=users">' . __('Users') . '</a>';
-		echo '<li' . $page == 'groups' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=groups">' . __('Groups') . '</a>';
-		echo '<li' . $page == 'log' ? ' id="current"' : '' . '><a href="' . $path_tmp . 'page=log">' . __('Log') . '</a>';
+		echo '<li' . ($page == 'users' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=users">' . __('Users') . '</a></li>';
+		echo '<li' . ($page == 'groups' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=groups">' . __('Groups') . '</a></li>';
+		echo '<li' . ($page == 'log' ? ' id="current"' : '') . '><a href="' . $path_tmp . 'page=log">' . __('Log') . '</a></li>';
 
 		echo '</ul>';
 		echo '</div>';
@@ -1205,10 +1204,6 @@ elseif ($page == 'edit_sources') {
 } elseif ($page == 'update') {
 	include_once __DIR__ . '/include/update.php';
 }
-//elseif ($page=='photoalbum'){ include_once ( __DIR__ . '/include/photoalbum_categories.php'; }
-
-// *** Edit event by person ***
-//elseif ($page=='editor_person_event'){ include_once ( __DIR__ . '/include/editor_person_event.php'; }
 
 // *** Default page for editor ***
 elseif ($group_administrator != 'j' and $group_edit_trees) {
