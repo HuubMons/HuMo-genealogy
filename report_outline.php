@@ -621,4 +621,3 @@ if($screen_mode != 'PDF') {
 else {
 	$pdf->Output($title.".pdf","I");
 }
-?>

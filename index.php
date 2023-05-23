@@ -80,4 +80,3 @@ else{
 echo $mainindex->show_footer();
 
 include_once(CMS_ROOTPATH."footer.php");
-?>

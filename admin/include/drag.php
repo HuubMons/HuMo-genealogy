@@ -38,4 +38,3 @@ if (isset($_SESSION['admin_tree_id'])){
 	}
 
 }
-?>

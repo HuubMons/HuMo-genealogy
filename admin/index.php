@@ -1356,32 +1356,32 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					echo '<ul class="humo_menu_item2">';
 						if ($group_administrator=='j'){
 							$menu_item=''; if ($page=='tree'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=tree">'.__('Family trees').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=tree">'.__('Family trees').'</a><li>';
 
 							$menu_item=''; if ($page=='thumbs'){ $menu_item=' id="current"'; }
 							//echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Create thumbnails').'</a>';
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Pictures/ create thumbnails').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Pictures/ create thumbnails').'</a></li>';
 
 							$menu_item=''; if ($page=='user_notes'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=user_notes">'.__('Notes').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=user_notes">'.__('Notes').'</a></li>';
 
 							$menu_item=''; if ($page=='check'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=check">'.__('Family tree data check').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=check">'.__('Family tree data check').'</a></li>';
 
 							$menu_item=''; if ($page=='check'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=view_latest_changes">'.__('View latest changes').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=view_latest_changes">'.__('View latest changes').'</a></li>';
 
 							$menu_item=''; if ($page=='cal_date'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cal_date">'.__('Calculated birth date').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cal_date">'.__('Calculated birth date').'</a></li>';
 
 							$menu_item=''; if ($page=='export'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=export">'.__('Gedcom export').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=export">'.__('Gedcom export').'</a></li>';
 
 							$menu_item=''; if ($page=='backup'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=backup">'.__('Database backup').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=backup">'.__('Database backup').'</a></li>';
 
 							$menu_item=''; if ($page=='statistics'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=statistics">'.__('Statistics').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=statistics">'.__('Statistics').'</a></li>';
 						}
 
 					echo '</ul>';
@@ -1408,23 +1408,23 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					echo '<ul class="humo_menu_item2">';
 
 						$menu_item=''; if ($page=='editor'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=editor">'.__('Persons and families').'</a>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=editor">'.__('Persons and families').'</a></li>';
 
 						// *** Sources ***
 						$menu_item=''; if ($page=='edit_sources'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_sources">'.__('Sources')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_sources">'.__('Sources')."</a></li>";
 
 						// *** Repositories ***
 						$menu_item=''; if ($page=='edit_repositories'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_repositories">'.__('Repositories')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_repositories">'.__('Repositories')."</a></li>";
 
 						// *** Addresses ***
 						$menu_item=''; if ($page=='edit_addresses'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_addresses">'.__('Shared addresses')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_addresses">'.__('Shared addresses')."</a></li>";
 
 						// *** Place editor ***
 						$menu_item=''; if ($page=='edit_places'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_places">'.__('Rename places')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_places">'.__('Rename places')."</a></li>";
 
 					echo '</ul>';
 				echo '</div>';
@@ -1448,13 +1448,13 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 						echo '<ul class="humo_menu_item2">';
 
 							$menu_item=''; if ($page=='users'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=users">'.__('Users').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=users">'.__('Users').'</a></li>';
 
 							$menu_item=''; if ($page=='groups'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=groups">'.__('Groups').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=groups">'.__('Groups').'</a></li>';
 
 							$menu_item=''; if ($page=='log'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=log">'.__('Log').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=log">'.__('Log').'</a></li>';
 
 						echo '</ul>';
 					echo '</div>';
@@ -1477,10 +1477,10 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 						echo '<ul class="humo_menu_item2">';
 
 							$menu_item=''; if ($page=='log'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=log">'.__('Log').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=log">'.__('Log').'</a></li>';
 
 							$menu_item=''; if ($page=='statistics'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=statistics">'.__('Statistics').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=statistics">'.__('Statistics').'</a></li>';
 						echo '</ul>';
 					echo '</div>';
 				echo '</div>';
@@ -1612,5 +1612,3 @@ if (!CMS_SPECIFIC){
 	print "</body>\n";
 	print "</html>";
 }
-
-?>

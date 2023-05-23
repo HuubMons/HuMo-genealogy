@@ -993,4 +993,3 @@ echo '<div id="statistics_screen">';
 	
 echo '</div>'; // *** End of tab menu div ***
 include_once(CMS_ROOTPATH."footer.php");
-?>

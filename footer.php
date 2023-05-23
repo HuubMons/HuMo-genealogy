@@ -10,11 +10,19 @@
 	var lightboxVideo = GLightbox({
 		selector: '.glightbox3'
 	});
-	lightboxVideo.on('slide_changed', ({ prev, current }) => {
+	lightboxVideo.on('slide_changed', ({
+		prev,
+		current
+	}) => {
 		console.log('Prev slide', prev);
 		console.log('Current slide', current);
 
-		const { slideIndex, slideNode, slideConfig, player } = current;
+		const {
+			slideIndex,
+			slideNode,
+			slideConfig,
+			player
+		} = current;
 
 		if (player) {
 			if (!player.ready) {
@@ -47,7 +55,7 @@
 echo '</div>'; // End of div: Content.
 echo '</div>'; // End of div: Silverline.
 
-if ($humo_option["text_footer"]) echo "<br>\n".$humo_option["text_footer"];
+if ($humo_option["text_footer"]) echo "<br>\n" . $humo_option["text_footer"];
 ?>
 
 <!-- YOU CAN ADD YOUR OWN HTML CODE IN THE BLOCK BELOW -->
@@ -69,7 +77,7 @@ else{
 }
 */
 
-if (!CMS_SPECIFIC){
+if (!CMS_SPECIFIC) {
 	echo "</body>\n";
 	echo "</html>";
 }

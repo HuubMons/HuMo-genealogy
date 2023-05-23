@@ -16,13 +16,6 @@ if (document.getElementById && selectedtitle!=null) //load user chosen style she
 else
 	setStylesheet(defaultskin)
 
-function getCookie(Name) {
-	var re=new RegExp(Name+"=[^;]+", "i"); //construct RE to search for target name/value pair
-	if (document.cookie.match(re)) //if cookie found
-	return document.cookie.match(re)[0].split("=")[1] //return its value
-	return null
-}
-
 function setCookie(name, value, days) {
 	var expireDate = new Date()
 	//set "expstring" to either future or past date, to set or delete cookie, respectively

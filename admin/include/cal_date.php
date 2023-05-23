@@ -130,4 +130,3 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 	}
 
 echo '</table>';
-?>

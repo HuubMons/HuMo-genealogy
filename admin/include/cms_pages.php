@@ -635,4 +635,3 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
 	echo 'Change "true" into "false": \'disabled\' => true,</b>';
 
 }
-?>

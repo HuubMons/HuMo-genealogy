@@ -93,4 +93,3 @@ while (@$resultDb = $result->fetch(PDO::FETCH_OBJ)){
 	// *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
 	echo '<a href="" onClick=\'return select_item("'.str_replace("'","&prime;",$resultDb->place_order).'")\'>'.$resultDb->place_order.'</a><br>';
 }
-?>

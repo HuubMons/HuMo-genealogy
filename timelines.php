@@ -813,4 +813,3 @@ if(file_exists($filenames[0][0])) {
 	fclose($handle);
 }
 include_once(CMS_ROOTPATH."footer.php");
-?>

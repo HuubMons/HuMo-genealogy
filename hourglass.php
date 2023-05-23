@@ -333,5 +333,3 @@ $divlen = 10 + $anc_len + $desc_len;
 printchart();
  
 include_once(CMS_ROOTPATH."footer.php");
-
-?>

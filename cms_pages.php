@@ -86,4 +86,3 @@ echo '<div id="mainmenu_centerbox">';
 echo '</div>';
 
 include_once(CMS_ROOTPATH."footer.php");
-?>

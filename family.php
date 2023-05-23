@@ -2386,5 +2386,3 @@ function show_rtf_media($media_kind,$gedcomnumber){
 
 	}
 }
-
-?>

@@ -441,5 +441,3 @@ function source_display($sourcenum) {
 	} // end if not PDF
 
 } // end function source_display
-
-?>

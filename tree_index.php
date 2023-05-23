@@ -17,4 +17,3 @@ echo $mainindex->show_tree_index();
 echo $mainindex->show_footer();
 
 include_once(CMS_ROOTPATH."footer.php");
-?>

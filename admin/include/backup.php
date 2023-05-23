@@ -333,4 +333,3 @@ function restore_tables($filename) {
 		if(is_file($filename) AND substr($filename,-4)!=".sql" ) { echo "This is not a valid back up file (no .sql extension)"; }
 	}
 }
-?>

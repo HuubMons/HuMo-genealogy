@@ -3530,4 +3530,3 @@ if(isset($_POST["calculator"]) OR isset($_POST["switch"])) { // calculate or swi
 echo '</form>';
 echo '<br><br><br><br><br><br><br><br>';
 include_once(CMS_ROOTPATH."footer.php");
-?>
