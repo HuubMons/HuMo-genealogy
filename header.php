@@ -4,13 +4,15 @@
 //error_reporting(E_ALL);
 //error_reporting(0);
 
-// *** Check if HuMo-genealogy is in a CMS system ***
-//	Names:
-//		- CMS names used for now are 'Joomla' and 'CMSMS'.
-//	Usage:
-//		- Code for all CMS: if (CMS_SPECIFIC) {}
-//		- Code for one CMS: if (CMS_SPECIFIC == 'Joomla') {}
-//		- Code NOT for CMS: if (!CMS_SPECIFIC) {}
+/*
+ * Check if HuMo-genealogy is in a CMS system
+ *	Names:
+ *		- CMS names used for now are 'Joomla' and 'CMSMS'.
+ *	Usage:
+ *		- Code for all CMS: if (CMS_SPECIFIC) {}
+ *		- Code for one CMS: if (CMS_SPECIFIC == 'Joomla') {}
+ *		- Code NOT for CMS: if (!CMS_SPECIFIC) {}
+*/
 if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
 
 // *** When run from CMS, the path to the map (that contains this file) should be given ***
@@ -64,17 +66,8 @@ $db_functions = new db_functions;
 //$dbh->query("SET NAMES 'utf8'");
 
 // *** Show a message at NEW installation. Use "try" for PHP 8.1. ***
-//$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-//if (!$result OR $result->rowCount() ==0) {
-//	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
-//	exit();
-//}
 try {
 	$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-	//if (!$result OR $result->rowCount() ==0) {
-	//	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
-	//	exit();
-	//}
 } catch (PDOException $e) {
 	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
 	exit();
@@ -243,163 +236,201 @@ if (isset($screen_mode) and $screen_mode == "PDF") {
 }
 
 
-// *** Automatic menu choice ***
-// *** Also used for title of webpage ***
+// *** Selected menu and title of page ***
 $auto_menu = $_SERVER['REQUEST_URI'];
 $save_menu_choice = '';
+$page='index';
+$head_text = $humo_option["database_name"];
 
 // *** Automatic menu_choice main_index ***
 if (strpos($auto_menu, 'index') > 0) {
 	$save_menu_choice = 'main_index';
+	$head_text .= ' - ' . __('Main index');
 }
 if (strpos($auto_menu, 'tree_index') > 0) {
 	$save_menu_choice = 'tree_index';
+	$head_text .= ' - ' . __('Family tree index');
 }
 if (strpos($auto_menu, 'list') > 0) {
 	$save_menu_choice = 'persons';
+	$head_text .= ' - ' . __('Persons');
 }
 if (strpos($auto_menu, 'list_names') > 0) {
 	$save_menu_choice = 'names';
+	$head_text .= ' - ' . __('Names');
 }
 if (strpos($auto_menu, 'places') > 0) {
 	$save_menu_choice = 'places';
+	$head_text .= ' - ' . __('Places');
 }
 if (strpos($auto_menu, 'places_families') > 0) {
 	$save_menu_choice = 'places_families';
+	$head_text .= ' - ' . __('Places');
 }
 if (
 	isset($_POST['index_list'])
 	and $_POST['index_list'] == "places"
 ) {
 	$save_menu_choice = 'places';
+	$head_text .= ' - ' . __('Places');
 }
 if (strpos($auto_menu, 'photoalbum') > 0) {
 	$save_menu_choice = 'pictures';
+	$head_text .= ' - ' . __('Photobook');
 }
 if (strpos($auto_menu, 'source') > 0) {
 	$save_menu_choice = 'sources';
+	$head_text .= ' - ' . __('Sources');
 }
+// *** First check 'address' then 'addresses' ***
 if (strpos($auto_menu, 'address') > 0) {
+	$save_menu_choice = 'address';
+	$head_text .= ' - ' . __('Address');
+	$page='address';
+}
+if (strpos($auto_menu, 'addresses') > 0) {
 	$save_menu_choice = 'addresses';
+	$head_text .= ' - ' . __('Addresses');
 }
 if (strpos($auto_menu, 'birthday') > 0) {
 	$save_menu_choice = 'birthday';
+	$head_text .= ' - ' . __('Birthday calendar');
 }
 if (strpos($auto_menu, 'statistics') > 0) {
 	$save_menu_choice = 'statistics';
+	$head_text .= ' - ' . __('Statistics');
 }
 if (strpos($auto_menu, 'relations') > 0) {
 	$save_menu_choice = 'relations';
+	$head_text .= ' - ' . __('Relationship calculator');
 }
 if (strpos($auto_menu, 'mailform') > 0) {
 	$save_menu_choice = 'mailform';
+	$head_text .= ' - ' . __('Mail form');
 }
 if (strpos($auto_menu, 'maps') > 0) {
 	$save_menu_choice = 'maps';
+	$head_text .= ' - ' . __('World map');
 }
 if (strpos($auto_menu, 'latest_changes') > 0) {
 	$save_menu_choice = 'latest_changes';
+	$head_text .= ' - ' . __('Latest changes');
 }
 if (strpos($auto_menu, 'help') > 0) {
 	$save_menu_choice = 'help';
+	$head_text .= ' - ' . __('Help');
 }
 if (strpos($auto_menu, 'info') > 0) {
 	$save_menu_choice = 'info';
+	$head_text .= ' - ' . __('Information');
 }
 if (strpos($auto_menu, 'credits') > 0) {
 	$save_menu_choice = 'credits';
+	$head_text .= ' - ' . __('Credits');
 }
 if (strpos($auto_menu, 'info_cookies') > 0) {
 	$save_menu_choice = 'info_cookies';
+	$head_text .= ' - ' . __('Cookie information');
 }
 if (strpos($auto_menu, 'login') > 0) {
 	$save_menu_choice = 'login';
+	$head_text .= ' - ' . __('Login');
 }
 if (strpos($auto_menu, 'family') > 0) {
 	$save_menu_choice = 'persons';
+	$head_text .= ' - ' . __('Family Page');
 }
 if (strpos($auto_menu, 'cms_pages') > 0) {
 	$save_menu_choice = 'cms_pages';
+	$head_text .= ' - ' . __('Information');
 }
 if (strpos($auto_menu, 'register') > 0) {
 	$save_menu_choice = 'register';
+	$head_text .= ' - ' . __('Register');
 }
 if (strpos($auto_menu, 'user_settings') > 0) {
 	$save_menu_choice = 'settings';
-}
-
-if ($save_menu_choice) {
-	$_SESSION['save_menu_choice'] = $save_menu_choice;
-}
-
-// *** Used for menu highlight ***
-$menu_choice = "main_index";
-if (isset($_SESSION["save_menu_choice"])) {
-	$menu_choice = $_SESSION["save_menu_choice"];
-}
-
-// *** Page title ***
-$head_text = $humo_option["database_name"];
-if ($menu_choice == 'main_index') {
-	$head_text .= ' - ' . __('Main index');
-}
-if ($menu_choice == 'persons') {
-	$head_text .= ' - ' . __('Persons');
-}
-if ($menu_choice == 'names') {
-	$head_text .= ' - ' . __('Names');
-}
-if ($menu_choice == 'places') {
-	$head_text .= ' - ' . __('Places');
-}
-if ($menu_choice == 'pictures') {
-	$head_text .= ' - ' . __('Photobook');
-}
-if ($menu_choice == 'sources') {
-	$head_text .= ' - ' . __('Sources');
-}
-if ($menu_choice == 'addresses') {
-	$head_text .= ' - ' . __('Address');
-}
-if ($menu_choice == 'birthday') {
-	$head_text .= ' - ' . __('Birthday calendar');
-}
-if ($menu_choice == 'statistics') {
-	$head_text .= ' - ' . __('Statistics');
-}
-if ($menu_choice == 'relations') {
-	$head_text .= ' - ' . __('Relationship calculator');
-}
-if ($menu_choice == 'mailform') {
-	$head_text .= ' - ' . __('Mail form');
-}
-if ($menu_choice == 'maps') {
-	$head_text .= ' - ' . __('Google maps');
-}
-if ($menu_choice == 'latest_changes') {
-	$head_text .= ' - ' . __('Latest changes');
-}
-if ($menu_choice == 'help') {
-	$head_text .= ' - ' . __('Help');
-}
-if ($menu_choice == 'info') {
-	$head_text .= ' - ' . __('Information');
-}
-if ($menu_choice == 'credits') {
-	$head_text .= ' - ' . __('Credits');
-}
-if ($menu_choice == 'info') {
-	$head_text .= ' - ' . __('Cookie information');
-}
-if ($menu_choice == 'login') {
-	$head_text .= ' - ' . __('Login');
-}
-if ($menu_choice == 'register') {
-	$head_text .= ' - ' . __('Register');
-}
-if ($menu_choice == 'settings') {
 	$head_text .= ' - ' . __('Settings');
 }
+
+$menu_choice=$save_menu_choice;
+
+//if ($save_menu_choice) {
+//	$_SESSION['save_menu_choice'] = $save_menu_choice;
+//}
+
+// *** Used for menu highlight ***
+//$menu_choice = "main_index";
+//if (isset($_SESSION["save_menu_choice"])) {
+//	$menu_choice = $_SESSION["save_menu_choice"];
+//}
+
+// COMBINEREN MET VORIGE CODE???
+// *** Page title ***
+//$head_text = $humo_option["database_name"];
+//if ($menu_choice == 'main_index') {
+//	$head_text .= ' - ' . __('Main index');
+//}
+//if ($menu_choice == 'persons') {
+//	$head_text .= ' - ' . __('Persons');
+//}
+//if ($menu_choice == 'names') {
+//	$head_text .= ' - ' . __('Names');
+//}
+//if ($menu_choice == 'places') {
+//	$head_text .= ' - ' . __('Places');
+//}
+//if ($menu_choice == 'pictures') {
+//	$head_text .= ' - ' . __('Photobook');
+//}
+//if ($menu_choice == 'sources') {
+//	$head_text .= ' - ' . __('Sources');
+//}
+//if ($menu_choice == 'addresses') {
+//	$head_text .= ' - ' . __('Addresses');
+//}
+//if ($menu_choice == 'address') {
+//	$head_text .= ' - ' . __('Address');
+//}
+//if ($menu_choice == 'birthday') {
+//	$head_text .= ' - ' . __('Birthday calendar');
+//}
+//if ($menu_choice == 'statistics') {
+//	$head_text .= ' - ' . __('Statistics');
+//}
+//if ($menu_choice == 'relations') {
+//	$head_text .= ' - ' . __('Relationship calculator');
+//}
+//if ($menu_choice == 'mailform') {
+//	$head_text .= ' - ' . __('Mail form');
+//}
+//if ($menu_choice == 'maps') {
+//	$head_text .= ' - ' . __('World map');
+//}
+//if ($menu_choice == 'latest_changes') {
+//	$head_text .= ' - ' . __('Latest changes');
+//}
+//if ($menu_choice == 'help') {
+//	$head_text .= ' - ' . __('Help');
+//}
+//if ($menu_choice == 'info') {
+//	$head_text .= ' - ' . __('Information');
+//}
+//if ($menu_choice == 'credits') {
+//	$head_text .= ' - ' . __('Credits');
+//}
+//if ($menu_choice == 'info') {
+//	$head_text .= ' - ' . __('Cookie information');
+//}
+//if ($menu_choice == 'login') {
+//	$head_text .= ' - ' . __('Login');
+//}
+//if ($menu_choice == 'register') {
+//	$head_text .= ' - ' . __('Register');
+//}
+//if ($menu_choice == 'settings') {
+//	$head_text .= ' - ' . __('Settings');
+//}
 
 // *** For PDF reports: remove html tags en decode ' characters ***
 function pdf_convert($text)
