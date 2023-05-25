@@ -555,6 +555,12 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 			$url_path = 'cms_pages';
 		}
 
+		// *** New may 2023 ***
+		if (substr_count($uri_path, 'address') > 0) {
+			$uri_path = str_replace("address", "!", $uri_path);
+			$url_path = 'address';
+		}
+
 		if (substr_count($uri_path, 'source') > 0) {
 			$uri_path = str_replace("source", "!", $uri_path);
 			$url_path = 'source';

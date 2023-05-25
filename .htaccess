@@ -44,6 +44,10 @@ RewriteRule ^family/(.*)/(.*) family.php?tree_id=$1&id=$2 [QSA]
 # RewriteRule ^gezin/(.*)/ family.php
 # RewriteRule ^gezin/(.*) family.php
 
+# New may 2023
+RewriteRule ^address/(.*)/(.*)/ index.php?page=address&tree_id=$1&id=$2
+RewriteRule ^address/(.*)/(.*) index.php?page=address&tree_id=$1&id=$2
+
 RewriteRule ^source/(.*)/(.*)/ source.php?tree_id=$1&id=$2
 RewriteRule ^source/(.*)/(.*) source.php?tree_id=$1&id=$2
 

@@ -189,7 +189,7 @@ while (@$addressDb = $address->fetch(PDO::FETCH_OBJ)) {
 
 		//TEST
 		if ($humo_option["url_rewrite"] == "j") {
-			echo '<a href="' . CMS_ROOTPATH . 'index/address/' . $tree_id . '/' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+			echo '<a href="' . CMS_ROOTPATH . 'address/' . $tree_id . '/' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
 		} else {
 			echo '<a href="' . CMS_ROOTPATH . 'index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
 		}
