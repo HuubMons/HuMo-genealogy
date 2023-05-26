@@ -247,8 +247,6 @@ echo '<ul class="humo_menu_item">';
 	// *** Mobile menu ***
 	$select_top='';
 	if ($menu_choice=='help'){ $select_top=' id="current_top"'; }
-	//if ($menu_choice=='info'){ $select_top=' id="current_top"'; }
-	if ($menu_choice=='credits'){ $select_top=' id="current_top"'; }
 	if ($menu_choice=='info_cookies'){ $select_top=' id="current_top"'; }
 
 	echo '<li class="mobile_visible">';
@@ -336,41 +334,6 @@ echo '<ul class="humo_menu_item">';
 				$select_menu=''; if ($menu_choice=='help'){ $select_menu=' id="current"'; }
 				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Help').'</a></li>';
 				//echo '<li'.$select_menu.' class="mobile_visible"><a href="'.$path_tmp.'">'.__('Help').'</a></li>';
-
-				// *** Info ***
-				/*
-				$select_menu=''; if ($menu_choice=='info'){ $select_menu=' id="current"'; }
-				if (CMS_SPECIFIC=='Joomla'){
-					$path_tmp='index.php?option=com_humo-gen&amp;task=info';
-				}
-				elseif ($humo_option["url_rewrite"]=="j"){
-					// *** $uri_path made in header.php ***
-					$path_tmp=$uri_path.'info';
-				}
-				else{
-					$path_tmp=CMS_ROOTPATH.'info.php';
-				}
-				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
-				//echo '<li'.$select_menu.' class="mobile_visible"><a href="'.$path_tmp.'">';
-				printf(__('%s info'),'HuMo-genealogy');
-				echo '</a></li>';
-				*/
-
-				$select_menu=''; if ($menu_choice=='credits'){ $select_menu=' id="current"'; }
-				if (CMS_SPECIFIC=='Joomla'){
-					$path_tmp='index.php?option=com_humo-gen&amp;task=credits';
-				}
-				elseif ($humo_option["url_rewrite"]=="j"){
-					// *** $uri_path made in header.php ***
-					$path_tmp=$uri_path.'credits';
-				}
-				else{
-					$path_tmp=CMS_ROOTPATH.'credits.php';
-				}
-				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
-				//echo '<li'.$select_menu.' class="mobile_visible"><a href="'.$path_tmp.'">';
-				printf(__('%s credits'),'HuMo-genealogy');
-				echo '</a></li>';
 
 				if (!$bot_visit){
 					$select_menu=''; if ($menu_choice=='info_cookies'){ $select_menu=' id="current"'; }
@@ -700,8 +663,6 @@ echo '<ul class="humo_menu_item">';
 
 	$select_top='';
 	if ($menu_choice=='help'){ $select_top=' id="current_top"'; }
-	//if ($menu_choice=='info'){ $select_top=' id="current_top"'; }
-	if ($menu_choice=='credits'){ $select_top=' id="current_top"'; }
 	if ($menu_choice=='info_cookies'){ $select_top=' id="current_top"'; }
 	echo '<li class="mobile_hidden">';
 	echo '<div class="'.$rtlmarker.'sddm">';
@@ -725,38 +686,6 @@ echo '<ul class="humo_menu_item">';
 			echo '<ul class="humo_menu_item2">';
 				$select_menu=''; if ($menu_choice=='help'){ $select_menu=' id="current"'; }
 				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Help').'</a></li>';
-
-				/*
-				$select_menu=''; if ($menu_choice=='info'){ $select_menu=' id="current"'; }
-				if (CMS_SPECIFIC=='Joomla'){
-					$path_tmp='index.php?option=com_humo-gen&amp;task=info';
-				}
-				elseif ($humo_option["url_rewrite"]=="j"){
-					// *** $uri_path made in header.php ***
-					$path_tmp=$uri_path.'info';
-				}
-				else{
-					$path_tmp=CMS_ROOTPATH.'info.php';
-				}
-				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
-				printf(__('%s info'),'HuMo-genealogy');
-				echo '</a></li>';
-				*/
-
-				$select_menu=''; if ($menu_choice=='credits'){ $select_menu=' id="current"'; }
-				if (CMS_SPECIFIC=='Joomla'){
-					$path_tmp='index.php?option=com_humo-gen&amp;task=credits';
-				}
-				elseif ($humo_option["url_rewrite"]=="j"){
-					// *** $uri_path made in header.php ***
-					$path_tmp=$uri_path.'credits';
-				}
-				else{
-					$path_tmp=CMS_ROOTPATH.'credits.php';
-				}
-				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
-				printf(__('%s credits'),'HuMo-genealogy');
-				echo '</a></li>';
 
 				if (!$bot_visit){
 					$select_menu=''; if ($menu_choice=='info_cookies'){ $select_menu=' id="current"'; }
