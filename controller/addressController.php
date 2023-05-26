@@ -7,12 +7,12 @@ class addressController
     public function __construct()
     {
         //require_once  __DIR__ . "/../core/connector.php";
-        require_once  __DIR__ . "/../model/address.php";
+        require_once  __DIR__ . "/../models/address.php";
 
         include_once(CMS_ROOTPATH . "include/person_cls.php");
         include_once(CMS_ROOTPATH . "include/show_sources.php");
         include_once(CMS_ROOTPATH . "include/show_picture.php");
-        
+
         //$this->connector = new connector();
         //$this->Connection = $this->connector->Connection();
         // *** Use existing database connection ***
@@ -22,7 +22,6 @@ class addressController
 
     /**
      * Process action.
-     *
      */
     public function run($action)
     {
@@ -41,7 +40,6 @@ class addressController
 
     /**
      * Loads the addresses page
-     *
      */
     public function index()
     {
@@ -59,10 +57,11 @@ class addressController
 
     /**
      * Get address
-     *
      */
     public function detail()
     {
+        global $user;
+
         //We load the model
         $model = new Address($this->Connection);
         $address = $model->getById($_GET["id"]);
@@ -71,8 +70,15 @@ class addressController
 
         $address_connected_persons = $model->getAddressConnectedPersons($_GET["id"]);
 
+        // *** Check user ***
+        $authorised = '';
+        if ($user['group_addresses'] != 'j') {
+            $authorised = __('You are not authorised to see this page.');
+        }
+
         //We load the detail view and pass values to it
         $this->view("address", array(
+            "authorised" => $authorised,
             "address" => $address,
             "address_sources" => $address_sources,
             "address_connected_persons" => $address_connected_persons,
@@ -82,11 +88,10 @@ class addressController
 
     /**
      * Create the view that we pass to it with the indicated data.
-     *
      */
     public function view($view, $results)
     {
         $data = $results;
-        require_once  __DIR__ . "/../view/" . $view . "View.php";
+        require_once  __DIR__ . "/../views/" . $view . "View.php";
     }
 }

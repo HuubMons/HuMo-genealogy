@@ -1,15 +1,9 @@
 <?php
-
-
-
-//Move to controller?
-global $user;
 // *** Check user ***
-if ($user['group_addresses'] != 'j') {
-	echo __('You are not authorised to see this page.');
+if ($data["authorised"] != '') {
+	echo $data["authorised"];
 	exit();
 }
-
 ?>
 
 <table class="humo standard">
