@@ -1,11 +1,11 @@
 <?php 
 // error_reporting(E_ALL);
 
-//==================================================================
-//===            OUTLINE REPORT  - report_outline.php            ===
-//=== by Yossi Beck - Nov 2008 - (on basis of Huub's family.php) ===
-//=== Jul 2011 Huub: translation of variables to English         ===
-//==================================================================
+/**
+ * OUTLINE REPORT  - report_outline.php
+ * by Yossi Beck - Nov 2008 - (on basis of Huub's family.php)
+ * Jul 2011 Huub: translation of variables to English
+ */
 @set_time_limit(300);
 
 global $show_date, $dates_behind_names, $nr_generations;

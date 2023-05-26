@@ -1,8 +1,6 @@
 # HuMo-genealogy
 
 >
-> Official development repository.
->
 > HuMo-genealogy is free and open-source genealogy software.
 >
 > You can download the current production version [here](https://github.com/HuubMons/HuMo-genealogy/).
@@ -15,7 +13,7 @@
 - [Forum](https://humo-gen.com/genforum/)
 - [Documentation](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
 
-
+## ADD-ON show statistics per country
 
 HuMo-genealogy ADD-ON
 September 2009: Yossi Beck made a function to show statistics per country.

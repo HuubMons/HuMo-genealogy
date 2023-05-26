@@ -67,20 +67,20 @@ if (isset($_POST["search_name"])) {
 }
 
 $person_result = $dbh->query($person_qry);
+?>
 
-echo '<h2 class="center">' . __('Recently changed persons and new persons') . '</h2>';
+<h2 class="center"><?php echo __('Recently changed persons and new persons'); ?></h2>
 
-// *** Search box ***
-echo '<div style="text-align: center; margin-bottom: 16px">';
-echo '<form action="' . CMS_ROOTPATH . 'latest_changes.php" method="post">';
-echo '<input type="text" name="search_name" id="part_of_name" value="' . safe_text_show($search_name) . '">';
-echo ' <input type="submit" value="' . __('Search') . '">';
-echo '</form>';
-echo '</div>';
+<!-- *** Search box *** -->
+<div style="text-align: center; margin-bottom: 16px">
+	<form action="<?php echo CMS_ROOTPATH; ?>latest_changes.php" method="post">
+		<input type="text" name="search_name" id="part_of_name" value="<?php echo safe_text_show($search_name); ?>">
+		<input type="submit" value="<?php echo __('Search'); ?>">
+	</form>
+</div>
 
-//if($rtlmarker=="ltr") echo '<div style="height:400px; width:60%; margin-left: 20%; overflow-y: scroll;">';
-//else echo '<div style="height:400px; width:60%; margin-right: 20%; overflow-y: scroll;">';
-//echo '<table class="humo" width="99%">';
+<?php
+
 echo '<table class="humo small">';
 echo '<tr class=table_headline>';
 echo '<th style="font-size: 90%; text-align: left">' . __('Changed/ Added') . '</th>';

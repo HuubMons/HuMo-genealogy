@@ -1,9 +1,8 @@
 <head>
     <!-- BACKWARDS COMPATIBLY ONLY!!!! -->
-    <script language="JavaScript">
+    <script>
         <!--
         window.location = "list.php";
-        //
         -->
     </script>
 </head>

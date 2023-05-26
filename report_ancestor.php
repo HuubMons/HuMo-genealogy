@@ -1,10 +1,15 @@
 <?php
-// First test scipt made by: Klaas de Winkel
-// Graphical script made by: Theo Huitema
-// Graphical part: better lay-out (colours) and pictures made by: Rene Janssen
-// Graphical part: improved lay-out by: Huub Mons.
-// Ancestor sheet, PDF export for ancestor report and ancestor sheet, image generation for chart made by: Yossi Beck.
-// July 2011: translated all variables to english by: Huub Mons.
+
+/**
+ * 
+ * First test scipt made by: Klaas de Winkel
+ * Graphical script made by: Theo Huitema
+ * Graphical part: better lay-out (colours) and pictures made by: Rene Janssen
+ * Graphical part: improved lay-out by: Huub Mons.
+ * Ancestor sheet, PDF export for ancestor report and ancestor sheet, image generation for chart made by: Yossi Beck.
+ * July 2011: translated all variables to english by: Huub Mons.
+ */
+
 //error_reporting(E_ALL);
 @set_time_limit(3000);
 

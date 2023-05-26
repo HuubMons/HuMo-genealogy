@@ -1,30 +1,32 @@
  <?php
-	// -------------------------------------------------------------------------
-	// |   REPORT_DESCENDANT.PHP                                               |
-	// |   for use with the $genarray generated in HuMo-genealogy              |
-	// |   Original starfield plotting code by Yossi Beck - Feb-March 2010     |
-	// |   Copyright GPL_GNU licence                                           |
-	// -------------------------------------------------------------------------
-	// meaning of $genarray members:
-	// "par" = array nr of parent
-	// "nrc" = nr of children (children with multiple marriages are counted as additional children for plotting's sake
-	// "gen" = nr of the generation
-	// "posx" = the x position of top left corner of a person's square
-	// "posy" = the y position of top left corner of a person's square
-	// "fst" = the x position of first (lefmost) child
-	// "lst" = the x position of last (rightmost) child, unless this is a second marriage of this child,
-	//         in which case the first marriage of the last child is entered into "lst"
-	// "chd" = the number of the child in the family (additional marriages have subsequent numbers)
-	// "2nd" = indicates this person is in fact a second or following instance of the previous person with additional marriage
-	// "htx" = wedding text ("married on 13 mar 1930 to:")
-	// "huw" = mentioning of additional marriage ("2nd marriage")
-	// "sex" = sex of the person
-	// "nam" = name of the person
-	// "sps" = name of spouse
-	// "fams"  = GEDCOM family number (F345)
-	// "gednr" = GEDCOM person number (I143)
-	// "non" = person with no own family (i.e. only child status)
-	// *********************************************************************************************
+	/**
+	 *	-------------------------------------------------------------------------
+	 *	|   REPORT_DESCENDANT.PHP                                               |
+	 *	|   for use with the $genarray generated in HuMo-genealogy              |
+	 *	|   Original starfield plotting code by Yossi Beck - Feb-March 2010     |
+	 *	|   Copyright GPL_GNU licence                                           |
+	 *	-------------------------------------------------------------------------
+	 *
+	 *	meaning of $genarray members:
+	 *	"par" = array nr of parent
+	 *	"nrc" = nr of children (children with multiple marriages are counted as additional children for plotting's sake
+	 *	"gen" = nr of the generation
+	 *	"posx" = the x position of top left corner of a person's square
+	 *	"posy" = the y position of top left corner of a person's square
+	 *	"fst" = the x position of first (lefmost) child
+	 *	"lst" = the x position of last (rightmost) child, unless this is a second marriage of this child,
+	 *	        in which case the first marriage of the last child is entered into "lst"
+	 *	"chd" = the number of the child in the family (additional marriages have subsequent numbers)
+	 *	"2nd" = indicates this person is in fact a second or following instance of the previous person with additional marriage
+	 *	"htx" = wedding text ("married on 13 mar 1930 to:")
+	 *	"huw" = mentioning of additional marriage ("2nd marriage")
+	 *	"sex" = sex of the person
+	 *	"nam" = name of the person
+	 *	"sps" = name of spouse
+	 *	"fams"  = GEDCOM family number (F345)
+	 *	"gednr" = GEDCOM person number (I143)
+	 *	"non" = person with no own family (i.e. only child status)
+	 */
 
 	//error_reporting(E_ALL);
 

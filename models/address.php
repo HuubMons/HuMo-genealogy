@@ -29,7 +29,6 @@ class Address
 //TESTING...
 //TO BE USED FOR ADDRESSES.PHP?
 
-
         $consultation = $this->Connection->prepare($sql);
         $consultation->execute();
         /* Fetch all of the remaining rows in the result set */
