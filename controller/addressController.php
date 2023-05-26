@@ -9,6 +9,10 @@ class addressController
         //require_once  __DIR__ . "/../core/connector.php";
         require_once  __DIR__ . "/../model/address.php";
 
+        include_once(CMS_ROOTPATH . "include/person_cls.php");
+        include_once(CMS_ROOTPATH . "include/show_sources.php");
+        include_once(CMS_ROOTPATH . "include/show_picture.php");
+        
         //$this->connector = new connector();
         //$this->Connection = $this->connector->Connection();
         // *** Use existing database connection ***
@@ -42,14 +46,14 @@ class addressController
     public function index()
     {
         // We create the Address object
-        $get_tickets = new Address($this->Connection);
-        // We get all the employees
-        $addresses = $modelo->getAll();
+        $get_addresses = new Address($this->Connection);
+        // We get all records
+        $addresses = $get_addresses->getAll();
 
         // We load the index view and pass values to it
         $this->view("addresses", array(
-            "tickets" => $addresses,
-            "titulo" => "PHP MVC"
+            "addressess" => $addresses,
+            "title" => __('Addresses')
         ));
     }
 
@@ -60,14 +64,19 @@ class addressController
     public function detail()
     {
         //We load the model
-        $modelo = new Address($this->Connection);
+        $model = new Address($this->Connection);
+        $address = $model->getById($_GET["id"]);
 
-        $address = $modelo->getById($_GET["id"]);
+        $address_sources = $model->getAddressSources($_GET["id"]);
+
+        $address_connected_persons = $model->getAddressConnectedPersons($_GET["id"]);
 
         //We load the detail view and pass values to it
         $this->view("address", array(
             "address" => $address,
-            "titulo" => __('Address')
+            "address_sources" => $address_sources,
+            "address_connected_persons" => $address_connected_persons,
+            "title" => __('Address')
         ));
     }
 
@@ -75,9 +84,9 @@ class addressController
      * Create the view that we pass to it with the indicated data.
      *
      */
-    public function view($vista, $datos)
+    public function view($view, $results)
     {
-        //$data = $datos;
-        require_once  __DIR__ . "/../view/" . $vista . "View.php";
+        $data = $results;
+        require_once  __DIR__ . "/../view/" . $view . "View.php";
     }
 }

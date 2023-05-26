@@ -4,10 +4,6 @@ class Address
     //private $table = "tbl_tickets";
     private $Connection;
     //private $id;
-    //private $Name;
-    //private $Surname;
-    //private $email;
-    //private $phone;
 
     public function __construct($Connection)
     {
@@ -23,42 +19,6 @@ class Address
     {
         $this->id = $id;
     }
-
-    public function getName()
-    {
-        return $this->Name;
-    }
-    public function setName($Name)
-    {
-        $this->Name = $Name;
-    }
-
-    public function getSurname()
-    {
-        return $this->Surname;
-    }
-    public function setSurname($Surname)
-    {
-        $this->Surname = $Surname;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function getphone()
-    {
-        return $this->phone;
-    }
-    public function setphone($phone)
-    {
-        $this->phone = $phone;
-    }
     */
 
     public function getAll()
@@ -66,36 +26,9 @@ class Address
         //$consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone FROM " . $this->table);
         //$consultation = $this->Connection->prepare("SELECT * FROM " . $this->table);
 
-        //$consultation = $this->Connection->prepare("SELECT * FROM tbl_tickets
-        //    LEFT JOIN tbl_ticket_category ON ticket_category=ticket_category_id
-        //    LEFT JOIN tbl_ticket_status ON ticket_status=ticket_status_id");
-        $sql = "SELECT * FROM tbl_tickets
-        LEFT JOIN tbl_ticket_category ON ticket_category=ticket_category_id
-        LEFT JOIN tbl_ticket_status ON ticket_status=ticket_status_id";
+//TESTING...
+//TO BE USED FOR ADDRESSES.PHP?
 
-        $start = ' WHERE';
-        if (isset($_POST['search_ticket']))
-            $search_ticket = $_POST['search_ticket'];
-        else
-            $search_ticket = '';
-
-        if ($search_ticket) {
-            $sql .= " WHERE ticket_name LIKE '%" . $_POST['search_ticket'] . "%'";
-            $sql .= " OR ticket_text LIKE '%" . $_POST['search_ticket'] . "%'";
-            $start = ' AND';
-        }
-
-        // *** Voorbeeld voor ONLY_FULL_GROUP_BY instellingen ***
-        //$sql.=" GROUP BY person_id ORDER BY ticket_name";
-        //$sql.=" GROUP BY person_id, ticket_name ORDER BY ticket_name";
-
-        if (isset($_GET['order']) and $_GET['order'] == 'status') {
-            $sql .= " ORDER BY ticket_status";
-        } elseif (isset($_GET['order']) and $_GET['order'] == 'status_desc') {
-            $sql .= " ORDER BY ticket_status DESC";
-        } else {
-            $sql .= " ORDER BY ticket_priority, ticket_id";
-        }
 
         $consultation = $this->Connection->prepare($sql);
         $consultation->execute();
@@ -108,27 +41,53 @@ class Address
 
     public function getById($id)
     {
-        //$consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone
-        //    FROM " . $this->table . "  WHERE id = :id");
-        //  $consultation = $this->Connection->prepare("
-        //      SELECT * FROM " . $this->table . "  WHERE ticket_id = :ticket_id");
+        global $db_functions;
 
-        global $tree_id;
-
-        $sql = "SELECT * FROM humo_addresses
-            WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr";
-        //$stmt = $this->db->prepare($sql);
-        $stmt = $this->Connection->prepare($sql);
-        //$stmt->bindValue(':address_tree_id', $this->tree_id, PDO::PARAM_STR);
-        $stmt->bindValue(':address_tree_id', $tree_id, PDO::PARAM_STR);
-        //$stmt->bindValue(':address_gedcomnr', $address_gedcomnr, PDO::PARAM_STR);
-        $stmt->bindValue(':address_gedcomnr', $id, PDO::PARAM_STR);
-        $stmt->execute();
-        //$qryDb = $stmt->fetch(PDO::FETCH_OBJ);
-        //		$result = $stmt->fetch(PDO::FETCH_OBJ);
-        $result = $stmt->fetchObject();
+        $addressDb = $db_functions->get_address($id);
+        $result = $addressDb;
 
         $this->Connection = null; //connection closure
         return $result;
+    }
+
+    public function getAddressSources($id)
+    {
+        // *** Show source by addresss ***
+        $source_array = show_sources2("address", "address_source", $id);
+
+        $this->Connection = null; //connection closure
+        if ($source_array)
+            return $source_array['text'];
+    }
+
+    public function getAddressConnectedPersons($id)
+    {
+        global $db_functions;
+
+        $text = '';
+        $person_cls = new person_cls;
+        // *** Search address in connections table ***
+        //$event_qry = $db_functions->get_connections('person_address', $_GET['gedcomnumber']);
+        $event_qry = $db_functions->get_connections('person_address', $_GET['id']);
+        foreach ($event_qry as $eventDb) {
+            // *** Person address ***
+            if ($eventDb->connect_connect_id) {
+                $personDb = $db_functions->get_person($eventDb->connect_connect_id);
+                $name = $person_cls->person_name($personDb);
+
+                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                $text .= __('Address by person') . ': <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+
+                if ($eventDb->connect_role) {
+                    $text .= ' ' . $eventDb->connect_role;
+                }
+                $text .= '<br>';
+            }
+        }
+        unset($event_qry); // *** If finished, remove data from memory ***
+
+        $this->Connection = null; //connection closure
+        return $text;
     }
 }

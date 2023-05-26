@@ -9,7 +9,6 @@
  * See the manual for basic setup instructions
  *
  * https://humo-gen.com
- * ----------
  *
  * Copyright (C) 2008-2023 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
@@ -33,9 +32,7 @@
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH . "menu.php");
 
-
-
-if ($page=='index') {
+if ($page == 'index') {
 
 	// ***********************************************************************************************
 	// ** Main index class ***
@@ -81,15 +78,11 @@ if ($page=='index') {
 
 	// *** Show HuMo-genealogy footer ***
 	echo $mainindex->show_footer();
-
 } elseif ($page == 'address') {
 	/**
-	 * MAy 2023: Added MVC system
-	 * 
+	 * May 2023: Added MVC system
 	 * 
 	 */
-
-	//include_once(CMS_ROOTPATH . "footer.php");
 
 	// Global setting
 	//require_once 'config/global.php';
@@ -98,11 +91,6 @@ if ($page=='index') {
 
 	function routeController($controller)
 	{
-
-//include_once __DIR__ . '/include/db_functions_cls.php';
-//$db_functions = new db_functions($dbh);
-
-
 		switch ($controller) {
 			case 'address':
 				$strFileController = 'controller/addressController.php';
@@ -120,8 +108,8 @@ if ($page=='index') {
 
 	function launchAction($controllerObj)
 	{
-//TIJDELIJK
-$_GET["action"]='detail';
+		//TEMPORARY
+		$_GET["action"] = 'detail';
 		if (isset($_GET["action"])) {
 			$controllerObj->run($_GET["action"]);
 		} else {
@@ -136,13 +124,12 @@ $_GET["action"]='detail';
 	//	// We launch the action
 	//	launchAction($controllerObj);
 	//} else {
-		// We load the default controller instance
-		$controllerObj = routeController(CONTROLLER_DEFAULT);
-		// We launch the action
-		launchAction($controllerObj);
+	// We load the default controller instance
+	$controllerObj = routeController(CONTROLLER_DEFAULT);
+	// We launch the action
+	launchAction($controllerObj);
 	//}
 }
 
-
-
+echo '<br>';
 include_once(CMS_ROOTPATH . "footer.php");
