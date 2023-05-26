@@ -247,7 +247,7 @@ echo '<ul class="humo_menu_item">';
 	// *** Mobile menu ***
 	$select_top='';
 	if ($menu_choice=='help'){ $select_top=' id="current_top"'; }
-	if ($menu_choice=='info'){ $select_top=' id="current_top"'; }
+	//if ($menu_choice=='info'){ $select_top=' id="current_top"'; }
 	if ($menu_choice=='credits'){ $select_top=' id="current_top"'; }
 	if ($menu_choice=='info_cookies'){ $select_top=' id="current_top"'; }
 
@@ -338,6 +338,7 @@ echo '<ul class="humo_menu_item">';
 				//echo '<li'.$select_menu.' class="mobile_visible"><a href="'.$path_tmp.'">'.__('Help').'</a></li>';
 
 				// *** Info ***
+				/*
 				$select_menu=''; if ($menu_choice=='info'){ $select_menu=' id="current"'; }
 				if (CMS_SPECIFIC=='Joomla'){
 					$path_tmp='index.php?option=com_humo-gen&amp;task=info';
@@ -353,6 +354,7 @@ echo '<ul class="humo_menu_item">';
 				//echo '<li'.$select_menu.' class="mobile_visible"><a href="'.$path_tmp.'">';
 				printf(__('%s info'),'HuMo-genealogy');
 				echo '</a></li>';
+				*/
 
 				$select_menu=''; if ($menu_choice=='credits'){ $select_menu=' id="current"'; }
 				if (CMS_SPECIFIC=='Joomla'){
@@ -698,7 +700,7 @@ echo '<ul class="humo_menu_item">';
 
 	$select_top='';
 	if ($menu_choice=='help'){ $select_top=' id="current_top"'; }
-	if ($menu_choice=='info'){ $select_top=' id="current_top"'; }
+	//if ($menu_choice=='info'){ $select_top=' id="current_top"'; }
 	if ($menu_choice=='credits'){ $select_top=' id="current_top"'; }
 	if ($menu_choice=='info_cookies'){ $select_top=' id="current_top"'; }
 	echo '<li class="mobile_hidden">';
@@ -724,6 +726,7 @@ echo '<ul class="humo_menu_item">';
 				$select_menu=''; if ($menu_choice=='help'){ $select_menu=' id="current"'; }
 				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Help').'</a></li>';
 
+				/*
 				$select_menu=''; if ($menu_choice=='info'){ $select_menu=' id="current"'; }
 				if (CMS_SPECIFIC=='Joomla'){
 					$path_tmp='index.php?option=com_humo-gen&amp;task=info';
@@ -738,6 +741,7 @@ echo '<ul class="humo_menu_item">';
 				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
 				printf(__('%s info'),'HuMo-genealogy');
 				echo '</a></li>';
+				*/
 
 				$select_menu=''; if ($menu_choice=='credits'){ $select_menu=' id="current"'; }
 				if (CMS_SPECIFIC=='Joomla'){
