@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is the main web entry point for HuMo-genealogy.
  *
@@ -8,7 +9,6 @@
  * See the manual for basic setup instructions
  *
  * https://humo-gen.com
- * ----------
  *
  * Copyright (C) 2008-2023 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
@@ -28,56 +28,128 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
+include_once(CMS_ROOTPATH . "menu.php");
 
-// ***********************************************************************************************
-// ** Main index class ***
-// ***********************************************************************************************
-include_once(CMS_ROOTPATH."include/mainindex_cls.php");
-$mainindex = new mainindex_cls();
+if ($page == 'index') {
+    // ***********************************************************************************************
+    // ** Main index class ***
+    // ***********************************************************************************************
+    include_once(CMS_ROOTPATH . "include/mainindex_cls.php");
+    $mainindex = new mainindex_cls();
 
-// *** Replace the main index by an own CMS page ***
-$text='';
-if (isset($humo_option["main_page_cms_id_".$selected_language]) AND $humo_option["main_page_cms_id_".$selected_language]) {
-	// *** Show CMS page ***
-	if (is_numeric($humo_option["main_page_cms_id_".$selected_language])){
-		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages
-			WHERE page_id='".$humo_option["main_page_cms_id_".$selected_language]."' AND page_status!=''");
-		$cms_pagesDb=$page_qry->fetch(PDO::FETCH_OBJ);
-		$text=$cms_pagesDb->page_text;
-	}
+    // *** Replace the main index by an own CMS page ***
+    $text = '';
+    if (isset($humo_option["main_page_cms_id_" . $selected_language]) and $humo_option["main_page_cms_id_" . $selected_language]) {
+        // *** Show CMS page ***
+        if (is_numeric($humo_option["main_page_cms_id_" . $selected_language])) {
+            $page_qry = $dbh->query("SELECT * FROM humo_cms_pages
+        WHERE page_id='" . $humo_option["main_page_cms_id_" . $selected_language] . "' AND page_status!=''");
+            $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
+            $text = $cms_pagesDb->page_text;
+        }
+    } elseif (isset($humo_option["main_page_cms_id"]) and $humo_option["main_page_cms_id"]) {
+        // *** Show CMS page ***
+        if (is_numeric($humo_option["main_page_cms_id"])) {
+            $page_qry = $dbh->query("SELECT * FROM humo_cms_pages
+        WHERE page_id='" . $humo_option["main_page_cms_id"] . "' AND page_status!=''");
+            $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
+            $text = $cms_pagesDb->page_text;
+        }
+    }
+
+    // *** Show slideshow ***
+    if (isset($humo_option["slideshow_show"]) and $humo_option["slideshow_show"] == 'y') {
+        $mainindex->show_slideshow();
+    }
+
+    if ($text) {
+        // *** Show CMS page ***
+        echo '<div id="mainmenu_centerbox">' . $text . '</div>';
+    } else {
+        // *** Show default HuMo-genealogy homepage ***
+        $mainindex->show_tree_index();
+    }
+
+    // *** Show HuMo-genealogy footer ***
+    echo $mainindex->show_footer();
+} elseif ($page == 'address') {
+
+    // NOT IN USE AT THIS MOMENT
+
+
+    /**
+     * May 2023: Added MVC system
+     * 
+     */
+    /*
+    // Global setting
+    //require_once 'config/global.php';
+    define("CONTROLLER_DEFAULT", "Address");
+    define("ACTION_DEFAULT", "address");
+
+    function routeController($controller)
+    {
+        switch ($controller) {
+            case 'address':
+                $strFileController = 'controller/addressController.php';
+                require_once $strFileController;
+                $controllerObj = new addressController();
+                break;
+            default:
+                $strFileController = 'controller/addressController.php';
+                require_once $strFileController;
+                $controllerObj = new addressController();
+                break;
+        }
+        return $controllerObj;
+    }
+
+    function launchAction($controllerObj)
+    {
+        //TEMPORARY
+        $_GET["action"] = 'detail';
+        if (isset($_GET["action"])) {
+            $controllerObj->run($_GET["action"]);
+        } else {
+            $controllerObj->run(ACTION_DEFAULT);
+        }
+    }
+
+    // We load the controller and execute the action
+    //if (isset($_GET["controller"])) {
+    //	// We load the instance of the corresponding controller
+    //	$controllerObj = routeController($_GET["controller"]);
+    //	// We launch the action
+    //	launchAction($controllerObj);
+    //} else {
+    // We load the default controller instance
+    $controllerObj = routeController(CONTROLLER_DEFAULT);
+    // We launch the action
+    launchAction($controllerObj);
+    //}
+*/
+} elseif ($page == 'birthday') {
+    include 'birthday_list.php';
+} elseif ($page == 'cookies') {
+    include 'cookies.php';
+} elseif ($page == 'family') {
+    include 'family.php';
+} elseif ($page == 'help') {
+    include 'help.php';
+} elseif ($page == 'list') {
+    include 'list.php';
+} elseif ($page == 'list_names') {
+    include 'list_names.php';
+} elseif ($page == 'login') {
+    include 'login.php';
+} elseif ($page == 'settings') {
+    include 'user_settings.php';
+} elseif ($page == 'statistics') {
+    include 'statistics.php';
 }
-elseif (isset($humo_option["main_page_cms_id"]) AND $humo_option["main_page_cms_id"]){
-	// *** Show CMS page ***
-	if (is_numeric($humo_option["main_page_cms_id"])){
-		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages
-			WHERE page_id='".$humo_option["main_page_cms_id"]."' AND page_status!=''");
-		$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
-		$text=$cms_pagesDb->page_text;
-	}
-}
 
-// *** Show slideshow ***
-if (isset($humo_option["slideshow_show"]) AND $humo_option["slideshow_show"]=='y'){
-	$mainindex->show_slideshow();
-}
 
-if ($text){
-	// *** Can be used for extra box in lay-out ***
-	echo '<div id="mainmenu_centerbox">';
-		// *** Show CMS page ***
-		echo $text;
-	echo '</div>';
-}
-else{
-	// *** Show default HuMo-genealogy homepage ***
-	$mainindex->show_tree_index();
-}
-
-// *** Show HuMo-genealogy footer ***
-echo $mainindex->show_footer();
-
-include_once(CMS_ROOTPATH."footer.php");
-?>
+echo '<br>';
+include_once(CMS_ROOTPATH . "footer.php");

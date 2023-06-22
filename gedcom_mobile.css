@@ -1,6 +1,6 @@
 /* CSS file to show standard HuMo-genealogy pages at mobile devices */
 
-body{
+body {
 	/* font: 10px Verdana, tahoma, arial, sans-serif; */
 
 	/* Rescale background image based on the container's size */
@@ -8,45 +8,49 @@ body{
 }
 
 /* Hide some items in mobile version */
-.mobile_hidden{
-	visibility:hidden;
-	width:0px; height:0px;
+.mobile_hidden {
+	visibility: hidden;
+	width: 0px;
+	height: 0px;
 	font-size: 0;
 }
-.mobile_visible{
-	visibility:visible;
-	width:initial; height:initial;
+
+.mobile_visible {
+	visibility: visible;
+	width: initial;
+	height: initial;
 }
 
 #top {
-	height:70px;
-	padding:5px 5px 0px;
+	height: 70px;
+	padding: 5px 5px 0px;
 }
 
-#top_website_name{
+#top_website_name {
 	/* visibility:hidden; */
-	font-size:14px;
+	font-size: 14px;
 }
 
-#top_tree_select{
+#top_tree_select {
 	/* position: relative; */
 	/* float:right; */
-	right:5px;
-	top:20px;
+	right: 5px;
+	top: 20px;
 }
 
 #top_quicksearch {
-	right:150px;
-	top:45px;
+	right: 150px;
+	top: 45px;
 }
+
 #top_favorites_select {
-	right:5px;
-	top:45px;
+	right: 5px;
+	top: 45px;
 }
 
 /* #humo_menu = menu bar */
 #humo_menu {
-	top:70px;
+	top: 70px;
 }
 
 #humo_menu {
@@ -54,20 +58,21 @@ body{
 }
 
 /* Pop-up menu */
-ul.humo_menu_item2 li a{
-	display:block;
+ul.humo_menu_item2 li a {
+	display: block;
 	/* font-size: 11px; */
 	font-size: 13px;
-	padding:5px 4px 5px 4px;
+	padding: 5px 4px 5px 4px;
 }
 
 #content {
 	/* up, right, down */
-	padding:5px 5px 5px 2px;
+	padding: 5px 5px 5px 2px;
 }
+
 #rtlcontent {
 	/* up, right, down */
-	padding:5px 5px 5px 2px;
+	padding: 5px 5px 5px 2px;
 }
 
 #mainmenu_centerbox {
@@ -75,61 +80,67 @@ ul.humo_menu_item2 li a{
 	margin: 10px 5px 0px 5px;
 }
 
-#mainmenu_left{
+#mainmenu_left {
 	/* visibility:hidden; */
 	/* width:1%; */
-	width:100%;
+	width: 100%;
 }
+
 #mainmenu_center {
-	width:100%;
+	width: 100%;
 	text-align: left;
 	margin-left: 0px;
 }
-#mainmenu_right{
+
+#mainmenu_right {
 	/* visibility:hidden;
 	width:1%;
 	width:0px; height:0px;
 	*/
-	width:100%;
+	width: 100%;
 	text-align: left;
 	margin-left: 0px;
 }
 
-#most_frequent_names{
+#most_frequent_names {
 	text-align: center;
-	width:90%;
+	width: 90%;
 }
 
 /* Single column for country flags in mobile version */
-#m4x{
-	width:100px;
-	width:20px;
+#m4x {
+	width: 100px;
+	width: 20px;
 }
+
 #m4x ul li {
-	width:100px;
-	width:30px;
+	width: 100px;
+	width: 30px;
 }
 
 /* Main menu */
-ul.humo_menu_item li a{
+ul.humo_menu_item li a {
 	/* up, right, bottom */
 	/* padding:8px 8px 7px 8px; */
-	padding:8px 2px 7px 2px;
-}
-/* Pop-up menu */
-ul.humo_menu_item2 li a{
-	/* padding:8px 5px 6px 5px; */
-	padding:4px 5px 4px 5px;
+	padding: 8px 2px 7px 2px;
 }
 
-table.index_table{
-	width:100%;
+/* Pop-up menu */
+ul.humo_menu_item2 li a {
+	/* padding:8px 5px 6px 5px; */
+	padding: 4px 5px 4px 5px;
 }
+
+table.index_table {
+	width: 100%;
+}
+
 table.small {
-	width:100%;
+	width: 100%;
 }
+
 table.standard {
-	width:100%;
+	width: 100%;
 }
 
 .index_lastname {
@@ -139,7 +150,7 @@ table.standard {
 
 div.photobook {
 	width: 300px;
-	height:170px;
+	height: 170px;
 }
 
 /* Hulppagina */
@@ -147,6 +158,7 @@ div.photobook {
 	width: 100%;
 	left: 0%;
 }
+
 .rtlhelp_div {
 	width: 100%;
 	right: 0%;
