@@ -32,7 +32,7 @@ while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
     $treetext = show_tree_text($treeDb->tree_id, $selected_language);
     $selected = '';
     if ($treeDb->tree_id == $tree_id) {
-        $selected = ' SELECTED';
+        $selected = ' selected';
         $db_functions->set_tree_id($tree_id);
     }
     echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
@@ -232,7 +232,7 @@ echo '</span>';
                     if ($changeDb->user) {
                         $selected = '';
                         if ($changeDb->user == $editor) {
-                            $selected = ' SELECTED';
+                            $selected = ' selected';
                         }
                         echo '<option value="' . $changeDb->user . '"' . $selected . '>' . $changeDb->user . '</option>';
                     }
@@ -244,17 +244,17 @@ echo '</span>';
                 echo '<option value="50">50</option>';
                 $selected = '';
                 if ($limit == 100) {
-                    $selected = ' SELECTED';
+                    $selected = ' selected';
                 }
                 echo '<option value="100"' . $selected . '>100</option>';
                 $selected = '';
                 if ($limit == 200) {
-                    $selected = ' SELECTED';
+                    $selected = ' selected';
                 }
                 echo '<option value="200"' . $selected . '>200</option>';
                 $selected = '';
                 if ($limit == 500) {
-                    $selected = ' SELECTED';
+                    $selected = ' selected';
                 }
                 echo '<option value="500"' . $selected . '>500</option>';
                 echo '</select>';
@@ -992,10 +992,9 @@ echo '</span>';
                     $personDb = $person->fetch();
 
                     /*	// using class slows down considerably: 10,000 persons without class 15 sec, with class for name: over 4 minutes...
-            $persclass = New person_cls;
-            $persclass->construct($personDb);
-            $name=$persclass->person_name($personDb); 
-        */
+                        $persclass = New person_cls($personDb);
+                        $name=$persclass->person_name($personDb); 
+                    */
                     $name = $personDb['pers_lastname'] . ", " . $personDb['pers_firstname'] . ' ' . str_replace("_", " ", $personDb['pers_prefix']);
 
                     // person's dates

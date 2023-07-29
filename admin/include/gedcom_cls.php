@@ -1,14 +1,13 @@
 <?php
 class gedcom_cls
 {
-
     //public function __destruct(){
     //	echo 'DESTRUCTION';
     //}
 
-    // ************************************************************************************************
-    // *** Process persons ***
-    // ************************************************************************************************
+    /**
+     * Process persons
+     */
     function process_person($person_array)
     {
         global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
@@ -2345,11 +2344,11 @@ class gedcom_cls
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
                 if (!$loc_qry->rowCount() and $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
                     $geosql = "INSERT IGNORE INTO humo_location SET
-                location_location='" . $this->text_process($geocode_plac[$i]) . "',
-                location_lat='" . $geocode_lati[$i] . "',
-                location_lng='" . $geocode_long[$i] . "',
-                location_status='" . $tree_prefix . $geocode_type[$i] . "'
-                ";
+                        location_location='" . $this->text_process($geocode_plac[$i]) . "',
+                        location_lat='" . $geocode_lati[$i] . "',
+                        location_lng='" . $geocode_long[$i] . "',
+                        location_status='" . $tree_prefix . $geocode_type[$i] . "'
+                        ";
                     $dbh->query($geosql);
                 } elseif ($loc_qry->rowCount() and $geocode_type[$geocode_nr] != "") {   // location already exists, check if we need to add something in location_status
                     $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
@@ -2655,6 +2654,7 @@ class gedcom_cls
                 if ($gen_program == 'BROSKEEP' and ($search_marr == "MARR" or $search_marr == "MARB" or $search_marr == "MARL")) {
                     if ($marr_flag == 1 and $family["fam_div"] == true) {
                         // this is a second MARR in this @FAM after a divorce so second marriage of these people
+                        //TODO check $skipfrom
                         $this->process_family($family_array, $skipfrom, $z); // calls itself with parameters what to skip
                         break;
                     } elseif ($second_marr == 0) {
@@ -3192,6 +3192,7 @@ class gedcom_cls
                     $this->process_places($family["fam_" . $finrelation . "_place"], $buffer);
                 }
 
+                //TODO check $person["pers_text"]
                 if ($level[2] == 'NOTE') {
                     $family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], $buffer, '2');
                 }
@@ -4148,7 +4149,7 @@ class gedcom_cls
                 }
 
                 //if($add_tree==true OR $reassign==true) { $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N'); }
-                $connect['text'][$i] = $text['text_gedcomnr'];	// *** Allready re-assigned ***
+                $connect['text'][$i] = $text['text_gedcomnr'];    // *** Allready re-assigned ***
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_connections SET
                 connect_tree_id='" . $tree_id . "',
@@ -5491,9 +5492,9 @@ class gedcom_cls
         }
     }
 
-    // *****************
-    // *** Functions ***
-    // *****************
+    /**
+     * Functions
+     */
 
     /*
 function non_processed_items($buffer){
@@ -5610,7 +5611,7 @@ function non_processed_items($buffer){
         } elseif ($buffer6 == ($number) . ' TITL') {
             $processed = 1;
             $text .= substr($buffer, 7);
-        }	// 1 OBJE -> 2 TITL 
+        }    // 1 OBJE -> 2 TITL 
         elseif ($buffer6 == ($number + 1) . ' CONT') {
             $processed = 1;
             $text .= $this->cont(substr($buffer, 7));

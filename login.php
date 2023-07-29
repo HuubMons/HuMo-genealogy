@@ -252,6 +252,7 @@ elseif (isset($_GET['ak']) and $_GET['ak'] != '') {
         <tr><td>" . __('Re-enter new Password') . "  
         </td><td><input type ='password' class='bginput' name='password2' ></td></tr>";
 
+    //TODO check this code
     //if ($humo_option["registration_use_spam_question"]=='y'){
     echo '<tr><td>' . __('Please answer the block-spam-question:') . '</td>';
     echo '<td>' . $humo_option["block_spam_question"] . '<br>';

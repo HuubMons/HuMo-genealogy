@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-//TO DO 
+//TODO 
 // IE - line around pics
 ?>
 <script src="include/popup_merge.js"></script>
@@ -277,28 +277,28 @@ if (!defined('ADMIN_PAGE')) {
             echo __('Max items per page: ');
             echo '<select size="1" name="maxlines" style="width:50px" onChange="this.form.submit();">';
             $selected = "";
-            if ($_SESSION['maxlines'] == 10) $selected = " SELECTED ";
+            if ($_SESSION['maxlines'] == 10) $selected = " selected ";
             echo '<option value="10" ' . $selected . '>' . '10' . '</option>';
             $selected = "";
-            if ($_SESSION['maxlines'] == 20) $selected = " SELECTED ";
+            if ($_SESSION['maxlines'] == 20) $selected = " selected ";
             echo '<option value="20" ' . $selected . '>' . '20' . '</option>';
             $selected = "";
-            if ($_SESSION['maxlines'] == 30) $selected = " SELECTED ";
+            if ($_SESSION['maxlines'] == 30) $selected = " selected ";
             echo '<option value="30" ' . $selected . '>' . '30' . '</option>';
             $selected = "";
-            if ($_SESSION['maxlines'] == 50) $selected = " SELECTED ";
+            if ($_SESSION['maxlines'] == 50) $selected = " selected ";
             echo '<option value="50" ' . $selected . '>' . '50' . '</option>';
             $selected = "";
-            if ($_SESSION['maxlines'] == 100) $selected = " SELECTED ";
+            if ($_SESSION['maxlines'] == 100) $selected = " selected ";
             echo '<option value="100" ' . $selected . '>' . '100' . '</option>';
             $selected = "";
-            if ($_SESSION['maxlines'] == 200) $selected = " SELECTED ";
+            if ($_SESSION['maxlines'] == 200) $selected = " selected ";
             echo '<option value="200" ' . $selected . '>' . '200' . '</option>';
             $selected = "";
-            if ($_SESSION['maxlines'] == 300) $selected = " SELECTED ";
+            if ($_SESSION['maxlines'] == 300) $selected = " selected ";
             echo '<option value="300" ' . $selected . '>' . '300' . '</option>';
             $selected = "";
-            if ($_SESSION['maxlines'] == 400) $selected = " SELECTED ";
+            if ($_SESSION['maxlines'] == 400) $selected = " selected ";
             echo '<option value="400" ' . $selected . '>' . '400' . '</option>';
             echo '</select>';
 

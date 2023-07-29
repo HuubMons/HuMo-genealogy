@@ -1,12 +1,8 @@
-# Remove # in next line to suppress fault messages.
-#php_flag display_errors off
-
 # Url_rewrite option
 RewriteEngine On
 
 RewriteRule ^tree_index/(.*)/ tree_index.php?tree_id=$1 [QSA]
 RewriteRule ^tree_index/(.*) tree_index.php?tree_id=$1 [QSA]
-# RewriteRule ^tree_index tree_index.php
 
 RewriteRule ^index/ index.php [QSA]
 RewriteRule ^index index.php [QSA]
@@ -24,11 +20,6 @@ RewriteRule ^cms_pages cms_pages.php
 # *** First (.*) = $1, second (.*) = $2. [QSA] = also read extra variables. ***
 RewriteRule ^family/(.*)/(.*)/ family.php?tree_id=$1&id=$2 [QSA]
 RewriteRule ^family/(.*)/(.*) family.php?tree_id=$1&id=$2 [QSA]
-
-RewriteRule ^source/(.*)/(.*)/ source.php?tree_id=$1&id=$2
-RewriteRule ^source/(.*)/(.*) source.php?tree_id=$1&id=$2
-
-# php_value max_input_vars 4000
 
 # MVC (and wrong links will direct to index.php).
 RewriteCond %{REQUEST_FILENAME} !-f

@@ -1,7 +1,7 @@
 <?php
 class mainindex_cls
 {
-    function show_tree_index()
+    public function show_tree_index()
     {
         global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
 
@@ -240,7 +240,7 @@ class mainindex_cls
 
 
     // *** Show name of selected family tree ***
-    function selected_family_tree()
+    public function selected_family_tree()
     {
         global $dbh, $num_rows, $selected_language;
         $text = '<div class="mainmenu_bar fonts">';
@@ -255,7 +255,7 @@ class mainindex_cls
     }
 
     // *** List family trees ***
-    function tree_list($datasql)
+    public function tree_list($datasql)
     {
         global $dbh, $humo_option, $uri_path, $user, $language, $selected_language;
         $text = '';
@@ -283,7 +283,8 @@ class mainindex_cls
                     // *** url_rewrite ***
                     //elseif ($humo_option["url_rewrite"] == "j") {
                     if ($humo_option["url_rewrite"] == "j") {
-                        $path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id . '/';
+                        //$path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id . '/';
+                        $path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id;
                         //$path_tmp=$uri_path.'index/'.$dataDb->tree_id.'/';
                     } else {
                         $path_tmp = 'tree_index.php?tree_id=' . $dataDb->tree_id;
@@ -293,7 +294,7 @@ class mainindex_cls
                 }
                 if ($text != '') $text .= '<br>';
                 $text .= $tree_name;
-            }	// end of family tree check
+            }    // end of family tree check
 
         }
 
@@ -304,7 +305,7 @@ class mainindex_cls
     }
 
     // *** Family tree data ***
-    function tree_data()
+    public function tree_data()
     {
         global $dataDb, $language;
         $tree_date = $dataDb->tree_date;
@@ -353,7 +354,7 @@ class mainindex_cls
     }
 
     // *** Owner family tree ***
-    function owner()
+    public function owner()
     {
         global $language, $dataDb;
         $tree_owner = '';
@@ -365,7 +366,7 @@ class mainindex_cls
                 //if (CMS_SPECIFIC == 'Joomla') {
                 //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=mailform';
                 //} else {
-                    $path_tmp = CMS_ROOTPATH . 'mailform.php';
+                $path_tmp = CMS_ROOTPATH . 'mailform.php';
                 //}
                 $tree_owner .= '<a href="' . $path_tmp . '">' . $dataDb->tree_owner . "</a>\n";
             } else {
@@ -376,7 +377,7 @@ class mainindex_cls
     }
 
     //*** Most frequent names ***
-    function last_names($columns, $rows)
+    public function last_names($columns, $rows)
     {
         global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $maxcols, $text;
 
@@ -401,8 +402,8 @@ class mainindex_cls
                 //    //$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
                 //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;tree_id=' . tree_id;
                 //} else {
-                    //$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
-                    $path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $_SESSION['tree_id'];
+                //$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
+                $path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $_SESSION['tree_id'];
                 //}
                 $text .= '<td class="namelst">';
                 if (isset($freq_last_names[$nr])) {
@@ -591,7 +592,7 @@ class mainindex_cls
     }
 
     // *** Search field ***
-    function search_box()
+    public function search_box()
     {
         global $language, $dbh, $humo_option;
         $text = '';
@@ -635,7 +636,7 @@ class mainindex_cls
         //if (CMS_SPECIFIC == 'Joomla') {
         //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=list';
         //} else {
-            $path_tmp = CMS_ROOTPATH . 'list.php';
+        $path_tmp = CMS_ROOTPATH . 'list.php';
         //}
         $text .= '<form method="post" action="' . $path_tmp . '">';
 
@@ -687,7 +688,7 @@ class mainindex_cls
         //if (CMS_SPECIFIC == 'Joomla') {
         //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1&index_list=search';
         //} else {
-            $path_tmp = CMS_ROOTPATH . 'list.php?adv_search=1&index_list=search';
+        $path_tmp = CMS_ROOTPATH . 'list.php?adv_search=1&index_list=search';
         //}
         $text .= '<p><a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25"> ' . __('Advanced search') . '</a></p>';
 
@@ -696,7 +697,7 @@ class mainindex_cls
     }
 
     // *** Random photo ***
-    function random_photo()
+    public function random_photo()
     {
         global $dataDb, $tree_id, $dbh, $db_functions;
         $text = '';
@@ -714,8 +715,7 @@ class mainindex_cls
             $check_file = strtolower(substr($picname, -3, 3));
             if (($check_file == 'png' or $check_file == 'gif'  or $check_file == 'jpg') and file_exists($tree_pict_path . $picname)) {
                 @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
-                $man_cls = new person_cls;
-                $man_cls->construct($personmnDb);
+                $man_cls = new person_cls($personmnDb);
                 $man_privacy = $man_cls->privacy;
                 if ($man_cls->privacy == '') {
                     $date_place = '';
@@ -759,7 +759,7 @@ class mainindex_cls
     }
 
     // *** Favourites ***
-    function extra_links()
+    public function extra_links()
     {
         global $dbh, $tree_id, $humo_option, $uri_path;
         $text = '';
@@ -806,7 +806,7 @@ class mainindex_cls
     }
 
     // *** Alphabet line ***
-    function alphabet()
+    public function alphabet()
     {
         global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path;
         $text = '';
@@ -919,7 +919,7 @@ class mainindex_cls
         return $text;
     }
 
-    function today_in_history($view = 'with_table')
+    public function today_in_history($view = 'with_table')
     {
         global $dbh, $dataDb;
         //include_once(CMS_ROOTPATH."include/person_cls.php");
@@ -957,9 +957,8 @@ class mainindex_cls
 
         // *** Save results in an array, so it's possible to order the results by date ***
         while ($record = $birth_qry->fetch(PDO::FETCH_OBJ)) {
-            $person_cls = new person_cls;
+            $person_cls = new person_cls($record);
             $name = $person_cls->person_name($record);
-            $person_cls->construct($record);
             if (!$person_cls->privacy) {
                 if (trim(substr($record->pers_birth_date, 0, 6)) == $today or substr($record->pers_birth_date, 0, 6) == $today2) {
                     //$history['order'][]=substr($record->pers_birth_date,-4);
@@ -1054,7 +1053,7 @@ class mainindex_cls
         return $text;
     }
 
-    function show_footer()
+    public function show_footer()
     {
         global $bot_visit, $humo_option, $uri_path;
 
@@ -1081,7 +1080,7 @@ class mainindex_cls
     }
 
     // *** Show slideshow ***
-    function show_slideshow()
+    public function show_slideshow()
     {
         global $humo_option;
 

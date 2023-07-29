@@ -19,9 +19,9 @@ global $phpself, $phpself2, $joomlastring;
 //    $joomlastring = "option=com_humo-gen&amp;task=admin&amp;"; // used also in trees_cls.php
 //    $phpself2 = "index.php?option=com_humo-gen&amp;task=admin&amp;"; // used only in trees_cls.php
 //} else {
-    $phpself = 'index.php';
-    $phpself2 = 'index.php?';
-    $joomlastring = '';
+$phpself = 'index.php';
+$phpself2 = 'index.php?';
+$joomlastring = '';
 //}
 
 // *** Family tree admin ***
@@ -332,7 +332,7 @@ $tree_search_result = $dbh->query($tree_search_sql);
         while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
             $selected = '';
             if ($tree_searchDb->tree_id == $tree_id) {
-                $selected = ' SELECTED';
+                $selected = ' selected';
             }
             $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
             echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
@@ -408,11 +408,7 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
     // *** Show main tree screen ***
     if (isset($menu_admin) and $menu_admin == 'tree_gedcom') {
         //$tree_cls->tree_main();
-        //if (CMS_SPECIFIC == "Joomla") {
-        //    include_once(CMS_ROOTPATH_ADMIN . "include/gedcom.php");
-        //} else {
-            include_once("gedcom.php");
-        //}
+        include_once("gedcom.php");
     }
     // ********************************************************************************
     // *** Show selected family tree                                                ***

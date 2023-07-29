@@ -1,7 +1,7 @@
 <?php
-$name='DejaVuSansCondensed';
-$type='TTF';
-$desc=array (
+$name = 'DejaVuSansCondensed';
+$type = 'TTF';
+$desc = array(
   'Ascent' => 928.0,
   'Descent' => -236.0,
   'CapHeight' => 928.0,
@@ -11,10 +11,10 @@ $desc=array (
   'StemV' => 87.0,
   'MissingWidth' => 540.0,
 );
-$up=-63;
-$ut=44;
+$up = -63;
+$ut = 44;
 //$ttffile='D:\xampp8\htdocs\humo-genealogy\include\tfpdf/font/unifont/DejaVuSansCondensed.ttf';
-$ttffile='include/tfpdf/font/unifont/DejaVuSansCondensed.ttf';
-$originalsize=680264;
-$fontkey='dejavu';
-?>
+//$ttffile='include/tfpdf/font/unifont/DejaVuSansCondensed.ttf';
+$ttffile = __DIR__ . '/DejaVuSansCondensed.ttf';
+$originalsize = 680264;
+$fontkey = 'dejavu';

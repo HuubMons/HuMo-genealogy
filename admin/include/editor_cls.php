@@ -1,7 +1,6 @@
 <?php
 class editor_cls
 {
-
     // *** Date functions ***
     // 13 OCT 1813 = 13 okt 1813
     // BEF 2000 = bef 2000
@@ -10,7 +9,7 @@ class editor_cls
     // BET 1986 AND 1987 = bet 1986 and 1987
 
     // *** $multiple_rows = addition for editing in multiple rows. Example: name = "event_date[]" ***
-    function date_show($process_date, $process_name, $multiple_rows = '', $disabled = '', $hebnight = 'n', $hebvar = '')
+    public function date_show($process_date, $process_name, $multiple_rows = '', $disabled = '', $hebnight = 'n', $hebvar = '')
     {
         // *** Prevent error in PHP 8.1.1 ***
         if (!isset($process_date)) $process_date = '';
@@ -133,7 +132,7 @@ class editor_cls
         return $text;
     }
 
-    function date_process($process_name, $multiple_rows = '')
+    public function date_process($process_name, $multiple_rows = '')
     {
         // *** Save "before", "about", "after" texts before a date ***
         $process_name_prefix = $process_name . '_prefix';
@@ -191,7 +190,7 @@ class editor_cls
         return $process_date;
     }
 
-    function valid_date($date)
+    public function valid_date($date)
     {
         include_once(CMS_ROOTPATH . "include/validate_date_cls.php");
         $check = new validate_date_cls;
@@ -278,7 +277,7 @@ class editor_cls
         } else return $this_date;
     }
 
-    function text_process($text, $long_text = false)
+    public function text_process($text, $long_text = false)
     {
         //$text=htmlentities($text,ENT_QUOTES,'UTF-8');
         if ($long_text == true) {
@@ -290,7 +289,7 @@ class editor_cls
     }
 
     // *** Show texts without <br> and process Aldfaer and other @xx@ texts ***
-    function text_show($find_text)
+    public function text_show($find_text)
     {
         global $dbh, $tree_id;
         if ($find_text != '') {
@@ -307,7 +306,7 @@ class editor_cls
         }
     }
 
-    function show_selected_person($person)
+    public function show_selected_person($person)
     {
         $text = __('N.N.');
         if ($person) {
@@ -344,32 +343,34 @@ class editor_cls
         return ($text);
     }
 
-    function select_tree($page)
+    public function select_tree($page)
     {
         global $dbh, $phpself, $group_edit_trees, $group_administrator, $tree_id, $selected_language;
 
         // *** Select family tree ***
-        echo '<form method="POST" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<select size="1" name="tree_id" onChange="this.form.submit();">';
-        echo '<option value="">' . __('Select a family tree:') . '</option>';
         $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
         $tree_search_result = $dbh->query($tree_search_sql);
-        while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
-            $edit_tree_array = explode(";", $group_edit_trees);
-            //$team_tree_array=explode(";",$group_team_trees);
-            // *** Administrator can always edit in all family trees ***
-            //if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array) OR in_array($tree_searchDb->tree_id, $team_tree_array)) {
-            if ($group_administrator == 'j' or in_array($tree_searchDb->tree_id, $edit_tree_array)) {
-                $selected = '';
-                if (isset($tree_id) and $tree_searchDb->tree_id == $tree_id) {
-                    $selected = ' SELECTED';
+?>
+        <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <select size="1" name="tree_id" onChange="this.form.submit();">
+                <option value=""><?= __('Select a family tree:'); ?></option>
+                <?php
+                while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
+                    $edit_tree_array = explode(";", $group_edit_trees);
+                    // *** Administrator can always edit in all family trees ***
+                    if ($group_administrator == 'j' or in_array($tree_searchDb->tree_id, $edit_tree_array)) {
+                        $selected = '';
+                        if (isset($tree_id) and $tree_searchDb->tree_id == $tree_id) {
+                            $selected = ' selected';
+                        }
+                        $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                        echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
+                    }
                 }
-                $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
-                echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-            }
-        }
-        echo '</select>';
-        echo '</form>';
+                ?>
+            </select>
+        </form>
+<?php
     }
 } // *** End of editor class ***

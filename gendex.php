@@ -34,8 +34,7 @@ foreach ($datasql as $dataDb) {
         //Birthdate|Birthplace|Deathdate|Deathplace|
         while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
-            $person_cls = new person_cls;
-            $person_cls->construct($personDb);
+            $person_cls = new person_cls($personDb);
             $privacy = $person_cls->privacy;
 
             // *** Completely filter person ***

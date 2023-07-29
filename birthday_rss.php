@@ -85,8 +85,7 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
             ) order by pers_lastname";
         $query = $dbh->query($sql);
         while($record = $query->fetch(PDO::FETCH_OBJ)) {
-            $person_cls1 = New person_cls;
-            $person_cls1->construct($record);
+            $person_cls1 = New person_cls($record);
             $privacy=$person_cls1->privacy;
             if(!$privacy) {
                 $death_date = $record->pers_death_date;

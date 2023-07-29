@@ -11,6 +11,8 @@ $gedcom_time = date("H:i:s");
 $confirm = '';
 $confirm_relation = '';
 
+//TODO use prepared statements
+
 if (isset($_GET['pers_favorite'])) {
     if ($_GET['pers_favorite'] == "1") {
         $sql = "INSERT INTO humo_settings SET
@@ -40,7 +42,7 @@ if (isset($_POST['person_remove'])) {
     //$disabled='';
     $disabled = ' DISABLED';
     $confirm .= '<span style="color:#6D7B8D;">';
-    $selected = ''; //if ($selected_alive=='alive'){ $selected=' CHECKED'; }
+    $selected = ''; //if ($selected_alive=='alive'){ $selected=' checked'; }
     $confirm .= ' <input type="checkbox" name="XXXXX" value="XXXXX"' . $selected . $disabled . '> ' . __('Also remove ALL RELATED PERSONS (including all items)') . '<br>';
     $confirm .= '</span>';
 
@@ -206,7 +208,7 @@ if (isset($_POST['add_picture'])) $save_person_data = true;
 if (isset($_POST['person_add_media'])) $save_person_data = true;
 
 //DIT MOETEN KNOPPEN WORDEN. $_POST dus.
-//TO DO sources, editor notes, wisselen van vrouw en man in relatie, toevoegen kind.
+//TODO sources, editor notes, wisselen van vrouw en man in relatie, toevoegen kind.
 // Bij bronnen een array meesturen met alle namen van de bron knoppen?
 /* Voorbeeld:
 <input type="text" name="add_source_button[]" value="'.$page_source.'"/>
@@ -514,8 +516,33 @@ if (isset($_POST['person_add']) or isset($_POST['relation_add'])) {
         $result = $dbh->query($sql);
     }
 
+    // TODO: this code is used multiple times in this script.
+    // *** New jul.2023: also use special names ***
+    if (isset($_POST["event_event_name_new"]) and $_POST["event_event_name_new"] != "") {
+        $event_kind = 'name';
+        if ($_POST['event_gedcom_new'] == 'NPFX') $event_kind = 'NPFX';
+        if ($_POST['event_gedcom_new'] == 'NSFX') $event_kind = 'NSFX';
+        if ($_POST['event_gedcom_new'] == 'nobility') $event_kind = 'nobility';
+        if ($_POST['event_gedcom_new'] == 'title') $event_kind = 'title';
+        if ($_POST['event_gedcom_new'] == 'lordship') $event_kind = 'lordship';
+
+        $event_gedcom = $_POST['event_gedcom_new'];
+        $event_event = $_POST['event_event_name_new'];
+        $event_date='';
+
+        $event_place = "";
+        //if (isset($_POST["event_place_name"])) $event_place = $_POST["event_place_name"];
+        $event_text = "";
+        //if (isset($_POST["event_text_name"]))  $event_text = $_POST["event_text_name"];
+
+        // *** Add event. If event is new, use: $new_event=true. ***
+        // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+        add_event(true, 'person', $new_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
+    }
+
     // *** New person: add profession ***
     if (isset($_POST["event_profession"]) and $_POST["event_profession"] != "" and $_POST["event_profession"] != "Profession") {
+        $event_date='';
         $event_place = "";
         if (isset($_POST["event_place_profession"])) $event_place = $_POST["event_place_profession"];
         $event_text = "";
@@ -523,7 +550,7 @@ if (isset($_POST['person_add']) or isset($_POST['relation_add'])) {
 
         // *** Add event. If event is new, use: $new_event=true. ***
         // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-        add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', 'event_date_profession', $event_place, $event_text);
+        add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', $event_date, $event_place, $event_text);
     }
 
     // *** New person: add religion ***
@@ -801,7 +828,30 @@ if (isset($_POST['add_parents2'])) {
         pers_new_time='" . $gedcom_time . "'";
     $result = $dbh->query($sql);
 
-    // *** At this moment only event_profession1 is used. ***
+    // *** Add special name ***
+    if (isset($_POST["event_event_name1"]) and $_POST["event_event_name1"] != "") {
+        $event_kind = 'name';
+        if ($_POST['event_gedcom_add1'] == 'NPFX') $event_kind = 'NPFX';
+        if ($_POST['event_gedcom_add1'] == 'NSFX') $event_kind = 'NSFX';
+        if ($_POST['event_gedcom_add1'] == 'nobility') $event_kind = 'nobility';
+        if ($_POST['event_gedcom_add1'] == 'title') $event_kind = 'title';
+        if ($_POST['event_gedcom_add1'] == 'lordship') $event_kind = 'lordship';
+
+        $event_gedcom = $_POST['event_gedcom_add1'];
+        $event_event = $_POST['event_event_name1'];
+        $event_date = '';
+
+        $event_place = "";
+        //if (isset($_POST["event_place_name"])) $event_place = $_POST["event_place_name"];
+        $event_text = "";
+        //if (isset($_POST["event_text_name"]))  $event_text = $_POST["event_text_name"];
+
+        // *** Add event. If event is new, use: $new_event=true. ***
+        // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+        add_event(true, 'person', $man_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
+    }
+
+    // *** Add profession ***
     if (isset($_POST["event_profession1"]) and $_POST["event_profession1"] != "" and $_POST["event_profession1"] != "Profession") {
         $event_place = "";
         if (isset($_POST["event_place_profession1"])) $event_place = $_POST["event_place_profession1"];
@@ -847,10 +897,32 @@ if (isset($_POST['add_parents2'])) {
         pers_new_user='" . $username . "',
         pers_new_date='" . $gedcom_date . "',
         pers_new_time='" . $gedcom_time . "'";
-    //echo $sql;
     $result = $dbh->query($sql);
 
-    // *** At this moment only event_profession1 is used. ***
+    // *** Add special name ***
+    if (isset($_POST["event_event_name2"]) and $_POST["event_event_name2"] != "") {
+        $event_kind = 'name';
+        if ($_POST['event_gedcom_add2'] == 'NPFX') $event_kind = 'NPFX';
+        if ($_POST['event_gedcom_add2'] == 'NSFX') $event_kind = 'NSFX';
+        if ($_POST['event_gedcom_add2'] == 'nobility') $event_kind = 'nobility';
+        if ($_POST['event_gedcom_add2'] == 'title') $event_kind = 'title';
+        if ($_POST['event_gedcom_add2'] == 'lordship') $event_kind = 'lordship';
+
+        $event_gedcom = $_POST['event_gedcom_add2'];
+        $event_event = $_POST['event_event_name2'];
+        $event_date = '';
+
+        $event_place = "";
+        //if (isset($_POST["event_place_name"])) $event_place = $_POST["event_place_name"];
+        $event_text = "";
+        //if (isset($_POST["event_text_name"]))  $event_text = $_POST["event_text_name"];
+
+        // *** Add event. If event is new, use: $new_event=true. ***
+        // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+        add_event(true, 'person', $woman_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
+    }
+
+    // *** Add profession ***
     if (isset($_POST["event_profession2"]) and $_POST["event_profession2"] != "" and $_POST["event_profession2"] != "Profession") {
         $event_place = "";
         if (isset($_POST["event_place_profession2"])) $event_place = $_POST["event_place_profession2"];
@@ -1896,7 +1968,7 @@ if (isset($_GET['event_drop'])) {
     $confirm .= '<input type="hidden" name="event_drop" value="' . $_GET['event_drop'] . '">';
 
     if (isset($_GET['event_kind']) and $_GET['event_kind'] == 'person_colour_mark') {
-        $selected = ''; //if ($selected_alive=='alive'){ $selected=' CHECKED'; }
+        $selected = ''; //if ($selected_alive=='alive'){ $selected=' checked'; }
         $confirm .= '<br>' . __('Also remove colour marks of');
         $confirm .= ' <input type="checkbox" name="event_descendants" value="alive"' . $selected . '> ' . __('Descendants');
         $confirm .= ' <input type="checkbox" name="event_ancestors" value="alive"' . $selected . '> ' . __('Ancestors') . '<br>';
@@ -2201,7 +2273,6 @@ if (isset($_GET['source_add3'])) {
     $_POST["connect_connect_id"] = $_GET["connect_connect_id"];
 }
 
-
 /*
 // *** Added may 2023: Add new source ***
 //http://localhost/humo-genealogy/admin/index.php?page=editor&
@@ -2218,7 +2289,6 @@ if (isset($_POST['add_pers_name_source'])){
 unset ($_POST['connect_change']);
 }
 */
-
 
 // *** Add new source/ address connection ***
 if (isset($_POST['connect_add'])) {
@@ -2260,7 +2330,7 @@ if (isset($_POST['connect_change'])) {
             if ($_POST["connect_role"][$key] != $_POST["connect_role_old"][$key]) $connect_changed = true;
             if ($_POST['connect_text'][$key] != $_POST["connect_text_old"][$key]) $connect_changed = true;
 
-            // *** Save shared address (even if role or extra text isn't used ***
+            // *** Save shared address (even if role or extra text isn't used) ***
             if (isset($_POST['connect_item_id'][$key])) {
                 if (isset($_POST["connect_item_id_old"][$key])) {
                     if ($_POST['connect_item_id'][$key] !== $_POST["connect_item_id_old"][$key]) $connect_changed = true;
@@ -2270,13 +2340,16 @@ if (isset($_POST['connect_change'])) {
             }
         }
 
+        // *** Remark: connect_kind and connect_sub_kind is missing if someone clicks "Add address" twice. ***
         if ($connect_changed) {
-            $sql = "UPDATE humo_connections SET
-            connect_kind='" . safe_text_db($_POST['connect_kind'][$key]) . "',
-            connect_sub_kind='" . safe_text_db($_POST['connect_sub_kind'][$key]) . "',
-            connect_page='" . $editor_cls->text_process($_POST["connect_page"][$key]) . "',
-            connect_role='" . $editor_cls->text_process($_POST["connect_role"][$key]) . "',
-            connect_source_id='" . safe_text_db($_POST['connect_source_id'][$key]) . "',";
+            $sql = "UPDATE humo_connections SET";
+            if (isset($_POST['connect_kind'][$key]))
+                $sql .= " connect_kind='" . safe_text_db($_POST['connect_kind'][$key]) . "',";
+            if (isset($_POST['connect_sub_kind'][$key]))
+                $sql .= " connect_sub_kind='" . safe_text_db($_POST['connect_sub_kind'][$key]) . "',";
+            $sql .= " connect_page='" . $editor_cls->text_process($_POST["connect_page"][$key]) . "',
+                connect_role='" . $editor_cls->text_process($_POST["connect_role"][$key]) . "',
+                connect_source_id='" . safe_text_db($_POST['connect_source_id'][$key]) . "',";
 
             if (isset($_POST['connect_date'][$key]))
                 $sql .= "connect_date='" . $editor_cls->date_process("connect_date", $key) . "',";
@@ -2462,6 +2535,7 @@ if (isset($_POST['connect_drop2'])) {
     }
 }
 
+// TODO check if up and down links can be improved. Maybe only 1 $_GET needed: connect_down or connect_up (including connect_id nr). Get other items from database.
 if (isset($_GET['connect_down'])) {
     $sql = "UPDATE humo_connections SET connect_order='99'
         WHERE connect_id='" . safe_text_db($_GET['connect_down']) . "'";
@@ -2765,8 +2839,7 @@ if (isset($_GET['note_add']) and $_GET['note_add']) {
     // *** Name of selected person in family tree ***
     @$persDb = $db_functions->get_person($pers_gedcomnumber);
     // *** Use class to process person ***
-    $pers_cls = new person_cls;
-    $pers_cls->construct($persDb);
+    $pers_cls = new person_cls($persDb);
     $name = $pers_cls->person_name($persDb);
     $note_names = safe_text_db($name["standard_name"]);
 
@@ -2848,7 +2921,7 @@ function remove_sources($tree_id, $connect_sub_kind, $connect_connect_id)
     $connect_source_qry=$dbh->query($connect_source_sql);
     while($connect_sourceDb=$connect_source_qry->fetch(PDO::FETCH_OBJ)){
 
-// TO DO: ALWAYS REMOVE A CONNECTION, ONLY REMOVE SOURCE IF IT ISN'T SHARED
+// TODO: ALWAYS REMOVE A CONNECTION, ONLY REMOVE SOURCE IF IT ISN'T SHARED
 
         $sql="DELETE FROM humo_sources WHERE source_id='".safe_text_db($connect_sourceDb->source_id)."'";
         //echo $sql.'<br>';

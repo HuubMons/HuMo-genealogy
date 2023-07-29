@@ -109,7 +109,7 @@ $start = 0;
 if (isset($_GET["start"]) and is_numeric($_GET["start"])) $start = $_GET["start"];
 $item = 0;
 if (isset($_GET['item']) and is_numeric($_GET['item'])) $item = $_GET['item'];
-$count_sources = $humo_option['show_persons'];	// *** Number of lines to show ***
+$count_sources = $humo_option['show_persons'];    // *** Number of lines to show ***
 //echo $count_sources;
 
 // *** All sources query ***
@@ -117,11 +117,15 @@ $all_sources = $dbh->query($querie);
 $source = $dbh->query($querie . " LIMIT " . safe_text_db($item) . "," . $count_sources);
 $line_pages = __('Page');
 
+$path = 'sources.php?tree_id=' . $tree_id . '&amp;';
+if ($humo_option["url_rewrite"] == "j") $path = 'sources/' . $tree_id . '?';
+
 // "<="
 if ($start > 1) {
     $start2 = $start - 20;
     $calculated = ($start - 2) * $count_sources;
-    $line_pages .= '<a href="sources.php?tree_id=' . $tree_id . '&amp;start=' . $start2 . '&amp;item=' . $calculated;
+    //$line_pages .= '<a href="sources.php?tree_id=' . $tree_id . '&amp;start=' . $start2 . '&amp;item=' . $calculated;
+    $line_pages .= '<a href="' . $path . 'start=' . $start2 . '&amp;item=' . $calculated;
     if (isset($_GET['order_sources'])) {
         $line_pages .=  '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $sort_desc;
     }
@@ -141,7 +145,8 @@ for ($i = $start; $i <= $start + 19; $i++) {
         if ($item == $calculated) {
             $line_pages .=  " <b>$i</b>";
         } else {
-            $line_pages .=  ' <a href="sources.php?tree_id=' . $tree_id . '&amp;item=' . $calculated . '&amp;start=' . $start;
+            //$line_pages .=  ' <a href="sources.php?tree_id=' . $tree_id . '&amp;item=' . $calculated . '&amp;start=' . $start;
+            $line_pages .=  ' <a href="' . $path . 'item=' . $calculated . '&amp;start=' . $start;
             if (isset($_GET['order_sources'])) $line_pages .= '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $sort_desc;
             if ($source_search != '') {
                 $line_pages .=  '&amp;source_search=' . $source_search;
@@ -154,7 +159,8 @@ for ($i = $start; $i <= $start + 19; $i++) {
 // "=>"
 $calculated = ($i - 1) * $count_sources;
 if ($calculated < $all_sources->rowCount()) {
-    $line_pages .=  '<a href="sources.php?tree_id=' . $tree_id . '&amp;start=' . $i . '&amp;item=' . $calculated;
+    //$line_pages .=  '<a href="sources.php?tree_id=' . $tree_id . '&amp;start=' . $i . '&amp;item=' . $calculated;
+    $line_pages .=  '<a href="' . $path . 'start=' . $i . '&amp;item=' . $calculated;
     if (isset($_GET['order_sources'])) {
         $line_pages .=  '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $sort_desc;
     }
@@ -163,9 +169,13 @@ if ($calculated < $all_sources->rowCount()) {
     }
     $line_pages .=  '"> =&gt;</a>';
 }
+
+$path_form = 'sources.php?tree_id=' . $tree_id;
+if ($humo_option["url_rewrite"] == "j") $path_form = 'sources/' . $tree_id;
+
 ?>
 <div class=index_list1><?= $line_pages; ?>
-    <form method="post" action="sources.php" style="display:inline">
+    <form method="post" action="<?= $path_form; ?>" style="display:inline">
         <input type="text" class="fonts" name="source_search" value="<?= $source_search; ?>" size="20">
         <input class="fonts" type="submit" value="<?= __('Search'); ?>">
     </form>
@@ -176,53 +186,55 @@ if ($calculated < $all_sources->rowCount()) {
         <th colspan="3"><?= __('Source'); ?></th>
     </tr>
 
+    <tr class=table_headline>
+        <?php
+        //$url = 'sources.php?tree_id=' . $tree_id . '&amp;start=1&amp;item=0';
+        $url = $path . 'start=1&amp;item=0';
+        if ($source_search != '') {
+            $url .=  '&amp;source_search=' . $source_search;
+        }
+
+        $style = '';
+        $sort_reverse = $sort_desc;
+        $img = '';
+        if ($order_sources == "title") {
+            $style = ' style="background-color:#ffffa0"';
+            $sort_reverse = '1';
+            if ($sort_desc == '1') {
+                $sort_reverse = '0';
+                $img = 'up';
+            }
+        }
+        echo '<th><a href="' . $url . '&amp;order_sources=title&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Title') . ' <img src="images/button3' . $img . '.png"></a></th>';
+
+        $style = '';
+        $sort_reverse = $sort_desc;
+        $img = '';
+        if ($order_sources == "date") {
+            $style = ' style="background-color:#ffffa0"';
+            $sort_reverse = '1';
+            if ($sort_desc == '1') {
+                $sort_reverse = '0';
+                $img = 'up';
+            }
+        }
+        echo '<th><a href="' . $url . '&amp;order_sources=date&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+
+        $style = '';
+        $sort_reverse = $sort_desc;
+        $img = '';
+        if ($order_sources == "place") {
+            $style = ' style="background-color:#ffffa0"';
+            $sort_reverse = '1';
+            if ($sort_desc == '1') {
+                $sort_reverse = '0';
+                $img = 'up';
+            }
+        }
+        echo '<th><a href="' . $url . '&amp;order_sources=place&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+        ?>
+    </tr>
     <?php
-
-    echo '<tr class=table_headline>';
-    $url = 'sources.php?tree_id=' . $tree_id . '&amp;start=1&amp;item=0';
-    if ($source_search != '') {
-        $url .=  '&amp;source_search=' . $source_search;
-    }
-
-    $style = '';
-    $sort_reverse = $sort_desc;
-    $img = '';
-    if ($order_sources == "title") {
-        $style = ' style="background-color:#ffffa0"';
-        $sort_reverse = '1';
-        if ($sort_desc == '1') {
-            $sort_reverse = '0';
-            $img = 'up';
-        }
-    }
-    echo '<th><a href="' . $url . '&amp;order_sources=title&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Title') . ' <img src="images/button3' . $img . '.png"></a></th>';
-
-    $style = '';
-    $sort_reverse = $sort_desc;
-    $img = '';
-    if ($order_sources == "date") {
-        $style = ' style="background-color:#ffffa0"';
-        $sort_reverse = '1';
-        if ($sort_desc == '1') {
-            $sort_reverse = '0';
-            $img = 'up';
-        }
-    }
-    echo '<th><a href="' . $url . '&amp;order_sources=date&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
-
-    $style = '';
-    $sort_reverse = $sort_desc;
-    $img = '';
-    if ($order_sources == "place") {
-        $style = ' style="background-color:#ffffa0"';
-        $sort_reverse = '1';
-        if ($sort_desc == '1') {
-            $sort_reverse = '0';
-            $img = 'up';
-        }
-    }
-    echo '<th><a href="' . $url . '&amp;order_sources=place&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
-    echo '</tr>';
 
     while (@$sourceDb = $source->fetch(PDO::FETCH_OBJ)) {
         if ($humo_option["url_rewrite"] == "j") {

@@ -30,8 +30,7 @@ function show_person($familyDb)
     $personDb = $db_functions->get_person($selected_person1);
 
     // *** Person class used for name and person pop-up data ***
-    $person_cls = new person_cls;
-    $person_cls->construct($personDb);
+    $person_cls = new person_cls($personDb);
     $privacy = $person_cls->privacy;
 
     $name = $person_cls->person_name($personDb);
@@ -644,18 +643,15 @@ $selected_place = "";
         // *** Man privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_man);
         // *** Person class used for name and person pop-up data ***
-        $man_cls = new person_cls;
-        $man_cls->construct($personDb);
+        $man_cls = new person_cls($personDb);
 
         // *** Woman privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_woman);
         // *** Person class used for name and person pop-up data ***
-        $woman_cls = new person_cls;
-        $woman_cls->construct($personDb);
+        $woman_cls = new person_cls($personDb);
 
         // *** Proces marriage using a class ***
-        $marriage_cls = new marriage_cls;
-        $marriage_cls->construct($familyDb, $man_cls->privacy, $woman_cls->privacy);
+        $marriage_cls = new marriage_cls($familyDb, $man_cls->privacy, $woman_cls->privacy);
         $family_privacy = $marriage_cls->privacy;
 
         // *** $family_privacy=true => filter ***

@@ -1,283 +1,270 @@
 <?php
-
 /*	Merge data functions are made by Yossi.
  *	2017_12_22 Huub: Updated merge data functions with correct person and family counter for main page.
  */
 
 class tree_cls
 {
-
     // *** List of trees ***
-    function tree_main()
+    public function tree_main()
     {
         global $language, $language_tree, $language_file, $selected_language;
         global $dbh, $page, $menu_admin, $tree_id;
         global $phpself, $phpself2, $joomlastring;
 
-        echo '<br>';
-
-        echo __('Administration of the family tree(s), i.e. the name can be changed here, and trees can be added or removed.') . '<br>';
-
-        // *** Read settings here to be shure radio buttons show proper values. ***
+        // *** Read settings here to be sure radio buttons show proper values. ***
         include_once(CMS_ROOTPATH . "include/settings_global.php"); // *** Read settings ***
+?>
+        <br>
+        <?= __('Administration of the family tree(s), i.e. the name can be changed here, and trees can be added or removed.'); ?><br>
 
-        echo '<table class="humo" border="1" cellspacing="0" width="100%">';
-        echo '<tr class="table_header"><th>' . __('Order') . '</th>';
-        echo '<th>' . __('Name of family tree') . '</th>';
-        echo '<th>' . __('Family tree data') . '</th>';
-        echo '<th>' . __('Remove') . '</th>';
-        echo '</tr>';
+        <table class="humo" border="1" cellspacing="0" width="100%">
+            <tr class="table_header">
+                <th><?= __('Order'); ?></th>
+                <th><?= __('Name of family tree'); ?></th>
+                <th><?= __('Family tree data'); ?></th>
+                <th><?= __('Remove'); ?></th>
+            </tr>
 
-        echo '<tr class="table_header">';
-        echo '<td></td>';
-        echo '<td>';
-
-        echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;language_tree=default&amp;tree_id=' . $tree_id . '">' . __('Default') . '</a> ';
-
-        // *** Language choice ***
-        $language_tree2 = $language_tree;
-        if ($language_tree == 'default') $language_tree2 = $selected_language;
-        echo '&nbsp;&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
-        echo '<a href="index.php?option=com_humo-gen"';
-        include(CMS_ROOTPATH . 'languages/' . $language_tree2 . '/language_data.php');
-        echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
-        $select_top = '';
-        echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
-        echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
-        echo '<ul class="humo_menu_item2">';
-        for ($i = 0; $i < count($language_file); $i++) {
-            // *** Get language name ***
-            if ($language_file[$i] != $language_tree2) {
-                include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
-                echo '<li style="float:left; width:124px;">';
-                echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
-                echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
-                echo $language["name"];
-                echo '</a>';
-                echo '</li>';
-            }
-        }
-        echo '</ul>';
-        echo '</div>';
-        echo '</div>';
-
-        echo '</td>';
-        echo '<td></td>';
-        echo '<td></td>';
-        echo '</tr>';
-
-        // *** Check number of real family tree number, because last tree is not allowed to be removed ***
-        $count_trees = 0;
-        $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-        $count_trees = $datasql->rowCount();
-
-        $new_number = '1';
-        $datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-        if ($datasql) {
-            // *** Count lines in query ***
-            $count_lines = $datasql->rowCount();
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                $style = '';
-                if ($dataDb->tree_id == $tree_id) {
-                    $style = ' bgcolor="#99CCFF"';
-                }
-                echo '<tr' . $style . '>';
-                echo '<td nowrap>';
-                if ($dataDb->tree_order < 10) {
-                    echo '0';
-                }
-                echo $dataDb->tree_order;
-                // *** Number for new family tree ***
-                $new_number = $dataDb->tree_order + 1;
-                if ($dataDb->tree_order != '1') {
-                    echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;up=1&amp;tree_order=' . $dataDb->tree_order .
-                        '&amp;id=' . $dataDb->tree_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
-                }
-                if ($dataDb->tree_order != $count_lines) {
-                    echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;down=1&amp;tree_order=' . $dataDb->tree_order . '&amp;id=' .
-                        $dataDb->tree_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
-                }
-                echo '</td>';
-
+            <tr class="table_header">
+                <?php
+                echo '<td></td>';
                 echo '<td>';
-                // *** Show/ Change family tree name ***
-                $treetext = show_tree_text($dataDb->tree_id, $language_tree);
-                if ($dataDb->tree_prefix == 'EMPTY')
-                    echo '* ' . __('EMPTY LINE') . ' *';
-                else {
-                    echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $dataDb->tree_id . '"><img src="images/edit.jpg" title="edit" alt="edit"></a> ' . $treetext['name'];
+                echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;language_tree=default&amp;tree_id=' . $tree_id . '">' . __('Default') . '</a> ';
+
+                // *** Language choice ***
+                $language_tree2 = $language_tree;
+                if ($language_tree == 'default') $language_tree2 = $selected_language;
+                echo '&nbsp;&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
+                echo '<a href="index.php?option=com_humo-gen"';
+                include(CMS_ROOTPATH . 'languages/' . $language_tree2 . '/language_data.php');
+                echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
+                $select_top = '';
+                echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+                echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
+                echo '<ul class="humo_menu_item2">';
+                for ($i = 0; $i < count($language_file); $i++) {
+                    // *** Get language name ***
+                    if ($language_file[$i] != $language_tree2) {
+                        include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+                        echo '<li style="float:left; width:124px;">';
+                        echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
+                        echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+                        echo $language["name"];
+                        echo '</a>';
+                        echo '</li>';
+                    }
                 }
+                echo '</ul>';
+                echo '</div>';
+                echo '</div>';
+
                 echo '</td>';
+                echo '<td></td>';
+                echo '<td></td>';
+                ?>
+            </tr>
+            <?php
 
-                echo '<td>';
-                if ($dataDb->tree_prefix != 'EMPTY') {
-                    echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
+            // *** Check number of real family tree number, because last tree is not allowed to be removed ***
+            $count_trees = 0;
+            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            $count_trees = $datasql->rowCount();
+
+            $new_number = '1';
+            $datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+            if ($datasql) {
+                // *** Count lines in query ***
+                $count_lines = $datasql->rowCount();
+                while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                    $style = '';
+                    if ($dataDb->tree_id == $tree_id) {
+                        $style = ' bgcolor="#99CCFF"';
+                    }
+                    echo '<tr' . $style . '>';
+                    echo '<td nowrap>';
+                    if ($dataDb->tree_order < 10) {
+                        echo '0';
+                    }
+                    echo $dataDb->tree_order;
+                    // *** Number for new family tree ***
+                    $new_number = $dataDb->tree_order + 1;
+                    if ($dataDb->tree_order != '1') {
+                        echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;up=1&amp;tree_order=' . $dataDb->tree_order .
+                            '&amp;id=' . $dataDb->tree_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
+                    }
+                    if ($dataDb->tree_order != $count_lines) {
+                        echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;down=1&amp;tree_order=' . $dataDb->tree_order . '&amp;id=' .
+                            $dataDb->tree_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+                    }
+                    echo '</td>';
+
+                    echo '<td>';
+                    // *** Show/ Change family tree name ***
+                    $treetext = show_tree_text($dataDb->tree_id, $language_tree);
+                    if ($dataDb->tree_prefix == 'EMPTY')
+                        echo '* ' . __('EMPTY LINE') . ' *';
+                    else {
+                        echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $dataDb->tree_id . '"><img src="images/edit.jpg" title="edit" alt="edit"></a> ' . $treetext['name'];
+                    }
+                    echo '</td>';
+
+                    echo '<td>';
+                    if ($dataDb->tree_prefix != 'EMPTY') {
+                        echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
+                    }
+
+                    if ($dataDb->tree_prefix == 'EMPTY') {
+                        //
+                    } elseif ($dataDb->tree_persons > 0) {
+                        echo ' <font color="#00FF00"><b>' . __('OK') . '</b></font>';
+
+                        // *** Show tree data ***
+                        $tree_date = $dataDb->tree_date;
+                        $month = ''; // for empty tree_dates
+                        if (substr($tree_date, 5, 2) == '01') {
+                            $month = ' ' . strtolower(__('jan')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '02') {
+                            $month = ' ' . strtolower(__('feb')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '03') {
+                            $month = ' ' . strtolower(__('mar')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '04') {
+                            $month = ' ' . strtolower(__('apr')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '05') {
+                            $month = ' ' . strtolower(__('may')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '06') {
+                            $month = ' ' . strtolower(__('jun')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '07') {
+                            $month = ' ' . strtolower(__('jul')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '08') {
+                            $month = ' ' . strtolower(__('aug')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '09') {
+                            $month = ' ' . strtolower(__('sep')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '10') {
+                            $month = ' ' . strtolower(__('oct')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '11') {
+                            $month = ' ' . strtolower(__('nov')) . ' ';
+                        }
+                        if (substr($tree_date, 5, 2) == '12') {
+                            $month = ' ' . strtolower(__('dec')) . ' ';
+                        }
+                        $tree_date = substr($tree_date, 8, 2) . $month . substr($tree_date, 0, 4);
+                        echo ' <font size=-1>' . $tree_date . ': ' . $dataDb->tree_persons . ' ' .
+                            __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families') . '</font>';
+                    } else {
+                        //echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';
+                        echo ' <b>' . __('This tree does not yet contain any data or has not been imported properly!') . '</b>';
+                    }
+                    echo '</td>';
+
+                    echo '<td nowrap>';
+                    // *** If there is only one family tree, prevent it can be removed ***
+                    if ($count_trees > 1 or $dataDb->tree_prefix == 'EMPTY') {
+                        echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;remove_tree=' . $dataDb->tree_id . '&amp;treetext_name=' . $treetext['name'] . '">';
+                        echo '<img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" alt="' . __('Remove tree') . '" border="0"></a>';
+                    }
+                    echo '</td>';
+                    echo '</tr>';
                 }
-
-                if ($dataDb->tree_prefix == 'EMPTY') {
-                    //
-                } elseif ($dataDb->tree_persons > 0) {
-                    echo ' <font color="#00FF00"><b>' . __('OK') . '</b></font>';
-
-                    // *** Show tree data ***
-                    $tree_date = $dataDb->tree_date;
-                    $month = ''; // for empty tree_dates
-                    if (substr($tree_date, 5, 2) == '01') {
-                        $month = ' ' . strtolower(__('jan')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '02') {
-                        $month = ' ' . strtolower(__('feb')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '03') {
-                        $month = ' ' . strtolower(__('mar')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '04') {
-                        $month = ' ' . strtolower(__('apr')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '05') {
-                        $month = ' ' . strtolower(__('may')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '06') {
-                        $month = ' ' . strtolower(__('jun')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '07') {
-                        $month = ' ' . strtolower(__('jul')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '08') {
-                        $month = ' ' . strtolower(__('aug')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '09') {
-                        $month = ' ' . strtolower(__('sep')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '10') {
-                        $month = ' ' . strtolower(__('oct')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '11') {
-                        $month = ' ' . strtolower(__('nov')) . ' ';
-                    }
-                    if (substr($tree_date, 5, 2) == '12') {
-                        $month = ' ' . strtolower(__('dec')) . ' ';
-                    }
-                    $tree_date = substr($tree_date, 8, 2) . $month . substr($tree_date, 0, 4);
-                    echo ' <font size=-1>' . $tree_date . ': ' . $dataDb->tree_persons . ' ' .
-                        __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families') . '</font>';
-                } else {
-                    //echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';
-                    echo ' <b>' . __('This tree does not yet contain any data or has not been imported properly!') . '</b>';
-                }
-                echo '</td>';
-
-                echo '<td nowrap>';
-                // *** If there is only one family tree, prevent it can be removed ***
-                if ($count_trees > 1 or $dataDb->tree_prefix == 'EMPTY') {
-                    echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;remove_tree=' . $dataDb->tree_id . '&amp;treetext_name=' . $treetext['name'] . '">';
-                    echo '<img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" alt="' . __('Remove tree') . '" border="0"></a>';
-                }
-                echo '</td>';
-
-                echo '</tr>';
             }
 
-            //echo '</tr>';
-        }
+            // *** Add new family tree ***
 
-        // *** Add new family tree ***
+            // *** Find latest tree_prefix ***
+            $found = '1';
+            $i = 1;
+            while ($found == '1') {
+                $new_tree_prefix = 'humo' . $i . '_';
+                $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='$new_tree_prefix'");
+                $found = $datasql->rowCount();
+                $i++;
+            }
 
-        // *** Find latest tree_prefix ***
-        $found = '1';
-        $i = 1;
-        while ($found == '1') {
-            $new_tree_prefix = 'humo' . $i . '_';
-            $datasql = $dbh->query("SELECT * FROM humo_trees
-            WHERE tree_prefix='$new_tree_prefix'");
-            $found = $datasql->rowCount();
-            $i++;
-        }
+            if ($new_number < 10) {
+                $new_number = '0' . $new_number;
+            }
 
-        echo '<tr><td colspan="4"><br></td></tr>';
+            ?>
+            <tr>
+                <td colspan="4"><br></td>
+            </tr>
 
-        echo '<tr><td>';
-        if ($new_number < 10) {
-            echo '0';
-        }
-        echo $new_number . '</td>';
-        echo '<td colspan="3">';
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_order" value="' . $new_number . '">';
-        echo '<input type="hidden" name="tree_prefix" value="' . $new_tree_prefix . '">';
-        echo ' <input type="Submit" name="add_tree_data" value="' . __('Add family tree') . '">';
-        echo '</form>';
-        echo '</td></tr>';
+            <tr>
+                <td><?= $new_number; ?></td>
+                <td colspan="3">
+                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                        <input type="hidden" name="page" value="<?= $page; ?>">
+                        <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
+                        <input type="hidden" name="tree_prefix" value="<?= $new_tree_prefix; ?>">
+                        <input type="Submit" name="add_tree_data" value="<?= __('Add family tree'); ?>">
+                    </form>
+                </td>
+            </tr>
 
-        echo '<tr><td colspan="4"><br></td></tr>';
+            <tr>
+                <td colspan="4"><br></td>
+            </tr>
 
-        echo '<tr><td>';
-        if ($new_number < 10) {
-            echo '0';
-        }
-        echo $new_number . '</td>';
-        echo '<td colspan="3">';
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_order" value="' . $new_number . '">';
-        echo ' <input type="Submit" name="add_tree_data_empty" value="' . __('Add empty line') . '"> ';
-        echo __('Add empty line in list of family trees');
-        echo '</form>';
-        echo '</td></tr>';
+            <tr>
+                <td><?= $new_number; ?></td>
+                <td colspan="3">
+                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                        <input type="hidden" name="page" value="<?= $page; ?>">
+                        <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
+                        <input type="Submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>">
+                        <?= __('Add empty line in list of family trees'); ?>
+                    </form>
+                </td>
+            </tr>
+        </table>
 
-        echo "</table>";
-
+        <?php
         // ** Change collation of family tree (needed for Swedish etc.) ***
-        $collation_sql = $dbh->query("SHOW FULL COLUMNS
-        FROM humo_persons
-        WHERE Field = 'pers_firstname'");
+        $collation_sql = $dbh->query("SHOW FULL COLUMNS FROM humo_persons WHERE Field = 'pers_firstname'");
         $collationDb = $collation_sql->fetch(PDO::FETCH_OBJ);
         $collation = $collationDb->Collation;
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<br>' . __('Collation') . ' ';
-        echo '<select size="1" name="tree_collation" style="width:250px;">';
-        // *** Default collation ***
-        echo '<option value="utf8_general_ci">utf8_general_ci (default)</option>';
+
         // *** Swedish collation ***
-        $select = '';
+        $select_swedish = '';
         if ($collation == 'utf8_swedish_ci') {
-            $select = 'selected';
+            $select_swedish = 'selected';
         }
-        echo '<option value="utf8_swedish_ci"' . $select . '>utf8_swedish_ci</option>';
+
         // *** Danish collation ***
-        $select = '';
+        $select_danish = '';
         if ($collation == 'utf8_danish_ci') {
-            $select = 'selected';
+            $select_danish = 'selected';
         }
-        echo '<option value="utf8_danish_ci"' . $select . '>utf8_danish_ci</option>';
-        echo '</select>';
-        echo ' <input type="Submit" name="change_collation" value="OK">';
-        echo '</form>';
+
+        ?>
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <br><?= __('Collation'); ?>
+            <select size="1" name="tree_collation" style="width:250px;">
+                <!-- Default collation -->
+                <option value="utf8_general_ci">utf8_general_ci (default)</option>
+                <option value="utf8_swedish_ci" <?= $select_swedish; ?>>utf8_swedish_ci</option>
+                <option value="utf8_danish_ci" <?= $select_danish; ?>>utf8_danish_ci</option>
+            </select>
+            <input type="Submit" name="change_collation" value="OK">
+        </form>
+    <?php
     }
 
-    function tree_data()
+    public function tree_data()
     {
         global $language, $data2Db, $page, $menu_admin;
         global $phpself, $phpself2, $joomlastring;
-
-        echo '<form method="post" action="' . $phpself . '">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_id" value="' . $data2Db->tree_id . '">';
-        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-
-        echo '<br><table class="humo" cellspacing="0" width="100%">';
-        echo '<tr class="table_header"><th colspan="2">' . __('Family tree data') . '</th></tr>';
-
-        echo '<tr><td>' . __('E-mail address') . '<br>' . __('Owner of tree') . '</td>';
-        echo '<td>' . __('E-mail address will not be shown on the site: an e-mail form will be generated!') . '<br><input type="text" name="tree_email" value="' . $data2Db->tree_email . '" size="40"><br>';
-        echo '<input type="text" name="tree_owner" value="' . $data2Db->tree_owner . '" size="40"></td></tr>';
-        echo '<tr><td>' . __('Path to the pictures') . '</td>';
-        $data2Db->tree_pict_path . '</textarea></td></tr>';
-        echo '<td>';
-        //echo '<textarea rows="1" cols="20" name="tree_pict_path" style="height: 20px; width:500px">'.
-        //	$data2Db->tree_pict_path.'</textarea></td></tr>';
 
         // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
         if (substr($data2Db->tree_pict_path, 0, 1) == '|') {
@@ -290,138 +277,193 @@ class tree_cls
         $tree_pict_path = $data2Db->tree_pict_path;
         if (substr($data2Db->tree_pict_path, 0, 1) == '|') $tree_pict_path = substr($tree_pict_path, 1);
 
-        echo '<input type="radio" value="yes" name="default_path" ' . $checked1 . '> ' . __('Use default picture path:') . ' <b>media/</b><br>';
-        echo '<input type="radio" value="no" name="default_path" ' . $checked2 . '> ';
+        // *** Family tree privacy ***
+        $select_filter_persons = '';
+        if ($data2Db->tree_privacy == 'filter_persons') {
+            $select_filter_persons = 'selected';
+        }
+        $select_show_persons = '';
+        if ($data2Db->tree_privacy == 'show_persons') {
+            $select_show_persons = 'selected';
+        }
 
-        //echo '<input type="text" name="tree_pict_path" value="'.$tree_pict_path.'" size="40"> '.__('example: ../pictures/').'<br>';
-        echo '<input type="text" name="tree_pict_path" value="' . $tree_pict_path . '" size="40" placeholder="../pictures/"><br>';
-        printf(__('Example of picture path:<br>
+    ?>
+        <form method="post" action="<?= $phpself; ?>">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="tree_id" value="<?= $data2Db->tree_id; ?>">
+            <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+
+            <br>
+            <table class="humo" cellspacing="0" width="100%">
+                <tr class="table_header">
+                    <th colspan="2"><?= __('Family tree data'); ?></th>
+                </tr>
+
+                <tr>
+                    <td><?= __('E-mail address'); ?><br><?= __('Owner of tree'); ?></td>
+                    <td><?= __('E-mail address will not be shown on the site: an e-mail form will be generated!'); ?><br><input type="text" name="tree_email" value="<?= $data2Db->tree_email; ?>" size="40"><br>
+                        <input type="text" name="tree_owner" value="<?= $data2Db->tree_owner; ?>" size="40">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><?= __('Path to the pictures'); ?></td>
+                    <td>
+                        <input type="radio" value="yes" name="default_path" <?= $checked1; ?>><?= __('Use default picture path:'); ?><b>media/</b><br>
+                        <input type="radio" value="no" name="default_path" <?= $checked2; ?>>
+
+                        <input type="text" name="tree_pict_path" value="<?= $tree_pict_path; ?>" size="40" placeholder="../pictures/"><br>
+                        <?= sprintf(__('Example of picture path:<br>
 www.myhomepage.nl/humo-gen/ => folder for %s files.<br>
 www.myhomepage.nl/pictures/ => folder for pictures.<br>
-Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealogy');
+Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealogy'); ?>
 
-        echo '<br><a href="index.php?page=thumbs">' . __('Pictures/ create thumbnails') . '.</a><br>';
-        echo '</td></tr>';
+                        <br><a href="index.php?page=thumbs"><?= __('Pictures/ create thumbnails'); ?></a><br>
+                    </td>
+                </tr>
 
-        // *** Family tree privacy ***
-        echo '<tr><td>' . __('Tree privacy') . ':</td>';
-        echo '<td>' . __('This option is valid for ALL persons in this tree!') . '<br><select size="1" name="tree_privacy">';
-        echo '<option value="standard">' . __('Standard') . '</option>';
-        $select = '';
-        if ($data2Db->tree_privacy == 'filter_persons') {
-            $select = 'selected';
-        }
-        echo '<option value="filter_persons"' . $select . '>' . __('FILTER ALL persons') . '</option>';
-        $select = '';
-        if ($data2Db->tree_privacy == 'show_persons') {
-            $select = 'selected';
-        }
-        echo '<option value="show_persons"' . $select . '>' . __('DISPLAY ALL persons') . '</option>';
-        echo '</select>';
-        echo '</td></tr>';
+                <tr>
+                    <td><?= __('Tree privacy'); ?>:</td>
+                    <td><?= __('This option is valid for ALL persons in this tree!'); ?><br><select size="1" name="tree_privacy">
+                            <option value="standard"><?= __('Standard'); ?></option>
+                            <option value="filter_persons" <?= $select_filter_persons; ?>><?= __('FILTER ALL persons'); ?></option>
+                            <option value="show_persons" <?= $select_show_persons; ?>><?= __('DISPLAY ALL persons'); ?></option>
+                        </select>
+                    </td>
+                </tr>
 
-        echo '<tr><td>' . __('Change') . '</td><td><input type="Submit" name="change_tree_data" value="' . __('Change') . '">';
+                <tr>
+                    <td><?= __('Change'); ?></td>
+                    <td><input type="Submit" name="change_tree_data" value="<?= __('Change'); ?>"></td>
+                </tr>
 
-        echo '</td></tr>';
-        echo '</table>';
-        echo '</form>';
+            </table>
+        </form>
+    <?php
     }
 
-    function tree_text()
+    public function tree_text()
     {
         global $language, $language_tree, $selected_language;
         global $page, $tree_id, $treetext_name, $language_file, $data2Db;
         global $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id, $menu_admin;
         global $phpself, $phpself2, $joomlastring;
 
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-        echo '<input type="hidden" name="language_tree" value="' . $language_tree . '">';
-        if (isset($treetext_id)) {
-            echo '<input type="hidden" name="treetext_id" value="' . $treetext_id . '">';
-        }
-
-        echo '<br><table class="humo" cellspacing="0" width="100%">';
-
-        echo '<tr class="table_header"><th colspan="2">' . __('Family tree texts (per language)') . '</th></tr>';
-
-        echo '<tr><td colspan="2">';
-        echo __('Here you can add some overall texts for EVERY family tree (and for  EVERY LANGUAGE!).<br>Select language, and change text') . '.<br>';
-        echo __('Add "Default" (e.g. english) texts  for all languages, and/ or select a language to add texts for that specific language') . ':<br>';
-        echo '</td></tr>';
-
-        echo '<tr><td style="white-space:nowrap;">' . __('Language') . '</td><td>';
-        echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;menu_admin=tree_text&amp;language_tree=default&amp;tree_id=' . $tree_id . '">' . __('Default') . '</a> ';
-
-        // *** Language choice ***
-        $language_tree2 = $language_tree;
-        if ($language_tree == 'default') $language_tree2 = $selected_language;
-        echo '&nbsp;&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
-        echo '<a href="index.php?option=com_humo-gen"';
-        include(CMS_ROOTPATH . 'languages/' . $language_tree2 . '/language_data.php');
-        echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
-        $select_top = '';
-        echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
-        echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
-        echo '<ul class="humo_menu_item2">';
-        for ($i = 0; $i < count($language_file); $i++) {
-            // *** Get language name ***
-            if ($language_file[$i] != $language_tree2) {
-                include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
-                echo '<li style="float:left; width:124px;">';
-                echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
-                echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
-                echo $language["name"];
-                echo '</a>';
-                echo '</li>';
+    ?>
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <?php
+            echo '<input type="hidden" name="page" value="' . $page . '">';
+            echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
+            echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
+            echo '<input type="hidden" name="language_tree" value="' . $language_tree . '">';
+            if (isset($treetext_id)) {
+                echo '<input type="hidden" name="treetext_id" value="' . $treetext_id . '">';
             }
-        }
-        echo '</ul>';
-        echo '</div>';
-        echo '</div>';
-        echo '</td></tr>';
 
+            ?>
+            <br>
+            <table class="humo" cellspacing="0" width="100%">
+                <tr class="table_header">
+                    <th colspan="2"><?= __('Family tree texts (per language)'); ?></th>
+                </tr>
 
-        echo '<tr><td style="white-space:nowrap;"><b>' . __('Name of family tree') . '</b></td><td><input type="text" name="treetext_name" value="' . $treetext_name . '" size="60"></td></tr>';
+                <tr>
+                    <td colspan="2">
+                        <?= __('Here you can add some overall texts for EVERY family tree (and for  EVERY LANGUAGE!).<br>Select language, and change text'); ?><br>
+                        <?= __('Add "Default" (e.g. english) texts  for all languages, and/ or select a language to add texts for that specific language'); ?>:<br>
+                    </td>
+                </tr>
 
-        echo '<tr><td style="white-space:nowrap;">' . __('Extra text in main menu') . '</td>';
-        echo '<td>';
-        echo __('I.e. a website') . ': &lt;a href="http://www.website.com"&gt;www.website.com&lt;/a&gt;<br>';
-        echo '<textarea cols="60" rows="2" name="treetext_mainmenu_text">' . $treetext_mainmenu_text . '</textarea>';
-        echo '</td>';
+                <tr>
+                    <td style="white-space:nowrap;"><?= __('Language'); ?></td>
+                    <td>
+                        <a href="index.php?<?= $joomlastring; ?>page=tree&amp;menu_admin=tree_text&amp;language_tree=default&amp;tree_id=<?= $tree_id; ?>"><?= __('Default'); ?></a>
+                        <?php
+                        // *** Language choice ***
+                        $language_tree2 = $language_tree;
+                        if ($language_tree == 'default') $language_tree2 = $selected_language;
+                        echo '&nbsp;&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
+                        echo '<a href="index.php?option=com_humo-gen"';
+                        include(CMS_ROOTPATH . 'languages/' . $language_tree2 . '/language_data.php');
+                        echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
+                        $select_top = '';
+                        echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+                        echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
+                        echo '<ul class="humo_menu_item2">';
+                        for ($i = 0; $i < count($language_file); $i++) {
+                            // *** Get language name ***
+                            if ($language_file[$i] != $language_tree2) {
+                                include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+                                echo '<li style="float:left; width:124px;">';
+                                echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
+                                echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+                                echo $language["name"];
+                                echo '</a>';
+                                echo '</li>';
+                            }
+                        }
+                        echo '</ul>';
+                        echo '</div>';
+                        echo '</div>';
+                        ?>
+                    </td>
+                </tr>
 
-        echo '<tr><td style="white-space:nowrap;">' . __('Extra source in main menu') . '</td>';
-        echo '<td>';
-        echo __(' I.e. a website') . ': &lt;a href="http://www.website.com"&gt;www.website.com&lt;/a&gt;<br>';
-        echo '<textarea cols="60" rows="2" name="treetext_mainmenu_source">' . $treetext_mainmenu_source . '</textarea>';
-        echo '</td></tr>';
+                <tr>
+                    <td style="white-space:nowrap;"><b><?= __('Name of family tree'); ?></b></td>
+                    <td><input type="text" name="treetext_name" value="<?= $treetext_name; ?>" size="60"></td>
+                </tr>
 
-        echo '<tr><td style="white-space:nowrap;">' . __('Upper text family page') . '</td>';
-        echo '<td>' . __('I.e. Familypage') . '<br>';
-        echo '<textarea cols="60" rows="1" name="treetext_family_top">' . $treetext_family_top . '</textarea>';
-        echo '</td></tr>';
+                <tr>
+                    <td style="white-space:nowrap;"><?= __('Extra text in main menu'); ?></td>
+                    <td>
+                        <?= __('I.e. a website'); ?>: &lt;a href="http://www.website.com"&gt;www.website.com&lt;/a&gt;<br>
+                        <textarea cols="60" rows="2" name="treetext_mainmenu_text"><?= $treetext_mainmenu_text; ?></textarea>
+                    </td>
+                </tr>
 
-        echo '<tr><td style="white-space:nowrap;">' . __('Lower text family page') . '</td>';
-        echo '<td>' . __('I.e.: For more information: &lt;a href="mailform.php"&gt;contact&lt;/a&gt;') . '<br>';
-        echo '<textarea cols="60" rows="1" name="treetext_family_footer">' . $treetext_family_footer . '</textarea>';
-        echo '</td></tr>';
+                <tr>
+                    <td style="white-space:nowrap;"><?= __('Extra source in main menu'); ?></td>
+                    <td>
+                        <?= __(' I.e. a website'); ?>: &lt;a href="http://www.website.com"&gt;www.website.com&lt;/a&gt;<br>
+                        <textarea cols="60" rows="2" name="treetext_mainmenu_source"><?= $treetext_mainmenu_source; ?></textarea>
+                    </td>
+                </tr>
 
-        if (isset($treetext_id)) {
-            echo '<tr><td>' . __('Change') . '</td><td><input type="Submit" name="change_tree_text" value="' . __('Change') . '">';
-        } else {
-            echo '<tr><td>' . __('Change') . '</td><td><input type="Submit" name="add_tree_text" value="' . __('Change') . '">';
-        }
+                <tr>
+                    <td style="white-space:nowrap;"><?= __('Upper text family page'); ?></td>
+                    <td><?= __('I.e. Familypage'); ?><br>
+                        <textarea cols="60" rows="1" name="treetext_family_top"><?= $treetext_family_top; ?></textarea>
+                    </td>
+                </tr>
 
-        echo '</table>';
-        echo '</form>';
+                <tr>
+                    <td style="white-space:nowrap;"><?= __('Lower text family page'); ?></td>
+                    <td><?= __('I.e.: For more information: &lt;a href="mailform.php"&gt;contact&lt;/a&gt;'); ?><br>
+                        <textarea cols="60" rows="1" name="treetext_family_footer"><?= $treetext_family_footer; ?></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <?php
+                        if (isset($treetext_id)) {
+                            echo __('Change') . '</td><td><input type="Submit" name="change_tree_text" value="' . __('Change') . '">';
+                        } else {
+                            echo __('Change') . '</td><td><input type="Submit" name="add_tree_text" value="' . __('Change') . '">';
+                        }
+                        ?>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <?php
     }
 
     //**************************************************************************************
     //******  tree_merge is the function that navigates all merge screens and options  *****
     //**************************************************************************************
-    function tree_merge()
+    public function tree_merge()
     {
         global $dbh, $db_functions, $data2Db, $phpself;
         global $page, $language, $tree_id, $menu_admin, $relatives_merge, $merge_chars;
@@ -516,63 +558,68 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                         $right = $_POST['right'];
                     }
 
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-                    echo '<input type="hidden" name="page" value="' . $page . '">';
-                    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-                    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                    echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
-                    echo '</form>';
+        ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                        <input type="hidden" name="page" value="<?= $page; ?>">
+                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                        <input type="Submit" value="<?= __('Back to main merge menu'); ?>">
+                    </form>
 
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-                    echo '<input type="hidden" name="page" value="' . $page . '">';
-                    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-                    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                    echo '<input type="hidden" name="no_increase" value="1">';
-                    echo '<input type="hidden" name="left" value="' . $right . '">';
-                    echo '<input type="hidden" name="right" value="' . $left . '">';
-                    echo '<input type="Submit" name="duplicate_compare" value="' . __('<- Switch left and right ->') . '">';
-                    echo '</form>';
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                        <input type="hidden" name="page" value="<?= $page; ?>">
+                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                        <input type="hidden" name="no_increase" value="1">
+                        <input type="hidden" name="left" value="<?= $right; ?>">
+                        <input type="hidden" name="right" value="<?= $left; ?>">
+                        <input type="Submit" name="duplicate_compare" value="<?= __('<- Switch left and right ->'); ?>">
+                    </form>
 
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-                    echo '<input type="hidden" name="page" value="' . $page . '">';
-                    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-                    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                    echo '<input type="Submit" name="duplicate_compare" value="' . __('Skip to next') . '">';
-                    echo '</form>';
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                        <input type="hidden" name="page" value="<?= $page; ?>">
+                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                        <input type="Submit" name="duplicate_compare" value="<?= __('Skip to next'); ?>">
+                    </form>
 
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;' . __('Skip to nr: ');
-                    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-                    echo '<input type="hidden" name="page" value="' . $page . '">';
-                    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-                    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                    echo '<select style="max-width:60px" name="choice_nr">';
-                    for ($x = 0; $x < count($_SESSION['dupl_arr_' . $data2Db->tree_prefix]); $x++) {
-                        $selected = '';
-                        if ($x == $_SESSION['present_compare_' . $data2Db->tree_prefix]) {
-                            $selected = "SELECTED";
+                    &nbsp;&nbsp;&nbsp;&nbsp;<?= __('Skip to nr: '); ?>
+                    <form method="post" action="' . $phpself . '" style="display : inline;">
+                        <?php
+                        echo '<input type="hidden" name="page" value="' . $page . '">';
+                        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
+                        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
+                        echo '<select style="max-width:60px" name="choice_nr">';
+                        for ($x = 0; $x < count($_SESSION['dupl_arr_' . $data2Db->tree_prefix]); $x++) {
+                            $selected = '';
+                            if ($x == $_SESSION['present_compare_' . $data2Db->tree_prefix]) {
+                                $selected = "selected";
+                            }
+                            echo '<option value="' . $x . '" ' . $selected . '>' . ($x + 1) . '</option>';
                         }
-                        echo '<option value="' . $x . '" ' . $selected . '>' . ($x + 1) . '</option>';
-                    }
-                    echo '</select>';
-                    echo '<input type="Submit" name="duplicate_compare" value="' . __('Go!') . '">';
-                    echo '</form>';
+                        echo '</select>';
+                        echo '<input type="Submit" name="duplicate_compare" value="' . __('Go!') . '">';
+                        ?>
+                    </form>
 
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-                    echo '<input type="hidden" name="page" value="' . $page . '">';
-                    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-                    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                    echo '<input type="hidden" name="dupl" value="1">';
-                    echo '<input type="Submit" name="merge" value="' . __('Merge right into left') . '">';
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                        <?php
+                        echo '<input type="hidden" name="page" value="' . $page . '">';
+                        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
+                        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
+                        echo '<input type="hidden" name="dupl" value="1">';
+                        echo '<input type="Submit" name="merge" value="' . __('Merge right into left') . '">';
 
-                    echo '<br><br>';
-                    $this->show_pair($left, $right, 'duplicate');
-                    echo '<br>';
-
-                    echo '</form>';
+                        echo '<br><br>';
+                        $this->show_pair($left, $right, 'duplicate');
+                        echo '<br>';
+                        ?>
+                    </form>
+<?php
 
                     break; // get out of the while loop. next loop will be called by skip or merge buttons
                 }
@@ -670,7 +717,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
             if (isset($_POST['skip_rel'])) {
                 // remove first entry (that the admin decided not to merge) from string
                 $relcomp = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'rel_merge_" . $data2Db->tree_prefix . "'");
-                $relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);		// database row: I23@I300;I54@I304;I34@I430;
+                $relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);        // database row: I23@I300;I54@I304;I34@I430;
                 $firstsemi = strpos($relcompDb->setting_value, ';') + 1;
                 $string = substr($relcompDb->setting_value, $firstsemi);
                 $result = $db_functions->update_settings('rel_merge_' . $data2Db->tree_prefix, $string);
@@ -685,7 +732,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
             }
 
             $relcomp = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'rel_merge_" . $data2Db->tree_prefix . "'");
-            $relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);		// database row: I23@I300;I54@I304;I34@I430;
+            $relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);        // database row: I23@I300;I54@I304;I34@I430;
 
             if ($relcompDb->setting_value != '') {
                 if (!isset($_POST['swap'])) {
@@ -1036,7 +1083,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                                 echo '<option';
                                 if (isset($left)) {
                                     if ($searchDb->pers_id == $left and !(isset($_POST["search1"]) and $search_lastname == '' and $search_firstname == '')) {
-                                        echo ' SELECTED';
+                                        echo ' selected';
                                     }
                                 }
                                 echo ' value="' . $searchDb->pers_id . '">' . $name["index_name"] . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
@@ -1117,7 +1164,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                                 echo '<option';
                                 if (isset($right)) {
                                     if ($searchDb2->pers_id == $right and !(isset($_POST["search2"]) and $search_lastname2 == '' and $search_firstname2 == '')) {
-                                        echo ' SELECTED';
+                                        echo ' selected';
                                     }
                                 }
                                 echo ' value="' . $searchDb2->pers_id . '">' . $name["index_name"] . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
@@ -1246,9 +1293,9 @@ You will be notified of results as the action is completed');
                                         $merges++;
                                     }
                                 }
-                            }	// end "if($go)"
+                            }    // end "if($go)"
                         }
-                    }	// end while
+                    }    // end while
                 } // end "if($pers2)
 
             }
@@ -1374,10 +1421,10 @@ You will be notified of results as the action is completed');
             echo '</td><td>';
             echo '<select size="1" name="merge_lastname">';
             if ($lastnDb->setting_value == 'YES') {
-                echo '<option value="YES" SELECTED>' . __('Yes') . '</option>';
+                echo '<option value="YES" selected>' . __('Yes') . '</option>';
                 echo '<option value="NO">' . __('No') . '</option>';
             } else {
-                echo '<option value="NO" SELECTED>' . __('No') . '</option>';
+                echo '<option value="NO" selected>' . __('No') . '</option>';
                 echo '<option value="YES">' . __('Yes') . '</option>';
             }
             echo "</select>";
@@ -1389,10 +1436,10 @@ You will be notified of results as the action is completed');
             echo '</td><td>';
             echo '<select size="1" name="merge_firstname">';
             if ($firstnDb->setting_value == 'YES') {
-                echo '<option value="YES" SELECTED>' . __('Yes') . '</option>';
+                echo '<option value="YES" selected>' . __('Yes') . '</option>';
                 echo '<option value="NO">' . __('No') . '</option>';
             } else {
-                echo '<option value="NO" SELECTED>' . __('No') . '</option>';
+                echo '<option value="NO" selected>' . __('No') . '</option>';
                 echo '<option value="YES">' . __('Yes') . '</option>';
             }
             echo "</select>";
@@ -1404,10 +1451,10 @@ You will be notified of results as the action is completed');
             echo '</td><td>';
             echo '<select size="1" name="merge_dates">';
             if ($datesDb->setting_value == 'YES') {
-                echo '<option value="YES" SELECTED>' . __('Yes') . '</option>';
+                echo '<option value="YES" selected>' . __('Yes') . '</option>';
                 echo '<option value="NO">' . __('No') . '</option>';
             } else {
-                echo '<option value="NO" SELECTED>' . __('No') . '</option>';
+                echo '<option value="NO" selected>' . __('No') . '</option>';
                 echo '<option value="YES">' . __('Yes') . '</option>';
             }
             echo "</select>";
@@ -1421,10 +1468,10 @@ You will be notified of results as the action is completed');
             echo '</td><td>';
             echo '<select size="1" name="merge_parentsdate">';
             if ($pardDb->setting_value == 'YES') {
-                echo '<option value="YES" SELECTED>' . __('Yes') . '</option>';
+                echo '<option value="YES" selected>' . __('Yes') . '</option>';
                 echo '<option value="NO">' . __('No') . '</option>';
             } else {
-                echo '<option value="NO" SELECTED>' . __('No') . '</option>';
+                echo '<option value="NO" selected>' . __('No') . '</option>';
                 echo '<option value="YES">' . __('Yes') . '</option>';
             }
             echo "</select>";
@@ -1736,7 +1783,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
             echo '<tr style="background-color:' . $color . '"><td style="font-weight:bold">' . ucfirst($title) . ':</td>';
             $checked = '';
             if ($left_item) {
-                $checked = " CHECKED";
+                $checked = " checked";
                 if ($name == 'crem' and $left_item == '1') {
                     $left_item = 'Yes';
                 }
@@ -1750,7 +1797,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
 
             echo '<td><input type="radio" name="' . $name . '" value="1"' . $checked . '>' . $left_item . '</td>';
             $checked = '';
-            if (!$left_item) $checked = " CHECKED";
+            if (!$left_item) $checked = " checked";
             if ($name == 'crem' and $right_item == '1') {
                 $right_item = 'Yes';
             }
@@ -1779,7 +1826,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
             $checked = '';
             $showtext = '';
             if ($left_item) {
-                $checked = " CHECKED";
+                $checked = " checked";
                 $showtext = "[" . __('Read text') . "]";
                 echo '<input type="checkbox" name="' . $name . '_l" ' . $checked . '>';
                 if (substr($left_item, 0, 2) == "@N") {  // not plain text but @N23@ -> look it up in humo_texts
@@ -1797,7 +1844,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
             $checked = '';
             $showtext = '';
             if (!$left_item) {
-                $checked = " CHECKED";
+                $checked = " checked";
             }
             $showtext = "[" . __('Read text') . "]";
             echo '</td><td><input type="checkbox" name="' . $name . '_r" ' . $checked . '>';
@@ -1980,7 +2027,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
             if (is_array($r_ev) and $r_ev != '') {
                 $checked = '';
                 if ($l_ev == '') {
-                    $checked = " CHECKED";
+                    $checked = " checked";
                 }
                 foreach ($r_ev as $key => $value) {
                     if (substr($value, 0, 2) == '@I') {  // this is a person gedcom number, not plain text
@@ -2009,7 +2056,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
     //**********************************************************************************************************************
     //******  "show_sources" is the function that places the sources in the comparison table (if right has a value)     ****
     //**********************************************************************************************************************
-    function show_sources($left_ged, $right_ged)
+    public function show_sources($left_ged, $right_ged)
     {
         global $dbh, $tree_id, $language, $data2Db, $color;
 
@@ -2090,7 +2137,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
     //**********************************************************************************************************************
     //******  "show_addresses" is the function that places the addresses in the comparison table (if right has a value) ****
     //**********************************************************************************************************************
-    function show_addresses($left_ged, $right_ged)
+    public function show_addresses($left_ged, $right_ged)
     {
         global $dbh, $tree_id, $language, $data2Db, $color;
 
@@ -2164,7 +2211,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
     //**********************************************************************************************************************
     //******  "merge_them" is the function that does the actual job of merging the data of two persons (left and right)*****
     //**********************************************************************************************************************
-    function merge_them($left, $right, $mode)
+    public function merge_them($left, $right, $mode)
     {
         global $dbh, $db_functions, $tree_id, $data2Db, $phpself, $language;
         global $page, $menu_admin;
@@ -3042,13 +3089,13 @@ This is the easiest way to make sure you don\'t forget anyone.');
                 }
                 echo '</form>';
             }
-        }	// end if not automatic
+        }    // end if not automatic
     }
 
     //*********************************************************************************************************************************
     //*********  function check_regular checks if data from the humo_person table was marked (checked) in the comparison table  *****
     //*********************************************************************************************************************************
-    function check_regular($post_var, $auto_var, $mysql_var)
+    public function check_regular($post_var, $auto_var, $mysql_var)
     {
         global $dbh, $language, $data2Db, $result1Db, $result2Db;
         if ((isset($_POST[$post_var]) and $_POST[$post_var] == '2') or $auto_var == '2') {
@@ -3061,7 +3108,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
     // *********************************************************************************************************************************
     // ***  function check_regular_text checks if text data from the humo_person table was marked (checked) in the comparison table  *****
     // *********************************************************************************************************************************
-    function check_regular_text($post_var, $auto_var, $mysql_var)
+    public function check_regular_text($post_var, $auto_var, $mysql_var)
     {
         global $dbh, $tree_id, $language, $data2Db, $result1Db, $result2Db;
         if (isset($_POST[$post_var . '_r']) or $auto_var == '2') {
@@ -3097,7 +3144,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
     //****************************************************************************************************
     //*********  function check_event checks if event were marked (checked) in the comparison table  *****
     //****************************************************************************************************
-    function check_events($left_ged, $right_ged)
+    public function check_events($left_ged, $right_ged)
     {
         global $dbh, $tree_id, $language, $data2Db;
         $right_event_array = array();
@@ -3126,7 +3173,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
     //****************************************************************************************************
     //** function check_addresses checks if addresses were marked (checked) in the comparison table  *****
     //****************************************************************************************************
-    function check_addresses($left_ged, $right_ged)
+    public function check_addresses($left_ged, $right_ged)
     {
         global $dbh, $tree_id, $language, $data2Db;
         $left_address = $dbh->query("SELECT * FROM humo_connections
@@ -3153,7 +3200,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
     //****************************************************************************************************
     //*********  function check_sources checks if sources were marked (checked) in the comparison table  *****
     //****************************************************************************************************
-    function check_sources($left_ged, $right_ged)
+    public function check_sources($left_ged, $right_ged)
     {
         global $dbh, $tree_id, $language, $data2Db;
         $left_source = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
@@ -3182,7 +3229,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
     //********************************************************************************************************
     //*********  function popclean prepares a mysql output string for presentation with popup_merge.js *****
     //********************************************************************************************************
-    function popclean($input)
+    public function popclean($input)
     {
         $output = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br>", htmlentities(addslashes($input), ENT_QUOTES));
         return $output;

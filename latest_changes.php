@@ -9,8 +9,6 @@ if (!is_numeric($tree_id)) exit;
 
 global $selected_language;
 
-$person_cls = new person_cls;
-
 // *** EXAMPLE of a UNION querie ***
 //$qry = "(SELECT * FROM humo1_person ".$query.') ';
 //$qry.= " UNION (SELECT * FROM humo2_person ".$query.')';
@@ -68,13 +66,17 @@ if (isset($_POST["search_name"])) {
 }
 
 $person_result = $dbh->query($person_qry);
+
+$path = CMS_ROOTPATH . 'latest_changes.php?' . $tree_id;
+if ($humo_option["url_rewrite"] == "j") $path = 'latest_changes/' . $tree_id;
+
 ?>
 
 <h2 class="center"><?= __('Recently changed persons and new persons'); ?></h2>
 
 <!-- *** Search box *** -->
 <div style="text-align: center; margin-bottom: 16px">
-    <form action="<?= CMS_ROOTPATH; ?>latest_changes.php" method="post">
+    <form action="<?= $path; ?>" method="post">
         <input type="text" name="search_name" id="part_of_name" value="<?= safe_text_show($search_name); ?>">
         <input type="submit" value="<?= __('Search'); ?>">
     </form>
@@ -104,7 +106,7 @@ $person_result = $dbh->query($person_qry);
             $pers_sexe = '<img src="' . CMS_ROOTPATH . 'images/unknown.gif" alt="unknown">';
         }
 
-        $person_cls->construct($person);
+        $person_cls = new person_cls($person);
         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
         $url = $person_cls->person_url2($person->pers_tree_id, $person->pers_famc, $person->pers_fams, $person->pers_gedcomnumber);
         $name = $person_cls->person_name($person);

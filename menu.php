@@ -14,7 +14,6 @@ elseif (is_file('media/logo.jpg'))
 ?>
 
 <div id="top_menu">
-
     <div id="top" style="direction:<?= $rtlmark; ?>">
         <div style="direction:ltr;">
             <span id="top_website_name">
@@ -24,12 +23,12 @@ elseif (is_file('media/logo.jpg'))
             &nbsp;&nbsp;
 
             <?php
-
             // *** Select family tree ***
             if (!$bot_visit) {
                 $sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
                 $tree_search_result2 = $dbh->query($sql);
                 $num_rows = $tree_search_result2->rowCount();
+                $count = 0;
                 if ($num_rows > 1) {
                     if ($humo_option["url_rewrite"] == "j") {
                         $link = $uri_path . 'tree_index/';
@@ -42,7 +41,6 @@ elseif (is_file('media/logo.jpg'))
                         <select size="1" name="tree_id" onChange="this.form.submit();" style="width: 150px; height:20px;">
                             <option value=""><?= __('Select a family tree:'); ?></option>
                             <?php
-                            $count = 0;
                             while ($tree_searchDb = $tree_search_result2->fetch(PDO::FETCH_OBJ)) {
                                 // *** Check if family tree is shown or hidden for user group ***
                                 $hide_tree_array2 = explode(";", $user['group_hide_trees']);
@@ -52,12 +50,12 @@ elseif (is_file('media/logo.jpg'))
                                     $selected = '';
                                     if (isset($_SESSION['tree_prefix'])) {
                                         if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
-                                            $selected = ' SELECTED';
+                                            $selected = ' selected';
                                         }
                                     } else {
                                         if ($count == 0) {
                                             $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
-                                            $selected = ' SELECTED';
+                                            $selected = ' selected';
                                         }
                                     }
                                     $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
@@ -73,6 +71,7 @@ elseif (is_file('media/logo.jpg'))
             }
             ?>
         </div>
+
         <?php
         // *** This code is used to restore $dataDb reading. Used for picture etc. ***
         if (is_string($_SESSION['tree_prefix']))
@@ -121,63 +120,9 @@ elseif (is_file('media/logo.jpg'))
         <?php
         }
 
-        //TEST Line to see all cookies...
-        //print_r($_COOKIE);
-
         // *** Favourite list for family pages ***
         if (!$bot_visit) {
-
-            //$favorites_array[]='';
-            // *** Use session if session is available ***
-            if (isset($_SESSION["save_favorites"]) and $_SESSION["save_favorites"]) {
-                $favorites_array = $_SESSION["save_favorites"];
-            } else {
-                // *** Get favourites from cookie (only if session is empty) ***
-                if (isset($_COOKIE['humo_favorite'])) {
-                    foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-                        $favorites_array[] = $value;
-                    }
-                    // *** Save cookie array in session ***
-                    $_SESSION["save_favorites"] = $favorites_array;
-                }
-            }
-
-            // *** Add new favorite to list of favourites ***
-            if (isset($_POST['favorite'])) {
-                // *** Add favourite to session ***
-                $favorites_array[] = $_POST['favorite'];
-                $_SESSION["save_favorites"] = $favorites_array;
-
-                // *** Add favourite to cookie ***
-                $favorite_array2 = explode("|", $_POST['favorite']);
-                // *** Combine tree prefix and family number as unique array id, for example: humo_F4 ***
-                $i = $favorite_array2['2'] . $favorite_array2['1'];
-                setcookie("humo_favorite[$i]", $_POST['favorite'], time() + 60 * 60 * 24 * 365);
-            }
-
-            // *** Remove favourite from favorite list ***
-            if (isset($_POST['favorite_remove'])) {
-                // *** Remove favourite from session ***
-                if (isset($_SESSION["save_favorites"])) {
-                    unset($favorites_array);
-                    foreach ($_SESSION['save_favorites'] as $key => $value) {
-                        if ($value != $_POST['favorite_remove']) {
-                            $favorites_array[] = $value;
-                        }
-                    }
-                    $_SESSION["save_favorites"] = $favorites_array;
-                }
-
-                // *** Remove cookie ***
-                if (isset($_COOKIE['humo_favorite'])) {
-                    foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-                        if ($value == $_POST['favorite_remove']) {
-                            setcookie("humo_favorite[$name]", "", time() - 3600);
-                        }
-                    }
-                }
-            }
-
+            include_once(CMS_ROOTPATH . "include/person_cls.php");
             // *** Show favorites in selection list ***
         ?>
             <form method="POST" action="<?= $uri_path; ?>family.php" style="display : inline;" id="top_favorites_select">
@@ -190,18 +135,45 @@ elseif (is_file('media/logo.jpg'))
                         foreach ($_SESSION['save_favorites'] as $key => $value) {
                             if (is_string($value) and $value) {
                                 $favorite_array2 = explode("|", $value);
-                                // *** Show only persons in selected family tree ***
-                                if ($_SESSION['tree_prefix'] == $favorite_array2['2']) {
-                                    // *** Check if family tree is still the same family tree ***
-                                    $person_manDb = $db_functions->get_person($favorite_array2['3']);
 
+                                // DISABLED OLD FAVOURITE SYSTEM. Because it's not possible to disable these favorites.
+                                //if (!is_numeric($favorite_array2['0'])) {
+                                /*
+                                    // *** Old favourite system ***
+                                    // *** Show only persons in selected family tree ***
+                                    if ($tree_id == $favorite_array2['2']) {
+                                        // *** Check if family tree is still the same family tree ***
+                                        // *** Proces man using a class ***
+                                        $test_favorite = $db_functions->get_person($favorite_array2['3']);
+                                        if ($test_favorite) {
+                                            echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['3'] . '">' . $favorite_array2['0'] . '</option>';
+                                        }
+                                    }
+                                    */
+                                //} else {
+
+                                // *** July 2023: New favorite system: 0=tree/ 1=family/ 2=person GEDCOM number ***
+                                // *** Show only persons in selected family tree ***
+                                if ($tree_id == $favorite_array2['0']) {
+                                    // *** Check if family tree is still the same family tree ***
                                     // *** Proces man using a class ***
-                                    $test_favorite = $db_functions->get_person($favorite_array2['3']);
-                                    if ($test_favorite)
-                                        echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['3'] . '">' . $favorite_array2['0'] . '</option>';
+                                    $test_favorite = $db_functions->get_person($favorite_array2['2']);
+                                    if ($test_favorite) {
+                                        //$name_cls = new person_cls($favorite_array2['3']);
+                                        $name_cls = new person_cls($favorite_array2['2']);
+                                        $name = $name_cls->person_name($test_favorite);
+                                        echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['2'] . '">' . $name['name'] . ' [' . $favorite_array2['2'] . ']</option>';
+                                    }
                                 }
+                                //}
                             }
                         }
+
+                        //TEST
+                        //foreach ($_COOKIE['humo_favorite'] as $name => $value) {
+                        //    echo '<option value="">' . $name . '!!!!</option>';
+                        //}
+                        //echo '<option value="' . $favorite_array2['0'] . '|' . $favorite_array2['1'] . '">' . $key.'='.$favorite_array2['0'].'-'.$favorite_array2['1'].'-'.$favorite_array2['2'] . '</option>';
                     }
                     ?>
                 </select>
@@ -211,19 +183,19 @@ elseif (is_file('media/logo.jpg'))
 
         // *** Show "A+ A- Reset" ***
         /*
-    echo '<span id="top_font_size">';
-        echo '&nbsp;&nbsp;&nbsp;<a href="javascript:decreaseFontSize(0);" title="decrease font size">'.$dirmark1.'A-&nbsp;</a>';
-        echo ' <a href="javascript:increaseFontSize(0);" title="increase font size">A+</a>';
+        echo '<span id="top_font_size">';
+            echo '&nbsp;&nbsp;&nbsp;<a href="javascript:decreaseFontSize(0);" title="decrease font size">'.$dirmark1.'A-&nbsp;</a>';
+            echo ' <a href="javascript:increaseFontSize(0);" title="increase font size">A+</a>';
 
-        $navigator_user_agent = ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) ? strtolower( $_SERVER['HTTP_USER_AGENT'] ) : '';
-        if ((stristr($navigator_user_agent, "chrome")) OR (stristr($navigator_user_agent, "safari"))) {
-            // Chrome and Safari: reset is not working good... So skip this code.
-        }
-        else {  // all other browsers
-            echo ' <a href="javascript:delCookie();" title="reset font size">Reset</a>';
-        }
-    echo '</span>';
-    */
+            $navigator_user_agent = ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) ? strtolower( $_SERVER['HTTP_USER_AGENT'] ) : '';
+            if ((stristr($navigator_user_agent, "chrome")) OR (stristr($navigator_user_agent, "safari"))) {
+                // Chrome and Safari: reset is not working good... So skip this code.
+            }
+            else {  // all other browsers
+                echo ' <a href="javascript:delCookie();" title="reset font size">Reset</a>';
+            }
+        echo '</span>';
+        */
         ?>
 
     </div> <!-- End of Top -->
@@ -235,14 +207,6 @@ elseif (is_file('media/logo.jpg'))
         $ie7_rtlhack = ' class="headerrtl"';
     }
 
-    $menu_item_home = '';
-    if ($menu_choice == 'main_index') {
-        $menu_item_home = ' id="current"';
-    }
-
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path_home = 'index.php?option=com_humo-gen';
-    //} elseif ($humo_option["url_rewrite"] == "j") {
     if ($humo_option["url_rewrite"] == "j") {
         //$menu_path_home = 'index/' . $tree_id . "/";
         $menu_path_home = 'index/' . $tree_id;
@@ -265,11 +229,6 @@ elseif (is_file('media/logo.jpg'))
             $menu_item_login = ' id="current"';
         }
 
-        //if (CMS_SPECIFIC == 'Joomla') {
-        //    $menu_path = 'index.php?option=com_humo-gen&amp;task=login';
-        //} else {
-        //    $menu_path_login = CMS_ROOTPATH . 'login.php';
-        //}
         if ($humo_option["url_rewrite"] == "j") {
             $menu_path_login = $uri_path . 'login';
         } else {
@@ -277,31 +236,19 @@ elseif (is_file('media/logo.jpg'))
         }
     }
 
-    if ($user['group_edit_trees'] or $user['group_admin'] == 'j') {
-        $menu_item_admin = '';
-        //if (CMS_SPECIFIC == 'Joomla') {
-        //    $menu_path = 'index.php?option=com_humo-gen&amp;task=admin';
-        //} else {
-        $menu_path_admin = CMS_ROOTPATH_ADMIN . 'index.php';
-        //}
-    }
+    //if ($user['group_edit_trees'] or $user['group_admin'] == 'j') {
+    //    $menu_item_admin = '';
+    //    $menu_path_admin = CMS_ROOTPATH_ADMIN . 'index.php';
+    //}
 
     $menu_item_logoff = ''; //if ($menu_choice=='help'){ $menu_item=' id="current"'; }
     // *** Log off ***
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=index&amp;log_off=1';
-    //} else {
-    //    $menu_path_logoff = CMS_ROOTPATH . 'index.php?log_off=1';
-    //}
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_logoff = $uri_path . 'index?log_off=1';
     } else {
         $menu_path_logoff = CMS_ROOTPATH . 'index.php?log_off=1';
     }
 
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=help';
-    //} elseif ($humo_option["url_rewrite"] == "j") {
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_help = $uri_path . 'help';
     } else {
@@ -316,19 +263,12 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'register') {
         $menu_item_register = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=register';
-    //} else {
     $menu_path_register = CMS_ROOTPATH . 'register.php';
-    //}
 
     $menu_item_cms = '';
     if ($menu_choice == 'cms_pages') {
         $menu_item_cms = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=cms_pages';
-    //} elseif ($humo_option["url_rewrite"] == "j") {
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_cms = $uri_path . 'cms_pages';
     } else {
@@ -339,9 +279,6 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'cookies') {
         $menu_item_cookies = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=cookies';
-    //} elseif ($humo_option["url_rewrite"] == "j") {
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_cookies = $uri_path . 'cookies';
     } else {
@@ -352,19 +289,12 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'persons') {
         $menu_item_persons = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=list&amp;tree_id=' . $tree_id . '&amp;reset=1';
-    //} else {
     $menu_path_persons = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id . '&amp;reset=1';
-    //}
 
     $menu_item_names = '';
     if ($menu_choice == 'names') {
         $menu_item_names = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id=' . $tree_id;
-    //} elseif ($humo_option["url_rewrite"] == "j") {
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_names = 'list_names/' . $tree_id . '/';
     } else {
@@ -375,11 +305,6 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'user_settings') {
         $menu_item_user_settings = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=user_settings';
-    //} else {
-    //    $menu_path_user_settings = CMS_ROOTPATH . 'user_settings.php';
-    //}
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_user_settings = 'user_settings';
     } else {
@@ -387,25 +312,15 @@ elseif (is_file('media/logo.jpg'))
     }
 
     $menu_item_admin = '';
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=admin';
-    //} else {
     $menu_path_admin = CMS_ROOTPATH_ADMIN . 'index.php';
-    //}
 
     $menu_item_anniversary = '';
     if ($menu_choice == 'birthday') {
         $menu_item_anniversary = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=birthday_list';
-    //} else {
-    //    $menu_path_anniversary = CMS_ROOTPATH . 'birthday_list.php';
-    //}
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_anniversary = 'birthday_list';
-    }
-    else{
+    } else {
         $menu_path_anniversary = CMS_ROOTPATH . 'birthday_list.php';
     }
 
@@ -413,67 +328,55 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'statistics') {
         $menu_item_statistics = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=statistics';
-    //} else {
-    //    $menu_path_statistics = CMS_ROOTPATH . 'statistics.php';
-    //}
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_statistics = 'statistics';
-    }
-    else{
+    } else {
         $menu_path_statistics = CMS_ROOTPATH . 'statistics.php';
     }
-
 
     $menu_item_calculator = '';
     if ($menu_choice == 'relations') {
         $menu_item_calculator = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=relations';
-    //} else {
-    $menu_path_calculator = CMS_ROOTPATH . 'relations.php';
-    //}
+    if ($humo_option["url_rewrite"] == "j") {
+        $menu_path_calculator = 'relations';
+    } else {
+        $menu_path_calculator = CMS_ROOTPATH . 'relations.php';
+    }
 
     $menu_item_map = '';
     if ($menu_choice == 'maps') {
         $menu_item_map = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=maps';
-    //} else {
     $menu_path_map = CMS_ROOTPATH . 'maps.php';
-    //}
 
     $menu_item_contact = '';
     if ($menu_choice == 'mailform') {
         $menu_item_contact = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=mailform';
-    //} else {
-    $menu_path_contact = CMS_ROOTPATH . 'mailform.php';
-    //}
+    if ($humo_option["url_rewrite"] == "j") {
+        $menu_path_contact = 'mailform';
+    } else {
+        $menu_path_contact = CMS_ROOTPATH . 'mailform.php';
+    }
 
     // *** Latest changes ***
     $menu_item_latest_changes = '';
     if ($menu_choice == 'latest_changes') {
         $menu_item_latest_changes = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=latest_changes';
-    //} else {
-    $menu_path_latest_changes = CMS_ROOTPATH . 'latest_changes.php';
-    //}
+    if ($humo_option["url_rewrite"] == "j") {
+        //$menu_path_latest_changes = 'latest_changes';
+        $menu_path_latest_changes = 'latest_changes/' . $tree_id;
+    } else {
+        //$menu_path_latest_changes = CMS_ROOTPATH . 'latest_changes.php';
+        $menu_path_latest_changes = CMS_ROOTPATH . 'latest_changes.php?' . $tree_id;
+    }
 
     $menu_item_tree_index = '';
     if ($menu_choice == 'tree_index') {
         $menu_item_tree_index = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=tree_index&amp;tree_id=' . $tree_id . '&amp;reset=1';
-    //} elseif ($humo_option["url_rewrite"] == "j") {
     if ($humo_option["url_rewrite"] == "j") {
         //$menu_path_tree_index = 'tree_index/' . $tree_id . "/";
         $menu_path_tree_index = 'tree_index/' . $tree_id;
@@ -485,64 +388,57 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'places') {
         $menu_item_places_persons = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;tree_id=' . $tree_id . '&amp;task=list&amp;index_list=places&amp;reset=1';
-    //} else {
     $menu_path_places_persons = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id . '&amp;index_list=places&amp;reset=1';
-    //}
 
     $menu_item_places_families = '';
     if ($menu_choice == 'places_families') {
         $menu_item_places_families = ' id="current"';
     }
-    //if (CMS_SPECIFIC=='Joomla'){
-    //	$menu_path='index.php?option=com_humo-gen&amp;tree_id='.$tree_id.'&amp;task=list&amp;index_list=places&amp;reset=1';
-    //}
-    //else{
     $menu_path_places_families = CMS_ROOTPATH . 'list_places_families.php?tree_id=' . $tree_id . '&amp;index_list=places&amp;reset=1';
-    //}
 
-    $menu_item_photobook = '';
+    $menu_item_photoalbum = '';
     if ($menu_choice == 'pictures') {
-        $menu_item_photobook = ' id="current"';
+        $menu_item_photoalbum = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=photoalbum&amp;tree_id=' . $tree_id;
-    //} else {
-    $menu_path_photobook = CMS_ROOTPATH . 'photoalbum.php?tree_id=' . $tree_id;
-    //}
+    if ($humo_option["url_rewrite"] == "j") {
+        $menu_path_photoalbum = 'photoalbum/' . $tree_id;
+    } else {
+        $menu_path_photoalbum = CMS_ROOTPATH . 'photoalbum.php?tree_id=' . $tree_id;
+    }
 
     $menu_item_sources = '';
     if ($menu_choice == 'sources') {
         $menu_item_sources = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=sources&amp;tree_id=' . $tree_id;
-    //}
-    //elseif ($humo_option["url_rewrite"]=="j"){
+    //if ($humo_option["url_rewrite"]=="j"){
     //	$menu_path= 'sources/'.$tree_id.'/';
     //}
     //else {
-    $menu_path_sources = CMS_ROOTPATH . 'sources.php?tree_id=' . $tree_id;
+    //$menu_path_sources = CMS_ROOTPATH . 'sources.php?tree_id=' . $tree_id;
     //}
+    if ($humo_option["url_rewrite"] == "j") {
+        $menu_path_sources = 'sources/' . $tree_id;
+    } else {
+        $menu_path_sources = CMS_ROOTPATH . 'sources.php?tree_id=' . $tree_id;
+    }
 
     $menu_item_addresses = '';
     if ($menu_choice == 'addresses') {
         $menu_item_addresses = ' id="current"';
     }
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $menu_path = 'index.php?option=com_humo-gen&amp;task=addresses&amp;tree_id=' . $tree_id;
-    //} else {
-    $menu_path_addresses = CMS_ROOTPATH . 'addresses.php?tree_id=' . $tree_id;
-    //}
+    if ($humo_option["url_rewrite"] == "j") {
+        $menu_path_addresses = 'addresses/' . $tree_id;
+    } else {
+        $menu_path_addresses = CMS_ROOTPATH . 'addresses.php?tree_id=' . $tree_id;
+    }
 
     ?>
     <div id="humo_menu" <?= $ie7_rtlhack; ?>>
         <ul class="humo_menu_item">
             <!-- You can use this link, for an extra link to another main homepage -->
             <!-- <li><a href="...">Homepage</a></li> -->
+            <li <?php if ($menu_choice == 'main_index') echo 'id="current"'; ?> class="mobile_hidden"><a href="<?= $menu_path_home; ?>"><img src="images/menu_mobile.png" width="18" class="mobile_icon" alt="<?= __('Home'); ?>"> <?= __('Home'); ?></a></li>
             <?php
-            echo '<li' . $menu_item_home . ' class="mobile_hidden"><a href="' . $menu_path_home . '"><img src="images/menu_mobile.png" width="18" class="mobile_icon" alt="' . __('Home') . '"> ' . __('Home') . "</a></li>\n";
 
             // Doesn't work properly. Icon too large and orange...
             //echo '<li'.$menu_item.' class="mobile_hidden"><a href="'.$menu_path.'">';
@@ -562,8 +458,8 @@ elseif (is_file('media/logo.jpg'))
                     ?>
                     <div id="m0x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                         <ul class="humo_menu_item2">
+                            <li <?php if ($menu_choice == 'main_index') echo ' id="current"'; ?>><a href="<?= $menu_path_home; ?>"><?= __('Home'); ?></a></li>
                             <?php
-                            echo '<li' . $menu_item_home . '><a href="' . $menu_path_home . '">' . __('Home') . "</a></li>\n";
 
                             // *** Login - Logoff ***
                             if ($user['group_menu_login'] == 'j') {
@@ -671,7 +567,7 @@ elseif (is_file('media/logo.jpg'))
                                 }
 
                                 if ($user['group_photobook'] == 'j') {
-                                    echo '<li' . $menu_item_photobook . '><a href="' . $menu_path_photobook . '">' . __('Photobook') . "</a></li>\n";
+                                    echo '<li' . $menu_item_photoalbum . '><a href="' . $menu_path_photoalbum . '">' . __('Photobook') . "</a></li>\n";
                                 }
 
                                 //if ($user['group_sources']=='j'){

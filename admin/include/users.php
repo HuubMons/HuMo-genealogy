@@ -109,17 +109,13 @@ if ($check_admin_user and $check_admin_pw) {
 }
 
 
-//if (CMS_SPECIFIC == "Joomla") {
-//    echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=users">' . "\n";
-//} else {
-//    echo '<form method="POST" action="index.php">' . "\n";
-//}
+$usersql = "SELECT * FROM humo_users ORDER BY user_name";
+$user = $dbh->query($usersql);
 ?>
 <form method="POST" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <br>
     <table class="humo standard" border="1" style="width:95%;">
-
         <tr class="table_header_large">
             <th><?= __('User'); ?></th>
             <th><?= __('E-mail address'); ?></th>
@@ -131,8 +127,6 @@ if ($check_admin_user and $check_admin_pw) {
         </tr>
 
         <?php
-        $usersql = "SELECT * FROM humo_users ORDER BY user_name";
-        $user = $dbh->query($usersql);
         while ($userDb = $user->fetch(PDO::FETCH_OBJ)) {
         ?>
             <tr align="center">
@@ -174,7 +168,7 @@ if ($check_admin_user and $check_admin_pw) {
                     echo '<td><select size="1" name="' . $userDb->user_id . 'group_id">';
                     while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) {
                         $select = '';
-                        if ($userDb->user_group_id == $groupDb->group_id) $select = ' SELECTED';
+                        if ($userDb->user_group_id == $groupDb->group_id) $select = ' selected';
                         echo '<option value="' . $groupDb->group_id . '"' . $select . '>' . $groupDb->group_name . '</option>';
                     }
                     echo '</select></td>';
@@ -224,24 +218,26 @@ if ($check_admin_user and $check_admin_pw) {
         <?php
         }
 
+        $groupsql = "SELECT * FROM humo_groups";
+        $groupresult = $dbh->query($groupsql);
         ?>
         <!-- Add user -->
         <tr align="center" bgcolor="green">
             <td><input type="text" name="add_username" size="15"></td>
             <td><input type="text" name="add_usermail" size="20"></td>
             <td><input type="password" name="add_password" size="15"></td>
-            <?php
-            // *** Select group for new user ***
-            echo "<td><select size='1' name='add_group_id'>";
-            $groupsql = "SELECT * FROM humo_groups";
-            $groupresult = $dbh->query($groupsql);
-            while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) {
-                $select = '';
-                if ($groupDb->group_id == '2') $select = ' SELECTED';
-                echo '<option value="' . $groupDb->group_id . '"' . $select . '>' . $groupDb->group_name . '</option>';
-            }
-            echo '</select></td>';
-            ?>
+            <td>
+                <!-- Select group for new user, default=family group. -->
+                <select size='1' name='add_group_id'>
+                    <?php
+                    while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) {
+                        $select = '';
+                        if ($groupDb->group_id == '2') $select = ' selected';
+                        echo '<option value="' . $groupDb->group_id . '"' . $select . '>' . $groupDb->group_name . '</option>';
+                    }
+                    ?>
+                </select>
+            </td>
             <td></td>
             <td></td>
             <td><input type="Submit" name="add_user" value="<?= __('Add'); ?>"></td>

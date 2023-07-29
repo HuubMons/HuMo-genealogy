@@ -51,12 +51,11 @@
 
 class db_functions
 {
-
     private $query = array();
     public $tree_id = '';
     public $tree_prefix = '';
 
-    function __construct()
+    public function __construct()
     {
         global $dbh;
 
@@ -185,13 +184,14 @@ class db_functions
             $sql = "SELECT text_gedcomnr FROM humo_texts WHERE text_tree_id=:tree_id";
             $this->query['generate_gedcomnr_text'] = $dbh->prepare($sql);
             // *** Generate new gedcomnumber EVENT ***
-            $sql = "SELECT event_gedcomnr FROM humo_events WHERE event_tree_id=:tree_id";
+            //$sql = "SELECT event_gedcomnr FROM humo_events WHERE event_tree_id=:tree_id";
+            $sql = "SELECT event_gedcomnr FROM humo_events WHERE event_tree_id=:tree_id AND event_gedcomnr LIKE '_%'";
             $this->query['generate_gedcomnr_event'] = $dbh->prepare($sql);
         }
     }
 
     // *** Set family tree_id ***
-    function set_tree_id($tree_id)
+    public function set_tree_id($tree_id)
     {
         if (is_numeric($tree_id)) $this->tree_id = $tree_id;
 
@@ -212,7 +212,7 @@ class db_functions
  *----------------------------------------------------------------
  */
     // *** $block: can be used to totally or partially (no login page) block the website ***
-    function check_visitor($ip_address, $block = 'total')
+    public function check_visitor($ip_address, $block = 'total')
     {
         global $dbh;
         $allowed = true;
@@ -256,7 +256,7 @@ class db_functions
  * RETURNS	: user data.
  *----------------------------------------------------------------
  */
-    function get_user($user_name, $user_password)
+    public function get_user($user_name, $user_password)
     {
         global $dbh;
         $qryDb = false;
@@ -302,7 +302,7 @@ class db_functions
  * RETURNS	: family tree data.
  *----------------------------------------------------------------
  */
-    function get_tree($tree_prefix)
+    public function get_tree($tree_prefix)
     {
         $qryDb = false;
         // *** Detection of tree_prefix/ tree_id ***
@@ -335,7 +335,7 @@ class db_functions
  * RETURNS	: all data from family trees.
  *----------------------------------------------------------------
  */
-    function get_trees()
+    public function get_trees()
     {
         $result_array = array();
         try {
@@ -354,7 +354,7 @@ class db_functions
  * RETURNS	: Check for valid person.
  *----------------------------------------------------------------
  */
-    function check_person($pers_gedcomnumber)
+    public function check_person($pers_gedcomnumber)
     {
         if ($pers_gedcomnumber != '') {
             try {
@@ -381,7 +381,7 @@ class db_functions
  * RETURNS	: a single person.
  *----------------------------------------------------------------
  */
-    function get_person($pers_gedcomnumber, $item = '')
+    public function get_person($pers_gedcomnumber, $item = '')
     {
         $qryDb = false;
         try {
@@ -408,7 +408,7 @@ class db_functions
  * RETURNS	: a single person.
  *----------------------------------------------------------------
  */
-    function get_person_with_id($pers_id)
+    public function get_person_with_id($pers_id)
     {
         $qryDb = false;
         try {
@@ -427,7 +427,7 @@ class db_functions
  * RETURNS	: Number of persons in family tree.
  *------------------------------------------------------------------------------
  */
-    function count_persons($tree_id)
+    public function count_persons($tree_id)
     {
         $nr_persons = 0;
         try {
@@ -447,7 +447,7 @@ class db_functions
  * RETURNS	: Check for valid family.
  *----------------------------------------------------------------
  */
-    function check_family($fam_gedcomnumber)
+    public function check_family($fam_gedcomnumber)
     {
         if ($fam_gedcomnumber != '') {
             try {
@@ -475,7 +475,7 @@ class db_functions
  * RETURNS	: a single family.
  *----------------------------------------------------------------
  */
-    function get_family($fam_gedcomnumber, $item = '')
+    public function get_family($fam_gedcomnumber, $item = '')
     {
         $qryDb = false;
         try {
@@ -497,12 +497,12 @@ class db_functions
     }
 
     /*--------------------[count_families]-----------------------------------------
- * FUNCTION	: Count families in selected family tree.
- * QUERY	: SELECT COUNT(*) FROM humo_families WHERE fam_tree_id=:fam_tree_id
- * RETURNS	: Number of families in family tree.
- *-----------------------------------------------------------------------------
- */
-    function count_families($tree_id)
+    * FUNCTION	: Count families in selected family tree.
+    * QUERY	: SELECT COUNT(*) FROM humo_families WHERE fam_tree_id=:fam_tree_id
+    * RETURNS	: Number of families in family tree.
+    *-----------------------------------------------------------------------------
+    */
+    public function count_families($tree_id)
     {
         $nr_families = 0;
         try {
@@ -522,7 +522,7 @@ class db_functions
  * RETURNS	: a single text.
  *----------------------------------------------------------------
  */
-    function get_text($text_gedcomnr)
+    public function get_text($text_gedcomnr)
     {
         $qryDb = false;
         try {
@@ -542,7 +542,7 @@ class db_functions
  * RETURNS	: a single event.
  *----------------------------------------------------------------
  */
-    function get_event($event_id)
+    public function get_event($event_id)
     {
         $qryDb = false;
         try {
@@ -563,7 +563,7 @@ class db_functions
  * RETURNS	: multiple selected events.
  *----------------------------------------------------------------
  */
-    function get_events_kind($event_event, $event_kind)
+    public function get_events_kind($event_event, $event_kind)
     {
         $result_array = array();
         try {
@@ -587,7 +587,7 @@ class db_functions
  * RETURNS	: all selected events by a person.
  *------------------------------------------------------------------------------------------
  */
-    function get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
+    public function get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
     {
         $result_array = array();
         try {
@@ -615,7 +615,7 @@ class db_functions
  * RETURNS	: a single source.
  *----------------------------------------------------------------
  */
-    function get_source($source_gedcomnr)
+    public function get_source($source_gedcomnr)
     {
         global $user;
         $qryDb = false;
@@ -646,7 +646,7 @@ class db_functions
  * RETURNS	: a single address.
  *----------------------------------------------------------------
  */
-    function get_address($address_gedcomnr)
+    public function get_address($address_gedcomnr)
     {
         $qryDb = false;
         try {
@@ -672,7 +672,7 @@ class db_functions
   * RETURNS	: all places by a person, family etc.
  *----------------------------------------------------------------
  */
-    function get_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
+    public function get_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
     {
         $result_array = array();
         try {
@@ -695,7 +695,7 @@ class db_functions
  * RETURNS	: multiple connections.
  *----------------------------------------------------------------
  */
-    function get_connections($connect_sub_kind, $connect_item_id)
+    public function get_connections($connect_sub_kind, $connect_item_id)
     {
         $result_array = array();
         try {
@@ -719,7 +719,7 @@ class db_functions
  * EXAMPLE	: $connect_sql = $db_functions->get_connections_connect_id('person','pers_object',$event_connect_id);
  *----------------------------------------------------------------
  */
-    function get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id)
+    public function get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id)
     {
         $result_array = array();
         try {
@@ -743,7 +743,7 @@ class db_functions
  * RETURNS	: a single repository.
  *----------------------------------------------------------------
  */
-    function get_repository($repo_gedcomnr)
+    public function get_repository($repo_gedcomnr)
     {
         $qryDb = false;
         try {
@@ -764,7 +764,7 @@ class db_functions
  * RETURNS	: result.
  *----------------------------------------------------------------
  */
-    function update_settings($setting_variable, $setting_value)
+    public function update_settings($setting_variable, $setting_value)
     {
         $qryDb = false;
         try {
@@ -782,7 +782,7 @@ class db_functions
     //	Generates new GEDCOM number (only numerical, like: 1234).
     //	$sql = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id=:tree_id";
     //	$sql = "SELECT fam_gedcomnumber FROM humo_families WHERE pers_tree_id=:tree_id";
-    function generate_gedcomnr($tree_id, $item)
+    public function generate_gedcomnr($tree_id, $item)
     {
         $qryDb = false;
         $new_gedcomnumber = 0;

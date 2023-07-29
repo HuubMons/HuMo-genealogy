@@ -1,12 +1,14 @@
 <?php
-// *********************************************************
-// *** Birtday list                                      ***
-// *********************************************************
-// Author : Louis Ywema
-// Date  : 29-04-2006
-// Website: http://www.ywema.com
-// 18-06-2011 Huub: translated all remarks and variables into English. And did some minor updates.
-// 10-11-2019 Yossi Beck - Added wedding anniversaries and menu
+/**
+ * Birtday list
+ * 
+ * Author : Louis Ywema
+ * Date  : 29-04-2006
+ * 
+ * 18-06-2011 Huub: translated all remarks and variables into English. And did some minor updates.
+ * 
+ * 10-11-2019 Yossi Beck - Added wedding anniversaries and menu
+ */
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH . "menu.php");
@@ -170,9 +172,8 @@ $last_cal_day = 0;
             while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
                 $calendar_day = $record->birth_day;
                 $birth_day = $record->birth_day . ' ' . $month;
-                $person_cls = new person_cls;
+                $person_cls = new person_cls($record);
                 $name = $person_cls->person_name($record);
-                $person_cls->construct($record);
 
                 if (!$person_cls->privacy) {
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -320,8 +321,7 @@ $last_cal_day = 0;
                         // get husband
                         @$manDb = $db_functions->get_person($value['man']);
                         // *** Use class to process person ***
-                        $man_cls = new person_cls;
-                        $man_cls->construct($manDb);
+                        $man_cls = new person_cls($manDb);
                         if (!$value['man'])
                             $man_name = 'N.N.';
                         else {
@@ -336,8 +336,7 @@ $last_cal_day = 0;
                         // get wife
                         @$womanDb = $db_functions->get_person($value['woman']);
                         // *** Use class to process person ***
-                        $woman_cls = new person_cls;
-                        $woman_cls->construct($womanDb);
+                        $woman_cls = new person_cls($womanDb);
                         if (!$value['woman'])
                             $woman_name = 'N.N.';
                         else {

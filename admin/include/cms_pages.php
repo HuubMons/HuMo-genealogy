@@ -165,10 +165,11 @@ if (isset($_GET['menu_down'])) {
 }
 
 if (isset($_GET['menu_remove'])) {
-    echo '<div class="confirm">';
     $qry = $dbh->query("SELECT * FROM humo_cms_pages
         WHERE page_menu_id='" . safe_text_db($_GET['menu_remove']) . "' ORDER BY page_order");
     $count = $qry->rowCount();
+
+    echo '<div class="confirm">';
     if ($count > 0) {
         echo __('There are still pages connected to this menu!<br>
 Please disconnect the pages from this menu first.');
@@ -329,127 +330,63 @@ if ($cms_item == 'pages') {
                     $position = strpos($_SERVER['PHP_SELF'], '/admin/');
                     $path_tmp = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, $position);
                     echo __('This page can be accessed using this link: ') . '<b>' . $path_tmp . '/cms_pages.php?select_page=', $page_id . '</b><br>';
+                    if ($humo_option["url_rewrite"] == "j")
+                        echo ' ' . __('or') . ': <b>' . $path_tmp . '/cms_pages/' . $page_id . '</b><br>';
                 }
 
-                echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-                echo '<input type="hidden" name="page" value="' . $page . '">';
-                echo '<input type="hidden" name="cms_pages" value="cms_page">';
-
-                echo '<input type="hidden" name="page_id" value="' . $page_id . '">';
-
-                echo ' <input type="text" name="page_title" value="' . $page_title . '" size=25> ';
-
-                echo '<input type="hidden" name="page_menu_id_old" value="' . $page_menu_id . '">';
-                echo '<select size="1" name="page_menu_id">';
-                echo "<option value=''>* " . __('No menu selected') . " *</option>\n";
-                $select = '';
-                if ($page_menu_id == '9999') {
-                    $select = ' SELECTED';
-                }
-                echo '<option value="9999"' . $select . '>* ' . __('Hide page in menu') . " *</option>\n";
-                $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
-                while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                    $select = '';
-                    if ($menuDb->menu_id == $page_menu_id) {
-                        $select = ' SELECTED';
-                    }
-                    echo '<option value="' . $menuDb->menu_id . '"' . $select . '>' . $menuDb->menu_name . '</option>';
-                }
-                echo "</select>";
-
-                $checked = '';
-                if ($page_status) {
-                    $checked = ' CHECKED';
-                }
-                echo ' <INPUT TYPE="CHECKBOX" name="page_status"' . $checked . '>' . __('Published');
-
-                if ($page_edit == 'add') {
-                    echo ' <input type="Submit" name="add_page" value="' . __('Save') . '">';
-                } else {
-                    echo ' <input type="Submit" name="change_page" value="' . __('Save') . '">';
-                }
-
-                echo ' ' . __('Visitors counter') . ': ' . $page_counter;
-
-                echo '<br>';
-
-                //echo '<textarea cols="50" rows="5" name="page_text">'.$page_text.'</textarea><br>';
-                echo '<textarea id="editor" name="page_text">' . $page_text . '</textarea>';
-
-                echo '</form>';
                 ?>
+                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="cms_pages" value="cms_page">
+                    <input type="hidden" name="page_id" value="<?= $page_id; ?>">
+                    <input type="hidden" name="page_menu_id_old" value="<?= $page_menu_id; ?>">
+                    <input type="text" name="page_title" value="<?= $page_title; ?>" size=25>
+                    <select size="1" name="page_menu_id">
+                        <option value=''>* <?= __('No menu selected'); ?> *</option>
+                        <option value="9999" <?php if ($page_menu_id == '9999') echo ' selected'; ?>>* <?= __('Hide page in menu'); ?> *</option>
+                        <?php
+                        $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+                        while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                            $select = '';
+                            if ($menuDb->menu_id == $page_menu_id) {
+                                $select = ' selected';
+                            }
+                            echo '<option value="' . $menuDb->menu_id . '"' . $select . '>' . $menuDb->menu_name . '</option>';
+                        }
+                        ?>
+                    </select>
+                    <?php
+
+                    $checked = '';
+                    if ($page_status) {
+                        $checked = ' checked';
+                    }
+                    echo ' <input type="CHECKBOX" name="page_status"' . $checked . '>' . __('Published');
+
+                    if ($page_edit == 'add') {
+                        echo ' <input type="Submit" name="add_page" value="' . __('Save') . '">';
+                    } else {
+                        echo ' <input type="Submit" name="change_page" value="' . __('Save') . '">';
+                    }
+                    ?>
+                    <?= __('Visitors counter'); ?>: <?= $page_counter; ?><br>
+                    <textarea id="editor" name="page_text"><?= $page_text; ?></textarea>
+                </form>
             </td>
         </tr>
     </table>
 
-
     <!-- TinyMCE Editor -->
     <script src="include/tinymce/tinymce.min.js"></script>
-    <script>
-        const example_image_upload_handler = (blobInfo, progress) => new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.withCredentials = false;
-            xhr.open('POST', 'include/tinymce/upload.php');
-
-            xhr.upload.onprogress = (e) => {
-                progress(e.loaded / e.total * 100);
-            };
-
-            xhr.onload = () => {
-                if (xhr.status === 403) {
-                    reject({
-                        message: 'HTTP Error: ' + xhr.status,
-                        remove: true
-                    });
-                    return;
-                }
-
-                if (xhr.status < 200 || xhr.status >= 300) {
-                    reject('HTTP Error: ' + xhr.status);
-                    return;
-                }
-
-                const json = JSON.parse(xhr.responseText);
-
-                if (!json || typeof json.location != 'string') {
-                    reject('Invalid JSON: ' + xhr.responseText);
-                    return;
-                }
-
-                resolve(json.location);
-            };
-
-            xhr.onerror = () => {
-                reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
-            };
-
-            const formData = new FormData();
-            formData.append('file', blobInfo.blob(), blobInfo.filename());
-
-            xhr.send(formData);
-        });
-
-        tinymce.init({
-            selector: '#editor',
-            plugins: [
-                'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-                'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
-                'media', 'table', 'emoticons', 'template', 'help'
-            ],
-            automatic_uploads: true,
-            //images_upload_base_path: '../media',
-            images_upload_url: 'upload.php',
-            //images_reuse_filename: true,
-            convert_urls: false,
-            images_upload_handler: example_image_upload_handler
-        });
-    </script>
+    <script src="include/tinymce/tinymce_settings.js"></script>
 <?php
 }
 
 // *** Show and edit menu's ***
 //if (isset($_POST['cms_menu']) OR isset($_GET['select_menu'])){
 if ($cms_item == 'menu') {
+    $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+    $count_menu = $qry->rowCount();
 ?>
     <!-- List of categories -->
     <?= __('Add and edit menu/ category items:'); ?>
@@ -460,38 +397,30 @@ if ($cms_item == 'menu') {
             <th><?= __('Save'); ?></th>
         </tr>
         <?php
-
-
-        $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
-        $count_menu = $qry->rowCount();
         while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-            echo '<input type="hidden" name="page" value="' . $page . '">';
-            echo '<input type="hidden" name="cms_menu" value="cms_menu">';
-            echo '<input type="hidden" name="menu_id" value="' . $cms_pagesDb->menu_id . '">';
+        ?>
+            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="hidden" name="cms_menu" value="cms_menu">
+                <input type="hidden" name="menu_id" value="<?= $cms_pagesDb->menu_id; ?>">
+                <tr>
+                    <td>
+                        <?php
+                        echo '<a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_remove=' . $cms_pagesDb->menu_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" alt="' . __('Remove menu') . '" border="0"></a>';
 
-            echo '<tr>';
-
-            echo '<td>';
-            //if ($cms_pagesDb->menu_order<10){ echo '0'; }
-            //echo $cms_pagesDb->menu_order;
-
-            echo '<a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_remove=' . $cms_pagesDb->menu_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" alt="' . __('Remove menu') . '" border="0"></a>';
-
-            if ($cms_pagesDb->menu_order != '1') {
-                echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_up=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
-            }
-            if ($cms_pagesDb->menu_order != $count_menu) {
-                echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_down=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
-            }
-            echo '</td>';
-
-            //echo ' <a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->menu_id.'">'.$cms_pagesDb->menu_name.'</a><br>';
-            echo '<td><input type="text" name="menu_name" value="' . $cms_pagesDb->menu_name . '" size=50></td>';
-
-            echo '<td><input type="Submit" name="change_menu" value="' . __('Save') . '"></td>';
-            echo '</tr>';
-            echo '</form>';
+                        if ($cms_pagesDb->menu_order != '1') {
+                            echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_up=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
+                        }
+                        if ($cms_pagesDb->menu_order != $count_menu) {
+                            echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_down=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+                        }
+                        ?>
+                    </td>
+                    <td><input type="text" name="menu_name" value="<?= $cms_pagesDb->menu_name; ?>" size=50></td>
+                    <td><input type="Submit" name="change_menu" value="<?= __('Save'); ?>"></td>
+                </tr>
+            </form>
+        <?php
         }
 
         ?>
@@ -592,7 +521,6 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                 </td>
                 <td>
                     <?php
-
                     // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
                     if (substr($cms_images_path, 0, 1) == '|') {
                         $checked1 = ' checked';
@@ -619,7 +547,6 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                 </td>
                 <td>
                     <?php
-
                     $lang_qry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable LIKE 'main_page_cms_id_%'"); // check if there are language-specific entries
                     $num = $lang_qry->rowCount();
                     $checked1 = ' checked';
@@ -640,7 +567,7 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                     while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
                         $select = '';
                         if ($pageDb->page_id == $main_page_cms_id) {
-                            $select = ' SELECTED';
+                            $select = ' selected';
                         }
                         echo '<option value="' . $pageDb->page_id . '"' . $select . '>' . $pageDb->page_title . '</option>';
                     }
@@ -648,36 +575,49 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                     echo '<br><input type="radio" onChange="document.cms_setting_form.submit()" value="specific" name="languages_choice" ' . $checked2 . '> ' . __('Set per language');
 
                     if ($checked1 == '') {
-                        echo '<br><table style="border:none">';
-                        for ($i = 0; $i < count($language_file); $i++) {
-                            include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
-                            echo '<tr><td><img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
-                            echo $language["name"];
-                            echo '</td><td>';
-                            $select_page = 'dummy';
-                            $qry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'main_page_cms_id_" . $language_file[$i] . "'");
-                            while ($lang_pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                                $select_page = $lang_pageDb->setting_value;
-                            }
-                            $sel = '';
-                            if ($select_page != 'dummy' and $select_page != '') $sel = $select_page; // a specific page was set
-                            elseif ($select_page == 'dummy') $sel = $main_page_cms_id;  // no entry was found - use default
-                            //else the value was '' which means language was set individually to "main index", so don't set "select" so "main index" will show
-                            echo '<select size="1" name="main_page_cms_id_' . $language_file[$i] . '">';
-                            echo "<option value=''>* " . __('Standard main index') . " *</option>\n";
-                            $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
-                            while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                                $select = '';
-                                if ($pageDb->page_id == $sel) {
-                                    $select = ' SELECTED';
-                                    $special_found = 1;
+                    ?>
+                        <br>
+                        <table style="border:none">
+                            <?php
+                            for ($i = 0; $i < count($language_file); $i++) {
+                                include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+                                $select_page = 'dummy';
+                                $qry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'main_page_cms_id_" . $language_file[$i] . "'");
+                                while ($lang_pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                                    $select_page = $lang_pageDb->setting_value;
                                 }
-                                echo '<option value="' . $pageDb->page_id . '"' . $select . '>' . $pageDb->page_title . '</option>';
+                                $sel = '';
+                                if ($select_page != 'dummy' and $select_page != '') $sel = $select_page; // a specific page was set
+                                elseif ($select_page == 'dummy') $sel = $main_page_cms_id;  // no entry was found - use default
+                                //else the value was '' which means language was set individually to "main index", so don't set "select" so "main index" will show
+                            ?>
+
+                                <tr>
+                                    <td>
+                                        <img src="<?= CMS_ROOTPATH . 'languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"><?= $language["name"];?>
+                                    </td>
+                                    <td>
+                                        <select size="1" name="main_page_cms_id_<?= $language_file[$i]; ?>">
+                                            <option value=''>* <?= __('Standard main index'); ?> *</option>
+                                            <?php
+                                            $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
+                                            while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                                                $select = '';
+                                                if ($pageDb->page_id == $sel) {
+                                                    $select = ' selected';
+                                                    $special_found = 1;
+                                                }
+                                                echo '<option value="' . $pageDb->page_id . '"' . $select . '>' . $pageDb->page_title . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
+                                </tr>
+                            <?php
                             }
-                            echo "</select>";
-                            echo '</td></tr>';
-                        }
-                        echo '</table>'; // end table with language flags and pages
+                            ?>
+                        </table> <!-- end table with language flags and pages -->
+                    <?php
                     }
                     ?>
                 </td>
@@ -697,6 +637,5 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
     <?php //echo __('Change "true" into "false":'); 
     ?> 'disabled' => true,
                 -->
-
 <?php
 }

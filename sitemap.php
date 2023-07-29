@@ -59,8 +59,7 @@ foreach ($datasql as $dataDb) {
             WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
         while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
-            //$person_cls = New person_cls;
-            //$person_cls->construct($personDb);
+            //$person_cls = New person_cls($personDb);
             //$privacy=$person_cls->privacy;
 
             // *** Completely filter person ***
@@ -99,8 +98,7 @@ foreach ($datasql as $dataDb) {
             WHERE pers_tree_id='" . $dataDb->tree_id . "' AND pers_famc='' AND pers_fams=''");
         while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
-            //$person_cls = New person_cls;
-            //$person_cls->construct($personDb);
+            //$person_cls = New person_cls($personDb);
             //$privacy=$person_cls->privacy;
 
             // *** Completely filter person ***

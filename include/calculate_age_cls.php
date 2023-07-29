@@ -11,7 +11,7 @@
 class calculate_year_cls
 {
 
-    function search_month($search_date)
+    public function search_month($search_date)
     {
         if (strpos($search_date, "JAN") !== false) {
             $text = 1;
@@ -44,7 +44,7 @@ class calculate_year_cls
     }
 
     /*
-function search_day($search_date) {
+public function search_day($search_date) {
     $day="";
     if (strlen($search_date)==11) {    // 12 sep 2002 or 08 sep 2002
         $day=substr($search_date, -11, 2);
@@ -64,7 +64,7 @@ function search_day($search_date) {
 }
 */
 
-    function search_day($search_date)
+    public function search_day($search_date)
     {
         $day = null;
         if ($this->search_month($search_date) != null) { // a day value only makes sense if there is a month
@@ -75,7 +75,7 @@ function search_day($search_date) {
         return ($day);
     }
 
-    function search_year($search_date)
+    public function search_year($search_date)
     {
         if (is_numeric(substr($search_date, -4, 4))) {
             $year = trim(substr($search_date, -4, 4));
@@ -89,7 +89,7 @@ function search_day($search_date) {
         return ($year);
     }
 
-    function process_special_text($date1, $date2, $baptism)
+    public function process_special_text($date1, $date2, $baptism)
     {
         global $language;
         $date1_remark = null; // pers_birth_date
@@ -187,7 +187,7 @@ function search_day($search_date) {
     }
 
     // *** $age_check=false/true. true=show short age text. ***
-    function calculate_age($baptism_date, $birth_date, $death_date, $age_check = false, $age_event = '')
+    public function calculate_age($baptism_date, $birth_date, $death_date, $age_check = false, $age_event = '')
     {
         global $language, $user;
 
@@ -419,7 +419,7 @@ function search_day($search_date) {
 
     // *** $age_check=false/true. true=show shortened age ***
     // *** Function calculate_marriage added by Huub Mons ***
-    function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check = false)
+    public function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check = false)
     {
         global $language, $selected_language;
 

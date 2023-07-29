@@ -30,7 +30,11 @@
  */
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH . "menu.php");
+
+$menu=true;
+// *** Hide menu in descendant chart shown in iframe in fanchart ***
+if (isset($_GET['menu']) and $_GET['menu'] == "1") $menu=false;
+if ($menu) include_once(CMS_ROOTPATH . "menu.php");
 
 if ($page == 'index') {
     // ***********************************************************************************************
@@ -75,16 +79,11 @@ if ($page == 'index') {
     // *** Show HuMo-genealogy footer ***
     echo $mainindex->show_footer();
 } elseif ($page == 'address') {
-
-    // NOT IN USE AT THIS MOMENT
-
-
     /**
-     * May 2023: Added MVC system
+     * July 2023: Added MVC system
      * 
      */
-    /*
-    // Global setting
+
     //require_once 'config/global.php';
     define("CONTROLLER_DEFAULT", "Address");
     define("ACTION_DEFAULT", "address");
@@ -108,7 +107,7 @@ if ($page == 'index') {
 
     function launchAction($controllerObj)
     {
-        //TEMPORARY
+        //TEMPORARY. TODO improve code.
         $_GET["action"] = 'detail';
         if (isset($_GET["action"])) {
             $controllerObj->run($_GET["action"]);
@@ -129,27 +128,48 @@ if ($page == 'index') {
     // We launch the action
     launchAction($controllerObj);
     //}
-*/
+} elseif ($page == 'addresses') {
+    include 'addresses.php';
+} elseif ($page == 'ancestor_chart') {
+    include 'views/ancestor_chart.php';
+} elseif ($page == 'ancestor_sheet') {
+    include 'views/ancestor_sheet.php';
 } elseif ($page == 'birthday') {
     include 'birthday_list.php';
 } elseif ($page == 'cookies') {
     include 'cookies.php';
+} elseif ($page == 'descendant') {
+    include 'views/descendant_chartView.php';
+} elseif ($page == 'family_rtf') {
+    // *** Always use url_rewrite to show RTF export ***
+    include 'views/family_rtfView.php';
 } elseif ($page == 'family') {
     include 'family.php';
 } elseif ($page == 'help') {
     include 'help.php';
+} elseif ($page == 'latest_changes') {
+    include 'latest_changes.php';
 } elseif ($page == 'list') {
     include 'list.php';
 } elseif ($page == 'list_names') {
     include 'list_names.php';
 } elseif ($page == 'login') {
     include 'login.php';
+} elseif ($page == 'mailform') {
+    include 'mailform.php';
+} elseif ($page == 'photoalbum') {
+    include 'photoalbum.php';
+} elseif ($page == 'relations') {
+    include 'relations.php';
 } elseif ($page == 'settings') {
     include 'user_settings.php';
 } elseif ($page == 'statistics') {
     include 'statistics.php';
+} elseif ($page == 'sources') {
+    include 'sources.php';
+} elseif ($page == 'source') {
+    include 'source.php';
 }
-
 
 echo '<br>';
 include_once(CMS_ROOTPATH . "footer.php");

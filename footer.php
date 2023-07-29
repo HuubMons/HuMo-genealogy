@@ -1,3 +1,4 @@
+<!-- TODO move javascript to seperate file --> 
 <!-- Script for GLightbox -->
 <script>
     var lightbox = GLightbox();

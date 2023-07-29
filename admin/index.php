@@ -740,9 +740,9 @@ if (!CMS_SPECIFIC) {
     if ($language["dir"] == "rtl") {   // right to left language
         $html_text = ' dir="rtl"';
     }
-    if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
-        $html_text = '';
-    }
+    //if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
+    //    $html_text = '';
+    //}
 
     // *** Use your own favicon.ico in media folder ***
     if (file_exists('../media/favicon.ico'))
@@ -859,8 +859,6 @@ if ($language["dir"] == "rtl") {
     $top_dir = 'style = "text-align:right" ';
 }
 
-//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
-//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45">';
 if ($popup == false) {
     ?>
     <div id="humo_top" <?= $top_dir; ?>>
@@ -916,7 +914,6 @@ if (isset($database_check) and $database_check and $group_administrator == 'j') 
             $link_version = str_replace(' ', '_', $humo_option["version"]);
 
             if (function_exists('curl_exec')) {
-
                 // First try GitHub ***
                 // *** Oct. 2021: Added random number to prevent CURL cache problems ***
                 $source = 'https://raw.githubusercontent.com/HuubMons/HuMo-genealogy/master/admin/update/version_check.txt?random=' . rand();
@@ -1005,7 +1002,6 @@ if (isset($database_check) and $database_check and $group_administrator == 'j') 
                     //	$fw = @fwrite($fp, $content);
                     //	@fclose($fp);
                     //}
-
                 }
 
                 // *** If provider or curl blocks https link: DISABLE SSL and recheck ***
@@ -1278,7 +1274,7 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
 
 /**
  * 
- * *** START MENU ***
+ * *** Start menu ***
  * 
  */
 
@@ -1622,7 +1618,6 @@ if ($popup == false) {
 ?>
 <div id="content_admin">
     <?php
-
     define('ADMIN_PAGE', true); // *** Safety line ***
 
     if ($page == 'install') {

@@ -126,14 +126,14 @@ if ($show_form) {
         }
 ?>
         <script>
-        function validate(form_id,register_mail) {
-            var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-            var address = document.forms[form_id].elements[register_mail].value;
-            if(reg.test(address) == false) {
-                alert('Invalid Email Address');
-                return false;
+            function validate(form_id, register_mail) {
+                var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                var address = document.forms[form_id].elements[register_mail].value;
+                if (reg.test(address) == false) {
+                    alert('Invalid Email Address');
+                    return false;
+                }
             }
-        }
         </script>
 
         <br>

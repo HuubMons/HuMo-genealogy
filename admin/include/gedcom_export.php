@@ -87,7 +87,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                     $treetext = show_tree_text($treeDb->tree_id, $selected_language);
                     $selected = '';
                     if ($treeDb->tree_id == $tree_id) {
-                        $selected = ' SELECTED';
+                        $selected = ' selected';
                         // *** Needed for submitter ***
                         $tree_owner = $treeDb->tree_owner;
                         $db_functions->set_tree_id($tree_id);
@@ -194,7 +194,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                 $selected = '';
                 if (isset($pers_gedcomnumber)) {
                     if ($person->pers_gedcomnumber == $pers_gedcomnumber) {
-                        $selected = ' SELECTED';
+                        $selected = ' selected';
                     }
                 }
                 $prefix2 = " " . strtolower(str_replace("_", " ", $person->pers_prefix));
@@ -212,7 +212,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
     while ($person=$pers_search->fetch(PDO::FETCH_OBJ)){
         $selected='';
         if (isset($pers_gedcomnumber)){
-            if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
+            if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' selected'; }
         }
         $prefix2=" ".strtolower(str_replace("_"," ",$person->pers_prefix));
         echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
@@ -339,7 +339,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
 <?php
         $selected = '';
         if (isset($_POST['gedcom_version']) and $_POST['gedcom_version'] == '70') {
-            $selected = ' SELECTED';
+            $selected = ' selected';
 
             // *** GEDCOM 7.0 is selected, always use UTF-8 character set ***
             $_POST['gedcom_char_set'] = 'UTF-8';
@@ -358,19 +358,19 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
         echo '<select size="1" name="gedcom_char_set">';
         $selected = '';
         if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'UTF-8') {
-            $selected = ' SELECTED';
+            $selected = ' selected';
         }
         echo '<option value="UTF-8"' . $selected . '>' . __('UTF-8 (recommended character set)') . '</option>';
 
         $selected = '';
         if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ANSI') {
-            $selected = ' SELECTED';
+            $selected = ' selected';
         }
         echo '<option value="ANSI"' . $selected . '>ANSI</option>';
 
         $selected = '';
         if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ASCII') {
-            $selected = ' SELECTED';
+            $selected = ' selected';
         }
         echo '<option value="ASCII"' . $selected . '>ASCII</option>';
         echo '</select> ';
@@ -380,7 +380,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
         echo '<tr><td>' . __('Export texts') . '</td><td>';
         $selected = '';
         if (isset($_POST['gedcom_texts']) and $_POST['gedcom_texts'] == 'no') {
-            $selected = ' SELECTED';
+            $selected = ' selected';
         }
         echo '<select size="1" name="gedcom_texts">';
         echo '<option value="yes">' . __('Yes') . '</option>';
@@ -391,7 +391,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
         echo '<tr><td>' . __('Export sources') . '</td><td>';
         $selected = '';
         if (isset($_POST['gedcom_sources']) and $_POST['gedcom_sources'] == 'no') {
-            $selected = ' SELECTED';
+            $selected = ' selected';
         }
         echo '<select size="1" name="gedcom_sources">';
         echo '<option value="yes">' . __('Yes') . '</option>';
@@ -404,7 +404,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
         if ($temp->rowCount() > 0) {
             $selected = '';
             if (isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'no') {
-                $selected = ' SELECTED';
+                $selected = ' selected';
             }
         ?>
             <tr>
@@ -428,7 +428,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
         if ($address->rowCount() > 0) {
             $selected = '';
             if (isset($_POST['gedcom_shared_addresses']) and $_POST['gedcom_shared_addresses'] == 'standard') {
-                $selected = ' SELECTED';
+                $selected = ' selected';
             }
             echo '<select size="1" name="gedcom_shared_addresses">';
             echo '<option value="non_standard">' . __('Export shared addresses') . '</option>';
@@ -444,7 +444,7 @@ Other programs: convert shared addresses. The "shared address" option will be lo
         echo '<tr><td>' . __('Show export status') . '</td><td>';
         $selected = '';
         if (isset($_POST['gedcom_status']) and $_POST['gedcom_status'] == 'yes') {
-            $selected = ' SELECTED';
+            $selected = ' selected';
         }
         echo '<select size="1" name="gedcom_status">';
         echo '<option value="no">' . __('No') . '</option>';
