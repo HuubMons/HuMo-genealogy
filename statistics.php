@@ -75,8 +75,6 @@ if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_firstnames') $menu_
 <p>
 <div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false">
     <div class="pageHeading">
-        <!-- <div class="pageHeadingText">Configuratie gegevens</div> -->
-        <!-- <div class="pageHeadingWidgets" aria-hidden="true" style="display: none;"></div> -->
         <div class="pageTabsContainer" aria-hidden="false">
             <ul class="pageTabs">
                 <?php
@@ -108,20 +106,13 @@ if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_firstnames') $menu_
         </div>
     </div>
 </div>
-<?php
 
+<?php
 // *** Align content to the left ***
 echo '<div id="statistics_screen">';
 
 // *** Show tree statistics ***
 if ($menu_tab == 'stats_tree') {
-
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $table1_width = "100%";
-    //} else {
-    $table1_width = "80%";
-    //}
-    //echo '<br><table style="width:'.$table1_width.';" class="humo" align="center">';
 ?>
     <br>
     <table class="humo small" align="center">
@@ -150,7 +141,6 @@ if ($menu_tab == 'stats_tree') {
         </tr>
         <?php
 
-
         // *** Most children in family ***
         echo "<tr><td>" . __('Most children in family') . "</td>\n";
         $test_number = "0"; // *** minimum of 0 children ***
@@ -169,14 +159,12 @@ if ($menu_tab == 'stats_tree') {
         echo "<td align='center'><i>$test_number</i></td>\n";
         if ($test_number != "0") {
             @$record = $db_functions->get_person($man_gedcomnumber);
-            $person_cls = new person_cls;
-            $person_cls->construct($record);
+            $person_cls = new person_cls($record);
             $name = $person_cls->person_name($record);
             $man = $name["standard_name"];
 
             @$record = $db_functions->get_person($woman_gedcomnumber);
-            $person_cls = new person_cls;
-            $person_cls->construct($record);
+            $person_cls = new person_cls($record);
             $name = $person_cls->person_name($record);
             $woman = $name["standard_name"];
 
@@ -288,8 +276,7 @@ if ($menu_tab == 'stats_persons') {
     function show_person($row, $date = 'EMPTY')
     {
         global $humo_option, $uri_path, $tree_id;
-        $person_cls = new person_cls;
-        $person_cls->construct($row);
+        $person_cls = new person_cls($row);
         $privacy = $person_cls->privacy;
 
         $name = $person_cls->person_name($row);
@@ -307,16 +294,6 @@ if ($menu_tab == 'stats_persons') {
         }
         return $line;
     }
-
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $table2_width = "100%";
-    //} else {
-    // $table2_width="900";
-    $table2_width = "80%";
-    //}
-    echo '<br><table style="width:' . $table2_width . ';" class="humo" align="center">';
-
-    echo '<tr class=table_headline><th width="20%">' . __('Item') . '</th><th colspan="2" width="40%">' . __('Male') . '</th><th colspan="2" width="40%">' . __('Female') . '</th></tr>';
 
     $countman = 0;
     $countwoman = 0;
@@ -518,175 +495,191 @@ if ($menu_tab == 'stats_persons') {
     if ($latest_woman_dea_date == '0') $latest_woman_dea_date = null;
     if ($latest_woman_bap_date == '0') $latest_woman_bap_date = null;
 
-
     $both = $countman + $countwoman;
-    echo "<tr><td>" . __('No. of persons') . "</td>\n";
-    echo "<td align='center'><i>$countman</i></td>\n";
     @$percent = ($countman / $both) * 100;
-    echo '<td align="center">' . round($percent, 1) . '%</td>';
-    echo "<td align='center'><i>$countwoman</i></td>\n";
+    $man_percentage = round($percent, 1);
     @$percent = ($countwoman / $both) * 100;
-    echo '<td align="center">' . round($percent, 1) . '%</td>';
-    echo '<tr><td colspan="5"><br></td></tr>';
+    $woman_percentage = round($percent, 1);
+?>
+    <br>
+    <table style="width:80%;" class="humo" align="center">
+        <tr class=table_headline>
+            <th width="20%"><?= __('Item'); ?></th>
+            <th colspan="2" width="40%"><?= __('Male'); ?></th>
+            <th colspan="2" width="40%"><?= __('Female'); ?></th>
+        </tr>
 
-    // *** Oldest pers_birth_date man.
-    echo "<tr><td>" . __('Oldest birth date') . "</td>\n";
-    if ($oldest_man_bir_date != null) {
-        $row = $db_functions->get_person($oldest_man_bir_ged);
-        echo show_person($row, $row->pers_birth_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+        <tr>
+            <td><?= __('No. of persons'); ?></td>
+            <td align='center'><i><?= $countman; ?></i></td>
+            <td align="center"><?= $man_percentage; ?>%</td>
+            <td align='center'><i><?= $countwoman; ?></i></td>
+            <td align="center"><?= $woman_percentage; ?>%</td>
+        </tr>
 
-    // *** Oldest pers_birth_date woman.
-    if ($oldest_woman_bir_date != null) {
-        $row = $db_functions->get_person($oldest_woman_bir_ged);
-        echo show_person($row, $row->pers_birth_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        <tr>
+            <td colspan="5"><br></td>
+        </tr>
 
-    // *** Youngest pers_birth_date man.
-    echo "<tr><td>" . __('Youngest birth date') . "</td>\n";
-    if ($latest_man_bir_date != null) {
-        $row = $db_functions->get_person($latest_man_bir_ged);
-        echo show_person($row, $row->pers_birth_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+        <?php
+        // *** Oldest pers_birth_date man.
+        echo '<tr><td>' . __('Oldest birth date') . '</td>';
+        if ($oldest_man_bir_date != null) {
+            $row = $db_functions->get_person($oldest_man_bir_ged);
+            echo show_person($row, $row->pers_birth_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Youngest pers_birth_date woman.
-    if ($latest_woman_bir_date != null) {
-        $row = $db_functions->get_person($latest_woman_bir_ged);
-        echo show_person($row, $row->pers_birth_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Oldest pers_birth_date woman.
+        if ($oldest_woman_bir_date != null) {
+            $row = $db_functions->get_person($oldest_woman_bir_ged);
+            echo show_person($row, $row->pers_birth_date);
+            echo "</tr>\n";
+        } else {
+            echo "<td></td><td></td></tr>\n";
+        }
 
-    // *** Oldest pers_bapt_date man.
-    echo "<tr><td>" . __('Oldest baptism date') . "</td>\n";
-    if ($oldest_man_bap_date != null) {
-        $row = $db_functions->get_person($oldest_man_bap_ged);
-        echo show_person($row, $row->pers_bapt_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+        // *** Youngest pers_birth_date man.
+        echo "<tr><td>" . __('Youngest birth date') . "</td>\n";
+        if ($latest_man_bir_date != null) {
+            $row = $db_functions->get_person($latest_man_bir_ged);
+            echo show_person($row, $row->pers_birth_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Oldest pers_bapt_date woman.
-    if ($oldest_woman_bap_date != null) {
-        $row = $db_functions->get_person($oldest_woman_bap_ged);
-        echo show_person($row, $row->pers_bapt_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Youngest pers_birth_date woman.
+        if ($latest_woman_bir_date != null) {
+            $row = $db_functions->get_person($latest_woman_bir_ged);
+            echo show_person($row, $row->pers_birth_date);
+            echo "</tr>\n";
+        } else {
+            echo "<td></td><td></td></tr>\n";
+        }
 
-    // *** Youngest pers_bapt_date man.
-    echo "<tr><td>" . __('Youngest baptism date') . "</td>\n";
-    if ($latest_man_bap_date != null) {
-        $row = $db_functions->get_person($latest_man_bap_ged);
-        echo show_person($row, $row->pers_bapt_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+        // *** Oldest pers_bapt_date man.
+        echo "<tr><td>" . __('Oldest baptism date') . "</td>\n";
+        if ($oldest_man_bap_date != null) {
+            $row = $db_functions->get_person($oldest_man_bap_ged);
+            echo show_person($row, $row->pers_bapt_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Youngest pers_bapt_date woman.
-    if ($latest_woman_bap_date != null) {
-        $row = $db_functions->get_person($latest_woman_bap_ged);
-        echo show_person($row, $row->pers_bapt_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Oldest pers_bapt_date woman.
+        if ($oldest_woman_bap_date != null) {
+            $row = $db_functions->get_person($oldest_woman_bap_ged);
+            echo show_person($row, $row->pers_bapt_date);
+            echo "</tr>\n";
+        } else {
+            echo "<td></td><td></td></tr>\n";
+        }
 
+        // *** Youngest pers_bapt_date man.
+        echo "<tr><td>" . __('Youngest baptism date') . "</td>\n";
+        if ($latest_man_bap_date != null) {
+            $row = $db_functions->get_person($latest_man_bap_ged);
+            echo show_person($row, $row->pers_bapt_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Oldest pers_death_date man.
-    echo "<tr><td>" . __('Oldest death date') . "</td>\n";
-    if ($oldest_man_dea_date != null) {
-        $row = $db_functions->get_person($oldest_man_dea_ged);
-        echo show_person($row, $row->pers_death_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+        // *** Youngest pers_bapt_date woman.
+        if ($latest_woman_bap_date != null) {
+            $row = $db_functions->get_person($latest_woman_bap_ged);
+            echo show_person($row, $row->pers_bapt_date);
+            echo "</tr>\n";
+        } else {
+            echo "<td></td><td></td></tr>\n";
+        }
 
-    // *** Oldest pers_death_date woman.
-    if ($oldest_woman_dea_date != null) {
-        $row = $db_functions->get_person($oldest_woman_dea_ged);
-        echo show_person($row, $row->pers_death_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Oldest pers_death_date man.
+        echo "<tr><td>" . __('Oldest death date') . "</td>\n";
+        if ($oldest_man_dea_date != null) {
+            $row = $db_functions->get_person($oldest_man_dea_ged);
+            echo show_person($row, $row->pers_death_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Youngest pers_death_date man.
-    echo "<tr><td>" . __('Youngest death date') . "</td>\n";
-    if ($latest_man_dea_date != null) {
-        $row = $db_functions->get_person($latest_man_dea_ged);
-        echo show_person($row, $row->pers_death_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+        // *** Oldest pers_death_date woman.
+        if ($oldest_woman_dea_date != null) {
+            $row = $db_functions->get_person($oldest_woman_dea_ged);
+            echo show_person($row, $row->pers_death_date);
+            echo "</tr>\n";
+        } else {
+            echo "<td></td><td></td></tr>\n";
+        }
 
-    // *** Youngest pers_death_date woman.
-    if ($latest_woman_dea_date != null) {
-        $row = $db_functions->get_person($latest_woman_dea_ged);
-        echo show_person($row, $row->pers_death_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Youngest pers_death_date man.
+        echo "<tr><td>" . __('Youngest death date') . "</td>\n";
+        if ($latest_man_dea_date != null) {
+            $row = $db_functions->get_person($latest_man_dea_ged);
+            echo show_person($row, $row->pers_death_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    echo "<tr><td>" . __('Longest living person') . "</td>\n";
-    // *** Longest living man.
-    if ($longest_living_man != null) {
-        $row = $db_functions->get_person($longest_living_man_ged);
-        echo '<td align="center"><i>' . $longest_living_man . ' ' . __('years') . "</i></td>\n";
-        echo show_person($row);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
-    // *** Longest living woman.
-    if ($longest_living_woman != null) {
-        $row = $db_functions->get_person($longest_living_woman_ged);
-        echo '<td align="center"><i>' . $longest_living_woman . ' ' . __('years') . "</i></td>\n";
-        echo show_person($row);
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
-    // *** Average age ***
-    echo "<tr><td>" . __('Average age') . "</td>\n";
-    // Man
-    echo '<td align="center">';
-    if ($average_living_man != 0) echo round($average_living_man, 1);
-    echo ' ' . __('years') . '</td><td></td>';
-    // Woman
-    echo '<td align="center">';
-    if ($average_living_woman != 0) echo round($average_living_woman, 1);
-    echo ' ' . __('years') . '</td><td></td></tr>';
+        // *** Youngest pers_death_date woman.
+        if ($latest_woman_dea_date != null) {
+            $row = $db_functions->get_person($latest_woman_dea_ged);
+            echo show_person($row, $row->pers_death_date);
+            echo "</tr>\n";
+        } else {
+            echo "<td></td><td></td></tr>\n";
+        }
 
+        echo "<tr><td>" . __('Longest living person') . "</td>\n";
+        // *** Longest living man.
+        if ($longest_living_man != null) {
+            $row = $db_functions->get_person($longest_living_man_ged);
+            echo '<td align="center"><i>' . $longest_living_man . ' ' . __('years') . "</i></td>\n";
+            echo show_person($row);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
+        // *** Longest living woman.
+        if ($longest_living_woman != null) {
+            $row = $db_functions->get_person($longest_living_woman_ged);
+            echo '<td align="center"><i>' . $longest_living_woman . ' ' . __('years') . "</i></td>\n";
+            echo show_person($row);
+        } else {
+            echo "<td></td><td></td></tr>\n";
+        }
+        // *** Average age ***
+        echo "<tr><td>" . __('Average age') . "</td>\n";
+        // Man
+        echo '<td align="center">';
+        if ($average_living_man != 0) echo round($average_living_man, 1);
+        echo ' ' . __('years') . '</td><td></td>';
+        // Woman
+        echo '<td align="center">';
+        if ($average_living_woman != 0) echo round($average_living_woman, 1);
+        echo ' ' . __('years') . '</td><td></td></tr>';
 
-    // *** Average age married ***
-    echo "<tr><td>" . __('Average age married persons') . "</td>\n";
+        // *** Average age married ***
+        echo "<tr><td>" . __('Average age married persons') . "</td>\n";
 
-    // Man
-    echo '<td align="center">';
-    if ($average_living_man_marr != 0) echo round($average_living_man_marr, 1);
-    echo ' ' . __('years') . '</td><td></td>';
-    // Woman
-    echo '<td align="center">';
-    if ($average_living_woman_marr != 0) echo round($average_living_woman_marr, 1);
-    echo ' ' . __('years') . '</td><td></td></tr>';
+        // Man
+        echo '<td align="center">';
+        if ($average_living_man_marr != 0) echo round($average_living_man_marr, 1);
+        echo ' ' . __('years') . '</td><td></td>';
+        // Woman
+        echo '<td align="center">';
+        if ($average_living_woman_marr != 0) echo round($average_living_woman_marr, 1);
+        echo ' ' . __('years') . '</td><td></td></tr>';
 
-    echo "<tr><td>" . __('Lifespan range of married individuals') . "</td>\n";
-    echo '<td align="center">' . $shortest_living_man_marr . ' - ' . $longest_living_man_marr . ' ' . __('years') . '</td>';
-    echo '<td align="center">&nbsp;</td>';
-    echo '<td align="center">' . $shortest_living_woman_marr . ' - ' . $longest_living_woman_marr . ' ' . __('years') . '</td>';
-    echo '<td align="center">&nbsp;</td>';
-    echo '</tr>';
-
-    echo '</table>';
+        ?>
+        <tr>
+            <td><?= __('Lifespan range of married individuals'); ?></td>
+            <td align="center"><?= $shortest_living_man_marr . ' - ' . $longest_living_man_marr . ' ' . __('years'); ?></td>
+            <td align="center">&nbsp;</td>
+            <td align="center"><?= $shortest_living_woman_marr . ' - ' . $longest_living_woman_marr . ' ' . __('years'); ?></td>
+            <td align="center">&nbsp;</td>
+        </tr>
+    </table>
+<?php
 }
 
 // *** Show frequent surnames ***
@@ -773,70 +766,67 @@ if ($menu_tab == 'stats_surnames') {
 
     //echo '<div class="standard_header">'.__('Frequency of Surnames').'</div>';
 
-    echo '<div style="text-align:center">';
     $maxnames = 51;
-
     if (isset($_POST['freqsurnames'])) {
         $maxnames = $_POST['freqsurnames'];
     }
-    //echo ' <form method="POST" action="frequent_surnames.php" style="display:inline;" id="frqnames">';
-    echo ' <form method="POST" action="' . $path . '?menu_tab=stats_surnames&amp;tree_id=' . $tree_id . '" style="display:inline;" id="frqnames">';
+?>
+    <div style="text-align:center">
+        <form method="POST" action="<?= $path; ?>?menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>" style="display:inline;" id="frqnames">
+            <?php
+            echo __('Number of displayed surnames');
+            echo ': <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
+            $selected = '';
+            if ($maxnames == 25) $selected = " selected ";
+            echo '<option value="25" ' . $selected . '>25</option>';
+            $selected = '';
+            if ($maxnames == 51) $selected = " selected ";
+            echo '<option value="51" ' . $selected . '>50</option>'; // 51 so no empty last field (if more names than this)
+            $selected = '';
+            if ($maxnames == 75) $selected = " selected ";
+            echo '<option value="75" ' . $selected . '>75</option>';
+            $selected = '';
+            if ($maxnames == 100) $selected = " selected ";
+            echo '<option value="100" ' . $selected . '>100</option>';
+            $selected = '';
+            if ($maxnames == 201) $selected = " selected ";
+            echo '<option value="201" ' . $selected . '>200</option>'; // 201 so no empty last field (if more names than this)
+            $selected = '';
+            if ($maxnames == 300) $selected = " selected ";
+            echo '<option value="300" ' . $selected . '>300</option>';
+            $selected = '';
+            if ($maxnames == 100000) $selected = " selected ";
+            echo '<option value="100000" ' . $selected . '">' . __('All') . '</option>';
+            echo '</select>';
 
-    echo __('Number of displayed surnames');
-    echo ': <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
-    $selected = '';
-    if ($maxnames == 25) $selected = " selected ";
-    echo '<option value="25" ' . $selected . '>25</option>';
-    $selected = '';
-    if ($maxnames == 51) $selected = " selected ";
-    echo '<option value="51" ' . $selected . '>50</option>'; // 51 so no empty last field (if more names than this)
-    $selected = '';
-    if ($maxnames == 75) $selected = " selected ";
-    echo '<option value="75" ' . $selected . '>75</option>';
-    $selected = '';
-    if ($maxnames == 100) $selected = " selected ";
-    echo '<option value="100" ' . $selected . '>100</option>';
-    $selected = '';
-    if ($maxnames == 201) $selected = " selected ";
-    echo '<option value="201" ' . $selected . '>200</option>'; // 201 so no empty last field (if more names than this)
-    $selected = '';
-    if ($maxnames == 300) $selected = " selected ";
-    echo '<option value="300" ' . $selected . '>300</option>';
-    $selected = '';
-    if ($maxnames == 100000) $selected = " selected ";
-    echo '<option value="100000" ' . $selected . '">' . __('All') . '</option>';
-    echo '</select>';
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;' . __('Number of columns');
+            echo ': <select size=1 name="maxcols" onChange="this.form.submit();" style="width: 50px; height:20px;">';
+            for ($i = 1; $i < 7; $i++) {
+                $selected = '';
+                if ($maxcols == $i) $selected = " selected ";
+                echo '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
+            }
+            echo '</select>';
+            ?>
+        </form>
+    </div>
 
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;' . __('Number of columns');
-    echo ': <select size=1 name="maxcols" onChange="this.form.submit();" style="width: 50px; height:20px;">';
-    for ($i = 1; $i < 7; $i++) {
-        $selected = '';
-        if ($maxcols == $i) $selected = " selected ";
-        echo '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
-    }
-    echo '</select>';
-    echo '</form>';
-    echo '</div>';
+    <?php $col_width = ((round(100 / $maxcols)) - 6) . "%"; ?>
+    <br>
+    <table style="width:90%;" class="humo nametbl" align="center">
+        <tr class=table_headline>
+            <?php
+            for ($x = 1; $x < $maxcols; $x++) {
+                echo '<th width="' . $col_width . '">' . __('Surname') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
+            }
+            echo '<th width="' . $col_width . '">' . __('Surname') . '</th><th style="text-align:center;font-size:90%;width:6%">' . __('Total') . '</th>';
+            ?>
+        </tr>
+        <!-- displays the table and sets the $baseperc (= the name with highest frequency that will be 100%) -->
+        <?php $baseperc = last_names($maxnames); ?>
+    </table>
+<?php
 
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $table2_width = "100%";
-    //} else {
-    // $table2_width="900";
-    $table2_width = "90%";
-    //}
-
-    echo '<br><table style="width:' . $table2_width . ';" class="humo nametbl" align="center">';
-
-    echo '<tr class=table_headline>';
-    $col_width = ((round(100 / $maxcols)) - 6) . "%";
-    for ($x = 1; $x < $maxcols; $x++) {
-        echo '<th width="' . $col_width . '">' . __('Surname') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
-    }
-    echo '<th width="' . $col_width . '">' . __('Surname') . '</th><th style="text-align:center;font-size:90%;width:6%">' . __('Total') . '</th>';
-    echo '</tr>';
-
-    $baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
-    echo '</table>';
     echo '
         <script>
         var tbl = document.getElementsByClassName("nametbl")[0];
@@ -1018,33 +1008,27 @@ if ($menu_tab == 'stats_firstnames') {
                 ?>
             </select>
         </form>
-    </div>
+    </div><br>
+
+    <table style="width:90%;" class="humo nametbl" align="center">
+        <tr class=table_headline style="height:25px">
+            <?php
+            echo '<th style="border-right-width:6px;width:50%" colspan="4"><span style="font-size:135%">' . __('Male') . '</span></th><th  style="width:50%" colspan="4"><span style="font-size:135%">' . __('Female') . '</span></th></tr><tr class=table_headline>';
+            echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
+            echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:6px;width:6%">' . __('Total') . '</th>';
+            echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
+            echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;width:6%">' . __('Total') . '</th>';
+            ?>
+        </tr>
+        <!-- displays table and gets return value -->
+        <?php $baseperc = first_names($maxnames); ?>
+    </table><br>
 <?php
 
-
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $table2_width = "100%";
-    //} else {
-    // $table2_width="1000";
-    $table2_width = "90%";
-    //}
-
-    echo '<br><table style="width:' . $table2_width . ';" class="humo nametbl" align="center">';
-
-    echo '<tr class=table_headline style="height:25px">';
-    echo '<th style="border-right-width:6px;width:50%" colspan="4"><span style="font-size:135%">' . __('Male') . '</span></th><th  style="width:50%" colspan="4"><span style="font-size:135%">' . __('Female') . '</span></th></tr><tr class=table_headline>';
-    echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
-    echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:6px;width:6%">' . __('Total') . '</th>';
-    echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
-    echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;width:6%">' . __('Total') . '</th>';
-    echo '</tr>';
-
-    $baseperc = first_names($maxnames);  // displays table and gets return value
+    // *** Show lightgray bars ***
     $baseperc_arr = explode("@", $baseperc);
     $m_baseperc = $baseperc_arr[0];  // nr of occurrences for most frequent male name - becomes 100%
     $f_baseperc = $baseperc_arr[1];    // nr of occurrences for most frequent female name - becomes 100%
-    echo '</table><br>';
-
     echo '
         <script>
         var tbl = document.getElementsByClassName("nametbl")[0];

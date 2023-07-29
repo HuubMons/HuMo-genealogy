@@ -106,6 +106,8 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
             $mail_text = $_POST['mail_text'];
         }
 
+        $path = 'mailform.php';
+        if ($humo_option["url_rewrite"] == "j") $path = 'mailform';
 ?>
         <script>
             function validate(form_id, mail_sender) {
@@ -119,7 +121,7 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
         </script>
 
         <br>
-        <form id="form_id" method="post" action="mailform.php" accept-charset="utf-8" onsubmit="javascript:return validate('form_id','mail_sender');">
+        <form id="form_id" method="post" action="<?= $path; ?>" accept-charset="utf-8" onsubmit="javascript:return validate('form_id','mail_sender');">
             <table align="center" class="humo">
                 <tr class=table_headline>
                     <th class="fonts" colspan="2"><?= __('Mail form'); ?></th>

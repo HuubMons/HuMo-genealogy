@@ -138,7 +138,7 @@
                         move($par);
                     }
                 }
-            }	// end for loop
+            }    // end for loop
 
         } // end if vertical
 
@@ -249,7 +249,7 @@
                         move($par);
                     }
                 }
-            }	// end for loop
+            }    // end for loop
 
         }  // end if horizontal
 
@@ -480,17 +480,14 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                 $boxwidth = "640";
             } // regular descendant chart
             else {
-                $boxwidth = "750";
+                $boxwidth = "800";
             } // DNA charts
             echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:' . $boxwidth . 'px; text-align:left;">';
 
             echo '<div style="display:inline;">';
-            //if (CMS_SPECIFIC == 'Joomla') {
-            //    echo '<form method="POST" name="desc_form" action="index.php?option=com_humo-gen&task=family&chosensize=' . $size . '&amp;screen_mode=STARSIZE" style="display : inline;">';
-            //} else {
-                echo '<form method="POST" name="desc_form" action="' . CMS_ROOTPATH . 'family.php?chosensize=' . $size . '&amp;screen_mode=STARSIZE" style="display : inline;">';
-            //}
-            echo '<input type="hidden" name="id" value="' . $keepfamily_id . '">';
+            //echo '<form method="POST" name="desc_form" action="' . CMS_ROOTPATH . 'family.php?chosensize=' . $size . '&amp;screen_mode=STARSIZE" style="display : inline;">';
+            echo '<form method="POST" name="desc_form" action="' . CMS_ROOTPATH . 'descendant/' . $tree_id . '/' . $keepfamily_id . '?chosensize=' . $size . '" style="display : inline;">';
+            //echo '<input type="hidden" name="id" value="' . $keepfamily_id . '">';
             echo '<input type="hidden" name="chosengen" value="' . $chosengen . '">';
             echo '<input type="hidden" name="main_person" value="' . $keepmain_person . '">';
             echo '<input type="hidden" name="database" value="' . $database . '">';
@@ -520,28 +517,37 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                 //echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
                 //		$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."none".'&amp;chosensize='.
                 //		$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('All').'</option>';
-                if ($base_person_sexe == "M") {		// only show Y-DNA option if base person is male
+                if ($base_person_sexe == "M") {        // only show Y-DNA option if base person is male
                     //echo $selected=""; if($dna=="ydna") $selected="selected";
                     echo $selected = "selected";
                     if ($dna != "ydna")  $selected = "";
-                    echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
-                        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . "ydna" . '&amp;chosensize=' .
-                        $size . '&amp;chosengen=' . $chosengen . '&amp;screen_mode=STAR" ' . $selected . '>' . __('Y-DNA Carriers only') . '</option>';
+                    //echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
+                    //    $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . "ydna" . '&amp;chosensize=' .
+                    //    $size . '&amp;chosengen=' . $chosengen . '&amp;screen_mode=STAR" ' . $selected . '>' . __('Y-DNA Carriers only') . '</option>';
+                    echo '<option value="' . $uri_path . 'descendant/' . $tree_id . '/' . $keepfamily_id . '?main_person=' .
+                        $keepmain_person . '&amp;direction=' . $direction . '&amp;dnachart=' . "ydna" . '&amp;chosensize=' .
+                        $size . '&amp;chosengen=' . $chosengen . '" ' . $selected . '>' . __('Y-DNA Carriers only') . '</option>';
                     //echo $selected="selected"; if($dna!="ydnamark") $selected="";
                     echo $selected = "";
                     if ($dna == "ydnamark") $selected = "selected";
-                    echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
-                        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . "ydnamark" . '&amp;chosensize=' .
-                        $size . '&amp;chosengen=' . $chosengen . '&amp;screen_mode=STAR" ' . $selected . '>' . __('Y-DNA Mark carriers') . '</option>';
+                    //echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
+                    //    $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . "ydnamark" . '&amp;chosensize=' .
+                    //    $size . '&amp;chosengen=' . $chosengen . '&amp;screen_mode=STAR" ' . $selected . '>' . __('Y-DNA Mark carriers') . '</option>';
+                    echo '<option value="' . $uri_path . 'descendant/' . $tree_id . '/' . $keepfamily_id . '?main_person=' .
+                        $keepmain_person . '&amp;direction=' . $direction . '&amp;dnachart=' . "ydnamark" . '&amp;chosensize=' .
+                        $size . '&amp;chosengen=' . $chosengen . '" ' . $selected . '>' . __('Y-DNA Mark carriers') . '</option>';
                 }
 
                 if ($base_person_sexe == "F" or ($base_person_sexe == "M" and isset($base_person_famc) and $base_person_famc != "")) {
                     // if base person is male, only show mtDNA if there are ancestors since he can't have mtDNA descendants...
                     echo $selected = "";
                     if ($dna == "mtdna") $selected = "selected";
-                    echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
-                        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . "mtdna" . '&amp;chosensize=' .
-                        $size . '&amp;chosengen=' . $chosengen . '&amp;screen_mode=STAR" ' . $selected . '>' . __('mtDNA Carriers only') . '</option>';
+                    //echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
+                    //    $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . "mtdna" . '&amp;chosensize=' .
+                    //    $size . '&amp;chosengen=' . $chosengen . '&amp;screen_mode=STAR" ' . $selected . '>' . __('mtDNA Carriers only') . '</option>';
+                    echo '<option value="' . $uri_path . 'descendant/' . $tree_id . '/' . $keepfamily_id . '?main_person=' .
+                        $keepmain_person . '&amp;direction=' . $direction . '&amp;dnachart=' . "mtdna" . '&amp;chosensize=' .
+                        $size . '&amp;chosengen=' . $chosengen . '" ' . $selected . '>' . __('mtDNA Carriers only') . '</option>';
                     if ($base_person_sexe == "F") {
                         echo $selected = "selected";
                         if ($dna != "mtdnamark") $selected = "";
@@ -549,9 +555,12 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                         echo $selected = "";
                         if ($dna == "mtdnamark") $selected = "selected";
                     }
-                    echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
-                        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . "mtdnamark" . '&amp;chosensize=' .
-                        $size . '&amp;chosengen=' . $chosengen . '&amp;screen_mode=STAR" ' . $selected . '>' . __('mtDNA Mark carriers') . '</option>';
+                    //echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
+                    //    $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . "mtdnamark" . '&amp;chosensize=' .
+                    //    $size . '&amp;chosengen=' . $chosengen . '&amp;screen_mode=STAR" ' . $selected . '>' . __('mtDNA Mark carriers') . '</option>';
+                    echo '<option value="' . $uri_path . 'descendant/'.$tree_id.'/' . $keepfamily_id . '?main_person=' .
+                        $keepmain_person . '&amp;direction=' . $direction . '&amp;dnachart=' . "mtdnamark" . '&amp;chosensize=' .
+                        $size . '&amp;chosengen=' . $chosengen . '" ' . $selected . '>' . __('mtDNA Mark carriers') . '</option>';
                 }
                 echo '</select>';
             }
@@ -561,23 +570,23 @@ step 9:   large rectangles with name, birth and death details + popup with furth
             echo '&nbsp;' . __('Nr. generations') . ': ';
             echo '<select name="chosengen" onChange="window.location=this.value">';
             for ($i = 2; $i <= 15; $i++) {
-                //if (CMS_SPECIFIC == 'Joomla') {
-                //    echo '<option value="index.php?option=com_humo-gen&task=family&id=' . $keepfamily_id . '&amp;main_person=' .
-                //        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . $dna . '&amp;chosensize=' .
-                //        $size . '&amp;chosengen=' . $i . '&amp;screen_mode=STAR" ';
-                //} else {
-                    echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
-                        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . $dna . '&amp;chosensize=' .
-                        $size . '&amp;chosengen=' . $i . '&amp;screen_mode=STAR" ';
-                //}
+                //echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
+                //    $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . $dna . '&amp;chosensize=' .
+                //    $size . '&amp;chosengen=' . $i . '&amp;screen_mode=STAR" ';
+                echo '<option value="' . $uri_path . 'descendant/' . $tree_id . '/' . $keepfamily_id .
+                    '?main_person=' . $keepmain_person . '&amp;direction=' . $direction . '&amp;dnachart=' . $dna .
+                    '&amp;chosensize=' . $size . '&amp;chosengen=' . $i . '" ';
                 if ($i == $chosengen) echo "selected=\"selected\" ";
-                echo ">" . $i . "</option>";
+                echo ">" . $i . '</option>' . "\n";
             }
 
-            //NEW - option "All" for all generations
-            echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
-                $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . $dna . '&amp;chosensize=' .
-                $size . '&amp;chosengen=All&amp;screen_mode=STAR" ';
+            // *** Otion "All" for all generations ***
+            //echo '<option value="' . $uri_path . 'family.php?id=' . $keepfamily_id . '&amp;main_person=' .
+            //    $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;dnachart=' . $dna . '&amp;chosensize=' .
+            //    $size . '&amp;chosengen=All&amp;screen_mode=STAR" ';
+            echo '<option value="' . $uri_path . 'descendant/' . $tree_id . '/' . $keepfamily_id . '?main_person=' .
+                $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database .
+                '&amp;dnachart=' . $dna . '&amp;chosensize=' .  $size . '&amp;chosengen=All" ';
             if ($chosengen == "All") echo "selected=\"selected\" ";
             echo ">" . "All" . "</option>";
             echo '</select>';
@@ -594,33 +603,37 @@ step 9:   large rectangles with name, birth and death details + popup with furth
             }
 
             /*
-        //NEW min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
-        echo '
-            <script>
-            $(function() {
-                $( "#slider" ).slider({
-                    value: '.(($size/5)-1).',
-                    min: 0,
-                    max: 9,
-                    step: 1,
-                    database: "'.$database.'",
-                    main_person: "'.$keepmain_person.'",
-                    id: "'.$keepfamily_id.'",
-                    chosengen: "'.$chosengen.'",
-                    direction: "'.$direction.'",
-                    dna: "'.$dna.'",'.
-                    $dna_params.'
-                    slide: function( event, ui ) {
-                        $( "#amount" ).val(ui.value+1);
-                    }
+            echo '
+                <script>
+                $(function() {
+                    $( "#slider" ).slider({
+                        value: '.(($size/5)-1).',
+                        min: 0,
+                        max: 9,
+                        step: 1,
+                        database: "'.$database.'",
+                        main_person: "'.$keepmain_person.'",
+                        id: "'.$keepfamily_id.'",
+                        chosengen: "'.$chosengen.'",
+                        direction: "'.$direction.'",
+                        dna: "'.$dna.'",'.
+                        $dna_params.'
+                        slide: function( event, ui ) {
+                            $( "#amount" ).val(ui.value+1);
+                        }
+                    });
+                    $( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
                 });
-                $( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
-            });
-            </script>
-        ';
-        */
+                </script>
+            ';
+            */
 
             // *** 20-08-2022: renewed jQuery and jQueryUI scripts ***
+            //echo $tree_id.' '.$keepfamily_id.' '.$keepmain_person.' '.$chosengen.' '.$direction.' '.$dna.' '.$dna_params;
+            // OLD LINE:
+            //window.location.href = "family.php?tree_id=' . $tree_id . '&id=' . $keepfamily_id . '&main_person=' . $keepmain_person .
+            //'&screen_mode=STAR&chosensize="+((endPos+1)*5)+"&chosengen=' . $chosengen .
+            //'&direction=' . $direction . '&dnachart=' . $dna . '&screen_mode=STARSIZE' . $dna_params . '";
             echo '
             <script>
             $(function() {
@@ -640,19 +653,17 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                 $("#slider").on("slidestop", function(event, ui) {
                     endPos = ui.value;
                     if (startPos != endPos) {
-                        window.location.href = "family.php?tree_id=' . $tree_id . '&id=' . $keepfamily_id . '&main_person=' . $keepmain_person .
-                '&screen_mode=STAR&chosensize="+((endPos+1)*5)+"&chosengen=' . $chosengen .
-                '&direction=' . $direction . '&dnachart=' . $dna . '&screen_mode=STARSIZE' . $dna_params . '";
-                    }
+                        window.location.href = "descendant/' . $tree_id . '/' . $keepfamily_id .
+                '?main_person=' . $keepmain_person .
+                '&chosensize="+((endPos+1)*5)+"&chosengen=' . $chosengen .
+                '&direction=' . $direction . '&dnachart=' . $dna . $dna_params . '";
+                        }
                     startPos = endPos;
                 });
-
             });
-
             </script>
         ';
 
-            //echo '<label for="amount">Zoom in/out:</label>';
             echo '<label for="amount">' . __('Zoom level:') . '</label> ';
             echo '<input type="text" id="amount" disabled="disabled" style="width:20px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">';
             echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
@@ -676,8 +687,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
             // *** Start person class and calculate privacy ***
             if (isset($genarray[$w]["gednr"]) and $genarray[$w]["gednr"]) {
                 $man = $db_functions->get_person($genarray[$w]["gednr"]);
-                $man_cls = new person_cls;
-                $man_cls->construct($man);
+                $man_cls = new person_cls($man);
                 $man_privacy = $man_cls->privacy;
             }
 
@@ -835,8 +845,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                 $woman_cls = ''; // prevent use of $woman_cls from previous wife if another wife is NN
                 if (isset($genarray[$w]["spgednr"]) and $genarray[$w]["spgednr"]) {
                     @$woman = $db_functions->get_person($genarray[$w]["spgednr"]);
-                    $woman_cls = new person_cls;
-                    $woman_cls->construct($woman);
+                    $woman_cls = new person_cls($woman);
                     $woman_privacy = $woman_cls->privacy;
                 }
 
@@ -848,10 +857,10 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                         //if (CMS_SPECIFIC == 'Joomla') {
                         //    $extra_popup_text .= '<a href="index.php?option=com_humo-gen&task=family&id=' . $genarray[$w]["spfams"] . '&amp;main_person=' . $genarray[$w]["spgednr"] . '">' . '<strong>' . $name["standard_name"] . '</strong></a>';
                         //} else {
-                            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $woman_cls->person_url2($woman->pers_tree_id, $woman->pers_famc, $woman->pers_fams, $woman->pers_gedcomnumber);
+                        // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                        $url = $woman_cls->person_url2($woman->pers_tree_id, $woman->pers_famc, $woman->pers_fams, $woman->pers_gedcomnumber);
 
-                            $extra_popup_text .= '<a href="' . $url . '">' . '<strong>' . $name["standard_name"] . '</strong></a>';
+                        $extra_popup_text .= '<a href="' . $url . '">' . '<strong>' . $name["standard_name"] . '</strong></a>';
                         //}
                     } else {
                         $extra_popup_text .= $name["standard_name"];

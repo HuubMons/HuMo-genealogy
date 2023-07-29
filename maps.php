@@ -51,7 +51,7 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
                 $selected = '';
                 if (isset($_SESSION['tree_prefix'])) {
                     if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
-                        $selected = ' SELECTED';
+                        $selected = ' selected';
                         $tree_id = $tree_searchDb->tree_id;
                         $_SESSION['tree_id'] = $tree_id;
                         $db_functions->set_tree_id($tree_id);
@@ -59,7 +59,7 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
                 } else {
                     if ($count == 0) {
                         $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
-                        $selected = ' SELECTED';
+                        $selected = ' selected';
                         $tree_id = $tree_searchDb->tree_id;
                         $_SESSION['tree_id'] = $tree_id;
                         $db_functions->set_tree_id($tree_id);
@@ -697,7 +697,6 @@ if (isset($_POST['descmap'])) {
     $chld_prep->bindParam(1, $chld_var);
     while ($desc_searchDb = $desc_search_result->fetch(PDO::FETCH_OBJ)) {
         $countmarr = 0;
-        $man_cls = new person_cls;
         $fam_arr = explode(";", $desc_searchDb->pers_fams);
         foreach ($fam_arr as $value) {
             if ($countmarr == 1) {
@@ -708,8 +707,8 @@ if (isset($_POST['descmap'])) {
             while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
                 $countmarr = 1;
                 $selected = '';
-                //if($desc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' SELECTED '; }
-                $man_cls->construct($desc_searchDb);
+                //if($desc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
+                $man_cls = new person_cls($desc_searchDb);
                 $privacy_man = $man_cls->privacy;
                 $date = '';
                 if (!$privacy_man) {
@@ -827,7 +826,6 @@ if (isset($_POST['ancmap'])) {
     $chld_prep->bindParam(1, $chld_var);
     while ($anc_searchDb = $anc_search_result->fetch(PDO::FETCH_OBJ)) {
         $countmarr = 0;
-        $man_cls = new person_cls;
         $fam_arr = explode(";", $anc_searchDb->pers_fams);
         foreach ($fam_arr as $value) {
             if ($countmarr == 1) {
@@ -838,8 +836,8 @@ if (isset($_POST['ancmap'])) {
             while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
                 $countmarr = 1;
                 $selected = '';
-                //if($anc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' SELECTED '; }
-                $man_cls->construct($anc_searchDb);
+                //if($anc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
+                $man_cls = new person_cls($anc_searchDb);
                 $privacy_man = $man_cls->privacy;
                 $date = '';
                 if (!$privacy_man) { // don't show dates if privacy is set for this person
@@ -1008,8 +1006,7 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
                 //$locarray[$place][13]++;  // array of all people incl without birth date
 
                 // *** Use person class ***
-                $person_cls = new person_cls;
-                $person_cls->construct($personDb);
+                $person_cls = new person_cls($personDb);
                 $name = $person_cls->person_name($personDb);
 
 

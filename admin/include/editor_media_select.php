@@ -77,14 +77,16 @@ if (file_exists($array_picture_folder[0])) {
     // *** Get directories ***
     get_dirs($prefx, $pict_path);
 
-    echo '<form method="POST" action="index.php?page=editor_media_select&form=' . $selected_form . '&event_id=' . $event_id . '">';
     $search_quicksearch = '';
     if (isset($_POST['search_quicksearch'])) {
         $search_quicksearch = safe_text_db($_POST['search_quicksearch']);
     }
-    echo ' <input class="fonts" type="text" name="search_quicksearch" placeholder="' . __('Name') . '" value="' . $search_quicksearch . '" size="15">';
-    echo ' <input class="fonts" type="submit" name="submit" value="' . __('Search') . '">';
-    echo '</form><br>';
+?>
+    <form method="POST" action="index.php?page=editor_media_select&form=<?= $selected_form . '&event_id=' . $event_id; ?>">
+        <input class="fonts" type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15">
+        <input class="fonts" type="submit" name="submit" value="<?= __('Search'); ?>">
+    </form><br>
+<?php
 
     // *** List of media files ***
     $ignore = array('.', '..', 'cms', 'readme.txt', 'slideshow', 'thumbs');
@@ -117,10 +119,10 @@ if (file_exists($array_picture_folder[0])) {
         if (isset($list_filename)) {
             array_multisort($list_filename_order, $list_filename);
             foreach ($list_filename as $selected_filename) {
-
-                echo '<div class="photobook">';
                 $thumb = '';
                 if (is_file($selected_picture_folder . 'thumb_' . $selected_filename)) $thumb = 'thumb_';
+
+                echo '<div class="photobook">';
                 echo '<img src="' . $selected_picture_folder . $thumb . $selected_filename . '">';
                 // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
                 echo '<br><a href="" onClick=\'return select_item("' . $sub_dir . str_replace("'", "&prime;", $selected_filename) . '")\'>' . $sub_dir . $selected_filename . '</a><br>';

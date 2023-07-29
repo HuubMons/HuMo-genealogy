@@ -121,7 +121,7 @@ if (isset($_GET['menu_admin'])) {
                                 $treetext = show_tree_text($treeDb->tree_id, $selected_language);
                                 $selected = '';
                                 if (isset($tree_id) and ($treeDb->tree_id == $tree_id)) {
-                                    $selected = ' SELECTED';
+                                    $selected = ' selected';
                                     $db_functions->set_tree_id($tree_id);
                                 }
                                 echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';

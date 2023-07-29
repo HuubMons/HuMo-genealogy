@@ -14,8 +14,6 @@ class editor_event_cls
     // *** Show event_kind text ***
     function event_text($event_kind)
     {
-        //global $language;
-
         if ($event_kind == 'picture') $event_text = __('Picture/ Media');
         elseif ($event_kind == 'profession') $event_text = __('Profession');
         elseif ($event_kind == 'event') $event_text = __('Event');
@@ -59,12 +57,12 @@ class editor_event_cls
         if ($data_listDb->event_date) $event_event .= ', ' . hideshow_date_place($data_listDb->event_date, $data_listDb->event_place);
 
         if ($event_event or $data_listDb->event_text) {
-            $text .= '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $event_event;
-            if ($data_listDb->event_text) $text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-            $text .= '</span><br>';
+            echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $event_event;
+            if ($data_listDb->event_text) echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
+            echo '</span><br>';
         }
 
-        $text .= '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
+        echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
         return $text;
     }
 
@@ -333,7 +331,7 @@ class editor_event_cls
                 <td></td>
                 <td colspan="2">
                     <select size="1" name="event_gedcom_add" style="width: 200px">
-                        <?= event_selection(''); ?>
+                        <?php event_selection(''); ?>
                     </select>
                     <input type="text" name="event_event_name" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
                     <input type="Submit" name="event_add_name" value="<?= __('Add'); ?>">
@@ -446,24 +444,24 @@ class editor_event_cls
                 </td>
                 <td></td>
             </tr>
-<?php
+        <?php
         }
 
         // *** Show pictures by person, family and (shared) source ***
         if ($event_kind == 'picture' or $event_kind == 'marriage_picture' or $event_kind == 'source_picture') {
             $link = 'picture';
 
-            $text .= '<tr class="table_header_large" id="picture">';
-            $text .= '<td style="border-right:0px;">';
-            $text .= '<b>' . __('Picture/ Media') . '</b></td>';
-            $text .= '<td colspan="2">';
+            echo '<tr class="table_header_large" id="picture">';
+            echo '<td style="border-right:0px;">';
+            echo '<b>' . __('Picture/ Media') . '</b></td>';
+            echo '<td colspan="2">';
 
             if ($event_kind == 'picture') {
-                $text .= ' <input type="Submit" name="add_picture" value="' . __('Add') . '">';
+                echo ' <input type="Submit" name="add_picture" value="' . __('Add') . '">';
             } elseif ($event_kind == 'marriage_picture') {
-                $text .= ' <input type="Submit" name="add_marriage_picture" value="' . __('Add') . '">';
+                echo ' <input type="Submit" name="add_marriage_picture" value="' . __('Add') . '">';
             } elseif ($event_kind == 'source_picture') {
-                $text .= ' <input type="Submit" name="add_source_picture" value="' . __('Add') . '">';
+                echo ' <input type="Submit" name="add_source_picture" value="' . __('Add') . '">';
             }
 
 
@@ -629,49 +627,45 @@ class editor_event_cls
             */
 
 
-            $text .= '</td>';
-            $text .= '<td></td>';
-            $text .= '</tr>';
+            echo '</td>';
+            echo '<td></td>';
+            echo '</tr>';
         }
 
-        // *** Show marriage witness by family ***
+        // *** Add marriage witness by family ***
         if ($event_kind == 'marriage_witness') {
             $link = 'marriage_relation';
-            //$text.='<tr class="table_header" style="display:none;" id="row8" name="row8">';
-            //$text.='<tr style="display:none;" class="row8 humo_color" name="row8">';
-            $text .= '<tr style="display:none;" class="row8 table_header_large" name="row8">';
-            //$text.='<tr'.$show_event_add.' class="row8 humo_color" name="row8">';
-            $text .= '<td></td>';
-            $text .= '<td style="border-right:0px;">' . __('marriage witness') . '</td>';
-            $text .= '<td style="border-left:0px;">';
-            //$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_marriage_witness&marriage_nr='.$event_connect_id.'#event_family_link">['.__('Add').']</a>';
-            $text .= ' <input type="Submit" name="add_marriage_witness" value="' . __('Add') . '">';
-            $text .= '</td>';
-            $text .= '<td></td>';
-            $text .= '</tr>';
+        ?>
+            <tr style="display:none;" class="row8 table_header_large" name="row8">
+                <td></td>
+                <td style="border-right:0px;"><?= __('marriage witness'); ?></td>
+                <td style="border-left:0px;">
+                    <input type="Submit" name="add_marriage_witness" value="<?= __('Add'); ?>">
+                </td>
+                <td></td>
+            </tr>
+        <?php
         }
 
-        // *** Show marriage witness (religious) by family ***
+        // *** Add marriage witness (religious) by family ***
         if ($event_kind == 'marriage_witness_rel') {
             $link = 'marr_church';
-            //$text.='<tr class="table_header" style="display:none;" id="row10" name="row10">';
-            //$text.='<tr style="display:none;" class="row10 humo_color" name="row10">';
-            $text .= '<tr style="display:none;" class="row10 table_header_large" name="row10">';
-            //$text.='<tr '.$show_event_add.' class="row10 humo_color" name="row10">';
-            $text .= '<td></td>';
-            $text .= '<td style="border-right:0px;">' . __('marriage witness (religious)') . '</td>';
-            $text .= '<td style="border-left:0px;">';
-            //$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_marriage_witness_rel&marriage_nr='.$event_connect_id.'#event_family_link">['.__('Add').']</a>';
-            $text .= ' <input type="Submit" name="add_marriage_witness_rel" value="' . __('Add') . '">';
-            $text .= '</td>';
-            $text .= '<td style="border-left:0px;"></td>';
-            $text .= '</tr>';
+        ?>
+            <tr style="display:none;" class="row10 table_header_large" name="row10">
+                <td></td>
+                <td style="border-right:0px;"><?= __('marriage witness (religious)'); ?></td>
+                <td style="border-left:0px;">
+                    <input type="Submit" name="add_marriage_witness_rel" value="<?= __('Add'); ?>">
+                </td>
+                <td style="border-left:0px;"></td>
+            </tr>
+            <?php
         }
 
         if (!isset($_GET['add_person'])) {
             $data_list_qry = $dbh->query($qry);
             while ($data_listDb = $data_list_qry->fetch(PDO::FETCH_OBJ)) {
-                $text .= '<input type="hidden" name="event_id[' . $data_listDb->event_id . ']" value="' . $data_listDb->event_id . '">';
+                echo '<input type="hidden" name="event_id[' . $data_listDb->event_id . ']" value="' . $data_listDb->event_id . '">';
 
                 $expand_link = '';
                 $internal_link = '#';
@@ -792,21 +786,21 @@ class editor_event_cls
                     $internal_link = '#event_family_link';
                 }
 
-                $text .= '<tr' . $expand_link . $change_bg_colour . '>';
+                echo '<tr' . $expand_link . $change_bg_colour . '>';
 
                 // *** Show name of event and [+] link ***
-                $text .= '<td>';
+                echo '<td>';
                 //$text.='&nbsp;&nbsp;&nbsp;<a href="'.$internal_link.'" onclick="hideShow('.$data_listDb->event_id.'00);"><span id="hideshowlink'.$data_listDb->event_id.'00">'.__('[+]').'</span></a>';
                 //$text.=' #'.$data_listDb->event_order;
                 $newpers = "";
                 if (isset($_GET['add_person'])) {
                     $newpers = "&amp;add_person=1";
                 }
-                $text .= '<a href="index.php?' . $joomlastring . 'page=' . $page . $newpers . '&amp;' . $event_group .
+                echo '<a href="index.php?' . $joomlastring . 'page=' . $page . $newpers . '&amp;' . $event_group .
                     '&amp;event_kind=' . $data_listDb->event_kind . '&amp;event_drop=' . $data_listDb->event_order;
                 // *** Remove picture by source ***
-                if ($event_kind == 'source_picture') $text .= '&amp;source_id=' . $data_listDb->event_connect_id;
-                $text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="down"></a>';
+                if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                echo '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="down"></a>';
 
                 //if ($data_listDb->event_kind !='picture'){
                 // *** Count number of events ***
@@ -826,29 +820,29 @@ class editor_event_cls
 
                 // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
                 if ($data_listDb->event_order < $count) {
-                    $text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;' . $event_group . '&amp;event_down=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
+                    echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;' . $event_group . '&amp;event_down=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
                     // *** Edit picture by source in seperate source page ***
-                    if ($event_kind == 'source_picture') $text .= '&amp;source_id=' . $data_listDb->event_connect_id;
-                    $text .= '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+                    if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                    echo '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
                 } else {
-                    $text .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                 }
 
                 // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
                 if ($data_listDb->event_order > 1) {
-                    $text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;' . $event_group . '&amp;event_up=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
+                    echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;' . $event_group . '&amp;event_up=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
                     // *** Edit picture by source in seperate source page ***
-                    if ($event_kind == 'source_picture') $text .= '&amp;source_id=' . $data_listDb->event_connect_id;
-                    $text .= '&amp;dummy=' . $data_listDb->event_id . $internal_link;
-                    $text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="down"></a>';
+                    if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                    echo '&amp;dummy=' . $data_listDb->event_id . $internal_link;
+                    echo '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="down"></a>';
                 } else {
-                    $text .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                 }
                 //}
-                $text .= '</td>';
+                echo '</td>';
 
-                //$text .= '<td style="border-left:solid 2px #0000FF;" colspan="2">';
-                $text .= '<td colspan="2">';
+                //echo '<td style="border-left:solid 2px #0000FF;" colspan="2">';
+                echo '<td colspan="2">';
 
                 // *** Witness and declaration persons ***
                 if (
@@ -864,18 +858,18 @@ class editor_event_cls
                     }
 
                     // *** Show name of item ***
-                    $text .= $this->event_text($data_listDb->event_kind) . ': ';
+                    echo $this->event_text($data_listDb->event_kind) . ': ';
 
                     // *** Hide/show line (start <span> to hide edit line) ***
-                    $text .= $this->hide_show_start($data_listDb, $witness_name) . '<br>';
+                    echo $this->hide_show_start($data_listDb, $witness_name) . '<br>';
 
                     //$text.='<td style="border-left:0px;">';
-                    $text .= editor_label2($this->event_text($data_listDb->event_kind));
+                    echo editor_label2($this->event_text($data_listDb->event_kind));
                     $event_text = $this->event_text($data_listDb->event_kind);
-                    $text .= witness_edit($event_text, $data_listDb->event_event, '[' . $data_listDb->event_id . ']');
+                    echo witness_edit($event_text, $data_listDb->event_event, '[' . $data_listDb->event_id . ']');
                 } elseif ($data_listDb->event_kind == 'picture') {
 
-                    $text .= '<div>';
+                    echo '<div>';
                     $tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
                     $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
                     if ($temp->rowCount()) {  // there is a category table 
@@ -891,53 +885,53 @@ class editor_event_cls
 
                     $extensions_check = substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -3, 3);
                     if (strtolower($extensions_check) == "pdf") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'images/pdf.jpeg"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'images/pdf.jpeg"></a>';
                     } elseif (strtolower($extensions_check) == "doc" or strtolower(substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -4, 4)) == "docx") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'images/msdoc.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'images/msdoc.gif"></a>';
                     }
                     // *** Show AVI Video file ***
                     elseif ($extensions_check == "avi") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
                     }
                     // *** Show WMV Video file ***
                     elseif ($extensions_check == "wmv") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
                     }
                     // *** Show MPG Video file ***
                     elseif (strtolower($extensions_check) == "mpg") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
                     }
                     // *** Show MP4 Video file ***
                     elseif (strtolower($extensions_check) == "mp4") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
                     }
                     // *** Show MOV Video file ***
                     elseif (strtolower($extensions_check) == "mov") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
                     }
                     // *** Show WMA Audio file ***
                     elseif (strtolower($extensions_check) == "wma") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
                     }
                     // *** Show WAV Audio file ***
                     elseif (strtolower($extensions_check) == "wav") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
                     }
                     // *** Show MP3 Audio file ***
                     elseif (strtolower($extensions_check) == "mp3") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
                     }
                     // *** Show MID Audio file ***
                     elseif (strtolower($extensions_check) == "mid") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
                     }
                     // *** Show RAM Audio file ***
                     elseif (strtolower($extensions_check) == "ram") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
                     }
                     // *** Show RA Audio file ***
                     elseif (strtolower($extensions_check) == ".ra") {
-                        $text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
                     } else {
                         $show_image = '';
 
@@ -971,23 +965,23 @@ class editor_event_cls
                         //Check line above. If thumb if missing, missing picture is shown...
 
                         if (!$data_listDb->event_event) $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
-                        $text .= $show_image;
+                        echo $show_image;
                     }
-                    $text .= '</div>';
+                    echo '</div>';
 
                     // *** Hide/show line (start <span> to hide edit line) ***
-                    $text .= $this->hide_show_start($data_listDb);
+                    echo $this->hide_show_start($data_listDb);
 
                     // *** Use text box for pictures and pop-up window ***
                     // *** To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id ***
-                    $text .= editor_label2(__('Picture/ Media'));
-                    $text .= '<input type="text" name="text_event' . $data_listDb->event_id . '" placeholder="' . __('Picture/ Media') . '" value="' . $data_listDb->event_event . '" style="width: 500px">';
+                    echo editor_label2(__('Picture/ Media'));
+                    echo '<input type="text" name="text_event' . $data_listDb->event_id . '" placeholder="' . __('Picture/ Media') . '" value="' . $data_listDb->event_event . '" style="width: 500px">';
                     $form = 1;
                     if ($event_connect_kind == 'family') $form = 2;
                     if ($event_connect_kind == 'source') $form = 3;
-                    $text .= '<a href="#" onClick=\'window.open("index.php?page=editor_media_select&amp;form=' . $form . '&amp;event_id=' . $data_listDb->event_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
+                    echo '<a href="#" onClick=\'window.open("index.php?page=editor_media_select&amp;form=' . $form . '&amp;event_id=' . $data_listDb->event_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
                 } elseif ($data_listDb->event_kind == 'adoption') {
-                    $text .= $this->event_text($data_listDb->event_kind) . ': ';
+                    echo $this->event_text($data_listDb->event_kind) . ': ';
 
                     // *** Show names of adoption parents ***
                     $parent_text = '';
@@ -1013,20 +1007,20 @@ class editor_event_cls
                     }
 
                     // *** Hide/show line (start <span> to hide edit line) ***
-                    $text .= $this->hide_show_start($data_listDb, $parent_text) . '<br>';
+                    echo $this->hide_show_start($data_listDb, $parent_text) . '<br>';
 
                     // *** Use pop-up to select adoption parents ***
-                    $text .= editor_label2(__('Adoption'));
-                    $text .= '<input type="text" name="text_event' . $data_listDb->event_id . '" placeholder="' . __('GEDCOM number (ID)') . '" value="' . $data_listDb->event_event . '" style="width: 250px">';
-                    $text .= '<a href="#" onClick=\'window.open("index.php?page=editor_relation_select&amp;adoption_id=' . $data_listDb->event_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
+                    echo editor_label2(__('Adoption'));
+                    echo '<input type="text" name="text_event' . $data_listDb->event_id . '" placeholder="' . __('GEDCOM number (ID)') . '" value="' . $data_listDb->event_event . '" style="width: 250px">';
+                    echo '<a href="#" onClick=\'window.open("index.php?page=editor_relation_select&amp;adoption_id=' . $data_listDb->event_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
                 }
 
                 // *** person_colour_mark ***
                 elseif ($data_listDb->event_kind == 'person_colour_mark') {
-                    $text .= $this->event_text($data_listDb->event_kind) . ': ';
+                    echo $this->event_text($data_listDb->event_kind) . ': ';
 
                     // *** Needed for descendants/ ascendants color ***
-                    $text .= '<input type="hidden" name="event_event_old[' . $data_listDb->event_id . ']" value="' . $data_listDb->event_event . '">';
+                    echo '<input type="hidden" name="event_event_old[' . $data_listDb->event_id . ']" value="' . $data_listDb->event_event . '">';
 
                     $pers_colour = '';
                     $person_colour_mark = $data_listDb->event_event;
@@ -1048,302 +1042,302 @@ class editor_event_cls
                     $person_colour = ' <span ' . $pers_colour . '>' . __('Selected colour') . '</span>';
 
                     // *** Hide/show line (start <span> to hide edit line) ***
-                    $text .= $this->hide_show_start($data_listDb, $person_colour);
+                    echo $this->hide_show_start($data_listDb, $person_colour);
 
                     //$text.='<td style="border-left:0px;">';
-                    $text .= editor_label2(__('Selected colour'));
-                    $text .= ' <select class="fonts" size="1" name="text_event[' . $data_listDb->event_id . ']">';
-                    $text .= '<option value="0">' . __('Change colour mark by person') . '</option>';
+                    echo editor_label2(__('Selected colour'));
+                    echo ' <select class="fonts" size="1" name="text_event[' . $data_listDb->event_id . ']">';
+                    echo '<option value="0">' . __('Change colour mark by person') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '1') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="1" style="color:#FF0000;"' . $selected . '>' . __('Colour 1') . '</option>';
+                    echo '<option value="1" style="color:#FF0000;"' . $selected . '>' . __('Colour 1') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '2') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="2" style="color:#00FF00;"' . $selected . '>' . __('Colour 2') . '</option>';
+                    echo '<option value="2" style="color:#00FF00;"' . $selected . '>' . __('Colour 2') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '3') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="3" style="color:#0000FF;"' . $selected . '>' . __('Colour 3') . '</option>';
+                    echo '<option value="3" style="color:#0000FF;"' . $selected . '>' . __('Colour 3') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '4') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="4" style="color:#FF00FF;"' . $selected . '>' . __('Colour 4') . '</option>';
+                    echo '<option value="4" style="color:#FF00FF;"' . $selected . '>' . __('Colour 4') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '5') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="5" style="color:#FFFF00;"' . $selected . '>' . __('Colour 5') . '</option>';
+                    echo '<option value="5" style="color:#FFFF00;"' . $selected . '>' . __('Colour 5') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '6') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="6" style="color:#00FFFF;"' . $selected . '>' . __('Colour 6') . '</option>';
+                    echo '<option value="6" style="color:#00FFFF;"' . $selected . '>' . __('Colour 6') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '7') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="7" style="color:#C0C0C0;"' . $selected . '>' . __('Colour 7') . '</option>';
+                    echo '<option value="7" style="color:#C0C0C0;"' . $selected . '>' . __('Colour 7') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '8') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="8" style="color:#800000;"' . $selected . '>' . __('Colour 8') . '</option>';
+                    echo '<option value="8" style="color:#800000;"' . $selected . '>' . __('Colour 8') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '9') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="9" style="color:#008000;"' . $selected . '>' . __('Colour 9') . '</option>';
+                    echo '<option value="9" style="color:#008000;"' . $selected . '>' . __('Colour 9') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '10') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="10" style="color:#000080;"' . $selected . '>' . __('Colour 10') . '</option>';
+                    echo '<option value="10" style="color:#000080;"' . $selected . '>' . __('Colour 10') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '11') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="11" style="color:#800080;"' . $selected . '>' . __('Colour 11') . '</option>';
+                    echo '<option value="11" style="color:#800080;"' . $selected . '>' . __('Colour 11') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '12') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="12" style="color:#A52A2A;"' . $selected . '>' . __('Colour 12') . '</option>';
+                    echo '<option value="12" style="color:#A52A2A;"' . $selected . '>' . __('Colour 12') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '13') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="13" style="color:#008080;"' . $selected . '>' . __('Colour 13') . '</option>';
+                    echo '<option value="13" style="color:#008080;"' . $selected . '>' . __('Colour 13') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '14') {
                         $selected = ' selected';
                     }
-                    $text .= '<option value="14" style="color:#808080;"' . $selected . '>' . __('Colour 14') . '</option>';
-                    $text .= '</select><br>';
+                    echo '<option value="14" style="color:#808080;"' . $selected . '>' . __('Colour 14') . '</option>';
+                    echo '</select><br>';
 
                     // *** Also change color of ascendants and/ or descendants ***
                     $check = ''; //if (isset($xx) AND $xx=='y'){ $check=' checked'; }
-                    $text .= editor_label2(__('Also change'));
-                    $text .= '<input type="checkbox" name="pers_colour_desc[' . $data_listDb->event_id . ']" ' . $check . '> ' . __('Descendants');
-                    $text .= '<input type="checkbox" name="pers_colour_anc[' . $data_listDb->event_id . ']" ' . $check . '> ' . __('Ancestors');
+                    echo editor_label2(__('Also change'));
+                    echo '<input type="checkbox" name="pers_colour_desc[' . $data_listDb->event_id . ']" ' . $check . '> ' . __('Descendants');
+                    echo '<input type="checkbox" name="pers_colour_anc[' . $data_listDb->event_id . ']" ' . $check . '> ' . __('Ancestors');
                 }
 
                 // *** profession ***
                 elseif ($data_listDb->event_kind == 'profession') {
-                    //$text .= $this->event_text($data_listDb->event_kind).': ';
+                    //echo $this->event_text($data_listDb->event_kind).': ';
 
                     // *** Hide/show line (start <span> to hide edit line) ***
-                    $text .= $this->hide_show_start($data_listDb);
+                    echo $this->hide_show_start($data_listDb);
 
 
-                    $text .= editor_label2(__('Profession'));
-                    $text .= '<textarea rows="1" name="text_event[' . $data_listDb->event_id . ']" ' . $field_text . ' placeholder="' . __('Profession') . '">' . $editor_cls->text_show($data_listDb->event_event) . '</textarea>';
+                    echo editor_label2(__('Profession'));
+                    echo '<textarea rows="1" name="text_event[' . $data_listDb->event_id . ']" ' . $field_text . ' placeholder="' . __('Profession') . '">' . $editor_cls->text_show($data_listDb->event_event) . '</textarea>';
                 }
 
                 // *** religion ***
                 elseif ($data_listDb->event_kind == 'religion') {
-                    $text .= $this->event_text($data_listDb->event_kind) . ': ';
+                    echo $this->event_text($data_listDb->event_kind) . ': ';
 
                     // *** Hide/show line (start <span> to hide edit line) ***
-                    $text .= $this->hide_show_start($data_listDb);
+                    echo $this->hide_show_start($data_listDb);
 
-                    $text .= editor_label2(__('Religion'));
-                    $text .= '<textarea rows="1" name="text_event[' . $data_listDb->event_id . ']" ' . $field_text . ' placeholder="' . __('Religion') . '">' . $editor_cls->text_show($data_listDb->event_event) . '</textarea>';
+                    echo editor_label2(__('Religion'));
+                    echo '<textarea rows="1" name="text_event[' . $data_listDb->event_id . ']" ' . $field_text . ' placeholder="' . __('Religion') . '">' . $editor_cls->text_show($data_listDb->event_event) . '</textarea>';
                 }
 
                 // *** General name of event ***
                 else {
                     // *** Show name of event ***
                     if ($data_listDb->event_gedcom == 'NICK') {
-                        $text .= __('Nickname') . ': ';
+                        echo __('Nickname') . ': ';
                     } elseif ($data_listDb->event_gedcom == '_RUFN') {
-                        $text .= __('German Rufname') . ': ';
+                        echo __('German Rufname') . ': ';
                     } elseif (language_name($data_listDb->event_gedcom)) {
-                        $text .= language_name($data_listDb->event_gedcom);
+                        echo language_name($data_listDb->event_gedcom);
                     } else {
-                        $text .= $this->event_text($data_listDb->event_kind) . ': ';
+                        echo $this->event_text($data_listDb->event_kind) . ': ';
                     }
 
                     // *** Hide/show line (start <span> to hide edit line) ***
                     //$text.=$this->hide_show_start($data_listDb);
                     $event_text = $data_listDb->event_event;
                     if (!$event_text) $event_text = language_event($data_listDb->event_gedcom);
-                    $text .= $this->hide_show_start($data_listDb, $event_text);
+                    echo $this->hide_show_start($data_listDb, $event_text);
 
                     // *** Check if event has text ***
                     $style = ''; //if (!$data_listDb->event_event) $style='style="background-color:#FFAA80"';
-                    $text .= editor_label2(__('Event'));
-                    $text .= '<input type="text" ' . $style . ' name="text_event[' . $data_listDb->event_id . ']" placeholder="' . __('Event') . '" value="' . $data_listDb->event_event . '" size="60">';
+                    echo editor_label2(__('Event'));
+                    echo '<input type="text" ' . $style . ' name="text_event[' . $data_listDb->event_id . ']" placeholder="' . __('Event') . '" value="' . $data_listDb->event_event . '" size="60">';
                 }
 
                 if ($data_listDb->event_kind == 'NPFX') {
-                    $text .= ' ' . __('e.g. Lt. Cmndr.');
+                    echo ' ' . __('e.g. Lt. Cmndr.');
                 } elseif ($data_listDb->event_kind == 'NSFX') {
-                    $text .= ' ' . __('e.g. Jr.');
+                    echo ' ' . __('e.g. Jr.');
                 } elseif ($data_listDb->event_kind == 'nobility') {
-                    $text .= ' ' . __('e.g. Jhr., Jkvr.');
+                    echo ' ' . __('e.g. Jhr., Jkvr.');
                 } elseif ($data_listDb->event_kind == 'title') {
-                    $text .= ' ' . __('e.g. Prof., Dr.');
+                    echo ' ' . __('e.g. Prof., Dr.');
                 } elseif ($data_listDb->event_kind == 'lordship') {
-                    $text .= ' ' . __('e.g. Lord of Amsterdam');
+                    echo ' ' . __('e.g. Lord of Amsterdam');
                 }
 
                 // *** Select type of event ***
                 if ($data_listDb->event_kind == 'event') {
-                    $text .= ' <select size="1" name="event_gedcom[' . $data_listDb->event_id . ']" style="width: 150px">';
+                    echo ' <select size="1" name="event_gedcom[' . $data_listDb->event_id . ']" style="width: 150px">';
 
                     if ($event_kind == 'person') {
-                        $text .= '<optgroup label="' . __('Events') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'EVEN');
-                        $text .= event_option($data_listDb->event_gedcom, '_NMAR');
-                        $text .= event_option($data_listDb->event_gedcom, 'NCHI');
-                        $text .= event_option($data_listDb->event_gedcom, 'MILI');
-                        $text .= event_option($data_listDb->event_gedcom, 'TXPY');
-                        $text .= event_option($data_listDb->event_gedcom, 'CENS');
-                        $text .= event_option($data_listDb->event_gedcom, 'RETI');
-                        $text .= event_option($data_listDb->event_gedcom, 'CAST');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Events') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'EVEN');
+                        echo event_option($data_listDb->event_gedcom, '_NMAR');
+                        echo event_option($data_listDb->event_gedcom, 'NCHI');
+                        echo event_option($data_listDb->event_gedcom, 'MILI');
+                        echo event_option($data_listDb->event_gedcom, 'TXPY');
+                        echo event_option($data_listDb->event_gedcom, 'CENS');
+                        echo event_option($data_listDb->event_gedcom, 'RETI');
+                        echo event_option($data_listDb->event_gedcom, 'CAST');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Baptise') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'BAPM');
-                        $text .= event_option($data_listDb->event_gedcom, 'CHRA');
-                        $text .= event_option($data_listDb->event_gedcom, 'LEGI');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Baptise') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'BAPM');
+                        echo event_option($data_listDb->event_gedcom, 'CHRA');
+                        echo event_option($data_listDb->event_gedcom, 'LEGI');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Adoption') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'ADOP');
-                        $text .= event_option($data_listDb->event_gedcom, '_ADPF');
-                        $text .= event_option($data_listDb->event_gedcom, '_ADPM');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Adoption') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'ADOP');
+                        echo event_option($data_listDb->event_gedcom, '_ADPF');
+                        echo event_option($data_listDb->event_gedcom, '_ADPM');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Settling') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'ARVL');
-                        $text .= event_option($data_listDb->event_gedcom, 'DPRT');
-                        $text .= event_option($data_listDb->event_gedcom, 'IMMI');
-                        $text .= event_option($data_listDb->event_gedcom, 'EMIG');
-                        $text .= event_option($data_listDb->event_gedcom, 'NATU');
-                        $text .= event_option($data_listDb->event_gedcom, 'NATI');
-                        $text .= event_option($data_listDb->event_gedcom, 'PROP');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Settling') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'ARVL');
+                        echo event_option($data_listDb->event_gedcom, 'DPRT');
+                        echo event_option($data_listDb->event_gedcom, 'IMMI');
+                        echo event_option($data_listDb->event_gedcom, 'EMIG');
+                        echo event_option($data_listDb->event_gedcom, 'NATU');
+                        echo event_option($data_listDb->event_gedcom, 'NATI');
+                        echo event_option($data_listDb->event_gedcom, 'PROP');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Characteristics') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, '_HEIG');
-                        $text .= event_option($data_listDb->event_gedcom, '_WEIG');
-                        $text .= event_option($data_listDb->event_gedcom, '_EYEC');
-                        $text .= event_option($data_listDb->event_gedcom, '_HAIR');
-                        $text .= event_option($data_listDb->event_gedcom, '_MEDC');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Characteristics') . '">';
+                        echo event_option($data_listDb->event_gedcom, '_HEIG');
+                        echo event_option($data_listDb->event_gedcom, '_WEIG');
+                        echo event_option($data_listDb->event_gedcom, '_EYEC');
+                        echo event_option($data_listDb->event_gedcom, '_HAIR');
+                        echo event_option($data_listDb->event_gedcom, '_MEDC');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Buried') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, '_FNRL');
-                        $text .= event_option($data_listDb->event_gedcom, '_INTE');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Buried') . '">';
+                        echo event_option($data_listDb->event_gedcom, '_FNRL');
+                        echo event_option($data_listDb->event_gedcom, '_INTE');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Will') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'PROB');
-                        $text .= event_option($data_listDb->event_gedcom, 'WILL');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Will') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'PROB');
+                        echo event_option($data_listDb->event_gedcom, 'WILL');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Religious') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'CONF');
-                        $text .= event_option($data_listDb->event_gedcom, 'BLES');
-                        $text .= event_option($data_listDb->event_gedcom, 'FCOM');
-                        $text .= event_option($data_listDb->event_gedcom, 'ORDN');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Religious') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'CONF');
+                        echo event_option($data_listDb->event_gedcom, 'BLES');
+                        echo event_option($data_listDb->event_gedcom, 'FCOM');
+                        echo event_option($data_listDb->event_gedcom, 'ORDN');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Education') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'GRAD');
-                        $text .= event_option($data_listDb->event_gedcom, 'EDUC');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Education') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'GRAD');
+                        echo event_option($data_listDb->event_gedcom, 'EDUC');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Social') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'AFN');
-                        $text .= event_option($data_listDb->event_gedcom, 'SSN');
-                        $text .= event_option($data_listDb->event_gedcom, 'IDNO');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Social') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'AFN');
+                        echo event_option($data_listDb->event_gedcom, 'SSN');
+                        echo event_option($data_listDb->event_gedcom, 'IDNO');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('LDS') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'BAPL');
-                        $text .= event_option($data_listDb->event_gedcom, 'CONL');
-                        $text .= event_option($data_listDb->event_gedcom, 'ENDL');
-                        $text .= event_option($data_listDb->event_gedcom, 'SLGC');
-                        $text .= event_option($data_listDb->event_gedcom, 'SLGL');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('LDS') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'BAPL');
+                        echo event_option($data_listDb->event_gedcom, 'CONL');
+                        echo event_option($data_listDb->event_gedcom, 'ENDL');
+                        echo event_option($data_listDb->event_gedcom, 'SLGC');
+                        echo event_option($data_listDb->event_gedcom, 'SLGL');
+                        echo '</optgroup>';
 
-                        $text .= '<optgroup label="' . __('Jewish') . '">';
-                        $text .= event_option($data_listDb->event_gedcom, 'BARM');
-                        $text .= event_option($data_listDb->event_gedcom, 'BASM');
-                        $text .= event_option($data_listDb->event_gedcom, '_BRTM');
-                        $text .= event_option($data_listDb->event_gedcom, '_YART');
-                        $text .= '</optgroup>';
+                        echo '<optgroup label="' . __('Jewish') . '">';
+                        echo event_option($data_listDb->event_gedcom, 'BARM');
+                        echo event_option($data_listDb->event_gedcom, 'BASM');
+                        echo event_option($data_listDb->event_gedcom, '_BRTM');
+                        echo event_option($data_listDb->event_gedcom, '_YART');
+                        echo '</optgroup>';
                     }
 
                     if ($event_kind == 'family') {
                         // *** Marriage events ***
-                        $text .= event_option($data_listDb->event_gedcom, 'EVEN');
-                        $text .= event_option($data_listDb->event_gedcom, '_MBON');
-                        $text .= event_option($data_listDb->event_gedcom, 'MARC');
-                        $text .= event_option($data_listDb->event_gedcom, 'MARL');
-                        $text .= event_option($data_listDb->event_gedcom, 'MARS');
-                        $text .= event_option($data_listDb->event_gedcom, 'DIVF');
-                        $text .= event_option($data_listDb->event_gedcom, 'ANUL');
-                        $text .= event_option($data_listDb->event_gedcom, 'ENGA');
-                        $text .= event_option($data_listDb->event_gedcom, 'SLGS');
+                        echo event_option($data_listDb->event_gedcom, 'EVEN');
+                        echo event_option($data_listDb->event_gedcom, '_MBON');
+                        echo event_option($data_listDb->event_gedcom, 'MARC');
+                        echo event_option($data_listDb->event_gedcom, 'MARL');
+                        echo event_option($data_listDb->event_gedcom, 'MARS');
+                        echo event_option($data_listDb->event_gedcom, 'DIVF');
+                        echo event_option($data_listDb->event_gedcom, 'ANUL');
+                        echo event_option($data_listDb->event_gedcom, 'ENGA');
+                        echo event_option($data_listDb->event_gedcom, 'SLGS');
                     }
 
-                    $text .= '</select>';
+                    echo '</select>';
                 }
 
                 if ($data_listDb->event_kind == 'name') {
-                    $text .= ' <select size="1" name="event_gedcom[' . $data_listDb->event_id . ']" style="width: 150px">';
+                    echo ' <select size="1" name="event_gedcom[' . $data_listDb->event_id . ']" style="width: 150px">';
                     // *** Nickname, alias, adopted name, hebrew name, etc. ***
-                    $text .= event_selection($data_listDb->event_gedcom);
-                    $text .= '</select>';
+                    event_selection($data_listDb->event_gedcom);
+                    echo '</select>';
                 }
                 //$text.='<td><input type="submit" name="submit" title="submit" value="'.__('Save').'"></td></td>';
 
                 // *** Date and place by event ***
-                $text .= '<br>';
-                $text .= editor_label2(__('Date'));
-                $text .= $editor_cls->date_show($data_listDb->event_date, 'event_date', "[$data_listDb->event_id]") . '<br>';
+                echo '<br>';
+                echo editor_label2(__('Date'));
+                echo $editor_cls->date_show($data_listDb->event_date, 'event_date', "[$data_listDb->event_id]") . '<br>';
 
                 // *** To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id ***
-                $text .= editor_label2(__('place'));
-                $text .= '<input type="text" name="event_place' . $data_listDb->event_id . '" placeholder="' . __('place') . '" value="' . $data_listDb->event_place . '" size="' . $field_place . '">';
+                echo editor_label2(__('place'));
+                echo '<input type="text" name="event_place' . $data_listDb->event_id . '" placeholder="' . __('place') . '" value="' . $data_listDb->event_place . '" size="' . $field_place . '">';
 
                 $form = 1;
                 if ($event_connect_kind == 'family') $form = 2;
                 if ($event_connect_kind == 'source') $form = 3;
-                $text .= '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=event_place&amp;event_id=' . $data_listDb->event_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
+                echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=event_place&amp;event_id=' . $data_listDb->event_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
 
                 // *** Text by event ***
                 $field_text_selected = $field_text;
                 if ($data_listDb->event_text and preg_match('/\R/', $data_listDb->event_text)) $field_text_selected = $field_text_medium;
-                $text .= editor_label2(__('text'));
-                $text .= '<textarea rows="1" name="event_text[' . $data_listDb->event_id . ']" ' . $field_text_selected . ' placeholder="' . __('text') . '">' . $editor_cls->text_show($data_listDb->event_text) . '</textarea>';
+                echo editor_label2(__('text'));
+                echo '<textarea rows="1" name="event_text[' . $data_listDb->event_id . ']" ' . $field_text_selected . ' placeholder="' . __('text') . '">' . $editor_cls->text_show($data_listDb->event_text) . '</textarea>';
 
                 // *** Use hideshow to show and hide the editor lines ***
-                if (isset($hideshow) and substr($hideshow, 0, 4) == '9000') $text .= '</span>';
+                if (isset($hideshow) and substr($hideshow, 0, 4) == '9000') echo '</span>';
 
-                $text .= '</td>';
+                echo '</td>';
 
-                $text .= '<td style="min-width:100px;">';
+                echo '<td style="min-width:100px;">';
                 // *** Source by event ***
                 if ($event_connect_kind == 'person') {
                     if (!isset($link)) $link = '';
-                    $text .= source_link2('10' . $data_listDb->event_id, $data_listDb->event_id, 'pers_event_source', $link);
+                    echo source_link2('10' . $data_listDb->event_id, $data_listDb->event_id, 'pers_event_source', $link);
 
                     // *** Could be used to connect a picture in a text field (Geneanet doesnt have constant GEDCOM numbers or an own text field) ***
                     if ($event_kind == 'picture')
-                        $text .= '<br>&nbsp;<span style="font-size:smaller;">' . __('ID') . ': ' . $data_listDb->event_id . '</span>';
+                        echo '<br>&nbsp;<span style="font-size:smaller;">' . __('ID') . ': ' . $data_listDb->event_id . '</span>';
                 } elseif ($event_connect_kind == 'family') {
                     if (!isset($link)) $link = '';
-                    $text .= source_link2('20' . $data_listDb->event_id, $data_listDb->event_id, 'fam_event_source', $link);
+                    echo source_link2('20' . $data_listDb->event_id, $data_listDb->event_id, 'fam_event_source', $link);
                 }
                 // *** Source by picture by source... ***
                 // DISABLED... Not sure if it's necessary to use a source by a picture by a source...
@@ -1351,15 +1345,15 @@ class editor_event_cls
                 //	// *** Calculate and show nr. of sources ***
                 //	$text.=source_link2('30'.$data_listDb->event_id,$data_listDb->event_id,'fam_event_source');
                 //}
-                $text .= '</td>';
-                $text .= '</tr>';
+                echo '</td>';
+                echo '</tr>';
 
                 if ($event_connect_kind == 'person') {
                     // *** Show source ***
-                    $text .= edit_sources('10' . $data_listDb->event_id, 'person', 'pers_event_source', $data_listDb->event_id);
+                    echo edit_sources('10' . $data_listDb->event_id, 'person', 'pers_event_source', $data_listDb->event_id);
                 } elseif ($event_connect_kind == 'family') {
                     // *** Show source ***
-                    $text .= edit_sources('20' . $data_listDb->event_id, 'family', 'fam_event_source', $data_listDb->event_id);
+                    echo edit_sources('20' . $data_listDb->event_id, 'family', 'fam_event_source', $data_listDb->event_id);
                 }
             }
         } // *** Don't use this block for newly added person ***
@@ -1368,58 +1362,43 @@ class editor_event_cls
         // *** Directly add a first profession for new person ***
         if (isset($_GET['add_person'])) {
             if ($event_kind == 'profession') {
-                $text .= '<tr>';
-                $text .= '<td></td>';
-                $text .= '<td style="border-right:0px;">' . __('Profession') . '</td>';
-                $text .= '<td>';
-                // *** Profession ***
-                $text .= '<input type="text" name="event_profession" placeholder="' . __('Profession') . '" value="" size="60"><br>';
-
-                // *** Date and place by event ***
-                $text .= $editor_cls->date_show("", "event_date_profession", "") . ' ' . __('place') . ' <input type="text" name="event_place_profession" placeholder="' . __('place') . '" value="" size="' . $field_date . '"><br>';
-
-                // *** Text by event ***
-                $text .= '<textarea rows="1" name="event_text_profession" ' . $field_text . ' placeholder="' . __('text') . '">' . $editor_cls->text_show("") . '</textarea>';
-                $text .= '</td>';
-                $text .= '<td></td>';
-                $text .= '</tr>';
+            ?>
+                <tr>
+                    <td style="border-right:0px;"><?= __('Profession'); ?></td>
+                    <td colspan="2">
+                        <input type="text" name="event_profession" placeholder="<?= __('Profession'); ?>" value="" size="60"><br>
+                        <?= $editor_cls->date_show("", "event_date_profession", "") . ' ' . __('place'); ?> <input type="text" name="event_place_profession" placeholder="<?= __('place'); ?>" value="" size="<?= $field_date; ?>"><br>
+                        <textarea rows="1" name="event_text_profession" <?= $field_text; ?> placeholder="<?= __('text'); ?>"><?= $editor_cls->text_show(""); ?></textarea>
+                    </td>
+                </tr>
+            <?php
             } elseif ($event_kind == 'religion') {
-                $text .= '<tr>';
-                $text .= '<td></td>';
-                $text .= '<td style="border-right:0px;">' . __('Religion') . '</td>';
-                $text .= '<td>';
-                // *** Religion ***
-                $text .= '<input type="text" name="event_religion" placeholder="' . __('Religion') . '" value="" size="60"><br>';
-
-                // *** Date and place by event ***
-                $text .= $editor_cls->date_show("", "event_date_religion", "") . ' ' . __('place') . ' <input type="text" name="event_place_religion" placeholder="' . __('place') . '" value="" size="' . $field_date . '"><br>';
-
-                // *** Text by event ***
-                $text .= '<textarea rows="1" name="event_text_religion" ' . $field_text . ' placeholder="' . __('text') . '">' . $editor_cls->text_show("") . '</textarea>';
-                $text .= '</td>';
-                $text .= '<td></td>';
-                $text .= '</tr>';
+            ?>
+                <tr>
+                    <td style="border-right:0px;"><?= __('Religion'); ?></td>
+                    <td colspan="2">
+                        <input type="text" name="event_religion" placeholder="<?= __('Religion'); ?>" value="" size="60"><br>
+                        <?= $editor_cls->date_show("", "event_date_religion", "") . ' ' . __('place'); ?> <input type="text" name="event_place_religion" placeholder="<?= __('place'); ?>" value="" size="<?= $field_date; ?>"><br>
+                        <textarea rows="1" name="event_text_religion" <?= $field_text; ?> placeholder="<?= __('text'); ?>"><?= $editor_cls->text_show(""); ?></textarea>
+                    </td>
+                </tr>
+            <?php
             }
         }
 
         if ($event_kind == 'picture' or $event_kind == 'marriage_picture') {
             // *** Upload image ***
-            //$text.='<tr style="display:none;" class="row53" name="row53"><td class="table_header_large" colspan="4">';
-            $text .= '<tr class="table_header_large"><td></td>';
-            $text .= '<td colspan="2">';
-            //$text.=sprintf(__('Upload new image. Picture max: %1$d MB or media max: %2$d MB.'), '2', '49');
-            $text .= __('Upload new image');
-            $text .= ' <input type="file" name="photo_upload">';
-            if ($event_kind == 'picture') {
-                //$text.='<input type="submit" name="person_event_change" title="submit" value="'.__('Upload').'">';
-                $text .= '<input type="submit" name="person_add_media" title="submit" value="' . __('Upload') . '">';
-            } else {
-                //$text.='<input type="submit" name="marriage_event_change" title="submit" value="'.__('Upload').'">';
-                $text .= '<input type="submit" name="relation_add_media" title="submit" value="' . __('Upload') . '">';
-            }
-            $text .= '</td>';
-            $text .= '<td></td>';
-            $text .= '</tr>';
+            ?>
+            <tr class="table_header_large">
+                <td></td>
+                <td colspan="2">
+                    <?= __('Upload new image'); ?>
+                    <input type="file" name="photo_upload">
+                    <input type="submit" name="<?php echo ($event_kind == 'picture') ? 'person_add_media' : 'relation_add_media'; ?>" title="submit" value="<?= __('Upload'); ?>">
+                </td>
+                <td></td>
+            </tr>
+        <?php
         }
 
         // *** Show events if save or arrow links are used ***
@@ -1497,183 +1476,129 @@ class editor_event_cls
 function event_selection($event_gedcom)
 {
     global $humo_option;
-    $text = '';
 
     if (!$event_gedcom) {
-        $text .= '<optgroup label="' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title') . '">';
-        $text .= '<option value="NPFX">' . __('Prefix') . ': ' . __('e.g. Lt. Cmndr.') . '</option>';
+        ?>
+        <optgroup label="<?= __('Nickname'); ?>">
+        <?php
+    }
+        ?>
+        <option value="NICK" <?php if ($event_gedcom == 'NICK') echo ' selected'; ?>>NICK <?= __('Nickname'); ?></option>
+        <?php
+        if (!$event_gedcom) {
+        ?>
+        </optgroup>
 
-        $event = 'NSFX';
-        $selected = '';
-        if ($event_gedcom == $event) {
-            $selected = ' SELECTED';
+        <optgroup label="<?= __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>">
+            <option value="NPFX"><?= __('Prefix') . ': ' . __('e.g. Lt. Cmndr.'); ?></option>
+            <option value="NSFX" <?php if ($event_gedcom == 'NSFX') echo ' selected'; ?>><?= __('Suffix'); ?>: <?= __('e.g. Jr.'); ?></option>
+            <option value="nobility" <?php if ($event_gedcom == 'nobility') echo ' selected'; ?>><?= __('Title of Nobility') . ': ' . __('e.g. Jhr., Jkvr.'); ?></option>
+            <option value="title" <?php if ($event_gedcom == 'title') echo ' selected'; ?>><?= __('Title') . ': ' . __('e.g. Prof., Dr.'); ?></option>
+            <option value="lordship" <?php if ($event_gedcom == 'lordship') echo ' selected'; ?>><?= __('Title of Lordship') . ': ' . __('e.g. Lord of Amsterdam'); ?></option>
+        </optgroup>
+    <?php
+            echo '<optgroup label="' . __('Name') . '">';
         }
-        $text .= '<option value="NSFX"' . $selected . '>' . __('Suffix') . ': ' . __('e.g. Jr.') . '</option>';
 
-        $event = 'nobility';
-        $selected = '';
-        if ($event_gedcom == $event) {
-            $selected = ' SELECTED';
-        }
-        $text .= '<option value="nobility"' . $selected . '>' . __('Title of Nobility') . ': ' . __('e.g. Jhr., Jkvr.') . '</option>';
+    ?>
+    <option value="_AKAN" <?php if ($event_gedcom == '_AKAN') echo ' selected'; ?>><?= '_AKAN ' . __('Also known as'); ?></option>
+    <option value="_ALIA" <?php if ($event_gedcom == '_ALIA') echo ' selected'; ?>><?= '_ALIA ' . __('alias name'); ?></option>
 
-        $event = 'title';
-        $selected = '';
-        if ($event_gedcom == $event) {
-            $selected = ' SELECTED';
-        }
-        $text .= '<option value="title"' . $selected . '>' . __('Title') . ': ' . __('e.g. Prof., Dr.') . '</option>';
-
-        $event = 'lordship';
-        $selected = '';
-        if ($event_gedcom == $event) {
-            $selected = ' SELECTED';
-        }
-        $text .= '<option value="lordship"' . $selected . '>' . __('Title of Lordship') . ': ' . __('e.g. Lord of Amsterdam') . '</option>';
-        $text .= '</optgroup>';
-        $text .= '<optgroup label="' . __('Name') . '">';
-    }
-
-    $event = 'NICK';
+<?php
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_SHON') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>NICK ' . __('Nickname') . '</option>';
+    echo '<option value="_SHON"' . $selected . '>_SHON ' . __('Short name (for reports)') . '</option>';
 
-    $event = '_AKAN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_ADPN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_AKAN ' . __('Also known as') . '</option>';
-
-    $event = '_ALIA';
-    $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
-    }
-    $text .= '<option value="' . $event . '"' . $selected . '>_ALIA ' . __('alias name') . '</option>';
-
-    $event = '_SHON';
-    $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
-    }
-    $text .= '<option value="' . $event . '"' . $selected . '>_SHON ' . __('Short name (for reports)') . '</option>';
-
-    $event = '_ADPN';
-    $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
-    }
-    $text .= '<option value="' . $event . '"' . $selected . '>_ADPN ' . __('Adopted name') . '</option>';
+    echo '<option value="_ADPN"' . $selected . '>_ADPN ' . __('Adopted name') . '</option>';
 
     if ($humo_option['admin_hebname'] != "y") {  // display here if user didn't set to be displayed in main name section
-        $event = '_HEBN';
         $selected = '';
-        if ($event_gedcom == $event) {
-            $selected = ' SELECTED';
+        if ($event_gedcom == '_HEBN') {
+            $selected = ' selected';
         }
-        $text .= '<option value="' . $event . '"' . $selected . '>_HEBN ' . __('Hebrew name') . '</option>';
+        echo '<option value="_HEBN"' . $selected . '>_HEBN ' . __('Hebrew name') . '</option>';
     }
 
-    $event = '_CENN';
-    $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
-    }
-    $text .= '<option value="' . $event . '"' . $selected . '>_CENN ' . __('Census name') . '</option>';
+    ?>
+    <option value="_CENN" <?php if ($event_gedcom == '_CENN') echo ' selected'; ?>>_CENN <?= __('Census name'); ?></option>
+    <option value="_MARN" <?php if ($event_gedcom == '_MARN') echo ' selected'; ?>>_MARN <?= __('Married name'); ?></option>
 
-    $event = '_MARN';
+<?php
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_GERN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_MARN ' . __('Married name') . '</option>';
+    echo '<option value="_GERN"' . $selected . '>_GERN ' . __('Given name') . '</option>';
 
-    $event = '_GERN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_FARN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_GERN ' . __('Given name') . '</option>';
+    echo '<option value="_FARN"' . $selected . '>_FARN ' . __('Farm name') . '</option>';
 
-    $event = '_FARN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_BIRN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_FARN ' . __('Farm name') . '</option>';
+    echo '<option value="_BIRN"' . $selected . '>_BIRN ' . __('Birth name') . '</option>';
 
-    $event = '_BIRN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_INDN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_BIRN ' . __('Birth name') . '</option>';
+    echo '<option value="_INDN"' . $selected . '>_INDN ' . __('Indian name') . '</option>';
 
-    $event = '_INDN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_FKAN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_INDN ' . __('Indian name') . '</option>';
+    echo '<option value="_FKAN"' . $selected . '>_FKAN ' . __('Formal name') . '</option>';
 
-    $event = '_FKAN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_CURN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_FKAN ' . __('Formal name') . '</option>';
+    echo '<option value="_CURN"' . $selected . '>_CURN ' . __('Current name') . '</option>';
 
-    $event = '_CURN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_SLDN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_CURN ' . __('Current name') . '</option>';
+    echo '<option value="_SLDN"' . $selected . '>_SLDN ' . __('Soldier name') . '</option>';
 
-    $event = '_SLDN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_RELN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_SLDN ' . __('Soldier name') . '</option>';
+    echo '<option value="_RELN"' . $selected . '>_RELN ' . __('Religious name') . '</option>';
 
-    $event = '_RELN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_OTHN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_RELN ' . __('Religious name') . '</option>';
+    echo '<option value="_OTHN"' . $selected . '>_OTHN ' . __('Other name') . '</option>';
 
-    $event = '_OTHN';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_FRKA') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_OTHN ' . __('Other name') . '</option>';
+    echo '<option value="_FRKA"' . $selected . '>_FRKA ' . __('Formerly known as') . '</option>';
 
-    $event = '_FRKA';
     $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
+    if ($event_gedcom == '_RUFN') {
+        $selected = ' selected';
     }
-    $text .= '<option value="' . $event . '"' . $selected . '>_FRKA ' . __('Formerly known as') . '</option>';
-
-    $event = '_RUFN';
-    $selected = '';
-    if ($event_gedcom == $event) {
-        $selected = ' SELECTED';
-    }
-    $text .= '<option value="' . $event . '"' . $selected . '>_RUFN ' . __('German Rufname') . '</option>';
+    echo '<option value="_RUFN"' . $selected . '>_RUFN ' . __('German Rufname') . '</option>';
 
     if (!$event_gedcom) {
-        $text .= '</optgroup>';
+        echo '</optgroup>';
     }
-
-    return $text;
 }
 
 // *** Javascript for "search by file name of picture" feature ***

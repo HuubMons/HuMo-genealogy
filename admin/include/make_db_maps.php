@@ -282,10 +282,10 @@ else {  // main screen
     }
     echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
     $selected = '';
-    if ($use_world_map == 'Google') $selected = ' CHECKED';
+    if ($use_world_map == 'Google') $selected = ' checked';
     echo '<input type="radio" name="use_world_map" value="Google"' . $selected . '> ' . __('Use Google Maps') . '<br>';
     $selected = '';
-    if ($use_world_map == 'OpenStreetMap') $selected = ' CHECKED';
+    if ($use_world_map == 'OpenStreetMap') $selected = ' checked';
     echo '<input type="radio" name="use_world_map" value="OpenStreetMap"' . $selected . '> ' . __('Use OpenStreetMap') . '<br>';
     echo '<input type="submit" style="font-size:14px" value="' . __('Save') . '" name="api_save">';
     echo '</form>';
@@ -775,7 +775,7 @@ else {  // main screen
         //echo '<option value="">'.__('Select a family tree:').'</option>';
         $selected = '';
         if (!isset($_SESSION['geo_tree']) or (isset($_POST['database']) and $_POST['database'] == "all_geo_trees")) {
-            $selected = ' SELECTED';
+            $selected = ' selected';
             $_SESSION['geo_tree'] = "all_geo_trees";
         }
         echo '<option value="all_geo_trees"' . $selected . '>' . __('All family trees') . '</option>';
@@ -784,12 +784,12 @@ else {  // main screen
             $selected = '';
             if (isset($_POST['database'])) {
                 if ($tree_searchDb->tree_prefix == $_POST['database']) {
-                    $selected = ' SELECTED';
+                    $selected = ' selected';
                     $_SESSION['geo_tree'] = $tree_searchDb->tree_id;
                 }
             } else {
                 if (isset($_SESSION['geo_tree']) and $_SESSION['geo_tree'] == $tree_searchDb->tree_id) {
-                    $selected = ' SELECTED';
+                    $selected = ' selected';
                 }
             }
             $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
@@ -1021,15 +1021,15 @@ else {  // main screen
             $selected = '';
             if (isset($_POST['loc_find'])) {
                 if ($loc_listDb->location_id == $_POST['loc_find']) {
-                    $selected = " SELECTED";
+                    $selected = " selected";
                 }
             } elseif (isset($_POST['loc_change']) or isset($_POST['yes_change']) or isset($_POST['cancel_change'])) {
                 if ($loc_listDb->location_location == $_POST['loc_del_name']) {
-                    $selected = " SELECTED";
+                    $selected = " selected";
                 }
             } elseif (isset($_POST['loc_add'])) {
                 if ($loc_listDb->location_location == $_POST['add_name']) {
-                    $selected = " SELECTED";
+                    $selected = " selected";
                 }
             } else {
                 if ($find_default === true) { // first location on the list
@@ -1214,10 +1214,10 @@ else {  // main screen
 
         echo '<select size="1" name="slider_default" id="slider_default" onChange="window.location=\'index.php?page=google_maps&slider_default=\'+this.value;">';
         $selected = "";
-        if ($sl_def == "off") $selected = " SELECTED ";
+        if ($sl_def == "off") $selected = " selected ";
         echo '<option value="off" ' . $selected . '>' . __('OFF position (leftmost position)') . '</option>';
         $selected = "";
-        if ($sl_def == "all") $selected = " SELECTED ";
+        if ($sl_def == "all") $selected = " selected ";
         echo '<option value="all" ' . $selected . '>' . __('Show all periods (rightmost position)') . '</option>';
         echo '</select>';
 
@@ -1248,10 +1248,10 @@ else {  // main screen
 
         echo '<select size="1" name="maptype_default" id="maptype_default" onChange="window.location=\'index.php?page=google_maps&maptype_default=\'+this.value;">';
         $selected = "";
-        if ($maptype_def == "ROADMAP") $selected = " SELECTED ";
+        if ($maptype_def == "ROADMAP") $selected = " selected ";
         echo '<option value="ROADMAP" ' . $selected . '>' . __('Regular map (ROADMAP)') . '</option>';
         $selected = "";
-        if ($maptype_def == "HYBRID") $selected = " SELECTED ";
+        if ($maptype_def == "HYBRID") $selected = " selected ";
         echo '<option value="HYBRID" ' . $selected . '>' . __('Satellite map with roads and places (HYBRID)') . '</option>';
         echo '</select>';
 
@@ -1281,7 +1281,7 @@ else {  // main screen
         echo '<select size="1" name="map_zoom_default" id="map_zoom_default" onChange="window.location=\'index.php?page=google_maps&map_zoom_default=\'+this.value;">';
         for ($x = 1; $x < 15; $x++) {
             $selected = "";
-            if ($mapzoom_def == $x) $selected = " SELECTED ";
+            if ($mapzoom_def == $x) $selected = " selected ";
             echo '<option value="' . $x . '" ' . $selected . '>' . $x . '</option>';
         }
         echo '</select>';

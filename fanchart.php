@@ -99,8 +99,7 @@ function fillarray($nr, $famid)
     if ($famid) {
         @$personmnDb = $db_functions->get_person($famid);
 
-        $man_cls = new person_cls;
-        $man_cls->construct($personmnDb);
+        $man_cls = new person_cls($personmnDb);
         $man_privacy = $man_cls->privacy;
 
         $name = $man_cls->person_name($personmnDb);
@@ -514,8 +513,7 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
                     @$spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
 
-                    $spouse_cls = new person_cls;
-                    $spouse_cls->construct($spouse2Db);
+                    $spouse_cls = new person_cls($spouse2Db);
                     $spname = $spouse_cls->person_name($spouse2Db);
                     if ($treeid[1][5] == "F") $spouse_lan = "SPOUSE_MALE";
                     else $spouse_lan = "SPOUSE_FEMALE";
@@ -811,6 +809,7 @@ echo '</div>';
 //}
 
 if ($china_message == 1) {
+    // TODO check download link. Use sourceforge?
     echo '<div style="border:2px solid red;background-color:white;padding:5px;position:relative;
     length:300px;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;
     font-size:120%;text-align:center;">';
@@ -827,7 +826,8 @@ if ($showdesc == "1") {
     if ($fan_style == 2) $top_pos = $fan_w / 2 + 165;
     elseif ($fan_style == 3) $top_pos = 0.856 * $fan_w;
     elseif ($fan_style == 4) $top_pos = $fan_w;
-    echo '<iframe src="family.php?database=' . safe_text_db($_SESSION['tree_prefix']) . '&amp;id=' . $indexnr . '&amp;main_person=' . $person_id . '&amp;screen_mode=STAR&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" >';
+    //echo '<iframe src="family.php?database=' . safe_text_db($_SESSION['tree_prefix']) . '&amp;id=' . $indexnr . '&amp;main_person=' . $person_id . '&amp;screen_mode=STAR&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" >';
+    echo '<iframe src="descendant/' . safe_text_db($_SESSION['tree_prefix']) .'/'. $indexnr . '?main_person=' . $person_id . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" >';
     echo '</iframe>';
 }
 

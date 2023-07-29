@@ -1,7 +1,7 @@
 <?php
-$name='DejaVuSansCondensed-Oblique';
-$type='TTF';
-$desc=array (
+$name = 'DejaVuSansCondensed-Oblique';
+$type = 'TTF';
+$desc = array(
   'Ascent' => 928.0,
   'Descent' => -236.0,
   'CapHeight' => 928.0,
@@ -11,9 +11,9 @@ $desc=array (
   'StemV' => 87.0,
   'MissingWidth' => 540.0,
 );
-$up=-63;
-$ut=44;
-$ttffile='include/tfpdf/font/unifont/DejaVuSansCondensed-Oblique.ttf';
-$originalsize=599292;
-$fontkey='dejavuI';
-?>
+$up = -63;
+$ut = 44;
+//$ttffile='include/tfpdf/font/unifont/DejaVuSansCondensed-Oblique.ttf';
+$ttffile = __DIR__ . '/DejaVuSansCondensed-Oblique.ttf';
+$originalsize = 599292;
+$fontkey = 'dejavuI';

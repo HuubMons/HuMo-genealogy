@@ -301,7 +301,6 @@ if ($show_theme_select == true) {
             }
             ?>
             </form>
-
         </td>
     </table>
 <?php

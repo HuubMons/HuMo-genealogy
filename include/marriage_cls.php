@@ -7,11 +7,12 @@
 
 class marriage_cls
 {
-    public $cls_marriage_Db = '';  // Database record
+    //public $cls_marriage_Db = '';  // Database record
+    public $cls_marriage_Db = null;  // Database record
     public $privacy = false;  // Privacy van persoon
 
-    // *** Simple constructor, will work in all PHP versions, I hope :-)) ***
-    function construct($familyDb, $privacy_man, $privacy_woman)
+    //public function __construct($familyDb, $privacy_man, $privacy_woman)
+    public function __construct($familyDb=null, $privacy_man=null, $privacy_woman=null)
     {
         $this->cls_marriage_Db = $familyDb;           // Database record
         $this->privacy = $this->set_privacy($privacy_man, $privacy_woman); // Set privacy
@@ -21,7 +22,7 @@ class marriage_cls
     // *** Marriage privacy filter                     ***
     // ***************************************************
     //  Privacy filter for marriage (if man OR woman privacy filter is set)
-    function set_privacy($privacy_man, $privacy_woman)
+    public function set_privacy($privacy_man, $privacy_woman)
     {
         global $user;
         $privacy_marriage = false;
@@ -39,7 +40,7 @@ class marriage_cls
     // ***************************************************
     // *** Show marriage                               ***
     // ***************************************************
-    function marriage_data($marriageDb = '', $number = '0', $presentation = 'standard')
+    public function marriage_data($marriageDb = '', $number = '0', $presentation = 'standard')
     {
         global $dbh, $db_functions, $tree_prefix_quoted, $dataDb, $uri_path, $humo_option;
         global $language, $user, $screen_mode;

@@ -231,7 +231,7 @@ if (!isset($_GET['proceed'])) {
     */
 
     // *** END OF UPDATES ***
-    echo '<table><br>';
+    echo '</table><br>';
     echo __('All updates completed, click at "Mainmenu"') . '.';
     echo ' <a href="index.php">' . __('Main menu') . '</a>';
     // *** END OF UPDATE PROCEDURES *******************************************************

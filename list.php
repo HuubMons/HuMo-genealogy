@@ -18,8 +18,7 @@ function show_person($personDb)
     $db_functions->set_tree_id($personDb->pers_tree_id);
 
     // *** Person class used for name and person pop-up data ***
-    $person_cls = new person_cls;
-    $person_cls->construct($personDb);
+    $person_cls = new person_cls($personDb);
     $name = $person_cls->person_name($personDb);
 
     // *** Show name ***
@@ -1725,94 +1724,62 @@ if (!$selection['spouse_firstname'] and !$selection['spouse_lastname'] and $sele
 //    $list_var  = 'index.php?option=com_humo-gen&amp;task=list';  // for use without query string
 //    $list_var2 = 'index.php?option=com_humo-gen&amp;task=list&amp;'; // for use with query string
 //} else {
-    $list_var  = CMS_ROOTPATH . 'list.php';
-    $list_var2 = CMS_ROOTPATH . 'list.php?';
+$list_var  = CMS_ROOTPATH . 'list.php';
+$list_var2 = CMS_ROOTPATH . 'list.php?';
 //}
 
 if ($index_list == 'places') {
-    echo '<table align="center" class="humo index_table">';
-    echo '<tr><td>';
+?>
+    <table align="center" class="humo index_table">
+        <tr>
+            <td>
+                <!--  Search places -->
+                <form method="post" action="<?= $list_var; ?>">
+                    <?= __('Find place'); ?>:
+                    <select name="part_place_name">
+                        <option value="contains"><?= __('Contains'); ?></option>
+                        <option value="equals" <?php if ($part_place_name == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
+                        <option value="starts_with" <?php if ($part_place_name == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                    </select>
 
-    //************** search places **************************************
-    //echo ' <form method="post" action="'.$list_var.'" style="display : inline;">';
-    echo ' <form method="post" action="' . $list_var . '">';
-    echo __('Find place') . ': ';
+                    <input type="text" name="place_name" value="<?= safe_text_show($place_name); ?>" size="15">
+                    <input type="hidden" name="index_list" value="<?= $index_list; ?>">
+                    <input type="submit" value="<?= __('Search'); ?>" name="B1">
+                    <br>
 
-    echo '<select name="part_place_name">';
-    echo '<option value="contains">' . __('Contains') . '</option>';
+                    <span class="select_box"><input type="Checkbox" name="select_birth" value="1" <?php if ($select_birth == '1') echo ' checked'; ?>>
+                        <span class="place_index_selected" style="float:none;"><?= __('*'); ?></span>
+                        <?= __('birth pl.'); ?>
+                    </span>
 
-    $select_item = '';
-    if ($part_place_name == 'equals') {
-        $select_item = ' selected';
-    }
-    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
+                    <span class="select_box"><input type="Checkbox" name="select_bapt" value="1" <?php if ($select_bapt == '1') echo ' checked'; ?>>
+                        <span class="place_index_selected" style="float:none;"><?= __('~'); ?></span>
+                        <?= __('bapt pl.'); ?>
+                    </span>
 
-    $select_item = '';
-    if ($part_place_name == 'starts_with') {
-        $select_item = ' selected';
-    }
-    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-    echo '</select>';
+                    <span class="select_box"><input type="Checkbox" name="select_place" value="1" <?php if ($select_place == '1') echo ' checked'; ?>>
+                        <span class="place_index_selected" style="float:none;"><?= __('^'); ?></span>
+                        <?= __('residence'); ?>
+                    </span>
 
-    echo ' <input type="text" name="place_name" value="' . safe_text_show($place_name) . '" size="15">';
-    echo '<input type="hidden" name="index_list" value="' . $index_list . '">';
-    echo ' <input type="submit" value="' . __('Search') . '" name="B1">';
+                    <span class="select_box"><input type="Checkbox" name="select_death" value="1" <?php if ($select_death == '1') echo 'checked'; ?>>
+                        <span class="place_index_selected" style="float:none;"><?= __('&#134;'); ?></span>
+                        <?= __('death pl.'); ?>
+                    </span>
 
-    echo '<br>';
+                    <span class="select_box"><input type="Checkbox" name="select_buried" value="1" <?php if ($select_buried == '1') echo 'checked'; ?>>
+                        <span class="place_index_selected" style="float:none;"><?= __('[]'); ?></span>
+                        <?= __('bur pl.'); ?>
+                    </span>
 
-    $checked = '';
-    if ($select_birth == '1') {
-        $checked = 'checked';
-    }
-    echo '<span class="select_box"><input type="Checkbox" name="select_birth" value="1" ' . $checked . '> ';
-    echo '<span class="place_index_selected" style="float:none;">' . __('*') . '</span>';
-    echo ' ' . __('birth pl.') . '</span>';
-
-    $checked = '';
-    if ($select_bapt == '1') {
-        $checked = 'checked';
-    }
-    echo '<span class="select_box"><input type="Checkbox" name="select_bapt" value="1" ' . $checked . '> ';
-    echo '<span class="place_index_selected" style="float:none;">' . __('~') . '</span>';
-    echo ' ' . __('bapt pl.') . '</span>';
-
-    $checked = '';
-    if ($select_place == '1') {
-        $checked = 'checked';
-    }
-    echo '<span class="select_box"><input type="Checkbox" name="select_place" value="1" ' . $checked . '> ';
-    echo '<span class="place_index_selected" style="float:none;">' . __('^') . '</span>';
-    echo ' ' . __('residence') . '</span>';
-
-    $checked = '';
-    if ($select_death == '1') {
-        $checked = 'checked';
-    }
-    echo '<span class="select_box"><input type="Checkbox" name="select_death" value="1" ' . $checked . '> ';
-    echo '<span class="place_index_selected" style="float:none;">' . __('&#134;') . '</span>';
-    echo ' ' . __('death pl.') . '</span>';
-
-    $checked = '';
-    if ($select_buried == '1') {
-        $checked = 'checked';
-    }
-    //echo '<span class="select_box"><input type="Checkbox" name="select_buried" value="1" '.$checked.'> '.__('[]').' '.__('bur pl.').'</span>';
-    echo '<span class="select_box"><input type="Checkbox" name="select_buried" value="1" ' . $checked . '> ';
-    echo '<span class="place_index_selected" style="float:none;">' . __('[]') . '</span>';
-    echo ' ' . __('bur pl.') . '</span>';
-
-    // *** Places by events (like occupations etc.).
-    $checked = '';
-    if ($select_event == '1') {
-        $checked = 'checked';
-    }
-    echo '<input type="Checkbox" name="select_event" value="1" ' . $checked . '> ';
-    echo '<span class="place_index_selected" style="float:none;">' . substr(__('Events'), 0, 1) . '</span>';
-    echo ' ' . __('Events');
-
-    echo '</form>';
-
-    echo '</td></tr></table>';
+                    <input type="Checkbox" name="select_event" value="1" <?php if ($select_event == '1') echo ' checked'; ?>>
+                    <span class="place_index_selected" style="float:none;"><?= substr(__('Events'), 0, 1); ?></span>
+                    <?= __('Events'); ?>
+                </form>
+            </td>
+        </tr>
+    </table>
+<?php
 
     //***************** end search of places **********************************
 }
@@ -1822,161 +1789,122 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
 ?>
     <!-- STANDARD SEARCH BOX -->
     <form method="post" action="<?= $list_var; ?>" style="display : inline;">
-
         <table align="center" class="humo index_table">
+            <tr>
+                <?php
+                // *** ADVANCED SEARCH BOX ***
+                if ($adv_search == true) {
+                ?>
+                    <td class="no_border"><?= __('First name'); ?>:<br>
+                        <select size="1" name="part_firstname">
+                            <option value="contains"><?= __('Contains'); ?></option>
+                            <option value="equals" <?php if ($selection['part_firstname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
+                            <option value="starts_with" <?php if ($selection['part_firstname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                        </select>
+                        <input type="text" name="pers_firstname" value="<?= safe_text_show($selection['pers_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
+                    </td>
+
+                    <?php
+                    if ($humo_option['one_name_study'] != 'y') {
+                        $pers_prefix = $selection['pers_prefix'];
+                        if ($pers_prefix == 'EMPTY') $pers_prefix = '';
+                    ?>
+                        <td class="no_border"><?= __('Last name'); ?>:<br>
+                            <input type="text" name="pers_prefix" value="<?= safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
+
+                            <!--  Lastname -->
+                            <select size="1" name="part_lastname">
+                                <option value="contains"><?= __('Contains'); ?></option>
+                                <option value="equals" <?php if ($selection['part_lastname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
+                                <option value="starts_with" <?php if ($selection['part_lastname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                            </select>
+                            <input type="text" name="pers_lastname" value="<?= safe_text_show($selection['pers_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
+                        </td>
+                    <?php
+                    } else {
+                    ?>
+                        <td align="center" class="no_border"><?= __('Last name'); ?>:
+                            <span style="text-align:center; font-weight:bold"><?= $humo_option['one_name_thename']; ?></span>
+                            <input type="hidden" name="pers_lastname" value="<?= $humo_option['one_name_thename']; ?>">
+                            <input type="hidden" name="part_lastname" value="equals">
+                        </td>
+                    <?php
+                    }
+                    ?>
+                    <!-- Profession -->
+                    <td class="no_border"><?= __('Profession'); ?>:<br>
+                        <select size="1" name="part_profession">
+                            <option value="contains"><?= __('Contains'); ?></option>
+                            <option value="equals" <?php if ($selection['part_profession'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
+                            <option value="starts_with" <?php if ($selection['part_profession'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                        </select>
+                        <input type="text" name="pers_profession" value="<?= safe_text_show($selection['pers_profession']); ?>" size="15" placeholder="<?= __('Profession'); ?>">
+                    </td>
+                <?php
+                } else {
+                    if ($humo_option['one_name_study'] != 'y') {
+                        echo '<td class="no_border center" colspan="2">' . __('Enter name or part of name') . '<br>';
+                        echo '<span style="font-size:12px;">' . __('"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"') . '</span>';
+                    } else {
+                        echo '<td class="no_border center" colspan="2">' . __('Enter private name');
+                    }
+                    echo '<input type="hidden" name="index_list" value="quicksearch">';
+                    $quicksearch = '';
+                    if (isset($_POST['quicksearch'])) {
+                        $quicksearch = safe_text_show($_POST['quicksearch']);
+                        $_SESSION["save_quicksearch"] = $quicksearch;
+                    }
+                    if (isset($_SESSION["save_quicksearch"])) {
+                        $quicksearch = $_SESSION["save_quicksearch"];
+                    }
+                    if ($humo_option['min_search_chars'] == 1) {
+                        $pattern = "";
+                        $min_chars = " 1 ";
+                    } else {
+                        $pattern = 'pattern=".{' . $humo_option['min_search_chars'] . ',}"';
+                        $min_chars = " " . $humo_option['min_search_chars'] . " ";
+                    }
+                    echo '<p><input type="text" name="quicksearch" value="' . $quicksearch . '" size="30" ' . $pattern . ' title="' . __('Minimum:') . $min_chars . __('characters') . '"></p></td>';
+                }
+                ?>
+            </tr>
             <?php
-            echo '<tr>';
 
             // *** ADVANCED SEARCH BOX ***
             if ($adv_search == true) {
-                echo '<td class="no_border" >' . __('First name') . ':<br>';
-                echo ' <select size="1" name="part_firstname">';
+            ?>
+                <tr>
+                    <td class="no_border"><?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?>:<br>
+                        <input type="text" name="birth_year" value="<?= safe_text_show($selection['birth_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
+                        &nbsp;&nbsp;(<?= __('till:'); ?>&nbsp;
+                        <input type="text" name="birth_year_end" value="<?= safe_text_show($selection['birth_year_end']); ?>" size="4" placeholder="<?= __('Date'); ?>">&nbsp;)
+                    </td>
 
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_firstname'] == 'equals') {
-                    $select_item = ' selected';
-                }
+                    <td class="no_border"><?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?>:<br>
+                        <select size="1" name="part_birth_place">
+                            <option value="contains"><?= __('Contains'); ?></option>
+                            <option value="equals" <?php if ($selection['part_birth_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
+                            <option value="starts_with" <?php if ($selection['part_birth_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                        </select>
+                        <input type="text" name="birth_place" value="<?= safe_text_show($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                    </td>
 
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_firstname'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
+                    <td class="no_border"><?= __('Own code'); ?>:<br>
+                        <select size="1" name="part_own_code">
+                            <option value="contains"><?= __('Contains'); ?></option>
+                            <option value="equals" <?php if ($selection['part_own_code'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
+                            <option value="starts_with" <?php if ($selection['part_own_code'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                        </select>
+                        <input type="text" name="own_code" value="<?= safe_text_show($selection['own_code']); ?>" size="15" placeholder="<?= __('Own code'); ?>">
+                    </td>
+                </tr>
+            <?php
 
-                echo ' <input type="text" name="pers_firstname" value="' . safe_text_show($selection['pers_firstname']) . '" size="15" placeholder="' . __('First name') . '"></td>';
-                if ($humo_option['one_name_study'] != 'y') {
-                    //echo '<td align="right" class="no_border">'.__('Last name').':';
-                    echo '<td class="no_border">' . __('Last name') . ':<br>';
-                    // *** Lastname prefix ***
-                    $pers_prefix = $selection['pers_prefix'];
-                    if ($pers_prefix == 'EMPTY') $pers_prefix = '';
-                    echo ' <input type="text" name="pers_prefix" value="' . safe_text_show($pers_prefix) . '" size="8" placeholder="' . ucfirst(__('prefix')) . '">';
-                    // *** Lastname ***
-                    echo ' <select size="1" name="part_lastname">';
-                    echo '<option value="contains">' . __('Contains') . '</option>';
-                    $select_item = '';
-                    if ($selection['part_lastname'] == 'equals') {
-                        $select_item = ' selected';
-                    }
-                    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                    $select_item = '';
-                    if ($selection['part_lastname'] == 'starts_with') {
-                        $select_item = ' selected';
-                    }
-                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                    echo '</select>';
-                    echo ' <input type="text" name="pers_lastname" value="' . safe_text_show($selection['pers_lastname']) . '" size="15" placeholder="' . __('Last name') . '"></td>';
-                } else {
-                    echo '<td align="center" class="no_border">' . __('Last name') . ':';
-                    echo '<span style="text-align:center; font-weight:bold">' . $humo_option['one_name_thename'] . '</span>';
-                    echo '<input type="hidden" name="pers_lastname" value="' . $humo_option['one_name_thename'] . '">';
-                    echo '<input type="hidden" name="part_lastname" value="equals">';
-                }
-                // *** Profession ***
-                //echo '<td align="right" class="no_border">'.__('Profession').':';
-                echo '<td class="no_border">' . __('Profession') . ':<br>';
-                echo ' <select size="1" name="part_profession">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_profession'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_profession'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="pers_profession" value="' . safe_text_show($selection['pers_profession']) . '" size="15" placeholder="' . __('Profession') . '"></td>';
-
-                echo '</tr>';
-            } else {
-                // TO DO: CHECK <tr> and </tr> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                if ($humo_option['one_name_study'] != 'y') {
-                    echo '<td class="no_border center" colspan="2">' . __('Enter name or part of name') . '<br>';
-                    echo '<span style="font-size:12px;">' . __('"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"') . '</span>';
-                } else {
-                    echo '<td class="no_border center" colspan="2">' . __('Enter private name');
-                }
-                echo '<input type="hidden" name="index_list" value="quicksearch">';
-                $quicksearch = '';
-                if (isset($_POST['quicksearch'])) {
-                    //$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
-                    $quicksearch = safe_text_show($_POST['quicksearch']);
-                    $_SESSION["save_quicksearch"] = $quicksearch;
-                }
-                if (isset($_SESSION["save_quicksearch"])) {
-                    $quicksearch = $_SESSION["save_quicksearch"];
-                }
-                if ($humo_option['min_search_chars'] == 1) {
-                    $pattern = "";
-                    $min_chars = " 1 ";
-                } else {
-                    $pattern = 'pattern=".{' . $humo_option['min_search_chars'] . ',}"';
-                    $min_chars = " " . $humo_option['min_search_chars'] . " ";
-                }
-                echo '<p><input type="text" name="quicksearch" value="' . $quicksearch . '" size="30" ' . $pattern . ' title="' . __('Minimum:') . $min_chars . __('characters') . '"></p></td>';
-            }
-
-            // *** ADVANCED SEARCH BOX ***
-            if ($adv_search == true) {
-                //echo '<tr><td align="right" class="no_border">'.__('Year (or period) of birth:');
-                //echo '<tr><td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
-                echo '<tr><td class="no_border">' . ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')) . ':<br>';
-                echo ' <input type="text" name="birth_year" value="' . safe_text_show($selection['birth_year']) . '" size="4" placeholder="' . __('Date') . '">';
-                echo '&nbsp;&nbsp;(' . __('till:') . '&nbsp;';
-                echo '<input type="text" name="birth_year_end" value="' . safe_text_show($selection['birth_year_end']) . '" size="4" placeholder="' . __('Date') . '">&nbsp;)</td>';
-
-                //echo '<td align="right" class="no_border">'.__('Place of birth').':';
-                //echo '<td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
-                echo '<td class="no_border">' . ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')) . ':<br>';
-                echo ' <select size="1" name="part_birth_place">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_birth_place'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_birth_place'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="birth_place" value="' . safe_text_show($selection['birth_place']) . '" size="15" placeholder="' . __('Place') . '"></td>';
-
-                //echo '<td align="right" class="no_border">'.__('Own code').':';
-                echo '<td class="no_border">' . __('Own code') . ':<br>';
-                echo ' <select size="1" name="part_own_code">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_own_code'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_own_code'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="own_code" value="' . safe_text_show($selection['own_code']) . '" size="15" placeholder="' . __('Own code') . '">';
-                echo '</td>';
-
-                echo '</tr>';
-                //echo '<tr><td align="right" class="no_border">'.__('Year (or period) of death:');
-                //echo '<tr><td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
                 echo '<tr><td class="no_border">' . ucfirst(__('died')) . '/ ' . ucfirst(__('buried')) . ':<br>';
                 echo ' <input type="text" name="death_year" value="' . safe_text_show($selection['death_year']) . '" size="4" placeholder="' . __('Date') . '">';
                 echo '&nbsp;&nbsp;(' . __('till:') . '&nbsp;';
                 echo '<input type="text" name="death_year_end" value="' . safe_text_show($selection['death_year_end']) . '" size="4" placeholder="' . __('Date') . '">&nbsp;)</td>';
 
-                //echo '<td align="right" class="no_border">'.__('Place of death').':';
-                //echo '<td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
                 echo '<td class="no_border">' . ucfirst(__('died')) . '/ ' . ucfirst(__('buried')) . ':<br>';
                 echo ' <select size="1" name="part_death_place">';
                 echo '<option value="contains">' . __('Contains') . '</option>';
@@ -1994,7 +1922,6 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                 echo ' <input type="text" name="death_place" value="' . safe_text_show($selection['death_place']) . '" size="15" placeholder="' . __('Place') . '"></td>';
 
                 // *** Text ***
-                //echo '<td align="right" class="no_border">'.__('Text').':';
                 echo '<td class="no_border">' . __('Text') . ':<br>';
                 echo ' <select size="1" name="part_text">';
                 echo '<option value="contains">' . __('Contains') . '</option>';
@@ -2009,13 +1936,11 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                 }
                 echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
                 echo '</select>';
-                //echo ' <input type="text" name="text" value="'.safe_text_show($selection['text']).'" size="15" placeholder="'.__('Text by person').'">';
                 echo ' <input type="text" name="text" value="' . safe_text_show($selection['text']) . '" size="15" placeholder="' . __('Text') . '">';
                 echo '</td>';
 
                 echo '</tr>';
 
-                //echo '<tr><td align="right" class="no_border">'.__('Choose sex:');
                 echo '<tr><td class="no_border">' . __('Choose sex:') . '<br>';
                 $check = '';
                 if ($selection['sexe'] == 'both') {
@@ -2040,7 +1965,6 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                 echo '</td>';
 
                 // *** Living place ***
-                //echo '<td align="right" class="no_border">'.__('Place').':';
                 echo '<td class="no_border">' . __('Place') . ':<br>';
                 echo ' <select size="1" name="part_place">';
                 echo '<option value="contains">' . __('Contains') . '</option>';
@@ -2058,7 +1982,6 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                 echo ' <input type="text" name="pers_place" value="' . safe_text_show($selection['pers_place']) . '" size="15" placeholder="' . __('Place') . '"></td>';
 
                 // *** Zip code ***
-                //echo '<td align="right" class="no_border">'.__('Zip code').':';
                 echo '<td class="no_border">' . __('Zip code') . ':<br>';
                 echo ' <select size="1" name="part_zip_code">';
                 echo '<option value="contains">' . __('Contains') . '</option>';
@@ -2078,7 +2001,6 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
 
                 echo '</tr>';
 
-                //echo '<tr><td align="right" class="no_border">'.__('Partner firstname').':';
                 echo '<tr><td class="no_border">' . __('Partner firstname') . ':<br>';
                 echo ' <select size="1" name="part_spouse_firstname">';
                 echo '<option value="contains">' . __('Contains') . '</option>';
@@ -2095,7 +2017,6 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                 echo '</select>';
                 echo ' <input type="text" name="spouse_firstname" value="' . safe_text_show($selection['spouse_firstname']) . '" size="15" placeholder="' . __('First name') . '"></td>';
 
-                //echo '<td align="right" class="no_border">'.__('Partner lastname').':';
                 echo '<td class="no_border">' . __('Partner lastname') . ':<br>';
                 echo ' <select size="1" name="part_spouse_lastname">';
                 echo '<option value="contains">' . __('Contains') . '</option>';
@@ -2113,7 +2034,6 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                 echo ' <input type="text" name="spouse_lastname" value="' . safe_text_show($selection['spouse_lastname']) . '" size="15" placeholder="' . __('Last name') . '"></td>';
 
                 // *** Witness ***
-                //echo '<td align="right" class="no_border">'.ucfirst(__('witness')).':';
                 echo '<td class="no_border">' . ucfirst(__('witness')) . ':<br>';
                 echo ' <select size="1" name="part_witness">';
                 echo '<option value="contains">' . __('Contains') . '</option>';
@@ -2133,25 +2053,26 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                 echo '</tr>';
 
                 echo '<tr>';
-                //echo '<td align="right" class="no_border">'.ucfirst(__('gedcomnumber (ID)')).':';
                 echo '<td class="no_border">' . ucfirst(__('gedcomnumber (ID)')) . ':<br>';
                 echo ' <select size="1" name="part_gednr">';
                 echo '<option value="equals">' . __('Equals') . '</option>';
+
                 $select_item = '';
                 if ($selection['part_gednr'] == 'contains') {
                     $select_item = ' selected';
                 }
                 echo '<option value="contains"' . $select_item . '>' . __('Contains') . '</option>';
+
                 $select_item = '';
                 if ($selection['part_gednr'] == 'starts_with') {
                     $select_item = ' selected';
                 }
                 echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+
                 echo '</select>';
                 echo ' <input type="text" name="gednr" value="' . safe_text_show($selection['gednr']) . '" size="15" placeholder="' . ucfirst(__('gedcomnumber (ID)')) . '">';
 
                 //==================================
-                //echo '</td><td colspan="2" align="center" class="no_border">'.__('Research status:');
                 echo '</td><td colspan="2" align="center" class="no_border">' . __('Research status:') . '<br>';
                 $check = '';
                 if ($selection['parent_status'] == 'noparents') {
@@ -2168,18 +2089,15 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                     $check = ' checked';
                 }
                 echo '<input type="radio" name="parent_status" value="fatheronly"' . $check . '>' . __('mother unknown') . '&nbsp;&nbsp;';
-                //$check=''; if ($selection['parent_status']=='bothparents'){ $check=' checked'; }
-                //echo '<input type="radio" name="parent_status" value="bothparents"'.$check.'>'.__('Both parents').'&nbsp;&nbsp;';	
                 $check = '';
                 if ($selection['parent_status'] == "" or $selection['parent_status'] == 'allpersons') {
                     $check = ' checked';
                 }
                 echo '<input type="radio" name="parent_status" value="allpersons"' . $check . '>' . __('All') . '&nbsp;&nbsp;';
                 //==================================
-                //echo '</td><td>';
                 echo '</td>';
                 echo '</tr>';
-            }	// *** End of advanced search fields ***
+            }    // *** End of advanced search fields ***
 
             // *** Check for multiple family trees ***
             ?>
@@ -2191,7 +2109,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                     if ($num_rows2 > 1 and $humo_option['one_name_study'] == 'n') {
                         $checked = '';
                         if ($search_database == "tree_selected") {
-                            $checked = 'CHECKED';
+                            $checked = 'checked';
                         }
                         echo '<input type="radio" name="search_database" value="tree_selected" ' . $checked . '> ' . __('Selected family tree');
                         $checked = '';
@@ -2213,7 +2131,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                     if ($adv_search == true) {
                     ?>
                         <input type="hidden" name="adv_search" value="1">
-                        <input type="Submit" name="reset_all" value="<?= __('Clear fields');?>">
+                        <input type="Submit" name="reset_all" value="<?= __('Clear fields'); ?>">
                         &nbsp;<a href="<?= $list_var2; ?>adv_search=0&reset=1"><?= __('Standard search'); ?></a>
 
                         <!--======== HELP POPUP ======================== -->
@@ -2237,7 +2155,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
 
                                     <tr>
                                         <td>
-                                        <?= __('Note:</td><td>When you use the birth and/ or death search boxes please note this:<br>1. Persons for whom no birth/ death data exist in the database, will not be found.<br>2. Persons with privacy settings will not be shown, unless you are logged in with the proper permissions.<br>These persons can be found by searching by name and/ or surname only.');?>
+                                            <?= __('Note:</td><td>When you use the birth and/ or death search boxes please note this:<br>1. Persons for whom no birth/ death data exist in the database, will not be found.<br>2. Persons with privacy settings will not be shown, unless you are logged in with the proper permissions.<br>These persons can be found by searching by name and/ or surname only.'); ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -2260,7 +2178,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
 //if (CMS_SPECIFIC == 'Joomla') {
 //    $uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;";
 //} else {
-    $uri_path_string = $uri_path . "list.php?";
+$uri_path_string = $uri_path . "list.php?";
 //}
 
 // *** Check for search results ***
@@ -2568,8 +2486,7 @@ while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
         //AND $parent_status_found=='1'
         $pers_counter++; // needed for spouses search and mother/father only search
         // Added by Yossi
-        $person_cls = new person_cls;
-        $person_cls->construct($personDb);
+        $person_cls = new person_cls($personDb);
         $privacy = $person_cls->privacy;
         if ($privacy) { // Privacy restricted person
             if ($selection['birth_place'] == '' and $selection['birth_year'] == '' and $selection['death_place'] == '' and $selection['death_year'] == '') {

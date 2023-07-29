@@ -169,6 +169,7 @@ function search_year($search_date)
     }
     return ($year);
 }
+
 function search_month($search_date)
 {
     $month = strtoupper(substr($search_date, -8, 3));
@@ -201,6 +202,7 @@ function search_month($search_date)
     }
     return ($text);
 }
+
 function search_day($search_date)
 {
     $day = '';

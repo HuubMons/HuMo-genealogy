@@ -13,10 +13,18 @@ function show_media($event_connect_kind, $event_connect_id)
 
     // *** Pictures/ media ***
     if ($user['group_pictures'] == 'j' and $picture_presentation != 'hide') {
-        // In joomla relative path is relative to joomla main folder, NOT HuMo-genealogy main folder. Therefore use the path entered as-is, without ROOTPATH.
         //$tree_pict_path=CMS_ROOTPATH.$dataDb->tree_pict_path;
         $tree_pict_path = $dataDb->tree_pict_path;
-        if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+        //$tree_pict_path = __DIR__ . '/../' . $dataDb->tree_pict_path;
+
+        // *** Use default folder: media ***
+        if (substr($tree_pict_path, 0, 1) == '|') {
+            $tree_pict_path = 'media/';
+            //$tree_pict_path = __DIR__ . '/../media/';
+        }
+
+        //TODO check PDF code
+        if ($screen_mode == 'PDF') $tree_pict_path = __DIR__ . '/../'.$tree_pict_path;
 
         // *** Standard connected media by person and family ***
         $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
@@ -76,7 +84,7 @@ function show_media($event_connect_kind, $event_connect_id)
         //if (CMS_SPECIFIC == "Joomla") {
         //    $picpath = CMS_ROOTPATH;
         //} else {
-            $picpath = $uri_path;
+        $picpath = $uri_path;
         //}
 
         for ($i = 1; $i < ($media_nr + 1); $i++) {
@@ -273,7 +281,7 @@ function show_media($event_connect_kind, $event_connect_id)
 
 function show_picture($picture_path, $picture_org, $pict_width = '', $pict_height = '')
 {
-    global $dbh;
+    global $dbh, $screen_mode;
     // in case subfolders are made for photobook categories and this was not already set in $picture_path, look there
     // in cases where the $picture_path is already set with subfolder this anyway gives false and so the $picture_path gives will work
     $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
@@ -330,18 +338,20 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
     // *** No picture selected yet (in editor) ***
     if (!$picture['picture']) {
         $picture['path'] = 'images/';
+        if ($screen_mode == 'PDF' or $screen_mode == 'RTF') $picture['path'] = __DIR__ . '/../images/';
         $picture['thumb'] = 'thumb_';
         $picture['picture'] = 'missing-image.jpg';
     }
 
     if (!$found_picture) {
         $picture['path'] = 'images/';
+        if ($screen_mode == 'PDF' or $screen_mode == 'RTF') $picture['path'] = __DIR__ . '/../images/';
         $picture['thumb'] = 'thumb_';
         $picture['picture'] = 'missing-image.jpg';
     }
 
     // *** If photo is too wide, correct the size ***
-    @list($width, $height) = getimagesize($picture["path"] . $picture['thumb'] . $picture['picture']);
+    list($width, $height) = getimagesize($picture["path"] . $picture['thumb'] . $picture['picture']);
 
     if ($pict_width > 0 and $pict_height > 0) {
         /*

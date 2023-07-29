@@ -9,7 +9,6 @@ if (!defined('ADMIN_PAGE')) {
 require_once(CMS_ROOTPATH_ADMIN . "statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
 include_once(CMS_ROOTPATH . "include/person_cls.php");
 
-echo '<h1 class="center">' . __('Statistics') . '</h1>';
 
 // *** Use a class to process person data ***
 global $person_cls, $statistics_screen;
@@ -41,12 +40,12 @@ function statistics_line($familyDb)
     if ($checkDb and $checkDb->fam_man == $familyDb->stat_gedcom_man and $checkDb->fam_woman == $familyDb->stat_gedcom_woman) $check = true;
 
     if ($check == true) {
-        if (CMS_SPECIFIC == "Joomla") {
-            echo '<td><a href="index.php?option=com_humo-gen&amp;task=family&amp;id=' . $familyDb->stat_gedcom_fam . '&amp;tree_id=' . $familyDb->tree_id .
-                '">' . __('Family') . ': </a>';
-        } else {
-            echo '<td><a href="../family.php?id=' . $familyDb->stat_gedcom_fam . '&amp;tree_id=' . $familyDb->tree_id . '">' . __('Family') . ': </a>';
-        }
+        //if (CMS_SPECIFIC == "Joomla") {
+        //    echo '<td><a href="index.php?option=com_humo-gen&amp;task=family&amp;id=' . $familyDb->stat_gedcom_fam . '&amp;tree_id=' . $familyDb->tree_id .
+        //        '">' . __('Family') . ': </a>';
+        //} else {
+        echo '<td><a href="../family.php?id=' . $familyDb->stat_gedcom_fam . '&amp;tree_id=' . $familyDb->tree_id . '">' . __('Family') . ': </a>';
+        //}
 
         //*** Man ***
         $personDb = $db_functions->get_person($familyDb->stat_gedcom_man);
@@ -201,18 +200,18 @@ function calender($month, $year, $thismonth)
 
     echo "</table><br>\n";
 
-    if (CMS_SPECIFIC == "Joomla") {  // make the graph scrollable
-        echo '<div style="width:100%;height:230px;overflow:auto;">';
-        echo '<div style="height:210px;width:1000px;overflow:visible;">';
-    }
+    //if (CMS_SPECIFIC == "Joomla") {  // make the graph scrollable
+    //    echo '<div style="width:100%;height:230px;overflow:auto;">';
+    //    echo '<div style="height:210px;width:1000px;overflow:visible;">';
+    //}
     // *** Show graphical month statistics ***
     //$this_month=$thismonth;
     $mc = new maxChart($data);
     //$mc->displayChart($calender_head."&nbsp;".$year,1,700,200,false,$this_month);
     $mc->displayChart($calender_head . "&nbsp;" . $year, 1, 700, 200, false, $thismonth);
-    if (CMS_SPECIFIC == "Joomla") {
-        echo '</div></div>';
-    }
+    //if (CMS_SPECIFIC == "Joomla") {
+    //    echo '</div></div>';
+    //}
 }
 
 // *** Function to show year statistics ***
@@ -294,10 +293,10 @@ function year_graphics($month, $year)
     $mc = new maxChart($twelve_months);
     $this_month = date("n");
 
-    if (CMS_SPECIFIC == "Joomla") {  // make the graph scrollable
-        echo '<div style="width:100%;height:230px;overflow:auto;">';
-        echo '<div style="height:210px;width:1000px;overflow:visible;">';
-    }
+    //if (CMS_SPECIFIC == "Joomla") {  // make the graph scrollable
+    //    echo '<div style="width:100%;height:230px;overflow:auto;">';
+    //    echo '<div style="height:210px;width:1000px;overflow:visible;">';
+    //}
 
     if ($statistics_screen == 'visitors') {
         $mc->displayChart(__('Visitors'), 1, 700, 200, false, $this_month);
@@ -305,93 +304,64 @@ function year_graphics($month, $year)
         $mc->displayChart(__('Visited families in the past 12 months'), 1, 700, 200, false, $this_month);
     }
 
-    if (CMS_SPECIFIC == "Joomla") {
-        echo '</div>';
-        echo '</div>';
-    }
+    //if (CMS_SPECIFIC == "Joomla") {
+    //    echo '</div>';
+    //    echo '</div>';
+    //}
 }
 // End statistics
 
-//*************BEGIN COUNTRY STATISTICS FUNCTIONS ******************
-function iptocountry($ip, $path)
+// *** Country statistics ***
+function country2()
 {
-    global $language;
-    $numbers = preg_split("/\./", $ip);
-    //if(CMS_SPECIFIC == "Joomla") {   // include_once doesn't work in joomla
-    include($path . $numbers[0] . ".php");
-    //}
-    //else {
-    //   include_once($path.$numbers[0].".php");
-    //}
-    $code = ($numbers[0] * 16777216) + ($numbers[1] * 65536) + ($numbers[2] * 256) + ($numbers[3]);
+    global $dbh;
+    $temp = $dbh->query("SHOW TABLES LIKE 'humo_stat_country'");
+    if ($temp->rowCount()) {
+        $max = 400; // *** For now just show all countries ***
 
-    foreach ($ranges as $key => $value) {
-        if ($key <= $code) {
-            if ($ranges[$key][0] >= $code) {
-                $country = $ranges[$key][1];
-                break;
+        // *** Names of countries ***
+        include_once('include/countries.php');
+
+        $statqry = "SELECT stat_country_code, count(stat_country_code) as count_country_code
+        FROM humo_stat_country
+        GROUP BY stat_country_code ORDER BY count_country_code DESC LIMIT 0," . $max;
+        $stat = $dbh->query($statqry);
+
+?>
+        <table class="humo standard" border="1" cellspacing="0">
+            <tr class="table_header">
+                <th><?= __('Country of origin'); ?></th>
+                <th><?= __('Number of unique visitors'); ?></th>
+            </tr>
+            <?php
+            while (@$statDb = $stat->fetch(PDO::FETCH_OBJ)) {
+                $key = $statDb->stat_country_code;
+                $flag = "images/flags/" . $key . ".gif";
+                if (!file_exists($flag)) {
+                    $flag = 'images/flags/noflag.gif';
+                }
+            ?>
+                <tr>
+                    <td>
+                        <img src="<?= $flag; ?>" width="30" height="15">&nbsp;
+                        <?php
+                        if ($key != __('Unknown')) {
+                            echo $countries[$key][1] . '&nbsp;(' . $key . ')';
+                        } else {
+                            echo $key;
+                        }
+                        ?>
+                    </td>
+                    <td><?= $statDb->count_country_code; ?></td>
+                </tr>
+            <?php
             }
-        }
+            ?>
+        </table>
+<?php
     }
-    if (!isset($country)) {
-        $country = __('Unknown');
-    }
-    return $country;
 }
-
-function country()
-{
-    global $dbh, $language;
-
-    // *** For test purposes ***
-    $path = CMS_ROOTPATH_ADMIN . 'ip_files/';
-    // *** For test only ***
-    //if (file_exists("../../humo-gen ip_files")){ $path='../../humo-gen ip_files/'; }
-
-    $stat = $dbh->query("SELECT stat_ip_address FROM humo_stat_date GROUP BY stat_ip_address");
-    // Print out result
-    while ($row = $stat->fetch()) {
-        $country = iptocountry($row['stat_ip_address'], $path);
-        if (isset($countries[$country])) {
-            $countries[$country]++;
-        } else {
-            $countries[$country] = 1;
-        }
-    }
-
-    echo '<table class="humo" border="1" cellspacing="0" width="100%">';
-    echo '<tr class="table_header"><th>' . __('Country of origin') . '</th> <th>' . __('Number of unique visitors') . '</th> </tr>';
-    if (isset($countries)) {
-        arsort($countries);
-        foreach ($countries as $key => $value) {
-            include_once($path . "countries.php");
-            echo '<tr><td>';
-            //flag
-            //$file_to_check="ip_files/flags/".$key.".gif";
-            $file_to_check = $path . "flags/" . $key . ".gif";
-            if (file_exists($file_to_check)) {
-                print '<img src="' . $file_to_check . '" width="30" height="15">';
-            } else {
-                print '<img src="' . $path . 'flags/noflag.gif" width="30" height="15">';
-            }
-            echo "&nbsp;";
-            if ($key != __('Unknown')) {
-                echo $countries[$key][1] . '&nbsp;(' . $key . ')</td>';
-            } else {
-                echo $key;
-            }
-            echo '<td>' . $value . '</td></tr>';
-        }
-    }
-
-    echo '<tr><td>' . __('Total number of unique visitors:') . '</td>';
-    $total = $stat->rowCount();
-    echo '<td>' . $total . '</td></tr>';
-    echo '</table>';
-
-    //echo "<br>";
-}
-// ************ END COUNTRY STATISTICS FUNCTIONS  ***************
+// *** End country statistics ***
 
 $statistics_screen = 'general_statistics';
 if (isset($_POST['statistics_screen']) and $_POST['statistics_screen'] == 'date_statistics') {
@@ -411,63 +381,75 @@ if (isset($_GET['tree_id'])) {
 }
 
 // *** Show buttons ***
-if (CMS_SPECIFIC == "Joomla") {
-    $phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=statistics";
-} else {
-    $phpself = 'index.php';
+//if (CMS_SPECIFIC == "Joomla") {
+//    $phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=statistics";
+//} else {
+$phpself = 'index.php';
+//}
+
+$style_general_statistics = '';
+if ($statistics_screen == 'general_statistics') {
+    $style_general_statistics = ' class="selected_item"';
+}
+$style_date_statistics = '';
+if ($statistics_screen == 'date_statistics') {
+    $style_date_statistics = ' class="selected_item"';
+}
+$style_visitors = '';
+if ($statistics_screen == 'visitors') {
+    $style_visitors = ' class="selected_item"';
+}
+$style_statistics_old = '';
+if ($statistics_screen == 'statistics_old') {
+    $style_statistics_old = ' class="selected_item"';
+}
+$style_remove = '';
+if ($statistics_screen == 'remove') {
+    $style_remove = ' class="selected_item"';
 }
 
-echo '<table class="humo" style="width:90%; text-align:center; border:1px solid black;"><tr class="table_header_large"><td>';
-echo ' <form method="POST" action="' . $phpself . '" style="display : inline;">';
-echo '<input type="hidden" name="page" value="' . $page . '">';
-echo '<input type="hidden" name="statistics_screen" value="general_statistics">';
-$style = '';
-if ($statistics_screen == 'general_statistics') {
-    $style = ' class="selected_item"';
-}
-echo '<input type="Submit" name="submit" value="' . __('General statistics') . '"' . $style . '>';
-echo '</form>';
-echo '</td><td>';
-echo ' <form method="POST" action="' . $phpself . '" style="display : inline;">';
-echo '<input type="hidden" name="page" value="' . $page . '">';
-echo ' <input type="hidden" name="statistics_screen" value="date_statistics">';
-$style = '';
-if ($statistics_screen == 'date_statistics') {
-    $style = ' class="selected_item"';
-}
-echo '<input type="Submit" name="submit" value="' . __('Statistics by date') . '"' . $style . '>';
-echo '</form>';
-echo '</td><td>';
-echo ' <form method="POST" action="' . $phpself . '" style="display : inline;">';
-echo '<input type="hidden" name="page" value="' . $page . '">';
-echo ' <input type="hidden" name="statistics_screen" value="visitors">';
-$style = '';
-if ($statistics_screen == 'visitors') {
-    $style = ' class="selected_item"';
-}
-echo '<input type="Submit" name="submit" value="' . __('Visitors') . '"' . $style . '>';
-echo '</form>';
-echo '</td><td>';
-echo ' <form method="POST" action="' . $phpself . '" style="display : inline;">';
-echo '<input type="hidden" name="page" value="' . $page . '">';
-echo ' <input type="hidden" name="statistics_screen" value="statistics_old">';
-$style = '';
-if ($statistics_screen == 'statistics_old') {
-    $style = ' class="selected_item"';
-}
-echo '<input type="Submit" name="submit" value="' . __('Old statistics') . '"' . $style . '>';
-echo '</form>';
-echo '</td><td>';
-echo ' <form method="POST" action="' . $phpself . '" style="display : inline;">';
-echo '<input type="hidden" name="page" value="' . $page . '">';
-echo ' <input type="hidden" name="statistics_screen" value="remove">';
-$style = '';
-if ($statistics_screen == 'remove') {
-    $style = ' class="selected_item"';
-}
-echo '<input type="Submit" name="submit" value="' . __('Remove statistics') . '"' . $style . '>';
-echo '</form>';
-echo '</td></tr></table>';
+?>
+<h1 class="center"><?= __('Statistics'); ?></h1>
+<table class="humo" style="width:90%; text-align:center; border:1px solid black;">
+    <tr class="table_header_large">
+        <td>
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="hidden" name="statistics_screen" value="general_statistics">
+                <input type="Submit" name="submit" value="<?= __('General statistics'); ?>" <?= $style_general_statistics; ?>>
+            </form>
+        </td>
+        <td>
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="hidden" name="statistics_screen" value="date_statistics">
+                <input type="Submit" name="submit" value="<?= __('Statistics by date'); ?>" <?= $style_date_statistics; ?>>
+            </form>
+        </td>
+        <td>
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="hidden" name="statistics_screen" value="visitors">
+                <input type="Submit" name="submit" value="<?= __('Visitors'); ?>" <?= $style_visitors; ?>>
+            </form>
+        </td>
+        <td>
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="hidden" name="statistics_screen" value="statistics_old">
+                <input type="Submit" name="submit" value="<?= __('Old statistics'); ?>" <?= $style_statistics_old; ?>>
+            </form>
+        </td>
+        <td>
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="hidden" name="statistics_screen" value="remove">
+                <input type="Submit" name="submit" value="<?= __('Remove statistics'); ?>" <?= $style_remove; ?>>
+            </form>
+        </td>
+    </tr>
+</table>
+<?php
 
 // *** Remove old statistics ***
 if (isset($_POST['remove2'])) {
@@ -506,7 +488,6 @@ if ($statistics_screen == 'remove') {
 }
 
 if ($statistics_screen == 'general_statistics') {
-
     echo '<h2 align="center">' . __('Status statistics table') . '</h2>';
     //$family_qry=$dbh->query("SELECT *, count(humo_stat_date.stat_easy_id) as count_lines
     //	FROM humo_stat_date LEFT JOIN humo_trees
@@ -589,12 +570,12 @@ if ($statistics_screen == 'general_statistics') {
     echo '<tr><td>' . __('Total number of families in the last hour:') . '</td><td>' . $total . '</td>';
     echo '</table>';
 
-    //******** START COUNTRY STATISTICS (second file check for test) *************
-    if (file_exists(CMS_ROOTPATH_ADMIN . "ip_files") or file_exists("../../humo-gen ip_files")) {
-        echo '<br><b>' . __('Unique visitors - Country of origin') . '</b><br>';
-        country();
-    }
-    //******** END COUNTRY STATISTICS ********
+
+    // *** Country statistics ***
+    echo '<h2 align="center">' . __('Unique visitors - Country of origin') . '</h2>';
+    country2();
+    // *** End country statistics ***
+
 
     $nr_lines = 15; // *** Nr. of statistics lines ***
 
@@ -659,62 +640,62 @@ if ($statistics_screen == 'date_statistics') {
     echo "<select size='1' name='month'>";
     $select = '';
     if ($month == '1') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="1"' . $select . '>' . __('January') . '</option>';
     $select = '';
     if ($month == '2') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="2"' . $select . '>' . __('February') . '</option>';
     $select = '';
     if ($month == '3') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="3"' . $select . '>' . __('March') . '</option>';
     $select = '';
     if ($month == '4') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="4"' . $select . '>' . __('April') . '</option>';
     $select = '';
     if ($month == '5') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="5"' . $select . '>' . __('May') . '</option>';
     $select = '';
     if ($month == '6') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="6"' . $select . '>' . __('June') . '</option>';
     $select = '';
     if ($month == '7') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="7"' . $select . '>' . __('July') . '</option>';
     $select = '';
     if ($month == '8') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="8"' . $select . '>' . __('August') . '</option>';
     $select = '';
     if ($month == '9') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="9"' . $select . '>' . __('September') . '</option>';
     $select = '';
     if ($month == '10') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="10"' . $select . '>' . __('October') . '</option>';
     $select = '';
     if ($month == '11') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="11"' . $select . '>' . __('November') . '</option>';
     $select = '';
     if ($month == '12') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="12"' . $select . '>' . __('December') . '</option>';
     echo "</select>";
@@ -736,7 +717,7 @@ if ($statistics_screen == 'date_statistics') {
     for ($year_select = $first_year; $year_select <= $present_year; $year_select++) {
         $select = '';
         if ($year == $year_select) {
-            $select = ' SELECTED';
+            $select = ' selected';
         }
         echo '<option value="' . $year_select . '"' . $select . '>' . $year_select . '</option>';
     }
@@ -778,62 +759,62 @@ if ($statistics_screen == 'visitors') {
     echo "<select size='1' name='month'>";
     $select = '';
     if ($month == '1') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="1"' . $select . '>' . __('January') . '</option>';
     $select = '';
     if ($month == '2') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="2"' . $select . '>' . __('February') . '</option>';
     $select = '';
     if ($month == '3') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="3"' . $select . '>' . __('March') . '</option>';
     $select = '';
     if ($month == '4') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="4"' . $select . '>' . __('April') . '</option>';
     $select = '';
     if ($month == '5') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="5"' . $select . '>' . __('May') . '</option>';
     $select = '';
     if ($month == '6') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="6"' . $select . '>' . __('June') . '</option>';
     $select = '';
     if ($month == '7') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="7"' . $select . '>' . __('July') . '</option>';
     $select = '';
     if ($month == '8') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="8"' . $select . '>' . __('August') . '</option>';
     $select = '';
     if ($month == '9') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="9"' . $select . '>' . __('September') . '</option>';
     $select = '';
     if ($month == '10') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="10"' . $select . '>' . __('October') . '</option>';
     $select = '';
     if ($month == '11') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="11"' . $select . '>' . __('November') . '</option>';
     $select = '';
     if ($month == '12') {
-        $select = ' SELECTED';
+        $select = ' selected';
     }
     echo '<option value="12"' . $select . '>' . __('December') . '</option>';
     echo "</select>";
@@ -855,7 +836,7 @@ if ($statistics_screen == 'visitors') {
     for ($year_select = $first_year; $year_select <= $present_year; $year_select++) {
         $select = '';
         if ($year == $year_select) {
-            $select = ' SELECTED';
+            $select = ' selected';
         }
         echo '<option value="' . $year_select . '"' . $select . '>' . $year_select . '</option>';
     }
@@ -965,11 +946,11 @@ if ($statistics_screen == 'statistics_old') {
                 if ($dataDb->tree_id == $tree_id) {
                     echo '<b>' . $treetext['name'] . '</b>';
                 } else {
-                    if (CMS_SPECIFIC == "Joomla") {
-                        echo '<a href="index.php?option=com_humo-gen&amp;task=admin&amp;page=' . $page . '&amp;tree_id=' . $dataDb->tree_id . '">' . $treetext['name'] . '</a>';
-                    } else {
-                        echo '<a href="index.php?page=' . $page . '&amp;tree_id=' . $dataDb->tree_id . '">' . $treetext['name'] . '</a>';
-                    }
+                    //if (CMS_SPECIFIC == "Joomla") {
+                    //    echo '<a href="index.php?option=com_humo-gen&amp;task=admin&amp;page=' . $page . '&amp;tree_id=' . $dataDb->tree_id . '">' . $treetext['name'] . '</a>';
+                    //} else {
+                    echo '<a href="index.php?page=' . $page . '&amp;tree_id=' . $dataDb->tree_id . '">' . $treetext['name'] . '</a>';
+                    //}
                 }
                 echo ' <font size=-1>(' . $date . ': ' . $dataDb->tree_persons . ' ' . __('persons') . ", " . $dataDb->tree_families . ' ' . __('families') . ")</font>\n<br>";
             }
@@ -984,11 +965,11 @@ if ($statistics_screen == 'statistics_old') {
             WHERE fam_tree_id='" . $tree_id . "' AND fam_counter ORDER BY fam_counter desc LIMIT 0,50");
     while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
         echo $familyDb->fam_counter . " ";
-        if (CMS_SPECIFIC == "Joomla") {
-            echo '<a href="index.php?option=com_humo-gen&amp;task=family&amp;id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
-        } else {
-            echo '<a href="../family.php?id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
-        }
+        //if (CMS_SPECIFIC == "Joomla") {
+        //    echo '<a href="index.php?option=com_humo-gen&amp;task=family&amp;id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
+        //} else {
+        echo '<a href="../family.php?id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
+        //}
 
         //*** Man ***
         $personDb = $db_functions->get_person($familyDb->fam_man);

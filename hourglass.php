@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HOURGLASS.PHP by Yossi Beck august 2013
  * Made with extensive use of existing files:
@@ -15,13 +16,16 @@
  * - think about names in size 8
  */
 
-include_once("family.php");
+//include_once("family.php");
+include_once("views/descendant_chartView.php");
+
 include_once("report_descendant.php");
 
 // in the ancestor code below $family_id is used for pers_gedcomnumber
 // until here it was used by the descendant code for the fam_gedcomnumber
 $family_id = $_GET['main_person'];
-include_once("report_ancestor.php");
+//include_once("report_ancestor.php");
+include_once("views/ancestor_chart.php");
 
 // GENERATE DATA FOR DESCENDANTS ^^^^^
 
@@ -73,41 +77,25 @@ $anc_hi = $anc_top + ((pow(2, $chosengenanc - 1) * $v_distance) / 2) + 100; // l
 // Find longest chart and set as bottom of div
 $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
 
-echo '<div class="standard_header fonts" style="align:center; text-align: center;">';
-echo '<b>' . __('Hourglass chart') . __(' of ') . $genarray[0]["nam"] . '</b>';
-echo '</div>';
+?>
+<div class="standard_header fonts" style="margin:auto; text-align: center;">
+    <b><?= __('Hourglass chart') . __(' of ') . $genarray[0]["nam"]; ?></b>
+</div>
 
-echo '<script src="include/html2canvas/html2canvas.min.js"></script>';
+<script src="include/html2canvas/html2canvas.min.js"></script>
 
-echo '<div style="text-align:center;">';
-echo '<span style="font-size:130%">' . __('Ancestors') . "&#8678;&#8678;&#8678;";
-for ($q = 0; $q < 25; $q++) {
-    echo "&nbsp;";
-}
-echo '</span>';
-echo '<input type="button" id="imgbutton" value="' . __('Get image of chart for printing (allow pop-up!)') . '" onClick="showimg();">';
-echo '<span style="font-size:130%">';
-for ($q = 0; $q < 25; $q++) {
-    echo "&nbsp;";
-}
-echo "&#8680;&#8680;&#8680;" . __('Descendants');
-echo '</span>';
-echo '</div>';
+<div style="text-align:center;">
+    <span style="font-size:130%"><?= __('Ancestors'); ?>&#8678;&#8678;&#8678;&nbsp;&nbsp;&nbsp;</span>
+    <input type="button" id="imgbutton" value="<?= __('Get image of chart for printing (allow pop-up!)'); ?>" onClick="showimg();">
+    <span style="font-size:130%">&nbsp;&nbsp;&nbsp;&#8680;&#8680;&#8680;<?= __('Descendants'); ?></span>
+</div>
 
-// START HELP POPUP - displayed at upper left corner of screen
-
-//======== HELP POPUP ========================
-echo '<div id="helppopup" class="' . $rtlmarker . 'sddm" style="position:absolute;left:10px;top:10px;display:inline;">';
-echo '<a href="#"';
-echo ' style="display:inline" ';
-echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-echo 'onmouseout="mclosetime()">';
-echo '<b>' . __('Help') . '</b>';
-echo '</a>&nbsp;';
-
-echo '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $alignmarker . ';  direction:' . $rtlmarker . ';" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-
-echo __('<b>USE:</b>
+<!-- HELP POPUP - displayed at upper left corner of screen -->
+<div id="helppopup" class="<?= $rtlmarker; ?>sddm" style="position:absolute;left:10px;top:10px;display:inline;">
+    <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',0,0)" onmouseout="mclosetime()"><b><?= __('Help'); ?></b></a>&nbsp;
+    <div class="sddm_fixed" style="z-index:10; padding:4px; text-align:<?= $alignmarker; ?>;  direction:<?= $rtlmarker; ?>;" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+        <?php
+        echo __('<b>USE:</b>
 <p>The main person is displayed in the center of the chart.<br>
 Ancestors are displayed to his/her left, descendants are displayed to the right
 <p><b>Hover over square:</b> Display pop-up menu with details<br>
@@ -115,12 +103,12 @@ Ancestors are displayed to his/her left, descendants are displayed to the right
 <b>Click on name in pop-up menu:</b> Go to person\'s family page<br><br>
 <b>LEGEND:</b>');
 
-echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Male') . '<br>';
-echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Female') . '<br>';
+        echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Male') . '<br>';
+        echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Female') . '<br>';
 
-echo '<span style="color:blue">=====</span>&nbsp;' . __('Additional marriage of same person') . '<br><br>';
+        echo '<span style="color:blue">=====</span>&nbsp;' . __('Additional marriage of same person') . '<br><br>';
 
-echo __('<b>SETTINGS:</b>
+        echo __('<b>SETTINGS:</b>
 
 <br><br><b>Nr. Generations:</b> choose between 2 - 12 generations for ancestors<br>
 and 2 - 15 generation for descendants. 
@@ -130,9 +118,10 @@ step 1-4: small boxes with popup for details<br>
 step 5-7: larger boxes with initials of name + pop-up for details<br>
 step 8-9: boxes/rectangles with name inside + pop-up with further details<br>
 step 10:    large rectangles with name, birth and death details + pop-up with further details');
-
-echo '</div>';
-echo '</div>';
+        ?>
+    </div>
+</div>
+<?php
 
 // MENU BAR - no. of generations, zoom
 
@@ -140,21 +129,19 @@ echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr;
 
 echo '&nbsp;' . __('Nr. generations') . ': ' . __('Anc.') . '&nbsp;';
 echo '<select name="chosengenanc" onChange="window.location=this.value">';
-
 for ($i = 2; $i <= 12; $i++) {
     //if (CMS_SPECIFIC == 'Joomla') {
     //    echo '<option value="index.php?option=com_humo-gen&task=hourglass&id=' . $keepfamily_id . '&amp;main_person=' .
     //        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
     //        $size . '&amp;chosengen=' . $chosengen . '&amp;chosengenanc=' . $i . '&amp;screen_mode=HOUR" ';
     //} else {
-        echo '<option value="' . $uri_path . 'hourglass.php?id=' . $keepfamily_id . '&amp;main_person=' .
-            $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
-            $size . '&amp;chosengen=' . $chosengen . '&amp;chosengenanc=' . $i . '&amp;screen_mode=HOUR" ';
+    echo '<option value="' . $uri_path . 'hourglass.php?id=' . $keepfamily_id . '&amp;main_person=' .
+        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
+        $size . '&amp;chosengen=' . $chosengen . '&amp;chosengenanc=' . $i . '&amp;screen_mode=HOUR" ';
     //}
     if ($i == $chosengenanc) echo "selected=\"selected\" ";
     echo ">" . $i . "</option>";
 }
-
 echo '</select>';
 
 echo '&nbsp;&nbsp;' . __('Desc.') . '&nbsp;';
@@ -165,9 +152,9 @@ for ($i = 2; $i <= 15; $i++) {
     //        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
     //        $size . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $chosengenanc . '&amp;screen_mode=HOUR" ';
     //} else {
-        echo '<option value="' . $uri_path . 'hourglass.php?id=' . $keepfamily_id . '&amp;main_person=' .
-            $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
-            $size . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $chosengenanc . '&amp;screen_mode=HOUR" ';
+    echo '<option value="' . $uri_path . 'hourglass.php?id=' . $keepfamily_id . '&amp;main_person=' .
+        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
+        $size . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $chosengenanc . '&amp;screen_mode=HOUR" ';
     //}
     if ($i == $chosengen) echo "selected=\"selected\" ";
     echo ">" . $i . "</option>";
@@ -227,12 +214,12 @@ echo '<input type="text" id="amount" disabled="disabled" style="width:18px;borde
 echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
 echo '</div>';
 
-// START DIV FOR IMAGE (to print image of chart with plotter) ^^^^^
+// Start DIV FOR IMAGE (to print image of chart with plotter) ^^^^^
 
 //following div gets width and length in imaging java function showimg() (at bottom) otherwise double scrollbars won't work.
 echo '<div id="png">';
 
-// START DIV FOR DOUBLESCROLL (horizontal scrollbars top and bottom ^^^^^^^^^^^^^^^^^^^^^^^
+// Start DIV FOR DOUBLESCROLL (horizontal scrollbars top and bottom ^^^^^^^^^^^^^^^^^^^^^^^
 
 echo '
 <style type="text/css">

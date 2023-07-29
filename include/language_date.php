@@ -45,8 +45,8 @@ function language_date($date_text)
         $date_text = str_replace("NOV", __('November'), $date_text);
         $date_text = str_replace("DEC", __('December'), $date_text);
     }
-    if ($humo_option["date_display"] == "us" or $humo_option["date_display"] == "ch" or $selected_language == "hu") {
 
+    if ($humo_option["date_display"] == "us" or $humo_option["date_display"] == "ch" or $selected_language == "hu") {
         $prfx = ""; // prefix
         if (strpos($date_text, "EST ABT") !== false) {
             $prfx = __('estimated &#177;');

@@ -81,10 +81,10 @@ if (is_numeric($user)) {
         echo '<td><select size="1" name="show_tree_' . $data3Db->tree_id . '">';
         echo '<option value="user-group">' . __('Use user-group setting') . '</option>';
         $select = '';
-        if (in_array('y' . $data3Db->tree_id, $hide_tree_array)) $select = ' SELECTED';
+        if (in_array('y' . $data3Db->tree_id, $hide_tree_array)) $select = ' selected';
         echo '<option value="yes"' . $select . '>' . __('Yes') . '</option>';
         $select = '';
-        if (in_array($data3Db->tree_id, $hide_tree_array)) $select = ' SELECTED';
+        if (in_array($data3Db->tree_id, $hide_tree_array)) $select = ' selected';
         echo '<option value="no"' . $select . '>' . __('No') . '</option>';
         echo "</select></td>";
 

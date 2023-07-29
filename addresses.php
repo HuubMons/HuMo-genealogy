@@ -37,8 +37,6 @@ if (isset($_SESSION['sort']) and !isset($_GET['sort'])) {
     $selectsort = $_SESSION['sort'];
 }
 if (isset($_GET['sort'])) {
-    //if($_GET['sort']=="sort_country") { $selectsort="sort_country"; $_SESSION['sort']=$selectsort; }
-    //if($_GET['sort']=="sort_state") { $selectsort="sort_state"; $_SESSION['sort']=$selectsort; }
     if ($_GET['sort'] == "sort_place") {
         $selectsort = "sort_place";
         $_SESSION['sort'] = $selectsort;
@@ -48,17 +46,9 @@ if (isset($_GET['sort'])) {
         $_SESSION['sort'] = $selectsort;
     }
 }
-//$orderby = " address_country ".$desc_asc.", address_state".$desc_asc.", address_place".$desc_asc.", address_address".$desc_asc;
 $orderby = " address_place" . $desc_asc . ", address_address" . $desc_asc;
 if ($selectsort) {
-    //if($selectsort=="sort_country") {
-    //	$orderby = " address_country ".$desc_asc.", address_state".$desc_asc.", address_place".$desc_asc.", address_address".$desc_asc;
-    //}
-    //if($selectsort=="sort_state") {
-    //	$orderby = " address_state ".$desc_asc.", address_country".$desc_asc.", address_place".$desc_asc.", address_address".$desc_asc;
-    //}
     if ($selectsort == "sort_place") {
-        //$orderby = " address_place ".$desc_asc.", address_country".$desc_asc.", address_state".$desc_asc.", address_address".$desc_asc;
         $orderby = " address_place " . $desc_asc . ", address_address" . $desc_asc;
     }
     if ($selectsort == "sort_address") {
@@ -67,12 +57,8 @@ if ($selectsort) {
 }
 
 $where = '';
-//$adr_country='';
-//$adr_state='';
 $adr_place = '';
 $adr_address = '';
-//if(isset($_POST['adr_country']) AND $_POST['adr_country'] != '') { $adr_country = $_POST['adr_country']; }
-//if(isset($_POST['adr_state']) AND $_POST['adr_state'] != '') { $adr_state = $_POST['adr_state']; }
 if (isset($_POST['adr_place']) and $_POST['adr_place'] != '') {
     $adr_place = $_POST['adr_place'];
 }
@@ -80,8 +66,6 @@ if (isset($_POST['adr_address']) and $_POST['adr_address'] != '') {
     $adr_address = $_POST['adr_address'];
 }
 
-//if(isset($_GET['adr_country']) AND $_GET['adr_country'] != '') { $adr_country = $_GET['adr_country']; }
-//if(isset($_GET['adr_state']) AND $_GET['adr_state'] != '') { $adr_state = $_GET['adr_state']; }
 if (isset($_GET['adr_place']) and $_GET['adr_place'] != '') {
     $adr_place = $_GET['adr_place'];
 }
@@ -89,10 +73,7 @@ if (isset($_GET['adr_address']) and $_GET['adr_address'] != '') {
     $adr_address = $_GET['adr_address'];
 }
 
-//if($adr_country OR $adr_state OR $adr_place OR $adr_address) {
 if ($adr_place or $adr_address) {
-    //if($adr_country!='') { $where .= " AND address_country LIKE '%".safe_text_db($adr_country)."%' "; }
-    //if($adr_state!='') { $where .= " AND address_state LIKE '%".safe_text_db($adr_state)."%' "; }
     if ($adr_place != '') {
         $where .= " AND address_place LIKE '%" . safe_text_db($adr_place) . "%' ";
     }
@@ -100,18 +81,47 @@ if ($adr_place or $adr_address) {
         $where .= " AND address_address LIKE '%" . safe_text_db($adr_address) . "%' ";
     }
 }
-?>
+$path_form = 'addresses.php?tree_id=' . $tree_id;
+if ($humo_option["url_rewrite"] == "j") {
+    $path_form = 'addresses/' . $tree_id;
+}
 
+$place_style = '';
+$place_sort_reverse = $sort_desc;
+$place_img = '';
+if ($selectsort == "sort_place") {
+    $place_style = ' style="background-color:#ffffa0"';
+    $place_sort_reverse = '1';
+    if ($sort_desc == '1') {
+        $place_sort_reverse = '0';
+        $place_img = 'up';
+    }
+}
+
+$address_style = '';
+$address_sort_reverse = $sort_desc;
+$address_img = '';
+if ($selectsort == "sort_address") {
+    $address_style = ' style="background-color:#ffffa0"';
+    $address_sort_reverse = '1';
+    if ($sort_desc == '1') {
+        $address_sort_reverse = '0';
+        $address_img = 'up';
+    }
+}
+
+$path = 'addresses.php?tree_id=' . $tree_id . '&';
+if ($humo_option["url_rewrite"] == "j") {
+    $path = 'addresses/' . $tree_id . '?';
+}
+
+?>
 <h1 style="text-align:center;"><?= __('Addresses'); ?></h1>
 <div>
     <!-- *** Search form *** -->
-    <form method="POST" action="addresses.php" style="display : inline;">
+    <form method="POST" action="<?= $path_form; ?>" style="display : inline;">
         <table class="humo" style="margin-left:auto;margin-right:auto">
             <tr class="table_headline">
-                <!--
-                <td><?= __('Country'); ?>&nbsp;<input type="text" name="adr_country" size=15></td>
-                <td><?= __('State'); ?>&nbsp;<input type="text" name="adr_state" size=15></td>
-                -->
                 <td><?= __('City'); ?>&nbsp;<input type="text" name="adr_place" size=15></td>
                 <td><?= __('Street'); ?>&nbsp;<input type="text" name="adr_address" size=15></td>
                 <input type="hidden" name="database" value="<?= $database; ?>">
@@ -123,83 +133,37 @@ if ($adr_place or $adr_address) {
     <!-- *** Show results *** -->
     <table class="humo" style="margin-left:auto;margin-right:auto">
         <tr class="table_headline">
-            <?php
-            //echo '<th>'.__('Country').'</th>';
-
-            //$style=''; $sort_reverse=$sort_desc; $img='';
-            //if ($selectsort=="sort_country"){
-            //	$style=' style="background-color:#ffffa0"';
-            //	$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
-            //}
-            //echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_country&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Country').' <img src="images/button3'.$img.'.png"></a>';
-
-            //$style=''; $sort_reverse=$sort_desc; $img='';
-            //if ($selectsort=="sort_state"){
-            //	$style=' style="background-color:#ffffa0"';
-            //	$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
-            //}
-            //echo '<th><a href="addresses.php?database='.$database.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_state&sort_desc='.$sort_reverse.'"'.$style.'>'.__('State').' <img src="images/button3'.$img.'.png"></a>';
-
-            $style = '';
-            $sort_reverse = $sort_desc;
-            $img = '';
-            if ($selectsort == "sort_place") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($sort_desc == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
-                }
-            }
-            //echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('City').' <img src="images/button3'.$img.'.png"></a>';
-            echo '<th><a href="addresses.php?database=' . $database . '&adr_place=' . safe_text_show($adr_place) . '&adr_address=' . safe_text_show($adr_address) . '&sort=sort_place&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('City') . ' <img src="images/button3' . $img . '.png"></a>';
-
-            $style = '';
-            $sort_reverse = $sort_desc;
-            $img = '';
-            if ($selectsort == "sort_address") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($sort_desc == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
-                }
-            }
-            //echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_address&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Street').' <img src="images/button3'.$img.'.png"></a>';
-            echo '<th><a href="addresses.php?database=' . $database . '&adr_place=' . safe_text_show($adr_place) . '&adr_address=' . safe_text_show($adr_address) . '&sort=sort_address&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Street') . ' <img src="images/button3' . $img . '.png"></a>';
-
-            ?>
+            <th><a href="<?= $path; ?>adr_place=<?= safe_text_show($adr_place); ?>&adr_address=<?= safe_text_show($adr_address); ?>&sort=sort_place&sort_desc=<?= $place_sort_reverse; ?>" <?= $place_style; ?>><?= __('City'); ?> <img src="images/button3<?= $place_img; ?>.png"></a></th>
+            <th><a href="<?= $path; ?>adr_place=<?= safe_text_show($adr_place); ?>&adr_address=<?= safe_text_show($adr_address); ?>&sort=sort_address&sort_desc=<?= $address_sort_reverse; ?>" <?= $address_style; ?>><?= __('Street'); ?> <img src="images/button3<?= $address_img; ?>.png"></a></th>
             <th><?= __('Text'); ?></th>
         </tr>
 
         <?php
-        //$sql="SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."' 
-        //	AND address_gedcomnr LIKE '_%' AND address_address LIKE '_%'".
-        //	$where." ORDER BY ".$orderby;
         $sql = "SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' 
-        AND address_shared='1'" .
+            AND address_shared='1'" .
             $where . " ORDER BY " . $orderby;
         $address = $dbh->query($sql);
-
         while (@$addressDb = $address->fetch(PDO::FETCH_OBJ)) {
-            echo '<tr>';
-            //echo '<td style="padding-left:5px;padding-right:5px">';
-            //if($addressDb->address_country!='') { echo $addressDb->address_country; }
-            //echo '</td><td style="padding-left:5px;padding-right:5px">';
-            //if($addressDb->address_state!='')  { echo $addressDb->address_state; }
-            //echo '</td>';
-            echo '<td style="padding-left:5px;padding-right:5px">';
-            if ($addressDb->address_place != '') echo $addressDb->address_place;
-            echo '</td><td style="padding-left:5px;padding-right:5px">';
-            if ($addressDb->address_address != '') {
-                echo '<a href="' . CMS_ROOTPATH . 'address.php?gedcomnumber=' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
-            }
-            echo '</td>';
+        ?>
+            <tr>
+                <td style="padding-left:5px;padding-right:5px">
+                    <?php if ($addressDb->address_place != '') echo $addressDb->address_place; ?>
+                </td>
 
-            echo '<td>' . substr($addressDb->address_text, 0, 40);
-            if (strlen($addressDb->address_text) > 40) echo '...';
-            echo '</td>';
-            echo '</tr>';
+                <td style="padding-left:5px;padding-right:5px">
+                    <?php
+                    if ($addressDb->address_address != '') {
+                        //echo '<a href="' . CMS_ROOTPATH . 'address.php?gedcomnumber=' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+                        echo '<a href="' . CMS_ROOTPATH . 'address/' . $tree_id . '/' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+                    }
+                    ?>
+                </td>
+
+                <td><?= substr($addressDb->address_text, 0, 40); ?>
+                    <?php if (strlen($addressDb->address_text) > 40) echo '...'; ?>
+                </td>
+            </tr>
+        <?php
         }
         ?>
     </table>

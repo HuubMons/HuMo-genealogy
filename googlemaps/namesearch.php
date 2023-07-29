@@ -6,14 +6,11 @@ if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
 // *** When run from CMS, the path to the map (that contains this file) should be given ***
 if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../");
 
-//if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
-
 //ini_set('url_rewriter.tags','');
 
-//if (!CMS_SPECIFIC){
-//	session_cache_limiter ('private, must-revalidate'); //tb edit
+//session_cache_limiter ('private, must-revalidate'); //tb edit
 session_start();
-//}
+
 include_once(CMS_ROOTPATH . "include/db_login.php"); //Inloggen database.
 
 // *** Use UTF-8 database connection ***
@@ -175,10 +172,9 @@ function mapbirthplace($place)
         }
         //echo 'TEST: '.$sql;
 
-        $man_cls = new person_cls;
         echo '<div style="direction:ltr">';
         while (@$maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
-            $man_cls->construct($maplistDb);
+            $man_cls = new person_cls($maplistDb);
             $privacy_man = $man_cls->privacy;
             $name = $man_cls->person_name($maplistDb);
             if ($name["show_name"] == true) {

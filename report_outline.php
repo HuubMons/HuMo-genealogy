@@ -114,8 +114,7 @@ if ($screen_mode == 'PDF') {
     $pdf_marriage = array();
     @$persDb = $db_functions->get_person($main_person);
     // *** Use person class ***
-    $pers_cls = new person_cls;
-    $pers_cls->construct($persDb);
+    $pers_cls = new person_cls($persDb);
     $name = $pers_cls->person_name($persDb);
     $title = pdf_convert(__('Outline report') . __(' of ') . pdf_convert($name["standard_name"]));
 
@@ -149,16 +148,6 @@ if ($screen_mode != "PDF") {
     // ******** Button: Show full details (book)  ***********
     // ******************************************************
 
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    $qstr = '';
-    //    if ($_SERVER['QUERY_STRING'] != '') {
-    //        $qstr = '?' . $_SERVER['QUERY_STRING'];
-    //    }
-    //    echo '<form method="POST" action="report_outline.php' . $qstr . '" style="display : inline;">';
-    //} else {
-    //    //echo '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-    //    echo '<form method="POST" action="report_outline.php" style="display : inline;">';
-    //}
     echo '<form method="POST" action="report_outline.php" style="display : inline;">';
     echo '<input type="hidden" name="id" value="' . $family_id . '">';
     echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
@@ -178,16 +167,6 @@ if ($screen_mode != "PDF") {
         // ***************************************
         // ******** Button: Show date  ***********
         // ***************************************
-
-        //if(CMS_SPECIFIC=='Joomla') {
-        //    $qstr='';
-        //    if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-        //    echo '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
-        //}
-        //else {
-        //    //echo '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-        //    echo '<form method="POST" action="report_outline.php" style="display : inline;">';
-        //}
         echo '<form method="POST" action="report_outline.php" style="display : inline;">';
         echo '<input type="hidden" name="id" value="' . $family_id . '">';
         echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
@@ -204,15 +183,6 @@ if ($screen_mode != "PDF") {
         // *****************************************************************
         // ******** Show button: date after or below each other ************
         // *****************************************************************
-
-        //if(CMS_SPECIFIC=='Joomla') {
-        //    $qstr='';
-        //    if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-        //    echo '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
-        //}
-        //else {
-        //    echo ' <form method="POST" action="report_outline.php" style="display : inline;">';
-        //}
         echo ' <form method="POST" action="report_outline.php" style="display : inline;">';
         echo '<input type="hidden" name="id" value="' . $family_id . '">';
         echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
@@ -239,24 +209,16 @@ if ($screen_mode != "PDF") {
         $nr_gen = $i - 1;
         echo '<option';
         if ($nr_gen == $nr_generations) {
-            echo ' SELECTED';
+            echo ' selected';
         }
-        //if (CMS_SPECIFIC == 'Joomla') {
-        //    echo ' value="report_outline.php?' . $_SERVER['QUERY_STRING'] . '&amp;nr_generations=' . $nr_gen . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
-        //} else {
             echo ' value="report_outline.php?nr_generations=' . $nr_gen . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
-        //}
     }
     echo '<option';
     if ($nr_generations == 50) {
-        echo ' SELECTED';
+        echo ' selected';
     }
 
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    echo ' value="report_outline.php?' . $_SERVER['QUERY_STRING'] . '&amp;nr_generations=50&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . 'ALL' . '</option>';
-    //} else {
         echo ' value="report_outline.php?nr_generations=50&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
-    //}
     echo '</select>';
     echo '</span>';
 
@@ -355,17 +317,14 @@ function outline($family_id, $main_person, $gn, $nr_generations)
 
         // *** Privacy filter man and woman ***
         @$person_manDb = $db_functions->get_person($familyDb->fam_man);
-        $man_cls = new person_cls;
-        $man_cls->construct($person_manDb);
+        $man_cls = new person_cls($person_manDb);
         $privacy_man = $man_cls->privacy;
 
         @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-        $woman_cls = new person_cls;
-        $woman_cls->construct($person_womanDb);
+        $woman_cls = new person_cls($person_womanDb);
         $privacy_woman = $woman_cls->privacy;
 
-        $marriage_cls = new marriage_cls;
-        $marriage_cls->construct($familyDb, $privacy_man, $privacy_woman);
+        $marriage_cls = new marriage_cls($familyDb, $privacy_man, $privacy_woman);
         $family_privacy = $marriage_cls->privacy;
 
         // *************************************************************
@@ -580,8 +539,7 @@ function outline($family_id, $main_person, $gn, $nr_generations)
                     continue;
                 }
 
-                $child_cls = new person_cls;
-                $child_cls->construct($childDb);
+                $child_cls = new person_cls($childDb);
                 $child_privacy = $child_cls->privacy;
 
                 // *** Build descendant_report ***

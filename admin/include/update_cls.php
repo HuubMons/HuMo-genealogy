@@ -2,7 +2,7 @@
 class update_cls
 {
 
-    function update_v3_1()
+    public function update_v3_1()
     {
         // ********************************
         // *** HuMo-genealogy update 1 (V3.1) ***
@@ -64,7 +64,7 @@ class update_cls
         }
     }
 
-    function update_v4_6()
+    public function update_v4_6()
     {
         // ********************************
         // *** HuMo-genealogy update 4 (V4.6) ***
@@ -107,7 +107,7 @@ class update_cls
         }
     }
 
-    function update_v4_2()
+    public function update_v4_2()
     {
         // *********************************
         // *** HuMo-genealogy update 3 (V 4.2) ***
@@ -127,7 +127,7 @@ class update_cls
         $result = $dbh->query($sql);
     }
 
-    function update_v3_2()
+    public function update_v3_2()
     {
         // ********************************
         // *** HuMo-genealogy update 2 (V3.2) ***
@@ -233,7 +233,7 @@ class update_cls
         }
     }
 
-    function update_v4_6_update_2()
+    public function update_v4_6_update_2()
     {
         // ********************************
         // *** HuMo-genealogy update 4 (V4.6) ***
@@ -594,7 +594,7 @@ class update_cls
         }
     }
 
-    function update_v4_6_update_3()
+    public function update_v4_6_update_3()
     {
         global $dbh;
         // *** Check for update version 4.6 ***
@@ -1172,7 +1172,7 @@ class update_cls
         // *** End of update version 4.6 ***
     }
 
-    function update_v4_7()
+    public function update_v4_7()
     {
         // ************************************
         // *** Update procedure version 4.7 ***
@@ -1336,7 +1336,7 @@ class update_cls
         $result = $dbh->query("UPDATE humo_settings SET setting_value='1' WHERE setting_variable='update_status'");
     }
 
-    function update_v4_8()
+    public function update_v4_8()
     {
         // ************************************
         // *** Update procedure version 4.8 ***
@@ -1687,7 +1687,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    function update_v4_8_2()
+    public function update_v4_8_2()
     {
         // **************************************
         // *** Update procedure version 4.8.2 ***
@@ -1734,7 +1734,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    function update_v4_8_8()
+    public function update_v4_8_8()
     {
         // **************************************
         // *** Update procedure version 4.8.8 ***
@@ -1764,7 +1764,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    function update_v4_8_9()
+    public function update_v4_8_9()
     {
         // ************************************
         // *** Update procedure version 4.8.9 ***
@@ -1885,7 +1885,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    function update_v4_9_1()
+    public function update_v4_9_1()
     {
         // **************************************
         // *** Update procedure version 4.9.1 ***
@@ -1908,7 +1908,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    function update_v5_0()
+    public function update_v5_0()
     {
         // ************************************
         // *** Update procedure version 5.0 ***
@@ -1953,7 +1953,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    function update_v5_1()
+    public function update_v5_1()
     {
         // ************************************
         // *** Update procedure version 5.1 ***
@@ -2908,7 +2908,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    function update_v5_1_6()
+    public function update_v5_1_6()
     {
         // **************************************
         // *** Update procedure version 5.1.6 ***
@@ -2980,7 +2980,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    function update_v5_1_9()
+    public function update_v5_1_9()
     {
         // **************************************
         // *** Update procedure version 5.1.9 ***
@@ -3140,7 +3140,7 @@ class update_cls
     }
 
 
-    function update_v5_2_5()
+    public function update_v5_2_5()
     {
         // **************************************
         // *** Update procedure version 5.2.5 ***
@@ -3310,7 +3310,7 @@ class update_cls
     }
 
 
-    function update_v5_6_1()
+    public function update_v5_6_1()
     {
         // **************************************
         // *** Update procedure version 5.6.1 ***
@@ -3447,7 +3447,7 @@ class update_cls
     }
 
 
-    function update_v5_7()
+    public function update_v5_7()
     {
         // ************************************
         // *** Update procedure version 5.7 ***
@@ -3609,7 +3609,7 @@ class update_cls
     }
 
 
-    function update_v5_9()
+    public function update_v5_9()
     {
         // ************************************
         // *** Update procedure version 5.9 ***
@@ -3692,7 +3692,7 @@ class update_cls
     }
 
 
-    function update_v6_0_1()
+    public function update_v6_0_1()
     {
         // **************************************
         // *** Update procedure version 6.0.1 ***
