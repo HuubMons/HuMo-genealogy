@@ -1,7 +1,4 @@
 <?php
-include_once("header.php"); // *** returns CMS_ROOTPATH constant ***
-include_once(CMS_ROOTPATH . "menu.php");
-
 // *** Check user authority ***
 if ($user['group_addresses'] != 'j') {
     echo __('You are not authorised to see this page.');
@@ -81,7 +78,8 @@ if ($adr_place or $adr_address) {
         $where .= " AND address_address LIKE '%" . safe_text_db($adr_address) . "%' ";
     }
 }
-$path_form = 'addresses.php?tree_id=' . $tree_id;
+//$path_form = 'addresses.php?tree_id=' . $tree_id;
+$path_form = 'index.php?page=addresses&amp;tree_id=' . $tree_id;
 if ($humo_option["url_rewrite"] == "j") {
     $path_form = 'addresses/' . $tree_id;
 }
@@ -110,7 +108,8 @@ if ($selectsort == "sort_address") {
     }
 }
 
-$path = 'addresses.php?tree_id=' . $tree_id . '&';
+//$path = 'addresses.php?tree_id=' . $tree_id . '&';
+$path = 'index.php?page=addresses&amp;tree_id=' . $tree_id . '&';
 if ($humo_option["url_rewrite"] == "j") {
     $path = 'addresses/' . $tree_id . '?';
 }
@@ -140,8 +139,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
         <?php
         $sql = "SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' 
-            AND address_shared='1'" .
-            $where . " ORDER BY " . $orderby;
+            AND address_shared='1'" . $where . " ORDER BY " . $orderby;
         $address = $dbh->query($sql);
         while (@$addressDb = $address->fetch(PDO::FETCH_OBJ)) {
         ?>
@@ -153,13 +151,18 @@ if ($humo_option["url_rewrite"] == "j") {
                 <td style="padding-left:5px;padding-right:5px">
                     <?php
                     if ($addressDb->address_address != '') {
-                        //echo '<a href="' . CMS_ROOTPATH . 'address.php?gedcomnumber=' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
-                        echo '<a href="' . CMS_ROOTPATH . 'address/' . $tree_id . '/' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+                        if ($humo_option["url_rewrite"] == "j") {
+                            echo '<a href="' . CMS_ROOTPATH . 'address/' . $tree_id . '/' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+                        } else {
+                            //echo '<a href="' . CMS_ROOTPATH . 'address.php?tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+                            echo '<a href="' . CMS_ROOTPATH . 'index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+                        }
                     }
                     ?>
                 </td>
 
-                <td><?= substr($addressDb->address_text, 0, 40); ?>
+                <td>
+                    <?= substr($addressDb->address_text, 0, 40); ?>
                     <?php if (strlen($addressDb->address_text) > 40) echo '...'; ?>
                 </td>
             </tr>
@@ -168,5 +171,3 @@ if ($humo_option["url_rewrite"] == "j") {
         ?>
     </table>
 </div>
-<?php
-include_once(CMS_ROOTPATH . "footer.php");

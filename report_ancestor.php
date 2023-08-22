@@ -34,14 +34,17 @@ include_once("header.php"); // returns CMS_ROOTPATH constant
 // TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/models/ancestor.php";
 $get_ancestor = new Ancestor($dbh);
-//$family_id = $get_family->getFamilyId();
-//$main_person = $get_family->getMainPerson();
+//$family_id = $get_ancestor->getFamilyId();
+$main_person = $get_ancestor->getMainPerson();
 //$family_expanded =  $get_family->getFamilyExpanded();
 //$source_presentation =  $get_family->getSourcePresentation();
 //$picture_presentation =  $get_family->getPicturePresentation();
 //$text_presentation =  $get_family->getTextPresentation();
 $rom_nr = $get_ancestor->getNumberRoman();
 //$number_generation = $get_family->getNumberGeneration();
+if ($screen_mode != 'PDF') {
+    $ancestor_header = $get_ancestor->getAncestorHeader('Ancestor report', $tree_id, $main_person);
+}
 //$this->view("families", array(
 //    "family" => $family,
 //    "title" => __('Family')
@@ -69,17 +72,8 @@ if ($screen_mode != 'PDF') {  //we can't have a menu in pdf...
     $db_functions->set_tree_id($dataDb->tree_id);
 }
 
-// *** TODO CHECK: $family_id is actually a person_id... ***
-$family_id = 'I1'; // *** Default value, normally not used... ***
-if (isset($_GET["id"])) {
-    $family_id = $_GET["id"];
-}
-if (isset($_POST["id"])) {
-    $family_id = $_POST["id"];
-}
-
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($family_id);
+$db_functions->check_person($main_person);
 
 // *** Source presentation selected by user (title/ footnote or hide sources) ***
 // *** Default setting is selected by administrator ***
@@ -95,42 +89,8 @@ if (isset($_SESSION['save_source_presentation'])) {
 }
 
 if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
-    echo '<div class="standard_header fonts">';
-    if ($screen_mode == 'ancestor_chart') {
-        echo __('Ancestor chart');
-    } else {
-        echo __('Ancestor report');
-
-        //if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
-        if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
-            // Show pdf button
-            echo ' <form method="POST" action="' . $uri_path . 'report_ancestor.php?show_sources=1" style="display : inline;">';
-            echo '<input type="hidden" name="id" value="' . $family_id . '">';
-            echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
-            echo '<input type="hidden" name="screen_mode" value="PDF">';
-
-            // *** needed to check PDF M/F/? icons ***
-            echo '<input type="hidden" name="ancestor_report" value="1">';
-
-            echo '<input class="fonts" type="Submit" name="submit" value="' . __('PDF Report') . '">';
-            echo '</form>';
-        }
-
-        if ($user["group_rtf_button"] == 'y' and $language["dir"] != "rtl") {
-            // Show rtf button
-            echo ' <form method="POST" action="' . $uri_path . 'report_ancestor.php?show_sources=1" style="display : inline;">';
-            echo '<input type="hidden" name="id" value="' . $family_id . '">';
-            echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
-            echo '<input type="hidden" name="screen_mode" value="RTF">';
-
-            // *** needed to check RTF M/F/? icons ***
-            echo '<input type="hidden" name="ancestor_report" value="1">';
-
-            echo '<input class="fonts" type="Submit" name="submit" value="' . __('RTF Report') . '">';
-            echo '</form>';
-        }
-    }
-    echo '</div>';
+    //echo '<h1 class="standard_header fonts">'.__('Ancestor report').'</h1>';
+    echo $ancestor_header;
 }
 
 if ($screen_mode == 'PDF') {
@@ -139,7 +99,7 @@ if ($screen_mode == 'PDF') {
     $pdf_marriage = array();
 
     $pdf = new PDF();
-    @$persDb = $db_functions->get_person($family_id);
+    @$persDb = $db_functions->get_person($main_person);
     // *** Use person class ***
     $pers_cls = new person_cls($persDb);
     $name = $pers_cls->person_name($persDb);
@@ -207,7 +167,7 @@ if ($screen_mode == 'RTF') {  // initialize rtf generation
     $parSimple->setIndentRight(0.5);
 
     // *** Generate title of RTF file ***
-    @$persDb = $db_functions->get_person($family_id);
+    @$persDb = $db_functions->get_person($main_person);
     // *** Use person class ***
     $pers_cls = new person_cls($persDb);
     $name = $pers_cls->person_name($persDb);
@@ -231,7 +191,7 @@ if ($screen_mode == 'RTF') {  // initialize rtf generation
     }
 }
 
-$ancestor_array2[] = $family_id;
+$ancestor_array2[] = $main_person;
 $ancestor_number2[] = 1;
 $marriage_gedcomnumber2[] = 0;
 $generation = 1;
@@ -313,12 +273,44 @@ while (isset($ancestor_array2[0])) {
     if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
         echo '</table>';
 
-        if (isset($rom_nr[$generation]))
-            echo '<div class="standard_header fonts">' . __('generation ') . $rom_nr[$generation];
+        if (isset($rom_nr[$generation])) {
+            echo '<h2 class="standard_header fonts">' . __('generation ') . $rom_nr[$generation];
+        }
         if (isset($language["gen" . $generation]) and $language["gen" . $generation]) {
             echo ' (' . $language["gen" . $generation] . ')';
         }
-        echo '</div><br>';
+
+        if ($generation == 1) {
+            if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
+                // Show pdf button
+                echo '&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'report_ancestor.php?show_sources=1" style="display : inline;">';
+                echo '<input type="hidden" name="id" value="' . $main_person . '">';
+                echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
+                echo '<input type="hidden" name="screen_mode" value="PDF">';
+
+                // *** needed to check PDF M/F/? icons ***
+                echo '<input type="hidden" name="ancestor_report" value="1">';
+
+                echo '<input class="fonts" type="Submit" name="submit" value="' . __('PDF Report') . '">';
+                echo '</form>';
+            }
+
+            if ($user["group_rtf_button"] == 'y' and $language["dir"] != "rtl") {
+                // Show rtf button
+                echo ' <form method="POST" action="' . $uri_path . 'report_ancestor.php?show_sources=1" style="display : inline;">';
+                echo '<input type="hidden" name="id" value="' . $main_person . '">';
+                echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
+                echo '<input type="hidden" name="screen_mode" value="RTF">';
+
+                // *** needed to check RTF M/F/? icons ***
+                echo '<input type="hidden" name="ancestor_report" value="1">';
+
+                echo '<input class="fonts" type="Submit" name="submit" value="' . __('RTF Report') . '">';
+                echo '</form>';
+            }
+        }
+
+        echo '</h2><br>';
 
         echo '<table class="humo standard" align="center">';
     } elseif ($screen_mode == "RTF") {
@@ -738,7 +730,7 @@ if ($screen_mode == '') {
 
 // Finishing code for ancestor chart and ancestor report
 if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
-    include_once(CMS_ROOTPATH . "footer.php");
+    include_once(CMS_ROOTPATH . "views/footer.php");
 } elseif ($screen_mode == 'RTF') { // initialize rtf generation
     // *** Save rtf document to file ***
     $rtf->save($file_name);
@@ -746,7 +738,7 @@ if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
     echo '<br><br><a href="' . $file_name . '">' . __('Download RTF report.') . '</a>';
     echo '<br><br>' . __('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.');
 
-    $text = '<br><br><form method="POST" action="' . $uri_path . 'report_ancestor.php?database=' . $_SESSION['tree_prefix'] . '&amp;id=' . $family_id . '" style="display : inline;">';
+    $text = '<br><br><form method="POST" action="' . $uri_path . 'report_ancestor.php?database=' . $_SESSION['tree_prefix'] . '&amp;id=' . $main_person . '" style="display : inline;">';
 
     echo '<input type="hidden" name="screen_mode" value="">';
 

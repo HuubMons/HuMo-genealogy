@@ -79,11 +79,7 @@ elseif (is_file('media/logo.jpg'))
 
         // *** Show quicksearch field ***
         if (!$bot_visit) {
-            //if (CMS_SPECIFIC == 'Joomla') {
-            //    $menu_path = 'index.php?option=com_humo-gen&amp;task=list';
-            //} else {
             $menu_path = CMS_ROOTPATH . 'list.php';
-            //}
 
             $quicksearch = '';
             if (isset($_POST['quicksearch'])) {
@@ -109,11 +105,7 @@ elseif (is_file('media/logo.jpg'))
                 echo ' <input type="submit" value="' . __('Search') . '">';
 
                 // *** Link for extended search form ***
-                //if (CMS_SPECIFIC == 'Joomla') {
-                //    $menu_path = 'index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1&index_list=search';
-                //} else {
                 $menu_path = CMS_ROOTPATH . 'list.php?adv_search=1&index_list=search';
-                //}
                 echo ' <a href="' . $menu_path . '"><img src="images/advanced-search.jpg" width="17" alt="' . __('Advanced search') . '"></a>';
                 ?>
             </form>
@@ -136,22 +128,6 @@ elseif (is_file('media/logo.jpg'))
                             if (is_string($value) and $value) {
                                 $favorite_array2 = explode("|", $value);
 
-                                // DISABLED OLD FAVOURITE SYSTEM. Because it's not possible to disable these favorites.
-                                //if (!is_numeric($favorite_array2['0'])) {
-                                /*
-                                    // *** Old favourite system ***
-                                    // *** Show only persons in selected family tree ***
-                                    if ($tree_id == $favorite_array2['2']) {
-                                        // *** Check if family tree is still the same family tree ***
-                                        // *** Proces man using a class ***
-                                        $test_favorite = $db_functions->get_person($favorite_array2['3']);
-                                        if ($test_favorite) {
-                                            echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['3'] . '">' . $favorite_array2['0'] . '</option>';
-                                        }
-                                    }
-                                    */
-                                //} else {
-
                                 // *** July 2023: New favorite system: 0=tree/ 1=family/ 2=person GEDCOM number ***
                                 // *** Show only persons in selected family tree ***
                                 if ($tree_id == $favorite_array2['0']) {
@@ -165,37 +141,14 @@ elseif (is_file('media/logo.jpg'))
                                         echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['2'] . '">' . $name['name'] . ' [' . $favorite_array2['2'] . ']</option>';
                                     }
                                 }
-                                //}
                             }
                         }
-
-                        //TEST
-                        //foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-                        //    echo '<option value="">' . $name . '!!!!</option>';
-                        //}
-                        //echo '<option value="' . $favorite_array2['0'] . '|' . $favorite_array2['1'] . '">' . $key.'='.$favorite_array2['0'].'-'.$favorite_array2['1'].'-'.$favorite_array2['2'] . '</option>';
                     }
                     ?>
                 </select>
             </form>
         <?php
         }
-
-        // *** Show "A+ A- Reset" ***
-        /*
-        echo '<span id="top_font_size">';
-            echo '&nbsp;&nbsp;&nbsp;<a href="javascript:decreaseFontSize(0);" title="decrease font size">'.$dirmark1.'A-&nbsp;</a>';
-            echo ' <a href="javascript:increaseFontSize(0);" title="increase font size">A+</a>';
-
-            $navigator_user_agent = ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) ? strtolower( $_SERVER['HTTP_USER_AGENT'] ) : '';
-            if ((stristr($navigator_user_agent, "chrome")) OR (stristr($navigator_user_agent, "safari"))) {
-                // Chrome and Safari: reset is not working good... So skip this code.
-            }
-            else {  // all other browsers
-                echo ' <a href="javascript:delCookie();" title="reset font size">Reset</a>';
-            }
-        echo '</span>';
-        */
         ?>
 
     </div> <!-- End of Top -->
@@ -252,7 +205,8 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_help = $uri_path . 'help';
     } else {
-        $menu_path_help = CMS_ROOTPATH . 'help.php';
+        //$menu_path_help = CMS_ROOTPATH . 'help.php';
+        $menu_path_help = CMS_ROOTPATH . 'index.php?page=help';
     }
     $menu_item_help = '';
     if ($menu_choice == 'help') {
@@ -263,7 +217,12 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'register') {
         $menu_item_register = ' id="current"';
     }
-    $menu_path_register = CMS_ROOTPATH . 'register.php';
+    if ($humo_option["url_rewrite"] == "j") {
+        $menu_path_register = $uri_path . 'register';
+    }
+    else{
+        $menu_path_register = CMS_ROOTPATH . 'index.php?page=register';
+    }
 
     $menu_item_cms = '';
     if ($menu_choice == 'cms_pages') {
@@ -272,7 +231,7 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_cms = $uri_path . 'cms_pages';
     } else {
-        $menu_path_cms = CMS_ROOTPATH . 'cms_pages.php';
+        $menu_path_cms = CMS_ROOTPATH . 'index.php?page=cms_pages';
     }
 
     $menu_item_cookies = '';
@@ -282,7 +241,8 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_cookies = $uri_path . 'cookies';
     } else {
-        $menu_path_cookies = CMS_ROOTPATH . 'cookies.php';
+        //$menu_path_cookies = CMS_ROOTPATH . 'cookies.php';
+        $menu_path_cookies = CMS_ROOTPATH . 'index.php?page=cookies';
     }
 
     $menu_item_persons = '';
@@ -298,7 +258,7 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_names = 'list_names/' . $tree_id . '/';
     } else {
-        $menu_path_names = CMS_ROOTPATH . 'list_names.php?tree_id=' . $tree_id;
+        $menu_path_names = CMS_ROOTPATH . 'index.php?page=list_names&amp;tree_id=' . $tree_id;
     }
 
     $menu_item_user_settings = '';
@@ -308,7 +268,8 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_user_settings = 'user_settings';
     } else {
-        $menu_path_user_settings = CMS_ROOTPATH . 'user_settings.php';
+        //$menu_path_user_settings = CMS_ROOTPATH . 'user_settings.php';
+        $menu_path_user_settings = CMS_ROOTPATH . 'index.php?page=user_settings';
     }
 
     $menu_item_admin = '';
@@ -321,7 +282,7 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_anniversary = 'birthday_list';
     } else {
-        $menu_path_anniversary = CMS_ROOTPATH . 'birthday_list.php';
+        $menu_path_anniversary = CMS_ROOTPATH . 'index.php?page=birthday_list';
     }
 
     $menu_item_statistics = '';
@@ -331,7 +292,7 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_statistics = 'statistics';
     } else {
-        $menu_path_statistics = CMS_ROOTPATH . 'statistics.php';
+        $menu_path_statistics = CMS_ROOTPATH . 'index.php?page=statistics';
     }
 
     $menu_item_calculator = '';
@@ -357,7 +318,7 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_contact = 'mailform';
     } else {
-        $menu_path_contact = CMS_ROOTPATH . 'mailform.php';
+        $menu_path_contact = CMS_ROOTPATH . 'index.php?page=mailform';
     }
 
     // *** Latest changes ***
@@ -370,7 +331,7 @@ elseif (is_file('media/logo.jpg'))
         $menu_path_latest_changes = 'latest_changes/' . $tree_id;
     } else {
         //$menu_path_latest_changes = CMS_ROOTPATH . 'latest_changes.php';
-        $menu_path_latest_changes = CMS_ROOTPATH . 'latest_changes.php?' . $tree_id;
+        $menu_path_latest_changes = CMS_ROOTPATH . 'index.php?page=latest_changes&amp;tree_id=' . $tree_id;
     }
 
     $menu_item_tree_index = '';
@@ -410,16 +371,11 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'sources') {
         $menu_item_sources = ' id="current"';
     }
-    //if ($humo_option["url_rewrite"]=="j"){
-    //	$menu_path= 'sources/'.$tree_id.'/';
-    //}
-    //else {
-    //$menu_path_sources = CMS_ROOTPATH . 'sources.php?tree_id=' . $tree_id;
-    //}
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_sources = 'sources/' . $tree_id;
     } else {
-        $menu_path_sources = CMS_ROOTPATH . 'sources.php?tree_id=' . $tree_id;
+        //$menu_path_sources = CMS_ROOTPATH . 'sources.php?tree_id=' . $tree_id;
+        $menu_path_sources = CMS_ROOTPATH . 'index.php?page=sources&amp;tree_id=' . $tree_id;
     }
 
     $menu_item_addresses = '';
@@ -429,7 +385,8 @@ elseif (is_file('media/logo.jpg'))
     if ($humo_option["url_rewrite"] == "j") {
         $menu_path_addresses = 'addresses/' . $tree_id;
     } else {
-        $menu_path_addresses = CMS_ROOTPATH . 'addresses.php?tree_id=' . $tree_id;
+        //$menu_path_addresses = CMS_ROOTPATH . 'addresses.php?tree_id=' . $tree_id;
+        $menu_path_addresses = CMS_ROOTPATH . 'index.php?page=addresses&amp;tree_id=' . $tree_id;
     }
 
     ?>
@@ -644,23 +601,23 @@ elseif (is_file('media/logo.jpg'))
                             <div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                                 <ul class="humo_menu_item2">
                                     <?php
-                                    if ($user["group_birthday_list"] == 'j' and file_exists(CMS_ROOTPATH . 'birthday_list.php')) {
+                                    if ($user["group_birthday_list"] == 'j') {
                                         echo '<li' . $menu_item_anniversary . '><a href="' . $menu_path_anniversary . '">' . __('Anniversary list') . '</a></li>';
                                     }
-                                    if ($user["group_showstatistics"] == 'j' and file_exists(CMS_ROOTPATH . 'statistics.php')) {
+                                    if ($user["group_showstatistics"] == 'j') {
                                         echo '<li' . $menu_item_statistics . '><a href="' . $menu_path_statistics . '">' . __('Statistics') . '</a></li>';
                                     }
-                                    if ($user["group_relcalc"] == 'j' and file_exists(CMS_ROOTPATH . 'relations.php')) {
+                                    if ($user["group_relcalc"] == 'j') {
                                         echo '<li' . $menu_item_calculator . '><a href="' . $menu_path_calculator . '">' . __('Relationship calculator') . "</a></li>\n";
                                     }
-                                    if ($user["group_googlemaps"] == 'j' and file_exists(CMS_ROOTPATH . 'maps.php')) {
+                                    if ($user["group_googlemaps"] == 'j') {
                                         //	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
                                         //		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0) {  // this tree has been indexed
                                         if (!$bot_visit and $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) {
                                             echo '<li' . $menu_item_map . '><a href="' . $menu_path_map . '">' . __('World map') . "</a></li>\n";
                                         }
                                     }
-                                    if ($user["group_contact"] == 'j' and file_exists(CMS_ROOTPATH . 'mailform.php')) {
+                                    if ($user["group_contact"] == 'j') {
                                         // *** Show link to contact form ***
                                         if (@$dataDb->tree_owner) {
                                             if ($dataDb->tree_email) {
@@ -668,7 +625,7 @@ elseif (is_file('media/logo.jpg'))
                                             }
                                         }
                                     }
-                                    if ($user["group_latestchanges"] == 'j' and file_exists(CMS_ROOTPATH . 'latest_changes.php')) {
+                                    if ($user["group_latestchanges"] == 'j') {
                                         echo '<li' . $menu_item_latest_changes . '><a href="' . $menu_path_latest_changes . '">' . __('Latest changes') . '</a></li>';
                                     }
                                     ?>

@@ -1,8 +1,4 @@
-<?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH . "menu.php");
-?>
-
+<!-- TODO check all links in this script -->
 <p class="fonts">
     <!--*** Find first first_character of last name *** -->
 <div style="text-align:center">
@@ -18,23 +14,17 @@ include_once(CMS_ROOTPATH . "menu.php");
     }
     @$person_result = $dbh->query($person_qry);
     while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
-        //if (CMS_SPECIFIC == 'Joomla') {
-        //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
-        //} elseif ($humo_option["url_rewrite"] == "j") {
         if ($humo_option["url_rewrite"] == "j") {
             // *** url_rewrite ***
-            $path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $personDb->first_character . '/';
+            $path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $personDb->first_character;
         } else {
-            $path_tmp = CMS_ROOTPATH . 'list_names.php?tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
+            $path_tmp = CMS_ROOTPATH . 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
         }
         echo ' <a href="' . $path_tmp . '">' . $personDb->first_character . '</a>';
     }
 
-    if (CMS_SPECIFIC == 'Joomla') {
-        $path_tmp = 'index.php?option=com_humo-gen&amp;task=list_names&amp;last_name=all';
-    } else {
-        $path_tmp = CMS_ROOTPATH . "list_names.php?last_name=all";
-    }
+    //TODO also use url_rewrite.
+    $path_tmp = CMS_ROOTPATH . "index.php?page=list_names&amp;last_name=all";
     echo ' <a href="' . $path_tmp . '">' . __('All names') . "</a>\n";
     ?>
 </div><br>
@@ -44,12 +34,16 @@ include_once(CMS_ROOTPATH . "menu.php");
 //if (isset($urlpart[1])){
 //	$last_name=urldecode(safe_text_db($urlpart[1]));   // without urldecode skandinavian letters don't work!
 //}
-if (isset($_GET['last_name']) and $_GET['last_name'] and is_string($_GET['last_name'])) {
-    $last_name = safe_text_db($_GET['last_name']);
-} else {
-    // *** Alphabet find first first_character of lastname ***
+if (!isset($last_name)){
     $last_name = 'a'; // *** Default first_character ***
 }
+if (isset($_GET['last_name']) and $_GET['last_name'] and is_string($_GET['last_name'])) {
+    $last_name = safe_text_db($_GET['last_name']);
+}
+// else{
+//    // *** Alphabet find first first_character of lastname ***
+//    $last_name = 'a'; // *** Default first_character ***
+//}
 //echo 'TEST'.$_GET['last_name'].'!'.$last_name.'!';
 
 // *** MAIN SETTINGS ***
@@ -83,12 +77,7 @@ function tablerow($nr, $lastcol = false)
     // $nr is the array number of the name set created in function last_names
     // if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
     global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id;
-    //if (CMS_SPECIFIC=='Joomla'){
-    //	$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;tree_id='.$tree_id;
-    //}
-    //else{
     $path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id;
-    //}
     echo '<td class="namelst">';
     if (isset($freq_last_names[$nr])) {
         $top_pers_lastname = '';
@@ -211,7 +200,7 @@ $count_persons = $result->rowCount();
 // *** If number of displayed surnames is "ALL" change value into number of surnames ***
 if ($nr_persons == 'ALL') $nr_persons = $count_persons;
 
-//echo '<div class="standard_header">'.__('Frequency of Surnames').'</div>';
+//echo '<h1 class="standard_header">'.__('Frequency of Surnames').'</h1>';
 
 // *** Show options line ***
 echo '<div style="text-align:center">';
@@ -219,37 +208,22 @@ echo '<div style="text-align:center">';
 if ($humo_option["url_rewrite"] == "j") {
     $url = $uri_path . 'list_names/' . $tree_id . '/' . $last_name;
 } else {
-    $url = CMS_ROOTPATH . 'list_names.php?tree_id=' . $tree_id . '&amp;last_name=' . $last_name;
+    $url = CMS_ROOTPATH . 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $last_name;
 }
 ?>
 <form method="POST" action="<?= $url; ?>" style="display:inline;" id="frqnames">
+    <?= __('Number of displayed surnames') . ': '; ?>
+    <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">
+        <option value="25" <?php if ($maxnames == 25) echo ' selected'; ?>>25</option>
+        <option value="51" <?php if ($maxnames == 51) echo ' selected'; ?>>50</option> <!-- 51 so no empty last field (if more names than this) -->
+        <option value="75" <?php if ($maxnames == 75) echo ' selected'; ?>>75</option>
+        <option value="100" <?php if ($maxnames == 100) echo ' selected'; ?>>100</option>
+        <option value="201" <?php if ($maxnames == 201) echo ' selected'; ?>>200</option> <!-- 201 so no empty last field (if more names than this) -->
+        <option value="300" <?php if ($maxnames == 300) echo ' selected'; ?>>300</option>
+        <option value="ALL" <?php if ($maxnames == 'ALL') echo ' selected'; ?>><?= __('All'); ?></option>
+    </select>
 
     <?php
-    echo __('Number of displayed surnames') . ': ';
-    echo '<select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
-    $selected = '';
-    if ($maxnames == 25) $selected = " selected ";
-    echo '<option value="25" ' . $selected . '>25</option>';
-    $selected = '';
-    if ($maxnames == 51) $selected = " selected ";
-    echo '<option value="51" ' . $selected . '>50</option>'; // 51 so no empty last field (if more names than this)
-    $selected = '';
-    if ($maxnames == 75) $selected = " selected ";
-    echo '<option value="75" ' . $selected . '>75</option>';
-    $selected = '';
-    if ($maxnames == 100) $selected = " selected ";
-    echo '<option value="100" ' . $selected . '>100</option>';
-    $selected = '';
-    if ($maxnames == 201) $selected = " selected ";
-    echo '<option value="201" ' . $selected . '>200</option>'; // 201 so no empty last field (if more names than this)
-    $selected = '';
-    if ($maxnames == 300) $selected = " selected ";
-    echo '<option value="300" ' . $selected . '>300</option>';
-    $selected = '';
-    if ($maxnames == 'ALL') $selected = " selected ";
-    echo '<option value="ALL" ' . $selected . '">' . __('All') . '</option>';
-    echo '</select>';
-
     echo '&nbsp;&nbsp;&nbsp;&nbsp;' . __('Number of columns') . ': ';
     echo '<select size=1 name="maxcols" onChange="this.form.submit();" style="width: 50px; height:20px;">';
     for ($i = 1; $i < 7; $i++) {
@@ -275,7 +249,7 @@ if (@$person->rowCount() == 0) {
     if ($humo_option["url_rewrite"] == "j") {
         $uri_path_string = $uri_path . 'list_names/' . $tree_id . '/' . $last_name . '?';
     } else {
-        $uri_path_string = 'list_names.php?last_name=' . $last_name . '&amp;';
+        $uri_path_string = 'index.php?page=list_names&amp;last_name=' . $last_name . '&amp;';
     }
 
     // "<="
@@ -324,12 +298,7 @@ if (isset($show_line_pages) and $show_line_pages and isset($line_pages)) echo '<
 
 echo '</div>';
 
-if (CMS_SPECIFIC == "Joomla") {
-    $table2_width = "100%";
-} else {
-    //$table2_width="900";
-    $table2_width = "90%";
-}
+$table2_width = "90%";
 ?>
 <br>
 <table style="width:<?= $table2_width; ?>;" class="humo nametbl" align="center">
@@ -377,6 +346,3 @@ if (CMS_SPECIFIC == "Joomla") {
         }
     }
 </script><br>
-
-<?php
-include_once(CMS_ROOTPATH . "footer.php");

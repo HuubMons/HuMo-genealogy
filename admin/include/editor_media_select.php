@@ -37,13 +37,8 @@ echo '
     </script>
 ';
 
-if (CMS_SPECIFIC == "Joomla") {
-    $prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-genealogy admin map
-    $joomlastring = "option=com_humo-gen&amp;task=admin&amp;";
-} else {
-    $prefx = '../'; // to get out of the admin map
-    $joomlastring = "";
-}
+$prefx = '../'; // to get out of the admin map
+$joomlastring = "";
 
 // *** Get main path for selected family tree ***
 $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);

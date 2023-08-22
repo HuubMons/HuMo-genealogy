@@ -27,13 +27,13 @@ class addressController
     {
         switch ($action) {
             case "index":
-                $this->index();
+                //$this->index();
                 break;
             case "detail":
                 $this->detail();
                 break;
             default:
-                $this->index();
+                //$this->index();
                 break;
         }
     }
@@ -41,6 +41,7 @@ class addressController
     /**
      * Loads the addresses page
      */
+    /*
     public function index()
     {
         $get_addresses = new Address($this->Connection);
@@ -50,6 +51,7 @@ class addressController
             "title" => __('Addresses')
         ));
     }
+    */
 
     /**
      * Get address
@@ -88,6 +90,6 @@ class addressController
     public function view($view, $results)
     {
         $data = $results;
-        require_once  __DIR__ . "/../views/" . $view . "View.php";
+        require_once  __DIR__ . "/../views/" . $view . ".php";
     }
 }

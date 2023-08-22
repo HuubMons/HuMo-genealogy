@@ -6,9 +6,6 @@ if (!defined('ADMIN_PAGE')) {
 
 global $selected_language;
 
-//if (CMS_SPECIFIC == "Joomla")
-//    $phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
-//else
 $phpself = 'index.php';
 
 ?>

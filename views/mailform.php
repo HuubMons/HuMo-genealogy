@@ -1,7 +1,4 @@
 <?php
-include_once("header.php");
-include_once(CMS_ROOTPATH . "menu.php");
-
 // *** Check block_spam_answer ***
 $mail_allowed = false;
 if (isset($_POST['send_mail'])) {
@@ -106,72 +103,82 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
             $mail_text = $_POST['mail_text'];
         }
 
-        $path = 'mailform.php';
+        $path = 'index.php?page=mailform';
         if ($humo_option["url_rewrite"] == "j") $path = 'mailform';
 ?>
-        <script>
-            function validate(form_id, mail_sender) {
-                var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-                var address = document.forms[form_id].elements[mail_sender].value;
-                if (reg.test(address) == false) {
-                    alert('Invalid Email Address');
-                    return false;
-                }
-            }
-        </script>
 
-        <br>
-        <form id="form_id" method="post" action="<?= $path; ?>" accept-charset="utf-8" onsubmit="javascript:return validate('form_id','mail_sender');">
-            <table align="center" class="humo">
-                <tr class=table_headline>
-                    <th class="fonts" colspan="2"><?= __('Mail form'); ?></th>
-                </tr>
+        <h1><?= __('Mail form'); ?></h1>
 
-                <tr>
-                    <td><?= __('Name'); ?>:</td>
-                    <td><input type="text" class="fonts" name="mail_name" size="40" style="background-color:#FFFFFF" value="<?= $mail_name; ?>"></td>
-                </tr>
+        <!-- Layout: https://www.w3schools.com/csS/tryit.asp?filename=trycss_form_responsive -->
+        <div class="container">
+            <form action="<?= $path; ?>" method="post">
+                <div class="row">
+                    <div class="col-25">
+                        <label for="name"><?= __('Name'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" id="fname" class="input" name="mail_name" placeholder="<?= __('Name'); ?>" value="<?= $mail_name; ?>">
+                    </div>
+                </div>
 
-                <tr>
-                    <td><?= __('FULL e-mail address: '); ?></td>
-                    <td><input type="text" class="fonts" id="mail_sender" name="mail_sender" value="<?= $mail_sender; ?>" size="40" style="background-color:#FFFFFF"><br><?= __('My response will be sent to this e-mail address!'); ?></td>
-                </tr>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="mail_sender"><?= __('E-mail address'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <input type="email" id="lname" class="input" name="mail_sender" placeholder="<?= __('E-mail address'); ?>" value="<?= $mail_sender; ?>">
+                    </div>
+                </div>
 
-                <tr>
-                    <td><?= __('Subject:'); ?></td>
-                    <td><input type="text" class="fonts" name="mail_subject" size="40" style="background-color:#FFFFFF" value="<?= $mail_subject; ?>"></td>
-                </tr>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="subject"><?= __('Subject'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" id="lname" class="input" name="mail_subject" placeholder="<?= __('Subject'); ?>" value="<?= $mail_subject; ?>">
+                    </div>
+                </div>
 
-                <tr>
-                    <td><?= __('Message: '); ?></td>
-                    <td><textarea name="mail_text" ROWS="10" COLS="29" class="fonts"><?= $mail_text; ?></textarea></td>
-                </tr>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="message"><?= __('Message'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <textarea id="message" class="input" name="mail_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $mail_text; ?></textarea>
+                    </div>
+                </div>
 
-                <?php
+                <?php if ($humo_option["use_newsletter_question"] == 'y') { ?>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="newsletter"><?= __('Receive newsletter'); ?></label>
+                        </div>
+                        <div class="col-75">
+                            <input type="radio" name="newsletter" value="Yes"><?= __('Yes'); ?><br>
+                            <input type="radio" name="newsletter" value="No" checked><?= __('No'); ?>
+                        </div>
+                    </div>
+                <?php } ?>
 
-                if ($humo_option["use_newsletter_question"] == 'y') {
-                    echo '<tr><td>' . __('Receive newsletter') . '</td><td>
-                    <input type="radio" name="newsletter" value="Yes"> ' . __('Yes') . '<br>
-                    <input type="radio" name="newsletter" value="No" checked> ' . __('No') . '</td></tr>';
-                }
+                <?php if ($humo_option["use_spam_question"] == 'y') { ?>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="mail_block_spam"><?= __('Please answer the block-spam-question:'); ?></label>
+                        </div>
+                        <div class="col-75">
+                            <?= $humo_option["block_spam_question"]; ?>
+                            <input type="text" id="lname" class="input" name="mail_block_spam">
+                        </div>
+                    </div>
+                <?php } ?>
 
-                if ($humo_option["use_spam_question"] == 'y') {
-                    echo '<tr><td>' . __('Please answer the block-spam-question:') . '</td>';
-                    echo '<td>' . $humo_option["block_spam_question"] . '<br>';
-                    echo '<input type="text" class="fonts" name="mail_block_spam" size="80" style="background-color:#FFFFFF"></td></tr>';
-                }
+                <br>
+                <div class="row">
+                    <input type="submit" class="input_submit" name="send_mail" value="<?= __('Send'); ?>">
+                </div>
+            </form>
+        </div>
 
-                ?>
-                <tr>
-                    <td></td>
-                    <td style="font-weight:bold;" class="fonts" align="left"><?= __('Please enter a full and valid email address,<br>otherwise I cannot respond to your e-mail!'); ?></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><input class="fonts" type="submit" name="send_mail" value="<?= __('Send'); ?>"></td>
-                </tr>
-            </table>
-        </form>
 <?php
         if (isset($_POST['send_mail'])) {
             echo '<h3 style="text-align:center;">' . __('Wrong answer to the block-spam question! Try again...') . '</h3>';
@@ -180,4 +187,3 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
         echo '<h2>' . __('The e-mail function has been switched off!') . '</h2>';
     }
 }
-include_once(CMS_ROOTPATH . "footer.php");

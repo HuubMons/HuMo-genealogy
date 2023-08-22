@@ -97,11 +97,11 @@ td.table_header {
 
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
-	font-size: 110%;
+	/* font-size: 110%; */
 	color: #0058af;
-	font-weight: bold;
-	text-align: center;
-	line-height: 200%;
+	/* font-weight: bold; */
+	/* text-align: center; */
+	/* line-height: 200%; */
 }
 
 /* report_ancestor.php */
@@ -180,10 +180,6 @@ ul.humo_menu_item2 li a {
 /* top bar in left - content - right boxes: only in main menu */
 .mainmenu_bar {
 	background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
-}
-
-.help_box {
-	background-color: #FFFFFF;
 }
 
 div.photobook,

@@ -30,7 +30,7 @@ include_once(__DIR__ . '../../header.php'); // returns CMS_ROOTPATH constant
 require_once  __DIR__ . "/../models/ancestor.php";
 $get_ancestor = new Ancestor($dbh);
 //$family_id = $get_family->getFamilyId();
-//$main_person = $get_family->getMainPerson();
+$main_person = $get_ancestor->getMainPerson();
 //$family_expanded =  $get_family->getFamilyExpanded();
 //$source_presentation =  $get_family->getSourcePresentation();
 //$picture_presentation =  $get_family->getPicturePresentation();
@@ -42,16 +42,14 @@ $rom_nr = $get_ancestor->getNumberRoman();
 //    "title" => __('Family')
 //));
 
-
-
 include_once(__DIR__ . "../../include/db_functions_cls.php");
 $db_functions = new db_functions;
 
 if (isset($_SESSION['tree_prefix'])) {
     $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-            ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-            AND humo_tree_texts.treetext_language='" . $selected_language . "'
-            WHERE tree_prefix='" . $tree_prefix_quoted . "'";
+        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
+        AND humo_tree_texts.treetext_language='" . $selected_language . "'
+        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
     @$datasql = $dbh->query($dataqry);
     @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
 }
@@ -60,21 +58,12 @@ $tree_prefix = $dataDb->tree_prefix;
 $tree_id = $dataDb->tree_id;
 $db_functions->set_tree_id($dataDb->tree_id);
 
-// *** CHECK: $family_id is actually a person_id... ***
-$family_id = 'I1'; // *** Default value, normally not used... ***
-if (isset($_GET["id"])) {
-    $family_id = $_GET["id"];
-}
-if (isset($_POST["id"])) {
-    $family_id = $_POST["id"];
-}
-
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($family_id);
+$db_functions->check_person($main_person);
 
 // The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
 // person 01
-$personDb = $db_functions->get_person($family_id);
+$personDb = $db_functions->get_person($main_person);
 $gedcomnumber[1] = $personDb->pers_gedcomnumber;
 $pers_famc[1] = $personDb->pers_famc;
 $sexe[1] = $personDb->pers_sexe;
@@ -371,7 +360,7 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
 }
 
 //initialize pdf generation
-@$persDb = $db_functions->get_person($family_id);
+@$persDb = $db_functions->get_person($main_person);
 // *** Use person class ***
 $pers_cls = new person_cls($persDb);
 $name = $pers_cls->person_name($persDb);

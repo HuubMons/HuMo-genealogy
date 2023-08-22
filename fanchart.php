@@ -486,12 +486,6 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
                 $ty = round($cy - $mr * -sin($rad));
                 $imagemap .= "$tx, $ty";
 
-                //if (CMS_SPECIFIC == "Joomla") {
-                //	$imagemap .= "\" href=\"index.php?option=com_humo-gen&amp;task=family&amp;id=".$treeid[$sosa][2]."&amp;main_person=".$treeid[$sosa][3]."\"";
-                //}
-                //else {
-                //$imagemap .= "\" href=\"family.php?tree_id=".$tree_id."&amp;id=".$treeid[$sosa][2]."&amp;main_person=".$treeid[$sosa][3]."\"";
-
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                 $person_cls = new person_cls;
                 $url = $person_cls->person_url2($tree_id, $treeid[$sosa][6], $treeid[$sosa][2], $treeid[$sosa][3]);
@@ -539,11 +533,6 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
     $image_title = preg_replace("~<.*>~", "", $name) . "   - " . __('RELOAD FANCHART WITH \'VIEW\' BUTTON ON THE LEFT');
     echo "<p align=\"center\" >";
 
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    ImagePng($image, CMS_ROOTPATH . "include/fanchart/tmpimg.png");
-    //    $ext = "?" . time(); // add random string to file to prevent loading from cache and then replacing which is not nice
-    //    echo "<img src=\"index.php?option=com_humo-gen&task=fanimage&format=raw&nochache=" . $ext . "\" width=\"$fanw\" height=\"$fanh\" border=\"0\" alt=\"$image_title\" title=\"$image_title\" usemap=\"#fanmap\">";
-    //} else {
     ob_start();
     ImagePng($image);
     $image_data = ob_get_contents();
@@ -553,7 +542,6 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
     $_SESSION['image_data'] = $image_data;
 
     echo "<img src=\"include/fanchart/fanimage.php\" width=\"$fanw\" height=\"$fanh\" border=\"0\" alt=\"$image_title\" title=\"$image_title\" usemap=\"#fanmap\">";
-    //}
 
     echo "</p>\n";
     ImageDestroy($image);
@@ -575,16 +563,17 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 //';
 
 
-$fan_style = 3;
 $maxgens = 7;
-$fan_width = "auto";
 
+$fan_style = 3;
 if (isset($_GET["fan_style"])) {
     $fan_style = $_GET["fan_style"];
 }
 if (isset($_POST["fan_style"])) {
     $fan_style = $_POST["fan_style"];
 }
+
+$fan_width = "auto";
 if (isset($_GET["fan_width"])) {
     $fan_width = $_GET["fan_width"];
 }
@@ -596,17 +585,11 @@ if ($fan_width > 50 and $fan_width < 301) {
     $tmp_width = $fan_width;
 } else { // "auto" or invalid entry - reset to 100%
     $tmp_width = 100;
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $tmp_width = 78;
-    //}
 }
 $realwidth = (840 * $tmp_width) / 100; // realwidth needed for next line (top text)
 
 // *** Text on Top: Name of base person and print-help link ***
 $top_for_name = 20;
-//if (CMS_SPECIFIC == "Joomla") {
-//    $top_for_name = 45; // lower to get out of the way of possible scrollbar
-//}
 echo '<div style="border:1px;z-index:80; position:absolute; top:' . $top_for_name . 'px; left:135px; width:' . $realwidth . 'px; height:30px; text-align:center; color:#000000">';
 echo '<div style="padding:5px">';
 echo "<strong>" . __('Fanchart') . " - " . $treeid[1][0] . "</strong>\n";
@@ -659,40 +642,13 @@ if ($fan_width == "auto" or $fan_width == "") {  // if someone cleared the field
         $fan_width = 130;
     } else {
         $fan_width = 100;
-        //if (CMS_SPECIFIC == "Joomla") {
-        //    $fan_width = 78;
-        //}
     }
 } else if ($fan_width > 49 and $fan_width < 301) {  // valid entry by user
     $menu_fan = $fan_width;
 } else { // invalid entry! reset it.
     $fan_width = 100;
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $fan_width = 78;
-    //}
     $menu_fan = "auto";
 }
-
-/*
-if (CMS_SPECIFIC == "Joomla") {
-    if ($fan_style == 3) {
-        $thisheight = ($fan_width * 3.5) / 4;
-    }   // (default) 3/4 circle
-    else if ($fan_style == 2) {
-        $thisheight = $fan_width / 1.6;
-    }  // half circle
-    else {
-        $thisheight = $fan_width;
-    }  // full circle
-
-    $thisheight = 840 * $thisheight / 100 + 100;
-
-    echo '<style type="text/css">';
-    echo '#doublescroll { position:relative; width:100%; height:' . $thisheight . 'px; overflow: auto; overflow-y: hidden; }';
-    echo '</style>';
-    echo '<div id="doublescroll">';
-}
-*/
 
 // Semi-transparant MENU BOX on the left
 echo '<div class="fanmenu1">';
@@ -701,11 +657,7 @@ echo '<div class="fanmenu3"></div>';
 echo '<div style="position:absolute; left:0; top:0; color: #000000">';
 //echo '<div style="border: 2px solid #000077; padding:10px">';
 
-//if (CMS_SPECIFIC == "Joomla") {
-//    echo "<form name=\"people\" method=\"post\" action=\"index.php?option=com_humo-gen&task=fanchart&id=" . $person_id . "\" style=\"display:inline;\">";
-//} else {
 echo "<form name=\"people\" method=\"post\" action=\"fanchart.php?id=" . $person_id . "\" style=\"display:inline;\">";
-//}
 echo "<input type=\"submit\" value=\"" . __('View') . "\">";
 
 // Fan style
@@ -804,10 +756,6 @@ echo '</div>';
 echo '</div>';
 // ** End container for fanchart ***
 
-//if (CMS_SPECIFIC == "Joomla") {
-//    echo '</div>'; // end of horizontal scrollbar div
-//}
-
 if ($china_message == 1) {
     // TODO check download link. Use sourceforge?
     echo '<div style="border:2px solid red;background-color:white;padding:5px;position:relative;
@@ -827,38 +775,11 @@ if ($showdesc == "1") {
     elseif ($fan_style == 3) $top_pos = 0.856 * $fan_w;
     elseif ($fan_style == 4) $top_pos = $fan_w;
     //echo '<iframe src="family.php?database=' . safe_text_db($_SESSION['tree_prefix']) . '&amp;id=' . $indexnr . '&amp;main_person=' . $person_id . '&amp;screen_mode=STAR&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" >';
-    echo '<iframe src="descendant/' . safe_text_db($_SESSION['tree_prefix']) .'/'. $indexnr . '?main_person=' . $person_id . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" >';
+    echo '<iframe src="descendant/' . safe_text_db($_SESSION['tree_prefix']) . '/' . $indexnr . '?main_person=' . $person_id . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" >';
     echo '</iframe>';
 }
 
 echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
-/*
-if (CMS_SPECIFIC == "Joomla") {
-?>
-    <script>
-        function DoubleScroll(element) {
-            var scrollbar = document.createElement('div');
-            scrollbar.appendChild(document.createElement('div'));
-            scrollbar.style.overflow = 'auto';
-            scrollbar.style.overflowY = 'hidden';
-            scrollbar.firstChild.style.width = element.scrollWidth + 'px';
-            scrollbar.firstChild.style.paddingTop = '1px';
-            scrollbar.firstChild.style.height = '20px';
-            scrollbar.firstChild.appendChild(document.createTextNode('\xA0'));
-            scrollbar.onscroll = function() {
-                element.scrollLeft = scrollbar.scrollLeft;
-            };
-            element.onscroll = function() {
-                scrollbar.scrollLeft = element.scrollLeft;
-            };
-            element.parentNode.insertBefore(scrollbar, element);
-        }
-
-        DoubleScroll(document.getElementById('doublescroll'));
-    </script>
-<?php
-}
-*/
 
 echo '<div style="left:135px; height:520px; width:10px"></div>';
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

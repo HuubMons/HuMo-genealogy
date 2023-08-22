@@ -3,10 +3,10 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+?>
 
-echo '<html><head><title>' . __('Extra settings') . 'Select place</title></head><body>';
-
-echo '<h1 align=center>' . __('Extra settings') . '</h1>';
+<h1 align=center><?= __('Extra settings'); ?></h1>
+<?php
 
 // *** Update tree settings ***
 if (isset($_POST['user_change']) and isset($_POST["id"]) and (is_numeric($_POST["id"]))) {
@@ -62,48 +62,50 @@ if (is_numeric($user)) {
     $hide_tree_array = explode(";", $userDb->user_hide_trees);
     $edit_tree_array = explode(";", $userDb->user_edit_trees);
 
-    echo '<form method="POST" action="index.php?page=editor_user_settings">';
-    echo '<input type="hidden" name="page" value="editor_user_settings">';
-    echo '<input type="hidden" name="id" value="' . $userDb->user_id . '">';
+?>
+    <form method="POST" action="index.php?page=editor_user_settings">
+        <input type="hidden" name="page" value="editor_user_settings">
+        <input type="hidden" name="id" value="<?= $userDb->user_id; ?>">
+        <table class="humo standard" border="1">
+            <?php
+            echo '<tr style="background-color:green; color:white"><th>' . __('Family tree') . '</th><th>' . __('Show tree?') . '</th><th>' . __('Edit tree?') . ' <input type="Submit" name="user_change" value="' . __('Change') . '"></th></tr>';
 
-    echo '<table class="humo standard" border="1">';
-    echo '<tr style="background-color:green; color:white"><th>' . __('Family tree') . '</th><th>' . __('Show tree?') . '</th><th>' . __('Edit tree?') . ' <input type="Submit" name="user_change" value="' . __('Change') . '"></th></tr>';
+            $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
+                $treetext = show_tree_text($data3Db->tree_id, $selected_language);
+                $treetext_name = $treetext['name'];
+                echo '<tr><td>' . $treetext_name . '</td>';
 
-    $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-    while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
-        $treetext = show_tree_text($data3Db->tree_id, $selected_language);
-        $treetext_name = $treetext['name'];
-        echo '<tr><td>' . $treetext_name . '</td>';
+                // *** Show/ hide tree for user ***
+                echo '<td><select size="1" name="show_tree_' . $data3Db->tree_id . '">';
+                echo '<option value="user-group">' . __('Use user-group setting') . '</option>';
 
-        // *** Show/ hide tree for user ***
-        //$check=' checked'; if (in_array($data3Db->tree_id, $hide_tree_array)) $check='';
-        //echo '<td><input type="checkbox" name="show_tree_'.$data3Db->tree_id.'"'.$check.'></td>';
-        echo '<td><select size="1" name="show_tree_' . $data3Db->tree_id . '">';
-        echo '<option value="user-group">' . __('Use user-group setting') . '</option>';
-        $select = '';
-        if (in_array('y' . $data3Db->tree_id, $hide_tree_array)) $select = ' selected';
-        echo '<option value="yes"' . $select . '>' . __('Yes') . '</option>';
-        $select = '';
-        if (in_array($data3Db->tree_id, $hide_tree_array)) $select = ' selected';
-        echo '<option value="no"' . $select . '>' . __('No') . '</option>';
-        echo "</select></td>";
+                $select = '';
+                if (in_array('y' . $data3Db->tree_id, $hide_tree_array)) $select = ' selected';
+                echo '<option value="yes"' . $select . '>' . __('Yes') . '</option>';
+                
+                $select = '';
+                if (in_array($data3Db->tree_id, $hide_tree_array)) $select = ' selected';
+                echo '<option value="no"' . $select . '>' . __('No') . '</option>';
+                echo "</select></td>";
 
-        // *** Editor rights per family tree (NOT USED FOR ADMINISTRATOR) ***
-        echo '<td>';
-        $check = '';
-        if (in_array($data3Db->tree_id, $edit_tree_array)) $check = ' checked';
-        $disabled = '';
-        if ($userDb->user_id == '1') {
-            $check = ' checked';
-            $disabled = ' disabled';
-            //echo '<input type="hidden" name="edit_tree_'.$data3Db->tree_id.'" value="1">';
-        }
-        echo '<input type="checkbox" name="edit_tree_' . $data3Db->tree_id . '"' . $check . $disabled . '>';
-        echo '</td>';
+                // *** Editor rights per family tree (NOT USED FOR ADMINISTRATOR) ***
+                echo '<td>';
+                $check = '';
+                if (in_array($data3Db->tree_id, $edit_tree_array)) $check = ' checked';
+                $disabled = '';
+                if ($userDb->user_id == '1') {
+                    $check = ' checked';
+                    $disabled = ' disabled';
+                }
+                echo '<input type="checkbox" name="edit_tree_' . $data3Db->tree_id . '"' . $check . $disabled . '>';
+                echo '</td>';
 
-        echo '</tr>';
-    }
-    echo '</table>';
-
-    echo '</form>';
+                echo '</tr>';
+            }
+            ?>
+        </table>
+    </form>
+<?php
 }
+?>

@@ -29,6 +29,28 @@ class Ancestor
         include_once(__DIR__ . '/../include/show_quality.php');
     }
 
+    //TODO check the $_GET. Normally main_person is used. ID is used for family number.
+    public function getMainPerson()
+    {
+        $main_person = 'I1'; // *** Mainperson of a family ***
+        //if (isset($urlpart[2])){ $main_person=$urlpart[2]; }
+
+        //if (isset($_GET["main_person"])) {
+        //    $main_person = $_GET["main_person"];
+        //}
+        //if (isset($_POST["main_person"])) {
+        //    $main_person = $_POST["main_person"];
+        //}
+
+        if (isset($_GET["id"])) {
+            $main_person = $_GET["id"];
+        }
+        if (isset($_POST["id"])) {
+            $main_person = $_POST["id"];
+        }
+        return $main_person;
+    }
+
     // *** Define numbers (max. 60 generations) ***
     //TODO this is also defined in family.php.
     public function getNumberRoman()
@@ -42,5 +64,45 @@ class Ancestor
             51 => 'LI',  52 => 'LII',  53 => 'LIII',  54 => 'LIV',  55 => 'LV',  56 => 'LVII',  57 => 'LVII',  58 => 'LVIII',  59 => 'LIX',  60 => 'LX',
         );
         return $number_roman;
+    }
+
+    function getAncestorHeader($name, $tree_id, $main_person)
+    {
+        global $humo_option;
+
+        $text = '<h1 class="standard_header">';
+        if ($name == 'Ancestor report') {
+            $text .= __($name);
+        } else {
+            $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="report_ancestor.php?tree_id=' . $tree_id . '&amp;id=' . $main_person . '">' . __('Ancestor report') . '</a></span>';
+        }
+
+        $text .= ' | ';
+
+        if ($name == 'Ancestor sheet') {
+            $text .= __($name);
+        } else {
+            if ($humo_option["url_rewrite"] == 'j') {
+                $path = 'ancestor_sheet?tree_id=' . $tree_id . '&amp;id=' . $main_person;
+            } else {
+                $path = 'index.php?page=ancestor_sheet&amp;tree_id=' . $tree_id . '&amp;id=' . $main_person;
+            }
+            $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor sheet') . '</a></span>';
+        }
+
+        $text .= ' | ';
+
+        if ($name == 'Ancestor chart') {
+            $text .= __($name);
+        } else {
+            if ($humo_option["url_rewrite"] == 'j') {
+                $path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
+            } else {
+                $path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
+            }
+            $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor chart') . '</a></span>';
+        }
+        $text .= '</h1>';
+        return $text;
     }
 }

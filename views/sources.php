@@ -1,7 +1,4 @@
 <?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH . "menu.php");
-
 // *** Check user authority ***
 if ($user['group_sources'] != 'j') {
     echo __('You are not authorised to see this page.');
@@ -117,8 +114,11 @@ $all_sources = $dbh->query($querie);
 $source = $dbh->query($querie . " LIMIT " . safe_text_db($item) . "," . $count_sources);
 $line_pages = __('Page');
 
-$path = 'sources.php?tree_id=' . $tree_id . '&amp;';
-if ($humo_option["url_rewrite"] == "j") $path = 'sources/' . $tree_id . '?';
+//$path = 'sources.php?tree_id=' . $tree_id . '&amp;';
+$path = 'index.php?page=sources&amp;tree_id=' . $tree_id . '&amp;';
+if ($humo_option["url_rewrite"] == "j") {
+    $path = 'sources/' . $tree_id . '?';
+}
 
 // "<="
 if ($start > 1) {
@@ -170,8 +170,11 @@ if ($calculated < $all_sources->rowCount()) {
     $line_pages .=  '"> =&gt;</a>';
 }
 
-$path_form = 'sources.php?tree_id=' . $tree_id;
-if ($humo_option["url_rewrite"] == "j") $path_form = 'sources/' . $tree_id;
+//$path_form = 'sources.php?tree_id=' . $tree_id;
+$path_form = 'index.php?page=sources&amp;tree_id=' . $tree_id;
+if ($humo_option["url_rewrite"] == "j") {
+    $path_form = 'sources/' . $tree_id;
+}
 
 ?>
 <div class=index_list1><?= $line_pages; ?>
@@ -181,14 +184,10 @@ if ($humo_option["url_rewrite"] == "j") $path_form = 'sources/' . $tree_id;
     </form>
 </div><br>
 
+<h1><?= __('Sources'); ?></h1>
 <table class="humo index_table" align="center">
     <tr class=table_headline>
-        <th colspan="3"><?= __('Source'); ?></th>
-    </tr>
-
-    <tr class=table_headline>
         <?php
-        //$url = 'sources.php?tree_id=' . $tree_id . '&amp;start=1&amp;item=0';
         $url = $path . 'start=1&amp;item=0';
         if ($source_search != '') {
             $url .=  '&amp;source_search=' . $source_search;
@@ -240,7 +239,8 @@ if ($humo_option["url_rewrite"] == "j") $path_form = 'sources/' . $tree_id;
         if ($humo_option["url_rewrite"] == "j") {
             $url = $uri_path . 'source/' . $tree_id . '/' . $sourceDb->source_gedcomnr;
         } else {
-            $url = $uri_path . 'source.php?tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
+            //$url = $uri_path . 'source.php?tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
+            $url = $uri_path . 'index.php?page=source&amp;tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
         }
 
     ?>
@@ -273,6 +273,3 @@ if ($humo_option["url_rewrite"] == "j") $path_form = 'sources/' . $tree_id;
 
 <br>
 <div class=index_list1><?= $line_pages; ?></div>
-<?php
-
-include_once(CMS_ROOTPATH . "footer.php");

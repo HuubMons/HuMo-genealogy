@@ -81,11 +81,7 @@ function show_media($event_connect_kind, $event_connect_id)
             else $process_text .= '<br>';
         }
 
-        //if (CMS_SPECIFIC == "Joomla") {
-        //    $picpath = CMS_ROOTPATH;
-        //} else {
         $picpath = $uri_path;
-        //}
 
         for ($i = 1; $i < ($media_nr + 1); $i++) {
             $date_place = date_place($media_event_date[$i], $media_event_place[$i]);

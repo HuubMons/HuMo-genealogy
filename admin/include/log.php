@@ -8,13 +8,8 @@ if (!defined('ADMIN_PAGE')) {
 
 <?php
 // *** Tab menu ***
-//if (CMS_SPECIFIC == "Joomla") {
-//	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-genealogy admin map
-//	$joomlastring = "option=com_humo-gen&amp;task=admin&amp;";
-//} else {
 $prefx = '../'; // to get out of the admin map
 $joomlastring = "";
-//}
 
 $menu_admin = 'log_users';
 if (isset($_POST['menu_admin'])) {
@@ -73,13 +68,15 @@ if (isset($_GET['menu_admin'])) {
             </tr>
             <?php
             while ($logbookDb = $logbook->fetch(PDO::FETCH_OBJ)) {
-                echo '<tr>';
-                echo '<td>' . $logbookDb->log_date . '</td>';
-                echo '<td>' . $logbookDb->log_username . '</td>';
-                echo '<td>' . $logbookDb->log_user_admin . '</td>';
-                echo '<td>' . $logbookDb->log_ip_address . '</td>';
-                echo '<td>' . $logbookDb->log_status . '</td>';
-                echo '</tr>';
+            ?>
+                <tr>
+                    <td><?= $logbookDb->log_date; ?></td>
+                    <td><?= $logbookDb->log_username; ?></td>
+                    <td><?= $logbookDb->log_user_admin; ?></td>
+                    <td><?= $logbookDb->log_ip_address; ?></td>
+                    <td><?= $logbookDb->log_status; ?></td>
+                </tr>
+            <?php
             }
             ?>
         </table>
@@ -149,11 +146,6 @@ if (isset($_GET['menu_admin'])) {
         printf(__('IP Blacklist: access to %s will be totally blocked for these IP addresses.'), 'HuMo-genealogy');
 
         // *** Show all links ***
-        //if (CMS_SPECIFIC == "Joomla") {
-        //	echo "<form method='post' action='index.php?option=com_humo-gen&amp;task=admin&amp;page=log&amp;menu_admin=log_blacklist'>";
-        //} else {
-        //	echo "<form method='post' action='index.php?page=log&amp;menu_admin=log_blacklist'>";
-        //}
     ?>
         <form method='post' action='index.php?page=log&amp;menu_admin=log_blacklist'>
             <input type="hidden" name="page" value="<?= $page; ?>">
@@ -192,14 +184,16 @@ if (isset($_GET['menu_admin'])) {
                     }
 
                     // *** Add new link ***
-                    echo "<tr>";
-                    echo "<td><br></td>";
-                    echo '<input type="hidden" name="link_order" value="' . $new_number . '">';
-                    echo '<td><input type="text" name="own_code" placeholder="' . __('IP Address') . '" size="5"></td>';
-                    echo '<td><input type="text" name="link_text" placeholder="' . __('Description') . '" size="20"></td>';
-                    echo '<td><input type="Submit" name="add_link" value="' . __('Add') . '"></td>';
-                    echo '<td><br></td>';
-                    echo "</tr>";
+                ?>
+                    <tr>
+                        <td><br></td>
+                        <input type="hidden" name="link_order" value="<?= $new_number; ?>">
+                        <td><input type="text" name="own_code" placeholder="<?= __('IP Address'); ?>" size="5"></td>
+                        <td><input type="text" name="link_text" placeholder="<?= __('Description'); ?>" size="20"></td>
+                        <td><input type="Submit" name="add_link" value="<?= __('Add'); ?>"></td>
+                        <td><br></td>
+                    </tr>
+                <?php
                 } else {
                     echo '<tr><td colspan="4">' . __('Database is not yet available.') . '</td></tr>';
                 }

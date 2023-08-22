@@ -6,6 +6,8 @@ include_once(CMS_ROOTPATH . "include/person_cls.php");
 
 @set_time_limit(300);
 
+// TODO Be aware: this script is added in htaccess file.
+
 // *** show person ***
 function show_person($personDb)
 {
@@ -1720,13 +1722,8 @@ if (!$selection['spouse_firstname'] and !$selection['spouse_lastname'] and $sele
 // $person_result2=mysql_query($query,$db) or die("FAULT : " . mysql_error());
 // $person_result=mysql_query($query." LIMIT ".safe_text_db($item).",".$nr_persons,$db) or die("FAULT : " . mysql_error());
 
-//if (CMS_SPECIFIC == 'Joomla') {
-//    $list_var  = 'index.php?option=com_humo-gen&amp;task=list';  // for use without query string
-//    $list_var2 = 'index.php?option=com_humo-gen&amp;task=list&amp;'; // for use with query string
-//} else {
 $list_var  = CMS_ROOTPATH . 'list.php';
 $list_var2 = CMS_ROOTPATH . 'list.php?';
-//}
 
 if ($index_list == 'places') {
 ?>
@@ -1898,205 +1895,214 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                         <input type="text" name="own_code" value="<?= safe_text_show($selection['own_code']); ?>" size="15" placeholder="<?= __('Own code'); ?>">
                     </td>
                 </tr>
+
+                <tr>
+                    <?php
+                    echo '<td class="no_border">' . ucfirst(__('died')) . '/ ' . ucfirst(__('buried')) . ':<br>';
+                    echo ' <input type="text" name="death_year" value="' . safe_text_show($selection['death_year']) . '" size="4" placeholder="' . __('Date') . '">';
+                    echo '&nbsp;&nbsp;(' . __('till:') . '&nbsp;';
+                    echo '<input type="text" name="death_year_end" value="' . safe_text_show($selection['death_year_end']) . '" size="4" placeholder="' . __('Date') . '">&nbsp;)</td>';
+
+                    echo '<td class="no_border">' . ucfirst(__('died')) . '/ ' . ucfirst(__('buried')) . ':<br>';
+                    echo ' <select size="1" name="part_death_place">';
+                    echo '<option value="contains">' . __('Contains') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_death_place'] == 'equals') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_death_place'] == 'starts_with') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+                    echo '</select>';
+                    echo ' <input type="text" name="death_place" value="' . safe_text_show($selection['death_place']) . '" size="15" placeholder="' . __('Place') . '"></td>';
+
+                    // *** Text ***
+                    echo '<td class="no_border">' . __('Text') . ':<br>';
+                    echo ' <select size="1" name="part_text">';
+                    echo '<option value="contains">' . __('Contains') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_text'] == 'equals') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_text'] == 'starts_with') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+                    echo '</select>';
+                    echo ' <input type="text" name="text" value="' . safe_text_show($selection['text']) . '" size="15" placeholder="' . __('Text') . '">';
+                    echo '</td>';
+                    ?>
+                </tr>
+
+                <tr>
+                    <?php
+                    echo '<td class="no_border">' . __('Choose sex:') . '<br>';
+                    $check = '';
+                    if ($selection['sexe'] == 'both') {
+                        $check = ' checked';
+                    }
+                    echo '<input type="radio" name="sexe" value="both"' . $check . '>' . __('All') . '&nbsp;&nbsp;';
+                    $check = '';
+                    if ($selection['sexe'] == 'M') {
+                        $check = ' checked';
+                    }
+                    echo '<input type="radio" name="sexe" value="M"' . $check . '>' . __('Male') . '&nbsp;&nbsp;';
+                    $check = '';
+                    if ($selection['sexe'] == 'F') {
+                        $check = ' checked';
+                    }
+                    echo '<input type="radio" name="sexe" value="F"' . $check . '>' . __('Female') . '&nbsp;&nbsp;';
+                    $check = '';
+                    if ($selection['sexe'] == 'Unknown') {
+                        $check = ' checked';
+                    }
+                    echo '<input type="radio" name="sexe" value="Unknown"' . $check . '>' . __('Unknown');
+                    echo '</td>';
+
+                    // *** Living place ***
+                    echo '<td class="no_border">' . __('Place') . ':<br>';
+                    echo ' <select size="1" name="part_place">';
+                    echo '<option value="contains">' . __('Contains') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_place'] == 'equals') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_place'] == 'starts_with') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+                    echo '</select>';
+                    echo ' <input type="text" name="pers_place" value="' . safe_text_show($selection['pers_place']) . '" size="15" placeholder="' . __('Place') . '"></td>';
+
+                    // *** Zip code ***
+                    echo '<td class="no_border">' . __('Zip code') . ':<br>';
+                    echo ' <select size="1" name="part_zip_code">';
+                    echo '<option value="contains">' . __('Contains') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_zip_code'] == 'equals') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_zip_code'] == 'starts_with') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+                    echo '</select>';
+                    echo ' <input type="text" name="zip_code" value="' . safe_text_show($selection['zip_code']) . '" size="15" placeholder="' . __('Zip code') . '">';
+                    echo '</td>';
+                    ?>
+                </tr>
+
+                <tr>
+                    <?php
+                    echo '<td class="no_border">' . __('Partner firstname') . ':<br>';
+                    echo ' <select size="1" name="part_spouse_firstname">';
+                    echo '<option value="contains">' . __('Contains') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_spouse_firstname'] == 'equals') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_spouse_firstname'] == 'starts_with') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+                    echo '</select>';
+                    echo ' <input type="text" name="spouse_firstname" value="' . safe_text_show($selection['spouse_firstname']) . '" size="15" placeholder="' . __('First name') . '"></td>';
+
+                    echo '<td class="no_border">' . __('Partner lastname') . ':<br>';
+                    echo ' <select size="1" name="part_spouse_lastname">';
+                    echo '<option value="contains">' . __('Contains') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_spouse_lastname'] == 'equals') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_spouse_lastname'] == 'starts_with') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+                    echo '</select>';
+                    echo ' <input type="text" name="spouse_lastname" value="' . safe_text_show($selection['spouse_lastname']) . '" size="15" placeholder="' . __('Last name') . '"></td>';
+
+                    // *** Witness ***
+                    echo '<td class="no_border">' . ucfirst(__('witness')) . ':<br>';
+                    echo ' <select size="1" name="part_witness">';
+                    echo '<option value="contains">' . __('Contains') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_witness'] == 'equals') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
+                    $select_item = '';
+                    if ($selection['part_witness'] == 'starts_with') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+                    echo '</select>';
+                    echo ' <input type="text" name="witness" value="' . safe_text_show($selection['witness']) . '" size="15" placeholder="' . ucfirst(__('witness')) . '">';
+                    echo '</td>';
+                    ?>
+                </tr>
+
+                <tr>
+                    <?php
+                    echo '<td class="no_border">' . ucfirst(__('gedcomnumber (ID)')) . ':<br>';
+                    echo ' <select size="1" name="part_gednr">';
+                    echo '<option value="equals">' . __('Equals') . '</option>';
+
+                    $select_item = '';
+                    if ($selection['part_gednr'] == 'contains') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="contains"' . $select_item . '>' . __('Contains') . '</option>';
+
+                    $select_item = '';
+                    if ($selection['part_gednr'] == 'starts_with') {
+                        $select_item = ' selected';
+                    }
+                    echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
+
+                    echo '</select>';
+                    echo ' <input type="text" name="gednr" value="' . safe_text_show($selection['gednr']) . '" size="15" placeholder="' . ucfirst(__('gedcomnumber (ID)')) . '">';
+
+                    //==================================
+                    echo '</td><td colspan="2" align="center" class="no_border">' . __('Research status:') . '<br>';
+                    $check = '';
+                    if ($selection['parent_status'] == 'noparents') {
+                        $check = ' checked';
+                    }
+                    echo '<input type="radio" name="parent_status" value="noparents"' . $check . '>' . __('parents unknown') . '&nbsp;&nbsp;';
+                    $check = '';
+                    if ($selection['parent_status'] == 'motheronly') {
+                        $check = ' checked';
+                    }
+                    echo '<input type="radio" name="parent_status" value="motheronly"' . $check . '>' . __('father unknown') . '&nbsp;&nbsp;';
+                    $check = '';
+                    if ($selection['parent_status'] == 'fatheronly') {
+                        $check = ' checked';
+                    }
+                    echo '<input type="radio" name="parent_status" value="fatheronly"' . $check . '>' . __('mother unknown') . '&nbsp;&nbsp;';
+                    $check = '';
+                    if ($selection['parent_status'] == "" or $selection['parent_status'] == 'allpersons') {
+                        $check = ' checked';
+                    }
+                    echo '<input type="radio" name="parent_status" value="allpersons"' . $check . '>' . __('All') . '&nbsp;&nbsp;';
+                    //==================================
+                    echo '</td>';
+                    ?>
+                </tr>
             <?php
-
-                echo '<tr><td class="no_border">' . ucfirst(__('died')) . '/ ' . ucfirst(__('buried')) . ':<br>';
-                echo ' <input type="text" name="death_year" value="' . safe_text_show($selection['death_year']) . '" size="4" placeholder="' . __('Date') . '">';
-                echo '&nbsp;&nbsp;(' . __('till:') . '&nbsp;';
-                echo '<input type="text" name="death_year_end" value="' . safe_text_show($selection['death_year_end']) . '" size="4" placeholder="' . __('Date') . '">&nbsp;)</td>';
-
-                echo '<td class="no_border">' . ucfirst(__('died')) . '/ ' . ucfirst(__('buried')) . ':<br>';
-                echo ' <select size="1" name="part_death_place">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_death_place'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_death_place'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="death_place" value="' . safe_text_show($selection['death_place']) . '" size="15" placeholder="' . __('Place') . '"></td>';
-
-                // *** Text ***
-                echo '<td class="no_border">' . __('Text') . ':<br>';
-                echo ' <select size="1" name="part_text">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_text'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_text'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="text" value="' . safe_text_show($selection['text']) . '" size="15" placeholder="' . __('Text') . '">';
-                echo '</td>';
-
-                echo '</tr>';
-
-                echo '<tr><td class="no_border">' . __('Choose sex:') . '<br>';
-                $check = '';
-                if ($selection['sexe'] == 'both') {
-                    $check = ' checked';
-                }
-                echo '<input type="radio" name="sexe" value="both"' . $check . '>' . __('All') . '&nbsp;&nbsp;';
-                $check = '';
-                if ($selection['sexe'] == 'M') {
-                    $check = ' checked';
-                }
-                echo '<input type="radio" name="sexe" value="M"' . $check . '>' . __('Male') . '&nbsp;&nbsp;';
-                $check = '';
-                if ($selection['sexe'] == 'F') {
-                    $check = ' checked';
-                }
-                echo '<input type="radio" name="sexe" value="F"' . $check . '>' . __('Female') . '&nbsp;&nbsp;';
-                $check = '';
-                if ($selection['sexe'] == 'Unknown') {
-                    $check = ' checked';
-                }
-                echo '<input type="radio" name="sexe" value="Unknown"' . $check . '>' . __('Unknown');
-                echo '</td>';
-
-                // *** Living place ***
-                echo '<td class="no_border">' . __('Place') . ':<br>';
-                echo ' <select size="1" name="part_place">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_place'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_place'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="pers_place" value="' . safe_text_show($selection['pers_place']) . '" size="15" placeholder="' . __('Place') . '"></td>';
-
-                // *** Zip code ***
-                echo '<td class="no_border">' . __('Zip code') . ':<br>';
-                echo ' <select size="1" name="part_zip_code">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_zip_code'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_zip_code'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="zip_code" value="' . safe_text_show($selection['zip_code']) . '" size="15" placeholder="' . __('Zip code') . '">';
-                echo '</td>';
-
-                echo '</tr>';
-
-                echo '<tr><td class="no_border">' . __('Partner firstname') . ':<br>';
-                echo ' <select size="1" name="part_spouse_firstname">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_spouse_firstname'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_spouse_firstname'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="spouse_firstname" value="' . safe_text_show($selection['spouse_firstname']) . '" size="15" placeholder="' . __('First name') . '"></td>';
-
-                echo '<td class="no_border">' . __('Partner lastname') . ':<br>';
-                echo ' <select size="1" name="part_spouse_lastname">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_spouse_lastname'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_spouse_lastname'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="spouse_lastname" value="' . safe_text_show($selection['spouse_lastname']) . '" size="15" placeholder="' . __('Last name') . '"></td>';
-
-                // *** Witness ***
-                echo '<td class="no_border">' . ucfirst(__('witness')) . ':<br>';
-                echo ' <select size="1" name="part_witness">';
-                echo '<option value="contains">' . __('Contains') . '</option>';
-                $select_item = '';
-                if ($selection['part_witness'] == 'equals') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="equals"' . $select_item . '>' . __('Equals') . '</option>';
-                $select_item = '';
-                if ($selection['part_witness'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-                echo '</select>';
-                echo ' <input type="text" name="witness" value="' . safe_text_show($selection['witness']) . '" size="15" placeholder="' . ucfirst(__('witness')) . '">';
-                echo '</td>';
-                echo '</tr>';
-
-                echo '<tr>';
-                echo '<td class="no_border">' . ucfirst(__('gedcomnumber (ID)')) . ':<br>';
-                echo ' <select size="1" name="part_gednr">';
-                echo '<option value="equals">' . __('Equals') . '</option>';
-
-                $select_item = '';
-                if ($selection['part_gednr'] == 'contains') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="contains"' . $select_item . '>' . __('Contains') . '</option>';
-
-                $select_item = '';
-                if ($selection['part_gednr'] == 'starts_with') {
-                    $select_item = ' selected';
-                }
-                echo '<option value="starts_with"' . $select_item . '>' . __('Starts with') . '</option>';
-
-                echo '</select>';
-                echo ' <input type="text" name="gednr" value="' . safe_text_show($selection['gednr']) . '" size="15" placeholder="' . ucfirst(__('gedcomnumber (ID)')) . '">';
-
-                //==================================
-                echo '</td><td colspan="2" align="center" class="no_border">' . __('Research status:') . '<br>';
-                $check = '';
-                if ($selection['parent_status'] == 'noparents') {
-                    $check = ' checked';
-                }
-                echo '<input type="radio" name="parent_status" value="noparents"' . $check . '>' . __('parents unknown') . '&nbsp;&nbsp;';
-                $check = '';
-                if ($selection['parent_status'] == 'motheronly') {
-                    $check = ' checked';
-                }
-                echo '<input type="radio" name="parent_status" value="motheronly"' . $check . '>' . __('father unknown') . '&nbsp;&nbsp;';
-                $check = '';
-                if ($selection['parent_status'] == 'fatheronly') {
-                    $check = ' checked';
-                }
-                echo '<input type="radio" name="parent_status" value="fatheronly"' . $check . '>' . __('mother unknown') . '&nbsp;&nbsp;';
-                $check = '';
-                if ($selection['parent_status'] == "" or $selection['parent_status'] == 'allpersons') {
-                    $check = ' checked';
-                }
-                echo '<input type="radio" name="parent_status" value="allpersons"' . $check . '>' . __('All') . '&nbsp;&nbsp;';
-                //==================================
-                echo '</td>';
-                echo '</tr>';
             }    // *** End of advanced search fields ***
 
             // *** Check for multiple family trees ***
@@ -2175,11 +2181,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
 <?php
 }
 
-//if (CMS_SPECIFIC == 'Joomla') {
-//    $uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;";
-//} else {
 $uri_path_string = $uri_path . "list.php?";
-//}
 
 // *** Check for search results ***
 if (@$person_result->rowCount() == 0) {
@@ -2557,4 +2559,4 @@ echo '<script>
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;
 
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

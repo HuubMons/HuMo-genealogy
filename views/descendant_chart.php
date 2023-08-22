@@ -27,8 +27,6 @@ global $templ_name;
 // *** Needed for hourglass ***
 include_once(__DIR__ . '../../header.php'); // returns CMS_ROOTPATH constant
 
-
-
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../models/family.php";
@@ -39,6 +37,7 @@ $main_person = $get_family->getMainPerson();
 //$source_presentation =  $get_family->getSourcePresentation();
 //$picture_presentation =  $get_family->getPicturePresentation();
 //$text_presentation =  $get_family->getTextPresentation();
+$descendant_header = $get_family->getDescendantHeader('Descendant chart', $tree_id, $family_id,$main_person);
 //$this->view("families", array(
 //    "family" => $family,
 //    "title" => __('Family')

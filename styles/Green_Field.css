@@ -91,10 +91,6 @@ td.style_tree_text {
 	background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
 }
 
-.help_box {
-	background-color: #f5fffa;
-}
-
 div.photobook,
 div.photobooktext {
 	background-color: #f5fffa;

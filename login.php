@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Front page login form.
  * Password retreival code from: http://www.plus2net.com/ 
@@ -19,11 +20,7 @@ if ($user['group_menu_login'] != 'j') {
     exit;
 }
 
-//if (CMS_SPECIFIC == 'Joomla') {
-//    $path_tmp = 'index.php?option=com_humo-gen&amp;task=login';
-//} else {
-    $path_tmp = CMS_ROOTPATH . 'login.php';
-//}
+$path_tmp = CMS_ROOTPATH . 'login.php';
 
 // form to enter username and mail in order to receive reset link
 // *** An e-mail adres is necessary for password retreival, option Username is disabled ***
@@ -350,15 +347,46 @@ else {
         echo '</td></tr></table>';
     }
 
-    echo '<form name="form1" method="post" action="' . $path_tmp . '">';
-    echo '<br><table class="humo" cellspacing="0" align="center">';
-    echo '<tr class="table_headline"><th class="fonts" colspan="2">' . __('Login') . '</th></tr>';
-    echo '<tr><td>' . __('Username or e-mail address') . ':</td><td><input class="fonts" name="username" type="text" size="20" maxlength="25"></td></tr>';
-    echo '<tr><td>' . __('Password') . ':</td><td><input class="fonts" name="password" type="password" size="20" maxlength="50"></td></tr>';
-    echo '<tr><td>' . __('Two factor authentication (2FA) code if needed') . ':</td><td><input class="fonts" name="2fa_code" type="text" size="20" maxlength="25"></td></tr>';
-    echo '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="' . __('Login') . '"></td></tr>';
-    echo '</table>';
-    echo '</form>';
+?>
+    <h1><?= __('Login'); ?></h1>
+
+    <!-- Layout: https://www.w3schools.com/csS/tryit.asp?filename=trycss_form_responsive -->
+    <div class="container">
+        <form action="<?= $path_tmp; ?>" method="post">
+            <div class="row">
+                <div class="col-25">
+                    <label for="username"><?= __('Username or e-mail address'); ?></label>
+                </div>
+                <div class="col-75">
+                    <input type="text" id="username" class="input" name="username" placeholder="<?= __('Username or e-mail address'); ?>">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-25">
+                    <label for="password"><?= __('Password'); ?></label>
+                </div>
+                <div class="col-75">
+                    <input type="password" id="password" class="input" name="password" placeholder="<?= __('Password'); ?>">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-25">
+                    <label for="2fa_code"><?= __('Two factor authentication (2FA) code if needed'); ?></label>
+                </div>
+                <div class="col-75">
+                    <input type="text" id="2fa_code" class="input" name="2fa_code">
+                </div>
+            </div>
+
+            <br>
+            <div class="row">
+                <input type="submit" class="input_submit" name="send_mail" value="<?= __('Login'); ?>">
+            </div>
+        </form>
+    </div>
+<?php
 
     // *** Only use password retreival option if sender mail is set in admin settings ***
     if ($humo_option["password_retreival"]) {
@@ -375,4 +403,4 @@ else {
     }
 }  // end of else (else show login screen)
 
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

@@ -267,20 +267,11 @@ echo '</div>';
 */
 
             // HELP POPUP
-            //if (CMS_SPECIFIC == "Joomla") {
-            //    echo '<div class="fonts ' . $rtlmarker . 'sddm" style="z-index:400; position:absolute; top:20px; left:10px;">';
-            //    $popwidth = "width:700px;";
-            //} else {
             echo '<div class="fonts ' . $rtlmarker . 'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline; float:left;">';
             $popwidth = "";
-            //}
             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"';
             echo ' style="display:inline" ';
-            //if (CMS_SPECIFIC == "Joomla") {
-            //    echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-            //} else {
             echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
-            //}
             echo 'onmouseout="mclosetime()">';
             echo '<strong>' . __('Help') . '</strong>';
             echo '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -1139,5 +1130,5 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
     </script>';
 }
 
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");
 ?>

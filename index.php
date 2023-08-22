@@ -31,9 +31,9 @@
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
 
-$menu=true;
+$menu = true;
 // *** Hide menu in descendant chart shown in iframe in fanchart ***
-if (isset($_GET['menu']) and $_GET['menu'] == "1") $menu=false;
+if (isset($_GET['menu']) and $_GET['menu'] == "1") $menu = false;
 if ($menu) include_once(CMS_ROOTPATH . "menu.php");
 
 if ($page == 'index') {
@@ -84,6 +84,10 @@ if ($page == 'index') {
      * 
      */
 
+    //TEST
+    //include 'views/address.php';
+
+
     //require_once 'config/global.php';
     define("CONTROLLER_DEFAULT", "Address");
     define("ACTION_DEFAULT", "address");
@@ -129,47 +133,62 @@ if ($page == 'index') {
     launchAction($controllerObj);
     //}
 } elseif ($page == 'addresses') {
-    include 'addresses.php';
+    //include 'addresses.php';
+    include 'views/addresses.php';
 } elseif ($page == 'ancestor_chart') {
     include 'views/ancestor_chart.php';
 } elseif ($page == 'ancestor_sheet') {
     include 'views/ancestor_sheet.php';
 } elseif ($page == 'birthday') {
-    include 'birthday_list.php';
+    //include 'birthday_list.php';
+    include 'views/birthday_list.php';
+} elseif ($page == 'cms_pages') {
+    include 'views/cms_pages.php';
 } elseif ($page == 'cookies') {
-    include 'cookies.php';
+    //include 'cookies.php';
+    include 'views/cookies.php';
 } elseif ($page == 'descendant') {
-    include 'views/descendant_chartView.php';
+    include 'views/descendant_chart.php';
 } elseif ($page == 'family_rtf') {
-    // *** Always use url_rewrite to show RTF export ***
-    include 'views/family_rtfView.php';
+    include 'views/family_rtf.php';
 } elseif ($page == 'family') {
     include 'family.php';
 } elseif ($page == 'help') {
-    include 'help.php';
+    //include 'help.php';
+    include 'views/help.php';
 } elseif ($page == 'latest_changes') {
-    include 'latest_changes.php';
+    //include 'latest_changes.php';
+    include 'views/latest_changes.php';
 } elseif ($page == 'list') {
     include 'list.php';
 } elseif ($page == 'list_names') {
-    include 'list_names.php';
+    //include 'list_names.php';
+    include 'views/list_names.php';
 } elseif ($page == 'login') {
     include 'login.php';
 } elseif ($page == 'mailform') {
-    include 'mailform.php';
+    //include 'mailform.php';
+    include 'views/mailform.php';
 } elseif ($page == 'photoalbum') {
     include 'photoalbum.php';
+} elseif ($page == 'register') {
+    include 'views/register.php';
 } elseif ($page == 'relations') {
     include 'relations.php';
 } elseif ($page == 'settings') {
-    include 'user_settings.php';
+    //include 'user_settings.php';
+    include 'views/user_settings.php';
 } elseif ($page == 'statistics') {
-    include 'statistics.php';
+    //include 'statistics.php';
+    include 'views/statistics.php';
 } elseif ($page == 'sources') {
-    include 'sources.php';
+    //include 'sources.php';
+    include 'views/sources.php';
 } elseif ($page == 'source') {
     include 'source.php';
+} elseif ($page == 'tree_index') {
+    include 'views/tree_index.php';
 }
 
 echo '<br>';
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

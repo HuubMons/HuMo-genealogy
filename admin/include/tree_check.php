@@ -16,43 +16,41 @@ echo '<h1 class="center">' . __('Family tree data check') . '</h1>';
 $direction = "left";
 if ($rtlmarker == "rtl") $direction = "right";
 
-//if (CMS_SPECIFIC == "Joomla") {
-//    echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
-//} else {
-    echo '<form method="POST" action="index.php" style="display : inline;">';
-//}
 $page = 'check'; // *** Otherwise the direct link to page "Latest changes" doesn't work properly ***
-echo '<input type="hidden" name="page" value="' . $page . '">';
-
-echo '<span class="noprint">' . __('Choose tree:');  // class "noprint" hides it when printing
-$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-$tree_result = $dbh->query($tree_sql);
-echo ' <select size="1" name="tree_id" onChange="this.form.submit();">';
-while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-    $treetext = show_tree_text($treeDb->tree_id, $selected_language);
-    $selected = '';
-    if ($treeDb->tree_id == $tree_id) {
-        $selected = ' selected';
-        $db_functions->set_tree_id($tree_id);
-    }
-    echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-}
-echo '</select>';
-echo '</span>';
-
 ?>
-<!-- menu of data check page -->
-<br><br><input type="hidden" name="page" value="<?= $page; ?>">
-<span class="noprint">
-    <table class="humo standard" style="text-align:center;">
-        <tr class="table_header_large">
-            <td><input type="Submit" name="data_check" value="<?= __('Check consistency of dates'); ?>"></td>
-            <td><input type="Submit" name="invalid_dates" value="<?= __('Find invalid dates'); ?>"></td>
-            <td><input type="Submit" name="database_check" value="<?= __('Check database integrity'); ?>"></td>
-            <td><input type="Submit" name="last_changes" value="<?= __('View latest changes'); ?>"></td>
-        </tr>
-    </table>
-</span>
+<form method="POST" action="index.php" style="display : inline;">
+    <?php
+    echo '<input type="hidden" name="page" value="' . $page . '">';
+
+    echo '<span class="noprint">' . __('Choose tree:');  // class "noprint" hides it when printing
+    $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+    $tree_result = $dbh->query($tree_sql);
+    echo ' <select size="1" name="tree_id" onChange="this.form.submit();">';
+    while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
+        $treetext = show_tree_text($treeDb->tree_id, $selected_language);
+        $selected = '';
+        if ($treeDb->tree_id == $tree_id) {
+            $selected = ' selected';
+            $db_functions->set_tree_id($tree_id);
+        }
+        echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
+    }
+    echo '</select>';
+    echo '</span>';
+
+    ?>
+    <!-- menu of data check page -->
+    <br><br><input type="hidden" name="page" value="<?= $page; ?>">
+    <span class="noprint">
+        <table class="humo standard" style="text-align:center;">
+            <tr class="table_header_large">
+                <td><input type="Submit" name="data_check" value="<?= __('Check consistency of dates'); ?>"></td>
+                <td><input type="Submit" name="invalid_dates" value="<?= __('Find invalid dates'); ?>"></td>
+                <td><input type="Submit" name="database_check" value="<?= __('Check database integrity'); ?>"></td>
+                <td><input type="Submit" name="last_changes" value="<?= __('View latest changes'); ?>"></td>
+            </tr>
+        </table>
+    </span>
 </form>
 
 <br>
@@ -60,7 +58,6 @@ echo '</span>';
     <tr>
         <td>
             <?php
-
             if (
                 !isset($_POST['last_changes']) and !isset($_POST['database_check']) and !isset($_POST['data_check'])
                 and !isset($_POST['final_check']) and !isset($_POST['unmark'])
@@ -110,19 +107,19 @@ echo '</span>';
                         // *** Show latest changes and additions: editor is selected ***
                         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
                         $person_qry = "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='' AND pers_changed_user='" . $editor . "')
-                UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL AND pers_new_user='" . $editor . "')
-                ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
+                            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='' AND pers_changed_user='" . $editor . "')
+                            UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+                            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL AND pers_new_user='" . $editor . "')
+                            ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
                         //LIMIT 0,".$limit;
                     } else {
                         // *** Show latest changes and additions ***
                         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
                         $person_qry = "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')
-                UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL)
-                ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
+                            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')
+                            UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+                            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL)
+                            ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
                         //LIMIT 0,".$limit;
                         //FROM humo_persons WHERE pers_tree_id='".$tree_id."')
                     }
@@ -159,18 +156,18 @@ echo '</span>';
                         // *** Show latest changes and additions: editor is selected ***
                         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
                         $person_qry = "(SELECT *, STR_TO_DATE(fam_changed_date,'%d %b %Y') AS changed_date, fam_changed_time as changed_time
-                FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NOT NULL AND fam_changed_date!='' AND fam_changed_user='" . $editor . "')
-                UNION (SELECT *, STR_TO_DATE(fam_new_date,'%d %b %Y') AS changed_date, fam_new_time as changed_time
-                FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NULL AND fam_new_user='" . $editor . "')
-                ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
+                            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NOT NULL AND fam_changed_date!='' AND fam_changed_user='" . $editor . "')
+                            UNION (SELECT *, STR_TO_DATE(fam_new_date,'%d %b %Y') AS changed_date, fam_new_time as changed_time
+                            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NULL AND fam_new_user='" . $editor . "')
+                            ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
                     } else {
                         // *** Show latest changes and additions ***
                         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
                         $person_qry = "(SELECT *, STR_TO_DATE(fam_changed_date,'%d %b %Y') AS changed_date, fam_changed_time as changed_time
-                FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NOT NULL AND fam_changed_date!='')
-                UNION (SELECT *, STR_TO_DATE(fam_new_date,'%d %b %Y') AS changed_date, fam_new_time as changed_time
-                FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NULL)
-                ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
+                            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NOT NULL AND fam_changed_date!='')
+                            UNION (SELECT *, STR_TO_DATE(fam_new_date,'%d %b %Y') AS changed_date, fam_new_time as changed_time
+                            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NULL)
+                            ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
                     }
 
                     $person_result = $dbh->query($person_qry);
@@ -218,7 +215,7 @@ echo '</span>';
 
                 // *** List of editors, depending of selected items (persons and/ or families) ***
                 $changes_qry = "(SELECT pers_new_user AS user FROM humo_persons WHERE pers_tree_id='" . $tree_id . "')
-            UNION (SELECT pers_changed_user AS user FROM humo_persons WHERE pers_tree_id='" . $tree_id . "')";
+                    UNION (SELECT pers_changed_user AS user FROM humo_persons WHERE pers_tree_id='" . $tree_id . "')";
                 if ($show_families) {
                     $changes_qry .= " UNION (SELECT fam_new_user AS user FROM humo_families WHERE fam_tree_id='" . $tree_id . "')";
                     $changes_qry .= " UNION (SELECT fam_changed_user AS user FROM humo_families WHERE fam_tree_id='" . $tree_id . "')";
@@ -267,11 +264,11 @@ echo '</span>';
                 if ($show_families) $checked = ' checked';
                 echo ' <input type="checkbox" id="1" name="show_families" value="1" ' . $checked . '>' . __('Families');
                 /*
-        $checked = ''; //if($show_sources) $checked=' checked';
-        echo ' <input type="checkbox" id="1" name="show_sources" value="1" '.$checked.'>'.__('Sources');
-        $checked = ''; //if($show_addresses) $checked=' checked';
-        echo ' <input type="checkbox" id="1" name="show_addresses" value="1" '.$checked.'>'.__('Addresses');
-        */
+                $checked = ''; //if($show_sources) $checked=' checked';
+                echo ' <input type="checkbox" id="1" name="show_sources" value="1" '.$checked.'>'.__('Sources');
+                $checked = ''; //if($show_addresses) $checked=' checked';
+                echo ' <input type="checkbox" id="1" name="show_addresses" value="1" '.$checked.'>'.__('Addresses');
+                */
 
                 echo ' <input type="Submit" name="last_changes" value="' . __('Select') . '">';
                 echo '</form><br><br>';
@@ -282,9 +279,9 @@ echo '</span>';
                     <table class="humo" style="width:100%">
                         <tr>
                             <th style="font-size: 90%; text-align: center"><?= __('Item'); ?></th>
-                            <th style="font-size: 90%; text-align: center"><?=  __('Changed/ Added'); ?></th>
-                            <th style="font-size: 90%; text-align: center"><?=  __('When changed'); ?></th>
-                            <th style="font-size: 90%; text-align: center"><?=  __('When added'); ?></th>
+                            <th style="font-size: 90%; text-align: center"><?= __('Changed/ Added'); ?></th>
+                            <th style="font-size: 90%; text-align: center"><?= __('When changed'); ?></th>
+                            <th style="font-size: 90%; text-align: center"><?= __('When added'); ?></th>
                         </tr>
                         <?php
 
@@ -292,7 +289,7 @@ echo '</span>';
                         function cmp($a, $b)
                         {
                             //return strcmp($a[4], $b[4]);	// ascending
-                            return strcmp($b[4], $a[4]);	// descending
+                            return strcmp($b[4], $a[4]);    // descending
                         }
                         usort($result_array, "cmp");
 
@@ -314,11 +311,7 @@ echo '</span>';
                 echo '<h3>' . __('Checking database tables...') . '</h3>';
 
                 // *** Option to remove wrong database connections ***
-                //if (CMS_SPECIFIC == "Joomla") {
-                //    echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
-                //} else {
-                    echo '<form method="POST" action="index.php" style="display : inline;">';
-                //}
+                echo '<form method="POST" action="index.php" style="display : inline;">';
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="database_check" value="' . $page . '">';
 
@@ -350,7 +343,7 @@ echo '</span>';
 
                     // *** Now get all data for one person at a time ***
                     $person = $dbh->query("SELECT pers_gedcomnumber,pers_famc,pers_fams FROM humo_persons
-            WHERE pers_id='" . $person_startDb['pers_id'] . "'");
+                        WHERE pers_id='" . $person_startDb['pers_id'] . "'");
                     $person = $person->fetch(PDO::FETCH_OBJ);
 
                     // *** Relations/ marriages ***
@@ -871,12 +864,7 @@ echo '</span>';
             if ((isset($_POST['data_check']) or isset($_POST['unmark']) or isset($_POST['mark_all']))) {
                 // displays menu for date consistency check
 
-
-                //if (CMS_SPECIFIC == "Joomla") {
-                //    echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
-                //} else {
-                    echo '<form method="POST" action="index.php" style="display : inline;">';
-                //}
+                echo '<form method="POST" action="index.php" style="display : inline;">';
                 echo '<input type="hidden" name="page" value="' . $page . '">';
 
                 // easily set other defaults:
@@ -893,8 +881,8 @@ echo '</span>';
                 $age1_def  = 100; //Age (by death date) - more than X years
                 $age2_def  = 100; //Age (by burial date) - more than X years
                 $age3_def  = 100; //Age (up till today) - more than X years 
-                $b5_def	  = 9;   //Birth date - less than 9 months after parents' wedding date
-                $b6_def	  = 9;   //Birth date - less than 9 months after previous sibbling
+                $b5_def      = 9;   //Birth date - less than 9 months after parents' wedding date
+                $b6_def      = 9;   //Birth date - less than 9 months after previous sibbling
 
                 $checked = " checked";
                 if (isset($_POST['unmark'])) $checked = '';
@@ -1100,7 +1088,7 @@ echo '</span>';
                                     }
                                 } elseif ($count == 0) {
                                     $first_ch = 1;
-                                }	// this is first child in own fam
+                                }    // this is first child in own fam
                             }
                             if ($num_ch == 1 or $first_ch == 1) { // if this only or first child in this marriage - look for previous marriage of mother
                                 if (isset($m_fams_arr) and count($m_fams_arr) > 1 and $m_fams_arr[0] != $parentsDb->fam_gedcomnumber) {

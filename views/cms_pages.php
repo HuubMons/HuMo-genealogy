@@ -1,22 +1,19 @@
 <?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH . "menu.php");
-
 if ($user['group_menu_cms'] != 'y') {
     echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
     die();
+}
+
+if ($humo_option["url_rewrite"] == "j") {
+    $path = CMS_ROOTPATH . 'cms_pages/';
+} else {
+    //$path = CMS_ROOTPATH . 'cms_pages.php?select_page=';
+    $path = CMS_ROOTPATH . 'index.php?page=cms_pages&amp;select_page=';
 }
 ?>
 <div id="mainmenu_centerbox">
     <div id="mainmenu_left">
         <?php
-        if ($humo_option["url_rewrite"] == "j") {
-            $path = CMS_ROOTPATH . 'cms_pages/';
-        } else {
-            $path = CMS_ROOTPATH . 'cms_pages.php?select_page=';
-        }
-
-
         $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='0' AND page_status!='' ORDER BY page_order");
         while ($cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ)) {
             echo '<a href="' . $path . $cms_pagesDb->page_id . '">' . $cms_pagesDb->page_title . '</a><br>';
@@ -27,11 +24,7 @@ if ($user['group_menu_cms'] != 'y') {
             echo '<p><b>' . $cmsDb->menu_name . '</b><br>';
             $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='" . $cmsDb->menu_id . "' AND page_status!='' ORDER BY page_order");
             while ($cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ)) {
-                //if ($humo_option["url_rewrite"] == "j") {
-                //    echo '<a href="' . $path . $cms_pagesDb->page_id . '/">' . $cms_pagesDb->page_title . '</a><br>';
-                //} else {
-                    echo '<a href="' . $path . $cms_pagesDb->page_id . '">' . $cms_pagesDb->page_title . '</a><br>';
-                //}
+                echo '<a href="' . $path . $cms_pagesDb->page_id . '">' . $cms_pagesDb->page_title . '</a><br>';
             }
         }
         ?>
@@ -40,15 +33,11 @@ if ($user['group_menu_cms'] != 'y') {
     <?php
     if (isset($_GET['select_page']) and (is_numeric($_GET['select_page']))) {
         $select_page = $_GET['select_page'];
-    }
-    //elseif(isset($urlpart[0]) AND (is_numeric($urlpart[0])) ){
-    //	$select_page=$urlpart[0];
-    //}
-    else {
+    } else {
         // *** First page in a menu ***
         $page_qry = $dbh->query("SELECT * FROM humo_cms_menu, humo_cms_pages
-                WHERE page_status!='' AND page_menu_id=menu_id
-                ORDER BY menu_order, page_order ASC LIMIT 0,1");
+            WHERE page_status!='' AND page_menu_id=menu_id
+            ORDER BY menu_order, page_order ASC LIMIT 0,1");
         $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
         if (isset($cms_pagesDb->page_id)) $select_page = $cms_pagesDb->page_id;
 
@@ -61,10 +50,11 @@ if ($user['group_menu_cms'] != 'y') {
     $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
 
     // *** Raise page counter ***
-    // Only count page once every session
+    // Only change counter of page once every session
     $session_counter[] = '';
     $visited = 0;
     if (isset($_SESSION["opslag_sessieteller"])) $session_counter = $_SESSION["opslag_sessieteller"];
+    // TODO improve code. Check if value is in array.
     for ($i = 0; $i <= count($session_counter) - 1; $i++) {
         if (@$cms_pagesDb->page_id == $session_counter[$i]) {
             $visited = 1;
@@ -86,5 +76,3 @@ if ($user['group_menu_cms'] != 'y') {
         <?= $cms_pagesDb->page_text; ?>
     </div>
 </div>
-<?php
-include_once(CMS_ROOTPATH . "footer.php");

@@ -1,6 +1,15 @@
 <?php
 @set_time_limit(300);
 
+/*--------------------[source_display]----------------------------
+ * Show a single source.
+ * RETURNS: shows a single source.
+ *    NOTE: function can be called from sources.php and show_sources.php.
+ *----------------------------------------------------------------
+ */
+
+//TODO seperate file for PDF export.
+
 if (isset($_GET["id"])) { // source.php is called from show_sources.php, sources.php
     $sourcenumber = $_GET["id"];
     source_display($sourcenumber);
@@ -10,12 +19,6 @@ if (isset($id)) {
     source_display($sourcenumber);
 }
 
-/*--------------------[source_display]----------------------------
- * Show a single source.
- * RETURNS: shows a single source.
- *    NOTE: function can be called from sources.php and show_sources.php.
- *----------------------------------------------------------------
- */
 function source_display($sourcenum)
 {
     global $dbh, $db_functions, $tree_id, $dataDb, $user, $pdf, $screen_mode, $language, $humo_option;
@@ -39,7 +42,7 @@ function source_display($sourcenum)
         include_once(CMS_ROOTPATH . "include/language_date.php");
         include_once(CMS_ROOTPATH . "include/person_cls.php");
         echo '<table class="humo standard">';
-        echo "<tr><td><h2>" . __('Sources') . "</h2>";
+        echo "<tr><td><h2>" . __('Source') . "</h2>";
     }
 
     $sourceDb = $db_functions->get_source($sourcenum);
@@ -454,7 +457,7 @@ function source_display($sourcenum)
 
         echo '</table><br>';
 
-        include_once(CMS_ROOTPATH . "footer.php");
+        include_once(CMS_ROOTPATH . "views/footer.php");
     } // end if not PDF
 
 } // end function source_display

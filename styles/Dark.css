@@ -176,10 +176,6 @@ table.humo tr:first-of-type td {
 	border-color: #404040;
 }
 
-td.table_header {}
-
-table.humo th {}
-
 /* 2nd table A-Z */
 .family_page_toptext {}
 
@@ -188,12 +184,6 @@ table.humo th {}
 /* familypage */
 .pers_name {
 	color: #e0e0e0;
-}
-
-/* help */
-.help_box {
-	background: url("images_dark/background.jpg") repeat left top;
-	color: #b0b0b0;
 }
 
 /* statistics */
@@ -207,7 +197,7 @@ table.humo th {}
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
 	color: #000066;
-	margin-top: 10px;
+	/* margin-top: 10px; */
 }
 
 /* Ancestor graphical */

@@ -1,9 +1,5 @@
 <?php
 /*
- * This index list for places by families was a copy of index list by persons.
- * Maybe it's possible to combine these two lists later, but processing is different.
- * At this moment it's easier to just make a second index list...
- *
  * sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
@@ -433,16 +429,9 @@ if ($count_qry) {
     $count_persons = $rows['found_rows'];
 }
 
-//if (CMS_SPECIFIC=='Joomla'){
-//	$list_var  = 'index.php?option=com_humo-gen&amp;task=list';  // for use without query string
-//	$list_var2 = 'index.php?option=com_humo-gen&amp;task=list&amp;'; // for use with query string
-//}
-//else {
 $list_var  = CMS_ROOTPATH . 'list_places_families.php';
 $list_var2 = CMS_ROOTPATH . 'list_places_families.php?';
-//}
 
-//if ($index_list=='places'){
 echo '<table align="center" class="humo index_table">';
 echo '<tr><td>';
 
@@ -506,13 +495,8 @@ echo ' ' . __('Married (religious)') . '</span><br clear="all">';
 echo '</form>';
 echo '</td></tr></table>';
 //***************** end search of places **********************************
-//}
 
-//if (CMS_SPECIFIC == 'Joomla') {
-//    $uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;";
-//} else {
     $uri_path_string = $uri_path . "list_places_families.php?";
-//}
 
 // *** Check for search results ***
 if (@$person_result->rowCount() == 0) {
@@ -629,7 +613,6 @@ $selected_place = "";
 ?>
 <!-- Table to hold left sort date column (when necessary) and right person list column -->
 <table class="humo index_table" align="center">
-
     <tr class="table_headline">
         <th><?= __('Places'); ?></th>
         <th colspan="2"><?= __('Family'); ?></th>
@@ -638,7 +621,6 @@ $selected_place = "";
     </tr>
 
     <?php
-
     while (@$familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
         // *** Man privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_man);

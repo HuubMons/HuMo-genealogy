@@ -1,9 +1,8 @@
 <h2 align=center><?= __('Administration menu login'); ?></h2>
 
-<?php
-// *** Show login fault message ***
-if ($fault) echo '<p align="center"><font color="red">' . __('Please enter a valid username or password. ') . '</font>';
-?>
+<?php if ($fault) echo '<p align="center"><font color="red">' . __('Please enter a valid username or password. ') . '</font>'; ?>
+
+<!-- TEST: <a href='../login.php'>Administration menu login</a> -->
 
 <form name="form1" method="post" action="index.php">
     <table class="humo" border="1" cellspacing="0" align="center">

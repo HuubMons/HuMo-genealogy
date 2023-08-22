@@ -2975,3 +2975,19 @@ function add_event($new_event, $event_connect_kind, $event_connect_id, $event_ki
         event_new_time='" . $gedcom_time . "'";
     $result = $dbh->query($sql);
 }
+
+// *** Calculate and update nr. of persons and nr. of families ***
+function family_tree_update($tree_id)
+{
+    global $db_functions, $dbh;
+
+    $nr_persons = $db_functions->count_persons($tree_id);
+    $nr_families = $db_functions->count_families($tree_id);
+
+    $tree_date = date("Y-m-d H:i");
+    $sql = "UPDATE humo_trees
+        SET tree_persons='" . $nr_persons . "', tree_families='" . $nr_families . "', tree_date='" . $tree_date . "'
+        WHERE tree_id='" . $tree_id . "'";
+    $dbh->query($sql);
+}
+

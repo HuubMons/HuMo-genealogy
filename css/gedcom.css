@@ -12,7 +12,7 @@ html {
 body {
 	background-color: white;
 	color: black;
-	background-image: url('images/background.gif');
+	background-image: url('../images/background.gif');
 	background-repeat: no-repeat;
 	height: 100%;
 	max-height: 100%;
@@ -46,7 +46,8 @@ body {
 	/* background-color:#E8E8E8; */
 	background: linear-gradient(rgb(244, 244, 255) 0%, rgb(219, 219, 219) 100%);
 
-	height: 35px;
+	/* height: 35px; */
+	height: 40px;
 	padding: 5px 10px 0;
 }
 
@@ -290,7 +291,8 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 	z-index: 3;
 	height: 100%;
 	max-height: 90%;
-	top: 35px;
+	/* top: 35px; */
+	top: 30px;
 	/* up, right, down */
 	padding: 10px 0px 10px 10px;
 }
@@ -562,15 +564,6 @@ table.humo tr:only-of-type td:only-of-type {
 	background: linear-gradient(to top, rgb(209, 184, 143) 0%, rgb(250, 241, 235) 73%);
 }
 
-/* Smaller headline in family screen etc. */
-table.humo td.table_header {
-	/*
-	padding-left:1px;
-	padding-top:0px;
-	padding-bottom:0px;
-	*/
-}
-
 table.humo th {
 	font-size: 15px;
 	padding: 5px;
@@ -686,27 +679,15 @@ a:visited {
 	font-size: 12px;
 }
 
-/* head genealogy - koptekst parenteel (Generatie I, II, etc.) */
+/* Head genealogy - koptekst parenteel (Generatie I, II, etc.) */
 .standard_header {
-	font-size: 200%;
-	color: blue;
-	font-weight: bold;
 	text-align: center;
-	line-height: 200%;
 }
 
 /* Center buttons etc. */
 .center {
 	text-align: center;
 }
-
-/* All kinds of input */
-/* input { font-size: 10px; } */
-input {
-	font-size: 12px;
-}
-
-/* input.geselecteerd { color:blue; font-weight:bold; } */
 
 /* Family tree buttons */
 .button {
@@ -1383,8 +1364,8 @@ div.rtlsub40 {
 .help_box {
 	padding-left: 20px;
 	padding-right: 20px;
-	border: solid 1px #999999;
-	background-color: #FAF1EB;
+	/* border: solid 1px #999999; */
+	/* background-color: #FAF1EB; */
 }
 
 .help_header {
@@ -1695,88 +1676,6 @@ td.extended_woman {
 
 	background-color: #dddddd;
 	background-image: linear-gradient(to bottom, #ffffff, #FFB1B1);
-}
-
-
-/* Tab Menu */
-.pageHeadingContainer-lineVisible {
-	margin-bottom: 15px;
-	border-bottom: 1px solid #d9d9d9;
-}
-
-.pageHeadingContainer {
-	clear: both;
-	display: table;
-	width: 100%;
-	margin-bottom: 0px;
-}
-
-.pageHeading {
-	display: table-cell;
-}
-
-.pageTabsContainer {
-	display: table-cell;
-	vertical-align: bottom;
-	/* white-space: nowrap; */
-}
-
-.pageTabs {
-	margin: 0;
-	padding: 0;
-	float: right;
-	margin-left: 10px;
-}
-
-.pageTabItem {
-	display: inline-block;
-	zoom: 1;
-	list-style: none;
-	margin: 0 4px -1px 0;
-}
-
-.pageTab {
-	display: inline-block;
-	white-space: nowrap;
-	color: #333;
-	cursor: pointer;
-	border: 1px solid #d9d9d9;
-	background-color: #eaf4fa;
-	-webkit-border-top-right-radius: 3px;
-	-webkit-border-bottom-right-radius: 0;
-	-webkit-border-bottom-left-radius: 0;
-	-webkit-border-top-left-radius: 3px;
-	-moz-border-radius-topright: 3px;
-	-moz-border-radius-bottomright: 0;
-	-moz-border-radius-bottomleft: 0;
-	-moz-border-radius-topleft: 3px;
-	border-top-right-radius: 3px;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
-	border-top-left-radius: 3px;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
-	background-clip: padding-box;
-	-webkit-box-shadow: 1px 1px 1px #fff inset;
-	-moz-box-shadow: 1px 1px 1px #fff inset;
-	box-shadow: 1px 1px 1px #fff inset;
-}
-
-.pageTab a {
-	text-decoration: none;
-	color: #765;
-	display: inline-block;
-	padding: 6px 8px 4px;
-}
-
-.pageTab-active {
-	background-color: #fff;
-	border-bottom: 1px solid #fff;
-	color: #2f63a3;
-}
-
-.pageTab-active a {
-	font-weight: bold;
 }
 
 /* statistics */

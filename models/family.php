@@ -14,6 +14,7 @@ class Family
     {
         $this->Connection = $Connection;
 
+        //TODO check included files. Some allready included in header.php?
         include_once(__DIR__ . '/../include/language_date.php');
         include_once(__DIR__ . '/../include/language_event.php');
         include_once(__DIR__ . '/../include/date_place.php');
@@ -154,5 +155,79 @@ class Family
             }
         }
         return $number_generation;
+    }
+
+    public function getDescendantReport()
+    {
+        $descendant_report = false;
+        if (isset($_GET['descendant_report'])) {
+            $descendant_report = true;
+        }
+        if (isset($_POST['descendant_report'])) {
+            $descendant_report = true;
+        }
+        return $descendant_report;
+    }
+
+    function getDescendantHeader($name, $tree_id, $family_id, $main_person)
+    {
+        global $humo_option;
+
+        $text = '<h1 class="standard_header">';
+        if ($name == 'Descendant report') {
+            $text .= __($name);
+        } else {
+            $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="family.php?tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&descendant_report=1">' . __('Descendant report') . '</a></span>';
+        }
+
+        $text .= ' | ';
+
+        if ($name == 'Outline report') {
+            $text .= __($name);
+        } else {
+            $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="report_outline.php?tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '">' . __('Outline report') . '</a></span>';
+        }
+
+        $text .= ' | ';
+
+        if ($name == 'Descendant chart') {
+            $text .= __($name);
+        } else {
+            if ($humo_option["url_rewrite"] == 'j') {
+                $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="descendant/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person . '">' . __('Descendant chart') . '</a></span>';
+            } else {
+                //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="descendant.php?tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '">' . __('Descendant chart') . '</a></span>';
+                $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="index.php?page=descendant&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '">' . __('Descendant chart') . '</a></span>';
+            }
+        }
+        $text .= '</h1>';
+        return $text;
+    }
+
+    // *** Used in family.php: show/ hide Google maps ***
+    function getMapsPresentation()
+    {
+        global $dbh, $user;
+
+        // *** Default setting is selected by administrator ***
+        $maps_presentation = $user['group_maps_presentation'];
+
+        $maps_presentation_array = array('show', 'hide');
+        if (isset($_GET['maps_presentation']) and in_array($_GET['maps_presentation'], $maps_presentation_array)) {
+            $_SESSION['save_maps_presentation'] = $_GET["maps_presentation"];
+            $maps_presentation = $_GET["maps_presentation"];
+        }
+
+        // *** If session is used, read variable ***
+        if (isset($_SESSION['save_maps_presentation']) and in_array($_SESSION['save_maps_presentation'], $maps_presentation_array)) {
+            $maps_presentation = $_SESSION['save_maps_presentation'];
+        }
+
+        // *** Only show selection if there is a Google maps database ***
+        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+        if (!$temp->rowCount()) {
+            $maps_presentation = 'hide';
+        }
+        return $maps_presentation;
     }
 }

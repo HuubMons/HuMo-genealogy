@@ -175,7 +175,7 @@ table.humo td.table_header {
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
 	color: #7E3517;
-	margin-top: 10px;
+	/* margin-top: 10px; */
 }
 
 /* Ancestor graphical */
@@ -209,10 +209,6 @@ div.ancestor_split {
 /* Switchform */
 #switchform {
 	color: #333399;
-}
-
-.help_box {
-	background-color: #eeeeff;
 }
 
 div.photobook,

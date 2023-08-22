@@ -6,17 +6,16 @@ if (isset($_COOKIE["humogenphotos"]) and is_numeric($_COOKIE["humogenphotos"])) 
     $show_pictures = $_SESSION['save_show_pictures'];
 }
 
+// Remark: setcookie is done in header.
 if (isset($_POST['show_pictures']) and is_numeric($_POST['show_pictures'])) {
-    // Remark: setcookie is done in header.
     $show_pictures = $_POST['show_pictures'];
     $_SESSION['save_show_pictures'] = $show_pictures;
 }
+// Remark: setcookie is done in header.
 if (isset($_GET['show_pictures']) and is_numeric($_GET['show_pictures'])) {
-    // Remark: setcookie is done in header.
     $show_pictures = $_GET['show_pictures'];
     $_SESSION['save_show_pictures'] = $show_pictures;
 }
-
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH . "menu.php");
@@ -285,6 +284,10 @@ if (isset($media_files)) {
             echo '<br><br></div>';
         }
     }
+} else {
+    // *** Search is used, but there were no results, to prevent empty screen show search bar ***
+    $media_files[] = '';
+    show_media_files("none");  // show all
 }
 
 // *** $pref = category ***
@@ -301,11 +304,6 @@ function show_media_files($pref)
     //@usort($media_files,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
     $nr_pictures = count($media_files);
 
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $albumpath = 'index.php?option=com_humo-gen&amp;task=photoalbum&amp;';
-    //} else {
-    //    $albumpath = $uri_path . 'photoalbum.php?tree_id=' . $tree_id . '&amp;';
-    //}
     if ($humo_option["url_rewrite"] == "j") {
         $albumpath = 'photoalbum/' . $tree_id . '?';
     } else {
@@ -386,11 +384,6 @@ function show_media_files($pref)
             if ($show_categories === true) {
                 $menu = '?select_category=' . $pref;
             }
-            //if (CMS_SPECIFIC == "Joomla") {   // cant use $albumpath here cause we don't need the &amp; for joomla or the ? for humogen
-            //    echo ' <form method="post" action="index.php?option=com_humo-gen&amp;task=photoalbum' . $menu . '" style="display:inline">';
-            //} else {
-            //    echo ' <form method="post" action="photoalbum.php' . $menu . '" style="display:inline">';
-            //}
             $path = 'photoalbum.php';
             if ($humo_option["url_rewrite"] == "j") {
                 $path = 'photoalbum/' . $tree_id;
@@ -405,7 +398,7 @@ function show_media_files($pref)
 
         // *** Show photos ***
         for ($picture_nr = $item; $picture_nr < ($item + $show_pictures); $picture_nr++) {
-            if (isset($media_files[$picture_nr])) {
+            if (isset($media_files[$picture_nr]) and $media_files[$picture_nr]) {
                 $filename = $media_files[$picture_nr];
                 $picture_text = '';    // Text with link to person
                 $picture_text2 = '';    // Text without link to person
@@ -413,7 +406,8 @@ function show_media_files($pref)
                 //$sql="SELECT * FROM humo_events
                 //	WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
                 $sql = "SELECT * FROM humo_events
-                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND LEFT(event_kind,7)='picture' AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
+                    WHERE event_tree_id='" . $tree_id . "'
+                    AND event_connect_kind='person' AND LEFT(event_kind,7)='picture' AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
                 $afbqry = $dbh->query($sql);
                 if (!$afbqry->rowCount()) {
                     $picture_text = substr($filename, 0, -4);
@@ -483,9 +477,9 @@ function show_media_files($pref)
                 $picture2 = show_picture($dir, $filename, 175, 120);
                 // *** Check if media exists ***
                 if (file_exists($picture2['path'] . $picture2['thumb'] . $picture2['picture'])) {
-                    $picture = '<img src="' . $picture2['path'] . $picture2['thumb'] . $picture2['picture'] . '" width="' . $picture2['width'] . '" alt="' . $filename . '"></a>';
+                    $picture = '<img src="' . $picture2['path'] . $picture2['thumb'] . $picture2['picture'] . '" width="' . $picture2['width'] . '" alt="' . $filename . '">';
                 } else {
-                    $picture = '<img src="images/missing-image.jpg" width="' . $picture2['width'] . '" alt="' . $filename . '"></a>';
+                    $picture = '<img src="images/missing-image.jpg" width="' . $picture2['width'] . '" alt="' . $filename . '">';
                 }
 
         ?>
@@ -495,7 +489,8 @@ function show_media_files($pref)
                         <!-- Need a class for multiple lines and HTML code in a text -->
                         <div class="glightbox-desc custom-desc<?= $picture_nr; ?>"><?= $picture_text2; ?></div>
                         <?= $picture; ?>
-                        <div class="photobooktext"><?= $picture_text; ?></div>
+                    </a>
+                    <div class="photobooktext"><?= $picture_text; ?></div>
                 </div>
         <?php
             }
@@ -507,4 +502,4 @@ function show_media_files($pref)
     <?php
 } //  *** End of function showthem() ***
 
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");
