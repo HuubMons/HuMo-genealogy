@@ -32,13 +32,7 @@ class maxChart
 		$this->thismonth = $thismonth;
 		//echo '<div class="chartbox" style="width:'.$this->width.'px; height:'.$this->height.'px;"> <h2>'.$this->title.'</h2>'."\r\n";
 		//echo '<div class="chartbox" style="width:100%; height:'.$this->height.'px;"> <h2>'.$this->title.'</h2>'."\r\n";
-		//if(CMS_SPECIFIC == "Joomla") {
-		//	$chartwidth = "1000px";
-		//}
-		//else {
-		// $chartwidth = "100%";
 		$chartwidth = "80%";
-		//}
 		echo '<div class="chartbox" style="width:' . $chartwidth . '; height:' . $this->height . 'px;"> <h2>' . $this->title . '</h2>' . "\r\n";
 		if ($this->type == 1)  $this->drawVertical();
 		else $this->drawHorizontal();

@@ -4,16 +4,10 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-//if (CMS_SPECIFIC == "Joomla") {
-//    $phpself2 = 'index.php?option=com_humo-gen&amp;task=admin&amp;page=prefix_editor';
-//} else {
-$phpself2 = CMS_ROOTPATH . 'admin/index.php?page=prefix_editor';
-//}
-
-$file = CMS_ROOTPATH . 'admin/prefixes.php';
+$file = CMS_ROOTPATH . 'admin/include/prefixes.php';
 $message = '';
 if (isset($_POST['save_language'])) {
-    $message = '<b>' . __('Saved') . ' ';
+    $message = '<b>' . __('Saved') . '</b>';
     if (file_exists($file)) {
         $language_text = $_POST['language_text'];
         file_put_contents($file, $language_text);
@@ -25,11 +19,9 @@ if (isset($_POST['save_language'])) {
 ?>
 <h1 align=center><?= __('Prefix editor'); ?></h1>
 
-<p>
-    <?= __('These prefixes are used to process name-prefixes if a GEDCOM file is read.'); ?>
+<?= __('These prefixes are used to process name-prefixes if a GEDCOM file is read.'); ?><br><br>
 
-<form method="POST" action="<?= $phpself2; ?>" style="display : inline;">
-    <p>
+<form method="POST" action="<?= CMS_ROOTPATH;?>admin/index.php?page=prefix_editor" style="display : inline;">
     <table class="humo" border="1" cellspacing="0">
         <tr class="table_header_large">
             <th>
@@ -40,7 +32,7 @@ if (isset($_POST['save_language'])) {
                     echo '<b>' . __('FILE IS NOT WRITABLE!') . '</b>';
                 }
                 // *** Show "Save" message ***
-                echo $message . '<br>';
+                echo $message;
                 ?>
             </th>
         </tr>
@@ -52,3 +44,4 @@ if (isset($_POST['save_language'])) {
         </tr>
     </table>
 </form>
+<br>

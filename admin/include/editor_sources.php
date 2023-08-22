@@ -4,7 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-//$joomlapath=CMS_ROOTPATH_ADMIN.'include/';
 include_once("editor_cls.php");
 $editor_cls = new editor_cls;
 

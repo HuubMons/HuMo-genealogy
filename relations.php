@@ -74,11 +74,6 @@ include_once(CMS_ROOTPATH . "include/marriage_cls.php");
 include_once(CMS_ROOTPATH . "include/language_date.php");
 include_once(CMS_ROOTPATH . "include/date_place.php");
 
-//if (CMS_SPECIFIC == "Joomla") {
-//    $fampath = "index.php?option=com_humo-gen&amp;task=family&amp"; // path to family.php for joomla (used some 20 times in this code
-//} else {
-//$fampath = CMS_ROOTPATH . "family.php?";
-//}
 // http://localhost/HuMo-genealogy/family/3/F116?main_person=I202
 $fampath = CMS_ROOTPATH . 'family.php?tree_id=' . $tree_id.'&amp;id=';
 if ($humo_option["url_rewrite"] == "j") $fampath = CMS_ROOTPATH . 'family/'.$tree_id.'/';
@@ -2662,11 +2657,7 @@ function display()
             }
 
             if ($bloodrel == 1) {
-                //if (CMS_SPECIFIC == "Joomla") {
-                //    echo '</td></tr><tr><td>'; // in joomla we want blood- and marital tables one under the other for lack of space
-                //} else {
                 echo '</td><td style="padding-left:30px;border-left:2px solid #bbbbbb;vertical-align:text-top;">';
-                //}
             }
             //else { echo '<table class="humo container"<tr><td>'; }
             else {
@@ -3733,22 +3724,12 @@ $pers_cls = new person_cls;
 
 /*
 //======== HELP POPUP ========================
-if(CMS_SPECIFIC=="Joomla") {
-    echo '<div class="fonts '.$rtlmarker.'sddm" style="z-index:400; position:absolute; top:20px; left:10px;">';
-    $popwidth="width:700px;";
-}
-else {
     echo '<div class="fonts '.$rtlmarker.'sddm" style="margin-right:10px; float:right; display:inline">';
     $popwidth="";
-}
+
     echo '<a href="#"';
     echo ' style="display:inline;" ';
-    if(CMS_SPECIFIC=="Joomla") {
-        echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-    }
-    else {
-        echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
-    }
+    echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
     echo 'onmouseout="mclosetime()">';
     echo '&nbsp;&nbsp;&nbsp;<strong><span class="print_version">'.__('Information about the Relationship Calculator').'</span></strong>';
     echo '</a>&nbsp;';
@@ -3833,11 +3814,6 @@ if (isset($_POST["extended"]) or isset($_POST["next_path"])) {
     echo '<br><div id="geargif"><img src="images/gear.gif">&nbsp;&nbsp;&nbsp;' . __('Calculating relations') . '</div>';
 }
 
-//if (CMS_SPECIFIC == "Joomla") {
-//    echo '<form method="POST" action="' . 'index.php?option=com_humo-gen&task=relations' . '" style="display : inline;">';
-//} else {
-//echo '<form method="POST" action="relations.php" style="display : inline;">';
-//}
 $path = 'relations.php';
 if ($humo_option["url_rewrite"] == "j") $path = 'relations';
 ?>
@@ -3878,9 +3854,6 @@ Directions for use:<br>
 
     echo '<tr><td>';
     $language_person = __('Person') . ' ';
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $language_person = '';
-    //}  // for joomla keep it short...
     echo $language_person . '1:';
     echo '</td>';
 
@@ -4007,10 +3980,6 @@ Directions for use:<br>
     echo '&nbsp;<input class="fonts" type="submit" name="search_id1" value="' . __('Search') . '"></td>';
 
     $len = 230;  // length of name pulldown box
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    $len = 180;
-    //} // for joomla keep it short....
-
 
     // *** Limit results ***
     $limit = 500;
@@ -4321,4 +4290,4 @@ Directions for use:<br>
 </form>
 <br><br><br><br><br><br><br><br>
 <?php
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

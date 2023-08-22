@@ -134,11 +134,6 @@ table.humo tr:first-of-type td {
 	border-color: #3355cc;
 }
 
-table.humo th {}
-
-/* 2nd table A-Z */
-.family_page_toptext {}
-
 td.style_tree_text {
 	background-color: #eeeeff;
 }
@@ -151,7 +146,7 @@ td.style_tree_text {
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
 	color: #000066;
-	margin-top: 10px;
+	/* margin-top: 10px; */
 }
 
 /* Ancestor graphical */
@@ -201,22 +196,13 @@ div.hour_ancestor_split {
 	background: url("images_silverline/menuhover.jpg") repeat left top;
 }
 
-td.table_header {}
-
 /* Switchform */
 #switchform {
 	color: #333399;
 }
 
-/* Menu */
-#top_menu {}
-
 #country_flags {
 	padding: 11px 85px 6px 5px;
-}
-
-.help_box {
-	background-color: #eeeeff;
 }
 
 div.photobook,

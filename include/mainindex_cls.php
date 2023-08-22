@@ -276,12 +276,7 @@ class mainindex_cls
                 } elseif (isset($_SESSION['tree_prefix']) and $_SESSION['tree_prefix'] == $dataDb->tree_prefix) {
                     $tree_name = '<span class="tree_link fonts">' . $treetext_name . '</span>';
                 } else {
-                    //if (CMS_SPECIFIC == 'Joomla') {
-                    //    //$path_tmp='index.php?option=com_humo-gen&amp;database='.$dataDb->tree_prefix;
-                    //    $path_tmp = 'index.php?option=com_humo-gen&amp;tree_id=' . $dataDb->tree_id;
-                    //}
                     // *** url_rewrite ***
-                    //elseif ($humo_option["url_rewrite"] == "j") {
                     if ($humo_option["url_rewrite"] == "j") {
                         //$path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id . '/';
                         $path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id;
@@ -363,11 +358,7 @@ class mainindex_cls
             $tree_owner = __('Owner family tree:') . ' ';
             // *** Show owner e-mail address ***
             if ($dataDb->tree_email) {
-                //if (CMS_SPECIFIC == 'Joomla') {
-                //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=mailform';
-                //} else {
                 $path_tmp = CMS_ROOTPATH . 'mailform.php';
-                //}
                 $tree_owner .= '<a href="' . $path_tmp . '">' . $dataDb->tree_owner . "</a>\n";
             } else {
                 $tree_owner .= $dataDb->tree_owner . "\n";
@@ -398,13 +389,7 @@ class mainindex_cls
                 // $nr is the array number of the name set created in function last_names
                 // if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
                 global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $text;
-                //if (CMS_SPECIFIC == 'Joomla') {
-                //    //$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
-                //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;tree_id=' . tree_id;
-                //} else {
-                //$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
                 $path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $_SESSION['tree_id'];
-                //}
                 $text .= '<td class="namelst">';
                 if (isset($freq_last_names[$nr])) {
                     $top_pers_lastname = '';
@@ -476,12 +461,12 @@ class mainindex_cls
                     // TEST LINE
                     //echo 'NO CACHE';
                     /*
-                $personqry="SELECT pers_lastname, pers_prefix,
-                    CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-                    FROM humo_persons
-                    WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
-                    GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
-                */
+                    $personqry="SELECT pers_lastname, pers_prefix,
+                        CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
+                        FROM humo_persons
+                        WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
+                        GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
+                    */
                     // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
                     $personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
                     FROM humo_persons
@@ -567,24 +552,24 @@ class mainindex_cls
 
         // *** Show light gray background bar, that graphical shows number of persons ***
         $text .= '
-    <script>
-    var tbl = document.getElementsByClassName("nametbl")[0];
-    var rws = tbl.rows; var baseperc = ' . $baseperc . ';
-    for(var i = 0; i < rws.length; i ++) {
-        var tbs =  rws[i].getElementsByClassName("namenr");
-        var nms = rws[i].getElementsByClassName("namelst");
-        for(var x = 0; x < tbs.length; x ++) {
-            var percentage = parseInt(tbs[x].innerHTML, 10);
-            percentage = (percentage * 100)/baseperc;
-            if(percentage > 0.1) {
-                nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
-                nms[x].style.backgroundSize = percentage + "%" + " 100%";
-                nms[x].style.backgroundRepeat = "no-repeat";
-                nms[x].style.color = "rgb(0, 140, 200)";
+        <script>
+        var tbl = document.getElementsByClassName("nametbl")[0];
+        var rws = tbl.rows; var baseperc = ' . $baseperc . ';
+        for(var i = 0; i < rws.length; i ++) {
+            var tbs =  rws[i].getElementsByClassName("namenr");
+            var nms = rws[i].getElementsByClassName("namelst");
+            for(var x = 0; x < tbs.length; x ++) {
+                var percentage = parseInt(tbs[x].innerHTML, 10);
+                percentage = (percentage * 100)/baseperc;
+                if(percentage > 0.1) {
+                    nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
+                    nms[x].style.backgroundSize = percentage + "%" + " 100%";
+                    nms[x].style.backgroundRepeat = "no-repeat";
+                    nms[x].style.color = "rgb(0, 140, 200)";
+                }
             }
         }
-    }
-    </script>';
+        </script>';
 
         //ob_flush();
         //flush(); // IE
@@ -633,11 +618,7 @@ class mainindex_cls
             $search_database = $_SESSION["save_search_database"];
         }
 
-        //if (CMS_SPECIFIC == 'Joomla') {
-        //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=list';
-        //} else {
         $path_tmp = CMS_ROOTPATH . 'list.php';
-        //}
         $text .= '<form method="post" action="' . $path_tmp . '">';
 
         $text .= '<p>';
@@ -685,11 +666,7 @@ class mainindex_cls
             $text .= '<input type="hidden" name="search_database" value="all_trees">';
         }
         $text .= '<p><input type="submit" value="' . __('Search') . '"></p>';
-        //if (CMS_SPECIFIC == 'Joomla') {
-        //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1&index_list=search';
-        //} else {
         $path_tmp = CMS_ROOTPATH . 'list.php?adv_search=1&index_list=search';
-        //}
         $text .= '<p><a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25"> ' . __('Advanced search') . '</a></p>';
 
         $text .= "</form>\n";
@@ -884,10 +861,6 @@ class mainindex_cls
         // *** Show character line ***
         if (isset($first_character)) {
             for ($i = 0; $i < count($first_character); $i++) {
-                //if (CMS_SPECIFIC == 'Joomla') {
-                //    $path_tmp = 'index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id=' . $tree_id .
-                //        '&amp;last_name=' . $first_character[$i];
-                //} elseif ($humo_option["url_rewrite"] == "j") {
                 if ($humo_option["url_rewrite"] == "j") {
                     // *** url_rewrite ***
                     // *** $uri_path is gemaakt in header.php ***
@@ -898,13 +871,6 @@ class mainindex_cls
                 $text .= ' <a href="' . $path_tmp . '">' . $first_character[$i] . '</a>';
             }
         }
-
-        //if (CMS_SPECIFIC=='Joomla'){
-        //	$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;pers_lastname=...';
-        //} else{
-        //	$path_tmp=CMS_ROOTPATH.'list.php?pers_lastname=...';
-        //}
-        //$text.=' <a href="'.$path_tmp. '">'.__('Other')."</a>\n";
 
         $person = "SELECT pers_patronym FROM humo_persons
         WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
@@ -1085,51 +1051,50 @@ class mainindex_cls
         global $humo_option;
 
         // *** Used inline CSS, so it will be possible to use other CSS style (can be used for future slideshow options) ***
-
         echo '<style>
-    /* CSS3 slider for mainmenu */
-    /* @import url(http://fonts.googleapis.com/css?family=Istok+Web); */
-    @keyframes slidy {
-        0% { left: 0%; }
-        20% { left: 0%; }
-        25% { left: -100%; }
-        45% { left: -100%; }
-        50% { left: -200%; }
-        70% { left: -200%; }
-        75% { left: -300%; }
-        95% { left: -300%; }
-        100% { left: -400%; }
-    }
-    /* body, figure { */
-    figure {
-        margin: 0;
-        /*	font-family: Istok Web, sans-serif; */
-        font-weight: 100;
-        
-        /* height:250px; */
-    }
-    div#captioned-gallery {
-        width: 100%; overflow: hidden; 
-        margin-top: -17px;
-    }
-    figure.slider { 
-        position: relative; width: 500%; 
-        font-size: 0; animation: 30s slidy infinite; 
-    }
-    figure.slider figure { 
-        width: 20%; height: auto;
-        display: inline-block;  position: inherit; 
-    }
-    figure.slider img { width: 100%; height: auto; }
-    figure.slider figure figcaption {
-        position: absolute; bottom: 10px;
-        background: rgba(0,0,0,0.4);
-        color: #fff; width: 100%;
-        font-size: 1.2rem; padding: .6rem;
-        text-shadow: 2px 2px 4px #000000; 
-    }
-    /* end of CSS3 slider */
-    </style>';
+            /* CSS3 slider for mainmenu */
+            /* @import url(http://fonts.googleapis.com/css?family=Istok+Web); */
+            @keyframes slidy {
+                0% { left: 0%; }
+                20% { left: 0%; }
+                25% { left: -100%; }
+                45% { left: -100%; }
+                50% { left: -200%; }
+                70% { left: -200%; }
+                75% { left: -300%; }
+                95% { left: -300%; }
+                100% { left: -400%; }
+            }
+            /* body, figure { */
+            figure {
+                margin: 0;
+                /*	font-family: Istok Web, sans-serif; */
+                font-weight: 100;
+                
+                /* height:250px; */
+            }
+            div#captioned-gallery {
+                width: 100%; overflow: hidden; 
+                margin-top: -17px;
+            }
+            figure.slider { 
+                position: relative; width: 500%; 
+                font-size: 0; animation: 30s slidy infinite; 
+            }
+            figure.slider figure { 
+                width: 20%; height: auto;
+                display: inline-block;  position: inherit; 
+            }
+            figure.slider img { width: 100%; height: auto; }
+            figure.slider figure figcaption {
+                position: absolute; bottom: 10px;
+                background: rgba(0,0,0,0.4);
+                color: #fff; width: 100%;
+                font-size: 1.2rem; padding: .6rem;
+                text-shadow: 2px 2px 4px #000000; 
+            }
+            /* end of CSS3 slider */
+        </style>';
 
         echo '<div id="captioned-gallery">';
 

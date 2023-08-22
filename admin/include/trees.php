@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * THIS FILE IS MADE BY Huub Mons
+ * IT IS PART OF THE HuMo-genealogy program.
+ * 
+ * jan 2014: updated family tree texts.
+ */
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
@@ -6,23 +14,12 @@ if (!defined('ADMIN_PAGE')) {
 
 @set_time_limit(4000);
 
-
-// THIS FILE IS MADE BY Huub Mons
-// IT IS PART OF THE HuMo-genealogy program.
-// jan 2014: updated family tree texts.
-
 // have to be declared global here for use in trees_cls.php
 global $phpself, $phpself2, $joomlastring;
 
-//if (CMS_SPECIFIC == "Joomla") {
-//    $phpself = "index.php?option=com_humo-gen&amp;task=admin"; // used also in trees_cls.php
-//    $joomlastring = "option=com_humo-gen&amp;task=admin&amp;"; // used also in trees_cls.php
-//    $phpself2 = "index.php?option=com_humo-gen&amp;task=admin&amp;"; // used only in trees_cls.php
-//} else {
 $phpself = 'index.php';
 $phpself2 = 'index.php?';
 $joomlastring = '';
-//}
 
 // *** Family tree admin ***
 if (isset($_POST['change_tree_data'])) {
@@ -402,35 +399,34 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 
     // *** Show main tree screen ***
     if (isset($menu_admin) and $menu_admin == 'tree_main') {
-        $tree_cls->tree_main();
+        //$tree_cls->tree_main();
+        include(__DIR__.'/../views/tree_admin.php');
     }
-
     // *** Show main tree screen ***
     if (isset($menu_admin) and $menu_admin == 'tree_gedcom') {
-        //$tree_cls->tree_main();
         include_once("gedcom.php");
     }
+
     // ********************************************************************************
     // *** Show selected family tree                                                ***
     // ********************************************************************************
-
     $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
     $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 
     // *** Show tree data ***
     if ($menu_admin == 'tree_data') {
-        $tree_cls->tree_data();
+        //$tree_cls->tree_data();
+        include(__DIR__.'/../views/tree_data.php');
     }
 
     // *** Show tree text ***
     if ($menu_admin == 'tree_text') {
-        // ** Show family tree list and family tree name editor in 1 screen ***
-        //$tree_cls->tree_main();
-        $tree_cls->tree_text();
+        //$tree_cls->tree_text();
+        include(__DIR__.'/../views/tree_text.php');
     }
     // *** Show merge screen ***
     if ($menu_admin == 'tree_merge') {
         $tree_cls->tree_merge();
     }
     ?>
-</div> <!-- div for content -->
+</div>

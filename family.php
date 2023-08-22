@@ -6,6 +6,9 @@
  * July 2023: seperated RTF, PDF and descendant chart.
  */
 
+
+// TODO Be aware this file is added in htaccess file
+
 $screen_mode = '';
 
 //TODO check PDF variables. PDF is moved to seperate scripts.
@@ -21,7 +24,6 @@ global $templ_name;
 include_once("header.php"); // returns CMS_ROOTPATH constant
 
 
-
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/models/family.php";
@@ -32,8 +34,11 @@ $family_expanded =  $get_family->getFamilyExpanded();
 $source_presentation =  $get_family->getSourcePresentation();
 $picture_presentation =  $get_family->getPicturePresentation();
 $text_presentation =  $get_family->getTextPresentation();
+$maps_presentation = $get_family->getMapsPresentation();
 $number_roman = $get_family->getNumberRoman();
 $number_generation = $get_family->getNumberGeneration();
+$descendant_report = $get_family->getDescendantReport();
+$descendant_header = $get_family->getDescendantHeader('Descendant report', $tree_id, $family_id, $main_person);
 //$this->view("families", array(
 //    "family" => $family,
 //    "title" => __('Family')
@@ -204,11 +209,13 @@ function topline()
                 echo '</div>';
                 echo '</div>';
 
+                //TODO check variables in forms (database -> tree_id).
+
                 // *** PDF button ***
                 if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
                     //echo ' <form method="POST" action="' . $uri_path . 'family.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
-                    //echo ' <form method="POST" action="' . $uri_path . 'views/family_pdfView.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
-                    echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'views/family_pdfView.php" style="display:inline-block; vertical-align:middle;">';
+                    //echo ' <form method="POST" action="' . $uri_path . 'views/family_pdf.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
+                    echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'views/family_pdf.php" style="display:inline-block; vertical-align:middle;">';
                     echo '<input type="hidden" name="id" value="' . $family_id . '">';
                     echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
                     echo '<input type="hidden" name="database" value="' . $database . '">';
@@ -216,8 +223,8 @@ function topline()
                     if ($descendant_report == true) {
                         echo '<input type="hidden" name="descendant_report" value="' . $descendant_report . '">';
                     }
-                    //$text.='<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
-                    //$text.='<input type="image" src="images/pdf.jpeg" width="20" border="0" alt="PDF Report">';
+                    //echo  '<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
+                    //echo '<input type="image" src="images/pdf.jpeg" width="20" border="0" alt="PDF Report">';
                     echo '<input class="fonts" style="background-color:#FF0000; color:white; font-weight:bold;" type="Submit" name="submit" value="' . __('PDF') . '">';
                     echo '</form> ';
                 }
@@ -225,8 +232,13 @@ function topline()
                 // *** RTF button ***
                 if ($user["group_rtf_button"] == 'y' and $language["dir"] != "rtl") {
                     //echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'family.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
-                    //echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'views/family_rtfView.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
-                    echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'family_rtf" style="display:inline-block; vertical-align:middle;">';
+                    //echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'views/family_rtf.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
+                    if ($humo_option["url_rewrite"] == "j") {
+                        echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'family_rtf" style="display:inline-block; vertical-align:middle;">';
+                    }
+                    else{
+                        echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'index.php?page=family_rtf" style="display:inline-block; vertical-align:middle;">';
+                    }
                     echo '<input type="hidden" name="id" value="' . $family_id . '">';
                     echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
                     echo '<input type="hidden" name="database" value="' . $database . '">';
@@ -310,37 +322,10 @@ $db_functions->check_person($main_person);
 // **********************************************************
 $max_generation = ($humo_option["descendant_generations"] - 1);
 
-// TODO move this script to model page.
-$descendant_report = false;
-if (isset($_GET['descendant_report'])) {
-    $descendant_report = true;
-}
-if (isset($_POST['descendant_report'])) {
-    $descendant_report = true;
-}
-
-// TODO move this script to model page.
-// *** Show/ hide Google maps ***
-$maps_presentation_array = array('show', 'hide');
-if (isset($_GET['maps_presentation']) and in_array($_GET['maps_presentation'], $maps_presentation_array)) {
-    $_SESSION['save_maps_presentation'] = $_GET["maps_presentation"];
-}
-// *** Default setting is selected by administrator ***
-$maps_presentation = $user['group_maps_presentation'];
-if (isset($_SESSION['save_maps_presentation']) and in_array($_SESSION['save_maps_presentation'], $maps_presentation_array)) {
-    $maps_presentation = $_SESSION['save_maps_presentation'];
-}
-// *** Only show selection if there is a Google maps database ***
-$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-if (!$temp->rowCount()) {
-    $maps_presentation = 'hide';
-}
-
 // **************************
 // *** Show single person ***
 // **************************
 if (!$family_id) {
-    // starfieldchart is never called when there is no own fam so no need to mark this out
     // *** Privacy filter ***
     @$parent1Db = $db_functions->get_person($main_person);
     // *** Use class to show person ***
@@ -352,7 +337,6 @@ if (!$family_id) {
         printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">');
         echo '</b><br><br></div>';
     }
-
 
     $id = '';
 ?>
@@ -416,7 +400,12 @@ else {
         unset($descendant_main_person2);
 
         if ($descendant_report == true) {
-            echo '<div class="standard_header fonts">' . __('generation ') . $number_roman[$descendant_loop + 1] . '</div>';
+            // *** Show links to other charts at top of page ***
+            if ($descendant_loop == 0) {
+                echo $descendant_header;
+            }
+
+            echo '<h2 class="standard_header fonts">' . ucfirst(__('generation ')) . $number_roman[$descendant_loop + 1] . '</h2>';
         }
 
         // *** Nr of families in one generation ***
@@ -1238,10 +1227,8 @@ if ($descendant_report == false) {
         <table align="center" class="humo">
             <tr class="humo_user_notes">
                 <th>
-                    <?php
-                    if ($num_rows) echo '<a href="#humo_user_notes"></a> ';
-                    echo __('User notes');
-                    ?>
+                    <?php if ($num_rows) echo '<a href="#humo_user_notes"></a> ';?>
+                    <?= __('User notes'); ?>
                 </th>
                 <th colspan="2">
                     <?php
@@ -1405,4 +1392,4 @@ if ($descendant_report == false) {
     }
 }
 
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

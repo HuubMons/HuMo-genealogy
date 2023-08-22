@@ -1,10 +1,14 @@
 <?php
+
 /**
  * OUTLINE REPORT  - report_outline.php
  * by Yossi Beck - Nov 2008 - (on basis of Huub's family.php)
  * Jul 2011 Huub: translation of variables to English
  */
 @set_time_limit(300);
+
+
+//TODO split into PDF and HTML script.
 
 global $show_date, $dates_behind_names, $nr_generations;
 global $screen_mode, $language, $humo_option, $user, $selected_language;
@@ -17,19 +21,32 @@ if (isset($_POST["screen_mode"]) and ($_POST["screen_mode"] == 'PDF-L' or $_POST
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
 
-include_once(CMS_ROOTPATH . "include/language_date.php");
-include_once(CMS_ROOTPATH . "include/language_event.php");
-include_once(CMS_ROOTPATH . "include/date_place.php");
-include_once(CMS_ROOTPATH . "include/process_text.php");
-include_once(CMS_ROOTPATH . "include/person_cls.php");
-include_once(CMS_ROOTPATH . "include/marriage_cls.php");
 
-// TRY OUTLINE WITH DETAILS
-include_once(CMS_ROOTPATH . "include/show_sources.php"); // *** No sources in use in outline report ***
-include_once(CMS_ROOTPATH . "include/show_addresses.php");
-include_once(CMS_ROOTPATH . "include/witness.php");
-include_once(CMS_ROOTPATH . "include/show_picture.php");
-include_once(CMS_ROOTPATH . "include/calculate_age_cls.php");
+
+// TODO create seperate controller script.
+// TEMPORARY CONTROLLER HERE:
+require_once  __DIR__ . "/models/family.php";
+$get_family = new Family($dbh);
+$family_id = $get_family->getFamilyId();
+$main_person = $get_family->getMainPerson();
+/*
+$family_expanded =  $get_family->getFamilyExpanded();
+$source_presentation =  $get_family->getSourcePresentation();
+$picture_presentation =  $get_family->getPicturePresentation();
+$text_presentation =  $get_family->getTextPresentation();
+$number_roman = $get_family->getNumberRoman();
+$number_generation = $get_family->getNumberGeneration();
+$descendant_report = $get_family->getDescendantReport();
+*/
+if ($screen_mode != 'PDF') {
+    $descendant_header = $get_family->getDescendantHeader('Outline report', $tree_id, $family_id, $main_person);
+}
+//$this->view("families", array(
+//    "family" => $family,
+//    "title" => __('Family')
+//));
+
+
 
 if ($screen_mode != 'PDF') {  //we can't have a menu in pdf...
     include_once(CMS_ROOTPATH . "menu.php");
@@ -49,27 +66,9 @@ if ($screen_mode != 'PDF') {  //we can't have a menu in pdf...
     $db_functions->set_tree_id($tree_id);
 }
 
-// *** Family gedcomnumber ***
-$family_id = 'F1'; // *** Default: show 1st family ***
-//if (isset($urlpart[1])){ $family_id=$urlpart[1]; }
-if (isset($_GET["id"])) {
-    $family_id = $_GET["id"];
-}
-if (isset($_POST["id"])) {
-    $family_id = $_POST["id"];
-}
 // *** Check if family gedcomnumber is valid ***
 $db_functions->check_family($family_id);
 
-// *** Person gedcomnumber (backwards compatible) ***
-$main_person = ''; // *** Mainperson of family ***
-//if (isset($urlpart[2])){ $main_person=$urlpart[2];}
-if (isset($_GET["main_person"])) {
-    $main_person = $_GET["main_person"];
-}
-if (isset($_POST["main_person"])) {
-    $main_person = $_POST["main_person"];
-}
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($main_person);
 
@@ -140,9 +139,10 @@ if ($screen_mode == 'PDF') {
 }
 
 if ($screen_mode != "PDF") {
-    echo '<div class="standard_header fonts">' . __('Outline report') . '</div>';
-    echo '<div class="pers_name center print_version">';
+    //echo '<h1 class="standard_header fonts">' . __('Outline report') . '</h1>';
+    echo $descendant_header;
 
+    echo '<div class="pers_name center print_version">';
 
     // ******************************************************
     // ******** Button: Show full details (book)  ***********
@@ -163,7 +163,6 @@ if ($screen_mode != "PDF") {
     echo '</form>&nbsp;';
 
     if (!$show_details) {
-
         // ***************************************
         // ******** Button: Show date  ***********
         // ***************************************
@@ -211,19 +210,18 @@ if ($screen_mode != "PDF") {
         if ($nr_gen == $nr_generations) {
             echo ' selected';
         }
-            echo ' value="report_outline.php?nr_generations=' . $nr_gen . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
+        echo ' value="report_outline.php?nr_generations=' . $nr_gen . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
     }
     echo '<option';
     if ($nr_generations == 50) {
         echo ' selected';
     }
 
-        echo ' value="report_outline.php?nr_generations=50&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
+    echo ' value="report_outline.php?nr_generations=50&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
     echo '</select>';
     echo '</span>';
 
     if (!$show_details) {
-
         echo '&nbsp;&nbsp;&nbsp;<span>';
         //if($language["dir"]!="rtl") {
         if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
@@ -239,7 +237,6 @@ if ($screen_mode != "PDF") {
             echo '<input class="fonts" type="Submit" name="submit" value="' . __('PDF (Portrait)') . '">';
             echo '</form>';
         }
-
         echo '</span>';
 
         echo '&nbsp;&nbsp;&nbsp;<span>';
@@ -604,13 +601,12 @@ function outline($family_id, $main_person, $gn, $nr_generations)
 if ($screen_mode != 'PDF') {
     echo '<table class="humo outlinetable"><tr><td>';
 }
+
 outline($family_id, $main_person, $gn, $nr_generations);
-if ($screen_mode != 'PDF') {
-    echo '</td></tr></table>';
-}
 
 if ($screen_mode != 'PDF') {
-    include_once(CMS_ROOTPATH . "footer.php");
+    echo '</td></tr></table>';
+    include_once(CMS_ROOTPATH . "views/footer.php");
 } else {
     $pdf->Output($title . ".pdf", "I");
 }

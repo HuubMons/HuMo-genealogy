@@ -40,12 +40,7 @@ function statistics_line($familyDb)
     if ($checkDb and $checkDb->fam_man == $familyDb->stat_gedcom_man and $checkDb->fam_woman == $familyDb->stat_gedcom_woman) $check = true;
 
     if ($check == true) {
-        //if (CMS_SPECIFIC == "Joomla") {
-        //    echo '<td><a href="index.php?option=com_humo-gen&amp;task=family&amp;id=' . $familyDb->stat_gedcom_fam . '&amp;tree_id=' . $familyDb->tree_id .
-        //        '">' . __('Family') . ': </a>';
-        //} else {
         echo '<td><a href="../family.php?id=' . $familyDb->stat_gedcom_fam . '&amp;tree_id=' . $familyDb->tree_id . '">' . __('Family') . ': </a>';
-        //}
 
         //*** Man ***
         $personDb = $db_functions->get_person($familyDb->stat_gedcom_man);
@@ -78,7 +73,6 @@ function calender($month, $year, $thismonth)
 {
     global $dbh, $language, $statistics_screen;
 
-    echo '<table class="humo standard" border="1" cellspacing="0">';
     if ($month == '1') {
         $calender_head = __('January');
     }
@@ -115,103 +109,114 @@ function calender($month, $year, $thismonth)
     if ($month == '12') {
         $calender_head = __('December');
     }
-    echo '<tr class="table_header"><th colspan="8">' . $calender_head . ' ' . $year . '</th></TR>';
-    echo '<tr><th>Nr.</th><th>' . __('Monday') . '</th><th>' . __('Tuesday') . '</th><th>' . __('Wednesday') . '</th><th>' . __('Thursday') . '</th><th>' . __('Friday') . '</th><th>' . __('Saturday') . '</th><th>' . __('Sunday') . '</th></tr>';
-    $week = mktime(0, 0, 0, $month, 1, $year);
-    $week_number = date("W", $week);
-    echo "<tr><th>$week_number</th>";
 
-    // If neccesary skip days at start of month
-    $First_Day_Of_Month = date("w", mktime(0, 0, 0, $month, 1, $year));
-    if ($First_Day_Of_Month > "1") {
-        echo '<td colspan="' . ($First_Day_Of_Month - 1) . '"><br></td>';
-    }
-    // Sunday:
-    if ($First_Day_Of_Month == "0") {
-        echo '<td colspan="6"><br></td>';
-    }
+?>
+    <table class="humo standard" border="1" cellspacing="0">
+        <tr class="table_header">
+            <th colspan="8"><?= $calender_head . ' ' . $year; ?></th>
+        </tr>
 
-    // Show days
-    $Days_In_Month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-    $day = 1;
-    $row = 1;
-    $field = $First_Day_Of_Month;
-    if ($field == '0') {
-        $field = 7;
-    }  // First day is sunday.
+        <tr>
+            <th><?= __('Nr.'); ?></th>
+            <th><?= __('Monday'); ?></th>
+            <th><?= __('Tuesday'); ?></th>
+            <th><?= __('Wednesday'); ?></th>
+            <th><?= __('Thursday'); ?></th>
+            <th><?= __('Friday'); ?></th>
+            <th><?= __('Saturday'); ?></th>
+            <th><?= __('Sunday'); ?></th>
+        </tr>
 
-    $i = 1;
-    for ($i; $i <= $Days_In_Month; $i++) {
-        $present_day = date("Y-n-d");
-        if ($day < 10) {
-            $day = '0' . $day;
+        <?php
+        $week = mktime(0, 0, 0, $month, 1, $year);
+        $week_number = date("W", $week);
+        echo "<tr><th>$week_number</th>";
+
+        // If neccesary skip days at start of month
+        $First_Day_Of_Month = date("w", mktime(0, 0, 0, $month, 1, $year));
+        if ($First_Day_Of_Month > "1") {
+            echo '<td colspan="' . ($First_Day_Of_Month - 1) . '"><br></td>';
         }
-        $date = $year . '-' . $month . '-' . $day;
-        $yesterday = strtotime($date);
-        $today = $yesterday + 86400;
-
-        if ($statistics_screen == 'visitors') {
-            // *** Show visitors ***
-            $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date
-                WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today . ' GROUP BY stat_ip_address');
-        } else {
-            // *** Show families ***
-            $datasql = $dbh->query("SELECT * FROM humo_stat_date
-                WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today);
+        // Sunday:
+        if ($First_Day_Of_Month == "0") {
+            echo '<td colspan="6"><br></td>';
         }
 
-        if ($datasql) {
-            $nr_statistics = $datasql->rowCount();
-        }
+        // Show days
+        $Days_In_Month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $day = 1;
+        $row = 1;
+        $field = $First_Day_Of_Month;
+        if ($field == '0') {
+            $field = 7;
+        }  // First day is sunday.
 
-        // *** Use another colour for present day ***
-        $color = '';
-        if ($date == $present_day) {
-            $color = ' bgcolor="#00FFFF"';
-        }
-
-        echo "<td$color>$day <b>$nr_statistics</b></td>";
-        $day++;
-        if ($day <= $Days_In_Month) {
-            $field++;
-            if ($field == 8) {
-                $week = mktime(0, 0, 0, $month, $day, $year);
-                $week_number = date("W", $week);
-                echo "</tr>\n";
-                echo "<tr><th>$week_number</th>";
-                $row++;
-                $field = 1;
+        $i = 1;
+        for ($i; $i <= $Days_In_Month; $i++) {
+            $present_day = date("Y-n-d");
+            if ($day < 10) {
+                $day = '0' . $day;
             }
+            $date = $year . '-' . $month . '-' . $day;
+            $yesterday = strtotime($date);
+            $today = $yesterday + 86400;
+
+            if ($statistics_screen == 'visitors') {
+                // *** Show visitors ***
+                $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date
+                WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today . ' GROUP BY stat_ip_address');
+            } else {
+                // *** Show families ***
+                $datasql = $dbh->query("SELECT * FROM humo_stat_date
+                WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today);
+            }
+
+            if ($datasql) {
+                $nr_statistics = $datasql->rowCount();
+            }
+
+            // *** Use another colour for present day ***
+            $color = '';
+            if ($date == $present_day) {
+                $color = ' bgcolor="#00FFFF"';
+            }
+
+            echo "<td$color>$day <b>$nr_statistics</b></td>";
+            $day++;
+            if ($day <= $Days_In_Month) {
+                $field++;
+                if ($field == 8) {
+                    $week = mktime(0, 0, 0, $month, $day, $year);
+                    $week_number = date("W", $week);
+                    echo "</tr>\n";
+                    echo "<tr><th>$week_number</th>";
+                    $row++;
+                    $field = 1;
+                }
+            }
+
+            // *** Array for graphical statistics ***
+            $data[$day - 1] = $nr_statistics;
         }
 
-        // *** Array for graphical statistics ***
-        $data[$day - 1] = $nr_statistics;
-    }
+        // Add end month spacers
+        if ((8 - $field) >= "1") {
+            echo '<td colspan="' . (8 - $field) . '"><br></td></tr>';
+        }
 
-    // Add end month spacers
-    if ((8 - $field) >= "1") {
-        echo '<td colspan="' . (8 - $field) . '"><br></td></tr>';
-    }
+        // *** Always make 6 rows ***
+        if ($row == 5) {
+            echo "</tr><tr><td colspan=8><br></td></tr>";
+        }
+        ?>
+    </table><br>
+    <?php
 
-    // *** Always make 6 rows ***
-    if ($row == 5) {
-        echo "</tr><tr><td colspan=8><br></td></tr>";
-    }
-
-    echo "</table><br>\n";
-
-    //if (CMS_SPECIFIC == "Joomla") {  // make the graph scrollable
-    //    echo '<div style="width:100%;height:230px;overflow:auto;">';
-    //    echo '<div style="height:210px;width:1000px;overflow:visible;">';
-    //}
     // *** Show graphical month statistics ***
     //$this_month=$thismonth;
     $mc = new maxChart($data);
     //$mc->displayChart($calender_head."&nbsp;".$year,1,700,200,false,$this_month);
     $mc->displayChart($calender_head . "&nbsp;" . $year, 1, 700, 200, false, $thismonth);
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    echo '</div></div>';
-    //}
 }
 
 // *** Function to show year statistics ***
@@ -293,21 +298,11 @@ function year_graphics($month, $year)
     $mc = new maxChart($twelve_months);
     $this_month = date("n");
 
-    //if (CMS_SPECIFIC == "Joomla") {  // make the graph scrollable
-    //    echo '<div style="width:100%;height:230px;overflow:auto;">';
-    //    echo '<div style="height:210px;width:1000px;overflow:visible;">';
-    //}
-
     if ($statistics_screen == 'visitors') {
         $mc->displayChart(__('Visitors'), 1, 700, 200, false, $this_month);
     } else {
         $mc->displayChart(__('Visited families in the past 12 months'), 1, 700, 200, false, $this_month);
     }
-
-    //if (CMS_SPECIFIC == "Joomla") {
-    //    echo '</div>';
-    //    echo '</div>';
-    //}
 }
 // End statistics
 
@@ -327,7 +322,7 @@ function country2()
         GROUP BY stat_country_code ORDER BY count_country_code DESC LIMIT 0," . $max;
         $stat = $dbh->query($statqry);
 
-?>
+    ?>
         <table class="humo standard" border="1" cellspacing="0">
             <tr class="table_header">
                 <th><?= __('Country of origin'); ?></th>
@@ -381,11 +376,7 @@ if (isset($_GET['tree_id'])) {
 }
 
 // *** Show buttons ***
-//if (CMS_SPECIFIC == "Joomla") {
-//    $phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=statistics";
-//} else {
 $phpself = 'index.php';
-//}
 
 $style_general_statistics = '';
 if ($statistics_screen == 'general_statistics') {
@@ -464,14 +455,6 @@ if (isset($_POST['remove2'])) {
 }
 
 if ($statistics_screen == 'remove') {
-    echo '<h2>' . __('Remove statistics') . '</h2>';
-
-    echo __('Statistics will be removed PERMANENTLY. Make a backup first to save the statistics data') . '<br>';
-
-    echo '<form method="POST" action="">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo __('Remove ALL statistics BEFORE this date:');
-    echo ' <input type="text" name="stat_day" value="1" size="1">';
     $month = date("m");
     $year = date("Y");
     $month--;
@@ -479,12 +462,23 @@ if ($statistics_screen == 'remove') {
         $month = 12;
         $year--;
     }
-    echo ' <input type="text" name="stat_month" value="' . $month . '" size="1">';
 
-    echo ' <input type="text" name="stat_year" value="' . $year . '" size="2"> ' . __('d-m-yyyy') . '<br>';
+?>
+    <h2><?= __('Remove statistics'); ?></h2>
 
-    echo '<input type ="Submit" name="remove2" value="' . __('REMOVE statistic data') . '">';
-    echo '</form>';
+    <?= __('Statistics will be removed PERMANENTLY. Make a backup first to save the statistics data'); ?><br>
+
+    <form method="POST" action="">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <?= __('Remove ALL statistics BEFORE this date:'); ?>
+        <input type="text" name="stat_day" value="1" size="1">
+        <input type="text" name="stat_month" value="<?= $month; ?>" size="1">
+
+        <input type="text" name="stat_year" value="<?= $year; ?>" size="2"> <?= __('d-m-yyyy'); ?><br>
+
+        <input type="Submit" name="remove2" value="<?= __('REMOVE statistic data'); ?>">
+    </form>
+<?php
 }
 
 if ($statistics_screen == 'general_statistics') {
@@ -547,13 +541,11 @@ if ($statistics_screen == 'general_statistics') {
     echo '<table class="humo standard" border="1" cellspacing="0">';
     echo '<tr class="table_header"><th>' . __('Item') . '</th><th>' . __('Counter') . '</th></tr>';
     // *** Total number unique visitors ***
-    //$stat=$dbh->query("SELECT * FROM humo_stat_date GROUP BY stat_ip_address");
     $stat = $dbh->query("SELECT stat_ip_address FROM humo_stat_date GROUP BY stat_ip_address");
     $count_visitors = $stat->rowCount();
     echo '<tr><td>' . __('Total number of unique visitors:') . '</td><td>' . $count_visitors . '</td>';
 
     // *** Total number visited families ***
-    //$datasql = $dbh->query("SELECT * FROM humo_stat_date");
     $datasql = $dbh->query("SELECT stat_id FROM humo_stat_date");
     if ($datasql) {
         $total = $datasql->rowCount();
@@ -633,103 +625,62 @@ if ($statistics_screen == 'date_statistics') {
         $month = $_POST['month'];
     }
 
-    echo '<div class="center">';
-    echo '<br><form method="POST" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo ' <input type="hidden" name="statistics_screen" value="date_statistics">';
-    echo "<select size='1' name='month'>";
-    $select = '';
-    if ($month == '1') {
-        $select = ' selected';
-    }
-    echo '<option value="1"' . $select . '>' . __('January') . '</option>';
-    $select = '';
-    if ($month == '2') {
-        $select = ' selected';
-    }
-    echo '<option value="2"' . $select . '>' . __('February') . '</option>';
-    $select = '';
-    if ($month == '3') {
-        $select = ' selected';
-    }
-    echo '<option value="3"' . $select . '>' . __('March') . '</option>';
-    $select = '';
-    if ($month == '4') {
-        $select = ' selected';
-    }
-    echo '<option value="4"' . $select . '>' . __('April') . '</option>';
-    $select = '';
-    if ($month == '5') {
-        $select = ' selected';
-    }
-    echo '<option value="5"' . $select . '>' . __('May') . '</option>';
-    $select = '';
-    if ($month == '6') {
-        $select = ' selected';
-    }
-    echo '<option value="6"' . $select . '>' . __('June') . '</option>';
-    $select = '';
-    if ($month == '7') {
-        $select = ' selected';
-    }
-    echo '<option value="7"' . $select . '>' . __('July') . '</option>';
-    $select = '';
-    if ($month == '8') {
-        $select = ' selected';
-    }
-    echo '<option value="8"' . $select . '>' . __('August') . '</option>';
-    $select = '';
-    if ($month == '9') {
-        $select = ' selected';
-    }
-    echo '<option value="9"' . $select . '>' . __('September') . '</option>';
-    $select = '';
-    if ($month == '10') {
-        $select = ' selected';
-    }
-    echo '<option value="10"' . $select . '>' . __('October') . '</option>';
-    $select = '';
-    if ($month == '11') {
-        $select = ' selected';
-    }
-    echo '<option value="11"' . $select . '>' . __('November') . '</option>';
-    $select = '';
-    if ($month == '12') {
-        $select = ' selected';
-    }
-    echo '<option value="12"' . $select . '>' . __('December') . '</option>';
-    echo "</select>";
+?>
+    <div class="center">
+        <br>
+        <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="statistics_screen" value="date_statistics">
+            <select size='1' name='month'>
+                <option value="1" <?php if ($month == '1') echo ' selected'; ?>><?= __('January'); ?></option>
+                <option value="2" <?php if ($month == '2') echo ' selected'; ?>><?= __('February'); ?></option>
+                <option value="3" <?php if ($month == '3') echo ' selected'; ?>><?= __('March'); ?></option>
+                <option value="4" <?php if ($month == '4') echo ' selected'; ?>><?= __('April'); ?></option>
+                <option value="5" <?php if ($month == '5') echo ' selected'; ?>><?= __('May'); ?></option>
+                <option value="6" <?php if ($month == '6') echo ' selected'; ?>><?= __('June'); ?></option>
+                <option value="7" <?php if ($month == '7') echo ' selected'; ?>><?= __('July'); ?></option>
+                <option value="8" <?php if ($month == '8') echo ' selected'; ?>><?= __('August'); ?></option>
+                <option value="9" <?php if ($month == '9') echo ' selected'; ?>><?= __('September'); ?></option>
+                <option value="10" <?php if ($month == '10') echo ' selected'; ?>><?= __('October'); ?></option>
+                <option value="11" <?php if ($month == '11') echo ' selected'; ?>><?= __('November'); ?></option>
+                <option value="12" <?php if ($month == '12') echo ' selected'; ?>><?= __('December'); ?></option>
+            </select>
+            <?php
 
-    // *** Selection of year ***
+            // *** Selection of year ***
 
-    // *** Search oldest record in database***
-    $datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
-    $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-    if (isset($dataDb->stat_date_linux)) $first_year = date("Y", $dataDb->stat_date_linux);
+            // *** Search oldest record in database***
+            $datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
+            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+            if (isset($dataDb->stat_date_linux)) $first_year = date("Y", $dataDb->stat_date_linux);
 
-    $present_year = date("Y");
-    $year = $present_year;
-    if (isset($_POST['year'])) {
-        $year = $_POST['year'];
-    }
+            $present_year = date("Y");
+            $year = $present_year;
+            if (isset($_POST['year'])) {
+                $year = $_POST['year'];
+            }
 
-    echo " <select size='1' name='year'>";
-    for ($year_select = $first_year; $year_select <= $present_year; $year_select++) {
-        $select = '';
-        if ($year == $year_select) {
-            $select = ' selected';
-        }
-        echo '<option value="' . $year_select . '"' . $select . '>' . $year_select . '</option>';
-    }
-    echo "</select>";
+            ?>
+            <select size='1' name='year'>
+                <?php
+                for ($year_select = $first_year; $year_select <= $present_year; $year_select++) {
+                    $select = '';
+                    if ($year == $year_select) {
+                        $select = ' selected';
+                    }
+                    echo '<option value="' . $year_select . '"' . $select . '>' . $year_select . '</option>';
+                }
+                ?>
+            </select>
+            <input type="Submit" name="submit" value=<?= __('Select'); ?>>
+        </form>
+        <?php
 
-    echo ' <input type="Submit" name="submit" value=' . __('Select') . '>';
-
-    echo '</form>';
-
-    // *** Visited families in this month ***
-    echo '<br><br><b>' . __('Total number of visited families:') . '</b><br>';
-    echo '</div><br>';
+        // *** Visited families in this month ***
+        echo '<br><br><b>' . __('Total number of visited families:') . '</b><br>';
+        ?>
+    </div><br>
+    <?php
 
     // Graphic present month
     if ($month == $present_month and $year == $present_year) {
@@ -752,103 +703,61 @@ if ($statistics_screen == 'visitors') {
         $month = $_POST['month'];
     }
 
-    echo '<div class="center">';
-    echo '<br><form method="POST" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo ' <input type="hidden" name="statistics_screen" value="visitors">';
-    echo "<select size='1' name='month'>";
-    $select = '';
-    if ($month == '1') {
-        $select = ' selected';
-    }
-    echo '<option value="1"' . $select . '>' . __('January') . '</option>';
-    $select = '';
-    if ($month == '2') {
-        $select = ' selected';
-    }
-    echo '<option value="2"' . $select . '>' . __('February') . '</option>';
-    $select = '';
-    if ($month == '3') {
-        $select = ' selected';
-    }
-    echo '<option value="3"' . $select . '>' . __('March') . '</option>';
-    $select = '';
-    if ($month == '4') {
-        $select = ' selected';
-    }
-    echo '<option value="4"' . $select . '>' . __('April') . '</option>';
-    $select = '';
-    if ($month == '5') {
-        $select = ' selected';
-    }
-    echo '<option value="5"' . $select . '>' . __('May') . '</option>';
-    $select = '';
-    if ($month == '6') {
-        $select = ' selected';
-    }
-    echo '<option value="6"' . $select . '>' . __('June') . '</option>';
-    $select = '';
-    if ($month == '7') {
-        $select = ' selected';
-    }
-    echo '<option value="7"' . $select . '>' . __('July') . '</option>';
-    $select = '';
-    if ($month == '8') {
-        $select = ' selected';
-    }
-    echo '<option value="8"' . $select . '>' . __('August') . '</option>';
-    $select = '';
-    if ($month == '9') {
-        $select = ' selected';
-    }
-    echo '<option value="9"' . $select . '>' . __('September') . '</option>';
-    $select = '';
-    if ($month == '10') {
-        $select = ' selected';
-    }
-    echo '<option value="10"' . $select . '>' . __('October') . '</option>';
-    $select = '';
-    if ($month == '11') {
-        $select = ' selected';
-    }
-    echo '<option value="11"' . $select . '>' . __('November') . '</option>';
-    $select = '';
-    if ($month == '12') {
-        $select = ' selected';
-    }
-    echo '<option value="12"' . $select . '>' . __('December') . '</option>';
-    echo "</select>";
+    //TODO select month is double code. Also used in previous part.
 
-    // *** Selection of year ***
+    ?>
+    <div class="center">
+        <br>
+        <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="statistics_screen" value="visitors">
+            <select size='1' name='month'>
+                <option value="1" <?php if ($month == '1') echo ' selected'; ?>><?= __('January'); ?></option>
+                <option value="2" <?php if ($month == '2') echo ' selected'; ?>><?= __('February'); ?></option>
+                <option value="3" <?php if ($month == '3') echo ' selected'; ?>><?= __('March'); ?></option>
+                <option value="4" <?php if ($month == '4') echo ' selected'; ?>><?= __('April'); ?></option>
+                <option value="5" <?php if ($month == '5') echo ' selected'; ?>><?= __('May'); ?></option>
+                <option value="6" <?php if ($month == '6') echo ' selected'; ?>><?= __('June'); ?></option>
+                <option value="7" <?php if ($month == '7') echo ' selected'; ?>><?= __('July'); ?></option>
+                <option value="8" <?php if ($month == '8') echo ' selected'; ?>><?= __('August'); ?></option>
+                <option value="9" <?php if ($month == '9') echo ' selected'; ?>><?= __('September'); ?></option>
+                <option value="10" <?php if ($month == '10') echo ' selected'; ?>><?= __('October'); ?></option>
+                <option value="11" <?php if ($month == '11') echo ' selected'; ?>><?= __('November'); ?></option>
+                <option value="12" <?php if ($month == '12') echo ' selected'; ?>><?= __('December'); ?></option>
+            </select>
+            <?php
 
-    // *** Find oldest record in database ***
-    $datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
-    $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-    if (isset($dataDb->stat_date_linux)) $first_year = date("Y", $dataDb->stat_date_linux);
+            // *** Selection of year ***
 
-    $present_year = date("Y");
-    $year = $present_year;
-    if (isset($_POST['year'])) {
-        $year = $_POST['year'];
-    }
+            // *** Find oldest record in database ***
+            $datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
+            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+            if (isset($dataDb->stat_date_linux)) $first_year = date("Y", $dataDb->stat_date_linux);
 
-    echo " <select size='1' name='year'>";
-    for ($year_select = $first_year; $year_select <= $present_year; $year_select++) {
-        $select = '';
-        if ($year == $year_select) {
-            $select = ' selected';
-        }
-        echo '<option value="' . $year_select . '"' . $select . '>' . $year_select . '</option>';
-    }
-    echo "</select>";
+            $present_year = date("Y");
+            $year = $present_year;
+            if (isset($_POST['year'])) {
+                $year = $_POST['year'];
+            }
 
-    echo ' <input type="Submit" name="submit" value=' . __('Select') . '>';
+            echo " <select size='1' name='year'>";
+            for ($year_select = $first_year; $year_select <= $present_year; $year_select++) {
+                $select = '';
+                if ($year == $year_select) {
+                    $select = ' selected';
+                }
+                echo '<option value="' . $year_select . '"' . $select . '>' . $year_select . '</option>';
+            }
+            echo "</select>";
 
-    echo '</form>';
+            ?>
+            <input type="Submit" name="submit" value="<?= __('Select'); ?>">
+        </form>
 
-    // *** Visitors in present month ***
-    echo '<br><br><b>' . __('Visitors') . '</b><br>';
-    echo '</div><br>';
+        <!-- Visitors in present month -->
+        <br><br><b><?= __('Visitors'); ?></b><br>
+    </div><br>
+<?php
 
     // Graphic of present month
     if ($month == $present_month and $year == $present_year) {
@@ -864,12 +773,6 @@ if ($statistics_screen == 'visitors') {
     // *** User agent ***
     echo '<br><b>' . __('User agent information') . '</b><br>';
     // *** Show user agent info (50 most used user agents) ***
-    //$datasql=$dbh->query("SELECT *, count(humo_stat_date.stat_user_agent) as count_lines
-    //	FROM humo_stat_date
-    //	WHERE stat_user_agent LIKE '_%'
-    //	GROUP BY humo_stat_date.stat_user_agent desc
-    //	ORDER BY count_lines desc
-    //	LIMIT 0,50");
     $datasql = $dbh->query("SELECT stat_user_agent, count(humo_stat_date.stat_user_agent) as count_lines
         FROM humo_stat_date
         WHERE stat_user_agent LIKE '_%'
@@ -904,6 +807,7 @@ if ($statistics_screen == 'statistics_old') {
                 // *** Update date ***
                 $date = $dataDb->tree_date;
                 $month = ''; //voor lege datums
+                // TODO translate months.
                 if (substr($date, 5, 2) == '01') {
                     $month = ' jan ';
                 }
@@ -946,11 +850,7 @@ if ($statistics_screen == 'statistics_old') {
                 if ($dataDb->tree_id == $tree_id) {
                     echo '<b>' . $treetext['name'] . '</b>';
                 } else {
-                    //if (CMS_SPECIFIC == "Joomla") {
-                    //    echo '<a href="index.php?option=com_humo-gen&amp;task=admin&amp;page=' . $page . '&amp;tree_id=' . $dataDb->tree_id . '">' . $treetext['name'] . '</a>';
-                    //} else {
                     echo '<a href="index.php?page=' . $page . '&amp;tree_id=' . $dataDb->tree_id . '">' . $treetext['name'] . '</a>';
-                    //}
                 }
                 echo ' <font size=-1>(' . $date . ': ' . $dataDb->tree_persons . ' ' . __('persons') . ", " . $dataDb->tree_families . ' ' . __('families') . ")</font>\n<br>";
             }
@@ -965,11 +865,7 @@ if ($statistics_screen == 'statistics_old') {
             WHERE fam_tree_id='" . $tree_id . "' AND fam_counter ORDER BY fam_counter desc LIMIT 0,50");
     while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
         echo $familyDb->fam_counter . " ";
-        //if (CMS_SPECIFIC == "Joomla") {
-        //    echo '<a href="index.php?option=com_humo-gen&amp;task=family&amp;id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
-        //} else {
         echo '<a href="../family.php?id=' . $familyDb->fam_gedcomnumber . '">' . __('Family') . ': </a>';
-        //}
 
         //*** Man ***
         $personDb = $db_functions->get_person($familyDb->fam_man);

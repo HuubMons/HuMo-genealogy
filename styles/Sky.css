@@ -116,8 +116,6 @@ td.table_header {
 	background: url("images_sky/sky.gif") repeat-x bottom;
 }
 
-#humo_menu a {}
-
 /* Pop-up menu */
 /* ul.humo_menu_item2 li a{ */
 #humo_menu ul.humo_menu_item2 li a {
@@ -129,9 +127,6 @@ td.table_header {
 #humo_menu ul.humo_menu_item2 li a:hover {
 	background: linear-gradient(rgb(204, 204, 204) 0%, rgb(238, 238, 238) 60%, rgb(238, 238, 238) 100%);
 }
-
-#humo_menu #current a,
-#humo_menu #current_top {}
 
 ul.humo_menu_item li {
 	border-left: none;
@@ -153,12 +148,6 @@ input {
 	border-top-color: #ffdd55;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-}
-
-.help_box {
-	background-color: #000000;
-	background-image: url('images_sky/sky_dark.gif');
-	color: #ffffff;
 }
 
 div.photobook,

@@ -1,7 +1,7 @@
 <?php
 // *** To make HuMo-genealogy work, fill these lines properly! ***
 // *** Om HuMo-genealogy werkend te krijgen onderstaande regels GOED invullen! ***
-define("DATABASE_HOST",     'localhost');
+define("DATABASE_HOST",     'mysql');
 define("DATABASE_USERNAME", 'root');
 define("DATABASE_PASSWORD", '');
 define("DATABASE_NAME",     'humo-gen');

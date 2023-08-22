@@ -74,15 +74,6 @@ td.style_tree_text {
 	color: #464646;
 }
 
-/* A-Z title and header text reports (Generation I, II, etc.) */
-.standard_header {
-	font-size: 110%;
-	color: #0058af;
-	font-weight: bold;
-	text-align: center;
-	line-height: 200%;
-}
-
 /* report_ancestor.php */
 .chart_line {
 	background-color: #AAA;
@@ -172,10 +163,6 @@ ul.humo_menu_item2 li a {
 /* top bar in left - content - right boxes: only in main menu */
 .mainmenu_bar {
 	background: url("images_sky_blue/blue.png") repeat left top;
-}
-
-.help_box {
-	background-color: #e5f0fa;
 }
 
 div.photobook,

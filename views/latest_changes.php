@@ -1,6 +1,4 @@
 <?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH . "menu.php");
 include_once(CMS_ROOTPATH . "include/person_cls.php");
 include_once(CMS_ROOTPATH . "include/language_date.php");
 
@@ -67,12 +65,12 @@ if (isset($_POST["search_name"])) {
 
 $person_result = $dbh->query($person_qry);
 
-$path = CMS_ROOTPATH . 'latest_changes.php?' . $tree_id;
+$path = CMS_ROOTPATH . 'index.php?page=latest_changes.php&amp;tree_id=' . $tree_id;
 if ($humo_option["url_rewrite"] == "j") $path = 'latest_changes/' . $tree_id;
 
 ?>
 
-<h2 class="center"><?= __('Recently changed persons and new persons'); ?></h2>
+<h1><?= __('Recently changed persons and new persons'); ?></h1>
 
 <!-- *** Search box *** -->
 <div style="text-align: center; margin-bottom: 16px">
@@ -90,11 +88,7 @@ if ($humo_option["url_rewrite"] == "j") $path = 'latest_changes/' . $tree_id;
     </tr>
 
     <?php
-
-    //$rowcounter = 0;
     while (@$person = $person_result->fetch(PDO::FETCH_OBJ)) {
-        //$rowcounter++;
-
         $pers_changed_date = '';
         if ($person->pers_changed_date) $pers_changed_date = $person->pers_changed_date;
 
@@ -128,6 +122,3 @@ if ($humo_option["url_rewrite"] == "j") $path = 'latest_changes/' . $tree_id;
     }
     ?>
 </table>
-
-<?php
-include_once(CMS_ROOTPATH . "footer.php");

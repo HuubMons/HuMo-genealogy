@@ -18,10 +18,6 @@ session_start();
 * GNU General Public License for more details.                              *
 ****************************************************************************/
 
-//Changed this line, it's not working very good.
-//if (CMS_SPECIFIC == "Joomla") {
-//if (@CMS_SPECIFIC == "Joomla") {
-//Changed into:
 if (!isset($_SESSION['image_data'])) {
 	defined( '_JEXEC' ) or die( 'Restricted access' );
 	if(file_exists(CMS_ROOTPATH."include/fanchart/tmpimg.png")) {

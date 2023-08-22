@@ -508,20 +508,15 @@ The timeline menu:<br>
 <li><strong>After choosing the desired step and/or timeline, click the "Change Display" button on the bottom of the menu.</strong></li></ul>');
                 echo '</div>';
                 echo '</div><br>';
+                ?>
 
-                // =============================================
-                // *** Steps of years in display: 1, 5 or 10 ***
-                echo '<br>' . __('Steps:') . '<br>';
-                echo '<span class="select_box"><input type="radio" name="step" value="1"';
-                if ($step == 1) echo ' checked="checked"';
-                echo ' >1 ' . __('year') . '</span>';
-                echo '<span class="select_box"><input type="radio" name="step" value="5"';
-                if ($step == 5) echo ' checked="checked"';
-                echo ' >5 ' . __('years') . '</span>';
-                echo '<span class="select_box"><input type="radio" name="step" value="10"';
-                if ($step == 10) echo ' checked="checked"';
-                echo ' >10 ' . __('years') . '</span>';
+                <!-- Steps of years in display: 1, 5 or 10 -->
+                <br><?= __('Steps:'); ?><br>
+                <span class="select_box"><input type="radio" name="step" value="1" <?php if ($step == 1) echo ' checked="checked"'; ?>>1 <?= __('year'); ?></span>
+                <span class="select_box"><input type="radio" name="step" value="5" <?php if ($step == 5) echo ' checked="checked"'; ?>>5 <?= __('years'); ?></span>
+                <span class="select_box"><input type="radio" name="step" value="10" <?php if ($step == 10) echo ' checked="checked"'; ?>>10 <?= __('years'); ?></span>
 
+                <?php
                 // *** Choice of timeline files available ***
                 if (count($filenames) > 1) { // only show timelines menu if there are more than 1 timeline files
                     echo '<br><br>' . __('Choose timeline') . ':<br>';
@@ -849,4 +844,4 @@ $name = $person_cls->person_name($personDb);
 if (file_exists($filenames[0][0])) {
     fclose($handle);
 }
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

@@ -8,7 +8,7 @@
  *
  * See the manual for basic setup instructions
  *
- * http://www.huubmons.nl/software/
+ * https://humo-gen.com
  *
  * ----------
  *
@@ -156,12 +156,12 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                 $search_quicksearch = str_replace(',', '', $search_quicksearch);
 
                 $person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
-            WHERE pers_tree_id='" . $tree_id . "'
-            AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch%'
-            OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch%' 
-            OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch%' 
-            OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch%')
-            ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
+                    WHERE pers_tree_id='" . $tree_id . "'
+                    AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch%'
+                    OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch%' 
+                    OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch%' 
+                    OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch%')
+                    ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
                 $person_result = $dbh->query($person_qry);
             } elseif ($search_id != '') {
                 if (substr($search_id, 0, 1) != "i" and substr($search_id, 0, 1) != "I") {
@@ -204,22 +204,22 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
             echo '</select>';
 
             /*
-    $pers_gedcomnumber='';
-    if(isset($_POST['person']) AND $_POST['flag_newtree']!='1') { $pers_gedcomnumber = $_POST['person']; }
-    $pers_search = $dbh->query("SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix
-        FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname, pers_firstname");
-    echo '<select size="1" name="person" style="width: 300px">';
-    while ($person=$pers_search->fetch(PDO::FETCH_OBJ)){
-        $selected='';
-        if (isset($pers_gedcomnumber)){
-            if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' selected'; }
-        }
-        $prefix2=" ".strtolower(str_replace("_"," ",$person->pers_prefix));
-        echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
-            $person->pers_lastname.', '.$person->pers_firstname.$prefix2.' ['.$person->pers_gedcomnumber.']</option>';
-    }
-    echo '</select>';
-    */
+            $pers_gedcomnumber='';
+            if(isset($_POST['person']) AND $_POST['flag_newtree']!='1') { $pers_gedcomnumber = $_POST['person']; }
+            $pers_search = $dbh->query("SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix
+                FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname, pers_firstname");
+            echo '<select size="1" name="person" style="width: 300px">';
+            while ($person=$pers_search->fetch(PDO::FETCH_OBJ)){
+                $selected='';
+                if (isset($pers_gedcomnumber)){
+                    if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' selected'; }
+                }
+                $prefix2=" ".strtolower(str_replace("_"," ",$person->pers_prefix));
+                echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
+                    $person->pers_lastname.', '.$person->pers_firstname.$prefix2.' ['.$person->pers_gedcomnumber.']</option>';
+            }
+            echo '</select>';
+            */
 
             echo '</td><tr>';
 
@@ -259,31 +259,31 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
 
         // *** GEDCOM submitter/ GEDCOM inzender ***
         /* Full example, if all items were used:
-    0 @SUBMITTER@ SUBM
-    1 NAME Firstname Lastname
-    1 ADDR Submitter address line 1
-    2 CONT Submitter address line 2
-    2 ADR1 Submitter address line 1
-    2 ADR2 Submitter address line 2
-    2 CITY Submitter address city
-    2 STAE Submitter address state
-    2 POST Submitter address ZIP code
-    2 CTRY Submitter address country
-    1 PHON Submitter phone number 1
-    1 PHON Submitter phone number 2
-    1 PHON Submitter phone number 3 (last one!)
-    1 LANG English
-    1 OBJE
-    2 FORM jpeg
-    2 TITL Submitter Multimedia File
-    2 FILE ImgFile.JPG
-    2 NOTE @N1@
-    1 RFN Submitter Registered RFN
-    1 RIN 1
-    1 CHAN
-    2 DATE 7 Sep 2000
-    3 TIME 8:35:36
-*/
+        0 @SUBMITTER@ SUBM
+        1 NAME Firstname Lastname
+        1 ADDR Submitter address line 1
+        2 CONT Submitter address line 2
+        2 ADR1 Submitter address line 1
+        2 ADR2 Submitter address line 2
+        2 CITY Submitter address city
+        2 STAE Submitter address state
+        2 POST Submitter address ZIP code
+        2 CTRY Submitter address country
+        1 PHON Submitter phone number 1
+        1 PHON Submitter phone number 2
+        1 PHON Submitter phone number 3 (last one!)
+        1 LANG English
+        1 OBJE
+        2 FORM jpeg
+        2 TITL Submitter Multimedia File
+        2 FILE ImgFile.JPG
+        2 NOTE @N1@
+        1 RFN Submitter Registered RFN
+        1 RIN 1
+        1 CHAN
+        2 DATE 7 Sep 2000
+        3 TIME 8:35:36
+        */
 
         // *** Update submitter data ***
         if (isset($_POST['gedcom_submit_name'])) {
@@ -336,7 +336,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
             <th colspan="2"><?= __('Settings'); ?></th>
         </tr>
 
-<?php
+        <?php
         $selected = '';
         if (isset($_POST['gedcom_version']) and $_POST['gedcom_version'] == '70') {
             $selected = ' selected';
@@ -1896,11 +1896,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
     echo '<input type="hidden" name="file_name_short" value="' . $gedcom_file_name . '">';
     echo '</form><br>';
 
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=export">';
-    //} else {
     echo '<form method="POST" action="index.php">';
-    //}
 
     //echo ' <input type="Submit" name="remove_gedcom" value="'.__('Remove GEDCOM file').'">';
     //echo '<input type="hidden" name="page" value="'.$page.'">';

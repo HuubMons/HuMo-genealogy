@@ -157,6 +157,30 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             $_SESSION['user_id'] = $resultDb->user_id;
             $_SESSION['user_group_id'] = $resultDb->user_group_id;
 
+
+            // *** August 2023: Also login for admin pages ***
+            // *** Edit family trees [GROUP SETTING] ***
+            $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $resultDb->user_group_id . "'");
+            @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
+            if (isset($groepDb->group_edit_trees)) {
+                $group_edit_trees = $groepDb->group_edit_trees;
+            }
+            // *** Edit family trees [USER SETTING] ***
+            if (isset($resultDb->user_edit_trees) and $resultDb->user_edit_trees) {
+                if ($group_edit_trees) $group_edit_trees .= ';' . $resultDb->user_edit_trees;
+                else $group_edit_trees = $resultDb->user_edit_trees;
+            }
+            if ($groepDb->group_admin != 'j' and $group_edit_trees == '') {
+                // *** User is not an administrator or editor ***
+                //echo __('Access to admin pages is not allowed.');
+                //exit;
+            } else {
+                $_SESSION['user_name_admin'] = $resultDb->user_name;
+                $_SESSION['user_id_admin'] = $resultDb->user_id;
+                $_SESSION['group_id_admin'] = $resultDb->user_group_id;
+            }
+
+
             // *** Save succesful login into log! ***
             $sql = "INSERT INTO humo_user_log SET
                 log_date='" . date("Y-m-d H:i") . "',
@@ -167,11 +191,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             $dbh->query($sql);
 
             // *** Send to secured page ***
-            //if (CMS_SPECIFIC == 'Joomla') {
-            //    header("Location: index.php?option=com_humo-gen&amp;menu_choice=main_index");
-            //} else {
             header("Location: " . CMS_ROOTPATH . "index.php?menu_choice=main_index");
-            //}
             exit();
         }
     } else {
@@ -191,6 +211,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
 // *** Language processing after header("..") lines. *** 
 include_once(CMS_ROOTPATH . "languages/language.php"); //Taal
+//include_once(__DIR__ . "/languages/language.php"); //Taal
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = "&#x200E;";  //ltr marker
@@ -212,12 +233,20 @@ if (isset($screen_mode) and $screen_mode == "PDF") {
 
 // *** Process highlight of menu item, title of page and $uri_path ***
 $request_uri = $_SERVER['REQUEST_URI'];
+
+// *** Option url_rewrite disabled ***
+// http://127.0.0.1/humo-genealogy/index.php?page=ancestor_sheet&tree_id=3&id=I1180
+// change into (but still process index.php, so this will work in NGinx with url_rewrite disabled):
+// http://127.0.0.1/humo-genealogy/ancestor_sheet&tree_id=3&id=I1180
+if (isset($_GET['page'])) $request_uri = str_replace('index.php?page=', '', $request_uri);
+
 // *** Example: http://localhost/HuMo-genealogy/photoalbum/2?start=1&item=11 ***
 $request_uri = strtok($request_uri, "?"); // Remove last part of url: ?start=1&item=11
+
 // *** Get url_rewrite variables ***
-if ($humo_option["url_rewrite"] == "j") {
-    $url_array = explode('/', $request_uri);
-}
+//if ($humo_option["url_rewrite"] == "j") {
+$url_array = explode('/', $request_uri);
+//}
 $save_menu_choice = '';
 $page = 'index';
 $head_text = $humo_option["database_name"];
@@ -234,6 +263,14 @@ if (strpos($request_uri, 'tree_index') > 0) {
     $head_text .= ' - ' . __('Family tree index');
     $url_position = strpos($request_uri, 'tree_index');
     $tmp_path = substr($request_uri, 0, $url_position);
+
+    // *** Get url_rewrite variables ***
+    if ($humo_option["url_rewrite"] == "j") {
+        // *** Get last item of array ***
+        $select_tree_id = end($url_array);
+    }
+
+    $page = 'tree_index';
 }
 if (strpos($request_uri, 'list') > 0) {
     $save_menu_choice = 'persons';
@@ -254,6 +291,16 @@ if (strpos($request_uri, 'list_names') > 0) {
     $head_text .= ' - ' . __('Names');
     $url_position = strpos($request_uri, 'list_names');
     $tmp_path = substr($request_uri, 0, $url_position);
+
+    // *** Get url_rewrite variables ***
+    if ($humo_option["url_rewrite"] == "j") {
+        // *** Get last item of array ***
+        if (is_string(end($url_array))) $last_name = end($url_array);
+        // *** Get previous item of array ***
+        $select_tree_id = prev($url_array);
+    }
+
+    $page = 'list_names';
 }
 // *** Backwards compatibility only ***
 if (strpos($request_uri, 'lijst_namen') > 0) {
@@ -291,6 +338,20 @@ if (strpos($request_uri, 'photoalbum') > 0) {
     }
 
     $page = 'photoalbum';
+}
+if (strpos($request_uri, 'register') > 0) {
+    $save_menu_choice = 'login';
+    $head_text .= ' - ' . __('Register');
+    $url_position = strpos($request_uri, 'register');
+    $tmp_path = substr($request_uri, 0, $url_position);
+
+    // *** Get url_rewrite variables ***
+    if ($humo_option["url_rewrite"] == "j") {
+        // *** Get last item of array ***
+        $select_tree_id = end($url_array);
+    }
+
+    $page = 'register';
 }
 if (strpos($request_uri, 'sources') > 0) {
     $save_menu_choice = 'sources';
@@ -349,8 +410,7 @@ if (strpos($request_uri, 'addresses') > 0) {
 }
 if (strpos($request_uri, 'ancestor_sheet_pdf') > 0) {
     // *** TEST: Ancestor_sheet_pdf is used with direct link ***
-}
-elseif (strpos($request_uri, 'ancestor_chart') > 0) {
+} elseif (strpos($request_uri, 'ancestor_chart') > 0) {
     $save_menu_choice = 'persons';
     $head_text .= ' - ' . __('Ancestor chart');
     $url_position = strpos($request_uri, 'ancestor_chart');
@@ -367,8 +427,7 @@ elseif (strpos($request_uri, 'ancestor_chart') > 0) {
     }
     */
     $page = 'ancestor_chart';
-}
-elseif (strpos($request_uri, 'ancestor_sheet') > 0) {
+} elseif (strpos($request_uri, 'ancestor_sheet') > 0) {
     $save_menu_choice = 'persons';
     $head_text .= ' - ' . __('Ancestor sheet');
     $url_position = strpos($request_uri, 'ancestor_sheet');
@@ -505,6 +564,14 @@ if (strpos($request_uri, 'cms_pages') > 0) {
     $head_text .= ' - ' . __('Information');
     $url_position = strpos($request_uri, 'cms_pages');
     $tmp_path = substr($request_uri, 0, $url_position);
+
+    // *** Get url_rewrite variables ***
+    if ($humo_option["url_rewrite"] == "j") {
+        // *** Get last item of array ***
+        $_GET["select_page"] = end($url_array);
+    }
+
+    $page = 'cms_pages';
 }
 if (strpos($request_uri, 'register') > 0) {
     $save_menu_choice = 'register';
@@ -572,6 +639,94 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     // *** Set variabele for queries ***
     $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 } else {
+
+    // *** Set cookies before any output ***
+
+    // *** Number of photo's in photobook ***
+    if (isset($_POST['show_pictures']) and is_numeric($_POST['show_pictures'])) {
+        $show_pictures = $_POST['show_pictures'];
+        setcookie("humogenphotos", $show_pictures, time() + 60 * 60 * 24 * 365);
+    }
+    if (isset($_GET['show_pictures']) and is_numeric($_GET['show_pictures'])) {
+        $show_pictures = $_GET['show_pictures'];
+        setcookie("humogenphotos", $show_pictures, time() + 60 * 60 * 24 * 365);
+    }
+
+    // *** Use session if session is available ***
+    if (isset($_SESSION["save_favorites"]) and $_SESSION["save_favorites"]) {
+        $favorites_array = $_SESSION["save_favorites"];
+    } else {
+        // *** Get favourites from cookie (only if session is empty) ***
+        if (isset($_COOKIE['humo_favorite'])) {
+            foreach ($_COOKIE['humo_favorite'] as $name => $value) {
+                $favorites_array[] = $value;
+            }
+            // *** Save cookie array in session ***
+            $_SESSION["save_favorites"] = $favorites_array;
+        }
+    }
+
+    // *** Add new favorite to list of favourites ***
+    // *** Remark: cookies must be set in header, otherwise they don't work ***
+    if (isset($_POST['favorite'])) {
+        // *** Add favourite to session ***
+        $favorites_array[] = $_POST['favorite'];
+        $_SESSION["save_favorites"] = $favorites_array;
+
+        // *** Add favourite to cookie ***
+        $favorite_array2 = explode("|", $_POST['favorite']);
+        // *** Combine tree id and family number as unique array id: 1F4 ***
+        $i = $favorite_array2['0'] . $favorite_array2['1'];
+        setcookie("humo_favorite[$i]", $_POST['favorite'], time() + 60 * 60 * 24 * 365);
+    }
+
+    // *** Remove favourite from favorite list ***
+    if (isset($_POST['favorite_remove'])) {
+        // *** Remove favourite from session ***
+        $process_favorites = false;
+        if (isset($_SESSION["save_favorites"])) {
+            unset($favorites_array);
+            foreach ($_SESSION['save_favorites'] as $key => $value) {
+                if ($value != $_POST['favorite_remove']) {
+                    $favorites_array[] = $value;
+                    $process_favorites = true;
+                }
+            }
+            //Doesn't work properly: if (isset($favorites_array)){}
+            if ($process_favorites) {
+                $_SESSION["save_favorites"] = $favorites_array;
+            } else {
+                // *** Just removed last favorite, so remove session ***
+                unset($_SESSION["save_favorites"]);
+            }
+        }
+
+        // *** Remove cookie ***
+        if (isset($_COOKIE['humo_favorite'])) {
+            foreach ($_COOKIE['humo_favorite'] as $name => $value) {
+                if ($value == $_POST['favorite_remove']) {
+                    setcookie("humo_favorite[$name]", "", time() - 3600);
+                }
+            }
+        }
+    }
+
+    // *** Cookie for "show descendant chart below fanchart"
+    // Set default ("0" is OFF, "1" is ON):
+    $showdesc = "0";
+    if (isset($_POST['show_desc'])) {
+        if ($_POST['show_desc'] == "1") {
+            $showdesc = "1";
+            $_SESSION['save_show_desc'] = "1";
+            setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
+        } else {
+            $showdesc = "0";
+            $_SESSION['save_show_desc'] = "0";
+            setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
+            // we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
+        }
+    }
+
     if (!CMS_SPECIFIC) {
         // ----------- RTL by Dr Maleki ------------------
         $html_text = '';
@@ -600,11 +755,16 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
         if ($base_href) echo '<base href="' . $base_href . '">' . "\n";
     }
 
-    echo '<link href="' . CMS_ROOTPATH . 'gedcom.css" rel="stylesheet" type="text/css">';
-    //echo '<link href="' . __DIR__ . '/gedcom.css" rel="stylesheet" type="text/css">';
+    //echo '<link href="' . CMS_ROOTPATH . 'gedcom.css" rel="stylesheet" type="text/css">';
+    ?>
+    <link href="css/gedcom.css" rel="stylesheet" type="text/css">
+    <link href="css/form.css" rel="stylesheet" type="text/css">
+    <link href="css/tab_menu.css" rel="stylesheet" type="text/css">
+    <?php
 
     if (CMS_SPECIFIC != 'CMSMS') {
-        echo '<link href="' . CMS_ROOTPATH . 'print.css" rel="stylesheet" type="text/css" media="print">';
+        //echo '<link href="' . CMS_ROOTPATH . 'print.css" rel="stylesheet" type="text/css" media="print">';
+        echo '<link href="css/print.css" rel="stylesheet" type="text/css" media="print">';
 
         // *** Use your own favicon.ico in media folder ***
         if (file_exists('media/favicon.ico'))
@@ -753,94 +913,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
         echo '<script src="' . CMS_ROOTPATH . 'include/jqueryui/jquery-ui.min.js"></script>';
     }
 
-    // *** Use session if session is available ***
-    if (isset($_SESSION["save_favorites"]) and $_SESSION["save_favorites"]) {
-        $favorites_array = $_SESSION["save_favorites"];
-    } else {
-        // *** Get favourites from cookie (only if session is empty) ***
-        if (isset($_COOKIE['humo_favorite'])) {
-            foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-                $favorites_array[] = $value;
-            }
-            // *** Save cookie array in session ***
-            $_SESSION["save_favorites"] = $favorites_array;
-        }
-    }
-
-    // *** Add new favorite to list of favourites ***
-    // *** Remark: cookies must be set in header, otherwise they don't work ***
-    if (isset($_POST['favorite'])) {
-        // *** Add favourite to session ***
-        $favorites_array[] = $_POST['favorite'];
-        $_SESSION["save_favorites"] = $favorites_array;
-
-        // *** Add favourite to cookie ***
-        $favorite_array2 = explode("|", $_POST['favorite']);
-        // *** Combine tree id and family number as unique array id: 1F4 ***
-        $i = $favorite_array2['0'] . $favorite_array2['1'];
-        setcookie("humo_favorite[$i]", $_POST['favorite'], time() + 60 * 60 * 24 * 365);
-    }
-
-    // *** Remove favourite from favorite list ***
-    if (isset($_POST['favorite_remove'])) {
-        // *** Remove favourite from session ***
-        $process_favorites = false;
-        if (isset($_SESSION["save_favorites"])) {
-            unset($favorites_array);
-            foreach ($_SESSION['save_favorites'] as $key => $value) {
-                if ($value != $_POST['favorite_remove']) {
-                    $favorites_array[] = $value;
-                    $process_favorites = true;
-                }
-            }
-            //Doesn't work properly: if (isset($favorites_array)){}
-            if ($process_favorites) {
-                $_SESSION["save_favorites"] = $favorites_array;
-            } else {
-                // *** Just removed last favorite, so remove session ***
-                unset($_SESSION["save_favorites"]);
-            }
-        }
-
-        // *** Remove cookie ***
-        if (isset($_COOKIE['humo_favorite'])) {
-            foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-                if ($value == $_POST['favorite_remove']) {
-                    setcookie("humo_favorite[$name]", "", time() - 3600);
-                }
-            }
-        }
-    }
-
-    // *** Number of photo's in photobook ***
-    if (isset($_POST['show_pictures']) and is_numeric($_POST['show_pictures'])) {
-        $show_pictures = $_POST['show_pictures'];
-        setcookie("humogenphotos", $show_pictures, time() + 60 * 60 * 24 * 365);
-    }
-    if (isset($_GET['show_pictures']) and is_numeric($_GET['show_pictures'])) {
-        $show_pictures = $_GET['show_pictures'];
-        setcookie("humogenphotos", $show_pictures, time() + 60 * 60 * 24 * 365);
-    }
-
-    // *** Cookie for "show descendant chart below fanchart"
-    // Set default ("0" is OFF, "1" is ON):
-    $showdesc = "0";
-    if (isset($_POST['show_desc'])) {
-        if ($_POST['show_desc'] == "1") {
-            $showdesc = "1";
-            $_SESSION['save_show_desc'] = "1";
-            setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
-        } else {
-            $showdesc = "0";
-            $_SESSION['save_show_desc'] = "0";
-            setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
-            // we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
-        }
-    }
-
-    // *** Was needed to change fontsize ***
-    //CHECK: the function getCookie in this script is also used for theme selection!
-    //echo '<script src="' . CMS_ROOTPATH . 'fontsize.js"></script>';
+    // *** Cookie for theme selection ***
     echo '<script>
     function getCookie(NameOfCookie) {
         if (document.cookie.length > 0) {
@@ -869,10 +942,10 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     // *** Photo lightbox effect using GLightbox ***
     echo '<link rel="stylesheet" href="' . CMS_ROOTPATH . 'include/glightbox/css/glightbox.css">';
     echo '<script src="' . CMS_ROOTPATH . 'include/glightbox/js/glightbox.min.js"></script>';
-    // *** There is also a script in footer.php, otherwise GLightbox doesn't work ***
+    // *** Remark: there is also a script in footer.php, otherwise GLightbox doesn't work ***
 
     // *** CSS changes for mobile devices ***
-    echo '<link rel="stylesheet" media="(max-width: 640px)" href="gedcom_mobile.css">';
+    echo '<link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">';
 
     // *** Extra items in header added by admin ***
     if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];

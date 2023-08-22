@@ -49,7 +49,6 @@ if (isset($_POST['upload_the_file'])) {
     <tr>
         <td>
             <?php
-
             if (isset($_POST['create_backup'])) {
                 backup_tables();
             } else {
@@ -59,11 +58,13 @@ if (isset($_POST['upload_the_file'])) {
 3) Use the %s backup page.'), 'HuMo-genealogy', 'HuMo-genealogy', 'HuMo-genealogy');
                 echo '<br>';
 
-                echo '<h3>' . __('Create backup file') . '</h3>';
+            ?>
+                <h3><?= __('Create backup file'); ?></h3>
 
-                echo '<form action="index.php?page=backup" method="post">';
-                echo '&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="' . __('Create backup file') . '" name="create_backup">';
-                echo '</form>';
+                <form action="index.php?page=backup" method="post">
+                    &nbsp;&nbsp;<input type="submit" style="font-size:14px" value="<?= __('Create backup file'); ?>" name="create_backup">
+                </form>
+            <?php
             }
 
             // *** Get list of backup files ***
@@ -80,8 +81,10 @@ if (isset($_POST['upload_the_file'])) {
             }
 
             // *** Download most recent backup file ***
-            echo '<h3>' . __('Download backup file') . '</h3>';
-            echo __('We recommend downloading the most recent backup file in case the data on your server (including the backup file) might get deleted or corrupted.') . '<br>';
+            ?>
+            <h3><?= __('Download backup file'); ?></h3>
+            <?= __('We recommend downloading the most recent backup file in case the data on your server (including the backup file) might get deleted or corrupted.'); ?><br>
+            <?php
             if (isset($backup_files[0])) {
                 echo '<a href="backup_files/' . $backup_files[0] . '">' . $backup_files[0] . '</a><br>';
             }
@@ -105,12 +108,14 @@ if (isset($_POST['upload_the_file'])) {
 
             // *** Upload backup file ***
             if (!isset($_POST['restore_server'])) {
-                echo '<h3>' . __('Optional: upload a database backup file') . '</h3>';
+            ?>
+                <h3><?= __('Optional: upload a database backup file'); ?></h3>
 
-                echo ' <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
-                echo '<input type="file" id="upload_file" name="upload_file">';
-                echo " <input type='submit' style='margin-top:4px' name='upload_the_file' value='" . __('Upload') . "'><br>";
-                echo '</form>';
+                <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">
+                    <input type="file" id="upload_file" name="upload_file">
+                    <input type="submit" style="margin-top:4px" name="upload_the_file" value="<?= __('Upload'); ?>"><br>
+                </form>
+            <?php
             }
 
             if ($backup_count > 0) {
@@ -125,19 +130,23 @@ if (isset($_POST['upload_the_file'])) {
                     }
                 }
 
-                echo '<h3>' . __('Restore database from backup file') . '</h3>';
+            ?>
+                <h3><?= __('Restore database from backup file'); ?></h3>
 
-                // *** List of backup files ***
-                echo '<form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
-                echo '<select size="1" style="margin-top:4px;"  name="select_file">';
-                for ($i = 0; $i < $backup_count; $i++) {
-                    echo '<option value="' . $backup_files[$i] . '">' . $backup_files[$i];
-                    if ($i == 0) echo ' * ' . __('Most recent backup!') . ' *';
-                    echo '</option>';
-                }
-                echo '</select>';
-                echo ' <input type="submit" style="font-size:14px" name="restore_server" value="' . __('Restore database') . '"> ';
-                echo '<form>';
+                <!-- List of backup files -->
+                <form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">
+                    <select size="1" style="margin-top:4px;" name="select_file">
+                        <?php
+                        for ($i = 0; $i < $backup_count; $i++) {
+                            echo '<option value="' . $backup_files[$i] . '">' . $backup_files[$i];
+                            if ($i == 0) echo ' * ' . __('Most recent backup!') . ' *';
+                            echo '</option>';
+                        }
+                        ?>
+                    </select>
+                    <input type="submit" style="font-size:14px" name="restore_server" value="<?= __('Restore database'); ?>">
+                </form>
+            <?php
             } else {
                 echo "<b>&nbsp;&nbsp;&nbsp;" . __('No backup file found!') . '</b>';
             }

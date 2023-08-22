@@ -11,7 +11,6 @@
 
 @set_time_limit(3000);
 
-//==========================
 global $humo_option, $user, $marr_date_array, $marr_place_array;
 global $gedcomnumber, $language;
 global $screen_mode, $dirmark1, $dirmark2, $pdf_footnotes;
@@ -26,9 +25,6 @@ if (isset($hourglass) and $hourglass === true) {
 
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
-//include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(__DIR__ . '../../header.php'); // returns CMS_ROOTPATH constant
-
 
 
 // TODO create seperate controller script.
@@ -36,13 +32,14 @@ include_once(__DIR__ . '../../header.php'); // returns CMS_ROOTPATH constant
 require_once  __DIR__ . "/../models/ancestor.php";
 $get_ancestor = new Ancestor($dbh);
 //$family_id = $get_family->getFamilyId();
-//$main_person = $get_family->getMainPerson();
+$main_person = $get_ancestor->getMainPerson();
 //$family_expanded =  $get_family->getFamilyExpanded();
 //$source_presentation =  $get_family->getSourcePresentation();
 //$picture_presentation =  $get_family->getPicturePresentation();
 //$text_presentation =  $get_family->getTextPresentation();
 $rom_nr = $get_ancestor->getNumberRoman();
 //$number_generation = $get_family->getNumberGeneration();
+$ancestor_header = $get_ancestor->getAncestorHeader('Ancestor chart', $tree_id, $main_person);
 //$this->view("families", array(
 //    "family" => $family,
 //    "title" => __('Family')
@@ -50,29 +47,31 @@ $rom_nr = $get_ancestor->getNumberRoman();
 
 
 
+// *** Needed for hourglass ***
 include_once(CMS_ROOTPATH . "menu.php");
+
 if ($hourglass === false) {
-    // *** CHECK: $family_id is actually a person_id... ***
-    $family_id = 'I1'; // *** Default value, normally not used... ***
+    //TODO check if this is still needed
+    $main_person = 'I1'; // *** Default value, normally not used... ***
     if (isset($_GET["id"])) {
-        $family_id = $_GET["id"];
+        $main_person = $_GET["id"];
     }
     if (isset($_POST["id"])) {
-        $family_id = $_POST["id"];
+        $main_person = $_POST["id"];
     }
 
     // *** Check if person gedcomnumber is valid ***
-    $db_functions->check_person($family_id);
+    $db_functions->check_person($main_person);
 }
 
-//if ($screen_mode != 'PDF' and $screen_mode != 'RTF' and $screen_mode != "ancestor_sheet" and $screen_mode != 'ASPDF' and $hourglass === false) {
 if ($hourglass === false) {
-    echo '<div class="standard_header fonts">' . __('Ancestor chart') . '</div>';
+    //echo '<h1 class="standard_header fonts">' . __('Ancestor chart') . '</h1>';
+    echo $ancestor_header;
 }
 
 // The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
 // person 01
-$personDb = $db_functions->get_person($family_id);
+$personDb = $db_functions->get_person($main_person);
 $gedcomnumber[1] = $personDb->pers_gedcomnumber;
 $pers_famc[1] = $personDb->pers_famc;
 $sexe[1] = $personDb->pers_sexe;
@@ -525,33 +524,4 @@ if ($screen_mode != "ancestor_sheet" and $screen_mode != "ASPDF" and $hourglass 
         DoubleScroll(document.getElementById('doublescroll'));
     </script>
 <?php
-
 }   // end of ancestor CHART code
-
-
-if ($hourglass === false) {
-    // Finishing code for ancestor chart and ancestor report
-    //if ($screen_mode != 'PDF' and $screen_mode != "ASPDF" and $screen_mode != 'RTF') {
-        include_once(CMS_ROOTPATH . "footer.php");
-    /*
-    } elseif ($screen_mode == 'RTF') { // initialize rtf generation
-        // *** Save rtf document to file ***
-        $rtf->save($file_name);
-
-        echo '<br><br><a href="' . $file_name . '">' . __('Download RTF report.') . '</a>';
-        echo '<br><br>' . __('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.');
-
-        $text = '<br><br><form method="POST" action="' . $uri_path . 'report_ancestor.php?database=' . $_SESSION['tree_prefix'] . '&amp;id=' . $family_id . '" style="display : inline;">';
-        echo '<input type="hidden" name="screen_mode" value="">';
-        $text .= '<input class="fonts" type="Submit" name="submit" value="' . __('Back') . '">';
-        $text .= '</form> ';
-        echo $text;
-    }
-    */
-
-    // Finishing code for ancestor report PDF and ancestor sheet PDF (ASPDF)
-    //else {
-    //    $pdf->Output($title . ".pdf", "I");
-    //}
-}
-?>

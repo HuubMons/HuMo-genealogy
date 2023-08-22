@@ -40,8 +40,6 @@ $number_generation = $get_family->getNumberGeneration();
 //    "title" => __('Family')
 //));
 
-
-
 @set_time_limit(300);
 
 // TODO test code. Is missing in family.php, maybe not needed.
@@ -113,7 +111,6 @@ $pdf->SetFont($pdf_font, '', 12);
 // *** Show single person ***
 // **************************
 if (!$family_id) {
-    // starfieldchart is never called when there is no own fam so no need to mark this out
     // *** Privacy filter ***
     @$parent1Db = $db_functions->get_person($main_person);
     // *** Use class to show person ***

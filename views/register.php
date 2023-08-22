@@ -1,7 +1,4 @@
 <?php
-include_once("header.php");
-include_once(CMS_ROOTPATH . "menu.php");
-
 // *** Check block_spam_answer ***
 $register_allowed = false;
 if (isset($_POST['send_mail'])) {
@@ -38,12 +35,12 @@ if (isset($_POST['send_mail']) and $register_allowed == true) {
         $user_register_date = date("Y-m-d H:i");
         $hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
         $sql = "INSERT INTO humo_users SET
-        user_name='" . safe_text_db($_POST["register_name"]) . "',
-        user_remark='" . safe_text_db($_POST["register_text"]) . "',
-        user_register_date='" . safe_text_db($user_register_date) . "',
-        user_mail='" . safe_text_db($_POST["register_mail"]) . "',
-        user_password_salted='" . $hashToStoreInDb . "',
-        user_group_id='" . $humo_option["visitor_registration_group"] . "';";
+            user_name='" . safe_text_db($_POST["register_name"]) . "',
+            user_remark='" . safe_text_db($_POST["register_text"]) . "',
+            user_register_date='" . safe_text_db($user_register_date) . "',
+            user_mail='" . safe_text_db($_POST["register_mail"]) . "',
+            user_password_salted='" . $hashToStoreInDb . "',
+            user_group_id='" . $humo_option["visitor_registration_group"] . "';";
         $result = $dbh->query($sql);
         echo '<h2>' . __('Registration completed') . '</h2>';
         echo __('At this moment you are registered in the user-group "guest". The administrator will check your registration, and select a user-group for you.') . '<br>';
@@ -124,68 +121,83 @@ if ($show_form) {
         if (isset($_POST['register_text'])) {
             $register_text = $_POST['register_text'];
         }
+
+        $path = 'index.php?page=register';
+        if ($humo_option["url_rewrite"] == "j") {
+            $path = CMS_ROOTPATH . 'register';
+        }
 ?>
-        <script>
-            function validate(form_id, register_mail) {
-                var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-                var address = document.forms[form_id].elements[register_mail].value;
-                if (reg.test(address) == false) {
-                    alert('Invalid Email Address');
-                    return false;
-                }
-            }
-        </script>
 
-        <br>
-        <form id="form_id" method="post" action="<?= CMS_ROOTPATH; ?>register.php" accept-charset="utf-8" onsubmit="javascript:return validate('form_id','register_mail');">
-            <table align="center" class="humo">
-                <tr class="table_headline">
-                    <th class=fonts" colspan="2"><?= __('User registration form'); ?></th>
-                </tr>
+        <h1><?= __('User registration form'); ?></h1>
 
-                <tr>
-                    <td><?= __('Name'); ?></td>
-                    <td><input type="text" class="fonts" name="register_name" size="40" style="background-color:#FFFFFF" value="<?= $register_name; ?>"></td>
-                </tr>
+        <!-- Layout: https://www.w3schools.com/csS/tryit.asp?filename=trycss_form_responsive -->
+        <div class="container">
+            <form action="<?= $path; ?>" method="post">
+                <div class="row">
+                    <div class="col-25">
+                        <label for="name"><?= __('Name'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" id="name" class="input" name="register_name" placeholder="<?= __('Name'); ?>" value="<?= $register_name; ?>">
+                    </div>
+                </div>
 
-                <tr>
-                    <td><?= __('E-mail address'); ?></td>
-                    <td><input type="text" class="fonts" id="register_mail" name="register_mail" value="<?= $register_mail; ?>" size="40" style="background-color:#FFFFFF"></td>
-                </tr>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="mail_sender"><?= __('E-mail address'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <input type="email" id="register_mail" class="input" name="register_mail" placeholder="<?= __('E-mail address'); ?>" value="<?= $register_mail; ?>">
+                    </div>
+                </div>
 
-                <tr>
-                    <td><?= __('Password'); ?></td>
-                    <td><input type="password" class="fonts" name="register_password" size="40" style="background-color:#FFFFFF" value="<?= $register_password; ?>"></td>
-                </tr>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="register_password"><?= __('Password'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <input type="password" id="register_password" class="input" name="register_password">
+                    </div>
+                </div>
 
-                <tr>
-                    <td><?= __('Repeat password'); ?></td>
-                    <td><input type="password" class="fonts" name="register_repeat_password" size="40" style="background-color:#FFFFFF" value="<?= $register_repeat_password ?>"></td>
-                </tr>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="register_repeat_password"><?= __('Repeat password'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <input type="password" id="register_repeat_password" class="input" name="register_repeat_password">
+                    </div>
+                </div>
 
-                <tr>
-                    <td><?= __('Message'); ?></td>
-                    <td><textarea name="register_text" ROWS="5" COLS="40" class="fonts"><?= $register_text; ?></textarea></td>
-                </tr>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="register_text"><?= __('Message'); ?></label>
+                    </div>
+                    <div class="col-75">
+                        <textarea id="register_text" class="input" name="register_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $register_text; ?></textarea>
+                    </div>
+                </div>
 
-                <?php if ($humo_option["registration_use_spam_question"] == 'y') { ?>
-                    <tr>
-                        <td><?= __('Please answer the block-spam-question:'); ?></td>
-                        <td><?= $humo_option["block_spam_question"]; ?><br>
-                            <input type="text" class="fonts" name="register_block_spam" size="80" style="background-color:#FFFFFF">
-                        </td>
-                    </tr>
+                <?php if ($humo_option["use_spam_question"] == 'y') { ?>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="register_block_spam"><?= __('Please answer the block-spam-question:'); ?></label>
+                        </div>
+                        <div class="col-75">
+                            <?= $humo_option["block_spam_question"]; ?>
+                            <input type="text" id="register_block_spa," class="input" name="register_block_spam">
+                        </div>
+                    </div>
                 <?php } ?>
 
-                <tr>
-                    <td></td>
-                    <td><input class="fonts" type="submit" name="send_mail" value="<?= __('Send'); ?>"></td>
-                </tr>
-            </table>
-        </form>
+                <br>
+                <div class="row">
+                    <input type="submit" class="input_submit" name="send_mail" value="<?= __('Send'); ?>">
+                </div>
+            </form>
+        </div>
 
 <?php
-
         if (isset($_POST['send_mail']) and $error == false) {
             echo '<h3 style="text-align:center;">' . __('Wrong answer to the block-spam question! Try again...') . '</h3>';
         }
@@ -193,5 +205,3 @@ if ($show_form) {
         echo '<h2>' . __('The register function has been switched off!') . '</h2>';
     }
 }
-echo '<br>';
-include_once(CMS_ROOTPATH . "footer.php");

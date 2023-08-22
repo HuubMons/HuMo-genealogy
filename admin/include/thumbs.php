@@ -5,13 +5,8 @@ if (!defined('ADMIN_PAGE')) {
 }
 //ini_set('memory_limit', '-1');
 
-//if (CMS_SPECIFIC == "Joomla") {
-//	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-genealogy admin map
-//	$joomlastring = "option=com_humo-gen&amp;task=admin&amp;";
-//} else {
 $prefx = '../'; // to get out of the admin map
 $joomlastring = "";
-//}
 
 // *** Tab menu ***
 $menu_admin = 'picture_settings';
@@ -339,7 +334,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         }
                     } else {  // update entered names for all languages 
                         $check_default = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix = '" . $resultDb->photocat_prefix . "' AND photocat_language='default'");
-                        if ($check_default->rowCount() != 0) {	// there is a default name for this language - update it
+                        if ($check_default->rowCount() != 0) {    // there is a default name for this language - update it
                             $dbh->query("UPDATE humo_photocat SET photocat_name = '" . safe_text_db($_POST[$resultDb->photocat_prefix]) . "'
                             WHERE photocat_prefix='" . $resultDb->photocat_prefix . "' AND photocat_language='default'");
                         } else {  // no default name yet for this category - create it
@@ -418,7 +413,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         }
 
         $sql = "UPDATE humo_events SET
-    event_event='" . safe_text_db($_POST['filename']) . "' WHERE event_event='" . safe_text_db($_POST['filename_old']) . "'";
+            event_event='" . safe_text_db($_POST['filename']) . "' WHERE event_event='" . safe_text_db($_POST['filename_old']) . "'";
         $result = $dbh->query($sql);
     }
 
@@ -579,9 +574,11 @@ function categories()
         <input type="hidden" name="menu_admin" value="picture_categorie">
         <input type="hidden" name="language_tree" value="<?= $language_tree; ?>">
         <table class="humo" cellspacing="0" style="margin-left:0px; text-align:center; width:80%">
-            <?php
-            echo '<tr class="table_header"><th colspan="5">' . __('Create categories for your photo albums') . '</th></tr>';
+            <tr class="table_header">
+                <th colspan="5"><?= __('Create categories for your photo albums'); ?></th>
+            </tr>
 
+            <?php
             echo '<tr><td style="text-align:left" colspan="5">';
             echo '<ul><li>' . __('Here you can create categories for all your photo albums.</li><li><b>A category will not be displayed in the photobook menu unless there is at least one picture for it.</b></li><li>Click "Default" to create one default name in all languages. Choose a language from the list to set a specific name for that language.<br><b>TIP:</b> First set an English name as default for all languages, then create specific names for those languages that you know. That way no tabs will display without a name in any language. In any case, setting a default name will not overwrite names for specific languages that you have already set.</li><li>The category prefix has to be made up of two letters and an underscore (like: <b>sp_</b> or <b>ws_</b>).</li><li>Pictures that you want to appear in a specific category have to be named with that prefix like: <b>sp_</b>John Smith.jpg</li><li>Pictures that you want to be displayed in the default photo category don\'t need a prefix.');
             echo '<li>' . __('A (sub)directory could also be a category. Example: category prefix = ab_, the directory name = ab.') . '</li>';
@@ -599,33 +596,33 @@ function categories()
             $language_tree2 = $language_tree;
             if ($language_tree == 'default') $language_tree2 = $selected_language;
             echo '&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
-            //echo '<a href="index.php?'.$joomlastring.'page=photoalbum&amp;language_tree='.$language_tree2.'"';
             echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_tree2 . '"';
-            //echo '<a href="index.php?'.$joomlastring.'page=photoalbum&amp;language_tree='.$language_tree2.'"';
             echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_tree2 . '"';
             include(CMS_ROOTPATH . 'languages/' . $language_tree2 . '/language_data.php');
             echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
             $select_top = '';
             echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'images/button3.png" height="13" style="border:none;" alt="pull_down"></a>';
 
-            echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
-            echo '<ul class="humo_menu_item2">';
-            for ($i = 0; $i < count($language_file); $i++) {
-                // *** Get language name ***
-                if ($language_file[$i] != $language_tree2) {
-                    include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
-
-                    echo '<li style="float:left; width:124px;">';
-                    //echo '<a href="index.php?'.$joomlastring.'page=photoalbum&amp;language_tree='.$language_file[$i].$add.'">';
-                    echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_file[$i] . $add . '">';
-                    echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
-                    echo $language["name"];
-                    echo '</a>';
-                    echo '</li>';
-                }
-            }
-            echo '</ul>';
-            echo '</div>';
+            ?>
+            <div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">
+                <ul class="humo_menu_item2">
+                    <?php
+                    for ($i = 0; $i < count($language_file); $i++) {
+                        // *** Get language name ***
+                        if ($language_file[$i] != $language_tree2) {
+                            include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+                            echo '<li style="float:left; width:124px;">';
+                            echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_file[$i] . $add . '">';
+                            echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+                            echo $language["name"];
+                            echo '</a>';
+                            echo '</li>';
+                        }
+                    }
+                    ?>
+                </ul>
+            </div>
+            <?php
             echo '</div>';
             echo '&nbsp;&nbsp;' . __('or') . '&nbsp;&nbsp;';
             echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=default' . $add . '">' . __('Default') . '</a> ';
@@ -685,7 +682,6 @@ function categories()
                 $content = $warning_prefix;
             }
             echo '<tr><td>' . $number . '.</td><td></td><td></td><td style="white-space:nowrap;">' . '<input type="text" name="new_cat_prefix" value="' . $content . '" size="6">';
-            $pref = "";
             if (isset($warning_invalid_prefix)) echo '<br><span style="color:red">' . $warning_invalid_prefix . '</span>';
             if (isset($warning_exist_prefix)) echo '<br><span style="color:red">' . $warning_exist_prefix . '</span>';
             echo '</td><td><input type="text" name="new_cat_name" value="" size="30">';

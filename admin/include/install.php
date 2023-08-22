@@ -7,13 +7,9 @@ if (!defined('ADMIN_PAGE')) {
 <h1 class="center"><?= __('Install'); ?></h1>
 
 <?= __('Installation of the standard tables. Or create tables from a scratch, they will be filled in with standard data.'); ?>
-<?php
 
-//if (CMS_SPECIFIC == 'Joomla') {
-//    $path_tmp = 'index.php?option=com_humo-gen&amp;task=admin&amp;page=install';
-//} else {
-    $path_tmp = 'index.php';
-//}
+<?php
+$path_tmp = 'index.php';
 
 // *** Check if tables exists ***
 $table['settings'] = '';
@@ -293,7 +289,7 @@ if (isset($_POST['install_tables2'])) {
         echo '<br>';
 
         $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('database_name','Web Site')");
-        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage','http://www.humo-gen.com')");
+        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage','https://humo-gen.com')");
         $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage_description','Website')");
         $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('searchengine','n')");
         $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')");

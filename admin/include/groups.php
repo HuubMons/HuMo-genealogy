@@ -6,9 +6,6 @@ if (!defined('ADMIN_PAGE')) {
 
 global $selected_language;
 
-//if (CMS_SPECIFIC == "Joomla")
-//    $phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
-//else
 $phpself = 'index.php';
 
 echo '<h1 class="center">' . __('User groups') . '</h1>';
@@ -343,27 +340,15 @@ $groupresult = $dbh->query($groupsql);
     <tr class="table_header_large">
         <td>
             <b><?= __('Choose a user group: '); ?></b>
-            <?php
-            while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) {
-                $selected = '';
-                if ($show_group_id == $groupDb->group_id) {
-                    $selected = ' class="selected_item"';
-                }
-                echo '<form method="POST" action="' . $phpself . '" style="display : inline;">';
-                echo '<input type="hidden" name="page" value="' . $page . '">';
-                echo '<input type="hidden" name="show_group_id" value="' . $groupDb->group_id . '">';
-                $group_name = $groupDb->group_name;
-                if ($group_name == '') {
-                    $group_name = 'NO NAME';
-                }
-                //TODO
-                //($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name
-                echo ' <input type="Submit" name="submit" value="' . $group_name . '"' . $selected . '>';
-                echo '</form>';
-            }
+            <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
+                <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="show_group_id" value="<?= $groupDb->group_id; ?>">
+                    <input type="Submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?php if ($show_group_id == $groupDb->group_id) echo ' class="selected_item"'; ?>>
+                </form>
+            <?php } ?>
 
-            // *** Add group ***
-            ?>
+            <!-- Add group -->
             <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="Submit" name="group_add" value="<?= __('ADD GROUP'); ?>">
@@ -420,10 +405,9 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         }
         echo '</th><th><input type="Submit" name="group_change" value="' . __('Change') . '"></th></tr>';
 
-        echo '<tr><td>' . __('Group name') . '</td><td><input type="text" name="group_name" value="' . $groupDb->group_name . '" size="15"></td>';
+        echo '<tr><td>' . __('Group name') . '</td><td><input type="text" name="group_name" value="' . $groupDb->group_name . '" size="15"></td></tr>';
 
         echo '<tr><td>' . __('Administrator') . '</td>';
-
         $check = '';
         if ($groupDb->group_admin != 'n') $check = ' checked';
         // *** Administrator group: don't change admin rights for administrator ***
@@ -465,42 +449,42 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
             <td><input type="checkbox" name="group_menu_names" <?php if ($groupDb->group_menu_names != 'n') echo ' checked'; ?>></td>
         </tr>
 
+        <tr>
+            <td><?= __('FAMILY TREE menu: show "Places" submenu'); ?></td>
+            <td><input type="checkbox" name="group_menu_places" <?php if ($groupDb->group_menu_places != 'n') echo ' checked'; ?>></td>
+        </tr>
+
+        <tr>
+            <td><?= __('FAMILY TREE menu: show "Addresses" submenu (only shown if there really are addresses)'); ?></td>
+            <td><input type="checkbox" name="group_addresses" <?php if ($groupDb->group_addresses != 'n') echo ' checked'; ?>></td>
+        </tr>
+
+        <tr>
+            <td><?= __('FAMILY TREE menu: show "Photobook" submenu'); ?></td>
+            <td><input type="checkbox" name="group_photobook" <?php if ($groupDb->group_photobook != 'n') echo ' checked'; ?>></td>
+        </tr>
+
+        <tr>
+            <td><?= __('TOOLS menu: show "Anniversary" (birthday list) submenu'); ?></td>
+            <td><input type="checkbox" name="group_birthday_list" <?php if ($groupDb->group_birthday_list != 'n') echo ' checked'; ?>></td>
+        </tr>
+
+        <tr>
+            <td><?= __('TOOLS menu: show "Statistics" submenu'); ?></td>
+            <td><input type="checkbox" name="group_showstatistics" <?php if ($groupDb->group_showstatistics != 'n') echo ' checked'; ?>></td>
+        </tr>
+
+        <tr>
+            <td><?= __('TOOLS menu: show "Relationship Calculator" submenu'); ?></td>
+            <td><input type="checkbox" name="group_relcalc" <?php if ($groupDb->group_relcalc != 'n') echo ' checked'; ?>></td>
+        </tr>
+
+        <tr>
+            <td><?= __('TOOLS menu: show "Google maps" submenu (only shown if geolocation database was created)'); ?></td>
+            <td><input type="checkbox" name="group_googlemaps" <?php if ($groupDb->group_googlemaps != 'n') echo ' checked'; ?>></td>
+        </tr>
+
         <?php
-        echo '<tr><td>' . __('FAMILY TREE menu: show "Places" submenu') . '</td>';
-        $check = '';
-        if ($groupDb->group_menu_places != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_menu_places"' . $check . '></td></tr>';
-
-        echo '<tr><td>' . __('FAMILY TREE menu: show "Addresses" submenu (only shown if there really are addresses)') . '</td>';
-        $check = '';
-        if ($groupDb->group_addresses != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_addresses"' . $check . '></td></tr>';
-
-        echo '<tr><td>' . __('FAMILY TREE menu: show "Photobook" submenu') . '</td>';
-        $check = '';
-        if ($groupDb->group_photobook != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_photobook"' . $check . '></td></tr>';
-
-        echo '<tr><td>' . __('TOOLS menu: show "Anniversary" (birthday list) submenu') . '</td>';
-        $check = '';
-        if ($groupDb->group_birthday_list != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_birthday_list"' . $check . '></td></tr>';
-
-        echo '<tr><td>' . __('TOOLS menu: show "Statistics" submenu') . '</td>';
-        $check = '';
-        if ($groupDb->group_showstatistics != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_showstatistics"' . $check . '></td></tr>';
-
-        echo '<tr><td>' . __('TOOLS menu: show "Relationship Calculator" submenu') . '</td>';
-        $check = '';
-        if ($groupDb->group_relcalc != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_relcalc"' . $check . '></td></tr>';
-
-        echo '<tr><td>' . __('TOOLS menu: show "Google maps" submenu (only shown if geolocation database was created)') . '</td>';
-        $check = '';
-        if ($groupDb->group_googlemaps != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_googlemaps"' . $check . '></td></tr>';
-
         echo '<tr><td>' . __('TOOLS menu: show "Contact" submenu (only shown if tree owner and email were entered)') . '</td>';
         $check = '';
         if ($groupDb->group_contact != 'n') $check = ' checked';
@@ -979,8 +963,8 @@ If possible, try to filter with that') . '</i></td>';
         unset($photocat_prefix_array);
 
         $sql = "UPDATE humo_groups
-        SET group_hide_photocat='" . $group_hide_photocat . "' 
-        WHERE group_id=" . $_POST["id"];
+            SET group_hide_photocat='" . $group_hide_photocat . "' 
+            WHERE group_id=" . $_POST["id"];
         $result = $dbh->query($sql);
 
         $hide_photocat_array = explode(";", $group_hide_photocat);

@@ -21,6 +21,7 @@ class Address
     }
     */
 
+    /*
     public function getAll()
     {
         //$consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone FROM " . $this->table);
@@ -31,12 +32,13 @@ class Address
 
         $consultation = $this->Connection->prepare($sql);
         $consultation->execute();
-        /* Fetch all of the remaining rows in the result set */
+        // Fetch all of the remaining rows in the result set
         $results = $consultation->fetchAll();
 
         $this->Connection = null; //connection closure
         return $results;
     }
+    */
 
     public function getById($id)
     {

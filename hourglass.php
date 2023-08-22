@@ -16,14 +16,12 @@
  * - think about names in size 8
  */
 
-//include_once("family.php");
-include_once("views/descendant_chartView.php");
+include_once("views/descendant_chart.php");
 
 include_once("report_descendant.php");
 
-// in the ancestor code below $family_id is used for pers_gedcomnumber
-// until here it was used by the descendant code for the fam_gedcomnumber
-$family_id = $_GET['main_person'];
+// *** Ancestor part of report ***
+$_GET['id'] = $_GET['main_person'];
 //include_once("report_ancestor.php");
 include_once("views/ancestor_chart.php");
 
@@ -78,9 +76,9 @@ $anc_hi = $anc_top + ((pow(2, $chosengenanc - 1) * $v_distance) / 2) + 100; // l
 $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
 
 ?>
-<div class="standard_header fonts" style="margin:auto; text-align: center;">
+<h1 class="standard_header fonts" style="margin:auto; text-align: center;">
     <b><?= __('Hourglass chart') . __(' of ') . $genarray[0]["nam"]; ?></b>
-</div>
+</h1>
 
 <script src="include/html2canvas/html2canvas.min.js"></script>
 
@@ -130,15 +128,9 @@ echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr;
 echo '&nbsp;' . __('Nr. generations') . ': ' . __('Anc.') . '&nbsp;';
 echo '<select name="chosengenanc" onChange="window.location=this.value">';
 for ($i = 2; $i <= 12; $i++) {
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    echo '<option value="index.php?option=com_humo-gen&task=hourglass&id=' . $keepfamily_id . '&amp;main_person=' .
-    //        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
-    //        $size . '&amp;chosengen=' . $chosengen . '&amp;chosengenanc=' . $i . '&amp;screen_mode=HOUR" ';
-    //} else {
     echo '<option value="' . $uri_path . 'hourglass.php?id=' . $keepfamily_id . '&amp;main_person=' .
         $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
         $size . '&amp;chosengen=' . $chosengen . '&amp;chosengenanc=' . $i . '&amp;screen_mode=HOUR" ';
-    //}
     if ($i == $chosengenanc) echo "selected=\"selected\" ";
     echo ">" . $i . "</option>";
 }
@@ -147,15 +139,9 @@ echo '</select>';
 echo '&nbsp;&nbsp;' . __('Desc.') . '&nbsp;';
 echo '<select name="chosengen" onChange="window.location=this.value">';
 for ($i = 2; $i <= 15; $i++) {
-    //if (CMS_SPECIFIC == 'Joomla') {
-    //    echo '<option value="index.php?option=com_humo-gen&task=hourglass&id=' . $keepfamily_id . '&amp;main_person=' .
-    //        $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
-    //        $size . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $chosengenanc . '&amp;screen_mode=HOUR" ';
-    //} else {
     echo '<option value="' . $uri_path . 'hourglass.php?id=' . $keepfamily_id . '&amp;main_person=' .
         $keepmain_person . '&amp;direction=' . $direction . '&amp;database=' . $database . '&amp;chosensize=' .
         $size . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $chosengenanc . '&amp;screen_mode=HOUR" ';
-    //}
     if ($i == $chosengen) echo "selected=\"selected\" ";
     echo ">" . $i . "</option>";
 }
@@ -340,4 +326,4 @@ $divlen = 10 + $anc_len + $desc_len;
 // PRINT THE DESCENDANT CHART ^^^^^^^^^^^^^
 printchart();
 
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

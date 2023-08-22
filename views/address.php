@@ -10,8 +10,7 @@ if ($data["authorised"] != '') {
 	<tr>
 		<td>
 			<h2><?php echo __('Address'); ?></h2>
-			<?php //echo $data["title"]; 
-			?>
+			<?php //echo $data["title"]; ?>
 
 			<?php
 			if ($data["address"]->address_address) {

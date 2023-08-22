@@ -97,6 +97,7 @@ if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10
         </script>
     ';
 }
+
 echo '<form method="POST" action="index.php?page=editor_person_select&person_item=' . $_GET['person_item'] . '&person=' . $_GET['person'];
 if (isset($_GET['event_row'])) echo '&event_row=' . $_GET['event_row'];
 echo '&tree_id=' . $tree_id . '" style="display : inline;">';

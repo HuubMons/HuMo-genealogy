@@ -7,12 +7,7 @@ if (!defined('ADMIN_PAGE')) {
 @set_time_limit(300);
 global $selected_language;
 
-//if(CMS_SPECIFIC=="Joomla") {
-//	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
-//}
-//else {
 $phpself = 'index.php';
-//}
 
 echo '<h1 class="center">';
 printf(__('%s Update'), 'HuMo-genealogy');
@@ -149,7 +144,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 					curl_close($resource);
 					if ($content != '') {
 						$fp = fopen($destination, 'w');
-						$fw = fwrite($fp, $content);
+						$fw = fwrite($fp, $content); //returns false on failure
 						fclose($fp);
 						if ($fw != false) {
 							$download = true;
