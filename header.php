@@ -614,6 +614,9 @@ if ($humo_option["url_rewrite"] == "j" and $tmp_path) {
     $uri_path = substr($_SERVER['PHP_SELF'], 0, $position) . '/';
 }
 
+// *** To be used to show links in several pages ***
+include_once(CMS_ROOTPATH . 'include/links.php');
+$link_cls = new Link_cls($uri_path);
 
 // *** For PDF reports: remove html tags en decode ' characters ***
 function pdf_convert($text)
@@ -760,6 +763,8 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     <link href="css/gedcom.css" rel="stylesheet" type="text/css">
     <link href="css/form.css" rel="stylesheet" type="text/css">
     <link href="css/tab_menu.css" rel="stylesheet" type="text/css">
+    <!-- TODO this is only needed for outline report -->
+    <link href="css/outline_report.css" rel="stylesheet" type="text/css">
     <?php
 
     if (CMS_SPECIFIC != 'CMSMS') {

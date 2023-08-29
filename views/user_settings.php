@@ -295,5 +295,8 @@ if ($show_theme_select == true) {
         }
         ?>
     </form>
+
+    <!-- Otherwise footer is at wrong place -->
+    <div style="width:100%; clear:both;"></div>
 <?php
 }

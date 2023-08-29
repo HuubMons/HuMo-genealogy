@@ -42,23 +42,11 @@
 	cursor: pointer;
 	border: 1px solid #d9d9d9;
 	background-color: #eaf4fa;
-	-webkit-border-top-right-radius: 3px;
-	-webkit-border-bottom-right-radius: 0;
-	-webkit-border-bottom-left-radius: 0;
-	-webkit-border-top-left-radius: 3px;
-	-moz-border-radius-topright: 3px;
-	-moz-border-radius-bottomright: 0;
-	-moz-border-radius-bottomleft: 0;
-	-moz-border-radius-topleft: 3px;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 0;
 	border-bottom-left-radius: 0;
 	border-top-left-radius: 3px;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
 	background-clip: padding-box;
-	-webkit-box-shadow: 1px 1px 1px #fff inset;
-	-moz-box-shadow: 1px 1px 1px #fff inset;
 	box-shadow: 1px 1px 1px #fff inset;
 }
 

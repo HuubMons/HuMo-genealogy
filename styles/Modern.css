@@ -77,16 +77,13 @@ ul.humo_menu_item2 li a {
 	overflow: hidden;
 	height: auto;
 	min-height: 380px;
-	-moz-border-radius: none;
-	-webkit-border-radius: none;
 	border-radius: none;
 	box-shadow: none;
-	-moz-box-shadow: none;
-	-webkit-box-shadow: none;
 }
 
 
 /* For main menu: left - center - right */
+/*
 #mainmenu_left {
 	background: #2980b9;
 	color: #FFFFFF;
@@ -111,13 +108,14 @@ ul.humo_menu_item2 li a {
 	min-height: 380px;
 	float: left;
 }
-
-#mainmenu_right form {}
+*/
 
 /* top bar in left - content - right boxes: only in main menu */
+/*
 .mainmenu_bar {
 	background: none;
 }
+*/
 
 table.humo td,
 table.humo th,
@@ -140,11 +138,6 @@ table.ext {
 	border-width: 0px;
 
 	box-shadow: none;
-	-moz-box-shadow: none;
-	-webkit-box-shadow: none;
-
-	-moz-border-radius: none;
-	-webkit-border-radius: none;
 	border-radius: none;
 }
 

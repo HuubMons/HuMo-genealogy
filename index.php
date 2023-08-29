@@ -40,8 +40,8 @@ if ($page == 'index') {
     // ***********************************************************************************************
     // ** Main index class ***
     // ***********************************************************************************************
-    include_once(CMS_ROOTPATH . "include/mainindex_cls.php");
-    $mainindex = new mainindex_cls();
+    //include_once(CMS_ROOTPATH . "include/mainindex_cls.php");
+    //$mainindex = new mainindex_cls();
 
     // *** Replace the main index by an own CMS page ***
     $text = '';
@@ -64,20 +64,18 @@ if ($page == 'index') {
     }
 
     // *** Show slideshow ***
-    if (isset($humo_option["slideshow_show"]) and $humo_option["slideshow_show"] == 'y') {
-        $mainindex->show_slideshow();
-    }
+    //if (isset($humo_option["slideshow_show"]) and $humo_option["slideshow_show"] == 'y') {
+    //    $mainindex->show_slideshow();
+    //}
 
     if ($text) {
         // *** Show CMS page ***
         echo '<div id="mainmenu_centerbox">' . $text . '</div>';
     } else {
         // *** Show default HuMo-genealogy homepage ***
-        $mainindex->show_tree_index();
+        //$mainindex->show_tree_index();
+        include 'views/tree_index.php';
     }
-
-    // *** Show HuMo-genealogy footer ***
-    echo $mainindex->show_footer();
 } elseif ($page == 'address') {
     /**
      * July 2023: Added MVC system

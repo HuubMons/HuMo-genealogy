@@ -87,9 +87,11 @@ td.style_tree_text {
 }
 
 /* top bar in left - content - right boxes: only in main menu */
+/*
 .mainmenu_bar {
 	background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
 }
+*/
 
 div.photobook,
 div.photobooktext {

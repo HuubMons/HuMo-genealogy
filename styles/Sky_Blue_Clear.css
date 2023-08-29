@@ -152,11 +152,13 @@ ul.humo_menu_item2 li a {
 }
 
 /* top bar in left - content - right boxes: only in main menu */
+/*
 .mainmenu_bar {
-	/* background:url("images_sky_blue/blue.png") repeat left top; */
 	background: none;
 	border-bottom: solid 1px #61a0d9;
 }
+*/
+
 
 div.photobook,
 div.photobooktext {

@@ -15,7 +15,7 @@ class person_cls
     // *** Jul 2023: new constructor ***
     public function __construct($personDb = null)
     {
-        $this->personDb = $personDb;    // Database record
+        $this->personDb = $personDb;    // Database record        
         $this->privacy = $this->set_privacy($personDb); // Set privacy
     }
 
@@ -767,7 +767,7 @@ class person_cls
             $colour = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'person_colour_mark');
             foreach ($colour as $colourDb) {
                 if ($colourDb and $screen_mode != "PDF" and $screen_mode != "RTF") {
-                    $pers_colour = 'style="-moz-border-radius: 40px; border-radius: 40px;';
+                    $pers_colour = 'style="border-radius: 40px;';
                     $person_colour_mark = $colourDb->event_event;
                     if ($person_colour_mark == '1') {
                         $pers_colour .= ' background-color:#FF0000;';

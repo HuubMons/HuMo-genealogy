@@ -6,13 +6,8 @@
   left: 0;
   z-index: 999999 !important;
   overflow: hidden;
-  -ms-touch-action: none;
   touch-action: none;
-  -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   outline: none;
   overflow: hidden;
@@ -58,18 +53,11 @@
   width: 100%;
   position: absolute;
   opacity: 1;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
   justify-content: center;
   opacity: 0;
 }
@@ -147,9 +135,6 @@
   float: none;
   outline: none;
   border: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   max-width: 100vw;
   width: auto;

@@ -1814,7 +1814,7 @@ msgstr "&asymp;"
 #: views/ancestor_chart.php:178 views/ancestor_sheet.php:163
 #: views/ancestor_sheet.php:371 views/ancestor_sheet_pdf.php:153
 msgid "&#134;"
-msgstr "&dagger;"
+msgstr "&#134;"
 
 # Buried
 #: admin/include/editor_cls.php:340 include/person_cls.php:1076 list.php:93
@@ -9126,7 +9126,7 @@ msgstr "Lade..."
 #: list_places_families.php:57 list_places_families.php:159
 #: list_places_families.php:169 list_places_families.php:468
 msgid "&infin;"
-msgstr "&dagger;"
+msgstr "&#134;"
 
 #: list_places_families.php:64 list_places_families.php:157
 #: list_places_families.php:167 list_places_families.php:484
