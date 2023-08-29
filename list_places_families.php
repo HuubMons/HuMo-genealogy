@@ -673,4 +673,4 @@ echo '<script>
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;
 
-include_once(CMS_ROOTPATH . "footer.php");
+include_once(CMS_ROOTPATH . "views/footer.php");

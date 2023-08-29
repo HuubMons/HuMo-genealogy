@@ -9086,7 +9086,7 @@ msgstr "Načítavanie..."
 #: list_places_families.php:57 list_places_families.php:159
 #: list_places_families.php:169 list_places_families.php:468
 msgid "&infin;"
-msgstr "&infin;"
+msgstr "&#134;"
 
 #: list_places_families.php:64 list_places_families.php:157
 #: list_places_families.php:167 list_places_families.php:484

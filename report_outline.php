@@ -429,6 +429,20 @@ function outline($family_id, $main_person, $gn, $nr_generations)
         }
 
         if ($screen_mode != "PDF") {
+
+
+            // TODO improve this script and use $parent1Db and $parent2Db.
+            // Needed for marriage_cls.php. Workaround to solve bug.
+            global $parent1Db, $parent2Db;
+            if ($swap_parent1_parent2) {
+                $parent1Db = $person_womanDb;
+                $parent2Db = $person_manDb;
+            } else {
+                $parent1Db = $person_manDb;
+                $parent2Db = $person_womanDb;
+            }
+
+
             echo '<div class="' . $indent . '" style="font-style:italic">';
             if (!$show_details) {
                 echo ' x ' . $dirmark1;
@@ -439,6 +453,7 @@ function outline($family_id, $main_person, $gn, $nr_generations)
                         echo $marriage_cls->marriage_data($familyDb, '', 'short') . "<br>";
                     } else {
                         echo $marriage_cls->marriage_data() . "<br>";
+                        //echo $marriage_cls->marriage_data($familyDb) . "<br>";
                     }
                 } else {
                     echo $marriage_cls->marriage_data($familyDb, $parent1_marr + 1, 'shorter') . ' <br>';

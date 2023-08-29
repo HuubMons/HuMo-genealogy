@@ -55,8 +55,18 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
         }
 
         // *** Show link to shared address ***
-        if ($connectDb->address_shared == '1')
-            $text .= '<a href="' . $uri_path . 'address.php?gedcomnumber=' . $connectDb->connect_item_id . '">';
+        if ($connectDb->address_shared == '1') {
+            //$text .= '<a href="' . $uri_path . 'address.php?gedcomnumber=' . $connectDb->connect_item_id . '">';
+            //$text .= '<a href="' . $uri_path . 'address.php?id=' . $connectDb->connect_item_id . '">';
+
+//TODO check this link and global.
+            global $humo_option;
+            if ($humo_option["url_rewrite"] == "j") {
+                $text .= '<a href="' . $uri_path . 'address/' . $tree_id.'/'.$connectDb->connect_item_id . '">';
+            } else {
+                $text .= '<a href="' . $uri_path . 'address.php?id=' . $connectDb->connect_item_id . '">';
+            }
+        }
 
         // *** Address ***
         //if ($user['group_addresses']=='j' AND $connectDb->address_address){

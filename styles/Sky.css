@@ -139,6 +139,10 @@ ul.humo_menu_item li {
 	background-image: url('images_sky/sky_dark.gif');
 }
 
+.homepage_box{
+	background-color: transparent;
+}
+
 input {
 	font-size: 10px;
 	color: #ffdd55;
@@ -146,7 +150,6 @@ input {
 	background-color: #000000;
 	border-left-color: #ffdd55;
 	border-top-color: #ffdd55;
-	-moz-border-radius: 10px;
 	border-radius: 10px;
 }
 
@@ -164,4 +167,8 @@ table.reltable td {
 table.reltable {
 	background: none;
 	background-image: none;
+}
+
+footer{
+	background-color: transparent;
 }

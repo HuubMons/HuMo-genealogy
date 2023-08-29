@@ -93,19 +93,6 @@ body {
 	font-size: 12px;
 }
 
-/* NOT IN USE AT THE MOMENT ***
-/* Font size selection */
-#top_font_size {
-	position: absolute;
-	top: 5px;
-	right: 10px;
-	z-index: 10;
-	font-family: Rockwell, Verdana, Arial, Sans-Serif;
-	color: #000000;
-	padding: 3px 3px 1px 3px;
-	font-size: 12px;
-}
-
 /* #humo_menu = menu bar */
 #humo_menu {
 	position: absolute;
@@ -149,28 +136,14 @@ div.rtlsddm #mft ul {
 /* More space around person pop-up menu */
 #content div.ltrsddm div {
 	padding: 5px;
-	border-radius: 5px;
-
-	box-shadow: 6px 6px 6px #999;
-	-moz-box-shadow: 6px 6px 6px #999;
-	-webkit-box-shadow: 6px 6px 6px #999;
-
-	-moz-border-radius: 6px 6px 6px 6px;
-	-webkit-border-radius: 6px 6px 6px 6px;
-	border-radius: 6px 6px 6px 6px;
+	box-shadow: 2px 2px 2px #c0c0c0;
+	border-radius: 3px;
 }
 
 #content div.rtlsddm div {
 	padding: 5px;
-	border-radius: 5px;
-
-	box-shadow: 6px 6px 6px #999;
-	-moz-box-shadow: 6px 6px 6px #999;
-	-webkit-box-shadow: 6px 6px 6px #999;
-
-	-moz-border-radius: 6px 6px 6px 6px;
-	-webkit-border-radius: 6px 6px 6px 6px;
-	border-radius: 6px 6px 6px 6px;
+	box-shadow: 2px 2px 2px #c0c0c0;
+	border-radius: 3px;
 }
 
 /* Smaller lines in person pop-up menu */
@@ -291,6 +264,7 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 	z-index: 3;
 	height: 100%;
 	max-height: 90%;
+
 	/* top: 35px; */
 	top: 30px;
 	/* up, right, down */
@@ -310,8 +284,11 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 
 /* Center box */
 #mainmenu_centerbox {
+	/*
 	background: #ffffff;
 	border: solid 1px #999999;
+	*/
+
 	/* up, right, down */
 	margin: 10px 15px 0px 0px;
 	padding: 5px;
@@ -319,12 +296,11 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 	overflow: hidden;
 	height: auto;
 	min-height: 380px;
-	-moz-border-radius: 6px 6px 6px 6px;
-	-webkit-border-radius: 6px 6px 6px 6px;
-	border-radius: 6px 6px 6px 6px;
-	box-shadow: 6px 6px 6px #999;
-	-moz-box-shadow: 6px 6px 6px #999;
-	-webkit-box-shadow: 6px 6px 6px #999;
+
+	/*
+	border-radius: 3px;
+	box-shadow: 2px 2px 2px #c0c0c0;
+	*/
 }
 
 /* For main menu: left - center - right */
@@ -358,10 +334,6 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 	/* width:210px; */
 }
 
-#mainmenu_right form {
-	margin-left: 12px;
-}
-
 #most_frequent_names {
 	width: 500px;
 	margin-left: auto;
@@ -370,9 +342,7 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 
 /* Mainmenu link and text family tree - Link en tekst bij stamboom in hoofdmenu */
 .tree_link {
-	/* font-size: 14px; */
 	font-weight: bold;
-	margin-left: 10px;
 }
 
 .style_tree_text {
@@ -380,13 +350,29 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 }
 
 /* top bar in left - content - right boxes: only in main menu */
+/* aug 2023: no longer in use */
+/*
 .mainmenu_bar {
-	/* background: linear-gradient(to top, rgba(236, 204, 179, 1) 0%, rgba(250, 241, 235, 1) 91%, rgba(250, 241, 235, 1) 100%); */
 	background: linear-gradient(to top, rgb(209, 184, 143) 0%, rgb(250, 241, 235) 73%);
 	text-align: center;
 	font-weight: bold;
-	/* font-size:13px; */
 	margin-bottom: 10px;
+}
+*/
+
+/* New august 2023 */
+.homepage_box {
+	border: solid 1px #EED4D4;
+	background-color: #f1f1f1;
+	/* top, right, bottom, left */
+	padding: 0px 10px 10px 10px; 
+	margin-bottom: 20px;
+}
+
+/* New august 2023 */
+.homepage_box h3 {
+	text-align: center;
+	margin: 10px 0;
 }
 
 /* heads - koppen */
@@ -415,13 +401,12 @@ table.ext {
 	border-spacing: 0;
 	border-width: 1px;
 
+	/*
 	box-shadow: 6px 6px 6px #999;
-	-moz-box-shadow: 6px 6px 6px #999;
-	-webkit-box-shadow: 6px 6px 6px #999;
-
-	-moz-border-radius: 6px 6px 6px 6px;
-	-webkit-border-radius: 6px 6px 6px 6px;
 	border-radius: 6px 6px 6px 6px;
+	*/
+	box-shadow: 2px 2px 2px #c0c0c0;
+	border-radius: 3px;
 }
 
 table.ext {
@@ -486,64 +471,47 @@ table.relmenu th:nth-of-type(1n+2) {
 /*~~~~~~~~~ set rounded corners at bottom ~~~~~~~~~~~~~~~~~~~~~~ */
 
 table.humo tr:last-of-type td:first-of-type {
-	-moz-border-radius: 0 0 0 6px;
-	-webkit-border-radius: 0 0 0 6px;
-	border-radius: 0 0 0 6px;
+	border-radius: 0 0 0 3px;
 }
 
 table.humo tr:last-of-type td:last-of-type {
-	-moz-border-radius: 0 0 6px 0;
-	-webkit-border-radius: 0 0 6px 0;
-	border-radius: 0 0 6px 0;
+	border-radius: 0 0 3px 0;
 }
 
 table.humo tr:last-of-type td:only-of-type,
 table.humo tr:only-of-type td:only-of-type {
-	-moz-border-radius: 0 0 6px 6px;
-	-webkit-border-radius: 0 0 6px 6px;
-	border-radius: 0 0 6px 6px;
+	border-radius: 0 0 3px 3px;
 }
 
 /*~~~~~~~~~ set rounded corners at top (whether td or th) ~~~~~~~ */
 
 table.humo tr:first-of-type td:first-of-type,
 table.humo tr:first-of-type th:first-of-type {
-	-moz-border-radius: 6px 0 0 0;
-	-webkit-border-radius: 6px 0 0 0;
-	border-radius: 6px 0 0 0;
+	border-radius: 3px 0 0 0;
 }
 
 table.humo tr:first-of-type td:last-of-type,
 table.humo tr:first-of-type th:last-of-type {
-	-moz-border-radius: 0 6px 0 0;
-	-webkit-border-radius: 0 6px 0 0;
-	border-radius: 0 6px 0 0;
+	border-radius: 0 3px 0 0;
 }
 
 table.humo tr:first-of-type td:only-of-type,
 table.humo tr:first-of-type th:only-of-type {
-	-moz-border-radius: 6px 6px 0 0;
-	-webkit-border-radius: 6px 6px 0 0;
-	border-radius: 6px 6px 0 0;
+	border-radius: 3px 3px 0 0;
 }
 
 /*~~~~ set rounded corners at top and bottom if one line table~~ */
 table.humo tr:only-of-type td:first-of-type {
-	-moz-border-radius: 6px 0px 0px 6px;
-	-webkit-border-radius: 6px 0px 0px 6px;
-	border-radius: 6px 0px 0px 6px;
+	border-radius: 3px 0px 0px 3px;
 }
 
 table.humo tr:only-of-type td:last-of-type {
-	-moz-border-radius: 0 6px 6px 0;
-	-webkit-border-radius: 0 6px 6px 0;
-	border-radius: 0 6px 6px 0;
+	border-radius: 0 3px 3px 0;
 }
 
 table.humo tr:only-of-type td:only-of-type {
-	-moz-border-radius: 6px 6px 6px 6px;
-	-webkit-border-radius: 6px 6px 6px 6px;
-	border-radius: 6px 6px 6px 6px;
+	/* border-radius: 6px 6px 6px 6px; */
+	border-radius: 3px;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -787,12 +755,6 @@ div.ancestorName {
 	padding-left: 2px;
 	line-height: 12px;
 	border-radius: 4px;
-	/*
-	Disabled, doesn't work properly for html2canvas script.
-	-moz-border-radius: 4px;
-	-moz-box-shadow: 3px 3px 6px #bbb;
-	-webkit-box-shadow: 3px 3px 6px #bbb;
-	*/
 	box-shadow: 3px 3px 6px #bbb;
 }
 
@@ -939,415 +901,6 @@ div.photobooktext {
 	margin: 2px;
 }
 
-/* indentations for outline report */
-/* a bit longer than necessary - better to many than too few.... */
-div.sub1 {
-	margin-left: 20px;
-	text-indent: -1.5em;
-}
-
-div.sub2 {
-	margin-left: 60px;
-	text-indent: -1.5em;
-}
-
-div.sub3 {
-	margin-left: 100px;
-	text-indent: -1.5em;
-}
-
-div.sub4 {
-	margin-left: 140px;
-	text-indent: -1.5em;
-}
-
-div.sub5 {
-	margin-left: 180px;
-	text-indent: -1.5em;
-}
-
-div.sub6 {
-	margin-left: 220px;
-	text-indent: -1.5em;
-}
-
-div.sub7 {
-	margin-left: 260px;
-	text-indent: -1.5em;
-}
-
-div.sub8 {
-	margin-left: 300px;
-	text-indent: -1.5em;
-}
-
-div.sub9 {
-	margin-left: 340px;
-	text-indent: -1.5em;
-}
-
-div.sub10 {
-	margin-left: 380px;
-	text-indent: -1.5em;
-}
-
-div.sub11 {
-	margin-left: 420px;
-	text-indent: -1.5em;
-}
-
-div.sub12 {
-	margin-left: 460px;
-	text-indent: -1.5em;
-}
-
-div.sub13 {
-	margin-left: 500px;
-	text-indent: -1.5em;
-}
-
-div.sub14 {
-	margin-left: 540px;
-	text-indent: -1.5em;
-}
-
-div.sub15 {
-	margin-left: 580px;
-	text-indent: -1.5em;
-}
-
-div.sub16 {
-	margin-left: 620px;
-	text-indent: -1.5em;
-}
-
-div.sub17 {
-	margin-left: 660px;
-	text-indent: -1.5em;
-}
-
-div.sub18 {
-	margin-left: 700px;
-	text-indent: -1.5em;
-}
-
-div.sub19 {
-	margin-left: 740px;
-	text-indent: -1.5em;
-}
-
-div.sub20 {
-	margin-left: 780px;
-	text-indent: -1.5em;
-}
-
-div.sub21 {
-	margin-left: 820px;
-	text-indent: -1.5em;
-}
-
-div.sub22 {
-	margin-left: 860px;
-	text-indent: -1.5em;
-}
-
-div.sub23 {
-	margin-left: 900px;
-	text-indent: -1.5em;
-}
-
-div.sub24 {
-	margin-left: 940px;
-	text-indent: -1.5em;
-}
-
-div.sub25 {
-	margin-left: 980px;
-	text-indent: -1.5em;
-}
-
-div.sub26 {
-	margin-left: 1020px;
-	text-indent: -1.5em;
-}
-
-div.sub27 {
-	margin-left: 1060px;
-	text-indent: -1.5em;
-}
-
-div.sub28 {
-	margin-left: 1100px;
-	text-indent: -1.5em;
-}
-
-div.sub29 {
-	margin-left: 1140px;
-	text-indent: -1.5em;
-}
-
-div.sub30 {
-	margin-left: 1180px;
-	text-indent: -1.5em;
-}
-
-div.sub31 {
-	margin-left: 1220px;
-	text-indent: -1.5em;
-}
-
-div.sub32 {
-	margin-left: 1260px;
-	text-indent: -1.5em;
-}
-
-div.sub33 {
-	margin-left: 1300px;
-	text-indent: -1.5em;
-}
-
-div.sub34 {
-	margin-left: 1340px;
-	text-indent: -1.5em;
-}
-
-div.sub35 {
-	margin-left: 1380px;
-	text-indent: -1.5em;
-}
-
-div.sub36 {
-	margin-left: 1420px;
-	text-indent: -1.5em;
-}
-
-div.sub37 {
-	margin-left: 1460px;
-	text-indent: -1.5em;
-}
-
-div.sub38 {
-	margin-left: 1500px;
-	text-indent: -1.5em;
-}
-
-div.sub39 {
-	margin-left: 1540px;
-	text-indent: -1.5em;
-}
-
-div.sub40 {
-	margin-left: 1580px;
-	text-indent: -1.5em;
-}
-
-/* end indentations */
-
-/* indentations for RTL outline report */
-/* a bit longer than necessary - better to many than too few.... */
-div.rtlsub1 {
-	margin-right: 20px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub2 {
-	margin-right: 60px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub3 {
-	margin-right: 100px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub4 {
-	margin-right: 140px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub5 {
-	margin-right: 180px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub6 {
-	margin-right: 220px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub7 {
-	margin-right: 260px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub8 {
-	margin-right: 300px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub9 {
-	margin-right: 340px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub10 {
-	margin-right: 380px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub11 {
-	margin-right: 420px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub12 {
-	margin-right: 460px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub13 {
-	margin-right: 500px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub14 {
-	margin-right: 540px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub15 {
-	margin-right: 580px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub16 {
-	margin-right: 620px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub17 {
-	margin-right: 660px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub18 {
-	margin-right: 700px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub19 {
-	margin-right: 740px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub20 {
-	margin-right: 780px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub21 {
-	margin-right: 820px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub22 {
-	margin-right: 860px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub23 {
-	margin-right: 900px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub24 {
-	margin-right: 940px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub25 {
-	margin-right: 980px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub26 {
-	margin-right: 1020px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub27 {
-	margin-right: 1060px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub28 {
-	margin-right: 1100px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub29 {
-	margin-right: 1140px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub30 {
-	margin-right: 1180px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub31 {
-	margin-right: 1220px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub32 {
-	margin-right: 1260px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub33 {
-	margin-right: 1300px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub34 {
-	margin-right: 1340px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub35 {
-	margin-right: 1380px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub36 {
-	margin-right: 1420px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub37 {
-	margin-right: 1460px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub38 {
-	margin-right: 1500px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub39 {
-	margin-right: 1540px;
-	text-indent: -1.5em;
-}
-
-div.rtlsub40 {
-	margin-right: 1580px;
-	text-indent: -1.5em;
-}
-
-/* end indentations */
-
-
 /* Hulppagina */
 .help_div {
 	width: 80%;
@@ -1467,7 +1020,6 @@ table.ancestor_sheet td.ancestor_devider {
 .fanmenu3 {
 	background-color: #FFE4C4;
 	filter: alpha(opacity=60);
-	-moz-opacity: 0.6;
 	opacity: 0.6;
 	min-height: 570px;
 }
@@ -1521,12 +1073,8 @@ table.reltable {
 	margin-left: auto;
 	margin-right: auto;
 	white-space: nowrap;
-	box-shadow: 0px 0px 0px #999;
-	-moz-box-shadow: 0px 0px 0px #999;
-	-webkit-box-shadow: 0px 0px 0px #999;
 
-	-moz-border-radius: 0px 0px 0px 0px;
-	-webkit-border-radius: 0px 0px 0px 0px;
+	box-shadow: 0px 0px 0px #999;
 	border-radius: 0px 0px 0px 0px;
 }
 
@@ -1636,13 +1184,6 @@ table.relmenu tr:nth-of-type(2) td:last-of-type {
 .wordwrap {
 	/* breaks string to fit in fixed size div even if contains no spaces */
 	white-space: pre-wrap;
-	/* CSS3 */
-	white-space: -moz-pre-wrap;
-	/* Firefox */
-	white-space: -pre-wrap;
-	/* Opera <7 */
-	white-space: -o-pre-wrap;
-	/* Opera 7 */
 	word-wrap: break-word;
 	/* IE */
 }
@@ -1654,12 +1195,7 @@ td.extended_woman a {
 
 td.extended_man {
 	border-radius: 8px;
-	-moz-border-radius: 8 px;
-	-webkit-border-radius: 8px;
-
 	box-shadow: inset -1px -1px 1px 1px #bbbbbb;
-	-webkit-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
-	-moz-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
 
 	background-color: #dddddd;
 	background-image: linear-gradient(to bottom, #ffffff, #C2C1FF);
@@ -1667,12 +1203,7 @@ td.extended_man {
 
 td.extended_woman {
 	border-radius: 8px;
-	-moz-border-radius: 8 px;
-	-webkit-border-radius: 8px;
-
 	box-shadow: inset -1px -1px 1px 1px #bbbbbb;
-	-webkit-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
-	-moz-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
 
 	background-color: #dddddd;
 	background-image: linear-gradient(to bottom, #ffffff, #FFB1B1);
@@ -1681,6 +1212,23 @@ td.extended_woman {
 /* statistics */
 #statistics_screen {
 	background-color: white;
-	height: 500px;
+	min-height: 500px;
 	padding: 10px;
+}
+
+footer {
+	width: 100%;
+	min-height: 20%;
+	bottom: 0;
+	left: 0;
+	background-color: #f1f1f1;
+
+	position: relative;
+	margin-top: 30px;
+	padding: 10px;
+	clear: both;
+}
+
+#footer {
+	text-align: right;
 }

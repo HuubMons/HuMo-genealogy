@@ -29,8 +29,6 @@ body {
 	font-weight: normal;
 }
 
-#mainmenu_center {}
-
 /* Links */
 a:link {
 	color: #0058af;
@@ -60,9 +58,6 @@ table.humo td {
 table.humo tr:first-of-type td {
 	border-color: #CFB09D;
 }
-
-/* 2nd table A-Z */
-.family_page_toptext {}
 
 td.style_tree_text {
 	background-color: #BDD7EF;
@@ -127,8 +122,6 @@ td.table_header {
 	background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
 	border-top: solid 0px #FFFFFF;
 	border-bottom: solid 1px #000000;
-	-moz-box-shadow: 3px 3px 6px #bbb;
-	-webkit-box-shadow: 3px 3px 6px #bbb;
 	box-shadow: 3px 3px 6px #bbb;
 }
 
@@ -178,9 +171,11 @@ ul.humo_menu_item2 li a {
 }
 
 /* top bar in left - content - right boxes: only in main menu */
+/*
 .mainmenu_bar {
 	background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
 }
+*/
 
 div.photobook,
 div.photobooktext {

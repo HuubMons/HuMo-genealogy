@@ -245,12 +245,11 @@ if ($show_categories) {
                                 }
                             }
 
-                            //echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category . '">' . $menutab_name . "</a></div></li>";
-
                             $path = 'photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category;
                             if ($humo_option["url_rewrite"] == "j") {
                                 $path = 'photoalbum/' . $tree_id . '?select_category=' . $category;
                             }
+                            //$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
 
                             $select_item = '';
                             if ($selected_category == $category) {
@@ -309,6 +308,7 @@ function show_media_files($pref)
     } else {
         $albumpath = $uri_path . 'photoalbum.php?tree_id=' . $tree_id . '&amp;';
     }
+    //$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
 
     $item = 0;
     if (isset($_GET['item'])) {
@@ -382,12 +382,14 @@ function show_media_files($pref)
             // *** Search by photo name ***
             $menu = "";
             if ($show_categories === true) {
+                //TODO add in $_POST as hidden value?
                 $menu = '?select_category=' . $pref;
             }
             $path = 'photoalbum.php';
             if ($humo_option["url_rewrite"] == "j") {
                 $path = 'photoalbum/' . $tree_id;
             }
+            //$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
             ?>
             <form method="post" action="<?= $path . $menu; ?>" style="display:inline">
                 <input type="text" class="fonts" name="search_media" value="<?= $search_media; ?>" size="20">

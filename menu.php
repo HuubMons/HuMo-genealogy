@@ -30,12 +30,15 @@ elseif (is_file('media/logo.jpg'))
                 $num_rows = $tree_search_result2->rowCount();
                 $count = 0;
                 if ($num_rows > 1) {
-                    if ($humo_option["url_rewrite"] == "j") {
-                        $link = $uri_path . 'tree_index/';
-                    } else {
-                        $link = 'tree_index.php';
-                    }
+                    //if ($humo_option["url_rewrite"] == "j") {
+                    //    $link = $uri_path . 'tree_index/';
+                    //} else {
+                    //    //$link = 'tree_index.php';
+                    //    $link = 'index.php?page=tree_index';
+                    //}
+                    $link = $link_cls->get_link($uri_path, 'tree_index');
             ?>
+
                     <form method="POST" action="<?= $link; ?>" style="display : inline;" id="top_tree_select">
                         <?= __('Family tree') . ': '; ?>
                         <select size="1" name="tree_id" onChange="this.form.submit();" style="width: 150px; height:20px;">
@@ -136,7 +139,8 @@ elseif (is_file('media/logo.jpg'))
                                     $test_favorite = $db_functions->get_person($favorite_array2['2']);
                                     if ($test_favorite) {
                                         //$name_cls = new person_cls($favorite_array2['3']);
-                                        $name_cls = new person_cls($favorite_array2['2']);
+                                        //$name_cls = new person_cls($favorite_array2['2']);
+                                        $name_cls = new person_cls($test_favorite);
                                         $name = $name_cls->person_name($test_favorite);
                                         echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['2'] . '">' . $name['name'] . ' [' . $favorite_array2['2'] . ']</option>';
                                     }
@@ -160,12 +164,14 @@ elseif (is_file('media/logo.jpg'))
         $ie7_rtlhack = ' class="headerrtl"';
     }
 
-    if ($humo_option["url_rewrite"] == "j") {
-        //$menu_path_home = 'index/' . $tree_id . "/";
-        $menu_path_home = 'index/' . $tree_id;
-    } else {
-        $menu_path_home = CMS_ROOTPATH . 'index.php?tree_id=' . $tree_id;
-    }
+    //if ($humo_option["url_rewrite"] == "j") {
+    //    //$menu_path_home = 'index/' . $tree_id . "/";
+    //    $menu_path_home = 'index/' . $tree_id;
+    //} else {
+    //    $menu_path_home = CMS_ROOTPATH . 'index.php?tree_id=' . $tree_id;
+    //}
+    $menu_path_home = $link_cls->get_link($uri_path, 'index', $tree_id);
+
 
     // *** Mobile menu ***
     $menu_top_home = '';
@@ -182,11 +188,12 @@ elseif (is_file('media/logo.jpg'))
             $menu_item_login = ' id="current"';
         }
 
-        if ($humo_option["url_rewrite"] == "j") {
-            $menu_path_login = $uri_path . 'login';
-        } else {
-            $menu_path_login = CMS_ROOTPATH . 'login.php';
-        }
+        //if ($humo_option["url_rewrite"] == "j") {
+        //    $menu_path_login = $uri_path . 'login';
+        //} else {
+        //    $menu_path_login = CMS_ROOTPATH . 'login.php';
+        //}
+        $menu_path_login = $link_cls->get_link($uri_path, 'login');
     }
 
     //if ($user['group_edit_trees'] or $user['group_admin'] == 'j') {
@@ -196,18 +203,20 @@ elseif (is_file('media/logo.jpg'))
 
     $menu_item_logoff = ''; //if ($menu_choice=='help'){ $menu_item=' id="current"'; }
     // *** Log off ***
-    if ($humo_option["url_rewrite"] == "j") {
-        $menu_path_logoff = $uri_path . 'index?log_off=1';
-    } else {
-        $menu_path_logoff = CMS_ROOTPATH . 'index.php?log_off=1';
-    }
+    //if ($humo_option["url_rewrite"] == "j") {
+    //    $menu_path_logoff = $uri_path . 'index?log_off=1';
+    //} else {
+    //    $menu_path_logoff = CMS_ROOTPATH . 'index.php?log_off=1';
+    //}
+    $menu_path_logoff = $link_cls->get_link($uri_path, 'logoff');
 
-    if ($humo_option["url_rewrite"] == "j") {
-        $menu_path_help = $uri_path . 'help';
-    } else {
-        //$menu_path_help = CMS_ROOTPATH . 'help.php';
-        $menu_path_help = CMS_ROOTPATH . 'index.php?page=help';
-    }
+    //if ($humo_option["url_rewrite"] == "j") {
+    //    $menu_path_help = $uri_path . 'help';
+    //} else {
+    //    //$menu_path_help = CMS_ROOTPATH . 'help.php';
+    //    $menu_path_help = CMS_ROOTPATH . 'index.php?page=help';
+    //}
+    $menu_path_help = $link_cls->get_link($uri_path, 'help');
     $menu_item_help = '';
     if ($menu_choice == 'help') {
         $menu_item_help = ' id="current"';
@@ -217,39 +226,43 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'register') {
         $menu_item_register = ' id="current"';
     }
-    if ($humo_option["url_rewrite"] == "j") {
-        $menu_path_register = $uri_path . 'register';
-    }
-    else{
-        $menu_path_register = CMS_ROOTPATH . 'index.php?page=register';
-    }
+    //if ($humo_option["url_rewrite"] == "j") {
+    //    $menu_path_register = $uri_path . 'register';
+    //} else {
+    //    $menu_path_register = CMS_ROOTPATH . 'index.php?page=register';
+    //}
+    $menu_path_register = $link_cls->get_link($uri_path, 'register');
 
     $menu_item_cms = '';
     if ($menu_choice == 'cms_pages') {
         $menu_item_cms = ' id="current"';
     }
-    if ($humo_option["url_rewrite"] == "j") {
-        $menu_path_cms = $uri_path . 'cms_pages';
-    } else {
-        $menu_path_cms = CMS_ROOTPATH . 'index.php?page=cms_pages';
-    }
+    //if ($humo_option["url_rewrite"] == "j") {
+    //    $menu_path_cms = $uri_path . 'cms_pages';
+    //} else {
+    //    $menu_path_cms = CMS_ROOTPATH . 'index.php?page=cms_pages';
+    //}
+    $menu_path_cms = $link_cls->get_link($uri_path, 'cms_pages');
 
     $menu_item_cookies = '';
     if ($menu_choice == 'cookies') {
         $menu_item_cookies = ' id="current"';
     }
-    if ($humo_option["url_rewrite"] == "j") {
-        $menu_path_cookies = $uri_path . 'cookies';
-    } else {
-        //$menu_path_cookies = CMS_ROOTPATH . 'cookies.php';
-        $menu_path_cookies = CMS_ROOTPATH . 'index.php?page=cookies';
-    }
+    //if ($humo_option["url_rewrite"] == "j") {
+    //    $menu_path_cookies = $uri_path . 'cookies';
+    //} else {
+    //    //$menu_path_cookies = CMS_ROOTPATH . 'cookies.php';
+    //    $menu_path_cookies = CMS_ROOTPATH . 'index.php?page=cookies';
+    //}
+    $menu_path_cookies = $link_cls->get_link($uri_path, 'cookies');
 
     $menu_item_persons = '';
     if ($menu_choice == 'persons') {
         $menu_item_persons = ' id="current"';
     }
     $menu_path_persons = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id . '&amp;reset=1';
+    //$menu_path_persons = $link_cls->get_link($uri_path, 'persons',$tree_id,true);
+    //$menu_path_persons.='reset=1';
 
     $menu_item_names = '';
     if ($menu_choice == 'names') {
@@ -260,6 +273,7 @@ elseif (is_file('media/logo.jpg'))
     } else {
         $menu_path_names = CMS_ROOTPATH . 'index.php?page=list_names&amp;tree_id=' . $tree_id;
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     $menu_item_user_settings = '';
     if ($menu_choice == 'user_settings') {
@@ -271,6 +285,7 @@ elseif (is_file('media/logo.jpg'))
         //$menu_path_user_settings = CMS_ROOTPATH . 'user_settings.php';
         $menu_path_user_settings = CMS_ROOTPATH . 'index.php?page=user_settings';
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     $menu_item_admin = '';
     $menu_path_admin = CMS_ROOTPATH_ADMIN . 'index.php';
@@ -284,6 +299,7 @@ elseif (is_file('media/logo.jpg'))
     } else {
         $menu_path_anniversary = CMS_ROOTPATH . 'index.php?page=birthday_list';
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     $menu_item_statistics = '';
     if ($menu_choice == 'statistics') {
@@ -294,6 +310,7 @@ elseif (is_file('media/logo.jpg'))
     } else {
         $menu_path_statistics = CMS_ROOTPATH . 'index.php?page=statistics';
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     $menu_item_calculator = '';
     if ($menu_choice == 'relations') {
@@ -304,6 +321,7 @@ elseif (is_file('media/logo.jpg'))
     } else {
         $menu_path_calculator = CMS_ROOTPATH . 'relations.php';
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     $menu_item_map = '';
     if ($menu_choice == 'maps') {
@@ -320,6 +338,7 @@ elseif (is_file('media/logo.jpg'))
     } else {
         $menu_path_contact = CMS_ROOTPATH . 'index.php?page=mailform';
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     // *** Latest changes ***
     $menu_item_latest_changes = '';
@@ -333,17 +352,20 @@ elseif (is_file('media/logo.jpg'))
         //$menu_path_latest_changes = CMS_ROOTPATH . 'latest_changes.php';
         $menu_path_latest_changes = CMS_ROOTPATH . 'index.php?page=latest_changes&amp;tree_id=' . $tree_id;
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     $menu_item_tree_index = '';
     if ($menu_choice == 'tree_index') {
         $menu_item_tree_index = ' id="current"';
     }
-    if ($humo_option["url_rewrite"] == "j") {
-        //$menu_path_tree_index = 'tree_index/' . $tree_id . "/";
-        $menu_path_tree_index = 'tree_index/' . $tree_id;
-    } else {
-        $menu_path_tree_index = CMS_ROOTPATH . 'tree_index.php?tree_id=' . $tree_id . '&amp;reset=1';
-    }
+    //if ($humo_option["url_rewrite"] == "j") {
+    //    //$menu_path_tree_index = 'tree_index/' . $tree_id . "/";
+    //    $menu_path_tree_index = 'tree_index/' . $tree_id;
+    //} else {
+    //    //$menu_path_tree_index = CMS_ROOTPATH . 'tree_index.php?tree_id=' . $tree_id . '&amp;reset=1';
+    //    $menu_path_tree_index = CMS_ROOTPATH . 'index.php?page=tree_index&amp;tree_id=' . $tree_id . '&amp;reset=1';
+    //}
+    $menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index', $tree_id);
 
     $menu_item_places_persons = '';
     if ($menu_choice == 'places') {
@@ -361,11 +383,12 @@ elseif (is_file('media/logo.jpg'))
     if ($menu_choice == 'pictures') {
         $menu_item_photoalbum = ' id="current"';
     }
-    if ($humo_option["url_rewrite"] == "j") {
-        $menu_path_photoalbum = 'photoalbum/' . $tree_id;
-    } else {
-        $menu_path_photoalbum = CMS_ROOTPATH . 'photoalbum.php?tree_id=' . $tree_id;
-    }
+    //if ($humo_option["url_rewrite"] == "j") {
+    //    $menu_path_photoalbum = 'photoalbum/' . $tree_id;
+    //} else {
+    //    $menu_path_photoalbum = CMS_ROOTPATH . 'photoalbum.php?tree_id=' . $tree_id;
+    //}
+    $menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
 
     $menu_item_sources = '';
     if ($menu_choice == 'sources') {
@@ -377,6 +400,7 @@ elseif (is_file('media/logo.jpg'))
         //$menu_path_sources = CMS_ROOTPATH . 'sources.php?tree_id=' . $tree_id;
         $menu_path_sources = CMS_ROOTPATH . 'index.php?page=sources&amp;tree_id=' . $tree_id;
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     $menu_item_addresses = '';
     if ($menu_choice == 'addresses') {
@@ -388,6 +412,7 @@ elseif (is_file('media/logo.jpg'))
         //$menu_path_addresses = CMS_ROOTPATH . 'addresses.php?tree_id=' . $tree_id;
         $menu_path_addresses = CMS_ROOTPATH . 'index.php?page=addresses&amp;tree_id=' . $tree_id;
     }
+    //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
 
     ?>
     <div id="humo_menu" <?= $ie7_rtlhack; ?>>
@@ -437,13 +462,13 @@ elseif (is_file('media/logo.jpg'))
                             }
 
                             // *** Help items ***
-                            echo '<li' . $menu_item_help . '><a href="' . $menu_path_help . '">' . __('Help') . '</a></li>';
+                            //echo '<li' . $menu_item_help . '><a href="' . $menu_path_help . '">' . __('Help') . '</a></li>';
 
-                            if (!$bot_visit) {
-                                echo '<li' . $menu_item_cookies . '><a href="' . $menu_path_cookies . '">';
-                                printf(__('%s cookies'), 'HuMo-genealogy');
-                                echo '</a></li>';
-                            }
+                            //if (!$bot_visit) {
+                            //    echo '<li' . $menu_item_cookies . '><a href="' . $menu_path_cookies . '">';
+                            //    printf(__('%s cookies'), 'HuMo-genealogy');
+                            //    echo '</a></li>';
+                            //}
                             ?>
                         </ul>
                     </div>
@@ -633,10 +658,11 @@ elseif (is_file('media/logo.jpg'))
                             </div>
                         </div>
                     </li>
-            <?php
+                <?php
                 } // *** End of menu check ***
             } // *** End of bot check
 
+            /*
             $menu_top = '';
             if ($menu_choice == 'help') {
                 $menu_top = ' id="current_top"';
@@ -644,6 +670,8 @@ elseif (is_file('media/logo.jpg'))
             if ($menu_choice == 'cookies') {
                 $menu_top = ' id="current_top"';
             }
+            */
+            /*
             ?>
             <li class="mobile_hidden">
                 <div class="<?= $rtlmarker; ?>sddm">
@@ -669,10 +697,11 @@ elseif (is_file('media/logo.jpg'))
                 </div>
             </li>
             <?php
+            */
 
             // *** Only show login/ register if user isn't logged in ***
             if ($user['group_menu_login'] == 'j' and !$user["user_name"]) {
-            ?>
+                ?>
                 <li class="mobile_hidden">
                     <div class="<?= $rtlmarker; ?>sddm">
                         <?php
@@ -771,6 +800,7 @@ elseif (is_file('media/logo.jpg'))
                                         } else {
                                             echo '<a href="' . CMS_ROOTPATH . 'index.php?language=' . $language_file[$i] . '">';
                                         }
+                                        //$menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index');
                                         echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
                                         // *** Hide names of languages in mobile version ***
                                         echo '<span class="mobile_hidden">' . $language["name"] . '</span>';

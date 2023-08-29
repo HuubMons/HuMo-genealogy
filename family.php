@@ -71,7 +71,7 @@ function topline()
             <div class="family_page_toptext fonts"><?= $treetext['family_top']; ?><br></div>
         </td>
 
-        <td class="table_header fonts" width="180" style="text-align:right;">
+        <td class="table_header fonts" width="190" style="text-align:right;">
             <?php
             // *** Hide selections for bots, and second family screen (descendant report etc.) ***
             if (!$bot_visit and $descendant_loop == 0 and $parent1_marr == 0) {

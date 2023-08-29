@@ -126,6 +126,7 @@ if ($show_form) {
         if ($humo_option["url_rewrite"] == "j") {
             $path = CMS_ROOTPATH . 'register';
         }
+        //$menu_path_register = $link_cls->get_link($uri_path, 'register');
 ?>
 
         <h1><?= __('User registration form'); ?></h1>

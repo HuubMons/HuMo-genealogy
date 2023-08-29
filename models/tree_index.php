@@ -1,48 +1,53 @@
 <?php
-class mainindex_cls
+class Mainindex_cls
 {
+
+    public function __construct()
+    {
+        //$this->var = $var;
+        include_once(__DIR__ . '/../include/language_date.php');
+        include_once(__DIR__ . '/../include/date_place.php');
+    }
+
     public function show_tree_index()
     {
         global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
 
-        include_once(CMS_ROOTPATH . "include/person_cls.php");
-
-        // *** Was needed to change fontsize ***
-        //echo '<script>';
-        //echo 'checkCookie();';
-        //echo '</script>';
+        //include_once(CMS_ROOTPATH . "include/person_cls.php");
+        include_once(__DIR__ . '/../include/person_cls.php');
 
         // *** Option to only index CMS page for bots ***
         if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
-            $left_column = '';
+            $item_array[0]['position'] = 'center';
+            $item_array[0]['header'] = '';
+            $item_array[0]['item'] = $this->selected_family_tree();
 
-            $temp = $this->selected_family_tree();
-            $center_column = $temp;
-
-            $right_column = '';
+            $item_array[1]['position'] = 'right';
+            $item_array[1]['header'] = '';
+            $item_array[1]['item'] = '';
         }
         // *** Check visitor/ user permissions ***
         elseif ($tree_prefix_quoted == '' or $tree_prefix_quoted == 'EMPTY') {
-            $left_column = '';
-
             $temp = $this->selected_family_tree();
             $temp .= '<h2><a href="' . CMS_ROOTPATH . 'login.php">' . __('Select another family tree, or login for the selected family tree.') . '</a></h2>';
-            $center_column = $temp;
+            $item_array[0]['position'] = 'center';
+            $item_array[0]['header'] = '';
+            $item_array[0]['item'] = $temp;
 
-            $right_column = '';
+            $item_array[1]['position'] = 'right';
+            $item_array[1]['header'] = '';
+            $item_array[1]['item'] = '';
         }
         // *** One name study page ***
         elseif ($humo_option["one_name_study"] != 'n') {
-            $left_column = '';
-
-            // *** Show one name study homepage ***
-            $temp = '<br><br><br><br><span style="font-size:200%">' . __('One Name Study of the name') . ': </span><span style="font-weight:bold;font-size:250%">' . $humo_option["one_name_thename"] . '</span>';;
-            $center_column = $temp;
+            $item_array[0]['position'] = 'center';
+            $item_array[0]['header'] = __('One Name Study of the name');
+            $item_array[0]['item'] = '<span style="font-weight:bold;font-size:150%">' . $humo_option["one_name_thename"] . '</span>';
 
             // *** Right column: search module ***
-            $temp = '<div class="mainmenu_bar fonts">' . __('Search') . '</div>';
-            $temp .= $this->search_box();
-            $right_column = $temp;
+            $item_array[1]['position'] = 'right';
+            $item_array[1]['header'] = __('Search');
+            $item_array[1]['item'] = $this->search_box();
         }
         // *** Standard family tree template page ***
         else {
@@ -50,10 +55,7 @@ class mainindex_cls
             while (@$data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
                 $item = explode("|", $data2Db->setting_value);
                 if ($item[0] == 'active') {
-                    //$module_status[] = $item[0];
-
                     $module_column[] = $item[1];
-
                     $module_item[] = $item[2];
 
                     if (isset($item[3]))
@@ -69,24 +71,25 @@ class mainindex_cls
                     $module_order[] = $data2Db->setting_order;
                 }
             }
-            $left_column = '';
-            $center_column = '';
-            $right_column = '';
 
             $nr_modules = 0;
             if (isset($module_order)) $nr_modules = count($module_order);
             $nr_modules--;
+
+
+            $count = 0;
+
             for ($i = 0; $i <= $nr_modules; $i++) {
                 $temp = '';
+                $header = '';
 
                 // *** Select family tree ***
                 if ($module_item[$i] == 'select_family_tree') {
                     //move these 2 rows at top of template script?
                     $data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
                     $num_rows = $data2sql->rowCount();
-                    //if ($num_rows>1 AND $humo_option["one_name_study"]=='n'){
                     if ($num_rows > 1) {
-                        $temp .= '<div class="mainmenu_bar fonts">' . __('Select a family tree') . '</div>';
+                        $header = __('Select a family tree');
                         // *** List of family trees ***
                         $temp .= $this->tree_list($data2sql);
                     }
@@ -94,27 +97,34 @@ class mainindex_cls
 
                 // *** Homepage favourites ***
                 if ($module_item[$i] == 'favourites') {
+                    $header = __('Favourites');
                     $temp .= $this->extra_links();
                 }
 
                 // *** Just for sure, probably not necessary here: re-get selected family tree data ***
                 @$dataDb = $db_functions->get_tree($tree_prefix_quoted);
                 //*** Today in history ***
-                if ($module_item[$i] == 'history') $temp .= $this->today_in_history($module_option_1[$i]);
+                if ($module_item[$i] == 'history') {
+                    $header = __('Today in history');
+                    $temp .= $this->today_in_history($module_option_1[$i]);
+                }
 
                 // *** Alphabet line ***
                 if ($module_item[$i] == 'alphabet') {
+                    //*** Find first first_character of last name ***
+                    $header = __('Surnames Index');
                     $temp .= $this->alphabet() . $dirmark2;
                 }
 
                 //*** Most frequent names ***
                 if ($module_item[$i] == 'names') {
-                    $temp .= $this->last_names($module_option_1[$i], $module_option_2[$i]) . $dirmark2;
+                    $header = __('Names');
+                    $temp .= $this->last_names($module_option_1[$i], $module_option_2[$i]);
                 }
 
                 // *** Show name of selected family tree ***
                 if ($module_item[$i] == 'selected_family_tree') {
-                    $temp .= $this->selected_family_tree();
+                    $header = $this->selected_family_tree();
 
                     // use seperate modules for these items?
                     // *** Date and number of persons/ families ***
@@ -128,20 +138,19 @@ class mainindex_cls
 
                     // *** Prepare mainmenu text and source ***
                     $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+
                     // *** Show mainmenu text ***
-                    //$mainmenu_text=$treetext['mainmenu_text']; if ($mainmenu_text!='') $temp.='<p>'.nl2br($mainmenu_text).$dirmark2.'</p>';
                     $mainmenu_text = $treetext['mainmenu_text'];
                     if ($mainmenu_text != '') $temp .= '<br><br>' . nl2br($mainmenu_text) . $dirmark2;
+
                     // *** Show mainmenu source ***
-                    //$mainmenu_source=$treetext['mainmenu_source']; if ($mainmenu_source!='') $temp.='<p>'.nl2br($mainmenu_source).$dirmark2.'</p>';
                     $mainmenu_source = $treetext['mainmenu_source'];
                     if ($mainmenu_source != '') $temp .= '<br><br>' . nl2br($mainmenu_source) . $dirmark2;
-                    //if ($mainmenu_text=='' AND $mainmenu_source=='') $temp.='<br>';
                 }
 
                 // *** Search ***
                 if ($module_item[$i] == 'search') {
-                    $temp .= '<div class="mainmenu_bar fonts">' . __('Search') . '</div>';
+                    $header = __('Search');
                     if (!$bot_visit) {
                         $temp .= $this->search_box();
                     }
@@ -149,7 +158,7 @@ class mainindex_cls
 
                 // *** Random photo ***
                 if ($module_item[$i] == 'random_photo') {
-                    $temp .= '<div class="mainmenu_bar fonts">' . __('Random photo') . '</div>';
+                    $header = __('Random photo');
                     if (!$bot_visit) {
                         $temp .= $this->random_photo();
                     }
@@ -157,7 +166,7 @@ class mainindex_cls
 
                 // *** Text ***
                 if ($module_item[$i] == 'text') {
-                    if ($module_option_1[$i]) $temp .= '<div class="mainmenu_bar fonts">' . $module_option_1[$i] . '</div>';
+                    if ($module_option_1[$i]) $header = $module_option_1[$i];
                     $temp .= $module_option_2[$i];
                 }
 
@@ -165,13 +174,14 @@ class mainindex_cls
                 if ($module_item[$i] == 'cms_page') {
                     $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='" . $module_option_1[$i] . "' AND page_status!=''");
                     $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
-                    if ($cms_pagesDb->page_title) $temp .= '<div class="mainmenu_bar fonts">' . $cms_pagesDb->page_title . '</div>';
+
+                    if ($cms_pagesDb->page_title) $header = $cms_pagesDb->page_title;
                     $temp .= $cms_pagesDb->page_text;
                 }
 
                 // *** Own script ***
                 if ($module_item[$i] == 'own_script' and strpos($module_option_2[$i], $_SERVER['HTTP_HOST'])) {
-                    if ($module_option_1[$i]) $temp .= '<div class="mainmenu_bar fonts">' . __($module_option_1[$i]) . '</div>';
+                    if ($module_option_1[$i]) $header = __($module_option_1[$i]);
                     $codefile = $module_option_2[$i];
                     $temp .= file_get_contents($codefile . '?language=' . $selected_language . '&treeid=' . $tree_id);
                 }
@@ -182,85 +192,49 @@ class mainindex_cls
                 }
 
                 if ($module_column[$i] == 'left') {
-                    if ($left_column !== '') $left_column .= '<br><br>';
-                    $left_column .= $temp;
+                    $item_array[$count]['position'] = 'left';
+                    $item_array[$count]['item'] = $temp;
+                    $item_array[$count]['header'] = $header;
+                    $count++;
                 }
                 if ($module_column[$i] == 'center') {
-                    if ($center_column !== '') $center_column .= '<br><br>';
-                    $center_column .= $temp;
+                    $item_array[$count]['position'] = 'center';
+                    $item_array[$count]['item'] = $temp;
+                    $item_array[$count]['header'] = $header;
+                    $count++;
                 }
                 if ($module_column[$i] == 'right') {
-                    if ($right_column !== '') $right_column .= '<br><br>';
-                    $right_column .= $temp;
+                    $item_array[$count]['position'] = 'right';
+                    $item_array[$count]['item'] = $temp;
+                    $item_array[$count]['header'] = $header;
+                    $count++;
                 }
             }
         } // *** End of user permission check ***
 
-
-        // TOP?????
-        // *** Show slideshow ***
-        //if (isset($humo_option["slideshow_show"]) AND $humo_option["slideshow_show"]=='y'){
-        //	$this->show_slideshow();
-        //}
-
-        // *** Can be used for extra box in lay-out ***
-        echo '<div id="mainmenu_centerbox">';
-
-        // *** Center column ***
-        $center_id = "mainmenu_center";
-        //if ($num_rows<=1 OR $humo_option["one_name_study"]=='y') $center_id="mainmenu_center_alt";
-        if ($left_column == '') $center_id = "mainmenu_center_alt";
-
-        // *** Left column ***
-        if ($left_column) {
-            echo '<div id="mainmenu_left">' . $left_column . '</div>';
-            // Send output to browser immediately for large family trees.
-            //ob_flush();
-            //flush(); // IE
-        }
-
-        // *** Center column ***
-        echo '<div id="' . $center_id . '" class="style_tree_text fonts">';
-        echo $center_column;
-        // Send output to browser immediately for large family trees.
-        //ob_flush();
-        //flush(); // for IE
-        echo '</div>';
-
-        // *** Right column ***
-        if ($right_column) {
-            echo '<div id="mainmenu_right" class="fonts">' . $right_column . '</div>';
-            // Send output to browser immediately for large family trees.
-            //ob_flush();
-            //flush(); // IE
-        }
-
-        echo '</div>'; // end of center_box
+        return $item_array;
     }
-
 
     // *** Show name of selected family tree ***
     public function selected_family_tree()
     {
         global $dbh, $num_rows, $selected_language;
-        $text = '<div class="mainmenu_bar fonts">';
+        $text = '';
         if ($num_rows > 1) {
             $text .= __('Selected family tree') . ': ';
         }
         // *** Variable $treetext_name used from menu.php ***
         $treetext = show_tree_text($_SESSION['tree_id'], $selected_language);
         $text .= $treetext['name'];
-        $text .= '</div>';
         return $text;
     }
 
     // *** List family trees ***
     public function tree_list($datasql)
     {
-        global $dbh, $humo_option, $uri_path, $user, $language, $selected_language;
+        global $dbh, $humo_option, $uri_path, $user, $language, $selected_language,$link_cls;
         $text = '';
         while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-
             // *** Check is family tree is shown or hidden for user group ***
             $hide_tree_array = explode(";", $user['group_hide_trees']);
             $hide_tree = false;
@@ -274,23 +248,21 @@ class mainindex_cls
                     // *** Show empty line ***
                     $tree_name = '';
                 } elseif (isset($_SESSION['tree_prefix']) and $_SESSION['tree_prefix'] == $dataDb->tree_prefix) {
-                    $tree_name = '<span class="tree_link fonts">' . $treetext_name . '</span>';
+                    $tree_name = '<span class="tree_link">' . $treetext_name . '</span>';
                 } else {
                     // *** url_rewrite ***
-                    if ($humo_option["url_rewrite"] == "j") {
-                        //$path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id . '/';
-                        $path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id;
-                        //$path_tmp=$uri_path.'index/'.$dataDb->tree_id.'/';
-                    } else {
-                        $path_tmp = 'tree_index.php?tree_id=' . $dataDb->tree_id;
-                        //$path_tmp='index.php?tree_id='.$dataDb->tree_id;
-                    }
-                    $tree_name = '<span class="tree_link fonts"><a href="' . $path_tmp . '">' . $treetext_name . '</a></span>';
+                    //if ($humo_option["url_rewrite"] == "j") {
+                    //    $path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id;
+                    //} else {
+                    //    //$path_tmp = 'tree_index.php?tree_id=' . $dataDb->tree_id;
+                    //    $path_tmp = 'index.php?page=tree_index&amp;tree_id=' . $dataDb->tree_id;
+                    //}
+                    $path_tmp = $link_cls->get_link($uri_path, 'tree_index', $dataDb->tree_id);
+                    $tree_name = '<span class="tree_link"><a href="' . $path_tmp . '">' . $treetext_name . '</a></span>';
                 }
                 if ($text != '') $text .= '<br>';
                 $text .= $tree_name;
             }    // end of family tree check
-
         }
 
         // *** Use scroll scrollbar for long list of family trees ***
@@ -351,14 +323,19 @@ class mainindex_cls
     // *** Owner family tree ***
     public function owner()
     {
-        global $language, $dataDb;
+        global $dataDb, $humo_option;
         $tree_owner = '';
 
         if (isset($dataDb->tree_owner) and $dataDb->tree_owner) {
             $tree_owner = __('Owner family tree:') . ' ';
             // *** Show owner e-mail address ***
             if ($dataDb->tree_email) {
-                $path_tmp = CMS_ROOTPATH . 'mailform.php';
+                if ($humo_option["url_rewrite"] == "j") {
+                    $path_tmp = CMS_ROOTPATH . 'mailform.php';
+                }
+                else{
+                    $path_tmp = CMS_ROOTPATH . 'index.php?page=mailform';
+                }
                 $tree_owner .= '<a href="' . $path_tmp . '">' . $dataDb->tree_owner . "</a>\n";
             } else {
                 $tree_owner .= $dataDb->tree_owner . "\n";
@@ -469,9 +446,9 @@ class mainindex_cls
                     */
                     // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
                     $personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
-                    FROM humo_persons
-                    WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname NOT LIKE ''
-                    GROUP BY pers_lastname, pers_prefix ORDER BY count_last_names DESC LIMIT 0," . $max;
+                        FROM humo_persons
+                        WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname NOT LIKE ''
+                        GROUP BY pers_lastname, pers_prefix ORDER BY count_last_names DESC LIMIT 0," . $max;
                     $person = $dbh->query($personqry);
 
                     while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
@@ -493,14 +470,14 @@ class mainindex_cls
                         if ($cache_exists) {
                             // *** Update existing cache item ***
                             $sql = "UPDATE humo_settings SET
-                            setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "'
-                            WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
+                                setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "'
+                                WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
                             $result = $dbh->query($sql);
                         } else {
                             // *** Add new cache item ***
                             $sql = "INSERT INTO humo_settings SET
-                            setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "',
-                            setting_tree_id='" . safe_text_db($tree_id) . "'";
+                                setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "',
+                                setting_tree_id='" . safe_text_db($tree_id) . "'";
                             $result = $dbh->query($sql);
                         }
                     }
@@ -524,12 +501,9 @@ class mainindex_cls
             }
         }
 
-        //	$text.=__('Most frequent surnames:')."<br>";
-        $text .= '<div class="mainmenu_bar fonts">' . __('Names') . '</div>';
-
         // *** nametbl = used for javascript to show graphical lightgray bar to show number of persons ***
         //$text.='<table width=500 class="humo nametbl" align="center">';
-        $text .= '<table style="width:90%;" class="humo nametbl" align="center">';
+        $text .= '<table style="width:100%;" class="humo nametbl" align="center">';
 
         $text .= '<tr class="table_headline">';
         $col_width = ((round(100 / $maxcols)) - 6) . "%";
@@ -541,13 +515,13 @@ class mainindex_cls
 
         $baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
 
-        //$text.='<tr class=table_headline>';
-        //	$text.='<td colspan="2" style="border-right-width:3px;"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_surnames">'.__('More frequent surnames').'</a></td>';
-        //	$text.='<td colspan="2"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_firstnames">'.__('Frequent first names').'</a></td>';
-        //$text.='</tr>';
-
-        $text .= '<tr><td colspan="' . ($maxcols * 2) . '" class=table_headline><a href="' . CMS_ROOTPATH . 'statistics.php">' . __('More statistics') . '</a></td></tr>';
-
+        if ($humo_option["url_rewrite"] == "j") {
+            $path=CMS_ROOTPATH . 'statistics';
+        }
+        else{
+            $path=CMS_ROOTPATH . 'index.php?page=statistics';
+        }
+        $text .= '<tr><td colspan="' . ($maxcols * 2) . '" class=table_headline><a href="' . $path . '">' . __('More statistics') . '</a></td></tr>';
         $text .= '</table>';
 
         // *** Show light gray background bar, that graphical shows number of persons ***
@@ -571,8 +545,6 @@ class mainindex_cls
         }
         </script>';
 
-        //ob_flush();
-        //flush(); // IE
         return $text;
     }
 
@@ -667,9 +639,9 @@ class mainindex_cls
         }
         $text .= '<p><input type="submit" value="' . __('Search') . '"></p>';
         $path_tmp = CMS_ROOTPATH . 'list.php?adv_search=1&index_list=search';
-        $text .= '<p><a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25"> ' . __('Advanced search') . '</a></p>';
+        $text .= '<a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25"> ' . __('Advanced search') . '</a>';
 
-        $text .= "</form>\n";
+        $text .= "</form>";
         return $text;
     }
 
@@ -696,14 +668,12 @@ class mainindex_cls
                 $man_privacy = $man_cls->privacy;
                 if ($man_cls->privacy == '') {
                     $date_place = '';
+
                     if ($picqryDb->event_date or $picqryDb->event_place) {
                         $date_place = date_place($picqryDb->event_date, $picqryDb->event_place) . ' ';
                     }
 
                     $text .= '<div style="text-align: center;">';
-
-                    //$text.='<img src="'.$tree_pict_path.$picname.'" width="200"
-                    //	style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
 
                     // *** Show picture using GLightbox ***
                     //$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.'" width="200"
@@ -715,7 +685,7 @@ class mainindex_cls
                     $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
 
                     //$text.='<a href="'.$url.'">'.$picqryDb->event_text.'</a></div><br>';
-                    $text .= '<a href="' . $url . '">' . $date_place . $picqryDb->event_text . '</a></div><br>';
+                    $text .= '<a href="' . $url . '">' . $date_place . $picqryDb->event_text . '</a></div>';
 
                     // *** Show first available picture without privacy restrictions ***
                     break;
@@ -731,7 +701,6 @@ class mainindex_cls
                 //}
             }
         }
-
         return $text;
     }
 
@@ -751,29 +720,25 @@ class mainindex_cls
                 $link_text[] = $item[1];
                 $link_order[] = $data2Db->setting_order;
             }
-            //include_once(CMS_ROOTPATH.'include/person_cls.php');
             $person = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_own_code NOT LIKE ''");
-            while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
+            while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($personDb->pers_own_code, $pers_own_code)) {
                     $person_cls = new person_cls;
+                    //$person_cls = new person_cls($personDb);
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $path_tmp = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
-
                     $name = $person_cls->person_name($personDb);
                     $text_nr = array_search($personDb->pers_own_code, $pers_own_code);
-
                     $link_order2 = $link_order[$text_nr];
                     // *** Only needed for PJCS, can't be used in other installations ***
-                    //$link_text2[$link_order2]='<a href="'.$path_tmp.'">'.$name["standard_name"].'</a> '.__($link_text[$text_nr]);
+                    //$link_text2[$link_order2] = '<a href="' . $path_tmp . '">' . $name["standard_name"] . '</a> ' . __($link_text[$text_nr]);
                     $link_text2[$link_order2] = '<a href="' . $path_tmp . '">' . $name["standard_name"] . '</a> ' . $link_text[$text_nr];
                 }
             }
 
             // *** Show links ***
             if (isset($link_text2)) {
-                $text .= '<div class="mainmenu_bar fonts">' . __('Favourites') . '</div>';
-                //for($i=1; $i<=count($link_text2); $i++){
                 for ($i = 1; $i <= $num_rows; $i++) {
                     if (isset($link_text2[$i])) $text .= $link_text2[$i] . "<br>\n";
                 }
@@ -788,16 +753,13 @@ class mainindex_cls
         global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path;
         $text = '';
 
-        //*** Find first first_character of last name ***
-        $text .= __('Surnames Index:') . "<br>\n";
-
         // *** Read cache (only used in large family trees) ***
         $cache = '';
         $cache_count = 0;
         $cache_exists = false;
         $cache_check = false; // *** Use cache for large family trees ***
         $cacheqry = $dbh->query("SELECT * FROM humo_settings
-        WHERE setting_variable='cache_alphabet' AND setting_tree_id='" . $tree_id . "'");
+            WHERE setting_variable='cache_alphabet' AND setting_tree_id='" . $tree_id . "'");
         $cacheDb = $cacheqry->fetch(PDO::FETCH_OBJ);
         if ($cacheDb) {
             $cache_exists = true;
@@ -819,13 +781,13 @@ class mainindex_cls
 
         if ($cache_check == false) {
             $personqry = "SELECT UPPER(LEFT(pers_lastname,1)) as first_character FROM humo_persons
-            WHERE pers_tree_id='" . $tree_id . "' AND LEFT(CONCAT(pers_prefix,pers_lastname),1)!=''
-            GROUP BY first_character ORDER BY first_character";
+                WHERE pers_tree_id='" . $tree_id . "' AND LEFT(CONCAT(pers_prefix,pers_lastname),1)!=''
+                GROUP BY first_character ORDER BY first_character";
             // *** If "van Mons" is selected, also check pers_prefix ***
             if ($user['group_kindindex'] == "j") {
                 $personqry = "SELECT UPPER(LEFT(CONCAT(pers_prefix,pers_lastname),1)) as first_character FROM humo_persons
-                WHERE pers_tree_id='" . $tree_id . "' AND LEFT(CONCAT(pers_prefix,pers_lastname),1)!=''
-                GROUP BY first_character ORDER BY first_character";
+                    WHERE pers_tree_id='" . $tree_id . "' AND LEFT(CONCAT(pers_prefix,pers_lastname),1)!=''
+                    GROUP BY first_character ORDER BY first_character";
             }
 
             @$person = $dbh->query($personqry);
@@ -846,13 +808,13 @@ class mainindex_cls
             if ($cache and ($cache_count == $count_first_character)) {
                 if ($cache_exists) {
                     $sql = "UPDATE humo_settings SET
-                    setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "'
-                    WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
+                        setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "'
+                        WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
                     $result = $dbh->query($sql);
                 } else {
                     $sql = "INSERT INTO humo_settings SET
-                    setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "',
-                    setting_tree_id='" . safe_text_db($tree_id) . "'";
+                        setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "',
+                        setting_tree_id='" . safe_text_db($tree_id) . "'";
                     $result = $dbh->query($sql);
                 }
             }
@@ -864,7 +826,8 @@ class mainindex_cls
                 if ($humo_option["url_rewrite"] == "j") {
                     // *** url_rewrite ***
                     // *** $uri_path is gemaakt in header.php ***
-                    $path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $first_character[$i] . '/';
+                    //$path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $first_character[$i] . '/';
+                    $path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $first_character[$i];
                 } else {
                     $path_tmp = CMS_ROOTPATH . 'list_names.php?tree_id=' . $tree_id . '&amp;last_name=' . $first_character[$i];
                 }
@@ -873,7 +836,7 @@ class mainindex_cls
         }
 
         $person = "SELECT pers_patronym FROM humo_persons
-        WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
+            WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
         @$personDb = $dbh->query($person);
         if ($personDb->rowCount() > 0) {
             $text .= ' <a href="' . CMS_ROOTPATH . 'list.php?index_list=patronym">' . __('Patronyms') . '</a>';
@@ -888,9 +851,11 @@ class mainindex_cls
     public function today_in_history($view = 'with_table')
     {
         global $dbh, $dataDb;
-        //include_once(CMS_ROOTPATH."include/person_cls.php");
-        include_once(CMS_ROOTPATH . "include/language_date.php");
-        include_once(CMS_ROOTPATH . "include/date_place.php");
+        //include_once(CMS_ROOTPATH . "include/language_date.php");
+        //include_once(__DIR__ . '/../include/language_date.php');
+
+        //include_once(CMS_ROOTPATH . "include/date_place.php");
+        //include_once(__DIR__ . '/../include/date_place.php');
 
         // *** Backwards compatible, value is empty ***
         if ($view == '') $view = 'with_table';
@@ -903,13 +868,13 @@ class mainindex_cls
         // *** Check user group is restricted sources can be shown ***
         // *** Calculate present date, month and year ***
         $sql = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id
-        AND (
-            substring( pers_birth_date,1,6) = :today OR substring( pers_birth_date, 1,6 ) = :today2
-            OR substring( pers_bapt_date,1,6) = :today OR substring( pers_bapt_date, 1,6 ) = :today2
-            OR substring( pers_death_date,1,6) = :today OR substring( pers_death_date, 1,6 ) = :today2
-        )
-        ORDER BY substring(pers_birth_date,-4) DESC
-        LIMIT 0,30
+            AND (
+                substring( pers_birth_date,1,6) = :today OR substring( pers_birth_date, 1,6 ) = :today2
+                OR substring( pers_bapt_date,1,6) = :today OR substring( pers_bapt_date, 1,6 ) = :today2
+                OR substring( pers_death_date,1,6) = :today OR substring( pers_death_date, 1,6 ) = :today2
+            )
+            ORDER BY substring(pers_birth_date,-4) DESC
+            LIMIT 0,30
         ";
         try {
             $birth_qry = $dbh->prepare($sql);
@@ -964,12 +929,10 @@ class mainindex_cls
                 $count_privacy++;
         }
 
-        $text .= '<div class="mainmenu_bar fonts">' . __('Today in history') . '</div>';
-
         // *** Use scrollbar for long list ***
         $text .= '<div style="max-height:200px; overflow-x: auto;">';
         if ($view == 'with_table') {
-            $text .= '<table style="width:90%;" class="humo nametbl" align="center">';
+            $text .= '<table style="width:100%;" class="humo nametbl" align="center">';
             //$text.='<tr class="table_headline">';
             //	$text.='<td colspan="3"><b>'.__('Today in history').'</b></td>';
             //$text.='</tr>';
@@ -1029,14 +992,14 @@ class mainindex_cls
 
         // *** Show HuMo-genealogy link ***
         printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="https://humo-gen.com">HuMo-genealogy</a>');
-        //echo ' ('.$humo_option["version"].').<br>';
         echo '.<br>';
 
         // *** Show European cookie information ***
         if ($humo_option["url_rewrite"] == "j") {
             $url = $uri_path . 'cookies';
         } else {
-            $url = 'cookies.php';
+            //$url = 'cookies.php';
+            $url = 'index.php?page=cookies';
         }
         if (!$bot_visit) {
             printf(__('European law: %s cookie information'), '<a href="' . $url . '">HuMo-genealogy');

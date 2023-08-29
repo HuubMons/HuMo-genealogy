@@ -22,8 +22,10 @@ if ($user["group_birthday_list"] != 'j') {
 
 if ($humo_option["url_rewrite"] == "j") {
     $path = 'birthday_list';
+    $path2 = 'birthday_list?';
 } else {
     $path = CMS_ROOTPATH . 'index.php?page=birthday_list';
+    $path2 = CMS_ROOTPATH . 'index.php?page=birthday_list&amp;';
 }
 
 // *** Month to show ***
@@ -83,18 +85,18 @@ $last_cal_day = 0;
     <?php
     // *** Show navigation ***
     echo '[ ';
-    echo '<a href="' . $path . '?month=jan' . $url_end . '">' . __('jan') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=feb' . $url_end . '">' . __('feb') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=mar' . $url_end . '">' . __('mar') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=apr' . $url_end . '">' . __('apr') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=may' . $url_end . '">' . __('may') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=jun' . $url_end . '">' . __('jun') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=jul' . $url_end . '">' . __('jul') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=aug' . $url_end . '">' . __('aug') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=sep' . $url_end . '">' . __('sep') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=oct' . $url_end . '">' . __('oct') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=nov' . $url_end . '">' . __('nov') . '</a>' . $spacer;
-    echo '<a href="' . $path . '?month=dec' . $url_end . '">' . __('dec') . '</a>';
+    echo '<a href="' . $path2 . 'month=jan' . $url_end . '">' . __('jan') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=feb' . $url_end . '">' . __('feb') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=mar' . $url_end . '">' . __('mar') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=apr' . $url_end . '">' . __('apr') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=may' . $url_end . '">' . __('may') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=jun' . $url_end . '">' . __('jun') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=jul' . $url_end . '">' . __('jul') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=aug' . $url_end . '">' . __('aug') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=sep' . $url_end . '">' . __('sep') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=oct' . $url_end . '">' . __('oct') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . 'month=nov' . $url_end . '">' . __('nov') . '</a>' . $spacer;
+    echo '<a href="' . $path2 . '   month=dec' . $url_end . '">' . __('dec') . '</a>';
     echo " ]\n";
     ?>
 

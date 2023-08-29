@@ -22,6 +22,7 @@ if (isset($id)) {
 function source_display($sourcenum)
 {
     global $dbh, $db_functions, $tree_id, $dataDb, $user, $pdf, $screen_mode, $language, $humo_option;
+    global $bot_visit; // *** Don't remove. Is needed for source.php ***
 
     if ($screen_mode != "PDF") {
         include_once("header.php"); //returns CMS_ROOTPATH constant

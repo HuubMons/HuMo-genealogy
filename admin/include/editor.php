@@ -848,12 +848,8 @@ if ($check_person) {
         echo '<div class="sddm_fixed"
             style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
             direction:' . $rtlmarker . ';
-            box-shadow: 6px 6px 6px #999;
-            -moz-box-shadow: 6px 6px 6px #999;
-            -webkit-box-shadow: 6px 6px 6px #999;
-            -moz-border-radius: 6px 6px 6px 6px;
-            -webkit-border-radius: 6px 6px 6px 6px;
-            border-radius: 6px 6px 6px 6px;"
+            box-shadow: 2px 2px 2px #999;
+            border-radius: 3px;"
             id="browse_menu"
             onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
         if ($add_person == false) {
@@ -1270,12 +1266,8 @@ if ($check_person) {
                                 echo '<div class="sddm_fixed"
                                     style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
                                     direction:' . $rtlmarker . ';
-                                    box-shadow: 6px 6px 6px #999;
-                                    -moz-box-shadow: 6px 6px 6px #999;
-                                    -webkit-box-shadow: 6px 6px 6px #999;
-                                    -moz-border-radius: 6px 6px 6px 6px;
-                                    -webkit-border-radius: 6px 6px 6px 6px;
-                                    border-radius: 6px 6px 6px 6px;"
+                                    box-shadow: 2px 2px 2px #999;
+                                    border-radius: 3px;"
                                     id="archive_menu"
                                     onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 

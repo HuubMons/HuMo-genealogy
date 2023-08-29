@@ -5,7 +5,6 @@ html {
 body {
 	background: url(images_white/background.gif) repeat-y top center #fff;
 	color: #404040;
-	/* font:76% Verdana,Tahoma,Arial,sans-serif; */
 	line-height: 1.3em;
 	margin: 0 auto;
 	padding: 0;
@@ -14,8 +13,6 @@ body {
 /* Menu */
 #top_menu {
 	position: relative;
-	/* color: #6666aa; */
-	/* background-color: #aaccee; */
 	width: 1010px;
 	margin: 0 auto;
 }
@@ -56,8 +53,6 @@ body {
 	background: url("images_white/white.jpg") repeat left top;
 }
 
-#humo_menu #current {}
-
 #humo_menu #current a,
 #humo_menu #current_top {
 	background: url("images_white/white.jpg") repeat left top;
@@ -65,22 +60,20 @@ body {
 }
 
 /* top bar in left - content - right boxes: only in main menu */
+/*
 .mainmenu_bar {
 	background: none;
-	/* h2 {border-bottom:4px solid #dadada; color:#4088b8; font-size:1.4em; letter-spacing:-1px; margin:0 0 10px; padding:0 2px 2px 5px;} */
 	border-bottom: 4px solid #dadada;
 	color: #4088b8;
 }
+*/
 
 #mainmenu_centerbox {
 	box-shadow: 0px 0px 0px #999;
-	-moz-box-shadow: 0px 0px 0px #999;
-	-webkit-box-shadow: 0px 0px 0px #999;
 }
 
 .search_bar {
 	background: url("images_white/white.jpg") repeat left top;
-	/* background:none; */
 }
 
 #content {
@@ -89,7 +82,6 @@ body {
 	position: relative;
 	z-index: 3;
 	height: 100%;
-	/* overflow:auto; */
 	max-height: 90%;
 	top: 35px;
 	width: 1005px;
@@ -102,7 +94,6 @@ body {
 	position: relative;
 	z-index: 3;
 	height: 100%;
-	/* overflow:auto; */
 	max-height: 95%;
 	top: 35px;
 	width: 1024px;
@@ -121,19 +112,14 @@ table.humo {
 /* 1st table A-Z */
 .border {
 	border: none;
-	/* border-collapse: collapse; */
 }
 
 table.humo {
-	-moz-box-shadow: 0px 0px 0px;
-	-webkit-box-shadow: 0px 0px 0px;
 	box-shadow: 0px 0px 0px;
 }
 
 table.humo td {
-	/* border: ridge 1px #3355cc; */
 	border: none;
-	/* background-color: #cceeff; */
 	/* achtergrond gezinsblad en 1e tabel */
 	border-bottom: 2px solid #dadada;
 }
@@ -176,4 +162,9 @@ table.container {
 
 table.reltable td {
 	border: 0px;
+}
+
+footer{
+	width: 1010px;
+	margin: 0 auto;
 }

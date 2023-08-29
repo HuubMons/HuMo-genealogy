@@ -42,7 +42,7 @@ if (isset($_GET['remove_module']) and is_numeric($_GET['remove_module'])) {
 if (isset($_POST['add_module']) and is_numeric($_POST['module_order'])) {
     $setting_value = $_POST['module_status'] . "|" . $_POST['module_column'] . "|" . $_POST['module_item'];
     $sql = "INSERT INTO humo_settings SET setting_variable='template_homepage',
-                setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['module_order']) . "'";
+        setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['module_order']) . "'";
     $result = $dbh->query($sql);
 }
 
@@ -53,11 +53,10 @@ if (isset($_GET['mod_up'])) {
 
     // *** Raise previous module ***
     $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['module_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
-
     $result = $dbh->query($sql);
+
     // *** Lower module order ***
     $sql = "UPDATE humo_settings SET setting_order='" . (safe_text_db($_GET['module_order']) - 1) . "' WHERE setting_id=" . safe_text_db($_GET['id']);
-
     $result = $dbh->query($sql);
 }
 if (isset($_GET['mod_down'])) {
@@ -67,17 +66,73 @@ if (isset($_GET['mod_down'])) {
 
     // *** Lower previous link ***
     $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['module_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
-
     $result = $dbh->query($sql);
+
     // *** Raise link order ***
     $sql = "UPDATE humo_settings SET setting_order='" . (safe_text_db($_GET['module_order']) + 1) . "' WHERE setting_id=" . safe_text_db($_GET['id']);
-
     $result = $dbh->query($sql);
+}
+
+
+// *** Automatic group all items: left, center and right items. So it's easier to move items ***
+$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
+$left = 0;
+$center = 0;
+$right = 0;
+if ($datasql) {
+    $teller = 0;
+    // *** Read all items ***
+    while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+        $dataDb->setting_value .= '|'; // In some cases the last | is missing. TODO: improve saving of settings.
+        $lijst = explode("|", $dataDb->setting_value);
+        if ($lijst[1] == 'left') {
+            $left++;
+        }
+        if ($lijst[1] == 'center') {
+            $center++;
+        }
+        if ($lijst[1] == 'right') {
+            $right++;
+        }
+        $item_array[$teller]['id'] = $dataDb->setting_id;
+        $item_array[$teller]['column'] = $lijst[1];
+        $item_array[$teller]['order'] = $dataDb->setting_order;
+        $teller++;
+    }
+}
+$count_left = 0;
+$count_center = $left;
+$count_right = $left + $center;
+// *** Reorder all items (if new items is added) ***
+for ($i = 0; $i < count($item_array); $i++) {
+    if ($item_array[$i]['column'] == 'left') {
+        $count_left++;
+        if ($item_array[$i]['order'] != $count_left) {
+            $sql = "UPDATE humo_settings SET setting_order='" . $count_left . "' WHERE setting_id='" . $item_array[$i]['id']."'";
+            $result = $dbh->query($sql);        
+        }
+    }
+
+    if ($item_array[$i]['column'] == 'center') {
+        $count_center++;
+        if ($item_array[$i]['order'] != $count_center) {
+            $sql = "UPDATE humo_settings SET setting_order='" . $count_center . "' WHERE setting_id='" . $item_array[$i]['id']."'";
+            $result = $dbh->query($sql);        
+        }
+    }
+
+    if ($item_array[$i]['column'] == 'right') {
+        $count_right++;
+        if ($item_array[$i]['order'] != $count_right) {
+            $sql = "UPDATE humo_settings SET setting_order='" . $count_right . "' WHERE setting_id='" . $item_array[$i]['id']."'";
+            $result = $dbh->query($sql);        
+        }
+    }
 }
 
 // *** Show all links ***
 ?>
-<form method=' post' action='index.php'>
+<form method="post" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="menu_admin" value="settings_homepage">
     <table class="humo" border="1">
@@ -94,6 +149,7 @@ if (isset($_GET['mod_down'])) {
             <th><br></th>
             <th><input type="Submit" name="change_module" value="<?= __('Change'); ?>"></th>
         </tr>
+
         <?php
         $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
         // *** Number for new module ***
@@ -104,6 +160,7 @@ if (isset($_GET['mod_down'])) {
         if ($datasql) {
             $teller = 1;
             while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                $dataDb->setting_value .= '|'; // In some cases the last | is missing. TODO: improve saving of settings.
                 $lijst = explode("|", $dataDb->setting_value);
                 // *** Just to prevent error messages, set a default value ***
                 if (!isset($lijst[3])) $lijst[3] = '';
@@ -119,6 +176,7 @@ if (isset($_GET['mod_down'])) {
                         </select>
                     </td>
 
+                    <!-- TODO use seperate blocks for editing left/center/right items -->
                     <td>
                         <select size="1" name="<?= $dataDb->setting_id; ?>module_column">
                             <option value="left"><?= __('Left'); ?></option>
@@ -146,7 +204,7 @@ if (isset($_GET['mod_down'])) {
                             <option value="names" <?php if ($lijst[2] == 'names') echo ' selected'; ?>><?= __('Names'); ?></option>
                             <option value="history" <?php if ($lijst[2] == 'history') echo ' selected'; ?>><?= __('Today in history'); ?></option>
                             <option value="favourites" <?php if ($lijst[2] == 'favourites') echo ' selected'; ?>><?= __('Favourites'); ?></option>
-                            <option value="alphabet" <?php if ($lijst[2] == 'alphabet') ' selected'; ?>><?= __('Surnames Index'); ?></option>
+                            <option value="alphabet" <?php if ($lijst[2] == 'alphabet') echo ' selected'; ?>><?= __('Surnames Index'); ?></option>
                             <option value="random_photo" <?php if ($lijst[2] == 'random_photo') echo ' selected'; ?>><?= __('Random photo'); ?></option>
                             <option value="text" <?php if ($lijst[2] == 'text') echo ' selected'; ?>><?= __('Text'); ?></option>
                             <option value="own_script" <?php if ($lijst[2] == 'own_script') echo ' selected'; ?>><?= __('Own script'); ?></option>
@@ -158,7 +216,6 @@ if (isset($_GET['mod_down'])) {
                     <!-- Extra table column used for extra options -->
                     <td>
                         <?php
-
                         //if ($lijst[2]=='select_family_tree'){
                         //	echo ' '.__('Only use for multiple family trees.');
                         //}
@@ -357,7 +414,7 @@ if (isset($_GET['remove_link']) and is_numeric($_GET['remove_link'])) {
 if (isset($_POST['add_link']) and is_numeric($_POST['link_order'])) {
     $setting_value = $_POST['own_code'] . "|" . $_POST['link_text'];
     $sql = "INSERT INTO humo_settings SET setting_variable='link',
-                setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['link_order']) . "'";
+        setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['link_order']) . "'";
     $result = $dbh->query($sql);
 }
 
@@ -394,7 +451,7 @@ if (isset($_GET['down'])) {
 ?>
 <h1 align=center><?= __('Homepage favourites'); ?></h1>
 
-<form method='post' action='index.php'>
+<form method="post" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="menu_admin" value="settings_homepage">
 
@@ -450,7 +507,7 @@ if (isset($_GET['down'])) {
             ?>
             <tr bgcolor="green">
                 <td><br></td>
-                <input type="hidden" name="link_order" value="' . $new_number . '">
+                <input type="hidden" name="link_order" value="<?= $new_number; ?>">
                 <td><input type="text" name="own_code" value="Code" size="5"></td>
                 <td><input type="text" name="link_text" value="<?= __('Owner of tree'); ?>" size="20"></td>
                 <td><input type="Submit" name="add_link" value="<?= __('Add'); ?>"></td>

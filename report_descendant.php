@@ -87,7 +87,9 @@ function generate()
 
             $distance = 0;
 
-            $genarray[$i]["posy"] = ($genarray[$i]["gen"] * ($vbasesize)) + 40;
+            // *** last number seems to be height from previous div. ***
+            //$genarray[$i]["posy"] = ($genarray[$i]["gen"] * ($vbasesize)) + 40;
+            $genarray[$i]["posy"] = ($genarray[$i]["gen"] * ($vbasesize)) + 80;
             $par = $genarray[$i]["par"];
             if ($genarray[$i]["chd"] == 1) {   // the first child in this fam
                 if ($genarray[$i]["gen"] == 0) {  // this is base person - put in left most position

@@ -58,8 +58,6 @@ body {
 	background: url("images_antique/header4.jpg") repeat left top;
 }
 
-#humo_menu ul.humo_menu_item2 li {}
-
 #humo_menu ul.humo_menu_item2 li a {
 	background: url("images_antique/header2.jpg") repeat left top;
 	font-family: "Monotype Corsiva", "URW Chancery L", "Comic Sans MS", Tahoma, Verdana;
@@ -93,6 +91,7 @@ ul.humo_menu_item li {
 	background-color: #f2f2f2;
 }
 
+/*
 #mainmenu_centerbox .mainmenu_bar {
 	background: url("images_antique/header2.jpg") repeat left top;
 	font-size: 13px;
@@ -100,13 +99,7 @@ ul.humo_menu_item li {
 	height: 20px;
 	padding-top: 3px;
 }
-
-#mainmenu_right form {
-	margin-left: 12px;
-	margin-right: 12px;
-}
-
-#mainmenu_center_alt {}
+*/s
 
 /* Links */
 a {

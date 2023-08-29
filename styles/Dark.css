@@ -4,8 +4,6 @@ body {
 	background-image: none;
 }
 
-/* ************* */
-
 /* MAIN SETTINGS */
 a:link {
 	color: #8888ff;
@@ -54,30 +52,25 @@ p {
 
 /* ********** */
 /* MENUBAR */
-/*	#humo_menu { background-image: none; background-color:#202020; } */
 #humo_menu {
 	background: url("images_dark/silvermenu1.jpg") repeat left top;
 }
 
-/* #humo_menu a:hover, #humo_menu ul.humo_menu_item2 li a:hover { background-image: none; background-color:#404040; } */
 #humo_menu a:hover,
 #humo_menu ul.humo_menu_item2 li a:hover {
 	background: url("images_dark/menuhover1.jpg") repeat left top;
 }
 
-/* #humo_menu a#current_top, #humo_menu #current a { background-image: none; background-color:#a0a0a0; color:#202020; font-weight:bold; } */
 #humo_menu a#current_top,
 #humo_menu #current a {
 	background: url("images_dark/menuhover1.jpg") repeat left top;
 	color: #ff6600;
 }
 
-/* #humo_menu ul.humo_menu_item2 li { background-image: none; background-color:#2020a0; } */
 #humo_menu ul.humo_menu_item2 li {
 	background: url("images_dark/silver.jpg") repeat left top;
 }
 
-/* #humo_menu ul.humo_menu_item2 li a { background-image: none; background-color:#2020a0; font-weight:normal; } */
 #humo_menu ul.humo_menu_item2 li a {
 	background: url("images_dark/silver.jpg") repeat left top;
 }
@@ -103,8 +96,6 @@ ul.humo_menu_item li {
 /* ********** */
 /* CONTENT */
 
-/* #content { background-image: none; background-color:  #202020; color: #b0b0b0; }
-#rtlcontent { background-image: none; background-color:  #202020; color: #b0b0b0; } */
 #content {
 	background: url("images_dark/background.jpg") repeat left top;
 	color: #b0b0b0;
@@ -121,13 +112,17 @@ ul.humo_menu_item li {
 	background-color: #101010;
 }
 
-/* #mainmenu_centerbox  { background:url("images_dark/background.jpg") repeat left top; } */
-
-/* .mainmenu_bar { background-image: none; background-color: #101010; color: #ff9900; } */
+/*
 .mainmenu_bar {
 	background: url("images_dark/menuhover2.jpg") repeat left top;
 	color: #ff9900;
 	padding: 8px;
+}
+*/
+
+.homepage_box {
+	border: solid 1px #EED4D4;
+	background-color: transparent;
 }
 
 /* OVERIG CONTENT */
@@ -137,15 +132,8 @@ ul.humo_menu_item li {
 	color: #b0b0b0;
 }
 
-/* #mainmenu_center_alt.style_tree_text fonts { background:url("images_dark/background.jpg") repeat left top; color: #b0b0b0; } */
-
 #mainmenu_right fonts {
 	background-color: #101010;
-}
-
-#mainmenu_right form {
-	margin-left: 12px;
-	margin-right: 12px;
 }
 
 /* Tables */
@@ -176,11 +164,6 @@ table.humo tr:first-of-type td {
 	border-color: #404040;
 }
 
-/* 2nd table A-Z */
-.family_page_toptext {}
-
-/* td.style_tree_text { background-color: #eeeeff; } */
-
 /* familypage */
 .pers_name {
 	color: #e0e0e0;
@@ -197,7 +180,6 @@ table.humo tr:first-of-type td {
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
 	color: #000066;
-	/* margin-top: 10px; */
 }
 
 /* Ancestor graphical */
@@ -268,4 +250,9 @@ table.reltable {
 
 .mobile_icon {
 	filter: invert(100%);
+}
+
+footer{
+	background-color: transparent;
+	color: #ff9900;
 }
