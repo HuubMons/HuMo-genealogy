@@ -495,7 +495,7 @@ else {
                                         stat_country_code =:stat_country_code";
 
                                 // *** Get country code ***
-                                require_once(__DIR__ . '/include/geoplugin/geoplugin.class.php');
+                                include_once(__DIR__ . '/../include/geoplugin/geoplugin.class.php');
                                 $geoplugin = new geoPlugin();
                                 $geoplugin->locate();
 
