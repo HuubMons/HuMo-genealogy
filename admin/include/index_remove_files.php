@@ -134,19 +134,21 @@ if (!isset($humo_option['cleanup_status'])) {
 }
 
 // *** Second cleanup of files ***
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] == '1') {
+$cleanup_status=2;
+if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
     unset($remove_folders, $update_dir, $update_files);
 
     $remove_folders[] = '../include/securimage';
     remove_the_folders($remove_folders);
 
-    // *** Update "update_status" to number 2 ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='2' WHERE setting_variable='cleanup_status'");
-    $humo_option['cleanup_status'] = '2';
+    // *** Update "update_status" ***
+    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $humo_option['cleanup_status'] = $cleanup_status;
 }
 
 // *** Third cleanup of files ***
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] == '2') {
+$cleanup_status=3;
+if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
     // *** Remove old files ***
     $remove_file[] = '../info.php';
     $remove_file[] = '../credits.php';
@@ -175,13 +177,14 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] == 
     $remove_folders[] = 'include/kcfinder';
     remove_the_folders($remove_folders);
 
-    // *** Update "update_status" to number 3 ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='3' WHERE setting_variable='cleanup_status'");
-    $humo_option['cleanup_status'] = '3';
+    // *** Update "update_status" ***
+    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $humo_option['cleanup_status'] = $cleanup_status;
 }
 
-// *** Fourth cleanup of files ***
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] == '3') {
+// *** Fourth cleanup of files (in version 6.3) ***
+$cleanup_status=4;
+if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
     // *** Remove old files ***
     $remove_file[] = '../address.php';
     $remove_file[] = '../addresses.php';
@@ -217,9 +220,111 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] == 
         }
     }
 
-    // *** Update "update_status" to number 3 ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='3' WHERE setting_variable='cleanup_status'");
-    $humo_option['cleanup_status'] = '4';
+    // *** Update "update_status" ***
+    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $humo_option['cleanup_status'] = $cleanup_status;
 }
+
+// *** Cleanup 5 of files (in version 6.3.1) ***
+$cleanup_status=5;
+if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+    // *** Remove old files ***
+    $remove_file[] = '../admin/include/backup.php';
+    $remove_file[] = '../admin/include/cal_date.php';
+    $remove_file[] = '../admin/include/cms_pages.php';
+    $remove_file[] = '../admin/include/editor.php';
+    $remove_file[] = '../admin/include/extensions.php';
+    $remove_file[] = '../admin/include/gedcom.php';
+    $remove_file[] = '../admin/include/gedcom_export.php';
+    $remove_file[] = '../admin/include/groups.php';
+    $remove_file[] = '../admin/include/install.php';
+    $remove_file[] = '../admin/include/language_editor.php';
+    $remove_file[] = '../admin/include/log.php';
+    $remove_file[] = '../admin/include/make_db_maps.php';
+    $remove_file[] = '../admin/include/settings_admin.php';
+    $remove_file[] = '../admin/include/statistics.php';
+    $remove_file[] = '../admin/include/thumbs.php';
+    $remove_file[] = '../admin/include/tree_check.php';
+    $remove_file[] = '../admin/include/trees.php';
+    $remove_file[] = '../admin/include/user_notes.php';
+    $remove_file[] = '../admin/include/users.php';
+    $remove_file[] = '../include/mainindex_cls.php';
+    foreach ($remove_file as $rfile) {
+        if (file_exists($rfile)) {
+            //echo $rfile . '<br>';
+            unlink($rfile);
+        }
+    }
+
+    // *** Update "update_status" ***
+    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $humo_option['cleanup_status'] = $cleanup_status;
+}
+
+// *** Cleanup 6 of files (in version 6.5) ***
+$cleanup_status=6;
+if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+    unset($remove_folders, $update_dir, $update_files);
+    $remove_folders[] = '../Docker';
+    remove_the_folders($remove_folders);
+
+    unset($remove_folders, $update_dir, $update_files);
+    $remove_folders[] = '../models';
+    remove_the_folders($remove_folders);
+
+    unset($remove_folders, $update_dir, $update_files);
+    $remove_folders[] = 'include/areyousure';        // admin/include/areyousure
+    remove_the_folders($remove_folders);
+
+    // *** Remove old files ***
+    $remove_file[] = '../admin/include/backup.php';
+    $remove_file[] = '../admin/include/cal_date.php';
+    $remove_file[] = '../admin/include/cms_pages.php';
+    $remove_file[] = '../admin/include/editor.php';
+    $remove_file[] = '../admin/include/extensions.php';
+    $remove_file[] = '../admin/include/gedcom.php';
+    $remove_file[] = '../admin/include/gedcom_export.php';
+    $remove_file[] = '../admin/include/groups.php';
+    $remove_file[] = '../admin/include/install.php';
+    $remove_file[] = '../admin/include/language_editor.php';
+    $remove_file[] = '../admin/include/log.php';
+    $remove_file[] = '../admin/include/make_db_maps.php';
+    $remove_file[] = '../admin/include/settings_admin.php';
+    $remove_file[] = '../admin/include/statistics.php';
+    $remove_file[] = '../admin/include/thumbs.php';
+    $remove_file[] = '../admin/include/tree_check.php';
+    $remove_file[] = '../admin/include/trees.php';
+    $remove_file[] = '../admin/include/user_notes.php';
+    $remove_file[] = '../admin/include/users.php';
+    $remove_file[] = '../birthday_rss.php';
+    $remove_file[] = '../controller/addressController.php';
+    $remove_file[] = '../family.php';
+    $remove_file[] = '../fanchart.php';
+    $remove_file[] = '../hourglass.php';
+    $remove_file[] = '../languages/ro/language_help.php';
+    $remove_file[] = '../list.php';
+    $remove_file[] = '../list_places_families.php';
+    $remove_file[] = '../login.php';
+    $remove_file[] = '../maps.php';
+    $remove_file[] = '../menu.php';
+    $remove_file[] = '../photoalbum.php';
+    $remove_file[] = '../relations.php';
+    $remove_file[] = '../report_ancestor.php';
+    $remove_file[] = '../report_descendant.php';
+    $remove_file[] = '../report_outline.php';
+    $remove_file[] = '../timelines.php';
+
+    foreach ($remove_file as $rfile) {
+        if (file_exists($rfile)) {
+            //echo $rfile . '<br>';
+            unlink($rfile);
+        }
+    }
+
+    // *** Update "update_status" ***
+    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $humo_option['cleanup_status'] = $cleanup_status;
+}
+
 
 // Remark: for testing reset $humo_option['cleanup_status'] option.

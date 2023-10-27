@@ -1,154 +1,154 @@
 body {
-	color: #000000;
-	background-image: linear-gradient(to bottom, #ffffff, #C2C1FF);
-	/* font: 13px Verdana, tahoma, arial, sans-serif; */
+    color: #000000;
+    background-image: linear-gradient(to bottom, #ffffff, #C2C1FF);
+    /* font: 13px Verdana, tahoma, arial, sans-serif; */
 }
 
 #top_menu {
-	background: none;
+    background: none;
 }
 
 #top {
-	/* background:url(images_sky_blue/top.png) repeat left top */
-	background: none;
+    /* background:url(images_sky_blue/top.png) repeat left top */
+    background: none;
 }
 
 #top_website_name {
-	font-family: Delicious-Boldx, Verdana, Arial;
-	font-weight: bold;
-	font-size: 18px;
+    font-family: Delicious-Boldx, Verdana, Arial;
+    font-weight: bold;
+    font-size: 18px;
 }
 
 #top_familytree_name {
-	color: #333;
-	font-family: Deliciousx, Verdana, Arial;
-	font-size: 16px;
-	font-weight: normal;
+    color: #333;
+    font-family: Deliciousx, Verdana, Arial;
+    font-size: 16px;
+    font-weight: normal;
 }
 
 #mainmenu_center {
-	/*	float: left;
+    /*	float: left;
 	width: 46%;
 	margin-left: 19px; */
 }
 
 /* Links */
 a:link {
-	color: #0058af;
+    color: #0058af;
 }
 
 a:visited {
-	color: #AD5E34;
+    color: #AD5E34;
 }
 
 a:hover {
-	color: #333366;
-	text-decoration: underline;
+    color: #333366;
+    text-decoration: underline;
 }
 
 /* Tables */
 table.humo {
-	background-color: #fcfcfc;
+    background-color: #fcfcfc;
 }
 
 table.humo td {
-	border-color: #3355cc;
+    border-color: #3355cc;
 }
 
 table.humo tr:first-of-type td {
-	border-color: #3355cc;
+    border-color: #3355cc;
 }
 
 /* 2nd table A-Z */
 .family_page_toptext {
-	color: #000066;
+    color: #000066;
 }
 
 td.style_tree_text {
-	background-color: #BDD7EF;
+    background-color: #BDD7EF;
 }
 
 .table_headline {
-	background: url('images_sky_blue/blue.png') repeat left top;
+    background: url('images_sky_blue/blue.png') repeat left top;
 }
 
 /* familypage */
 .pers_name {
-	color: #464646;
+    color: #464646;
 }
 
-/* report_ancestor.php */
+/* report_ancestor */
 .chart_line {
-	background-color: #AAA;
-	border: 0px;
+    background-color: #AAA;
+    border: 0px;
 }
 
 /* Switchform */
 #switchform {
-	color: #333399;
+    color: #333399;
 }
 
 /* Menu */
 #top_menu {}
 
 #humo_menu {
-	/* background:url("images_sky_blue/blue.png") repeat left top; */
-	background: none;
-	border-top: solid 0px #61a0d9;
-	/* border-bottom: solid 1px #61a0d9; */
-	border-bottom: 0px;
+    /* background:url("images_sky_blue/blue.png") repeat left top; */
+    background: none;
+    border-top: solid 0px #61a0d9;
+    /* border-bottom: solid 1px #61a0d9; */
+    border-bottom: 0px;
 
-	/* font-size:15px;
+    /* font-size:15px;
 	font-family: Trebuchet MS; */
 }
 
 #humo_menu a {
-	color: #111;
+    color: #111;
 }
 
 #humo_menu a:hover {
-	/* background:url("images_sky_blue/blue_hover.png") repeat left top; */
+    /* background:url("images_sky_blue/blue_hover.png") repeat left top; */
 }
 
 ul.humo_menu_item li {
-	border-left: none;
-	border-right: none;
+    border-left: none;
+    border-right: none;
 }
 
 ul.humo_menu_item li a {
-	display: block;
-	text-decoration: none;
-	color: #333;
-	border-right: 0px;
+    display: block;
+    text-decoration: none;
+    color: #333;
+    border-right: 0px;
 }
 
 /* Hide pull down icon */
 .pull_down_icon {
-	visibility: hidden;
-	width: 0px;
-	height: 0px;
+    visibility: hidden;
+    width: 0px;
+    height: 0px;
 }
 
 /* Pop-up menu */
 ul.humo_menu_item2 li a {
-	background: url("images_sky_blue/blue.png") repeat left top;
+    background: url("images_sky_blue/blue.png") repeat left top;
 }
 
 #humo_menu #current a,
 #humo_menu #current_top {
-	background: url("images_sky_blue/blue_hover.png") repeat left top;
+    background: url("images_sky_blue/blue_hover.png") repeat left top;
 }
 
 #humo_menu a:visited {
-	color: #001155;
+    color: #001155;
 }
 
 #humo_menu a:active {
-	color: #2288dd;
+    color: #2288dd;
 }
 
 #humo_menu a:hover {
-	color: #001155;
+    color: #001155;
 }
 
 /* top bar in left - content - right boxes: only in main menu */
@@ -162,18 +162,18 @@ ul.humo_menu_item2 li a {
 
 div.photobook,
 div.photobooktext {
-	background-color: #e5f0fa;
+    background-color: #e5f0fa;
 }
 
 .search_bar {
-	background: url("images_sky_blue/blue.png") repeat left top;
+    background: url("images_sky_blue/blue.png") repeat left top;
 }
 
 table.reltable td {
-	border: 0px;
+    border: 0px;
 }
 
 table.reltable {
-	background: none;
-	background-image: none;
+    background: none;
+    background-image: none;
 }

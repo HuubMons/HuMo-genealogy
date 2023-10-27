@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once("editor_cls.php");
+include_once(__DIR__."/editor_cls.php");
 $editor_cls = new editor_cls;
 
 if (isset($_SESSION['admin_pers_gedcomnumber'])) {
@@ -45,7 +45,7 @@ $phpself2 = 'index.php?page=editor_sources&connect_kind=' . $connect_kind . '&co
 $phpself2 .= $event_link;
 
 // *** Process queries ***
-include_once("editor_inc.php");
+include_once(__DIR__."/editor_inc.php");
 
 // **************************
 // *** Show source editor ***
@@ -223,321 +223,275 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
     }
     </script>
     ';
-
-    //$text='<p>'.__('<b>Sourcerole</b>: e.g. Writer, Brother, Sister, Father. <b>Page</b>: page in source.');
 ?>
-    <table class="humo" border="1" style="width: 770px;">
-        <form method="POST" action="<?= $phpself2; ?>">
-            <tr class="table_header_large">
-                <th colspan="2"><input type="submit" name="submit" title="submit" value="<?= __('Save'); ?>"></th>
-            </tr>
 
-            <?php
-            echo '<input type="hidden" name="page" value="' . $page . '">';
-            if (isset($_POST['event_person']) or isset($_GET['event_person']))
-                echo '<input type="hidden" name="event_person" value="1">';
-            if (isset($_POST['event_family']) or isset($_GET['event_family']))
-                echo '<input type="hidden" name="event_family" value="1">';
+    <form method="POST" action="<?= $phpself2; ?>">
+        <input type="submit" name="submit" title="submit" value="<?= __('Save'); ?>">
 
-            // *** Search for all connected sources ***
-            $connect_sql = $db_functions->get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id);
-            $nr_sources = count($connect_sql);
-            $change_bg_colour = false;
-            foreach ($connect_sql as $connectDb) {
-                echo '<input type="hidden" name="connect_change[' . $connectDb->connect_id . ']" value="' . $connectDb->connect_id . '">';
-                echo '<input type="hidden" name="connect_connect_id[' . $connectDb->connect_id . ']" value="' . $connectDb->connect_connect_id . '">';
-                if (isset($marriage)) {
-                    echo '<input type="hidden" name="marriage_nr[' . $connectDb->connect_id . ']" value="' . $marriage . '">';
-                }
-                echo '<input type="hidden" name="connect_kind[' . $connectDb->connect_id . ']" value="' . $connect_kind . '">';
-                echo '<input type="hidden" name="connect_sub_kind[' . $connectDb->connect_id . ']" value="' . $connect_sub_kind . '">';
-                echo '<input type="hidden" name="connect_item_id[' . $connectDb->connect_id . ']" value="">';
+        <?php
+        echo '<input type="hidden" name="page" value="' . $page . '">';
+        if (isset($_POST['event_person']) or isset($_GET['event_person']))
+            echo '<input type="hidden" name="event_person" value="1">';
+        if (isset($_POST['event_family']) or isset($_GET['event_family']))
+            echo '<input type="hidden" name="event_family" value="1">';
 
-            ?>
-                <!-- <tr class="table_header_large"> -->
-                <tr>
-                    <td style="border-right:0px;"><b><?= __('Source'); ?></b>
-                        <?php
-                        echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;connect_drop=' . $connectDb->connect_id;
-                        // *** Needed for events **
-                        echo '&amp;connect_kind=' . $connect_kind;
-                        echo '&amp;connect_sub_kind=' . $connect_sub_kind;
-                        echo '&amp;connect_connect_id=' . $connect_connect_id;
+        // *** Search for all connected sources ***
+        $connect_sql = $db_functions->get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id);
+        $nr_sources = count($connect_sql);
+        ?>
+
+        <ul id="sortable<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>" class="sortable" style="padding-left:0px;">
+
+            <?php foreach ($connect_sql as $connectDb) { ?>
+                <li><span style="cursor:move;" id="<?= $connectDb->connect_id; ?>" class="handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>"><img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>"></span>
+
+                    <?php
+                    echo '<input type="hidden" name="connect_change[' . $connectDb->connect_id . ']" value="' . $connectDb->connect_id . '">';
+                    echo '<input type="hidden" name="connect_connect_id[' . $connectDb->connect_id . ']" value="' . $connectDb->connect_connect_id . '">';
+                    if (isset($marriage)) {
+                        echo '<input type="hidden" name="marriage_nr[' . $connectDb->connect_id . ']" value="' . $marriage . '">';
+                    }
+                    echo '<input type="hidden" name="connect_kind[' . $connectDb->connect_id . ']" value="' . $connect_kind . '">';
+                    echo '<input type="hidden" name="connect_sub_kind[' . $connectDb->connect_id . ']" value="' . $connect_sub_kind . '">';
+                    echo '<input type="hidden" name="connect_item_id[' . $connectDb->connect_id . ']" value="">';
+                    ?>
+
+                    <!-- <b><?= __('Source'); ?></b> -->
+
+                    <?php
+                    echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;connect_drop=' . $connectDb->connect_id;
+                    // *** Needed for events **
+                    echo '&amp;connect_kind=' . $connect_kind;
+                    echo '&amp;connect_sub_kind=' . $connect_sub_kind;
+                    echo '&amp;connect_connect_id=' . $connect_connect_id;
+                    if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+                        echo '&amp;event_person=1';
+                    }
+                    if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+                        echo '&amp;event_family=1';
+                    }
+                    if (isset($marriage)) {
+                        echo '&amp;marriage_nr=' . $marriage;
+                    }
+                    echo '"><img src="images/button_drop.png" border="0" alt="remove"></a>';
+                    ?>
+
+                    <?php
+                    if ($connectDb->connect_source_id != '') {
+                        $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+
+                        $display = ' display:none;';
+                        if (!$sourceDb->source_title and !$sourceDb->source_text) $display = '';
+                        $hideshow = '8' . $connectDb->connect_id;
+                        $text = '[' . $connectDb->connect_source_id . '] ';
+                        if ($sourceDb->source_title) $text .= htmlspecialchars($sourceDb->source_title);
+                        else $text .= ' [' . __('Source') . ']';
+                        echo ' <span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
+                        //if ($check_text) $return_text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
+                        echo '</span>';
+                    }
+
+                    if ($connectDb->connect_source_id != '') {
+                        //$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+                        $field_date = 12; // Size of date field (function date_show).
+                        $field_text = 'style="height: 60px; width:550px"';
+                        $connect_role = '';
+                        if ($connectDb->connect_role) $connect_role = $connectDb->connect_role;
+                        $connect_place = '';
+                        if ($connectDb->connect_place) $connect_place = $connectDb->connect_place;
+                        $field_extra_text = 'style="height: 20px; width:500px"';
+                    ?>
+                        <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
+                            <div style="border: 2px solid red">
+                                <input type="hidden" name="connect_source_id[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_source_id; ?>">
+                                <input type="hidden" name="source_id[<?= $connectDb->connect_id; ?>]" value="<?= $sourceDb->source_id; ?>">
+
+                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Title'); ?></span>
+                                <input type="text" name="source_title[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_title); ?>" size="60" placeholder="<?= __('Title'); ?>"><br>
+
+                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Date'); ?></span>
+                                <?= $editor_cls->date_show($sourceDb->source_date, 'source_date', "[$connectDb->connect_id]"); ?><br>
+
+                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= ucfirst(__('place')); ?></span>
+                                <input type="text" name="source_place[<?= $connectDb->connect_id; ?>]" placeholder="<?= ucfirst(__('place')) . '" value="' . htmlspecialchars($sourceDb->source_place); ?>" size="15"><br>
+
+                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Own code'); ?></span>
+                                <input type="text" name="source_refn[<?= $connectDb->connect_id; ?>]" placeholder="<?= __('Own code') . '" value="' . htmlspecialchars($sourceDb->source_refn); ?>" size="15"><br>
+
+                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Text'); ?></span>
+                                <textarea rows="2" name="source_text[<?= $connectDb->connect_id . ']" ' . $field_text; ?> placeholder=" <?= __('Text'); ?>"><?= $editor_cls->text_show($sourceDb->source_text); ?></textarea><br>
+
+                                <!-- TODO Picture by source -->
+                            </div>
+
+                            <!-- Source connection items -->
+                            <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Sourcerole'); ?></span>
+                            <input type="text" name="connect_role[<?= $connectDb->connect_id; ?>]" placeholder="<?= __('Sourcerole'); ?>" value="<?= htmlspecialchars($connect_role); ?>" size="6">
+                            <span style="font-size:13px;"><?= __('e.g. Writer, Brother, Sister, Father.'); ?></span><br>
+
+                            <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Page'); ?></span>
+                            <input type="text" name="connect_page[<?= $connectDb->connect_id; ?>]" placeholder="<?= __('Page'); ?>" value="<?= $connectDb->connect_page; ?>" size="6">
+                            <span style="font-size:13px;"><?= __('Page in source.'); ?></span><br>
+
+                            <!-- Quality -->
+                            <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Quality'); ?></span>
+                            <select size="1" name="connect_quality[<?= $connectDb->connect_id; ?>]" style="width: 300px">
+                                <option value=""><?= ucfirst(__('quality: default')); ?></option>
+                                <option value="0" <?php if ($connectDb->connect_quality == '0') echo ' selected'; ?>><?= ucfirst(__('quality: unreliable evidence or estimated data')); ?></option>
+                                <option value="1" <?php if ($connectDb->connect_quality == '1') echo ' selected'; ?>><?= ucfirst(__('quality: questionable reliability of evidence')); ?></option>
+                                <option value="2" <?php if ($connectDb->connect_quality == '2') echo ' selected'; ?>><?= ucfirst(__('quality: data from secondary evidence')); ?></option>
+                                <option value="3" <?php if ($connectDb->connect_quality == '3') echo ' selected'; ?>><?= ucfirst(__('quality: data from direct source')); ?></option>
+                            </select><br>
+
+                            <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Date'); ?></span>
+                            <?= $editor_cls->date_show($connectDb->connect_date, 'connect_date', "[$connectDb->connect_id]"); ?><br>
+
+                            <span style="display: inline-block; width:150px; vertical-align: top;"><?= ucfirst(__('place')); ?></span>
+                            <input type="text" name="connect_place[<?= $connectDb->connect_id; ?>]" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($connect_place); ?>" size="15"><br>
+
+                            <!-- Extra text by shared source -->
+                            <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Extra text'); ?></span>
+                            <textarea rows="2" name="connect_text[<?= $connectDb->connect_id; ?>]" placeholder="<?= __('Extra text by source'); ?>" <?= $field_extra_text; ?>><?= $editor_cls->text_show($connectDb->connect_text); ?></textarea>
+                        </span>
+                    <?php
+                    } else {
+                        // *** Add new source or select existing source ***
+                        $source_search_gedcomnr = '';
+                        if (isset($_POST['source_search_gedcomnr'])) {
+                            $source_search_gedcomnr = safe_text_db($_POST['source_search_gedcomnr']);
+                        }
+                        $source_search = '';
+                        if (isset($_POST['source_search'])) {
+                            $source_search = safe_text_db($_POST['source_search']);
+                        }
+
+                        echo '<h3>' . __('Search existing source') . '</h3>';
+                        echo '<input type="text" class="fonts" name="source_search_gedcomnr" value="' . $source_search_gedcomnr . '" size="20" placeholder="' . __('gedcomnumber (ID)') . '">';
+                        echo ' <input type="text" class="fonts" name="source_search" value="' . $source_search . '" size="20" placeholder="' . __('text') . '">';
+                        echo ' <input class="fonts" type="submit" value="' . __('Search') . '"><br>';
+
+                        // *** Source: pull-down menu ***
+                        // TODO only get necesary items
+                        $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . safe_text_db($tree_id) . "'";
+                        if (isset($_POST['source_search_gedcomnr'])) {
+                            $qry .= " AND source_gedcomnr LIKE '%" . safe_text_db($_POST['source_search_gedcomnr']) . "%'";
+                        }
+                        if (isset($_POST['source_search'])) {
+                            $qry .= " AND ( source_title LIKE '%" . safe_text_db($_POST['source_search']) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($source_search) . "%') )";
+                        }
+                        $qry .= " ORDER BY IF (source_title!='',source_title,source_text)";
+                        //$qry.=" ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,500";
+                        $source_qry = $dbh->query($qry);
+                    ?>
+
+                        <select size="1" name="connect_source_id[<?= $connectDb->connect_id; ?>]" style="width: 300px">
+                            <option value=""><?= __('Select existing source'); ?>:</option>
+                            <?php
+                            while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
+                                // TODO $selected not useful here?
+                                $selected = '';
+                                if ($connectDb->connect_source_id != '') {
+                                    if ($sourceDb->source_gedcomnr == $connectDb->connect_source_id) {
+                                        $selected = ' selected';
+                                    }
+                                }
+                                echo '<option value="' . @$sourceDb->source_gedcomnr . '"' . $selected . '>';
+                                if ($sourceDb->source_title) {
+                                    echo $sourceDb->source_title;
+                                } else {
+                                    echo substr($sourceDb->source_text, 0, 40);
+                                    if (strlen($sourceDb->source_text) > 40) echo '...';
+                                }
+                                echo ' [' . @$sourceDb->source_gedcomnr . ']</option>' . "\n";
+                            }
+                            ?>
+                            <option value="">*** <?= __('Results are limited, use search to find more sources.'); ?> ***</option>
+                        </select>
+
+                        &nbsp;&nbsp;<input type="submit" name="submit" title="submit" value="<?= __('Select'); ?>">
+
+                    <?php
+                        // *** Add new source ***
+                        echo '<br><br>' . __('Or:') . ' ';
+                        echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;source_add2=1&amp;connect_id=' . $connectDb->connect_id . '
+&amp;connect_order=' . $connectDb->connect_order . '&amp;connect_kind=' . $connectDb->connect_kind . '&amp;connect_sub_kind=' . $connectDb->connect_sub_kind . '&amp;connect_connect_id=' . $connectDb->connect_connect_id;
                         if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
                             echo '&amp;event_person=1';
                         }
                         if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
                             echo '&amp;event_family=1';
                         }
-                        if (isset($marriage)) {
-                            echo '&amp;marriage_nr=' . $marriage;
-                        }
-                        echo '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="remove"></a>';
+                        echo '#addresses">' . __('add new source') . '</a> ';
 
-                        if ($connectDb->connect_order < $nr_sources) {
-                            echo ' <a href="index.php?' . $joomlastring . 'page=' . $page .
-                                '&amp;connect_down=' . $connectDb->connect_id .
-                                '&amp;connect_kind=' . $connectDb->connect_kind .
-                                '&amp;connect_sub_kind=' . $connectDb->connect_sub_kind .
-                                '&amp;connect_connect_id=' . $connectDb->connect_connect_id .
-                                '&amp;connect_order=' . $connectDb->connect_order;
-                            if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
-                                echo '&amp;event_person=1';
-                            }
-                            if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
-                                echo '&amp;event_family=1';
-                            }
-                            if (isset($marriage)) {
-                                echo '&amp;marriage_nr=' . $marriage;
-                            }
-                            echo '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
-                        } else {
-                            //$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                            echo '&nbsp;&nbsp;&nbsp;';
-                        }
+                        echo '<input type="hidden" name="connect_role[' . $connectDb->connect_id . ']" value="">';
+                        echo '<input type="hidden" name="connect_page[' . $connectDb->connect_id . ']" value="">';
+                        echo '<input type="hidden" name="connect_quality[' . $connectDb->connect_id . ']" value="">';
+                        echo '<input type="hidden" name="connect_text[' . $connectDb->connect_id . ']" value="">';
+                    }
+                    ?>
 
-                        if ($connectDb->connect_order > 1) {
-                            echo ' <a href="index.php?' . $joomlastring . 'page=' . $page .
-                                '&amp;connect_up=' . $connectDb->connect_id .
-                                '&amp;connect_kind=' . $connectDb->connect_kind .
-                                '&amp;connect_sub_kind=' . $connectDb->connect_sub_kind .
-                                '&amp;connect_connect_id=' . $connectDb->connect_connect_id .
-                                '&amp;connect_order=' . $connectDb->connect_order;
-                            if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
-                                echo '&amp;event_person=1';
-                            }
-                            if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
-                                echo '&amp;event_family=1';
-                            }
-                            if (isset($marriage)) {
-                                echo '&amp;marriage_nr=' . $marriage;
-                            }
-                            echo '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="down"></a>';
-                        } else {
-                            //$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                        }
-                        ?>
-                    </td>
+                </li>
+            <?php } ?>
+        </ul>
+    </form>
 
-                    <td>
-                        <?php
-                        if ($connectDb->connect_source_id != '') {
-                            $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-
-                            $display = ' display:none;';
-                            if (!$sourceDb->source_title and !$sourceDb->source_text) $display = '';
-                            $hideshow = '8' . $connectDb->connect_id;
-                            $text = '[' . $connectDb->connect_source_id . '] ';
-                            if ($sourceDb->source_title) $text .= htmlspecialchars($sourceDb->source_title);
-                            else $text .= ' [' . __('Source') . ']';
-                            echo ' <span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
-                            //if ($check_text) $return_text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-                            echo '</span>';
-                        }
-                        ?>
-                    </td>
-                </tr>
-                <?php
-
-                $color = '';
-                //if ($change_bg_colour == true) {
-                //    $color = ' class="humo_color"';
-                //}
-                ?>
-                <tr <?= $color; ?>>
-                    <td style="vertical-align:top;" colspan="2">
-                        <?php
-                        if ($connectDb->connect_source_id != '') {
-                            //$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-                            $field_date = 12; // Size of date field (function date_show).
-                            $field_text = 'style="height: 60px; width:550px"';
-                            $connect_role = '';
-                            if ($connectDb->connect_role) $connect_role = $connectDb->connect_role;
-                            $connect_place = '';
-                            if ($connectDb->connect_place) $connect_place = $connectDb->connect_place;
-                            $field_extra_text = 'style="height: 20px; width:500px"';
-                        ?>
-                            <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
-                                <div style="border: 2px solid red">
-                                    <input type="hidden" name="connect_source_id[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_source_id; ?>">
-                                    <input type="hidden" name="source_id[<?= $connectDb->connect_id; ?>]" value="<?= $sourceDb->source_id; ?>">
-
-                                    <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Title'); ?></span>
-                                    <input type="text" name="source_title[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_title); ?>" size="60" placeholder="<?= __('Title'); ?>"><br>
-
-                                    <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Date'); ?></span>
-                                    <?= $editor_cls->date_show($sourceDb->source_date, 'source_date', "[$connectDb->connect_id]"); ?><br>
-
-                                    <span style="display: inline-block; width:150px; vertical-align: top;"><?= ucfirst(__('place')); ?></span>
-                                    <input type="text" name="source_place[<?= $connectDb->connect_id; ?>]" placeholder="<?= ucfirst(__('place')) . '" value="' . htmlspecialchars($sourceDb->source_place); ?>" size="15"><br>
-
-                                    <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Own code'); ?></span>
-                                    <input type="text" name="source_refn[<?= $connectDb->connect_id; ?>]" placeholder="<?= __('Own code') . '" value="' . htmlspecialchars($sourceDb->source_refn); ?>" size="15"><br>
-
-                                    <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Text'); ?></span>
-                                    <textarea rows="2" name="source_text[<?= $connectDb->connect_id . ']" ' . $field_text; ?> placeholder=" <?= __('Text'); ?>"><?= $editor_cls->text_show($sourceDb->source_text); ?></textarea><br>
-
-                                    <!-- TODO Picture by source -->
-                                </div>
-
-                                <!-- Source connection items -->
-                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Sourcerole'); ?></span>
-                                <input type="text" name="connect_role[<?= $connectDb->connect_id; ?>]" placeholder="<?= __('Sourcerole'); ?>" value="<?= htmlspecialchars($connect_role); ?>" size="6">
-                                <span style="font-size:13px;"><?= __('e.g. Writer, Brother, Sister, Father.'); ?></span><br>
-
-                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Page'); ?></span>
-                                <input type="text" name="connect_page[<?= $connectDb->connect_id; ?>]" placeholder="<?= __('Page'); ?>" value="<?= $connectDb->connect_page; ?>" size="6">
-                                <span style="font-size:13px;"><?= __('Page in source.'); ?></span><br>
-
-                                <!-- Quality -->
-                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Quality'); ?></span>
-                                <select size="1" name="connect_quality[<?= $connectDb->connect_id; ?>]" style="width: 300px">
-                                    <option value=""><?= ucfirst(__('quality: default')); ?></option>
-                                    <option value="0" <?php if ($connectDb->connect_quality == '0') echo ' selected'; ?>><?= ucfirst(__('quality: unreliable evidence or estimated data')); ?></option>
-                                    <option value="1" <?php if ($connectDb->connect_quality == '1') echo ' selected'; ?>><?= ucfirst(__('quality: questionable reliability of evidence')); ?></option>
-                                    <option value="2" <?php if ($connectDb->connect_quality == '2') echo ' selected'; ?>><?= ucfirst(__('quality: data from secondary evidence')); ?></option>
-                                    <option value="3" <?php if ($connectDb->connect_quality == '3') echo ' selected'; ?>><?= ucfirst(__('quality: data from direct source')); ?></option>
-                                </select><br>
-
-                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Date'); ?></span>
-                                <?= $editor_cls->date_show($connectDb->connect_date, 'connect_date', "[$connectDb->connect_id]"); ?><br>
-
-                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= ucfirst(__('place')); ?></span>
-                                <input type="text" name="connect_place[<?= $connectDb->connect_id; ?>]" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($connect_place); ?>" size="15"><br>
-
-                                <!-- Extra text by shared source -->
-                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Extra text'); ?></span>
-                                <textarea rows="2" name="connect_text[<?= $connectDb->connect_id; ?>]" placeholder="<?= __('Extra text by source'); ?>" <?= $field_extra_text; ?>><?= $editor_cls->text_show($connectDb->connect_text); ?></textarea>
-                            </span>
-                        <?php
-                        } else {
-                            $source_search_gedcomnr = '';
-                            if (isset($_POST['source_search_gedcomnr'])) {
-                                $source_search_gedcomnr = safe_text_db($_POST['source_search_gedcomnr']);
-                            }
-                            $source_search = '';
-                            if (isset($_POST['source_search'])) {
-                                $source_search = safe_text_db($_POST['source_search']);
-                            }
-
-                            echo '<h3>' . __('Search existing source') . '</h3>';
-                            echo '<input type="text" class="fonts" name="source_search_gedcomnr" value="' . $source_search_gedcomnr . '" size="20" placeholder="' . __('gedcomnumber (ID)') . '">';
-                            echo ' <input type="text" class="fonts" name="source_search" value="' . $source_search . '" size="20" placeholder="' . __('text') . '">';
-                            echo ' <input class="fonts" type="submit" value="' . __('Search') . '"><br>';
-
-                            // *** Source: pull-down menu ***
-                            $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . safe_text_db($tree_id) . "'";
-                            if (isset($_POST['source_search_gedcomnr'])) {
-                                $qry .= " AND source_gedcomnr LIKE '%" . safe_text_db($_POST['source_search_gedcomnr']) . "%'";
-                            }
-                            if (isset($_POST['source_search'])) {
-                                $qry .= " AND ( source_title LIKE '%" . safe_text_db($_POST['source_search']) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($source_search) . "%') )";
-                            }
-                            $qry .= " ORDER BY IF (source_title!='',source_title,source_text)";
-                            //$qry.=" ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,500";
-                            $source_qry = $dbh->query($qry);
-
-                        ?>
-                            <select size="1" name="connect_source_id[<?= $connectDb->connect_id; ?>]" style="width: 300px">
-                                <option value=""><?= __('Select existing source'); ?>:</option>
-                                <?php
-                                while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
-                                    // TODO $selected not usefull here?
-                                    $selected = '';
-                                    if ($connectDb->connect_source_id != '') {
-                                        if ($sourceDb->source_gedcomnr == $connectDb->connect_source_id) {
-                                            $selected = ' selected';
-                                        }
-                                    }
-                                    echo '<option value="' . @$sourceDb->source_gedcomnr . '"' . $selected . '>';
-                                    if ($sourceDb->source_title) {
-                                        echo $sourceDb->source_title;
-                                    } else {
-                                        echo substr($sourceDb->source_text, 0, 40);
-                                        if (strlen($sourceDb->source_text) > 40) echo '...';
-                                    }
-                                    echo ' [' . @$sourceDb->source_gedcomnr . ']</option>' . "\n";
-                                }
-                                ?>
-                                <option value="">*** <?= __('Results are limited, use search to find more sources.'); ?> ***</option>
-                            </select>
-
-                            &nbsp;&nbsp;<input type="submit" name="submit" title="submit" value="<?= __('Select'); ?>">
-                        <?php
-
-                            // *** Add new source ***
-                            echo '<br><br>' . __('Or:') . ' ';
-                            echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;source_add2=1&amp;connect_id=' . $connectDb->connect_id . '
-&amp;connect_order=' . $connectDb->connect_order . '&amp;connect_kind=' . $connectDb->connect_kind . '&amp;connect_sub_kind=' . $connectDb->connect_sub_kind . '&amp;connect_connect_id=' . $connectDb->connect_connect_id;
-                            if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
-                                echo '&amp;event_person=1';
-                            }
-                            if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
-                                echo '&amp;event_family=1';
-                            }
-                            echo '#addresses">' . __('add new source') . '</a> ';
-
-                            echo '<input type="hidden" name="connect_role[' . $connectDb->connect_id . ']" value="">';
-                            echo '<input type="hidden" name="connect_page[' . $connectDb->connect_id . ']" value="">';
-                            echo '<input type="hidden" name="connect_quality[' . $connectDb->connect_id . ']" value="">';
-                            echo '<input type="hidden" name="connect_text[' . $connectDb->connect_id . ']" value="">';
-                        }
-                        ?>
-                    </td>
-                </tr>
-            <?php
-
-                //$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="4"><br></td></tr>';
-
-                if ($change_bg_colour == true) {
-                    $change_bg_colour = false;
-                } else {
-                    $change_bg_colour = true;
+    <!-- Script for ordering sources -->
+    <?php if (count($connect_sql) > 0) { ?>
+        <script>
+            $('#sortable<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>').sortable({
+                handle: '.handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>'
+            }).bind('sortupdate', function() {
+                var childstring = "";
+                var chld_arr = document.getElementsByClassName("handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>");
+                for (var z = 0; z < chld_arr.length; z++) {
+                    childstring = childstring + chld_arr[z].id + ";";
+                    //document.getElementById('chldnum' + chld_arr[z].id).innerHTML = (z + 1);
                 }
+                childstring = childstring.substring(0, childstring.length - 1);
+                $.ajax({
+                    url: "include/drag.php?drag_kind=sources&sourcestring=" + childstring,
+                    success: function(data) {},
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+            });
+        </script>
+    <?php
+    }
+
+
+    // *** Add new source connection ***
+    if (!isset($_POST['connect_add'])) {
+    ?>
+        <h3><?= __('Add'); ?></h3>
+        <form method="POST" action="<?= $phpself2; ?>">
+            <?php
+            echo '<input type="hidden" name="page" value="' . $page . '">';
+            if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+                echo '<input type="hidden" name="event_person" value="1">';
+            }
+            if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+                echo '<input type="hidden" name="event_family" value="1">';
+            }
+            echo '<input type="hidden" name="connect_kind" value="' . $connect_kind . '">';
+            echo '<input type="hidden" name="connect_sub_kind" value="' . $connect_sub_kind . '">';
+            echo '<input type="hidden" name="connect_connect_id" value="' . $connect_connect_id . '">';
+            if (isset($marriage)) {
+                echo '<input type="hidden" name="marriage_nr" value="' . $marriage . '">';
+            }
+
+            if ($nr_sources > 0) {
+                echo ' <input type="Submit" name="connect_add" value="' . __('Add another source') . '">';
+            } else {
+                echo ' <input type="Submit" name="connect_add" value="' . __('Add source') . '">';
             }
             ?>
         </form>
-        <?php
-
-        //$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="4"><br></td></tr>';
-        //$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="3"><br></td></tr>';
-
-        // *** Add new source connection ***
-        if (!isset($_POST['connect_add'])) {
-        ?>
-            <tr bgcolor="#CCFFFF" style="border-top:solid 2px #000000;">
-                <td><?= __('Add'); ?></td>
-                <th>
-                    <form method="POST" action="<?= $phpself2; ?>">
-                        <?php
-                        echo '<input type="hidden" name="page" value="' . $page . '">';
-                        if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
-                            echo '<input type="hidden" name="event_person" value="1">';
-                        }
-                        if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
-                            echo '<input type="hidden" name="event_family" value="1">';
-                        }
-                        echo '<input type="hidden" name="connect_kind" value="' . $connect_kind . '">';
-                        echo '<input type="hidden" name="connect_sub_kind" value="' . $connect_sub_kind . '">';
-                        echo '<input type="hidden" name="connect_connect_id" value="' . $connect_connect_id . '">';
-                        if (isset($marriage)) {
-                            echo '<input type="hidden" name="marriage_nr" value="' . $marriage . '">';
-                        }
-
-                        if ($nr_sources > 0) {
-                            echo ' <input type="Submit" name="connect_add" value="' . __('Add another source') . '">';
-                        } else {
-                            echo ' <input type="Submit" name="connect_add" value="' . __('Add source') . '">';
-                        }
-                        ?>
-                    </form>
-                </th>
-            </tr>
-        <?php
-        }
-
-        ?>
-    </table>
+    <?php
+    }
+    ?>
     <p>
     <?php
 }

@@ -528,7 +528,7 @@ if (isset($_POST['person_add']) or isset($_POST['relation_add'])) {
 
         $event_gedcom = $_POST['event_gedcom_new'];
         $event_event = $_POST['event_event_name_new'];
-        $event_date='';
+        $event_date = '';
 
         $event_place = "";
         //if (isset($_POST["event_place_name"])) $event_place = $_POST["event_place_name"];
@@ -542,7 +542,7 @@ if (isset($_POST['person_add']) or isset($_POST['relation_add'])) {
 
     // *** New person: add profession ***
     if (isset($_POST["event_profession"]) and $_POST["event_profession"] != "" and $_POST["event_profession"] != "Profession") {
-        $event_date='';
+        $event_date = '';
         $event_place = "";
         if (isset($_POST["event_place_profession"])) $event_place = $_POST["event_place_profession"];
         $event_text = "";
@@ -1638,7 +1638,6 @@ if (isset($_POST['marriage_event_add'])) {
 
 // *** Upload images ***
 if (isset($_FILES['photo_upload']) and $_FILES['photo_upload']['name']) {
-
     // *** get path of pictures folder 
     $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
@@ -1762,6 +1761,8 @@ if (isset($_FILES['photo_upload']) and $_FILES['photo_upload']['name']) {
         $_FILES['photo_upload']['type'] == "video/avi" || $_FILES['photo_upload']['type'] == "video/x-msvideo" ||
         $_FILES['photo_upload']['type'] == "video/msvideo" || $_FILES['photo_upload']['type'] == "video/mpeg" ||
         $_FILES['photo_upload']['type'] == "video/msvideo" || $_FILES['photo_upload']['type'] == "video/mp4"
+
+        || $_FILES['photo_upload']['type'] == "image/png" // Added in sept. 2023. TODO resize png
     ) {
         $fault = "";
 
@@ -1780,6 +1781,26 @@ if (isset($_FILES['photo_upload']) and $_FILES['photo_upload']['name']) {
                 // *** Re-order pictures by alphabet ***
                 @sort($picture_array);
                 $nr_pictures = count($picture_array);
+
+                // Added in sept. 2023
+                // *** Directly connect new media to person or relation ***
+                if (isset($_POST['person_add_media'])) {
+                    $event_connect_kind = 'person';
+                    $event_connect_id = $pers_gedcomnumber;
+                    $event_kind = 'picture';
+                    $event_event = $_FILES['photo_upload']['name'];
+                    $event_gedcom = '';
+                }
+                if (isset($_POST['relation_add_media'])) {
+                    $event_connect_kind = 'family';
+                    $event_connect_id = $marriage;
+                    $event_kind = 'picture';
+                    $event_event = $_FILES['photo_upload']['name'];
+                    $event_gedcom = '';
+                }
+                // *** Add event. If event is new, use: $new_event=true. ***
+                // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+                add_event(false, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, '', '', '');
             }
         } else {
             echo '<font color="red">' . $fault . '</font>';
@@ -1799,8 +1820,15 @@ if (isset($_POST['event_id'])) {
             $event_event = $editor_cls->text_process($_POST["text_event"][$key]);
 
         // *** Replaced array function, because witness popup javascript doesn't work using an html-form-array ***
-        if (isset($_POST["text_event2" . $key]) and $_POST["text_event2" . $key] != '') {
-            $event_event = '@' . $_POST["text_event2" . $key] . '@';
+        //if (isset($_POST["text_event2" . $key]) and $_POST["text_event2" . $key] != '') {
+        //    $event_event = '@' . $_POST["text_event2" . $key] . '@';
+        //}
+        $event_connect_kind2 = '';
+        $event_connect_id2 = '';
+        // *** Replaced array function, because witness popup javascript doesn't work using an html-form-array ***
+        if (isset($_POST["event_connect_id2" . $key]) and $_POST["event_connect_id2" . $key] != '') {
+            $event_connect_kind2 = 'person';
+            $event_connect_id2 = $_POST["event_connect_id2" . $key];
         }
 
         // *** Media selection pop-up option *** 
@@ -1818,6 +1846,9 @@ if (isset($_POST['event_id'])) {
             $event_changed = false;
 
             if ($event_event != $eventDb->event_event) $event_changed = true;
+
+            if ($event_connect_id2 != $eventDb->event_connect_id2) $event_changed = true;
+
             // *** Compare date case-insensitive (for PHP 8.1 check if variabele is used) ***
             //if (isset($_POST["event_date_prefix"][$key]) OR isset($_POST["event_date"][$key])){
             // Doesn't work properly, date isn't always saved:
@@ -1841,6 +1872,8 @@ if (isset($_POST['event_id'])) {
             if ($event_changed) {
                 $sql = "UPDATE humo_events SET
                     event_event='" . $event_event . "',
+                    event_connect_kind2='" . $event_connect_kind2 . "',
+                    event_connect_id2='" . $event_connect_id2 . "',
                     event_date='" . $editor_cls->date_process("event_date", $key) . "',
                     event_place='" . $editor_cls->text_process($_POST["event_place" . $key]) . "',";
                 if (isset($_POST["event_gedcom"][$key])) {
@@ -1855,7 +1888,6 @@ if (isset($_POST['event_id'])) {
 
                 //$sql.=" WHERE event_id='".safe_text_db($_POST["event_id"][$key])."'";
                 $sql .= " WHERE event_id='" . $event_id . "'";
-                //echo '<br>'.$sql.'<br>';
                 $result = $dbh->query($sql);
             }
         }
@@ -2448,7 +2480,7 @@ if (isset($_GET['connect_drop'])) {
     if (isset($_POST['event_family']) or isset($_GET['event_family']))
         echo '<input type="hidden" name="event_family" value="1">';
 
-    // *** Remove adress event ***
+    // *** Remove address event ***
     if (isset($_GET['person_place_address']))
         echo '<input type="hidden" name="person_place_address" value="person_place_address">';
 
@@ -2990,4 +3022,3 @@ function family_tree_update($tree_id)
         WHERE tree_id='" . $tree_id . "'";
     $dbh->query($sql);
 }
-

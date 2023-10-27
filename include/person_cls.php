@@ -184,7 +184,7 @@ class person_cls
     */
     public function person_url2($pers_tree_id, $pers_famc, $pers_fams, $pers_gedcomnumber = '')
     {
-        global $humo_option, $uri_path;
+        global $humo_option, $uri_path, $link_cls;
 
         $pers_family = '';
         if ($pers_famc) {
@@ -195,13 +195,9 @@ class person_cls
             $pers_family = $pers_fams[0];
         }
 
-        if ($humo_option["url_rewrite"] == "j") {
-            $url = $uri_path . 'family/' . $pers_tree_id . '/' . $pers_family;
-            if ($pers_gedcomnumber) $url .= '?main_person=' . $pers_gedcomnumber;
-        } else {
-            $url = CMS_ROOTPATH . 'family.php?tree_id=' . $pers_tree_id . '&amp;id=' . $pers_family;
-            if ($pers_gedcomnumber) $url .= '&amp;main_person=' . $pers_gedcomnumber;
-        }
+        $vars['pers_family'] = $pers_family;
+        $url = $link_cls->get_link($uri_path, 'family', $pers_tree_id, true, $vars);
+        $url .= "main_person=" . $pers_gedcomnumber;
 
         return $url;
     }
@@ -841,7 +837,7 @@ class person_cls
     {
         global $dbh, $db_functions, $bot_visit, $humo_option, $uri_path, $user, $language;
         global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
-        global $selected_language, $hourglass;
+        global $selected_language, $hourglass, $link_cls;
         $text = '';
         $privacy = $this->privacy;
 
@@ -867,18 +863,10 @@ class person_cls
 
             // *** Change start url for a person in a graphical ancestor report ***
             if ($screen_mode == 'ancestor_chart' and $hourglass === false) {
-                $start_url = CMS_ROOTPATH . 'report_ancestor.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber . '&amp;screen_mode=ancestor_chart';
+                $vars['id'] = $personDb->pers_gedcomnumber;
+                $start_url = $link_cls->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, true, $vars);
+                $start_url .= 'screen_mode=ancestor_chart';
             }
-
-            // *** Change start url for a person in a graphical descendant report ***
-            //if (($screen_mode == 'STAR' or $screen_mode == 'STARSIZE') and $hourglass === false) {
-            //    $start_url = CMS_ROOTPATH . 'family.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;screen_mode=STAR';
-            //}
-
-            // *** Change start url for a person in an hourglass chart ***
-            //if (($screen_mode == 'STAR' or $screen_mode == 'STARSIZE' or $screen_mode == 'ancestor_chart') and $hourglass === true) {
-            //    $start_url = CMS_ROOTPATH . 'hourglass.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;screen_mode=HOUR';
-            //}
 
             $text .= '<div class="' . $rtlmarker . 'sddm" style="display:inline;">' . "\n";
 
@@ -894,7 +882,7 @@ class person_cls
             if ($replacement_text) {
                 $text .= $replacement_text;
             } else {
-                $text .= '<img src="' . CMS_ROOTPATH . 'images/reports.gif" border="0" alt="reports">';
+                $text .= '<img src="images/reports.gif" border="0" alt="reports">';
             }
             $text .= '</a>';
 
@@ -917,11 +905,11 @@ class person_cls
                 $text .= '<table><tr><td style="width:auto; border: solid 0px; border-right:solid 1px #999999;">';
 
             $text .= '<b>' . __('Text reports') . ':</b>';
-            //$text.= $dirmark1.'<a href="'.$family_url.'"><img src="'.CMS_ROOTPATH.'images/family.gif" border="0" alt="'.__('Family group sheet').'"> '.__('Family group sheet').'</a>';
+            //$text.= $dirmark1.'<a href="'.$family_url.'"><img src="images/family.gif" border="0" alt="'.__('Family group sheet').'"> '.__('Family group sheet').'</a>';
             // *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
             $direct_link = '';
             if ($personDb->pers_fams == '') $direct_link = '#person_' . $personDb->pers_gedcomnumber;
-            $text .= $dirmark1 . '<a href="' . $family_url . $direct_link . '"><img src="' . CMS_ROOTPATH . 'images/family.gif" border="0" alt="' . __('Family group sheet') . '"> ' . __('Family group sheet') . '</a>';
+            $text .= $dirmark1 . '<a href="' . $family_url . $direct_link . '"><img src="images/family.gif" border="0" alt="' . __('Family group sheet') . '"> ' . __('Family group sheet') . '</a>';
 
             if ($user['group_gen_protection'] == 'n' and $personDb->pers_fams != '') {
                 // *** Only show a descendant_report icon if there are children ***
@@ -934,26 +922,31 @@ class person_cls
                     }
                 }
                 if ($check_children) {
-                    $path_tmp = CMS_ROOTPATH . 'family.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;descendant_report=1';
-                    $text .= '<a href="' . $path_tmp . '"><img src="' . CMS_ROOTPATH . 'images/descendant.gif" border="0" alt="' . __('Descendant report') . '"> ' . __('Descendant report') . '</a>';
+                    $vars['pers_family'] = $pers_family;
+                    $path_tmp = $link_cls->get_link($uri_path, 'family', $personDb->pers_tree_id, true, $vars);
+                    $path_tmp .= "main_person=" . $personDb->pers_gedcomnumber . '&amp;descendant_report=1';
 
-                    $path_tmp = CMS_ROOTPATH . 'report_outline.php?tree_id=' . $personDb->pers_tree_id .
-                        '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
-                    $text .= '<a href="' . $path_tmp . '"><img src="' . CMS_ROOTPATH . 'images/outline.gif" border="0" alt="' . __('Outline report') . '"> ' . __('Outline report') . '</a>';
+                    $text .= '<a href="' . $path_tmp . '"><img src="images/descendant.gif" border="0" alt="' . __('Descendant report') . '"> ' . __('Descendant report') . '</a>';
+
+                    //$path_tmp = 'report_outline.php?tree_id=' . $personDb->pers_tree_id .
+                    //    '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
+                    $path_tmp = $link_cls->get_link($uri_path, 'report_outline', $personDb->pers_tree_id, true);
+                    $path_tmp .= 'id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
+                    $text .= '<a href="' . $path_tmp . '"><img src="images/outline.gif" border="0" alt="' . __('Outline report') . '"> ' . __('Outline report') . '</a>';
                 }
             }
 
             if ($user['group_gen_protection'] == 'n' and $personDb->pers_famc != '') {
-                // == Ancestor report: link & icons by Klaas de Winkel (www.dewinkelwaar.tk) ==
-                $path_tmp = CMS_ROOTPATH . 'report_ancestor.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
-                $text .= '<a href="' . $path_tmp . '"><img src="' . CMS_ROOTPATH . 'images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestor report') . '</a>';
+                // == Ancestor report: link & icons by Klaas de Winkel ==
+                $vars['id'] = $personDb->pers_gedcomnumber;
+                $path_tmp = $link_cls->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, false, $vars);
+                $text .= '<a href="' . $path_tmp . '"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestor report') . '</a>';
 
-                //$text .= '<a href="' . $path_tmp . '&amp;screen_mode=ancestor_sheet"><img src="' . CMS_ROOTPATH . 'images/ancestor_chart.gif" border="0" alt="' . __('Ancestor sheet') . '"> ' . __('Ancestor sheet') . '</a>';
-                if ($humo_option["url_rewrite"]=='j'){
-                    $text .= '<a href="' . CMS_ROOTPATH  . 'ancestor_sheet?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber . '"><img src="' . CMS_ROOTPATH . 'images/ancestor_chart.gif" border="0" alt="' . __('Ancestor sheet') . '"> ' . __('Ancestor sheet') . '</a>';               
-                }
-                else{
-                    $text .= '<a href="' . CMS_ROOTPATH  . 'index.php?page=ancestor_sheet&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber . '"><img src="' . CMS_ROOTPATH . 'images/ancestor_chart.gif" border="0" alt="' . __('Ancestor sheet') . '"> ' . __('Ancestor sheet') . '</a>';               
+                //$text .= '<a href="' . $path_tmp . '&amp;screen_mode=ancestor_sheet"><img src="images/ancestor_chart.gif" border="0" alt="' . __('Ancestor sheet') . '"> ' . __('Ancestor sheet') . '</a>';
+                if ($humo_option["url_rewrite"] == 'j') {
+                    $text .= '<a href="ancestor_sheet?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber . '"><img src="images/ancestor_chart.gif" border="0" alt="' . __('Ancestor sheet') . '"> ' . __('Ancestor sheet') . '</a>';
+                } else {
+                    $text .= '<a href="index.php?page=ancestor_sheet&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber . '"><img src="images/ancestor_chart.gif" border="0" alt="' . __('Ancestor sheet') . '"> ' . __('Ancestor sheet') . '</a>';
                 }
             }
 
@@ -967,14 +960,18 @@ class person_cls
                     $tmldates = 1;
                 }
                 if ($user['group_gen_protection'] == 'n' and $tmldates == 1) {
-                    $path_tmp = CMS_ROOTPATH . 'timelines.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
+                    //$path_tmp = 'timelines.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
+                    $path_tmp = $link_cls->get_link($uri_path, 'timelines', $personDb->pers_tree_id, true);
+                    $path_tmp .= 'id=' . $personDb->pers_gedcomnumber;
                     $text .= '<a href="' . $path_tmp . '">';
-                    $text .= '<img src="' . CMS_ROOTPATH . 'images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a>';
+                    $text .= '<img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a>';
                 }
             }
 
             if ($user["group_relcalc"] == 'j') {
-                $text .= '<a href="' . CMS_ROOTPATH . 'relations.php?pers_id=' . $personDb->pers_id . '"><img src="' . CMS_ROOTPATH . 'images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a>';
+                $relpath = $link_cls->get_link($uri_path, 'relations', $personDb->pers_tree_id, true);
+                //$text .= '<a href="relations.php?pers_id=' . $personDb->pers_id . '"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a>';
+                $text .= '<a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a>';
             }
 
             if ($user['group_gen_protection'] == 'n' and ($personDb->pers_famc != '' or $personDb->pers_fams != '')) {
@@ -982,47 +979,48 @@ class person_cls
             }
             if ($user['group_gen_protection'] == 'n' and $personDb->pers_famc != '') {
                 // == added by Yossi Beck - FANCHART
-                $path_tmp = CMS_ROOTPATH . 'fanchart.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
-                $text .= '<a href="' . $path_tmp . '"><img src="' . CMS_ROOTPATH . 'images/fanchart.gif" border="0" alt="Fanchart"> ' . __('Fanchart') . '</a>';
 
-                //$path_tmp = CMS_ROOTPATH . 'report_ancestor.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber . '&amp;screen_mode=ancestor_chart';
+                //$path_tmp = 'fanchart.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
+                $path_tmp = $link_cls->get_link($uri_path, 'fanchart', $personDb->pers_tree_id, true);
+                $path_tmp .= 'id=' . $personDb->pers_gedcomnumber;
+                $text .= '<a href="' . $path_tmp . '"><img src="images/fanchart.gif" border="0" alt="Fanchart"> ' . __('Fanchart') . '</a>';
+
                 if ($humo_option["url_rewrite"] == 'j') {
-                    $path_tmp = CMS_ROOTPATH . 'ancestor_chart?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
+                    $path_tmp = 'ancestor_chart?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
                 } else {
-                    $path_tmp = CMS_ROOTPATH . 'index.php?page=ancestor_chart&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
+                    $path_tmp = 'index.php?page=ancestor_chart&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
                 }
-                $text .= '<a href="' . $path_tmp . '"><img src="' . CMS_ROOTPATH . 'images/ancestor_report.gif" border="0" alt="' . __('Ancestor chart') . '"> ' . __('Ancestor chart') . '</a>';
+                $text .= '<a href="' . $path_tmp . '"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor chart') . '"> ' . __('Ancestor chart') . '</a>';
             }
             if ($user['group_gen_protection'] == 'n' and $personDb->pers_fams != '') {
                 if ($check_children) {
-                    //$path_tmp = CMS_ROOTPATH . 'family.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;screen_mode=STAR';
                     if ($humo_option["url_rewrite"] == 'j') {
-                        $path_tmp = CMS_ROOTPATH . 'descendant/' . $personDb->pers_tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber;
+                        $path_tmp = 'descendant/' . $personDb->pers_tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber;
                     } else {
-                        //$path_tmp = CMS_ROOTPATH . 'descendant.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
-                        $path_tmp = CMS_ROOTPATH . 'index.php?page=descendant.php&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
+                        $path_tmp = 'index.php?page=descendant.php&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
                     }
-                    $text .= '<a href="' . $path_tmp . '"><img src="' . CMS_ROOTPATH . 'images/descendant.gif" border="0" alt="' . __('Descendant chart') . '"> ' . __('Descendant chart') . '</a>';
+                    $text .= '<a href="' . $path_tmp . '"><img src="images/descendant.gif" border="0" alt="' . __('Descendant chart') . '"> ' . __('Descendant chart') . '</a>';
                 }
             }
             // DNA charts
             if ($user['group_gen_protection'] == 'n' and ($personDb->pers_famc != "" or ($personDb->pers_fams != "" and $check_children))) {
                 if ($personDb->pers_sexe == "M") $charttype = "ydna";
                 else $charttype = "mtdna";
-                //$path_tmp = CMS_ROOTPATH . 'family.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;screen_mode=STAR&amp;dnachart=' . $charttype;
                 if ($humo_option["url_rewrite"] == 'j') {
-                    $path_tmp = CMS_ROOTPATH . 'descendant/' . $personDb->pers_tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber . '&amp;dnachart=' . $charttype;
+                    $path_tmp = 'descendant/' . $personDb->pers_tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber . '&amp;dnachart=' . $charttype;
                 } else {
-                    //$path_tmp = CMS_ROOTPATH . 'descendant.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;dnachart=' . $charttype;
-                    $path_tmp = CMS_ROOTPATH . 'index.php?page=descendant.php&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;dnachart=' . $charttype;
+                    $path_tmp = 'index.php?page=descendant.php&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;dnachart=' . $charttype;
                 }
-                $text .= '<a href="' . $path_tmp . '"><img src="' . CMS_ROOTPATH . 'images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a>';
+                $text .= '<a href="' . $path_tmp . '"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a>';
             }
 
             if ($user['group_gen_protection'] == 'n' and $personDb->pers_famc != '' and $personDb->pers_fams != '' and $check_children) {
                 // hourglass only if there is at least one generation of ancestors and of children.
-                $path_tmp = CMS_ROOTPATH . 'hourglass.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;screen_mode=HOUR';
-                $text .= '<a href="' . $path_tmp . '"><img src="' . CMS_ROOTPATH . 'images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a>';
+                $vars['pers_family'] = $pers_family;
+                $path_tmp = $link_cls->get_link($uri_path, 'hourglass', $personDb->pers_tree_id, true, $vars);
+                $path_tmp .= "main_person=" . $personDb->pers_gedcomnumber . '&amp;screen_mode=HOUR';
+
+                $text .= '<a href="' . $path_tmp . '"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a>';
             }
 
             // *** Editor link ***
@@ -1032,9 +1030,9 @@ class person_cls
                 if ($user['group_admin'] == 'j' or in_array($_SESSION['tree_id'], $edit_tree_array)) {
                     $text .= '<b>' . __('Admin') . ':</b>';
 
-                    $path_tmp = CMS_ROOTPATH . 'admin/index.php?page=editor&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id . '&amp;person=' . $personDb->pers_gedcomnumber;
+                    $path_tmp = 'admin/index.php?page=editor&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id . '&amp;person=' . $personDb->pers_gedcomnumber;
                     $text .= '<a href="' . $path_tmp . '" target="_blank">';
-                    $text .= '<img src="' . CMS_ROOTPATH . 'images/person_edit.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Editor') . '</a>';
+                    $text .= '<img src="images/person_edit.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Editor') . '</a>';
                 }
             }
 
@@ -1141,21 +1139,21 @@ class person_cls
                     if ($personDb->pers_sexe == "M")
                         $sect->addImage('images/man.jpg', null);
                     elseif ($personDb->pers_sexe == "F")
-                        $sect->addImage(CMS_ROOTPATH . 'images/woman.jpg', null);
+                        $sect->addImage('images/woman.jpg', null);
                     else
-                        $sect->addImage(CMS_ROOTPATH . 'images/unknown.jpg', null);
+                        $sect->addImage('images/unknown.jpg', null);
                     // SOURCE IS MISSING
                 } else {
                     $text_name .= $dirmark1;
                     if ($personDb->pers_sexe == "M") {
                         $templ_name["name_sexe"] = $personDb->pers_sexe;
-                        $start_name .= '<img src="' . CMS_ROOTPATH . 'images/man.gif" alt="man">';
+                        $start_name .= '<img src="images/man.gif" alt="man">';
                     } elseif ($personDb->pers_sexe == "F") {
                         $templ_name["name_sexe"] = $personDb->pers_sexe;
-                        $start_name .= '<img src="' . CMS_ROOTPATH . 'images/woman.gif" alt="woman">';
+                        $start_name .= '<img src="images/woman.gif" alt="woman">';
                     } else {
                         $templ_name["name_sexe"] = '?';
-                        $start_name .= '<img src="' . CMS_ROOTPATH . 'images/unknown.gif" alt="unknown">';
+                        $start_name .= '<img src="images/unknown.gif" alt="unknown">';
                     }
 
                     // *** Source by sexe ***
@@ -1175,12 +1173,12 @@ class person_cls
                                 preg_match("/($camps)/i", $personDb->pers_death_place) !== 0 or
                                 preg_match("/($camps)/i", $personDb->pers_buried_place) !== 0 or strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !== FALSE
                             ) {
-                                $start_name .= '<img src="' . CMS_ROOTPATH . 'images/star.gif" alt="star">&nbsp;';
+                                $start_name .= '<img src="images/star.gif" alt="star">&nbsp;';
                             }
                         }
                         // *** Add own icon by person, using a file name in own code ***
                         if ($personDb->pers_own_code != '' and is_file("images/" . $personDb->pers_own_code . ".gif")) {
-                            $start_name .= '<img src="' . CMS_ROOTPATH . 'images/' . $personDb->pers_own_code . '.gif" alt="' . $personDb->pers_own_code . '">&nbsp;';
+                            $start_name .= '<img src="images/' . $personDb->pers_own_code . '.gif" alt="' . $personDb->pers_own_code . '">&nbsp;';
                         }
                     }
                 }
@@ -1700,7 +1698,7 @@ $own_code=0;
                 else
                     return;  // makes no sense to ask for login in a pdf report.....
             } else {
-                // *** Quality (function show_quality can be found in script: family.php) ***
+                // *** Quality (function show_quality can be found in family script) ***
                 // Disabled because normally quality belongs to a source.
                 //if ($personDb->pers_quality=='0' or $personDb->pers_quality){
                 //	$quality_text=show_quality($personDb->pers_quality);
@@ -1857,7 +1855,7 @@ $own_code=0;
                     $templ_person["born_source"] = $source_array['text'];
                     $temp = "born_source";
                     //}
-                    // *** Not necessary to do this in person_cls.php, this is processed in family.php.
+                    // *** Not necessary to do this in person_cls.php, this is processed in family script.
                     //elseif($screen_mode=='RTF') {
                     //	$templ_person["born_source"]=$source_array['text'];
                     //	$rtf_text=strip_tags($templ_person["born_source"],"<b><i>");

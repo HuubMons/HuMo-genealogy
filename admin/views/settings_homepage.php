@@ -187,11 +187,11 @@ for ($i = 0; $i < count($item_array); $i++) {
 
                         if ($dataDb->setting_order != '1') {
                             echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;mod_up=1&amp;module_order=' . $dataDb->setting_order .
-                                '&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
+                                '&amp;id=' . $dataDb->setting_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
                         }
                         if ($dataDb->setting_order != $count_links) {
                             echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;mod_down=1&amp;module_order=' . $dataDb->setting_order . '&amp;id=' .
-                                $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+                                $dataDb->setting_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
                         }
                         ?>
                     </td>
@@ -327,7 +327,7 @@ for ($i = 0; $i < count($item_array); $i++) {
                     </td>
                     <td>
                         <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_module=<?= $dataDb->setting_id; ?>">
-                            <img src="<?= CMS_ROOTPATH_ADMIN; ?>images/button_drop.png" border="0" alt="remove"></a>
+                            <img src="images/button_drop.png" border="0" alt="remove"></a>
                     </td>
                 </tr>
             <?php
@@ -481,17 +481,17 @@ if (isset($_GET['down'])) {
                 <tr>
                     <td>
                         <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_link=<?= $dataDb->setting_id; ?>">
-                            <img src="<?= CMS_ROOTPATH_ADMIN; ?>images/button_drop.png" border="0" alt="remove"></a>
+                            <img src="images/button_drop.png" border="0" alt="remove"></a>
 
                         <input type="hidden" name="<?= $dataDb->setting_id; ?>id" value="<?= $dataDb->setting_id; ?>"><?= __('Link') . ' ' . $teller; ?>
                         <?php
                         if ($dataDb->setting_order != '1') {
                             echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;up=1&amp;link_order=' . $dataDb->setting_order .
-                                '&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
+                                '&amp;id=' . $dataDb->setting_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
                         }
                         if ($dataDb->setting_order != $count_links) {
                             echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;down=1&amp;link_order=' . $dataDb->setting_order . '&amp;id=' .
-                                $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+                                $dataDb->setting_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
                         }
                         ?>
                     </td>

@@ -13,6 +13,7 @@ if (!isset($_SESSION["user_name_admin"])) {
 }
 
 // *** Get path to pictures ***
+//TODO use __DIR__
 include_once('../../../include/db_login.php'); // *** Database login ***
 include_once('../../../include/settings_global.php');
 

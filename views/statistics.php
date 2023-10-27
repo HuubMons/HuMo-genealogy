@@ -8,17 +8,17 @@
  */
 
 // *** Standard function for names ***
-include_once(CMS_ROOTPATH . "include/person_cls.php");
-include_once(CMS_ROOTPATH . "include/language_date.php");
-include_once(CMS_ROOTPATH . "include/date_place.php");
-include_once(CMS_ROOTPATH . "include/calculate_age_cls.php");
+include_once(__DIR__ . "/../include/person_cls.php");
+include_once(__DIR__ . "/../include/language_date.php");
+include_once(__DIR__ . "/../include/date_place.php");
+include_once(__DIR__ . "/../include/calculate_age_cls.php");
 
 if ($humo_option["url_rewrite"] == "j") {
     $path = 'statistics';
     $path2 = 'statistics?';
 } else {
-    $path = CMS_ROOTPATH . 'index.php?page=statistics';
-    $path2 = CMS_ROOTPATH . 'index.php?page=statistics&amp;';
+    $path = 'index.php?page=statistics';
+    $path2 = 'index.php?page=statistics&amp;';
 }
 
 // *** Get general data from family tree ***

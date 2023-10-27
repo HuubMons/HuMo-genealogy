@@ -1,89 +1,89 @@
 body {
-	background-image: url('images_green_field/background.gif');
-	background-repeat: no-repeat;
+    background-image: url('images_green_field/background.gif');
+    background-repeat: no-repeat;
 }
 
 /* Tables */
 table.humo {
-	background-color: #ffffff;
+    background-color: #ffffff;
 }
 
 /* 1st table A-Z */
 table.humo td {
-	border-color: #99cc33;
+    border-color: #99cc33;
 }
 
 table.humo tr:first-of-type td {
-	border-color: #99cc33;
+    border-color: #99cc33;
 }
 
 /* 2nd table A-Z */
 /* .family_page_toptext { color: #ddffbb; } */
 td.style_tree_text {
-	background-color: #eeeebb;
+    background-color: #eeeebb;
 }
 
 .table_headline {
-	color: #FFFFFF;
-	background: linear-gradient(to top, rgb(116, 188, 26) 0%, rgb(130, 204, 49) 100%);
+    color: #FFFFFF;
+    background: linear-gradient(to top, rgb(116, 188, 26) 0%, rgb(130, 204, 49) 100%);
 }
 
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
-	color: #006600;
+    color: #006600;
 }
 
 /* Switchform */
 #switchform {
-	color: #ffcc33;
+    color: #ffcc33;
 }
 
 /* Menu */
 #top_menu {
-	/* For IE - Voor IE: */
-	color: #666666;
+    /* For IE - Voor IE: */
+    color: #666666;
 }
 
 #humo_menu {
-	background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
+    background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
 }
 
 #humo_menu a {
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
 
 #humo_menu a:hover {
-	background: linear-gradient(to bottom, rgb(184, 227, 135) 0%, rgb(215, 236, 195) 53%, rgb(150, 216, 89) 100%);
+    background: linear-gradient(to bottom, rgb(184, 227, 135) 0%, rgb(215, 236, 195) 53%, rgb(150, 216, 89) 100%);
 }
 
 #humo_menu ul.humo_menu_item2 li {
-	background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
+    background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
 }
 
 #humo_menu ul.humo_menu_item2 li a {
-	background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
+    background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
 }
 
 #humo_menu ul.humo_menu_item2 li a:hover {
-	background: linear-gradient(to bottom, rgb(184, 227, 135) 0%, rgb(215, 236, 195) 53%, rgb(150, 216, 89) 100%);
+    background: linear-gradient(to bottom, rgb(184, 227, 135) 0%, rgb(215, 236, 195) 53%, rgb(150, 216, 89) 100%);
 
 }
 
 #humo_menu #current a,
 #humo_menu #current_top {
-	background: linear-gradient(to bottom, rgb(184, 227, 135) 0%, rgb(215, 236, 195) 53%, rgb(150, 216, 89) 100%);
+    background: linear-gradient(to bottom, rgb(184, 227, 135) 0%, rgb(215, 236, 195) 53%, rgb(150, 216, 89) 100%);
 }
 
 #humo_menu a:visited {
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
 
 #humo_menu a:active {
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
 
 #humo_menu a:hover {
-	color: #000000;
+    color: #000000;
 }
 
 /* top bar in left - content - right boxes: only in main menu */
@@ -95,13 +95,13 @@ td.style_tree_text {
 
 div.photobook,
 div.photobooktext {
-	background-color: #f5fffa;
+    background-color: #f5fffa;
 }
 
 .search_bar {
-	background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
+    background: linear-gradient(to bottom, rgb(200, 255, 135) 0%, rgb(107, 182, 16) 72%);
 }
 
 table.reltable td {
-	border: 0px;
+    border: 0px;
 }

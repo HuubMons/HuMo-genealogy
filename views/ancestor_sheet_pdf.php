@@ -9,7 +9,7 @@
  * July 2011: translated all variables to english by: Huub Mons.
  */
 
-@set_time_limit(3000);
+//@set_time_limit(3000);
 
 //==========================
 global $humo_option, $user, $marr_date_array, $marr_place_array;
@@ -20,14 +20,13 @@ $screen_mode = 'ASPDF';
 
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
-//include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(__DIR__ . '../../header.php'); // returns CMS_ROOTPATH constant
+include_once(__DIR__ . '../../header.php');
 
 
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../models/ancestor.php";
+require_once  __DIR__ . "/../app/model/ancestor.php";
 $get_ancestor = new Ancestor($dbh);
 //$family_id = $get_family->getFamilyId();
 $main_person = $get_ancestor->getMainPerson();

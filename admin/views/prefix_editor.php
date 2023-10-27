@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$file = CMS_ROOTPATH . 'admin/include/prefixes.php';
+$file = 'include/prefixes.php';
 $message = '';
 if (isset($_POST['save_language'])) {
     $message = '<b>' . __('Saved') . '</b>';
@@ -21,7 +21,7 @@ if (isset($_POST['save_language'])) {
 
 <?= __('These prefixes are used to process name-prefixes if a GEDCOM file is read.'); ?><br><br>
 
-<form method="POST" action="<?= CMS_ROOTPATH;?>admin/index.php?page=prefix_editor" style="display : inline;">
+<form method="POST" action="index.php?page=prefix_editor" style="display : inline;">
     <table class="humo" border="1" cellspacing="0">
         <tr class="table_header_large">
             <th>

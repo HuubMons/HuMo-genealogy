@@ -5,17 +5,15 @@ header('Content-type: text/plain; charset=UTF-8');
  * Sitemap
  */
 
-define("CMS_ROOTPATH", '');
-
-include_once(CMS_ROOTPATH . "include/db_login.php"); //Inloggen database.
-include_once(CMS_ROOTPATH . "include/safe.php"); //Variabelen
+include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
+include_once(__DIR__ . "/include/safe.php"); //Variabelen
 
 // *** Needed for privacy filter ***
-include_once(CMS_ROOTPATH . "include/settings_global.php"); //Variables
-include_once(CMS_ROOTPATH . "include/settings_user.php"); // USER variables
-include_once(CMS_ROOTPATH . "include/person_cls.php");
+include_once(__DIR__ . "/include/settings_global.php"); //Variables
+include_once(__DIR__ . "/include/settings_user.php"); // USER variables
+include_once(__DIR__ . "/include/person_cls.php");
 
-include_once(CMS_ROOTPATH . "include/db_functions_cls.php");
+include_once(__DIR__ . "/include/db_functions_cls.php");
 $db_functions = new db_functions;
 
 $person_cls = new person_cls;
@@ -69,7 +67,7 @@ foreach ($datasql as $dataDb) {
             //}
             //else{
             // *** Example ***
-            //http://localhost/humo-gen/family.php?database=humo2_&amp;id=F365&main_person=I1180
+            //http://localhost/humo-gen/index.php?page=family&amp;database=humo2_&amp;id=F365&main_person=I1180
             // OR, using url_rewrite:
             //http://localhost/humo-gen/family/humo_//I2354/
 
@@ -86,7 +84,7 @@ foreach ($datasql as $dataDb) {
             if ($humo_option["url_rewrite"] == "j") {
                 $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
             } else {
-                $person_url = $uri_path . '/family.php?tree_id=' . $dataDb->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
+                $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
             }
 
             echo "<url>\r\n<loc>" . $person_url . "</loc>\r\n</url>\r\n";
@@ -109,7 +107,7 @@ foreach ($datasql as $dataDb) {
                 // *** Don't show person ***
             } else {
                 // *** Example ***
-                //http://localhost/humo-gen/family.php?database=humo2_&amp;id=F365&main_person=I1180
+                //http://localhost/humo-gen/index.php?page=family&amp;tree_id=1&amp;id=F365&main_person=I1180
                 // OR, using url_rewrite:
                 //http://localhost/humo-gen/family/humo_/?&main_person=I2354
 
@@ -136,7 +134,7 @@ foreach ($datasql as $dataDb) {
                 if ($humo_option["url_rewrite"] == "j") {
                     $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber;
                 } else {
-                    $person_url = $uri_path . '/family.php?tree_id=' . $dataDb->tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
+                    $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
                 }
 
                 echo "<url>\r\n<loc>" . $person_url . "</loc>\r\n</url>\r\n";

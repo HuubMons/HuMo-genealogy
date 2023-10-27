@@ -2,10 +2,7 @@
 
 /**
  * Family/ relation page PDF export
- * Seperated from family.php in july 2023 by Huub.
- * 
- * July 2023: NOT A VIEW YET (must be seperated into MVC). REFACTORING UNDER CONSTRUCTION.
- * First step is refactoring family.php and PDF script...
+ * Seperated from family script in july 2023 by Huub.
  */
 
 $screen_mode = 'PDF';
@@ -16,13 +13,13 @@ global $pdf_footnotes;
 global $parent1Db, $parent2Db;
 global $templ_name;
 
-include_once(__DIR__ . '../../header.php'); // returns CMS_ROOTPATH constant
+include_once(__DIR__ . '../../header.php');
 
 
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../models/family.php";
+require_once __DIR__ . "/../app/model/family.php";
 $get_family = new Family($dbh);
 $family_id = $get_family->getFamilyId();
 $main_person = $get_family->getMainPerson();
@@ -40,13 +37,13 @@ $number_generation = $get_family->getNumberGeneration();
 //    "title" => __('Family')
 //));
 
-@set_time_limit(300);
+//@set_time_limit(300);
 
-// TODO test code. Is missing in family.php, maybe not needed.
+// TODO test code. Maybe not needed.
 include_once(__DIR__ . "../../include/db_functions_cls.php");
 $db_functions = new db_functions;
 
-// TODO test code. Is missing in family.php, maybe not needed.
+// TODO test code. Maybe not needed.
 if (isset($_SESSION['tree_prefix'])) {
     $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
         ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
@@ -573,7 +570,6 @@ else {
 
 // *** List appendix of sources ***
 if (!empty($pdf_source) and ($source_presentation == 'footnote' or $user['group_sources'] == 'j')) {
-    //include_once(CMS_ROOTPATH . "source.php");
     include_once(__DIR__ . '/../source.php');
     $pdf->AddPage(); // appendix on new page
     $pdf->SetFont($pdf_font, "B", 14);

@@ -493,7 +493,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 
             // ===== BEGIN SEARCH BOX SYSTEM
 
-            include_once(CMS_ROOTPATH . "include/person_cls.php");
+            include_once(__DIR__ . "/../../include/person_cls.php");
             $pers_cls = new person_cls;
 
             if (!isset($_POST["search1"]) and !isset($_POST["search2"]) and !isset($_POST["manual_compare"]) and !isset($_POST["switch"])) {
@@ -639,7 +639,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 echo '<select size="1" name="left" style="width:' . $len . 'px"><option></option></select>';
             }
             echo '</td><td rowspan=2>';
-            echo '<input type="submit" alt="' . __('Switch persons') . '" title="' . __('Switch persons') . '" value=" " name="switch" style="background: #fff url(\'' . CMS_ROOTPATH . 'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
+            echo '<input type="submit" alt="' . __('Switch persons') . '" title="' . __('Switch persons') . '" value=" " name="switch" style="background: #fff url(\'../images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
             echo '</td><td rowspan=2>';
             echo '<input type="submit" name="manual_compare" value="' . __('Show details') . '" style="font-size:115%;">';
             echo '</td></tr><tr><td  style="white-space:nowrap">';

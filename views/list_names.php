@@ -18,13 +18,13 @@
             // *** url_rewrite ***
             $path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $personDb->first_character;
         } else {
-            $path_tmp = CMS_ROOTPATH . 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
+            $path_tmp = 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
         }
         echo ' <a href="' . $path_tmp . '">' . $personDb->first_character . '</a>';
     }
 
     //TODO also use url_rewrite.
-    $path_tmp = CMS_ROOTPATH . "index.php?page=list_names&amp;last_name=all";
+    $path_tmp = "index.php?page=list_names&amp;last_name=all";
     echo ' <a href="' . $path_tmp . '">' . __('All names') . "</a>\n";
     ?>
 </div><br>
@@ -34,7 +34,7 @@
 //if (isset($urlpart[1])){
 //	$last_name=urldecode(safe_text_db($urlpart[1]));   // without urldecode skandinavian letters don't work!
 //}
-if (!isset($last_name)){
+if (!isset($last_name)) {
     $last_name = 'a'; // *** Default first_character ***
 }
 if (isset($_GET['last_name']) and $_GET['last_name'] and is_string($_GET['last_name'])) {
@@ -76,8 +76,9 @@ function tablerow($nr, $lastcol = false)
     // displays one set of name & nr column items in the row
     // $nr is the array number of the name set created in function last_names
     // if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
-    global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id;
-    $path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id;
+    global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id, $link_cls, $uri_path;
+    $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+
     echo '<td class="namelst">';
     if (isset($freq_last_names[$nr])) {
         $top_pers_lastname = '';
@@ -86,13 +87,13 @@ function tablerow($nr, $lastcol = false)
         }
         $top_pers_lastname .= $freq_last_names[$nr];
         if ($user['group_kindindex'] == "j") {
-            echo '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
+            echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
         } else {
             $top_pers_lastname = $freq_last_names[$nr];
             if ($freq_pers_prefix[$nr]) {
                 $top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
             }
-            echo '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
+            echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
             if ($freq_pers_prefix[$nr]) {
                 echo '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
             } else {
@@ -208,7 +209,7 @@ echo '<div style="text-align:center">';
 if ($humo_option["url_rewrite"] == "j") {
     $url = $uri_path . 'list_names/' . $tree_id . '/' . $last_name;
 } else {
-    $url = CMS_ROOTPATH . 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $last_name;
+    $url = 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $last_name;
 }
 ?>
 <form method="POST" action="<?= $url; ?>" style="display:inline;" id="frqnames">

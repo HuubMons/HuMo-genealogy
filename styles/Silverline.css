@@ -1,85 +1,85 @@
 body {
-	color: #000000;
-	background-color: #ededed;
-	background-image: none;
+    color: #000000;
+    background-color: #ededed;
+    background-image: none;
 }
 
 #top {
-	background: url(images_silverline/silvertop1.png) repeat left top
+    background: url(images_silverline/silvertop1.png) repeat left top
 }
 
 #top_website_name a {
-	color: #7e3517;
-	font-weight: normal;
+    color: #7e3517;
+    font-weight: normal;
 }
 
 #top_website_name a:visited {
-	color: #7e3517;
-	font-weight: normal;
+    color: #7e3517;
+    font-weight: normal;
 }
 
 #top_familytree_name {
-	color: #347c17;
-	font-weight: normal;
+    color: #347c17;
+    font-weight: normal;
 }
 
 #humo_menu {
-	background-color: #bbeeff;
-	background: url("images_silverline/silvermenu1.png") repeat left top;
+    background-color: #bbeeff;
+    background: url("images_silverline/silvermenu1.png") repeat left top;
 }
 
 #humo_menu a:hover {
-	background: url("images_silverline/menuhover1.jpg") repeat left top;
+    background: url("images_silverline/menuhover1.jpg") repeat left top;
 }
 
 #humo_menu ul.humo_menu_item2 li a:hover {
-	background: url("images_silverline/menuhover1.jpg") repeat left top;
+    background: url("images_silverline/menuhover1.jpg") repeat left top;
 }
 
 #humo_menu a#current_top {
-	color: #000000;
-	font-weight: bold;
-	background: url("images_silverline/menuhover1.jpg") repeat left top;
+    color: #000000;
+    font-weight: bold;
+    background: url("images_silverline/menuhover1.jpg") repeat left top;
 }
 
 #humo_menu #current a {
-	color: #000000;
-	font-weight: bold;
-	background: url("images_silverline/menuhover1.jpg") repeat left top;
+    color: #000000;
+    font-weight: bold;
+    background: url("images_silverline/menuhover1.jpg") repeat left top;
 }
 
 #humo_menu ul.humo_menu_item2 li {
-	background: url("images_silverline/silver.gif") repeat left top;
+    background: url("images_silverline/silver.gif") repeat left top;
 }
 
 #humo_menu ul.humo_menu_item2 li a {
-	background: url("images_silverline/silver.gif") repeat left top;
-	font-weight: normal;
+    background: url("images_silverline/silver.gif") repeat left top;
+    font-weight: normal;
 }
 
 #humo_menu ul.humo_menu_item li a {
-	font-weight: normal;
-	color: #000000;
+    font-weight: normal;
+    color: #000000;
 }
 
 ul.humo_menu_item li {
-	border-right: none;
+    border-right: none;
 }
 
 #content {
-	background: url("images_silverline/silverbg1.jpg") repeat-x left top;
+    background: url("images_silverline/silverbg1.jpg") repeat-x left top;
 }
 
 #rtlcontent {
-	background: url("images_silverline/silverbg1.jpg") repeat-x left top;
+    background: url("images_silverline/silverbg1.jpg") repeat-x left top;
 }
 
 #mainmenu_centerbox {
-	background: #FFFFFF url("images_silverline/background.gif") no-repeat;
+    background: #FFFFFF url("images_silverline/background.gif") no-repeat;
 
-	border: solid 1px #999999;
-	border-radius: 3px;
-	box-shadow: 2px 2px 2px #c0c0c0;
+    border: solid 1px #999999;
+    border-radius: 3px;
+    box-shadow: 2px 2px 2px #c0c0c0;
 }
 
 /*
@@ -95,127 +95,127 @@ ul.humo_menu_item li {
 */
 
 .homepage_box {
-	background-color: transparent;
+    background-color: transparent;
 }
 
 /* Links */
 a {
-	color: #505050;
-	text-decoration: none;
+    color: #505050;
+    text-decoration: none;
 }
 
 a:hover {
-	color: #808080;
-	text-decoration: underline;
+    color: #808080;
+    text-decoration: underline;
 }
 
 p {
-	line-height: 150%;
-	margin: 15px 0 15px;
+    line-height: 150%;
+    margin: 15px 0 15px;
 }
 
 /* Tables */
 table.humo,
 table.ext {
-	background-color: #FFFFFF;
-	margin-top: 10px;
+    background-color: #FFFFFF;
+    margin-top: 10px;
 }
 
 table.standard {
-	margin-left: auto;
-	margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* 1st table A-Z */
 table.humo td {
-	border-color: #3355cc;
+    border-color: #3355cc;
 }
 
 table.humo tr:first-of-type td {
-	border-color: #3355cc;
+    border-color: #3355cc;
 }
 
 td.style_tree_text {
-	background-color: #eeeeff;
+    background-color: #eeeeff;
 }
 
 /* familypage */
 .pers_name {
-	color: #000000;
+    color: #000000;
 }
 
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
-	color: #000066;
-	/* margin-top: 10px; */
+    color: #000066;
+    /* margin-top: 10px; */
 }
 
 /* Ancestor graphical */
 div.ancestorName {
-	border-color: #000066;
-	color: #000000;
-	font-family: "arial narrow";
-	font-size: 75%;
+    border-color: #000066;
+    color: #000000;
+    font-family: "arial narrow";
+    font-size: 75%;
 }
 
 /* Text */
 div.ancestorName a {
-	color: #222222;
-	font-weight: bold;
+    color: #222222;
+    font-weight: bold;
 }
 
 div.ancestor_line {
-	border-bottom-color: #000066;
-	border-top-color: #000066;
+    border-bottom-color: #000066;
+    border-top-color: #000066;
 }
 
 div.ancestor_split {
-	border-left-color: #000066;
-	border-bottom-color: #000066;
-	border-top-color: #000066;
+    border-left-color: #000066;
+    border-bottom-color: #000066;
+    border-top-color: #000066;
 }
 
 div.hour_ancestor_split {
-	position: absolute;
-	width: 8px;
-	border-right: 1px solid #000066;
-	border-bottom: 1px solid #000066;
-	border-top: 1px solid #000066;
+    position: absolute;
+    width: 8px;
+    border-right: 1px solid #000066;
+    border-bottom: 1px solid #000066;
+    border-top: 1px solid #000066;
 }
 
 .ancestorName {
-	line-height: 100%;
+    line-height: 100%;
 }
 
 .chart_line {
-	background-color: #000066;
-	border: 0px;
+    background-color: #000066;
+    border: 0px;
 }
 
 /* table header  */
 .table_headline {
-	background: url("images_silverline/menuhover.jpg") repeat left top;
+    background: url("images_silverline/menuhover.jpg") repeat left top;
 }
 
 /* Switchform */
 #switchform {
-	color: #333399;
+    color: #333399;
 }
 
 #country_flags {
-	padding: 11px 85px 6px 5px;
+    padding: 11px 85px 6px 5px;
 }
 
 div.photobook,
 div.photobooktext {
-	background-color: #eeeeff;
+    background-color: #eeeeff;
 }
 
 table.reltable td {
-	border: 0px;
+    border: 0px;
 }
 
 table.reltable {
-	background: none;
-	background-image: none;
+    background: none;
+    background-image: none;
 }

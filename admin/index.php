@@ -31,23 +31,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* *** CMS_SPECIFIC: when run from CMS, this will contain it's name. ***
-    Names:
-        - CMS names used for now are 'Joomla' and 'CMSMS'.
-    Usage:
-        - Code for all CMS: if (CMS_SPECIFIC) {}
-        - Code for one CMS: if (CMS_SPECIFIC == 'Joomla') {}
-        - Code NOT for CMS: if (!CMS_SPECIFIC) {}
-*/
-if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
-if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../");
-// *** When run from CMS, the path to the parent-map that contains this file should be given ***
-if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "");
-if (!CMS_SPECIFIC) {
-    session_start();
-    // *** Regenerate session id regularly to prevent session hacking ***
-    session_regenerate_id();
-}
+session_start();
+// *** Regenerate session id regularly to prevent session hacking ***
+session_regenerate_id();
 
 $page = 'index';
 
@@ -76,18 +62,22 @@ if (isset($_GET['log_off'])) {
 }
 
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
-include_once(CMS_ROOTPATH . "include/db_login.php"); // *** Database login ***
+include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
 
-include_once(CMS_ROOTPATH . "include/safe.php"); // Variables
+include_once(__DIR__ . "/../include/safe.php"); // Variables
 
 // *** Function to show family tree texts ***
-include_once(CMS_ROOTPATH . 'include/show_tree_text.php');
+include_once(__DIR__ . '/../include/show_tree_text.php');
 
-include_once(CMS_ROOTPATH . "include/db_functions_cls.php");
+include_once(__DIR__ . "/../include/db_functions_cls.php");
 $db_functions = new db_functions();
 
 // *** Added juli 2019: Person functions ***
-include_once(CMS_ROOTPATH . "include/person_cls.php");
+include_once(__DIR__ . "/../include/person_cls.php");
+
+// *** Added october 2023: generate links to frontsite ***
+include_once(__DIR__ . "/../include/links.php");
+$link_cls = new Link_cls();
 
 // *** Only load settings if database and table exists ***
 $show_menu_left = false;
@@ -104,130 +94,15 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
     }
 
     if ($check_tables) {
-        include_once(CMS_ROOTPATH . "include/settings_global.php");
+        include_once(__DIR__ . "/../include/settings_global.php");
 
         // *** Added may 2020, needed for some user settings in admin section ***
         // *** At this moment there is no separation for front user and admin user... ***
-        include_once(CMS_ROOTPATH . "include/settings_user.php"); // USER variables
+        include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
 
         // **** Temporary update scripts ***
+        // no updates at this moment.
 
-        // *** Check table user_notes ***
-        $column_qry = $dbh->query('SHOW COLUMNS FROM humo_user_notes');
-        while ($columnDb = $column_qry->fetch()) {
-            $field_value = $columnDb['Field'];
-            $field[$field_value] = $field_value;
-        }
-        // *** Automatic update ***
-        if (!isset($field['note_order'])) {
-            $sql = "ALTER TABLE humo_user_notes CHANGE note_date note_new_date varchar(20) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-            $sql = "ALTER TABLE humo_user_notes CHANGE note_time note_new_time varchar(25) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-            $sql = "ALTER TABLE humo_user_notes CHANGE note_user_id note_new_user_id smallint(5);";
-            $result = $dbh->query($sql);
-
-            $sql = "ALTER TABLE humo_user_notes ADD note_changed_date varchar(20) CHARACTER SET utf8 AFTER note_new_user_id;";
-            $result = $dbh->query($sql);
-            $sql = "ALTER TABLE humo_user_notes ADD note_changed_time varchar(25) CHARACTER SET utf8 AFTER note_changed_date;";
-            $result = $dbh->query($sql);
-            $sql = "ALTER TABLE humo_user_notes ADD note_changed_user_id smallint(5) AFTER note_changed_time;";
-            $result = $dbh->query($sql);
-
-            $sql = "ALTER TABLE humo_user_notes ADD note_priority varchar(15) CHARACTER SET utf8 AFTER note_status;";
-            $result = $dbh->query($sql);
-
-            $sql = "ALTER TABLE humo_user_notes CHANGE note_status note_status varchar(15) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-
-            // *** Add note_order ***
-            $sql = "ALTER TABLE humo_user_notes ADD note_order smallint(5) AFTER note_id;";
-            $result = $dbh->query($sql);
-
-            // *** Add note_connect_kind = person/ family/ source/ repository ***
-            $sql = "ALTER TABLE humo_user_notes ADD note_connect_kind varchar(20) CHARACTER SET utf8 AFTER note_tree_id;";
-            $result = $dbh->query($sql);
-
-            // *** Add note_kind = user/ editor ***
-            $sql = "ALTER TABLE humo_user_notes ADD note_kind varchar(10) CHARACTER SET utf8 AFTER note_tree_id;";
-            $result = $dbh->query($sql);
-
-            // *** Change all existing note_connect_kind items into 'person' ***
-            $sql = "UPDATE humo_user_notes SET note_connect_kind='person';";
-            $result = $dbh->query($sql);
-
-            // *** Change note_pers_gedcomnumber into: note_connect_id ***
-            $sql = "ALTER TABLE humo_user_notes CHANGE note_pers_gedcomnumber note_connect_id VARCHAR(25) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-
-            // *** Update tree_id, could be missing in some cases ***
-            $sql = "SELECT * FROM humo_user_notes LEFT JOIN humo_trees ON note_tree_prefix=tree_prefix ORDER BY note_id;";
-            $qry = $dbh->query($sql);
-            while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                $sql2 = "UPDATE humo_user_notes SET note_tree_id='" . $qryDb->tree_id . "', note_kind='user' WHERE note_id='" . $qryDb->note_id . "'";
-                $result = $dbh->query($sql2);
-            }
-
-            // *** Remove note_fam_gedcomnumber ***
-            $sql = "ALTER TABLE humo_user_notes DROP note_fam_gedcomnumber;";
-            $result = $dbh->query($sql);
-
-            // *** Remove note_fam_gedcomnumber ***
-            $sql = "ALTER TABLE humo_user_notes DROP note_tree_prefix;";
-            $result = $dbh->query($sql);
-        }
-
-        // *** Remove "NOT NULL" from hebnight variables ***
-        $column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
-        while ($columnDb = $column_qry->fetch()) {
-            $field_value = $columnDb['Field'];
-            $field[$field_value] = $field_value;
-        }
-        if (isset($field['pers_birth_date_hebnight'])) {
-            $sql = "ALTER TABLE humo_persons CHANGE pers_birth_date_hebnight pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            //echo $sql;
-            $result = $dbh->query($sql);
-        }
-        if (isset($field['pers_death_date_hebnight'])) {
-            $sql = "ALTER TABLE humo_persons CHANGE pers_death_date_hebnight pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-        }
-        if (isset($field['pers_buried_date_hebnight'])) {
-            $sql = "ALTER TABLE humo_persons CHANGE pers_buried_date_hebnight pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-        }
-
-        $column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
-        while ($columnDb = $column_qry->fetch()) {
-            $field_value = $columnDb['Field'];
-            $field[$field_value] = $field_value;
-        }
-        if (isset($field['fam_marr_notice_date_hebnight'])) {
-            $sql = "ALTER TABLE humo_families CHANGE fam_marr_notice_date_hebnight fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-        }
-        if (isset($field['fam_marr_date_hebnight'])) {
-            $sql = "ALTER TABLE humo_families CHANGE fam_marr_date_hebnight fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-        }
-        if (isset($field['fam_marr_church_notice_date_hebnight'])) {
-            $sql = "ALTER TABLE humo_families CHANGE fam_marr_church_notice_date_hebnight fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-        }
-        if (isset($field['fam_marr_church_date_hebnight'])) {
-            $sql = "ALTER TABLE humo_families CHANGE fam_marr_church_date_hebnight fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-        }
-
-        $column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
-        while ($columnDb = $column_qry->fetch()) {
-            $field_value = $columnDb['Field'];
-            $field[$field_value] = $field_value;
-        }
-        if (isset($field['event_date_hebnight'])) {
-            $sql = "ALTER TABLE humo_events CHANGE event_date_hebnight event_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
-        }
 
         // *** Remove old system files ***
         include_once(__DIR__ . '/include/index_remove_files.php');
@@ -275,7 +150,7 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
     // *** Check HuMo-genealogy database status ***
     // *** Change this value if the database must be updated ***
     if (isset($humo_option["update_status"])) {
-        if ($humo_option["update_status"] < 15) {
+        if ($humo_option["update_status"] < 16) {
             $page = 'update';
             $show_menu_left = false;
         }
@@ -307,17 +182,17 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 }
 
 // *** Set timezone ***
-include_once(CMS_ROOTPATH . "include/timezone.php"); // set timezone
+include_once(__DIR__ . "/../include/timezone.php"); // set timezone
 timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
 
 // *** Language selection for admin ***
-$map = opendir(CMS_ROOTPATH . 'languages/');
+$map = opendir('../languages/');
 while (false !== ($file = readdir($map))) {
     if (strlen($file) < 6 and $file != '.' and $file != '..') {
         $language_select[] = $file;
-        if (file_exists(CMS_ROOTPATH . 'languages/' . $file . '/' . $file . '.mo')) {
+        if (file_exists('../languages/' . $file . '/' . $file . '.mo')) {
             $language_file[] = $file;
             // *** Order of languages ***
             if ($file == 'cn') $language_order[] = 'Chinese';
@@ -367,23 +242,23 @@ $selected_language = "en";
 // *** Saved default language ***
 if (
     isset($humo_option['default_language_admin'])
-    and file_exists(CMS_ROOTPATH . 'languages/' . $humo_option['default_language_admin'] . '/' . $humo_option['default_language_admin'] . '.mo')
+    and file_exists('../languages/' . $humo_option['default_language_admin'] . '/' . $humo_option['default_language_admin'] . '.mo')
 ) {
     $selected_language = $humo_option['default_language_admin'];
 }
 // *** Safety: extra check if language exists ***
 if (
     isset($_SESSION["save_language_admin"])
-    and file_exists(CMS_ROOTPATH . 'languages/' . $_SESSION["save_language_admin"] . '/' . $_SESSION["save_language_admin"] . '.mo')
+    and file_exists('../languages/' . $_SESSION["save_language_admin"] . '/' . $_SESSION["save_language_admin"] . '.mo')
 ) {
     $selected_language = $_SESSION["save_language_admin"];
 }
 
 $language = array();
-include(CMS_ROOTPATH . 'languages/' . $selected_language . '/language_data.php');
+include(__DIR__ . '/../languages/' . $selected_language . '/language_data.php');
 
 // *** .mo language text files ***
-include_once(CMS_ROOTPATH . "languages/gettext.php");
+include_once(__DIR__ . "/../languages/gettext.php");
 // *** Load ***
 $_SESSION["language_selected"] = $selected_language;
 Load_default_textdomain();
@@ -433,7 +308,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         if (isset($resultDb->user_2fa_enabled) and $resultDb->user_2fa_enabled) {
             $valid_user = false;
             $fault = true;
-            include_once(CMS_ROOTPATH . "include/2fa_authentication/authenticator.php");
+            include_once(__DIR__ . "/../include/2fa_authentication/authenticator.php");
 
             if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
                 $Authenticator = new Authenticator();
@@ -560,101 +435,98 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
     $_SESSION['current_ip_address'] = $_SERVER['REMOTE_ADDR'];
 }
 
-if (!CMS_SPECIFIC) {
-    $html_text = '';
-    if ($language["dir"] == "rtl") {   // right to left language
-        $html_text = ' dir="rtl"';
-    }
-    //if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
-    //    $html_text = '';
-    //}
+$html_text = '';
+if ($language["dir"] == "rtl") {   // right to left language
+    $html_text = ' dir="rtl"';
+}
+//if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
+//    $html_text = '';
+//}
 
-    // *** Use your own favicon.ico in media folder ***
-    if (file_exists('../media/favicon.ico'))
-        $favicon = '<link href="../media/favicon.ico" rel="shortcut icon" type="image/x-icon">';
-    else
-        $favicon = '<link href="' . CMS_ROOTPATH . 'favicon.ico" rel="shortcut icon" type="image/x-icon">';
+// *** Use your own favicon.ico in media folder ***
+if (file_exists('../media/favicon.ico'))
+    $favicon = '<link href="../media/favicon.ico" rel="shortcut icon" type="image/x-icon">';
+else
+    $favicon = '<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">';
 
 ?>
-    <!DOCTYPE html>
-    <html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
+<!DOCTYPE html>
+<html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
 
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-        <!-- *** Rescale standard HuMo-genealogy pages for mobile devices *** -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- *** Rescale standard HuMo-genealogy pages for mobile devices *** -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title><?= __('Administration'); ?></title>
+    <title><?= __('Administration'); ?></title>
 
-        <?= $favicon; ?>
+    <?= $favicon; ?>
 
-        <link href="admin.css" rel="stylesheet" type="text/css">
+    <link href="admin.css" rel="stylesheet" type="text/css">
 
-        <!-- CSS changes for mobile devices -->
-        <link rel="stylesheet" media="(max-width: 640px)" href="admin_mobile.css">
+    <!-- CSS changes for mobile devices -->
+    <link rel="stylesheet" media="(max-width: 640px)" href="admin_mobile.css">
 
-        <?php
-        // *** Don't load all scripts for source editor (improves speed of page) ***
-        if ($popup == false) {
-        ?>
+    <script src="../include/jquery/jquery.min.js"></script>
+    <script src="../include/jqueryui/jquery-ui.min.js"></script>
+
+    <!-- Don't load all scripts for source editor (improves speed of page) --?
+        <?php if ($popup == false) { ?>
             <!-- Statistics style sheet -->
-            <link href="statistics/style.css" rel="stylesheet" type="text/css">
+    <link href="statistics/style.css" rel="stylesheet" type="text/css">
 
-            <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
+    <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
 
-            <script src="<?= CMS_ROOTPATH; ?>include/jquery/jquery.min.js"></script>
-            <script src="<?= CMS_ROOTPATH; ?>include/jqueryui/jquery-ui.min.js"></script>
-            <script src="include/popup_merge.js"></script>
-        <?php
-        }
-        ?>
-        <!-- Main menu pull-down -->
-        <link rel="stylesheet" type="text/css" href="<?= CMS_ROOTPATH; ?>include/popup_menu/popup_menu.css">
-        <!-- Pop-up menu -->
-        <script src="<?= CMS_ROOTPATH; ?>include/popup_menu/popup_menu.js"></script>
-    </head>
+    <script src="include/popup_merge.js"></script>
+<?php } ?>
 
-    <?php
+<!-- Main menu pull-down -->
+<link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
 
-    // *** Close pop-up screen and update main screen ***
-    if (isset($_GET['page']) and $_GET['page'] == 'close_popup') {
-        $page_link = 'editor';
-        // *** Also add these links in "Close source screen" link ***
-        if (isset($_GET['connect_sub_kind'])) {
-            if ($_GET['connect_sub_kind'] == 'address_source') $page_link = 'edit_addresses';
-            //if ($_GET['connect_sub_kind']=='pers_address_source') $page_link='edit_addresses';
-            //if ($_GET['connect_sub_kind']=='fam_address_source') $page_link='edit_addresses';
-            if ($_GET['connect_sub_kind'] == 'pers_event_source') $page_link = 'editor&event_person=1'; // Don't use &amp;
-            if ($_GET['connect_sub_kind'] == 'fam_event_source') $page_link = 'editor&event_family=1'; // Don't use &amp;
-        }
+<!-- Pop-up menu -->
+<script src="../include/popup_menu/popup_menu.js"></script>
+</head>
 
-        // *** Added May 2021: For multiple marriages ***
-        if (substr($_GET['connect_sub_kind'], 0, 3) == 'fam')
-            $page_link .= '&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber']; // Don't use &amp;
+<?php
 
-        if (isset($_GET['event_person']) and $_GET['event_person'] == '1')
-            $page_link = 'editor&event_person=1#event_person_link'; // Don't use &amp;
-        //if (isset($_GET['event_family']) AND $_GET['event_family']=='1')
-        //	$page_link='editor&event_family=1#event_family_link'; // Don't use &amp;
-        // *** Added May 2021: For multiple marriages ***
-        if (isset($_GET['event_family']) and $_GET['event_family'] == '1')
-            $page_link = 'editor&event_family=1&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber'] . '#event_family_link'; // Don't use &amp;
+// *** Close pop-up screen and update main screen ***
+if (isset($_GET['page']) and $_GET['page'] == 'close_popup') {
+    $page_link = 'editor';
+    // *** Also add these links in "Close source screen" link ***
+    if (isset($_GET['connect_sub_kind'])) {
+        if ($_GET['connect_sub_kind'] == 'address_source') $page_link = 'edit_addresses';
+        //if ($_GET['connect_sub_kind']=='pers_address_source') $page_link='edit_addresses';
+        //if ($_GET['connect_sub_kind']=='fam_address_source') $page_link='edit_addresses';
+        if ($_GET['connect_sub_kind'] == 'pers_event_source') $page_link = 'editor&event_person=1'; // Don't use &amp;
+        if ($_GET['connect_sub_kind'] == 'fam_event_source') $page_link = 'editor&event_family=1'; // Don't use &amp;
+    }
 
-        echo '<script>';
-        echo 'function redirect_to(where, closewin){
+    // *** Added May 2021: For multiple marriages ***
+    if (substr($_GET['connect_sub_kind'], 0, 3) == 'fam')
+        $page_link .= '&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber']; // Don't use &amp;
+
+    if (isset($_GET['event_person']) and $_GET['event_person'] == '1')
+        $page_link = 'editor&event_person=1#event_person_link'; // Don't use &amp;
+    //if (isset($_GET['event_family']) AND $_GET['event_family']=='1')
+    //	$page_link='editor&event_family=1#event_family_link'; // Don't use &amp;
+    // *** Added May 2021: For multiple marriages ***
+    if (isset($_GET['event_family']) and $_GET['event_family'] == '1')
+        $page_link = 'editor&event_family=1&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber'] . '#event_family_link'; // Don't use &amp;
+
+    echo '<script>';
+    echo 'function redirect_to(where, closewin){
             opener.location= \'index.php?page=' . $page_link . '\' + where;
             if (closewin == 1){ self.close(); }
         }';
-        echo '</script>';
+    echo '</script>';
 
-        //echo '<body onload="redirect_to(\'index.php\',\'1\')">';
-        echo '<body onload="redirect_to(\'\',\'1\')">';
+    //echo '<body onload="redirect_to(\'index.php\',\'1\')">';
+    echo '<body onload="redirect_to(\'\',\'1\')">';
 
-        die();
-    } else {
-        echo '<body class="humo">';
-    }
+    die();
+} else {
+    echo '<body class="humo">';
 }
 
 // *** Show top menu ***
@@ -666,7 +538,7 @@ if ($language["dir"] == "rtl") {
 }
 
 if ($popup == false) {
-    ?>
+?>
     <div id="humo_top" <?= $top_dir; ?>>
 
         <span id="top_website_name">
@@ -761,111 +633,108 @@ if ($popup == false) {
     define('ADMIN_PAGE', true); // *** Safety line ***
 
     if ($page == 'install') {
-        include_once("include/install.php");
+        include_once(__DIR__ . "/views/install.php");
     } elseif ($page == 'extensions') {
-        include_once("include/extensions.php");
+        include_once(__DIR__ . "/views/extensions.php");
     } elseif ($page == 'login') {
-        //include_once("include/login.php");
-        include_once("views/login.php");
+        include_once(__DIR__ . "/views/login.php");
     } elseif ($group_administrator == 'j' and $page == 'tree') {
-        include_once("include/trees.php");
+        include_once(__DIR__ . "/views/trees.php");
     } elseif ($page == 'editor') {
         $_GET['menu_admin'] = 'person';
-        include_once("include/editor.php");
+        include_once(__DIR__ . "/views/editor.php");
     } elseif ($page == 'editor_sources') {
         $_GET['menu_admin'] = 'person';
-        include_once("include/editor_sources.php");
+        include_once(__DIR__ . "/include/editor_sources.php");
     }
     // NEW edit_sources for all source links...
     elseif ($page == 'edit_sources') {
         $_GET['menu_admin'] = 'sources';
-        include_once("views/edit_source.php");
+        include_once(__DIR__ . "/views/edit_source.php");
     } elseif ($page == 'edit_repositories') {
         $_GET['menu_admin'] = 'repositories';
-        include_once("views/edit_repository.php");
+        include_once(__DIR__ . "/views/edit_repository.php");
     } elseif ($page == 'edit_addresses') {
         $_GET['menu_admin'] = 'addresses';
-        include_once("views/edit_address.php");
+        include_once(__DIR__ . "/views/edit_address.php");
     } elseif ($page == 'edit_places') {
         $_GET['menu_admin'] = 'places';
-        include_once("views/edit_rename_place.php");
+        include_once(__DIR__ . "/views/edit_rename_place.php");
     } elseif ($page == 'editor_place_select') {
         $_GET['menu_admin'] = 'places';
-        include_once("include/editor_place_select.php");
+        include_once(__DIR__ . "/include/editor_place_select.php");
     } elseif ($page == 'editor_person_select') {
         $_GET['menu_admin'] = 'marriage';
-        include_once("include/editor_person_select.php");
+        include_once(__DIR__ . "/include/editor_person_select.php");
     } elseif ($page == 'editor_relation_select') {
         $_GET['menu_admin'] = 'relation';
-        include_once("include/editor_relation_select.php");
+        include_once(__DIR__ . "/include/editor_relation_select.php");
     } elseif ($page == 'editor_media_select') {
         $_GET['menu_admin'] = 'menu';
-        include_once("include/editor_media_select.php");
+        include_once(__DIR__ . "/include/editor_media_select.php");
     } elseif ($page == 'check') {
-        include_once("include/tree_check.php");
+        include_once(__DIR__ . "/views/tree_check.php");
     } elseif ($page == 'view_latest_changes') {
         $_POST['last_changes'] = 'View latest changes';
-        include_once("include/tree_check.php");
+        include_once(__DIR__ . "/include/tree_check.php");
     } elseif ($page == 'gedcom') {
-        include_once("include/gedcom.php");
+        include_once(__DIR__ . "/views/gedcom.php");
     } elseif ($page == 'settings') {
-        include_once("include/settings_admin.php");
+        include_once(__DIR__ . "/views/settings_admin.php");
     } elseif ($page == 'thumbs') {
-        include_once("include/thumbs.php");
-    } elseif ($page == 'favorites') {
-        include_once("include/favorites.php");
+        include_once(__DIR__ . "/views/thumbs.php");
+        //} elseif ($page == 'favorites') {
+        //    include_once(__DIR__ . "/include/favorites.php");
     } elseif ($page == 'users') {
-        include_once("include/users.php");
+        include_once(__DIR__ . "/views/users.php");
     } elseif ($page == 'editor_user_settings') {
         $_GET['menu_admin'] = 'users';
-        include_once("include/editor_user_settings.php");
+        include_once(__DIR__ . "/include/editor_user_settings.php");
     } elseif ($page == 'groups') {
-        include_once("include/groups.php");
+        include_once(__DIR__ . "/views/groups.php");
     } elseif ($page == 'cms_pages') {
-        include_once("include/cms_pages.php");
+        include_once(__DIR__ . "/views/cms_pages.php");
     } elseif ($page == 'backup') {
-        include_once("include/backup.php");
+        include_once(__DIR__ . "/views/backup.php");
     } elseif ($page == 'user_notes') {
-        include_once("include/user_notes.php");
+        include_once(__DIR__ . "/views/user_notes.php");
     } elseif ($page == 'cal_date') {
-        include_once("include/cal_date.php");
+        include_once(__DIR__ . "/views/cal_date.php");
     } elseif ($page == 'export') {
-        include_once("include/gedcom_export.php");
+        include_once(__DIR__ . "/views/gedcom_export.php");
     } elseif ($page == 'log') {
-        include_once("include/log.php");
+        include_once(__DIR__ . "/views/log.php");
     } elseif ($page == 'language_editor') {
-        include_once("include/language_editor.php");
+        include_once(__DIR__ . "/views/language_editor.php");
     } elseif ($page == 'prefix_editor') {
-        //include_once("include/prefix_editor.php");
-        include_once("views/prefix_editor.php");
+        include_once(__DIR__ . "/views/prefix_editor.php");
     } elseif ($page == 'google_maps') {
-        include_once("include/make_db_maps.php");
+        include_once(__DIR__ . "/views/make_db_maps.php");
     } elseif ($page == 'statistics') {
-        include_once("include/statistics.php");
+        include_once(__DIR__ . "/views/statistics.php");
     } elseif ($page == 'install_update') {
-        include_once("update/install_update.php");
+        include_once(__DIR__ . "/update/install_update.php");
     } elseif ($page == 'update') {
-        include_once("include/update.php");
+        include_once(__DIR__ . "/include/update.php");
     }
-    //elseif ($page=='photoalbum'){ include_once ("include/photoalbum_categories.php"); }
+    //elseif ($page=='photoalbum'){ include_once (__DIR__ . "/include/photoalbum_categories.php"); }
 
     // *** Edit event by person ***
-    //elseif ($page=='editor_person_event'){ include_once ("include/editor_person_event.php"); }
+    //elseif ($page=='editor_person_event'){ include_once (__DIR__ . "/include/editor_person_event.php"); }
 
     // *** Default page for editor ***
     elseif ($group_administrator != 'j' and $group_edit_trees) {
         $_GET['menu_admin'] = 'person';
-        include_once("include/editor.php");
+        include_once(__DIR__ . "/views/editor.php");
     }
 
     // *** Default page for administrator ***
     else {
-        //include_once("include/index_inc.php");
-        include_once("views/index_admin.php");
+        include_once(__DIR__ . "/views/index_admin.php");
     }
     ?>
 </div>
 
 </body>
 
-    </html>
+</html>

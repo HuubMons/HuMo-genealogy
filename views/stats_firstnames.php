@@ -1,7 +1,7 @@
 <?php
 function first_names($max)
 {
-    global $dbh, $tree_id, $language, $user, $humo_option, $uri_path;
+    global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $link_cls;
 
     $m_first_names = array();
     $f_first_names = array();
@@ -63,7 +63,7 @@ function first_names($max)
         }
     );
 
-    $path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id;
+    $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
 
     count($m_first_names) < count($f_first_names) ? $most = count($f_first_names) : $most = count($m_first_names);
     if ($most > $max) $most = $max;
@@ -76,7 +76,7 @@ function first_names($max)
         //male 1st name
         echo '<tr><td class="m_namelst">';
         if (isset($m_keys[$i]) and isset($m_first_names[$m_keys[$i]])) {
-            echo '<a href="' . $path_tmp . '&amp;sexe=M&amp;pers_firstname=' . $m_keys[$i] . '&amp;part_firstname=contains">' . $m_keys[$i] . "</a>";
+            echo '<a href="' . $path_tmp . 'sexe=M&amp;pers_firstname=' . $m_keys[$i] . '&amp;part_firstname=contains">' . $m_keys[$i] . "</a>";
         }
         //male 1st nr
         echo '</td><td class="m_namenr" style="text-align:center;border-right-width:3px">';
@@ -86,7 +86,7 @@ function first_names($max)
         //male 2nd name
         echo '</td><td class="m_namelst">';
         if (isset($m_keys[$i + $row]) and isset($m_first_names[$m_keys[$i + $row]])) {
-            echo '<a href="' . $path_tmp . '&amp;sexe=M&amp;pers_firstname=' . $m_keys[$i + $row] . '&amp;part_firstname=contains">' . $m_keys[$i + $row] . "</a>";
+            echo '<a href="' . $path_tmp . 'sexe=M&amp;pers_firstname=' . $m_keys[$i + $row] . '&amp;part_firstname=contains">' . $m_keys[$i + $row] . "</a>";
         }
         //male 2nd nr
         echo '</td><td class="m_namenr" style="text-align:center;border-right-width:6px">';
@@ -96,7 +96,7 @@ function first_names($max)
         //female 1st name
         echo '</td><td class="f_namelst">';
         if (isset($f_keys[$i]) and isset($f_first_names[$f_keys[$i]])) {
-            echo '<a href="' . $path_tmp . '&amp;sexe=F&amp;pers_firstname=' . $f_keys[$i] . '&amp;part_firstname=contains">' . $f_keys[$i] . "</a>";
+            echo '<a href="' . $path_tmp . 'sexe=F&amp;pers_firstname=' . $f_keys[$i] . '&amp;part_firstname=contains">' . $f_keys[$i] . "</a>";
         }
         //female 1st nr
         echo '</td><td class="f_namenr" style="text-align:center;border-right-width:3px">';
@@ -106,7 +106,7 @@ function first_names($max)
         //female 2nd name
         echo '</td><td class="f_namelst">';
         if (isset($f_keys[$i + $row]) and isset($f_first_names[$f_keys[$i + $row]])) {
-            echo '<a href="' . $path_tmp . '&amp;sexe=F&amp;pers_firstname=' . $f_keys[$i + $row] . '&amp;part_firstname=contains">' . $f_keys[$i + $row] . "</a>";
+            echo '<a href="' . $path_tmp . 'sexe=F&amp;pers_firstname=' . $f_keys[$i + $row] . '&amp;part_firstname=contains">' . $f_keys[$i + $row] . "</a>";
         }
         //female 2nd nr
         echo '</td><td class="f_namenr" style="text-align:center;border-right-width:1px">';

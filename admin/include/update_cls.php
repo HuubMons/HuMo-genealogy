@@ -1373,10 +1373,10 @@ class update_cls
         // *** Read all family trees from database ***
         $update_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
         while ($updateDb = $update_sql->fetch(PDO::FETCH_OBJ)) {
-
+            //ob_start();
             echo '<b>Check ' . $updateDb->tree_prefix . '</b>';
-            ob_flush();
-            flush(); // IE
+            //ob_flush();
+            flush();
 
             // *** Update source table ***
             $sql = "ALTER TABLE " . $updateDb->tree_prefix . "sources
@@ -1777,9 +1777,10 @@ class update_cls
         // *** Read all family trees from database ***
         $update_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
         while ($updateDb = $update_sql->fetch(PDO::FETCH_OBJ)) {
+            //ob_start();
             echo '<b>Check ' . $updateDb->tree_prefix . '</b><br>';
-            ob_flush();
-            flush(); // IE
+            //ob_flush();
+            flush();
 
             // *** Automatic installation or update ***
             if (isset($field)) {
@@ -2385,9 +2386,10 @@ class update_cls
             //echo '<script>';
             //	echo 'document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";';
             //echo '</script>';
+            //ob_start();
             echo __('Update tree:') . ' ' . $updateDb->tree_id . '<br>';
-            ob_flush();
-            flush(); // IE
+            //ob_flush();
+            flush();
 
             // *** Copy items from humo[nr]_person to humo_persons table ***
             // *** Batch processing ***
@@ -2788,9 +2790,10 @@ class update_cls
         //echo '<script>';
         //echo 'document.getElementById("information").innerHTML="'.__('Update table unprocessed_tags...').'";';
         //echo '</script>';
+        //ob_start();
         echo __('Update table unprocessed_tags...') . '<br>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
 
         // *** Copy tags from sources to tag table ***
@@ -3149,24 +3152,26 @@ class update_cls
         global $dbh;
 
         // *** Show update status ***
+        //ob_start();
         echo '<tr><td>HuMo-genealogy update V5.2.5</td>';
         echo '<td style="background-color:#00FF00">' . __('Update in progress...') . ' <div id="information v5_2_5" style="display: inline; font-weight:bold;"></div></td></tr>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         // *** Batch processing ***
         //$dbh->beginTransaction();
 
-        // *** Update for 2 TYPE including long text: "2 TYPE E-mail adres" ***
+        // *** Update for 2 TYPE including long text: "2 TYPE E-mail address" ***
         $sql = "ALTER TABLE humo_events CHANGE event_gedcom event_gedcom VARCHAR(25) CHARACTER SET utf8,
             CHANGE event_gedcomnr event_gedcomnr VARCHAR(25) CHARACTER SET utf8,
             CHANGE event_connect_id event_connect_id VARCHAR(25) CHARACTER SET utf8,
             CHANGE event_id event_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
         $result = $dbh->query($sql);
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update events table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         // *** Automatic installation or update ***
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_users');
@@ -3190,9 +3195,10 @@ class update_cls
             CHANGE pers_indexnr pers_indexnr VARCHAR(25) CHARACTER SET utf8";
         $result = $dbh->query($sql);
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update pers table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         $sql = "ALTER TABLE humo_families CHANGE fam_id fam_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE fam_gedcomnumber fam_gedcomnumber VARCHAR(25) CHARACTER SET utf8,
@@ -3200,18 +3206,20 @@ class update_cls
             CHANGE fam_woman fam_woman VARCHAR(25) CHARACTER SET utf8";
         $result = $dbh->query($sql);
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update fam table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         $sql = "ALTER TABLE humo_addresses CHANGE address_id address_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE address_gedcomnr address_gedcomnr VARCHAR(25) CHARACTER SET utf8,
             CHANGE address_connect_id address_connect_id VARCHAR(25) CHARACTER SET utf8";
         $result = $dbh->query($sql);
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update address table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         $sql = "ALTER TABLE humo_connections CHANGE connect_id connect_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE connect_connect_id connect_connect_id VARCHAR(25) CHARACTER SET utf8,
@@ -3219,9 +3227,10 @@ class update_cls
             CHANGE connect_item_id connect_item_id VARCHAR(25) CHARACTER SET utf8";
         $result = $dbh->query($sql);
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update connect table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         try {
             $sql = "ALTER TABLE humo_location CHANGE location_id location_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
@@ -3231,34 +3240,38 @@ class update_cls
         }
 
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update location table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         $sql = "ALTER TABLE humo_sources CHANGE source_id source_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE source_gedcomnr source_gedcomnr VARCHAR(25) CHARACTER SET utf8,
             CHANGE source_repo_gedcomnr source_repo_gedcomnr VARCHAR(25) CHARACTER SET utf8";
         $result = $dbh->query($sql);
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update source table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         $sql = "ALTER TABLE humo_texts CHANGE text_id text_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE text_gedcomnr text_gedcomnr VARCHAR(25) CHARACTER SET utf8";
         $result = $dbh->query($sql);
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update texts table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         $sql = "ALTER TABLE humo_repositories CHANGE repo_id repo_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE repo_gedcomnr repo_gedcomnr varchar(25) CHARACTER SET utf8";
         $result = $dbh->query($sql);
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update repo table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         $sql = "ALTER TABLE humo_user_notes ADD note_tree_id mediumint(7) AFTER note_status,
             CHANGE note_pers_gedcomnumber note_pers_gedcomnumber varchar(25) CHARACTER SET utf8,
@@ -3277,9 +3290,10 @@ class update_cls
             CHANGE tag_repo_id tag_repo_id INT(10) UNSIGNED NULL DEFAULT NULL,
             CHANGE tag_id tag_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
         $result = $dbh->query($sql);
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update unprocessed table";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         $sql = "ALTER TABLE humo_stat_date
             CHANGE stat_gedcom_fam stat_gedcom_fam varchar(25) CHARACTER SET utf8,
@@ -3304,9 +3318,10 @@ class update_cls
         //$dbh->commit();
 
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Database updated!";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
     }
 
 
@@ -3319,10 +3334,11 @@ class update_cls
         global $dbh;
 
         // *** Show update status ***
+        //ob_start();
         echo '<tr><td>HuMo-genealogy update V5.6.1</td>';
         echo '<td style="background-color:#00FF00">' . __('Update in progress...') . ' <div id="information v5_6_1" style="display: inline; font-weight:bold;"></div></td></tr>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         // *** Batch processing ***
         //$dbh->beginTransaction();
@@ -3441,9 +3457,10 @@ class update_cls
         //$dbh->commit();
 
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_6_1").innerHTML="Database updated!";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
     }
 
 
@@ -3456,10 +3473,11 @@ class update_cls
         global $dbh, $db_functions;
 
         // *** Show update status ***
+        //ob_start();
         echo '<tr><td>HuMo-genealogy update V5.7</td>';
         echo '<td style="background-color:#00FF00">' . __('Update in progress...') . ' <div id="information v5_7" style="display: inline; font-weight:bold;"></div></td></tr>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         // *** Remove unwanted file from HuMo-genealogy ***
         if (file_exists('gedcom_files/HuMo-gen 2020_05_02 UTF-8.ged')) {
@@ -3486,16 +3504,6 @@ class update_cls
         // *** Read all family trees from database ***
         $update_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
         while ($updateDb = $update_sql->fetch(PDO::FETCH_OBJ)) {
-
-            // *** Show status of database update ***
-            //echo '<script>';
-            //	echo 'document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";';
-            //echo '</script>';
-
-            //echo __('Update tree:').' '.$updateDb->tree_id.'<br>';
-            //ob_flush(); 
-            //flush(); // IE
-
             // *** Generate new GEDCOM number ***
             $new_gedcomnumber = $db_functions->generate_gedcomnr($updateDb->tree_id, 'address');
 
@@ -3603,9 +3611,10 @@ class update_cls
         //$dbh->commit();
 
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_7").innerHTML="Database updated!";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
     }
 
 
@@ -3618,10 +3627,11 @@ class update_cls
         global $dbh, $db_functions;
 
         // *** Show update status ***
+        //ob_start();
         echo '<tr><td>HuMo-genealogy update V5.9</td>';
         echo '<td style="background-color:#00FF00">' . __('Update in progress...') . ' <div id="information v5_9" style="display: inline; font-weight:bold;"></div></td></tr>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         // *** Add index to humo_addresses ***
         $index_check = $dbh->query("SHOW KEYS FROM humo_addresses WHERE Key_name='address_gedcomnr'");
@@ -3686,9 +3696,10 @@ class update_cls
         //$dbh->commit();
 
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v5_9").innerHTML="Database updated!";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
     }
 
 
@@ -3701,10 +3712,11 @@ class update_cls
         global $dbh, $db_functions;
 
         // *** Show update status ***
+        //ob_start();
         echo '<tr><td>HuMo-genealogy update V6.0.1</td>';
         echo '<td style="background-color:#00FF00">' . __('Update in progress...') . ' <div id="information v6_0_1" style="display: inline; font-weight:bold;"></div></td></tr>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
 
         // *** Change pers_address_source and fam_address_source into: address_source ***
         $sql_get = $dbh->query("SELECT * FROM humo_connections WHERE connect_sub_kind='pers_address_source' OR connect_sub_kind='fam_address_source'");
@@ -3775,10 +3787,203 @@ class update_cls
         //$dbh->commit();
 
         // *** Show status of database update ***
+        //ob_start();
         echo '<script>document.getElementById("information v6_0_1").innerHTML="Database updated!";</script>';
-        ob_flush();
-        flush(); // IE
+        //ob_flush();
+        flush();
     }
+
+
+    public function update_v6_4_1()
+    {
+        // **************************************
+        // *** Update procedure version 6.4.1 ***
+        // **************************************
+
+        global $dbh, $db_functions;
+
+        // *** Show update status ***
+        //ob_start();
+?>
+        <tr>
+            <td>HuMo-genealogy update V6.4.1</td>
+            <td style="background-color:#00FF00"><?= __('Update in progress...'); ?><div id="information v6_4_1" style="display: inline; font-weight:bold;"></div>
+            </td>
+        </tr>
+<?php
+        //ob_flush();
+        flush();
+
+        // *** Check table user_notes ***
+        $column_qry = $dbh->query('SHOW COLUMNS FROM humo_user_notes');
+        while ($columnDb = $column_qry->fetch()) {
+            $field_value = $columnDb['Field'];
+            $field[$field_value] = $field_value;
+        }
+        // *** Automatic update ***
+        if (!isset($field['note_order'])) {
+            $sql = "ALTER TABLE humo_user_notes CHANGE note_date note_new_date varchar(20) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_user_notes CHANGE note_time note_new_time varchar(25) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_user_notes CHANGE note_user_id note_new_user_id smallint(5);";
+            $result = $dbh->query($sql);
+
+            $sql = "ALTER TABLE humo_user_notes ADD note_changed_date varchar(20) CHARACTER SET utf8 AFTER note_new_user_id;";
+            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_user_notes ADD note_changed_time varchar(25) CHARACTER SET utf8 AFTER note_changed_date;";
+            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_user_notes ADD note_changed_user_id smallint(5) AFTER note_changed_time;";
+            $result = $dbh->query($sql);
+
+            $sql = "ALTER TABLE humo_user_notes ADD note_priority varchar(15) CHARACTER SET utf8 AFTER note_status;";
+            $result = $dbh->query($sql);
+
+            $sql = "ALTER TABLE humo_user_notes CHANGE note_status note_status varchar(15) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+
+            // *** Add note_order ***
+            $sql = "ALTER TABLE humo_user_notes ADD note_order smallint(5) AFTER note_id;";
+            $result = $dbh->query($sql);
+
+            // *** Add note_connect_kind = person/ family/ source/ repository ***
+            $sql = "ALTER TABLE humo_user_notes ADD note_connect_kind varchar(20) CHARACTER SET utf8 AFTER note_tree_id;";
+            $result = $dbh->query($sql);
+
+            // *** Add note_kind = user/ editor ***
+            $sql = "ALTER TABLE humo_user_notes ADD note_kind varchar(10) CHARACTER SET utf8 AFTER note_tree_id;";
+            $result = $dbh->query($sql);
+
+            // *** Change all existing note_connect_kind items into 'person' ***
+            $sql = "UPDATE humo_user_notes SET note_connect_kind='person';";
+            $result = $dbh->query($sql);
+
+            // *** Change note_pers_gedcomnumber into: note_connect_id ***
+            $sql = "ALTER TABLE humo_user_notes CHANGE note_pers_gedcomnumber note_connect_id VARCHAR(25) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+
+            // *** Update tree_id, could be missing in some cases ***
+            $sql = "SELECT * FROM humo_user_notes LEFT JOIN humo_trees ON note_tree_prefix=tree_prefix ORDER BY note_id;";
+            $qry = $dbh->query($sql);
+            while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                $sql2 = "UPDATE humo_user_notes SET note_tree_id='" . $qryDb->tree_id . "', note_kind='user' WHERE note_id='" . $qryDb->note_id . "'";
+                $result = $dbh->query($sql2);
+            }
+
+            // *** Remove note_fam_gedcomnumber ***
+            $sql = "ALTER TABLE humo_user_notes DROP note_fam_gedcomnumber;";
+            $result = $dbh->query($sql);
+
+            // *** Remove note_fam_gedcomnumber ***
+            $sql = "ALTER TABLE humo_user_notes DROP note_tree_prefix;";
+            $result = $dbh->query($sql);
+        }
+
+        // *** Remove "NOT NULL" from hebnight variables ***
+        $column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
+        while ($columnDb = $column_qry->fetch()) {
+            $field_value = $columnDb['Field'];
+            $field[$field_value] = $field_value;
+        }
+        if (isset($field['pers_birth_date_hebnight'])) {
+            $sql = "ALTER TABLE humo_persons CHANGE pers_birth_date_hebnight pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+        }
+        if (isset($field['pers_death_date_hebnight'])) {
+            $sql = "ALTER TABLE humo_persons CHANGE pers_death_date_hebnight pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+        }
+        if (isset($field['pers_buried_date_hebnight'])) {
+            $sql = "ALTER TABLE humo_persons CHANGE pers_buried_date_hebnight pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+        }
+
+        $column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
+        while ($columnDb = $column_qry->fetch()) {
+            $field_value = $columnDb['Field'];
+            $field[$field_value] = $field_value;
+        }
+        if (isset($field['fam_marr_notice_date_hebnight'])) {
+            $sql = "ALTER TABLE humo_families CHANGE fam_marr_notice_date_hebnight fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+        }
+        if (isset($field['fam_marr_date_hebnight'])) {
+            $sql = "ALTER TABLE humo_families CHANGE fam_marr_date_hebnight fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+        }
+        if (isset($field['fam_marr_church_notice_date_hebnight'])) {
+            $sql = "ALTER TABLE humo_families CHANGE fam_marr_church_notice_date_hebnight fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+        }
+        if (isset($field['fam_marr_church_date_hebnight'])) {
+            $sql = "ALTER TABLE humo_families CHANGE fam_marr_church_date_hebnight fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+        }
+
+        $column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
+        while ($columnDb = $column_qry->fetch()) {
+            $field_value = $columnDb['Field'];
+            $field[$field_value] = $field_value;
+        }
+        if (isset($field['event_date_hebnight'])) {
+            $sql = "ALTER TABLE humo_events CHANGE event_date_hebnight event_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+            $result = $dbh->query($sql);
+        }
+
+        // *** Create table humo_stat_country
+        $temp = $dbh->query("SHOW TABLES LIKE 'humo_stat_country'");
+        if (!$temp->rowCount()) {
+            $qry = "CREATE TABLE humo_stat_country (
+                stat_country_id INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                stat_country_ip_address varchar(40) DEFAULT NULL,
+                stat_country_code VARCHAR(10) CHARACTER SET utf8
+            )";
+            $dbh->query($qry);
+        }
+
+        $result = $dbh->query("ALTER TABLE `humo_texts` ADD KEY `text_gedcomnr` (`text_gedcomnr`)");
+
+        $sql = "ALTER TABLE humo_events
+            ADD event_connect_kind2 varchar(25) CHARACTER SET utf8 AFTER event_connect_id,
+            ADD event_connect_id2 varchar(25) DEFAULT NULL AFTER event_connect_kind2";
+        $result = $dbh->query($sql);
+
+        $result = $dbh->query("ALTER TABLE `humo_events` ADD KEY `event_connect_id2` (`event_connect_id2`)");
+
+        // loop humo_events, copy @ numbers to new event_connect_id2.
+        // *** Batch processing ***
+        $dbh->beginTransaction();
+        $sql = "SELECT event_id, event_event FROM humo_events WHERE LEFT(event_event,1)= '@'
+            AND (event_kind='birth_declaration' OR event_kind='baptism_witness'
+            OR event_kind='death_declaration' OR event_kind='burial_witness'
+            OR event_kind='marriage_witness' OR event_kind='marriage_witness_rel')
+        ";
+        $qry = $dbh->query($sql);
+        while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
+            $gebeurtsql = "UPDATE humo_events SET
+                event_connect_kind='person',
+                event_connect_id2='" . substr($qryDb->event_event,1,-1) . "',
+                event_event=''
+                WHERE event_id= '" . $qryDb->event_id . "'";
+            $result = $dbh->query($gebeurtsql);
+        }
+        // *** Commit data in database ***
+        $dbh->commit();
+
+        // *** Update "update_status" to number 16 ***
+        $result = $dbh->query("UPDATE humo_settings SET setting_value='16' WHERE setting_variable='update_status'");
+
+        // *** Commit data in database ***
+        //$dbh->commit();
+
+        // *** Show status of database update ***
+        //ob_start();
+        echo '<script>document.getElementById("information v6_4_1").innerHTML="Database updated!";</script>';
+        //ob_flush();
+        flush();
+    }
+
+
 
 
     /*	*** UPDATE REMARKS ***
@@ -3821,6 +4026,9 @@ class update_cls
         echo __('Update in progress...').' <div id="information" style="display: inline; font-weight:bold;"></div><br>';
 
         // *** Show status of database update ***
-        echo '<script>document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";</script>'; ob_flush(); flush(); // IE
+        //ob_start();
+        echo '<script>document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";</script>';
+        //ob_flush();
+        flush();
 */
 } // *** End of update_cls ***

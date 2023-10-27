@@ -1,7 +1,8 @@
 <?php
-include_once(CMS_ROOTPATH . "include/2fa_authentication/authenticator.php");
+include_once(__DIR__ . "/../include/2fa_authentication/authenticator.php");
 $two_fa_change = false;
 
+// TODO use function to get link
 if ($humo_option["url_rewrite"] == "j") {
     $action = 'user_settings';
     $action2 = 'user_settings?';
@@ -94,7 +95,7 @@ if (isset($_POST['update_settings'])) {
         $register_message .= __('Name') . ':' . $userDb->user_name . "<br>\n";
         $register_message .= __('E-mail') . ": <a href='mailto:" . $_POST['register_mail'] . "'>" . $_POST['register_mail'] . "</a><br>\n";
 
-        include_once('include/mail.php');
+        include_once(__DIR__ . '/../include/mail.php');
 
         // *** Set who the message is to be sent from ***
         $mail->setFrom($_POST['register_mail'], $userDb->user_name);
@@ -298,5 +299,8 @@ if ($show_theme_select == true) {
 
     <!-- Otherwise footer is at wrong place -->
     <div style="width:100%; clear:both;"></div>
+
+    <br>
+    <br>
 <?php
 }

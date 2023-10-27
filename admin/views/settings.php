@@ -1,5 +1,5 @@
 <?php
-$folder = opendir(CMS_ROOTPATH . 'styles/');
+$folder = opendir('../styles/');
 while (false !== ($file = readdir($folder))) {
     if (substr($file, -4, 4) == '.css') {
         $theme_folder[] = $file;
@@ -146,7 +146,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     <option value="j"><?= __('Yes'); ?></option>
                     <option value="n" <?php if ($humo_option["url_rewrite"] != 'j') echo ' selected'; ?>><?= __('No'); ?></option>
                 </select> <b><?= __('ATTENTION: the Apache module "mod_rewrite" has to be installed!'); ?></b><br>
-                URL&nbsp;&nbsp;: http://www.website.nl/humo-gen/family.php?id=F12<br>
+                URL&nbsp;&nbsp;: http://www.website.nl/humo-gen/index.php?page=family&amp;id=F12<br>
                 <?= __('becomes:'); ?> http://www.website.nl/humo-gen/family/F12/<br>
             </td>
         </tr>
@@ -391,7 +391,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     //echo '<option value="default_timelines"'.$select.'>English</option>'; // *** Don't add "English" in translation file! ***
                     echo '<option value="default_timelines"' . $select . '>' . __('Default') . '</option>'; // *** Don't add "English" in translation file! ***
                     for ($i = 0; $i < count($langs); $i++) {
-                        if (is_dir(CMS_ROOTPATH . 'languages/' . $langs[$i][1] . '/timelines/')) {
+                        if (is_dir('../languages/' . $langs[$i][1] . '/timelines/')) {
                             $select = '';
                             if ($time_lang == $langs[$i][1]) {
                                 $select = ' selected';
@@ -405,9 +405,9 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 echo "&nbsp;&nbsp;";
 
                 // *** First select language, then the timeline files of that language is shown ***
-                $folder = @opendir(CMS_ROOTPATH . 'languages/' . $time_lang . '/timelines/');
+                $folder = @opendir('../languages/' . $time_lang . '/timelines/');
                 // *** Default language = english ***
-                if ($time_lang == 'default_timelines') $folder = @opendir(CMS_ROOTPATH . 'languages/' . $time_lang);
+                if ($time_lang == 'default_timelines') $folder = @opendir('../languages/' . $time_lang);
                 if ($folder !== false) {  // no use showing the option if we can't access the timeline folder
                     while (false !== ($file = readdir($folder))) {
                         if (substr($file, -4, 4) == '.txt') {

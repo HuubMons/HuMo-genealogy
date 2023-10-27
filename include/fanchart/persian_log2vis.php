@@ -21,19 +21,19 @@
  * @param		boolean	Which encoding? default it "utf8"
  * @param		boolean	Do you want to change special characters like "allah" or "lam+alef" or "lam+hamza", default is true
  */
-function persian_log2vis(&$str){
-	include_once('bidi.php');
-	$text = explode("\n", $str);
+function persian_log2vis(&$str)
+{
+    include_once('bidi.php');
+    $text = explode("\n", $str);
 
-	$str = array();
-	foreach($text as $line){
-		$chars = bidi::utf8Bidi(bidi::UTF8StringToArray($line), 'R');
-		$line = '';
-		foreach($chars as $char){
-			$line .= bidi::unichr($char);
-		}
-		$str[] = $line;
-	}
-	$str = implode("\n", $str);
+    $str = array();
+    foreach ($text as $line) {
+        $chars = bidi::utf8Bidi(bidi::UTF8StringToArray($line), 'R');
+        $line = '';
+        foreach ($chars as $char) {
+            $line .= bidi::unichr($char);
+        }
+        $str[] = $line;
+    }
+    $str = implode("\n", $str);
 }
-?>

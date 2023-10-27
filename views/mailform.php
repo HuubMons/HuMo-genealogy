@@ -43,7 +43,7 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
     //$headers .= "From: \"".$_POST['mail_name']."\"\n";
     //$headers .= "Reply-To: \"".$_POST['mail_name']."\" <".$_POST['mail_sender'].">\n";
 
-    // *** REMARK: because of security, the mail adres and message entered by the visitor are not shown on screen anymore! ***
+    // *** REMARK: because of security, the mail address and message entered by the visitor are not shown on screen anymore! ***
     //echo '<br>'.__('You have entered the following e-mail address: ').'<b> '.$_POST['mail_sender'].'</b><br>';
     $position = strpos($_POST['mail_sender'], "@");
     if ($position < 1) echo '<font color="red">' . __('The e-mail address you entered doesn\'t seem to be a valid e-mail address!') . '</font><br>';
@@ -51,7 +51,7 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
     //echo __('Message: ').'<br>'.$_POST['mail_text'];
 
     // *** Use PhpMailer to send mail ***
-    include_once('include/mail.php');
+    include_once(__DIR__.'/../include/mail.php');
 
     // *** Set who the message is to be sent from ***
     $mail->setFrom($_POST['mail_sender'], $_POST['mail_name']);

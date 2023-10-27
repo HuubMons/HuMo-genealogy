@@ -29,19 +29,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once("header.php"); // returns CMS_ROOTPATH constant
+include_once(__DIR__ . "/header.php");
 
 $menu = true;
 // *** Hide menu in descendant chart shown in iframe in fanchart ***
 if (isset($_GET['menu']) and $_GET['menu'] == "1") $menu = false;
-if ($menu) include_once(CMS_ROOTPATH . "menu.php");
+if ($menu) include_once(__DIR__ . "/views/menu.php");
 
 if ($page == 'index') {
     // ***********************************************************************************************
     // ** Main index class ***
     // ***********************************************************************************************
-    //include_once(CMS_ROOTPATH . "include/mainindex_cls.php");
-    //$mainindex = new mainindex_cls();
 
     // *** Replace the main index by an own CMS page ***
     $text = '';
@@ -74,119 +72,80 @@ if ($page == 'index') {
     } else {
         // *** Show default HuMo-genealogy homepage ***
         //$mainindex->show_tree_index();
-        include 'views/tree_index.php';
+        include __DIR__ . '/views/tree_index.php';
     }
 } elseif ($page == 'address') {
-    /**
-     * July 2023: Added MVC system
-     * 
-     */
-
-    //TEST
-    //include 'views/address.php';
-
-
-    //require_once 'config/global.php';
-    define("CONTROLLER_DEFAULT", "Address");
-    define("ACTION_DEFAULT", "address");
-
-    function routeController($controller)
-    {
-        switch ($controller) {
-            case 'address':
-                $strFileController = 'controller/addressController.php';
-                require_once $strFileController;
-                $controllerObj = new addressController();
-                break;
-            default:
-                $strFileController = 'controller/addressController.php';
-                require_once $strFileController;
-                $controllerObj = new addressController();
-                break;
-        }
-        return $controllerObj;
-    }
-
-    function launchAction($controllerObj)
-    {
-        //TEMPORARY. TODO improve code.
-        $_GET["action"] = 'detail';
-        if (isset($_GET["action"])) {
-            $controllerObj->run($_GET["action"]);
-        } else {
-            $controllerObj->run(ACTION_DEFAULT);
-        }
-    }
-
-    // We load the controller and execute the action
-    //if (isset($_GET["controller"])) {
-    //	// We load the instance of the corresponding controller
-    //	$controllerObj = routeController($_GET["controller"]);
-    //	// We launch the action
-    //	launchAction($controllerObj);
-    //} else {
-    // We load the default controller instance
-    $controllerObj = routeController(CONTROLLER_DEFAULT);
-    // We launch the action
-    launchAction($controllerObj);
-    //}
+    require __DIR__ . '/app/controller/addressController.php';
+    $controllerObj = new addressController($db_functions, $user);
+    $data = $controllerObj->detail();
+    require  __DIR__ . '/views/address.php';
 } elseif ($page == 'addresses') {
-    //include 'addresses.php';
-    include 'views/addresses.php';
+    require __DIR__ . '/app/controller/addressesController.php';
+    $controllerObj = new addressesController($dbh, $user, $tree_id);
+    $data = $controllerObj->list();
+    require __DIR__ . '/views/addresses.php';
+} elseif ($page == 'ancestor_report') {
+    require __DIR__ . '/views/ancestor_report.php';
 } elseif ($page == 'ancestor_chart') {
-    include 'views/ancestor_chart.php';
+    require __DIR__ . '/views/ancestor_chart.php';
 } elseif ($page == 'ancestor_sheet') {
-    include 'views/ancestor_sheet.php';
+    require __DIR__ . '/views/ancestor_sheet.php';
 } elseif ($page == 'birthday') {
-    //include 'birthday_list.php';
-    include 'views/birthday_list.php';
+    require __DIR__ . '/views/birthday_list.php';
 } elseif ($page == 'cms_pages') {
-    include 'views/cms_pages.php';
+    require __DIR__ . '/app/controller/cms_pagesController.php';
+    $controllerObj = new CMS_pagesController($dbh, $user);
+    $data = $controllerObj->list();
+    require __DIR__ . '/views/cms_pages.php';
 } elseif ($page == 'cookies') {
-    //include 'cookies.php';
-    include 'views/cookies.php';
+    require __DIR__ . '/views/cookies.php';
 } elseif ($page == 'descendant') {
-    include 'views/descendant_chart.php';
+    require __DIR__ . '/views/descendant_chart.php';
 } elseif ($page == 'family_rtf') {
-    include 'views/family_rtf.php';
+    require __DIR__ . '/views/family_rtf.php';
 } elseif ($page == 'family') {
-    include 'family.php';
+    require __DIR__ . '/views/family.php';
+} elseif ($page == 'fanchart') {
+    require __DIR__ . '/views/fanchart.php';
 } elseif ($page == 'help') {
-    //include 'help.php';
-    include 'views/help.php';
+    require __DIR__ . '/views/help.php';
+} elseif ($page == 'hourglass') {
+    require __DIR__ . '/views/hourglass.php';
 } elseif ($page == 'latest_changes') {
-    //include 'latest_changes.php';
-    include 'views/latest_changes.php';
+    require __DIR__ . '/views/latest_changes.php';
 } elseif ($page == 'list') {
-    include 'list.php';
+    require __DIR__ . '/views/list.php';
+} elseif ($page == 'list_places_families') {
+    require __DIR__ . '/views/list_places_families.php';
 } elseif ($page == 'list_names') {
-    //include 'list_names.php';
-    include 'views/list_names.php';
+    require __DIR__ . '/views/list_names.php';
 } elseif ($page == 'login') {
-    include 'login.php';
+    require __DIR__ . '/views/login.php';
 } elseif ($page == 'mailform') {
-    //include 'mailform.php';
-    include 'views/mailform.php';
+    require __DIR__ . '/views/mailform.php';
+} elseif ($page == 'maps') {
+    require __DIR__ . '/views/maps.php';
 } elseif ($page == 'photoalbum') {
-    include 'photoalbum.php';
+    require __DIR__ . '/views/photoalbum.php';
 } elseif ($page == 'register') {
-    include 'views/register.php';
+    require __DIR__ . '/views/register.php';
 } elseif ($page == 'relations') {
-    include 'relations.php';
+    require __DIR__ . '/views/relations.php';
+} elseif ($page == 'report_outline') {
+    require __DIR__ . '/views/report_outline.php';
 } elseif ($page == 'settings') {
-    //include 'user_settings.php';
-    include 'views/user_settings.php';
+    require __DIR__ . '/views/user_settings.php';
 } elseif ($page == 'statistics') {
-    //include 'statistics.php';
-    include 'views/statistics.php';
+    require __DIR__ . '/views/statistics.php';
 } elseif ($page == 'sources') {
-    //include 'sources.php';
-    include 'views/sources.php';
+    require __DIR__ . '/views/sources.php';
 } elseif ($page == 'source') {
-    include 'source.php';
+    require __DIR__ . '/source.php';
+} elseif ($page == 'timelines') {
+    require __DIR__ . '/views/timelines.php';
 } elseif ($page == 'tree_index') {
-    include 'views/tree_index.php';
+    require __DIR__ . '/views/tree_index.php';
 }
 
 echo '<br>';
-include_once(CMS_ROOTPATH . "views/footer.php");
+include_once(__DIR__ . "/views/footer.php");

@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once(CMS_ROOTPATH . "include/language_date.php");
+include_once(__DIR__ . "/../../include/language_date.php");
 
 echo '<h1 class="center">' . __('Select person') . '</h1>';
 
@@ -26,11 +26,13 @@ if ($_GET['person_item'] == 'child_connect2') {
 
 // *** Witnesses (=event, multiple witnesses possible) ***
 if ($_GET['person_item'] == 'person_witness') {
-    $place_item = 'text_event2' . $_GET['event_row'];
+    //$place_item = 'text_event2' . $_GET['event_row'];
+    $place_item = 'event_connect_id2' . $_GET['event_row'];
     $form = 'form1';
 }
 if ($_GET['person_item'] == 'marriage_witness') {
-    $place_item = 'text_event2' . $_GET['event_row'];
+    //$place_item = 'text_event2' . $_GET['event_row'];
+    $place_item = 'event_connect_id2' . $_GET['event_row'];
     $form = 'form2';
 }
 
@@ -73,7 +75,6 @@ if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10
     echo '
         <script>
         function select_item2(pgn,ppf,pln,pfn,pbdp,pbd,pbp,pddp,pdd,pdp,psx){
-
             window.opener.document.' . $form . '.add_fam_' . $pers_status . '_exist' . $childnr . '.value=pgn;
             window.opener.document.' . $form . '.add_fam_' . $pers_status . '_lastname' . $childnr . '.value=pln;
             window.opener.document.' . $form . '.add_fam_' . $pers_status . '_prefix' . $childnr . '.value=ppf;
@@ -142,7 +143,7 @@ if ($search_quicksearch_man != '') {
     //$person = $db_functions->get_person($man_gedcomnumber);
 }
 
-include('include/editor_cls.php');
+include(__DIR__ . '/editor_cls.php');
 $editor_cls = new editor_cls;
 
 if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10) != 'add_child_') {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Descendant chart. Used to be part of family.php, seperated in july 2023.
+ * Descendant chart. Used to be part of family script, seperated in july 2023.
  * 
  * July 2023: this script will be refactored. Under construction.
  * 
@@ -25,11 +25,13 @@ global $parent1Db, $parent2Db;
 global $templ_name;
 
 // *** Needed for hourglass ***
-include_once(__DIR__ . '../../header.php'); // returns CMS_ROOTPATH constant
+include_once(__DIR__ . '../../header.php');
+
+
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../models/family.php";
+require_once  __DIR__ . "/../app/model/family.php";
 $get_family = new Family($dbh);
 $family_id = $get_family->getFamilyId();
 $main_person = $get_family->getMainPerson();
@@ -45,7 +47,7 @@ $descendant_header = $get_family->getDescendantHeader('Descendant chart', $tree_
 
 
 
-@set_time_limit(300);
+//@set_time_limit(300);
 
 $family_nr = 1;  // *** process multiple families ***
 
@@ -503,10 +505,10 @@ if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_pres
     echo show_sources_footnotes();
 }
 
-if ($hourglass === false) { // in hourglass there's more code after family.php is included
-    include_once(CMS_ROOTPATH . "report_descendant.php");
+if ($hourglass === false) { // in hourglass there's more code after family script is included
+    include_once(__DIR__ . "/report_descendant.php");
     generate();
     printchart();
 
-    include_once(CMS_ROOTPATH . "footer.php");
+    include_once(__DIR__ . "/footer.php");
 }

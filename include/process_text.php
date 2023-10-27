@@ -88,7 +88,12 @@ function process_text($text_process, $text_sort = 'standard')
             if (isset($text_nr)) $text_nr++;
             else $text_nr = 1;
             $text = '<div class="' . $rtlmarker . 'sddm" style="left:10px;top:10px;display:inline;">';
-            $text .= '<a href="family.php?id=' . $family_id . '&amp;main_person=' . $main_person . '"';
+
+            $vars['pers_family'] = $family_id;
+            $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+            $link .= "main_person=" . $main_person;
+            $text .= '<a href="' . $link . '"';
+
             $text .= ' style="display:inline" ';
             $text .= 'onmouseover="mopen(event,\'show_text' . $text_nr . '\',0,0)"';
             $text .= 'onmouseout="mclosetime()">';

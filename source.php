@@ -1,6 +1,4 @@
 <?php
-@set_time_limit(300);
-
 /*--------------------[source_display]----------------------------
  * Show a single source.
  * RETURNS: shows a single source.
@@ -8,13 +6,12 @@
  *----------------------------------------------------------------
  */
 
-//TODO seperate file for PDF export.
+// TODO seperate file for PDF export.
 
 if (isset($_GET["id"])) { // source.php is called from show_sources.php, sources.php
     $sourcenumber = $_GET["id"];
     source_display($sourcenumber);
-}
-if (isset($id)) {
+} elseif (isset($id)) {
     $sourcenumber = $id;
     source_display($sourcenumber);
 }
@@ -25,13 +22,13 @@ function source_display($sourcenum)
     global $bot_visit; // *** Don't remove. Is needed for source.php ***
 
     if ($screen_mode != "PDF") {
-        include_once("header.php"); //returns CMS_ROOTPATH constant
-        include_once(CMS_ROOTPATH . "menu.php");
-        include_once(CMS_ROOTPATH . "include/date_place.php");
-        include_once(CMS_ROOTPATH . "include/process_text.php");
+        include_once(__DIR__ . "/header.php");
+        include_once(__DIR__ . "/views/menu.php");
+        include_once(__DIR__ . "/include/date_place.php");
+        include_once(__DIR__ . "/include/process_text.php");
         // *** Needed for pictures by a source ***
-        include_once(CMS_ROOTPATH . "include/show_picture.php");
-        include_once(CMS_ROOTPATH . "include/show_sources.php");
+        include_once(__DIR__ . "/include/show_picture.php");
+        include_once(__DIR__ . "/include/show_sources.php");
     }
 
     // *** Check user authority ***
@@ -40,8 +37,8 @@ function source_display($sourcenum)
         exit();
     }
     if ($screen_mode != "PDF") {
-        include_once(CMS_ROOTPATH . "include/language_date.php");
-        include_once(CMS_ROOTPATH . "include/person_cls.php");
+        include_once(__DIR__ . "/include/language_date.php");
+        include_once(__DIR__ . "/include/person_cls.php");
         echo '<table class="humo standard">';
         echo "<tr><td><h2>" . __('Source') . "</h2>";
     }
@@ -406,7 +403,7 @@ function source_display($sourcenum)
                     $address_sql = $dbh->query($address_qry);
                     $addressDb = $address_sql->fetch(PDO::FETCH_OBJ);
                     // Show family that has connected address.
-                    echo __('Source by adres (family):');
+                    echo __('Source by address (family):');
                     $familyDb = $db_functions->get_family($addressDb->connect_connect_id);
                     $personDb = person_data($familyDb);
 
@@ -456,9 +453,9 @@ function source_display($sourcenum)
 
         echo '</td></tr>';
 
-        echo '</table><br>';
+        echo '</table><br><br>';
 
-        include_once(CMS_ROOTPATH . "views/footer.php");
+        include_once(__DIR__ . "/views/footer.php");
     } // end if not PDF
 
 } // end function source_display

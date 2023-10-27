@@ -9,7 +9,7 @@
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../models/tree_index.php";
+require_once  __DIR__ . "/../app/model/tree_index.php";
 $mainindex = new Mainindex_cls($dbh);
 $item_array = $mainindex->show_tree_index();
 //$family_id = $get_family->getFamilyId();

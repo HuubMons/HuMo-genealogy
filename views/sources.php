@@ -5,10 +5,8 @@ if ($user['group_sources'] != 'j') {
     exit();
 }
 
-include_once(CMS_ROOTPATH . "include/language_date.php");
-include_once(CMS_ROOTPATH . "include/date_place.php");
-
-@set_time_limit(300);
+include_once(__DIR__."/../include/language_date.php");
+include_once(__DIR__."/../include/date_place.php");
 
 // *** Search ***
 $source_search = '';
@@ -233,8 +231,8 @@ if ($humo_option["url_rewrite"] == "j") {
         echo '<th><a href="' . $url . '&amp;order_sources=place&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
         ?>
     </tr>
-    <?php
 
+    <?php
     while (@$sourceDb = $source->fetch(PDO::FETCH_OBJ)) {
         if ($humo_option["url_rewrite"] == "j") {
             $url = $uri_path . 'source/' . $tree_id . '/' . $sourceDb->source_gedcomnr;
@@ -242,8 +240,8 @@ if ($humo_option["url_rewrite"] == "j") {
             //$url = $uri_path . 'source.php?tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
             $url = $uri_path . 'index.php?page=source&amp;tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
         }
-
     ?>
+
         <tr>
             <td>
                 <a href="<?= $url; ?>">
@@ -267,7 +265,6 @@ if ($humo_option["url_rewrite"] == "j") {
         </tr>
     <?php
     }
-
     ?>
 </table>
 
