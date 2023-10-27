@@ -47,7 +47,7 @@ if (isset($_POST['save_settings_database'])) {
     }
 
     // *** Check if db_login.php is writable, and change database lines in db_login.php file ***
-    $login_file = CMS_ROOTPATH . "include/db_login.php";
+    $login_file = "../include/db_login.php";
     if (!is_writable($login_file)) {
         $result_message = '<b> *** ' . __('The configuration file is not writable! Please change the include/db_login.php file manually.') . ' ***</b>';
     } else {
@@ -329,61 +329,73 @@ if (isset($_POST['save_settings_database'])) {
 
             if (isset($_GET['optimize'])) {
                 echo '<b>' . __('This may take some time. Please wait...') . '</b><br>';
+                //ob_start();
                 echo __('Optimize table...') . ' humo_persons<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_persons";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_families<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_families";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_unprocessed_tags<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_unprocessed_tags";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_settings<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_settings";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_repositories<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_repositories";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_sources<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_sources";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_texts<br>';
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_texts";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_connections<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_connections";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_addresses<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_addresses";
                 @$result = $dbh->query($sql);
 
+                //ob_start();
                 echo __('Optimize table...') . ' humo_events<br>';
-                ob_flush();
-                flush(); // IE
+                //ob_flush();
+                flush();
                 $sql = "OPTIMIZE TABLE humo_events";
                 @$result = $dbh->query($sql);
             }

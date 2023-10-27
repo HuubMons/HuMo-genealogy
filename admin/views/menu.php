@@ -23,7 +23,7 @@ if ($page == 'admin') {
     $menu_item_admin = ' id="current"';
 }
 
-$menu_path_website = CMS_ROOTPATH . 'index.php';
+$menu_path_website = '../index.php';
 
 $menu_path_logoff = 'index.php?log_off=1';
 
@@ -300,10 +300,10 @@ if ($popup == false) {
             <li>
                 <div class="<?= $rtlmarker; ?>sddm">
                     <?php
-                    include(CMS_ROOTPATH . 'languages/' . $selected_language . '/language_data.php');
+                    include(__DIR__ . '/../../languages/' . $selected_language . '/language_data.php');
                     echo '<a href="index.php?option=com_humo-gen"';
                     echo ' onmouseover="mopen(event,\'m40x\',\'?\',\'?\')"';
-                    echo ' onmouseout="mclosetime()"' . $menu_top_flags . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $selected_language . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:18px"> </a>';
+                    echo ' onmouseout="mclosetime()"' . $menu_top_flags . '>' . '<img src="../languages/' . $selected_language . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:18px"> </a>';
                     ?>
                     <div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                         <ul class="humo_menu_item2">
@@ -311,9 +311,9 @@ if ($popup == false) {
                             for ($i = 0; $i < count($language_file); $i++) {
                                 // *** Get language name ***
                                 if ($language_file[$i] != $selected_language and !in_array($language_file[$i], $hide_languages_array)) {
-                                    include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+                                    include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
                                     echo '<li><a href="' . $path_tmp . 'language_choice=' . $language_file[$i] . '">';
-                                    echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+                                    echo '<img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
                                     echo '<span class="mobile_hidden">' . $language["name"] . '</span>';
                                     echo '</a>';
                                     echo '</li>';

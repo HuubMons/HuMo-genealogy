@@ -7,7 +7,7 @@
  */
 ?>
 
-<script src="<?= CMS_ROOTPATH; ?>include/glightbox/glightbox_footer.js"></script>
+<script src="include/glightbox/glightbox_footer.js"></script>
 
 </div> <!-- End of div: Content -->
 </div> <!-- End of div: Silverline -->
@@ -27,7 +27,7 @@
         <a href="<?= $menu_path_help; ?>"><?= __('Help'); ?></a>
 
         <?php if (!$bot_visit) { ?>
-            | <a href="<?= $menu_path_cookies;?>"><?php echo ucfirst(str_replace('%s ', '', __('%s cookie information'))); ?></a>
+            | <a href="<?= $menu_path_cookies; ?>"><?php echo ucfirst(str_replace('%s ', '', __('%s cookie information'))); ?></a>
         <?php }; ?>
     </div>
 </footer>
@@ -50,9 +50,7 @@ else{
     echo 'TEXT: Guest';
 }
 */
-
-if (!CMS_SPECIFIC) {
-    echo "</body>\n";
-    echo "</html>";
-}
 ?>
+</body>
+
+</html>

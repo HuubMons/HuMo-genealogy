@@ -19,13 +19,11 @@ global $parent1Db, $parent2Db;
 //global $templ_relation;
 global $templ_name;
 
-include_once(__DIR__ . '../../header.php'); // returns CMS_ROOTPATH constant
-
 
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../models/family.php";
+require_once  __DIR__ . "/../app/model/family.php";
 $get_family = new Family($dbh);
 $family_id = $get_family->getFamilyId();
 $main_person = $get_family->getMainPerson();
@@ -41,8 +39,7 @@ $number_generation = $get_family->getNumberGeneration();
 //));
 
 
-
-@set_time_limit(300);
+//@set_time_limit(300);
 
 $family_nr = 1;  // *** process multiple families ***
 
@@ -498,14 +495,15 @@ if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_pres
 
 // *** Save rtf document to file ***
 $rtf->save($file_name);
+
+$vars['pers_family'] = $family_id;
+$link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+$link .= "main_person=" . $main_person;
 ?>
 <br><br><a href="<?= $download_link; ?>"><?= __('Download RTF report.'); ?></a>
 <br><br><?= __('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.'); ?>
 <br><br>
-<form method="POST" action="<?= $uri_path; ?>family.php?show_sources=1" style="display : inline;">
-    <input type="hidden" name="id" value="<?= $family_id; ?>">
-    <input type="hidden" name="main_person" value="<?= $main_person; ?>">
-    <input type="hidden" name="database" value="<?= $database; ?>">
+<form method="POST" action="<?= $link; ?>" style="display : inline;">
     <input type="hidden" name="screen_mode" value="">
     <?php if ($descendant_report == true) { ?>
         <input type="hidden" name="descendant_report" value="<?= $descendant_report; ?>">

@@ -192,7 +192,7 @@ class editor_cls
 
     public function valid_date($date)
     {
-        include_once(CMS_ROOTPATH . "include/validate_date_cls.php");
+        include_once(__DIR__ . "/../../include/validate_date_cls.php");
         $check = new validate_date_cls;
 
         // German date input: 01.02.2016 or Scandinavian input: 01,02,2016

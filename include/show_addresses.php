@@ -128,7 +128,7 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
             if ($templ_relation["address_address" . $address_nr] != '') $temp = "address_address" . $address_nr;
         }
 
-        // *** END OF: Show link to adres if street is used ***
+        // *** END OF: Show link to address if street is used ***
         if ($connectDb->address_shared == '1')
             $text .= "</a>";
 
@@ -144,7 +144,7 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
                 $templ_person["address_phone" . $address_nr] = ', ' . __('phone') . ' ' . $connectDb->address_phone;
         }
 
-        // *** Don't use address_date. Using connect_date for all adresses ***
+        // *** Don't use address_date. Using connect_date for all addresses ***
         //if ($connectDb->address_date){
         //	//$text.=date_place($connectDb->address_date,'').' ';
         //	$text.=' ('.date_place($connectDb->address_date,'').')';

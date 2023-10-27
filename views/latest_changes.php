@@ -1,6 +1,6 @@
 <?php
-include_once(CMS_ROOTPATH . "include/person_cls.php");
-include_once(CMS_ROOTPATH . "include/language_date.php");
+include_once(__DIR__ . "/../include/person_cls.php");
+include_once(__DIR__ . "/../include/language_date.php");
 
 // *** Extra safety line ***
 if (!is_numeric($tree_id)) exit;
@@ -65,7 +65,7 @@ if (isset($_POST["search_name"])) {
 
 $person_result = $dbh->query($person_qry);
 
-$path = CMS_ROOTPATH . 'index.php?page=latest_changes.php&amp;tree_id=' . $tree_id;
+$path = 'index.php?page=latest_changes.php&amp;tree_id=' . $tree_id;
 if ($humo_option["url_rewrite"] == "j") $path = 'latest_changes/' . $tree_id;
 
 ?>
@@ -93,11 +93,11 @@ if ($humo_option["url_rewrite"] == "j") $path = 'latest_changes/' . $tree_id;
         if ($person->pers_changed_date) $pers_changed_date = $person->pers_changed_date;
 
         if ($person->pers_sexe == "M") {
-            $pers_sexe = '<img src="' . CMS_ROOTPATH . 'images/man.gif" alt="man">';
+            $pers_sexe = '<img src="images/man.gif" alt="man">';
         } elseif ($person->pers_sexe == "F") {
-            $pers_sexe = '<img src="' . CMS_ROOTPATH . 'images/woman.gif" alt="woman">';
+            $pers_sexe = '<img src="images/woman.gif" alt="woman">';
         } else {
-            $pers_sexe = '<img src="' . CMS_ROOTPATH . 'images/unknown.gif" alt="unknown">';
+            $pers_sexe = '<img src="images/unknown.gif" alt="unknown">';
         }
 
         $person_cls = new person_cls($person);
@@ -122,3 +122,4 @@ if ($humo_option["url_rewrite"] == "j") $path = 'latest_changes/' . $tree_id;
     }
     ?>
 </table>
+<br>

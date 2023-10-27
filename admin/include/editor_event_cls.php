@@ -46,7 +46,8 @@ class editor_event_cls
         $hideshow = '9000' . $data_listDb->event_id;
         $display = ' display:none;';
         $event_event = $data_listDb->event_event;
-        if (!$data_listDb->event_event and !$data_listDb->event_date and !$data_listDb->event_place and !$data_listDb->event_text) {
+        //if (!$data_listDb->event_event and !$data_listDb->event_date and !$data_listDb->event_place and !$data_listDb->event_text) {
+        if (!$data_listDb->event_event and !$data_listDb->event_connect_id2 and !$data_listDb->event_date and !$data_listDb->event_place and !$data_listDb->event_text) {
             //$event_event=__('EMPTY LINE');
             $display = '';
         }
@@ -76,51 +77,54 @@ class editor_event_cls
 
         $text = '';
 
-        $picture_array = array();
-        // *** Picture list for selecting pictures ***
-        $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'");
-        $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-        $tree_pict_path = $dataDb->tree_pict_path;
-        if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
-        $dir = $path_prefix . $tree_pict_path;
-        if (file_exists($dir)) {
-            $dh  = opendir($dir);
-            while (false !== ($filename = readdir($dh))) {
-                if (substr($filename, 0, 6) != 'thumb_' and $filename != '.' and $filename != '..' and !is_dir($dir . $filename)) {
-                    $picture_array[] = $filename;
-                }
-            }
-            closedir($dh);
-        }
-        @usort($picture_array, 'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+        if ($event_kind == 'picture') {
+            $picture_array = array();
+            // *** Picture list for selecting pictures ***
+            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'");
+            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+            $tree_pict_path = $dataDb->tree_pict_path;
+            if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+            $dir = $path_prefix . $tree_pict_path;
 
-        $is_cat = false; // flags there are category files (for use later on)
-        $picture_array2 = array(); // declare, otherwise if not used gives error
-        // if subfolders exist for category files, list those too
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-        if ($temp->rowCount()) { // there is a category table
-            $catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
-            if ($catg->rowCount()) {
-                while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
-                    if (is_dir($dir . substr($catDb->photocat_prefix, 0, 2))) {  // there is a subfolder for this prefix
-                        $dh  = opendir($dir . substr($catDb->photocat_prefix, 0, 2));
-                        while (false !== ($filename = readdir($dh))) {
-                            if (substr($filename, 0, 6) != 'thumb_' and $filename != '.' and $filename != '..') {
-                                $picture_array2[] = $filename;
-                                $is_cat = true;
+            if (file_exists($dir)) {
+                $dh  = opendir($dir);
+                while (false !== ($filename = readdir($dh))) {
+                    if (substr($filename, 0, 6) != 'thumb_' and $filename != '.' and $filename != '..' and !is_dir($dir . $filename)) {
+                        $picture_array[] = $filename;
+                    }
+                }
+                closedir($dh);
+            }
+            @usort($picture_array, 'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+
+            $is_cat = false; // flags there are category files (for use later on)
+            $picture_array2 = array(); // declare, otherwise if not used gives error
+            // if subfolders exist for category files, list those too
+            $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+            if ($temp->rowCount()) { // there is a category table
+                $catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+                if ($catg->rowCount()) {
+                    while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
+                        if (is_dir($dir . substr($catDb->photocat_prefix, 0, 2))) {  // there is a subfolder for this prefix
+                            $dh  = opendir($dir . substr($catDb->photocat_prefix, 0, 2));
+                            while (false !== ($filename = readdir($dh))) {
+                                if (substr($filename, 0, 6) != 'thumb_' and $filename != '.' and $filename != '..') {
+                                    $picture_array2[] = $filename;
+                                    $is_cat = true;
+                                }
                             }
+                            closedir($dh);
                         }
-                        closedir($dh);
                     }
                 }
             }
+            // *** Order pictures by alphabet ***
+            @usort($picture_array2, 'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+            $picture_array = array_merge($picture_array, $picture_array2);
+            //@sort($picture_array);  
+            //@usort($picture_array,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+            $nr_pictures = count($picture_array);
         }
-        // *** Order pictures by alphabet ***
-        @usort($picture_array2, 'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
-        $picture_array = array_merge($picture_array, $picture_array2);
-        //@sort($picture_array);  
-        //@usort($picture_array,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
-        $nr_pictures = count($picture_array);
 
         // *** Change line colour ***
         $change_bg_colour = ' class="humo_color3"';
@@ -145,24 +149,6 @@ class editor_event_cls
         }
 
         if ($event_kind == 'person') {
-            /*
-        $qry="SELECT * FROM humo_events
-            WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
-            AND event_kind!='name'
-            AND event_kind!='NPFX'
-            AND event_kind!='NSFX'
-            AND event_kind!='nobility'
-            AND event_kind!='title'
-            AND event_kind!='lordship'
-            AND event_kind!='birth_declaration'
-            AND event_kind!='baptism_witness'
-            AND event_kind!='death_declaration'
-            AND event_kind!='burial_witness'
-            AND event_kind!='profession'
-            AND event_kind!='religion'
-            AND event_kind!='picture' ".$hebtext."
-            ORDER BY event_kind, event_order";
-        */
             // *** Filter several events, allready shown in seperate lines in editor ***
             $qry = "SELECT * FROM humo_events
                 WHERE event_tree_id='" . $tree_id . "'
@@ -330,14 +316,66 @@ class editor_event_cls
             <tr class="table_header_large">
                 <td></td>
                 <td colspan="2">
-                    <select size="1" name="event_gedcom_add" style="width: 200px">
+                    <select size="1" name="event_gedcom_add" id="event_gedcom_add" style="width: 200px">
                         <?php event_selection(''); ?>
                     </select>
-                    <input type="text" name="event_event_name" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
+                    <input type="text" name="event_event_name" id="event_event_name" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
                     <input type="Submit" name="event_add_name" value="<?= __('Add'); ?>">
+
+
+
+                    <!-- Test to add line inside table -->
+                    <!--
+<button type="button" onclick="myFunction()">Test</button>
+
+//https://www.w3schools.com/jsref/met_table_insertrow.asp
+<script>
+function myFunction() {
+  var table = document.getElementById("table_editor");
+  var row = table.insertRow(8);
+
+  //APEND!!!!!!
+  //var row = table.insertRow(-1);
+  //var cell = row.insertCell(-1);
+
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  //row.id = "xyz"; //you can add your id like this
+
+  var str = document.getElementById("event_gedcom_add");
+  var stra = str.value;
+
+  var str2 = document.getElementById("event_event_name");
+  var str2a = str2.value;
+
+
+  // https://www.w3schools.com/js/tryit.asp?filename=tryjs_ajax_database
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+    cell2.innerHTML = this.responseText;
+  }
+  xhttp.open("GET", "include/editor_ajax.php?event_gedcom_add="+stra+"&event_event_name="+str2a);
+  xhttp.send();
+
+  cell1.innerHTML = "NEW CELL1";
+  //cell2.innerHTML = "NEW CELL2";
+
+  var event_gedcom_add = document.getElementById("event_gedcom_add");
+  var value = event_gedcom_add.value;
+  cell3.innerHTML = value;
+
+  cell4.innerHTML = "NEW CELL4";
+}
+</script>
+-->
+
+
                 </td>
                 <td></td>
             </tr>
+
         <?php
         }
 
@@ -464,6 +502,25 @@ class editor_event_cls
                 echo ' <input type="Submit" name="add_source_picture" value="' . __('Add') . '">';
             }
 
+            //TEST
+            /*
+            // *** JUNE 2021: disabled drag and drop to get a clearer editor page ***
+            if ($count>1) { echo "&nbsp;&nbsp;".__('(Drag pictures to change display order)'); }
+            echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
+            echo '<ul id="sortable_pic" class="sortable_pic handle_pic">';
+                echo '<li id="xxxxxxxxxxx" class="mediamove">';
+                echo '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
+                echo '&nbsp;Test<br>';
+                echo '<img src="../../humo-gen-afb/mons/thumb_huub_linda_mons.jpg" style="height:80px;">';
+                echo '</li>';
+
+                echo '<li id="xxxxxxxxxxx" class="mediamove">';
+                echo '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
+                echo '&nbsp;Test<br>';
+                echo '<img src="../../humo-gen-afb/mons/thumb_huub_linda_mons.jpg" style="height:80px;">';
+                echo '</li>';
+            echo '</ul>';
+            */
 
             /*
             // *** JUNE 2021: disabled drag and drop to get a clearer editor page ***
@@ -476,9 +533,9 @@ class editor_event_cls
                 $text.='<div style="position:relative">';
                 if ($count>1) {
                     $text.='<div style="position:absolute;top:0;left:0">';
-                    $show_image= '<img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">'; $text.=$show_image;
+                    $show_image= '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
+                    $text.=$show_image;
                     $text.='</div>';
-
                 }
                 $text.='<div style="overflow:hidden">';
                 $tree_pict_path2 = $tree_pict_path;  // we change it only if category subfolders exist
@@ -525,8 +582,9 @@ class editor_event_cls
             */
 
 
-            // DEC 2015: OLD: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
+
             // MAY 2023: convert OBJECTS to standard images.
+            // DEC 2015: OLD: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
             // *** Search for all external connected objects by a person or a family ***
             if ($event_connect_kind == 'person') {
                 $connect_qry = "SELECT * FROM humo_connections
@@ -800,7 +858,7 @@ class editor_event_cls
                     '&amp;event_kind=' . $data_listDb->event_kind . '&amp;event_drop=' . $data_listDb->event_order;
                 // *** Remove picture by source ***
                 if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
-                echo '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="down"></a>';
+                echo '"><img src="images/button_drop.png" border="0" alt="down"></a>';
 
                 //if ($data_listDb->event_kind !='picture'){
                 // *** Count number of events ***
@@ -823,7 +881,7 @@ class editor_event_cls
                     echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;' . $event_group . '&amp;event_down=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
                     // *** Edit picture by source in seperate source page ***
                     if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
-                    echo '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+                    echo '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
                 } else {
                     echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                 }
@@ -834,7 +892,7 @@ class editor_event_cls
                     // *** Edit picture by source in seperate source page ***
                     if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
                     echo '&amp;dummy=' . $data_listDb->event_id . $internal_link;
-                    echo '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="down"></a>';
+                    echo '"><img src="images/arrow_up.gif" border="0" alt="down"></a>';
                 } else {
                     echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                 }
@@ -851,8 +909,8 @@ class editor_event_cls
                     or $data_listDb->event_kind == 'marriage_witness' or $data_listDb->event_kind == 'marriage_witness_rel'
                 ) {
                     // *** Hide or show editor fields ***
-                    if (substr($data_listDb->event_event, 0, 1) == '@') {
-                        $witness_name = show_person(substr($data_listDb->event_event, 1, -1), $gedcom_date = false, $show_link = false);
+                    if ($data_listDb->event_connect_id2) {
+                        $witness_name = show_person($data_listDb->event_connect_id2, $gedcom_date = false, $show_link = false);
                     } else {
                         $witness_name = $data_listDb->event_event;
                     }
@@ -866,7 +924,7 @@ class editor_event_cls
                     //$text.='<td style="border-left:0px;">';
                     echo editor_label2($this->event_text($data_listDb->event_kind));
                     $event_text = $this->event_text($data_listDb->event_kind);
-                    echo witness_edit($event_text, $data_listDb->event_event, '[' . $data_listDb->event_id . ']');
+                    echo witness_edit($data_listDb->event_connect_id2, $event_text, $data_listDb->event_event, '[' . $data_listDb->event_id . ']');
                 } elseif ($data_listDb->event_kind == 'picture') {
 
                     echo '<div>';
@@ -885,53 +943,53 @@ class editor_event_cls
 
                     $extensions_check = substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -3, 3);
                     if (strtolower($extensions_check) == "pdf") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'images/pdf.jpeg"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="../images/pdf.jpeg"></a>';
                     } elseif (strtolower($extensions_check) == "doc" or strtolower(substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -4, 4)) == "docx") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'images/msdoc.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="../images/msdoc.gif"></a>';
                     }
                     // *** Show AVI Video file ***
                     elseif ($extensions_check == "avi") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                     }
                     // *** Show WMV Video file ***
                     elseif ($extensions_check == "wmv") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                     }
                     // *** Show MPG Video file ***
                     elseif (strtolower($extensions_check) == "mpg") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                     }
                     // *** Show MP4 Video file ***
                     elseif (strtolower($extensions_check) == "mp4") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                     }
                     // *** Show MOV Video file ***
                     elseif (strtolower($extensions_check) == "mov") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                     }
                     // *** Show WMA Audio file ***
                     elseif (strtolower($extensions_check) == "wma") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                     }
                     // *** Show WAV Audio file ***
                     elseif (strtolower($extensions_check) == "wav") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                     }
                     // *** Show MP3 Audio file ***
                     elseif (strtolower($extensions_check) == "mp3") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                     }
                     // *** Show MID Audio file ***
                     elseif (strtolower($extensions_check) == "mid") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                     }
                     // *** Show RAM Audio file ***
                     elseif (strtolower($extensions_check) == "ram") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                     }
                     // *** Show RA Audio file ***
                     elseif (strtolower($extensions_check) == ".ra") {
-                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+                        echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                     } else {
                         $show_image = '';
 
@@ -1133,7 +1191,6 @@ class editor_event_cls
 
                     // *** Hide/show line (start <span> to hide edit line) ***
                     echo $this->hide_show_start($data_listDb);
-
 
                     echo editor_label2(__('Profession'));
                     echo '<textarea rows="1" name="text_event[' . $data_listDb->event_id . ']" ' . $field_text . ' placeholder="' . __('Profession') . '">' . $editor_cls->text_show($data_listDb->event_event) . '</textarea>';
@@ -1404,7 +1461,7 @@ class editor_event_cls
         // *** Show events if save or arrow links are used ***
         // Deels al vervangen door $_POST...
         /*
-    if (isset($_GET['event_person']) OR isset($_GET['event_family']) OR isset($_GET['event_add'])){
+        if (isset($_GET['event_person']) OR isset($_GET['event_family']) OR isset($_GET['event_add'])){
         // *** Script voor expand and collapse of items ***
 
         $link_id='';
@@ -1504,7 +1561,7 @@ function event_selection($event_gedcom)
     <option value="_AKAN" <?php if ($event_gedcom == '_AKAN') echo ' selected'; ?>><?= '_AKAN ' . __('Also known as'); ?></option>
     <option value="_ALIA" <?php if ($event_gedcom == '_ALIA') echo ' selected'; ?>><?= '_ALIA ' . __('alias name'); ?></option>
 
-<?php
+    <?php
     $selected = '';
     if ($event_gedcom == '_SHON') {
         $selected = ' selected';

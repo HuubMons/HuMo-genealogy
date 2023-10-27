@@ -28,16 +28,13 @@ $menu_admin = $get_editor->getMenuAdmin();
 
 $phpself = 'index.php';
 $joomlastring = '';
-//$family_string = '../family.php?';
 $sourcestring = '../source.php?';
 $addresstring = '../address.php?';
 //$path_prefix = '../';
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-$joomlapath = CMS_ROOTPATH_ADMIN . 'include/';
-
-include_once($joomlapath . "editor_cls.php");
+include_once(__DIR__."/../include/editor_cls.php");
 $editor_cls = new editor_cls;
 
 include(__DIR__ . '/../include/editor_event_cls.php');
@@ -63,7 +60,7 @@ $gedcom_time = date("H:i:s");
 
 if (isset($tree_id)) {
     // *** Process queries ***
-    include_once($joomlapath . "editor_inc.php");
+    include_once(__DIR__."/../include/editor_inc.php");
 }
 
 

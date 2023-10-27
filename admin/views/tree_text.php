@@ -39,19 +39,19 @@
                 if ($language_tree == 'default') $language_tree2 = $selected_language;
                 echo '&nbsp;&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
                 echo '<a href="index.php?option=com_humo-gen"';
-                include(CMS_ROOTPATH . 'languages/' . $language_tree2 . '/language_data.php');
+                include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
                 echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
                 $select_top = '';
-                echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+                echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="../languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="../images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
                 echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
                 echo '<ul class="humo_menu_item2">';
                 for ($i = 0; $i < count($language_file); $i++) {
                     // *** Get language name ***
                     if ($language_file[$i] != $language_tree2) {
-                        include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+                        include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
                         echo '<li style="float:left; width:124px;">';
                         echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
-                        echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+                        echo '<img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
                         echo $language["name"];
                         echo '</a>';
                         echo '</li>';

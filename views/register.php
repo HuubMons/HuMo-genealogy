@@ -70,7 +70,7 @@ if (isset($_POST['send_mail']) and $register_allowed == true) {
         //$headers .= "From: \"".$_POST['register_name']."\" <".$_POST['register_mail'].">\n";
 
         //@$mail = mail($register_address, $register_subject, $register_message, $headers);
-        include_once('include/mail.php');
+        include_once(__DIR__.'/../include/mail.php');
 
         // *** Set who the message is to be sent from ***
         $mail->setFrom($_POST['register_mail'], $_POST['register_name']);
@@ -124,7 +124,7 @@ if ($show_form) {
 
         $path = 'index.php?page=register';
         if ($humo_option["url_rewrite"] == "j") {
-            $path = CMS_ROOTPATH . 'register';
+            $path = 'register';
         }
         //$menu_path_register = $link_cls->get_link($uri_path, 'register');
 ?>

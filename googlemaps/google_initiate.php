@@ -1,5 +1,4 @@
-<script src="googlemaps/StyledMarker.js">
-</script>
+<script src="googlemaps/StyledMarker.js"></script>
 
 <script>
     var markersArray = [];
@@ -419,7 +418,6 @@
         var i;
 
         for (i = 0; i < j.length; i++) {
-
             var thislat = parseFloat(j[i][1]);
             var thislng = parseFloat(j[i][2]);
             var thisplace = encodeURI(j[i][0]);

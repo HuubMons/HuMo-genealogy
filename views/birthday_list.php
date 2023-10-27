@@ -11,8 +11,8 @@
  * 10-11-2019 Yossi Beck - Added wedding anniversaries and menu
  */
 
-include_once(CMS_ROOTPATH . "include/language_date.php");
-include_once(CMS_ROOTPATH . "include/person_cls.php");
+include_once(__DIR__ . "/../include/language_date.php");
+include_once(__DIR__ . "/../include/person_cls.php");
 
 // *** Check user authority ***
 if ($user["group_birthday_list"] != 'j') {
@@ -24,8 +24,8 @@ if ($humo_option["url_rewrite"] == "j") {
     $path = 'birthday_list';
     $path2 = 'birthday_list?';
 } else {
-    $path = CMS_ROOTPATH . 'index.php?page=birthday_list';
-    $path2 = CMS_ROOTPATH . 'index.php?page=birthday_list&amp;';
+    $path = 'index.php?page=birthday_list';
+    $path2 = 'index.php?page=birthday_list&amp;';
 }
 
 // *** Month to show ***
@@ -364,3 +364,6 @@ $last_cal_day = 0;
     }
     ?>
 </div>
+
+<br>
+<br>

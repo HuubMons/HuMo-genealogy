@@ -641,14 +641,11 @@ function load_default_textdomain()
         //$locale = CONFIG_LANGUAGE;
         $locale = 'en';
         // *** Extra check if language exists ***
-        //if (isset($_SESSION["language_selected"]) and file_exists(CMS_ROOTPATH . 'languages/' . $_SESSION["language_selected"] . '/' . $_SESSION["language_selected"] . '.mo')) {
         if (isset($_SESSION["language_selected"]) and file_exists(__DIR__ . '/' . $_SESSION["language_selected"] . '/' . $_SESSION["language_selected"] . '.mo')) {
                 $locale = $_SESSION["language_selected"];
         }
     }
 
-    //$mofile = CONFIG_FOLDER_LIBRARY . "language/$locale.mo";
-    //$mofile = CMS_ROOTPATH . 'languages/' . $locale . '/' . $locale . '.mo';
     $mofile = __DIR__ . '/' . $locale . '/' . $locale . '.mo';
     load_textdomain('default', $mofile);
 }

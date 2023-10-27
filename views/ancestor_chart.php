@@ -9,7 +9,7 @@
  * July 2011: translated all variables to english by: Huub Mons.
  */
 
-@set_time_limit(3000);
+//@set_time_limit(3000);
 
 global $humo_option, $user, $marr_date_array, $marr_place_array;
 global $gedcomnumber, $language;
@@ -29,7 +29,7 @@ $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../models/ancestor.php";
+require_once  __DIR__ . "/../app/model/ancestor.php";
 $get_ancestor = new Ancestor($dbh);
 //$family_id = $get_family->getFamilyId();
 $main_person = $get_ancestor->getMainPerson();
@@ -48,7 +48,7 @@ $ancestor_header = $get_ancestor->getAncestorHeader('Ancestor chart', $tree_id, 
 
 
 // *** Needed for hourglass ***
-include_once(CMS_ROOTPATH . "menu.php");
+include_once(__DIR__ . "/../views/menu.php");
 
 if ($hourglass === false) {
     //TODO check if this is still needed
@@ -126,7 +126,7 @@ function ancestor_chart_person($id, $box_appearance)
     global $marr_date_array, $marr_place_array;
     global $gedcomnumber, $language, $screen_mode, $dirmark1, $dirmark2;
 
-    $hour_value = ''; // if called from hourglass.php size of chart is given in box_appearance as "hour45" etc.
+    $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {
         $hour_value = substr($box_appearance, 4);
     }
@@ -289,7 +289,7 @@ if ($screen_mode != "ancestor_sheet" and $screen_mode != "ASPDF" and $hourglass 
     $divlen = 1000;
     // width of the chart. for 6 generations 1000px is right
     // if we ever make the anc chart have optionally more generations, the width and length will have to be generated
-    // as in dreport_descendant.php
+    // as in report_descendant.php
 
     //following div gets width and length in imaging java function showimg() (at bottom) otherwise double scrollbars won't work.
     echo '<div id="png">';

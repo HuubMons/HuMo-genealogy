@@ -1,84 +1,84 @@
 body {
-	background: none;
+    background: none;
 }
 
 #humo_menu {
-	background: none;
-	background-color: #5bc1af;
-	border-top: none;
-	border-bottom: none;
+    background: none;
+    background-color: #5bc1af;
+    border-top: none;
+    border-bottom: none;
 
 }
 
 /* Border pop-up menu */
 div.ltrsddm div {
-	border: none;
+    border: none;
 }
 
 div.rtlsddm div {
-	border: none;
+    border: none;
 }
 
 #humo_menu a {
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
 
 #humo_menu ul.humo_menu_item2 li a {
-	background: none;
-	background-color: #5bc1af;
+    background: none;
+    background-color: #5bc1af;
 }
 
 /* Main menu */
 ul.humo_menu_item li {
-	border-left: none;
-	/* border-right: none; */
-	border-right: 1px dotted #eee;
+    border-left: none;
+    /* border-right: none; */
+    border-right: 1px dotted #eee;
 }
 
 /* Pop-up menu */
 ul.humo_menu_item2 li {
-	border-right: none;
+    border-right: none;
 }
 
 /* Main menu */
 ul.humo_menu_item li a {
-	border-right: none;
+    border-right: none;
 }
 
 /* Pop-up menu */
 ul.humo_menu_item2 li a {
-	border-right: none;
+    border-right: none;
 }
 
 #top_menu li:hover {
-	background: #2980b9;
+    background: #2980b9;
 }
 
 #humo_menu a:hover,
 #humo_menu ul.humo_menu_item2 li a:hover {
-	background: #2980b9;
-	color: #FFFFFF;
+    background: #2980b9;
+    color: #FFFFFF;
 }
 
 #humo_menu #current a,
 #humo_menu #current_top {
-	background: none;
-	background: #2980b9;
-	color: #FFFFFF;
+    background: none;
+    background: #2980b9;
+    color: #FFFFFF;
 }
 
 
 #mainmenu_centerbox {
-	background: #ffffff;
-	border: none;
-	margin: 10px 15px 0px 15px;
-	padding: 5px;
-	line-height: 150%;
-	overflow: hidden;
-	height: auto;
-	min-height: 380px;
-	border-radius: none;
-	box-shadow: none;
+    background: #ffffff;
+    border: none;
+    margin: 10px 15px 0px 15px;
+    padding: 5px;
+    line-height: 150%;
+    overflow: hidden;
+    height: auto;
+    min-height: 380px;
+    border-radius: none;
+    box-shadow: none;
 }
 
 
@@ -120,30 +120,30 @@ ul.humo_menu_item2 li a {
 table.humo td,
 table.humo th,
 table.reltable td {
-	border: 0px;
+    border: 0px;
 }
 
 table.humo tr:first-of-type td,
 table.relmenu tr:first-of-type td,
 table.humo tr:first-of-type th,
 table.relmenu tr:first-of-type th {
-	border-top: 0px;
+    border-top: 0px;
 }
 
 table.humo,
 table.ext {
-	background-color: #FAF1EB;
-	color: #000000;
-	border-spacing: 0;
-	border-width: 0px;
+    background-color: #FAF1EB;
+    color: #000000;
+    border-spacing: 0;
+    border-width: 0px;
 
-	box-shadow: none;
-	border-radius: none;
+    box-shadow: none;
+    border-radius: none;
 }
 
 /* Headline in table */
 .table_headline {
-	color: #000000;
-	background-color: transparent;
-	background-image: none;
+    color: #000000;
+    background-color: transparent;
+    background-image: none;
 }

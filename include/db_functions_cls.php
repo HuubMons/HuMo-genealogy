@@ -21,7 +21,7 @@
  *		get_events_connect			Get multiple events of a connected person, family etc. selecting one event_kind from database.
  *		get_source					Get a single source from database.
  *		get_address					Get a single address from database.
- *		get_addressses				Get all adresses (places) by a person, family, etc.
+ *		get_addressses				Get all addresses (places) by a person, family, etc.
  *		get_connections				Get multiple connections (used for sources and addresses).
  *		get_connections_connect_id	Get multiple connections of a person or family.
  *		get_repository				Get a single repository from database.

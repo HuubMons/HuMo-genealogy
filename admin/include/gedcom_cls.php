@@ -243,6 +243,8 @@ class gedcom_cls
                             $calculated_event_id++;
                             $event['connect_kind'][$event_nr] = 'person';
                             $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                            $event['connect_kind2'][$event_nr] = '';
+                            $event['connect_id2'][$event_nr] = '';
                             $event['kind'][$event_nr] = 'adoption';
                             $event['event'][$event_nr] = $pers_famc2;
                             $event['event_extra'][$event_nr] = '';
@@ -279,8 +281,10 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'adoption_by_person';
-                    // *** BE AWARE: in gedcom.php step 4 further processing is done, famc is converted into a peron number!!! ***
+                    // *** BE AWARE: in gedcom.php step 4 further processing is done, famc is converted into a person number!!! ***
                     $event['event'][$event_nr] = $pers_famc2;
                     $event['event_extra'][$event_nr] = '';
                     $event['gedcom'][$event_nr] = substr($buffer, 7); // *** adopted, steph, legal or foster. ***
@@ -409,6 +413,8 @@ class gedcom_cls
                         $calculated_event_id++;
                         $event['connect_kind'][$event_nr] = 'person';
                         $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                        $event['connect_kind2'][$event_nr] = '';
+                        $event['connect_id2'][$event_nr] = '';
                         $event['kind'][$event_nr] = 'name';
                         $event['event'][$event_nr] = $pers_aka;
                         $event['event_extra'][$event_nr] = '';
@@ -472,6 +478,8 @@ class gedcom_cls
                     //$processed=1; $event_nr++; $calculated_event_id++;
                     //$event['connect_kind'][$event_nr]='person';
                     //$event['connect_id'][$event_nr]=$pers_gedcomnumber;
+                    //$event['connect_kind2'][$event_nr] = '';
+                    //$event['connect_id2'][$event_nr] = '';   
                     //$event['kind'][$event_nr]='name';
                     //$event['event'][$event_nr]=$pers_aka;
                     //$event['event_extra'][$event_nr]='';
@@ -497,6 +505,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'NPFX';
                     $event['event'][$event_nr] = substr($buffer, 7);
                     $event['event_extra'][$event_nr] = '';
@@ -513,6 +523,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'NSFX';
                     $event['event'][$event_nr] = substr($buffer, 7);
                     $event['event_extra'][$event_nr] = '';
@@ -617,6 +629,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'name';
 
                     // *** $buffer[7] = check 8th character.***
@@ -716,6 +730,8 @@ class gedcom_cls
                 $calculated_event_id++;
                 $event['connect_kind'][$event_nr] = 'person';
                 $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                $event['connect_kind2'][$event_nr] = '';
+                $event['connect_id2'][$event_nr] = '';
                 $event['kind'][$event_nr] = 'name';
                 $event['event'][$event_nr] = $pers_aka;
                 $event['event_extra'][$event_nr] = '';
@@ -858,8 +874,13 @@ class gedcom_cls
                 }
 
                 // *** Birth witness Pro-Gen ***
-                if ($level[2] == '_WIT') {
-                    if (substr($buffer, 2, 5) == '_WITN') {
+                if ($buffer7 == '2 _WITN') {
+                    $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                    $level[2] = 'WITN';
+                }
+                // 2 WITN Witness//
+                if ($level[2] == 'WITN') {
+                    if (substr($buffer, 2, 4) == 'WITN') {
                         $processed = 1;
                         $buffer = str_replace("/", " ", $buffer);
                         $buffer = str_replace("  ", " ", $buffer);
@@ -868,8 +889,20 @@ class gedcom_cls
                         $calculated_event_id++;
                         $event['connect_kind'][$event_nr] = 'person';
                         $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                        $event['connect_kind2'][$event_nr] = '';
+                        $event['connect_id2'][$event_nr] = '';
                         $event['kind'][$event_nr] = 'birth_declaration';
-                        $event['event'][$event_nr] = substr($buffer, 7);
+                        $event['event'][$event_nr] = '';
+
+                        if (substr($buffer, 7, 1) == '@') {
+                            // 2 WITN @I1@
+                            $event['connect_kind2'][$event_nr] = 'person';
+                            $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
+                        } else {
+                            // 2 WITN Doopgetuige1//
+                            $event['event'][$event_nr] = substr($buffer, 7);
+                        }
+
                         $event['event_extra'][$event_nr] = '';
                         $event['gedcom'][$event_nr] = 'WITN';
                         $event['date'][$event_nr] = '';
@@ -971,10 +1004,12 @@ class gedcom_cls
                     $this->process_sources('person', 'pers_bapt_source', $pers_gedcomnumber, $buffer, '2');
                 }
 
-                //Haza-data uses "i.p.v." (instead of).
-                //2 WITN Doopgetuige1//
-                //3 TYPE locum
-                //2 WITN Doopgetuige2//
+                // *** Baptise witnesses ***
+                // Pro-gen: 2 _WITN Anna van Wely
+                if ($buffer7 == '2 _WITN') {
+                    $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                    $level[2] = 'WITN';
+                }
                 if ($level[2] == 'WITN') {
                     if (substr($buffer, 2, 4) == 'WITN') {
                         $processed = 1;
@@ -985,40 +1020,36 @@ class gedcom_cls
                         $calculated_event_id++;
                         $event['connect_kind'][$event_nr] = 'person';
                         $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                        $event['connect_kind2'][$event_nr] = '';
+                        $event['connect_id2'][$event_nr] = '';
                         $event['kind'][$event_nr] = 'baptism_witness';
-                        $event['event'][$event_nr] = substr($buffer, 7);
+                        $event['event'][$event_nr] = '';
+
+                        if (substr($buffer, 7, 1) == '@') {
+                            // 2 WITN @I1@
+                            $event['connect_kind2'][$event_nr] = 'person';
+                            $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
+                        } else {
+                            // 2 WITN Doopgetuige1//
+                            $event['event'][$event_nr] = substr($buffer, 7);
+                        }
+
                         $event['event_extra'][$event_nr] = '';
                         $event['gedcom'][$event_nr] = 'WITN';
                         $event['date'][$event_nr] = '';
                         $event['text'][$event_nr] = '';
                         $event['place'][$event_nr] = '';
                     }
+
+                    // Haza-data uses "i.p.v." (instead of).
+                    // 2 WITN Doopgetuige1//
+                    // 3 TYPE locum
+                    // 2 WITN Doopgetuige2//
                     if (substr($buffer, 0, 12) == '3 TYPE locum') {
                         $processed = 1;
                         $event['event'][$event_nr] .= " i.p.v. ";
                     }
-                }
 
-                // *** Baptise witnesses ***
-                // Pro-gen: 2 _WITN Anna van Wely
-                if ($level[2] == '_WIT') {
-                    if (substr($buffer, 2, 5) == '_WITN') {
-                        $processed = 1;
-                        $buffer = str_replace("/", " ", $buffer);
-                        $buffer = str_replace("  ", " ", $buffer);
-                        $buffer = trim($buffer);
-                        $event_nr++;
-                        $calculated_event_id++;
-                        $event['connect_kind'][$event_nr] = 'person';
-                        $event['connect_id'][$event_nr] = $pers_gedcomnumber;
-                        $event['kind'][$event_nr] = 'baptism_witness';
-                        $event['event'][$event_nr] = substr($buffer, 7);
-                        $event['event_extra'][$event_nr] = '';
-                        $event['gedcom'][$event_nr] = 'WITN';
-                        $event['date'][$event_nr] = '';
-                        $event['text'][$event_nr] = '';
-                        $event['place'][$event_nr] = '';
-                    }
                     if ($buffer6 == '3 CONT') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
@@ -1030,6 +1061,7 @@ class gedcom_cls
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                 }
+
 
                 // Doopheffer/ Godfather.
                 //  1 BAPM
@@ -1043,6 +1075,8 @@ class gedcom_cls
                         $calculated_event_id++;
                         $event['connect_kind'][$event_nr] = 'person';
                         $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                        $event['connect_kind2'][$event_nr] = '';
+                        $event['connect_id2'][$event_nr] = '';
                         $event['kind'][$event_nr] = 'godfather';
                         $event['event'][$event_nr] = substr($buffer, 7);
                         $event['event_extra'][$event_nr] = '';
@@ -1132,8 +1166,13 @@ class gedcom_cls
                 }
 
                 // *** Death witness Pro-Gen ***
-                if ($level[2] == '_WIT') {
-                    if (substr($buffer, 2, 5) == '_WITN') {
+                // Pro-gen: 2 _WITN Anna van Wely
+                if ($buffer7 == '2 _WITN') {
+                    $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                    $level[2] = 'WITN';
+                }
+                if ($level[2] == 'WITN') {
+                    if (substr($buffer, 2, 4) == 'WITN') {
                         $processed = 1;
                         $buffer = str_replace("/", " ", $buffer);
                         $buffer = str_replace("  ", " ", $buffer);
@@ -1142,8 +1181,20 @@ class gedcom_cls
                         $calculated_event_id++;
                         $event['connect_kind'][$event_nr] = 'person';
                         $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                        $event['connect_kind2'][$event_nr] = '';
+                        $event['connect_id2'][$event_nr] = '';
                         $event['kind'][$event_nr] = 'death_declaration';
-                        $event['event'][$event_nr] = substr($buffer, 7);
+                        $event['event'][$event_nr] = '';
+
+                        if (substr($buffer, 7, 1) == '@') {
+                            // 2 WITN @I1@
+                            $event['connect_kind2'][$event_nr] = 'person';
+                            $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
+                        } else {
+                            // 2 WITN Doopgetuige1//
+                            $event['event'][$event_nr] = substr($buffer, 7);
+                        }
+
                         $event['event_extra'][$event_nr] = '';
                         $event['gedcom'][$event_nr] = 'WITN';
                         $event['date'][$event_nr] = '';
@@ -1244,6 +1295,54 @@ class gedcom_cls
                     $this->process_sources('person', 'pers_buried_source', $pers_gedcomnumber, $buffer, '2');
                 }
 
+                // *** Burial witness Pro-Gen ***
+                // Pro-gen: 2 _WITN Anna van Wely
+                if ($buffer7 == '2 _WITN') {
+                    $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                    $level[2] = 'WITN';
+                }
+                if ($level[2] == 'WITN') {
+                    if (substr($buffer, 2, 4) == 'WITN') {
+                        $processed = 1;
+                        $buffer = str_replace("/", " ", $buffer);
+                        $buffer = str_replace("  ", " ", $buffer);
+                        $buffer = trim($buffer);
+                        $event_nr++;
+                        $calculated_event_id++;
+                        $event['connect_kind'][$event_nr] = 'person';
+                        $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                        $event['connect_kind2'][$event_nr] = '';
+                        $event['connect_id2'][$event_nr] = '';
+                        $event['kind'][$event_nr] = 'burial_witness';
+                        $event['event'][$event_nr] = '';
+
+                        if (substr($buffer, 7, 1) == '@') {
+                            // 2 WITN @I1@
+                            $event['connect_kind2'][$event_nr] = 'person';
+                            $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
+                        } else {
+                            // 2 WITN Doopgetuige1//
+                            $event['event'][$event_nr] = substr($buffer, 7);
+                        }
+
+                        $event['event_extra'][$event_nr] = '';
+                        $event['gedcom'][$event_nr] = 'WITN';
+                        $event['date'][$event_nr] = '';
+                        $event['text'][$event_nr] = '';
+                        $event['place'][$event_nr] = '';
+                    }
+                    if ($buffer6 == '3 CONT') {
+                        $processed = 1;
+                        $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
+                        $buffer = ""; // to prevent use of this text in other text!
+                    }
+                    if ($buffer6 == '3 CONC') {
+                        $processed = 1;
+                        $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
+                        $buffer = ""; // to prevent use of this text in other text!
+                    }
+                }
+
                 // *** Method of burial ***
                 if (substr($buffer, 0, 16) == '2 TYPE cremation') {
                     $processed = 1;
@@ -1314,6 +1413,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = substr($buffer, 8, -1);
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'witness';
                     $event['event'][$event_nr] = '@' . $pers_gedcomnumber . '@';
                     $event['event_extra'][$event_nr] = '';
@@ -1374,6 +1475,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'profession';
                     $event['event'][$event_nr] = substr($buffer, 7);
                     $event['event_extra'][$event_nr] = '';
@@ -1440,6 +1543,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'religion';
                     $event['event'][$event_nr] = substr($buffer, 7);
                     $event['event_extra'][$event_nr] = '';
@@ -1516,6 +1621,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'picture';
                     $event['event'][$event_nr] = $photo;
                     $event['event_extra'][$event_nr] = '';
@@ -1554,6 +1661,8 @@ class gedcom_cls
                 $calculated_event_id++;
                 $event['connect_kind'][$event_nr] = 'person';
                 $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                $event['connect_kind2'][$event_nr] = '';
+                $event['connect_id2'][$event_nr] = '';
                 $event['kind'][$event_nr] = 'person_colour_mark';
                 $event['event'][$event_nr] = substr($buffer, 9);
                 $event['event_extra'][$event_nr] = '';
@@ -1953,6 +2062,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
                     $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'event';
                     $event['event'][$event_nr] = '';
                     $event['event_extra'][$event_nr] = '';
@@ -2029,7 +2140,7 @@ class gedcom_cls
                     // *** Aldfaer if 1 EVEN has no text, but 2 TYPE has text, use that for title of event  ***
                     // The name of the event will be displayed as-is, in the language as entered in the Gedcom
                     // 1 EVEN
-                    // 2 TYPE E-mail adres
+                    // 2 TYPE E-mail address
                     // 2 NOTE @N457@
                     // 1 EVEN
                     // 2 TYPE Telefoon
@@ -2199,41 +2310,41 @@ class gedcom_cls
         // *** Save data ***
         //pers_callname='".$this->text_process($pers_callname)."',
         $sql = "INSERT IGNORE INTO humo_persons SET
-    pers_gedcomnumber='" . $this->text_process($pers_gedcomnumber) . "',
-    pers_tree_id='" . $tree_id . "',
-    pers_tree_prefix='" . $tree_prefix . "',
-    pers_fams='" . $this->text_process($fams) . "',
-    pers_famc='" . $this->text_process($pers_famc) . "',
-    pers_firstname='" . $this->text_process($pers_firstname) . "', pers_lastname='" . $this->text_process($pers_lastname) . "',
-    pers_name_text='" . $this->text_process($pers_name_text) . "',
-    pers_prefix='" . $this->text_process($person["pers_prefix"]) . "',
-    pers_patronym='" . $this->text_process($person["pers_patronym"]) . "',
-    pers_place_index='" . $this->text_process($pers_place_index) . "',
-    pers_text='" . $this->text_process($person["pers_text"]) . "',
-    pers_birth_date='" . $this->process_date($this->text_process($pers_birth_date)) . "', pers_birth_time='" . $this->text_process($pers_birth_time) . "',
-    pers_birth_place='" . $this->text_process($pers_birth_place) . "',
-    pers_birth_text='" . $this->text_process($pers_birth_text) . "',
-    pers_stillborn='" . $pers_stillborn . "',
-    pers_bapt_date='" . $this->process_date($this->text_process($pers_bapt_date)) . "', pers_bapt_place='" . $this->text_process($pers_bapt_place) . "',
-    pers_bapt_text='" . $this->text_process($pers_bapt_text) . "',
-    pers_religion='" . $this->text_process($pers_religion) . "',
-    pers_death_date='" . $this->process_date($this->text_process($pers_death_date)) . "', pers_death_time='$pers_death_time',
-    pers_death_place='" . $this->text_process($pers_death_place) . "',
-    pers_death_text='" . $this->text_process($pers_death_text) . "',
-    pers_buried_date='" . $this->process_date($this->text_process($pers_buried_date)) . "', pers_buried_place='" . $this->text_process($pers_buried_place) . "',
-    pers_buried_text='" . $this->text_process($pers_buried_text) . "',
-    pers_cal_date='" . $this->process_date($this->text_process($person["pers_cal_date"])) . "',
-    pers_cremation='" . $pers_cremation . "',
-    pers_death_cause='" . $this->text_process($pers_death_cause) . "',
-    pers_death_age='" . $this->text_process($person["pers_death_age"]) . "',
-    pers_sexe='" . $pers_sexe . "',
-    pers_own_code='" . $this->text_process($person["pers_own_code"]) . "',
-    pers_quality='" . $this->text_process($person["pers_quality"]) . "',
-    pers_new_date='" . $this->process_date($this->text_process($person["new_date"])) . "',
-    pers_new_time='" . $person["new_time"] . "',
-    pers_changed_date='" . $this->process_date($this->text_process($person["changed_date"])) . "',
-    pers_changed_time='" . $person["changed_time"] . "'," . $heb_qry . "
-    pers_alive='" . $pers_alive . "'";
+            pers_gedcomnumber='" . $this->text_process($pers_gedcomnumber) . "',
+            pers_tree_id='" . $tree_id . "',
+            pers_tree_prefix='" . $tree_prefix . "',
+            pers_fams='" . $this->text_process($fams) . "',
+            pers_famc='" . $this->text_process($pers_famc) . "',
+            pers_firstname='" . $this->text_process($pers_firstname) . "', pers_lastname='" . $this->text_process($pers_lastname) . "',
+            pers_name_text='" . $this->text_process($pers_name_text) . "',
+            pers_prefix='" . $this->text_process($person["pers_prefix"]) . "',
+            pers_patronym='" . $this->text_process($person["pers_patronym"]) . "',
+            pers_place_index='" . $this->text_process($pers_place_index) . "',
+            pers_text='" . $this->text_process($person["pers_text"]) . "',
+            pers_birth_date='" . $this->process_date($this->text_process($pers_birth_date)) . "', pers_birth_time='" . $this->text_process($pers_birth_time) . "',
+            pers_birth_place='" . $this->text_process($pers_birth_place) . "',
+            pers_birth_text='" . $this->text_process($pers_birth_text) . "',
+            pers_stillborn='" . $pers_stillborn . "',
+            pers_bapt_date='" . $this->process_date($this->text_process($pers_bapt_date)) . "', pers_bapt_place='" . $this->text_process($pers_bapt_place) . "',
+            pers_bapt_text='" . $this->text_process($pers_bapt_text) . "',
+            pers_religion='" . $this->text_process($pers_religion) . "',
+            pers_death_date='" . $this->process_date($this->text_process($pers_death_date)) . "', pers_death_time='$pers_death_time',
+            pers_death_place='" . $this->text_process($pers_death_place) . "',
+            pers_death_text='" . $this->text_process($pers_death_text) . "',
+            pers_buried_date='" . $this->process_date($this->text_process($pers_buried_date)) . "', pers_buried_place='" . $this->text_process($pers_buried_place) . "',
+            pers_buried_text='" . $this->text_process($pers_buried_text) . "',
+            pers_cal_date='" . $this->process_date($this->text_process($person["pers_cal_date"])) . "',
+            pers_cremation='" . $pers_cremation . "',
+            pers_death_cause='" . $this->text_process($pers_death_cause) . "',
+            pers_death_age='" . $this->text_process($person["pers_death_age"]) . "',
+            pers_sexe='" . $pers_sexe . "',
+            pers_own_code='" . $this->text_process($person["pers_own_code"]) . "',
+            pers_quality='" . $this->text_process($person["pers_quality"]) . "',
+            pers_new_date='" . $this->process_date($this->text_process($person["new_date"])) . "',
+            pers_new_time='" . $person["new_time"] . "',
+            pers_changed_date='" . $this->process_date($this->text_process($person["changed_date"])) . "',
+            pers_changed_time='" . $person["changed_time"] . "'," . $heb_qry . "
+            pers_alive='" . $pers_alive . "'";
 
         if (isset($_POST['debug_mode']) and $_SESSION['debug_person'] < 2) {
             echo '<br>' . $sql . '<br>';
@@ -2377,7 +2488,15 @@ class gedcom_cls
                 event_tree_id='" . $tree_id . "',
                 event_order='" . $event_order . "',
                 event_connect_kind='" . $this->text_process($event['connect_kind'][$i]) . "',
-                event_connect_id='" . $this->text_process($event['connect_id'][$i]) . "',
+                event_connect_id='" . $this->text_process($event['connect_id'][$i]) . "',";
+
+                if (isset($event['connect_id2'][$i])) {
+                    $gebeurtsql .= "
+                    event_connect_kind2='" . $this->text_process($event['connect_kind2'][$i]) . "',
+                    event_connect_id2='" . $this->text_process($event['connect_id2'][$i]) . "',";
+                }
+
+                $gebeurtsql .= "
                 event_kind='" . $this->text_process($event['kind'][$i]) . "',
                 event_event='" . $this->text_process($event['event'][$i]) . "',
                 event_event_extra='" . $this->text_process($event['event_extra'][$i]) . "',
@@ -2385,7 +2504,6 @@ class gedcom_cls
                 event_date='" . $this->process_date($this->text_process($event['date'][$i])) . "',
                 event_text='" . $this->text_process($event['text'][$i]) . "',
                 event_place='" . $this->text_process($event['place'][$i]) . "'";
-                //echo $gebeurtsql.'<br>';
                 $result = $dbh->query($gebeurtsql);
             }
 
@@ -2408,6 +2526,8 @@ class gedcom_cls
                     $event_order = 1;
                     $check_event_kind = $event2['kind'][$i];
                 }
+                //event_connect_kind2='" . $this->text_process($event2['connect_kind2'][$i]) . "',
+                //event_connect_id2='" . $this->text_process($event2['connect_id2'][$i]) . "',
                 $gebeurtsql = "INSERT IGNORE INTO humo_events SET
                 event_tree_id='" . $tree_id . "',
                 event_order='" . $event_order . "',
@@ -2717,8 +2837,8 @@ class gedcom_cls
             }
 
             // *** Witnesses ***
-            //1 WITN Doeko/Mons/
-            //1 WITN Rene/Mansveld/
+            // 1 WITN Doeko/Mons/
+            // 1 WITN Rene/Mansveld/
             if ($buffer6 == '1 WITN') {
                 $processed = 1;
                 $buffer = str_replace("/", " ", $buffer);
@@ -2728,6 +2848,8 @@ class gedcom_cls
                 $calculated_event_id++;
                 $event['connect_kind'][$event_nr] = 'family';
                 $event['connect_id'][$event_nr] = $gedcomnumber;
+                $event['connect_kind2'][$event_nr] = '';
+                $event['connect_id2'][$event_nr] = '';
                 $event['kind'][$event_nr] = 'marriage_witness';
                 $event['event'][$event_nr] = substr($buffer, 7);
                 $event['event_extra'][$event_nr] = '';
@@ -2786,27 +2908,29 @@ class gedcom_cls
                 // 2 _FREL Adopted ===>>> Adopted by father.
                 // 2 _MREL Adopted ===>>> Adopted by mother.
                 /*
-            if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
-                $processed=1;
-                $child_array=explode(";",$fam_children); $count_children=count($child_array);
+                if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
+                    $processed=1;
+                    $child_array=explode(";",$fam_children); $count_children=count($child_array);
 
-                $event_nr++; $calculated_event_id++;
-                $event['connect_kind'][$event_nr]='person';
-                $event['connect_id'][$event_nr]=$child_array[$count_children-1];
-                $event['kind'][$event_nr]='adoption_by_person';
-                $event['event'][$event_nr]=$gedcomnumber;
-                $event['event_extra'][$event_nr]='';
-                $event['gedcom'][$event_nr]=substr($buffer,8); // *** adopted, steph, legal or foster. ***
-                $event['date'][$event_nr]='';
-                //$event['source'][$event_nr]='';
-                $event['text'][$event_nr]='';
-                $event['place'][$event_nr]='';
+                    $event_nr++; $calculated_event_id++;
+                    $event['connect_kind'][$event_nr]='person';
+                    $event['connect_id'][$event_nr]=$child_array[$count_children-1];
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
+                    $event['kind'][$event_nr]='adoption_by_person';
+                    $event['event'][$event_nr]=$gedcomnumber;
+                    $event['event_extra'][$event_nr]='';
+                    $event['gedcom'][$event_nr]=substr($buffer,8); // *** adopted, steph, legal or foster. ***
+                    $event['date'][$event_nr]='';
+                    //$event['source'][$event_nr]='';
+                    $event['text'][$event_nr]='';
+                    $event['place'][$event_nr]='';
 
-                // *** Child is adopted child, so remove child from children array *** 
-                //array_pop($child_array); // *** Remove last item from array ***
-                //$fam_children=implode(";", $child_array);
-            }
-            */
+                    // *** Child is adopted child, so remove child from children array *** 
+                    //array_pop($child_array); // *** Remove last item from array ***
+                    //$fam_children=implode(";", $child_array);
+                }
+                */
             }
 
             // Haza-data
@@ -2945,41 +3069,6 @@ class gedcom_cls
             // *******************************************************************************************
 
             if ($level[1] == 'MARR') {
-                // *** Witnesses Pro-gen ***
-                //1 MARR
-                //2 DATE 21 MAY 1874
-                //2 PLAC Winsum
-                //2 _WITN Aam Pieter Borgman, oud 48 jaar, herbergier, wonende te
-                //3 CONT bla bla
-                //3 CONT bla bla
-                if ($level[2] == '_WIT') {
-                    if ($buffer7 == '2 _WITN') {
-                        // new way of saving: not tested yet.
-                        $processed = 1;
-                        $event_nr++;
-                        $calculated_event_id++;
-                        $event['connect_kind'][$event_nr] = 'family';
-                        $event['connect_id'][$event_nr] = $gedcomnumber;
-                        $event['kind'][$event_nr] = 'marriage_witness';
-                        $event['event'][$event_nr] = substr($buffer, 8);
-                        $event['event_extra'][$event_nr] = '';
-                        $event['gedcom'][$event_nr] = 'WITN';
-                        $event['date'][$event_nr] = '';
-                        $event['text'][$event_nr] = '';
-                        $event['place'][$event_nr] = '';
-                    }
-                    if ($buffer6 == '3 CONT') {
-                        $processed = 1;
-                        $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in text marriage!
-                    }
-                    if ($buffer6 == '3 CONC') {
-                        $processed = 1;
-                        $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in text marriage!
-                    }
-                }
-
                 // *** fam_religion ***
                 // Haza-data
                 //1 MARR
@@ -3030,17 +3119,73 @@ class gedcom_cls
                 }
             }
 
-            //Pro-gen and GensdataPro, licence marriage church:
-            //1 ORDI
-            //2 DATE 01 JUN 1749
-            //2 PLAC Huizen
-            //if (substr($buffer,0,1)=='1'){
-            //  $temp_kind="";
-            //}
+            // Pro-gen and GensdataPro, licence marriage church:
+            // 1 ORDI
+            // 2 DATE 01 JUN 1749
+            // 2 PLAC Huizen
+            // if (substr($buffer,0,1)=='1'){
+            //   $temp_kind="";
+            // }
             if ($buffer6 == '1 ORDI') {
                 $buffer = "1 MARR";
                 $temp_kind = "religious";
                 $level[1] = 'MARR';
+            }
+
+            // *** Witnesses Pro-gen ***
+            // 1 MARR
+            // 2 DATE 21 MAY 1874
+            // 2 PLAC Winsum
+            // 2 _WITN Aam Pieter Borgman, oud 48 jaar, herbergier, wonende te
+            // 3 CONT bla bla
+            // 3 CONT bla bla
+            if ($buffer7 == '2 _WITN') {
+                $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                $level[2] = 'WITN';
+            }
+            if ($level[2] == 'WITN') {
+                if ($buffer6 == '2 WITN') {
+                    // new way of saving: not tested yet.
+                    $processed = 1;
+                    $event_nr++;
+                    $calculated_event_id++;
+                    $event['connect_kind'][$event_nr] = 'family';
+                    $event['connect_id'][$event_nr] = $gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
+
+                    $event['kind'][$event_nr] = 'marriage_witness';
+                    if ($temp_kind == 'religious'){
+                        $event['kind'][$event_nr] = 'marriage_witness_rel';
+                    }
+
+                    $event['event'][$event_nr] = '';
+
+                    if (substr($buffer, 7, 1) == '@') {
+                        // 2 WITN @I1@
+                        $event['connect_kind2'][$event_nr] = 'family';
+                        $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
+                    } else {
+                        // 2 WITN Doopgetuige1//
+                        $event['event'][$event_nr] = substr($buffer, 7);
+                    }
+
+                    $event['event_extra'][$event_nr] = '';
+                    $event['gedcom'][$event_nr] = 'WITN';
+                    $event['date'][$event_nr] = '';
+                    $event['text'][$event_nr] = '';
+                    $event['place'][$event_nr] = '';
+                }
+                if ($buffer6 == '3 CONT') {
+                    $processed = 1;
+                    $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
+                    $buffer = ""; // to prevent use of this text in text marriage!
+                }
+                if ($buffer6 == '3 CONC') {
+                    $processed = 1;
+                    $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
+                    $buffer = ""; // to prevent use of this text in text marriage!
+                }
             }
 
             if ($level[1] == 'MARR' and $temp_kind == 'religious') {
@@ -3506,6 +3651,8 @@ class gedcom_cls
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'family';
                     $event['connect_id'][$event_nr] = $gedcomnumber;
+                    $event['connect_kind2'][$event_nr] = '';
+                    $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'event';
                     $event['event'][$event_nr] = '';
                     $event['event_extra'][$event_nr] = '';
@@ -3709,42 +3856,42 @@ class gedcom_cls
         }
 
         $sql = "INSERT IGNORE INTO humo_families SET
-    fam_tree_id='" . $tree_id . "',
-    fam_gedcomnumber='$gedcomnumber',
-    fam_man='$fam_man',
-    fam_man_age='" . $family["fam_man_age"] . "',
-    fam_woman='$fam_woman',
-    fam_woman_age='" . $family["fam_woman_age"] . "',
-    fam_children='$fam_children',
-    fam_religion='" . $this->text_process($family["fam_religion"]) . "',
-    fam_kind='" . $this->text_process($family["fam_kind"]) . "',
-    fam_text='" . $this->text_process($family["fam_text"]) . "',
-    fam_marr_church_notice_date='" . $this->process_date($this->text_process($family["fam_marr_church_notice_date"])) . "',
-    fam_marr_church_notice_place='" . $this->text_process($family["fam_marr_church_notice_place"]) . "',
-    fam_marr_church_notice_text='" . $this->text_process($family["fam_marr_church_notice_text"]) . "',
-    fam_marr_church_date='" . $this->process_date($this->text_process($family["fam_marr_church_date"])) . "',
-    fam_marr_church_place='" . $this->text_process($family["fam_marr_church_place"]) . "',
-    fam_marr_church_text='" . $this->text_process($family["fam_marr_church_text"]) . "',
-    fam_relation_date='" . $this->process_date($this->text_process($family["fam_relation_date"])) . "',
-    fam_relation_place='" . $this->text_process($family["fam_relation_place"]) . "',
-    fam_relation_text='" . $this->text_process($family["fam_relation_text"]) . "',
-    fam_relation_end_date='" . $this->process_date($this->text_process($family["fam_relation_end_date"])) . "',
-    fam_marr_notice_date='" . $this->process_date($this->text_process($family["fam_marr_notice_date"])) . "',
-    fam_marr_notice_place='" . $this->text_process($family["fam_marr_notice_place"]) . "',
-    fam_marr_notice_text='" . $this->text_process($family["fam_marr_notice_text"]) . "',
-    fam_marr_date='" . $this->process_date($this->text_process($family["fam_marr_date"])) . "',
-    fam_marr_place='" . $this->text_process($family["fam_marr_place"]) . "',
-    fam_marr_text='" . $this->text_process($family["fam_marr_text"]) . "',
-    fam_marr_authority='" . $this->text_process($family["fam_marr_authority"]) . "',
-    fam_div_date='" . $this->process_date($this->text_process($family["fam_div_date"])) . "',
-    fam_div_place='" . $this->text_process($family["fam_div_place"]) . "',
-    fam_div_text='" . $this->text_process($family["fam_div_text"]) . "',
-    fam_div_authority='" . $this->text_process($family["fam_div_authority"]) . "',
-    fam_cal_date='" . $this->process_date($this->text_process($family["fam_cal_date"])) . "',
-    fam_new_date='" . $this->process_date($family["new_date"]) . "',
-    fam_new_time='" . $family["new_time"] . "',
-    fam_changed_date='" . $this->process_date($family["changed_date"]) . "'," . $heb_qry . "
-    fam_changed_time='" . $family["changed_time"] . "'";
+            fam_tree_id='" . $tree_id . "',
+            fam_gedcomnumber='$gedcomnumber',
+            fam_man='$fam_man',
+            fam_man_age='" . $family["fam_man_age"] . "',
+            fam_woman='$fam_woman',
+            fam_woman_age='" . $family["fam_woman_age"] . "',
+            fam_children='$fam_children',
+            fam_religion='" . $this->text_process($family["fam_religion"]) . "',
+            fam_kind='" . $this->text_process($family["fam_kind"]) . "',
+            fam_text='" . $this->text_process($family["fam_text"]) . "',
+            fam_marr_church_notice_date='" . $this->process_date($this->text_process($family["fam_marr_church_notice_date"])) . "',
+            fam_marr_church_notice_place='" . $this->text_process($family["fam_marr_church_notice_place"]) . "',
+            fam_marr_church_notice_text='" . $this->text_process($family["fam_marr_church_notice_text"]) . "',
+            fam_marr_church_date='" . $this->process_date($this->text_process($family["fam_marr_church_date"])) . "',
+            fam_marr_church_place='" . $this->text_process($family["fam_marr_church_place"]) . "',
+            fam_marr_church_text='" . $this->text_process($family["fam_marr_church_text"]) . "',
+            fam_relation_date='" . $this->process_date($this->text_process($family["fam_relation_date"])) . "',
+            fam_relation_place='" . $this->text_process($family["fam_relation_place"]) . "',
+            fam_relation_text='" . $this->text_process($family["fam_relation_text"]) . "',
+            fam_relation_end_date='" . $this->process_date($this->text_process($family["fam_relation_end_date"])) . "',
+            fam_marr_notice_date='" . $this->process_date($this->text_process($family["fam_marr_notice_date"])) . "',
+            fam_marr_notice_place='" . $this->text_process($family["fam_marr_notice_place"]) . "',
+            fam_marr_notice_text='" . $this->text_process($family["fam_marr_notice_text"]) . "',
+            fam_marr_date='" . $this->process_date($this->text_process($family["fam_marr_date"])) . "',
+            fam_marr_place='" . $this->text_process($family["fam_marr_place"]) . "',
+            fam_marr_text='" . $this->text_process($family["fam_marr_text"]) . "',
+            fam_marr_authority='" . $this->text_process($family["fam_marr_authority"]) . "',
+            fam_div_date='" . $this->process_date($this->text_process($family["fam_div_date"])) . "',
+            fam_div_place='" . $this->text_process($family["fam_div_place"]) . "',
+            fam_div_text='" . $this->text_process($family["fam_div_text"]) . "',
+            fam_div_authority='" . $this->text_process($family["fam_div_authority"]) . "',
+            fam_cal_date='" . $this->process_date($this->text_process($family["fam_cal_date"])) . "',
+            fam_new_date='" . $this->process_date($family["new_date"]) . "',
+            fam_new_time='" . $family["new_time"] . "',
+            fam_changed_date='" . $this->process_date($family["changed_date"]) . "'," . $heb_qry . "
+            fam_changed_time='" . $family["changed_time"] . "'";
 
         $result = $dbh->query($sql);
 
@@ -3874,7 +4021,15 @@ class gedcom_cls
                 event_tree_id='" . $tree_id . "',
                 event_order='" . $event_order . "',
                 event_connect_kind='" . $event['connect_kind'][$i] . "',
-                event_connect_id='" . $event['connect_id'][$i] . "',
+                event_connect_id='" . $event['connect_id'][$i] . "',";
+
+                if (isset($event['connect_id2'][$i])) {
+                    $gebeurtsql .= "
+                    event_connect_kind2='" . $this->text_process($event['connect_kind2'][$i]) . "',
+                    event_connect_id2='" . $this->text_process($event['connect_id2'][$i]) . "',";
+                }
+
+                $gebeurtsql .= "
                 event_kind='" . $this->text_process($event['kind'][$i]) . "',
                 event_event='" . $this->text_process($event['event'][$i]) . "',
                 event_event_extra='" . $this->text_process($event['event_extra'][$i]) . "',

@@ -1,29 +1,11 @@
 <?php
-/*
- * Check if HuMo-genealogy is in a CMS system
- *	Names:
- *		- CMS names used for now are 'Joomla' and 'CMSMS'.
- *	Usage:
- *		- Code for all CMS: if (CMS_SPECIFIC) {}
- *		- Code for one CMS: if (CMS_SPECIFIC == 'Joomla') {}
- *		- Code NOT for CMS: if (!CMS_SPECIFIC) {}
-*/
-if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
-
-// *** When run from CMS, the path to the map (that contains this file) should be given ***
-if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "");
-
-if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
-
 // *** Disabled 18-01-2023 ***
 //ini_set('url_rewriter.tags','');
 
-if (!CMS_SPECIFIC) {
-    session_cache_limiter('private, must-revalidate'); //tb edit
-    session_start();
-    // *** Regenerate session id regularly to prevent session hacking ***
-    session_regenerate_id();
-}
+session_cache_limiter('private, must-revalidate'); //tb edit
+session_start();
+// *** Regenerate session id regularly to prevent session hacking ***
+session_regenerate_id();
 
 if (isset($_GET['log_off'])) {
     unset($_SESSION['user_name']);
@@ -33,12 +15,12 @@ if (isset($_GET['log_off'])) {
     session_destroy();
 }
 
-include_once(CMS_ROOTPATH . "include/db_login.php"); //Inloggen database.
-include_once(CMS_ROOTPATH . 'include/show_tree_text.php');
-include_once(CMS_ROOTPATH . "include/db_functions_cls.php");
+include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
+include_once(__DIR__ . '/include/show_tree_text.php');
+include_once(__DIR__ . "/include/db_functions_cls.php");
 $db_functions = new db_functions;
 
-// *** Show a message at NEW installation. Use "try" for PHP 8.1. ***
+// *** Show a message at NEW installation ***
 try {
     $result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
 } catch (PDOException $e) {
@@ -46,24 +28,24 @@ try {
     exit();
 }
 
-include_once(CMS_ROOTPATH . "include/safe.php");
-include_once(CMS_ROOTPATH . "include/settings_global.php"); //Variables
-include_once(CMS_ROOTPATH . "include/settings_user.php"); // USER variables
+include_once(__DIR__ . "/include/safe.php");
+include_once(__DIR__ . "/include/settings_global.php"); // System variables
+include_once(__DIR__ . "/include/settings_user.php"); // User variables
 
-// *** Debug HuMo-genealogy`front pages ***
+// *** Debug HuMo-genealogy front pages ***
 if ($humo_option["debug_front_pages"] == 'y') {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 }
 
-// *** Check if visitor is allowed ***
+// *** Check if visitor is allowed access to website ***
 if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'], 'partial')) {
     echo 'Access to website is blocked.';
     exit;
 }
 
 // *** Set timezone ***
-include_once(CMS_ROOTPATH . "include/timezone.php"); // set timezone 
+include_once(__DIR__ . "/include/timezone.php"); // set timezone 
 timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
@@ -73,7 +55,6 @@ $bot_visit = preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['
 // *** Line for bot test! ***
 //$bot_visit=true;
 
-//$language_folder = opendir(CMS_ROOTPATH . 'languages/');
 $language_folder = opendir(__DIR__ . '/languages/');
 while (false !== ($file = readdir($language_folder))) {
     if (strlen($file) < 6 and $file != '.' and $file != '..') {
@@ -140,7 +121,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         if (isset($resultDb->user_2fa_enabled) and $resultDb->user_2fa_enabled) {
             $valid_user = false;
             $fault = true;
-            include_once(CMS_ROOTPATH . "include/2fa_authentication/authenticator.php");
+            include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
 
             if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
                 $Authenticator = new Authenticator();
@@ -191,7 +172,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             $dbh->query($sql);
 
             // *** Send to secured page ***
-            header("Location: " . CMS_ROOTPATH . "index.php?menu_choice=main_index");
+            header("Location: index.php?menu_choice=main_index");
             exit();
         }
     } else {
@@ -210,8 +191,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 }
 
 // *** Language processing after header("..") lines. *** 
-include_once(CMS_ROOTPATH . "languages/language.php"); //Taal
-//include_once(__DIR__ . "/languages/language.php"); //Taal
+include_once(__DIR__ . "/languages/language.php"); //Taal
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = "&#x200E;";  //ltr marker
@@ -231,7 +211,7 @@ if (isset($screen_mode) and $screen_mode == "PDF") {
 }
 
 
-// *** Process highlight of menu item, title of page and $uri_path ***
+// *** Process title of page and $uri_path ***
 $request_uri = $_SERVER['REQUEST_URI'];
 
 // *** Option url_rewrite disabled ***
@@ -244,354 +224,54 @@ if (isset($_GET['page'])) $request_uri = str_replace('index.php?page=', '', $req
 $request_uri = strtok($request_uri, "?"); // Remove last part of url: ?start=1&item=11
 
 // *** Get url_rewrite variables ***
-//if ($humo_option["url_rewrite"] == "j") {
 $url_array = explode('/', $request_uri);
-//}
-$save_menu_choice = '';
 $page = 'index';
 $head_text = $humo_option["database_name"];
 $tmp_path = '';
 
-if (strpos($request_uri, 'index') > 0) {
-    $save_menu_choice = 'main_index';
-    $head_text .= ' - ' . __('Main index');
-    $url_position = strpos($request_uri, 'index');
-    $tmp_path = substr($request_uri, 0, $url_position);
-}
-if (strpos($request_uri, 'tree_index') > 0) {
-    $save_menu_choice = 'tree_index';
-    $head_text .= ' - ' . __('Family tree index');
-    $url_position = strpos($request_uri, 'tree_index');
-    $tmp_path = substr($request_uri, 0, $url_position);
 
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        $select_tree_id = end($url_array);
+
+// *** New routing script sept. 2023 ***
+include_once(__DIR__ . '/app/routing/router.php');
+# Search route, return match or not found
+$router = new Router();
+$matchedRoute = $router->get_route($_SERVER['REQUEST_URI']);
+if (isset($matchedRoute['page'])) {
+    $page = $matchedRoute['page'];
+
+    // TODO remove title from router script
+    $head_text = $matchedRoute['title'];
+
+    if (isset($matchedRoute['select_tree_id'])) {
+        $select_tree_id = $matchedRoute['select_tree_id'];
+    }
+    // *** Used for list_names ***
+    if (isset($matchedRoute['last_name']) and is_string($matchedRoute['last_name'])) {
+        $last_name = $matchedRoute['last_name'];
+    }
+    // *** Used for source ***
+    // TODO improve processing of these variables 
+    if (isset($matchedRoute['id'])) {
+        $id = $matchedRoute['id']; // for source
+        $_GET["id"] = $matchedRoute['id']; // for address
     }
 
-    $page = 'tree_index';
-}
-if (strpos($request_uri, 'list') > 0) {
-    $save_menu_choice = 'persons';
-    $head_text .= ' - ' . __('Persons');
-    $url_position = strpos($request_uri, 'list');
-    $tmp_path = substr($request_uri, 0, $url_position);
-}
-// *** Backwards compatibility only ***
-if (strpos($request_uri, 'lijst') > 0) {
-    $save_menu_choice = 'persons';
-    $head_text .= ' - ' . __('Persons');
-    $url_position = strpos($request_uri, 'lijst');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'list';
-}
-if (strpos($request_uri, 'list_names') > 0) {
-    $save_menu_choice = 'names';
-    $head_text .= ' - ' . __('Names');
-    $url_position = strpos($request_uri, 'list_names');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        if (is_string(end($url_array))) $last_name = end($url_array);
-        // *** Get previous item of array ***
-        $select_tree_id = prev($url_array);
+    if ($matchedRoute['tmp_path']) {
+        $tmp_path = $matchedRoute['tmp_path'];
     }
-
-    $page = 'list_names';
-}
-// *** Backwards compatibility only ***
-if (strpos($request_uri, 'lijst_namen') > 0) {
-    $save_menu_choice = 'names';
-    $head_text .= ' - ' . __('Names');
-    $url_position = strpos($request_uri, 'lijst_namen');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'list_names';
-}
-if (strpos($request_uri, 'places') > 0) {
-    $save_menu_choice = 'places';
-    $head_text .= ' - ' . __('Places');
-}
-if (strpos($request_uri, 'places_families') > 0) {
-    $save_menu_choice = 'places_families';
-    $head_text .= ' - ' . __('Places');
-}
-if (
-    isset($_POST['index_list'])
-    and $_POST['index_list'] == "places"
-) {
-    $save_menu_choice = 'places';
-    $head_text .= ' - ' . __('Places');
-}
-if (strpos($request_uri, 'photoalbum') > 0) {
-    $save_menu_choice = 'pictures';
-    $head_text .= ' - ' . __('Photobook');
-    $url_position = strpos($request_uri, 'photoalbum');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        $select_tree_id = end($url_array);
-    }
-
-    $page = 'photoalbum';
-}
-if (strpos($request_uri, 'register') > 0) {
-    $save_menu_choice = 'login';
-    $head_text .= ' - ' . __('Register');
-    $url_position = strpos($request_uri, 'register');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        $select_tree_id = end($url_array);
-    }
-
-    $page = 'register';
-}
-if (strpos($request_uri, 'sources') > 0) {
-    $save_menu_choice = 'sources';
-    $head_text .= ' - ' . __('Sources');
-    $url_position = strpos($request_uri, 'sources');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        $select_tree_id = end($url_array);
-    }
-
-    $page = 'sources';
-} elseif (strpos($request_uri, 'source') > 0) {
-    $save_menu_choice = 'sources';
-    $head_text .= ' - ' . __('Source');
-    $url_position = strpos($request_uri, 'source');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        $id = end($url_array);
-        // *** Get previous item of array ***
-        $select_tree_id = prev($url_array);
-    }
-
-    $page = 'source';
-}
-// *** First check 'address' then 'addresses' ***
-if (strpos($request_uri, 'address') > 0) {
-    $save_menu_choice = 'address';
-    $head_text .= ' - ' . __('Address');
-    $url_position = strpos($request_uri, 'address');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        //$id = end($url_array);
-        $_GET["id"] = end($url_array);
-        // *** Get previous item of array ***
-        $select_tree_id = prev($url_array);
-    }
-
-    $page = 'address';
-}
-if (strpos($request_uri, 'addresses') > 0) {
-    $save_menu_choice = 'addresses';
-    $head_text .= ' - ' . __('Addresses');
-
-    $url_position = strpos($request_uri, 'addresses');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'addresses';
-}
-if (strpos($request_uri, 'ancestor_sheet_pdf') > 0) {
-    // *** TEST: Ancestor_sheet_pdf is used with direct link ***
-} elseif (strpos($request_uri, 'ancestor_chart') > 0) {
-    $save_menu_choice = 'persons';
-    $head_text .= ' - ' . __('Ancestor chart');
-    $url_position = strpos($request_uri, 'ancestor_chart');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    /*
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        //$id = end($url_array);
-        $_GET["id"] = end($url_array);
-        // *** Get previous item of array ***
-        $select_tree_id = prev($url_array);
-    }
-    */
-    $page = 'ancestor_chart';
-} elseif (strpos($request_uri, 'ancestor_sheet') > 0) {
-    $save_menu_choice = 'persons';
-    $head_text .= ' - ' . __('Ancestor sheet');
-    $url_position = strpos($request_uri, 'ancestor_sheet');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    /*
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        //$id = end($url_array);
-        $_GET["id"] = end($url_array);
-        // *** Get previous item of array ***
-        $select_tree_id = prev($url_array);
-    }
-    */
-    $page = 'ancestor_sheet';
 }
 
-if (strpos($request_uri, 'birthday_list') > 0) {
-    $save_menu_choice = 'birthday';
-    $head_text .= ' - ' . __('Birthday calendar');
-    $url_position = strpos($request_uri, 'birthday_list');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'birthday';
-}
-if (strpos($request_uri, 'descendant') > 0) {
-    $save_menu_choice = 'persons';
-    $head_text .= ' - ' . __('Descendants');
-    $url_position = strpos($request_uri, 'descendant');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        //$id = end($url_array);
-        $_GET["id"] = end($url_array);
-        // *** Get previous item of array ***
-        $select_tree_id = prev($url_array);
-    }
-
-    $page = 'descendant';
-}
-if (strpos($request_uri, 'statistics') > 0) {
-    $save_menu_choice = 'statistics';
-    $head_text .= ' - ' . __('Statistics');
-    $url_position = strpos($request_uri, 'statistics');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'statistics';
-}
-if (strpos($request_uri, 'relations') > 0) {
-    $save_menu_choice = 'relations';
-    $head_text .= ' - ' . __('Relationship calculator');
-    $url_position = strpos($request_uri, 'relations');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'relations';
-}
-if (strpos($request_uri, 'mailform') > 0) {
-    $save_menu_choice = 'mailform';
-    $head_text .= ' - ' . __('Mail form');
-    $page = 'mailform';
-}
-if (strpos($request_uri, 'maps') > 0) {
-    $save_menu_choice = 'maps';
-    $head_text .= ' - ' . __('World map');
-}
-if (strpos($request_uri, 'latest_changes') > 0) {
-    $save_menu_choice = 'latest_changes';
-    $head_text .= ' - ' . __('Latest changes');
-    $url_position = strpos($request_uri, 'latest_changes');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'latest_changes';
-}
-if (strpos($request_uri, 'help') > 0) {
-    $save_menu_choice = 'help';
-    $head_text .= ' - ' . __('Help');
-    $url_position = strpos($request_uri, 'help');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'help';
-}
-/*
-if (strpos($request_uri, 'info') > 0) {
-    $save_menu_choice = 'info';
-    $head_text .= ' - ' . __('Information');
-}
-if (strpos($request_uri, 'credits') > 0) {
-    $save_menu_choice = 'credits';
-    $head_text .= ' - ' . __('Credits');
-}
-*/
-if (strpos($request_uri, 'cookies') > 0) {
-    $save_menu_choice = 'cookies';
-    $head_text .= ' - ' . __('Cookie information');
-    $url_position = strpos($request_uri, 'cookies');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'cookies';
-}
-if (strpos($request_uri, 'login') > 0) {
-    $save_menu_choice = 'login';
-    $head_text .= ' - ' . __('Login');
-    $url_position = strpos($request_uri, 'login');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'login';
-}
-if (strpos($request_uri, 'family_rtf') > 0) {
-    $save_menu_choice = 'persons';
-    $head_text .= ' - ' . __('Family Page');
-    $url_position = strpos($request_uri, 'family_rtf');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'family_rtf';
-} elseif (strpos($request_uri, 'family') > 0) {
-    $save_menu_choice = 'persons';
-    $head_text .= ' - ' . __('Family Page');
-    $url_position = strpos($request_uri, 'family');
-    $tmp_path = substr($request_uri, 0, $url_position);
-}
 // *** Backwards compatibility only ***
 // *** Example: gezin.php?database=humo_&id=F1&hoofdpersoon=I2 ***
-if (strpos($request_uri, 'gezin') > 0) {
-    $save_menu_choice = 'persons';
-    $head_text .= ' - ' . __('Family Page');
-    $url_position = strpos($request_uri, 'gezin');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    if (isset($_GET["hoofdpersoon"])) {
-        $_GET['main_person'] = $_GET["hoofdpersoon"];
-    }
-    if (isset($_POST["hoofdpersoon"])) {
-        $_POST['main_person'] = $_POST["hoofdpersoon"];
-    }
-    $page = 'family';
+//if (strpos($request_uri, 'gezin') > 0) {
+// *** Allready moved most variables to routing script ***
+if (isset($_GET["hoofdpersoon"])) {
+    $_GET['main_person'] = $_GET["hoofdpersoon"];
 }
-if (strpos($request_uri, 'cms_pages') > 0) {
-    $save_menu_choice = 'cms_pages';
-    $head_text .= ' - ' . __('Information');
-    $url_position = strpos($request_uri, 'cms_pages');
-    $tmp_path = substr($request_uri, 0, $url_position);
-
-    // *** Get url_rewrite variables ***
-    if ($humo_option["url_rewrite"] == "j") {
-        // *** Get last item of array ***
-        $_GET["select_page"] = end($url_array);
-    }
-
-    $page = 'cms_pages';
+if (isset($_POST["hoofdpersoon"])) {
+    $_POST['main_person'] = $_POST["hoofdpersoon"];
 }
-if (strpos($request_uri, 'register') > 0) {
-    $save_menu_choice = 'register';
-    $head_text .= ' - ' . __('Register');
-}
-if (strpos($request_uri, 'user_settings') > 0) {
-    $save_menu_choice = 'settings';
-    $head_text .= ' - ' . __('Settings');
-    $url_position = strpos($request_uri, 'user_settings');
-    $tmp_path = substr($request_uri, 0, $url_position);
-    $page = 'settings';
-}
-if (strpos($request_uri, 'report_ancestor') > 0) {
-    $save_menu_choice = 'report_ancestor';
-    $head_text .= ' - ' . __('Ancestor report');
-    $url_position = strpos($request_uri, 'report_ancestor');
-    $tmp_path = substr($request_uri, 0, $url_position);
-}
-
-$menu_choice = $save_menu_choice;
+//}
 
 // *** Generate BASE HREF for use in url_rewrite ***
 // SERVER_NAME   127.0.0.1
@@ -615,7 +295,7 @@ if ($humo_option["url_rewrite"] == "j" and $tmp_path) {
 }
 
 // *** To be used to show links in several pages ***
-include_once(CMS_ROOTPATH . 'include/links.php');
+include_once(__DIR__ . '/include/links.php');
 $link_cls = new Link_cls($uri_path);
 
 // *** For PDF reports: remove html tags en decode ' characters ***
@@ -631,13 +311,10 @@ $pdf_font = 'DejaVu';
 
 // *** Don't generate a HTML header in a PDF report ***
 if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) {
-    //require(CMS_ROOTPATH.'include/fpdf/fpdf.php');
-    //require(CMS_ROOTPATH.'include/fpdf/fpdfextend.php');
-
     // *** june 2022: FPDF supports romanian and greek characters ***
     //define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
-    require(CMS_ROOTPATH . 'include/tfpdf/tfpdf.php');
-    require(CMS_ROOTPATH . 'include/tfpdf/tfpdfextend.php');
+    require(__DIR__ . '/include/tfpdf/tfpdf.php');
+    require(__DIR__ . '/include/tfpdf/tfpdfextend.php');
 
     // *** Set variabele for queries ***
     $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
@@ -730,61 +407,50 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
         }
     }
 
-    if (!CMS_SPECIFIC) {
-        // ----------- RTL by Dr Maleki ------------------
+    // ----------- RTL by Dr Maleki ------------------
+    $html_text = '';
+    if ($language["dir"] == "rtl") {   // right to left language
+        $html_text = ' dir="rtl"';
+    }
+    // TODO check this code
+    if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
         $html_text = '';
-        if ($language["dir"] == "rtl") {   // right to left language
-            $html_text = ' dir="rtl"';
-        }
-        // TODO check this code
-        if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
-            $html_text = '';
-        }
+    }
 ?>
-        <!DOCTYPE html>
+    <!DOCTYPE html>
 
-        <html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
+    <html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
 
-        <head>
-            <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-            <!-- Rescale standard HuMo-genealogy pages for mobile devices -->
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Rescale standard HuMo-genealogy pages for mobile devices -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            <title><?= $head_text; ?></title>
+        <title><?= $head_text; ?></title>
 
-    <?php
+        <?php
         if ($humo_option["searchengine"] == "j") echo $humo_option["robots_option"];
         if ($base_href) echo '<base href="' . $base_href . '">' . "\n";
-    }
+        ?>
 
-    //echo '<link href="' . CMS_ROOTPATH . 'gedcom.css" rel="stylesheet" type="text/css">';
-    ?>
-    <link href="css/gedcom.css" rel="stylesheet" type="text/css">
-    <link href="css/form.css" rel="stylesheet" type="text/css">
-    <link href="css/tab_menu.css" rel="stylesheet" type="text/css">
-    <!-- TODO this is only needed for outline report -->
-    <link href="css/outline_report.css" rel="stylesheet" type="text/css">
+        <link href="css/gedcom.css" rel="stylesheet" type="text/css">
+        <link href="css/form.css" rel="stylesheet" type="text/css">
+        <link href="css/tab_menu.css" rel="stylesheet" type="text/css">
+        <!-- TODO this is only needed for outline report -->
+        <link href="css/outline_report.css" rel="stylesheet" type="text/css">
+
     <?php
+    echo '<link href="css/print.css" rel="stylesheet" type="text/css" media="print">';
 
-    if (CMS_SPECIFIC != 'CMSMS') {
-        //echo '<link href="' . CMS_ROOTPATH . 'print.css" rel="stylesheet" type="text/css" media="print">';
-        echo '<link href="css/print.css" rel="stylesheet" type="text/css" media="print">';
-
-        // *** Use your own favicon.ico in media folder ***
-        if (file_exists('media/favicon.ico'))
-            echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'media/favicon.ico" type="image/x-icon">';
-        else
-            echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'favicon.ico" type="image/x-icon">';
-    }
+    // *** Use your own favicon.ico in media folder ***
+    if (file_exists('media/favicon.ico'))
+        echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
+    else
+        echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
 
     if (isset($user["group_birthday_rss"]) and $user["group_birthday_rss"] == "j") {
-        //$language_rss = 'en';
-        //if (isset($_SESSION["language_humo"])) {
-        //    $language_rss = $_SESSION["language_humo"];
-        //}
-        //echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="' . CMS_ROOTPATH . 'birthday_rss.php?lang=' . $language_rss . '" >';
-        echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="' . CMS_ROOTPATH . 'birthday_rss.php?lang=' . $selected_language . '" >';
+        echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="birthday_rss.php?lang=' . $selected_language . '" >';
     }
 
     // *** Family tree choice ***
@@ -913,9 +579,9 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
         strpos($_SERVER['REQUEST_URI'], "HOUR") !== false or
         strpos($_SERVER['REQUEST_URI'], "maps") !== false
     ) {
-        echo '<script src="' . CMS_ROOTPATH . 'include/jquery/jquery.min.js"></script> ';
-        echo '<link rel="stylesheet" href="' . CMS_ROOTPATH . 'include/jqueryui/jquery-ui.min.css"> ';
-        echo '<script src="' . CMS_ROOTPATH . 'include/jqueryui/jquery-ui.min.js"></script>';
+        echo '<script src="include/jquery/jquery.min.js"></script> ';
+        echo '<link rel="stylesheet" href="include/jqueryui/jquery-ui.min.css"> ';
+        echo '<script src="include/jqueryui/jquery-ui.min.js"></script>';
     }
 
     // *** Cookie for theme selection ***
@@ -937,16 +603,16 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     </script>';
 
     // *** Style sheet select ***
-    include_once(CMS_ROOTPATH . "styles/sss1.php");
+    include_once(__DIR__ . "/styles/sss1.php");
 
     // *** Pop-up menu ***
-    echo '<script src="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.js"></script>';
-    echo '<link rel="stylesheet" type="text/css" href="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.css">';
+    echo '<script src="include/popup_menu/popup_menu.js"></script>';
+    echo '<link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">';
 
     // *** Always load script, because of "Random photo" at homepage ***
     // *** Photo lightbox effect using GLightbox ***
-    echo '<link rel="stylesheet" href="' . CMS_ROOTPATH . 'include/glightbox/css/glightbox.css">';
-    echo '<script src="' . CMS_ROOTPATH . 'include/glightbox/js/glightbox.min.js"></script>';
+    echo '<link rel="stylesheet" href="include/glightbox/css/glightbox.css">';
+    echo '<script src="include/glightbox/js/glightbox.min.js"></script>';
     // *** Remark: there is also a script in footer.php, otherwise GLightbox doesn't work ***
 
     // *** CSS changes for mobile devices ***
@@ -955,19 +621,16 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     // *** Extra items in header added by admin ***
     if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];
 
-    if (!CMS_SPECIFIC) {
-        echo "</head>\n";
-        //echo "<body onload='checkCookie()'>\n";  // *** Was needed to change fontsize ***
-        echo "<body>\n";
-    }
+    echo "</head>\n";
+    echo "<body>\n";
 
     $db_functions->set_tree_id($_SESSION['tree_id']);
 
     if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
-        $str = file_get_contents(CMS_ROOTPATH . "languages/en/en.po");
+        $str = file_get_contents("languages/en/en.po");
         if (strpos($str, 'msgstr "&#134;"') or strpos($str, 'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
             $humo_option['death_char'] = "n"; // fool "change_all.php" into thinking a change was requested from cross to infinity
-            include(CMS_ROOTPATH . "languages/change_all.php");
+            include(__DIR__ . "/languages/change_all.php");
         }
     }
 

@@ -1,115 +1,115 @@
 body {
-	color: #303030;
-	background-color: #000000;
-	background-image: none;
+    color: #303030;
+    background-color: #000000;
+    background-image: none;
 }
 
 /* MAIN SETTINGS */
 a:link {
-	color: #8888ff;
+    color: #8888ff;
 }
 
 a:hover {
-	text-decoration: underline;
-	color: #2222ff;
+    text-decoration: underline;
+    color: #2222ff;
 }
 
 a:visited {
-	color: #8844ff;
+    color: #8844ff;
 }
 
 p {
-	line-height: 150%;
-	margin: 15px 0 15px;
+    line-height: 150%;
+    margin: 15px 0 15px;
 }
 
 /* ********** */
 /* TITLE-AREA */
 #top {
-	background: url(images_dark/darktop1.jpg) repeat left top
+    background: url(images_dark/darktop1.jpg) repeat left top
 }
 
 /* #top { background-image: none; background-color: #202020; } */
 #top_menu {
-	background-image: none;
-	background-color: #202020;
+    background-image: none;
+    background-color: #202020;
 }
 
 #top_website_name a {
-	color: #8888ff;
-	font-weight: normal;
+    color: #8888ff;
+    font-weight: normal;
 }
 
 #top_website_name a:visited {
-	color: #8888ff;
-	font-weight: normal;
+    color: #8888ff;
+    font-weight: normal;
 }
 
 #top_familytree_name {
-	color: #ff8888;
-	font-weight: normal;
+    color: #ff8888;
+    font-weight: normal;
 }
 
 /* ********** */
 /* MENUBAR */
 #humo_menu {
-	background: url("images_dark/silvermenu1.jpg") repeat left top;
+    background: url("images_dark/silvermenu1.jpg") repeat left top;
 }
 
 #humo_menu a:hover,
 #humo_menu ul.humo_menu_item2 li a:hover {
-	background: url("images_dark/menuhover1.jpg") repeat left top;
+    background: url("images_dark/menuhover1.jpg") repeat left top;
 }
 
 #humo_menu a#current_top,
 #humo_menu #current a {
-	background: url("images_dark/menuhover1.jpg") repeat left top;
-	color: #ff6600;
+    background: url("images_dark/menuhover1.jpg") repeat left top;
+    color: #ff6600;
 }
 
 #humo_menu ul.humo_menu_item2 li {
-	background: url("images_dark/silver.jpg") repeat left top;
+    background: url("images_dark/silver.jpg") repeat left top;
 }
 
 #humo_menu ul.humo_menu_item2 li a {
-	background: url("images_dark/silver.jpg") repeat left top;
+    background: url("images_dark/silver.jpg") repeat left top;
 }
 
 #humo_menu ul.humo_menu_item li a {
-	font-weight: normal;
-	color: #d0d0d0;
+    font-weight: normal;
+    color: #d0d0d0;
 }
 
 ul.humo_menu_item li {
-	border-right: none;
+    border-right: none;
 }
 
 #country_flags {
-	padding: 11px 85px 6px 5px;
+    padding: 11px 85px 6px 5px;
 }
 
 .loginname {
-	color: #ff6600;
-	font-weight: bold;
+    color: #ff6600;
+    font-weight: bold;
 }
 
 /* ********** */
 /* CONTENT */
 
 #content {
-	background: url("images_dark/background.jpg") repeat left top;
-	color: #b0b0b0;
+    background: url("images_dark/background.jpg") repeat left top;
+    color: #b0b0b0;
 }
 
 #rtlcontent {
-	background: url("images_dark/background.jpg") repeat left top;
-	color: #b0b0b0;
+    background: url("images_dark/background.jpg") repeat left top;
+    color: #b0b0b0;
 }
 
 /* KOPPEN ITEMS EN KOPPEN EN TEKST IN DE RECHTER ZIJBALK */
 #mainmenu_centerbox {
-	background-image: none;
-	background-color: #101010;
+    background-image: none;
+    background-color: #101010;
 }
 
 /*
@@ -121,138 +121,138 @@ ul.humo_menu_item li {
 */
 
 .homepage_box {
-	border: solid 1px #EED4D4;
-	background-color: transparent;
+    border: solid 1px #EED4D4;
+    background-color: transparent;
 }
 
 /* OVERIG CONTENT */
 #mainmenu_center_alt.style_tree_text fonts {
-	background-image: none;
-	background-color: #101010;
-	color: #b0b0b0;
+    background-image: none;
+    background-color: #101010;
+    color: #b0b0b0;
 }
 
 #mainmenu_right fonts {
-	background-color: #101010;
+    background-color: #101010;
 }
 
 /* Tables */
 table.humo,
 table.ext {
-	background-image: none;
-	background-color: #101010;
-	margin-top: 10px;
+    background-image: none;
+    background-color: #101010;
+    margin-top: 10px;
 }
 
 table.standard {
-	margin-left: auto;
-	margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* 1st table A-Z */
 table.humo td {
-	border-color: #404040;
+    border-color: #404040;
 }
 
 table.humo tr:first-of-type td {
-	border-color: #404040;
+    border-color: #404040;
 }
 
 .table_headline {
-	background-image: none;
-	background-color: #101010;
-	border-color: #404040;
+    background-image: none;
+    background-color: #101010;
+    border-color: #404040;
 }
 
 /* familypage */
 .pers_name {
-	color: #e0e0e0;
+    color: #e0e0e0;
 }
 
 /* statistics */
 #statistics_screen {
-	background: none;
-	background: url("images_dark/background.jpg") repeat left top;
-	height: 500px;
-	padding: 10px;
+    background: none;
+    background: url("images_dark/background.jpg") repeat left top;
+    height: 500px;
+    padding: 10px;
 }
 
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
-	color: #000066;
+    color: #000066;
 }
 
 /* Ancestor graphical */
 div.ancestorName {
-	border-color: #000066;
-	color: #000000;
-	font-family: "arial narrow";
-	font-size: 75%;
+    border-color: #000066;
+    color: #000000;
+    font-family: "arial narrow";
+    font-size: 75%;
 }
 
 /* Text */
 div.ancestorName a {
-	color: #222222;
-	font-weight: bold;
+    color: #222222;
+    font-weight: bold;
 }
 
 div.ancestor_line {
-	border-bottom-color: #000066;
-	border-top-color: #000066;
+    border-bottom-color: #000066;
+    border-top-color: #000066;
 }
 
 div.ancestor_split {
-	border-left-color: #000066;
-	border-bottom-color: #000066;
-	border-top-color: #000066;
+    border-left-color: #000066;
+    border-bottom-color: #000066;
+    border-top-color: #000066;
 }
 
 div.hour_ancestor_split {
-	position: absolute;
-	width: 8px;
-	border-right: 1px solid #000066;
-	border-bottom: 1px solid #000066;
-	border-top: 1px solid #000066;
+    position: absolute;
+    width: 8px;
+    border-right: 1px solid #000066;
+    border-bottom: 1px solid #000066;
+    border-top: 1px solid #000066;
 }
 
 .ancestorName {
-	line-height: 100%;
+    line-height: 100%;
 }
 
 .chart_line {
-	background-color: #000066;
-	border: 0px;
+    background-color: #000066;
+    border: 0px;
 }
 
 /* Switchform */
 #switchform {
-	color: #333399;
+    color: #333399;
 }
 
 div.photobook,
 div.photobooktext {
-	background-color: #eeeeff;
+    background-color: #eeeeff;
 }
 
 table.reltable td {
-	border: 0px;
+    border: 0px;
 }
 
 table.reltable {
-	background: none;
-	background-image: none;
+    background: none;
+    background-image: none;
 }
 
 .bottomtext {
-	text-align: center;
-	color: #ff9900;
+    text-align: center;
+    color: #ff9900;
 }
 
 .mobile_icon {
-	filter: invert(100%);
+    filter: invert(100%);
 }
 
-footer{
-	background-color: transparent;
-	color: #ff9900;
+footer {
+    background-color: transparent;
+    color: #ff9900;
 }

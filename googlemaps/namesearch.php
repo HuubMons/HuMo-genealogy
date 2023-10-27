@@ -1,35 +1,31 @@
 <?php
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//the parts of header.php that we need:
-if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
-
-// *** When run from CMS, the path to the map (that contains this file) should be given ***
-if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../");
-
 //ini_set('url_rewriter.tags','');
 
 //session_cache_limiter ('private, must-revalidate'); //tb edit
 session_start();
 
-include_once(CMS_ROOTPATH . "include/db_login.php"); //Inloggen database.
+include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 
 // *** Use UTF-8 database connection ***
 //$dbh->query("SET NAMES 'utf8'");
 
-include_once(CMS_ROOTPATH . "include/safe.php");
-include_once(CMS_ROOTPATH . "include/settings_global.php"); //Variables
-include_once(CMS_ROOTPATH . "include/settings_user.php"); // USER variables
-include_once(CMS_ROOTPATH . "include/person_cls.php"); // for privacy
-include_once(CMS_ROOTPATH . "include/language_date.php");
-include_once(CMS_ROOTPATH . "include/date_place.php");
+include_once(__DIR__ . "/../include/safe.php");
+include_once(__DIR__ . "/../include/settings_global.php"); //Variables
+include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
+include_once(__DIR__ . "/../include/person_cls.php"); // for privacy
+include_once(__DIR__ . "/../include/language_date.php");
+include_once(__DIR__ . "/../include/date_place.php");
+
+include_once(__DIR__ . '/../include/links.php');
+$link_cls = new Link_cls();
 
 $tree_id = $_SESSION['tree_id'];
 
-include_once(CMS_ROOTPATH . "include/db_functions_cls.php");
+include_once(__DIR__ . "/../include/db_functions_cls.php");
 $db_functions = new db_functions;
 $db_functions->set_tree_id($tree_id);
 
-$language_folder = opendir(CMS_ROOTPATH . 'languages/');
+$language_folder = opendir('../languages/');
 while (false !== ($file = readdir($language_folder))) {
     if (strlen($file) < 5 and $file != '.' and $file != '..') {
         $language_file[] = $file;
@@ -51,7 +47,7 @@ while (false !== ($file = readdir($language_folder))) {
 }
 closedir($language_folder);
 // *** Language processing after header("..") lines. ***
-include_once(CMS_ROOTPATH . "languages/language.php"); //Taal
+include_once(__DIR__ . "/../languages/language.php"); //Taal
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = "&#x200E;";  //ltr marker
@@ -86,7 +82,7 @@ if (isset($_GET['thisplace'])) {
 
 function mapbirthplace($place)
 {
-    global $dbh, $tree_id, $language, $map_max;
+    global $dbh, $tree_id, $language, $map_max, $link_cls;
 
     if (isset($_GET['namestring'])) {
         $temparray = explode("@", $_GET['namestring']);
@@ -178,15 +174,18 @@ function mapbirthplace($place)
             $privacy_man = $man_cls->privacy;
             $name = $man_cls->person_name($maplistDb);
             if ($name["show_name"] == true) {
-                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                //echo '<a href=family.php?database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$maplistDb->pers_indexnr.'&amp;main_person='.$maplistDb->pers_gedcomnumber.' target="blank">';
-
-                // *** This sometimes doesn't work, because $uri_path is empty. Not generated? ***
-                //$url=$man_cls->person_url2($maplistDb->pers_tree_id,$maplistDb->pers_famc,$maplistDb->pers_fams,$maplistDb->pers_gedcomnumber);
-                //echo '<a href='.$url.' target="blank">';
-
-                //http://localhost/family.php?tree_id=11&id=F1&main_person=I3
-                echo '<a href=family.php?tree_id=' . safe_text_db($_SESSION['tree_prefix']) . '&amp;id=' . $maplistDb->pers_indexnr . '&amp;main_person=' . $maplistDb->pers_gedcomnumber . ' target="blank">';
+                $pers_family = '';
+                if ($maplistDb->pers_famc) {
+                    $pers_family = $maplistDb->pers_famc;
+                }
+                if ($maplistDb->pers_fams) {
+                    $pers_fams = explode(';', $maplistDb->pers_fams);
+                    $pers_family = $pers_fams[0];
+                }
+                $vars['pers_family'] = $pers_family;
+                $link = $link_cls->get_link('', 'family', $maplistDb->pers_tree_id, true, $vars);
+                $link .= "main_person=" . $maplistDb->pers_gedcomnumber;
+                echo '<a href=' . $link . ' target="blank">';
             }
             if ($_SESSION['type_birth'] == 1) {
                 echo $name["index_name"];

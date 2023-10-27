@@ -10,8 +10,8 @@ function tablerow($nr, $lastcol = false)
     // displays one set of name & nr column items in the row
     // $nr is the array number of the name set created in function last_names
     // if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
-    global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id;
-    $path_tmp = CMS_ROOTPATH . 'list.php?tree_id=' . $tree_id;
+    global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id, $link_cls, $uri_path;
+    $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
     echo '<td class="namelst">';
     if (isset($freq_last_names[$nr])) {
         $top_pers_lastname = '';
@@ -20,13 +20,13 @@ function tablerow($nr, $lastcol = false)
         }
         $top_pers_lastname .= $freq_last_names[$nr];
         if ($user['group_kindindex'] == "j") {
-            echo '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
+            echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
         } else {
             $top_pers_lastname = $freq_last_names[$nr];
             if ($freq_pers_prefix[$nr]) {
                 $top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
             }
-            echo '<a href="' . $path_tmp . '&amp;pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
+            echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
             if ($freq_pers_prefix[$nr]) {
                 echo '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
             } else {

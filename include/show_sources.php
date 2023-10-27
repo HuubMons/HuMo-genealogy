@@ -211,7 +211,7 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
                         $source_array['text'] .= $source_link;
                     }
 
-                    // *** Quality (function show_quality can be found in script: family.php) ***
+                    // *** Quality (function show_quality can be found in family script) ***
                     if ($connectDb->connect_quality == '0' or $connectDb->connect_quality) {
                         $quality_text = show_quality($connectDb->connect_quality);
                         //$source_array['text'].= ' <i>('.$quality_text.')</i>';

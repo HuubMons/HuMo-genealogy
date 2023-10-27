@@ -1,68 +1,68 @@
 /* Tab Menu */
 .pageHeadingContainer-lineVisible {
-	margin-bottom: 15px;
-	border-bottom: 1px solid #d9d9d9;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #d9d9d9;
 }
 
 .pageHeadingContainer {
-	clear: both;
-	display: table;
-	width: 100%;
-	margin-bottom: 0px;
+    clear: both;
+    display: table;
+    width: 100%;
+    margin-bottom: 0px;
 }
 
 .pageHeading {
-	display: table-cell;
+    display: table-cell;
 }
 
 .pageTabsContainer {
-	display: table-cell;
-	vertical-align: bottom;
-	/* white-space: nowrap; */
+    display: table-cell;
+    vertical-align: bottom;
+    /* white-space: nowrap; */
 }
 
 .pageTabs {
-	margin: 0;
-	padding: 0;
-	float: right;
-	margin-left: 10px;
+    margin: 0;
+    padding: 0;
+    float: right;
+    margin-left: 10px;
 }
 
 .pageTabItem {
-	display: inline-block;
-	zoom: 1;
-	list-style: none;
-	margin: 0 4px -1px 0;
+    display: inline-block;
+    zoom: 1;
+    list-style: none;
+    margin: 0 4px -1px 0;
 }
 
 .pageTab {
-	display: inline-block;
-	white-space: nowrap;
-	color: #333;
-	cursor: pointer;
-	border: 1px solid #d9d9d9;
-	background-color: #eaf4fa;
-	border-top-right-radius: 3px;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
-	border-top-left-radius: 3px;
-	background-clip: padding-box;
-	box-shadow: 1px 1px 1px #fff inset;
+    display: inline-block;
+    white-space: nowrap;
+    color: #333;
+    cursor: pointer;
+    border: 1px solid #d9d9d9;
+    background-color: #eaf4fa;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 3px;
+    background-clip: padding-box;
+    box-shadow: 1px 1px 1px #fff inset;
 }
 
 .pageTab a {
-	text-decoration: none;
-	color: #765;
-	display: inline-block;
-	padding: 6px 8px 4px;
+    text-decoration: none;
+    color: #765;
+    display: inline-block;
+    padding: 6px 8px 4px;
 }
 
 .pageTab-active {
-	background-color: #fff;
-	border-bottom: 1px solid #fff;
-	color: #2f63a3;
+    background-color: #fff;
+    border-bottom: 1px solid #fff;
+    color: #2f63a3;
 }
 
 .pageTab-active a {
-	font-weight: bold;
+    font-weight: bold;
 }
