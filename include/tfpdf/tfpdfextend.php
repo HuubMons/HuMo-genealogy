@@ -54,9 +54,9 @@ class PDF extends tFPDF
             $type = '';
         }
 
-        $source_presentation = 'title';
+        $data["source_presentation"] = 'title';
         if (isset($_SESSION['save_source_presentation'])) {
-            $source_presentation = $_SESSION['save_source_presentation'];
+            $data["source_presentation"] = $_SESSION['save_source_presentation'];
         }
 
         // *** Check if we have first occurance of birth, death etc. data, so we add "Born", "Died", etc. ***
@@ -418,9 +418,9 @@ class PDF extends tFPDF
         $tallestpic = 0;
         $tallesttext = 0;
 
-        $source_presentation = 'title';
+        $data["source_presentation"] = 'title';
         if (isset($_SESSION['save_source_presentation'])) {
-            $source_presentation = $_SESSION['save_source_presentation'];
+            $data["source_presentation"] = $_SESSION['save_source_presentation'];
         }
 
         foreach ($templ_relation as $key => $value) {
@@ -613,9 +613,9 @@ class PDF extends tFPDF
         $font_size = 12;
         if ($length == 'child') $font_size = 11;
 
-        $source_presentation = 'title';
+        $data["source_presentation"] = 'title';
         if (isset($_SESSION['save_source_presentation'])) {
-            $source_presentation = $_SESSION['save_source_presentation'];
+            $data["source_presentation"] = $_SESSION['save_source_presentation'];
         }
 
         foreach ($templ_name as $key => $value) {
@@ -797,19 +797,19 @@ class PDF extends tFPDF
     // *** REMARK: footnotes are shown in family script ***
     function PDFShowSources($value)
     {
-        global $pdf, $pdf_font, $font_size, $source_presentation, $user, $pdf_footnotes;
+        global $data, $pdf, $pdf_font, $font_size, $user, $pdf_footnotes;
 
         // *** May 2021: moved these lines into this function ***
-        $source_presentation = 'title';
+        $data["source_presentation"] = 'title';
         if (isset($_SESSION['save_source_presentation'])) {
-            $source_presentation = $_SESSION['save_source_presentation'];
+            $data["source_presentation"] = $_SESSION['save_source_presentation'];
         }
 
         //$pdf->SetX($indentation);
         $pdf->SetFont($pdf_font, '', $font_size);  // was Times
         $pdf->SetTextColor(28, 28, 255);
 
-        if ($source_presentation == 'footnote') {  // "1)" as link to list at end of doc
+        if ($data["source_presentation"] == 'footnote') {  // "1)" as link to list at end of doc
             $footnote_nr_array = explode('~', $value);
             //TEST
             //$pdf->Write(6,$value);

@@ -6,64 +6,27 @@
  * July 2023: seperated RTF, PDF and descendant chart.
  */
 
+// TODO check this variable.
 $screen_mode = '';
 
 //TODO check PDF variables. PDF is moved to seperate scripts.
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-global $dbh, $chosengen, $genarray, $size, $keepfamily_id, $keepmain_person, $direction;
-global $pdf_footnotes;
-global $parent1Db, $parent2Db;
-
-//global $temp,$templ_person;
-//global $templ_relation;
-global $templ_name;
-
-include_once(__DIR__ . "/../header.php"); // returns $dataDb
-
-
-
-// TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../app/model/family.php";
-$get_family = new Family($dbh);
-$family_id = $get_family->getFamilyId();
-$main_person = $get_family->getMainPerson();
-$family_expanded =  $get_family->getFamilyExpanded();
-$source_presentation =  $get_family->getSourcePresentation();
-$picture_presentation =  $get_family->getPicturePresentation();
-$text_presentation =  $get_family->getTextPresentation();
-$maps_presentation = $get_family->getMapsPresentation();
-$number_roman = $get_family->getNumberRoman();
-$number_generation = $get_family->getNumberGeneration();
-$descendant_report = $get_family->getDescendantReport();
-$descendant_header = $get_family->getDescendantHeader('Descendant report', $tree_id, $family_id, $main_person);
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
-
-
+//$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
 // *** "Last visited" id is used for contact form ***
 $last_visited = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $_SESSION['save_last_visitid'] = $last_visited;
 
-//@set_time_limit(300);
-
-include_once(__DIR__ . "/menu.php");
-
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favourite ***
-function topline()
+function topline($data)
 {
-    global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker, $family_id, $main_person;
-    global $alignmarker, $language, $uri_path, $descendant_report, $family_expanded;
-    global $user, $source_presentation, $swap_parent1_parent2, $maps_presentation, $picture_presentation, $text_presentation;
+    global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker;
+    global $alignmarker, $language, $uri_path;
+    global $user, $tree_id, $humo_option, $link_cls;
     global $database, $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
-    global $tree_id, $humo_option, $link_cls;
 
     $treetext = show_tree_text($dataDb->tree_id, $selected_language);
-
 ?>
+
     <tr class="table_headline">
         <td class="table_header">
             <div class="family_page_toptext fonts"><?= $treetext['family_top']; ?><br></div>
@@ -76,11 +39,11 @@ function topline()
                 // *** Settings in pop-up screen ***
                 echo '<div class="' . $rtlmarker . 'sddm" style="left:10px; top:10px; display:inline-block; vertical-align:middle;">';
 
-                $vars['pers_family'] = $family_id;
+                $vars['pers_family'] = $data["family_id"];
                 $settings_url = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
                 $url_add = '';
-                if ($main_person) {
-                    $settings_url .= "main_person=" . $main_person;
+                if ($data["main_person"]) {
+                    $settings_url .= "main_person=" . $data["main_person"];
                     $url_add = '&amp;';
                 }
 
@@ -102,13 +65,13 @@ function topline()
                             <b><?= __('Family Page'); ?></b><br>
                             <?php
                             $desc_rep = '';
-                            if ($descendant_report == true) {
+                            if ($data["descendant_report"] == true) {
                                 $desc_rep = '&amp;descendant_report=1';
                             }
 
                             $selected = ' checked';
                             $selected2 = '';
-                            if ($family_expanded == true) {
+                            if ($data["family_expanded"] == true) {
                                 $selected = '';
                                 $selected2 = ' checked';
                             }
@@ -120,31 +83,31 @@ function topline()
                                 echo '<hr>';
                                 echo '<b>' . __('Sources') . '</b><br>';
                                 $desc_rep = '';
-                                if ($descendant_report == true) {
+                                if ($data["descendant_report"] == true) {
                                     $desc_rep = '&amp;descendant_report=1';
                                 }
 
                                 $selected = '';
-                                if ($source_presentation == 'title') {
+                                if ($data["source_presentation"] == 'title') {
                                     $selected = ' checked';
                                 }
                                 echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=title' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show source') . "<br>\n";
 
                                 $selected = '';
-                                if ($source_presentation == 'footnote') {
+                                if ($data["source_presentation"] == 'footnote') {
                                     $selected = ' checked';
                                 }
                                 echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=footnote' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show source as footnote') . "<br>\n";
 
                                 $selected = '';
-                                if ($source_presentation == 'hide') {
+                                if ($data["source_presentation"] == 'hide') {
                                     $selected = ' checked';
                                 }
                                 echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Hide sources') . "<br>\n";
                             }
 
                             // *** Show/ hide maps ***
-                            if ($user["group_googlemaps"] == 'j' and $descendant_report == false) {
+                            if ($user["group_googlemaps"] == 'j' and $data["descendant_report"] == false) {
                                 // *** Only show selection if there is a location database ***
                                 global $dbh;
                                 $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
@@ -152,7 +115,7 @@ function topline()
                                     echo '<hr><b>' . __('Family map') . '</b><br>';
                                     $selected = '';
                                     $selected2 = '';
-                                    if ($maps_presentation == 'hide') $selected2 = ' checked';
+                                    if ($data["maps_presentation"] == 'hide') $selected2 = ' checked';
                                     else $selected = ' checked';
 
                                     echo '<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'maps_presentation=show&xx=\'+this.value"' . $selected . '>' . __('Show family map') . "<br>\n";
@@ -169,7 +132,7 @@ function topline()
                                 echo '<b>' . __('Pictures') . '</b><br>';
                                 $selected = '';
                                 $selected2 = '';
-                                if ($picture_presentation == 'hide') $selected2 = ' checked';
+                                if ($data["picture_presentation"] == 'hide') $selected2 = ' checked';
                                 else $selected = ' checked';
 
                                 echo '<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'picture_presentation=show' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show pictures') . "<br>\n";
@@ -181,15 +144,15 @@ function topline()
 
                             echo '<b>' . __('Texts') . '</b><br>';
                             $selected = '';
-                            if ($text_presentation == 'show') $selected = ' checked';
+                            if ($data["text_presentation"] == 'show') $selected = ' checked';
                             echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=show' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show texts') . "<br>\n";
 
                             $selected = '';
-                            if ($text_presentation == 'popup') $selected = ' checked';
+                            if ($data["text_presentation"] == 'popup') $selected = ' checked';
                             echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=popup' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show texts in popup screen') . "<br>\n";
 
                             $selected = '';
-                            if ($text_presentation == 'hide') $selected = ' checked';
+                            if ($data["text_presentation"] == 'hide') $selected = ' checked';
                             echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Hide texts') . "<br>\n";
                             ?>
                         </td>
@@ -204,12 +167,12 @@ function topline()
                 // *** PDF button ***
                 if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
                     echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'views/family_pdf.php" style="display:inline-block; vertical-align:middle;">';
-                    echo '<input type="hidden" name="id" value="' . $family_id . '">';
-                    echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
+                    echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
+                    echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
                     echo '<input type="hidden" name="database" value="' . $database . '">';
                     //echo '<input type="hidden" name="screen_mode" value="PDF">';
-                    if ($descendant_report == true) {
-                        echo '<input type="hidden" name="descendant_report" value="' . $descendant_report . '">';
+                    if ($data["descendant_report"] == true) {
+                        echo '<input type="hidden" name="descendant_report" value="' . $data["descendant_report"] . '">';
                     }
                     //echo  '<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
                     //echo '<input type="image" src="images/pdf.jpeg" width="20" border="0" alt="PDF Report">';
@@ -224,12 +187,12 @@ function topline()
                     } else {
                         echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'index.php?page=family_rtf" style="display:inline-block; vertical-align:middle;">';
                     }
-                    echo '<input type="hidden" name="id" value="' . $family_id . '">';
-                    echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
+                    echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
+                    echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
                     echo '<input type="hidden" name="database" value="' . $database . '">';
                     echo '<input type="hidden" name="screen_mode" value="RTF">';
-                    if ($descendant_report == true) {
-                        echo '<input type="hidden" name="descendant_report" value="' . $descendant_report . '">';
+                    if ($data["descendant_report"] == true) {
+                        echo '<input type="hidden" name="descendant_report" value="' . $data["descendant_report"] . '">';
                     }
                     //$text.='<input class="fonts" type="Submit" name="submit" value="'.__('RTF Report').'">';
                     echo '<input class="fonts" style="background-color:#0040FF; color:white; font-weight:bold;" type="Submit" name="submit" value="' . __('RTF') . '">';
@@ -238,22 +201,17 @@ function topline()
 
                 // *** Add family to favourite list ***
                 // If there is a N.N. father, then use mother in favourite icon.
-                //if ($swap_parent1_parent2==true OR !isset($parent1Db->pers_gedcomnumber)){
                 if (!isset($parent1Db->pers_gedcomnumber)) {
                     $name = $parent2_cls->person_name($parent2Db);
-                    //$favorite_gedcomnumber = ' [' . $parent2Db->pers_gedcomnumber . ']';
                     $favorite_gedcomnumber = $parent2Db->pers_gedcomnumber;
                 } else {
                     $name = $parent1_cls->person_name($parent1Db);
-                    //$favorite_gedcomnumber = ' [' . $parent1Db->pers_gedcomnumber . ']';
                     $favorite_gedcomnumber = $parent1Db->pers_gedcomnumber;
                 }
 
                 if ($name) {
-                    //$favorite_value = $name['name'] . $favorite_gedcomnumber . '|' . $family_id . '|' . $_SESSION['tree_prefix'] . '|' . $main_person;
-                    //$favorite_value = $name['name'] . $favorite_gedcomnumber . '|' . $family_id . '|' . $tree_id . '|' . $main_person;
                     // *** New cookies only need 3 variables ***
-                    $favorite_value = $tree_id . '|' . $family_id . '|' . $favorite_gedcomnumber;
+                    $favorite_value = $tree_id . '|' . $data["family_id"] . '|' . $favorite_gedcomnumber;
                     $check = false;
                     if (isset($_SESSION['save_favorites'])) {
                         foreach ($_SESSION['save_favorites'] as $key => $value) {
@@ -263,14 +221,14 @@ function topline()
                         }
                     }
 
-                    $vars['pers_family'] = $family_id;
+                    $vars['pers_family'] = $data["family_id"];
                     $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-                    $link .= "main_person=" . $main_person;
+                    $link .= "main_person=" . $data["main_person"];
                 ?>
                     &nbsp;&nbsp;&nbsp;
                     <form method="POST" action="<?= $link; ?>" style="display:inline-block; vertical-align:middle;">
                         <?php
-                        if ($descendant_report == true) {
+                        if ($data["descendant_report"] == true) {
                             echo '<input type="hidden" name="descendant_report" value="1">';
                         }
                         if ($check == false) {
@@ -288,24 +246,17 @@ function topline()
             ?>
         </td>
     </tr>
-<?php
+    <?php
 }
 
 
 $family_nr = 1;  // *** process multiple families ***
 
-// *** A favourite ID is used ***
-if (isset($_POST["humo_favorite_id"])) {
-    $favorite_array_id = explode("|", $_POST["humo_favorite_id"]);
-    $family_id = $favorite_array_id[0];
-    $main_person = $favorite_array_id[1];
-}
-
 // *** Check if family gedcomnumber is valid ***
-$db_functions->check_family($family_id);
+$db_functions->check_family($data["family_id"]);
 
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
+$db_functions->check_person($data["main_person"]);
 
 // **********************************************************
 // *** Maximum number of generations in descendant report ***
@@ -315,24 +266,27 @@ $max_generation = ($humo_option["descendant_generations"] - 1);
 // **************************
 // *** Show single person ***
 // **************************
-if (!$family_id) {
+if (!$data["family_id"]) {
     // *** Privacy filter ***
-    @$parent1Db = $db_functions->get_person($main_person);
+    @$parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
     $parent1_cls = new person_cls($parent1Db);
 
     // *** Add tip in person screen ***
     if (!$bot_visit) {
-        echo '<div class="print_version"><b>';
-        printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">');
-        echo '</b><br><br></div>';
+    ?>
+        <div class="print_version"><b>
+                <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">'); ?>
+            </b><br><br>
+        </div>
+    <?php
     }
 
     $id = '';
-?>
+    ?>
     <table class="humo standard">
         <!-- Show person topline (top text, settings, favourite) -->
-        <?php topline(); ?>
+        <?php topline($data); ?>
         <tr>
             <td colspan="4">
                 <!--  Show person data -->
@@ -350,8 +304,8 @@ if (!$family_id) {
 // *** Show family ***
 // *******************
 else {
-    $descendant_family_id2[] = $family_id;
-    $descendant_main_person2[] = $main_person;
+    $descendant_family_id2[] = $data["family_id"];
+    $descendant_main_person2[] = $data["main_person"];
 
     // *** Nr. of generations ***
     try { // only prepare location statement if table exists otherwise PDO throws exception!
@@ -370,7 +324,6 @@ else {
     $old_stat_prep->bindParam(2, $fam_gednr_var);
 
     for ($descendant_loop = 0; $descendant_loop <= $max_generation; $descendant_loop++) {
-        // ORG
         $descendant_family_id2[] = 0;
         $descendant_main_person2[] = 0;
         if (!isset($descendant_family_id2[1])) {
@@ -389,27 +342,24 @@ else {
         $descendant_main_person = $descendant_main_person2;
         unset($descendant_main_person2);
 
-        if ($descendant_report == true) {
+        if ($data["descendant_report"] == true) {
             // *** Show links to other charts at top of page ***
             if ($descendant_loop == 0) {
-                echo $descendant_header;
+                echo $data["descendant_header"];
             }
 
-            echo '<h2 class="standard_header fonts">' . ucfirst(__('generation ')) . $number_roman[$descendant_loop + 1] . '</h2>';
+            echo '<h2 class="standard_header fonts">' . ucfirst(__('generation ')) . $data["number_roman"][$descendant_loop + 1] . '</h2>';
         }
 
         // *** Nr of families in one generation ***
         $nr_families = count($descendant_family_id);
         for ($descendant_loop2 = 0; $descendant_loop2 < $nr_families; $descendant_loop2++) {
-
-            // Original code:
-            //if ($descendant_family_id[$descendant_loop2]==''){ break; }
             if ($descendant_family_id[$descendant_loop2] == '0') {
                 break;
             }
 
             $family_id_loop = $descendant_family_id[$descendant_loop2];
-            $main_person = $descendant_main_person[$descendant_loop2];
+            $data["main_person"] = $descendant_main_person[$descendant_loop2];
             $family_nr = 1;
 
             // *** Count marriages of man ***
@@ -422,7 +372,7 @@ else {
                 $parent1 = $familyDb->fam_man;
             }
             // *** After clicking the mother, the mother is main person ***
-            if ($familyDb->fam_woman == $main_person) {
+            if ($familyDb->fam_woman == $data["main_person"]) {
                 $parent1 = $familyDb->fam_woman;
                 $swap_parent1_parent2 = true;
             }
@@ -452,11 +402,11 @@ else {
                     $old_stat_prep->execute();
 
                     // *** Extended statistics ***
-                    if ($descendant_report == false and $user['group_statistics'] == 'j') {
+                    if ($data["descendant_report"] == false and $user['group_statistics'] == 'j') {
                         $stat_easy_id = $familyDb->fam_tree_id . '-' . $familyDb->fam_gedcomnumber . '-' . $familyDb->fam_man . '-' . $familyDb->fam_woman;
                         $update_sql = "INSERT INTO humo_stat_date SET
                             stat_easy_id='" . $stat_easy_id . "',
-                            stat_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
+                            stat_ip_address='" . $visitor_ip . "',
                             stat_user_agent='" . $_SERVER['HTTP_USER_AGENT'] . "',
                             stat_tree_id='" . $familyDb->fam_tree_id . "',
                             stat_gedcom_fam='" . $familyDb->fam_gedcomnumber . "',
@@ -467,21 +417,12 @@ else {
                         $result = $dbh->query($update_sql);
 
                         // *** June 2023: get country code for statistics ***
-                        //$temp = $dbh->query("SHOW TABLES LIKE 'humo_stat_country'");
-                        //if (!$temp->rowCount()) {
-                        //    $qry = "CREATE TABLE humo_stat_country (
-                        //        stat_country_id INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                        //        stat_country_ip_address varchar(40) DEFAULT NULL,
-                        //        stat_country_code VARCHAR(10) CHARACTER SET utf8
-                        //    )";
-                        //    $dbh->query($qry);
-                        //} else {
                         // *** Check if country code is known for this IP address ***
                         $sql = "SELECT stat_country_ip_address FROM humo_stat_country
                                 WHERE stat_country_ip_address = :stat_country_ip_address";
                         try {
                             $qry = $dbh->prepare($sql);
-                            $qry->bindValue(':stat_country_ip_address', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
+                            $qry->bindValue(':stat_country_ip_address', $visitor_ip, PDO::PARAM_STR);
                             $qry->execute();
                         } catch (PDOException $e) {
                             //echo $e->getMessage() . '<br>';
@@ -489,10 +430,10 @@ else {
 
                         $record = $qry->fetch(PDO::FETCH_OBJ);
                         if (!isset($record->stat_country_ip_address)) {
-                            if (strlen($_SERVER['REMOTE_ADDR']) > 6) {
+                            if (strlen($visitor_ip) > 6) {
                                 $sql = "INSERT INTO humo_stat_country
-                                        SET stat_country_ip_address = :stat_country_ip_address,
-                                        stat_country_code =:stat_country_code";
+                                    SET stat_country_ip_address = :stat_country_ip_address,
+                                    stat_country_code =:stat_country_code";
 
                                 // *** Get country code ***
                                 include_once(__DIR__ . '/../include/geoplugin/geoplugin.class.php');
@@ -501,7 +442,7 @@ else {
 
                                 try {
                                     $qry = $dbh->prepare($sql);
-                                    $qry->bindValue(':stat_country_ip_address', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
+                                    $qry->bindValue(':stat_country_ip_address', $visitor_ip, PDO::PARAM_STR);
                                     $qry->bindValue(':stat_country_code', $geoplugin->countryCode, PDO::PARAM_STR);
                                     $qry->execute();
                                 } catch (PDOException $e) {
@@ -509,11 +450,9 @@ else {
                                 }
                             }
                         }
-                        //}
                     }
                 }
 
-                // Oct. 2021 New method:
                 if ($swap_parent1_parent2 == true) {
                     $parent1 = $familyDb->fam_woman;
                     $parent2 = $familyDb->fam_man;
@@ -539,23 +478,26 @@ else {
                 // *******************************************************************
 
                 // *** Internal link for descendant_report ***
-                if ($descendant_report == true) {
+                if ($data["descendant_report"] == true) {
                     // *** Internal link (Roman number_generation) ***
-                    echo '<a name="' . $number_roman[$descendant_loop + 1] . '-' . $number_generation[$descendant_loop2 + 1] . '">';
+                    echo '<a name="' . $data["number_roman"][$descendant_loop + 1] . '-' . $data["number_generation"][$descendant_loop2 + 1] . '">';
                     echo '&nbsp;</a>';
                 }
 
                 // *** Add tip in family screen ***
                 if (!$bot_visit and $descendant_loop == 0 and $parent1_marr == 0) {
-                    echo '<div class="print_version"><b>';
-                    printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">');
-                    echo '</b><br><br></div>';
+    ?>
+                    <div class="print_version"><b>
+                            <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">'); ?>
+                        </b><br><br>
+                    </div>
+                <?php
                 }
 
                 echo '<table class="humo standard">';
 
                 // *** Show family top line (family top text, settings, favourite) ***
-                topline();
+                topline($data);
 
                 echo '<tr><td colspan="4">';
 
@@ -567,8 +509,8 @@ else {
                         //*** Show data of parent1 ***
                         echo '<div class="parent1 fonts">';
                         // *** Show roman number in descendant_report ***
-                        if ($descendant_report == true) {
-                            echo '<b>' . $number_roman[$descendant_loop + 1] . '-' . $number_generation[$descendant_loop2 + 1] . '</b> ';
+                        if ($data["descendant_report"] == true) {
+                            echo '<b>' . $data["number_roman"][$descendant_loop + 1] . '-' . $data["number_generation"][$descendant_loop2 + 1] . '</b> ';
                         }
 
                         $show_name_texts = true;
@@ -696,7 +638,6 @@ else {
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
                         if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
-                            //if (!$show_privacy_text and $screen_mode == '') {
                             if (!$show_privacy_text) {
                                 echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                             }
@@ -710,7 +651,7 @@ else {
                         echo $child_cls->name_extended("child");
 
                         // *** Build descendant_report ***
-                        if ($descendant_report == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
+                        if ($data["descendant_report"] == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
 
                             // *** 1st family of child ***
                             $child_family = explode(";", $childDb->pers_fams);
@@ -725,7 +666,7 @@ else {
                             for ($k = 0; $k < count($child_family); $k++) {
                                 $check_double[] = $child_family[$k];
                                 // *** Save "Follows: " text in array, also needed for doubles... ***
-                                $follows_array[] = $number_roman[$descendant_loop + 2] . '-' . $number_generation[count($descendant_family_id2)];
+                                $follows_array[] = $data["number_roman"][$descendant_loop + 2] . '-' . $data["number_generation"][count($descendant_family_id2)];
                             }
 
                             // *** YB: show children first in descendant_report ***
@@ -750,7 +691,7 @@ else {
                     @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                     // *** Use person class ***
                     $child_cls = new person_cls($childDb);
-    ?>
+                ?>
                     <tr>
                         <td colspan="4">
                             <div class="children">
@@ -801,7 +742,7 @@ else {
                 echo "</table><br>\n";
 
                 // *** Show Google or OpenStreetMap map ***
-                if ($user["group_googlemaps"] == 'j' and $descendant_report == false and $maps_presentation == 'show') {
+                if ($user["group_googlemaps"] == 'j' and $data["descendant_report"] == false and $data["maps_presentation"] == 'show') {
                     unset($location_array);
                     unset($lat_array);
                     unset($lon_array);
@@ -841,7 +782,6 @@ else {
                     }
 
                     // BIRTH woman
-                    //if (!$parent2_cls->privacy){
                     if ($parent2Db and !$parent2_cls->privacy) {
                         $location_var = $parent2Db->pers_birth_place;
                         if ($location_var != '') {
@@ -1068,26 +1008,26 @@ else {
                             }
 
                             echo '<script>
-                                    var center = null;
-                                    var map=new Array();
-                                    var currentPopup;
-                                    var bounds = new google.maps.LatLngBounds();
-                                </script>';
+                                var center = null;
+                                var map=new Array();
+                                var currentPopup;
+                                var bounds = new google.maps.LatLngBounds();
+                            </script>';
 
                             echo '<script>
-                                    function addMarker(family_nr, lat, lng, info, icon) {
-                                        var pt = new google.maps.LatLng(lat, lng);
-                                        var fam_nr=family_nr;
-                                        bounds.extend(pt);
-                                        //bounds(fam_nr).extend(pt);
-                                        var marker = new google.maps.Marker({
-                                            position: pt,
-                                            icon: icon,
-                                            title: info,
-                                            map: map[fam_nr]
-                                        });
-                                    }
-                                </script>';
+                                function addMarker(family_nr, lat, lng, info, icon) {
+                                    var pt = new google.maps.LatLng(lat, lng);
+                                    var fam_nr=family_nr;
+                                    bounds.extend(pt);
+                                    //bounds(fam_nr).extend(pt);
+                                    var marker = new google.maps.Marker({
+                                        position: pt,
+                                        icon: icon,
+                                        title: info,
+                                        map: map[fam_nr]
+                                    });
+                                }
+                            </script>';
                         }
 
                         $maptype = "ROADMAP";
@@ -1095,19 +1035,18 @@ else {
                             $maptype = $humo_option['google_map_type'];
                         }
                         echo '<script>
-
-                                function initMap' . $family_nr . '(family_nr) {
-                                    var fam_nr=family_nr;
-                                    map[fam_nr] = new google.maps.Map(document.getElementById(fam_nr), {
-                                        center: new google.maps.LatLng(50.917293, 5.974782),
-                                        maxZoom: 16,
-                                        mapTypeId: google.maps.MapTypeId.' . $maptype . ',
-                                        mapTypeControl: true,
-                                        mapTypeControlOptions: {
-                                            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
-                                        }
-                                    });
-                                    ';
+                            function initMap' . $family_nr . '(family_nr) {
+                                var fam_nr=family_nr;
+                                map[fam_nr] = new google.maps.Map(document.getElementById(fam_nr), {
+                                    center: new google.maps.LatLng(50.917293, 5.974782),
+                                    maxZoom: 16,
+                                    mapTypeId: google.maps.MapTypeId.' . $maptype . ',
+                                    mapTypeControl: true,
+                                    mapTypeControlOptions: {
+                                        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
+                                    }
+                                });
+                                ';
 
                         // *** Add all markers from array ***
                         for ($i = 1; $i < count($location_array); $i++) {
@@ -1158,7 +1097,6 @@ if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_pres
 /* EXAMPLE:
 "Family Page: Bethel, Catherine Ann Charles." database, Dolly Mae Alpha Index - Wyannie Malone Historical Museum (http://subscriber.bahamasgenealogyrecor ... son=I52982 : accessed 17 April 2016, Catherine Anne Charles Bethel, born 19 feb 1809 at New Providence, Bahamas; citing Christ Church Cathedral - Baptismal Register. Book 2, Whites -Page 99, item 21. for period Feb. 7, 1802 to Dec. 22, 1840.
 */
-//if ($screen_mode == '' and $user['group_citation_generation'] == 'y') {
 if ($user['group_citation_generation'] == 'y') {
     $name1 = $parent1_cls->person_name($parent1Db);
     if (isset($parent2Db)) $name2 = $parent2_cls->person_name($parent2Db);
@@ -1175,9 +1113,9 @@ if ($user['group_citation_generation'] == 'y') {
         // *** Link to family page ***
         echo ' HuMo-genealogy - ' . $humo_option["database_name"] . ' (';
 
-        $vars['pers_family'] = $family_id;
+        $vars['pers_family'] = $data["family_id"];
         $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-        $link .= "main_person=" . $main_person;
+        $link .= "main_person=" . $data["main_person"];
         if ($humo_option["url_rewrite"] == "j") {
             echo $link;
         } else {
@@ -1207,7 +1145,7 @@ if ($user['group_citation_generation'] == 'y') {
 }
 
 // *** Extra footer text / User notes in family screen ***
-if ($descendant_report == false) {
+if ($data["descendant_report"] == false) {
     // *** Show extra footer text in family screen ***
     $treetext = show_tree_text($dataDb->tree_id, $selected_language);
     echo $treetext['family_footer'];
@@ -1215,7 +1153,7 @@ if ($descendant_report == false) {
     if ($user['group_user_notes_show'] == 'y') {
         $note_qry = "SELECT * FROM humo_user_notes
             WHERE note_tree_id='" . $tree_id . "'
-            AND note_connect_kind='person' AND note_connect_id='" . $main_person . "' AND note_kind='user' AND note_status = 'approved'";
+            AND note_connect_kind='person' AND note_connect_id='" . $data["main_person"] . "' AND note_kind='user' AND note_status = 'approved'";
         $note_result = $dbh->query($note_qry);
         $num_rows = $note_result->rowCount();
     ?>
@@ -1279,7 +1217,7 @@ if ($descendant_report == false) {
                 note_kind='user',
                 note_note='" . safe_text_db($_POST["user_note"]) . "',
                 note_connect_kind='person',
-                note_connect_id='" . safe_text_db($main_person) . "',
+                note_connect_id='" . safe_text_db($data["main_person"]) . "',
                 note_tree_id='" . $tree_id . "',
                 note_names='" . safe_text_db($name["standard_name"]) . "';";
             $result = $dbh->query($sql);
@@ -1298,9 +1236,9 @@ if ($descendant_report == false) {
             //$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
             $register_message .= $_POST['user_note'] . "<br>\n";
 
-            $vars['pers_family'] = $family_id;
+            $vars['pers_family'] = $data["family_id"];
             $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-            $link .= "main_person=" . $main_person;
+            $link .= "main_person=" . $data["main_person"];
             $register_message .= __('User note by family') . ': <a href="' . $link . '">' . safe_text_db($name["standard_name"]) . '</a>';
 
             include_once(__DIR__ . '/../include/mail.php');
@@ -1346,8 +1284,8 @@ if ($descendant_report == false) {
             </script>
 
             <form method="POST" action="<?= $start_url; ?>#add_info" style="display : inline;">
-                <input type="hidden" name="id" value="<?= $family_id; ?>">
-                <input type="hidden" name="main_person" value="<?= $main_person; ?>">
+                <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
+                <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
                 <table align="center" class="humo" width="40%">
                     <tr id="add_info">
                         <th class="fonts" colspan="2">
@@ -1392,6 +1330,3 @@ if ($descendant_report == false) {
 
 <br>
 <br>
-
-<?php
-include_once(__DIR__ . "/footer.php");

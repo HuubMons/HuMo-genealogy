@@ -326,5 +326,28 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
+// *** Cleanup 7 of files (in version 6.5.2) ***
+$cleanup_status=7;
+if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+    // *** Remove old files ***
+    $remove_file[] = '../header.php';
+    $remove_file[] = '../source.php';
+
+    // not tested:
+    $remove_file[] = '../views/report_descendant.php';
+    $remove_file[] = '../views/report_outline_pdf.php';
+    $remove_file[] = '../views/report_outline.php';
+
+    foreach ($remove_file as $rfile) {
+        if (file_exists($rfile)) {
+            //echo $rfile . '<br>';
+            unlink($rfile);
+        }
+    }
+
+    // *** Update "update_status" ***
+    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $humo_option['cleanup_status'] = $cleanup_status;
+}
 
 // Remark: for testing reset $humo_option['cleanup_status'] option.

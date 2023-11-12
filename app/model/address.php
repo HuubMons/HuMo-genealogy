@@ -1,5 +1,5 @@
 <?php
-class Address
+class AddressModel
 {
     private $db_functions;
 

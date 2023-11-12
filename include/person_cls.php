@@ -747,7 +747,7 @@ class person_cls
                     }
                 }
 
-                // *** $name["initials"] used in report_descendant.php ***
+                // *** $name["initials"] used in report_descendant ***
                 // *** Example: H.M. ***
                 $name_array["initials"] = substr($personDb->pers_firstname, 0, 1) . '.' . substr($personDb->pers_lastname, 0, 1) . '.';
 
@@ -928,8 +928,6 @@ class person_cls
 
                     $text .= '<a href="' . $path_tmp . '"><img src="images/descendant.gif" border="0" alt="' . __('Descendant report') . '"> ' . __('Descendant report') . '</a>';
 
-                    //$path_tmp = 'report_outline.php?tree_id=' . $personDb->pers_tree_id .
-                    //    '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
                     $path_tmp = $link_cls->get_link($uri_path, 'report_outline', $personDb->pers_tree_id, true);
                     $path_tmp .= 'id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
                     $text .= '<a href="' . $path_tmp . '"><img src="images/outline.gif" border="0" alt="' . __('Outline report') . '"> ' . __('Outline report') . '</a>';
@@ -1104,10 +1102,11 @@ class person_cls
     {
         global $dbh, $db_functions, $humo_option, $uri_path, $user, $language;
         global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
-        global $selected_language, $family_expanded, $bot_visit;
+        global $selected_language, $bot_visit;
         global $sect; // *** RTF Export ***
         global $templ_name, $familyDb;
         global $pdf;
+        global $data;
 
         $start_name = '';
         $text_name = '';
@@ -1267,7 +1266,7 @@ class person_cls
                 if ($personDb->pers_sexe == '') {
                     $text_parents .= __('child of') . ' ';
                 }
-                if ($family_expanded == true) {
+                if ($data["family_expanded"] == true) {
                     $templ_name["name_parents"] = ucfirst($text_parents);
                     $text_parents = ucfirst($text_parents);
                 } else {
@@ -1596,7 +1595,7 @@ class person_cls
 
         }
 
-        if ($family_expanded == true) {
+        if ($data["family_expanded"] == true) {
             $text_parents = '<div class="margin_person">' . $text_parents . '</div>';
             $child_marriage = '<div class="margin_child">' . $child_marriage . '</div>';
         }
@@ -1669,17 +1668,18 @@ $own_code=0;
     public function person_data($person_kind, $id)
     {
         global $dbh, $db_functions, $tree_id, $dataDb, $user, $language, $humo_option, $family_id, $uri_path;
-        global $family_expanded, $swap_parent1_parent2;
+        global $swap_parent1_parent2;
         global $childnr, $screen_mode, $dirmark1, $dirmark2;
         global $temp, $templ_person;
         global $sect, $arial12; // *** RTF export ***
         global $pdf;
+        global $data;
 
         $personDb = $this->personDb;
         $privacy = $this->privacy;
 
         // *** Settings for mobile version, show details in multiple lines ***
-        if ($person_kind == "mobile") $family_expanded = true;
+        if ($person_kind == "mobile") $data["family_expanded"] = true;
 
         // *** $personDb is empty by N.N. person ***
         if ($personDb) {
@@ -1792,12 +1792,12 @@ $own_code=0;
                     else
                         $templ_person["own_code_start"] = lcfirst(__('Own code')) . ': ';
 
-                    if (!$process_text or $family_expanded == true) {
+                    if (!$process_text or $data["family_expanded"] == true) {
                         $text = '<b>' . __('Own code') . ':</b> ';
                     } else {
                         $text = ', <b>' . lcfirst(__('Own code')) . ':</b> ';
                     }
-                    if ($process_text and $family_expanded == true) {
+                    if ($process_text and $data["family_expanded"] == true) {
                         $text = '<br>' . $text;
                     }
                     //PDF expanded view
@@ -1851,10 +1851,8 @@ $own_code=0;
                     //test:
                     //$templ_person["born_first"]='bron!!';
 
-                    //if($screen_mode=='PDF') {
                     $templ_person["born_source"] = $source_array['text'];
                     $temp = "born_source";
-                    //}
                     // *** Not necessary to do this in person_cls.php, this is processed in family script.
                     //elseif($screen_mode=='RTF') {
                     //	$templ_person["born_source"]=$source_array['text'];
@@ -1914,12 +1912,12 @@ $own_code=0;
                         }
                     }
 
-                    if (!$process_text or $family_expanded == true) {
+                    if (!$process_text or $data["family_expanded"] == true) {
                         $text = '<b>' . ucfirst(__('born')) . '</b> ' . $text;
                     } else {
                         $text = ', <b>' . __('born') . '</b> ' . $text;
                     }
-                    if ($process_text and $family_expanded == true) {
+                    if ($process_text and $data["family_expanded"] == true) {
                         $text = '<br>' . $text;
                     }
                     $process_text .= $text;
@@ -2050,12 +2048,12 @@ $own_code=0;
                         }
                     }
 
-                    if (!$process_text or $family_expanded == true) {
+                    if (!$process_text or $data["family_expanded"] == true) {
                         $text = '<b>' . ucfirst(__('baptised')) . '</b> ' . $text;
                     } else {
                         $text = ', <b>' . __('baptised') . '</b> ' . $text;
                     }
-                    if ($process_text and $family_expanded == true) {
+                    if ($process_text and $data["family_expanded"] == true) {
                         $text = '<br>' . $text;
                     }
                     $process_text .= $text;
@@ -2241,9 +2239,9 @@ $own_code=0;
                         }
                     }
 
-                    if (!$process_text or $family_expanded == true) $text = '<b>' . ucfirst(__('died')) . '</b> ' . $text;
+                    if (!$process_text or $data["family_expanded"] == true) $text = '<b>' . ucfirst(__('died')) . '</b> ' . $text;
                     else $text = ', <b>' . __('died') . '</b> ' . $text;
-                    if ($process_text and $family_expanded == true) {
+                    if ($process_text and $data["family_expanded"] == true) {
                         $text = '<br>' . $text;
                     }
                     $process_text .= $text;
@@ -2348,12 +2346,12 @@ $own_code=0;
                         }
                     }
 
-                    if (!$process_text or $family_expanded == true) {
+                    if (!$process_text or $data["family_expanded"] == true) {
                         $text = '<b>' . ucfirst($method_of_burial) . '</b> ' . $text;
                     } else {
                         $text = ', <b>' . $method_of_burial . '</b> ' . $text;
                     }
-                    if ($process_text and $family_expanded == true) {
+                    if ($process_text and $data["family_expanded"] == true) {
                         $text = '<br>' . $text;
                     }
                     $process_text .= $text;
@@ -2388,7 +2386,7 @@ $own_code=0;
                             } else {
                                 $occupation = __('occupations');
                             }
-                            if ($family_expanded == true) {
+                            if ($data["family_expanded"] == true) {
                                 $process_text .= '<br><span class="profession"><b>' . ucfirst($occupation) . ':</b> ';
                             } else {
                                 // punt hoort bij vorige item.
@@ -2474,7 +2472,7 @@ $own_code=0;
                             } else {
                                 $religion = __('religions');
                             }
-                            if ($family_expanded == true) {
+                            if ($data["family_expanded"] == true) {
                                 $process_text .= '<br><span class="religion"><b>' . ucfirst($religion) . ':</b> ';
                             } else {
                                 if ($process_text) {
@@ -2549,7 +2547,7 @@ $own_code=0;
                     $text = show_addresses('person', 'person_address', $personDb->pers_gedcomnumber);
 
                     if ($process_text and $text) {
-                        if ($family_expanded == true) {
+                        if ($data["family_expanded"] == true) {
                             $text = '<br>' . $text;
                         } else {
                             $text = '. ' . $text;

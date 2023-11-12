@@ -12,9 +12,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-// have to be declared global here for use in trees_cls.php
-global $phpself, $phpself2, $joomlastring;
-
 $phpself = 'index.php';
 $phpself2 = 'index.php?';
 $joomlastring = '';
@@ -263,7 +260,6 @@ if (isset($_POST['language_tree'])) {
     $language_tree = $_POST['language_tree'];
 }
 
-//include_once("trees_cls.php");
 include(__DIR__ . '/../include/trees_cls.php');
 
 $tree_cls = new tree_cls;
@@ -399,13 +395,11 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 
     // *** Show main tree screen ***
     if (isset($menu_admin) and $menu_admin == 'tree_main') {
-        //$tree_cls->tree_main();
-        include(__DIR__ . '/../views/tree_admin.php');
+        include(__DIR__ . '/tree_admin.php');
     }
     // *** Show main tree screen ***
     if (isset($menu_admin) and $menu_admin == 'tree_gedcom') {
-        //include_once("gedcom.php");
-        include(__DIR__ . '/../views/gedcom.php');
+        include(__DIR__ . '/gedcom.php');
     }
 
     // ********************************************************************************
@@ -416,14 +410,12 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 
     // *** Show tree data ***
     if ($menu_admin == 'tree_data') {
-        //$tree_cls->tree_data();
-        include(__DIR__ . '/../views/tree_data.php');
+        include(__DIR__ . '/tree_data.php');
     }
 
     // *** Show tree text ***
     if ($menu_admin == 'tree_text') {
-        //$tree_cls->tree_text();
-        include(__DIR__ . '/../views/tree_text.php');
+        include(__DIR__ . '/tree_text.php');
     }
     // *** Show merge screen ***
     if ($menu_admin == 'tree_merge') {

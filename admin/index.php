@@ -43,12 +43,9 @@ global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $tree
 
 // DISABLED because the SECURED PAGE message was shown regularly.
 // *** Prevent Session hijacking ***
-//if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $_SERVER['REMOTE_ADDR']){
+//if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $visitor_ip){
 //	// *** Remove login session if IP address is changed ***
 //	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
-//		// *** Test ***
-//		//echo '<br>'.$_SESSION['current_ip_address'].'<br>';
-//		//echo $_SERVER['REMOTE_ADDR'];
 //	session_unset();
 //	session_destroy();
 //	die();
@@ -70,7 +67,7 @@ include_once(__DIR__ . "/../include/safe.php"); // Variables
 include_once(__DIR__ . '/../include/show_tree_text.php');
 
 include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions();
+$db_functions = new db_functions($dbh);
 
 // *** Added juli 2019: Person functions ***
 include_once(__DIR__ . "/../include/person_cls.php");
@@ -78,6 +75,9 @@ include_once(__DIR__ . "/../include/person_cls.php");
 // *** Added october 2023: generate links to frontsite ***
 include_once(__DIR__ . "/../include/links.php");
 $link_cls = new Link_cls();
+
+include_once(__DIR__ . "/../include/get_visitor_ip.php");
+$visitor_ip=visitorIP();
 
 // *** Only load settings if database and table exists ***
 $show_menu_left = false;
@@ -101,8 +101,9 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
         include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
 
         // **** Temporary update scripts ***
-        // no updates at this moment.
-
+        // *** Restore update problem generate in version 6.4.1 (accidently changed family into person) ***
+        $eventsql = "UPDATE humo_events SET event_connect_kind='family' WHERE event_kind='marriage_witness' OR event_kind='marriage_witness_rel'";
+        $dbh->query($eventsql);
 
         // *** Remove old system files ***
         include_once(__DIR__ . '/include/index_remove_files.php');
@@ -116,7 +117,7 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
         }
 
         // *** Check if visitor is allowed ***
-        if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])) {
+        if (!$db_functions->check_visitor($visitor_ip)) {
             echo 'Access to website is blocked.';
             exit;
         }
@@ -330,7 +331,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             $sql = "INSERT INTO humo_user_log SET
                 log_date='$log_date',
                 log_username='" . $resultDb->user_name . "',
-                log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
+                log_ip_address='" . $visitor_ip . "',
                 log_user_admin='admin',
                 log_status='success'";
             @$dbh->query($sql);
@@ -344,7 +345,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         $sql = "INSERT INTO humo_user_log SET
             log_date='" . date("Y-m-d H:i") . "',
             log_username='" . safe_text_db($_POST["username"]) . "',
-            log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
+            log_ip_address='" . $visitor_ip . "',
             log_user_admin='admin',
             log_status='failed'";
         $dbh->query($sql);
@@ -432,16 +433,13 @@ if (isset($database_check) and $database_check) {
 
 // *** Save ip address in session to prevent session hijacking ***
 if (isset($_SESSION['current_ip_address']) == FALSE) {
-    $_SESSION['current_ip_address'] = $_SERVER['REMOTE_ADDR'];
+    $_SESSION['current_ip_address'] = $visitor_ip;
 }
 
 $html_text = '';
 if ($language["dir"] == "rtl") {   // right to left language
     $html_text = ' dir="rtl"';
 }
-//if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
-//    $html_text = '';
-//}
 
 // *** Use your own favicon.ico in media folder ***
 if (file_exists('../media/favicon.ico'))
@@ -674,9 +672,9 @@ if ($popup == false) {
         include_once(__DIR__ . "/include/editor_media_select.php");
     } elseif ($page == 'check') {
         include_once(__DIR__ . "/views/tree_check.php");
-    } elseif ($page == 'view_latest_changes') {
+    } elseif ($page == 'latest_changes') {
         $_POST['last_changes'] = 'View latest changes';
-        include_once(__DIR__ . "/include/tree_check.php");
+        include_once(__DIR__ . "/views/tree_check.php");
     } elseif ($page == 'gedcom') {
         include_once(__DIR__ . "/views/gedcom.php");
     } elseif ($page == 'settings') {

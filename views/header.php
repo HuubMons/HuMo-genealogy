@@ -15,10 +15,10 @@ if (isset($_GET['log_off'])) {
     session_destroy();
 }
 
-include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
-include_once(__DIR__ . '/include/show_tree_text.php');
-include_once(__DIR__ . "/include/db_functions_cls.php");
-$db_functions = new db_functions;
+include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
+include_once(__DIR__ . '/../include/show_tree_text.php');
+include_once(__DIR__ . "/../include/db_functions_cls.php");
+$db_functions = new db_functions($dbh);
 
 // *** Show a message at NEW installation ***
 try {
@@ -28,9 +28,12 @@ try {
     exit();
 }
 
-include_once(__DIR__ . "/include/safe.php");
-include_once(__DIR__ . "/include/settings_global.php"); // System variables
-include_once(__DIR__ . "/include/settings_user.php"); // User variables
+include_once(__DIR__ . "/../include/safe.php");
+include_once(__DIR__ . "/../include/settings_global.php"); // System variables
+include_once(__DIR__ . "/../include/settings_user.php"); // User variables
+
+include_once(__DIR__ . "/../include/get_visitor_ip.php");
+$visitor_ip = visitorIP();
 
 // *** Debug HuMo-genealogy front pages ***
 if ($humo_option["debug_front_pages"] == 'y') {
@@ -39,13 +42,13 @@ if ($humo_option["debug_front_pages"] == 'y') {
 }
 
 // *** Check if visitor is allowed access to website ***
-if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'], 'partial')) {
+if (!$db_functions->check_visitor($visitor_ip, 'partial')) {
     echo 'Access to website is blocked.';
     exit;
 }
 
 // *** Set timezone ***
-include_once(__DIR__ . "/include/timezone.php"); // set timezone 
+include_once(__DIR__ . "/../include/timezone.php"); // set timezone 
 timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
@@ -55,7 +58,7 @@ $bot_visit = preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['
 // *** Line for bot test! ***
 //$bot_visit=true;
 
-$language_folder = opendir(__DIR__ . '/languages/');
+$language_folder = opendir(__DIR__ . '/../languages/');
 while (false !== ($file = readdir($language_folder))) {
     if (strlen($file) < 6 and $file != '.' and $file != '..') {
         $language_file[] = $file;
@@ -121,7 +124,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         if (isset($resultDb->user_2fa_enabled) and $resultDb->user_2fa_enabled) {
             $valid_user = false;
             $fault = true;
-            include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
+            include_once(__DIR__ . "/../include/2fa_authentication/authenticator.php");
 
             if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
                 $Authenticator = new Authenticator();
@@ -166,7 +169,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             $sql = "INSERT INTO humo_user_log SET
                 log_date='" . date("Y-m-d H:i") . "',
                 log_username='" . $resultDb->user_name . "',
-                log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
+                log_ip_address='" . $visitor_ip . "',
                 log_user_admin='user',
                 log_status='success'";
             $dbh->query($sql);
@@ -183,7 +186,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         $sql = "INSERT INTO humo_user_log SET
             log_date='" . date("Y-m-d H:i") . "',
             log_username='" . safe_text_db($_POST["username"]) . "',
-            log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
+            log_ip_address='" . $visitor_ip . "',
             log_user_admin='user',
             log_status='failed'";
         $dbh->query($sql);
@@ -191,7 +194,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 }
 
 // *** Language processing after header("..") lines. *** 
-include_once(__DIR__ . "/languages/language.php"); //Taal
+include_once(__DIR__ . "/../languages/language.php"); //Taal
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = "&#x200E;";  //ltr marker
@@ -212,19 +215,21 @@ if (isset($screen_mode) and $screen_mode == "PDF") {
 
 
 // *** Process title of page and $uri_path ***
-$request_uri = $_SERVER['REQUEST_URI'];
+//$request_uri = $_SERVER['REQUEST_URI'];
 
 // *** Option url_rewrite disabled ***
 // http://127.0.0.1/humo-genealogy/index.php?page=ancestor_sheet&tree_id=3&id=I1180
 // change into (but still process index.php, so this will work in NGinx with url_rewrite disabled):
 // http://127.0.0.1/humo-genealogy/ancestor_sheet&tree_id=3&id=I1180
-if (isset($_GET['page'])) $request_uri = str_replace('index.php?page=', '', $request_uri);
+//if (isset($_GET['page'])) $request_uri = str_replace('index.php?page=', '', $request_uri);
 
 // *** Example: http://localhost/HuMo-genealogy/photoalbum/2?start=1&item=11 ***
-$request_uri = strtok($request_uri, "?"); // Remove last part of url: ?start=1&item=11
+//$request_uri = strtok($request_uri, "?"); // Remove last part of url: ?start=1&item=11
 
 // *** Get url_rewrite variables ***
-$url_array = explode('/', $request_uri);
+//$url_array = explode('/', $request_uri);
+
+// *** Default values
 $page = 'index';
 $head_text = $humo_option["database_name"];
 $tmp_path = '';
@@ -232,7 +237,7 @@ $tmp_path = '';
 
 
 // *** New routing script sept. 2023 ***
-include_once(__DIR__ . '/app/routing/router.php');
+include_once(__DIR__ . '/../app/routing/router.php');
 # Search route, return match or not found
 $router = new Router();
 $matchedRoute = $router->get_route($_SERVER['REQUEST_URI']);
@@ -253,7 +258,7 @@ if (isset($matchedRoute['page'])) {
     // TODO improve processing of these variables 
     if (isset($matchedRoute['id'])) {
         $id = $matchedRoute['id']; // for source
-        $_GET["id"] = $matchedRoute['id']; // for address
+        $_GET["id"] = $matchedRoute['id']; // for family page, and other pages? TODO improve processing of these variables.
     }
 
     if ($matchedRoute['tmp_path']) {
@@ -295,7 +300,7 @@ if ($humo_option["url_rewrite"] == "j" and $tmp_path) {
 }
 
 // *** To be used to show links in several pages ***
-include_once(__DIR__ . '/include/links.php');
+include_once(__DIR__ . '/../include/links.php');
 $link_cls = new Link_cls($uri_path);
 
 // *** For PDF reports: remove html tags en decode ' characters ***
@@ -313,8 +318,8 @@ $pdf_font = 'DejaVu';
 if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) {
     // *** june 2022: FPDF supports romanian and greek characters ***
     //define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
-    require(__DIR__ . '/include/tfpdf/tfpdf.php');
-    require(__DIR__ . '/include/tfpdf/tfpdfextend.php');
+    require(__DIR__ . '/../include/tfpdf/tfpdf.php');
+    require(__DIR__ . '/../include/tfpdf/tfpdfextend.php');
 
     // *** Set variabele for queries ***
     $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
@@ -449,9 +454,9 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     else
         echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
 
-    if (isset($user["group_birthday_rss"]) and $user["group_birthday_rss"] == "j") {
-        echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="birthday_rss.php?lang=' . $selected_language . '" >';
-    }
+    //if (isset($user["group_birthday_rss"]) and $user["group_birthday_rss"] == "j") {
+    //    echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="../birthday_rss.php?lang=' . $selected_language . '" >';
+    //}
 
     // *** Family tree choice ***
     global $database;
@@ -570,14 +575,11 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     */
 
     // if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
-    //if (
-    //    strpos($_SERVER['REQUEST_URI'], "STAR") !== false or
-    //    strpos($_SERVER['REQUEST_URI'], "HOUR") !== false or
-    //    strpos($_SERVER['REQUEST_URI'], "maps") !== false
+    // *** Needed for zoomslider ***
     if (
+        strpos($_SERVER['REQUEST_URI'], "maps") !== false or
         strpos($_SERVER['REQUEST_URI'], "descendant") !== false or
-        strpos($_SERVER['REQUEST_URI'], "HOUR") !== false or
-        strpos($_SERVER['REQUEST_URI'], "maps") !== false
+        strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
     ) {
         echo '<script src="include/jquery/jquery.min.js"></script> ';
         echo '<link rel="stylesheet" href="include/jqueryui/jquery-ui.min.css"> ';
@@ -603,7 +605,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     </script>';
 
     // *** Style sheet select ***
-    include_once(__DIR__ . "/styles/sss1.php");
+    include_once(__DIR__ . "/../styles/sss1.php");
 
     // *** Pop-up menu ***
     echo '<script src="include/popup_menu/popup_menu.js"></script>';
@@ -613,7 +615,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     // *** Photo lightbox effect using GLightbox ***
     echo '<link rel="stylesheet" href="include/glightbox/css/glightbox.css">';
     echo '<script src="include/glightbox/js/glightbox.min.js"></script>';
-    // *** Remark: there is also a script in footer.php, otherwise GLightbox doesn't work ***
+    // *** Remark: there is also a script in footer script, otherwise GLightbox doesn't work ***
 
     // *** CSS changes for mobile devices ***
     echo '<link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">';
@@ -630,11 +632,11 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
         $str = file_get_contents("languages/en/en.po");
         if (strpos($str, 'msgstr "&#134;"') or strpos($str, 'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
             $humo_option['death_char'] = "n"; // fool "change_all.php" into thinking a change was requested from cross to infinity
-            include(__DIR__ . "/languages/change_all.php");
+            include(__DIR__ . "/../languages/change_all.php");
         }
     }
 
-    // *** Added in mar. 2022: disable NO_ZERO_DATE and NO_ZERO_IN_DATE. To solve sorting problems in dates. ***
+    // *** Added in mar. 2022: disable NO_ZERO_DATE and NO_ZERO_IN_DATE. To solve sorting problems in genealogical dates. ***
     //$result= $dbh->query("SET GLOBAL sql_mode=(SELECT
     //	REPLACE(
     //		REPLACE(@@sql_mode,'NO_ZERO_DATE','')

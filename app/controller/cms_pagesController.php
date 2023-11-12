@@ -13,13 +13,13 @@ class cms_pagesController
 
     public function list()
     {
-        $model = new CMS_pages($this->dbh);
+        $CMS_pagesModel = new CMS_pagesModel($this->dbh);
 
-        $authorised = $model->getCMS_pagesAuthorised($this->user);
-        $pages = $model->getPages($this->dbh);
-        $menu = $model->getMenu($this->dbh);
-        $pages_menu = $model->getPages_menu($this->dbh);
-        $page = $model->getPage($this->dbh);
+        $authorised = $CMS_pagesModel->getCMS_pagesAuthorised($this->user);
+        $pages = $CMS_pagesModel->getPages($this->dbh);
+        $menu = $CMS_pagesModel->getMenu($this->dbh);
+        $pages_menu = $CMS_pagesModel->getPages_menu($this->dbh);
+        $page = $CMS_pagesModel->getPage($this->dbh);
 
         $data = array(
             "authorised" => $authorised,

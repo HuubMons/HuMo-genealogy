@@ -64,17 +64,23 @@ class Router
 
     public function get_route($request_uri)
     {
+        //TODO remove global
         global $humo_option;
         $result_array = [];
 
         // *** Option url_rewrite disabled ***
-        // http://127.0.0.1/humo-genealogy/index.php?page=ancestor_sheet&tree_id=3&id=I1180
+        // http://127.0.0.1/HuMo-genealogy/index.php?page=ancestor_sheet&tree_id=3&id=I1180
         // change into (but still process index.php, so this will work in NGinx with url_rewrite disabled):
-        // http://127.0.0.1/humo-genealogy/ancestor_sheet&tree_id=3&id=I1180
-        if (isset($_GET['page'])) $request_uri = str_replace('index.php?page=', '', $request_uri);
-
-        // *** Example: http://localhost/HuMo-genealogy/photoalbum/2?start=1&item=11 ***
-        $request_uri = strtok($request_uri, "?"); // Remove last part of url: ?start=1&item=11
+        // http://127.0.0.1/HuMo-genealogy/ancestor_sheet&tree_id=3&id=I1180
+        if (isset($_GET['page'])){
+            //http://127.0.0.1/HuMo-genealogy/index.php?page=list&tree_id=3&adv_search=1&index_list=search
+            $request_uri = str_replace('index.php?page=', '', $request_uri);
+            // *** Example: http://localhost/HuMo-genealogy/list&tree_id=3&adv_search=1&index_list=search ***
+            $request_uri = strtok($request_uri, "&"); // Remove last part of url: ?start=1&item=11
+        }else{
+            // *** Example: http://localhost/HuMo-genealogy/photoalbum/2?start=1&item=11 ***
+            $request_uri = strtok($request_uri, "?"); // Remove last part of url: ?start=1&item=11
+        }
 
         // *** Get url_rewrite variables ***
         $url_array = explode('/', $request_uri);

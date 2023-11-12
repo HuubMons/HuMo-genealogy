@@ -664,8 +664,8 @@ class Mainindex_cls
 
         // *** Loop through pictures and find first available picture without privacy filter ***
         $qry = "SELECT * FROM humo_events
-        WHERE event_tree_id='" . $tree_id . "' AND event_kind='picture' AND event_connect_kind='person' AND event_connect_id NOT LIKE ''
-        ORDER BY RAND()";
+            WHERE event_tree_id='" . $tree_id . "' AND event_kind='picture' AND event_connect_kind='person' AND event_connect_id NOT LIKE ''
+            ORDER BY RAND()";
         $picqry = $dbh->query($qry);
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
             $picname = str_replace(" ", "_", $picqryDb->event_event);
@@ -831,13 +831,14 @@ class Mainindex_cls
         // *** Show character line ***
         if (isset($first_character)) {
             for ($i = 0; $i < count($first_character); $i++) {
+                // TODO use function
                 if ($humo_option["url_rewrite"] == "j") {
                     // *** url_rewrite ***
-                    // *** $uri_path is generated in header.php ***
+                    // *** $uri_path is generated in header script ***
                     //$path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $first_character[$i] . '/';
                     $path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $first_character[$i];
                 } else {
-                    $path_tmp = 'list_names.php?tree_id=' . $tree_id . '&amp;last_name=' . $first_character[$i];
+                    $path_tmp = 'index.php?page=list_names.php&amp;tree_id=' . $tree_id . '&amp;last_name=' . $first_character[$i];
                 }
                 $text .= ' <a href="' . $path_tmp . '">' . $first_character[$i] . '</a>';
             }
@@ -849,7 +850,7 @@ class Mainindex_cls
         if ($personDb->rowCount() > 0) {
             $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
             $path_tmp .= 'index_list=patronym';
-                $text .= ' <a href="'.$path_tmp.'">' . __('Patronyms') . '</a>';
+            $text .= ' <a href="' . $path_tmp . '">' . __('Patronyms') . '</a>';
         }
 
         return $text;

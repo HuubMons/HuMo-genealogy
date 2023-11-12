@@ -17,16 +17,10 @@
  * GNU General Public License for more details.                              *
  ****************************************************************************/
 
-//@set_time_limit(3000);
-
-global $maxperson, $treeid, $chosengen, $fontsize, $date_display, $person_id, $printing, $fan_style, $fanw, $fanh, $indexnr;
-
-include_once(__DIR__ . "/../header.php");
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/language_event.php");
 include_once(__DIR__ . "/../include/calculate_age_cls.php");
 include_once(__DIR__ . "/../include/person_cls.php");
-include_once(__DIR__ . "/menu.php");
 require_once(__DIR__ . "/../include/fanchart/persian_log2vis.php");
 
 $person_id = 'I1'; // *** Show 1st person if file is called directly. ***
@@ -78,7 +72,7 @@ if (!isset($_POST['show_desc'])) {  // first entry into page - check cookie or s
         $showdesc = $_SESSION['save_show_desc'];
     }
 }
-// The $_POST['show_desc'] and cookie setting is handled in header.php before the headers are sent
+// The $_POST['show_desc'] and cookie setting is handled in header script before the headers are sent
 
 $treeid = array();
 

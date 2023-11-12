@@ -12,15 +12,6 @@
 require_once  __DIR__ . "/../app/model/tree_index.php";
 $mainindex = new Mainindex_cls($dbh);
 $item_array = $mainindex->show_tree_index();
-//$family_id = $get_family->getFamilyId();
-//$main_person = $get_ancestor->getMainPerson();
-//$rom_nr = $get_ancestor->getNumberRoman();
-//$number_generation = $get_family->getNumberGeneration();
-//$ancestor_header = $get_ancestor->getAncestorHeader('Ancestor chart', $tree_id, $main_person);
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
 
 
 

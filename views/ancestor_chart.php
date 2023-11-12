@@ -9,69 +9,31 @@
  * July 2011: translated all variables to english by: Huub Mons.
  */
 
-//@set_time_limit(3000);
-
-global $humo_option, $user, $marr_date_array, $marr_place_array;
-global $gedcomnumber, $language;
-global $screen_mode, $dirmark1, $dirmark2, $pdf_footnotes;
-
+// TODO check variable
 $screen_mode = 'ancestor_chart';
 
-if (isset($hourglass) and $hourglass === true) {
-    //$screen_mode = 'ancestor_chart';
-} else {
-    $hourglass = false;
-}
+//$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-
-
-
-// TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../app/model/ancestor.php";
-$get_ancestor = new Ancestor($dbh);
-//$family_id = $get_family->getFamilyId();
-$main_person = $get_ancestor->getMainPerson();
-//$family_expanded =  $get_family->getFamilyExpanded();
-//$source_presentation =  $get_family->getSourcePresentation();
-//$picture_presentation =  $get_family->getPicturePresentation();
-//$text_presentation =  $get_family->getTextPresentation();
-$rom_nr = $get_ancestor->getNumberRoman();
-//$number_generation = $get_family->getNumberGeneration();
-$ancestor_header = $get_ancestor->getAncestorHeader('Ancestor chart', $tree_id, $main_person);
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
-
-
-
-// *** Needed for hourglass ***
-include_once(__DIR__ . "/../views/menu.php");
-
-if ($hourglass === false) {
+if (!isset($hourglass)) {
     //TODO check if this is still needed
-    $main_person = 'I1'; // *** Default value, normally not used... ***
+    $data["main_person"] = 'I1'; // *** Default value, normally not used... ***
     if (isset($_GET["id"])) {
-        $main_person = $_GET["id"];
+        $data["main_person"] = $_GET["id"];
     }
     if (isset($_POST["id"])) {
-        $main_person = $_POST["id"];
+        $data["main_person"] = $_POST["id"];
     }
 
     // *** Check if person gedcomnumber is valid ***
-    $db_functions->check_person($main_person);
-}
+    $db_functions->check_person($data["main_person"]);
 
-if ($hourglass === false) {
     //echo '<h1 class="standard_header fonts">' . __('Ancestor chart') . '</h1>';
-    echo $ancestor_header;
+    echo $data["ancestor_header"];
 }
 
 // The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
 // person 01
-$personDb = $db_functions->get_person($main_person);
+$personDb = $db_functions->get_person($data["main_person"]);
 $gedcomnumber[1] = $personDb->pers_gedcomnumber;
 $pers_famc[1] = $personDb->pers_famc;
 $sexe[1] = $personDb->pers_sexe;
@@ -88,8 +50,9 @@ if ($pers_famc[1]) {
 
 // Loop to find person data
 $count_max = 64;
-if ($hourglass === true) {
-    $count_max = pow(2, $chosengenanc);
+// *** hourglass report ***
+if (isset($hourglass) and $hourglass === true) {
+    $count_max = pow(2, $data["chosengenanc"]);
 }
 
 for ($counter = 2; $counter < $count_max; $counter++) {
@@ -124,7 +87,8 @@ function ancestor_chart_person($id, $box_appearance)
 {
     global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
     global $marr_date_array, $marr_place_array;
-    global $gedcomnumber, $language, $screen_mode, $dirmark1, $dirmark2;
+    global $gedcomnumber, $language, $dirmark1, $dirmark2;
+    //global $screen_mode;
 
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {
@@ -149,7 +113,8 @@ function ancestor_chart_person($id, $box_appearance)
 
         // >>>>> link to show rest of ancestor chart
         //if ($box_appearance=='small' AND isset($personDb->pers_gedcomnumber) AND $screen_mode!="ancestor_sheet"){
-        if ($box_appearance == 'small' and isset($personDb->pers_gedcomnumber) and $personDb->pers_famc and $screen_mode != "ancestor_sheet") {
+        //if ($box_appearance == 'small' and isset($personDb->pers_gedcomnumber) and $personDb->pers_famc and $screen_mode != "ancestor_sheet") {
+        if ($box_appearance == 'small' and isset($personDb->pers_gedcomnumber) and $personDb->pers_famc) {
             $replacement_text .= ' &gt;&gt;&gt;' . $dirmark1;
         }
 
@@ -279,7 +244,8 @@ function ancestor_chart_person($id, $box_appearance)
 // *** End of function ancestor_chart_person ***
 
 // Specific code for ancestor chart:
-if ($screen_mode != "ancestor_sheet" and $screen_mode != "ASPDF" and $hourglass === false) {
+//if ($screen_mode != "ancestor_sheet" and $screen_mode != "ASPDF" and $hourglass === false) {
+if (!isset($hourglass)) {
     echo '<script src="include/html2canvas/html2canvas.min.js"></script>';
 
     echo '<div style="text-align:center;">';
@@ -289,7 +255,7 @@ if ($screen_mode != "ancestor_sheet" and $screen_mode != "ASPDF" and $hourglass 
     $divlen = 1000;
     // width of the chart. for 6 generations 1000px is right
     // if we ever make the anc chart have optionally more generations, the width and length will have to be generated
-    // as in report_descendant.php
+    // as in report_descendant
 
     //following div gets width and length in imaging java function showimg() (at bottom) otherwise double scrollbars won't work.
     echo '<div id="png">';

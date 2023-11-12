@@ -1,6 +1,4 @@
 <?php
-include_once(__DIR__ . "/../header.php");
-include_once(__DIR__ . "/menu.php");
 require_once(__DIR__ . "/../include/person_cls.php");
 require_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/calculate_age_cls.php");
@@ -478,8 +476,8 @@ elseif (isset($humo_option['default_timeline']) and $humo_option['default_timeli
 }
 //$default=false; if($tml==$filenames[0][1]) $default=true;
 
-$path = $link_cls->get_link($uri_path, 'timelines', $personDb->pers_tree_id,true);
-$path.='id=' . $id;
+$path = $link_cls->get_link($uri_path, 'timelines', $personDb->pers_tree_id, true);
+$path .= 'id=' . $id;
 
 // **** SHOW MENU ****
 ?>
@@ -847,4 +845,3 @@ $name = $person_cls->person_name($personDb);
 if (file_exists($filenames[0][0])) {
     fclose($handle);
 }
-include_once(__DIR__ . "/footer.php");

@@ -9,44 +9,36 @@
  * July 2011: translated all variables to english by: Huub Mons.
  */
 
-//@set_time_limit(3000);
-
-//==========================
-global $humo_option, $user, $marr_date_array, $marr_place_array;
-global $gedcomnumber, $language;
-global $screen_mode, $dirmark1, $dirmark2, $pdf_footnotes;
-
 $screen_mode = 'PDF';
 
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
-include_once(__DIR__ . "/../header.php");
+include_once(__DIR__ . "/header.php");
 
 
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../app/model/ancestor.php";
-$get_ancestor = new Ancestor($dbh);
-//$family_id = $get_ancestor->getFamilyId();
-$main_person = $get_ancestor->getMainPerson();
+$get_ancestor = new AncestorModel($dbh);
+$data["main_person"] = $get_ancestor->getMainPerson();
 $rom_nr = $get_ancestor->getNumberRoman();
-//$number_generation = $get_family->getNumberGeneration();
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
 
+// TODO for now using extended class.
+$data["text_presentation"] =  $get_ancestor->getTextPresentation();
+$data["family_expanded"] =  $get_ancestor->getTextPresentation();
+$data["picture_presentation"] =  $get_ancestor->getTextPresentation();
+// source_presentation is saved in session.
 
 
 include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions;
+$db_functions = new db_functions($dbh);
 
 if (isset($_SESSION['tree_prefix'])) {
     $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-            ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-            AND humo_tree_texts.treetext_language='" . $selected_language . "'
-            WHERE tree_prefix='" . $tree_prefix_quoted . "'";
+        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
+        AND humo_tree_texts.treetext_language='" . $selected_language . "'
+        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
     @$datasql = $dbh->query($dataqry);
     @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
 }
@@ -56,27 +48,14 @@ $tree_id = $dataDb->tree_id;
 $db_functions->set_tree_id($dataDb->tree_id);
 
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
-
-// *** Source presentation selected by user (title/ footnote or hide sources) ***
-// *** Default setting is selected by administrator ***
-if (isset($_GET['source_presentation'])) {
-    $_SESSION['save_source_presentation'] = safe_text_db($_GET["source_presentation"]);
-}
-$source_presentation = $user['group_source_presentation'];
-if (isset($_SESSION['save_source_presentation'])) {
-    $source_presentation = $_SESSION['save_source_presentation'];
-} else {
-    // *** Save setting in session (if no choice is made, this is admin default setting) ***
-    $_SESSION['save_source_presentation'] = safe_text_db($source_presentation);
-}
+$db_functions->check_person($data["main_person"]);
 
 //initialize pdf generation
 $pdfdetails = array();
 $pdf_marriage = array();
 
 $pdf = new PDF();
-@$persDb = $db_functions->get_person($main_person);
+@$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use person class ***
 $pers_cls = new person_cls($persDb);
 $name = $pers_cls->person_name($persDb);
@@ -102,7 +81,7 @@ $pdf->MultiCell(0, 10, __('Ancestor report') . __(' of ') . pdf_convert($name["s
 $pdf->Ln(4);
 $pdf->SetFont($pdf_font, '', 12);
 
-$ancestor_array2[] = $main_person;
+$ancestor_array2[] = $data["main_person"];
 $ancestor_number2[] = 1;
 $marriage_gedcomnumber2[] = 0;
 $generation = 1;
@@ -386,8 +365,8 @@ while (isset($ancestor_array2[0])) {
 
 
 // Code for ancestor report PDF -- list appendix of sources
-if ($screen_mode == "PDF" and !empty($pdf_source) and ($source_presentation == 'footnote' or $user['group_sources'] == 'j')) {
-    include_once(__DIR__ . "/../source.php");
+if ($screen_mode == "PDF" and !empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user['group_sources'] == 'j')) {
+    include_once(__DIR__ . "/../include/show_source_pdf.php");
     $pdf->AddPage(); // appendix on new page
     $pdf->SetFont($pdf_font, "B", 14);
     $pdf->Write(8, __('Sources') . "\n\n");
@@ -402,7 +381,7 @@ if ($screen_mode == "PDF" and !empty($pdf_source) and ($source_presentation == '
             $pdf->SetFont($pdf_font, 'B', 10);
             $pdf->Write(6, $count . ". ");
             if ($user['group_sources'] == 'j') {
-                source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
+                source_display_pdf($pdf_source[$key]);  // function source_display from source.php, called with source nr.
             } elseif ($user['group_sources'] == 't') {
                 $db_functions->get_source($pdf_source[$key]);
                 if ($sourceDb->source_title) {

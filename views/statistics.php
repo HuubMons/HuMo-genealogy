@@ -70,8 +70,8 @@ if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_tree') $menu_tab = 
 if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_persons') $menu_tab = 'stats_persons';
 if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_surnames') $menu_tab = 'stats_surnames';
 if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_firstnames') $menu_tab = 'stats_firstnames';
-
 ?>
+
 <p>
 <div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false">
     <div class="pageHeading">

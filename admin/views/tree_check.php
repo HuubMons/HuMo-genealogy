@@ -10,8 +10,6 @@ include_once(__DIR__ . "/../../include/language_date.php");
 
 echo '<h1 class="center">' . __('Family tree data check') . '</h1>';
 
-//@set_time_limit(3000);
-
 // for rtl direction in tables
 $direction = "left";
 if ($rtlmarker == "rtl") $direction = "right";

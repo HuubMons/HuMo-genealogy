@@ -14,15 +14,15 @@ class addressesController
 
     public function list()
     {
-        $model = new Addresses($this->dbh);
+        $addressesModel = new AddressesModel($this->dbh);
 
-        $authorised = $model->getAddressAuthorised($this->user);
-        $addresses = $model->getAll($this->dbh, $this->tree_id);
-        $address_image = $model->getAddressImage();
-        $place_image = $model->getPlaceImage();
-        $select_sort = $model->getSelectSort();
-        $place_link = $model->getPlaceLink();
-        $address_link = $model->getAddressLink();
+        $authorised = $addressesModel->getAddressAuthorised($this->user);
+        $addresses = $addressesModel->getAll($this->dbh, $this->tree_id);
+        $address_image = $addressesModel->getAddressImage();
+        $place_image = $addressesModel->getPlaceImage();
+        $select_sort = $addressesModel->getSelectSort();
+        $place_link = $addressesModel->getPlaceLink();
+        $address_link = $addressesModel->getAddressLink();
 
         $data = array(
             "authorised" => $authorised,

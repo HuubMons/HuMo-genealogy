@@ -27,7 +27,6 @@ function deleteCookie(name) {
     setCookie(name, "moot")
 }
 
-
 function setStylesheet(title, randomize) { //Main stylesheet switcher function. Second parameter if defined causes a random alternate stylesheet (including none) to be enabled
     var i, cacheobj, altsheets = [""];
     if (setStylesheet.chosen)
@@ -56,7 +55,6 @@ function setStylesheet(title, randomize) { //Main stylesheet switcher function. 
     }
     return (typeof randomize != "undefined" && altsheets[randomnumber] != "") ? altsheets[randomnumber].getAttribute("title") : "" //if in "random" mode, return "title" of randomly enabled alt stylesheet
 }
-
 
 function chooseStyle(styletitle, days) { //Interface function to switch style sheets plus save "title" attr of selected stylesheet to cookie
     if (document.getElementById) {
