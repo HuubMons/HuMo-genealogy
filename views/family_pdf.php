@@ -8,40 +8,31 @@
 $screen_mode = 'PDF';
 
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-global $dbh, $chosengen, $genarray, $size, $keepfamily_id, $keepmain_person, $direction;
-global $pdf_footnotes;
-global $parent1Db, $parent2Db;
-global $templ_name;
 
-include_once(__DIR__ . '../../header.php');
+include_once(__DIR__ . '/header.php');
 
 
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
 require_once __DIR__ . "/../app/model/family.php";
-$get_family = new Family($dbh);
-$family_id = $get_family->getFamilyId();
-$main_person = $get_family->getMainPerson();
-//$family_expanded =  $get_family->getFamilyExpanded();
+$get_family = new FamilyModel($dbh);
+$data["family_id"] = $get_family->getFamilyId();
+$data["main_person"] = $get_family->getMainPerson();
 // TODO expanded view is disabled for PDF. Will we using expand in future for PDF?
 // *** No expanded view in PDF export ***
-$family_expanded = false;
-$source_presentation =  $get_family->getSourcePresentation();
-$picture_presentation =  $get_family->getPicturePresentation();
-$text_presentation =  $get_family->getTextPresentation();
-$number_roman = $get_family->getNumberRoman();
-$number_generation = $get_family->getNumberGeneration();
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
+$data["family_expanded"]=false;
+$data["source_presentation"] =  $get_family->getSourcePresentation();
+$data["picture_presentation"] =  $get_family->getPicturePresentation();
+$data["text_presentation"] =  $get_family->getTextPresentation();
+$data["number_roman"] = $get_family->getNumberRoman();
+$data["number_generation"] = $get_family->getNumberGeneration();
 
-//@set_time_limit(300);
+
 
 // TODO test code. Maybe not needed.
 include_once(__DIR__ . "../../include/db_functions_cls.php");
-$db_functions = new db_functions;
+$db_functions = new db_functions($dbh);
 
 // TODO test code. Maybe not needed.
 if (isset($_SESSION['tree_prefix'])) {
@@ -58,22 +49,22 @@ $db_functions->set_tree_id($tree_id);
 $family_nr = 1;  // *** process multiple families ***
 
 // *** Check if family gedcomnumber is valid ***
-$db_functions->check_family($family_id);
+$db_functions->check_family($data["family_id"]);
 
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
+$db_functions->check_person($data["main_person"]);
 
 // **********************************************************
 // *** Maximum number of generations in descendant report ***
 // **********************************************************
 $max_generation = ($humo_option["descendant_generations"] - 1);
 
-$descendant_report = false;
+$data["descendant_report"] = false;
 if (isset($_GET['descendant_report'])) {
-    $descendant_report = true;
+    $data["descendant_report"] = true;
 }
 if (isset($_POST['descendant_report'])) {
-    $descendant_report = true;
+    $data["descendant_report"] = true;
 }
 
 $pdfdetails = array();
@@ -81,11 +72,11 @@ $pdf_marriage = array();
 $pdf = new PDF();
 
 // *** Generate title of PDF file ***
-@$persDb = $db_functions->get_person($main_person);
+@$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use class to process person ***
 $pers_cls = new person_cls($persDb);
 $name = $pers_cls->person_name($persDb);
-if (!$descendant_report == false) {
+if (!$data["descendant_report"] == false) {
     $title = pdf_convert(__('Descendant report') . __(' of ') . $name["standard_name"]);
 } else {
     $title = pdf_convert(__('Family group sheet') . __(' of ') . $name["standard_name"]);
@@ -107,9 +98,9 @@ $pdf->SetFont($pdf_font, '', 12);
 // **************************
 // *** Show single person ***
 // **************************
-if (!$family_id) {
+if (!$data["family_id"]) {
     // *** Privacy filter ***
-    @$parent1Db = $db_functions->get_person($main_person);
+    @$parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
     $parent1_cls = new person_cls($parent1Db);
 
@@ -154,7 +145,7 @@ else {
     $pdf->SetFont($pdf_font, 'B', 15);
     $pdf->Ln(4);
     $name = $pers_cls->person_name($persDb);
-    if (!$descendant_report == false) {
+    if (!$data["descendant_report"] == false) {
         $pdf->MultiCell(0, 10, __('Descendant report') . __(' of ') . str_replace("&quot;", '"', $name["standard_name"]), 0, 'C');
     } else {
         $pdf->MultiCell(0, 10, __('Family group sheet') . __(' of ') . str_replace("&quot;", '"', $name["standard_name"]), 0, 'C');
@@ -162,8 +153,8 @@ else {
     $pdf->Ln(4);
     $pdf->SetFont($pdf_font, '', 12);
 
-    $descendant_family_id2[] = $family_id;
-    $descendant_main_person2[] = $main_person;
+    $descendant_family_id2[] = $data["family_id"];
+    $descendant_main_person2[] = $data["main_person"];
 
     // *** Nr. of generations ***
     for ($descendant_loop = 0; $descendant_loop <= $max_generation; $descendant_loop++) {
@@ -185,7 +176,7 @@ else {
         $descendant_main_person = $descendant_main_person2;
         unset($descendant_main_person2);
 
-        if ($descendant_report == true) {
+        if ($data["descendant_report"] == true) {
             $pdf->SetLeftMargin(10);
             $pdf->Cell(0, 2, "", 0, 1);
             $pdf->SetFont($pdf_font, 'BI', 14);
@@ -194,7 +185,7 @@ else {
                 $pdf->AddPage();
                 $pdf->SetY(20);
             }
-            $pdf->Cell(0, 8, pdf_convert(__('generation ')) . $number_roman[$descendant_loop + 1], 0, 1, 'C', true);
+            $pdf->Cell(0, 8, pdf_convert(__('generation ')) . $data["number_roman"][$descendant_loop + 1], 0, 1, 'C', true);
             $pdf->SetFont($pdf_font, '', 12);
 
             // *** Added mar. 2021 ***
@@ -211,7 +202,7 @@ else {
             }
 
             $family_id_loop = $descendant_family_id[$descendant_loop2];
-            $main_person = $descendant_main_person[$descendant_loop2];
+            $data["main_person"] = $descendant_main_person[$descendant_loop2];
             $family_nr = 1;
 
             // *** Count marriages of man ***
@@ -224,7 +215,7 @@ else {
                 $parent1 = $familyDb->fam_man;
             }
             // *** After clicking the mother, the mother is main person ***
-            if ($familyDb->fam_woman == $main_person) {
+            if ($familyDb->fam_woman == $data["main_person"]) {
                 $parent1 = $familyDb->fam_woman;
                 $swap_parent1_parent2 = true;
             }
@@ -270,11 +261,11 @@ else {
                 // *** Show family                                                 ***
                 // *******************************************************************
                 // *** Internal link for descendant_report ***
-                if ($descendant_report == true) {
+                if ($data["descendant_report"] == true) {
                     // *** Internal link (Roman number_generation) ***
                     // put internal PDF link to family
                     $pdf->Cell(0, 1, " ", 0, 1);
-                    $romannr = $number_roman[$descendant_loop + 1] . '-' . $number_generation[$descendant_loop2 + 1];
+                    $romannr = $data["number_roman"][$descendant_loop + 1] . '-' . $data["number_generation"][$descendant_loop2 + 1];
                     if (isset($link[$romannr])) {
                         $pdf->SetLink($link[$romannr], -1); //link to this family from child with "volgt"
                     }
@@ -312,8 +303,8 @@ else {
                 if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
                     if ($family_nr == 1) {
                         //*** Show data of parent1 ***
-                        if ($descendant_report == true) {
-                            $pdf->Write(8, $number_roman[$descendant_loop + 1] . '-' . $number_generation[$descendant_loop2 + 1] . " ");
+                        if ($data["descendant_report"] == true) {
+                            $pdf->Write(8, $data["number_roman"][$descendant_loop + 1] . '-' . $data["number_generation"][$descendant_loop2 + 1] . " ");
                         }
 
                         //  PDF rendering of name + details
@@ -509,7 +500,7 @@ else {
                         //$indent=$pdf->GetX();
 
                         // *** Build descendant_report ***
-                        if ($descendant_report == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
+                        if ($data["descendant_report"] == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
 
                             // *** 1st family of child ***
                             $child_family = explode(";", $childDb->pers_fams);
@@ -524,7 +515,7 @@ else {
                             for ($k = 0; $k < count($child_family); $k++) {
                                 $check_double[] = $child_family[$k];
                                 // *** Save "Follows: " text in array, also needed for doubles... ***
-                                $follows_array[] = $number_roman[$descendant_loop + 2] . '-' . $number_generation[count($descendant_family_id2)];
+                                $follows_array[] = $data["number_roman"][$descendant_loop + 2] . '-' . $data["number_generation"][count($descendant_family_id2)];
                             }
 
                             // *** YB: show children first in descendant_report ***
@@ -569,8 +560,8 @@ else {
 
 
 // *** List appendix of sources ***
-if (!empty($pdf_source) and ($source_presentation == 'footnote' or $user['group_sources'] == 'j')) {
-    include_once(__DIR__ . '/../source.php');
+if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user['group_sources'] == 'j')) {
+    include_once(__DIR__ . '/../include/show_source_pdf.php');
     $pdf->AddPage(); // appendix on new page
     $pdf->SetFont($pdf_font, "B", 14);
     $pdf->Write(8, __('Sources') . "\n\n");
@@ -585,7 +576,7 @@ if (!empty($pdf_source) and ($source_presentation == 'footnote' or $user['group_
             $pdf->SetFont($pdf_font, 'B', 10);
             $pdf->Write(6, $count . ". ");
             if ($user['group_sources'] == 'j') {
-                source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
+                source_display_pdf($pdf_source[$key]);  // function source_display from source.php, called with source nr.
             } elseif ($user['group_sources'] == 't') {
                 $sourceDb = $db_functions->get_source($pdf_source[$key]);
                 if ($sourceDb->source_title or $sourceDb->source_text) {

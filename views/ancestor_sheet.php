@@ -9,46 +9,17 @@
  * July 2011: translated all variables to english by: Huub Mons.
  */
 
-//@set_time_limit(3000);
-
-//==========================
-global $humo_option, $user, $marr_date_array, $marr_place_array;
-global $gedcomnumber, $language;
-global $screen_mode, $dirmark1, $dirmark2, $pdf_footnotes;
-
 $screen_mode = 'ancestor_sheet';
 
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
+//$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 // see end of this code 
 
-
-
-// TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../app/model/ancestor.php";
-$get_ancestor = new Ancestor($dbh);
-//$family_id = $get_family->getFamilyId();
-$main_person = $get_ancestor->getMainPerson();
-//$family_expanded =  $get_family->getFamilyExpanded();
-//$source_presentation =  $get_family->getSourcePresentation();
-//$picture_presentation =  $get_family->getPicturePresentation();
-//$text_presentation =  $get_family->getTextPresentation();
-$rom_nr = $get_ancestor->getNumberRoman();
-//$number_generation = $get_family->getNumberGeneration();
-$ancestor_header = $get_ancestor->getAncestorHeader('Ancestor sheet', $tree_id, $main_person);
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
-
-
-
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
+$db_functions->check_person($data["main_person"]);
 
 // The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
 // person 01
-$personDb = $db_functions->get_person($main_person);
+$personDb = $db_functions->get_person($data["main_person"]);
 $gedcomnumber[1] = $personDb->pers_gedcomnumber;
 $pers_famc[1] = $personDb->pers_famc;
 $sexe[1] = $personDb->pers_sexe;
@@ -65,7 +36,6 @@ if ($pers_famc[1]) {
 
 // Loop to find person data
 $count_max = 64;
-
 for ($counter = 2; $counter < $count_max; $counter++) {
     $gedcomnumber[$counter] = '';
     $pers_famc[$counter] = '';
@@ -313,7 +283,7 @@ function check_gen($start, $end)
 }
 ?>
 
-<?= $ancestor_header; ?>
+<?= $data["ancestor_header"]; ?>
 
 <table class="humo ancestor_sheet">
     <tr>
@@ -324,7 +294,7 @@ function check_gen($start, $end)
             if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
                 // Show pdf button
                 echo '&nbsp;&nbsp; <form method="POST" action="' . $uri_path . 'views/ancestor_sheet_pdf.php?show_sources=1" style="display : inline;">';
-                echo '<input type="hidden" name="id" value="' . $main_person . '">';
+                echo '<input type="hidden" name="id" value="' . $data["main_person"] . '">';
                 echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
                 echo '<input type="hidden" name="screen_mode" value="ASPDF">';
                 echo '<input class="fonts" type="Submit" name="submit" value="PDF Report">';
@@ -367,3 +337,4 @@ function check_gen($start, $end)
     <?= __('*') . '  ' . __('born') . ', ' . __('&#134;') . '  ' . __('died') . ', ' . __('X') . '  ' . __('married'); ?><br>
     <?php printf(__('Generated with %s on %s'), 'HuMo-genealogy', date("d M Y - H:i")); ?>
 </div>
+<br>

@@ -2,9 +2,9 @@
 function process_text($text_process, $text_sort = 'standard')
 {
     global $dbh, $tree_id, $user;
-    global $screen_mode, $text_presentation;
+    global $screen_mode, $data, $link_cls, $uri_path;
 
-    if ($text_presentation != 'hide' and $text_process) {
+    if ($data["text_presentation"] != 'hide' and $text_process) {
         //1 NOTE Text by person#werktekst#
         //2 CONT 2e line text persoon#2e werktekst#
         //2 CONT 3e line #3e werktekst# tekst persoon
@@ -83,15 +83,15 @@ function process_text($text_process, $text_sort = 'standard')
         }
 
         // *** Show tekst in popup screen ***
-        if ($text_presentation == 'popup' and $screen_mode != 'PDF' and $screen_mode != 'RTF' and $text_process) {
-            global $rtlmarker, $family_id, $main_person, $alignmarker, $text_nr;
+        if ($data["text_presentation"] == 'popup' and $screen_mode != 'PDF' and $screen_mode != 'RTF' and $text_process) {
+            global $data, $rtlmarker, $alignmarker, $text_nr;
             if (isset($text_nr)) $text_nr++;
             else $text_nr = 1;
             $text = '<div class="' . $rtlmarker . 'sddm" style="left:10px;top:10px;display:inline;">';
 
-            $vars['pers_family'] = $family_id;
+            $vars['pers_family'] = $data["family_id"];
             $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-            $link .= "main_person=" . $main_person;
+            $link .= "main_person=" . $data["main_person"];
             $text .= '<a href="' . $link . '"';
 
             $text .= ' style="display:inline" ';

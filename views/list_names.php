@@ -14,6 +14,7 @@
     }
     @$person_result = $dbh->query($person_qry);
     while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
+        // TODO use function
         if ($humo_option["url_rewrite"] == "j") {
             // *** url_rewrite ***
             $path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $personDb->first_character;
@@ -31,20 +32,12 @@
 
 <?php
 // *** Search variables in: http://localhost/humo-gen/list/humo1_/M/ ***
-//if (isset($urlpart[1])){
-//	$last_name=urldecode(safe_text_db($urlpart[1]));   // without urldecode skandinavian letters don't work!
-//}
 if (!isset($last_name)) {
     $last_name = 'a'; // *** Default first_character ***
 }
 if (isset($_GET['last_name']) and $_GET['last_name'] and is_string($_GET['last_name'])) {
     $last_name = safe_text_db($_GET['last_name']);
 }
-// else{
-//    // *** Alphabet find first first_character of lastname ***
-//    $last_name = 'a'; // *** Default first_character ***
-//}
-//echo 'TEST'.$_GET['last_name'].'!'.$last_name.'!';
 
 // *** MAIN SETTINGS ***
 $maxcols = 2; // number of name & nr colums in table. For example 3 means 3x name col + nr col

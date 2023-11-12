@@ -5,14 +5,14 @@ function show_media($event_connect_kind, $event_connect_id)
 {
     global $dbh, $db_functions, $tree_id, $user, $dataDb, $uri_path;
     global $sect, $screen_mode; // *** RTF Export ***
-    global $picture_presentation;
+    global $data;
 
     $templ_person = array(); // local version
     $process_text = '';
     $media_nr = 0;
 
     // *** Pictures/ media ***
-    if ($user['group_pictures'] == 'j' and $picture_presentation != 'hide') {
+    if ($user['group_pictures'] == 'j' and $data["picture_presentation"] != 'hide') {
         $tree_pict_path = $dataDb->tree_pict_path;
 
         // *** Use default folder: media ***

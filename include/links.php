@@ -41,6 +41,7 @@ class Link_cls
         ['page' => 'relations', 'file_rewrite' => 'relations', 'file' => 'index.php?page=relations', 'seperator' => '&amp;'],
         ['page' => 'report_outline', 'file_rewrite' => 'report_outline', 'file' => 'index.php?page=report_outline', 'seperator' => '&amp;'],
         ['page' => 'sources', 'file_rewrite' => 'sources', 'file' => 'index.php?page=sources', 'seperator' => '&amp;'],
+        ['page' => 'source', 'file_rewrite' => 'source', 'file' => 'index.php?page=sources', 'seperator' => '&amp;'],
         ['page' => 'statistics', 'file_rewrite' => 'statistics', 'file' => 'index.php?page=statistics', 'seperator' => '&amp;'],
         ['page' => 'timelines', 'file_rewrite' => 'timelines', 'file' => 'index.php?page=timelines', 'seperator' => '&amp;'],
         ['page' => 'tree_index', 'file_rewrite' => 'tree_index', 'file' => 'index.php?page=tree_index', 'seperator' => '&amp;'],

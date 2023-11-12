@@ -20,6 +20,7 @@ if ($user["group_birthday_list"] != 'j') {
     exit();
 }
 
+//TODO use function
 if ($humo_option["url_rewrite"] == "j") {
     $path = 'birthday_list';
     $path2 = 'birthday_list?';

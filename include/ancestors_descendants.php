@@ -30,7 +30,6 @@ function descendants($family_id, $main_person, $gn, $nr_generations)
     // *** Selected person ***
     $descendant_id++;
     $descendant_array[$descendant_id] = $main_person;
-    //echo $main_person.' <br>';
     $gn++;
     if ($nr_generations < $gn) return;
 

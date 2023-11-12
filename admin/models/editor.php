@@ -8,7 +8,7 @@ include_once(__DIR__ . "/../../include/language_date.php");
 include_once(__DIR__ . "/../../include/date_place.php");
 include_once(__DIR__ . "/../../include/language_event.php");
 
-class Editor
+class EditorModel
 {
     private $Connection;
 

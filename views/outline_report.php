@@ -1,44 +1,18 @@
 <?php
 
 /**
- * OUTLINE REPORT  - report_outline.php
+ * OUTLINE REPORT  - outline_report.php
  * by Yossi Beck - Nov 2008 - (on basis of Huub's family script)
  * Jul 2011 Huub: translation of variables to English
  */
 
-//@set_time_limit(300);
-
-global $show_date, $dates_behind_names, $nr_generations;
-global $screen_mode, $language, $humo_option, $user, $selected_language;
-
-
-
 $screen_mode = '';
-//if (isset($_POST["screen_mode"]) and ($_POST["screen_mode"] == 'PDF-L' or $_POST["screen_mode"] == 'PDF-P')) {
-//    $screen_mode = 'PDF';
-//}
-
-include_once(__DIR__ . "/../header.php");
-
-
-
-// TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../app/model/family.php";
-$get_family = new Family($dbh);
-$family_id = $get_family->getFamilyId();
-$main_person = $get_family->getMainPerson();
-$descendant_header = $get_family->getDescendantHeader('Outline report', $tree_id, $family_id, $main_person);
-
-
-
-include_once(__DIR__ . "/menu.php");
 
 // *** Check if family gedcomnumber is valid ***
-$db_functions->check_family($family_id);
+$db_functions->check_family($data["family_id"]);
 
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
+$db_functions->check_person($data["main_person"]);
 
 $show_details = false;
 if (isset($_GET["show_details"])) {
@@ -78,7 +52,7 @@ if (isset($_POST["nr_generations"])) {
 $path_form = $link_cls->get_link($uri_path, 'report_outline', $tree_id);
 
 //echo '<h1 class="standard_header fonts">' . __('Outline report') . '</h1>';
-echo $descendant_header;
+echo $data["descendant_header"];
 
 echo '<div class="pers_name center print_version">';
 
@@ -87,9 +61,9 @@ echo '<div class="pers_name center print_version">';
 // ******************************************************
 
 echo '<form method="POST" action="' . $path_form . '" style="display : inline;">';
-echo '<input type="hidden" name="id" value="' . $family_id . '">';
+echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
 echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
-echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
+echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
 
 if ($show_details == true) {
     echo '<input type="hidden" name="show_details" value="0">';
@@ -105,9 +79,9 @@ if (!$show_details) {
     // ******** Button: Show date  ***********
     // ***************************************
     echo '<form method="POST" action="' . $path_form . '" style="display : inline;">';
-    echo '<input type="hidden" name="id" value="' . $family_id . '">';
+    echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
     echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
-    echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
+    echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
     if ($show_date == true) {
         echo '<input type="hidden" name="show_date" value="0">';
         echo '<input class="fonts" type="Submit" name="submit" value="' . __('Hide dates') . '">';
@@ -121,9 +95,9 @@ if (!$show_details) {
     // ******** Show button: date after or below each other ************
     // *****************************************************************
     echo ' <form method="POST" action="' . $path_form . '" style="display : inline;">';
-    echo '<input type="hidden" name="id" value="' . $family_id . '">';
+    echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
     echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
-    echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
+    echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
     if ($dates_behind_names == "1") {
         echo '<input type="hidden" name="dates_behind_names" value="0">';
         echo '<input type="Submit" class="fonts" name="submit" value="' . __('Dates below names') . '">';
@@ -144,7 +118,7 @@ echo '<select size=1 name="selectnr_generations" onChange="window.location=this.
 
 
 $path_tmp = $link_cls->get_link($uri_path, 'report_outline', $tree_id, true);
-//$path_tmp .= 'id=' . $family_id . '&amp;main_person=' . $main_person;
+//$path_tmp .= 'id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"];
 
 
 for ($i = 2; $i < 20; $i++) {
@@ -153,16 +127,14 @@ for ($i = 2; $i < 20; $i++) {
     if ($nr_gen == $nr_generations) {
         echo ' selected';
     }
-    //echo ' value="report_outline.php?nr_generations=' . $nr_gen . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
-    echo ' value="' . $path_tmp . 'nr_generations=' . $nr_gen . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
+    echo ' value="' . $path_tmp . 'nr_generations=' . $nr_gen . '&amp;id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"] . '&amp;show_details=' . $show_details . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '">' . $i . '</option>';
 }
 echo '<option';
 if ($nr_generations == 50) {
     echo ' selected';
 }
 
-//echo ' value="report_outline.php?nr_generations=50&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
-echo ' value="' . $path_tmp . 'nr_generations=50&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
+echo ' value="' . $path_tmp . 'nr_generations=50&amp;id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"] . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
 echo '</select>';
 echo '</span>';
 
@@ -170,15 +142,14 @@ if (!$show_details) {
     echo '&nbsp;&nbsp;&nbsp;<span>';
     if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
         //Show pdf button
-        //echo ' <form method="POST" action="' . $uri_path . 'report_outline.php" style="display : inline;">';
-        echo ' <form method="POST" action="views/report_outline_pdf.php" style="display : inline;">';
+        echo ' <form method="POST" action="views/outline_report_pdf.php" style="display : inline;">';
         echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
         echo '<input type="hidden" name="screen_mode" value="PDF-P">';
-        echo '<input type="hidden" name="id" value="' . $family_id . '">';
+        echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
         echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
         echo '<input type="hidden" name="dates_behind_names" value="' . $dates_behind_names . '">';
         echo '<input type="hidden" name="show_date" value="' . $show_date . '">';
-        echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
+        echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
         echo '<input class="fonts" type="Submit" name="submit" value="' . __('PDF (Portrait)') . '">';
         echo '</form>';
     }
@@ -187,15 +158,14 @@ if (!$show_details) {
     echo '&nbsp;&nbsp;&nbsp;<span>';
     if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
         //Show pdf button
-        //echo ' <form method="POST" action="' . $uri_path . 'report_outline.php" style="display : inline;">';
-        echo ' <form method="POST" action="views/report_outline_pdf.php" style="display : inline;">';
+        echo ' <form method="POST" action="views/outline_report_pdf.php" style="display : inline;">';
         echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
         echo '<input type="hidden" name="screen_mode" value="PDF-L">';
-        echo '<input type="hidden" name="id" value="' . $family_id . '">';
+        echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
         echo '<input type="hidden" name="nr_generations" value="' . $nr_generations . '">';
         echo '<input type="hidden" name="dates_behind_names" value="' . $dates_behind_names . '">';
         echo '<input type="hidden" name="show_date" value="' . $show_date . '">';
-        echo '<input type="hidden" name="main_person" value="' . $main_person . '">';
+        echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
         echo '<input class="fonts" type="Submit" name="submit" value="' . __('PDF (Landscape)') . '">';
         echo '</form>';
     }
@@ -211,7 +181,7 @@ $gn = 0;   // generatienummer
 // ****** FUNCTION OUTLINE *************  // recursive function
 // *************************************
 
-function outline($family_id, $main_person, $gn, $nr_generations)
+function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
 {
     global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $show_details, $show_date, $dates_behind_names, $nr_generations;
     global $language, $dirmark1, $dirmark1, $screen_mode, $user;
@@ -227,7 +197,7 @@ function outline($family_id, $main_person, $gn, $nr_generations)
 
     // *** Count marriages of man ***
     // *** YB: if needed show woman as main_person ***
-    @$familyDb = $db_functions->get_family($family_id, 'man-woman');
+    @$familyDb = $db_functions->get_family($outline_family_id, 'man-woman');
     $parent1 = '';
     $parent2 = '';
     $swap_parent1_parent2 = false;
@@ -237,7 +207,7 @@ function outline($family_id, $main_person, $gn, $nr_generations)
         $parent1 = $familyDb->fam_man;
     }
     // *** If mother is selected, mother will be main_person ***
-    if ($familyDb->fam_woman == $main_person) {
+    if ($familyDb->fam_woman == $outline_main_person) {
         $parent1 = $familyDb->fam_woman;
         $swap_parent1_parent2 = true;
     }
@@ -249,7 +219,7 @@ function outline($family_id, $main_person, $gn, $nr_generations)
         $marriage_array = explode(";", $personDb->pers_fams);
         $nr_families = substr_count($personDb->pers_fams, ";");
     } else {
-        $marriage_array[0] = $family_id;
+        $marriage_array[0] = $outline_family_id;
         $nr_families = "0";
     }
 
@@ -462,7 +432,6 @@ function outline($family_id, $main_person, $gn, $nr_generations)
 // ******* Start function here - recursive if started ******
 echo '<table class="humo outlinetable"><tr><td>';
 
-outline($family_id, $main_person, $gn, $nr_generations);
+outline($data["family_id"], $data["main_person"], $gn, $nr_generations);
 
-echo '</td></tr></table>';
-include_once(__DIR__ . "/footer.php");
+echo '</td></tr></table><br><br>';

@@ -1,7 +1,4 @@
 <?php
-include_once(__DIR__ . "/../header.php");
-
-include_once(__DIR__ . "/menu.php");
 include_once(__DIR__ . "/../include/person_cls.php");
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
@@ -376,13 +373,13 @@ A yellow banner will appear near the top of the map, informing which persons\' d
 
                 $gn = 0; // generation number
 
-                function outline($family_id, $main_person, $gn)
+                function outline($outline_family_id, $outline_person, $gn)
                 {
                     global $dbh, $db_functions, $desc_array;
                     global $language, $dirmark1, $dirmark1;
                     $family_nr = 1; //*** Process multiple families ***
 
-                    $familyDb = $db_functions->get_family($family_id, 'man-woman');
+                    $familyDb = $db_functions->get_family($outline_family_id, 'man-woman');
                     $parent1 = '';
                     $parent2 = '';
                     $swap_parent1_parent2 = false;
@@ -392,7 +389,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                         $parent1 = $familyDb->fam_man;
                     }
                     // *** If mother is selected, mother will be main_person ***
-                    if ($familyDb->fam_woman == $main_person) {
+                    if ($familyDb->fam_woman == $outline_person) {
                         $parent1 = $familyDb->fam_woman;
                         $swap_parent1_parent2 = true;
                     }
@@ -404,7 +401,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                         $marriage_array = explode(";", $personDb->pers_fams);
                         $nr_families = substr_count($personDb->pers_fams, ";");
                     } else {
-                        $marriage_array[0] = $family_id;
+                        $marriage_array[0] = $outline_family_id;
                         $nr_families = "0";
                     }
 
@@ -1130,7 +1127,3 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
 ?>
 
 <br><br>
-
-<?php
-include_once(__DIR__ . "/footer.php");
-?>

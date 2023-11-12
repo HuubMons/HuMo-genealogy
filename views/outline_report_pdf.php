@@ -1,32 +1,29 @@
 <?php
 
 /**
- * OUTLINE REPORT  - report_outline.php
+ * OUTLINE REPORT  - outline_report.php
  * by Yossi Beck - Nov 2008 - (on basis of Huub's family script)
  * Jul 2011 Huub: translation of variables to English
  * Oct 2023 Huub: seperated HTML and PDF files.
  */
-
-//@set_time_limit(300);
-
-global $show_date, $dates_behind_names, $nr_generations;
-global $screen_mode, $language, $humo_option, $user, $selected_language;
 
 $screen_mode = '';
 if (isset($_POST["screen_mode"]) and ($_POST["screen_mode"] == 'PDF-L' or $_POST["screen_mode"] == 'PDF-P')) {
     $screen_mode = 'PDF';
 }
 
-include_once(__DIR__ . "/../header.php");
+include_once(__DIR__ . "/header.php");
 
 
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../app/model/family.php";
-$get_family = new Family($dbh);
-$family_id = $get_family->getFamilyId();
-$main_person = $get_family->getMainPerson();
+$get_family = new FamilyModel($dbh);
+$data["family_id"] = $get_family->getFamilyId();
+$data["main_person"] = $get_family->getMainPerson();
+$data["text_presentation"] =  $get_family->getTextPresentation();
+$data["family_expanded"] =  $get_family->getFamilyExpanded();
 
 
 
@@ -41,15 +38,15 @@ if (isset($_SESSION['tree_prefix'])) {
 }
 
 include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions;
+$db_functions = new db_functions($dbh);
 $db_functions->set_tree_id($tree_id);
 
 
 // *** Check if family gedcomnumber is valid ***
-$db_functions->check_family($family_id);
+$db_functions->check_family($data["family_id"]);
 
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
+$db_functions->check_person($data["main_person"]);
 
 $show_details = false;
 if (isset($_GET["show_details"])) {
@@ -90,7 +87,7 @@ if ($screen_mode == 'PDF') {
     //initialize pdf generation
     $pdfdetails = array();
     $pdf_marriage = array();
-    @$persDb = $db_functions->get_person($main_person);
+    @$persDb = $db_functions->get_person($data["main_person"]);
     // *** Use person class ***
     $pers_cls = new person_cls($persDb);
     $name = $pers_cls->person_name($persDb);
@@ -126,7 +123,7 @@ $gn = 0;   // generatienummer
 // ****** FUNCTION OUTLINE *************  // recursive function
 // *************************************
 
-function outline($family_id, $main_person, $gn, $nr_generations)
+function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
 {
     global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $show_details, $show_date, $dates_behind_names, $nr_generations;
     global $language, $dirmark1, $dirmark1, $screen_mode, $user;
@@ -142,7 +139,7 @@ function outline($family_id, $main_person, $gn, $nr_generations)
 
     // *** Count marriages of man ***
     // *** YB: if needed show woman as main_person ***
-    @$familyDb = $db_functions->get_family($family_id, 'man-woman');
+    @$familyDb = $db_functions->get_family($outline_family_id, 'man-woman');
     $parent1 = '';
     $parent2 = '';
     $swap_parent1_parent2 = false;
@@ -152,7 +149,7 @@ function outline($family_id, $main_person, $gn, $nr_generations)
         $parent1 = $familyDb->fam_man;
     }
     // *** If mother is selected, mother will be main_person ***
-    if ($familyDb->fam_woman == $main_person) {
+    if ($familyDb->fam_woman == $outline_main_person) {
         $parent1 = $familyDb->fam_woman;
         $swap_parent1_parent2 = true;
     }
@@ -164,7 +161,7 @@ function outline($family_id, $main_person, $gn, $nr_generations)
         $marriage_array = explode(";", $personDb->pers_fams);
         $nr_families = substr_count($personDb->pers_fams, ";");
     } else {
-        $marriage_array[0] = $family_id;
+        $marriage_array[0] = $outline_family_id;
         $nr_families = "0";
     }
 
@@ -343,6 +340,6 @@ function outline($family_id, $main_person, $gn, $nr_generations)
 
 
 // ******* Start function here - recursive if started ******
-outline($family_id, $main_person, $gn, $nr_generations);
+outline($data["family_id"], $data["main_person"], $gn, $nr_generations);
 
 $pdf->Output($title . ".pdf", "I");

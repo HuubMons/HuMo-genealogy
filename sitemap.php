@@ -14,7 +14,7 @@ include_once(__DIR__ . "/include/settings_user.php"); // USER variables
 include_once(__DIR__ . "/include/person_cls.php");
 
 include_once(__DIR__ . "/include/db_functions_cls.php");
-$db_functions = new db_functions;
+$db_functions = new db_functions($dbh);
 
 $person_cls = new person_cls;
 

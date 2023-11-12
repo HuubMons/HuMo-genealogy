@@ -53,7 +53,7 @@ global $tree_prefix, $gedcom_date, $gedcom_time, $pers_gedcomnumber;
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../models/editor.php";
-$get_editor = new Editor($dbh);
+$get_editor = new EditorModel($dbh);
 $menu_admin = $get_editor->getMenuAdmin();
 //$this->view("families", array(
 //    "family" => $family,

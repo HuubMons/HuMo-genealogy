@@ -10,60 +10,48 @@
 $screen_mode = 'RTF';
 
 //TODO check PDF variables. PDF is moved to seperate scripts.
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-global $dbh, $chosengen, $genarray, $size, $keepfamily_id, $keepmain_person, $direction;
-global $pdf_footnotes;
-global $parent1Db, $parent2Db;
-
-//global $temp,$templ_person;
-//global $templ_relation;
-global $templ_name;
+//$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
 
 
 // TODO create seperate controller script.
 // TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../app/model/family.php";
-$get_family = new Family($dbh);
-$family_id = $get_family->getFamilyId();
-$main_person = $get_family->getMainPerson();
-$family_expanded =  $get_family->getFamilyExpanded();
-$source_presentation =  $get_family->getSourcePresentation();
-$picture_presentation =  $get_family->getPicturePresentation();
-$text_presentation =  $get_family->getTextPresentation();
-$number_roman = $get_family->getNumberRoman();
-$number_generation = $get_family->getNumberGeneration();
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
+$get_family = new FamilyModel($dbh);
+$data["family_id"] = $get_family->getFamilyId();
+$data["main_person"] = $get_family->getMainPerson();
+$data["family_expanded"]=false;
+$data["source_presentation"] =  $get_family->getSourcePresentation();
+$data["picture_presentation"] =  $get_family->getPicturePresentation();
+$data["text_presentation"] =  $get_family->getTextPresentation();
+$data["number_roman"] = $get_family->getNumberRoman();
+$data["number_generation"] = $get_family->getNumberGeneration();
 
 
-//@set_time_limit(300);
 
 $family_nr = 1;  // *** process multiple families ***
 
 // *** Check if family gedcomnumber is valid ***
-$db_functions->check_family($family_id);
+$db_functions->check_family($data["family_id"]);
 
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
+$db_functions->check_person($data["main_person"]);
 
 // **********************************************************
 // *** Maximum number of generations in descendant report ***
 // **********************************************************
 $max_generation = ($humo_option["descendant_generations"] - 1);
 
-$descendant_report = false;
+$data["descendant_report"] = false;
 if (isset($_GET['descendant_report'])) {
-    $descendant_report = true;
+    $data["descendant_report"] = true;
 }
 if (isset($_POST['descendant_report'])) {
-    $descendant_report = true;
+    $data["descendant_report"] = true;
 }
 
 require_once __DIR__ . '/../include/phprtflite/lib/PHPRtfLite.php';
-$family_expanded = false;
+$data["family_expanded"]=false;
 
 // *** registers PHPRtfLite autoloader (spl) ***
 PHPRtfLite::registerAutoloader();
@@ -103,11 +91,11 @@ $par_child_text->setIndentRight(0.5);
 //$rtf->setMargins(3, 1, 1 ,2);
 
 // *** Generate title of RTF file ***
-$persDb = $db_functions->get_person($main_person);
+$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use class to process person ***
 $pers_cls = new person_cls($persDb);
 $name = $pers_cls->person_name($persDb);
-if (!$descendant_report == false) {
+if (!$data["descendant_report"] == false) {
     $title = __('Descendant report') . __(' of ') . $name["standard_name"];
 } else {
     $title = __('Family group sheet') . __(' of ') . $name["standard_name"];
@@ -139,10 +127,10 @@ while (false !== ($filename = readdir($dh))) {
 // **************************
 // *** Show single person ***
 // **************************
-if (!$family_id) {
+if (!$data["family_id"]) {
     // starfieldchart is never called when there is no own fam so no need to mark this out
     // *** Privacy filter ***
-    @$parent1Db = $db_functions->get_person($main_person);
+    @$parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
     $parent1_cls = new person_cls($parent1Db);
 
@@ -157,8 +145,8 @@ if (!$family_id) {
 // *** Show family ***
 // *******************
 else {
-    $descendant_family_id2[] = $family_id;
-    $descendant_main_person2[] = $main_person;
+    $descendant_family_id2[] = $data["family_id"];
+    $descendant_main_person2[] = $data["main_person"];
 
     // *** Nr. of generations ***
     for ($descendant_loop = 0; $descendant_loop <= $max_generation; $descendant_loop++) {
@@ -180,8 +168,8 @@ else {
         $descendant_main_person = $descendant_main_person2;
         unset($descendant_main_person2);
 
-        if ($descendant_report == true) {
-            $rtf_text = __('generation ') . $number_roman[$descendant_loop + 1];
+        if ($data["descendant_report"] == true) {
+            $rtf_text = __('generation ') . $data["number_roman"][$descendant_loop + 1];
             $sect->writeText($rtf_text, $arial14, $parHead);
         }
 
@@ -195,7 +183,7 @@ else {
             }
 
             $family_id_loop = $descendant_family_id[$descendant_loop2];
-            $main_person = $descendant_main_person[$descendant_loop2];
+            $data["main_person"] = $descendant_main_person[$descendant_loop2];
             $family_nr = 1;
 
             // *** Count marriages of man ***
@@ -208,7 +196,7 @@ else {
                 $parent1 = $familyDb->fam_man;
             }
             // *** After clicking the mother, the mother is main person ***
-            if ($familyDb->fam_woman == $main_person) {
+            if ($familyDb->fam_woman == $data["main_person"]) {
                 $parent1 = $familyDb->fam_woman;
                 $swap_parent1_parent2 = true;
             }
@@ -254,9 +242,9 @@ else {
                 // *** Show family                                                 ***
                 // *******************************************************************
                 // *** Internal link for descendant_report ***
-                if ($descendant_report == true) {
+                if ($data["descendant_report"] == true) {
                     // *** Internal link (Roman number_generation) ***
-                    //$rtf_text=$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].' ';
+                    //$rtf_text=$data["number_roman"][$descendant_loop+1].'-'.$data["number_generation"][$descendant_loop2+1].' ';
                     //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                 }
 
@@ -275,7 +263,7 @@ else {
                 if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
                     if ($family_nr == 1) {
                         //*** Show data of parent1 ***
-                        $rtf_text = ' <b>' . $number_roman[$descendant_loop + 1] . '-' . $number_generation[$descendant_loop2 + 1] . '</b> ';
+                        $rtf_text = ' <b>' . $data["number_roman"][$descendant_loop + 1] . '-' . $data["number_generation"][$descendant_loop2 + 1] . '</b> ';
                         //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                         $sect->writeText($rtf_text, $arial12);
 
@@ -436,7 +424,7 @@ else {
                         $sect->writeText($rtf_text, $arial12);
 
                         // *** Build descendant_report ***
-                        if ($descendant_report == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
+                        if ($data["descendant_report"] == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
 
                             // *** 1st family of child ***
                             $child_family = explode(";", $childDb->pers_fams);
@@ -451,7 +439,7 @@ else {
                             for ($k = 0; $k < count($child_family); $k++) {
                                 $check_double[] = $child_family[$k];
                                 // *** Save "Follows: " text in array, also needed for doubles... ***
-                                $follows_array[] = $number_roman[$descendant_loop + 2] . '-' . $number_generation[count($descendant_family_id2)];
+                                $follows_array[] = $data["number_roman"][$descendant_loop + 2] . '-' . $data["number_generation"][count($descendant_family_id2)];
                             }
 
                             // *** YB: show children first in descendant_report ***
@@ -496,17 +484,17 @@ if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_pres
 // *** Save rtf document to file ***
 $rtf->save($file_name);
 
-$vars['pers_family'] = $family_id;
+$vars['pers_family'] = $data["family_id"];
 $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-$link .= "main_person=" . $main_person;
+$link .= "main_person=" . $data["main_person"];
 ?>
 <br><br><a href="<?= $download_link; ?>"><?= __('Download RTF report.'); ?></a>
 <br><br><?= __('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.'); ?>
 <br><br>
 <form method="POST" action="<?= $link; ?>" style="display : inline;">
     <input type="hidden" name="screen_mode" value="">
-    <?php if ($descendant_report == true) { ?>
-        <input type="hidden" name="descendant_report" value="<?= $descendant_report; ?>">
+    <?php if ($data["descendant_report"] == true) { ?>
+        <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
     <?php } ?>
     <input class="fonts" type="Submit" name="submit" value="<?= __('Back'); ?>">
 </form>

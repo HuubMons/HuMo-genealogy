@@ -17,12 +17,12 @@ class addressController
 
     public function detail()
     {
-        $model = new Address($this->db_functions);
+        $addressModel = new AddressModel($this->db_functions);
 
-        $authorised = $model->getAddressAuthorised($this->user);
-        $address = $model->getById($_GET["id"]);
-        $address_sources = $model->getAddressSources($_GET["id"]);
-        $address_connected_persons = $model->getAddressConnectedPersons($_GET["id"]);
+        $authorised = $addressModel->getAddressAuthorised($this->user);
+        $address = $addressModel->getById($_GET["id"]);
+        $address_sources = $addressModel->getAddressSources($_GET["id"]);
+        $address_connected_persons = $addressModel->getAddressConnectedPersons($_GET["id"]);
 
         $data = array(
             "authorised" => $authorised,

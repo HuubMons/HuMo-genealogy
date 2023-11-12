@@ -37,8 +37,12 @@ function tablerow($nr, $lastcol = false)
     } else echo '~';
     echo '</td>';
 
-    if ($lastcol == false)  echo '<td class="namenr" style="text-align:center;border-right-width:3px">'; // not last column numbers
-    else echo '</td><td class="namenr" style="text-align:center">'; // no thick border
+    if ($lastcol == false){
+        echo '<td class="namenr" style="text-align:center;border-right-width:3px">'; // not last column numbers
+    }
+    else {
+        echo '</td><td class="namenr" style="text-align:center">'; // no thick border
+    }
 
     if (isset($freq_last_names[$nr])) echo $freq_count_last_names[$nr];
     else echo '~';

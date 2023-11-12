@@ -2,513 +2,667 @@
 
 /**
  * Descendant chart. Used to be part of family script, seperated in july 2023.
- * 
- * July 2023: this script will be refactored. Under construction.
- * 
  */
 
 $screen_mode = 'STAR';
 
-$hourglass = false;
-if (isset($_GET["screen_mode"]) and $_GET["screen_mode"] == 'HOUR') {
-    $hourglass = true;
+if (!isset($hourglass)) $hourglass = false;
+if ($hourglass === false) {
+    // for png image generating
+    echo '<script src="include/html2canvas/html2canvas.min.js"></script>';
 }
 
-//TODO check PDF variables. PDF is moved to seperate scripts.
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-global $dbh, $chosengen, $genarray, $size, $keepfamily_id, $keepmain_person, $direction;
-global $pdf_footnotes;
-global $parent1Db, $parent2Db;
 
-//global $temp,$templ_person;
-//global $templ_relation;
-global $templ_name;
+$genarray = $data["genarray"];
 
-// *** Needed for hourglass ***
-include_once(__DIR__ . '../../header.php');
+// YB: -- check browser type & version. we need this further on to detect IE7 with it's widely reported z-index bug
+$browser_user_agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
 
-
-
-// TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../app/model/family.php";
-$get_family = new Family($dbh);
-$family_id = $get_family->getFamilyId();
-$main_person = $get_family->getMainPerson();
-//$family_expanded =  $get_family->getFamilyExpanded();
-//$source_presentation =  $get_family->getSourcePresentation();
-//$picture_presentation =  $get_family->getPicturePresentation();
-//$text_presentation =  $get_family->getTextPresentation();
-$descendant_header = $get_family->getDescendantHeader('Descendant chart', $tree_id, $family_id,$main_person);
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
-
-
-
-//@set_time_limit(300);
-
-$family_nr = 1;  // *** process multiple families ***
-
-// *** Check if family gedcomnumber is valid ***
-$db_functions->check_family($family_id);
-
-// *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
-
-$dna = "none"; // DNA setting
-if (isset($_GET["dnachart"])) {
-    $dna = $_GET["dnachart"];
-}
-if (isset($_POST["dnachart"])) {
-    $dna = $_POST["dnachart"];
-}
-$chosengen = 4;
-if ($dna != "none") $chosengen = "All"; // in DNA chart by default show all generations
-if (isset($_GET["chosengen"])) {
-    $chosengen = $_GET["chosengen"];
-}
-if (isset($_POST["chosengen"])) {
-    $chosengen = $_POST["chosengen"];
-}
-$chosengenanc = 4;  // for hourglass -- no. of generations of ancestors
-if (isset($_GET["chosengenanc"])) {
-    $chosengenanc = $_GET["chosengenanc"];
-}
-if (isset($_POST["chosengenanc"])) {
-    $chosengenanc = $_POST["chosengenanc"];
-}
-if (isset($_SESSION['chartsize'])) {
-    $size = $_SESSION['chartsize'];
-} else {
-    $size = 50;
-    if ($dna != "none") $size = 25;
-} // in DNA chart by default zoom position 4
-if (isset($_GET["chosensize"])) {
-    $size = $_GET["chosensize"];
-}
-if (isset($_POST["chosensize"])) {
-    $size = $_POST["chosensize"];
-}
-$_SESSION['chartsize'] = $size;
-$keepfamily_id = $family_id;
-$keepmain_person = $main_person;
-$direction = 0; // vertical
-if (isset($_GET["direction"])) {
-    $direction = $_GET["direction"];
-}
-if (isset($_POST["direction"])) {
-    $direction = $_POST["direction"];
-}
-
-if ($dna != "none") {
-    if (isset($_GET["bf"])) {
-        $base_person_famc = $_GET["bf"];
-    }
-    if (isset($_POST["bf"])) {
-        $base_person_famc = $_POST["bf"];
-    }
-    if (isset($_GET["bs"])) {
-        $base_person_sexe = $_GET["bs"];
-    }
-    if (isset($_POST["bs"])) {
-        $base_person_sexe = $_POST["bs"];
-    }
-    if (isset($_GET["bn"])) {
-        $base_person_name = $_GET["bn"];
-    }
-    if (isset($_POST["bn"])) {
-        $base_person_name = $_POST["bn"];
-    }
-    if (isset($_GET["bg"])) {
-        $base_person_gednr = $_GET["bg"];
-    }
-    if (isset($_POST["bg"])) {
-        $base_person_gednr = $_POST["bg"];
-    }
-}
-
-$descendant_report = true;
-$genarray = array();
-$family_expanded = false;
-
-
-// DNA chart -> change base person to earliest father-line (Y-DNA) or mother-line (Mt-DNA) ancestor
-$max_generation = 100;
-@$dnaDb = $db_functions->get_person($main_person);
-
-$dnapers_cls = new person_cls;
-$dnaname = $dnapers_cls->person_name($dnaDb);
-$base_person_name =  $dnaname["standard_name"];    // need these 4 in report_descendant.php
-$base_person_sexe = $dnaDb->pers_sexe;
-$base_person_famc = $dnaDb->pers_famc;
-$base_person_gednr = $dnaDb->pers_gedcomnumber;
-
-if ($dna == "ydna" or $dna == "ydnamark") {
-    while (isset($dnaDb->pers_famc) and $dnaDb->pers_famc != "") {
-        @$dnaparDb = $db_functions->get_family($dnaDb->pers_famc);
-        if ($dnaparDb->fam_man == "") break;
-        else {
-            $main_person = $dnaparDb->fam_man;
-            $family_id  = $dnaDb->pers_famc;
-            @$dnaDb = $db_functions->get_person($dnaparDb->fam_man);
+if ($hourglass === false) {
+    // find rightmost and bottommost positions to calculate size of the canvas needed for png image
+    $divlen = 0;
+    $divhi = 0;
+    for ($i = 0; $i < count($genarray); $i++) {
+        if ($genarray[$i]["posx"] > $divlen) {
+            $divlen = $genarray[$i]["posx"];
+        }
+        if ($genarray[$i]["posy"] > $divhi) {
+            $divhi = $genarray[$i]["posy"];
         }
     }
-}
-if ($dna == "mtdna" or $dna == "mtdnamark") {
-    while (isset($dnaDb->pers_famc) and $dnaDb->pers_famc != "") {
-        @$dnaparDb = $db_functions->get_family($dnaDb->pers_famc);
-        if ($dnaparDb->fam_woman == "") break;
-        else {
-            $main_person = $dnaparDb->fam_woman;
-            $family_id  = $dnaDb->pers_famc;
-            @$dnaDb = $db_functions->get_person($dnaparDb->fam_woman);
-        }
+    $divlen += 200;
+    $divhi += 300;
+
+    // the width and length of following div are set with $divlen en $divhi in java function "showimg" 
+    // (at bottom of this file) otherwise double scrollbars won't work.
+?>
+    <div id="png">
+
+        <!--  HELP POPUP -->
+        <div id="helppopup" class="<?= $rtlmarker; ?>sddm" style="position:absolute;left:10px;top:10px;display:inline;">
+            <?php
+            echo '<a href="#" style="display:inline" ';
+            echo 'onmouseover="mopen(event,\'help_menu\',0,0)" onmouseout="mclosetime()">';
+            echo '<b>' . __('Help') . '</b></a>&nbsp;';
+
+            //echo '<div style="z-index:40; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+            echo '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $alignmarker . ';  direction:' . $rtlmarker . ';" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+
+            echo __('<b>USE:</b>
+<p><b>Hover over square:</b> Display popup menu with details and report & chart options<br>
+<b>Click on square:</b> Move this person to the center of the chart<br>
+<b>Click on spouse\'s name in popup menu:</b> Go to spouse\'s family page<br><br>
+<b>LEGEND:</b>');
+
+            echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Male') . '</br>';
+            echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Female') . '</br>';
+            if ($data["dna"] == "ydna" or $data["dna"] == "ydnamark" or $data["dna"] == "mtdna" or $data["dna"] == "mtdnamark") {
+                echo '<p style="line-height:3px"><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:3px solid #999999;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Male Y-DNA or mtDNA carrier (Base person has red border)') . '</p>';
+                echo '<p style="line-height:10px"><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:3px solid #999999;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Female MtDNA carrier (Base person has red border)') . '</p>';
+            }
+            echo '<p><span style="color:blue">=====</span>&nbsp;' . __('Additional marriage of same person') . '<br><br>';
+            echo __('<b>SETTINGS:</b>
+<p>Horizontal/Vertical button: toggle direction of the chart from top-down to left-right<br>
+<b>Nr. Generations:</b> choose between 2 - 15 generations<br>
+(large number of generations will take longer to generate)<br>
+<b>Box size:</b> Use the slider to choose display size (9 steps): <br>
+step 1-3: small boxes with popup for details<br>
+step 4-7: larger boxes with initials of name + popup for details<br>
+step 8:   rectangles with name inside + popup with further details<br>
+step 9:   large rectangles with name, birth and death details + popup with further details');
+
+            ?>
+        </div>
+    </div>
+    <?php
+
+    //=================================
+    if ($data["dna"] == "none") {
+        //echo '<h1 class="standard_header fonts" style="align:center; text-align: center;"><b>' . __('Descendant chart') . __(' of ') . $genarray[0]["nam"] . '</b>';
+        echo $data["descendant_header"];
+    } elseif ($data["dna"] == "ydna" or $data["dna"] == "ydnamark") {
+        echo '<h1 class="standard_header fonts" style="align:center; text-align: center;"><b>' . __('Same Y-DNA as ') . $data["base_person_name"] . '</b>';
+    } elseif ($data["dna"] == "mtdna" or $data["dna"] == "mtdnamark") {
+        echo '<h1 class="standard_header fonts" style="align:center; text-align: center;"><b>' . __('Same mtDNA as ') . $data["base_person_name"] . '</b>';
     }
-}
+    echo '<br><input type="button" id="imgbutton" value="' . __('Get image of chart for printing (allow popup!)') . '" onClick="showimg();">';
+    echo '</h1>';
 
-// *******************
-// *** Show family ***
-// *******************
-if ($family_id) {
-    $descendant_family_id2[] = $family_id;
-    $descendant_main_person2[] = $main_person;
-
-    $arraynr = 0;
-
-    // *** Nr. of generations ***
-    if ($chosengen != "All") {
-        $max_generation = $chosengen - 2;
+    if ($data["direction"] == 0) {  //vertical
+        $latter = count($genarray) - 1;
+        $the_height = $genarray[$latter]["posy"] + 130;
     } else {
-        $max_generation = 100;
-    } // any impossibly high number, will anyway stop at last generation
-
-    for ($descendant_loop = 0; $descendant_loop <= $max_generation; $descendant_loop++) {
-        $descendant_family_id2[] = 0;
-        $descendant_main_person2[] = 0;
-        if (!isset($descendant_family_id2[1])) {
-            break;
-        }
-
-        // TEST code (only works with family, will give error in descendant report and DNA reports:
-        // if (!isset($descendant_family_id2[0])){ break; }
-
-        // *** Copy array ***
-        unset($descendant_family_id);
-        $descendant_family_id = $descendant_family_id2;
-        unset($descendant_family_id2);
-
-        unset($descendant_main_person);
-        $descendant_main_person = $descendant_main_person2;
-        unset($descendant_main_person2);
-
-        if ($descendant_loop != 0) {
-            if (isset($genarray[$arraynr])) {
-                $temppar = $genarray[$arraynr]["par"];
-            }
-            while (isset($genarray[$temppar]["gen"]) and $genarray[$temppar]["gen"] == $descendant_loop - 1) {
-                $lst_in_array += $genarray[$temppar]["nrc"];
-                $temppar++;
+        $hgt = 0;
+        for ($e = 0; $e < count($genarray); $e++) {
+            if ($genarray[$e]["posy"] > $hgt) {
+                $hgt = $genarray[$e]["posy"];
             }
         }
-        $nrchldingen = 0;
+        $the_height = $hgt + 130;
+    }
 
-        // *** Nr of families in one generation ***
-        $nr_families = count($descendant_family_id);
-        for ($descendant_loop2 = 0; $descendant_loop2 < $nr_families; $descendant_loop2++) {
+    //echo '<style type="text/css">';
+    //echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; overflow: auto; overflow-y: hidden;z-index:10; }';
+    //echo '</style>';
+    //echo '<div id="doublescroll" class="wrapper" style="direction:' . $rtlmarker . ';">';
 
-            while (
-                isset($genarray[$arraynr]["non"]) and $genarray[$arraynr]["non"] == 1
-                and isset($genarray[$arraynr]["gen"]) and $genarray[$arraynr]["gen"] == $descendant_loop
-            ) {
-                //$genarray[$arraynr]["nrc"]==0;
-                $genarray[$arraynr]["nrc"] = 0;
-                $arraynr++;
+    // generation and size choice box:
+    if ($data["dna"] == "none") {
+        $boxwidth = "640";
+    } // regular descendant chart
+    else {
+        $boxwidth = "850";
+    } // DNA charts
+    echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:' . $boxwidth . 'px; text-align:left;">';
+
+    echo '<div style="display:inline;">';
+
+    if ($humo_option["url_rewrite"] == 'j') {
+        $path = 'descendant/' . $tree_id . '/' . $data["family_id"] . '?';
+        $path2 = 'descendant/' . $tree_id . '/' . $data["family_id"] . '?';
+    } else {
+        $path = 'index.php?page=descendant.php&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;';
+        // Don't use &amp; for javascript.
+        $path2 = 'index.php?page=descendant.php&amp;tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
+    }
+
+    ?>
+    <form method="POST" name="desc_form" action="<?= $path . 'chosensize=' . $data["size"]; ?>" style="display : inline;">
+        <?php
+        //echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
+        echo '<input type="hidden" name="chosengen" value="' . $data["chosengen"] . '">';
+        echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
+        echo '<input type="hidden" name="database" value="' . $database . '">';
+        if ($data["dna"] != "none") {
+            echo '<input type="hidden" name="dnachart" value="' . $data["dna"] . '">';
+            echo '<input type="hidden" name="bf" value="' . $data["base_person_famc"] . '">';
+            echo '<input type="hidden" name="bs" value="' . $data["base_person_sexe"] . '">';
+            echo '<input type="hidden" name="bn" value="' . $data["base_person_name"] . '">';
+            echo '<input type="hidden" name="bg" value="' . $data["base_person_gednr"] . '">';
+        }
+
+        echo '<input id="dirval" type="hidden" name="direction" value="">';  // will be filled in next lines
+        if ($data["direction"] == "1") { // horizontal
+            echo '<input type="button" name="dummy" value="' . __('vertical') . '" onClick=\'document.desc_form.direction.value="0";document.desc_form.submit();\'>';
+        } else {
+            echo '<input type="button" name="dummy" value="' . __('horizontal') . '" onClick=\'document.desc_form.direction.value="1";document.desc_form.submit();\'>';
+        }
+        ?>
+    </form>
+    <?php
+
+    // TODO check code. This query isn't used?
+    $result = $dbh->query("SELECT pers_sexe FROM humo_persons
+        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $data["main_person"] . "'");
+    $resultDb = $result->fetch(PDO::FETCH_OBJ);
+    // TODO cleanup code
+    if ($data["dna"] != "none") {
+        echo "&nbsp;&nbsp;" . __('DNA: ');
+    ?>
+        <select name="dnachart" style="width:150px" onChange="window.location=this.value">
+            <?php
+            if ($data["base_person_sexe"] == "M") {        // only show Y-DNA option if base person is male
+                echo $selected = "selected";
+                if ($data["dna"] != "ydna")  $selected = "";
+                echo '<option value="' . $path . 'main_person=' .
+                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "ydna" . '&amp;chosensize=' .
+                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('Y-DNA Carriers only') . '</option>';
+
+                echo $selected = "";
+                if ($data["dna"] == "ydnamark") $selected = "selected";
+                echo '<option value="' . $path . 'main_person=' .
+                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "ydnamark" . '&amp;chosensize=' .
+                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('Y-DNA Mark carriers') . '</option>';
             }
 
-            // Original code:
-            //if ($descendant_family_id[$descendant_loop2]==''){ break; }
-            if ($descendant_family_id[$descendant_loop2] == '0') {
-                break;
-            }
-
-            $family_id_loop = $descendant_family_id[$descendant_loop2];
-            $main_person = $descendant_main_person[$descendant_loop2];
-            $family_nr = 1;
-
-            // *** Count marriages of man ***
-            $familyDb = $db_functions->get_family($family_id_loop);
-            $parent1 = '';
-            $parent2 = '';
-            $swap_parent1_parent2 = false;
-            // *** Standard main person is the father ***
-            if ($familyDb->fam_man) {
-                $parent1 = $familyDb->fam_man;
-            }
-            // *** After clicking the mother, the mother is main person ***
-            if ($familyDb->fam_woman == $main_person) {
-                $parent1 = $familyDb->fam_woman;
-                $swap_parent1_parent2 = true;
-            }
-
-            // *** Check for parent1: N.N. ***
-            if ($parent1) {
-                // *** Save parent1 families in array ***
-                $personDb = $db_functions->get_person($parent1);
-                $marriage_array = explode(";", $personDb->pers_fams);
-                $count_marr = substr_count($personDb->pers_fams, ";");
-            } else {
-                $marriage_array[0] = $family_id_loop;
-                $count_marr = "0";
-            }
-
-            // *** Loop multiple marriages of main_person ***
-            for ($parent1_marr = 0; $parent1_marr <= $count_marr; $parent1_marr++) {
-                $id = $marriage_array[$parent1_marr];
-                @$familyDb = $db_functions->get_family($id);
-
-                // Oct. 2021 New method:
-                if ($swap_parent1_parent2 == true) {
-                    $parent1 = $familyDb->fam_woman;
-                    $parent2 = $familyDb->fam_man;
+            if ($data["base_person_sexe"] == "F" or ($data["base_person_sexe"] == "M" and isset($data["base_person_famc"]) and $data["base_person_famc"] != "")) {
+                // if base person is male, only show mtDNA if there are ancestors since he can't have mtDNA descendants...
+                echo $selected = "";
+                if ($data["dna"] == "mtdna") $selected = "selected";
+                echo '<option value="' . $path . 'main_person=' .
+                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdna" . '&amp;chosensize=' .
+                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Carriers only') . '</option>';
+                if ($data["base_person_sexe"]  == "F") {
+                    echo $selected = "selected";
+                    if ($data["dna"] != "mtdnamark") $selected = "";
                 } else {
-                    $parent1 = $familyDb->fam_man;
-                    $parent2 = $familyDb->fam_woman;
+                    echo $selected = "";
+                    if ($data["dna"] == "mtdnamark") $selected = "selected";
                 }
-                @$parent1Db = $db_functions->get_person($parent1);
-                // *** Proces parent1 using a class ***
-                $parent1_cls = new person_cls($parent1Db);
+                echo '<option value="' . $path . 'main_person=' .
+                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdnamark" . '&amp;chosensize=' .
+                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Mark carriers') . '</option>';
+            }
+            ?>
+        </select>
+<?php
+    }
+    echo '</div>';
 
-                @$parent2Db = $db_functions->get_person($parent2);
-                // *** Proces parent2 using a class ***
-                $parent2_cls = new person_cls($parent2Db);
+    echo '&nbsp;&nbsp;';
+    echo '&nbsp;' . __('Nr. generations') . ': ';
+    echo '<select name="chosengen" onChange="window.location=this.value">';
+    for ($i = 2; $i <= 15; $i++) {
+        echo '<option value="' . $path . 'main_person=' . $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . $data["dna"] .
+            '&amp;chosensize=' . $data["size"] . '&amp;chosengen=' . $i . '" ';
+        if ($i == $data["chosengen"]) echo "selected=\"selected\" ";
+        echo ">" . $i . '</option>' . "\n";
+    }
 
-                // *** Proces marriage using a class ***
-                $marriage_cls = new marriage_cls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
-                $family_privacy = $marriage_cls->privacy;
+    // *** Option "All" for all generations ***
+    echo '<option value="' . $path . 'main_person=' . $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;database=' . $database .
+        '&amp;dnachart=' . $data["dna"] . '&amp;chosensize=' .  $data["size"] . '&amp;chosengen=All" ';
+    if ($data["chosengen"] == "All") echo "selected=\"selected\" ";
+    echo ">" . "All" . "</option>";
+    echo '</select>';
 
+    echo '&nbsp;&nbsp;';
+    $dna_params = "";
+    if ($data["dna"] != "none") {
+        //$dna_params = '
+        //	bn: "'.$data["base_person_name"].'",
+        //	bs: "'.$data["base_person_sexe"].'",
+        //	bf: "'.$data["base_person_famc"].'",
+        //	bg: "'.$data["base_person_gednr"].'",';
+        $dna_params = '&bn=' . $data["base_person_name"] . '&bs=' . $data["base_person_sexe"] . '&bf=' . $data["base_person_famc"] . '&bg=' . $data["base_person_gednr"];
+    }
 
-                // *************************************************************
-                // *** Parent1 (normally the father)                         ***
-                // *************************************************************
-                if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
-                    if ($family_nr == 1) {
-                        //*** Show data of parent1 ***
-                        if ($descendant_loop == 0) {
-                            $name = $parent1_cls->person_name($parent1Db);
-                            $genarray[$arraynr]["nam"] = $name["standard_name"];
-                            if (isset($name["colour_mark"]))
-                                $genarray[$arraynr]["nam"] .= $name["colour_mark"];
-                            $genarray[$arraynr]["init"] = $name["initials"];
-                            $genarray[$arraynr]["short"] = $name["short_firstname"];
-                            $genarray[$arraynr]["fams"] = $id;
-                            if (isset($parent1Db->pers_gedcomnumber))
-                                $genarray[$arraynr]["gednr"] = $parent1Db->pers_gedcomnumber;
-                            $genarray[$arraynr]["2nd"] = 0;
+    // *** 20-08-2022: renewed jQuery and jQueryUI scripts ***
+    echo '
+        <script>
+        $(function() {
+            $( "#slider" ).slider({
+                value: ' . (($data["size"] / 5) - 1) . ',
+                min: 0,
+                max: 9,
+                step: 1,
+                slide: function( event, ui ) {
+                    $( "#amount" ).val(ui.value+1);
+                }
+            });
+            $( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
 
-                            if ($swap_parent1_parent2 == true) {
-                                $genarray[$arraynr]["sex"] = "v";
-                                if ($dna == "mtdnamark" or $dna == "mtdna") {
-                                    $genarray[$arraynr]["dna"] = 1;
-                                } else $genarray[$arraynr]["dna"] = "no";
-                            } else {
-                                $genarray[$arraynr]["sex"] = "m";
-                                if ($dna == "ydnamark" or $dna == "ydna" or $dna == "mtdnamark" or $dna == "mtdna") {
-                                    $genarray[$arraynr]["dna"] = 1;
-                                } else $genarray[$arraynr]["dna"] = "no";
-                            }
-                        }
-                        //$family_nr++;
-                    } else {
-                        // *** Show standard marriage text and name in 2nd, 3rd, etc. marriage ***
-                        if ($descendant_loop == 0) {
-                            $genarray[$arraynr] = $genarray[$arraynr - 1];
-                            $genarray[$arraynr]["2nd"] = 1;
-                            //$genarray[$arraynr]["fams"]=$id;
-                        }
-                        $genarray[$arraynr]["huw"] = $marriage_cls->marriage_data($familyDb, $family_nr, 'shorter');
-                        $genarray[$arraynr]["fams"] = $id;
+            // *** Only reload page if value is changed ***
+            startPos = $("#slider").slider("value");
+            $("#slider").on("slidestop", function(event, ui) {
+                endPos = ui.value;
+                if (startPos != endPos) {
+                    window.location.href = "' . $path2 . 'main_person=' . $data["main_person"] .
+        '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
+        '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
                     }
-                    $family_nr++;
-                } // *** End check of PRO-GEN ***
+                startPos = endPos;
+            });
+        });
+        </script>
+    ';
 
+    echo '<label for="amount">' . __('Zoom level:') . '</label> ';
+    echo '<input type="text" id="amount" disabled="disabled" style="width:25px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">';
+    echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
+    echo '</div>';
+} // end if not hourglass
 
-                // *************************************************************
-                // *** Marriage                                              ***
-                // *************************************************************
-                if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
+if ($hourglass === false) {
+    echo '<style type="text/css">';
+    echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; overflow: auto; overflow-y: hidden;z-index:10; }';
+    echo '</style>';
+    echo '<div id="doublescroll" class="wrapper" style="direction:' . $rtlmarker . ';">';
+}
 
-                    // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
-                    if (
-                        $user["group_pers_hide_totally_act"] == 'j' and isset($parent1Db->pers_own_code)
-                        and strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
-                    ) {
-                        $family_privacy = true;
-                    }
-                    if (
-                        $user["group_pers_hide_totally_act"] == 'j' and isset($parent2Db->pers_own_code)
-                        and strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
-                    ) {
-                        $family_privacy = true;
-                    }
+for ($w = 0; $w < count($genarray); $w++) {
+    $xvalue = $genarray[$w]["posx"];
+    $yvalue = $genarray[$w]["posy"];
 
-                    if ($family_privacy) {
-                        $genarray[$arraynr]["htx"] = $marriage_cls->marriage_data($familyDb, '', 'short');
-                    } else {
-                        $genarray[$arraynr]["htx"] = $marriage_cls->marriage_data();
+    $sexe_colour = '';
+    $backgr_col = "#FFFFFF";
+    if ($genarray[$w]["sex"] == "v") {
+        $sexe_colour = ' ancestor_woman';
+        $backgr_col = "#FBDEC0";     //"#f8bdf1";
+    } else {
+        $sexe_colour = ' ancestor_man';
+        $backgr_col =  "#C0F9FC";      //"#bbf0ff";
+    }
+
+    // *** Start person class and calculate privacy ***
+    if (isset($genarray[$w]["gednr"]) and $genarray[$w]["gednr"]) {
+        $man = $db_functions->get_person($genarray[$w]["gednr"]);
+        $man_cls = new person_cls($man);
+        $man_privacy = $man_cls->privacy;
+    }
+
+    //echo '<div style="position:absolute; background-color:'.$bkcolor.';height:'.$data["vsize"].'px; width:'.$data["hsize"].'px; border:1px brown solid; left:'.$xvalue.'px; top:'.$yvalue.'px">';
+
+    $bkgr = "";
+    if (($data["dna"] == "ydnamark" or $data["dna"] == "mtdnamark" or $data["dna"] == "ydna" or $data["dna"] == "mtdna") and $genarray[$w]["dna"] == 1) {
+        $bkgr = "border:3px solid #999999;background-color:" . $backgr_col . ";";
+        if (isset($genarray[$w]["gednr"]) and $genarray[$w]["gednr"] == $data["base_person_gednr"]) {  // base person
+            $bkgr = "border:3px solid red;background-color:" . $backgr_col . ";";
+        }
+    } else {
+        $bkgr = "border:1px solid #8C8C8C;background-color:" . $backgr_col . ";";
+    }
+    if ($genarray[$w]["gen"] == 0 and $hourglass === true) {
+        $bkgr = "background-color:" . $backgr_col . ";";
+    }
+    echo '<div class="ancestorName' . $sexe_colour . '" style="' . $bkgr . 'position:absolute; height:' . $data["vsize"] . 'px; width:' . $data["hsize"] . 'px; left:' . $xvalue . 'px; top:' . $yvalue . 'px;">';
+
+    $replacement_text = '';
+    if ($data["size"] >= 25) {
+        if (strpos($browser_user_agent, "msie 7.0") === false) {
+            if ($data["size"] == 50) {
+
+                // *** Show picture ***
+                if (!$man_privacy and $user['group_pictures'] == 'j') {
+                    //  *** Path can be changed per family tree ***
+                    global $dataDb;
+                    $tree_pict_path = $dataDb->tree_pict_path;
+                    if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+                    $picture_qry = $db_functions->get_events_connect('person', $man->pers_gedcomnumber, 'picture');
+                    // *** Only show 1st picture ***
+                    if (isset($picture_qry[0])) {
+                        $pictureDb = $picture_qry[0];
+                        $picture = show_picture($tree_pict_path, $pictureDb->event_event, 60, 65);
+                        //$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" height="65px">';
+                        //$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'"';
+                        $replacement_text .= '<img src="' . $picture['path'] . $picture['thumb'] . $picture['picture'] . '" style="float:left; margin:5px;" alt="' . $pictureDb->event_text . '" width="' . $picture['width'] . '"';
+                        //if (isset($picture['height'])) $replacement_text.=' height="'.$picture['height'].'"';
+                        $replacement_text .= '>';
                     }
                 }
 
-                // *************************************************************
-                // *** Parent2 (normally the mother)                         ***
-                // *************************************************************
-                if ($parent2Db) {
-                    $name = $parent2_cls->person_name($parent2Db);
-                    $genarray[$arraynr]["sps"] = $name["standard_name"];
-                    $genarray[$arraynr]["spgednr"] = $parent2Db->pers_gedcomnumber;
+                //$replacement_text.= '<strong>'.$genarray[$w]["nam"].'</strong>';
+                //$replacement_text.= '<span class="anc_box_name">'.$genarray[$w]["nam"].'</span>';
+                $replacement_text .= '<span class="anc_box_name">' . $genarray[$w]["nam"] . '</span>';
+                if ($man_privacy) {
+                    $replacement_text .= '<br>' . __(' PRIVACY FILTER') . '<br>';  //Tekst privacy weergeven
                 } else {
-                    $genarray[$arraynr]["sps"] = __('Unknown');
-                    $genarray[$arraynr]["spgednr"] = ''; // this is a non existing NN spouse!
-                }
-                $genarray[$arraynr]["spfams"] = $id;
-
-
-                // *************************************************************
-                // *** Marriagetext                                          ***
-                // *************************************************************
-                $temp = '';
-
-                if ($descendant_loop == 0) {
-                    $lst_in_array = $count_marr;
-                    $genarray[$arraynr]["gen"] = 0;
-                    $genarray[$arraynr]["par"] = -1;
-                    $genarray[$arraynr]["chd"] = $arraynr + 1;
-                    $genarray[$arraynr]["non"] = 0;
-                }
-
-                // *************************************************************
-                // *** Children                                              ***
-                // *************************************************************
-
-                if (!$familyDb->fam_children) {
-                    $genarray[$arraynr]["nrc"] = 0;
-                }
-
-                if ($familyDb->fam_children) {
-                    $childnr = 1;
-                    $child_array = explode(";", $familyDb->fam_children);
-
-                    $genarray[$arraynr]["nrc"] = count($child_array);
-                    // dna -> count only man or women
-                    if ($dna == "ydna" or $dna == "mtdna") {
-                        $countdna = 0;
-                        foreach ($child_array as $i => $value) {
-                            @$childDb = $db_functions->get_person($child_array[$i]);
-                            if ($dna == "ydna" and $childDb->pers_sexe == "M" and $genarray[$arraynr]["sex"] == "m" and $genarray[$arraynr]["dna"] == 1) $countdna++;
-                            elseif ($dna == "mtdna" and $genarray[$arraynr]["sex"] == "v" and $genarray[$arraynr]["dna"] == 1) $countdna++;
-                        }
-                        $genarray[$arraynr]["nrc"] = $countdna;
+                    //if ($man->pers_birth_date OR $man->pers_birth_place){
+                    if ($man->pers_birth_date) {
+                        //$replacement_text.= '<br>'.__('*').$dirmark1.' '.date_place($man->pers_birth_date,$man->pers_birth_place);
+                        $replacement_text .= '<br>' . __('*') . $dirmark1 . ' ' . date_place($man->pers_birth_date, '');
+                    }
+                    //elseif ($man->pers_bapt_date OR $man->pers_bapt_place){
+                    elseif ($man->pers_bapt_date) {
+                        //$replacement_text.= '<br>'.__('~').$dirmark1.' '.date_place($man->pers_bapt_date,$man->pers_bapt_place);
+                        $replacement_text .= '<br>' . __('~') . $dirmark1 . ' ' . date_place($man->pers_bapt_date, '');
                     }
 
-                    $show_privacy_text = false;
-                    foreach ($child_array as $i => $value) {
-                        @$childDb = $db_functions->get_person($child_array[$i]);
-                        // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                    //if ($man->pers_death_date OR $man->pers_death_place){
+                    if ($man->pers_death_date) {
+                        //$replacement_text.= '<br>'.__('&#134;').$dirmark1.' '.date_place($man->pers_death_date,$man->pers_death_place);
+                        $replacement_text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . date_place($man->pers_death_date, '');
+                    }
+                    //elseif ($man->pers_buried_date OR $man->pers_buried_place){
+                    elseif ($man->pers_buried_date) {
+                        //$replacement_text.= '<br>'.__('[]').$dirmark1.' '.date_place($man->pers_buried_date,$man->pers_buried_place);
+                        $replacement_text .= '<br>' . __('[]') . $dirmark1 . ' ' . date_place($man->pers_buried_date, '');
+                    }
 
-                        $chdn_in_gen = $nrchldingen + $childnr;
-                        $place = $lst_in_array + $chdn_in_gen;
+                    if ($genarray[$w]["non"] == 0) { // otherwise for an unmarried child it would give the parents' marriage!
+                        $ownfam = $db_functions->get_family($genarray[$w]["fams"]);
+                        //if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
+                        // *** Don't check for date. Otherwise living together persons are missing ***
+                        //if ($ownfam->fam_marr_date){
+                        //$replacement_text.= '<br>'.__('X').$dirmark1.' '.date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
 
-                        //if (isset($genarray[$arraynr]["sex"]) AND isset($genarray[$arraynr]["dna"] )){
-                        if (($dna == "ydnamark" or $dna == "ydna") and $childDb->pers_sexe == "M"
-                            and $genarray[$arraynr]["sex"] == "m" and $genarray[$arraynr]["dna"] == 1
-                        ) {
-                            $genarray[$place]["dna"] = 1;
-                        } elseif (($dna == "mtdnamark" or $dna == "mtdna") and $genarray[$arraynr]["sex"] == "v" and $genarray[$arraynr]["dna"] == 1) {
-                            $genarray[$place]["dna"] = 1;
-                        } elseif ($dna == "ydna" or $dna == "mtdna") {
-                            continue;
+                        if ($ownfam->fam_marr_date or $ownfam->fam_marr_place) {
+                            $replacement_text .= '<br>' . __('X');
                         } else {
-                            $genarray[$place]["dna"] = "no";
+                            // *** Relation ***
+                            $replacement_text .= '<br>' . __('&amp;');
+                        }
+
+                        if ($ownfam->fam_marr_date) {
+                            $replacement_text .= $dirmark1 . ' ' . date_place($ownfam->fam_marr_date, '') . ' ';
+                        }
+
+                        // *** Jan. 2022: Show spouse ***
+                        if (isset($genarray[$w]["sps"]) and $genarray[$w]["sps"] != '') {
+                            if ($ownfam->fam_marr_date or $ownfam->fam_marr_place) {
+                                //$replacement_text.= "&nbsp;".__(' to: ')."<br>";
+                                $replacement_text .= __(' to: ') . '<br>';
+                            } else {
+                                // *** Don't show 'to: ' for relations.
+                                $replacement_text .= ' ';
+                            }
+                            $replacement_text .= '<i>' . $genarray[$w]["sps"] . '</i>';
                         }
                         //}
-
-                        $genarray[$place]["gen"] = $descendant_loop + 1;
-                        $genarray[$place]["par"] = $arraynr;
-                        $genarray[$place]["chd"] = $childnr;
-                        $genarray[$place]["non"] = 0;
-                        $genarray[$place]["nrc"] = 0;
-                        $genarray[$place]["2nd"] = 0;
-                        $name = $child_cls->person_name($childDb);
-                        $genarray[$place]["nam"] = $name["standard_name"] . $name["colour_mark"];
-                        $genarray[$place]["init"] = $name["initials"];
-                        $genarray[$place]["short"] = $name["short_firstname"];
-                        $genarray[$place]["gednr"] = $childDb->pers_gedcomnumber;
-                        if ($childDb->pers_fams) {
-                            $childfam = explode(";", $childDb->pers_fams);
-                            $genarray[$place]["fams"] = $childfam[0];
-                        } else {
-                            $genarray[$place]["fams"] = $childDb->pers_famc;
-                        }
-                        if ($childDb->pers_sexe == "F") {
-                            $genarray[$place]["sex"] = "v";
-                        } else {
-                            $genarray[$place]["sex"] = "m";
-                        }
-
-                        // *** Build descendant_report ***
-                        if ($descendant_report == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
-
-                            // *** 1st family of child ***
-                            $child_family = explode(";", $childDb->pers_fams);
-
-                            // *** Check for double families in descendant report (if a person relates or marries another person in the same family) ***
-                            if (isset($check_double) and in_array($child_family[0], $check_double)) {
-                                // *** Don't show this family, double... ***
-                            } else
-                                $descendant_family_id2[] = $child_family[0];
-
-                            if (count($child_family) > 1) {
-                                for ($k = 1; $k < count($child_family); $k++) {
-                                    $childnr++;
-                                    $thisplace = $place + $k;
-                                    $genarray[$thisplace] = $genarray[$place];
-                                    $genarray[$thisplace]["chd"] = $childnr;
-                                    $genarray[$thisplace]["2nd"] = 1;
-                                    $genarray[$arraynr]["nrc"] += 1;
-                                }
-                            }
-
-                            // *** YB: show children first in descendant_report ***
-                            $descendant_main_person2[] = $childDb->pers_gedcomnumber;
-                        } else {
-                            $genarray[$place]["non"] = 1;
-                        }
-
-                        $childnr++;
                     }
-                    $nrchldingen += ($childnr - 1);
+                }
+            } elseif ($data["size"] == 45) {
+                $replacement_text .= $genarray[$w]["nam"];
+            } elseif ($data["size"] == 40) {
+                $replacement_text .= '<span class="wordwrap" style="font-size:75%">' . $genarray[$w]["short"] . '</span>';
+            } elseif ($data["size"] >= 25 and $data["size"] < 40) {
+                $replacement_text .= $genarray[$w]["init"];
+            }
+        }
+    } else {
+        if (isset($genarray[$w]["fams"]) and isset($genarray[$w]["gednr"])) {
+            if (strpos($browser_user_agent, "chrome") !== false or strpos($browser_user_agent, "safari") !== false) {
+                $replacement_text .= "&nbsp;";
+            }
+            //  (Chrome and Safari need some character here - even &nbsp - or else popup won't work..!
+        }
+    }
+    //$replacement_text.='</a>';
+
+    // *** POP-UP box ***
+    $extra_popup_text = '';
+
+    if ($genarray[$w]["2nd"] == 1) {
+        $extra_popup_text .= $genarray[$w]["huw"] . "<br>";
+    }
+
+    if ($genarray[$w]["non"] != 1) {
+        // *** Start person class and calculate privacy ***
+        $woman_cls = ''; // prevent use of $woman_cls from previous wife if another wife is NN
+        if (isset($genarray[$w]["spgednr"]) and $genarray[$w]["spgednr"]) {
+            @$woman = $db_functions->get_person($genarray[$w]["spgednr"]);
+            $woman_cls = new person_cls($woman);
+            $woman_privacy = $woman_cls->privacy;
+        }
+
+        // *** Marriage data ***
+        $extra_popup_text .= '<br>' . $genarray[$w]["htx"] . "<br>";
+        if ($woman_cls) {
+            $name = $woman_cls->person_name($woman);
+            if (isset($genarray[$w]["spfams"]) and isset($genarray[$w]["spgednr"]) and isset($genarray[$w]["sps"])) {
+                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                $url = $woman_cls->person_url2($woman->pers_tree_id, $woman->pers_famc, $woman->pers_fams, $woman->pers_gedcomnumber);
+
+                $extra_popup_text .= '<a href="' . $url . '">' . '<strong>' . $name["standard_name"] . '</strong></a>';
+            } else {
+                $extra_popup_text .= $name["standard_name"];
+            }
+
+            if ($woman_privacy) {
+                $extra_popup_text .= __(' PRIVACY FILTER') . '<br>';  //Tekst privacy weergeven
+            } else {
+                if ($woman->pers_birth_date or $woman->pers_birth_place) {
+                    $extra_popup_text .= __('born') . $dirmark1 . ' ' .
+                        date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
                 }
 
-                $arraynr++;
-            } // Show multiple marriages
+                if ($woman->pers_death_date or $woman->pers_death_place) {
+                    $extra_popup_text .= __('died ') . $dirmark1 . ' ' .
+                        date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
+                }
+            }
+        } else {
+            $extra_popup_text .= __('N.N.');
+        }
+    }
 
-        } // Multiple families in 1 generation
+    if (isset($man))
+        echo $man_cls->person_popup_menu($man, true, $replacement_text, $extra_popup_text);
 
-    } // nr. of generations
-    //} // end if not STARSIZE
-} // End of single person
+    echo '</div>';  // div of square
 
-// *** If source footnotes are selected, show them here ***
-if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_presentation'] == 'footnote') {
-    echo show_sources_footnotes();
+    if ($data["direction"] == 0) { // if vertical
+        // draw dotted line from first marriage to following marriages
+        if (isset($genarray[$w]["2nd"]) and $genarray[$w]["2nd"] == 1) {
+            $startx = $genarray[$w - 1]["posx"] + $data["hsize"] + 2;
+            $starty = $genarray[$w - 1]["posy"] + ($data["vsize"] / 2);
+            $width = ($genarray[$w]["posx"]) - ($genarray[$w - 1]["posx"] + $data["hsize"]) - 2;
+            echo  '<div style="position:absolute;border:1px blue dashed;height:2px;width:' . $width . 'px;left:' . $startx . 'px;top:' . $starty . 'px"></div>';
+        }
+
+        // draw line to children
+        if ($genarray[$w]["nrc"] != 0) {
+            $startx = $genarray[$w]["posx"] + ($data["hsize"] / 2);
+            $starty = $genarray[$w]["posy"] + $data["vsize"] + 2;
+            echo  '<div class="chart_line" style="position:absolute; height:' . (($data["vdist"] / 2) - 2) . 'px; width:1px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+        }
+
+        // draw line to parent
+        if ($genarray[$w]["gen"] != 0 and $genarray[$w]["2nd"] != 1) {
+            $startx = $genarray[$w]["posx"] + ($data["hsize"] / 2);
+            $starty = $genarray[$w]["posy"] - ($data["vdist"] / 2);
+            echo '<div class="chart_line" style="position:absolute; height:' . ($data["vdist"] / 2) . 'px;width:1px;left:' . $startx . 'px;top:' . $starty . 'px"></div>';
+        }
+
+        // draw horizontal line from 1st child in fam to last child in fam
+        if ($genarray[$w]["gen"] != 0) {
+            $parent = $genarray[$w]["par"];
+            if ($genarray[$w]["chd"] == $genarray[$parent]["nrc"]) { // last child in fam
+                $z = $w;
+                while ($genarray[$z]["2nd"] == 1) { //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
+                    $z--;
+                }
+                $startx = $genarray[$parent]["fst"] + ($data["hsize"] / 2);
+                $starty = $genarray[$z]["posy"] - ($data["vdist"] / 2);
+                $width = $genarray[$z]["posx"] - $genarray[$parent]["fst"];
+                echo '<div class="chart_line" style="position:absolute; height:1px; width:' . $width . 'px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+            }
+        }
+    } // end if vertical
+
+    else { // if horizontal
+        // draw dotted line from first marriage to following marriages
+        if (isset($genarray[$w]["2nd"]) and $genarray[$w]["2nd"] == 1) {
+            $starty = $genarray[$w - 1]["posy"] + $data["vsize"] + 2;
+            $startx = $genarray[$w - 1]["posx"] + ($data["hsize"] / 2);
+            $height = ($genarray[$w]["posy"]) - ($genarray[$w - 1]["posy"] + $data["vsize"]) - 2;
+            echo  '<div style="position:absolute;border:1px blue dashed;height:' . $height . 'px; width:3px; left:' . $startx . 'px;top:' . $starty . 'px"></div>';
+        }
+
+        // draw line to children
+        if ($genarray[$w]["nrc"] != 0) {
+            $starty = $genarray[$w]["posy"] + ($data["vsize"] / 2);
+            $startx = $genarray[$w]["posx"] + $data["hsize"] + 3;
+            echo '<div class="chart_line" style="position:absolute; height:1px; width:' . (($data["hdist"] / 2) - 2) . 'px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+        }
+
+        // draw line to parent
+        if ($genarray[$w]["gen"] != 0 and $genarray[$w]["2nd"] != 1) {
+            $starty = $genarray[$w]["posy"] + ($data["vsize"] / 2);
+            $startx = $genarray[$w]["posx"] - ($data["hdist"] / 2);
+            echo '<div class="chart_line" style="position:absolute; width:' . ($data["hdist"] / 2) . 'px; height:1px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+        }
+
+        // draw vertical line from 1st child in fam to last child in fam
+        if ($genarray[$w]["gen"] != 0) {
+            $parent = $genarray[$w]["par"];
+            if ($genarray[$w]["chd"] == $genarray[$parent]["nrc"]) { // last child in fam
+                $z = $w;
+                while ($genarray[$z]["2nd"] == 1) { //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
+                    $z--;
+                }
+                $starty = $genarray[$parent]["fst"] + ($data["vsize"] / 2);
+                $startx = $genarray[$z]["posx"] - ($data["hdist"] / 2);
+                $height = $genarray[$z]["posy"] - $genarray[$parent]["fst"];
+                echo '<div class="chart_line" style="position:absolute; width:1px; height:' . $height . 'px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+            }
+        }
+    } // end if horizontal
 }
 
-if ($hourglass === false) { // in hourglass there's more code after family script is included
-    include_once(__DIR__ . "/report_descendant.php");
-    generate();
-    printchart();
+echo '</div>'; // id=png
+echo "<br><br></div>"; // id=doublescroll
 
-    include_once(__DIR__ . "/footer.php");
+// YB:
+// before creating the image we want to hide unnecessary items such as the help link, the menu box etc
+// we also have to set the width and height of the "png" div (this can't be set before because then the double scrollbars won't work
+// after generating the image, all those items are returned to their previous state....
+// *** 19-08-2022: script updated by Huub ***
+echo '<script>';
+if ($hourglass === false) {
+    echo "
+        function showimg() {
+            document.getElementById('helppopup').style.visibility = 'hidden';
+            document.getElementById('menubox').style.visibility = 'hidden';
+            document.getElementById('imgbutton').style.visibility = 'hidden';
+            document.getElementById('png').style.width = '" . $divlen . "px';
+            document.getElementById('png').style.height= '" . $divhi . "px';
+
+            // *** Change ancestorName class, DO NOT USE A _ CHARACTER IN CLASS NAME ***
+            const el = document.querySelectorAll('.ancestorName');
+            el.forEach((elItem) => {
+                //elItem.style.setProperty('border-radius', 'none', 'important');
+                elItem.style.setProperty('box-shadow', 'none', 'important');
+            });
+
+            // *** Previous version of html2canvas ***
+            //html2canvas( [ document.getElementById('png') ], {
+            //	onrendered: function( canvas ) {
+
+                html2canvas(document.querySelector('#png')).then(canvas => {
+                    var img = canvas.toDataURL();
+
+                    // *** Show image at the same page ***
+                    //document.body.appendChild(canvas);
+
+                    document.getElementById('helppopup').style.visibility = 'visible';
+                    document.getElementById('menubox').style.visibility = 'visible';
+                    document.getElementById('imgbutton').style.visibility = 'visible';
+                    document.getElementById('png').style.width = 'auto';
+                    document.getElementById('png').style.height= 'auto';
+
+                    var newWin = window.open();
+                    newWin.document.open();
+                    newWin.document.write('<!DOCTYPE html><head></head><body>" . __('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ') . "<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>" . __('If you have a plotter you can use its software to print the image on one large sheet.') . "<br><br><img src=\"' + img + '\"></body></html>');
+                    newWin.document.close();
+                }
+
+            //}
+            );
+        }
+        ";
+} else {
+    // *** Printscreen of hourglass page ***
+
+
+    // TODO check code.
+    $divhi = 0;
+    for ($i = 0; $i < count($genarray); $i++) {
+        if ($genarray[$i]["posx"] > $divlen) {
+            //$divlen = $genarray[$i]["posx"];
+        }
+        if ($genarray[$i]["posy"] > $divhi) {
+            $divhi = $genarray[$i]["posy"];
+        }
+    }
+    //$divlen += 200;
+    $divhi += 300;
+
+
+    echo "
+        function showimg() {
+            document.getElementById('png').style.width = '" . $divlen . "px';
+            document.getElementById('png').style.height= '" . $divhi . "px';
+
+            // *** Change ancestorName class, DO NOT USE A _ CHARACTER IN CLASS NAME ***
+            const el = document.querySelectorAll('.ancestorName');
+            el.forEach((elItem) => {
+                //elItem.style.setProperty('border-radius', 'none', 'important');
+                elItem.style.setProperty('box-shadow', 'none', 'important');
+            });
+
+            //html2canvas( [ document.getElementById('png') ], {
+            //	onrendered: function( canvas ) {
+            html2canvas(document.querySelector('#png')).then(canvas => {
+                var img = canvas.toDataURL();
+                document.getElementById('png').style.width = 'auto';
+                document.getElementById('png').style.height= 'auto';
+
+                var newWin = window.open();
+                newWin.document.open();
+                newWin.document.write('<!DOCTYPE html><head></head><body>" . __('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ') . "<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>" . __('If you have a plotter you can use its software to print the image on one large sheet.') . "<br><br><img src=\"' + img + '\"></body></html>');
+                newWin.document.close();
+                }
+            //}
+            );
+        }
+        ";
 }
+echo "</script>";
+?>
+<script>
+    function DoubleScroll(element) {
+        var scrollbar = document.createElement('div');
+        scrollbar.appendChild(document.createElement('div'));
+        scrollbar.style.overflow = 'auto';
+        scrollbar.style.overflowY = 'hidden';
+        scrollbar.firstChild.style.width = element.scrollWidth + 'px';
+        scrollbar.firstChild.style.paddingTop = '1px';
+        scrollbar.firstChild.style.height = '20px';
+        scrollbar.firstChild.appendChild(document.createTextNode('\xA0'));
+        scrollbar.onscroll = function() {
+            element.scrollLeft = scrollbar.scrollLeft;
+        };
+        element.onscroll = function() {
+            scrollbar.scrollLeft = element.scrollLeft;
+        };
+        element.parentNode.insertBefore(scrollbar, element);
+    }
+    DoubleScroll(document.getElementById('doublescroll'));
+</script>
+<?php
+
+// here place div at bottom so there is some space under last boxes
+$last = count($genarray) - 1;
+$putit = $genarray[$last]["posy"] + 130;
+echo '<div style="position:absolute;left:1px;top:' . $putit . 'px;">&nbsp; </div>';

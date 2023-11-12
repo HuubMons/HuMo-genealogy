@@ -11,37 +11,32 @@
  * - icon added: /images/hourglass.gif
  * - class added to gedcom.css and silverline.css for graph lines
  * 
+ * Updated to MVC model by Huub in november 2023.
+ * 
  * TODO:
  * - save slider position
  * - think about names in size 8
  */
 
-include_once(__DIR__ . "/descendant_chart.php");
-
-include_once(__DIR__ . "/report_descendant.php");
+$genarray = $data["genarray"];
+$hourglass = true;
 
 // *** Ancestor part of report ***
 $_GET['id'] = $_GET['main_person'];
 include_once(__DIR__ . "/ancestor_chart.php");
 
-// GENERATE DATA FOR DESCENDANTS ^^^^^
-
-//$size=45; 
-$direction = 1;
-generate(); // generates the $genarray for the descendant chart (to be printed later, after the ancestor chart - with the printchart() function)
-
-// HORIZONTALLY ALIGN POSITION OF BASE PERSON IN DESC CHART AND ANCESTOR CHART
+// THE HORIZONTALLY ALIGN POSITION OF THE BASE PERSON IN DONE DESC CHART AND ANCESTOR CHART
 
 // Height of base person in desc chart is dynamically generated in descendant chart functions
 // Height of base person in ancestor chart is set here. Will be moved down if necessary
-if ($size == 50) {
+if ($data["size"] == 50) {
     $boxhight = 1.5 * 75;
-} elseif ($size == 45) {
+} elseif ($data["size"] == 45) {
     $boxhight = 1.5 * 45;
 } else {
-    $boxhight = 1.5 * $size;
+    $boxhight = 1.5 * $data["size"];
 }
-$anc_top = (pow(2, $chosengenanc - 1) * $boxhight) / 2;
+$anc_top = (pow(2, $data["chosengenanc"] - 1) * $boxhight) / 2;
 
 if ($genarray[0]["posy"] < $anc_top) { // if desc base pers higher on screen than base person of ancestor chart - has to be lowered to there.
     $offset = $anc_top - $genarray[0]["posy"];
@@ -64,12 +59,12 @@ for ($i = 0; $i < count($genarray); $i++) {
 }
 $desc_hi += 150;  // lowest point of desc chart
 //Ancestor chart bottom coordinates
-if ($size == 50) {
+if ($data["size"] == 50) {
     $v_distance = 1.5 * 75;
 } else {
-    $v_distance = 1.5 * $size;
+    $v_distance = 1.5 * $data["size"];
 }
-$anc_hi = $anc_top + ((pow(2, $chosengenanc - 1) * $v_distance) / 2) + 100; // lowest point of anc chart 550
+$anc_hi = $anc_top + ((pow(2, $data["chosengenanc"] - 1) * $v_distance) / 2) + 100; // lowest point of anc chart 550
 
 // Find longest chart and set as bottom of div
 $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
@@ -120,62 +115,66 @@ step 10:    large rectangles with name, birth and death details + pop-up with fu
 </div>
 <?php
 
-// MENU BAR - no. of generations, zoom
-
-echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:700px; text-align:left;">';
-
-echo '&nbsp;' . __('Nr. generations') . ': ' . __('Anc.') . '&nbsp;';
-echo '<select name="chosengenanc" onChange="window.location=this.value">';
-
-$vars['pers_family'] = $keepfamily_id;
+$vars['pers_family'] = $data["family_id"];
 $path_tmp = $link_cls->get_link($uri_path, 'hourglass', $tree_id, true, $vars);
-$path_tmp .= "main_person=" . $keepmain_person . '&amp;screen_mode=HOUR';
+$path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
 
-for ($i = 2; $i <= 12; $i++) {
-    echo '<option value="' . $path_tmp . '&amp;direction=' . $direction . '&amp;chosensize=' .
-        $size . '&amp;chosengen=' . $chosengen . '&amp;chosengenanc=' . $i . '"';
-    if ($i == $chosengenanc) echo "selected=\"selected\" ";
-    echo ">" . $i . "</option>";
-}
-echo '</select>';
+// MENU BAR - no. of generations, zoom
+?>
+<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:700px; text-align:left;">
+    &nbsp;<?= __('Nr. generations') . ': ' . __('Anc.'); ?>&nbsp;
 
-echo '&nbsp;&nbsp;' . __('Desc.') . '&nbsp;';
-echo '<select name="chosengen" onChange="window.location=this.value">';
-for ($i = 2; $i <= 15; $i++) {
-    echo '<option value="' . $path_tmp . '&amp;direction=' . $direction . '&amp;chosensize=' .
-        $size . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $chosengenanc . '"';
-    if ($i == $chosengen) echo "selected=\"selected\" ";
-    echo ">" . $i . "</option>";
-}
+    <select name="chosengenanc" onChange="window.location=this.value">
+        <?php
+        for ($i = 2; $i <= 12; $i++) {
+            echo '<option value="' . $path_tmp . '&amp;direction=' . $data["direction"] . '&amp;chosensize=' .
+                $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '&amp;chosengenanc=' . $i . '"';
+            if ($i == $data["chosengenanc"]) echo "selected=\"selected\" ";
+            echo ">" . $i . "</option>";
+        }
+        ?>
+    </select>
 
-// oct. 2023 DISABLED because of fault messages.
-// *** Option "All" for all generations ***
-//echo '<option value="' . $path_tmp . '&amp;direction=' . $direction . '&amp;chosensize=' .
-//    $size . '&amp;chosengen=All&amp;chosengenanc=' . $chosengenanc . '"';
-//if ($chosengen == "All") echo "selected=\"selected\" ";
-//echo ">" . "All" . "</option>";
-echo '</select>';
+    &nbsp;&nbsp;<?= __('Desc.'); ?>&nbsp;
+    <select name="chosengen" onChange="window.location=this.value">
+        <?php
+        for ($i = 2; $i <= 15; $i++) {
+            echo '<option value="' . $path_tmp . '&amp;direction=' . $data["direction"] . '&amp;chosensize=' .
+                $data["size"] . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $data["chosengenanc"] . '"';
+            if ($i == $data["chosengen"]) echo "selected=\"selected\" ";
+            echo ">" . $i . "</option>";
+        }
 
-echo '&nbsp;&nbsp;';
-// min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
-/* OLD VALUES
-database: "'.$database.'",
-main_person: "'.$keepmain_person.'",
-id: "'.$keepfamily_id.'",
-chosengen: "'.$chosengen.'",
-chosengenanc: "'.$chosengenanc.'",
-direction: "'.$direction.'",
-chart_type: "hour",
-*/
+        // oct. 2023 DISABLED because of fault messages.
+        // *** Option "All" for all generations ***
+        //echo '<option value="' . $path_tmp . '&amp;direction=' . $data["direction"] . '&amp;chosensize=' .
+        //    $data["size"] . '&amp;chosengen=All&amp;chosengenanc=' . $data["chosengenanc"] . '"';
+        //if ($data["chosengen"] == "All") echo "selected=\"selected\" ";
+        //echo ">" . "All" . "</option>";
+        ?>
+    </select>
 
-// *** Don't use &amp in link in javascript ***
-$path_tmp = str_replace('&amp;', '&', $path_tmp);
+    <?php
+    echo '&nbsp;&nbsp;';
+    // min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
+    /* OLD VALUES
+    database: "'.$database.'",
+    main_person: "'.$data["main_person"].'",
+    id: "'.$data["family_id"].'",
+    chosengen: "'.$data["chosengen"].'",
+    chosengenanc: "'.$data["chosengenanc"].'",
+    direction: "'.$data["direction"].'",
+    chart_type: "hour",
+    */
 
-echo '
+    // *** Don't use &amp in link in javascript ***
+    $path_tmp = str_replace('&amp;', '&', $path_tmp);
+
+    echo '
     <script>
     $(function() {
         $( "#slider" ).slider({
-            value: ' . (($size / 5) - 1) . ',
+            value: ' . (($data["size"] / 5) - 1) . ',
             min: 0,
             max: 9,
             step: 1,
@@ -190,41 +189,40 @@ echo '
         $("#slider").on("slidestop", function(event, ui) {
             endPos = ui.value;
             if (startPos != endPos) {
-                window.location.href = "' . $path_tmp . '&chosensize="+((endPos+1)*5)+"&chosengen=' . $chosengen . '&chosengenanc=' . $chosengenanc . '&direction=' . $direction . '";
+                window.location.href = "' . $path_tmp . '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] . '&chosengenanc=' . $data["chosengenanc"] . '&direction=' . $data["direction"] . '";
             }
             startPos = endPos;
         });
-
     });
     </script>
-';
+    ';
+    ?>
 
-echo '<label for="amount">' . __('Zoom level:') . '</label> ';
-echo '<input type="text" id="amount" disabled="disabled" style="width:18px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">';
-echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
-echo '</div>';
+    <label for="amount"><?= __('Zoom level:'); ?></label>
+    <input type="text" id="amount" disabled="disabled" style="width:28px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">
+    <div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>
+</div>
 
+<?php
 // Start DIV FOR IMAGE (to print image of chart with plotter) ^^^^^
 
 //following div gets width and length in imaging java function showimg() (at bottom) otherwise double scrollbars won't work.
 echo '<div id="png">';
 
 // Start DIV FOR DOUBLESCROLL (horizontal scrollbars top and bottom ^^^^^^^^^^^^^^^^^^^^^^^
-
 echo '
 <style type="text/css">
 #doublescroll { position:relative; width:auto; height:' . $div_hi . 'px; overflow: auto; overflow-y: hidden; }
 #doublescroll p { margin: 0; padding: 1em; white-space: nowrap; }
 </style>
 ';
-
 echo '<div id="doublescroll">';
 
 // PRINT THE ANCESTOR CHART ^^^^^^^^^^^^^
-
 $left = 10;
-$vdist = 20;
-$blocks = pow(2, $chosengenanc - 1);
+//$vdist = 20;
+$data["vdist"] = 20;
+$blocks = pow(2, $data["chosengenanc"] - 1);
 $height = 75;
 $width = 170;
 $line_drop = $height / 2;
@@ -232,7 +230,7 @@ $incr = 1.5 * $height;
 $hi = 1.5 * $height;
 $gap = 3 * $height;
 
-if ($size == 45) {
+if ($data["size"] == 45) {
     $height = 45;
     $width = 100;
     $line_drop = $height / 2;
@@ -240,9 +238,9 @@ if ($size == 45) {
     $hi = 1.5 * $height;
     $gap = 3 * $height;
 }
-if ($size < 45) {
-    $height = $size;
-    $width = $size;
+if ($data["size"] < 45) {
+    $height = $data["size"];
+    $width = $data["size"];
     $line_drop = $height / 2;
     $incr = 1.5 * $height;
     $hi = 1.5 * $height;
@@ -251,7 +249,7 @@ if ($size < 45) {
 
 $top = $anc_top - ((($blocks * $hi) - $incr) / 2);
 
-for ($x = $chosengenanc; $x > 1; $x--) {
+for ($x = $data["chosengenanc"]; $x > 1; $x--) {
     $this_top = $top;
     for ($i = 0; $i < $blocks; $i++) {
         $sexe_colour = '';
@@ -271,7 +269,7 @@ for ($x = $chosengenanc; $x > 1; $x--) {
         echo '<div class="ancestorName' . $sexe_colour . '" style="background-color:' . $backgr_col . '; top: ' . $this_top . 'px; left: ' . $left . 'px; height: ' . $height . 'px; width:' . $width . 'px;';
         echo '">';
         if (isset($sexe[$i + $blocks]) and $sexe[$i + $blocks] != "") {
-            echo ancestor_chart_person($i + $blocks, 'hour' . $size);
+            echo ancestor_chart_person($i + $blocks, 'hour' . $data["size"]);
         } else {
             echo "&nbsp;"; // otherwise background color doesn't work and lines show through
         }
@@ -301,7 +299,7 @@ for ($x = $chosengenanc; $x > 1; $x--) {
     $gap *= 2;
     $incr *= 2;
     $blocks = $blocks / 2;
-    if ($x > $chosengenanc - 1 or $size < 45) { // maybe just: if($x==$chosengenanc)     ;-)
+    if ($x > $data["chosengenanc"] - 1 or $data["size"] < 45) { // maybe just: if($x==$data["chosengenanc"])     ;-)
         $left += $width + 20;
     } else {
         $left += $width / 2 + 20;
@@ -309,25 +307,24 @@ for ($x = $chosengenanc; $x > 1; $x--) {
 }
 
 // SET CHART DIMENSIONS AND CAPTIONS ^^^^^
-if ($size == 50 or $size == 45) {
-    if ($chosengenanc > 2) {
-        $anc_len = (2 * ($width + 20)) + (($chosengenanc - 3) * (($size / 2) + 40));
+if ($data["size"] == 50 or $data["size"] == 45) {
+    if ($data["chosengenanc"] > 2) {
+        $anc_len = (2 * ($width + 20)) + (($data["chosengenanc"] - 3) * (($data["size"] / 2) + 40));
     } else {
         $anc_len = $width + 20;
     }
 } else {
-    $anc_len = ($chosengenanc - 1) * ($width + 20);
+    $anc_len = ($data["chosengenanc"] - 1) * ($width + 20);
 }
 
-if ($size == 50) {
-    $desc_len = $chosengen * ($width + 60);
-} elseif ($size == 45) {
-    $desc_len = $chosengen * ($width + 50);
-} else $desc_len = $chosengen * ($width + $size);
+if ($data["size"] == 50) {
+    $desc_len = $data["chosengen"] * ($width + 60);
+} elseif ($data["size"] == 45) {
+    $desc_len = $data["chosengen"] * ($width + 50);
+} else $desc_len = $data["chosengen"] * ($width + $data["size"]);
 
 $divlen = 10 + $anc_len + $desc_len;
 
-// PRINT THE DESCENDANT CHART ^^^^^^^^^^^^^
-printchart();
-
-include_once(__DIR__ . "/footer.php");
+$data["genarray"] = $genarray;
+// *** Show descendant chart ***
+include_once(__DIR__ . "/descendant_chart.php");

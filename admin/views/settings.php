@@ -146,8 +146,8 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     <option value="j"><?= __('Yes'); ?></option>
                     <option value="n" <?php if ($humo_option["url_rewrite"] != 'j') echo ' selected'; ?>><?= __('No'); ?></option>
                 </select> <b><?= __('ATTENTION: the Apache module "mod_rewrite" has to be installed!'); ?></b><br>
-                URL&nbsp;&nbsp;: http://www.website.nl/humo-gen/index.php?page=family&amp;id=F12<br>
-                <?= __('becomes:'); ?> http://www.website.nl/humo-gen/family/F12/<br>
+                URL&nbsp;&nbsp;: http://www.website.nl/humo-gen/index.php?page=family&amp;tree_id=1&amp;id=F12<br>
+                <?= __('becomes:'); ?> http://www.website.nl/humo-gen/family/1/F12<br>
             </td>
         </tr>
 

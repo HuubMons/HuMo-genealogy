@@ -1,5 +1,5 @@
 <?php
-class Addresses
+class AddressesModel
 {
     private $dbh;
 

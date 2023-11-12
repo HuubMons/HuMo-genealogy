@@ -267,17 +267,17 @@ if ($menu_admin == 'settings_special') {
     <?php
     // *** Show settings ***
     if (isset($menu_admin) and $menu_admin == 'settings') {
-        include(__DIR__ . '/../views/settings.php');
+        include(__DIR__ . '/settings.php');
     }
 
     // *** Show homepage settings ***
     if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
-        include(__DIR__ . '/../views/settings_homepage.php');
+        include(__DIR__ . '/settings_homepage.php');
     }
 
     // *** Show special settings ***
     if (isset($menu_admin) and $menu_admin == 'settings_special') {
-        include(__DIR__ . '/../views/settings_special.php');
+        include(__DIR__ . '/settings_special.php');
     }
     ?>
 </div>

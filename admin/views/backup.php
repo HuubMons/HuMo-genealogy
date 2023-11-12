@@ -2,8 +2,7 @@
 // *** Original script made by Yossi ***
 // *** feb. 2023: Rebuild this script by Huub. Multiple backups will be stored on server. ***
 
-//@set_time_limit(3000);
-@ini_set('memory_limit', '-1');
+//@ini_set('memory_limit', '-1');
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;

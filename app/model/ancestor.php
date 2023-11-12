@@ -2,9 +2,9 @@
 
 /**
  * July 2023: refactor ancestor.php to MVC
- * Will be improved over time...
- * 
  */
+
+// At this moment this model is used by multiple ancestor reports (report/ chart/ sheet)...
 
 include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/language_event.php');
@@ -20,7 +20,14 @@ include_once(__DIR__ . '/../../include/show_addresses.php');
 include_once(__DIR__ . '/../../include/show_picture.php');
 include_once(__DIR__ . '/../../include/show_quality.php');
 
-class Ancestor
+// TODO use traits? This is a temporary solution for now. Several functions needed from family.php.
+// Only needed for these variables:
+//$data["text_presentation"]
+//$data["family_expanded"]
+//$data["picture_presentation"]
+include_once(__DIR__ . '/family.php');
+
+class AncestorModel extends FamilyModel
 {
     private $Connection;
 
@@ -32,8 +39,10 @@ class Ancestor
     //TODO check the $_GET. Normally main_person is used. ID is used for family number.
     public function getMainPerson()
     {
+        // TODO this global will be removed.
+        global $id;
+
         $main_person = 'I1'; // *** Mainperson of a family ***
-        //if (isset($urlpart[2])){ $main_person=$urlpart[2]; }
 
         //if (isset($_GET["main_person"])) {
         //    $main_person = $_GET["main_person"];
@@ -41,13 +50,17 @@ class Ancestor
         //if (isset($_POST["main_person"])) {
         //    $main_person = $_POST["main_person"];
         //}
-
+        if (isset($id)){
+            // $id=last variable in link: http://127.0.0.1/humo-genealogy/ancestor_report/3/I1180
+            $main_person=$id;
+        }
         if (isset($_GET["id"])) {
             $main_person = $_GET["id"];
         }
         if (isset($_POST["id"])) {
             $main_person = $_POST["id"];
         }
+
         return $main_person;
     }
 
@@ -99,10 +112,13 @@ class Ancestor
         if ($name == 'Ancestor chart') {
             $text .= __($name);
         } else {
+            // TODO improve paths and variables.
             if ($humo_option["url_rewrite"] == 'j') {
-                $path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
+                //$path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
+                $path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
             } else {
-                $path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
+                //$path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
+                $path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
             }
             $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor chart') . '</a></span>';
         }

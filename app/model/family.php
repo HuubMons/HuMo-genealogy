@@ -2,11 +2,9 @@
 
 /**
  * July 2023: refactor family script to MVC
- * Will be improved over time...
- * 
  */
 
-//TODO check included files. Some allready included in header.php?
+//TODO check included files.
 include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/language_event.php');
 include_once(__DIR__ . '/../../include/date_place.php');
@@ -20,44 +18,80 @@ include_once(__DIR__ . '/../../include/show_addresses.php');
 include_once(__DIR__ . '/../../include/show_picture.php');
 include_once(__DIR__ . '/../../include/show_quality.php');
 
-class Family
-{
-    private $Connection;
 
-    public function __construct($Connection)
+
+//TEST to use multiple functions in multiple classes
+//https://www.w3schools.com/php/php_oop_traits.asp
+//https://wiki.php.net/rfc/traits
+/*
+trait Hello {
+    public function sayHello() {
+      echo 'Hello ';
+    }
+  }
+  
+  trait World {
+    public function sayWorld() {
+      echo ' World';
+    }
+  }
+*/
+
+class FamilyModel
+{
+    private $dbh;
+
+    // TEST
+    //use Hello, World;
+
+
+    public function __construct($dbh)
     {
-        $this->Connection = $Connection;
+        $this->dbh = $dbh;
     }
 
     public function getFamilyId()
     {
         $family_id = 'F1'; // *** standard: show first family ***
-        //if (isset($urlpart[1])){ $family_id=$urlpart[1]; }
         if (isset($_GET["id"])) {
             $family_id = $_GET["id"];
         }
         if (isset($_POST["id"])) {
             $family_id = $_POST["id"];
         }
+
+        // *** A favourite ID is used ***
+        if (isset($_POST["humo_favorite_id"])) {
+            $favorite_array_id = explode("|", $_POST["humo_favorite_id"]);
+            $family_id = $favorite_array_id[0];
+        }
+
         return $family_id;
     }
 
     public function getMainPerson()
     {
         $main_person = ''; // *** Mainperson of a family ***
-        //if (isset($urlpart[2])){ $main_person=$urlpart[2]; }
         if (isset($_GET["main_person"])) {
             $main_person = $_GET["main_person"];
         }
         if (isset($_POST["main_person"])) {
             $main_person = $_POST["main_person"];
         }
+
+        // *** A favourite ID is used ***
+        if (isset($_POST["humo_favorite_id"])) {
+            $favorite_array_id = explode("|", $_POST["humo_favorite_id"]);
+            $main_person = $favorite_array_id[1];
+        }
+
         return $main_person;
     }
 
     // *** Compact or expanded view ***
     public function getFamilyExpanded()
     {
+        // TODO remove global
         global $user;
         if (isset($_GET['family_expanded'])) {
             if ($_GET['family_expanded'] == '0') $_SESSION['save_family_expanded'] = '0';
@@ -76,6 +110,7 @@ class Family
     // *** Source presentation selected by user, only valid values are: title/ footnote/ hide ***
     public function getSourcePresentation()
     {
+        // TODO remove global
         global $user;
         $source_presentation_array = array('title', 'footnote', 'hide');
         if (isset($_GET['source_presentation']) and in_array($_GET['source_presentation'], $source_presentation_array)) {
@@ -95,7 +130,6 @@ class Family
     // *** Show/ hide pictures ***
     public function getPicturePresentation()
     {
-        //global $user;
         $picture_presentation = 'show';
         $picture_presentation_array = array('show', 'hide');
         if (isset($_GET['picture_presentation']) and in_array($_GET['picture_presentation'], $picture_presentation_array)) {
@@ -126,6 +160,7 @@ class Family
     }
 
     // *** Define numbers (max. 60 generations) ***
+    //TODO this is also defined in ancestor script.
     public function getNumberRoman()
     {
         $number_roman = array(
@@ -189,8 +224,6 @@ class Family
         if ($name == 'Outline report') {
             $text .= __($name);
         } else {
-            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="report_outline.php?tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '">' . __('Outline report') . '</a></span>';
-
             $path_tmp = $link_cls->get_link($uri_path, 'report_outline', $tree_id, true);
             $path_tmp .= 'id=' . $family_id . '&amp;main_person=' . $main_person;
             $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path_tmp . '">' . __('Outline report') . '</a></span>';

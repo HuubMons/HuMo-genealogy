@@ -6,11 +6,10 @@
  */
 
 $fault = false;
-include_once(__DIR__ . "/../header.php");
-include_once(__DIR__ . "/menu.php");
 
+// TODO allready done in header.php?
 // *** Check if visitor is allowed ***
-if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])) {
+if (!$db_functions->check_visitor($visitor_ip)) {
     echo 'Access to website is blocked.';
     exit;
 }
@@ -404,5 +403,3 @@ else {
         }
     }
 }  // end of else (else show login screen)
-
-include_once(__DIR__ . "/footer.php");

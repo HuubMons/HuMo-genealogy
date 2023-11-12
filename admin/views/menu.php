@@ -233,7 +233,7 @@ if ($popup == false) {
                                     echo '<li' . $menu_item_thumbs . '><a href="' . $path_tmp . 'page=thumbs">' . __('Pictures/ create thumbnails') . '</a></li>';
                                     echo '<li' . $menu_item_user_notes . '><a href="' . $path_tmp . 'page=user_notes">' . __('Notes') . '</a></li>';
                                     echo '<li' . $menu_item_check . '><a href="' . $path_tmp . 'page=check">' . __('Family tree data check') . '</a></li>';
-                                    echo '<li' . $menu_item_latest_changes . '><a href="' . $path_tmp . 'page=view_latest_changes">' . __('View latest changes') . '</a></li>';
+                                    echo '<li' . $menu_item_latest_changes . '><a href="' . $path_tmp . 'page=latest_changes">' . __('View latest changes') . '</a></li>';
                                     echo '<li' . $menu_item_cal_date . '><a href="' . $path_tmp . 'page=cal_date">' . __('Calculated birth date') . '</a></li>';
                                     echo '<li' . $menu_item_export . '><a href="' . $path_tmp . 'page=export">' . __('Gedcom export') . '</a></li>';
                                     echo '<li' . $menu_item_backup . '><a href="' . $path_tmp . 'page=backup">' . __('Database backup') . '</a></li>';

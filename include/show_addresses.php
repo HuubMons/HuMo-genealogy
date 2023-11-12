@@ -17,7 +17,7 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
         $address_nr++;
         if ($address_nr == '1') {
             //if ($process_text){
-            //	if ($family_expanded==true){ $text.='<br>'; } else{ $text.='. '; }
+            //	if ($data["family_expanded"]==true){ $text.='<br>'; } else{ $text.='. '; }
             //}
             if ($nr_addresses == '1') {
                 $residence = ucfirst(__('residence'));

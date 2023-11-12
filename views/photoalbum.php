@@ -1,5 +1,7 @@
 <?php
 $show_pictures = 8; // *** Default value ***
+
+// Remark: setcookie is done in header.
 if (isset($_COOKIE["humogenphotos"]) and is_numeric($_COOKIE["humogenphotos"])) {
     $show_pictures = $_COOKIE["humogenphotos"];
 } elseif (isset($_SESSION['save_show_pictures']) and is_numeric($_SESSION['save_show_pictures'])) {
@@ -16,9 +18,6 @@ if (isset($_GET['show_pictures']) and is_numeric($_GET['show_pictures'])) {
     $show_pictures = $_GET['show_pictures'];
     $_SESSION['save_show_pictures'] = $show_pictures;
 }
-
-include_once(__DIR__ . "/../header.php");
-include_once(__DIR__ . "/menu.php");
 
 // *** Check user privileges ***
 if ($user['group_pictures'] != 'j' or $user['group_photobook'] != 'j') {
@@ -245,7 +244,8 @@ if ($show_categories) {
                                 }
                             }
 
-                            $path = 'photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category;
+                            //$path = 'photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category;
+                            $path = 'index.php?page=photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category;
                             if ($humo_option["url_rewrite"] == "j") {
                                 $path = 'photoalbum/' . $tree_id . '?select_category=' . $category;
                             }
@@ -295,7 +295,7 @@ function show_media_files($pref)
     global $dataDb, $search_media, $dbh, $show_pictures, $uri_path, $tree_id, $db_functions,
         $cat_string, $show_categories, $chosen_tab, $media_files, $humo_option, $link_cls;
 
-        $tree_pict_path = $dataDb->tree_pict_path;
+    $tree_pict_path = $dataDb->tree_pict_path;
     if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
     $dir = $tree_pict_path;
 
@@ -309,7 +309,7 @@ function show_media_files($pref)
     //} else {
     //    $albumpath = $uri_path . 'photoalbum.php?tree_id=' . $tree_id . '&amp;';
     //}
-    $albumpath = $link_cls->get_link($uri_path, 'photoalbum',$tree_id,true);
+    $albumpath = $link_cls->get_link($uri_path, 'photoalbum', $tree_id, true);
 
     $item = 0;
     if (isset($_GET['item'])) {
@@ -503,6 +503,4 @@ function show_media_files($pref)
         <br clear="all"><br>
         <div class="center"><?= $line_pages; ?></div>
     <?php
-} //  *** End of function showthem() ***
-
-include_once(__DIR__ . "/footer.php");
+}

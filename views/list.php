@@ -1,10 +1,7 @@
 <?php
-include_once(__DIR__ . "/../header.php");
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
 include_once(__DIR__ . "/../include/person_cls.php");
-
-//@set_time_limit(300);
 
 // *** show person ***
 function show_person($personDb)
@@ -452,13 +449,13 @@ if ($selectsort) {
             ) " . $desc_asc . ", " . $last_or_patronym . " ASC , pers_firstname ASC";
         // DOESN'T WORK AT WEBSITE:
         //$orderby = " CONCAT( substring(order_date,-4),
-        //	date_format( str_to_date(
-        //		LOWER(SUBSTRING(
-        //			substring(order_date,-8,3)
-        //		,2))
-        //	,'%b' ) ,'%m'),
-        //	date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
-        //	) ".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
+        //  date_format( str_to_date(
+        //      LOWER(SUBSTRING(
+        //          substring(order_date,-8,3)
+        //      ,2))
+        //  ,'%b' ) ,'%m'),
+        //  date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
+        //  ) ".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
     }
     if ($selectsort == "sort_birthplace") {
         //$orderby = " pers_birth_place ".$desc_asc.",".$last_or_patronym.$desc_asc;
@@ -1459,7 +1456,7 @@ if ($index_list == 'quicksearch') {
         ON humo_persons1.pers_id = humo_persons2.pers_id
     ";
     // *** Prevent double results (if there are multiple nick names) ***
-    // *** 31-03-2023 BE AWARE: disabled option ONLY_GROUP_BY in header.php ***
+    // *** 31-03-2023 BE AWARE: disabled option ONLY_GROUP_BY in header script ***
     $query .= " GROUP BY humo_persons1.pers_id";
     // *** Added event_event and event_kind for some PHP/MySQL providers... ***
     // IF USED THERE ARE DOUBLE RESULTS IN SEARCH LIST:
@@ -2367,7 +2364,7 @@ if ($index_list != 'places') {
             $img = 'up';
         }
     }
-    echo '<th><a href="'.$link.'index_list=' . $index_list . '&start=1&item=0&sort=sort_birthplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+    echo '<th><a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_birthplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
     $style = '';
     $sort_reverse = $sort_desc;
     $img = '';
@@ -2379,7 +2376,7 @@ if ($index_list != 'places') {
             $img = 'up';
         }
     }
-    echo '<th><a href="'.$link.'index_list=' . $index_list . '&start=1&item=0&sort=sort_deathdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+    echo '<th><a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_deathdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
     $style = '';
     $sort_reverse = $sort_desc;
     $img = '';
@@ -2391,7 +2388,7 @@ if ($index_list != 'places') {
             $img = 'up';
         }
     }
-    echo '<th><a href="'.$link.'index_list=' . $index_list . '&start=1&item=0&sort=sort_deathplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+    echo '<th><a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_deathplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
 
     if ($search_database == 'all_trees' or $search_database == 'all_but_this') echo '<th><br></th>';
 
@@ -2552,10 +2549,9 @@ echo '<script>
     document.getElementById("found_div").innerHTML = \'' . $pers_counter . __(' persons found.') . '\';
 </script>';
 
+echo '<br>';
 //for testing only:
 //echo 'Query: <pre>'.$query."</pre> LIMIT ".safe_text_db($item).",".$nr_persons.'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;
-
-include_once(__DIR__ . "/footer.php");

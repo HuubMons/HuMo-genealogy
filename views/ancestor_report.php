@@ -9,91 +9,20 @@
  * July 2011: translated all variables to english by: Huub Mons.
  */
 
-//@set_time_limit(3000);
-
-
-//TODO remove old items: $screen_mode != 'PDF'
-
-
-//==========================
-global $humo_option, $user, $marr_date_array, $marr_place_array;
-global $gedcomnumber, $language;
-global $screen_mode, $dirmark1, $dirmark2, $pdf_footnotes;
-
+//TODO use seperate file for RTF?
 $screen_mode = '';
 if (isset($_POST["screen_mode"]) and $_POST["screen_mode"] == 'RTF') {
     $screen_mode = 'RTF';
 }
 
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-
-include_once(__DIR__ . "/../header.php");
-
-
-
-// TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
-require_once  __DIR__ . "/../app/model/ancestor.php";
-$get_ancestor = new Ancestor($dbh);
-//$family_id = $get_ancestor->getFamilyId();
-$main_person = $get_ancestor->getMainPerson();
-//$family_expanded =  $get_family->getFamilyExpanded();
-//$source_presentation =  $get_family->getSourcePresentation();
-//$picture_presentation =  $get_family->getPicturePresentation();
-//$text_presentation =  $get_family->getTextPresentation();
-$rom_nr = $get_ancestor->getNumberRoman();
-//$number_generation = $get_family->getNumberGeneration();
-if ($screen_mode != 'PDF') {
-    $ancestor_header = $get_ancestor->getAncestorHeader('Ancestor report', $tree_id, $main_person);
-}
-//$this->view("families", array(
-//    "family" => $family,
-//    "title" => __('Family')
-//));
-
-
-/*
-if ($screen_mode != 'PDF') {  //we can't have a menu in pdf...
-    //include_once(__DIR__ . "/menu.php");
-} else {
-    //include_once(__DIR__ . "/../db_functions_cls.php");
-    include_once(__DIR__ . "/../include/db_functions_cls.php");
-    $db_functions = new db_functions;
-
-    if (isset($_SESSION['tree_prefix'])) {
-        $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-            ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-            AND humo_tree_texts.treetext_language='" . $selected_language . "'
-            WHERE tree_prefix='" . $tree_prefix_quoted . "'";
-        @$datasql = $dbh->query($dataqry);
-        @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
-    }
-
-    $tree_prefix = $dataDb->tree_prefix;
-    $tree_id = $dataDb->tree_id;
-    $db_functions->set_tree_id($dataDb->tree_id);
-}
-*/
+//$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
+$db_functions->check_person($data["main_person"]);
 
-// *** Source presentation selected by user (title/ footnote or hide sources) ***
-// *** Default setting is selected by administrator ***
-if (isset($_GET['source_presentation'])) {
-    $_SESSION['save_source_presentation'] = safe_text_db($_GET["source_presentation"]);
-}
-$source_presentation = $user['group_source_presentation'];
-if (isset($_SESSION['save_source_presentation'])) {
-    $source_presentation = $_SESSION['save_source_presentation'];
-} else {
-    // *** Save setting in session (if no choice is made, this is admin default setting) ***
-    $_SESSION['save_source_presentation'] = safe_text_db($source_presentation);
-}
-
-if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+if ($screen_mode != 'RTF') {
     //echo '<h1 class="standard_header fonts">'.__('Ancestor report').'</h1>';
-    echo $ancestor_header;
+    echo $data["ancestor_header"];
 }
 
 if ($screen_mode == 'RTF') {  // initialize rtf generation
@@ -138,7 +67,7 @@ if ($screen_mode == 'RTF') {  // initialize rtf generation
     $parSimple->setIndentRight(0.5);
 
     // *** Generate title of RTF file ***
-    @$persDb = $db_functions->get_person($main_person);
+    @$persDb = $db_functions->get_person($data["main_person"]);
     // *** Use person class ***
     $pers_cls = new person_cls($persDb);
     $name = $pers_cls->person_name($persDb);
@@ -162,7 +91,7 @@ if ($screen_mode == 'RTF') {  // initialize rtf generation
     }
 }
 
-$ancestor_array2[] = $main_person;
+$ancestor_array2[] = $data["main_person"];
 $ancestor_number2[] = 1;
 $marriage_gedcomnumber2[] = 0;
 $generation = 1;
@@ -221,7 +150,7 @@ $language["gen48"] = __('45th Great-Grandparents');
 $language["gen49"] = __('46th Great-Grandparents');
 $language["gen50"] = __('47th Great-Grandparents');
 
-if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+if ($screen_mode != 'RTF') {
     echo '<table style="border-style:none" align="center"><tr><td></td></tr>';
 }
 
@@ -241,11 +170,11 @@ while (isset($ancestor_array2[0])) {
     $marriage_gedcomnumber = $marriage_gedcomnumber2;
     unset($marriage_gedcomnumber2);
 
-    if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+    if ($screen_mode != 'RTF') {
         echo '</table>';
 
-        if (isset($rom_nr[$generation])) {
-            echo '<h2 class="standard_header fonts">' . __('generation ') . $rom_nr[$generation];
+        if (isset($data["rom_nr"][$generation])) {
+            echo '<h2 class="standard_header fonts">' . __('generation ') . $data["rom_nr"][$generation];
         }
         if (isset($language["gen" . $generation]) and $language["gen" . $generation]) {
             echo ' (' . $language["gen" . $generation] . ')';
@@ -255,14 +184,14 @@ while (isset($ancestor_array2[0])) {
             if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
                 // Show pdf button
 
-                //$vars['id'] = $main_person;
+                //$vars['id'] = $data["main_person"];
                 //$link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
                 //$link .= 'screen_mode=ancestor_chart&amp;show_sources=1';
 
                 $link = $uri_path . 'views/ancestor_report_pdf.php';
 
                 echo '&nbsp;&nbsp;<form method="POST" action="' . $link . '" style="display : inline;">';
-                echo '<input type="hidden" name="id" value="' . $main_person . '">';
+                echo '<input type="hidden" name="id" value="' . $data["main_person"] . '">';
                 echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
                 echo '<input type="hidden" name="screen_mode" value="PDF">';
 
@@ -275,11 +204,11 @@ while (isset($ancestor_array2[0])) {
 
             if ($user["group_rtf_button"] == 'y' and $language["dir"] != "rtl") {
                 // Show rtf button
-                $vars['id'] = $main_person;
+                $vars['id'] = $data["main_person"];
                 $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
                 $link .= 'show_sources=1';
                 echo ' <form method="POST" action="' . $link . '" style="display : inline;">';
-                //echo '<input type="hidden" name="id" value="' . $main_person . '">';
+                //echo '<input type="hidden" name="id" value="' . $data["main_person"] . '">';
                 //echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
                 echo '<input type="hidden" name="screen_mode" value="RTF">';
 
@@ -295,7 +224,7 @@ while (isset($ancestor_array2[0])) {
 
         echo '<table class="humo standard" align="center">';
     } elseif ($screen_mode == "RTF") {
-        $rtf_text = __('generation ') . $rom_nr[$generation];
+        $rtf_text = __('generation ') . $data["rom_nr"][$generation];
         $sect->writeText($rtf_text, $arial14, $parGen);
     }
 
@@ -333,7 +262,7 @@ while (isset($ancestor_array2[0])) {
                 $marriage_cls = new marriage_cls($familyDb, $privacy_man, $privacy_woman);
                 $family_privacy = $marriage_cls->privacy;
             }
-            if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+            if ($screen_mode != 'RTF') {
                 echo '<tr><td valign="top" width="80" nowrap><b>' . $ancestor_number[$i] .
                     '</b> (' . floor($ancestor_number[$i] / 2) . ')</td>';
 
@@ -422,24 +351,21 @@ while (isset($ancestor_array2[0])) {
 
             // Show own marriage (new line, after man)
             if (strtolower($person_manDb->pers_sexe) == 'm' and $ancestor_number[$i] > 1) {
-                if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+                if ($screen_mode != 'RTF') {
                     echo '<tr><td>&nbsp;</td><td>';
                     echo '<span class="marriage">';
                 }
                 if ($family_privacy) {
-                    if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+                    if ($screen_mode != 'RTF') {
                         echo __(' to: ');
                     } elseif ($screen_mode == "RTF") {
                         $rtf_text = __(' to: ');
                         $sect->writeText($rtf_text, $arial12, $parSimple);
-                    } else {
-                        $pdf->SetX(37);
-                        $pdf->Write(6, __(' to: ') . "\n");
                     }
 
                     // If privacy filter is activated, show divorce
                     if ($familyDb->fam_div_date or $familyDb->fam_div_place) {
-                        if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+                        if ($screen_mode != 'RTF') {
                             echo ' <span class="divorse">(' . trim(__('divorced ')) . ')</span>';
                         } elseif ($screen_mode == "RTF") {
                             $rtf_text = trim(__('divorced '));
@@ -454,14 +380,14 @@ while (isset($ancestor_array2[0])) {
                     // To calculate age by marriage.
                     $parent1Db = $person_manDb;
                     $parent2Db = $person_womanDb;
-                    if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+                    if ($screen_mode != 'RTF') {
                         echo $marriage_cls->marriage_data();
                     } elseif ($screen_mode == "RTF") {
                         $rtf_text = strip_tags($marriage_cls->marriage_data(), "<b><i>");
                         $sect->writeText($rtf_text, $arial12, $parSimple);
                     }
                 }
-                if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+                if ($screen_mode != 'RTF') {
                     echo '</span>';
                     echo '</td></tr>';
                 }
@@ -494,7 +420,7 @@ while (isset($ancestor_array2[0])) {
             $man_cls = new person_cls($person_manDb);
             $privacy_man = $man_cls->privacy;
 
-            if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+            if ($screen_mode != 'RTF') {
                 echo '<tr><td valign="top" width="80" nowrap><b>' . $ancestor_number[$i] .
                     '</b> (' . floor($ancestor_number[$i] / 2) . ')</td>';
 
@@ -546,7 +472,7 @@ if ($screen_mode == '') {
 }
 
 // Finishing code for ancestor chart and ancestor report
-if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
+if ($screen_mode != 'RTF') {
     echo '<br><br>';
     include_once(__DIR__ . "/footer.php");
 } elseif ($screen_mode == 'RTF') { // initialize rtf generation
@@ -556,12 +482,12 @@ if ($screen_mode != 'PDF' and $screen_mode != 'RTF') {
     echo '<br><br><a href="' . $file_name . '">' . __('Download RTF report.') . '</a>';
     echo '<br><br>' . __('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.');
 
-    $vars['id'] = $main_person;
+    $vars['id'] = $data["main_person"];
     $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, false, $vars);
+
     $text = '<br><br><form method="POST" action="' . $link . '" style="display : inline;">';
-
+    // TODO check code.
     echo '<input type="hidden" name="screen_mode" value="">';
-
     $text .= '<input class="fonts" type="Submit" name="submit" value="' . __('Back') . '">';
     $text .= '</form> ';
     echo $text;

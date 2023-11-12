@@ -22,7 +22,7 @@ $link_cls = new Link_cls();
 $tree_id = $_SESSION['tree_id'];
 
 include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions;
+$db_functions = new db_functions($dbh);
 $db_functions->set_tree_id($tree_id);
 
 $language_folder = opendir('../languages/');

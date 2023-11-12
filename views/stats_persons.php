@@ -2,7 +2,6 @@
 function convert_date_number($date)
 {
     //31 SEP 2010 -> 20100931
-    //$dote=$date;
     // *** Remove ABT from date ***
     $date = str_replace("ABT ", "", $date);
     $date = str_replace("EST ABT ", "", $date);

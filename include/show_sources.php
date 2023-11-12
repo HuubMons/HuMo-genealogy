@@ -12,23 +12,23 @@
 function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
 {
     global $dbh, $db_functions, $tree_id, $user, $humo_option, $language, $family_id, $uri_path;
-    global $main_person, $descendant_report, $pdf_source;
+    global $pdf_source;
     global $source_footnotes, $screen_mode, $pdf_footnotes, $pdf;
     global $source_footnote_connect_id;
     global $source_combiner;
     global $temp, $templ_person, $templ_relation; // *** PDF export ***
-    global $family_expanded;
+    global $data;
     $source_array['text'] = '';
 
-    $source_presentation = 'title';
+    $data["source_presentation"] = 'title';
     if (isset($_SESSION['save_source_presentation'])) {
-        $source_presentation = $_SESSION['save_source_presentation'];
+        $data["source_presentation"] = $_SESSION['save_source_presentation'];
     }
 
     // *** Hide sources in mobile version ***
-    if ($screen_mode == 'mobile') $source_presentation = 'hide';
+    if ($screen_mode == 'mobile') $data["source_presentation"] = 'hide';
 
-    if ($user['group_sources'] != 'n' and $source_presentation != 'hide' and $screen_mode != 'STAR') {
+    if ($user['group_sources'] != 'n' and $data["source_presentation"] != 'hide' and $screen_mode != 'STAR') {
         // *** Search for all connected sources ***
         $connect_sql = $db_functions->get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id);
         $nr_sources = count($connect_sql);
@@ -78,7 +78,7 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
                 }
 
                 // *** New source (in footnotes) ***
-                if ($source_presentation == 'footnote') {
+                if ($data["source_presentation"] == 'footnote') {
                     if ($source_array['text']) $source_array['text'] .= '~'; // delimiter
                     $source_array['text'] .= $j;
                 } else {
@@ -108,7 +108,7 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
                 }
             } // END PDF
 
-            elseif ($source_presentation == 'footnote' and $source_status == 'publish') {
+            elseif ($data["source_presentation"] == 'footnote' and $source_status == 'publish') {
                 // *** Combine footnotes with the same source including the same source role and source page... ***
                 $combiner_check = $connectDb->connect_source_id . '_' . $connectDb->connect_role . '_' . $connectDb->connect_page . '_' . $connectDb->connect_date . ' ' . $connectDb->connect_place . ' ' . $connectDb->connect_text;
 
@@ -164,6 +164,7 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
                     // *** Only show link if there is a source_title. Source is only shared if there is a source_title ***
                     //if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1'){
                     if ($user['group_sources'] == 'j' and $sourceDb->source_title != '') {
+                        // TODO use function
                         if ($humo_option["url_rewrite"] == "j") {
                             $url = $uri_path . 'source/' . $tree_id . '/' . $sourceDb->source_gedcomnr;
                         } else {
@@ -184,7 +185,7 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
                         $source_array['text'] .= $source_link;
                     } elseif ($connect_sub_kind == 'person_source') {
                         if ($connectDb->connect_order == '1') {
-                            if ($family_expanded == true) $source_array['text'] .= '<br>';
+                            if ($data["family_expanded"] == true) $source_array['text'] .= '<br>';
                             else $source_array['text'] .= '. ';
                         } else $source_array['text'] .= ', ';
 
@@ -197,7 +198,7 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
                         $source_array['text'] .= $source_link;
                     } elseif ($connect_sub_kind == 'family_source') {
                         if ($connectDb->connect_order == '1') {
-                            if ($family_expanded == true) $source_array['text'] .= '<br>';
+                            if ($data["family_expanded"] == true) $source_array['text'] .= '<br>';
                             else $source_array['text'] .= '. ';
                         } else $source_array['text'] .= ', ';
 

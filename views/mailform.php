@@ -47,7 +47,6 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
     //echo '<br>'.__('You have entered the following e-mail address: ').'<b> '.$_POST['mail_sender'].'</b><br>';
     $position = strpos($_POST['mail_sender'], "@");
     if ($position < 1) echo '<font color="red">' . __('The e-mail address you entered doesn\'t seem to be a valid e-mail address!') . '</font><br>';
-    //echo '<b>'.__('If you do not enter a valid e-mail address, unfortunately I cannot answer you!').'</b><br>';
     //echo __('Message: ').'<br>'.$_POST['mail_text'];
 
     // *** Use PhpMailer to send mail ***

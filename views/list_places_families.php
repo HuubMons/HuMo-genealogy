@@ -3,13 +3,10 @@
  * sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
-include_once(__DIR__ . "/../header.php");
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
 include_once(__DIR__ . "/../include/person_cls.php");
 include_once(__DIR__ . "/../include/marriage_cls.php");
-
-//@set_time_limit(300);
 
 // *** show person ***
 function show_person($familyDb)
@@ -499,7 +496,7 @@ $link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
 <?php
 //***************** end search of places **********************************
 
-$uri_path_string = $link_cls->get_link($uri_path, 'list_places_families', $tree_id,true);
+$uri_path_string = $link_cls->get_link($uri_path, 'list_places_families', $tree_id, true);
 
 // *** Check for search results ***
 if (@$person_result->rowCount() == 0) {
@@ -675,5 +672,3 @@ echo '<script>
 //echo 'Count qry: '.$count_qry.'<br>';
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;
-
-include_once(__DIR__ . "/footer.php");
