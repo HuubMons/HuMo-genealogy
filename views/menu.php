@@ -13,112 +13,136 @@ elseif (is_file('media/logo.jpg'))
     $logo = '<img src="media/logo.jpg">';
 ?>
 
-<div id="top_menu">
+<div id="top_menu"> <!-- TODO At this moment only needed for print version?  -->
     <div id="top" style="direction:<?= $rtlmark; ?>">
-        <div style="direction:ltr;">
-            <span id="top_website_name">
-                <!-- *** Show logo or name of website *** -->
-                &nbsp;<a href="<?= $humo_option["homepage"]; ?>"><?= $logo; ?></a>
-            </span>
-            &nbsp;&nbsp;
 
-            <?php
-            // *** Select family tree ***
-            if (!$bot_visit) {
-                $sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-                $tree_search_result2 = $dbh->query($sql);
-                $num_rows = $tree_search_result2->rowCount();
-                $count = 0;
-                if ($num_rows > 1) {
-                    $link = $link_cls->get_link($uri_path, 'tree_index');
-            ?>
+        <div class="row g-3">
+            <div class="col-sm-5">
+                <span id="top_website_name">
+                    <!-- *** Show logo or name of website *** -->
+                    &nbsp;<a href="<?= $humo_option["homepage"]; ?>"><?= $logo; ?></a>
+                </span>
+                &nbsp;&nbsp;
 
-                    <form method="POST" action="<?= $link; ?>" style="display : inline;" id="top_tree_select">
-                        <?= __('Family tree') . ': '; ?>
-                        <select size="1" name="tree_id" onChange="this.form.submit();" style="width: 150px; height:20px;">
-                            <option value=""><?= __('Select a family tree:'); ?></option>
-                            <?php
-                            while ($tree_searchDb = $tree_search_result2->fetch(PDO::FETCH_OBJ)) {
-                                // *** Check if family tree is shown or hidden for user group ***
-                                $hide_tree_array2 = explode(";", $user['group_hide_trees']);
-                                $hide_tree2 = false;
-                                if (in_array($tree_searchDb->tree_id, $hide_tree_array2)) $hide_tree2 = true;
-                                if ($hide_tree2 == false) {
-                                    $selected = '';
-                                    if (isset($_SESSION['tree_prefix'])) {
-                                        if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
-                                            $selected = ' selected';
-                                        }
-                                    } else {
-                                        if ($count == 0) {
-                                            $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
-                                            $selected = ' selected';
-                                        }
+                <?php
+                // *** Select family tree ***
+                if (!$bot_visit) {
+                    $sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+                    $tree_search_result2 = $dbh->query($sql);
+                    $num_rows = $tree_search_result2->rowCount();
+                    $count = 0;
+                    // *** Changed 1 into 0. So pull-down menu is always shown ***
+                    //if ($num_rows > 1) {
+                    if ($num_rows > 0) {
+                        $link = $link_cls->get_link($uri_path, 'tree_index');
+                ?>
+            </div>
+
+            <div class="col-sm-2">
+                <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                    <!-- <?= __('Family tree') . ': '; ?> -->
+                    <select size="1" name="tree_id" onChange="this.form.submit();" class="form-select form-select-sm">
+                        <option value=""><?= __('Select a family tree:'); ?></option>
+                        <?php
+                        while ($tree_searchDb = $tree_search_result2->fetch(PDO::FETCH_OBJ)) {
+                            // *** Check if family tree is shown or hidden for user group ***
+                            $hide_tree_array2 = explode(";", $user['group_hide_trees']);
+                            $hide_tree2 = false;
+                            if (in_array($tree_searchDb->tree_id, $hide_tree_array2)) $hide_tree2 = true;
+                            if ($hide_tree2 == false) {
+                                $selected = '';
+                                if (isset($_SESSION['tree_prefix'])) {
+                                    if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
+                                        $selected = ' selected';
                                     }
-                                    $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
-                                    echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-                                    $count++;
+                                } else {
+                                    if ($count == 0) {
+                                        $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
+                                        $selected = ' selected';
+                                    }
                                 }
+                                $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                                echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
+                                $count++;
                             }
-                            ?>
-                        </select>
-                    </form>
-            <?php
+                        }
+                        ?>
+                    </select>
+                </form>
+            </div>
+
+    <?php
+                    }
                 }
-            }
-            ?>
-        </div>
+    ?>
 
-        <?php
-        // *** This code is used to restore $dataDb reading. Used for picture etc. ***
-        if (is_string($_SESSION['tree_prefix']))
-            $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+    <?php
+    // *** This code is used to restore $dataDb reading. Used for picture etc. ***
+    if (is_string($_SESSION['tree_prefix']) and $_SESSION['tree_prefix'])
+        $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
 
-        // *** Show quicksearch field ***
-        if (!$bot_visit) {
-            $menu_path = $link_cls->get_link($uri_path, 'list', $tree_id);
+    // *** Show quicksearch field ***
+    if (!$bot_visit) {
+        $menu_path = $link_cls->get_link($uri_path, 'list', $tree_id);
 
-            $quicksearch = '';
-            if (isset($_POST['quicksearch'])) {
-                $quicksearch = safe_text_show($_POST['quicksearch']);
-                $_SESSION["save_quicksearch"] = $quicksearch;
-            }
-            if (isset($_SESSION["save_quicksearch"])) {
-                $quicksearch = $_SESSION["save_quicksearch"];
-            }
-            if ($humo_option['min_search_chars'] == 1) {
-                $pattern = "";
-                $min_chars = " 1 ";
-            } else {
-                $pattern = 'pattern=".{' . $humo_option['min_search_chars'] . ',}"';
-                $min_chars = " " . $humo_option['min_search_chars'] . " ";
-            }
-        ?>
-            <form method="post" action="<?= $menu_path; ?>" id="top_quicksearch">
+        $quicksearch = '';
+        if (isset($_POST['quicksearch'])) {
+            $quicksearch = safe_text_show($_POST['quicksearch']);
+            $_SESSION["save_quicksearch"] = $quicksearch;
+        }
+        if (isset($_SESSION["save_quicksearch"])) {
+            $quicksearch = $_SESSION["save_quicksearch"];
+        }
+        if ($humo_option['min_search_chars'] == 1) {
+            $pattern = "";
+            $min_chars = " 1 ";
+        } else {
+            $pattern = 'pattern=".{' . $humo_option['min_search_chars'] . ',}"';
+            $min_chars = " " . $humo_option['min_search_chars'] . " ";
+        }
+    ?>
+
+        <div class="col-sm-2">
+            <form method="post" action="<?= $menu_path; ?>">
                 <input type="hidden" name="index_list" value="quicksearch">
                 <input type="hidden" name="search_database" value="tree_selected">
-                <?php
-                echo '<input type="text" name="quicksearch" placeholder="' . __('Name') . '" value="' . $quicksearch . '" size="10" ' . $pattern . ' title="' . __('Minimum:') . $min_chars . __('characters') . '">';
-                echo ' <input type="submit" value="' . __('Search') . '">';
-
-                // *** Link for extended search form ***
-                $menu_path = $link_cls->get_link($uri_path, 'list', $tree_id, true);
-                $menu_path .= 'adv_search=1&amp;index_list=search';
-                echo ' <a href="' . $menu_path . '"><img src="images/advanced-search.jpg" width="17" alt="' . __('Advanced search') . '"></a>';
-                ?>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control form-control-sm" name="quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $quicksearch; ?>" size="10" <?= $pattern; ?> title="<?= __('Minimum:') . $min_chars . __('characters'); ?>">
+                    <button type="submit" class="btn btn-success btn-sm"><?= __('Search'); ?></button>
+                </div>
             </form>
-        <?php
-        }
+        </div>
 
-        // *** Favourite list for family pages ***
-        if (!$bot_visit) {
-            include_once(__DIR__ . "/../include/person_cls.php");
-            // *** Show favorites in selection list ***
-            $link = $link_cls->get_link($uri_path, 'family', $tree_id);
-        ?>
-            <form method="POST" action="<?= $link; ?>" style="display : inline;" id="top_favorites_select">
-                <img src="images/favorite_blue.png" alt="<?= __('Favourites'); ?>">
-                <select size=1 name="humo_favorite_id" onChange="this.form.submit();" style="width:115px; height:20px;">
+        <!-- hidden in mobile version -->
+        <div class="col-sm-1 d-none d-md-block">
+            <?php
+            // *** Link for extended search form ***
+            $menu_path = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+            $menu_path .= 'adv_search=1&amp;index_list=search';
+            ?>
+
+            <!--
+            <a href="<?= $menu_path; ?>"><img src="images/advanced-search.jpg" width="17" alt="<?= __('Advanced search'); ?>"></a>
+    -->
+
+            <form method="post" action="<?= $menu_path; ?>">
+                <button type="submit" class="btn btn-light btn-sm"><img src="images/advanced-search.jpg" width="17" alt="<?= __('Advanced search'); ?>"></button>
+            </form>
+        </div>
+    <?php
+    }
+
+    // *** Favourite list for family pages ***
+    if (!$bot_visit) {
+        include_once(__DIR__ . "/../include/person_cls.php");
+        // *** Show favorites in selection list ***
+        $link = $link_cls->get_link($uri_path, 'family', $tree_id);
+    ?>
+        <div class="col-sm-2">
+
+            <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                <!-- <img src="images/favorite_blue.png" alt="<?= __('Favourites'); ?>"> -->
+                <select size=1 name="humo_favorite_id" onChange="this.form.submit();" class="form-select form-select-sm">
                     <option value=""><?= __('Favourites list:'); ?></option>
                     <?php
                     if (isset($_SESSION["save_favorites"])) {
@@ -147,9 +171,12 @@ elseif (is_file('media/logo.jpg'))
                     ?>
                 </select>
             </form>
-        <?php
-        }
-        ?>
+        </div>
+        </div>
+
+    <?php
+    }
+    ?>
 
     </div> <!-- End of Top -->
 
@@ -199,7 +226,7 @@ elseif (is_file('media/logo.jpg'))
         $menu_item_persons = ' id="current"';
     }
     $menu_path_persons = $link_cls->get_link($uri_path, 'list', $tree_id, true);
-    $menu_path_persons.='reset=1';
+    $menu_path_persons .= 'reset=1';
 
     $menu_item_names = '';
     if ($page == 'list_names') {
@@ -226,7 +253,7 @@ elseif (is_file('media/logo.jpg'))
     if ($page == 'birthday') {
         $menu_item_anniversary = ' id="current"';
     }
-    $menu_path_anniversary = $link_cls->get_link($uri_path, 'birthday_list');
+    $menu_path_anniversary = $link_cls->get_link($uri_path, 'anniversary');
 
     $menu_item_statistics = '';
     if ($page == 'statistics') {
@@ -270,7 +297,7 @@ elseif (is_file('media/logo.jpg'))
         $menu_item_places_persons = ' id="current"';
     }
     $menu_path_places_persons = $link_cls->get_link($uri_path, 'list', $tree_id, true);
-    $menu_path_places_persons.='index_list=places&amp;reset=1';
+    $menu_path_places_persons .= 'index_list=places&amp;reset=1';
 
     $menu_item_list_places_families = '';
     if ($page == 'list_places_families') {
@@ -650,8 +677,139 @@ elseif (is_file('media/logo.jpg'))
     </div> <!-- End of humo_menu -->
 
 </div> <!-- End of top_menu -->
-<?php
 
+
+
+
+
+<!-- Test bootstrap menu using hoover effect -->
+<!-- Example from: https://bootstrap-menu.com/detail-basic-hover.html -->
+<!--
+<style>
+    @media all and (min-width: 992px) {
+        .navbar .nav-item .dropdown-menu {
+            display: none;
+        }
+
+        .navbar .nav-item:hover .nav-link {}
+
+        .navbar .nav-item:hover .dropdown-menu {
+            display: block;
+        }
+
+        .navbar .nav-item .dropdown-menu {
+            margin-top: 0;
+        }
+    }
+</style>
+<nav class="mt-5 navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+-->
+        <!-- <a class="navbar-brand" href="#">Brand</a> -->
+<!--
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main_nav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link <?php if ($page == 'index') echo 'active'; ?>" href="<?= $menu_path_home; ?>"><?= __('Home'); ?></a>
+                </li>
+
+                <?php
+                // TODO improve code
+                // *** Menu genealogy (for CMS pages) ***
+                if ($user['group_menu_cms'] == 'y') {
+                    $cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
+                    if ($cms_qry->rowCount() > 0) {
+                ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?php if ($page == 'cms_pages') echo 'active'; ?>" href="<?= $menu_path_cms; ?>"><?= __('Information'); ?></a>
+                        </li>
+                <?php
+                    }
+                }
+                ?>
+
+
+                <li class="nav-item dropdown">
+            -->
+                    <!-- TODO add active if dropdown item is selected -->
+<!--
+                    <a class="nav-link dropdown-toggle" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown"><?= __('Family tree'); ?></a>
+
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item <?php if ($page == 'tree_index') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>"><?= __('Family tree index'); ?></a></li>
+
+                        <li><a class="dropdown-item <?php if ($page == 'persons' || $page == 'family' || $page == 'family_rtf' || $page == 'descendant' || $page == 'ancestor' || $page == 'ancestor_chart' || $page == 'ancestor_sheet' || $page == 'list') echo 'active'; ?>" href="<?= $menu_path_persons ?>"><?= __('Persons'); ?></a></li>
+
+                        <?php
+                        /*
+                        // *** Persons ***
+                        if ($user['group_menu_persons'] == "j") {
+                            echo '<li' . $menu_item_persons . '><a href="' . $menu_path_persons . '">' . __('Persons') . '</a></li>';
+                        }
+                        // *** Names ***
+                        if ($user['group_menu_names'] == "j") {
+                            echo '<li' . $menu_item_names . '><a href="' . $menu_path_names . '">' . __('Names') . "</a></li>\n";
+                        }
+
+                        // *** Places ***
+                        if ($user['group_menu_places'] == "j") {
+                            echo '<li' . $menu_item_places_persons . '><a href="' . $menu_path_places_persons . '">' . __('Places (by persons)') . "</a></li>\n";
+                            echo '<li' . $menu_item_list_places_families . '><a href="' . $menu_path_list_places_families . '">' . __('Places (by families)') . "</a></li>\n";
+                        }
+
+                        if ($user['group_photobook'] == 'j') {
+                            echo '<li' . $menu_item_photoalbum . '><a href="' . $menu_path_photoalbum . '">' . __('Photobook') . "</a></li>\n";
+                        }
+
+                        //if ($user['group_sources']=='j'){
+                        if ($user['group_sources'] == 'j' and $tree_prefix_quoted != '' and $tree_prefix_quoted != 'EMPTY') {
+                            // *** Check if there are sources in the database ***
+                            //$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'AND source_shared='1'");
+                            $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
+                            @$sourceDb = $source_qry->rowCount();
+                            if ($sourceDb > 0) {
+                                echo '<li' . $menu_item_sources . '><a href="' . $menu_path_sources . '">' . __('Sources') . "</a></li>\n";
+                            }
+                        }
+
+                        if ($user['group_addresses'] == 'j' and $tree_prefix_quoted != '' and $tree_prefix_quoted != 'EMPTY') {
+                            // *** Check for addresses in the database ***
+                            $address_qry = $dbh->query("SELECT * FROM humo_addresses
+                                        WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'");
+                            @$addressDb = $address_qry->rowCount();
+                            if ($addressDb > 0) {
+                                echo '<li' . $menu_item_addresses . '><a href="' . $menu_path_addresses . '">' . __('Addresses') . "</a></li>\n";
+                            }
+                        }
+                        */
+                        ?>
+
+
+                    </ul>
+                </li>
+
+
+                <li class="nav-item"><a class="nav-link" href="#"> About </a></li>
+                <li class="nav-item"><a class="nav-link" href="#"> Services </a></li>
+            </ul>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+-->
+
+
+
+
+
+
+<?php
 // *** Override margin if slideshow is used ***
 if ($page == 'index' and isset($humo_option["slideshow_show"]) and $humo_option["slideshow_show"] == 'y') {
     echo '<style>

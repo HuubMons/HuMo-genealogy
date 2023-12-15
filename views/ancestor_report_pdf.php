@@ -31,9 +31,9 @@ $data["picture_presentation"] =  $get_ancestor->getTextPresentation();
 // source_presentation is saved in session.
 
 
-include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
 
+// TODO remove this code. $tree_id allready processed in header.
+// At this moment it can't be removed yet...
 if (isset($_SESSION['tree_prefix'])) {
     $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
         ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
@@ -42,10 +42,10 @@ if (isset($_SESSION['tree_prefix'])) {
     @$datasql = $dbh->query($dataqry);
     @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
 }
-
 $tree_prefix = $dataDb->tree_prefix;
 $tree_id = $dataDb->tree_id;
-$db_functions->set_tree_id($dataDb->tree_id);
+
+$db_functions->set_tree_id($tree_id);
 
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);

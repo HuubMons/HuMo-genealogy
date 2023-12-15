@@ -99,11 +99,6 @@ td.table_header {
     background-image: url('images_sky/default_trans.png');
 }
 
-/* Switchform */
-#switchform {
-    color: #000000;
-}
-
 /* Menu */
 #top_menu {
     color: #bbbbff;
@@ -133,16 +128,6 @@ ul.humo_menu_item li {
     border-right: none;
 }
 
-/* Center box */
-#mainmenu_centerbox {
-    background: #000000;
-    background-image: url('images_sky/sky_dark.gif');
-}
-
-.homepage_box {
-    background-color: transparent;
-}
-
 input {
     font-size: 10px;
     color: #ffdd55;
@@ -157,6 +142,16 @@ div.photobook,
 div.photobooktext {
     background-color: #ffffff;
 }
+
+/* Default background color */
+.genealogy_search{
+    background-color: transparent;
+    border: solid 1px #9d8a8a;
+}
+.genealogy_box{
+    background-color: transparent;
+    border: solid 1px #9d8a8a;
+} 
 
 table.reltable td {
     border: 0px;

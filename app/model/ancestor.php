@@ -25,6 +25,8 @@ include_once(__DIR__ . '/../../include/show_quality.php');
 //$data["text_presentation"]
 //$data["family_expanded"]
 //$data["picture_presentation"]
+
+// TODO move to controller?
 include_once(__DIR__ . '/family.php');
 
 class AncestorModel extends FamilyModel

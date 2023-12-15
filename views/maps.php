@@ -371,9 +371,9 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                 $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
                 $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
 
-                $gn = 0; // generation number
+                $generation_number = 0; // generation number
 
-                function outline($outline_family_id, $outline_person, $gn)
+                function outline($outline_family_id, $outline_person, $generation_number)
                 {
                     global $dbh, $db_functions, $desc_array;
                     global $language, $dirmark1, $dirmark1;
@@ -448,7 +448,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                                     // *** 1e family of child ***
                                     $child_family = explode(";", $childDb->pers_fams);
                                     $child1stfam = $child_family[0];
-                                    outline($child1stfam, $childDb->pers_gedcomnumber, $gn);  // recursive
+                                    outline($child1stfam, $childDb->pers_gedcomnumber, $generation_number);  // recursive
                                 } else {    // Child without own family
                                     if ($childDb->pers_birth_place or $childDb->pers_bapt_place) {
                                         $desc_array[] = $childDb->pers_gedcomnumber;
@@ -464,7 +464,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                 //$desc_array = '';
                 $desc_array = []; // Needed for PHP 7.x: creates an array
 
-                outline($persfams_arr[0], $chosenperson, $gn);
+                outline($persfams_arr[0], $chosenperson, $generation_number);
                 if ($desc_array != '') {
                     $desc_array = array_unique($desc_array); // removes duplicate persons (because of related ancestors)
                 }

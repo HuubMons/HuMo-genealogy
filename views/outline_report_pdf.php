@@ -7,10 +7,10 @@
  * Oct 2023 Huub: seperated HTML and PDF files.
  */
 
-$screen_mode = '';
-if (isset($_POST["screen_mode"]) and ($_POST["screen_mode"] == 'PDF-L' or $_POST["screen_mode"] == 'PDF-P')) {
-    $screen_mode = 'PDF';
-}
+//$screen_mode = '';
+//if (isset($_POST["screen_mode"]) and ($_POST["screen_mode"] == 'PDF-L' or $_POST["screen_mode"] == 'PDF-P')) {
+$screen_mode = 'PDF';
+//}
 
 include_once(__DIR__ . "/header.php");
 
@@ -27,20 +27,7 @@ $data["family_expanded"] =  $get_family->getFamilyExpanded();
 
 
 
-if (isset($_SESSION['tree_prefix'])) {
-    $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-        AND humo_tree_texts.treetext_language='" . $selected_language . "'
-        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
-    @$datasql = $dbh->query($dataqry);
-    @$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-    $tree_id = $dataDb->tree_id;
-}
-
-include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
 $db_functions->set_tree_id($tree_id);
-
 
 // *** Check if family gedcomnumber is valid ***
 $db_functions->check_family($data["family_id"]);
@@ -117,13 +104,13 @@ if ($screen_mode == 'PDF') {
 
 $path_form = $link_cls->get_link($uri_path, 'report_outline', $tree_id);
 
-$gn = 0;   // generatienummer
+$generation_number = 0;
 
 // *************************************
 // ****** FUNCTION OUTLINE *************  // recursive function
 // *************************************
 
-function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
+function outline($outline_family_id, $outline_main_person, $generation_number, $nr_generations)
 {
     global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $show_details, $show_date, $dates_behind_names, $nr_generations;
     global $language, $dirmark1, $dirmark1, $screen_mode, $user;
@@ -132,10 +119,10 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
 
     $show_privacy_text = false;
 
-    if ($nr_generations < $gn) {
+    if ($nr_generations < $generation_number) {
         return;
     }
-    $gn++;
+    $generation_number++;
 
     // *** Count marriages of man ***
     // *** YB: if needed show woman as main_person ***
@@ -193,10 +180,10 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
                     $dir = "rtl";    // in the following code calls the css indentation for rtl pages: "div.rtlsub2" instead of "div.sub2"
                 }
 
-                $indent = $dir . 'sub' . $gn;  // hier wordt de indent bepaald voor de namen div class (sub1, sub2 enz. die in gedcom.css staan)
-                $pdf->SetLeftMargin($gn * 10);
+                $indent = $dir . 'sub' . $generation_number;  // hier wordt de indent bepaald voor de namen div class (sub1, sub2 enz. die in gedcom.css staan)
+                $pdf->SetLeftMargin($generation_number * 10);
                 $pdf->Write(8, "\n");
-                $pdf->Write(8, $gn . '  ');
+                $pdf->Write(8, $generation_number . '  ');
 
                 if ($swap_parent1_parent2 == true) {
                     $pdf->SetFont($pdf_font, 'B', 12);
@@ -205,7 +192,7 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
 
                     if ($show_date == "1" and !$privacy_woman and !$show_details) {
                         if ($dates_behind_names == false) {
-                            $pdf->SetLeftMargin($gn * 10 + 4);
+                            $pdf->SetLeftMargin($generation_number * 10 + 4);
                             $pdf->Write(8, "\n");
                         }
                         $pdf_text = language_date($person_womanDb->pers_birth_date) . ' - ' . language_date($person_womanDb->pers_death_date);
@@ -217,7 +204,7 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
                     $pdf->SetFont($pdf_font, '', 12);
                     if ($show_date == "1" and !$privacy_man and !$show_details) {
                         if ($dates_behind_names == false) {
-                            $pdf->SetLeftMargin($gn * 10 + 4);
+                            $pdf->SetLeftMargin($generation_number * 10 + 4);
                             $pdf->Write(8, "\n");
                         }
                         $pdf_text = language_date($person_manDb->pers_birth_date) . ' - ' . language_date($person_manDb->pers_death_date);
@@ -249,7 +236,7 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
             }
         }
 
-        $pdf->SetLeftMargin($gn * 10);
+        $pdf->SetLeftMargin($generation_number * 10);
         $pdf->Write(8, "\n");
         $pdf->Write(8, 'x  ');
 
@@ -259,7 +246,7 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
             $pdf->SetFont($pdf_font, '', 12);
             if ($show_date == "1" and !$privacy_man and !$show_details) {
                 if ($dates_behind_names == false) {
-                    $pdf->SetLeftMargin($gn * 10 + 4);
+                    $pdf->SetLeftMargin($generation_number * 10 + 4);
                     $pdf->Write(8, "\n");
                 }
                 $pdf_text = language_date($person_manDb->pers_birth_date) . ' - ' . language_date($person_manDb->pers_death_date);
@@ -272,7 +259,7 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
 
             if ($show_date == "1" and !$privacy_woman and !$show_details) {
                 if ($dates_behind_names == false) {
-                    $pdf->SetLeftMargin($gn * 10 + 4);
+                    $pdf->SetLeftMargin($generation_number * 10 + 4);
                     $pdf->Write(8, "\n");
                 }
                 $pdf_text = language_date($person_womanDb->pers_birth_date) . ' - ' . language_date($person_womanDb->pers_death_date);
@@ -309,10 +296,10 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
                     // *** 1e family of child ***
                     $child_family = explode(";", $childDb->pers_fams);
                     $child1stfam = $child_family[0];
-                    outline($child1stfam, $childDb->pers_gedcomnumber, $gn, $nr_generations);  // recursive
+                    outline($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $nr_generations);  // recursive
                 } else {    // Child without own family
-                    if ($nr_generations >= $gn) {
-                        $childgn = $gn + 1;
+                    if ($nr_generations >= $generation_number) {
+                        $childgn = $generation_number + 1;
                         $childindent = $dir . 'sub' . $childgn;
                         $pdf->SetLeftMargin($childgn * 10);
                         $pdf->Write(8, "\n");
@@ -338,8 +325,7 @@ function outline($outline_family_id, $outline_main_person, $gn, $nr_generations)
 
 } // End of outline function
 
-
 // ******* Start function here - recursive if started ******
-outline($data["family_id"], $data["main_person"], $gn, $nr_generations);
+outline($data["family_id"], $data["main_person"], $generation_number, $nr_generations);
 
 $pdf->Output($title . ".pdf", "I");

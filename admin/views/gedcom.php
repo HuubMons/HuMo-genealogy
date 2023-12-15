@@ -1172,7 +1172,7 @@ if (isset($_POST['step3'])) {
         if ($gedcom_accent == "ASCII") {
             // These methods don't work :-(
             //$buffer=iconv("ASCII","UTF-8//IGNORE//TRANSLIT",$buffer);
-            //$buffer=utf8_encode($buffer);
+            //$buffer = mb_convert_encoding($buffer, 'UTF-8', 'ISO-8859-2');
 
             // It looks like this is the only method that alway works:
             // Step 1: convert ASCII to html entities.
@@ -2353,7 +2353,7 @@ if (isset($_POST['step4'])) {
             }
 
             if ($personDb->pers_fams != $families) {
-                $sql = "UPDATE humo_persons SET fams='" . $families . "' WHERE pers_id='" . $personDb->pers_id . "'";
+                $sql = "UPDATE humo_persons SET pers_fams='" . $families . "' WHERE pers_id='" . $personDb->pers_id . "'";
                 //echo $sql.'<br>';
                 $dbh->query($sql);
             }

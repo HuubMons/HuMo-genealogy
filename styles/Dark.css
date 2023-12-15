@@ -106,34 +106,13 @@ ul.humo_menu_item li {
     color: #b0b0b0;
 }
 
-/* KOPPEN ITEMS EN KOPPEN EN TEKST IN DE RECHTER ZIJBALK */
-#mainmenu_centerbox {
-    background-image: none;
+.genealogy_search {
     background-color: #101010;
-}
-
-/*
-.mainmenu_bar {
-	background: url("images_dark/menuhover2.jpg") repeat left top;
-	color: #ff9900;
-	padding: 8px;
-}
-*/
-
-.homepage_box {
     border: solid 1px #EED4D4;
+}
+.genealogy_box {
     background-color: transparent;
-}
-
-/* OVERIG CONTENT */
-#mainmenu_center_alt.style_tree_text fonts {
-    background-image: none;
-    background-color: #101010;
-    color: #b0b0b0;
-}
-
-#mainmenu_right fonts {
-    background-color: #101010;
+    border: solid 1px #EED4D4;
 }
 
 /* Tables */
@@ -222,11 +201,6 @@ div.hour_ancestor_split {
 .chart_line {
     background-color: #000066;
     border: 0px;
-}
-
-/* Switchform */
-#switchform {
-    color: #333399;
 }
 
 div.photobook,

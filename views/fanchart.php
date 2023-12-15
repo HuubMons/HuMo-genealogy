@@ -586,36 +586,32 @@ $realwidth = (840 * $tmp_width) / 100; // realwidth needed for next line (top te
 
 // *** Text on Top: Name of base person and print-help link ***
 $top_for_name = 20;
-echo '<div style="border:1px;z-index:80; position:absolute; top:' . $top_for_name . 'px; left:135px; width:' . $realwidth . 'px; height:30px; text-align:center; color:#000000">';
-echo '<div style="padding:5px">';
-echo "<strong>" . __('Fanchart') . " - " . $treeid[1][0] . "</strong>\n";
-
-//======== HELP POP-UP ========================
-echo '<div class=' . $rtlmarker . 'sddm>';
-echo '<a href="#"';
-echo ' style="display:inline" ';
-echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-echo 'onmouseout="mclosetime()">';
-echo '<br><strong>' . __('How to print the chart') . '</strong>';
-echo '</a>&nbsp;';
-echo '<div class="sddm_fixed" style="z-index:40; text-align:' . $alignmarker . '; padding:4px; direction:' . $rtlmarker . '" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-echo __('<u>Internet Explorer:</u><br>
+?>
+<div style="border:1px;z-index:80; position:absolute; top:<?= $top_for_name; ?>px; left:135px; width:<?= $realwidth; ?>px; height:30px; text-align:center; color:#000000">
+    <div style="padding:5px">
+        <strong><?= __('Fanchart') . ' - ' . $treeid[1][0]; ?></strong>
+        <!-- HELP POP-UP -->
+        <div class=<?= $rtlmarker; ?>sddm>
+            <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',0,0)" onmouseout="mclosetime()">
+                <br><strong><?= __('How to print the chart'); ?></strong>
+            </a>
+            <div class="sddm_fixed" style="z-index:40; text-align:<?= $alignmarker; ?>; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                <?= __('<u>Internet Explorer:</u><br>
 1. Set background to "white" on the menu and press "View"<br>
 2. Right-click on the chart<br>
 3. Save to disk with "Save picture as"<br>
-4. Print the saved picture');
-
-echo __('<p><u>All other browsers:</u><br>
+4. Print the saved picture'); ?>
+                <?= __('<p><u>All other browsers:</u><br>
 Just print the page .... ;-)<br>
 Print the chart in "Landscape" layout, use "Print Preview"<br>
 and adjust printing size to fit the page<br>
-(for regular charts 85%-90% of screen size)');
-echo '</div>';
-echo "</div>\n";
-//=================================
+(for regular charts 85%-90% of screen size)'); ?>
+            </div>
+        </div>
+    </div>
+</div>
 
-echo '</div></div>';
-
+<?php
 //YB  Code to automatically make chart bigger when 7 generations are chosen
 //    and the boxes for generations in outer circle(s) become too small
 //    Same for 6 generations in half circle chart
@@ -646,106 +642,80 @@ if ($fan_width == "auto" or $fan_width == "") {  // if someone cleared the field
     $menu_fan = "auto";
 }
 
-// Semi-transparant MENU BOX on the left
-echo '<div class="fanmenu1">';
-echo '<div class="fanmenu2">';
-echo '<div class="fanmenu3"></div>';
-echo '<div style="position:absolute; left:0; top:0; color: #000000">';
-//echo '<div style="border: 2px solid #000077; padding:10px">';
+$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
+$path_tmp .= 'id=' . $person_id;
+?>
 
-//echo "<form name=\"people\" method=\"post\" action=\"fanchart.php?id=" . $person_id . "\" style=\"display:inline;\">";
-$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id,true);
-$path_tmp.='id=' . $person_id;
-echo "<form name=\"people\" method=\"post\" action=\"".$path_tmp."\" style=\"display:inline;\">";
-echo "<input type=\"submit\" value=\"" . __('View') . "\">";
+<!-- Semi-transparant MENU BOX on the left -->
+<div class="fanmenu1">
+    <div class="fanmenu2">
+        <div class="fanmenu3"></div>
+        <div style="position:absolute; left:0; top:0; color: #000000">
+            <form name="people" method="post" action="<?= $path_tmp; ?>" style="display:inline;">
+                <input type="submit" value="<?= __('View'); ?>"><br>
 
-// Fan style
-echo '<br><hr style="width:110px">';
-echo __('Fan style') . "<br>";
-echo '<div style="text-align:' . $alignmarker . ';margin-left:15%;margin-right:15%">';
-echo "<input type=\"radio\" name=\"fan_style\" value=\"2\"";
-if ($fan_style == 2) echo " checked=\"checked\"";
+                <!-- Fan style -->
+                <hr style="width:110px">
+                <?= __('Fan style'); ?><br>
+                <div style="text-align:<?= $alignmarker; ?>;margin-left:15%;margin-right:15%">
+                    <input type="radio" name="fan_style" value="2" <?php if ($fan_style == 2) echo ' checked'; ?>><?= __('half'); ?><br>
+                    <input type="radio" name="fan_style" value="3" <?php if ($fan_style == 3) echo ' checked'; ?>> 3/4<br>
+                    <input type="radio" name="fan_style" value="4" <?php if ($fan_style == 4) echo ' checked'; ?>><?= __('full'); ?>
+                </div>
 
-echo ">" . __('half');
+                <!-- Nr. of generations -->
+                <hr style="width:110px">
+                <?= __('Generations'); ?>:<br>
+                <select name="chosengen">
+                    <?php for ($i = 2; $i <= min(9, $maxgens); $i++) {; ?>
+                        <option value="<?= $i; ?>" <?php if ($i == $chosengen) echo ' selected'; ?>><?= $i; ?></option>
+                    <?php } ?>
+                </select><br>
 
-echo "<br><input type=\"radio\" name=\"fan_style\" value=\"3\"";
-if ($fan_style == 3) echo " checked=\"checked\"";
-echo "> 3/4";
-echo "<br><input type=\"radio\" name=\"fan_style\" value=\"4\"";
-if ($fan_style == 4) echo " checked=\"checked\"";
-echo ">" . __('full');
-echo '</div>';
+                <!-- Fontsize -->
+                <hr style="width:110px">
+                <?= __('Font size'); ?>:<br>
+                <select name="fontsize">
+                    <?php for ($i = 5; $i <= 12; $i++) {; ?>
+                        <option value="<?= $i; ?>" <?php if ($i == $fontsize) echo ' selected'; ?>><?= $i; ?></option>
+                    <?php }; ?>
+                </select><br>
 
-// Nr. of generations
-echo '<hr style="width:110px">';
-echo __('Generations') . ":<br>";
-echo "<select name=\"chosengen\">";
-for ($i = 2; $i <= min(9, $maxgens); $i++) {
-    echo "<option value=\"" . $i . "\"";
-    if ($i == $chosengen) echo "selected=\"selected\" ";
-    echo ">" . $i . "</option>";
-}
-echo "</select>";
+                <!-- Date display -->
+                <hr style="width:110px">
+                <?= __('Date display'); ?>:<br>
+                <div style="text-align:<?= $alignmarker; ?>;margin-left:5%;margin-right:5%">
+                    <input type="radio" name="date_display" value="1" <?php if ($date_display == "1") echo ' checked'; ?>><?= __('No dates'); ?><br>
+                    <input type="radio" name="date_display" value="2" <?php if ($date_display == "2") echo ' checked'; ?>><?= __('Years only'); ?><br>
+                    <input type="radio" name="date_display" value="3" <?php if ($date_display == "3") echo ' checked'; ?>><?= __('Full dates'); ?>
+                </div>
 
-// Fontsize
-echo '<br><hr style="width:110px">';
-echo __('Font size') . ":<br>";
-echo "<select name=\"fontsize\">";
-for ($i = 5; $i <= 12; $i++) {
-    echo "<option value=\"" . $i . "\"";
-    if ($i == $fontsize) echo "selected=\"selected\" ";
-    echo ">" . $i . "</option>";
-}
-echo "</select>";
+                <!-- Fan width in percentages -->
+                <hr style="width:110px">
+                <?= __('Fan width:'); ?><br>
+                <input type="text" size="3" name="fan_width" value="<?= $menu_fan; ?>"> <b>%</b>
+                <div style="font-size:10px;"><?= __('"auto" for automatic resizing for best display, or value between 50-300'); ?></div>
 
-// Date display
-echo '<br><hr style="width:110px">';
-echo __('Date display') . ":<br>";
+                <!-- Background (for printing with IE) -->
+                <hr style="width:110px">
+                <?= __('Background'); ?>:<br>
 
-echo '<div style="text-align:' . $alignmarker . ';margin-left:5%;margin-right:5%">';
-echo "<input type=\"radio\" name=\"date_display\" value=\"1\"";
-if ($date_display == "1") echo " checked=\"checked\"";
-echo '>' . __('No dates');
+                <div style="text-align:<?= $alignmarker; ?>;margin-left:5%;margin-right:5%">
+                    <input type="radio" name="printing" value="1" <?php if ($printing == 1) echo " checked"; ?>> <span style="font-size:10px;"><?= __('transparent'); ?></span><br>
+                    <input type="radio" name="printing" value="2" <?php if ($printing == 2) echo " checked"; ?>> <span style="font-size:10px;"><?= __('white'); ?></span>
+                </div>
 
-echo "<br><input type=\"radio\" name=\"date_display\" value=\"2\"";
-if ($date_display == "2") echo " checked=\"checked\"";
-echo ">" . __('Years only');
+                <hr style="width:110px">
+                <div style="text-align:<?= $alignmarker; ?>;margin-left:5%;margin-right:5%">
+                    <input type="hidden" name="show_desc" value="0">
+                    <input type="checkbox" name="show_desc" value="1" <?php if ($showdesc == "1") echo ' checked'; ?>> <span style="font-size:10px;"><?= __('descendants'); ?><br>&nbsp;&nbsp;&nbsp;&nbsp;<?= __('under fanchart'); ?></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-echo "<br><input type=\"radio\" name=\"date_display\" value=\"3\"";
-if ($date_display == "3") echo " checked=\"checked\"";
-echo ">" . __('Full dates');
-echo '</div>';
-
-// Fan width in percentages
-echo '<hr style="width:110px">';
-echo __('Fan width:') . "<br>";
-echo "<input type=\"text\" size=\"3\" name=\"fan_width\" value=\"" . $menu_fan . "\"> <b>%</b> ";
-echo '<div style="font-size:10px;">' . __('"auto" for automatic resizing for best display, or value between 50-300') . '</div>';
-
-// Background (for printing with IE)
-echo '<hr style="width:110px">';
-echo __('Background') . ":<br>";
-
-echo '<div style="text-align:' . $alignmarker . ';margin-left:5%;margin-right:5%">';
-echo "<input type=\"radio\" name=\"printing\" value=\"1\"";
-if ($printing == 1) echo " checked=\"checked\"";
-echo "> <span style=\"font-size:10px;\">" . __('transparent') . "</span>";
-echo "<br><input type=\"radio\" name=\"printing\" value=\"2\"";
-if ($printing == 2) echo " checked=\"checked\"";
-echo "> <span style=\"font-size:10px;\">" . __('white') . "</span>";
-echo '</div>';
-
-echo '<hr style="width:110px">';
-echo '<div style="text-align:' . $alignmarker . ';margin-left:5%;margin-right:5%">';
-echo '<input type="hidden" name="show_desc" value="0">';
-echo '<input type="checkbox" name="show_desc" value="1"';
-if ($showdesc == "1") echo ' checked="checked"';
-echo '> <span style="font-size:10px;">' . __('descendants') . '<br>&nbsp;&nbsp;&nbsp;&nbsp;' . __('under fanchart') . '</span>';
-echo '</div>';
-
-echo "</form>";
-echo "</div></div></div>";
-
+<?php
 // *** Container for fanchart ***
 echo '<div style="position:absolute; top:60px; left:135px; width:' . (840 * $fan_width / 100) . 'px">';
 echo '<div style="padding:5px">';
@@ -779,5 +749,5 @@ if ($showdesc == "1") {
 
 echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
 
-echo '<div style="left:135px; height:520px; width:10px"></div>';
+echo '<div style="left:135px; height:650px; width:10px"></div>';
 include_once(__DIR__ . "/footer.php");

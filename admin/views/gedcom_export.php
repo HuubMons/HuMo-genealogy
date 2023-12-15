@@ -483,11 +483,11 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         } else {
             $desc_fams = $fam_searchDb->pers_famc;
         }
-        $gn = 0;
+        $generation_number = 0;
 
         // *** Only use first marriage of selected person to avoid error. Other marriages will be processed in the function! ***
         $pers_fams = explode(";", $desc_fams);
-        descendants($pers_fams[0], $desc_pers, $gn, $max_gens);
+        descendants($pers_fams[0], $desc_pers, $generation_number, $max_gens);
     }
     if (isset($_POST['part_tree']) and $_POST['part_tree'] == 'part' and isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") {
         // map ancestors
@@ -2215,16 +2215,16 @@ function sources_export($connect_kind, $connect_sub_kind, $connect_connect_id, $
     }
 }
 
-function descendants($family_id, $main_person, $gn, $max_generations)
+function descendants($family_id, $main_person, $generation_number, $max_generations)
 {
     global $dbh, $tree_id, $db_functions;
     global $persids, $famsids;
     global $language;
     $family_nr = 1; //*** Process multiple families ***
-    if ($max_generations < $gn) {
+    if ($max_generations < $generation_number) {
         return;
     }
-    $gn++;
+    $generation_number++;
     // *** Count marriages of man ***
     // *** If needed show woman as main_person ***
     if ($family_id == '') { // single person
@@ -2341,10 +2341,10 @@ function descendants($family_id, $main_person, $gn, $max_generations)
                         // *** 1st family of child ***
                         $child_family = explode(";", $childDb->pers_fams);
                         $child1stfam = $child_family[0];
-                        descendants($child1stfam, $childDb->pers_gedcomnumber, $gn, $max_generations);  // recursive
+                        descendants($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $max_generations);  // recursive
                     } else {  // Child without own family
-                        if ($max_generations >= $gn) {
-                            $childgn = $gn + 1;
+                        if ($max_generations >= $generation_number) {
+                            $childgn = $generation_number + 1;
                             $persids[] = $childDb->pers_gedcomnumber;
                         }
                     }

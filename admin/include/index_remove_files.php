@@ -350,4 +350,10 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
+
+//Next cleanup:
+//  ../app/controller/report_outlineController.php
+
+
+
 // Remark: for testing reset $humo_option['cleanup_status'] option.

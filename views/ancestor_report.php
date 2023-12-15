@@ -189,17 +189,19 @@ while (isset($ancestor_array2[0])) {
                 //$link .= 'screen_mode=ancestor_chart&amp;show_sources=1';
 
                 $link = $uri_path . 'views/ancestor_report_pdf.php';
+?>
+                <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                    <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
+                    <input type="hidden" name="database" value="<?= $_SESSION['tree_prefix']; ?>">
+                    <input type="hidden" name="screen_mode" value="PDF">
 
-                echo '&nbsp;&nbsp;<form method="POST" action="' . $link . '" style="display : inline;">';
-                echo '<input type="hidden" name="id" value="' . $data["main_person"] . '">';
-                echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
-                echo '<input type="hidden" name="screen_mode" value="PDF">';
+                    <!-- needed to check PDF M/F/? icons -->
+                    <input type="hidden" name="ancestor_report" value="1">
 
-                // *** needed to check PDF M/F/? icons ***
-                echo '<input type="hidden" name="ancestor_report" value="1">';
+                    <input type="submit" class="btn btn-sm btn-danger" value="<?= __('PDF'); ?>" name="submit">
+                </form>
 
-                echo '<input class="fonts" type="Submit" name="submit" value="' . __('PDF Report') . '">';
-                echo '</form>';
+            <?php
             }
 
             if ($user["group_rtf_button"] == 'y' and $language["dir"] != "rtl") {
@@ -207,16 +209,16 @@ while (isset($ancestor_array2[0])) {
                 $vars['id'] = $data["main_person"];
                 $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
                 $link .= 'show_sources=1';
-                echo ' <form method="POST" action="' . $link . '" style="display : inline;">';
-                //echo '<input type="hidden" name="id" value="' . $data["main_person"] . '">';
-                //echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
-                echo '<input type="hidden" name="screen_mode" value="RTF">';
+            ?>
+                <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                    <input type="hidden" name="screen_mode" value="RTF">
 
-                // *** needed to check RTF M/F/? icons ***
-                echo '<input type="hidden" name="ancestor_report" value="1">';
+                    <!-- needed to check RTF M/F/? icons -->
+                    <input type="hidden" name="ancestor_report" value="1">
 
-                echo '<input class="fonts" type="Submit" name="submit" value="' . __('RTF Report') . '">';
-                echo '</form>';
+                    <input type="submit" class="btn btn-sm btn-primary" value="<?= __('RTF'); ?>" name="submit">
+                </form>
+<?php
             }
         }
 

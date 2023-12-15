@@ -70,7 +70,7 @@ if (isset($_POST['send_mail']) and $register_allowed == true) {
         //$headers .= "From: \"".$_POST['register_name']."\" <".$_POST['register_mail'].">\n";
 
         //@$mail = mail($register_address, $register_subject, $register_message, $headers);
-        include_once(__DIR__.'/../include/mail.php');
+        include_once(__DIR__ . '/../include/mail.php');
 
         // *** Set who the message is to be sent from ***
         $mail->setFrom($_POST['register_mail'], $_POST['register_name']);
@@ -129,71 +129,60 @@ if ($show_form) {
         //$menu_path_register = $link_cls->get_link($uri_path, 'register');
 ?>
 
-        <h1><?= __('User registration form'); ?></h1>
+        <h1 class="my-4"><?= __('User registration form'); ?></h1>
 
-        <!-- Layout: https://www.w3schools.com/csS/tryit.asp?filename=trycss_form_responsive -->
         <div class="container">
             <form action="<?= $path; ?>" method="post">
-                <div class="row">
-                    <div class="col-25">
-                        <label for="name"><?= __('Name'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="name" class="input" name="register_name" placeholder="<?= __('Name'); ?>" value="<?= $register_name; ?>">
+                <div class="mb-2 row">
+                    <label for="name" class="col-sm-3 col-form-label"><?= __('Name'); ?></label>
+                    <div class="col-sm-5">
+                        <input type="text" id="name" class="form-control" name="register_name" placeholder="<?= __('Name'); ?>" value="<?= $register_name; ?>">
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-25">
-                        <label for="mail_sender"><?= __('E-mail address'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <input type="email" id="register_mail" class="input" name="register_mail" placeholder="<?= __('E-mail address'); ?>" value="<?= $register_mail; ?>">
+                <div class="mb-2 row">
+                    <label for="mail_sender" class="col-sm-3 col-form-label"><?= __('E-mail address'); ?></label>
+                    <div class="col-sm-5">
+                        <input type="email" id="register_mail" class="form-control" name="register_mail" placeholder="<?= __('E-mail address'); ?>" value="<?= $register_mail; ?>">
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-25">
-                        <label for="register_password"><?= __('Password'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <input type="password" id="register_password" class="input" name="register_password">
+                <div class="mb-2 row">
+                    <label for="register_password" class="col-sm-3 col-form-label"><?= __('Password'); ?></label>
+                    <div class="col-sm-5">
+                        <input type="password" id="register_password" class="form-control" name="register_password">
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-25">
-                        <label for="register_repeat_password"><?= __('Repeat password'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <input type="password" id="register_repeat_password" class="input" name="register_repeat_password">
+                <div class="mb-2 row">
+                    <label for="register_repeat_password" class="col-sm-3 col-form-label"><?= __('Repeat password'); ?></label>
+                    <div class="col-sm-5">
+                        <input type="password" id="register_repeat_password" class="form-control" name="register_repeat_password">
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-25">
-                        <label for="register_text"><?= __('Message'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <textarea id="register_text" class="input" name="register_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $register_text; ?></textarea>
+                <div class="mb-2 row">
+                    <label for="register_text" class="col-sm-3 col-form-label"><?= __('Message'); ?></label>
+                    <div class="col-sm-5">
+                        <textarea id="register_text" class="form-control" name="register_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $register_text; ?></textarea>
                     </div>
                 </div>
 
                 <?php if ($humo_option["use_spam_question"] == 'y') { ?>
-                    <div class="row">
-                        <div class="col-25">
-                            <label for="register_block_spam"><?= __('Please answer the block-spam-question:'); ?></label>
-                        </div>
-                        <div class="col-75">
+                    <div class="mb-2 row">
+                        <label for="register_block_spam" class="col-sm-3 col-form-label"><?= __('Please answer the block-spam-question:'); ?></label>
+                        <div class="col-sm-5">
                             <?= $humo_option["block_spam_question"]; ?>
-                            <input type="text" id="register_block_spa," class="input" name="register_block_spam">
+                            <input type="text" id="register_block_spam" class="form-control" name="register_block_spam">
                         </div>
                     </div>
                 <?php } ?>
 
-                <br>
-                <div class="row">
-                    <input type="submit" class="input_submit" name="send_mail" value="<?= __('Send'); ?>">
+                <div class="mb-2 row">
+                    <label for="2fa_code" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-5">
+                        <input type="submit" class="col-sm-4 btn btn-success" name="send_mail" value="<?= __('Send'); ?>">
+                    </div>
                 </div>
             </form>
         </div>

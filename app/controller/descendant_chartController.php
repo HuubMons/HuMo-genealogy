@@ -2,7 +2,7 @@
 require_once  __DIR__ . "/../model/family.php";
 require_once  __DIR__ . "/../model/descendant.php";
 
-class descendant_chartController
+class Descendant_chartController
 {
     //private $db_functions, $user;
 

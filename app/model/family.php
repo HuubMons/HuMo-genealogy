@@ -4,7 +4,6 @@
  * July 2023: refactor family script to MVC
  */
 
-//TODO check included files.
 include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/language_event.php');
 include_once(__DIR__ . '/../../include/date_place.php');
@@ -146,6 +145,7 @@ class FamilyModel
     // *** Show/ hide texts ***
     public function getTextPresentation()
     {
+        // TODO remove global
         global $user;
         $text_presentation_array = array('show', 'hide', 'popup');
         if (isset($_GET['text_presentation']) and in_array($_GET['text_presentation'], $text_presentation_array)) {
@@ -206,6 +206,7 @@ class FamilyModel
 
     function getDescendantHeader($name, $tree_id, $family_id, $main_person)
     {
+        // TODO remove global
         global $humo_option, $link_cls, $uri_path;
 
         $text = '<h1 class="standard_header">';
@@ -248,6 +249,7 @@ class FamilyModel
     // *** Used in family script: show/ hide Google maps ***
     function getMapsPresentation()
     {
+        // TODO remove global
         global $dbh, $user;
 
         // *** Default setting is selected by administrator ***

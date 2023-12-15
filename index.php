@@ -78,8 +78,14 @@ if ($page == 'index') {
     //}
 
     if ($text) {
-        // *** Show CMS page ***
-        echo '<div id="mainmenu_centerbox">' . $text . '</div>';
+?>
+        <!-- Show CMS page -->
+        <div class="row m-lg-1 py-3 genealogy_row">
+            <div class="col-sm-12">
+                <?= $text; ?>
+            </div>
+        </div>
+<?php
     } else {
         // *** Show default HuMo-genealogy homepage ***
         //$mainindex->show_tree_index();
@@ -87,31 +93,34 @@ if ($page == 'index') {
     }
 } elseif ($page == 'address') {
     require __DIR__ . '/app/controller/addressController.php';
-    $controllerObj = new addressController($db_functions, $user);
+    $controllerObj = new AddressController($db_functions, $user);
     $data = $controllerObj->detail();
     require  __DIR__ . '/views/address.php';
 } elseif ($page == 'addresses') {
     require __DIR__ . '/app/controller/addressesController.php';
-    $controllerObj = new addressesController($dbh, $user, $tree_id);
+    $controllerObj = new AddressesController($dbh, $user, $tree_id);
     $data = $controllerObj->list();
     require __DIR__ . '/views/addresses.php';
 } elseif ($page == 'ancestor_report') {
     require __DIR__ . '/app/controller/ancestor_reportController.php';
-    $controllerObj = new ancestor_reportController($dbh);
+    $controllerObj = new Ancestor_reportController($dbh);
     $data = $controllerObj->list($tree_id);
     require __DIR__ . '/views/ancestor_report.php';
 } elseif ($page == 'ancestor_chart') {
     require __DIR__ . '/app/controller/ancestor_chartController.php';
-    $controllerObj = new ancestor_chartController($dbh, $user);
+    $controllerObj = new Ancestor_chartController($dbh, $user);
     $data = $controllerObj->list($tree_id);
     require __DIR__ . '/views/ancestor_chart.php';
 } elseif ($page == 'ancestor_sheet') {
     require __DIR__ . '/app/controller/ancestor_sheetController.php';
-    $controllerObj = new ancestor_sheetController($dbh, $user);
+    $controllerObj = new Ancestor_sheetController($dbh, $user);
     $data = $controllerObj->list($tree_id);
     require __DIR__ . '/views/ancestor_sheet.php';
-} elseif ($page == 'birthday') {
-    require __DIR__ . '/views/birthday_list.php';
+} elseif ($page == 'anniversary') {
+    require __DIR__ . '/app/controller/AnniversaryController.php';
+    $controllerObj = new AnniversaryController();
+    $data = $controllerObj->anniversary();
+    require __DIR__ . '/views/anniversary.php';
 } elseif ($page == 'cms_pages') {
     require __DIR__ . '/app/controller/cms_pagesController.php';
     $controllerObj = new CMS_pagesController($dbh, $user);
@@ -121,14 +130,14 @@ if ($page == 'index') {
     require __DIR__ . '/views/cookies.php';
 } elseif ($page == 'descendant') {
     require __DIR__ . '/app/controller/descendant_chartController.php';
-    $controllerObj = new descendant_chartController();
+    $controllerObj = new Descendant_chartController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
     require __DIR__ . '/views/descendant_chart.php';
 } elseif ($page == 'family_rtf') {
     require __DIR__ . '/views/family_rtf.php';
 } elseif ($page == 'family') {
     require __DIR__ . '/app/controller/familyController.php';
-    $controllerObj = new familyController();
+    $controllerObj = new FamilyController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
     require __DIR__ . '/views/family.php';
 } elseif ($page == 'fanchart') {
@@ -137,19 +146,28 @@ if ($page == 'index') {
     require __DIR__ . '/views/help.php';
 } elseif ($page == 'hourglass') {
     require __DIR__ . '/app/controller/hourglassController.php';
-    $controllerObj = new hourglassController();
+    $controllerObj = new HourglassController();
     $data = $controllerObj->getHourglass($dbh, $tree_id);
     require __DIR__ . '/views/hourglass.php';
 } elseif ($page == 'latest_changes') {
     require __DIR__ . '/app/controller/latest_changesController.php';
-    $controllerObj = new latest_changesController($dbh);
+    $controllerObj = new Latest_changesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id);
     require __DIR__ . '/views/latest_changes.php';
 } elseif ($page == 'list') {
+    require __DIR__ . '/app/controller/listController.php';
+    $controllerObj = new ListController();
+    $data = $controllerObj->list_names($dbh, $tree_id, $user, $humo_option);
     require __DIR__ . '/views/list.php';
 } elseif ($page == 'list_places_families') {
+    require __DIR__ . '/app/controller/list_places_familiesController.php';
+    $controllerObj = new ListPlacesFamiliesController();
+    $data = $controllerObj->list_places_names($tree_id);
     require __DIR__ . '/views/list_places_families.php';
 } elseif ($page == 'list_names') {
+    require __DIR__ . '/app/controller/list_namesController.php';
+    $controllerObj = new List_namesController();
+    $data = $controllerObj->list_names($dbh, $tree_id, $user);
     require __DIR__ . '/views/list_names.php';
 } elseif ($page == 'login') {
     require __DIR__ . '/views/login.php';
@@ -162,28 +180,38 @@ if ($page == 'index') {
 } elseif ($page == 'register') {
     require __DIR__ . '/views/register.php';
 } elseif ($page == 'relations') {
+    require __DIR__ . '/app/controller/relationsController.php';
+    $controllerObj = new RelationsController($dbh);
+    $data = $controllerObj->getRelations();
     require __DIR__ . '/views/relations.php';
 } elseif ($page == 'report_outline') {
-    require __DIR__ . '/app/controller/report_outlineController.php';
-    $controllerObj = new report_outlineController();
-    $data = $controllerObj->getFamily($dbh, $tree_id);
+    require __DIR__ . '/app/controller/outline_reportController.php';
+    $controllerObj = new Outline_reportController();
+    $data = $controllerObj->getOutlineReport($dbh, $tree_id, $humo_option);
     require __DIR__ . '/views/outline_report.php';
 } elseif ($page == 'settings') {
+    require __DIR__ . '/app/controller/user_settingsController.php';
+    $controllerObj = new User_settingsController();
+    $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
     require __DIR__ . '/views/user_settings.php';
 } elseif ($page == 'statistics') {
     require __DIR__ . '/views/statistics.php';
 } elseif ($page == 'sources') {
     require __DIR__ . '/app/controller/sourcesController.php';
-    $controllerObj = new sourcesController($dbh);
+    $controllerObj = new SourcesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id, $user, $humo_option, $link_cls, $uri_path);
     require __DIR__ . '/views/sources.php';
 } elseif ($page == 'source') {
     require __DIR__ . '/app/controller/sourceController.php';
-    $controllerObj = new sourceController($dbh, $db_functions, $tree_id); // Using Controller.
+    $controllerObj = new SourceController($dbh, $db_functions, $tree_id); // Using Controller.
     if (isset($_GET["id"])) $id = $_GET["id"]; // *** url_rewrite is disabled ***
     $data = $controllerObj->source($id);
     require __DIR__ . '/views/source.php';
-} elseif ($page == 'timelines') {
+} elseif ($page == 'timeline') {
+    require __DIR__ . '/app/controller/timelineController.php';
+    $controllerObj = new TimelineController();
+    if (isset($_GET["id"])) $id = $_GET["id"]; // *** url_rewrite is disabled ***
+    $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
     require __DIR__ . '/views/timelines.php';
 } elseif ($page == 'tree_index') {
     require __DIR__ . '/views/tree_index.php';

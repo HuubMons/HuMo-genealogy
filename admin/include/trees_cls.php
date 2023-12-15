@@ -497,7 +497,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
             $pers_cls = new person_cls;
 
             if (!isset($_POST["search1"]) and !isset($_POST["search2"]) and !isset($_POST["manual_compare"]) and !isset($_POST["switch"])) {
-                // no button pressed: this is a fresh entry from humogen's frontpage link: start clean search form
+                // no button pressed: this is a fresh entry from frontpage link: start clean search form
                 $_SESSION["search1"] = '';
                 $_SESSION["search2"] = '';
                 $_SESSION['rel_search_firstname'] = '';

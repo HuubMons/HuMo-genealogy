@@ -21,7 +21,7 @@ $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
 // TODO expanded view is disabled for PDF. Will we using expand in future for PDF?
 // *** No expanded view in PDF export ***
-$data["family_expanded"]=false;
+$data["family_expanded"] = false;
 $data["source_presentation"] =  $get_family->getSourcePresentation();
 $data["picture_presentation"] =  $get_family->getPicturePresentation();
 $data["text_presentation"] =  $get_family->getTextPresentation();
@@ -30,20 +30,6 @@ $data["number_generation"] = $get_family->getNumberGeneration();
 
 
 
-// TODO test code. Maybe not needed.
-include_once(__DIR__ . "../../include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
-
-// TODO test code. Maybe not needed.
-if (isset($_SESSION['tree_prefix'])) {
-    $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-        AND humo_tree_texts.treetext_language='" . $selected_language . "'
-        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
-    @$datasql = $dbh->query($dataqry);
-    @$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-}
-$tree_id = $dataDb->tree_id;
 $db_functions->set_tree_id($tree_id);
 
 $family_nr = 1;  // *** process multiple families ***
@@ -109,7 +95,7 @@ if (!$data["family_id"]) {
     $pdf->SetFont($pdf_font, 'BI', 12);
     $pdf->SetFillColor(196, 242, 107);
 
-    $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+    $treetext = show_tree_text($tree_id, $selected_language);
     $family_top = $treetext['family_top'];
     if ($family_top != '') {
         $pdf->Cell(0, 6, pdf_convert($family_top), 0, 1, 'L', true);
@@ -286,7 +272,7 @@ else {
                 $pdf->SetFont($pdf_font, 'BI', 12);
                 $pdf->SetFillColor(186, 244, 193);
 
-                $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+                $treetext = show_tree_text($tree_id, $selected_language);
                 $family_top = $treetext['family_top'];
                 if ($family_top != '') {
                     $pdf->SetLeftMargin(10);

@@ -4,7 +4,7 @@ require_once  __DIR__ . "/../model/sources.php";
 include_once(__DIR__ . "/../../include/language_date.php");
 include_once(__DIR__ . "/../../include/date_place.php");
 
-class sourcesController
+class SourcesController
 {
     private $dbh;
 
@@ -23,12 +23,14 @@ class sourcesController
         $order_sources = $sourceModel->get_order_sources();
         $data = array(
             "listsources" => $listsources,
-            "line_pages" => $line_pages,
             "source_search" => $source_search,
             "sort_desc" => $sort_desc,
             "order_sources" => $order_sources,
             "title" => __('Sources')
         );
+
+        $data = array_merge($data, $line_pages);
+
         return $data;
     }
 }

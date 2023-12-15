@@ -5,8 +5,8 @@ class editor_event_cls
     //function utf8ize($d)
     //{
     //	foreach ($d as $key => $value) {
-    //		// utf8_encode = DEPRECATED
-    //		$d[$key] = utf8_encode($value);
+    //		//$d[$key] = utf8_encode($value); // deprecated in PHP 8.2.
+    //      $d[$key] = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-2'); 
     //	}
     //	return $d;
     //}
@@ -77,7 +77,8 @@ class editor_event_cls
 
         $text = '';
 
-        if ($event_kind == 'picture') {
+        //if ($event_kind == 'picture') {
+        if ($event_kind == 'picture' or $event_kind == 'marriage_picture') {
             $picture_array = array();
             // *** Picture list for selecting pictures ***
             $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'");
@@ -85,7 +86,6 @@ class editor_event_cls
             $tree_pict_path = $dataDb->tree_pict_path;
             if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
             $dir = $path_prefix . $tree_pict_path;
-
             if (file_exists($dir)) {
                 $dh  = opendir($dir);
                 while (false !== ($filename = readdir($dh))) {
@@ -999,7 +999,8 @@ function myFunction() {
                             $thumb_prefix = 'thumb_';
                         }
                         $picture = $path_prefix . $tree_pict_path3 . $thumb_prefix . $data_listDb->event_event;
-
+//$tree_pic_path3 is missing for family picture
+//                        echo $path_prefix .'-'. $tree_pict_path3.'-'.$data_listDb->event_event;
                         // *** Check if picture is in subdirectory ***
                         // Example: subdir1_test/xy/2022_02_12 Scheveningen.jpg
                         if ($thumb_prefix == '') {

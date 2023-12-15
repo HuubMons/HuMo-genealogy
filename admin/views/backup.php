@@ -333,7 +333,7 @@ function restore_tables($filename)
 
         //if($original_name != 'humo_backup.sql.zip') {
         //	// if a file was uploaded to backup_tmp in order to restore, delete it now.
-        //	// if however the restore was made from the last humogen backup (humo_backup.sql.zip) it should always stay in /admin, until replaced by next backup
+        //	// if however the restore was made from the last backup (humo_backup.sql.zip) it should always stay in /admin, until replaced by next backup
         //	unlink($original_name);
         //}
 

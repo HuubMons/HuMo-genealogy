@@ -4,7 +4,7 @@
  * First version: René Janssen.
  * Updated by: Huub.
  *
- * April 2015, Huub: added tab menu, and Yossi's new freqently firstnames and surnames pages.
+ * April 2015, Huub: added tab menu, and Yossi's freqently firstnames and surnames pages.
  */
 
 // *** Standard function for names ***
@@ -77,31 +77,29 @@ if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_firstnames') $menu_
     <div class="pageHeading">
         <div class="pageTabsContainer" aria-hidden="false">
             <ul class="pageTabs">
-                <?php
-                $select_item = '';
-                if ($menu_tab == 'stats_tree') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="' . $path2 . 'tree_id=' . $tree_id . '">' . __('Family tree') . "</a></div></li>";
+                <li class="pageTabItem">
+                    <div tabindex="0" class="pageTab<?php if ($menu_tab == 'stats_tree') echo ' pageTab-active'; ?>">
+                        <a href="<?= $path2; ?>tree_id=<?= $tree_id; ?>"><?= __('Family tree'); ?></a>
+                    </div>
+                </li>
 
-                $select_item = '';
-                if ($menu_tab == 'stats_persons') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="' . $path2 . 'menu_tab=stats_persons&amp;tree_id=' . $tree_id . '">' . __('Persons') . "</a></div></li>";
+                <li class="pageTabItem">
+                    <div tabindex="0" class="pageTab<?php if ($menu_tab == 'stats_persons') echo ' pageTab-active'; ?>">
+                        <a href="<?= $path2; ?>menu_tab=stats_persons&amp;tree_id=<?= $tree_id; ?>"><?= __('Persons'); ?></a>
+                    </div>
+                </li>
 
-                $select_item = '';
-                if ($menu_tab == 'stats_surnames') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="' . $path2 . 'menu_tab=stats_surnames&amp;tree_id=' . $tree_id . '">' . __('Frequency of Surnames') . "</a></div></li>";
+                <li class="pageTabItem">
+                    <div tabindex="0" class="pageTab<?php if ($menu_tab == 'stats_surnames') echo ' pageTab-active'; ?>">
+                        <a href="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>"><?= __('Frequency of Surnames'); ?></a>
+                    </div>
+                </li>
 
-                $select_item = '';
-                if ($menu_tab == 'stats_firstnames') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="' . $path2 . 'menu_tab=stats_firstnames&amp;tree_id=' . $tree_id . '">' . __('Frequency of First Names') . "</a></div></li>";
-                ?>
+                <li class="pageTabItem">
+                    <div tabindex="0" class="pageTab<?php if ($menu_tab == 'stats_firstnames') echo ' pageTab-active'; ?>">
+                        <a href="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?>"><?= __('Frequency of First Names'); ?></a>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>

@@ -1894,7 +1894,7 @@ if (isset($_POST['event_id'])) {
 
         // *** Also change person colors by descendants of selected person ***
         if (isset($_POST["pers_colour_desc"][$key])) {
-            // EXAMPLE: descendants($family_id,$main_person,$gn,$nr_generations);
+            // EXAMPLE: descendants($family_id,$main_person,$generation_number,$nr_generations);
             descendants($marriage, $pers_gedcomnumber, 0, 20);
             // *** Starts with 2nd descendant, skip main person (that's already processed above this code)! ***
             // *** $descendant_array[0]= not in use ***
@@ -2064,7 +2064,7 @@ if (isset($_POST['event_drop2'])) {
 
         // *** Also remove colour mark from descendants and/ or ancestors ***
         if (isset($_POST['event_descendants'])) {
-            // EXAMPLE: descendants($family_id,$main_person,$gn,$nr_generations);
+            // EXAMPLE: descendants($family_id,$main_person,$generation_number,$nr_generations);
             descendants($marriage, $pers_gedcomnumber, 0, 20);
             // *** Starts with 2nd descendant, skip main person (that's already processed above this code)! ***
             for ($i = 2; $i <= $descendant_id; $i++) {

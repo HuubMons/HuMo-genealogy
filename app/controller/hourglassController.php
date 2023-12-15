@@ -2,7 +2,7 @@
 require_once  __DIR__ . "/../model/family.php";
 require_once  __DIR__ . "/../model/descendant.php";
 
-class hourglassController
+class HourglassController
 {
     //private $db_functions, $user;
 

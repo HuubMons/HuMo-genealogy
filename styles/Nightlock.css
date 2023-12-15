@@ -43,6 +43,15 @@ a:hover {
     text-decoration: underline;
 }
 
+.genealogy_search {
+    background-color: transparent;
+    border: solid 1px #EED4D4;
+}
+.genealogy_box {
+    background-color: transparent;
+    border: solid 1px #EED4D4;
+}
+
 /* Tables */
 table.humo {
     background-color: #CFB09D;
@@ -51,8 +60,6 @@ table.humo {
 /* 1st table A-Z */
 table.humo td {
     border-color: #CFB09D;
-    /* background familypage and 1st table */
-    /* background-color: #fcfcfc; */
 }
 
 table.humo tr:first-of-type td {
@@ -92,22 +99,13 @@ td.table_header {
 
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
-    /* font-size: 110%; */
     color: #0058af;
-    /* font-weight: bold; */
-    /* text-align: center; */
-    /* line-height: 200%; */
 }
 
 /* report_ancestor */
 .chart_line {
     background-color: #AAA;
     border: 0px;
-}
-
-/* Switchform */
-#switchform {
-    color: #333399;
 }
 
 /* Menu */
@@ -169,13 +167,6 @@ ul.humo_menu_item2 li a {
 #humo_menu a:hover {
     color: #FFFFFF;
 }
-
-/* top bar in left - content - right boxes: only in main menu */
-/*
-.mainmenu_bar {
-	background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
-}
-*/
 
 div.photobook,
 div.photobooktext {

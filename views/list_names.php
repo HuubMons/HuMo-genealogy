@@ -1,32 +1,18 @@
 <!-- TODO check all links in this script -->
-<p class="fonts">
-    <!--*** Find first first_character of last name *** -->
+<br>
 <div style="text-align:center">
-
+    <!-- Find first character of last name -->
     <?php
-    $person_qry = "SELECT UPPER(substring(pers_lastname,1,1)) as first_character
-        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
+    foreach ($data["alphabet_array"] as $alphabet) {
+        $vars['last_name'] = $alphabet;
+        $link = $link_cls->get_link($uri_path, 'list_names', $tree_id, false, $vars);
 
-    // *** Search pers_prefix for names like: "van Mons" ***
-    if ($user['group_kindindex'] == "j") {
-        $person_qry = "SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
-    }
-    @$person_result = $dbh->query($person_qry);
-    while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
-        // TODO use function
-        if ($humo_option["url_rewrite"] == "j") {
-            // *** url_rewrite ***
-            $path_tmp = $uri_path . 'list_names/' . $tree_id . '/' . $personDb->first_character;
-        } else {
-            $path_tmp = 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $personDb->first_character;
-        }
-        echo ' <a href="' . $path_tmp . '">' . $personDb->first_character . '</a>';
+        echo ' <a href="' . $link . '">' . $alphabet . '</a>';
     }
 
-    //TODO also use url_rewrite.
-    $path_tmp = "index.php?page=list_names&amp;last_name=all";
-    echo ' <a href="' . $path_tmp . '">' . __('All names') . "</a>\n";
+    $vars['last_name'] = 'all';
+    $link = $link_cls->get_link($uri_path, 'list_names', $tree_id, false, $vars);
+    echo ' <a href="' . $link . '">' . __('All names') . "</a>\n";
     ?>
 </div><br>
 
@@ -40,25 +26,16 @@ if (isset($_GET['last_name']) and $_GET['last_name'] and is_string($_GET['last_n
 }
 
 // *** MAIN SETTINGS ***
-$maxcols = 2; // number of name & nr colums in table. For example 3 means 3x name col + nr col
-if (isset($_POST['maxcols'])) {
-    $maxcols = $_POST['maxcols'];
-    $_SESSION["save_maxcols"] = $maxcols;
-}
-if (isset($_SESSION["save_maxcols"])) $maxcols = $_SESSION["save_maxcols"];
+$maxcols = $data["max_cols"];
 
-$maxnames = 100;
-if (isset($_POST['freqsurnames'])) {
-    $maxnames = $_POST['freqsurnames'];
-    $_SESSION["save_maxnames"] = $maxnames;
-}
-if (isset($_SESSION["save_maxnames"])) $maxnames = $_SESSION["save_maxnames"];
-$nr_persons = $maxnames;
+$maxnames = $data["max_names"];
+$nr_persons = $data["max_names"];
 
 $item = 0;
 if (isset($_GET['item'])) {
     $item = $_GET['item'];
 }
+
 $start = 0;
 if (isset($_GET["start"])) {
     $start = $_GET["start"];
@@ -72,37 +49,46 @@ function tablerow($nr, $lastcol = false)
     global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id, $link_cls, $uri_path;
     $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
 
-    echo '<td class="namelst">';
-    if (isset($freq_last_names[$nr])) {
-        $top_pers_lastname = '';
-        if ($freq_pers_prefix[$nr]) {
-            $top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
-        }
-        $top_pers_lastname .= $freq_last_names[$nr];
-        if ($user['group_kindindex'] == "j") {
-            echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
-        } else {
-            $top_pers_lastname = $freq_last_names[$nr];
+?>
+    <td class="namelst">
+        <?php
+        if (isset($freq_last_names[$nr])) {
+            $top_pers_lastname = '';
             if ($freq_pers_prefix[$nr]) {
-                $top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
+                $top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
             }
-            echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
-            if ($freq_pers_prefix[$nr]) {
-                echo '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
+            $top_pers_lastname .= $freq_last_names[$nr];
+            if ($user['group_kindindex'] == "j") {
+                echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
             } else {
-                echo '&amp;pers_prefix=EMPTY';
+                $top_pers_lastname = $freq_last_names[$nr];
+                if ($freq_pers_prefix[$nr]) {
+                    $top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
+                }
+                echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
+                if ($freq_pers_prefix[$nr]) {
+                    echo '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
+                } else {
+                    echo '&amp;pers_prefix=EMPTY';
+                }
             }
+            echo '&amp;part_lastname=equals">' . $top_pers_lastname . "</a>";
+        } else {
+            echo '-';
         }
-        echo '&amp;part_lastname=equals">' . $top_pers_lastname . "</a>";
-    } else echo '-';
-    echo '</td>';
+        ?>
+    </td>
 
-    if ($lastcol == false)  echo '<td class="namenr" style="text-align:center;border-right-width:3px">'; // not last column numbers
-    else echo '</td><td class="namenr" style="text-align:center">'; // no thick border
-
-    if (isset($freq_last_names[$nr])) echo $freq_count_last_names[$nr];
-    else echo '-';
-    echo '</td>';
+    <td class="namenr" style="text-align:center<?php if ($lastcol == false) echo 'border-right-width:3px'; ?>">
+        <?php
+        if (isset($freq_last_names[$nr])) {
+            echo $freq_count_last_names[$nr];
+        } else {
+            echo '-';
+        }
+        ?>
+    </td>
+<?php
 }
 
 // *** Get names from database ***
@@ -121,7 +107,6 @@ if ($user['group_kindindex'] == "j") {
         FROM humo_persons
         WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(pers_prefix,pers_lastname) LIKE '" . $last_name . "%'
         GROUP BY pers_prefix, pers_lastname";
-
 
     if ($last_name == 'all') {
         // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
@@ -162,8 +147,7 @@ if ($user['group_kindindex'] == "j") {
 }
 
 // *** Add limit to query (results per page) ***
-if ($maxnames != 'ALL') $personqry .= " LIMIT " . $item . "," . $maxnames;
-
+if ($maxnames != '999') $personqry .= " LIMIT " . $item . "," . $maxnames;
 $person = $dbh->query($personqry);
 while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
     if ($personDb->pers_lastname == '') $personDb->pers_lastname = '...';
@@ -194,52 +178,52 @@ $count_persons = $result->rowCount();
 // *** If number of displayed surnames is "ALL" change value into number of surnames ***
 if ($nr_persons == 'ALL') $nr_persons = $count_persons;
 
-//echo '<h1 class="standard_header">'.__('Frequency of Surnames').'</h1>';
-
-// *** Show options line ***
-echo '<div style="text-align:center">';
-
 if ($humo_option["url_rewrite"] == "j") {
     $url = $uri_path . 'list_names/' . $tree_id . '/' . $last_name;
 } else {
     $url = 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $last_name;
 }
 ?>
+
+<!-- <h1 class="standard_header"><?= __('Frequency of Surnames'); ?></h1> -->
+
+<!-- Show options line -->
 <form method="POST" action="<?= $url; ?>" style="display:inline;" id="frqnames">
-    <?= __('Number of displayed surnames') . ': '; ?>
-    <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">
-        <option value="25" <?php if ($maxnames == 25) echo ' selected'; ?>>25</option>
-        <option value="51" <?php if ($maxnames == 51) echo ' selected'; ?>>50</option> <!-- 51 so no empty last field (if more names than this) -->
-        <option value="75" <?php if ($maxnames == 75) echo ' selected'; ?>>75</option>
-        <option value="100" <?php if ($maxnames == 100) echo ' selected'; ?>>100</option>
-        <option value="201" <?php if ($maxnames == 201) echo ' selected'; ?>>200</option> <!-- 201 so no empty last field (if more names than this) -->
-        <option value="300" <?php if ($maxnames == 300) echo ' selected'; ?>>300</option>
-        <option value="ALL" <?php if ($maxnames == 'ALL') echo ' selected'; ?>><?= __('All'); ?></option>
-    </select>
+    <div class="row mb-3">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3">
+            <select size=1 name="freqsurnames" class="form-select form-select-sm" onChange="this.form.submit();">
+                <option><?= __('Number of displayed surnames'); ?></option>
+                <option value="25">25</option>
+                <option value="51">50</option> <!-- 51 so no empty last field (if more names than this) -->
+                <option value="75">75</option>
+                <option value="100">100</option>
+                <option value="201">200</option> <!-- 201 so no empty last field (if more names than this) -->
+                <option value="300">300</option>
+                <option value="999"><?= __('All'); ?></option>
+            </select>
+        </div>
 
-    <?php
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;' . __('Number of columns') . ': ';
-    echo '<select size=1 name="maxcols" onChange="this.form.submit();" style="width: 50px; height:20px;">';
-    for ($i = 1; $i < 7; $i++) {
-        $selected = '';
-        if ($maxcols == $i) $selected = " selected ";
-        echo '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
-    }
-    echo '</select>';
-    ?>
+        <div class="col-sm-3">
+            <select size=1 name="maxcols" class="form-select form-select-sm" onChange="this.form.submit();">
+                <option><?= __('Number of columns'); ?></option>
+                <?php for ($i = 1; $i < 7; $i++) { ?>
+                    <option value="<?= $i; ?>"><?= $i; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="col-sm-3"></div>
+    </div>
 </form>
-<?php
 
+<?php
 //*** Show number of persons and pages *********************
 
 // *** Check for search results ***
 if (@$person->rowCount() == 0) {
-    $line_pages = '';
-    //echo '<br><div class="center">'.__('No names found.').'</div>';
+    //
 } else {
     $show_line_pages = false;
-    $line_pages = __('Page');
-
     if ($humo_option["url_rewrite"] == "j") {
         $uri_path_string = $uri_path . 'list_names/' . $tree_id . '/' . $last_name . '?';
     } else {
@@ -247,63 +231,65 @@ if (@$person->rowCount() == 0) {
     }
 
     // "<="
+    $data["previous_link"] = '';
+    $data["previous_status"] = '';
     if ($start > 1) {
         $show_line_pages = true;
         $start2 = $start - 20;
         $calculated = ($start - 2) * $nr_persons;
-        $line_pages .= ' <a href="' . $uri_path_string .
-            "start=" . $start2 .
-            "&amp;item=" . $calculated .
-            '">&lt;= </a>';
+        $data["previous_link"] = $uri_path_string . "start=" . $start2 . "&amp;item=" . $calculated;
     }
     if ($start <= 0) {
         $start = 1;
+    }
+    if ($start == '1') {
+        $data["previous_status"] = 'disabled';
     }
 
     // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
     for ($i = $start; $i <= $start + 19; $i++) {
         $calculated = ($i - 1) * $nr_persons;
         if ($calculated < $count_persons) {
+            $data["page_nr"][] = $i;
             if ($item == $calculated) {
-                $line_pages .=  ' <b>' . $i . '</b>';
+                $data["page_link"][$i] = '';
+                $data["page_status"][$i] = 'active';
             } else {
                 $show_line_pages = true;
-                $line_pages .= ' <a href="' . $uri_path_string .
-                    "start=" . $start .
-                    "&amp;item=" . $calculated .
-                    '"> ' . $i . '</a>';
+                $data["page_link"][$i] = $uri_path_string . "start=" . $start . "&amp;item=" . $calculated;
             }
         }
     }
 
     // "=>"
+    $data["next_link"] = '';
+    $data["next_status"] = '';
     $calculated = ($i - 1) * $nr_persons;
     if ($calculated < $count_persons) {
         $show_line_pages = true;
-        $line_pages .= ' <a href="' . $uri_path_string .
-            "start=" . $i .
-            "&amp;item=" . $calculated .
-            '"> =&gt;</a>';
+        $data["next_link"] = $uri_path_string . "start=" . $i . "&amp;item=" . $calculated;
+    } else {
+        $data["next_status"] = 'disabled';
     }
 }
-//if (isset($show_line_pages) AND $show_line_pages) echo '<br>';
-//if (isset($line_pages)) echo $line_pages;
-if (isset($show_line_pages) and $show_line_pages and isset($line_pages)) echo '<br>' . $line_pages;
-
-echo '</div>';
-
-$table2_width = "90%";
+if ($show_line_pages) {
 ?>
-<br>
-<table style="width:<?= $table2_width; ?>;" class="humo nametbl" align="center">
+    <div style="text-align:center">
+        <?php include __DIR__ . '/partial/pagination.php'; ?>
+    </div>
+<?php
+}
+?>
+
+<?php $col_width = ((round(100 / $maxcols)) - 6) . "%"; ?>
+<table style="width:90%;" class="humo nametbl" align="center">
     <tr class=table_headline>
-        <?php
-        $col_width = ((round(100 / $maxcols)) - 6) . "%";
-        for ($x = 1; $x < $maxcols; $x++) {
-            echo '<th width="' . $col_width . '">' . __('Name') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
-        }
-        echo '<th width="' . $col_width . '">' . __('Name') . '</th><th style="text-align:center;font-size:90%;width:6%">' . __('Total') . '</th>';
-        ?>
+        <?php for ($x = 1; $x < $maxcols; $x++) { ?>
+            <th width="<?= $col_width; ?>"><?= __('Name'); ?></th>
+            <th style="text-align:center;font-size:90%;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
+        <?php } ?>
+        <th width="<?= $col_width; ?>"><?= __('Name'); ?></th>
+        <th style="text-align:center;font-size:90%;width:6%"><?= __('Total'); ?></th>
     </tr>
     <?php
     for ($i = 0; $i < $row; $i++) {
@@ -339,4 +325,4 @@ $table2_width = "90%";
             }
         }
     }
-</script><br>
+</script><br><br>

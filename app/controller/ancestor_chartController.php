@@ -1,7 +1,7 @@
 <?php
 require_once  __DIR__ . "/../model/ancestor.php";
 
-class ancestor_chartController
+class Ancestor_chartController
 {
     private $dbh;
 

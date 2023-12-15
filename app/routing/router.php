@@ -10,7 +10,7 @@ class Router
         ['path' => 'ancestor_report', 'title' => 'Ancestor report', 'page' => 'ancestor_report', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_chart', 'title' => 'Ancestor chart', 'page' => 'ancestor_chart'],
         ['path' => 'ancestor_sheet', 'title' => 'Ancestor sheet', 'page' => 'ancestor_sheet'],
-        ['path' => 'birthday_list', 'title' => 'Birthday calendar', 'page' => 'birthday'],
+        ['path' => 'anniversary', 'title' => 'Birthday calendar', 'page' => 'anniversary'],
         ['path' => 'cms_pages', 'title' => 'Information', 'page' => 'cms_pages', 'vars' => 'id'],
         ['path' => 'cookies', 'title' => 'Cookie information', 'page' => 'cookies'],
         ['path' => 'descendant_report', 'title' => 'Descendants', 'page' => 'family', 'vars' => 'select_tree_id,id'],
@@ -45,7 +45,7 @@ class Router
         ['path' => 'sources', 'title' => 'Sources', 'page' => 'sources', 'vars' => 'select_tree_id'],
         ['path' => 'source', 'title' => 'Source', 'page' => 'source', 'vars' => 'select_tree_id,id'],
         ['path' => 'statistics', 'title' => 'Statistics', 'page' => 'statistics'],
-        ['path' => 'timelines', 'title' => 'Timelines', 'page' => 'timelines'],
+        ['path' => 'timeline', 'title' => 'Timelines', 'page' => 'timeline', 'vars' => 'select_tree_id,id'],
         ['path' => 'user_settings', 'title' => 'Settings', 'page' => 'settings'],
 
         // Backwards compatibility only:
@@ -72,12 +72,12 @@ class Router
         // http://127.0.0.1/HuMo-genealogy/index.php?page=ancestor_sheet&tree_id=3&id=I1180
         // change into (but still process index.php, so this will work in NGinx with url_rewrite disabled):
         // http://127.0.0.1/HuMo-genealogy/ancestor_sheet&tree_id=3&id=I1180
-        if (isset($_GET['page'])){
+        if (isset($_GET['page'])) {
             //http://127.0.0.1/HuMo-genealogy/index.php?page=list&tree_id=3&adv_search=1&index_list=search
             $request_uri = str_replace('index.php?page=', '', $request_uri);
             // *** Example: http://localhost/HuMo-genealogy/list&tree_id=3&adv_search=1&index_list=search ***
             $request_uri = strtok($request_uri, "&"); // Remove last part of url: ?start=1&item=11
-        }else{
+        } else {
             // *** Example: http://localhost/HuMo-genealogy/photoalbum/2?start=1&item=11 ***
             $request_uri = strtok($request_uri, "?"); // Remove last part of url: ?start=1&item=11
         }

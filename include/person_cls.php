@@ -212,7 +212,7 @@ class person_cls
         global $dbh, $db_functions, $user, $language, $screen_mode, $selection;
         global $humo_option;
 
-        $pers_tree_id = '';
+        $pers_tree_id = 0;
         if ($personDb) $pers_tree_id = $personDb->pers_tree_id;
         $db_functions->set_tree_id($pers_tree_id);
 
@@ -959,8 +959,9 @@ class person_cls
                 }
                 if ($user['group_gen_protection'] == 'n' and $tmldates == 1) {
                     //$path_tmp = 'timelines.php?tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $personDb->pers_gedcomnumber;
-                    $path_tmp = $link_cls->get_link($uri_path, 'timelines', $personDb->pers_tree_id, true);
-                    $path_tmp .= 'id=' . $personDb->pers_gedcomnumber;
+                    $vars['pers_gedcomnumber'] = $personDb->pers_gedcomnumber;
+                    $path_tmp = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
+                    //$path_tmp .= 'id=' . $personDb->pers_gedcomnumber;
                     $text .= '<a href="' . $path_tmp . '">';
                     $text .= '<img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a>';
                 }

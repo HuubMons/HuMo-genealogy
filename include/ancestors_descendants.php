@@ -7,7 +7,7 @@
  * First version made by Yossi Beck.
  * April 2015: converted into a general descendant function by Huub Mons.
  *
- * $gn = generation number to process.
+ * $generation_number = generation number to process.
  * $nr_generations = maximum number of generations.
  *
  *	Descendant array:
@@ -20,9 +20,9 @@
  *	child2					descendant[5]
  */
 
-$gn = 0;	// *** Generation number ***
+$generation_number = 0;	// *** Generation number ***
 $descendant_id = 0;
-function descendants($family_id, $main_person, $gn, $nr_generations)
+function descendants($family_id, $main_person, $generation_number, $nr_generations)
 {
     global $dbh, $db_functions;
     global $descendant_id, $descendant_array;
@@ -30,8 +30,8 @@ function descendants($family_id, $main_person, $gn, $nr_generations)
     // *** Selected person ***
     $descendant_id++;
     $descendant_array[$descendant_id] = $main_person;
-    $gn++;
-    if ($nr_generations < $gn) return;
+    $generation_number++;
+    if ($nr_generations < $generation_number) return;
 
     // *** Count marriages of main person (man) ***
     // *** YB: if needed show woman as main_person ***
@@ -79,12 +79,12 @@ function descendants($family_id, $main_person, $gn, $nr_generations)
                     $child_family = explode(";", $childDb->pers_fams);
                     $child1stfam = $child_family[0];
                     // *** Recursive, process ancestors of child ***
-                    descendants($child1stfam, $childDb->pers_gedcomnumber, $gn, $nr_generations);
+                    descendants($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $nr_generations);
                 } else {    // *** Child without own family ***
                     $descendant_id++;
                     $descendant_array[$descendant_id] = $childDb->pers_gedcomnumber;
-                    //if($nr_generations>=$gn) {
-                    //	$childgn=$gn+1;
+                    //if($nr_generations>=$generation_number) {
+                    //	$childgn=$generation_number+1;
                     //}
                 }
             }

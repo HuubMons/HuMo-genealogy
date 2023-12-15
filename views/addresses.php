@@ -10,19 +10,30 @@ $path = $link_cls->get_link($uri_path, 'addresses', $tree_id, true);
 ?>
 
 <h1 style="text-align:center;"><?= __('Addresses'); ?></h1>
+
 <div>
     <!-- *** Search form *** -->
-    <form method="POST" action="<?= $path_form; ?>" style="display : inline;">
-        <table class="humo" style="margin-left:auto;margin-right:auto">
-            <tr class="table_headline">
-                <td><?= __('City'); ?> <input type="text" name="adr_place" size="15"></td>
-                <td><?= __('Street'); ?> <input type="text" name="adr_address" size="15"></td>
-                <!-- TODO check database variable -->
-                <input type="hidden" name="database" value="<?= $database; ?>">
-                <td><input type="submit" value="<?= __('Search'); ?>" name="search_addresses"></td>
-            </tr>
-        </table><br>
-    </form>
+    <form method="POST" action="<?= $path_form; ?>">
+        <!-- TODO check database variable -->
+        <input type="hidden" name="database" value="<?= $database; ?>">
+        <div class="container">
+            <div class="mb-2 row">
+                <div class="col-sm-3"></div>
+
+                <div class="col-sm-2">
+                    <input type="text" class="form-control form-control-sm" name="adr_place" size="15" placeholder="<?= __('City'); ?>">
+                </div>
+
+                <div class="col-sm-2">
+                    <input type="text" class="form-control form-control-sm" name="adr_address" size="15" placeholder="<?= __('Street'); ?>">
+                </div>
+
+                <input type="submit" class="col-sm-2 btn btn-sm btn-success" value="<?= __('Search'); ?>" name="search_addresses">
+
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+    </form><br>
 
     <!-- *** Show results *** -->
     <table class="humo" style="margin-left:auto;margin-right:auto">

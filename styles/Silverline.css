@@ -74,30 +74,6 @@ ul.humo_menu_item li {
     background: url("images_silverline/silverbg1.jpg") repeat-x left top;
 }
 
-#mainmenu_centerbox {
-    background: #FFFFFF url("images_silverline/background.gif") no-repeat;
-
-    border: solid 1px #999999;
-    border-radius: 3px;
-    box-shadow: 2px 2px 2px #c0c0c0;
-}
-
-/*
-#mainmenu_right {
-	background-color: #f2f2f2;
-}
-*/
-
-/*
-#mainmenu_centerbox .mainmenu_bar {
-	background: url("images_silverline/menuhover1.png") repeat left top;
-}
-*/
-
-.homepage_box {
-    background-color: transparent;
-}
-
 /* Links */
 a {
     color: #505050;
@@ -112,6 +88,19 @@ a:hover {
 p {
     line-height: 150%;
     margin: 15px 0 15px;
+}
+
+/* Default background color */
+.genealogy_search{
+    background-color: transparent;
+    border: solid 1px #9d8a8a;
+}
+/* Used for old mainmenu_centerbox */
+.genealogy_row{
+    background: #FFFFFF url("images_silverline/background.gif") no-repeat;
+    border: solid 1px #999999;
+    border-radius: 3px;
+    box-shadow: 2px 2px 2px #c0c0c0;
 }
 
 /* Tables */
@@ -195,11 +184,6 @@ div.hour_ancestor_split {
 /* table header  */
 .table_headline {
     background: url("images_silverline/menuhover.jpg") repeat left top;
-}
-
-/* Switchform */
-#switchform {
-    color: #333399;
 }
 
 #country_flags {

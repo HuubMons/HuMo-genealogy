@@ -1,5 +1,5 @@
 <br>
-<table class="humo small" align="center">
+<table class="humo" align="center">
     <tr class="table_headline">
         <th><?= __('Item'); ?></th>
         <th><br></th>

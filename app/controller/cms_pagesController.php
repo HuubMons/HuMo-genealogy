@@ -1,7 +1,7 @@
 <?php
 require_once  __DIR__ . "/../model/cms_pages.php";
 
-class cms_pagesController
+class CMS_pagesController
 {
     private $dbh, $user;
 

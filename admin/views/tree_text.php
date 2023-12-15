@@ -1,10 +1,3 @@
-<?php
-//global $language, $language_tree, $selected_language;
-//global $page, $tree_id, $treetext_name, $language_file, $data2Db;
-//global $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id, $menu_admin;
-//global $phpself, $phpself2, $joomlastring;
-
-?>
 <form method="post" action="<?= $phpself; ?>" style="display : inline;">
     <?php
     echo '<input type="hidden" name="page" value="' . $page . '">';

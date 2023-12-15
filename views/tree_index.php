@@ -38,51 +38,66 @@ for ($i = 0; $i < count($item_array); $i++) {
     }
 }
 
-$center_id = "mainmenu_center";
-if (!$left) $center_id = "mainmenu_center_alt";
-// TODO: if there is no right colum also use center_alt?
+
+$middle = "col-sm-6";
 // TODO: if there is no left and right, then center column 100%?
+if (!$left or !$right) $middle = "col-sm-9";
 ?>
 
-<!-- Mainmenu Centerbox can be used for an extra box in lay-out -->
-<div id="mainmenu_centerbox">
+<div class="row m-lg-1 py-3 genealogy_row">
     <!--  Left column -->
     <?php if ($left) { ?>
-        <div id="mainmenu_left">
-            <?php for ($i = 0; $i < count($item_array); $i++) { ?>
-                <?php if ($item_array[$i]['position'] == 'left') { ?>
-                    <div class="homepage_box">
-                        <?php if ($item_array[$i]['header']) echo '<h3>' . $item_array[$i]['header'] . '</h3>'; ?>
-                        <?= $item_array[$i]['item']; ?>
-                    </div>
+        <div class="col-sm-3">
+            <div class="row">
+                <?php for ($i = 0; $i < count($item_array); $i++) { ?>
+                    <?php if ($item_array[$i]['position'] == 'left') { ?>
+                        <div class="col-12">
+                            <!-- <div class="mb-3 bg-light p-2 border"> -->
+                            <div class="mb-3 p-2 border genealogy_box">
+                                <?php if ($item_array[$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $item_array[$i]['header'] . '</strong></h5>'; ?>
+                                <?= $item_array[$i]['item']; ?>
+                            </div>
+                        </div>
+                    <?php } ?>
                 <?php } ?>
-            <?php } ?>
+            </div>
         </div>
     <?php } ?>
 
     <!-- Center column -->
-    <div id="<?= $center_id; ?>">
-        <?php for ($i = 0; $i < count($item_array); $i++) { ?>
-            <?php if ($item_array[$i]['position'] == 'center') { ?>
-                <div class="homepage_box">
-                    <?php if ($item_array[$i]['header']) echo '<h3>' . $item_array[$i]['header'] . '</h3>'; ?>
-                    <?= $item_array[$i]['item']; ?>
-                </div>
+    <!-- Remark: text in this column is centered (class text-center) -->
+    <div class="<?= $middle; ?>">
+        <div class="row">
+            <?php for ($i = 0; $i < count($item_array); $i++) { ?>
+                <?php if ($item_array[$i]['position'] == 'center') { ?>
+                    <div class="col-12">
+                        <!-- <div class="mb-3 bg-light p-2 border  text-center"> -->
+                        <div class="mb-3 p-2 border text-center genealogy_box">
+                            <?php if ($item_array[$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $item_array[$i]['header'] . '</strong></h5>'; ?>
+                            <?= $item_array[$i]['item']; ?>
+                        </div>
+                    </div>
+                <?php } ?>
             <?php } ?>
-        <?php } ?>
+        </div>
     </div>
 
     <!-- Right column -->
     <?php if ($right) { ?>
-        <div id="mainmenu_right">
-            <?php for ($i = 0; $i < count($item_array); $i++) { ?>
-                <?php if ($item_array[$i]['position'] == 'right') { ?>
-                    <div class="homepage_box">
-                        <?php if ($item_array[$i]['header']) echo '<h3>' . $item_array[$i]['header'] . '</h3>'; ?>
-                        <?= $item_array[$i]['item']; ?>
-                    </div>
+        <div class="col-sm-3">
+            <div class="row">
+                <?php for ($i = 0; $i < count($item_array); $i++) { ?>
+                    <?php if ($item_array[$i]['position'] == 'right') { ?>
+                        <div class="col-12">
+                            <!-- <div class="mb-3 bg-light p-2 border"> -->
+                            <div class="mb-3 p-2 border genealogy_box">
+                                <?php if ($item_array[$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $item_array[$i]['header'] . '</strong></h5>'; ?>
+                                <?= $item_array[$i]['item']; ?>
+                            </div>
+                        </div>
+                    <?php } ?>
                 <?php } ?>
-            <?php } ?>
+            </div>
         </div>
     <?php } ?>
 </div>

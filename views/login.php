@@ -5,23 +5,12 @@
  * Password retreival code from: http://www.plus2net.com/ 
  */
 
-$fault = false;
-
-// TODO allready done in header.php?
-// *** Check if visitor is allowed ***
-if (!$db_functions->check_visitor($visitor_ip)) {
-    echo 'Access to website is blocked.';
-    exit;
-}
-
 if ($user['group_menu_login'] != 'j') {
     echo 'Access to this page is blocked.';
     exit;
 }
 
-//$path_tmp = 'login.php';
 $path_tmp = $link_cls->get_link($uri_path, 'login');
-
 
 // form to enter username and mail in order to receive reset link
 // *** An e-mail address is necessary for password retreival, option Username is disabled ***
@@ -105,33 +94,14 @@ elseif (isset($_POST['got_email'])) {
         $row = $countmail->fetch(PDO::FETCH_OBJ);
         $no_mail = $countmail->rowCount();
 
-        //$countuser=$dbh->prepare("SELECT user_name FROM humo_users WHERE user_name = '".$pw_username."'");
-        //$countuser->execute();
-        //$no_user=$countuser->rowCount();
-
-        //$count=$dbh->prepare("SELECT user_mail, user_name FROM humo_users WHERE user_name = '".$pw_username."' AND user_mail = '".$email."'");
-        //$count->execute();
-        //$row = $count->fetch(PDO::FETCH_OBJ);
-        //$no=$count->rowCount();
-
         // *** Email address not found in database ***
         if ($no_mail == 0) {
             echo '<br><table class="humo" cellspacing="0" align="center">';
             echo '<tr class="table_headline"><th class="fonts">' . __('Error') . '</th></tr>';
             echo '<tr><td style="font-weight:bold;color:red">';
-            //if ($no_mail == 0 AND $no_user !=0) { // mail doesn't exist, username does
             if ($no_mail == 0) { // mail doesn't exist, username does
                 echo __('This email address was not found in our database.') . "&nbsp;" . __('Please contact the site owner.');
             }
-            //elseif ($no_mail != 0 AND $no_user ==0) { // username doesn't exist, mail does
-            //	echo __('This username was not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
-            //}
-            //elseif ($no_mail == 0 AND $no_user ==0) { // username and mail don't exist
-            //	echo __('This username and mail were not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
-            //}
-            //else  { // username and mail both exist, but not together
-            //	echo __('This combination of username and email was not found in our database.')."&nbsp;".__('Please contact the site owner.');
-            //}
             echo "</td></tr><tr><td style='text-align:center'><input type='button' value='" . __('Retry') . "' onClick='history.go(-1)'></td>";
             echo "</tr></table>";
             exit;
@@ -339,67 +309,69 @@ elseif (isset($_POST['ak']) and $_POST['ak'] != '') {
 
 // show initial login screen with "Forgot password" button
 else {
-    // *** No valid user found ***
-    if ($fault == true) {
-        echo '<br><table class="humo" cellspacing="0" align="center">';
-        echo '<tr class="table_headline"><th class="fonts">' . __('Error') . '</th></tr>';
-        echo '<tr><td style="font-weight:bold;color:red">';
-        echo __('No valid username or password.');
-        echo '</td></tr></table>';
-    }
-
 ?>
-    <h1><?= __('Login'); ?></h1>
+    <h1 class="my-4"><?= __('Login'); ?></h1>
 
-    <!-- Layout: https://www.w3schools.com/csS/tryit.asp?filename=trycss_form_responsive -->
     <div class="container">
+
+        <?php if ($fault == true) { ?>
+            <div class="alert alert-warning">
+                <strong><?= __('No valid username or password.'); ?></strong>
+            </div>
+        <?php } ?>
+
+        <br>
+
         <form action="<?= $path_tmp; ?>" method="post">
-            <div class="row">
-                <div class="col-25">
-                    <label for="username"><?= __('Username or e-mail address'); ?></label>
-                </div>
-                <div class="col-75">
-                    <input type="text" id="username" class="input" name="username" placeholder="<?= __('Username or e-mail address'); ?>">
+            <div class="mb-2 row">
+                <label for="username" class="col-sm-3 col-form-label"><?= __('Username or e-mail address'); ?></label>
+                <div class="col-sm-5">
+                    <input type="text" id="username" class="form-control" name="username" placeholder="<?= __('Username or e-mail address'); ?>">
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-25">
-                    <label for="password"><?= __('Password'); ?></label>
-                </div>
-                <div class="col-75">
-                    <input type="password" id="password" class="input" name="password" placeholder="<?= __('Password'); ?>">
+            <div class="mb-2 row">
+                <label for="password" class="col-sm-3 col-form-label"><?= __('Password'); ?></label>
+                <div class="col-sm-5">
+                    <input type="password" id="password" class="form-control" name="password" placeholder="<?= __('Password'); ?>">
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-25">
-                    <label for="2fa_code"><?= __('Two factor authentication (2FA) code if needed'); ?></label>
-                </div>
-                <div class="col-75">
-                    <input type="text" id="2fa_code" class="input" name="2fa_code">
+            <div class="mb-2 row">
+                <label for="2fa_code" class="col-sm-3 col-form-label"><?= __('Two factor authentication (2FA) code if needed'); ?></label>
+                <div class="col-sm-5">
+                    <input type="text" id="2fa_code" class="form-control" name="2fa_code">
                 </div>
             </div>
 
-            <br>
-            <div class="row">
-                <input type="submit" class="input_submit" name="send_mail" value="<?= __('Login'); ?>">
+            <div class="mb-2 row">
+                <label for="2fa_code" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    <input type="submit" class="col-sm-2 btn btn-success" name="send_mail" value="<?= __('Login'); ?>">
+                </div>
             </div>
         </form>
+
+        <?php
+        // *** Only use password retreival option if sender mail is set in admin settings ***
+        if ($humo_option["password_retreival"]) {
+            $mail_address = $humo_option["password_retreival"];
+            // *** Check if this is a valid a-mail address ***
+            if (filter_var($mail_address, FILTER_VALIDATE_EMAIL)) {
+        ?>
+                <br>
+                <div class="center">
+                    <form name="forget_form" method="post" action="<?= $path_tmp; ?>">
+                        <input type="hidden" name="forgotpw" value="1">
+                        <input type="submit" class="col-sm-2 btn btn-success" name="Submit" value="<?= __('Forgot password'); ?>">
+                    </form>
+                </div>
+        <?php
+            }
+        }
+        ?>
     </div>
 <?php
-
-    // *** Only use password retreival option if sender mail is set in admin settings ***
-    if ($humo_option["password_retreival"]) {
-        $mail_address = $humo_option["password_retreival"];
-        // *** Check if this is a valid a-mail address ***
-        if (filter_var($mail_address, FILTER_VALIDATE_EMAIL)) {
-            echo '<br><div class="center">';
-            echo '<form name="forget_form" method="post" action="' . $path_tmp . '">';
-            echo '<input class="fonts" type="submit" name="Submit" value="' . __('Forgot password') . '">';
-            echo '<input type="hidden" name="forgotpw" value="1">';
-            echo '</form>';
-            echo '</div>';
-        }
-    }
 }  // end of else (else show login screen)
+?>
+<br><br>

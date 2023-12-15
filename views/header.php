@@ -62,9 +62,8 @@ $language_folder = opendir(__DIR__ . '/../languages/');
 while (false !== ($file = readdir($language_folder))) {
     if (strlen($file) < 6 and $file != '.' and $file != '..') {
         $language_file[] = $file;
-
         // *** Order of languages ***
-        if ($file == 'cn') $language_order[] = 'Chinese';
+        if ($file == 'cn') $language_order[] = 'DAAChinese'; // Chinese in second row. Otherwise empty box.
         elseif ($file == 'cs') $language_order[] = 'Czech';
         elseif ($file == 'da') $language_order[] = 'Dansk';
         elseif ($file == 'de') $language_order[] = 'Deutsch';
@@ -72,7 +71,6 @@ while (false !== ($file = readdir($language_folder))) {
         elseif ($file == 'en_ca') $language_order[] = 'English_ca';
         elseif ($file == 'en_us') $language_order[] = 'English_us';
         elseif ($file == 'es') $language_order[] = 'Espanol';
-        elseif ($file == 'fa') $language_order[] = 'Persian';
         elseif ($file == 'fi') $language_order[] = 'Suomi';
         elseif ($file == 'fr') $language_order[] = 'French';
         elseif ($file == 'fur') $language_order[] = 'Furlan';
@@ -90,7 +88,6 @@ while (false !== ($file = readdir($language_folder))) {
         elseif ($file == 'sk') $language_order[] = 'Slovensky';
         elseif ($file == 'sv') $language_order[] = 'Swedish';
         elseif ($file == 'tr') $language_order[] = 'Turkish';
-        elseif ($file == 'zh') $language_order[] = 'Chinese_traditional';
         else $language_order[] = $file;
 
         // *** Save choice of language ***
@@ -115,6 +112,7 @@ array_multisort($language_order, $language_file);
 
 // *** Log in ***
 $valid_user = false;
+$fault = false;
 if (isset($_POST["username"]) && isset($_POST["password"])) {
     $resultDb = $db_functions->get_user($_POST["username"], $_POST["password"]);
     if ($resultDb) {
@@ -323,6 +321,12 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
     // *** Set variabele for queries ***
     $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
+
+    // *** Added in nov 2023 (used in outline_report_pdf.php) ***
+    $tree_id = 0;
+    if (isset($_SESSION['tree_id']) and is_numeric($_SESSION['tree_id'])) {
+        $tree_id = $_SESSION['tree_id'];
+    }
 } else {
 
     // *** Set cookies before any output ***
@@ -439,31 +443,39 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
         if ($base_href) echo '<base href="' . $base_href . '">' . "\n";
         ?>
 
+        <!-- Bootstrap added in dec. 2023 -->
+        <!--
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+-->
+        <link href="css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <script src="css/bootstrap/js/bootstrap.bundle.min.js"></script>
+
         <link href="css/gedcom.css" rel="stylesheet" type="text/css">
-        <link href="css/form.css" rel="stylesheet" type="text/css">
+
         <link href="css/tab_menu.css" rel="stylesheet" type="text/css">
         <!-- TODO this is only needed for outline report -->
         <link href="css/outline_report.css" rel="stylesheet" type="text/css">
 
-    <?php
-    echo '<link href="css/print.css" rel="stylesheet" type="text/css" media="print">';
+        <link href="css/print.css" rel="stylesheet" type="text/css" media="print">
+        <?php
 
-    // *** Use your own favicon.ico in media folder ***
-    if (file_exists('media/favicon.ico'))
-        echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
-    else
-        echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
+        // *** Use your own favicon.ico in media folder ***
+        if (file_exists('media/favicon.ico'))
+            echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
+        else
+            echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
 
-    //if (isset($user["group_birthday_rss"]) and $user["group_birthday_rss"] == "j") {
-    //    echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="../birthday_rss.php?lang=' . $selected_language . '" >';
-    //}
+        //if (isset($user["group_birthday_rss"]) and $user["group_birthday_rss"] == "j") {
+        //    echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="../birthday_rss.php?lang=' . $selected_language . '" >';
+        //}
 
-    // *** Family tree choice ***
-    global $database;
-    $database = '';
-    if (isset($_GET["database"])) $database = $_GET["database"];
-    if (isset($_POST["database"])) $database = $_POST["database"];
-    /*
+        // *** Family tree choice ***
+        global $database;
+        $database = '';
+        if (isset($_GET["database"])) $database = $_GET["database"];
+        if (isset($_POST["database"])) $database = $_POST["database"];
+        /*
     if (isset($urlpart[0]) AND $urlpart[0]!='' AND $urlpart[0]!='standaard'){
         // backwards compatible: humo2_
         $database=$urlpart[0]; // *** url_rewrite ***
@@ -483,149 +495,155 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
     }
     */
 
-    // *** Use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
-    if (isset($_GET["tree_id"])) $select_tree_id = $_GET["tree_id"];
-    if (isset($_POST["tree_id"])) $select_tree_id = $_POST["tree_id"];
-    if (isset($select_tree_id) and is_numeric($select_tree_id) and $select_tree_id) {
-        // *** Check if family tree really exists ***
-        $dataDb = $db_functions->get_tree($select_tree_id);
-        if ($dataDb) {
-            if ($select_tree_id == $dataDb->tree_id) {
-                $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
-                $database = $dataDb->tree_prefix;
-            }
-        }
-    }
-
-    // *** For example: database=humo2_ ***
-    if (isset($database) and is_string($database) and $database) {
-        // *** Check if family tree really exists ***
-        $dataDb = $db_functions->get_tree($database);
-        if ($dataDb) {
-            if ($database == $dataDb->tree_prefix) $_SESSION['tree_prefix'] = $database;
-        }
-    }
-
-    // *** No family tree selected yet ***
-    if (!isset($_SESSION["tree_prefix"]) or $_SESSION['tree_prefix'] == '') {
-        $_SESSION['tree_prefix'] = ''; // *** If all trees are blocked then session is empty ***
-
-        // *** Find first family tree that's not blocked for this usergroup ***
-        $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-        while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-            // *** Check is family tree is showed or hidden for user group ***
-            $hide_tree_array = explode(";", $user['group_hide_trees']);
-            $hide_tree = false;
-            if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
-            if ($hide_tree == false) {
-                $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
-                break;
-            }
-        }
-    }
-
-    // *** Check if selected tree is allowed for visitor and Google etc. ***
-    @$dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
-    $hide_tree_array = explode(";", $user['group_hide_trees']);
-    $hide_tree = false;
-    if (in_array(@$dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
-    if ($hide_tree) {
-        // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
-        $_SESSION['tree_prefix'] = '';
-        $_SESSION['tree_id'] = '';
-        $tree_id = '';
-
-        // *** Find first family tree that's not blocked for this usergroup ***
-        $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-        while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-            // *** Check is family tree is showed or hidden for user group ***
-            $hide_tree_array = explode(";", $user['group_hide_trees']);
-            $hide_tree = false;
-            if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
-            if ($hide_tree == false) {
-                $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
-                $_SESSION['tree_id'] = $dataDb->tree_id;
-                $tree_id = $dataDb->tree_id;
-                break;
-            }
-        }
-    } elseif (isset($dataDb->tree_id)) {
-        $_SESSION['tree_id'] = $dataDb->tree_id;
-        $tree_id = $dataDb->tree_id;
-    }
-
-    // *** Guest or user has no permission to see any family tree ***
-    if (!isset($tree_id)) {
-        $_SESSION['tree_prefix'] = '';
-        $_SESSION['tree_id'] = '';
-        $tree_id = '';
-    }
-
-    // *** Set variabele for queries ***
-    $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
-
-    /*
-    // *****************************************************************
-    // Use these lines to show a background picture for EACH FAMILY TREE
-    // *****************************************************************
-    print '<style type="text/css">';
-    $picture= "pictures/".$_SESSION['tree_prefix'].".jpg";
-    print " body { background-image: url($picture);}";
-    print "</style>";
-    */
-
-    // if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
-    // *** Needed for zoomslider ***
-    if (
-        strpos($_SERVER['REQUEST_URI'], "maps") !== false or
-        strpos($_SERVER['REQUEST_URI'], "descendant") !== false or
-        strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
-    ) {
-        echo '<script src="include/jquery/jquery.min.js"></script> ';
-        echo '<link rel="stylesheet" href="include/jqueryui/jquery-ui.min.css"> ';
-        echo '<script src="include/jqueryui/jquery-ui.min.js"></script>';
-    }
-
-    // *** Cookie for theme selection ***
-    echo '<script>
-    function getCookie(NameOfCookie) {
-        if (document.cookie.length > 0) {
-            begin = document.cookie.indexOf(NameOfCookie + "=");
-            if (begin != -1) {
-                begin += NameOfCookie.length + 1;
-                end = document.cookie.indexOf(";", begin);
-                if (end == -1) {
-                    end = document.cookie.length;
+        // *** Use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
+        if (isset($_GET["tree_id"])) $select_tree_id = $_GET["tree_id"];
+        if (isset($_POST["tree_id"])) $select_tree_id = $_POST["tree_id"];
+        if (isset($select_tree_id) and is_numeric($select_tree_id) and $select_tree_id) {
+            // *** Check if family tree really exists ***
+            $dataDb = $db_functions->get_tree($select_tree_id);
+            if ($dataDb) {
+                if ($select_tree_id == $dataDb->tree_id) {
+                    $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+                    $database = $dataDb->tree_prefix;
                 }
-                return unescape(document.cookie.substring(begin, end));
             }
         }
-        return null;
-    }
-    </script>';
 
-    // *** Style sheet select ***
-    include_once(__DIR__ . "/../styles/sss1.php");
+        // *** For example: database=humo2_ ***
+        if (isset($database) and is_string($database) and $database) {
+            // *** Check if family tree really exists ***
+            $dataDb = $db_functions->get_tree($database);
+            if ($dataDb) {
+                if ($database == $dataDb->tree_prefix) $_SESSION['tree_prefix'] = $database;
+            }
+        }
 
-    // *** Pop-up menu ***
-    echo '<script src="include/popup_menu/popup_menu.js"></script>';
-    echo '<link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">';
+        // *** No family tree selected yet ***
+        if (!isset($_SESSION["tree_prefix"]) or $_SESSION['tree_prefix'] == '') {
+            $_SESSION['tree_prefix'] = ''; // *** If all trees are blocked then session is empty ***
 
-    // *** Always load script, because of "Random photo" at homepage ***
-    // *** Photo lightbox effect using GLightbox ***
-    echo '<link rel="stylesheet" href="include/glightbox/css/glightbox.css">';
-    echo '<script src="include/glightbox/js/glightbox.min.js"></script>';
-    // *** Remark: there is also a script in footer script, otherwise GLightbox doesn't work ***
+            // *** Find first family tree that's not blocked for this usergroup ***
+            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                // *** Check is family tree is showed or hidden for user group ***
+                $hide_tree_array = explode(";", $user['group_hide_trees']);
+                $hide_tree = false;
+                if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
+                if ($hide_tree == false) {
+                    $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+                    break;
+                }
+            }
+        }
 
-    // *** CSS changes for mobile devices ***
-    echo '<link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">';
+        // *** Check if selected tree is allowed for visitor and Google etc. ***
+        @$dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+        $hide_tree_array = explode(";", $user['group_hide_trees']);
+        $hide_tree = false;
+        if (in_array(@$dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
+        if ($hide_tree) {
+            // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
+            $_SESSION['tree_prefix'] = '';
+            //$_SESSION['tree_id'] = '';
+            $_SESSION['tree_id'] = 0;
+            //$tree_id = '';
+            $tree_id = 0;
 
-    // *** Extra items in header added by admin ***
-    if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];
+            // *** Find first family tree that's not blocked for this usergroup ***
+            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                // *** Check is family tree is showed or hidden for user group ***
+                $hide_tree_array = explode(";", $user['group_hide_trees']);
+                $hide_tree = false;
+                if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
+                if ($hide_tree == false) {
+                    $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+                    $_SESSION['tree_id'] = $dataDb->tree_id;
+                    $tree_id = $dataDb->tree_id;
+                    break;
+                }
+            }
+        } elseif (isset($dataDb->tree_id)) {
+            $_SESSION['tree_id'] = $dataDb->tree_id;
+            $tree_id = $dataDb->tree_id;
+        }
 
-    echo "</head>\n";
-    echo "<body>\n";
+        // *** Guest or user has no permission to see any family tree ***
+        if (!isset($tree_id)) {
+            $_SESSION['tree_prefix'] = '';
+            //$_SESSION['tree_id'] = '';
+            $_SESSION['tree_id'] = 0;
+            //$tree_id = '';
+            $tree_id = 0;
+        }
 
+        // *** Set variabele for queries ***
+        $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
+
+        /*
+        // *****************************************************************
+        // Use these lines to show a background picture for EACH FAMILY TREE
+        // *****************************************************************
+        print '<style type="text/css">';
+        $picture= "pictures/".$_SESSION['tree_prefix'].".jpg";
+        print " body { background-image: url($picture);}";
+        print "</style>";
+        */
+
+        // if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
+        // *** Needed for zoomslider ***
+        if (
+            strpos($_SERVER['REQUEST_URI'], "maps") !== false or
+            strpos($_SERVER['REQUEST_URI'], "descendant") !== false or
+            strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
+        ) {
+            echo '<script src="include/jquery/jquery.min.js"></script> ';
+            echo '<link rel="stylesheet" href="include/jqueryui/jquery-ui.min.css"> ';
+            echo '<script src="include/jqueryui/jquery-ui.min.js"></script>';
+        }
+
+        // *** Cookie for theme selection ***
+        echo '<script>
+        function getCookie(NameOfCookie) {
+            if (document.cookie.length > 0) {
+                begin = document.cookie.indexOf(NameOfCookie + "=");
+                if (begin != -1) {
+                    begin += NameOfCookie.length + 1;
+                    end = document.cookie.indexOf(";", begin);
+                    if (end == -1) {
+                        end = document.cookie.length;
+                    }
+                    return unescape(document.cookie.substring(begin, end));
+                }
+            }
+            return null;
+        }
+        </script>';
+
+        // *** Style sheet select ***
+        include_once(__DIR__ . "/../styles/sss1.php");
+
+        // *** Pop-up menu ***
+        echo '<script src="include/popup_menu/popup_menu.js"></script>';
+        echo '<link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">';
+
+        // *** Always load script, because of "Random photo" at homepage ***
+        // *** Photo lightbox effect using GLightbox ***
+        echo '<link rel="stylesheet" href="include/glightbox/css/glightbox.css">';
+        echo '<script src="include/glightbox/js/glightbox.min.js"></script>';
+        // *** Remark: there is also a script in footer script, otherwise GLightbox doesn't work ***
+
+        // *** CSS changes for mobile devices ***
+        echo '<link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">';
+
+        // *** Extra items in header added by admin ***
+        if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];
+        ?>
+    </head>
+
+    <body>
+    <?php
+    // TODO check variable. Just use $tree_id?
     $db_functions->set_tree_id($_SESSION['tree_id']);
 
     if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
@@ -655,5 +673,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
             REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY','')
         ,'NO_ZERO_IN_DATE',''));");
 
-    echo '<div class="silverbody">';
+    ?>
+    <!-- <div> --> <!-- TODO remove old siverbody class. -->
+        <?php
 } // *** End of PDF export check ***

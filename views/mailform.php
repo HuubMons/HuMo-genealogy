@@ -50,7 +50,7 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
     //echo __('Message: ').'<br>'.$_POST['mail_text'];
 
     // *** Use PhpMailer to send mail ***
-    include_once(__DIR__.'/../include/mail.php');
+    include_once(__DIR__ . '/../include/mail.php');
 
     // *** Set who the message is to be sent from ***
     $mail->setFrom($_POST['mail_sender'], $_POST['mail_name']);
@@ -106,74 +106,64 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
         if ($humo_option["url_rewrite"] == "j") $path = 'mailform';
 ?>
 
-        <h1><?= __('Mail form'); ?></h1>
+        <h1 class="my-4"><?= __('Mail form'); ?></h1>
 
-        <!-- Layout: https://www.w3schools.com/csS/tryit.asp?filename=trycss_form_responsive -->
         <div class="container">
             <form action="<?= $path; ?>" method="post">
-                <div class="row">
-                    <div class="col-25">
-                        <label for="name"><?= __('Name'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="fname" class="input" name="mail_name" placeholder="<?= __('Name'); ?>" value="<?= $mail_name; ?>">
+                <div class="mb-2 row">
+                    <label for="name" class="col-sm-3 col-form-label"><?= __('Name'); ?></label>
+                    <div class="col-sm-5">
+                        <input type="text" id="fname" class="form-control" name="mail_name" placeholder="<?= __('Name'); ?>" value="<?= $mail_name; ?>">
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-25">
-                        <label for="mail_sender"><?= __('E-mail address'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <input type="email" id="lname" class="input" name="mail_sender" placeholder="<?= __('E-mail address'); ?>" value="<?= $mail_sender; ?>">
+                <div class="mb-2 row">
+                    <label for="mail_sender" class="col-sm-3 col-form-label"><?= __('E-mail address'); ?></label>
+                    <div class="col-sm-5">
+                        <input type="email" id="lname" class="form-control" name="mail_sender" placeholder="<?= __('E-mail address'); ?>" value="<?= $mail_sender; ?>">
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-25">
-                        <label for="subject"><?= __('Subject'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="lname" class="input" name="mail_subject" placeholder="<?= __('Subject'); ?>" value="<?= $mail_subject; ?>">
+                <div class="mb-2 row">
+                    <label for="subject" class="col-sm-3 col-form-label"><?= __('Subject'); ?></label>
+                    <div class="col-sm-5">
+                        <input type="text" id="lname" class="form-control" name="mail_subject" placeholder="<?= __('Subject'); ?>" value="<?= $mail_subject; ?>">
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-25">
-                        <label for="message"><?= __('Message'); ?></label>
-                    </div>
-                    <div class="col-75">
-                        <textarea id="message" class="input" name="mail_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $mail_text; ?></textarea>
+                <div class="mb-2 row">
+                    <label for="message" class="col-sm-3 col-form-label"><?= __('Message'); ?></label>
+                    <div class="col-sm-5">
+                        <textarea id="message" class="form-control" name="mail_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $mail_text; ?></textarea>
                     </div>
                 </div>
 
                 <?php if ($humo_option["use_newsletter_question"] == 'y') { ?>
-                    <div class="row">
-                        <div class="col-25">
-                            <label for="newsletter"><?= __('Receive newsletter'); ?></label>
-                        </div>
-                        <div class="col-75">
-                            <input type="radio" name="newsletter" value="Yes"><?= __('Yes'); ?><br>
-                            <input type="radio" name="newsletter" value="No" checked><?= __('No'); ?>
+                    <div class="mb-2 row">
+                        <label for="newsletter" class="col-sm-3 col-form-label"><?= __('Receive newsletter'); ?></label>
+                        <div class="col-sm-5">
+                            <input type="radio" class="form-check-input my-1" name="newsletter" value="Yes"> <?= __('Yes'); ?><br>
+                            <input type="radio" class="form-check-input my-1" name="newsletter" value="No" checked> <?= __('No'); ?>
                         </div>
                     </div>
                 <?php } ?>
 
                 <?php if ($humo_option["use_spam_question"] == 'y') { ?>
-                    <div class="row">
-                        <div class="col-25">
-                            <label for="mail_block_spam"><?= __('Please answer the block-spam-question:'); ?></label>
-                        </div>
-                        <div class="col-75">
+                    <div class="mb-2 row">
+                        <label for="mail_block_spam" class="col-sm-3 col-form-label"><?= __('Please answer the block-spam-question:'); ?></label>
+                        <div class="col-sm-5">
                             <?= $humo_option["block_spam_question"]; ?>
-                            <input type="text" id="lname" class="input" name="mail_block_spam">
+                            <input type="text" id="lname" class="form-control" name="mail_block_spam">
                         </div>
                     </div>
                 <?php } ?>
 
                 <br>
-                <div class="row">
-                    <input type="submit" class="input_submit" name="send_mail" value="<?= __('Send'); ?>">
+                <div class="mb-2 row">
+                    <label for="2fa_code" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-7">
+                        <input type="submit" class="col-sm-2 btn btn-success" name="send_mail" value="<?= __('Send'); ?>">
+                    </div>
                 </div>
             </form>
         </div>
