@@ -1,18 +1,13 @@
 <?php
 
 /**
- * Birtday list
+ * Anniversary list
  * 
- * Author : Louis Ywema
- * Date  : 29-04-2006
- * 
- * 18-06-2011 Huub: translated all remarks and variables into English. And did some minor updates.
- * 
- * 10-11-2019 Yossi Beck - Added wedding anniversaries and menu
+ * 29-04-2006 Louis Ywema: build first script.
+ * 18-06-2011 Huub Mons: translated all remarks and variables into English. And did some minor updates.
+ * 10-11-2019 Yossi Beck: Added wedding anniversaries and menu
+ * 01-12-2023 Huub Mons: refactor script (improve variables and prepare MVC).
  */
-
-include_once(__DIR__ . "/../include/language_date.php");
-include_once(__DIR__ . "/../include/person_cls.php");
 
 // *** Check user authority ***
 if ($user["group_birthday_list"] != 'j') {
@@ -20,109 +15,51 @@ if ($user["group_birthday_list"] != 'j') {
     exit();
 }
 
-//TODO use function
-if ($humo_option["url_rewrite"] == "j") {
-    $path = 'birthday_list';
-    $path2 = 'birthday_list?';
-} else {
-    $path = 'index.php?page=birthday_list';
-    $path2 = 'index.php?page=birthday_list&amp;';
-}
+$path = $link_cls->get_link($uri_path, 'anniversary', $tree_id, true);
 
-// *** Month to show ***
-$month = date("M");
-if (isset($_GET['month']) and strlen($_GET['month']) == '3') {
-    $month_check = $_GET['month'];
-    if ($month_check == 'jan') $month = 'jan';
-    if ($month_check == 'feb') $month = 'feb';
-    if ($month_check == 'mar') $month = 'mar';
-    if ($month_check == 'apr') $month = 'apr';
-    if ($month_check == 'may') $month = 'may';
-    if ($month_check == 'jun') $month = 'jun';
-    if ($month_check == 'jul') $month = 'jul';
-    if ($month_check == 'aug') $month = 'aug';
-    if ($month_check == 'sep') $month = 'sep';
-    if ($month_check == 'oct') $month = 'oct';
-    if ($month_check == 'nov') $month = 'nov';
-    if ($month_check == 'dec') $month = 'dec';
-}
-$show_month = language_date($month);
-
-// *** Calculate present date, month and year ***
-$today = date('j') . ' ' . date('M');
-$today = strtolower($today);
-
-$url_end = '';
-if (isset($_POST['ann_choice']) and $_POST['ann_choice'] == 'wedding') {
-    $url_end = '&amp;ann_choice=wedding';
-    if (isset($_POST['civil'])) $url_end .= '&amp;civil=civil';
-    if (isset($_POST['relig'])) $url_end .= '&amp;relig=relig';
-}
-
-if (isset($_GET['ann_choice']) and $_GET['ann_choice'] == 'wedding') {
-    $url_end = '&amp;ann_choice=wedding';
-    if (isset($_GET['civil'])) $url_end .= '&amp;civil=civil';
-    if (isset($_GET['relig'])) $url_end .= '&amp;relig=relig';
-}
-
-// *** If month is clicked, also set $_POST ***
-if (isset($_GET['ann_choice'])) $_POST['ann_choice'] = 'wedding';
-if (isset($_GET['civil'])) {
-    $_POST['ann_choice'] = 'wedding';
-    $_POST['civil'] = 'wedding';
-}
-if (isset($_GET['relig'])) {
-    $_POST['ann_choice'] = 'wedding';
-    $_POST['relig'] = 'relig';
-}
-
-$spacer = '&nbsp;&#124;&nbsp;';
 $max_age = '110';
 $last_cal_day = 0;
+$months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
 ?>
 
 <!-- *** Center page *** -->
 <div class="fonts center">
-    <?php
-    // *** Show navigation ***
-    echo '[ ';
-    echo '<a href="' . $path2 . 'month=jan' . $url_end . '">' . __('jan') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=feb' . $url_end . '">' . __('feb') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=mar' . $url_end . '">' . __('mar') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=apr' . $url_end . '">' . __('apr') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=may' . $url_end . '">' . __('may') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=jun' . $url_end . '">' . __('jun') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=jul' . $url_end . '">' . __('jul') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=aug' . $url_end . '">' . __('aug') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=sep' . $url_end . '">' . __('sep') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=oct' . $url_end . '">' . __('oct') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . 'month=nov' . $url_end . '">' . __('nov') . '</a>' . $spacer;
-    echo '<a href="' . $path2 . '   month=dec' . $url_end . '">' . __('dec') . '</a>';
-    echo " ]\n";
-    ?>
-
     <!-- *** Show month and year *** -->
-    <h1 class="standard_header"><?= ucfirst($show_month) . ' ' . date("Y"); ?></h1>
+    <h1 class="standard_header"><?= ucfirst($data["show_month"]) . ' ' . date("Y"); ?></h1>
 
     <div>
-        <form name="anniv" id="anniv" action="<?= $path; ?>?month=<?= $month; ?>" method="post">
+        <form name="anniv" id="anniv" action="<?= $path; ?>month=<?= $data["month"]; ?>" method="post">
             <table class="humo" style="text-align:center;width:40%;margin-left:auto;margin-right:auto;border:1px solid black;">
+                <!-- Show line of months -->
+                <tr>
+                    <td style="border:none" colspan="2"> <!-- Show navigation -->
+                        <?php foreach ($months as $month) { ?>
+                            <?php if ($data["month"] == $month) { ?>
+                                <b><?= __($month); ?></b>
+                            <?php } else { ?>
+                                <a href="<?= $path; ?>month=<?= $month . $data["url_end"]; ?>"><?= __($month); ?></a>
+                            <?php } ?>
+                            <?php if ($month!='dec') echo '&#124;'; ?>
+                        <?php } ?>
+                    </td>
+                </tr>
+
                 <tr>
                     <?php
-                    $check = ' checked';
-                    if (isset($_POST['ann_choice']) and $_POST['ann_choice'] != 'birthdays') $check = '';
+                    $check = '';
+                    if ($data["ann_choice"]) $check = ' checked';
                     echo "<td style='border:none'><input id='birthd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='birthdays'" . $check . ">" . __('Birthdays') . "</td>";
 
                     $check = '';
-                    if (isset($_POST['ann_choice']) and $_POST['ann_choice'] == 'wedding') $check = " checked";
+                    if ($data["ann_choice"] == 'wedding') $check = " checked";
                     echo "<td style='border:none'><input id='wedd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='wedding'" . $check . ">" . __('Wedding anniversaries') . "&nbsp;&nbsp;";
 
-                    $check = ' checked';
-                    if (isset($_POST['ann_choice']) and !isset($_POST['civil'])) $check = '';
+                    $check =  '';
+                    if ($data["civil"]) $check = ' checked';
                     echo "<span style='font-size:90%'>(<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='civil' id='civil' value='civil'" . $check . ">" . __('Civil');
 
                     $check = '';
-                    if (isset($_POST['ann_choice']) and isset($_POST['relig'])) $check = " checked";
+                    if ($data["relig"]) $check = " checked";
                     echo "&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'" . $check . ">" . __('Religious') . ")</span></td>";
                     ?>
                 </tr>
@@ -132,7 +69,7 @@ $last_cal_day = 0;
 
     <?php
     // *** Build page ***
-    if (!isset($_POST['ann_choice']) or $_POST['ann_choice'] == "birthdays") {
+    if ($data["ann_choice"] == 'birthdays') {
         $privcount = 0; // *** Count privacy persons ***
 
         // *** Build query ***
@@ -147,7 +84,7 @@ $last_cal_day = 0;
         try {
             $qry = $dbh->prepare($sql);
             $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-            $qry->bindValue(':month', $month, PDO::PARAM_STR);
+            $qry->bindValue(':month', $data["month"], PDO::PARAM_STR);
             $qry->execute();
         } catch (PDOException $e) {
             echo $e->getMessage() . '<br>';
@@ -165,7 +102,7 @@ $last_cal_day = 0;
             <?php
             while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
                 $calendar_day = $record->birth_day;
-                $birth_day = $record->birth_day . ' ' . $month;
+                $birth_day = $record->birth_day . ' ' . $data["month"];
                 $person_cls = new person_cls($record);
                 $name = $person_cls->person_name($record);
 
@@ -188,8 +125,8 @@ $last_cal_day = 0;
 
             ?>
                     <!-- Highlight present day -->
-                    <tr <?php if ($birth_day == $today) echo 'bgcolor="#BFBFBF"'; ?>>
-                        <td><?php echo ($calendar_day == $last_cal_day) ? '<br>' : $calendar_day . ' ' . $show_month; ?></td>
+                    <tr <?php if ($birth_day == $data["today"]) echo 'bgcolor="#BFBFBF"'; ?>>
+                        <td><?php echo ($calendar_day == $last_cal_day) ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
                         <?php $last_cal_day = $calendar_day; ?>
 
                         <td><?php echo ($person_cls->privacy) ?  __(' PRIVACY FILTER') : $record->birth_year; ?></td>
@@ -228,7 +165,7 @@ $last_cal_day = 0;
             $cnt = 0;
 
             // *** Build query ***
-            if (isset($_POST['civil'])) {
+            if ($data["civil"]) {
                 $sql = "SELECT *,
                     abs(substring( fam_marr_date,1,2 )) as marr_day,
                     substring( fam_marr_date,-4 ) as marr_year
@@ -240,7 +177,7 @@ $last_cal_day = 0;
                 try {
                     $qry = $dbh->prepare($sql);
                     $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                    $qry->bindValue(':month', $month, PDO::PARAM_STR);
+                    $qry->bindValue(':month', $data["month"], PDO::PARAM_STR);
                     $qry->execute();
                 } catch (PDOException $e) {
                     echo $e->getMessage() . "<br/>";
@@ -248,7 +185,7 @@ $last_cal_day = 0;
 
                 while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
                     $wed[$cnt]['calday'] = $record->marr_day;
-                    $wed[$cnt]['marday'] = $record->marr_day . ' ' . $month;
+                    $wed[$cnt]['marday'] = $record->marr_day . ' ' . $data["month"];
                     $wed[$cnt]['maryr'] = $record->marr_year;
                     $day = $record->marr_day;
                     if (strlen($record->marr_day) == 1) $day = "0" . $day;
@@ -260,7 +197,8 @@ $last_cal_day = 0;
                 }
             }
 
-            if (isset($_POST['relig'])) {
+
+            if ($data["relig"]) {
                 $sql = "SELECT *,
                     abs(substring( fam_marr_church_date,1,2 )) as marr_day,
                     substring( fam_marr_church_date,-4 ) as marr_year
@@ -271,14 +209,14 @@ $last_cal_day = 0;
                 try {
                     $qry = $dbh->prepare($sql);
                     $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                    $qry->bindValue(':month', $month, PDO::PARAM_STR);
+                    $qry->bindValue(':month', $data["month"], PDO::PARAM_STR);
                     $ccc = $qry->execute();
                 } catch (PDOException $e) {
                     echo $e->getMessage() . '<br>';
                 }
                 while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
                     $wed[$cnt]['calday'] = $record->marr_day;
-                    $wed[$cnt]['marday'] = $record->marr_day . ' ' . $month;
+                    $wed[$cnt]['marday'] = $record->marr_day . ' ' . $data["month"];
                     $wed[$cnt]['maryr'] = $record->marr_year;
                     $day = $record->marr_day;
                     if (strlen($record->marr_day) == 1) $day = "0" . $day;  // for sorting array
@@ -289,9 +227,11 @@ $last_cal_day = 0;
                     $cnt++;
                 }
             }
+
+
             if (isset($wed) and count($wed) > 0) {
                 // sort the array to mix civill and religious
-                if (isset($_POST['civil']) and isset($_POST['relig'])) {
+                if ($data["civil"] and $data["relig"]) {
                     function custom_sort($a, $b)
                     {
                         //return $a['dayyear']>$b['dayyear']; // DEPRECATED in PHP 8.
@@ -339,8 +279,8 @@ $last_cal_day = 0;
                     if (!$man_cls->privacy and !$woman_cls->privacy) {
             ?>
                         <!-- Highlight present day -->
-                        <tr <?php if ($marr_day == $today) echo 'bgcolor="#BFBFBF"'; ?>>
-                            <td><?php echo ($calendar_day == $last_cal_day) ? '<br>' : $calendar_day . ' ' . $show_month; ?></td>
+                        <tr <?php if ($marr_day == $data["today"]) echo 'bgcolor="#BFBFBF"'; ?>>
+                            <td><?php echo ($calendar_day == $last_cal_day) ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
                             <?php $last_cal_day = $calendar_day;; ?>
 
                             <td><?php echo ($man_cls->privacy and !$woman_cls->privacy) ? __(' PRIVACY FILTER') : $value['maryr']; ?></td>

@@ -274,10 +274,10 @@ $page = 'check'; // *** Otherwise the direct link to page "Latest changes" doesn
                 <div style="margin-left:auto;margin-right:auto;height:350px;width:90%; overflow-y: scroll;">
                     <table class="humo" style="width:100%">
                         <tr>
-                            <th style="font-size: 90%; text-align: center"><?= __('Item'); ?></th>
-                            <th style="font-size: 90%; text-align: center"><?= __('Changed/ Added'); ?></th>
-                            <th style="font-size: 90%; text-align: center"><?= __('When changed'); ?></th>
-                            <th style="font-size: 90%; text-align: center"><?= __('When added'); ?></th>
+                            <th style="text-align: center"><?= __('Item'); ?></th>
+                            <th style="text-align: center"><?= __('Changed/ Added'); ?></th>
+                            <th style="text-align: center"><?= __('When changed'); ?></th>
+                            <th style="text-align: center"><?= __('When added'); ?></th>
                         </tr>
                         <?php
 
@@ -717,7 +717,7 @@ $page = 'check'; // *** Otherwise the direct link to page "Latest changes" doesn
                 echo '<tr><td colspan="4" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid person dates:') . '</td></tr>';
                 $found = false; // if this stays false, displays message that no problems where found
                 $person = $dbh->query("SELECT pers_gedcomnumber, pers_birth_date, pers_bapt_date, pers_death_date, pers_buried_date FROM humo_persons
-        WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
+                WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
                 while ($persdateDb = $person->fetch()) {
                     if (isset($persdateDb['pers_birth_date']) and $persdateDb['pers_birth_date'] != '')
                         $result = invalid($persdateDb['pers_birth_date'], $persdateDb['pers_gedcomnumber'], 'pers_birth_date');

@@ -4,6 +4,9 @@ function process_text($text_process, $text_sort = 'standard')
     global $dbh, $tree_id, $user;
     global $screen_mode, $data, $link_cls, $uri_path;
 
+    if (!isset($data["text_presentation"])) $data["text_presentation"]='';
+    if (!isset($data["picture_presentation"])) $data["picture_presentation"]='';
+
     if ($data["text_presentation"] != 'hide' and $text_process) {
         //1 NOTE Text by person#werktekst#
         //2 CONT 2e line text persoon#2e werktekst#

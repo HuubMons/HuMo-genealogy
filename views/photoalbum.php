@@ -320,43 +320,44 @@ function show_media_files($pref)
         $start = $_GET["start"];
     }
 
-    $line_pages = __('Page');
-
     // "<="
+    $data["previous_link"] = '';
+    $data["previous_status"] = '';
     if ($start > 1) {
         $start2 = $start - 20;
         $calculated = ($start - 2) * $show_pictures;
-        //"&amp;show_pictures=" . $show_pictures .
-        //"&amp;search_media=" . $search_media .
-        //"&amp;select_category=" . $chosen_tab .
-        $line_pages .= ' <a href="' . $albumpath . "start=" . $start2 . "&amp;item=" . $calculated . '">&lt;= </a>';
+        $data["previous_link"] = $albumpath . "start=" . $start2 . "&amp;item=" . $calculated;
     }
     if ($start <= 0) {
         $start = 1;
+    }
+    if ($start == '1') {
+        $data["previous_status"] = 'disabled';
     }
 
     // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
     for ($i = $start; $i <= $start + 19; $i++) {
         $calculated = ($i - 1) * $show_pictures;
         if ($calculated < $nr_pictures) {
+            $data["page_nr"][] = $i;
             if ($item == $calculated) {
-                $line_pages .=  " <b>$i</b>";
+                $data["page_link"][$i] = '';
+                $data["page_status"][$i] = 'active';
             } else {
-                //"&amp;show_pictures=" . $show_pictures .
-                //"&amp;search_media=" . $search_media .
-                //"&amp;select_category=" . $chosen_tab .
-                $line_pages .= ' <a href="' . $albumpath . "start=" . $start . "&amp;item=" . $calculated . '"> ' . $i . '</a>';
+                $data["page_link"][$i] = $albumpath . "start=" . $start . "&amp;item=" . $calculated;
             }
         }
     }
 
     // "=>"
+    $data["next_link"] = '';
+    $data["next_status"] = '';
     $calculated = ($i - 1) * $show_pictures;
     if ($calculated < $nr_pictures) {
-        //"&amp;show_pictures=" . $show_pictures .
-        //"&amp;search_media=" . $search_media .
-        //"&amp;select_category=" . $chosen_tab .
-        $line_pages .= ' <a href="' . $albumpath . "start=" . $i . "&amp;item=" . $calculated . '"> =&gt;</a>';
+        $data["page_nr"][] = $i;
+        $data["next_link"] = $albumpath . "start=" . $i . "&amp;item=" . $calculated;
+    } else {
+        $data["next_status"] = 'disabled';
     }
 
     $style = '';
@@ -376,10 +377,8 @@ function show_media_files($pref)
                 }
                 ?>
             </select>
+
             <?php
-
-            echo $line_pages;
-
             // *** Search by photo name ***
             $menu = "";
             if ($show_categories === true) {
@@ -392,13 +391,16 @@ function show_media_files($pref)
             }
             //$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
             ?>
-            <form method="post" action="<?= $path . $menu; ?>" style="display:inline">
+            &nbsp;<form method="post" action="<?= $path . $menu; ?>" style="display:inline">
                 <input type="text" class="fonts" name="search_media" value="<?= $search_media; ?>" size="20">
                 <input class="fonts" type="submit" value="<?= __('Search'); ?>">
             </form>
-        </div>
-        <?php
 
+            <br><br>
+            <?php include __DIR__ . '/partial/pagination.php'; ?>
+        </div>
+
+        <?php
         // *** Show photos ***
         for ($picture_nr = $item; $picture_nr < ($item + $show_pictures); $picture_nr++) {
             if (isset($media_files[$picture_nr]) and $media_files[$picture_nr]) {
@@ -499,8 +501,11 @@ function show_media_files($pref)
             }
         }
         ?>
+
         </div> <!-- end of white menu page -->
         <br clear="all"><br>
-        <div class="center"><?= $line_pages; ?></div>
+
+        <?php include __DIR__ . '/partial/pagination.php'; ?>
+
     <?php
 }

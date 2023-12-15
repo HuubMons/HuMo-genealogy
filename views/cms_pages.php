@@ -13,8 +13,8 @@ if ($humo_option["url_rewrite"] == "j") {
 }
 ?>
 
-<div id="mainmenu_centerbox">
-    <div id="mainmenu_left">
+<div class="row m-lg-1 py-3 genealogy_row">
+    <div class="col-sm-2">
         <!-- Show pages without menu -->
         <?php foreach ($data["pages"] as $pageDb) { ?>
             <a href="<?= $path . $pageDb->page_id; ?>"><?= $pageDb->page_title; ?></a><br>
@@ -22,17 +22,15 @@ if ($humo_option["url_rewrite"] == "j") {
 
         <!-- Show pages with menu -->
         <?php foreach ($data["menu"] as $menuDb) { ?>
-            <p><b><?= $menuDb->menu_name; ?></b><br>
-                <?php foreach ($data["pages_menu"] as $pageDb) { ?>
-                    <?php if ($pageDb->page_menu_id == $menuDb->menu_id) { ?>
-                        <a href="<?= $path . $pageDb->page_id; ?>"><?= $pageDb->page_title; ?></a><br>
-                    <?php } ?>
+            <br><b><?= $menuDb->menu_name; ?></b><br>
+            <?php foreach ($data["pages_menu"] as $pageDb) { ?>
+                <?php if ($pageDb->page_menu_id == $menuDb->menu_id) { ?>
+                    <a href="<?= $path . $pageDb->page_id; ?>"><?= $pageDb->page_title; ?></a><br>
                 <?php } ?>
             <?php } ?>
+        <?php } ?>
     </div>
-
-    <!-- Show page -->
-    <div id="mainmenu_center_alt" style="text-align:left;">
+    <div class="col-sm-10">
         <?= $data["page"]; ?>
     </div>
 </div>

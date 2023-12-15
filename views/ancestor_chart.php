@@ -12,8 +12,6 @@
 // TODO check variable
 $screen_mode = 'ancestor_chart';
 
-//$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-
 if (!isset($hourglass)) {
     //TODO check if this is still needed
     $data["main_person"] = 'I1'; // *** Default value, normally not used... ***

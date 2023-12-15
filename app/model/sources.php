@@ -117,58 +117,68 @@ class SourcesModel
     function line_pages($tree_id, $link_cls, $uri_path)
     {
         $path = $link_cls->get_link($uri_path, 'sources', $tree_id, true);
-        $line_pages = __('Page');
 
         $start = 0;
         if (isset($_GET["start"]) and is_numeric($_GET["start"])) $start = $_GET["start"];
 
         // "<="
+        $data["previous_link"] = '';
+        $data["previous_status"] = '';
         if ($start > 1) {
             $start2 = $start - 20;
             $calculated = ($start - 2) * $this->count_sources;
-            $line_pages .= '<a href="' . $path . 'start=' . $start2 . '&amp;item=' . $calculated;
+            $data["previous_link"] .= $path . 'start=' . $start2 . '&amp;item=' . $calculated;
             if (isset($_GET['order_sources'])) {
-                $line_pages .=  '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
+                $data["previous_link"] .=  '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
             }
             if ($this->source_search != '') {
-                $line_pages .=  '&amp;source_search=' . $this->source_search;
+                $data["previous_link"] .=  '&amp;source_search=' . $this->source_search;
             }
-            $line_pages .=  '">&lt;= </a>';
         }
         if ($start <= 0) {
             $start = 1;
+        }
+        if ($start == 1) {
+            $data["previous_status"] = 'disabled';
         }
 
         // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
         for ($i = $start; $i <= $start + 19; $i++) {
             $calculated = ($i - 1) * $this->count_sources;
             if ($calculated < $this->all_sources->rowCount()) {
+                $data["page_nr"][] = $i;
                 if ($this->item == $calculated) {
-                    $line_pages .=  " <b>$i</b>";
+                    $data["page_link"][$i] =  " <b>$i</b>";
+                    $data["page_status"][$i] = 'active';
                 } else {
-                    $line_pages .=  ' <a href="' . $path . 'item=' . $calculated . '&amp;start=' . $start;
-                    if (isset($_GET['order_sources'])) $line_pages .= '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
-                    if ($this->source_search != '') {
-                        $line_pages .=  '&amp;source_search=' . $this->source_search;
+                    $data["page_link"][$i] =  $path . 'start=' . $start . '&amp;item=' . $calculated;
+                    if (isset($_GET['order_sources'])) {
+                        $data["page_link"][$i] .= '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
                     }
-                    $line_pages .=  '">' . $i . '</a>';
+                    if ($this->source_search != '') {
+                        $data["page_link"][$i] .=  '&amp;source_search=' . $this->source_search;
+                    }
+                    $data["page_status"][$i] = '';
                 }
             }
         }
 
         // "=>"
+        $data["next_link"] = '';
+        $data["next_status"] = '';
         $calculated = ($i - 1) * $this->count_sources;
         if ($calculated < $this->all_sources->rowCount()) {
-            $line_pages .=  '<a href="' . $path . 'start=' . $i . '&amp;item=' . $calculated;
+            $data["next_link"] .=  $path . 'start=' . $i . '&amp;item=' . $calculated;
             if (isset($_GET['order_sources'])) {
-                $line_pages .=  '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
+                $data["next_link"] .=  '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
             }
             if ($this->source_search != '') {
-                $line_pages .=  '&amp;source_search=' . $this->source_search;
+                $data["next_link"] .=  '&amp;source_search=' . $this->source_search;
             }
-            $line_pages .=  '"> =&gt;</a>';
+        } else {
+            $data["next_status"] = 'disabled';
         }
 
-        return $line_pages;
+        return $data;
     }
 }

@@ -10,8 +10,6 @@
  *
  * https://humo-gen.com
  *
- * ----------
- *
  * Copyright (C) 2008-2023 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * René Janssen, Yossi Beck
@@ -1244,11 +1242,9 @@ function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_conn
     </iframe>
     </td></tr>';
 
-
     //TEST
     //include (__DIR__.'/../index.php?page=editor_sources');
     //include_once (__DIR__.'/../include/editor_sources.php');
-
 
     return $text;
 }

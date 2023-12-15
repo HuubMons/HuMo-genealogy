@@ -20,7 +20,7 @@ class Link_cls
     public $link_array = [
         ['page' => 'addresses', 'file_rewrite' => 'addresses', 'file' => 'index.php?page=addresses', 'seperator' => '&amp;'],
         ['page' => 'ancestor_report', 'file_rewrite' => 'ancestor_report', 'file' => 'index.php?page=ancestor_report', 'seperator' => '&amp;'],
-        ['page' => 'birthday_list', 'file_rewrite' => 'birthday_list', 'file' => 'index.php?page=birthday_list', 'seperator' => '&amp;'],
+        ['page' => 'anniversary', 'file_rewrite' => 'anniversary', 'file' => 'index.php?page=anniversary', 'seperator' => '&amp;'],
         ['page' => 'cms_pages', 'file_rewrite' => 'cms_pages', 'file' => 'index.php?page=cms_pages', 'seperator' => '&amp;'],
         ['page' => 'cookies', 'file_rewrite' => 'cookies', 'file' => 'index.php?page=cookies', 'seperator' => '&amp;'],
         ['page' => 'family', 'file_rewrite' => 'family', 'file' => 'index.php?page=family', 'seperator' => '&amp;'],
@@ -31,6 +31,7 @@ class Link_cls
         ['page' => 'language', 'file_rewrite' => 'index', 'file' => 'index.php', 'seperator' => '?'],
         ['page' => 'latest_changes', 'file_rewrite' => 'latest_changes', 'file' => 'index.php?page=latest_changes', 'seperator' => '&amp;'],
         ['page' => 'list', 'file_rewrite' => 'list', 'file' => 'index.php?page=list', 'seperator' => '&amp;'],
+        ['page' => 'list_names', 'file_rewrite' => 'list_names', 'file' => 'index.php?page=list_names', 'seperator' => '&amp;'],
         ['page' => 'list_places_families', 'file_rewrite' => 'list_places_families', 'file' => 'index.php?page=list_places_families', 'seperator' => '&amp;'],
         ['page' => 'login', 'file_rewrite' => 'login', 'file' => 'index.php?page=login', 'seperator' => '&amp;'],
         ['page' => 'logoff', 'file_rewrite' => 'index?log_off=1', 'file' => 'index.php?log_off=1', 'seperator' => '&amp;'],
@@ -41,9 +42,9 @@ class Link_cls
         ['page' => 'relations', 'file_rewrite' => 'relations', 'file' => 'index.php?page=relations', 'seperator' => '&amp;'],
         ['page' => 'report_outline', 'file_rewrite' => 'report_outline', 'file' => 'index.php?page=report_outline', 'seperator' => '&amp;'],
         ['page' => 'sources', 'file_rewrite' => 'sources', 'file' => 'index.php?page=sources', 'seperator' => '&amp;'],
-        ['page' => 'source', 'file_rewrite' => 'source', 'file' => 'index.php?page=sources', 'seperator' => '&amp;'],
+        ['page' => 'source', 'file_rewrite' => 'source', 'file' => 'index.php?page=source', 'seperator' => '&amp;'],
         ['page' => 'statistics', 'file_rewrite' => 'statistics', 'file' => 'index.php?page=statistics', 'seperator' => '&amp;'],
-        ['page' => 'timelines', 'file_rewrite' => 'timelines', 'file' => 'index.php?page=timelines', 'seperator' => '&amp;'],
+        ['page' => 'timeline', 'file_rewrite' => 'timeline', 'file' => 'index.php?page=timeline', 'seperator' => '&amp;'],
         ['page' => 'tree_index', 'file_rewrite' => 'tree_index', 'file' => 'index.php?page=tree_index', 'seperator' => '&amp;'],
         ['page' => 'user_settings', 'file_rewrite' => 'user_settings', 'file' => 'index.php?page=user_settings', 'seperator' => '&amp;'],
     ];
@@ -82,6 +83,10 @@ class Link_cls
 
                     if ($tree_id) $link .= '/' . $tree_id;
 
+                    if ($page == 'ancestor_report' AND $vars) {
+                        $link .= '/' . $vars['id'];
+                    }
+
                     if ($page == 'family' AND $vars) {
                         $link .= '/' . $vars['pers_family'];
                     }
@@ -90,8 +95,16 @@ class Link_cls
                         $link .= '/' . $vars['pers_family'];
                     }
 
-                    if ($page == 'ancestor_report' AND $vars) {
-                        $link .= '/' . $vars['id'];
+                    if ($page == 'list_names' AND $vars) {
+                        $link .= '/' . $vars['last_name'];
+                    }
+
+                    if ($page == 'timeline' AND $vars) {
+                        $link .= '/' . $vars['pers_gedcomnumber'];
+                    }
+
+                    if ($page == 'source' AND $vars) {
+                        $link .= '/' . $vars['source_gedcomnr'];
                     }
 
                     if ($add_seperator) $link .= '?';
@@ -107,6 +120,10 @@ class Link_cls
                         $seperator = '&amp;';
                     }
 
+                    if ($page == 'ancestor_report' AND $vars) {
+                        $link .= '&amp;id=' . $vars['id'];
+                    }
+
                     if ($page == 'family' AND $vars) {
                         $link .= '&amp;id=' . $vars['pers_family'];
                     }
@@ -115,8 +132,16 @@ class Link_cls
                         $link .= '&amp;id=' . $vars['pers_family'];
                     }
 
-                    if ($page == 'ancestor_report' AND $vars) {
-                        $link .= '&amp;id=' . $vars['id'];
+                    if ($page == 'list_names' AND $vars) {
+                        $link .= '&amp;last_name=' . $vars['last_name'];
+                    }
+
+                    if ($page == 'timeline' AND $vars) {
+                        $link .= '&amp;id=' . $vars['pers_gedcomnumber'];
+                    }
+
+                    if ($page == 'source' AND $vars) {
+                        $link .= '&amp;id=' . $vars['source_gedcomnr'];
                     }
 
                     if ($add_seperator) $link .= $seperator;

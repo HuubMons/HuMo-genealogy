@@ -59,19 +59,6 @@ body {
     color: #333;
 }
 
-/* top bar in left - content - right boxes: only in main menu */
-/*
-.mainmenu_bar {
-	background: none;
-	border-bottom: 4px solid #dadada;
-	color: #4088b8;
-}
-*/
-
-#mainmenu_centerbox {
-    box-shadow: 0px 0px 0px #999;
-}
-
 .search_bar {
     background: url("images_white/white.jpg") repeat left top;
 }
@@ -81,8 +68,8 @@ body {
     padding-left: 10px;
     position: relative;
     z-index: 3;
-    height: 100%;
-    max-height: 90%;
+    /* height: 100%; */
+    /* max-height: 90%; */
     top: 35px;
     width: 1005px;
     margin: 0 auto;

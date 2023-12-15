@@ -22,8 +22,7 @@
  */
 class Ansel2Unicode
 {
-    // Huub: Commented this line because of errors in PHP 4, this line is not used???
-    // private $_mapping;   // The character mappings
+    private $_mapping;   // The character mappings
 
     /**
      * Constructor of the object.
@@ -138,7 +137,8 @@ class Ansel2Unicode
             }
         }
 
-        return utf8_encode($output); // Return the string with replacements
+        //return utf8_encode($output); // Return the string with replacements
+        return mb_convert_encoding($output, 'UTF-8', 'ISO-8859-2'); 
     }
 
 

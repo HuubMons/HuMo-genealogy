@@ -32,7 +32,6 @@ class Mainindex_cls
         elseif ($tree_prefix_quoted == '' or $tree_prefix_quoted == 'EMPTY') {
             $temp = $this->selected_family_tree();
 
-            //$temp .= '<h2><a href="login.php">' . __('Select another family tree, or login for the selected family tree.') . '</a></h2>';
             $path_tmp = $link_cls->get_link($uri_path, 'login');
             $temp .= '<h2><a href="' . $path_tmp . '">' . __('Select another family tree, or login for the selected family tree.') . '</a></h2>';
 
@@ -618,7 +617,7 @@ class Mainindex_cls
         if (isset($_SESSION["save_quicksearch"])) {
             $quicksearch = $_SESSION["save_quicksearch"];
         }
-        $text .= '<input type="text" name="quicksearch" placeholder="' . __('Name') . '" value="' . $quicksearch . '" size="30" pattern=".{3,}" title="' . __('Minimum: 3 characters.') . '"></p>';
+        $text .= '<input type="text" class="form-control form-control-sm" name="quicksearch" placeholder="' . __('Name') . '" value="' . $quicksearch . '" size="30" pattern=".{3,}" title="' . __('Minimum: 3 characters.') . '"></p>';
 
         // Check if there are multiple family trees.
         $datasql2 = $dbh->query("SELECT * FROM humo_trees");
@@ -628,23 +627,23 @@ class Mainindex_cls
             if ($search_database == "tree_selected") {
                 $checked = 'checked';
             }
-            $text .= '<input type="radio" name="search_database" value="tree_selected" ' . $checked . '> ' . __('Selected family tree') . '<br>';
+            $text .= '<input type="radio" class="form-check-input" name="search_database" value="tree_selected" ' . $checked . '> ' . __('Selected family tree') . '<br>';
             //$checked=''; if ($search_database=="all_databases"){ $checked='checked'; }
             $checked = '';
             if ($search_database == "all_trees") {
                 $checked = 'checked';
             }
-            $text .= '<input type="radio" name="search_database" value="all_trees" ' . $checked . '> ' . __('All family trees') . '<br>';
+            $text .= '<input type="radio" class="form-check-input" name="search_database" value="all_trees" ' . $checked . '> ' . __('All family trees') . '<br>';
             $checked = '';
             if ($search_database == "all_but_this") {
                 $checked = 'checked';
             }
-            $text .= '<input type="radio" name="search_database" value="all_but_this" ' . $checked . '> ' . __('All but selected tree') . '<br>';
+            $text .= '<input type="radio" class="form-check-input" name="search_database" value="all_but_this" ' . $checked . '> ' . __('All but selected tree') . '<br>';
         }
         if ($num_rows2 > 1 and $humo_option['one_name_study'] == 'y') {
             $text .= '<input type="hidden" name="search_database" value="all_trees">';
         }
-        $text .= '<p><input type="submit" value="' . __('Search') . '"></p>';
+        $text .= '<p><button type="submit" class="btn btn-success btn-sm my-2">'. __('Search') . '</button></p>';
         $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
         $path_tmp .= 'adv_search=1&index_list=search';
         $text .= '<a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25"> ' . __('Advanced search') . '</a>';
@@ -684,10 +683,10 @@ class Mainindex_cls
                     $text .= '<div style="text-align: center;">';
 
                     // *** Show picture using GLightbox ***
-                    //$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.'" width="200"
-                    //style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
+                    //$text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
+                    //    '" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
                     $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
-                        '" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
+                    '" width="90%" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);

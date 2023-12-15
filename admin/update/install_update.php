@@ -87,6 +87,38 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 
         echo __('Every step can take some time, please be patient and wait till the step is completed!') . '<br><br>';
 
+
+        /*
+        // Problem: HuMo-genealogy = 11 MB. Could be too large to upload for some providers in standard form without changing parameters.
+
+        // *** Only upload .ged or .zip files ***
+        if (isset($_POST['optional_upload'])) {
+            if (strtolower(substr($_FILES['upload_file']['name'], -4)) == '.zip' or strtolower(substr($_FILES['upload_file']['name'], -4)) == '.ged') {
+                $new_upload = 'update/humo-gen_update.zip';
+                // *** Move and check for succesful upload ***
+                echo '<p><b>' . $new_upload . '<br>';
+                if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $new_upload))
+                    echo __('File successfully uploaded.') . '</b>';
+                else
+                    echo __('Upload has failed.') . '</b>';
+            }
+        }
+
+        $reinstall = '';
+        if (isset($_GET['re_install'])) {
+            $reinstall = '&amp;re_install=1';
+        }
+
+        <?= __('Optional: manually upload new version.'); ?>
+        <?php printf(__('First download latest %s version from Github or Sourceforge.'), 'HuMo-genealogy'); ?>
+
+        <form name='uploadform' enctype='multipart/form-data' action="<?= $path_tmp; ?>page=install_update&auto=1&step=1&update_check=1<?= $reinstall; ?>" method="post">
+            <input type="file" name="upload_file">
+            <input type="submit" name="optional_upload" value="Upload">
+        </form><br>
+*/
+
+
         printf(__('Step 1) Download and unzip new %s version'), 'HuMo-genealogy');
         echo '<br>';
 
@@ -136,6 +168,9 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                     curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
 
+                    // *** Nov 2023: Don't use CURL cache ***
+                    curl_setopt($resource, CURLOPT_FRESH_CONNECT, true); // don't use a cached version of the url
+
                     // *** Added for GitHub ***
                     curl_setopt($resource, CURLOPT_FOLLOWLOCATION, true);
                     curl_setopt($resource, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
@@ -151,8 +186,53 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                         }
                     }
 
+
+
+                    // TEST
+                    /*
+                    $curl = curl_init();
+                    $fp = fopen($destination, "w+");
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+                    curl_setopt($curl, CURLOPT_FILE, $fp);
+                    curl_setopt($curl, CURLOPT_URL, $source);
+                    curl_exec ($curl);
+                    curl_close($curl);
+                    fclose($fp);
+
+                    // Er is een LEEG zip bestand...
+                    if (is_file($destination)) $download = true;
+
+                    end; //test
+*/
+
+                    //You can use CURLOPT_FILE to directly download to a file, just set that option to a previously
+                    // opened file pointer created with fopen($filename, 'w').
+
+                    /*
+                    # Open the file for writing...
+                    $GlobalFileHandle = fopen($destination, 'w+');
+                    curl_setopt($resource, CURLOPT_FILE, $GlobalFileHandle);
+
+                    # Assign a callback function to the CURL Write-Function
+                    curl_setopt($resource, CURLOPT_WRITEFUNCTION, 'curlWriteFile');
+
+                    # Execute the download - note we DO NOT put the result into a variable!
+                    curl_exec($resource);
+
+                    # Close CURL
+                    curl_close($resource);
+
+                    # Close the file pointer
+                    fclose($GlobalFileHandle);
+
+                    if (is_file($destination)) $download = true;
+*/
+
                     // *** Download failed from Github, now try humo-gen.com ***
                     if ($download == false) {
+                        // TODO translate?
+                        echo '<b>Download from Github failed. Now trying to download from HuMo-genealogy website.</b><br>';
+
                         $source = $update['version_auto_download'];
                         $destination = 'update/humo-gen_update.zip';
                         $resource = curl_init();
@@ -174,6 +254,9 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                 }
                 // *** copy HuMo-genealogy to server using copy ***
                 else {
+                    // TODO translate?
+                    echo '<b>Option curl is disabled. Now trying to copy file from HuMo-genealogy website.</b><br>';
+
                     if (copy($update['version_auto_download'], 'update/humo-gen_update.zip')) {
                         $download = true;
                     }
@@ -216,11 +299,14 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                     echo '">' . __('Check files') . '</a><br>';
                 } else {
                     echo 'ERROR: unzip failed!<br>';
+
+                    unlink('update/humo-gen_update.zip');
+                    echo 'Update failed, update file is removed.<br>';
                 }
             }
         }
 
-        // *** STEP 1: Download humo-gen.zip and do an unzip to humo-gen folder ***
+        // *** STEP 2: check files ***
         if (isset($_GET['step']) and ($_GET['step'] == '2' or $_GET['step'] == '3')) {
             echo '<br>' . __('Step 2) Compare existing and update files (no installation yet)...') . '<br>';
 

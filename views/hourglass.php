@@ -86,21 +86,19 @@ $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
 <div id="helppopup" class="<?= $rtlmarker; ?>sddm" style="position:absolute;left:10px;top:10px;display:inline;">
     <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',0,0)" onmouseout="mclosetime()"><b><?= __('Help'); ?></b></a>&nbsp;
     <div class="sddm_fixed" style="z-index:10; padding:4px; text-align:<?= $alignmarker; ?>;  direction:<?= $rtlmarker; ?>;" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-        <?php
-        echo __('<b>USE:</b>
+        <?= __('<b>USE:</b>
 <p>The main person is displayed in the center of the chart.<br>
 Ancestors are displayed to his/her left, descendants are displayed to the right
 <p><b>Hover over square:</b> Display pop-up menu with details<br>
 <b>Click on square:</b> Move this person to center of chart<br>
 <b>Click on name in pop-up menu:</b> Go to person\'s family page<br><br>
-<b>LEGEND:</b>');
+<b>LEGEND:</b>'); ?><br><br>
 
-        echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Male') . '<br>';
-        echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Female') . '<br>';
+        <span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;<?= __('Male'); ?><br>
+        <span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;<?= __('Female'); ?><br>
+        <span style="color:blue">=====</span>&nbsp;<?= __('Additional marriage of same person'); ?><br><br>
 
-        echo '<span style="color:blue">=====</span>&nbsp;' . __('Additional marriage of same person') . '<br><br>';
-
-        echo __('<b>SETTINGS:</b>
+        <?= __('<b>SETTINGS:</b>
 
 <br><br><b>Nr. Generations:</b> choose between 2 - 12 generations for ancestors<br>
 and 2 - 15 generation for descendants. 
@@ -109,18 +107,17 @@ and 2 - 15 generation for descendants.
 step 1-4: small boxes with popup for details<br>
 step 5-7: larger boxes with initials of name + pop-up for details<br>
 step 8-9: boxes/rectangles with name inside + pop-up with further details<br>
-step 10:    large rectangles with name, birth and death details + pop-up with further details');
-        ?>
+step 10:    large rectangles with name, birth and death details + pop-up with further details'); ?>
     </div>
 </div>
-<?php
 
+<?php
 $vars['pers_family'] = $data["family_id"];
 $path_tmp = $link_cls->get_link($uri_path, 'hourglass', $tree_id, true, $vars);
 $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
-
-// MENU BAR - no. of generations, zoom
 ?>
+
+<!-- MENU BAR - no. of generations, zoom -->
 <div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:700px; text-align:left;">
     &nbsp;<?= __('Nr. generations') . ': ' . __('Anc.'); ?>&nbsp;
 
@@ -157,15 +154,6 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
     <?php
     echo '&nbsp;&nbsp;';
     // min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
-    /* OLD VALUES
-    database: "'.$database.'",
-    main_person: "'.$data["main_person"].'",
-    id: "'.$data["family_id"].'",
-    chosengen: "'.$data["chosengen"].'",
-    chosengenanc: "'.$data["chosengenanc"].'",
-    direction: "'.$data["direction"].'",
-    chart_type: "hour",
-    */
 
     // *** Don't use &amp in link in javascript ***
     $path_tmp = str_replace('&amp;', '&', $path_tmp);

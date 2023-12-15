@@ -3961,7 +3961,7 @@ class update_cls
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
             $gebeurtsql = "UPDATE humo_events SET
-                event_connect_id2='" . substr($qryDb->event_event,1,-1) . "',
+                event_connect_id2='" . substr($qryDb->event_event, 1, -1) . "',
                 event_event=''
                 WHERE event_id= '" . $qryDb->event_id . "'";
             $result = $dbh->query($gebeurtsql);

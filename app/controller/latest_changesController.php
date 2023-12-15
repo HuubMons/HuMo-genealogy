@@ -3,7 +3,7 @@ require_once  __DIR__ . "/../model/latest_changes.php";
 
 include_once(__DIR__ . "/../../include/language_date.php");
 
-class latest_changesController
+class Latest_changesController
 {
     private $dbh;
 

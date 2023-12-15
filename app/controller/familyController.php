@@ -1,7 +1,7 @@
 <?php
 require_once  __DIR__ . "/../model/family.php";
 
-class familyController
+class FamilyController
 {
     //private $db_functions, $user;
 

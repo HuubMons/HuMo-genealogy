@@ -113,7 +113,6 @@ function first_names($max)
         if (isset($f_keys[$i + $row]) and isset($f_first_names[$f_keys[$i + $row]])) {
             echo $f_first_names[$f_keys[$i + $row]];
         }
-
         echo '</td></tr>';
     }
     return reset($m_first_names) . "@" . reset($f_first_names);

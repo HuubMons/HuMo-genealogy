@@ -11,12 +11,24 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
 
 <h1><?= __('Sources'); ?></h1>
 
-<div class=index_list1><?= $data["line_pages"]; ?>
-    <form method="post" action="<?= $path_form; ?>" style="display:inline">
-        <input type="text" class="fonts" name="source_search" value="<?= $data["source_search"]; ?>" size="20">
-        <input class="fonts" type="submit" value="<?= __('Search'); ?>">
-    </form>
-</div><br>
+<form method="post" action="<?= $path_form; ?>">
+    <div class="container">
+        <div class="mb-2 row">
+            <div class="col-sm-4"></div>
+
+            <div class="col-sm-4">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control form-control-sm" name="source_search" value="<?= $data["source_search"]; ?>" size="20">
+                    <button type="submit" class="btn btn-success btn-sm"><?= __('Search'); ?></button>
+                </div>
+            </div>
+
+            <div class="col-sm-4"></div>
+        </div>
+    </div>
+</form>
+
+<?php include __DIR__ . '/partial/pagination.php'; ?>
 
 <table class="humo index_table" align="center">
     <tr class=table_headline>
@@ -70,14 +82,16 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
 
     <?php foreach ($data["listsources"] as $sourceDb) { ?>
 
-    <?php
+        <?php
         // TODO use function
         if ($humo_option["url_rewrite"] == "j") {
             $url = $uri_path . 'source/' . $tree_id . '/' . $sourceDb->source_gedcomnr;
         } else {
             $url = $uri_path . 'index.php?page=source&amp;tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
         }
-    ?>
+        //$vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
+        //$sourcestring = $link_cls->get_link('../', 'source', $tree_id, false, $vars);
+        ?>
 
         <tr>
             <td>
@@ -104,6 +118,7 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
     }
     ?>
 </table>
-
 <br>
-<div class=index_list1><?= $data["line_pages"]; ?></div><br>
+
+<?php include __DIR__ . '/partial/pagination.php'; ?>
+<br><br>

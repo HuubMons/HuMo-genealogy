@@ -10,7 +10,7 @@
 <script src="include/glightbox/glightbox_footer.js"></script>
 
 </div> <!-- End of div: Content -->
-</div> <!-- End of div: Silverline -->
+<!-- </div> --> <!-- End of div: Silverline -->
 
 <footer>
     <?php if ($humo_option["text_footer"]); ?>

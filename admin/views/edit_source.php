@@ -27,7 +27,7 @@ $menu_admin = $get_editor->getMenuAdmin();
 
 
 $phpself = 'index.php';
-$sourcestring = '../source.php?';
+//$sourcestring = '../source.php?';
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
@@ -352,9 +352,12 @@ if ($menu_admin == 'sources') {
 
         // *** Source example in IFRAME ***
         if (!isset($_POST['add_source'])) {
+            $vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
+            $sourcestring = $link_cls->get_link('../', 'source', $tree_id, false, $vars);
+
             echo '<p>' . __('Preview') . '<br>';
-            echo '<iframe src ="' . $sourcestring . 'tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr . '" class="iframe">';
-            //TRANSLATE
+            echo '<iframe src ="' . $sourcestring . '" class="iframe">';
+            //TODO TRANSLATE
             echo '  <p>Your browser does not support iframes.</p>';
             echo '</iframe>';
         }

@@ -265,6 +265,19 @@ if (!isset($data["sourceDb"]->source_id)) exit(__('No valid source number.'));
                         $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
                         $name = $person_cls->person_name($personDb);
                         echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+
+
+                        //TEST show name of man and woman.
+                        /*
+                        if ($familyDb->fam_woman) {
+                            $personDb = $db_functions->get_person($familyDb->fam_woman);
+
+                            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                            $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                            $name = $person_cls->person_name($personDb);
+                            echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                        }
+                        */
                     }
                 }
 

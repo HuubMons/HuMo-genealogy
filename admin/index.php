@@ -77,7 +77,7 @@ include_once(__DIR__ . "/../include/links.php");
 $link_cls = new Link_cls();
 
 include_once(__DIR__ . "/../include/get_visitor_ip.php");
-$visitor_ip=visitorIP();
+$visitor_ip = visitorIP();
 
 // *** Only load settings if database and table exists ***
 $show_menu_left = false;
@@ -196,7 +196,7 @@ while (false !== ($file = readdir($map))) {
         if (file_exists('../languages/' . $file . '/' . $file . '.mo')) {
             $language_file[] = $file;
             // *** Order of languages ***
-            if ($file == 'cn') $language_order[] = 'Chinese';
+            if ($file == 'cn') $language_order[] = 'DAAChinese';  // Chinese in second row. Otherwise empty box.
             elseif ($file == 'cs') $language_order[] = 'Czech';
             elseif ($file == 'da') $language_order[] = 'Dansk';
             elseif ($file == 'de') $language_order[] = 'Deutsch';
@@ -204,7 +204,6 @@ while (false !== ($file = readdir($map))) {
             elseif ($file == 'en_ca') $language_order[] = 'English_ca';
             elseif ($file == 'en_us') $language_order[] = 'English_us';
             elseif ($file == 'es') $language_order[] = 'Espanol';
-            elseif ($file == 'fa') $language_order[] = 'Persian';
             elseif ($file == 'fi') $language_order[] = 'Suomi';
             elseif ($file == 'fr') $language_order[] = 'French';
             elseif ($file == 'fur') $language_order[] = 'Furlan';
@@ -221,7 +220,6 @@ while (false !== ($file = readdir($map))) {
             elseif ($file == 'sk') $language_order[] = 'Slovensky';
             elseif ($file == 'sv') $language_order[] = 'Swedish';
             elseif ($file == 'tr') $language_order[] = 'Turkish';
-            elseif ($file == 'zh') $language_order[] = 'Chinese_traditional';
             elseif ($file == 'pl') $language_order[] = 'Polish';
             else $language_order[] = $file;
         }
@@ -570,6 +568,15 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
         $check_tree_id = $_GET['tree_id'];
     }
 
+    // *** Check editor permissions ***
+    $edit_tree_array = explode(";", $group_edit_trees);
+    if ($group_administrator == 'j' or in_array($check_tree_id, $edit_tree_array)) {
+        // OK
+    } else {
+        // *** No valid family tree. Select first allowed family tree ***
+        $check_tree_id=$edit_tree_array[0];
+    }
+
     // *** Just logged in, or no tree_id available: find first family tree ***
     if ($check_tree_id == '') {
         $check_tree_sql = false;
@@ -602,15 +609,6 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
                 $tree_prefix = $get_treeDb->tree_prefix;
             }
         }
-    }
-
-    // *** Double double check for family tree editor. ***
-    $edit_tree_array = explode(";", $group_edit_trees);
-    if ($group_administrator == 'j' or in_array($check_tree_id, $edit_tree_array)) {
-        // OK
-    } else {
-        // No access to family tree.
-        $check_tree_id = '';
     }
 
     //echo 'test'.$tree_id.' '.$tree_prefix;

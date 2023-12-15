@@ -26,21 +26,7 @@ $rom_nr = $get_ancestor->getNumberRoman();
 
 
 
-include_once(__DIR__ . "../../include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
-
-if (isset($_SESSION['tree_prefix'])) {
-    $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-        AND humo_tree_texts.treetext_language='" . $selected_language . "'
-        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
-    @$datasql = $dbh->query($dataqry);
-    @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
-}
-
-$tree_prefix = $dataDb->tree_prefix;
-$tree_id = $dataDb->tree_id;
-$db_functions->set_tree_id($dataDb->tree_id);
+$db_functions->set_tree_id($tree_id);
 
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);

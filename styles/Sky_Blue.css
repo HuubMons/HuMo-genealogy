@@ -1,17 +1,10 @@
 body {
     color: #000000;
     background-image: url('images_sky_blue/background.gif');
-    /* font: 13px Verdana, tahoma, arial, sans-serif; */
-    /* background-repeat: repeat; */
 }
 
 #top {
     background: url(images_sky_blue/top.png) repeat left top;
-    /* background:none; */
-    /* background:inherit; */
-    /* Use #top_menu background! */
-    /* background:initial; */
-    /* Use #top_menu background! */
 }
 
 #top_website_name {
@@ -26,8 +19,6 @@ body {
     font-size: 16px;
     font-weight: normal;
 }
-
-#mainmenu_center {}
 
 /* Links */
 a:link {
@@ -45,7 +36,7 @@ a:hover {
 
 /* Tables */
 table.humo {
-    background-color: #fcfcfc;
+        -color: #fcfcfc;
 }
 
 table.humo td {
@@ -80,21 +71,10 @@ td.style_tree_text {
     border: 0px;
 }
 
-/* Switchform */
-#switchform {
-    color: #333399;
-}
-
 #humo_menu {
-    /* background-color:#bbeeff; */
     background: url("images_sky_blue/blue.png") repeat left top;
-
     border-top: solid 0px #61a0d9;
     border-bottom: solid 1px #61a0d9;
-
-    /* background:none; */
-    /* background:inherit; */
-    /* Use #top_menu background! */
 }
 
 #humo_menu a {
@@ -154,18 +134,7 @@ ul.humo_menu_item2 li a {
 #top_menu {
     /* For IE - Voor IE: */
     color: #6666aa;
-    /* background-color: #aaccee; */
-    /*	background:url("images_sky_blue/blue.png") repeat left top; */
-    /*background:url("images_sky_blue/top.png") repeat left top; */
-    /* TEST LINE */
 }
-
-/* top bar in left - content - right boxes: only in main menu */
-/*
-.mainmenu_bar {
-	background: url("images_sky_blue/blue.png") repeat left top;
-}
-*/
 
 div.photobook,
 div.photobooktext {
