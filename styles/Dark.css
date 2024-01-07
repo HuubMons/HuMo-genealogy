@@ -45,37 +45,26 @@ p {
     font-weight: normal;
 }
 
+/*
 #top_familytree_name {
     color: #ff8888;
     font-weight: normal;
 }
+*/
 
-/* ********** */
-/* MENUBAR */
-#humo_menu {
-    background: url("images_dark/silvermenu1.jpg") repeat left top;
-}
-
-#humo_menu a:hover,
-#humo_menu ul.humo_menu_item2 li a:hover {
+ul.humo_menu_item2 li a:hover {
     background: url("images_dark/menuhover1.jpg") repeat left top;
 }
 
-#humo_menu a#current_top,
-#humo_menu #current a {
-    background: url("images_dark/menuhover1.jpg") repeat left top;
-    color: #ff6600;
-}
-
-#humo_menu ul.humo_menu_item2 li {
+ul.humo_menu_item2 li {
     background: url("images_dark/silver.jpg") repeat left top;
 }
 
-#humo_menu ul.humo_menu_item2 li a {
+ul.humo_menu_item2 li a {
     background: url("images_dark/silver.jpg") repeat left top;
 }
 
-#humo_menu ul.humo_menu_item li a {
+ul.humo_menu_item li a {
     font-weight: normal;
     color: #d0d0d0;
 }
@@ -93,9 +82,7 @@ ul.humo_menu_item li {
     font-weight: bold;
 }
 
-/* ********** */
 /* CONTENT */
-
 #content {
     background: url("images_dark/background.jpg") repeat left top;
     color: #b0b0b0;
@@ -110,9 +97,38 @@ ul.humo_menu_item li {
     background-color: #101010;
     border: solid 1px #EED4D4;
 }
+
 .genealogy_box {
     background-color: transparent;
     border: solid 1px #EED4D4;
+}
+
+/* Bootstrap menu */
+.genealogy_menu {
+    background: #333333;
+}
+
+.genealogy_menu a:hover {
+    background: #9a3f3a;
+    color: #fff;
+}
+
+.genealogy_menu a {
+    background: none;
+    color: #FFFFFF;
+}
+
+.genealogy_active {
+    background: #9a3f3a;
+}
+
+.genealogy_active a {
+    color: #FFFFFF !important;
+}
+
+/* Button for smartphones */
+.genealogy_toggler {
+    background: #9a3f3a;
 }
 
 /* Tables */

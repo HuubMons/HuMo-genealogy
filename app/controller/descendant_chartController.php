@@ -44,14 +44,12 @@ class Descendant_chartController
         //TODO remove temp. global.
         global $db_functions, $data, $user;
         $genarray = $descendantModel->Prepare_genarray($db_functions, $data, $user);
-
         $genarray = $descendantModel->generate($genarray);
 
         $hsize = $descendantModel->getHsize();
         $vdist = $descendantModel->getVdist();
         $vsize = $descendantModel->getVsize();
         $hdist = $descendantModel->getHdist();
-
 
         // TODO check these variables
         /*

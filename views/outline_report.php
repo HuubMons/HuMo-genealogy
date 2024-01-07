@@ -21,7 +21,7 @@ $show_date = $data["show_date"];
 $dates_behind_names = $data["dates_behind_names"];
 $nr_generations = $data["nr_generations"];
 
-$path_form = $link_cls->get_link($uri_path, 'report_outline', $tree_id);
+$path_form = $link_cls->get_link($uri_path, 'outline_report', $tree_id);
 
 //echo '<h1 class="standard_header fonts">' . __('Outline report') . '</h1>';
 echo $data["descendant_header"];
@@ -80,7 +80,7 @@ echo $data["descendant_header"];
         <select size=1 name="selectnr_generations" class="form-select form-select-sm" onChange="window.location=this.value;" style="display:inline; width: 60px;">
  
 <?php
-            $path_tmp = $link_cls->get_link($uri_path, 'report_outline', $tree_id, true);
+            $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
             //$path_tmp .= 'id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"];
 
             for ($i = 2; $i < 20; $i++) {
@@ -105,7 +105,7 @@ echo $data["descendant_header"];
     ?>
             <!-- Show PDF button -->
             &nbsp;&nbsp;&nbsp;<form method="POST" action="views/outline_report_pdf.php" style="display : inline;">
-                <input type="hidden" name="database" value="<?php $_SESSION['tree_prefix']; ?>">
+                <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="screen_mode" value="PDF-P">
                 <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                 <input type="hidden" name="nr_generations" value="<?= $nr_generations; ?>">
@@ -117,7 +117,7 @@ echo $data["descendant_header"];
 
             <!-- Show pdf button -->
             &nbsp;<form method="POST" action="views/outline_report_pdf.php" style="display : inline;">
-                <input type="hidden" name="database" value="<?= $_SESSION['tree_prefix']; ?>">
+                <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="screen_mode" value="PDF-L">
                 <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                 <input type="hidden" name="nr_generations" value="<?= $nr_generations; ?>">

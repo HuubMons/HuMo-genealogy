@@ -14,7 +14,6 @@ if (!defined('ADMIN_PAGE')) {
 
 $phpself = 'index.php';
 $phpself2 = 'index.php?';
-$joomlastring = '';
 
 // *** Family tree admin ***
 if (isset($_POST['change_tree_data'])) {
@@ -98,18 +97,6 @@ if (isset($_POST['tree_collation'])) {
     $dbh->query("ALTER TABLE humo_events CHANGE `event_event` `event_event` TEXT COLLATE " . $tree_collation . ";");
 }
 
-if (isset($_GET['remove_tree']) and is_numeric($_GET['remove_tree'])) {
-    echo '<div class="confirm">';
-    echo '<b>' . __('Selected:') . ' ' . $_GET['treetext_name'] . '</b> ';
-    echo __('Are you sure you want to remove this tree <b>AND all its statistics</b>?');
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $_GET['remove_tree'] . '">';
-    echo ' <input type="Submit" name="remove_tree2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-    echo ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
-    echo '</form>';
-    echo '</div>';
-}
 if (isset($_POST['remove_tree2']) and is_numeric($_POST['tree_id'])) {
     $removeqry = 'SELECT * FROM humo_trees WHERE tree_id="' . safe_text_db($_POST['tree_id']) . '"';
     @$removesql = $dbh->query($removeqry);
@@ -317,6 +304,19 @@ $tree_search_result = $dbh->query($tree_search_sql);
 ?>
 <h1 class="center"><?= __('Family tree administration'); ?></h1>
 
+<?php if (isset($_GET['remove_tree']) and is_numeric($_GET['remove_tree'])) { ?>
+    <div class="alert alert-danger">
+        <b><?= __('Selected:'); ?> <?= $_GET['treetext_name']; ?></b>
+        <?= __('Are you sure you want to remove this tree <b>AND all its statistics</b>?'); ?>
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="tree_id" value="<?= $_GET['remove_tree']; ?>">
+            <input type="Submit" name="remove_tree2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+            <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+        </form>
+    </div>
+<?php } ;?>
+
 <?= __('Family tree'); ?>:
 <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
     <input type="hidden" name="page" value="<?= $page; ?>">
@@ -338,66 +338,35 @@ $tree_search_result = $dbh->query($tree_search_sql);
 // *** Family trees administration menu ***
 $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
 $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
-
+// TODO: check if tree_prefix is still needed in GEDCOM link.
 ?>
-<p>
-<div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false">
-    <div class="pageHeading">
-        <!-- <div class="pageHeadingText">Configuratie gegevens</div> -->
-        <!-- <div class="pageHeadingWidgets" aria-hidden="true" style="display: none;"></div> -->
-        <div class="pageTabsContainer" aria-hidden="false">
-            <ul class="pageTabs">
-                <?php
-                //echo '<li class="pageTabItem"><div tabindex="0" class="pageTab pageTab-active">Details</div></li>';
 
-                $select_item = '';
-                if ($menu_admin == 'tree_main') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;tree_id=' . $tree_id . '">' . __('Family tree administration') . "</a></div></li>";
-
-                // *** Family tree data ***
-                $select_item = '';
-                if ($menu_admin == 'tree_data') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_data' . '&amp;tree_id=' . $tree_id . '">' . __('Family tree data') . "</a></div></li>";
-
-                // *** Read GEDCOM file ***
-                $select_item = '';
-                if ($menu_admin == 'tree_gedcom') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $tree_id . '&amp;tree_prefix=' . $data2Db->tree_prefix . '&amp;step1=read_gedcom">' . __('Import Gedcom file') . "</a></div></li>";
-
-                // *** Family tree texts ***
-                $select_item = '';
-                if ($menu_admin == 'tree_text') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $tree_id . '">' . __('Family tree texts (per language)') . "</a></div></li>";
-
-                // *** Family tree merge ***
-                $select_item = '';
-                if ($menu_admin == 'tree_merge') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_merge&amp;tree_id=' . $tree_id . '">' . __('Merge Data') . "</a></div></li>";
-                ?>
-            </ul>
-        </div>
-    </div>
-</div>
+<ul class="nav nav-tabs mt-1">
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'tree_main') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tree_id=<?= $tree_id; ?>"><?= __('Family tree administration'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'tree_data') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=tree_data&amp;tree_id=<?= $tree_id; ?>"><?= __('Family tree data'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'tree_gedcom') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $tree_id; ?> '&amp;tree_prefix=<?= $data2Db->tree_prefix; ?>&amp;step1=read_gedcom"><?= __('Import Gedcom file'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'tree_text') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=tree_text&amp;tree_id=<?= $tree_id; ?>"><?= __('Family tree texts (per language)'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'tree_merge') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=tree_merge&amp;tree_id=<?= $tree_id; ?>"><?= __('Merge Data'); ?></a>
+    </li>
+</ul>
 
 <!-- Align content to the left -->
 <div style="float: left; background-color:white; height:500px; padding:10px;">
     <?php
-
     // *** Show main tree screen ***
     if (isset($menu_admin) and $menu_admin == 'tree_main') {
         include(__DIR__ . '/tree_admin.php');
     }
-    // *** Show main tree screen ***
+    // *** Import GEDCOM file ***
     if (isset($menu_admin) and $menu_admin == 'tree_gedcom') {
         include(__DIR__ . '/gedcom.php');
     }
@@ -412,7 +381,6 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
     if ($menu_admin == 'tree_data') {
         include(__DIR__ . '/tree_data.php');
     }
-
     // *** Show tree text ***
     if ($menu_admin == 'tree_text') {
         include(__DIR__ . '/tree_text.php');

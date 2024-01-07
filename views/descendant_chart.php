@@ -85,8 +85,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
     } elseif ($data["dna"] == "mtdna" or $data["dna"] == "mtdnamark") {
         echo '<h1 class="standard_header fonts" style="align:center; text-align: center;"><b>' . __('Same mtDNA as ') . $data["base_person_name"] . '</b>';
     }
-    echo '<br><input type="button" id="imgbutton" value="' . __('Get image of chart for printing (allow popup!)') . '" onClick="showimg();">';
     echo '</h1>';
+    echo '<br><input type="button" id="imgbutton" value="' . __('Get image of chart for printing (allow popup!)') . '" onClick="showimg();">';
 
     if ($data["direction"] == 0) {  //vertical
         $latter = count($genarray) - 1;
@@ -118,12 +118,12 @@ step 9:   large rectangles with name, birth and death details + popup with furth
     echo '<div style="display:inline;">';
 
     if ($humo_option["url_rewrite"] == 'j') {
-        $path = 'descendant/' . $tree_id . '/' . $data["family_id"] . '?';
-        $path2 = 'descendant/' . $tree_id . '/' . $data["family_id"] . '?';
+        $path = 'descendant_chart/' . $tree_id . '/' . $data["family_id"] . '?';
+        $path2 = 'descendant_chart/' . $tree_id . '/' . $data["family_id"] . '?';
     } else {
-        $path = 'index.php?page=descendant.php&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;';
+        $path = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;';
         // Don't use &amp; for javascript.
-        $path2 = 'index.php?page=descendant.php&amp;tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
+        $path2 = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
     }
 
     ?>
@@ -456,8 +456,13 @@ for ($w = 0; $w < count($genarray); $w++) {
         }
     }
 
-    if (isset($man))
+    if (isset($man)) {
         echo $man_cls->person_popup_menu($man, true, $replacement_text, $extra_popup_text);
+
+        // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+        //$url=$man_cls->person_url2($man->pers_tree_id,$man->pers_famc,$man->pers_fams,$man->pers_gedcomnumber);
+        //echo '<a href="'.$url.'"><span clas="nam" style="font-size:10px; color: #000000; text-decoration: none;">'.$replacement_text.'</span></a>';
+    }
 
     echo '</div>';  // div of square
 

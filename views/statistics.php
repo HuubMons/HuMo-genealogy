@@ -72,38 +72,20 @@ if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_surnames') $menu_ta
 if (isset($_GET['menu_tab']) and $_GET['menu_tab'] == 'stats_firstnames') $menu_tab = 'stats_firstnames';
 ?>
 
-<p>
-<div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false">
-    <div class="pageHeading">
-        <div class="pageTabsContainer" aria-hidden="false">
-            <ul class="pageTabs">
-                <li class="pageTabItem">
-                    <div tabindex="0" class="pageTab<?php if ($menu_tab == 'stats_tree') echo ' pageTab-active'; ?>">
-                        <a href="<?= $path2; ?>tree_id=<?= $tree_id; ?>"><?= __('Family tree'); ?></a>
-                    </div>
-                </li>
-
-                <li class="pageTabItem">
-                    <div tabindex="0" class="pageTab<?php if ($menu_tab == 'stats_persons') echo ' pageTab-active'; ?>">
-                        <a href="<?= $path2; ?>menu_tab=stats_persons&amp;tree_id=<?= $tree_id; ?>"><?= __('Persons'); ?></a>
-                    </div>
-                </li>
-
-                <li class="pageTabItem">
-                    <div tabindex="0" class="pageTab<?php if ($menu_tab == 'stats_surnames') echo ' pageTab-active'; ?>">
-                        <a href="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>"><?= __('Frequency of Surnames'); ?></a>
-                    </div>
-                </li>
-
-                <li class="pageTabItem">
-                    <div tabindex="0" class="pageTab<?php if ($menu_tab == 'stats_firstnames') echo ' pageTab-active'; ?>">
-                        <a href="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?>"><?= __('Frequency of First Names'); ?></a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+<ul class="nav nav-tabs mt-1">
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'stats_tree') echo 'active'; ?>" href="<?= $path2; ?>tree_id=<?= $tree_id; ?>"><?= __('Family tree'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'stats_persons') echo 'active'; ?>" href="<?= $path2; ?>menu_tab=stats_persons&amp;tree_id=<?= $tree_id; ?>"><?= __('Persons'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'stats_surnames') echo 'active'; ?>" href="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>"><?= __('Frequency of Surnames'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'stats_firstnames') echo 'active'; ?>" href="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?>"><?= __('Frequency of First Names'); ?></a>
+    </li>
+</ul>
 
 <!-- Align content to the left -->
 <div id="statistics_screen">

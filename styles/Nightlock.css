@@ -22,12 +22,14 @@ body {
     font-weight: bold;
 }
 
+/*
 #top_familytree_name {
     color: #689BDD;
     font-family: Deliciousx, Verdana, Arial;
     font-size: 16px;
     font-weight: normal;
 }
+*/
 
 /* Links */
 a:link {
@@ -50,6 +52,35 @@ a:hover {
 .genealogy_box {
     background-color: transparent;
     border: solid 1px #EED4D4;
+}
+
+/* Bootstrap menu */
+.genealogy_menu {
+    background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
+}
+
+.genealogy_menu a:hover {
+    background: #9a3f3a;
+    color: #fff;
+}
+
+.genealogy_menu a {
+    background: none;
+    color: #FFFFFF;
+}
+
+.genealogy_active {
+    background: linear-gradient(to top, rgb(127, 209, 63) 0%, rgb(127, 175, 63) 100%);
+}
+
+.genealogy_active a {
+    color: #FFFFFF !important;
+}
+
+/* Button for smartphones */
+.genealogy_toggler {
+    background: #9a3f3a;
+    background: linear-gradient(to top, rgb(127, 209, 63) 0%, rgb(127, 175, 63) 100%);
 }
 
 /* Tables */
@@ -115,22 +146,6 @@ td.table_header {
     background-color: #aaccee;
 }
 
-#humo_menu {
-    background-color: #bbeeff;
-    background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
-    border-top: solid 0px #FFFFFF;
-    border-bottom: solid 1px #000000;
-    box-shadow: 3px 3px 6px #bbb;
-}
-
-#humo_menu a {
-    color: #FFFFFF;
-}
-
-#humo_menu a:hover {
-    background: linear-gradient(to top, rgb(127, 209, 63) 0%, rgb(127, 175, 63) 100%);
-}
-
 ul.humo_menu_item li {
     border-left: none;
     border-right: none;
@@ -149,23 +164,6 @@ ul.humo_menu_item li a {
 ul.humo_menu_item2 li a {
     background-color: #999;
     background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
-}
-
-#humo_menu #current a,
-#humo_menu #current_top {
-    background: linear-gradient(to top, rgb(127, 209, 63) 0%, rgb(127, 175, 63) 100%);
-}
-
-#humo_menu a:visited {
-    color: #FFFFFF;
-}
-
-#humo_menu a:active {
-    color: #FFFFFF;
-}
-
-#humo_menu a:hover {
-    color: #FFFFFF;
 }
 
 div.photobook,

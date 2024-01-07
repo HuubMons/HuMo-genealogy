@@ -9,7 +9,7 @@ $screen_mode = 'PDF';
 
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
-include_once(__DIR__ . '/header.php');
+include_once(__DIR__ . '/layout_pdf.php');
 
 
 
@@ -27,8 +27,6 @@ $data["picture_presentation"] =  $get_family->getPicturePresentation();
 $data["text_presentation"] =  $get_family->getTextPresentation();
 $data["number_roman"] = $get_family->getNumberRoman();
 $data["number_generation"] = $get_family->getNumberGeneration();
-
-
 
 $db_functions->set_tree_id($tree_id);
 

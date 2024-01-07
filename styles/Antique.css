@@ -6,7 +6,6 @@ body {
 
 #top {
 	/* background: url(images_antique/sepiatop1.jpg) repeat left top; */
-
 	background: #ffffff url('images_antique/sepiathin.jpg') repeat;
 }
 
@@ -23,52 +22,16 @@ body {
 	font-family: "Monotype Corsiva", "URW Chancery L", cursive, "Comic Sans MS", Tahoma, Verdana;
 }
 
+/*
 #top_familytree_name {
 	color: #347c17;
 	font-weight: normal;
 	font-family: Tahoma, "URW Chancery L", Verdana;
 	font-size: 25px;
 }
+*/
 
-#humo_menu {
-	top: 40px;
-	background-color: #bbeeff;
-	background: url("images_antique/header10.jpg") repeat left top;
-	font-family: "Monotype Corsiva", "URW Chancery L", "Comic Sans MS", Tahoma, Verdana;
-	font-size: 20px;
-}
-
-#humo_menu a:hover {
-	background: url("images_antique/header4.jpg") repeat left top;
-	color: #098017;
-}
-
-#humo_menu ul.humo_menu_item2 li a:hover {
-	background: url("images_antique/header4.jpg") repeat left top;
-	color: #098017;
-}
-
-#humo_menu a#current_top {
-	color: #098017;
-	font-weight: normal;
-	background: url("images_antique/header4.jpg") repeat left top;
-}
-
-#humo_menu #current a {
-	color: #098017;
-	font-weight: normal;
-	background: url("images_antique/header4.jpg") repeat left top;
-}
-
-#humo_menu ul.humo_menu_item2 li a {
-	background: url("images_antique/header2.jpg") repeat left top;
-	font-family: "Monotype Corsiva", "URW Chancery L", "Comic Sans MS", Tahoma, Verdana;
-	font-weight: normal;
-	padding: 0px 5px 2px 5px;
-	font-size: 20px;
-}
-
-#humo_menu ul.humo_menu_item li a {
+ul.humo_menu_item li a {
 	font-weight: normal;
 	color: #000000;
 }
@@ -112,9 +75,17 @@ p {
 	background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top;
 }
 
-/* Used for old mainmenu_centerbox */
-.genealogy_row {
-	/*	background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top; */
+/* Bootstrap menu */
+.genealogy_menu {
+	background-image: linear-gradient(to top, #fae4b3 0%, #ffffff 90%);
+
+	font-family: "Monotype Corsiva", "URW Chancery L", "Comic Sans MS", Tahoma, Verdana;
+	font-size: 20px;
+}
+
+/* Button for smartphones */
+.genealogy_toggler {
+	background-color: #778bc63a;
 }
 
 /* Tables */

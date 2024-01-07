@@ -1,4 +1,6 @@
 <?php
+// TODO show fixed number of columns and lastnames. Also use pagination.
+
 // MAIN SETTINGS
 $maxcols = 3; // number of name&nr colums in table. For example 3 means 3x name col + nr col
 if (isset($_POST['maxcols'])) {
@@ -37,10 +39,9 @@ function tablerow($nr, $lastcol = false)
     } else echo '~';
     echo '</td>';
 
-    if ($lastcol == false){
+    if ($lastcol == false) {
         echo '<td class="namenr" style="text-align:center;border-right-width:3px">'; // not last column numbers
-    }
-    else {
+    } else {
         echo '</td><td class="namenr" style="text-align:center">'; // no thick border
     }
 
@@ -86,45 +87,59 @@ if (isset($_POST['freqsurnames'])) {
     $maxnames = $_POST['freqsurnames'];
 }
 ?>
-<div style="text-align:center">
-    <form method="POST" action="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>" style="display:inline;" id="frqnames">
-        <?php
-        echo __('Number of displayed surnames');
-        echo ': <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
-        $selected = '';
-        if ($maxnames == 25) $selected = " selected ";
-        echo '<option value="25" ' . $selected . '>25</option>';
-        $selected = '';
-        if ($maxnames == 51) $selected = " selected ";
-        echo '<option value="51" ' . $selected . '>50</option>'; // 51 so no empty last field (if more names than this)
-        $selected = '';
-        if ($maxnames == 75) $selected = " selected ";
-        echo '<option value="75" ' . $selected . '>75</option>';
-        $selected = '';
-        if ($maxnames == 100) $selected = " selected ";
-        echo '<option value="100" ' . $selected . '>100</option>';
-        $selected = '';
-        if ($maxnames == 201) $selected = " selected ";
-        echo '<option value="201" ' . $selected . '>200</option>'; // 201 so no empty last field (if more names than this)
-        $selected = '';
-        if ($maxnames == 300) $selected = " selected ";
-        echo '<option value="300" ' . $selected . '>300</option>';
-        $selected = '';
-        if ($maxnames == 100000) $selected = " selected ";
-        echo '<option value="100000" ' . $selected . '">' . __('All') . '</option>';
-        echo '</select>';
 
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;' . __('Number of columns');
-        echo ': <select size=1 name="maxcols" onChange="this.form.submit();" style="width: 50px; height:20px;">';
-        for ($i = 1; $i < 7; $i++) {
+<form method="POST" action="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>" style="display:inline;" id="frqnames">
+    <div class="mb-2 row">
+        <div class="col-sm-1"></div>
+
+        <div class="col-sm-3 text-end">
+            <?= __('Number of displayed surnames'); ?>:
+        </div>
+        <div class="col-sm-1">
+            <?php
+            echo '<select size=1 class="form-select form-select-sm" name="freqsurnames" onChange="this.form.submit();">';
             $selected = '';
-            if ($maxcols == $i) $selected = " selected ";
-            echo '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
-        }
-        echo '</select>';
-        ?>
-    </form>
-</div>
+            if ($maxnames == 25) $selected = " selected ";
+            echo '<option value="25" ' . $selected . '>25</option>';
+            $selected = '';
+            if ($maxnames == 51) $selected = " selected ";
+            echo '<option value="51" ' . $selected . '>50</option>'; // 51 so no empty last field (if more names than this)
+            $selected = '';
+            if ($maxnames == 75) $selected = " selected ";
+            echo '<option value="75" ' . $selected . '>75</option>';
+            $selected = '';
+            if ($maxnames == 100) $selected = " selected ";
+            echo '<option value="100" ' . $selected . '>100</option>';
+            $selected = '';
+            if ($maxnames == 201) $selected = " selected ";
+            echo '<option value="201" ' . $selected . '>200</option>'; // 201 so no empty last field (if more names than this)
+            $selected = '';
+            if ($maxnames == 300) $selected = " selected ";
+            echo '<option value="300" ' . $selected . '>300</option>';
+            $selected = '';
+            if ($maxnames == 100000) $selected = " selected ";
+            echo '<option value="100000" ' . $selected . '">' . __('All') . '</option>';
+            echo '</select>';
+            ?>
+        </div>
+
+        <div class="col-sm-3 text-end">
+            <?= __('Number of columns'); ?>:
+        </div>
+        <div class="col-sm-1">
+            <?php
+            echo '<select size=1 class="form-select form-select-sm" name="maxcols" onChange="this.form.submit();">';
+            for ($i = 1; $i < 7; $i++) {
+                $selected = '';
+                if ($maxcols == $i) $selected = " selected ";
+                echo '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
+            }
+            echo '</select>';
+            ?>
+        </div>
+
+    </div>
+</form>
 
 <?php $col_width = ((round(100 / $maxcols)) - 6) . "%"; ?>
 <br>
@@ -142,6 +157,7 @@ if (isset($_POST['freqsurnames'])) {
 </table>
 <?php
 
+// *** Show gray bar in name box. Graphical indication of number of names ***
 echo '
 <script>
 var tbl = document.getElementsByClassName("nametbl")[0];

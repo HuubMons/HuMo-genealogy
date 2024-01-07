@@ -5,6 +5,7 @@
     font-size: 22px;
 }
 
+/*
 #top_familytree_name {
     color: #333;
     font-size: 26px;
@@ -12,8 +13,9 @@
     font-style: italic;
     font-family: Monotype Corsiva
 }
+*/
 
-#humo_menu {
+.genealogy_menu {
     font-style: italic;
     font-family: Monotype Corsiva;
     font-size: 20px;

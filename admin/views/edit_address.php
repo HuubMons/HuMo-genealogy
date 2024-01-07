@@ -27,14 +27,12 @@ $menu_admin = $get_editor->getMenuAdmin();
 
 
 $phpself = 'index.php';
-$joomlastring = '';
 $sourcestring = '../source.php?';
 $addresstring = '../address.php?';
-//$path_prefix = '../';
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-include_once(__DIR__."/../include/editor_cls.php");
+include_once(__DIR__ . "/../include/editor_cls.php");
 $editor_cls = new editor_cls;
 
 include(__DIR__ . '/../include/editor_event_cls.php');
@@ -60,7 +58,7 @@ $gedcom_time = date("H:i:s");
 
 if (isset($tree_id)) {
     // *** Process queries ***
-    include_once(__DIR__."/../include/editor_inc.php");
+    include_once(__DIR__ . "/../include/editor_inc.php");
 }
 
 
@@ -88,11 +86,6 @@ if ($menu_admin == 'addresses') {
             address_new_time='" . $gedcom_time . "'";
         $result = $dbh->query($sql);
 
-        //$new_address_qry= "SELECT * FROM humo_addresses
-        //	WHERE address_tree_id='".$tree_id."' ORDER BY address_id DESC LIMIT 0,1";
-        //$new_address_result = $dbh->query($new_address_qry);
-        //$new_address=$new_address_result->fetch(PDO::FETCH_OBJ);
-        //$_POST['address_id']=$new_address->address_id;
         $_POST['address_id'] = $dbh->lastInsertId();
     }
 
@@ -114,21 +107,30 @@ if ($menu_admin == 'addresses') {
         $result = $dbh->query($sql);
     }
 
-    if (isset($_POST['address_remove'])) {
-        echo '<div class="confirm">';
-        echo __('Are you sure you want to remove this address and ALL address references?');
-        echo ' <form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="address_id" value="' . $_POST['address_id'] . '">';
-        echo '<input type="hidden" name="address_gedcomnr" value="' . $_POST['address_gedcomnr'] . '">';
-        echo ' <input type="Submit" name="address_remove2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-        echo ' <input type="Submit" name="dummy7" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
-        echo '</form>';
-        echo '</div>';
-    }
-    if (isset($_POST['address_remove2'])) {
-        echo '<div class="confirm">';
 
+    // *****************
+    // *** Addresses ***
+    // *****************
+
+    echo '<h1 class="center">' . __('Shared addresses') . '</h1>';
+    echo __('These addresses can be connected to multiple persons, families and other items.');
+
+    if (isset($_POST['address_remove'])) {
+?>
+        <div class="alert alert-danger">
+            <strong><?= __('Are you sure you want to remove this address and ALL address references?'); ?></strong>
+            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="hidden" name="address_id" value="<?= $_POST['address_id']; ?>">
+                <input type="hidden" name="address_gedcomnr" value="<?= $_POST['address_gedcomnr']; ?>">
+                <input type="Submit" name="address_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                <input type="Submit" name="dummy7" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            </form>
+        </div>
+    <?php
+    }
+
+    if (isset($_POST['address_remove2'])) {
         // *** Remove sources by this address from connection table ***
         $sql = "DELETE FROM humo_connections
             WHERE connect_tree_id='" . $tree_id . "'
@@ -169,16 +171,12 @@ if ($menu_admin == 'addresses') {
             WHERE address_id='" . safe_text_db($_POST["address_id"]) . "'";
         $result = $dbh->query($sql);
 
-        echo __('Address has been removed!');
-        echo '</div>';
+    ?>
+        <div class="alert alert-success">
+            <strong><?= __('Address has been removed!'); ?></strong>
+        </div>
+<?php
     }
-
-
-    // *****************
-    // *** Addresses ***
-    // *****************
-    echo '<h1 class="center">' . __('Shared addresses') . '</h1>';
-    echo __('These addresses can be connected to multiple persons, families and other items.');
 
     echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 
@@ -309,15 +307,13 @@ if ($menu_admin == 'addresses') {
         // *** Example in IFRAME ***
         if (!isset($_POST['add_address'])) {
             if ($humo_option["url_rewrite"] == "j") {
-                $url='../address/' . $tree_id . '/' . $addressDb->address_gedcomnr;
+                $url = '../address/' . $tree_id . '/' . $addressDb->address_gedcomnr;
             } else {
-                $url='../address.php?tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
+                $url = '../address.php?tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
             }
-        
+
             echo '<p>' . __('Preview') . '<br>';
-            //echo '<iframe src ="' . $addresstring . 'tree_id=' . $tree_id . '&gedcomnumber=' . $addressDb->address_gedcomnr . '" class="iframe">';
-            //echo '<iframe src ="../address/' . $tree_id . '/' . $addressDb->address_gedcomnr . '" class="iframe">';
-            echo '<iframe src ="'.$url.'" class="iframe">';
+            echo '<iframe src ="' . $url . '" class="iframe">';
             echo '  <p>Your browser does not support iframes.</p>';
             echo '</iframe>';
         }

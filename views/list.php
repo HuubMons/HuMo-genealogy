@@ -114,12 +114,16 @@ function show_person($personDb)
             echo $person_cls->person_popup_menu($personDb);
 
             // *** Show picture man or wife ***
-            if ($personDb->pers_sexe == "M")
-                echo $dirmark1 . ' <img src="images/man.gif" alt="man" style="vertical-align:top">';
-            elseif ($personDb->pers_sexe == "F")
-                echo $dirmark1 . ' <img src="images/woman.gif" alt="woman" style="vertical-align:top">';
-            else
-                echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown" style="vertical-align:top">';
+            if ($personDb->pers_sexe == "M") {
+                //echo $dirmark1 . ' <img src="images/man.gif" alt="man" style="vertical-align:top">';
+                echo $dirmark1 . ' <img src="images/man.gif" alt="man">';
+            } elseif ($personDb->pers_sexe == "F") {
+                //echo $dirmark1 . ' <img src="images/woman.gif" alt="woman" style="vertical-align:top">';
+                echo $dirmark1 . ' <img src="images/woman.gif" alt="woman">';
+            } else {
+                //echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown" style="vertical-align:top">';
+                echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
+            }
 
             if ($humo_option['david_stars'] == "y") {
                 $camps = "Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
@@ -987,9 +991,11 @@ function name_qry($search_name, $search_part)
     }
     $pers_counter = 0;
 
+    /*
     if ($adv_search == true and $selection['parent_status'] != "allpersons" and $selection['parent_status'] != "noparents") {
         echo '<script>document.getElementById("found_div").innerHTML = "' . __('Loading...') . '";</script>';
     }
+    */
 
     while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
         //while (@$person1Db = $person_result->fetch(PDO::FETCH_OBJ)) {
@@ -1107,6 +1113,7 @@ if (isset($data["page_nr"]) and !$selection['spouse_firstname'] and !$selection[
 //echo '</div>';
 
 // For use with inline site?
+/*
 echo '<script> 
     if(window.self != window.top) {
         var framew = window.frameElement.offsetWidth; 
@@ -1121,11 +1128,14 @@ echo '<script>
         }
     }
 </script>';
+*/
 
 //TODO check this code. In some cases found_div isn't used.
+/*
 echo '<script> 
     document.getElementById("found_div").innerHTML = \'' . $pers_counter . __(' persons found.') . '\';
 </script>';
+*/
 
 echo '<br>';
 //for testing only:

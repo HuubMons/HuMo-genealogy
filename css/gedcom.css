@@ -34,7 +34,9 @@ body {
     height: 0px;
 }
 
+/*
 .print_version {}
+*/
 
 #top_menu {
     width: 100%;
@@ -51,8 +53,14 @@ body {
     background: linear-gradient(rgb(244, 244, 255) 0%, rgb(219, 219, 219) 100%);
 
     /* height: 35px; */
+    /*
     height: 40px;
     padding: 5px 10px 0;
+    */
+
+    height: 60px;
+    /* up, right, bottom */
+    padding: 15px 10px 0;
 }
 
 #top_website_name {
@@ -68,20 +76,6 @@ body {
     font-weight: bold;
 }
 */
-
-/* #humo_menu = menu bar */
-#humo_menu {
-    position: absolute;
-    top: 40px;
-    display: block;
-    width: 100%;
-    /* background: linear-gradient(to top, rgba(236, 204, 179, 1) 0%, rgba(250, 241, 235, 1) 91%, rgba(250, 241, 235, 1) 100%); */
-    background: linear-gradient(to top, rgb(209, 184, 143) 0%, rgb(250, 241, 235) 73%);
-    font-size: 15px;
-    border-top: solid 1px #EED4D4;
-    border-bottom: solid 1px #EED4D4;
-    z-index: 100;
-}
 
 /* Border pop-up menu */
 div.ltrsddm div {
@@ -197,19 +191,6 @@ ul.humo_menu_item2 li a {
     background: linear-gradient(to top, rgb(209, 184, 143) 0%, rgb(250, 241, 235) 73%);
 }
 
-#humo_menu a:hover {
-    background: linear-gradient(rgb(204, 204, 204) 0%, rgb(238, 238, 238) 60%, rgb(238, 238, 238) 100%);
-    color: #333;
-}
-
-#humo_menu #current {}
-
-#humo_menu #current a,
-#humo_menu #current_top {
-    background: linear-gradient(rgb(204, 204, 204) 0%, rgb(238, 238, 238) 60%, rgb(238, 238, 238) 100%);
-    color: #333;
-}
-
 /* iPhone/iPad hack */
 ul.humo_menu_item li ul.humo_menu_item2 {
     display: none;
@@ -241,7 +222,7 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
     /* height: 100%; */
     /* max-height: 90%; */
 
-    top: 30px;
+    /* top: 30px; Disabled for bootstrap menu */
     /* up, right, down */
     padding: 10px 0px 10px 10px;
 }
@@ -268,9 +249,11 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
     font-weight: bold;
 }
 
+/*
 .style_tree_text {
-    /* font-size: 12px; */
+    font-size: 12px;
 }
+*/
 
 /* heads - koppen */
 h1 {
@@ -282,6 +265,30 @@ hr {
     width: 70%;
 }
 
+/* Bootstrap menu using hoover effect */
+/* Example from: https: //bootstrap-menu.com/detail-basic-hover.html */
+@media all and (min-width: 992px) {
+    .navbar .nav-item .dropdown-menu {
+        display: none;
+    }
+
+    /* .navbar .nav-item:hover .nav-link {} */
+
+    .navbar .nav-item:hover .dropdown-menu {
+        display: block;
+    }
+
+    .navbar .nav-item .dropdown-menu {
+        margin-top: 0;
+    }
+
+    /*
+    .navbar-nav>li>.dropdown-menu {
+        width: 250px;
+    }
+    */
+}
+
 /* Default background color. Used for search boxes */
 .genealogy_search {
     background-color: #f1f1f1;
@@ -289,14 +296,25 @@ hr {
 
 /* Used in homepage */
 .genealogy_box {
-    background-color: #f8f9fa;
     /* Same as bootstrap color: bg-light. Used for mainpage boxes */
+    background-color: #f8f9fa;
 }
 
 /* Used for old mainmenu_centerbox */
 .genealogy_row {
     background-color: transparent;
     line-height: 150%;
+}
+
+/* Bootstrap menu */
+.genealogy_menu {
+    /* background: linear-gradient(to top, rgb(209, 184, 143) 0%, rgb(250, 241, 235) 73%); */
+    background-color: #f8f9fa;
+}
+
+/* Add some color in non-selected naviagation tab */
+.genealogy_nav-link {
+    background-color: #e4e4e4;
 }
 
 /* tables - tabellen */
@@ -355,7 +373,7 @@ table.relmenu td {
 	padding-bottom: 3px;
 	*/
     padding: 4px;
-    line-height: 120%;
+    /* line-height: 120%; */
 }
 
 table.humo th,
@@ -511,7 +529,9 @@ a:visited {
 }
 
 /* divorse - scheiding */
+/*
 .divorse {}
+*/
 
 /* child number - overzicht child_nr */
 .child_nr {
@@ -539,20 +559,30 @@ a:visited {
 }
 
 /* city - woonplaats */
+/*
 .pers_living_place {}
+*/
 
 /* profession - beroep */
+/*
 .profession {}
+*/
 
 /* religion */
+/*
 .religion {}
+*/
 
 /* own code - eigen code */
+/*
 .pers_own_code {}
+*/
 
 /* event - gebeurtenis */
 /* .event { font-style:italic; } */
+/*
 .event {}
+*/
 
 /* Citations */
 .citation {

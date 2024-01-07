@@ -643,7 +643,7 @@ class Mainindex_cls
         if ($num_rows2 > 1 and $humo_option['one_name_study'] == 'y') {
             $text .= '<input type="hidden" name="search_database" value="all_trees">';
         }
-        $text .= '<p><button type="submit" class="btn btn-success btn-sm my-2">'. __('Search') . '</button></p>';
+        $text .= '<p><button type="submit" class="btn btn-success btn-sm my-2">' . __('Search') . '</button></p>';
         $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
         $path_tmp .= 'adv_search=1&index_list=search';
         $text .= '<a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25"> ' . __('Advanced search') . '</a>';
@@ -686,7 +686,7 @@ class Mainindex_cls
                     //$text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
                     //    '" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
                     $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
-                    '" width="90%" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
+                        '" width="90%" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
@@ -933,10 +933,14 @@ class Mainindex_cls
         // *** Use scrollbar for long list ***
         $text .= '<div style="max-height:200px; overflow-x: auto;">';
         if ($view == 'with_table') {
+
+            // test Bootstrap
+            //$text.='<div class="table-responsive">';
+
             $text .= '<table style="width:100%;" class="humo nametbl" align="center">';
-            //$text.='<tr class="table_headline">';
-            //	$text.='<td colspan="3"><b>'.__('Today in history').'</b></td>';
-            //$text.='</tr>';
+
+            //Test Bootstrap table.
+            //            $text .= '<table style="width:100%;" class="table" align="center">';
 
             $text .= '<tr class="table_headline">';
             $text .= '<td><b>' . __('Date') . '</b></td><td><b>' . __('Event') . '</b></td><td><b>' . __('Name') . '</b></td>';
@@ -956,6 +960,9 @@ class Mainindex_cls
             if ($count_privacy)
                 $text .= '<tr><td colspan="3">' . $count_privacy . __(' persons are not shown due to privacy settings') . '</td></tr>';
             $text .= '</table>';
+
+            //test bootstrap
+            //$text.='</div>';
         } else {
             // *** Show history list without table ***
             if (isset($history['date'])) {

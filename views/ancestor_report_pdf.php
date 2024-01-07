@@ -13,7 +13,7 @@ $screen_mode = 'PDF';
 
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
-include_once(__DIR__ . "/header.php");
+include_once(__DIR__ . "/layout_pdf.php");
 
 
 
@@ -34,16 +34,16 @@ $data["picture_presentation"] =  $get_ancestor->getTextPresentation();
 
 // TODO remove this code. $tree_id allready processed in header.
 // At this moment it can't be removed yet...
-if (isset($_SESSION['tree_prefix'])) {
-    $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-        AND humo_tree_texts.treetext_language='" . $selected_language . "'
-        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
-    @$datasql = $dbh->query($dataqry);
-    @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
-}
-$tree_prefix = $dataDb->tree_prefix;
-$tree_id = $dataDb->tree_id;
+//if (isset($_SESSION['tree_prefix'])) {
+//    $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
+//        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
+//        AND humo_tree_texts.treetext_language='" . $selected_language . "'
+//        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
+//    @$datasql = $dbh->query($dataqry);
+//    @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
+//}
+//$tree_prefix = $dataDb->tree_prefix;
+//$tree_id = $dataDb->tree_id;
 
 $db_functions->set_tree_id($tree_id);
 

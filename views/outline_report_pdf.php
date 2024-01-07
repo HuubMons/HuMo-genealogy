@@ -7,12 +7,9 @@
  * Oct 2023 Huub: seperated HTML and PDF files.
  */
 
-//$screen_mode = '';
-//if (isset($_POST["screen_mode"]) and ($_POST["screen_mode"] == 'PDF-L' or $_POST["screen_mode"] == 'PDF-P')) {
 $screen_mode = 'PDF';
-//}
 
-include_once(__DIR__ . "/header.php");
+include_once(__DIR__ . "/layout_pdf.php");
 
 
 
@@ -24,7 +21,6 @@ $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
 $data["text_presentation"] =  $get_family->getTextPresentation();
 $data["family_expanded"] =  $get_family->getFamilyExpanded();
-
 
 
 $db_functions->set_tree_id($tree_id);
@@ -102,7 +98,7 @@ if ($screen_mode == 'PDF') {
 }
 
 
-$path_form = $link_cls->get_link($uri_path, 'report_outline', $tree_id);
+$path_form = $link_cls->get_link($uri_path, 'outline_report', $tree_id);
 
 $generation_number = 0;
 

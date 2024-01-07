@@ -1,3 +1,13 @@
+/* Basic page styles */
+/* dec. 2023 test */
+html {
+    height: 100%;
+    max-height: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
 body.humo {
     background-color: white;
     background-image: url('style_admin/background.gif');
@@ -32,6 +42,29 @@ a {
 a:hover {
     text-decoration: underline;
     color: red;
+}
+
+/* Bootstrap menu using hoover effect */
+/* Example from: https: //bootstrap-menu.com/detail-basic-hover.html */
+@media all and (min-width: 992px) {
+    .navbar .nav-item .dropdown-menu {
+        display: none;
+    }
+
+    /* .navbar .nav-item:hover .nav-link {} */
+
+    .navbar .nav-item:hover .dropdown-menu {
+        display: block;
+    }
+
+    .navbar .nav-item .dropdown-menu {
+        margin-top: 0;
+    }
+}
+
+/* Add some color in non-selected navigation tab */
+.genealogy_nav-link {
+    background-color: #e4e4e4;
 }
 
 table.humo {
@@ -123,23 +156,8 @@ table.humo td {
     text-align: left;
     color: #737373;
     background-color: #f7f7f7;
-    height: 35px;
+    /* height: 40px; */
     padding: 5px 0px 0;
-}
-
-#humo_menu {
-    position: absolute;
-    top: 40px;
-    display: block;
-    width: 100%;
-    /*	background: linear-gradient(rgb(251, 251, 251) 0%, rgb(212, 212, 212) 100%); */
-    background: linear-gradient(rgb(244, 244, 255) 0%, rgb(219, 219, 219) 100%);
-
-    font-size: 15px;
-    /*	border-top: solid 1px #EED4D4; */
-    /*	border-bottom: solid 1px #EED4D4;*/
-    border-bottom: solid 1px #999999;
-    z-index: 100;
 }
 
 /* Main menu */
@@ -256,19 +274,6 @@ ul.humo_menu_item2 li a {
     width: 124px;
 }
 
-#humo_menu a:hover {
-    background: linear-gradient(rgb(204, 204, 204) 0%, rgb(238, 238, 238) 60%, rgb(238, 238, 238) 100%);
-    color: #333;
-}
-
-#humo_menu #current {}
-
-#humo_menu #current a,
-#humo_menu #current_top {
-    background: linear-gradient(rgb(204, 204, 204) 0%, rgb(238, 238, 238) 60%, rgb(238, 238, 238) 100%);
-    color: #333;
-}
-
 /* iPhone/iPad hack */
 ul.humo_menu_item li ul.humo_menu_item2 {
     display: none;
@@ -282,9 +287,9 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
     display: block;
     position: relative;
     z-index: 3;
-    height: 100%;
-    max-height: 90%;
-    top: 35px;
+    /* height: 100%; */
+    /* max-height: 90%; */
+    /* top: 35px; */
     /* boven, rechts, onder */
     padding: 10px 0px 10px 10px;
 }
@@ -322,15 +327,6 @@ input.selected_item {
     text-align: center;
 }
 
-/* Confirmation */
-div.confirm {
-    background-color: #FAF1EB;
-    margin: 5px;
-    border: 2px solid #FF0000;
-    width: 98%;
-    text-align: center;
-}
-
 #pup {
     position: absolute;
     z-index: 200;
@@ -353,76 +349,6 @@ div.confirm {
 .hideshowlink:hover {
     text-decoration: underline;
     cursor: pointer;
-}
-
-/* Tab Menu (in use in family tree administration and person/ marriages editor) */
-.pageHeadingContainer-lineVisible {
-    margin-bottom: 15px;
-    border-bottom: 1px solid #d9d9d9;
-}
-
-.pageHeadingContainer {
-    clear: both;
-    display: table;
-    width: 100%;
-    margin-bottom: 0px;
-}
-
-.pageHeading {
-    display: table-cell;
-}
-
-.pageTabsContainer {
-    display: table-cell;
-    vertical-align: bottom;
-    /* white-space: nowrap; */
-}
-
-.pageTabs {
-    margin: 0;
-    padding: 0;
-    float: right;
-    margin-left: 10px;
-}
-
-.pageTabItem {
-    display: inline-block;
-    zoom: 1;
-    list-style: none;
-    margin: 0 4px -1px 0;
-}
-
-.pageTab {
-    display: inline-block;
-    white-space: nowrap;
-    color: #333;
-    cursor: pointer;
-    border: 1px solid #d9d9d9;
-    background-color: #eaf4fa;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-
-    border-top-left-radius: 3px;
-    background-clip: padding-box;
-    box-shadow: 1px 1px 1px #fff inset;
-}
-
-.pageTab a {
-    text-decoration: none;
-    color: #765;
-    display: inline-block;
-    padding: 6px 8px 4px;
-}
-
-.pageTab-active {
-    background-color: #fff;
-    border-bottom: 1px solid #fff;
-    color: #2f63a3;
-}
-
-.pageTab-active a {
-    font-weight: bold;
 }
 
 .editor_item {

@@ -14,7 +14,7 @@ body {
 }
 
 /* HEADER */
-#container #humo_menu {
+#container {
     padding: 0px;
     margin-top: 0px;
     margin-right: 0px;
@@ -25,7 +25,7 @@ body {
     height: 42px;
 }
 
-#container #humo_menu #humo_menu_main {
+#container #humo_menu_main {
     float: left;
     padding: 5px;
     font-family: Geneva, Arial, Helvetica, sans-serif;

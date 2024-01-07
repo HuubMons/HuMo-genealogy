@@ -34,7 +34,7 @@ if (isset($_GET['pers_favorite'])) {
 // ***************************
 
 if (isset($_POST['person_remove'])) {
-    $confirm .= '<div class="confirm">';
+    $confirm .= '<div class="alert alert-danger">';
     $confirm .= __('This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?');
 
     // GRAYED-OUT and DISABLED! UNDER CONSTRUCTION!
@@ -54,7 +54,7 @@ if (isset($_POST['person_remove'])) {
     $confirm .= '</div>';
 }
 if (isset($_POST['person_remove2'])) {
-    $confirm .= '<div class="confirm">';
+    $confirm .= '<div class="alert alert-success">';
 
     $personDb = $db_functions->get_person($pers_gedcomnumber);
 
@@ -156,7 +156,7 @@ if (isset($_POST['person_remove2'])) {
     // *** Update cache for list of latest changes ***
     cache_latest_changes(true);
 
-    $confirm .= __('Person is removed');
+    $confirm .= '<strong>' . __('Person is removed') . '</strong>';
 
     // *** Select new person ***
     $new_nr_qry = "SELECT * FROM humo_settings
@@ -688,8 +688,8 @@ if (isset($_GET['fam_remove']) or isset($_POST['fam_remove'])) {
 
     $new_nr = $db_functions->get_family($fam_remove);
 
-    $confirm_relation .= '<div class="confirm">';
-    if ($new_nr->fam_children) $confirm_relation .= __('If you continue, ALL children will be disconnected automatically!') . '<br>';
+    $confirm_relation .= '<div class="alert alert-danger">';
+    if ($new_nr->fam_children) $confirm_relation .= '<strong>' . __('If you continue, ALL children will be disconnected automatically!') . '</strong><br>';
     $confirm_relation .= __('Are you sure to remove this mariage?');
     $confirm_relation .= ' <form method="post" action="' . $phpself . '#marriage" style="display : inline;">';
     $confirm_relation .= '<input type="hidden" name="page" value="' . $page . '">';
@@ -749,7 +749,7 @@ if (isset($_POST['fam_remove2'])) {
 
     family_tree_update($tree_id);
 
-    $confirm_relation .= '<div class="confirm">';
+    $confirm_relation .= '<div class="alert alert-success">';
     $confirm_relation .= __('Marriage is removed!');
     $confirm_relation .= '</div>';
 
@@ -985,11 +985,11 @@ if (isset($_POST['add_parents']) and $_POST['add_parents'] != '') {
 
         family_tree_update($tree_id);
 
-        $confirm .= '<div class="confirm">';
+        $confirm .= '<div class="alert alert-success">';
         $confirm .= __('Parents are selected!');
         $confirm .= '</div>';
     } else {
-        $confirm .= '<div class="confirm">';
+        $confirm .= '<div class="alert alert-danger">';
         $confirm .= __('Manual selected family isn\'t an existing family in the family tree!');
         $confirm .= '</div>';
     }
@@ -1005,7 +1005,7 @@ if (isset($_POST['child_connect2']) and $_POST['child_connect2'] and !isset($_PO
     if (isset($resultDb->pers_gedcomnumber)) {
 
         if ($resultDb->pers_famc  and !isset($_POST['child_connecting'])) {
-            $confirm .= '<div class="confirm">';
+            $confirm .= '<div class="alert alert-danger">';
             $confirm .= __('Child already has parents connected! Are you sure you want to connect this child?');
             $confirm .= ' <form method="post" action="' . $phpself . '" style="display : inline;">';
             $confirm .= '<input type="hidden" name="page" value="editor">';
@@ -1079,7 +1079,7 @@ if (isset($_POST['child_connect2']) and $_POST['child_connect2'] and !isset($_PO
 
 // *** Disconnect child ***
 if (isset($_GET['child_disconnect'])) {
-    $confirm .= '<div class="confirm">';
+    $confirm .= '<div class="alert alert-danger">';
     $confirm .= __('Are you sure you want to disconnect this child?');
     $confirm .= ' <form method="post" action="' . $phpself . '" style="display : inline;">';
     $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';
@@ -1987,8 +1987,8 @@ if (isset($_POST['event_id'])) {
 
 // *** Remove event ***
 if (isset($_GET['event_drop'])) {
-    $confirm .= '<div class="confirm">';
-    $confirm .= __('Are you sure you want to remove this event?');
+    $confirm .= '<div class="alert alert-danger">';
+    $confirm .= '<strong>' . __('Are you sure you want to remove this event?') . '</strong>';
     $confirm .= ' <form method="post" action="' . $phpself;
     if (isset($_GET['source_id'])) $confirm .= '?source_id=' . $_GET['source_id'];
     $confirm .= '" style="display : inline;">';
@@ -2444,10 +2444,8 @@ if (isset($_GET['connect_drop'])) {
     // *** Needed for event sources ***
     $connect_kind = '';
     if (isset($_GET['connect_kind'])) $connect_kind = $_GET['connect_kind'];
-    //if (isset($_POST['connect_kind'])) $connect_kind=$_POST['connect_kind'];
 
     $connect_sub_kind = '';
-    //if (isset($_POST['connect_sub_kind'])) $connect_sub_kind=$_POST['connect_sub_kind'];
     if (isset($_GET['connect_sub_kind'])) $connect_sub_kind = $_GET['connect_sub_kind'];
 
     // *** Needed for event sources ***
@@ -2460,38 +2458,41 @@ if (isset($_GET['connect_drop'])) {
         $event_link = '&event_person=1';
     if (isset($_POST['event_family']) or isset($_GET['event_family']))
         $event_link = '&event_family=1';
-    //$phpself2='index.php?page=editor_sources&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id;
     $phpself2 = 'index.php?page=' . $page . '&connect_kind=' . $connect_kind . '&connect_sub_kind=' . $connect_sub_kind . '&connect_connect_id=' . $connect_connect_id;
     $phpself2 .= $event_link;
 
-    echo '<div class="confirm">';
-    echo __('Are you sure you want to remove this event?');
-    echo ' <form method="post" action="' . $phpself2 . '" style="display : inline;">';
-    //echo '<input type="hidden" name="page" value="'.$_GET['page'].'">';
-    echo '<input type="hidden" name="connect_drop" value="' . $_GET['connect_drop'] . '">';
+?>
+    <div class="alert alert-danger">
+        <form method="post" action="<?= $phpself2; ?>" style="display : inline;">
+            <input type="hidden" name="connect_drop" value="<?= $_GET['connect_drop']; ?>">
+            <input type="hidden" name="connect_kind" value="<?= $connect_kind; ?>">
+            <input type="hidden" name="connect_sub_kind" value="<?= $connect_sub_kind; ?>">
+            <input type="hidden" name="connect_connect_id" value="<?= $connect_connect_id; ?>">
 
-    // *** Needed for events!!! ***
-    echo '<input type="hidden" name="connect_kind" value="' . $connect_kind . '">';
-    echo '<input type="hidden" name="connect_sub_kind" value="' . $connect_sub_kind . '">';
-    echo '<input type="hidden" name="connect_connect_id" value="' . $connect_connect_id . '">';
+            <?php
+            if (isset($_POST['event_person']) or isset($_GET['event_person'])){
+                echo '<input type="hidden" name="event_person" value="1">';
+            }
+            if (isset($_POST['event_family']) or isset($_GET['event_family'])){
+                echo '<input type="hidden" name="event_family" value="1">';
+            }
 
-    if (isset($_POST['event_person']) or isset($_GET['event_person']))
-        echo '<input type="hidden" name="event_person" value="1">';
-    if (isset($_POST['event_family']) or isset($_GET['event_family']))
-        echo '<input type="hidden" name="event_family" value="1">';
+            // *** Remove address event ***
+            if (isset($_GET['person_place_address'])){
+                echo '<input type="hidden" name="person_place_address" value="person_place_address">';
+            }
 
-    // *** Remove address event ***
-    if (isset($_GET['person_place_address']))
-        echo '<input type="hidden" name="person_place_address" value="person_place_address">';
+            if (isset($_GET['marriage_nr'])){
+                echo '<input type="hidden" name="marriage_nr" value="' . safe_text_db($_GET['marriage_nr']) . '">';
+            }
+            ?>
 
-    if (isset($_GET['marriage_nr']))
-        echo '<input type="hidden" name="marriage_nr" value="' . safe_text_db($_GET['marriage_nr']) . '">';
-
-    echo ' <input type="Submit" name="connect_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-    echo ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
-
-    echo '</form>';
-    echo '</div>';
+            <strong><?= __('Are you sure you want to remove this event?'); ?></strong>
+            <input type="Submit" name="connect_drop2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+            <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+        </form>
+    </div>
+<?php
 }
 // *** Delete source or address connection ***
 if (isset($_POST['connect_drop2'])) {
@@ -2730,62 +2731,6 @@ if ($save_source_data) {
 // *** Save data places ***
 // ************************
 
-//OLD CODE
-/*
-// *** Remove living place ***
-if (isset($_GET['living_place_drop'])){
-    echo '<div class="confirm">';
-    echo __('Are you sure you want to delete this place? ');
-    echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
-    if (isset($_GET['pers_place'])){
-        echo '<input type="hidden" name="pers_place" value="1">';
-    }
-    elseif (isset($_GET['fam_place'])){
-        echo '<input type="hidden" name="fam_place" value="1">';
-    }
-    echo '<input type="hidden" name="page" value="'.$_GET['page'].'">';
-    echo '<input type="hidden" name="person_place_address" value="person_place_address">';
-    echo '<input type="hidden" name="living_place_id" value="'.$_GET['living_place_drop'].'">';
-    echo ' <input type="Submit" name="living_place_drop2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
-    echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
-    echo '</form>';
-    echo '</div>';
-}
-if (isset($_POST['living_place_drop2'])){
-    if (isset($_POST['pers_place'])){
-        $address_connect_sub_kind='person';
-        $address_connect_id=$pers_gedcomnumber;
-    }
-    elseif (isset($_POST['fam_place'])){
-        $address_connect_sub_kind='family';
-        $address_connect_id=$marriage;
-    }
-
-    $living_place_order=safe_text_db($_POST['living_place_id']);
-    $sql="DELETE FROM humo_addresses WHERE address_tree_id='".$tree_id."'
-        AND address_connect_sub_kind='".$address_connect_sub_kind."'
-        AND address_connect_id='".$address_connect_id."'
-        AND address_order='".$living_place_order."'";
-    $result=$dbh->query($sql);
-
-    $address_sql="SELECT * FROM humo_addresses
-        WHERE address_tree_id='".$tree_id."'
-        AND address_connect_sub_kind='".$address_connect_sub_kind."'
-        AND address_connect_id='".$address_connect_id."' AND address_order>'".$living_place_order."'
-        ORDER BY address_order";
-    $event_qry=$dbh->query($address_sql);
-    while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
-        $sql="UPDATE humo_addresses SET
-        address_order='".($eventDb->address_order-1)."',
-        address_changed_user='".$username."',
-        address_changed_date='".$gedcom_date."',
-        address_changed_time='".$gedcom_time."'
-        WHERE address_id='".$eventDb->address_id."'";
-        $result=$dbh->query($sql);
-    }
-}
-*/
-
 // *** 25-12-2020: NEW combined addresses and shared addresses ***
 if (isset($_GET['address_add2'])) {
     // *** Generate new GEDCOM number ***
@@ -2877,17 +2822,17 @@ if (isset($_GET['note_add']) and $_GET['note_add']) {
 
     //note_connect_kind='person',
     $sql = "INSERT INTO humo_user_notes SET
-    note_new_date='" . $gedcom_date . "',
-    note_new_time='" . $gedcom_time . "',
-    note_new_user_id='" . $userid . "',
-    note_note='',
-    note_kind='editor',
-    note_status='Not started',
-    note_priority='Normal',
-    note_connect_kind='" . $note_connect_kind . "',
-    note_connect_id='" . safe_text_db($note_connect_id) . "',
-    note_names='" . safe_text_db($note_names) . "',
-    note_tree_id='" . $tree_id . "';";
+        note_new_date='" . $gedcom_date . "',
+        note_new_time='" . $gedcom_time . "',
+        note_new_user_id='" . $userid . "',
+        note_note='',
+        note_kind='editor',
+        note_status='Not started',
+        note_priority='Normal',
+        note_connect_kind='" . $note_connect_kind . "',
+        note_connect_id='" . safe_text_db($note_connect_id) . "',
+        note_names='" . safe_text_db($note_names) . "',
+        note_tree_id='" . $tree_id . "';";
     $result = $dbh->query($sql);
 }
 // *** Change editor note ***
@@ -2922,7 +2867,7 @@ if (isset($_POST['note_id'])) {
 }
 // *** Remove editor note ***
 if (isset($_GET['note_drop']) and is_numeric($_GET['note_drop'])) {
-    $confirm .= '<div class="confirm">';
+    $confirm .= '<div class="alert alert-danger">';
     $confirm .= __('Are you sure you want to remove this event?');
     $confirm .= ' <form method="post" action="' . $phpself . '" style="display : inline;">';
     $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';

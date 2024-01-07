@@ -27,13 +27,12 @@ $menu_admin = $get_editor->getMenuAdmin();
 
 
 $phpself = 'index.php';
-$joomlastring = '';
 $sourcestring = '../source.php?';
 $addresstring = '../address.php?';
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-include_once(__DIR__."/../include/editor_cls.php");
+include_once(__DIR__ . "/../include/editor_cls.php");
 $editor_cls = new editor_cls;
 
 include(__DIR__ . '/../include/editor_event_cls.php');
@@ -59,7 +58,7 @@ $gedcom_time = date("H:i:s");
 
 if (isset($tree_id)) {
     // *** Process queries ***
-    include_once(__DIR__."/../include/editor_inc.php");
+    include_once(__DIR__ . "/../include/editor_inc.php");
 }
 
 
@@ -67,7 +66,6 @@ if (isset($tree_id)) {
 // *******************************
 // *** Show/ edit repositories ***
 // *******************************
-
 
 if ($menu_admin == 'repositories') {
     if (isset($_POST['repo_add'])) {
@@ -112,10 +110,13 @@ if ($menu_admin == 'repositories') {
         $result = $dbh->query($sql);
     }
 
-    if (isset($_POST['repo_remove'])) {
 ?>
-        <div class="confirm">
-            <?= __('Really remove repository with all repository links?'); ?>
+    <h1 class="center"><?= __('Repositories'); ?></h1>
+    <?= __('A repository can be connected to a source. Edit a source to connect a repository.'); ?>
+
+    <?php if (isset($_POST['repo_remove'])) { ?>
+        <div class="alert alert-danger">
+            <strong><?= __('Really remove repository with all repository links?'); ?></strong>
             <form method="post" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="repo_id" value="<?= $_POST['repo_id']; ?>">
@@ -125,33 +126,27 @@ if ($menu_admin == 'repositories') {
         </div>
     <?php
     }
+
     if (isset($_POST['repo_remove2'])) {
-        echo '<div class="confirm">';
         // *** Find gedcomnumber, needed for events query ***
-        $repo_qry = $dbh->query("SELECT * FROM humo_repositories
-            WHERE repo_id='" . safe_text_db($_POST["repo_id"]) . "'");
+        $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_id='" . safe_text_db($_POST["repo_id"]) . "'");
         $repoDb = $repo_qry->fetch(PDO::FETCH_OBJ);
 
         // *** Delete repository link ***
-        $sql = "UPDATE humo_sources SET source_repo_gedcomnr=''
-            WHERE source_tree_id='" . $tree_id . "' AND source_repo_gedcomnr='" . $repoDb->repo_gedcomnr . "'";
+        $sql = "UPDATE humo_sources SET source_repo_gedcomnr='' WHERE source_tree_id='" . $tree_id . "' AND source_repo_gedcomnr='" . $repoDb->repo_gedcomnr . "'";
         $result = $dbh->query($sql);
 
         // *** Delete repository ***
-        $sql = "DELETE FROM humo_repositories
-            WHERE repo_id='" . safe_text_db($_POST["repo_id"]) . "'";
-
+        $sql = "DELETE FROM humo_repositories WHERE repo_id='" . safe_text_db($_POST["repo_id"]) . "'";
         $result = $dbh->query($sql);
-        echo __('Repository is removed!');
-        echo '</div>';
 
         // *** Empty $_POST ***
         unset($_POST['repo_id']);
-    }
-
     ?>
-    <h1 class="center"><?= __('Repositories'); ?></h1>
-    <?= __('A repository can be connected to a source. Edit a source to connect a repository.'); ?>
+        <div class="alert alert-success">
+            <strong><?= __('Repository is removed!'); ?></strong>
+        </div>
+    <?php } ?>
 
     <table class="humo standard" style="text-align:center;">
         <tr class="table_header_large">
@@ -235,7 +230,6 @@ if ($menu_admin == 'repositories') {
             $repo_changed_date = $repoDb->repo_changed_date;
             $repo_changed_time = $repoDb->repo_changed_time;
         }
-
     ?>
         <form method="POST" action="<?= $phpself; ?>">
             <input type="hidden" name="page" value="<?= $page; ?>">

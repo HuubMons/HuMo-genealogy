@@ -297,23 +297,25 @@ if (isset($_POST['group_change'])) {
 }
 
 if (isset($_POST['group_remove'])) {
-    echo '<div class="confirm">';
     $usersql = "SELECT * FROM humo_users WHERE user_group_id=" . $_POST["id"];
     $user = $dbh->query($usersql);
     $nr_users = $user->rowCount();
-    if ($nr_users > 0) {
-        // *** There are still users connected to this group ***
-        echo '<b>' . __('It\'s not possible to delete this group: there is/ are') . ' ' . $nr_users . ' ' . __('user(s) connected to this group!') . '</b>';
-    } else {
-        echo __('Are you sure you want to remove the group:') . ' "' . $_POST['group_name'] . '"?';
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="id" value="' . $_POST['id'] . '">';
-        echo ' <input type="Submit" name="group_remove2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-        echo ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
-        echo '</form>';
-    }
-    echo '</div>';
+?>
+    <div class="alert alert-danger">
+        <?php if ($nr_users > 0) { ?>
+            <!-- There are still users connected to this group -->
+            <strong><?= __('It\'s not possible to delete this group: there is/ are'); ?> <?= $nr_users; ?> <?= __('user(s) connected to this group!'); ?></strong>
+        <?php } else { ?>
+            <strong><?= __('Are you sure you want to remove the group:'); ?> "<?= $_POST['group_name']; ?>"?</strong>
+            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="hidden" name="id" value="<?= $_POST['id']; ?>">
+                <input type="Submit" name="group_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            </form>
+        <?php } ?>
+    </div>
+<?php
 }
 if (isset($_POST['group_remove2'])) {
     $sql = "DELETE FROM humo_groups WHERE group_id='" . $_POST["id"] . "'";

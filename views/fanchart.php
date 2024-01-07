@@ -17,6 +17,20 @@
  * GNU General Public License for more details.                              *
  ****************************************************************************/
 
+
+
+// TODO TEMP Controller here
+// Test for tab menu: ancestors. Probably have to rebuild selection menu first (put selection menu at top)
+/*
+require_once  __DIR__ . "/../app/model/ancestor.php";
+$get_ancestorModel = new AncestorModel($dbh);
+$main_person = $get_ancestorModel->getMainPerson();
+$data['ancestor_header'] = $get_ancestorModel->getAncestorHeader('Ancestor chart', $tree_id, $main_person);
+TEST: echo $data['ancestor_header']
+*/
+
+
+
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/language_event.php");
 include_once(__DIR__ . "/../include/calculate_age_cls.php");
@@ -750,4 +764,3 @@ if ($showdesc == "1") {
 echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
 
 echo '<div style="left:135px; height:650px; width:10px"></div>';
-include_once(__DIR__ . "/footer.php");

@@ -5,11 +5,11 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 //TODO convert to MVC files.
-
 ?>
-<h1 align=center><?= __('Administration'); ?></h1>
-<?php
 
+<h1 align=center><?= __('Administration'); ?></h1>
+
+<?php
 $path_tmp = "index.php";
 
 $result_message = '';
@@ -125,10 +125,20 @@ if (isset($_POST['save_settings_database'])) {
 
         // *** PHP Version ***
         $version = explode('.', phpversion());
-        if ($version[0] > 6) {
-            echo '<tr><td class="line_item">' . __('PHP Version') . '</td><td class="line_ok">' . phpversion() . '</td></tr>';
+        if ($version[0] > 7) {
+        ?>
+            <tr>
+                <td class="line_item"><?= __('PHP Version'); ?></td>
+                <td class="line_ok"><?= phpversion(); ?></td>
+            </tr>
+        <?php
         } else {
-            echo '<tr><td class="line_item">' . __('PHP Version') . '</td><td class="line_nok">' . phpversion() . ' ' . __('It is recommended to update PHP!') . '</td></tr>';
+        ?>
+            <tr>
+                <td class="line_item"><?= __('PHP Version'); ?></td>
+                <td class="line_nok"><?= phpversion(); ?> <?= __('It is recommended to update PHP!'); ?></td>
+            </tr>
+            <?php
         }
 
         // *** MySQL Version ***
@@ -139,9 +149,19 @@ if (isset($_POST['save_settings_database'])) {
             $mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);
             $version = explode('.', $mysqlversion);
             if ($version[0] > 7) {
-                echo '<tr><td class="line_item">' . __('MySQL Version') . '</td><td class="line_ok">' . $mysqlversion . '</td></tr>';
+            ?>
+                <tr>
+                    <td class="line_item"><?= __('MySQL Version'); ?></td>
+                    <td class="line_ok"><?= $mysqlversion; ?></td>
+                </tr>
+            <?php
             } else {
-                echo '<tr><td class="line_item">' . __('MySQL Version') . '</td><td class="line_nok">' . $mysqlversion . ' ' . __('It is recommended to update MySQL!') . '</td></tr>';
+            ?>
+                <tr>
+                    <td class="line_item"><?= __('MySQL Version'); ?></td>
+                    <td class="line_nok"><?= $mysqlversion; ?> <?= __('It is recommended to update MySQL!'); ?></td>
+                </tr>
+        <?php
             }
         }
 
@@ -149,112 +169,125 @@ if (isset($_POST['save_settings_database'])) {
         $install_status = true;
 
         // *** Check database, if needed install local database ***
-        echo '<tr><td class="line_item">' . __('Database') . '</td>';
-        if (@$database_check) {
-            echo '<td class="line_ok">' . __('OK');
-            echo ' <font size=-1>(' . __('Database name') . ': ' . DATABASE_NAME . ')</font>';
-        } else {
-            echo '<td class="line_nok">';
-            printf(__('<b>There is no database connection! To connect the MySQL database to %s, fill in these settings:</b>'), 'HuMo-genealogy');
-
-            $install_status = false;
-
-            $db_host = 'localhost';
-            if (isset($_POST['db_host'])) {
-                $db_host = $_POST['db_host'];
-            }
-
-            $db_username = 'root';
-            if (isset($_POST['db_username'])) {
-                $db_username = $_POST['db_username'];
-            }
-
-            $db_password = '';
-            if (isset($_POST['db_password'])) {
-                $db_password = $_POST['db_password'];
-            }
-
-            $db_name = 'humo-gen';
-            if (isset($_POST['db_name'])) {
-                $db_name = $_POST['db_name'];
-            }
-
-            $install_database = '';
-            if (isset($_POST["install_database"])) {
-                $install_database = ' checked';
-            }
-
-            // *** Get database settings ***
         ?>
-            <form method="post" action="<?= $path_tmp; ?>" style="display : inline;">
-                <table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B">
-                    <tr>
-                        <th><?= __('Database setting'); ?></th>
-                        <th><?= __('Database value'); ?></th>
-                        <th><?= __('Example website provider'); ?></th>
-                        <th><?= __('Example for XAMPP'); ?></th>
-                    </tr>
-
-                    <tr>
-                        <td><?= __('Database host'); ?></td>
-                        <td><input type="text" name="db_host" value="<?= $db_host; ?>" size="15"></td>
-                        <td>localhost</td>
-                        <td>localhost</td>
-                    </tr>
-
-                    <tr>
-                        <td><?= __('Database username'); ?></td>
-                        <td><input type="text" name="db_username" value="<?= $db_username; ?>" size="15"></td>
-                        <td>database_username</td>
-                        <td>root</td>
-                    </tr>
-
-                    <tr>
-                        <td><?= __('Database password'); ?></td>
-                        <td><input type="text" name="db_password" value="<?= $db_password; ?>" size="15"></td>
-                        <td>database_password</td>
-                        <td><br></td>
-                    </tr>
-
-                    <tr>
-                        <td><?= __('Database name'); ?></td>
-                        <td><input type="text" name="db_name" value="<?= $db_name; ?>" size="15"></td>
-                        <td>database_name</td>
-                        <td>humo-gen</td>
-                    </tr>
-
-                    <tr>
-                        <td><?= __('At a local PC also install database'); ?></td>
-                        <td><input type="checkbox" name="install_database" <?= $install_database; ?>> <?= __('YES, also install database'); ?></td>
-                        <td><?= __('NO'); ?></td>
-                        <td><?= __('YES'); ?></td>
-                    </tr>
-
-                    <tr>
-                        <td><?= __('Save settings and connect to database'); ?></td>
-                        <td><input type="Submit" name="save_settings_database" value="<?= __('SAVE'); ?>"></td>
-                        <td><br></td>
-                        <td><br></td>
-                    </tr>
-                </table>
-            </form>
-            <?= __('Sometimes it\'s needed to add these lines to a /php.ini and admin/php.ini files to activate the PDO driver:'); ?><br>
-            extension=pdo.so<br>
-            extension=pdo_sqlite.so<br>
-            extension=pdo_mysql.so<br>
-        <?php
-        }
-
-        if (isset($_POST['install_database'])) {
-            if (isset($database_check) and @$database_check) {
-                //
+        <tr>
+            <td class="line_item"><?= __('Database'); ?></td>
+            <?php
+            if (@$database_check) {
+                echo '<td class="line_ok">' . __('OK');
+                echo ' <font size=-1>(' . __('Database name') . ': ' . DATABASE_NAME . ')</font>';
             } else {
-                //if (!$database_check){
-                echo '<p><b>' . __('The database has NOT been created!') . '</b>';
+                echo '<td class="line_nok">';
+                printf(__('<b>There is no database connection! To connect the MySQL database to %s, fill in these settings:</b>'), 'HuMo-genealogy');
+
                 $install_status = false;
+
+                $db_host = 'localhost';
+                if (isset($_POST['db_host'])) {
+                    $db_host = $_POST['db_host'];
+                }
+
+                $db_username = 'root';
+                if (isset($_POST['db_username'])) {
+                    $db_username = $_POST['db_username'];
+                }
+
+                $db_password = '';
+                if (isset($_POST['db_password'])) {
+                    $db_password = $_POST['db_password'];
+                }
+
+                $db_name = 'humo-gen';
+                if (isset($_POST['db_name'])) {
+                    $db_name = $_POST['db_name'];
+                }
+
+                $install_database = '';
+                if (isset($_POST["install_database"])) {
+                    $install_database = ' checked';
+                }
+
+                // *** Get database settings ***
+            ?>
+                <form method="post" action="<?= $path_tmp; ?>" style="display : inline;">
+                    <table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B">
+                        <tr>
+                            <th><?= __('Database setting'); ?></th>
+                            <th><?= __('Database value'); ?></th>
+                            <th><?= __('Example website provider'); ?></th>
+                            <th><?= __('Example for XAMPP'); ?></th>
+                        </tr>
+
+                        <tr>
+                            <td><?= __('Database host'); ?></td>
+                            <td><input type="text" name="db_host" value="<?= $db_host; ?>" class="form-control" size="15"></td>
+                            <td>localhost</td>
+                            <td>localhost</td>
+                        </tr>
+
+                        <tr>
+                            <td><?= __('Database username'); ?></td>
+                            <td><input type="text" name="db_username" value="<?= $db_username; ?>" class="form-control" size="15"></td>
+                            <td>database_username</td>
+                            <td>root</td>
+                        </tr>
+
+                        <tr>
+                            <td><?= __('Database password'); ?></td>
+                            <td><input type="text" name="db_password" value="<?= $db_password; ?>" class="form-control" size="15"></td>
+                            <td>database_password</td>
+                            <td><br></td>
+                        </tr>
+
+                        <tr>
+                            <td><?= __('Database name'); ?></td>
+                            <td>
+                                <input type="text" name="db_name" value="<?= $db_name; ?>" class="form-control" size="15">
+                            </td>
+                            <td>database_name</td>
+                            <td>humo-gen</td>
+                        </tr>
+
+                        <tr>
+                            <td><?= __('At a local PC also install database'); ?></td>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="install_database" <?= $install_database; ?>>
+                                    <label class="form-check-label"><?= __('YES, also install database'); ?></label>
+                                </div>
+                            </td>
+                            <td><?= __('NO'); ?></td>
+                            <td><?= __('YES'); ?></td>
+                        </tr>
+
+                        <tr>
+                            <td><?= __('Save settings and connect to database'); ?></td>
+                            <td><input type="Submit" name="save_settings_database" class="btn btn-success" value="<?= __('Save'); ?>"></td>
+                            <td><br></td>
+                            <td><br></td>
+                        </tr>
+                    </table>
+                </form>
+                <?= __('Sometimes it\'s needed to add these lines to a /php.ini and admin/php.ini files to activate the PDO driver:'); ?><br>
+                extension=pdo.so<br>
+                extension=pdo_sqlite.so<br>
+                extension=pdo_mysql.so<br>
+            <?php
             }
-        }
-        echo '</td></tr>';
+
+            if (isset($_POST['install_database'])) {
+                if (isset($database_check) and @$database_check) {
+                    //
+                } else {
+                    //if (!$database_check){
+                    echo '<p><b>' . __('The database has NOT been created!') . '</b>';
+                    $install_status = false;
+                }
+            }
+            ?>
+            </td>
+        </tr>
+        <?php
 
         // *** Show button to continue installation (otherwise the tables are not recognised) ***
         if (isset($_POST['save_settings_database'])) {
@@ -264,7 +297,7 @@ if (isset($_POST['save_settings_database'])) {
             echo '<tr><td><br></td><td>' . $result_message . '</td></tr>';
             echo '<tr><td><br></td><td><form method="post" action="' . $path_tmp . '" style="display : inline;">';
             echo '<input type="hidden" name="page" value="admin">';
-            echo '<input type="Submit" name="submit" value="' . __('Continue installation') . '">';
+            echo '<input type="Submit" name="submit" value="' . __('Continue installation') . '" class="btn btn-success">';
             echo '</form></td></tr>';
         }
 
@@ -272,18 +305,27 @@ if (isset($_POST['save_settings_database'])) {
         if ($install_status == true) {
             // *** Check database tables ***
             if (isset($check_tables) and $check_tables) {
-                echo '<tr><td class="line_item">' . __('Database tables') . '</td><td class="line_ok">' . __('OK') . '</td></tr>';
+        ?>
+                <tr>
+                    <td class="line_item"><?= __('Database tables'); ?></td>
+                    <td class="line_ok"><?= __('OK'); ?></td>
+                </tr>
+            <?php
             } else {
-                echo '<tr><td class="line_item">' . __('Database tables') . '</td><td class="line_nok">';
-                printf(__('No %s tables found in database.'), 'HuMo-genealogy');
-                echo '<br>';
+            ?>
+                <tr>
+                    <td class="line_item"><?= __('Database tables'); ?></td>
+                    <td class="line_nok">
+                        <?php printf(__('No %s tables found in database.'), 'HuMo-genealogy'); ?><br>
 
-                echo ' <form method="post" action="' . $path_tmp . '" style="display : inline;">';
-                echo '<input type="hidden" name="page" value="install">';
-                echo '<input type="Submit" name="submit" value="';
-                printf(__('Install %s database tables'), 'HuMo-genealogy');
-                echo '"></form>';
-                echo '</td></tr>';
+                        <form method="post" action="<?= $path_tmp; ?>" style="display : inline;">
+                            <input type="hidden" name="page" value="install">
+                            <input type="Submit" name="submit" class="btn btn-success" value="<?php printf(__('Install %s database tables'), 'HuMo-genealogy'); ?>">
+                        </form>
+                    </td>
+                </tr>
+
+            <?php
                 $install_status = false;
             }
         }
@@ -291,10 +333,7 @@ if (isset($_POST['save_settings_database'])) {
         // *** Only show table status if database AND tables are checked ***
         if ($install_status == true) {
             // *** Show size of statistics table ***
-            //$size = $dbh->query('SHOW TABLE STATUS WHERE Name="humo_stat_date"');
             $sizeqry = $dbh->query('SHOW TABLE STATUS LIKE "humo_stat_date"');
-            //$size='? kB';
-            //$sizeDb=$sizeqry->fetch();
             $sizeDb = $sizeqry->fetch(PDO::FETCH_OBJ);
             $size = '0 kB';
             if ($sizeDb) {
@@ -311,9 +350,14 @@ if (isset($_POST['save_settings_database'])) {
                 $size = round($size, 1) . $val;
             }
 
-            echo '<tr><td class="line_item">' . __('Size of statistics table') . '</td><td class="line_ok">' . $size;
-            echo ' <a href="index.php?page=statistics">' . __('If needed remove old statistics.') . '</a>';
-            echo '</td></tr>';
+            ?>
+            <tr>
+                <td class="line_item"><?= __('Size of statistics table'); ?></td>
+                <td class="line_ok"><?= $size; ?>
+                    <a href="index.php?page=statistics"><?= __('If needed remove old statistics.'); ?></a>
+                </td>
+            </tr>
+            <?php
 
             // *** Show size of database and optimize option ***
             $size = 0;
@@ -324,85 +368,89 @@ if (isset($_POST['save_settings_database'])) {
             }
             $decimals = 2;
             $mbytes = number_format($size / (1024 * 1024), $decimals);
-            echo '<tr><td class="line_item">';
-            echo __('Size of database') . '</td><td class="line_ok">';
+            ?>
+            <tr>
+                <td class="line_item">
+                    <?= __('Size of database'); ?></td>
+                <td class="line_ok">
+                    <?php
+                    if (isset($_GET['optimize'])) {
+                        echo '<b>' . __('This may take some time. Please wait...') . '</b><br>';
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_persons<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_persons";
+                        @$result = $dbh->query($sql);
 
-            if (isset($_GET['optimize'])) {
-                echo '<b>' . __('This may take some time. Please wait...') . '</b><br>';
-                //ob_start();
-                echo __('Optimize table...') . ' humo_persons<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_persons";
-                @$result = $dbh->query($sql);
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_families<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_families";
+                        @$result = $dbh->query($sql);
 
-                //ob_start();
-                echo __('Optimize table...') . ' humo_families<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_families";
-                @$result = $dbh->query($sql);
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_unprocessed_tags<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_unprocessed_tags";
+                        @$result = $dbh->query($sql);
 
-                //ob_start();
-                echo __('Optimize table...') . ' humo_unprocessed_tags<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_unprocessed_tags";
-                @$result = $dbh->query($sql);
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_settings<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_settings";
+                        @$result = $dbh->query($sql);
 
-                //ob_start();
-                echo __('Optimize table...') . ' humo_settings<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_settings";
-                @$result = $dbh->query($sql);
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_repositories<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_repositories";
+                        @$result = $dbh->query($sql);
 
-                //ob_start();
-                echo __('Optimize table...') . ' humo_repositories<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_repositories";
-                @$result = $dbh->query($sql);
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_sources<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_sources";
+                        @$result = $dbh->query($sql);
 
-                //ob_start();
-                echo __('Optimize table...') . ' humo_sources<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_sources";
-                @$result = $dbh->query($sql);
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_texts<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_texts";
+                        @$result = $dbh->query($sql);
 
-                //ob_start();
-                echo __('Optimize table...') . ' humo_texts<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_texts";
-                @$result = $dbh->query($sql);
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_connections<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_connections";
+                        @$result = $dbh->query($sql);
 
-                //ob_start();
-                echo __('Optimize table...') . ' humo_connections<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_connections";
-                @$result = $dbh->query($sql);
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_addresses<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_addresses";
+                        @$result = $dbh->query($sql);
 
-                //ob_start();
-                echo __('Optimize table...') . ' humo_addresses<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_addresses";
-                @$result = $dbh->query($sql);
-
-                //ob_start();
-                echo __('Optimize table...') . ' humo_events<br>';
-                //ob_flush();
-                flush();
-                $sql = "OPTIMIZE TABLE humo_events";
-                @$result = $dbh->query($sql);
-            }
-
-            echo $mbytes . ' MB <a href="index.php?optimize=1">' . __('Optimize database.') . '</a>';
-            echo '</td></tr>';
-
+                        //ob_start();
+                        echo __('Optimize table...') . ' humo_events<br>';
+                        //ob_flush();
+                        flush();
+                        $sql = "OPTIMIZE TABLE humo_events";
+                        @$result = $dbh->query($sql);
+                    }
+                    ?>
+                    <?= $mbytes; ?> MB <a href="index.php?optimize=1"><?= __('Optimize database.'); ?></a>
+                </td>
+            </tr>
+            <?php
 
             // *** Check last database backup ***
             // *** Get list of backup files ***
@@ -419,20 +467,31 @@ if (isset($_POST['save_settings_database'])) {
                     rsort($backup_files); // *** Most recent backup file will be shown first ***
                 }
             }
-            if (isset($backup_files[0])) {
-                // 2023_02_23_09_56_humo-genealogy_backup.sql.zip
-                $backup_status = __('Last database backup') . ': ' . substr($backup_files[0], 8, 2) . '-' . substr($backup_files[0], 5, 2) . '-' . substr($backup_files[0], 0, 4) . '.';
-                echo '<tr><td class="line_item">' . __('Status of database backup') . '</td><td class="line_ok">' . $backup_status;
-            } else {
-                echo '<tr><td class="line_item">' . __('Status of database backup') . '</td><td class="line_nok">' . __('No backup file found!');
-            }
-            echo ' <a href="index.php?page=backup">' . __('Database backup') . '</a>';
-            echo '</td></tr>';
 
+            ?>
+            <tr>
+                <td class="line_item"><?= __('Status of database backup'); ?></td>
+                <?php
+                if (isset($backup_files[0])) {
+                    // 2023_02_23_09_56_humo-genealogy_backup.sql.zip
+                    $backup_status = __('Last database backup') . ': ' . substr($backup_files[0], 8, 2) . '-' . substr($backup_files[0], 5, 2) . '-' . substr($backup_files[0], 0, 4) . '.';
+                ?>
+                    <td class="line_ok"><?= $backup_status; ?>
+                    <?php } else { ?>
+                    <td class="line_nok"><?= __('No backup file found!'); ?>
+                    <?php } ?>
+                    <a href="index.php?page=backup"><?= __('Database backup'); ?></a>
+                    </td>
+            </tr>
+            <?php
 
-            echo '<tr class="table_header"><th colspan="2">';
-            printf(__('%s security items'), 'HuMo-genealogy');
-            echo '</th></tr>';
+            ?>
+            <tr class="table_header">
+                <th colspan="2">
+                    <?php printf(__('%s security items'), 'HuMo-genealogy'); ?>
+                </th>
+            </tr>
+            <?php
 
             // *** Check for standard admin username and password ***
             $check_admin_user = false;
@@ -483,126 +542,153 @@ if (isset($_POST['save_settings_database'])) {
             if (isset($_SERVER["PHP_AUTH_USER"])) {
                 $check_login = '<td class="line_ok">' . __('At the moment you are logged in through an .htacces file.');
             }
-            //if (isset($_SESSION["user_name_admin"]) AND $_SESSION["user_name_admin"]=="beheer") {
             if (isset($_SESSION["user_name_admin"])) {
                 $check_login = '<td class="line_nok">' . __('At the moment you are logged in through PHP-MySQL.');
             }
 
-            echo '<tr><td class="line_item">' . __('Login control') . '</td>' . $check_login;
+            ?>
+            <tr>
+                <td class="line_item"><?= __('Login control'); ?></td><?= $check_login; ?>
 
-            print '<form method="POST" action="' . $path_tmp . '" style="display : inline;">';
-            echo '<input type="hidden" name="page" value="' . $page . '">';
-            print ' <input type="Submit" name="login_info" value="' . __('INFO') . '">';
-            print '</form>';
+                <form method="POST" action="<?= $path_tmp; ?>" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="Submit" name="login_info" class="btn btn-success" value="<?= __('INFO'); ?>">
+                </form>
 
-            if (isset($_POST['login_info'])) {
-                echo '<div id="security_remark">';
+                <?php if (isset($_POST['login_info'])) { ?>
+                    <div id="security_remark">
 
-                printf(__('After installation of the tables (click on the left at Install) the admin folder will be secured with PHP-MySQL security.
+                        <?php printf(__('After installation of the tables (click on the left at Install) the admin folder will be secured with PHP-MySQL security.
 <p>You can have better security with .htaccess (server security).<br>
 If the administration panel of your webhost has an option to password-protect directories, use this option on the \"admin\" folder of %s. If you don\'t have such an option, you can make an .htaccess file yourself.<br>
-Make a file .htaccess:'), 'HuMo-genealogy');
+Make a file .htaccess:'), 'HuMo-genealogy'); ?>
 
-                echo '<p>AuthType Basic<br>
-                AuthName "' . __('Secured website') . '"<br>';
-                echo 'AuthUserFile ' . $_SERVER['DOCUMENT_ROOT'] . '/humo-gen/admin/.htpasswd<br>';
-                echo '&lt;LIMIT GET POST&gt;<br>
-                require valid-user<br>
-                &lt;/LIMIT&gt;';
+                        <p>AuthType Basic<br>
+                            AuthName "<?= __('Secured website'); ?>"<br>
+                            AuthUserFile <?= $_SERVER['DOCUMENT_ROOT']; ?>/humo-gen/admin/.htpasswd<br>
+                            &lt;LIMIT GET POST&gt;<br>
+                            require valid-user<br>
+                            &lt;/LIMIT&gt;';
 
-                echo '<p>' . __('Next, you need a file with user names and passwords.<br>
+                        <p><?= __('Next, you need a file with user names and passwords.<br>
 For example go to: http://www.htaccesstools.com/htpasswd-generator/<br>
-The file .htpasswd will look something like this:<br>');
+The file .htpasswd will look something like this:<br>'); ?>
 
-                echo '<p>Huub:mmb95Tozzk3a2';
+                        <p>Huub:mmb95Tozzk3a2</p>
 
-                echo '<form method="POST" action="' . $path_tmp . '" style="display : inline;">';
-                echo '<p>' . __('You can also try this password generator:') . '<br>';
-                echo '<input type="hidden" name="page" value="' . $page . '">';
-                echo '<input type="text" name="username" value="username" size="20">';
-                echo '<input type="text" name="password" value="password" size="20">';
-                echo ' <input type="Submit" name="login_info" value="' . __('Generate new ht-password') . '">';
-                echo '</form>';
+                        <form method="POST" action="<?= $path_tmp; ?>" style="display : inline;">
+                            <p><?= __('You can also try this password generator:'); ?><br>
+                                <input type="hidden" name="page" value="<?= $page; ?>">
+                                <input type="text" name="username" value="username" class="form-control" size="20"><br>
+                                <input type="text" name="password" value="password" class="form-control" size="20"><br>
+                                <input type="Submit" name="login_info" class="btn btn-success" value="<?= __('Generate new ht-password'); ?>">
+                        </form>
+                        <?php
 
-                if (isset($_POST['username'])) {
-                    //$htpassword=crypt(trim($_POST['password']),base64_encode(CRYPT_STD_DES));
-                    $htpassword2 = crypt($_POST['password'], base64_encode($_POST['password']));
-                    //echo $_POST['username'].":".$htpassword.'<br>';
-                    echo $_POST['username'] . ":" . $htpassword2;
-                }
+                        if (isset($_POST['username'])) {
+                            //$htpassword=crypt(trim($_POST['password']),base64_encode(CRYPT_STD_DES));
+                            $htpassword2 = crypt($_POST['password'], base64_encode($_POST['password']));
+                            //echo $_POST['username'].":".$htpassword.'<br>';
+                            echo $_POST['username'] . ":" . $htpassword2;
+                        }
 
-                echo '</div>';
-            }
-            echo '</td></tr>';
+                        ?>
+                    </div>
+                <?php } ?>
+                </td>
+            </tr>
+            <?php
 
             // *** display_errors ***
+            /*
             if (!ini_get('display_errors')) {
-                echo '<tr><td class="line_item">' . __('Option "display_errors"') . '</td><td class="line_ok">' . __('OK (option is OFF)') . '</td></tr>';
+                ?>
+                <tr><td class="line_item"><?= __('Option "display_errors"');?></td><td class="line_ok"><?= __('OK (option is OFF)');?></td></tr>
+                <?php
             } else {
-                echo '<tr><td class="line_item">' . __('Option "display_errors"') . '</td><td class="line_nok">' . __('UNSAFE (option is ON)<br>change this option in .htaccess file.') . '</td></tr>';
+                ?>
+                <tr><td class="line_item"><?= __('Option "display_errors"');?></td><td class="line_nok"><?= __('UNSAFE (option is ON)<br>change this option in .htaccess file.');?></td></tr>
+                <?php
             }
+            */
 
             // *** HuMo-genealogy debug options ***
-            if ($humo_option["debug_front_pages"] == 'n' and $humo_option["debug_admin_pages"] == 'n') {
-                echo '<tr><td class="line_item">';
-                printf(__('Debug %s pages'), 'HuMo-genealogy');
-                echo '</td><td class="line_ok">' . __('OK (option is OFF)');
-                echo ' <a href="index.php?page=settings">';
-                printf(__('Debug %s pages'), 'HuMo-genealogy');
-                echo '</a></td></tr>';
-            } else {
-                echo '<tr><td class="line_item">';
-                printf(__('Debug %s pages'), 'HuMo-genealogy');
-                echo '</td><td class="line_nok">' . __('UNSAFE (option is ON).');
-                echo ' <a href="index.php?page=settings">';
-                printf(__('Debug %s pages'), 'HuMo-genealogy');
-                echo '</a></td></tr>';
-            }
+            ?>
+            <tr>
+                <td class="line_item">
+                    <?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?>
+                </td>
+                <?php if ($humo_option["debug_front_pages"] == 'n' and $humo_option["debug_admin_pages"] == 'n') { ?>
+                    <td class="line_ok"><?= __('OK (option is OFF)'); ?>
+                        <a href="index.php?page=settings">
+                            <?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?>
+                        </a>
+                    </td>
+                <?php } else { ?>
+                    <td class="line_nok"><?= __('UNSAFE (option is ON).'); ?>
+                        <a href="index.php?page=settings">
+                            <?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?>
+                        </a>
+                    </td>
+                <?php } ?>
+            </tr>
 
+            <?php
             // *** Family trees ***
-            @$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
             if ($datasql) {
                 $tree_counter = 0;
-                echo '<tr class="table_header"><th colspan="2">' . __('Family trees') . '</th></tr>';
-                //echo '<tr class="table_header"><th colspan="2"><a href="index.php?page=tree">'.__('Family trees').'</a></th></tr>';
+            ?>
+                <tr class="table_header">
+                    <th colspan="2"><?= __('Family trees'); ?></th>
+                </tr>
 
+                <?php
                 while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                     // *** Skip empty lines (didn't work in query...) ***
-                    if ($dataDb->tree_prefix != 'EMPTY') {
-                        $tree_counter++;
-                        echo '<tr><td class="line_item">' . __('Status tree') . ' ' . $tree_counter . '</td>';
-
+                    $tree_counter++;
+                    $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+                ?>
+                    <tr>
+                        <td class="line_item"><?= __('Status tree'); ?> <?= $tree_counter; ?></td>
+                        <?php
                         if ($dataDb->tree_persons) {
                             echo '<td class="line_ok">';
                         } else {
                             echo '<td class="line_nok">';
                         }
-                        $treetext = show_tree_text($dataDb->tree_id, $selected_language);
-                        //echo $dirmark1.$treetext['name'];
                         echo $dirmark1 . '<a href="index.php?page=tree">' . $treetext['name'] . '</a>';
 
                         if ($dataDb->tree_persons > 0) {
                             print $dirmark1 . ' <font size=-1>(' . $dataDb->tree_persons . ' ' . __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families') . ')</font>';
                         } else {
-                            echo ' <b>' . __('This tree does not yet contain any data or has not been imported properly!') . '</b><br>';
-                            // *** Read GEDCOM file ***
-                            echo ' <form method="post" action="' . $path_tmp . '" style="display : inline;">';
-                            echo '<input type="hidden" name="page" value="tree">';
-                            echo '<input type="hidden" name="tree_prefix" value="' . $dataDb->tree_prefix . '">';
-                            echo '<input type="Submit" name="step1" value="' . __('Import Gedcom file') . '">';
-                            echo '</form>';
+                        ?>
+                            <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b><br>
 
-                            // *** Editor ***
-                            echo ' ' . __('or') . ' <form method="post" action="index.php?page=editor" style="display : inline;">';
-                            echo '<input type="hidden" name="tree_prefix" value="' . $dataDb->tree_prefix . '">';
-                            echo '<input type="Submit" name="submit" value="' . __('Editor') . '">';
-                            echo '</form>';
-                        }
-                        echo '</td></tr>';
-                    }
+                            <!-- Read GEDCOM file -->
+                            <form method="post" action="<?= $path_tmp; ?>" style="display : inline;">
+                                <input type="hidden" name="page" value="tree">
+                                <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
+                                <input type="Submit" name="step1" class="btn btn-success" value="<?= __('Import Gedcom file'); ?>">
+                            </form>
+
+                            <!-- Editor -->
+                            <?= __('or'); ?> <form method="post" action="index.php?page=editor" style="display : inline;">
+                                <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
+                                <input type="Submit" name="submit" class="btn btn-success" value="<?= __('Editor'); ?>">
+                            </form>
+                        <?php } ?>
+                        </td>
+                    </tr>
+                <?php
                 }
             } else {
-                echo '<tr><td>' . __('Trees table') . '</td><td class="line_nok">ERROR</td></tr>';
+                ?>
+                <tr>
+                    <td><?= __('Trees table'); ?></td>
+                    <td class="line_nok">ERROR</td>
+                </tr>
+        <?php
             }
 
             // *** End of check database and table status ***

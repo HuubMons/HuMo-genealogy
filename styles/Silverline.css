@@ -18,46 +18,39 @@ body {
     font-weight: normal;
 }
 
+/*
 #top_familytree_name {
     color: #347c17;
     font-weight: normal;
 }
+*/
 
-#humo_menu {
-    background-color: #bbeeff;
-    background: url("images_silverline/silvermenu1.png") repeat left top;
-}
-
-#humo_menu a:hover {
+ul.humo_menu_item2 li a:hover {
     background: url("images_silverline/menuhover1.jpg") repeat left top;
 }
 
-#humo_menu ul.humo_menu_item2 li a:hover {
-    background: url("images_silverline/menuhover1.jpg") repeat left top;
-}
-
-#humo_menu a#current_top {
+a#current_top {
     color: #000000;
     font-weight: bold;
     background: url("images_silverline/menuhover1.jpg") repeat left top;
 }
 
-#humo_menu #current a {
+#current a {
     color: #000000;
     font-weight: bold;
     background: url("images_silverline/menuhover1.jpg") repeat left top;
 }
 
-#humo_menu ul.humo_menu_item2 li {
+ul.humo_menu_item2 li {
     background: url("images_silverline/silver.gif") repeat left top;
 }
 
-#humo_menu ul.humo_menu_item2 li a {
+ul.humo_menu_item2 li a {
     background: url("images_silverline/silver.gif") repeat left top;
     font-weight: normal;
 }
 
-#humo_menu ul.humo_menu_item li a {
+ul.humo_menu_item li a {
     font-weight: normal;
     color: #000000;
 }
@@ -101,6 +94,12 @@ p {
     border: solid 1px #999999;
     border-radius: 3px;
     box-shadow: 2px 2px 2px #c0c0c0;
+}
+
+/* Bootstrap menu */
+.genealogy_menu {
+    /* background: url("images_silverline/silvermenu1.png") repeat left top; */
+    background-image: linear-gradient(to top, rgb(192, 192, 192) 0%, 	rgb(255, 255, 255) 80%);
 }
 
 /* Tables */

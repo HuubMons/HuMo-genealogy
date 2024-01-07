@@ -29,41 +29,37 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 
     <div>
         <form name="anniv" id="anniv" action="<?= $path; ?>month=<?= $data["month"]; ?>" method="post">
-            <table class="humo" style="text-align:center;width:40%;margin-left:auto;margin-right:auto;border:1px solid black;">
-                <!-- Show line of months -->
-                <tr>
-                    <td style="border:none" colspan="2"> <!-- Show navigation -->
-                        <?php foreach ($months as $month) { ?>
-                            <?php if ($data["month"] == $month) { ?>
-                                <b><?= __($month); ?></b>
-                            <?php } else { ?>
-                                <a href="<?= $path; ?>month=<?= $month . $data["url_end"]; ?>"><?= __($month); ?></a>
-                            <?php } ?>
-                            <?php if ($month!='dec') echo '&#124;'; ?>
-                        <?php } ?>
-                    </td>
-                </tr>
+            <!-- Show line of months -->
+            <div>
+                <?php foreach ($months as $month) { ?>
+                    <?php if ($data["month"] == $month) { ?>
+                        <b><?= __($month); ?></b>
+                    <?php } else { ?>
+                        <a href="<?= $path; ?>month=<?= $month . $data["url_end"]; ?>"><?= __($month); ?></a>
+                    <?php } ?>
+                    <?php if ($month != 'dec') echo '&#124;'; ?>
+                <?php } ?>
+            </div>
 
-                <tr>
-                    <?php
-                    $check = '';
-                    if ($data["ann_choice"]) $check = ' checked';
-                    echo "<td style='border:none'><input id='birthd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='birthdays'" . $check . ">" . __('Birthdays') . "</td>";
+            <div class="form-check form-check-inline mt-3">
+                <input class="form-check-input" id='birthd' onClick='document.getElementById("anniv").submit();' type='radio' name='ann_choice' value='birthdays' <?= $data["ann_choice"] ? ' checked' : ''; ?>>
+                <label class="form-check-label" for="birthd"><?= __('Birthdays'); ?></label>
+            </div>
 
-                    $check = '';
-                    if ($data["ann_choice"] == 'wedding') $check = " checked";
-                    echo "<td style='border:none'><input id='wedd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='wedding'" . $check . ">" . __('Wedding anniversaries') . "&nbsp;&nbsp;";
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" id='wedd' onClick='document.getElementById("anniv").submit();' type='radio' name='ann_choice' value='wedding' <?= $data["ann_choice"] == 'wedding' ? ' checked' : ''; ?>>
+                <label class="form-check-label" for="wedd"><?= __('Wedding anniversaries'); ?></label>
+            </div>
 
-                    $check =  '';
-                    if ($data["civil"]) $check = ' checked';
-                    echo "<span style='font-size:90%'>(<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='civil' id='civil' value='civil'" . $check . ">" . __('Civil');
+            (<div class="form-check form-check-inline">
+                <input class="form-check-input" type='checkbox' onClick='document.getElementById("wedd").checked = true;document.getElementById("anniv").submit();' name='civil' id='civil' value='civil' <?= $data["civil"] ? ' checked' : ''; ?>>
+                <label class="form-check-label" for="civil"><?= __('Civil'); ?></label>
+            </div>
 
-                    $check = '';
-                    if ($data["relig"]) $check = " checked";
-                    echo "&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'" . $check . ">" . __('Religious') . ")</span></td>";
-                    ?>
-                </tr>
-            </table>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type='checkbox' onClick='document.getElementById("wedd").checked = true;document.getElementById("anniv").submit();' name='relig' id='relig' value='relig' <?= $data["relig"] ? ' checked' : ''; ?>>
+                <label class="form-check-label" for="relig"><?= __('Religious'); ?>)</label>
+            </div>
         </form>
     </div><br>
 

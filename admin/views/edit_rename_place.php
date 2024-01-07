@@ -27,10 +27,8 @@ $menu_admin = $get_editor->getMenuAdmin();
 
 
 $phpself = 'index.php';
-$joomlastring = '';
 $sourcestring = '../source.php?';
 $addresstring = '../address.php?';
-//$path_prefix = '../';
 
 $field_text_large = 'style="height: 100px; width:550px"';
 

@@ -9,7 +9,6 @@ if (!defined('ADMIN_PAGE')) {
 <?php
 // *** Tab menu ***
 $prefx = '../'; // to get out of the admin map
-$joomlastring = "";
 
 $menu_admin = 'log_users';
 if (isset($_POST['menu_admin'])) {
@@ -18,40 +17,19 @@ if (isset($_POST['menu_admin'])) {
 if (isset($_GET['menu_admin'])) {
     $menu_admin = $_GET['menu_admin'];
 }
-
 ?>
-<p>
-<div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false">
-    <div class="pageHeading">
-        <!-- <div class="pageHeadingText">Configuratie gegevens</div> -->
-        <!-- <div class="pageHeadingWidgets" aria-hidden="true" style="display: none;"></div> -->
-        <div class="pageTabsContainer" aria-hidden="false">
-            <ul class="pageTabs">
-                <!-- <li class="pageTabItem"><div tabindex="0" class="pageTab pageTab-active">Details</div></li> -->
-                <?php
 
-                // *** Logfile users ***
-                $select_item = '';
-                if ($menu_admin == 'log_users') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '">' . __('Logfile users') . "</a></div></li>";
-
-                // *** IP blacklist ***
-                $select_item = '';
-                if ($menu_admin == 'log_blacklist') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=log_blacklist' . '">' . __('IP Blacklist') . "</a></div></li>";
-                ?>
-            </ul>
-        </div>
-    </div>
-</div>
+<ul class="nav nav-tabs">
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'log_users') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('Logfile users'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'log_blacklist') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=log_blacklist"><?= __('IP Blacklist'); ?></a>
+    </li>
+</ul>
 
 <!-- Align content to the left -->
 <div style="float: left; background-color:white; height:500px; padding:10px;">
-
     <?php
     // *** User log ***
     if (isset($menu_admin) and $menu_admin == 'log_users') {

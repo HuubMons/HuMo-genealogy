@@ -62,14 +62,6 @@ if (isset($_POST['send_mail']) and $register_allowed == true) {
         $register_message .= __('E-mail') . ": <a href='mailto:" . $_POST['register_mail'] . "'>" . $_POST['register_mail'] . "</a><br>\n";
         $register_message .= $_POST['register_text'] . "<br>\n";
 
-        //$headers  = "MIME-Version: 1.0\n";
-        //$headers .= "Content-type: text/html; charset=utf-8\n";
-        //$headers .= "X-Priority: 3\n";
-        //$headers .= "X-MSMail-Priority: Normal\n";
-        //$headers .= "X-Mailer: php\n";
-        //$headers .= "From: \"".$_POST['register_name']."\" <".$_POST['register_mail'].">\n";
-
-        //@$mail = mail($register_address, $register_subject, $register_message, $headers);
         include_once(__DIR__ . '/../include/mail.php');
 
         // *** Set who the message is to be sent from ***
@@ -136,14 +128,14 @@ if ($show_form) {
                 <div class="mb-2 row">
                     <label for="name" class="col-sm-3 col-form-label"><?= __('Name'); ?></label>
                     <div class="col-sm-5">
-                        <input type="text" id="name" class="form-control" name="register_name" placeholder="<?= __('Name'); ?>" value="<?= $register_name; ?>">
+                        <input type="text" id="name" class="form-control" name="register_name" value="<?= $register_name; ?>">
                     </div>
                 </div>
 
                 <div class="mb-2 row">
                     <label for="mail_sender" class="col-sm-3 col-form-label"><?= __('E-mail address'); ?></label>
                     <div class="col-sm-5">
-                        <input type="email" id="register_mail" class="form-control" name="register_mail" placeholder="<?= __('E-mail address'); ?>" value="<?= $register_mail; ?>">
+                        <input type="email" id="register_mail" class="form-control" name="register_mail" value="<?= $register_mail; ?>">
                     </div>
                 </div>
 
@@ -164,7 +156,7 @@ if ($show_form) {
                 <div class="mb-2 row">
                     <label for="register_text" class="col-sm-3 col-form-label"><?= __('Message'); ?></label>
                     <div class="col-sm-5">
-                        <textarea id="register_text" class="form-control" name="register_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $register_text; ?></textarea>
+                        <textarea id="register_text" class="form-control" name="register_text" style="height:200px"><?= $register_text; ?></textarea>
                     </div>
                 </div>
 
@@ -181,7 +173,7 @@ if ($show_form) {
                 <div class="mb-2 row">
                     <label for="2fa_code" class="col-sm-3 col-form-label"></label>
                     <div class="col-sm-5">
-                        <input type="submit" class="col-sm-4 btn btn-success" name="send_mail" value="<?= __('Send'); ?>">
+                        <input type="submit" class="btn btn-success" name="send_mail" value="<?= __('Send'); ?>">
                     </div>
                 </div>
             </form>

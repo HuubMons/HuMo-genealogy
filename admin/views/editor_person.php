@@ -255,7 +255,7 @@
                 $hideshow = 701;
             ?>
                 <!-- Add existing or new parents -->
-                <b><?= __('There are no parents.'); ?></b><a href="index.php?<?= $joomlastring; ?>page=<?= $page; ?>&amp;menu_admin=person&amp;add_parents=1">
+                <b><?= __('There are no parents.'); ?></b><a href="index.php?page=<?= $page; ?>&amp;menu_admin=person&amp;add_parents=1">
                     <a href="#" onclick="hideShow('<?= $hideshow; ?>');"><?= __('Add parents'); ?></a>
                     <span class="humo row701" style="margin-left:0px; display:none;">
                         <table class="humo" style="margin-left:0px;">
@@ -572,12 +572,12 @@
 $i=9999;
 echo '<ul id="sortable' . $i . '" class="sortable" style="padding-left:0px;">';
     echo '<li><span style="cursor:move;" id="xxx" class="handle"><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
-    echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=cc&amp;child_disconnect_gedcom=cc">
+    echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=cc&amp;child_disconnect_gedcom=cc">
             <img src="images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
     echo '&nbsp;&nbsp;Test source 1</li>';
 
     echo '<li><span style="cursor:move;" id="xxx" class="handle"><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
-    echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=cc&amp;child_disconnect_gedcom=cc">
+    echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=cc&amp;child_disconnect_gedcom=cc">
             <img src="images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
     echo '&nbsp;&nbsp;Test source 2</li>';
 echo '</ul>';

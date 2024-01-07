@@ -38,7 +38,6 @@ echo '
 ';
 
 $prefx = '../'; // to get out of the admin map
-$joomlastring = "";
 
 // *** Get main path for selected family tree ***
 $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
