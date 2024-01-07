@@ -71,7 +71,7 @@ class editor_event_cls
     // *** REMARK: queries can be found in editor_inc.php! ***
     function show_event($event_connect_kind, $event_connect_id, $event_kind)
     {
-        global $dbh, $tree_id, $page, $field_date, $field_place, $field_text, $field_text_medium, $joomlastring;
+        global $dbh, $tree_id, $page, $field_date, $field_place, $field_text, $field_text_medium;
         global $editor_cls, $path_prefix, $tree_pict_path, $humo_option, $field_popup;
         global $db_functions;
 
@@ -854,7 +854,7 @@ function myFunction() {
                 if (isset($_GET['add_person'])) {
                     $newpers = "&amp;add_person=1";
                 }
-                echo '<a href="index.php?' . $joomlastring . 'page=' . $page . $newpers . '&amp;' . $event_group .
+                echo '<a href="index.php?page=' . $page . $newpers . '&amp;' . $event_group .
                     '&amp;event_kind=' . $data_listDb->event_kind . '&amp;event_drop=' . $data_listDb->event_order;
                 // *** Remove picture by source ***
                 if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
@@ -878,7 +878,7 @@ function myFunction() {
 
                 // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
                 if ($data_listDb->event_order < $count) {
-                    echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;' . $event_group . '&amp;event_down=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
+                    echo ' <a href="index.php?page=' . $page . '&amp;' . $event_group . '&amp;event_down=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
                     // *** Edit picture by source in seperate source page ***
                     if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
                     echo '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
@@ -888,7 +888,7 @@ function myFunction() {
 
                 // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
                 if ($data_listDb->event_order > 1) {
-                    echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;' . $event_group . '&amp;event_up=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
+                    echo ' <a href="index.php?page=' . $page . '&amp;' . $event_group . '&amp;event_up=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
                     // *** Edit picture by source in seperate source page ***
                     if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
                     echo '&amp;dummy=' . $data_listDb->event_id . $internal_link;

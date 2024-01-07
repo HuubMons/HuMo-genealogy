@@ -3,10 +3,8 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-//ini_set('memory_limit', '-1');
 
 $prefx = '../'; // to get out of the admin map
-$joomlastring = "";
 
 // *** Tab menu ***
 $menu_admin = 'picture_settings';
@@ -17,53 +15,25 @@ if (isset($_GET['menu_admin'])) {
     $menu_admin = $_GET['menu_admin'];
 }
 ?>
-<p>
-<div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false">
-    <div class="pageHeading">
-        <!-- <div class="pageHeadingText">Configuratie gegevens</div> -->
-        <!-- <div class="pageHeadingWidgets" aria-hidden="true" style="display: none;"></div> -->
-        <div class="pageTabsContainer" aria-hidden="false">
-            <ul class="pageTabs">
-                <?php
-                //echo '<li class="pageTabItem"><div tabindex="0" class="pageTab pageTab-active">Details</div></li>';
 
-                // *** Picture settings ***
-                $select_item = '';
-                if ($menu_admin == 'picture_settings') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '">' . __('Picture settings') . "</a></div></li>";
-
-                // *** Create thumbnails ***
-                $select_item = '';
-                if ($menu_admin == 'picture_thumbnails') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=picture_thumbnails' . '">' . __('Create thumbnails') . "</a></div></li>";
-
-                // *** Show thumbnails ***
-                $select_item = '';
-                if ($menu_admin == 'picture_show') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=picture_show">' . __('Show thumbnails') . "</a></div></li>";
-
-                // *** Picture categories ***
-                $select_item = '';
-                if ($menu_admin == 'picture_categories') {
-                    $select_item = ' pageTab-active';
-                }
-                echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=picture_categories">' . __('Photo album categories') . "</a></div></li>";
-                ?>
-            </ul>
-        </div>
-    </div>
-</div>
+<ul class="nav nav-tabs mt-1">
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'picture_settings') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('Picture settings'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'picture_thumbnails') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=picture_thumbnails"><?= __('Create thumbnails'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'picture_show') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=picture_show"><?= __('Show thumbnails'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'picture_categories') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=picture_categories"><?= __('Photo album categories'); ?></a>
+    </li>
+</ul>
 
 <!-- Align content to the left -->
 <div style="float: left; background-color:white; height:500px; padding:10px;">
     <?php
-
     // *** Default settings ***
     $end_text = '';
     $show_table = false;
@@ -564,7 +534,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 function categories()
 {
     global $language, $language_tree, $selected_language, $dbh, $warning_exist_prefix, $warning_prefix, $warning_invalid_prefix, $warning_noname;
-    global $page, $language_file, $data2Db, $phpself, $joomlastring;
+    global $page, $language_file, $data2Db, $phpself;
 ?>
     <form method="post" action="<?= $phpself; ?>" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
@@ -593,8 +563,8 @@ function categories()
             $language_tree2 = $language_tree;
             if ($language_tree == 'default') $language_tree2 = $selected_language;
             echo '&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
-            echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_tree2 . '"';
-            echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_tree2 . '"';
+            echo '<a href="index.php?page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_tree2 . '"';
+            echo '<a href="index.php?page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_tree2 . '"';
             include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
             echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
             $select_top = '';
@@ -609,7 +579,7 @@ function categories()
                         if ($language_file[$i] != $language_tree2) {
                             include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
                             echo '<li style="float:left; width:124px;">';
-                            echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_file[$i] . $add . '">';
+                            echo '<a href="index.php?page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_file[$i] . $add . '">';
                             echo '<img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
                             echo $language["name"];
                             echo '</a>';
@@ -622,7 +592,7 @@ function categories()
             <?php
             echo '</div>';
             echo '&nbsp;&nbsp;' . __('or') . '&nbsp;&nbsp;';
-            echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=default' . $add . '">' . __('Default') . '</a> ';
+            echo '<a href="index.php?page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=default' . $add . '">' . __('Default') . '</a> ';
             echo '</td></tr>';
 
             //$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
@@ -660,14 +630,14 @@ function categories()
                     echo '<td>';
                 }
                 if ($catDb->photocat_order != $minorder) {
-                    echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_up=' . $catDb->photocat_order . '"><img src="images/arrow_up.gif"></a>&nbsp;&nbsp;';
+                    echo '<a href="index.php?page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_up=' . $catDb->photocat_order . '"><img src="images/arrow_up.gif"></a>&nbsp;&nbsp;';
                 }
                 if ($catDb->photocat_order != $maxorder) {
-                    echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_down=' . $catDb->photocat_order . '"><img src="images/arrow_down.gif"></a>';
+                    echo '<a href="index.php?page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_down=' . $catDb->photocat_order . '"><img src="images/arrow_down.gif"></a>';
                 }
                 echo '</td><td>';
                 if ($catDb->photocat_prefix != 'none') {
-                    echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_order=' . $catDb->photocat_order . '&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_drop=1"><img src="images/button_drop.png"></a>';
+                    echo '<a href="index.php?page=thumbs&amp;menu_admin=picture_categories&amp;cat_order=' . $catDb->photocat_order . '&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_drop=1"><img src="images/button_drop.png"></a>';
                 }
                 $prefname = $catDb->photocat_prefix;
                 if ($catDb->photocat_prefix == 'none') $prefname = __('default - without prefix');  // display default in the display language, so it is clear to everyone
@@ -687,8 +657,8 @@ function categories()
 
             if (isset($_GET['cat_drop']) and $_GET['cat_drop'] == 1) {
                 echo '<tr><td colspan=5 style="color:red;font-weight:bold;font-size:120%">' . __('Do you really want to delete category:') . '&nbsp;' . $_GET['cat_prefix'] . '&nbsp;?';
-                echo '&nbsp;&nbsp;&nbsp;<input type="button" style="color:red;font-weight:bold" onclick="location.href=\'index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_order=' . $_GET['cat_order'] . '&amp;cat_prefix=' . $_GET['cat_prefix'] . '&amp;cat_drop2=1\';" value="' . __('Yes') . '">';
-                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" style="color:green;font-weight:bold" onclick="location.href=\'index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories\';" value="' . __('No') . '">';
+                echo '&nbsp;&nbsp;&nbsp;<input type="button" style="color:red;font-weight:bold" onclick="location.href=\'index.php?page=thumbs&amp;menu_admin=picture_categories&amp;cat_order=' . $_GET['cat_order'] . '&amp;cat_prefix=' . $_GET['cat_prefix'] . '&amp;cat_drop2=1\';" value="' . __('Yes') . '">';
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" style="color:green;font-weight:bold" onclick="location.href=\'index.php?page=thumbs&amp;menu_admin=picture_categories\';" value="' . __('No') . '">';
                 echo '</td></tr>';
             }
             ?>

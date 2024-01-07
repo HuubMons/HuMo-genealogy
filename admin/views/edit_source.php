@@ -66,12 +66,14 @@ if (isset($tree_id)) {
 // ********************
 
 if ($menu_admin == 'sources') {
-
-    // ******* SOURCE_ADD AND SOURCE_CHANGED IS MOVED TO EDITOR_INC.PHP *************
-    if (isset($_POST['source_remove'])) {
 ?>
-        <div class="confirm">
-            <?= __('Are you sure you want to remove this source and ALL source references?'); ?>
+    <h1 class="center"><?= __('Sources'); ?></h1>
+    <?= __('These sources can be connected to multiple persons, families, events and other items.'); ?>
+
+    <!-- SOURCE_ADD AND SOURCE_CHANGED IS MOVED TO EDITOR_INC.PHP -->
+    <?php if (isset($_POST['source_remove'])) { ?>
+        <div class="alert alert-danger">
+            <strong><?= __('Are you sure you want to remove this source and ALL source references?'); ?></strong>
             <form method="post" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="source_id" value="<?= $_POST['source_id']; ?>">
@@ -83,7 +85,6 @@ if ($menu_admin == 'sources') {
     <?php
     }
     if (isset($_POST['source_remove2'])) {
-        echo '<div class="confirm">';
         // *** Delete source ***
         $sql = "DELETE FROM humo_sources WHERE source_id='" . safe_text_db($_POST["source_id"]) . "'";
         $result = $dbh->query($sql);
@@ -115,14 +116,14 @@ if ($menu_admin == 'sources') {
                 $event_order++;
             }
         }
-        echo __('Source is removed!');
-        echo '</div>';
+    ?>
+        <div class="alert alert-success">
+            <?= __('Source is removed!'); ?>
+        </div>
+    <?php
     }
 
-
-    echo '<h1 class="center">' . __('Sources') . '</h1>';
-    echo __('These sources can be connected to multiple persons, families, events and other items.');
-
+    // TODO check this
     // *** Show delete message ***
     if ($confirm) echo $confirm;
 

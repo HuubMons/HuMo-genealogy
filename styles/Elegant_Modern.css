@@ -22,17 +22,32 @@ body {
     color: #FFFFFF;
 }
 
-#humo_menu {
+/* Bootstrap menu */
+.genealogy_menu {
     background: #333333;
-    border-top: none;
-
-    /* font-size: 16px;
-	font-family: Trebuchet MS; */
 }
 
-#humo_menu a:hover {
+.genealogy_menu a:hover {
     background: #9a3f3a;
     color: #fff;
+}
+
+.genealogy_menu a {
+    background: none;
+    color: #FFFFFF;
+}
+
+.genealogy_active {
+    background: #9a3f3a;
+}
+
+.genealogy_active a {
+    color: #FFFFFF !important;
+}
+
+/* Button for smartphones */
+.genealogy_toggler {
+    background: #9a3f3a;
 }
 
 /* Main menu */
@@ -52,12 +67,6 @@ ul.humo_menu_item li a {
 ul.humo_menu_item2 li a {
     color: #fff;
     background: #333333;
-}
-
-#humo_menu #current a,
-#humo_menu #current_top {
-    background: #9a3f3a;
-    color: #fff;
 }
 
 .mobile_icon {

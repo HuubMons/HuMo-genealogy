@@ -189,9 +189,11 @@ if (isset($_POST['save_option3'])) {
     $result = $db_functions->update_settings('admin_barm', $setting_value);
 
     if (isset($_POST["death_char"]) and safe_text_db($_POST["death_char"]) == "y"  and $humo_option['death_char'] == "n") {
+        $humo_option['death_char'] = 'y';
         include(__DIR__ . "/../../languages/change_all.php");  // change cross to infinity
         $result = $db_functions->update_settings('death_char', 'y');
     } elseif ((!isset($_POST["death_char"]) or safe_text_db($_POST["death_char"]) == "n") and $humo_option['death_char'] == "y") {
+        $humo_option['death_char'] = 'n';
         include(__DIR__ . "/../../languages/change_all.php");  // change infinity to cross
         $result = $db_functions->update_settings('death_char', 'n');
     }
@@ -222,7 +224,6 @@ while (false !== ($file = readdir($folder))) {
 closedir($folder);
 
 
-
 // *** Show tabs ***
 $menu_admin = 'settings';
 if (isset($_POST['menu_admin'])) $menu_admin = $_POST['menu_admin'];
@@ -239,28 +240,19 @@ $select_item_special = '';
 if ($menu_admin == 'settings_special') {
     $select_item_special = ' pageTab-active';
 }
-
 ?>
-<p>
-<div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false">
-    <div class="pageHeading">
-        <!-- <div class="pageHeadingText">Configuratie gegevens</div> -->
-        <!-- <div class="pageHeadingWidgets" aria-hidden="true" style="display: none;"></div> -->
-        <div class="pageTabsContainer" aria-hidden="false">
-            <ul class="pageTabs">
-                <li class="pageTabItem">
-                    <div tabindex="0" class="pageTab<?= $select_item_settings; ?>"><a href="index.php?page=<?= $page; ?>"><?= __('Settings'); ?></a></div>
-                </li>
-                <li class="pageTabItem">
-                    <div tabindex="0" class="pageTab<?= $select_item_homepage; ?>"><a href="index.php?page=<?= $page; ?>&amp;menu_admin=settings_homepage"><?= __('Homepage'); ?></a></div>
-                </li>
-                <li class="pageTabItem">
-                    <div tabindex="0" class="pageTab<?= $select_item_special; ?>"><a href="index.php?page=<?= $page; ?>&amp;menu_admin=settings_special"><?= __('Special settings'); ?></a></div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'settings') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('Settings'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'settings_homepage') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=settings_homepage"><?= __('Homepage'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'settings_special') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=settings_special"><?= __('Special settings'); ?></a>
+    </li>
+</ul>
 
 <!-- Align content to the left -->
 <div style="float: left; background-color:white; height:500px; padding:10px;">

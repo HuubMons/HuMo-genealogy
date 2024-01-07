@@ -27,7 +27,7 @@ if (isset($_POST['save_language'])) {
             <th>
                 <?php
                 if (is_writable($file)) {
-                    echo ' <input type="Submit" name="save_language" value="' . __('Save') . '"> ';
+                    echo ' <input type="Submit" class="btn btn-success btn-sm" name="save_language" value="' . __('Save') . '"> ';
                 } else {
                     echo '<b>' . __('FILE IS NOT WRITABLE!') . '</b>';
                 }

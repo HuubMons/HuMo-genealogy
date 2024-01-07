@@ -191,6 +191,7 @@ while (isset($ancestor_array2[0])) {
                 $link = $uri_path . 'views/ancestor_report_pdf.php';
 ?>
                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
                     <input type="hidden" name="database" value="<?= $_SESSION['tree_prefix']; ?>">
                     <input type="hidden" name="screen_mode" value="PDF">
@@ -198,7 +199,7 @@ while (isset($ancestor_array2[0])) {
                     <!-- needed to check PDF M/F/? icons -->
                     <input type="hidden" name="ancestor_report" value="1">
 
-                    <input type="submit" class="btn btn-sm btn-danger" value="<?= __('PDF'); ?>" name="submit">
+                    <input type="submit" class="btn btn-sm btn-info" value="<?= __('PDF'); ?>" name="submit">
                 </form>
 
             <?php
@@ -216,7 +217,7 @@ while (isset($ancestor_array2[0])) {
                     <!-- needed to check RTF M/F/? icons -->
                     <input type="hidden" name="ancestor_report" value="1">
 
-                    <input type="submit" class="btn btn-sm btn-primary" value="<?= __('RTF'); ?>" name="submit">
+                    <input type="submit" class="btn btn-sm btn-info" value="<?= __('RTF'); ?>" name="submit">
                 </form>
 <?php
             }
@@ -476,7 +477,6 @@ if ($screen_mode == '') {
 // Finishing code for ancestor chart and ancestor report
 if ($screen_mode != 'RTF') {
     echo '<br><br>';
-    include_once(__DIR__ . "/footer.php");
 } elseif ($screen_mode == 'RTF') { // initialize rtf generation
     // *** Save rtf document to file ***
     $rtf->save($file_name);

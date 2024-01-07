@@ -213,56 +213,44 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
 // *** Show categories ***
 if ($show_categories) {
     $category_enabled['none'] = true; // *** Always show main category ***
-    //$selected_category = 'none';
-    //if (isset($_GET['select_category'])) $selected_category = $_GET['select_category'];
     $selected_category = $chosen_tab;
 ?>
-    <p>
-    <div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false">
-        <div class="pageHeading">
-            <div class="pageTabsContainer" aria-hidden="false">
-                <ul class="pageTabs">
-                    <?php
-                    foreach ($category_array as $category) {
-                        if ($category_enabled[$category] == true) {
-                            // check if name for this category exists for this language
-                            $qry2 = "SELECT * FROM humo_photocat WHERE photocat_prefix ='" . $category . "' AND photocat_language ='" . $selected_language . "'";
-                            $result2 = $dbh->query($qry2);
-                            if ($result2->rowCount() != 0) {
-                                $catnameDb = $result2->fetch(PDO::FETCH_OBJ);
-                                $menutab_name = $catnameDb->photocat_name;
-                            } else {
-                                // check if default name exists for this category
-                                $qry3 = "SELECT * FROM humo_photocat WHERE photocat_prefix ='" . $category . "' AND photocat_language ='default'";
-                                $result3 = $dbh->query($qry3);
-                                if ($result3->rowCount() != 0) {
-                                    $catnameDb = $result3->fetch(PDO::FETCH_OBJ);
-                                    $menutab_name = $catnameDb->photocat_name;
-                                } else {
-                                    // no name at all (neither default nor specific)
-                                    $menutab_name = __('NO NAME');
-                                }
-                            }
-
-                            //$path = 'photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category;
-                            $path = 'index.php?page=photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category;
-                            if ($humo_option["url_rewrite"] == "j") {
-                                $path = 'photoalbum/' . $tree_id . '?select_category=' . $category;
-                            }
-                            //$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
-
-                            $select_item = '';
-                            if ($selected_category == $category) {
-                                $select_item = ' pageTab-active';
-                            }
-                            echo '<li class="pageTabItem"><div tabindex="0" class="pageTab' . $select_item . '"><a href="' . $path . '">' . $menutab_name . "</a></div></li>";
-                        }
+    <ul class="nav nav-tabs mt-1">
+        <?php
+        foreach ($category_array as $category) {
+            if ($category_enabled[$category] == true) {
+                // check if name for this category exists for this language
+                $qry2 = "SELECT * FROM humo_photocat WHERE photocat_prefix ='" . $category . "' AND photocat_language ='" . $selected_language . "'";
+                $result2 = $dbh->query($qry2);
+                if ($result2->rowCount() != 0) {
+                    $catnameDb = $result2->fetch(PDO::FETCH_OBJ);
+                    $menutab_name = $catnameDb->photocat_name;
+                } else {
+                    // check if default name exists for this category
+                    $qry3 = "SELECT * FROM humo_photocat WHERE photocat_prefix ='" . $category . "' AND photocat_language ='default'";
+                    $result3 = $dbh->query($qry3);
+                    if ($result3->rowCount() != 0) {
+                        $catnameDb = $result3->fetch(PDO::FETCH_OBJ);
+                        $menutab_name = $catnameDb->photocat_name;
+                    } else {
+                        // no name at all (neither default nor specific)
+                        $menutab_name = __('NO NAME');
                     }
-                    ?>
-                </ul>
-            </div>
-        </div>
-    </div>
+                }
+                $path = 'index.php?page=photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category;
+                if ($humo_option["url_rewrite"] == "j") {
+                    $path = 'photoalbum/' . $tree_id . '?select_category=' . $category;
+                }
+        ?>
+                <li class="nav-item me-1">
+                    <a class="nav-link genealogy_nav-link <?php if ($selected_category == $category) echo 'active'; ?>" href="<?= $path; ?>"><?= $menutab_name; ?></a>
+                </li>
+        <?php
+            }
+        }
+        ?>
+    </ul>
+
 <?php
 }
 

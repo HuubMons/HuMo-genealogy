@@ -40,7 +40,7 @@ class Link_cls
         ['page' => 'photoalbum', 'file_rewrite' => 'photoalbum', 'file' => 'index.php?page=photoalbum', 'seperator' => '&amp;'],
         ['page' => 'register', 'file_rewrite' => 'register', 'file' => 'index.php?page=register', 'seperator' => '&amp;'],
         ['page' => 'relations', 'file_rewrite' => 'relations', 'file' => 'index.php?page=relations', 'seperator' => '&amp;'],
-        ['page' => 'report_outline', 'file_rewrite' => 'report_outline', 'file' => 'index.php?page=report_outline', 'seperator' => '&amp;'],
+        ['page' => 'outline_report', 'file_rewrite' => 'outline_report', 'file' => 'index.php?page=outline_report', 'seperator' => '&amp;'],
         ['page' => 'sources', 'file_rewrite' => 'sources', 'file' => 'index.php?page=sources', 'seperator' => '&amp;'],
         ['page' => 'source', 'file_rewrite' => 'source', 'file' => 'index.php?page=source', 'seperator' => '&amp;'],
         ['page' => 'statistics', 'file_rewrite' => 'statistics', 'file' => 'index.php?page=statistics', 'seperator' => '&amp;'],

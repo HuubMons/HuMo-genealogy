@@ -24,14 +24,6 @@ body {
     padding: 5px 5px 0px;
 }
 
-#humo_menu {
-    top: 220px;
-}
-
-#humo_menu {
-    font-size: 13px;
-}
-
 /* Pop-up menu */
 ul.humo_menu_item2 li a {
     display: block;
@@ -42,8 +34,6 @@ ul.humo_menu_item2 li a {
 #content {
     /* up, right, down */
     padding: 5px 5px 5px 2px;
-
-    width: auto; /* Needed for responsive theme Clear White */
 }
 
 #rtlcontent {

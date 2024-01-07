@@ -158,18 +158,16 @@ function topline($data)
                 if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
                 ?>
                     &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $uri_path; ?>views/family_pdf.php" style="display:inline-block; vertical-align:middle;">
+                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                         <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
                         <input type="hidden" name="database" value="<?= $database; ?>">
                         <?php
-                        if ($data["descendant_report"] == true) {
-                            echo '<input type="hidden" name="descendant_report" value="' . $data["descendant_report"] . '">';
-                        }
-                        echo '<input class="fonts" style="background-color:#FF0000; color:white; font-weight:bold;" type="Submit" name="submit" value="' . __('PDF') . '">';
+                        if ($data["descendant_report"] == true) { ?>
+                            <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
+                        <?php } ?>
 
-                        // TODO Test modern button
-                        //echo '<input class="..........." type="Submit" name="submit" value="' . __('PDF') . '">';
-                        ?>
+                        <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('PDF'); ?>">
                     </form>
                 <?php
                 }
@@ -186,11 +184,13 @@ function topline($data)
                     <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
                     <input type="hidden" name="database" value="<?= $database; ?>">
                     <input type="hidden" name="screen_mode" value="RTF">
-                    <?php
-                    if ($data["descendant_report"] == true) {
-                        echo '<input type="hidden" name="descendant_report" value="' . $data["descendant_report"] . '">';
-                    }
-                    echo '<input class="fonts" style="background-color:#0040FF; color:white; font-weight:bold;" type="Submit" name="submit" value="' . __('RTF') . '">';
+                    <?php if ($data["descendant_report"] == true) { ?>
+                        <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
+                    <?php } ?>
+
+                    <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('RTF'); ?>">
+                <?php
+
                     echo '</form> ';
                 }
 
@@ -219,7 +219,7 @@ function topline($data)
                     $vars['pers_family'] = $data["family_id"];
                     $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
                     $link .= "main_person=" . $data["main_person"];
-                    ?>
+                ?>
                     &nbsp;&nbsp;&nbsp;
                     <form method="POST" action="<?= $link; ?>" style="display:inline-block; vertical-align:middle;">
                         <?php

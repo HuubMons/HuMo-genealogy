@@ -26,7 +26,7 @@ if (isset($_GET['re_install'])) {
 
 if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
     // *** Show HuMo-genealogy version number ***
-    echo '<h2>HuMo-genealogy</h2>';
+    echo '<br><br><h2>HuMo-genealogy</h2>';
     echo __('Version:') . ' ';
     if (isset($humo_option["version"])) {
         echo $humo_option["version"] . '.';
@@ -41,7 +41,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
     echo '<br><br>';
 
     // *** Check for HuMo-genealogy beta version ***
-    echo '<h2>';
+    echo '<br><br><h2>';
     printf(__('%s beta version'), 'HuMo-genealogy');
     echo '</h2>';
     echo __('Sometimes there is a beta version available.');
@@ -57,28 +57,27 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
     // *** Check for HuMo-genealogy beta version SAME CODE AS CODE BELOW... ***
     $check = ' checked';
     if ($humo_option['update_last_check'] == 'DISABLED') $check = '';
-    echo '<h2>';
+    echo '<br><br><h2>';
     printf(__('Enable/ disable %s update check.'), 'HuMo-genealogy');
     echo '</h2>';
-
 ?>
+
     <form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">
         <input type="checkbox" name="enable_update_check" <?= $check; ?> onChange="this.form.submit();">
         <?php printf(__('Check regularly for %s updates.'), 'HuMo-genealogy'); ?><br>
         <input type="hidden" name="enable_update_check_change" value="1">
     </form>
-<?php
 
+<?php
     // *** Debug update check ***
     $check = ' checked';
     if ($humo_option['update_last_check'] == 'DISABLED') $check = '';
-    echo '<h2>';
+    echo '<br><br><h2>';
     printf(__('Debug %s update'), 'HuMo-genealogy');
     echo '</h2>';
     echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
     echo '<input type="Submit" name="debug_update" value="' . __('Debug') . '">';
     echo '</form>';
-
     echo '<br><br>';
 } elseif (isset($update['up_to_date']) and $update['up_to_date'] == 'no') {
 
@@ -157,14 +156,23 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
             } else {
                 // *** Copy HuMo-genealogy update to server using curl ***
                 if (function_exists('curl_exec')) {
-
                     // *** First try to download from GitHub ***
                     //$source='https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip';
                     $source = $update['new_version_auto_download_github'];
                     $destination = 'update/humo-gen_update.zip';
                     $resource = curl_init();
                     curl_setopt($resource, CURLOPT_URL, $source);
+
                     curl_setopt($resource, CURLOPT_HEADER, false);
+                    /*
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        'Accept: application/vnd.github+json',
+                        'Authorization: Bearer <YOUR-TOKEN>',
+                        'X-GitHub-Api-Version: 2022-11-28',
+                        'User-Agent: Awesome-App'
+                    ]);
+                    */
+
                     curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
 
@@ -186,8 +194,6 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                         }
                     }
 
-
-
                     // TEST
                     /*
                     $curl = curl_init();
@@ -203,7 +209,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                     if (is_file($destination)) $download = true;
 
                     end; //test
-*/
+                    */
 
                     //You can use CURLOPT_FILE to directly download to a file, just set that option to a previously
                     // opened file pointer created with fopen($filename, 'w').
@@ -226,7 +232,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                     fclose($GlobalFileHandle);
 
                     if (is_file($destination)) $download = true;
-*/
+                    */
 
                     // *** Download failed from Github, now try humo-gen.com ***
                     if ($download == false) {

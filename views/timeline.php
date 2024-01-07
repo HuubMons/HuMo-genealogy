@@ -15,8 +15,12 @@ if ($privacy) {
 }
 
 if ($data["isborn"] == 0 and $data["isdeath"] == 0 and $data["ismarr"] == 0 and $data["ischild"] == 0) {
-    // no birth or death dates available
-    echo "<br><br>" . __('There are no dates available for this person. Timeline can not be calculated.');
+?>
+    <!-- No birth or death dates available -->
+    <div class="alert alert-warning">
+        <?= __('There are no dates available for this person. Timeline can not be calculated.'); ?>
+    </div>
+<?php
     exit();
 }
 
@@ -78,9 +82,8 @@ if (isset($_POST['tml'])) {
     }
 }
 
-
-$path = $link_cls->get_link($uri_path, 'timelines', $personDb->pers_tree_id, true);
-$path .= 'id=' . $id;
+$vars['pers_gedcomnumber'] = $personDb->pers_gedcomnumber;
+$path = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
 
 // **** SHOW MENU ****
 ?>
@@ -175,13 +178,16 @@ if ($endyear > date("Y")) {
 }
 $flag = 0; // flags a first entry of timeline event in a specific year. is set to 1 when at least one entry has been made
 
+$name = $person_cls->person_name($personDb);
+
 // ****** DISPLAY
 if ($data["privacy_filtered"] == true) {
-    echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
-}
-
-$name = $person_cls->person_name($personDb);
 ?>
+    <div class="alert alert-warning">
+        <?= __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>'; ?>
+    </div>
+<?php } ?>
+
 <table align="center" class="humo index_table">
     <tr class=table_headline>
         <th colspan='3'><?= $name["name"]; ?></th>
@@ -434,7 +440,6 @@ $name = $person_cls->person_name($personDb);
             </td>
         </tr>
     <?php } ?>
-
 </table>
 <br><br><br><br>
 

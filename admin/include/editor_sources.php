@@ -201,7 +201,7 @@ if ($connect_sub_kind == 'fam_event_source') {
 // *** SOURCE EDIT FUNCTION ***
 function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 {
-    global $dbh, $tree_id, $language, $page, $phpself2, $joomlastring, $marriage;
+    global $dbh, $tree_id, $language, $page, $phpself2, $marriage;
     global $editor_cls, $field_date;
 
     global $db_functions;
@@ -259,7 +259,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                     <!-- <b><?= __('Source'); ?></b> -->
 
                     <?php
-                    echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;connect_drop=' . $connectDb->connect_id;
+                    echo ' <a href="index.php?page=' . $page . '&amp;connect_drop=' . $connectDb->connect_id;
                     // *** Needed for events **
                     echo '&amp;connect_kind=' . $connect_kind;
                     echo '&amp;connect_sub_kind=' . $connect_sub_kind;
@@ -413,7 +413,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                     <?php
                         // *** Add new source ***
                         echo '<br><br>' . __('Or:') . ' ';
-                        echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;source_add2=1&amp;connect_id=' . $connectDb->connect_id . '
+                        echo '<a href="index.php?page=' . $page . '&amp;source_add2=1&amp;connect_id=' . $connectDb->connect_id . '
 &amp;connect_order=' . $connectDb->connect_order . '&amp;connect_kind=' . $connectDb->connect_kind . '&amp;connect_sub_kind=' . $connectDb->connect_sub_kind . '&amp;connect_connect_id=' . $connectDb->connect_connect_id;
                         if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
                             echo '&amp;event_person=1';

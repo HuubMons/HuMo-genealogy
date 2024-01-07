@@ -54,8 +54,8 @@ if (isset($_POST['add_user']) and is_numeric($_POST["add_group_id"])) {
 // *** Remove user ***
 if (isset($_GET['remove_user'])) {
 ?>
-    <div class="confirm">
-        <?= __('Are you sure you want to delete this user?'); ?>
+    <div class="alert alert-danger">
+        <strong><?= __('Are you sure you want to delete this user?'); ?></strong>
         <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $_GET['page']; ?>">
             <input type="hidden" name="remove_user" value="<?= $_GET['remove_user']; ?>">
@@ -79,15 +79,6 @@ if (isset($_GET['unblock_ip_address'])) {
 // *************
 // *** Users ***
 // *************
-
-// *** Check for standard admin username and password ***
-/*
-$sql="SELECT * FROM humo_users WHERE user_name='admin' OR (user_name='admin' AND user_password='".MD5('humogen')."')";
-$check_login = $dbh->query($sql);
-$check_loginDb=$check_login->fetch(PDO::FETCH_OBJ);
-if ($check_loginDb)
-    echo '<b><span style="color:red">'.__('Standard admin username or admin password is used.').'</span></b>';
-*/
 
 // *** Check for standard admin username and password ***
 $check_admin_user = false;

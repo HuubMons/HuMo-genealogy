@@ -12,7 +12,7 @@
  *
  * ----------
  *
- * Copyright (C) 2008-2023 Huub Mons,
+ * Copyright (C) 2008-2024 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * René Janssen, Yossi Beck
  * and others.
@@ -67,7 +67,9 @@ include_once(__DIR__ . "/../include/safe.php"); // Variables
 include_once(__DIR__ . '/../include/show_tree_text.php');
 
 include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
+if (isset($dbh)) {
+    $db_functions = new db_functions($dbh);
+}
 
 // *** Added juli 2019: Person functions ***
 include_once(__DIR__ . "/../include/person_cls.php");
@@ -196,7 +198,7 @@ while (false !== ($file = readdir($map))) {
         if (file_exists('../languages/' . $file . '/' . $file . '.mo')) {
             $language_file[] = $file;
             // *** Order of languages ***
-            if ($file == 'cn') $language_order[] = 'DAAChinese';  // Chinese in second row. Otherwise empty box.
+            if ($file == 'cn') $language_order[] = 'Chinese';
             elseif ($file == 'cs') $language_order[] = 'Czech';
             elseif ($file == 'da') $language_order[] = 'Dansk';
             elseif ($file == 'de') $language_order[] = 'Deutsch';
@@ -459,6 +461,10 @@ else
 
     <?= $favicon; ?>
 
+    <!-- Bootstrap added in dec. 2023 -->
+    <link href="../css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../css/bootstrap/js/bootstrap.bundle.min.js"></script>
+
     <link href="admin.css" rel="stylesheet" type="text/css">
 
     <!-- CSS changes for mobile devices -->
@@ -477,10 +483,8 @@ else
     <script src="include/popup_merge.js"></script>
 <?php } ?>
 
-<!-- Main menu pull-down -->
-<link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
-
 <!-- Pop-up menu -->
+<link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
 <script src="../include/popup_menu/popup_menu.js"></script>
 </head>
 
@@ -574,7 +578,7 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
         // OK
     } else {
         // *** No valid family tree. Select first allowed family tree ***
-        $check_tree_id=$edit_tree_array[0];
+        $check_tree_id = $edit_tree_array[0];
     }
 
     // *** Just logged in, or no tree_id available: find first family tree ***
@@ -603,6 +607,7 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
             } catch (Exception $e) {
                 //
             }
+
             if (isset($get_treeDb) and $get_treeDb) {
                 $tree_id = $get_treeDb->tree_id;
                 $_SESSION['admin_tree_id'] = $tree_id;
@@ -613,15 +618,126 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
 
     //echo 'test'.$tree_id.' '.$tree_prefix;
 }
+    ?>
 
-// *** Show menu ***
-include_once(__DIR__ . '/views/menu.php');
 
-if ($popup == false) {
+    <!-- Offcanvas Sidebar -->
+    <div class="offcanvas offcanvas-end" id="demo">
+        <div class="offcanvas-header">
+            <h1 class="offcanvas-title"><?= __('Sidebar'); ?></h1>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+        </div>
+
+        <div class="offcanvas-body">
+            <!-- <p>Some text lorem ipsum.</p> -->
+            <!-- <button class="btn btn-secondary" type="button">A Button</button> -->
+
+            <!-- Control -->
+            <?php if ($show_menu_left == true and $page != 'login') {; ?>
+                <?php if ($group_administrator == 'j') {; ?>
+                    <ul>
+                        <li><a href="<?= $path_tmp; ?>page=install"><?= __('Install'); ?></a></li>
+                        <li>
+                            <a href="<?= $path_tmp; ?>page=extensions"><?= __('Extensions'); ?></a>
+                            <ul>
+                                <li><?= __('Show/ hide languages'); ?></li>
+                                <li><?= __('Show/ hide theme\'s'); ?></li>
+                            </ul>
+                        </li>
+                        <li><a href="<?= $path_tmp; ?>page=settings"><?= __('Settings'); ?></a></li>
+                        <li>
+                            <a href="<?= $path_tmp; ?>page=settings&amp;menu_admin=settings_homepage"><?= __('Homepage'); ?></a>
+                            <ul>
+                                <li><?= __('Homepage'); ?></li>
+                                <li><?= __('Homepage favourites'); ?></li>
+                                <li><?= __('Slideshow on the homepage'); ?></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="<?= $path_tmp; ?>page=settings&amp;menu_admin=settings_special"><?= __('Special settings'); ?></a>
+                            <ul>
+                                <li><?= __('Jewish settings'); ?></li>
+                                <li><?= __('Sitemap'); ?></li>
+                            </ul>
+                        </li>
+                        <li><a href="<?= $path_tmp; ?>page=cms_pages"><?= __('CMS Own pages'); ?></a></li>
+                        <li><a href="<?= $path_tmp; ?>page=language_editor"><?= __('Language editor'); ?></a></li>
+                        <li><a href="<?= $path_tmp; ?>page=prefix_editor"><?= __('Prefix editor'); ?></a></li>
+                        <li><a href="<?= $path_tmp; ?>page=google_maps"><?= __('World map'); ?></a></li>
+                    </ul>
+
+                    <!-- Family trees -->
+                    <ul>
+                        <li><a href="<?= $path_tmp; ?>page=tree"><?= __('Family trees'); ?></a></li>
+                        <li>
+                            <a href="<?= $path_tmp; ?>page=thumbs"><?= __('Pictures/ create thumbnails'); ?></a>
+                            <ul>
+                                <li><?= __('Picture settings'); ?></li>
+                                <li><?= __('Create thumbnails'); ?></li>
+                                <li><?= __('Photo album categories'); ?></li>
+                            </ul>
+                        </li>
+                        <li><a href="<?= $path_tmp; ?>page=user_notes"><?= __('Notes'); ?></a></li>
+                        <li>
+                            <a href="<?= $path_tmp; ?>page=check"><?= __('Family tree data check'); ?></a>
+                            <ul>
+                                <li><?= __('Check consistency of dates'); ?></li>
+                                <li><?= __('Find invalid dates'); ?></li>
+                                <li><?= __('Check database integrity'); ?></li>
+                            </ul>
+                        </li>
+                        <li><a href="<?= $path_tmp; ?>page=check&amp;tab=changes"><?= __('View latest changes'); ?></a></li>                        <li>
+                            <a href="<?= $path_tmp; ?>page=cal_date"><?= __('Calculated birth date'); ?></a>
+                            <ul>
+                                <li><?= __('Privacy filter'); ?></li>
+                            </ul>
+                        </li>
+                        <li><a href="<?= $path_tmp; ?>page=export"><?= __('Gedcom export'); ?></a></li>
+                        <li><a href="<?= $path_tmp; ?>page=backup"><?= __('Database backup'); ?></a></li>
+                        <li><a href="<?= $path_tmp; ?>page=statistics"><?= __('Statistics'); ?></a></li>
+                    </ul>
+                <?php }; ?>
+
+                <!-- Editor -->
+                <ul>
+                    <li><a href="<?= $path_tmp; ?>page=editor"><?= __('Persons and families'); ?></a></li>
+                    <li><a href="<?= $path_tmp; ?>page=edit_sources"><?= __('Sources'); ?></a></li>
+                    <li><a href="<?= $path_tmp; ?>page=edit_repositories"><?= __('Repositories'); ?></a></li>
+                    <li><a href="<?= $path_tmp; ?>page=edit_addresses"><?= __('Shared addresses'); ?></a></li>
+                    <li><a href="<?= $path_tmp; ?>page=edit_places"><?= __('Rename places'); ?></a></li>
+                </ul>
+
+                <!-- Users -->
+                <?php if ($group_administrator == 'j') {; ?>
+                    <ul>
+                        <li><a href="<?= $path_tmp; ?>page=users"><?= __('Users'); ?></a></li>
+                        <li><a href="<?= $path_tmp; ?>page=groups"><?= __('User groups'); ?></a></li>
+                        <li>
+                            <a href="<?= $path_tmp; ?>page=log"><?= __('Log'); ?></a>
+
+                            <ul>
+                                <li><?= __('Logfile users'); ?></li>
+                                <li><?= __('IP Blacklist'); ?></li>
+                            </ul>
+                        </li>
+                    </ul>
+                <?php }; ?>
+            <?php }; ?>
+        </div>
+    </div>
+    <?php
+
+
+
+    // *** Show menu ***
+    include_once(__DIR__ . '/views/menu.php');
+
+
+    if ($popup == false) {
     ?>
     </div> <!-- End of humo_top -->
 <?php
-}
+    }
 
 ?>
 <div id="content_admin">

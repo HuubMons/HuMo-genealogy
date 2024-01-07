@@ -65,9 +65,11 @@ if (isset($_SESSION['admin_tree_id'])) {
 ?>
 
     <!-- This doesn't work. Results must be returned to javascript in editor? -->
+    <!--
     <script>
         //document.getElementById("ajax_pers_fullname").innerHTML = <?= $text; ?>;
     </script>
+-->
 
 <?php
     //if ($pers_name_text) echo ' <img src="images/text.png" height="16">';

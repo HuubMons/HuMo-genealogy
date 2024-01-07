@@ -226,6 +226,10 @@ function ancestor_chart_person($id, $box_appearance)
             $text .= $replacement_text;
         } else {
             $text .= $person_cls->person_popup_menu($personDb, true, $replacement_text, $extra_popup_text);
+
+            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+            //$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+            //$text .= '<a href="'.$url.'"><span clas="nam" style="font-size:10px; color: #000000; text-decoration: none;">'.$replacement_text.'</span></a>';
         }
     }
     return $text . "\n";
@@ -288,19 +292,18 @@ function check_gen($start, $end)
 <table class="humo ancestor_sheet">
     <tr>
         <th class="ancestor_head" colspan="8"> <!-- adjusted for IE7 -->
-            <?php
-            echo __('Ancestor sheet') . __(' of ') . ancestor_chart_person(1, "ancestor_header");
+            <?= __('Ancestor sheet') . __(' of ') . ancestor_chart_person(1, "ancestor_header"); ?>
 
-            if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
-                // Show pdf button
-                echo '&nbsp;&nbsp; <form method="POST" action="' . $uri_path . 'views/ancestor_sheet_pdf.php?show_sources=1" style="display : inline;">';
-                echo '<input type="hidden" name="id" value="' . $data["main_person"] . '">';
-                echo '<input type="hidden" name="database" value="' . $_SESSION['tree_prefix'] . '">';
-                echo '<input type="hidden" name="screen_mode" value="ASPDF">';
-                echo '<input class="fonts" type="Submit" name="submit" value="PDF Report">';
-                echo '</form>';
-            }
-            ?>
+            <!-- Show pdf button -->
+            <?php if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") { ?>
+                &nbsp;&nbsp; <form method="POST" action="<?= $uri_path; ?>views/ancestor_sheet_pdf.php?show_sources=1" style="display : inline;">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
+                    <input type="hidden" name="database" value="<?= $_SESSION['tree_prefix']; ?>">
+                    <input type="hidden" name="screen_mode" value="ASPDF">
+                    <input type="submit" class="btn btn-sm btn-info" value="<?= __('PDF'); ?>" name="submit">
+                </form>
+            <?php } ?>
         </th>
     </tr>
 

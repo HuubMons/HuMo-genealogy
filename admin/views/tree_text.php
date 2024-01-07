@@ -25,7 +25,7 @@
         <tr>
             <td style="white-space:nowrap;"><?= __('Language'); ?></td>
             <td>
-                <a href="index.php?<?= $joomlastring; ?>page=tree&amp;menu_admin=tree_text&amp;language_tree=default&amp;tree_id=<?= $tree_id; ?>"><?= __('Default'); ?></a>
+                <a href="index.php?page=tree&amp;menu_admin=tree_text&amp;language_tree=default&amp;tree_id=<?= $tree_id; ?>"><?= __('Default'); ?></a>
                 <?php
                 // *** Language choice ***
                 $language_tree2 = $language_tree;
@@ -43,7 +43,7 @@
                     if ($language_file[$i] != $language_tree2) {
                         include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
                         echo '<li style="float:left; width:124px;">';
-                        echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
+                        echo '<a href="index.php?page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
                         echo '<img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
                         echo $language["name"];
                         echo '</a>';

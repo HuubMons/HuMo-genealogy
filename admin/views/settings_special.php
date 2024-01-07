@@ -1,15 +1,3 @@
-<?php
-$checked_death_char = '';
-if (isset($humo_option['death_char']) and $humo_option['death_char'] == "y") {
-    $checked_death_char = " checked ";
-}
-
-$checked_admin_hebdate = '';
-if (isset($humo_option['admin_hebdate']) and $humo_option['admin_hebdate'] == "y") {
-    $checked_admin_hebdate = " checked ";
-}
-
-?>
 <form method="post" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="menu_admin" value="settings_special">
@@ -21,50 +9,51 @@ if (isset($humo_option['admin_hebdate']) and $humo_option['admin_hebdate'] == "y
         <tr>
             <td><?= __('Jewish settings'); ?></td>
             <td>
-                <u><?= __('Display settings'); ?>:</u><br>
-                <input type="checkbox" id="death_char" value="y" name="death_char" <?= $checked_death_char; ?>> <label for="death_char"><?= __('Change all &#134; characters into &infin; characters in all language files'); ?> (<?= __('unchecking and saving will revert to the cross sign'); ?>)</label><br>
+                <u><?= __('Display settings'); ?>:</u><br><br>
 
-                <input type="checkbox" id="admin_hebdate" value="y" name="admin_hebdate" <?= $checked_admin_hebdate; ?>> <label for="admin_hebdate"><?= __('Display Hebrew date after Gregorian date: 23 Dec 1980 (16 Tevet 5741)'); ?></label><br>
-                <?php
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="y" name="death_char" <?php if (isset($humo_option['death_char']) and $humo_option['death_char'] == "y") echo 'checked'; ?>>
+                    <label class="form-check-label"><?= __('Change all &#134; characters into &infin; characters in all language files'); ?> (<?= __('unchecking and saving will revert to the cross sign'); ?>)</label>
+                </div>
 
-                $checked = '';
-                if (isset($humo_option['david_stars']) and $humo_option['david_stars'] == "y") {
-                    $checked = " checked ";
-                }
-                echo '<input type="checkbox" id="david_stars" value="y" name="david_stars" ' . $checked . '>  <label for="david_stars">' . __('Place yellow Stars of David before holocaust victims in lists and reports') . '</label><br>';
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="admin_hebdate" <?php if (isset($humo_option['admin_hebdate']) and $humo_option['admin_hebdate'] == "y") echo 'checked'; ?>>
+                    <label class="form-check-label"><?= __('Display Hebrew date after Gregorian date: 23 Dec 1980 (16 Tevet 5741)'); ?></label>
+                </div>
 
-                $checked = '';
-                if (isset($humo_option['death_shoa']) and $humo_option['death_shoa'] == "y") {
-                    $checked = " checked ";
-                }
-                echo '<input type="checkbox" id="death_shoa" value="y" name="death_shoa" ' . $checked . '>  <label for="death_shoa">' . __('Add: "cause of death: murdered" to holocaust victims') . '</label><br>';
-                echo '<u>' . __('Editor settings') . ':</u><br>';
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="david_stars" <?php if (isset($humo_option['david_stars']) and $humo_option['david_stars'] == "y") echo 'checked'; ?>>
+                    <label class="form-check-label"><?= __('Place yellow Stars of David before holocaust victims in lists and reports'); ?></label>
+                </div>
 
-                $checked = '';
-                if (isset($humo_option['admin_hebnight']) and $humo_option['admin_hebnight'] == "y") {
-                    $checked = " checked ";
-                }
-                echo '<input type="checkbox" id="admin_hebnight" value="y" name="admin_hebnight" ' . $checked . '>  <label for="admin_hebnight">' . __('Add "night" checkbox next to Gregorian dates to calculate Hebrew date correctly') . '</label><br>';
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="death_shoa" <?php if (isset($humo_option['death_shoa']) and $humo_option['death_shoa'] == "y") echo 'checked'; ?>>
+                    <label class="form-check-label"><?= __('Add: "cause of death: murdered" to holocaust victims'); ?></label>
+                </div>
 
-                $checked = '';
-                if (isset($humo_option['admin_hebname']) and $humo_option['admin_hebname'] == "y") {
-                    $checked = " checked ";
-                }
-                echo '<input type="checkbox" id="admin_hebname" value="y" name="admin_hebname" ' . $checked . '>  <label for="admin_hebname">' . __('Add field for Hebrew name in name section of editor (instead of in "events" list)') . '</label><br>';
+                <br><u><?= __('Editor settings'); ?>:</u><br><br>
 
-                $checked = '';
-                if (isset($humo_option['admin_brit']) and $humo_option['admin_brit'] == "y") {
-                    $checked = " checked ";
-                }
-                echo '<input type="checkbox" id="admin_brit" value="y" name="admin_brit" ' . $checked . '>  <label for="admin_brit">' . __('Add field for Brit Mila under birth fields (instead of in "events" list)') . '</label><br>';
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="admin_hebnight" <?php if (isset($humo_option['admin_hebnight']) and $humo_option['admin_hebnight'] == "y") echo 'checked'; ?>>
+                    <label class="form-check-label"><?= __('Add "night" checkbox next to Gregorian dates to calculate Hebrew date correctly'); ?></label>
+                </div>
 
-                $checked = '';
-                if (isset($humo_option['admin_barm']) and $humo_option['admin_barm'] == "y") {
-                    $checked = " checked ";
-                }
-                echo '<input type="checkbox" id="admin_barm" value="y" name="admin_barm" ' . $checked . '>  <label for="admin_barm">' . __('Add field for Bar/ Bat Mitsva before baptise fields (instead of in "events" list)') . '</label>';
-                echo '<br><input type="Submit" style="margin:3px" name="save_option3" value="' . __('Change') . '">';
-                ?>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="admin_hebname" <?php if (isset($humo_option['admin_hebname']) and $humo_option['admin_hebname'] == "y") echo 'checked'; ?>>
+                    <label class="form-check-label"><?= __('Add field for Hebrew name in name section of editor (instead of in "events" list)'); ?></label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="admin_brit" <?php if (isset($humo_option['admin_brit']) and $humo_option['admin_brit'] == "y") echo 'checked'; ?>>
+                    <label class="form-check-label"><?= __('Add field for Brit Mila under birth fields (instead of in "events" list)'); ?></label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="admin_barm" <?php if (isset($humo_option['admin_barm']) and $humo_option['admin_barm'] == "y") echo 'checked'; ?>>
+                    <label class="form-check-label"><?= __('Add field for Bar/ Bat Mitsva before baptise fields (instead of in "events" list)'); ?></label>
+                </div><br>
+
+                <input type="Submit" style="margin:3px" name="save_option3" class="btn btn-success" value="<?= __('Change'); ?>">
             </td>
         </tr>
 

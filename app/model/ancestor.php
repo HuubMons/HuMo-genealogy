@@ -52,9 +52,9 @@ class AncestorModel extends FamilyModel
         //if (isset($_POST["main_person"])) {
         //    $main_person = $_POST["main_person"];
         //}
-        if (isset($id)){
+        if (isset($id)) {
             // $id=last variable in link: http://127.0.0.1/humo-genealogy/ancestor_report/3/I1180
-            $main_person=$id;
+            $main_person = $id;
         }
         if (isset($_GET["id"])) {
             $main_person = $_GET["id"];
@@ -85,46 +85,77 @@ class AncestorModel extends FamilyModel
     {
         global $humo_option, $uri_path, $link_cls;
 
-        $text = '<h1 class="standard_header">';
+        $data['active'] = array();
+        $data['link'] = array();
+
+        //$text = '<h1 class="standard_header">';
+
+        $vars['id'] = $main_person;
+        $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
+        $link .= 'screen_mode=ancestor_chart';
+        $data['link'][] = $link;
         if ($name == 'Ancestor report') {
-            $text .= __($name);
+            //$text .= __($name);
+            $data['active'][] = 'active';
         } else {
-            $vars['id'] = $main_person;
-            $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
-            $link .= 'screen_mode=ancestor_chart';
-
-            $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $link . '">' . __('Ancestor report') . '</a></span>';
+            $data['active'][] = '';
+            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $link . '">' . __('Ancestor report') . '</a></span>';
         }
 
-        $text .= ' | ';
+        //$text .= ' | ';
 
-        if ($name == 'Ancestor sheet') {
-            $text .= __($name);
+        // TODO improve paths and variables.
+        if ($humo_option["url_rewrite"] == 'j') {
+            //$path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
+            $path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
         } else {
-            if ($humo_option["url_rewrite"] == 'j') {
-                $path = 'ancestor_sheet?tree_id=' . $tree_id . '&amp;id=' . $main_person;
-            } else {
-                $path = 'index.php?page=ancestor_sheet&amp;tree_id=' . $tree_id . '&amp;id=' . $main_person;
-            }
-            $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor sheet') . '</a></span>';
+            //$path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
+            $path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
         }
-
-        $text .= ' | ';
-
+        $data['link'][] = $path;
         if ($name == 'Ancestor chart') {
-            $text .= __($name);
+            //$text .= __($name);
+            $data['active'][] = 'active';
         } else {
-            // TODO improve paths and variables.
-            if ($humo_option["url_rewrite"] == 'j') {
-                //$path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
-                $path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
-            } else {
-                //$path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
-                $path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
-            }
-            $text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor chart') . '</a></span>';
+            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor chart') . '</a></span>';
+            $data['active'][] = '';
         }
-        $text .= '</h1>';
+
+        //$text .= ' | ';
+
+        if ($humo_option["url_rewrite"] == 'j') {
+            $path = 'ancestor_sheet?tree_id=' . $tree_id . '&amp;id=' . $main_person;
+        } else {
+            $path = 'index.php?page=ancestor_sheet&amp;tree_id=' . $tree_id . '&amp;id=' . $main_person;
+        }
+        $data['link'][] = $path;
+        if ($name == 'Ancestor sheet') {
+            //$text .= __($name);
+            $data['active'][] = 'active';
+        } else {
+            $data['active'][] = '';
+            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor sheet') . '</a></span>';
+        }
+        //$text .= '</h1>';
+
+        // *** Tab menu ***
+        $text = '
+        <h1>' . __('Ancestors') . '</h1>
+        <ul class="nav nav-tabs">   
+            <li class="nav-item me-1">
+                <a class="nav-link genealogy_nav-link ' . $data['active'][0] . '" href="' . $data['link'][0] . '">' . __('Ancestor report') . '</a>
+            </li>
+            <li class="nav-item me-1">
+                <a class="nav-link genealogy_nav-link ' . $data['active'][1] . '" href="' . $data['link'][1] . '">' . __('Ancestor chart') . '</a>
+            </li>
+            <li class="nav-item me-1">
+                <a class="nav-link genealogy_nav-link ' . $data['active'][2] . '" href="' . $data['link'][2] . '">' . __('Ancestor sheet') . '</a>
+            </li>
+        </ul>
+        <!-- Align content to the left -->
+        <!-- <div style="float: left; background-color:white; height:500px; padding:10px;"> -->
+        <div style="float: left; background-color:white; padding:10px;">';
+
         return $text;
     }
 }

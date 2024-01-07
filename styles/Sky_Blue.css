@@ -13,12 +13,14 @@ body {
     font-size: 18px;
 }
 
+/*
 #top_familytree_name {
     color: #333;
     font-family: Deliciousx, Verdana, Arial;
     font-size: 16px;
     font-weight: normal;
 }
+*/
 
 /* Links */
 a:link {
@@ -34,9 +36,9 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Tables */
-table.humo {
-        -color: #fcfcfc;
+/* Bootstrap menu */
+.genealogy_menu {
+    background-image: linear-gradient(to top, rgb(255, 255, 255) 0%, rgb(167, 208, 241) 80%);
 }
 
 table.humo td {
@@ -71,20 +73,6 @@ td.style_tree_text {
     border: 0px;
 }
 
-#humo_menu {
-    background: url("images_sky_blue/blue.png") repeat left top;
-    border-top: solid 0px #61a0d9;
-    border-bottom: solid 1px #61a0d9;
-}
-
-#humo_menu a {
-    color: #111;
-}
-
-#humo_menu a:hover {
-    background: url("images_sky_blue/blue_hover.png") repeat left top;
-}
-
 ul.humo_menu_item li {
     border-left: none;
     border-right: none;
@@ -111,23 +99,6 @@ ul.humo_menu_item li a {
 ul.humo_menu_item2 li a {
     background-color: #999;
     background: url("images_sky_blue/blue.png") repeat left top;
-}
-
-#humo_menu #current a,
-#humo_menu #current_top {
-    background: url("images_sky_blue/blue_hover.png") repeat left top;
-}
-
-#humo_menu a:visited {
-    color: #001155;
-}
-
-#humo_menu a:active {
-    color: #2288dd;
-}
-
-#humo_menu a:hover {
-    color: #001155;
 }
 
 /* Menu */

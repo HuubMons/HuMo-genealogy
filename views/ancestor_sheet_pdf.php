@@ -13,7 +13,7 @@ $screen_mode = 'ASPDF';
 
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 
-include_once(__DIR__ . '/header.php');
+include_once(__DIR__ . '/layout_pdf.php');
 
 
 

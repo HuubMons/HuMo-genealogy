@@ -4,9 +4,10 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 ?>
+
 <h1 class="center"><?= __('Install'); ?></h1>
 
-<?= __('Installation of the standard tables. Or create tables from a scratch, they will be filled in with standard data.'); ?>
+<?= __('Installation of the standard tables. Or create tables from a scratch, they will be filled in with standard data.'); ?><br><br>
 
 <?php
 $path_tmp = 'index.php';
@@ -180,11 +181,20 @@ if (!isset($_POST['install_tables2'])) {
     <form method="post" action="<?= $path_tmp; ?>" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
 
-        <p><input type="checkbox" name="table_settings" <?= $check_settings; ?>><?= __('(Re)create settings table.'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_settings" <?= $check_settings; ?>>
+            <label class="form-check-label"><?= __('(Re)create settings table.'); ?></label>
+        </div>
 
-        <p><input type="checkbox" name="table_stat_date" <?= $check_stat; ?>><?= __('(Re) create statistics tree table. <b>EXISTING STATISTICS TREES WILL BE REMOVED!</b>'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_stat_date" <?= $check_stat; ?>>
+            <label class="form-check-label"><?= __('(Re) create statistics tree table. <b>EXISTING STATISTICS TREES WILL BE REMOVED!</b>'); ?></label>
+        </div>
 
-        <p><input type="checkbox" name="table_users" <?= $check_users; ?>><?= __('(Re) create user table. <b>The user table will be filled with new users. Please add passwords:</b>'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_users" <?= $check_users; ?>>
+            <label class="form-check-label"><?= __('(Re) create user table. <b>The user table will be filled with new users. Please add passwords:</b>'); ?></label>
+        </div>
 
         <table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B" style="margin-left: 20px;">
             <tr class="table_header">
@@ -196,48 +206,72 @@ if (!isset($_POST['install_tables2'])) {
             <tr>
                 <td><?= __('Administrator'); ?></td>
                 <td><input type="text" name="username_admin" value="<?= $username_admin; ?>" size="15"></td>
-                <td><input type="password" name="password_admin" value="<?= $password_admin; ?>" size="15"><?= __('THIS WILL BE YOUR ADMIN PASSWORD! (default password = humogen)'); ?></td>
+                <td><input type="password" name="password_admin" value="<?= $password_admin; ?>" size="15"> <?= __('THIS WILL BE YOUR ADMIN PASSWORD! (default password = humogen)'); ?></td>
             </tr>
 
             <tr>
                 <td><?= __('Family or genealogists'); ?></td>
                 <td><input type="text" name="username_family" value="<?= $username_family; ?>" size="15"></td>
-                <td><input type="password" name="password_family" value="<?= $password_family; ?>" size="15"><?= __('Password for user: "family" (default password = humogen)'); ?></td>
+                <td><input type="password" name="password_family" value="<?= $password_family; ?>" size="15"> <?= __('Password for user: "family" (default password = humogen)'); ?></td>
             </tr>
 
             <tr>
                 <td colspan="3"><?= __('Remark: more users can be added after installation.'); ?></td>
             </tr>
-        </table>
+        </table><br>
 
-        <p><input type="checkbox" name="table_groups" <?= $check_groups; ?>><?= __('(Re) create user group table.'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_groups" <?= $check_groups; ?>>
+            <label class="form-check-label"><?= __('(Re) create user group table.'); ?></label>
+        </div>
 
-        <p><input type="checkbox" name="table_cms_menu" <?= $check_cms_menu; ?>><?= __('(Re) create CMS menu table, used for menu system of own pages.'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_cms_menu" <?= $check_cms_menu; ?>>
+            <label class="form-check-label"><?= __('(Re) create CMS menu table, used for menu system of own pages.'); ?></label>
+        </div>
 
-        <p><input type="checkbox" name="table_cms_pages" <?= $check_cms_pages; ?>><?= __('(Re) create CMS pages table, used for own pages.'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_cms_pages" <?= $check_cms_pages; ?>>
+            <label class="form-check-label"><?= __('(Re) create CMS pages table, used for own pages.'); ?></label>
+        </div>
 
-        <p><input type="checkbox" name="table_user_notes" <?= $check_user_notes; ?>><?= __('(Re) create user notes table.'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_user_notes" <?= $check_user_notes; ?>>
+            <label class="form-check-label"><?= __('(Re) create user notes table.'); ?></label>
+        </div>
 
-        <p><input type="checkbox" name="table_user_log" <?= $check_log; ?>><?= __('Empty log table.'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_user_log" <?= $check_log; ?>>
+            <label class="form-check-label"><?= __('Empty log table.'); ?></label>
+        </div>
 
-        <p><input type="checkbox" name="table_stat_country" <?= $check_stat_country; ?>><?= __('Empty statistics country table.'); ?></p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_stat_country" <?= $check_stat_country; ?>>
+            <label class="form-check-label"><?= __('Empty statistics country table.'); ?></label>
+        </div><br>
+
+        <p><b><?= __('Family tree tables'); ?></b></p>
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_trees" <?= $check_trees; ?>>
+            <label class="form-check-label"><?= __('(Re) create all family tree tables. <b>*** ALL EXISTING FAMILY TREES WILL BE REMOVED! ***</b>'); ?></label>
+        </div>
+
         <?php
-
-
-        echo '<p><b>' . __('Family tree tables') . '</b></p>';
-        echo '<p><input type="checkbox" name="table_trees" ' . $check_trees . '> ' .
-            __('(Re) create all family tree tables. <b>*** ALL EXISTING FAMILY TREES WILL BE REMOVED! ***</b>') . '</p>';
-
         if (isset($_POST['install_tables'])) {
-            echo '<p>' . __('Install') . ' ';
-            echo '<input type="Submit" name="install_tables2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-            echo ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+        ?>
+            <p><?= __('Install'); ?>
+                <input type="Submit" name="install_tables2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <?php
         } else {
-            echo '<p><input type="Submit" name="install_tables" value=' . __('Install') . '>';
+            ?>
+            <p><input type="Submit" name="install_tables" class="btn btn-success" value="<?= __('Install'); ?>">
+            <?php
         }
 
-        echo ' <b>' . __('Are you sure? Old settings will be deleted!') . '</b><br>';
-        ?>
+            ?>
+            <b><?= __('Are you sure? Old settings will be deleted!'); ?></b><br>
     </form>
 <?php
 }

@@ -14,7 +14,7 @@ class Router
         ['path' => 'cms_pages', 'title' => 'Information', 'page' => 'cms_pages', 'vars' => 'id'],
         ['path' => 'cookies', 'title' => 'Cookie information', 'page' => 'cookies'],
         ['path' => 'descendant_report', 'title' => 'Descendants', 'page' => 'family', 'vars' => 'select_tree_id,id'],
-        ['path' => 'descendant', 'title' => 'Descendants', 'page' => 'descendant', 'vars' => 'select_tree_id,id'],
+        ['path' => 'descendant_chart', 'title' => 'Descendants', 'page' => 'descendant_chart', 'vars' => 'select_tree_id,id'],
         // *** Must be before family ***
         ['path' => 'family_rtf', 'title' => 'Family Page', 'page' => 'family_rtf'],
         ['path' => 'family', 'title' => 'Family Page', 'page' => 'family', 'vars' => 'select_tree_id,id'],
@@ -37,16 +37,16 @@ class Router
         ['path' => 'login', 'title' => 'Login', 'page' => 'login'],
         ['path' => 'mailform', 'title' => 'Mail form', 'page' => 'mailform'],
         ['path' => 'maps', 'title' => 'World map', 'page' => 'maps'],
+        ['path' => 'outline_report', 'title' => 'Outline Report', 'page' => 'outline_report'],
         ['path' => 'photoalbum', 'title' => 'Photobook', 'page' => 'photoalbum', 'vars' => 'select_tree_id'],
         ['path' => 'register', 'title' => 'Register', 'page' => 'register'],
         ['path' => 'relations', 'title' => 'Relationship calculator', 'page' => 'relations'],
-        ['path' => 'report_outline', 'title' => 'Outline Report', 'page' => 'report_outline'],
         // *** Must be before source ***
         ['path' => 'sources', 'title' => 'Sources', 'page' => 'sources', 'vars' => 'select_tree_id'],
         ['path' => 'source', 'title' => 'Source', 'page' => 'source', 'vars' => 'select_tree_id,id'],
         ['path' => 'statistics', 'title' => 'Statistics', 'page' => 'statistics'],
         ['path' => 'timeline', 'title' => 'Timelines', 'page' => 'timeline', 'vars' => 'select_tree_id,id'],
-        ['path' => 'user_settings', 'title' => 'Settings', 'page' => 'settings'],
+        ['path' => 'user_settings', 'title' => 'Settings', 'page' => 'user_settings'],
 
         // Backwards compatibility only:
         ['path' => 'gezin', 'title' => 'Family Page', 'page' => 'family'],

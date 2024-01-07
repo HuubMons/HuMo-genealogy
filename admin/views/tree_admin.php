@@ -1,7 +1,7 @@
 <?php
 //global $language, $language_tree, $language_file, $selected_language;
 //global $dbh, $page, $menu_admin, $tree_id;
-//global $phpself, $phpself2, $joomlastring;
+//global $phpself, $phpself2;
 
 // *** Read settings here to be sure radio buttons show proper values. ***
 include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settings ***
@@ -21,7 +21,7 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
         <?php
         echo '<td></td>';
         echo '<td>';
-        echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;language_tree=default&amp;tree_id=' . $tree_id . '">' . __('Default') . '</a> ';
+        echo '<a href="index.php?page=tree&amp;language_tree=default&amp;tree_id=' . $tree_id . '">' . __('Default') . '</a> ';
 
         // *** Language choice ***
         $language_tree2 = $language_tree;
@@ -39,7 +39,7 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
             if ($language_file[$i] != $language_tree2) {
                 include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
                 echo '<li style="float:left; width:124px;">';
-                echo '<a href="index.php?' . $joomlastring . 'page=tree&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
+                echo '<a href="index.php?page=tree&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
                 echo '<img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
                 echo $language["name"];
                 echo '</a>';
@@ -96,13 +96,13 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
             if ($dataDb->tree_prefix == 'EMPTY')
                 echo '* ' . __('EMPTY LINE') . ' *';
             else {
-                echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $dataDb->tree_id . '"><img src="images/edit.jpg" title="edit" alt="edit"></a> ' . $treetext['name'];
+                echo '<a href="index.php?page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $dataDb->tree_id . '"><img src="images/edit.jpg" title="edit" alt="edit"></a> ' . $treetext['name'];
             }
             echo '</td>';
 
             echo '<td>';
             if ($dataDb->tree_prefix != 'EMPTY') {
-                echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
+                echo '<a href="index.php?page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
             }
 
             if ($dataDb->tree_prefix == 'EMPTY') {
@@ -161,7 +161,7 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
             echo '<td nowrap>';
             // *** If there is only one family tree, prevent it can be removed ***
             if ($count_trees > 1 or $dataDb->tree_prefix == 'EMPTY') {
-                echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;remove_tree=' . $dataDb->tree_id . '&amp;treetext_name=' . $treetext['name'] . '">';
+                echo ' <a href="index.php?page=' . $page . '&amp;remove_tree=' . $dataDb->tree_id . '&amp;treetext_name=' . $treetext['name'] . '">';
                 echo '<img src="images/button_drop.png" alt="' . __('Remove tree') . '" border="0"></a>';
             }
             echo '</td>';

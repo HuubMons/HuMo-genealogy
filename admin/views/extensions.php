@@ -58,7 +58,7 @@ include(__DIR__ . "/../../include/settings_global.php"); //variables
     <input type="hidden" name="page" value="<?= $page; ?>">
     <table class="humo standard" border="1">
         <tr class="table_header">
-            <th colspan="2"><?= __('Languages'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Languages'); ?></th>
         </tr>
 
         <tr>
@@ -84,17 +84,25 @@ include(__DIR__ . "/../../include/settings_global.php"); //variables
                         $disabled = ' disabled';
                         $checked = ' checked';
                     }
+                ?>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="<?= $language_file[$i]; ?>" <?= $checked . $disabled; ?>>
+                        <label class="form-check-label">
+                            <img src="../languages/<?= $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"><?= $language["name"]; ?><br>
+                        </label>
+                    </div>
+                <?php
 
-                    echo '<input type="checkbox" id="language" value="y" name="' . $language_file[$i] . '" ' . $checked . $disabled . '>';
-                    echo ' <img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
-                    echo $language["name"] . '<br>';
                 }
                 ?>
+
+                <br>
+                <input type="Submit" name="save_option" class="btn btn-success" value="<?= __('Change'); ?>">
             </td>
         </tr>
 
         <tr class="table_header">
-            <th colspan="2"><?= __('Themes'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Themes'); ?></th>
         </tr>
 
         <tr>
@@ -107,10 +115,16 @@ include(__DIR__ . "/../../include/settings_global.php"); //variables
                     $theme = str_replace(".css", "", $theme);
                     $checked = ' checked';
                     if (in_array($theme, $hide_themes_array)) $checked = '';
-                    echo '<input type="checkbox" id="themes" value="y" name="' . $theme . '" ' . $checked . '>';
-                    echo ' ' . $theme . '<br>';
-                }
                 ?>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="<?= $theme; ?>" <?= $checked; ?>>
+                        <label class="form-check-label">
+                            <?= $theme; ?><br>
+                        </label>
+                    </div>
+                <?php } ?>
+                <br>
+                <input type="Submit" name="save_option" class="btn btn-success" value="<?= __('Change'); ?>">
             </td>
         </tr>
     </table>

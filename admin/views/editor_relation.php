@@ -36,12 +36,12 @@ if ($add_person == false) {
                     echo '</td><td id="chtd2" valign="top">';
 
                     if ($i < ($fam_count - 1)) {
-                        echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_down=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="images/arrow_down.gif" border="0" alt="fam_down"></a> ';
+                        echo ' <a href="index.php?page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_down=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="images/arrow_down.gif" border="0" alt="fam_down"></a> ';
                     } else {
                         echo '&nbsp;&nbsp;&nbsp;';
                     }
                     if ($i > 0) {
-                        echo ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_up=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="images/arrow_up.gif" border="0" alt="fam_up"></a> ';
+                        echo ' <a href="index.php?page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_up=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="images/arrow_up.gif" border="0" alt="fam_up"></a> ';
                     } else {
                         //echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     }
@@ -840,7 +840,7 @@ if ($add_person == false) {
             if ($familyDb->fam_children) {
                 echo '<a name="children"></a>';
                 echo __('Use this icon to order children (drag and drop)') . ': <img src="images/drag-icon.gif" border="0">';
-                echo '<br>' . __('Or automatically order children:') . ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_tab=marriage&amp;marriage_nr=' . $marriage . '&amp;order_children=1#children">' . __('Automatic order children') . '</a>';
+                echo '<br>' . __('Or automatically order children:') . ' <a href="index.php?page=' . $page . '&amp;menu_tab=marriage&amp;marriage_nr=' . $marriage . '&amp;order_children=1#children">' . __('Automatic order children') . '</a>';
                 if (isset($_GET['order_children'])) echo ' <b>' . __('Children are re-ordered.') . '</b>';
 
                 //echo __('Children').':<br>';
@@ -858,7 +858,7 @@ if ($add_person == false) {
 
                     echo '<li><span style="cursor:move;" id="' . $fam_children_array[$j] . '" class="handle' . $i . '" ><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
 
-                    echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=' . $fam_children .
+                    echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=' . $fam_children .
                         '&amp;child_disconnect_gedcom=' . $fam_children_array[$j] . '">
                             <img src="images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
                     echo '&nbsp;&nbsp;<span id="chldnum' . $fam_children_array[$j] . '">' . ($j + 1) . '</span>. ' . show_person($fam_children_array[$j], true) . '</li>';

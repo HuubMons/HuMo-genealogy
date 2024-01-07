@@ -1,7 +1,4 @@
 <?php
-//global $language, $data2Db, $page, $menu_admin;
-//global $phpself, $phpself2, $joomlastring;
-
 // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
 if (substr($data2Db->tree_pict_path, 0, 1) == '|') {
     $checked1 = ' checked';

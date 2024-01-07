@@ -84,12 +84,18 @@ function show_person($familyDb)
             echo $person_cls->person_popup_menu($personDb);
 
             // *** Show picture man or wife ***
-            if ($personDb->pers_sexe == "M")
-                echo $dirmark1 . ' <img src="images/man.gif" alt="man" style="vertical-align:top">';
-            elseif ($personDb->pers_sexe == "F")
-                echo $dirmark1 . ' <img src="images/woman.gif" alt="woman" style="vertical-align:top">';
-            else
-                echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown" style="vertical-align:top">';
+            if ($personDb->pers_sexe == "M"){
+                //echo $dirmark1 . ' <img src="images/man.gif" alt="man" style="vertical-align:top">';
+                echo $dirmark1 . ' <img src="images/man.gif" alt="man">';
+            }
+            elseif ($personDb->pers_sexe == "F"){
+                //echo $dirmark1 . ' <img src="images/woman.gif" alt="woman" style="vertical-align:top">';
+                echo $dirmark1 . ' <img src="images/woman.gif" alt="woman">';
+            }
+            else{
+                //echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown" style="vertical-align:top">';
+                echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
+            }
 
             ?>
         </td>

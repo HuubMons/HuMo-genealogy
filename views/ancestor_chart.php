@@ -234,6 +234,10 @@ function ancestor_chart_person($id, $box_appearance)
             $text .= $replacement_text;
         } else {
             $text .= $person_cls->person_popup_menu($personDb, true, $replacement_text, $extra_popup_text);
+
+            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+            //$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+            //$text .= '<a href="'.$url.'"><span clas="nam" style="font-size:10px; color: #000000; text-decoration: none;">'.$replacement_text.'</span></a>';
         }
     }
 
