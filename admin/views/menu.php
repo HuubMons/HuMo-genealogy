@@ -136,7 +136,6 @@ if ($popup == false) {
                             // *** Get language name ***
                             if ($language_file[$i] != $selected_language and !in_array($language_file[$i], $hide_languages_array)) {
                                 include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
-                                //$language_path = $link_cls->get_link($uri_path, 'language', '', true);
                         ?>
                                 <li>
                                     <a class="dropdown-item" href="<?= $path_tmp . 'language_choice=' . $language_file[$i]; ?>">

@@ -592,9 +592,9 @@ class Mainindex_cls
             $part_lastname = $_SESSION["save_part_lastname"];
         }
         $search_database = 'tree_selected';
-        if (isset($_SESSION["save_search_database"])) {
-            $search_database = $_SESSION["save_search_database"];
-        }
+        //if (isset($_SESSION["save_search_database"])) {
+        //    $search_database = $_SESSION["save_search_database"];
+        //}
 
         $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, false);
         $text .= '<form method="post" action="' . $path_tmp . '">';
@@ -623,6 +623,7 @@ class Mainindex_cls
         $datasql2 = $dbh->query("SELECT * FROM humo_trees");
         $num_rows2 = $datasql2->rowCount();
         if ($num_rows2 > 1 and $humo_option['one_name_study'] == 'n') {
+            /*
             $checked = '';
             if ($search_database == "tree_selected") {
                 $checked = 'checked';
@@ -639,6 +640,21 @@ class Mainindex_cls
                 $checked = 'checked';
             }
             $text .= '<input type="radio" class="form-check-input" name="search_database" value="all_but_this" ' . $checked . '> ' . __('All but selected tree') . '<br>';
+            */
+
+            $text .= '<select name="select_trees" class="form-select form-select-sm">';
+            $text .= '<option value="tree_selected"';
+            if ($search_database == "tree_selected") $text .= ' selected';
+            $text .= '>' . __('Selected family tree') . '</option>';
+
+            $text .= '<option value="all_trees"';
+            if ($search_database == "all_trees") $text .= ' selected';
+            $text .= '>' . __('All family trees') . '</option>';
+
+            $text .= '<option value="all_but_this"';
+            if ($search_database == "all_but_this") $text .= ' selected';
+            $text .= '>' . __('All but selected tree') . '</option>';
+            $text .= '</select>';
         }
         if ($num_rows2 > 1 and $humo_option['one_name_study'] == 'y') {
             $text .= '<input type="hidden" name="search_database" value="all_trees">';

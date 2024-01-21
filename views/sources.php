@@ -13,7 +13,7 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
 
 <form method="post" action="<?= $path_form; ?>">
     <div class="container">
-        <div class="mb-2 row">
+        <div class="row mb-2">
             <div class="col-sm-4"></div>
 
             <div class="col-sm-4">

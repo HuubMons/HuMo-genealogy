@@ -85,71 +85,75 @@ class AncestorModel extends FamilyModel
     {
         global $humo_option, $uri_path, $link_cls;
 
-        $data['active'] = array();
-        $data['link'] = array();
-
-        //$text = '<h1 class="standard_header">';
+        $data['header_active'] = array();
+        $data['header_link'] = array();
+        $data['header_text'] = array();
 
         $vars['id'] = $main_person;
         $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
         $link .= 'screen_mode=ancestor_chart';
-        $data['link'][] = $link;
+        $data['header_link'][] = $link;
         if ($name == 'Ancestor report') {
-            //$text .= __($name);
-            $data['active'][] = 'active';
+            $data['header_active'][] = 'active';
         } else {
-            $data['active'][] = '';
-            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $link . '">' . __('Ancestor report') . '</a></span>';
+            $data['header_active'][] = '';
         }
-
-        //$text .= ' | ';
+        $data['header_text'][] = __('Ancestor report');
 
         // TODO improve paths and variables.
         if ($humo_option["url_rewrite"] == 'j') {
-            //$path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
             $path = 'ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
         } else {
-            //$path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;main_person=' . $main_person;
             $path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
         }
-        $data['link'][] = $path;
+        $data['header_link'][] = $path;
         if ($name == 'Ancestor chart') {
-            //$text .= __($name);
-            $data['active'][] = 'active';
+            $data['header_active'][] = 'active';
         } else {
-            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor chart') . '</a></span>';
-            $data['active'][] = '';
+            $data['header_active'][] = '';
         }
-
-        //$text .= ' | ';
+        $data['header_text'][] = __('Ancestor chart');
 
         if ($humo_option["url_rewrite"] == 'j') {
             $path = 'ancestor_sheet?tree_id=' . $tree_id . '&amp;id=' . $main_person;
         } else {
             $path = 'index.php?page=ancestor_sheet&amp;tree_id=' . $tree_id . '&amp;id=' . $main_person;
         }
-        $data['link'][] = $path;
+        $data['header_link'][] = $path;
         if ($name == 'Ancestor sheet') {
-            //$text .= __($name);
-            $data['active'][] = 'active';
+            $data['header_active'][] = 'active';
         } else {
-            $data['active'][] = '';
-            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path . '">' . __('Ancestor sheet') . '</a></span>';
+            $data['header_active'][] = '';
         }
-        //$text .= '</h1>';
+        $data['header_text'][] = __('Ancestor sheet');
 
+        // *** Fanchart ***
+        $path = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
+        $path .= 'id=' . $main_person;
+        $data['header_link'][] = $path;
+        if ($name == 'Fanchart') {
+            $data['header_active'][] = 'active';
+        } else {
+            $data['header_active'][] = '';
+        }
+        $data['header_text'][] = __('Fanchart');
+
+        // TODO Move to view (is used multiple times)?
         // *** Tab menu ***
         $text = '
         <h1>' . __('Ancestors') . '</h1>
         <ul class="nav nav-tabs">   
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['active'][0] . '" href="' . $data['link'][0] . '">' . __('Ancestor report') . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][0] . '" href="' . $data['header_link'][0] . '">' . $data['header_text'][0] . '</a>
             </li>
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['active'][1] . '" href="' . $data['link'][1] . '">' . __('Ancestor chart') . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][1] . '" href="' . $data['header_link'][1] . '">' . $data['header_text'][1] . '</a>
             </li>
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['active'][2] . '" href="' . $data['link'][2] . '">' . __('Ancestor sheet') . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][2] . '" href="' . $data['header_link'][2] . '">' . $data['header_text'][2] . '</a>
+            </li>
+            <li class="nav-item me-1">
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][3] . '" href="' . $data['header_link'][3] . '">' . $data['header_text'][3] . '</a>
             </li>
         </ul>
         <!-- Align content to the left -->

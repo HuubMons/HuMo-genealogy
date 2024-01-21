@@ -184,7 +184,7 @@ class TimelineModel
     public function getTimelinePersons($db_functions, $personDb, $user, $dirmark1)
     {
         // *** MARRIAGES & CHILDREN ***
-        if ($personDb->pers_fams) {
+        if (isset($personDb->pers_fams) AND $personDb->pers_fams) {
             $process_age = new calculate_year_cls;
 
             $data["marriages"] = explode(";", $personDb->pers_fams);

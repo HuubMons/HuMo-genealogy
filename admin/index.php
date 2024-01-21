@@ -37,10 +37,6 @@ session_regenerate_id();
 
 $page = 'index';
 
-// *** Globals needed for Joomla ***
-global $menu_admin, $tree_id, $language_file, $page, $language_tree, $data2Db;
-global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id;
-
 // DISABLED because the SECURED PAGE message was shown regularly.
 // *** Prevent Session hijacking ***
 //if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $visitor_ip){
@@ -123,13 +119,6 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
             echo 'Access to website is blocked.';
             exit;
         }
-
-        // *** Added in mar. 2023. To prevent double results in search results ***
-        //SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
-        $result = $dbh->query("SET SESSION sql_mode=(SELECT
-            REPLACE(
-                REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY','')
-            ,'NO_ZERO_IN_DATE',''));");
     }
 }
 
@@ -190,53 +179,10 @@ timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
 
-// *** Language selection for admin ***
-$map = opendir('../languages/');
-while (false !== ($file = readdir($map))) {
-    if (strlen($file) < 6 and $file != '.' and $file != '..') {
-        $language_select[] = $file;
-        if (file_exists('../languages/' . $file . '/' . $file . '.mo')) {
-            $language_file[] = $file;
-            // *** Order of languages ***
-            if ($file == 'cn') $language_order[] = 'Chinese';
-            elseif ($file == 'cs') $language_order[] = 'Czech';
-            elseif ($file == 'da') $language_order[] = 'Dansk';
-            elseif ($file == 'de') $language_order[] = 'Deutsch';
-            elseif ($file == 'en') $language_order[] = 'English';
-            elseif ($file == 'en_ca') $language_order[] = 'English_ca';
-            elseif ($file == 'en_us') $language_order[] = 'English_us';
-            elseif ($file == 'es') $language_order[] = 'Espanol';
-            elseif ($file == 'fi') $language_order[] = 'Suomi';
-            elseif ($file == 'fr') $language_order[] = 'French';
-            elseif ($file == 'fur') $language_order[] = 'Furlan';
-            elseif ($file == 'he') $language_order[] = 'Hebrew';
-            elseif ($file == 'hu') $language_order[] = 'Magyar';
-            elseif ($file == 'id') $language_order[] = 'Indonesian';
-            elseif ($file == 'it') $language_order[] = 'Italiano';
-            elseif ($file == 'es_mx') $language_order[] = 'Mexicano';
-            elseif ($file == 'nl') $language_order[] = 'Nederlands';
-            elseif ($file == 'no') $language_order[] = 'Norsk';
-            elseif ($file == 'pt') $language_order[] = 'Portuguese';
-            elseif ($file == 'ro') $language_order[] = 'Romanian';
-            elseif ($file == 'ru') $language_order[] = 'Russian';
-            elseif ($file == 'sk') $language_order[] = 'Slovensky';
-            elseif ($file == 'sv') $language_order[] = 'Swedish';
-            elseif ($file == 'tr') $language_order[] = 'Turkish';
-            elseif ($file == 'pl') $language_order[] = 'Polish';
-            else $language_order[] = $file;
-        }
-        // *** Save language choice ***
-        if (isset($_GET["language_choice"])) {
-            // *** Check if language file really exists, to prevent hack of website ***
-            if ($_GET["language_choice"] == $file) {
-                $_SESSION['save_language_admin'] = $file;
-            }
-        }
-    }
-}
-closedir($map);
-// *** Order language array by name of language ***
-array_multisort($language_order, $language_file);
+// *** Get ordered list of languages ***
+include(__DIR__ . '/../languages/language_cls.php');
+$language_cls = new Language_cls;
+$language_file = $language_cls->get_languages();
 
 // *** Select admin language ***
 $selected_language = "en";
@@ -620,7 +566,6 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
 }
     ?>
 
-
     <!-- Offcanvas Sidebar -->
     <div class="offcanvas offcanvas-end" id="demo">
         <div class="offcanvas-header">
@@ -686,7 +631,8 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
                                 <li><?= __('Check database integrity'); ?></li>
                             </ul>
                         </li>
-                        <li><a href="<?= $path_tmp; ?>page=check&amp;tab=changes"><?= __('View latest changes'); ?></a></li>                        <li>
+                        <li><a href="<?= $path_tmp; ?>page=check&amp;tab=changes"><?= __('View latest changes'); ?></a></li>
+                        <li>
                             <a href="<?= $path_tmp; ?>page=cal_date"><?= __('Calculated birth date'); ?></a>
                             <ul>
                                 <li><?= __('Privacy filter'); ?></li>
@@ -753,41 +699,30 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
     } elseif ($group_administrator == 'j' and $page == 'tree') {
         include_once(__DIR__ . "/views/trees.php");
     } elseif ($page == 'editor') {
-        $_GET['menu_admin'] = 'person';
         include_once(__DIR__ . "/views/editor.php");
     } elseif ($page == 'editor_sources') {
-        $_GET['menu_admin'] = 'person';
         include_once(__DIR__ . "/include/editor_sources.php");
     }
     // NEW edit_sources for all source links...
     elseif ($page == 'edit_sources') {
-        $_GET['menu_admin'] = 'sources';
         include_once(__DIR__ . "/views/edit_source.php");
     } elseif ($page == 'edit_repositories') {
-        $_GET['menu_admin'] = 'repositories';
         include_once(__DIR__ . "/views/edit_repository.php");
     } elseif ($page == 'edit_addresses') {
-        $_GET['menu_admin'] = 'addresses';
         include_once(__DIR__ . "/views/edit_address.php");
     } elseif ($page == 'edit_places') {
-        $_GET['menu_admin'] = 'places';
         include_once(__DIR__ . "/views/edit_rename_place.php");
     } elseif ($page == 'editor_place_select') {
-        $_GET['menu_admin'] = 'places';
         include_once(__DIR__ . "/include/editor_place_select.php");
     } elseif ($page == 'editor_person_select') {
-        $_GET['menu_admin'] = 'marriage';
         include_once(__DIR__ . "/include/editor_person_select.php");
     } elseif ($page == 'editor_relation_select') {
-        $_GET['menu_admin'] = 'relation';
         include_once(__DIR__ . "/include/editor_relation_select.php");
     } elseif ($page == 'editor_media_select') {
-        $_GET['menu_admin'] = 'menu';
         include_once(__DIR__ . "/include/editor_media_select.php");
     } elseif ($page == 'check') {
         include_once(__DIR__ . "/views/tree_check.php");
     } elseif ($page == 'latest_changes') {
-        $_POST['last_changes'] = 'View latest changes';
         include_once(__DIR__ . "/views/tree_check.php");
     } elseif ($page == 'gedcom') {
         include_once(__DIR__ . "/views/gedcom.php");
@@ -800,7 +735,6 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
     } elseif ($page == 'users') {
         include_once(__DIR__ . "/views/users.php");
     } elseif ($page == 'editor_user_settings') {
-        $_GET['menu_admin'] = 'users';
         include_once(__DIR__ . "/include/editor_user_settings.php");
     } elseif ($page == 'groups') {
         include_once(__DIR__ . "/views/groups.php");
@@ -836,7 +770,6 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
 
     // *** Default page for editor ***
     elseif ($group_administrator != 'j' and $group_edit_trees) {
-        $_GET['menu_admin'] = 'person';
         include_once(__DIR__ . "/views/editor.php");
     }
 

@@ -353,7 +353,7 @@ class editor_cls
 ?>
         <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
-            <select size="1" name="tree_id" onChange="this.form.submit();">
+            <select size="1" name="tree_id" onChange="this.form.submit();" class="form-select form-select-sm">
                 <option value=""><?= __('Select a family tree:'); ?></option>
                 <?php
                 while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {

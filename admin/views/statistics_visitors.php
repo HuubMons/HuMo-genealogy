@@ -54,7 +54,7 @@ if (isset($_POST['month'])) {
         echo "</select>";
 
         ?>
-        <input type="Submit" name="submit" value="<?= __('Select'); ?>">
+        <input type="submit" name="submit" value="<?= __('Select'); ?>">
     </form>
 
     <!-- Visitors in present month -->

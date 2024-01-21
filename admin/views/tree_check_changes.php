@@ -182,7 +182,7 @@ $checked = ''; //if($show_addresses) $checked=' checked';
 echo ' <input type="checkbox" id="1" name="show_addresses" value="1" '.$checked.'>'.__('Addresses');
 */
 
-echo ' <input type="Submit" name="last_changes" value="' . __('Select') . '">';
+echo ' <input type="submit" name="last_changes" value="' . __('Select') . '">';
 echo '</form><br><br>';
 ?>
 

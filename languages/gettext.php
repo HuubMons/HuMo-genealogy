@@ -1,5 +1,4 @@
 <?php
-// Global variable
 $l10n = array();
 
 /*

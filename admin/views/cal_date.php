@@ -35,7 +35,7 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
                     }
                     ?>
                 </select>
-                <input type="Submit" name="submit_button" value="<?= __('Select'); ?>">
+                <input type="submit" name="submit_button" value="<?= __('Select'); ?>">
             </form>
         </td>
     </tr>

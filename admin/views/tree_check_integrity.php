@@ -10,7 +10,7 @@ echo '<input type="hidden" name="page" value="' . $page . '">';
 echo '<input type="hidden" name="tab" value="integrity">';
 
 echo __('Remove links to missing items from database (first make a database backup!)');
-echo ' <input type="Submit" name="remove" value="' . __('REMOVE') . '">';
+echo ' <input type="submit" name="remove" value="' . __('REMOVE') . '">';
 echo '</form>';
 
 echo '<div style="height: 200px; overflow-y: scroll;">';

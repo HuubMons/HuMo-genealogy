@@ -65,11 +65,9 @@ include_once(__DIR__ . "/include/settings_user.php"); // User variables
 include_once(__DIR__ . "/include/get_visitor_ip.php");
 $visitor_ip = visitorIP();
 
-
 // TODO dec. 2023 now included this in index.php. Check other includes...
 include_once(__DIR__ . "/include/person_cls.php");
 $person_cls = new person_cls;
-
 
 // *** Debug HuMo-genealogy front pages ***
 if ($humo_option["debug_front_pages"] == 'y') {
@@ -94,57 +92,10 @@ $bot_visit = preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['
 // *** Line for bot test! ***
 //$bot_visit=true;
 
-$language_folder = opendir(__DIR__ . '/languages/');
-while (false !== ($file = readdir($language_folder))) {
-    if (strlen($file) < 6 and $file != '.' and $file != '..') {
-        $language_file[] = $file;
-        // *** Order of languages ***
-        if ($file == 'cn') $language_order[] = 'Chinese';
-        elseif ($file == 'cs') $language_order[] = 'Czech';
-        elseif ($file == 'da') $language_order[] = 'Dansk';
-        elseif ($file == 'de') $language_order[] = 'Deutsch';
-        elseif ($file == 'en') $language_order[] = 'English';
-        elseif ($file == 'en_ca') $language_order[] = 'English_ca';
-        elseif ($file == 'en_us') $language_order[] = 'English_us';
-        elseif ($file == 'es') $language_order[] = 'Espanol';
-        elseif ($file == 'fi') $language_order[] = 'Suomi';
-        elseif ($file == 'fr') $language_order[] = 'French';
-        elseif ($file == 'fur') $language_order[] = 'Furlan';
-        elseif ($file == 'he') $language_order[] = 'Hebrew';
-        elseif ($file == 'id') $language_order[] = 'Indonesian';
-        elseif ($file == 'hu') $language_order[] = 'Magyar';
-        elseif ($file == 'it') $language_order[] = 'Italiano';
-        elseif ($file == 'es_mx') $language_order[] = 'Mexicano';
-        elseif ($file == 'nl') $language_order[] = 'Nederlands';
-        elseif ($file == 'no') $language_order[] = 'Norsk';
-        elseif ($file == 'pl') $language_order[] = 'Polish';
-        elseif ($file == 'pt') $language_order[] = 'Portuguese';
-        elseif ($file == 'ro') $language_order[] = 'Romanian';
-        elseif ($file == 'ru') $language_order[] = 'Russian';
-        elseif ($file == 'sk') $language_order[] = 'Slovensky';
-        elseif ($file == 'sv') $language_order[] = 'Swedish';
-        elseif ($file == 'tr') $language_order[] = 'Turkish';
-        else $language_order[] = $file;
-
-        // *** Save choice of language ***
-        $language_choice = '';
-        if (isset($_GET["language"])) {
-            $language_choice = $_GET["language"];
-        }
-
-        if ($language_choice != '') {
-            // Check if file exists (IMPORTANT DO NOT REMOVE THESE LINES)
-            // ONLY save an existing language file.
-            if ($language_choice == $file) {
-                $_SESSION["language_humo"] = $file;
-            }
-        }
-    }
-}
-closedir($language_folder);
-// *** Order language array by name of language ***
-array_multisort($language_order, $language_file);
-
+// *** Get ordered list of languages ***
+include(__DIR__ . '/languages/language_cls.php');
+$language_cls = new Language_cls;
+$language_file = $language_cls->get_languages();
 
 // *** Log in ***
 $valid_user = false;
@@ -197,7 +148,6 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                 $_SESSION['user_id_admin'] = $resultDb->user_id;
                 $_SESSION['group_id_admin'] = $resultDb->user_group_id;
             }
-
 
             // *** Save succesful login into log! ***
             $sql = "INSERT INTO humo_user_log SET
@@ -268,30 +218,42 @@ $page = 'index';
 $head_text = $humo_option["database_name"];
 $tmp_path = '';
 
+// *** New routing script sept. 2023 ***
+include_once(__DIR__ . '/app/routing/router.php');
+# Search route, return match or not found
+$router = new Router();
+$matchedRoute = $router->get_route($_SERVER['REQUEST_URI']);
+if (isset($matchedRoute['page'])) {
+    $page = $matchedRoute['page'];
+
+    // TODO remove title from router script
+    $head_text = $matchedRoute['title'];
+
+    if (isset($matchedRoute['select_tree_id'])) {
+        $select_tree_id = $matchedRoute['select_tree_id'];
+    }
+    // *** Used for list_names ***
+    if (isset($matchedRoute['last_name']) and is_string($matchedRoute['last_name'])) {
+        $last_name = $matchedRoute['last_name'];
+    }
+    // *** Used for source ***
+    // TODO improve processing of these variables 
+    if (isset($matchedRoute['id'])) {
+        $id = $matchedRoute['id']; // for source
+        $_GET["id"] = $matchedRoute['id']; // for family page, and other pages? TODO improve processing of these variables.
+    }
+
+    if ($matchedRoute['tmp_path']) {
+        $tmp_path = $matchedRoute['tmp_path'];
+    }
+}
+
+
 // *** Family tree choice ***
 global $database;
 $database = '';
 if (isset($_GET["database"])) $database = $_GET["database"];
 if (isset($_POST["database"])) $database = $_POST["database"];
-/*
-if (isset($urlpart[0]) AND $urlpart[0]!='' AND $urlpart[0]!='standaard'){
-    // backwards compatible: humo2_
-    $database=$urlpart[0]; // *** url_rewrite ***
-    $_GET["database"]=$database; // *** Needed to check for CMS page if url-rewrite is used ***
-
-    // numeric value
-    if (is_numeric($urlpart[0])){
-        // *** Check if family tree really exists ***
-        $dataDb=$db_functions->get_tree($urlpart[0]);
-        if ($dataDb){
-            if ($urlpart[0]==$dataDb->tree_id){
-                $_SESSION['tree_prefix']=$dataDb->tree_prefix;
-                $database=$dataDb->tree_prefix;
-            }
-        }
-    }
-}
-*/
 
 // *** Use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
 if (isset($_GET["tree_id"])) $select_tree_id = $_GET["tree_id"];
@@ -312,7 +274,9 @@ if (isset($database) and is_string($database) and $database) {
     // *** Check if family tree really exists ***
     $dataDb = $db_functions->get_tree($database);
     if ($dataDb) {
-        if ($database == $dataDb->tree_prefix) $_SESSION['tree_prefix'] = $database;
+        if ($database == $dataDb->tree_prefix) {
+            $_SESSION['tree_prefix'] = $database;
+        }
     }
 }
 
@@ -388,27 +352,8 @@ if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cro
     }
 }
 
-// *** Added in mar. 2022: disable NO_ZERO_DATE and NO_ZERO_IN_DATE. To solve sorting problems in genealogical dates. ***
-//$result= $dbh->query("SET GLOBAL sql_mode=(SELECT
-//	REPLACE(
-//		REPLACE(@@sql_mode,'NO_ZERO_DATE','')
-//	,'NO_ZERO_IN_DATE',''));");
-// *** This query is probably better ***
-$result = $dbh->query("SET SESSION sql_mode=(SELECT
-    REPLACE(
-        REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE','')
-    ,'NO_ZERO_IN_DATE',''));");
-
-// *** Added in mar. 2023. To prevent double results in search results ***
-// *** Also added in admin/index.php ***
-//SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
-$result = $dbh->query("SET SESSION sql_mode=(SELECT
-    REPLACE(
-        REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY','')
-    ,'NO_ZERO_IN_DATE',''));");
-
-
 // *** New routing script sept. 2023 ***
+/*
 include_once(__DIR__ . '/app/routing/router.php');
 # Search route, return match or not found
 $router = new Router();
@@ -437,6 +382,7 @@ if (isset($matchedRoute['page'])) {
         $tmp_path = $matchedRoute['tmp_path'];
     }
 }
+*/
 
 // *** Backwards compatibility only ***
 // *** Example: gezin.php?database=humo_&id=F1&hoofdpersoon=I2 ***
@@ -473,179 +419,114 @@ if ($humo_option["url_rewrite"] == "j" and $tmp_path) {
 include_once(__DIR__ . '/include/links.php');
 $link_cls = new Link_cls($uri_path);
 
-
-//include_once(__DIR__ . "/views/layout.php");
-
-
 // *** Base controller ***
 require __DIR__ . '/app/controller/Controller.php';
 //$controllerObj = new Controller($dbh, $db_functions);
 
-/*
-if ($page == 'index') {
-    // ***********************************************************************************************
-    // ** Main index class ***
-    // ***********************************************************************************************
-
-    // *** Replace the main index by an own CMS page ***
-    $text = '';
-    if (isset($humo_option["main_page_cms_id_" . $selected_language]) and $humo_option["main_page_cms_id_" . $selected_language]) {
-        // *** Show CMS page ***
-        if (is_numeric($humo_option["main_page_cms_id_" . $selected_language])) {
-            $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='" . $humo_option["main_page_cms_id_" . $selected_language] . "' AND page_status!=''");
-            $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
-            $text = $cms_pagesDb->page_text;
-        }
-    } elseif (isset($humo_option["main_page_cms_id"]) and $humo_option["main_page_cms_id"]) {
-        // *** Show CMS page ***
-        if (is_numeric($humo_option["main_page_cms_id"])) {
-            $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='" . $humo_option["main_page_cms_id"] . "' AND page_status!=''");
-            $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
-            $text = $cms_pagesDb->page_text;
-        }
-    }
-
-    if ($text) {
-?>
-        <!-- Show CMS page -->
-        <div class="row m-lg-1 py-3 genealogy_row">
-            <div class="col-sm-12">
-                <?= $text; ?>
-            </div>
-        </div>
-<?php
-    } else {
-        // *** Show default HuMo-genealogy homepage ***
-        //$mainindex->show_tree_index();
-        include __DIR__ . '/views/tree_index.php';
-    }
-*/
-//} elseif ($page == 'address') {
 if ($page == 'address') {
     require __DIR__ . '/app/controller/addressController.php';
     $controllerObj = new AddressController($db_functions, $user);
     $data = $controllerObj->detail();
-    //require  __DIR__ . '/views/address.php';
 } elseif ($page == 'addresses') {
     require __DIR__ . '/app/controller/addressesController.php';
     $controllerObj = new AddressesController($dbh, $user, $tree_id);
     $data = $controllerObj->list();
-    //require __DIR__ . '/views/addresses.php';
 } elseif ($page == 'ancestor_report') {
     require __DIR__ . '/app/controller/ancestor_reportController.php';
     $controllerObj = new Ancestor_reportController($dbh);
     $data = $controllerObj->list($tree_id);
-    //require __DIR__ . '/views/ancestor_report.php';
 } elseif ($page == 'ancestor_chart') {
     require __DIR__ . '/app/controller/ancestor_chartController.php';
     $controllerObj = new Ancestor_chartController($dbh, $user);
     $data = $controllerObj->list($tree_id);
-    //require __DIR__ . '/views/ancestor_chart.php';
 } elseif ($page == 'ancestor_sheet') {
     require __DIR__ . '/app/controller/ancestor_sheetController.php';
     $controllerObj = new Ancestor_sheetController($dbh, $user);
     $data = $controllerObj->list($tree_id);
-    //require __DIR__ . '/views/ancestor_sheet.php';
 } elseif ($page == 'anniversary') {
     require __DIR__ . '/app/controller/anniversaryController.php';
     $controllerObj = new AnniversaryController();
     $data = $controllerObj->anniversary();
-    //require __DIR__ . '/views/anniversary.php';
 } elseif ($page == 'cms_pages') {
     require __DIR__ . '/app/controller/cms_pagesController.php';
     $controllerObj = new CMS_pagesController($dbh, $user);
     $data = $controllerObj->list();
-    //require __DIR__ . '/views/cms_pages.php';
 } elseif ($page == 'cookies') {
-    //require __DIR__ . '/views/cookies.php';
+    //
 } elseif ($page == 'descendant_chart') {
     require __DIR__ . '/app/controller/descendant_chartController.php';
     $controllerObj = new Descendant_chartController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
-    //require __DIR__ . '/views/descendant_chart.php';
 } elseif ($page == 'family_rtf') {
-    //require __DIR__ . '/views/family_rtf.php';
+    //
 } elseif ($page == 'family') {
     require __DIR__ . '/app/controller/familyController.php';
     $controllerObj = new FamilyController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
-    //require __DIR__ . '/views/family.php';
 } elseif ($page == 'fanchart') {
-    //require __DIR__ . '/views/fanchart.php';
+    //
 } elseif ($page == 'help') {
-    //require __DIR__ . '/views/help.php';
+    //
 } elseif ($page == 'hourglass') {
     require __DIR__ . '/app/controller/hourglassController.php';
     $controllerObj = new HourglassController();
     $data = $controllerObj->getHourglass($dbh, $tree_id);
-    //require __DIR__ . '/views/hourglass.php';
 } elseif ($page == 'latest_changes') {
     require __DIR__ . '/app/controller/latest_changesController.php';
     $controllerObj = new Latest_changesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id);
-    //require __DIR__ . '/views/latest_changes.php';
 } elseif ($page == 'list') {
     require __DIR__ . '/app/controller/listController.php';
     $controllerObj = new ListController();
     $data = $controllerObj->list_names($dbh, $tree_id, $user, $humo_option);
-    //require __DIR__ . '/views/list.php';
 } elseif ($page == 'list_places_families') {
     require __DIR__ . '/app/controller/list_places_familiesController.php';
     $controllerObj = new ListPlacesFamiliesController();
     $data = $controllerObj->list_places_names($tree_id);
-    //require __DIR__ . '/views/list_places_families.php';
 } elseif ($page == 'list_names') {
     require __DIR__ . '/app/controller/list_namesController.php';
     $controllerObj = new List_namesController();
     $data = $controllerObj->list_names($dbh, $tree_id, $user);
-    //require __DIR__ . '/views/list_names.php';
 } elseif ($page == 'login') {
-    //require __DIR__ . '/views/login.php';
+    //
 } elseif ($page == 'mailform') {
-    //require __DIR__ . '/views/mailform.php';
+    //
 } elseif ($page == 'maps') {
-    //require __DIR__ . '/views/maps.php';
-
+    //
 } elseif ($page == 'photoalbum') {
-    //require __DIR__ . '/views/photoalbum.php';
+    //
 } elseif ($page == 'register') {
-    //require __DIR__ . '/views/register.php';
+    //
 } elseif ($page == 'relations') {
     require __DIR__ . '/app/controller/relationsController.php';
     $controllerObj = new RelationsController($dbh);
     $data = $controllerObj->getRelations();
-    //require __DIR__ . '/views/relations.php';
 } elseif ($page == 'outline_report') {
     require __DIR__ . '/app/controller/outline_reportController.php';
     $controllerObj = new Outline_reportController();
     $data = $controllerObj->getOutlineReport($dbh, $tree_id, $humo_option);
-    //require __DIR__ . '/views/outline_report.php';
 } elseif ($page == 'user_settings') {
     require __DIR__ . '/app/controller/user_settingsController.php';
     $controllerObj = new User_settingsController();
     $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
-    //require __DIR__ . '/views/user_settings.php';
 } elseif ($page == 'statistics') {
-    //require __DIR__ . '/views/statistics.php';
+    //
 } elseif ($page == 'sources') {
     require __DIR__ . '/app/controller/sourcesController.php';
     $controllerObj = new SourcesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id, $user, $humo_option, $link_cls, $uri_path);
-    //require __DIR__ . '/views/sources.php';
 } elseif ($page == 'source') {
     require __DIR__ . '/app/controller/sourceController.php';
     $controllerObj = new SourceController($dbh, $db_functions, $tree_id); // Using Controller.
     if (isset($_GET["id"])) $id = $_GET["id"]; // *** url_rewrite is disabled ***
     $data = $controllerObj->source($id);
-    //require __DIR__ . '/views/source.php';
 } elseif ($page == 'timeline') {
     require __DIR__ . '/app/controller/timelineController.php';
     $controllerObj = new TimelineController();
     if (isset($_GET["id"])) $id = $_GET["id"]; // *** url_rewrite is disabled ***
     $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
-    //require __DIR__ . '/views/timeline.php';
 } elseif ($page == 'tree_index') {
-    //require __DIR__ . '/views/tree_index.php';
+    //
 }
 
 include_once(__DIR__ . "/views/layout.php");

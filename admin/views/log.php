@@ -155,8 +155,8 @@ if (isset($_GET['menu_admin'])) {
                         echo '</td>';
                         echo '<td><input type="text" name="' . $dataDb->setting_id . 'own_code" value="' . $lijst[0] . '" size="5"></td>';
                         echo '<td><input type="text" name="' . $dataDb->setting_id . 'link_text" value="' . $lijst[1] . '" size="20"></td>';
-                        echo '<td><input type="Submit" name="change_link" value="' . __('Change') . '"></td>';
-                        echo '<td bgcolor="red"><input type="Submit" name="' . $dataDb->setting_id . 'remove_link" value="' . __('Remove') . '"></td>';
+                        echo '<td><input type="submit" name="change_link" value="' . __('Change') . '"></td>';
+                        echo '<td bgcolor="red"><input type="submit" name="' . $dataDb->setting_id . 'remove_link" value="' . __('Remove') . '"></td>';
                         echo "</tr>";
                         $teller++;
                     }
@@ -168,7 +168,7 @@ if (isset($_GET['menu_admin'])) {
                         <input type="hidden" name="link_order" value="<?= $new_number; ?>">
                         <td><input type="text" name="own_code" placeholder="<?= __('IP Address'); ?>" size="5"></td>
                         <td><input type="text" name="link_text" placeholder="<?= __('Description'); ?>" size="20"></td>
-                        <td><input type="Submit" name="add_link" value="<?= __('Add'); ?>"></td>
+                        <td><input type="submit" name="add_link" value="<?= __('Add'); ?>"></td>
                         <td><br></td>
                     </tr>
                 <?php

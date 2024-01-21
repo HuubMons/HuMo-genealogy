@@ -67,7 +67,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
         <tr>
             <td><?= __('Change'); ?></td>
-            <td><input type="Submit" name="change_tree_data" value="<?= __('Change'); ?>"></td>
+            <td><input type="submit" name="change_tree_data" value="<?= __('Change'); ?>"></td>
         </tr>
 
     </table>

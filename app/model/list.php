@@ -117,34 +117,41 @@ class ListModel
 
     public function getSelection()
     {
+        $change=false;
+
         $selection['pers_firstname'] = '';
         if (isset($_POST['pers_firstname'])) {
             $selection['pers_firstname'] = $_POST['pers_firstname'];
             //$selection['pers_firstname']=htmlentities($_POST['pers_firstname'],ENT_QUOTES,'UTF-8');
+            $change=true;
         }
         // *** Used for frequent firstnames in statistics page ***
         if (isset($_GET['pers_firstname'])) {
             $selection['pers_firstname'] = $_GET['pers_firstname'];
             $_GET['adv_search'] = '1';
+            $change=true;
         }
 
         $selection['part_firstname'] = '';
         if (isset($_POST['part_firstname'])) {
             $selection['part_firstname'] = $_POST['part_firstname'];
+            $change=true;
         }
         if (isset($_GET['part_firstname'])) {
             $selection['part_firstname'] = $_GET['part_firstname'];
-            $_SESSION["save_selection"] = $selection;
+            $change=true;
         }
 
         // *** Prefix (names list and most frequent names in main menu.) ***
         $selection['pers_prefix'] = '';
         if (isset($_POST['pers_prefix'])) {
             $selection['pers_prefix'] = $_POST['pers_prefix'];
+            $change=true;
         }
         if (isset($_GET['pers_prefix'])) {
             $selection['pers_prefix'] = $_GET['pers_prefix'];
             //$selection['pers_prefix']=htmlentities($_GET['pers_prefix'],ENT_QUOTES,'UTF-8');
+            $change=true;
         }
 
         // *** Lastname ***
@@ -152,185 +159,212 @@ class ListModel
         if (isset($_POST['pers_lastname'])) {
             $selection['pers_lastname'] = $_POST['pers_lastname'];
             //$selection['pers_lastname']=htmlentities($_POST['pers_lastname'],ENT_QUOTES,'UTF-8');
-            $_SESSION["save_selection"] = $selection;
+            $change=true;
         }
         if (isset($humo_option['one_name_study']) and $humo_option['one_name_study'] == 'y') {
             if ((isset($_GET['adv_search']) and $_GET['adv_search'] == 1) or (isset($_GET['index_list']) and $_GET['index_list'] == 'search') or (isset($_GET['reset']) and $_GET['reset'] == 1)) {
                 $selection['pers_lastname'] = $humo_option['one_name_thename'];
+                $change=true;
             }
         }
         if (isset($_GET["pers_lastname"])) {
             $selection['pers_lastname'] = $_GET['pers_lastname'];
             //$selection['pers_lastname']=htmlentities($_GET['pers_lastname'],ENT_QUOTES,'UTF-8');
             $selection['pers_lastname'] = str_replace("|", "&", $selection['pers_lastname']);  // Don't use a & character in a GET link
-            $_SESSION["save_selection"] = $selection;
+            $change=true;
         }
 
         $selection['part_lastname'] = '';
         if (isset($_POST['part_lastname'])) {
             $selection['part_lastname'] = $_POST['part_lastname'];
-            $_SESSION["save_selection"] = $selection;
+            $change=true;
         }
         // *** Used for clicking in the names list ***
         if (isset($_GET['part_lastname'])) {
             $selection['part_lastname'] = $_GET['part_lastname'];
-            $_SESSION["save_selection"] = $selection;
+            $change=true;
         }
 
         // ***  ADVANCED SEARCH added by Yossi Beck, translated and integrated in person search screen by Huub. *** //
         $selection['birth_place'] = '';
         if (isset($_POST['birth_place'])) {
             $selection['birth_place'] = $_POST['birth_place'];
+            $change=true;
         }
         $selection['part_birth_place'] = '';
         if (isset($_POST['part_birth_place'])) {
             $selection['part_birth_place'] = $_POST['part_birth_place'];
+            $change=true;
         }
 
         $selection['death_place'] = '';
         if (isset($_POST['death_place'])) {
             $selection['death_place'] = $_POST['death_place'];
+            $change=true;
         }
         $selection['part_death_place'] = '';
         if (isset($_POST['part_death_place'])) {
             $selection['part_death_place'] = $_POST['part_death_place'];
+            $change=true;
         }
 
         $selection['birth_year'] = '';
         if (isset($_POST['birth_year'])) {
             $selection['birth_year'] = $_POST['birth_year'];
+            $change=true;
         }
         $selection['birth_year_end'] = '';
         if (isset($_POST['birth_year_end'])) {
             $selection['birth_year_end'] = $_POST['birth_year_end'];
+            $change=true;
         }
 
         $selection['death_year'] = '';
         if (isset($_POST['death_year'])) {
             $selection['death_year'] = $_POST['death_year'];
+            $change=true;
         }
         $selection['death_year_end'] = '';
         if (isset($_POST['death_year_end'])) {
             $selection['death_year_end'] = $_POST['death_year_end'];
+            $change=true;
         }
 
         $selection['spouse_firstname'] = '';
         if (isset($_POST['spouse_firstname'])) {
             $selection['spouse_firstname'] = $_POST['spouse_firstname'];
             //$selection['spouse_firstname']=htmlentities($_POST['spouse_firstname'],ENT_QUOTES,'UTF-8');
+            $change=true;
         }
         $selection['part_spouse_firstname'] = '';
         if (isset($_POST['part_spouse_firstname'])) {
             $selection['part_spouse_firstname'] = $_POST['part_spouse_firstname'];
+            $change=true;
         }
 
         $selection['spouse_lastname'] = '';
         if (isset($_POST['spouse_lastname'])) {
             $selection['spouse_lastname'] = $_POST['spouse_lastname'];
             //$selection['spouse_lastname']=htmlentities($_POST['spouse_lastname'],ENT_QUOTES,'UTF-8');
+            $change=true;
         }
         $selection['part_spouse_lastname'] = '';
         if (isset($_POST['part_spouse_lastname'])) {
             $selection['part_spouse_lastname'] = $_POST['part_spouse_lastname'];
+            $change=true;
         }
 
         $selection['sexe'] = '';
         if (isset($_POST['sexe'])) {
             $selection['sexe'] = $_POST['sexe'];
+            $change=true;
         } elseif (isset($_GET['sexe'])) {
             $selection['sexe'] = $_GET['sexe'];
+            $change=true;
         }
 
         // *** Own Code ***
         $selection['own_code'] = '';
         if (isset($_POST['own_code'])) {
             $selection['own_code'] = $_POST['own_code'];
+            $change=true;
         }
         $selection['part_own_code'] = '';
         if (isset($_POST['part_own_code'])) {
             $selection['part_own_code'] = $_POST['part_own_code'];
+            $change=true;
         }
 
         // *** Gedcomnumber ***
         $selection['gednr'] = '';
         if (isset($_POST['gednr'])) {
             $selection['gednr'] = $_POST['gednr'];
+            $change=true;
         }
         $selection['part_gednr'] = '';
         if (isset($_POST['part_gednr'])) {
             $selection['part_gednr'] = $_POST['part_gednr'];
+            $change=true;
         }
 
         // *** Profession ***
         $selection['pers_profession'] = '';
         if (isset($_POST['pers_profession'])) {
             $selection['pers_profession'] = $_POST['pers_profession'];
+            $change=true;
         }
         $selection['part_profession'] = '';
         if (isset($_POST['part_profession'])) {
             $selection['part_profession'] = $_POST['part_profession'];
+            $change=true;
         }
 
         // *** Text ***
         $selection['text'] = '';
         if (isset($_POST['text'])) {
             $selection['text'] = $_POST['text'];
+            $change=true;
         }
         $selection['part_text'] = '';
         if (isset($_POST['part_text'])) {
             $selection['part_text'] = $_POST['part_text'];
+            $change=true;
         }
 
         // *** Place ***
         $selection['pers_place'] = '';
         if (isset($_POST['pers_place'])) {
             $selection['pers_place'] = $_POST['pers_place'];
+            $change=true;
         }
         $selection['part_place'] = '';
         if (isset($_POST['part_place'])) {
             $selection['part_place'] = $_POST['part_place'];
+            $change=true;
         }
 
         // *** Zip code ***
         $selection['zip_code'] = '';
         if (isset($_POST['zip_code'])) {
             $selection['zip_code'] = $_POST['zip_code'];
+            $change=true;
         }
         $selection['part_zip_code'] = '';
         if (isset($_POST['part_zip_code'])) {
             $selection['part_zip_code'] = $_POST['part_zip_code'];
+            $change=true;
         }
 
         // *** Research status ***
         $selection['parent_status'] = '';
         if (!isset($_POST['quicksearch']) and isset($_POST['parent_status'])) {
             $selection['parent_status'] = $_POST['parent_status'];
+            $change=true;
         }
 
         // *** Witness ***
         $selection['witness'] = '';
         if (isset($_POST['witness'])) {
             $selection['witness'] = $_POST['witness'];
+            $change=true;
         }
         $selection['part_witness'] = '';
         if (isset($_POST['part_witness'])) {
             $selection['part_witness'] = $_POST['part_witness'];
-
-            // ******************************************************
-            // *** THIS LAST LINE WILL SAVE ALL $selection VALUES ***
-            // ******************************************************
-            $_SESSION["save_selection"] = $selection;
+            $change=true;
         }
 
-        // *** Store selection if search for most frequent firstnames is used from statistics page ***
-        if (isset($_GET['pers_firstname'])) {
+        // *** Store selection if an item is changed ***
+        if ($change==true){
             $_SESSION["save_selection"] = $selection;
         }
 
         // *** Read session for multiple pages ***
         if (isset($_GET['item'])) {
             // *** Multiple search values ***
-            if (isset($_SESSION["save_selection"])) $selection = $_SESSION["save_selection"];
+            if (isset($_SESSION["save_selection"])) {
+                $selection = $_SESSION["save_selection"];
+            }
         }
 
         return $selection;
@@ -1255,6 +1289,12 @@ class ListModel
                 $query .= ' ORDER BY place_order, pers_lastname, pers_firstname';
             }
         }
+
+
+        // Test line to show query.
+        //echo $query.'!!';
+        //end;
+
 
         //*** Patronym list ***
         if ($index_list == 'patronym') {

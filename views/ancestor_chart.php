@@ -86,7 +86,6 @@ function ancestor_chart_person($id, $box_appearance)
     global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
     global $marr_date_array, $marr_place_array;
     global $gedcomnumber, $language, $dirmark1, $dirmark2;
-    //global $screen_mode;
 
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {

@@ -88,7 +88,7 @@ $tree_result = $dbh->query($tree_sql);
                 <input type="checkbox" name="user_notes" <?= $user_notes ? ' checked' : ''; ?>> <?= __('User notes'); ?>
                 <input type="checkbox" name="editor_notes" <?= $editor_notes ? ' checked ' : ''; ?>> <?= __('Editor notes'); ?>
 
-                <input type="Submit" name="note_settings" class="btn btn-success btn-sm" value="<?= __('Select'); ?>">
+                <input type="submit" name="note_settings" class="btn btn-success btn-sm" value="<?= __('Select'); ?>">
             </form>
         </td>
     </tr>
@@ -116,8 +116,8 @@ $tree_result = $dbh->query($tree_sql);
                     <input type="hidden" name="page" value="user_notes">
                     <input type="hidden" name="tree" value="<?= $tree_id; ?>">
                     <input type="hidden" name="note_id" value="<?= $_POST['note_id']; ?>">
-                    <input type="Submit" name="note_remove" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                    <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                    <input type="submit" name="note_remove" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                    <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
                 </form>
             </div>
         <?php
@@ -187,7 +187,7 @@ $tree_result = $dbh->query($tree_sql);
                             <?php } ?>
                             <option value="remove" <?= $note_status == 'remove' ? ' selected' : ''; ?>><?= __('Remove'); ?></option>
                         </select>
-                        <input type="Submit" name="submit_button" value="<?= __('Select'); ?>">
+                        <input type="submit" name="submit_button" value="<?= __('Select'); ?>">
                     </form>
 
                     <?php if ($noteDb->note_kind != 'user') { ?>

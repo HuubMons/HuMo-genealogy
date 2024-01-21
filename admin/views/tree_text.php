@@ -96,9 +96,9 @@
             <td>
                 <?php
                 if (isset($treetext_id)) {
-                    echo __('Change') . '</td><td><input type="Submit" name="change_tree_text" value="' . __('Change') . '">';
+                    echo __('Change') . '</td><td><input type="submit" name="change_tree_text" value="' . __('Change') . '">';
                 } else {
-                    echo __('Change') . '</td><td><input type="Submit" name="add_tree_text" value="' . __('Change') . '">';
+                    echo __('Change') . '</td><td><input type="submit" name="add_tree_text" value="' . __('Change') . '">';
                 }
                 ?>
             </td>

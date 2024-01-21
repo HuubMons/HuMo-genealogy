@@ -48,8 +48,8 @@ if (isset($_POST['person_remove'])) {
 
     $confirm .= ' <form method="post" action="' . $phpself . '" style="display : inline;">';
     $confirm .= '<input type="hidden" name="page" value="' . $page . '">';
-    $confirm .= ' <input type="Submit" name="person_remove2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-    $confirm .= ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+    $confirm .= ' <input type="submit" name="person_remove2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
+    $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
     $confirm .= '</form>';
     $confirm .= '</div>';
 }
@@ -694,8 +694,8 @@ if (isset($_GET['fam_remove']) or isset($_POST['fam_remove'])) {
     $confirm_relation .= ' <form method="post" action="' . $phpself . '#marriage" style="display : inline;">';
     $confirm_relation .= '<input type="hidden" name="page" value="' . $page . '">';
     $confirm_relation .= '<input type="hidden" name="fam_remove3" value="' . $fam_remove . '">';
-    $confirm_relation .= ' <input type="Submit" name="fam_remove2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-    $confirm_relation .= ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+    $confirm_relation .= ' <input type="submit" name="fam_remove2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
+    $confirm_relation .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
     $confirm_relation .= '</form>';
     $confirm_relation .= '</div>';
 }
@@ -1012,8 +1012,8 @@ if (isset($_POST['child_connect2']) and $_POST['child_connect2'] and !isset($_PO
             $confirm .= '<input type="hidden" name="family_id" value="' . $_POST['family_id'] . '">';
             $confirm .= '<input type="hidden" name="children" value="' . $_POST['children'] . '">';
             $confirm .= '<input type="hidden" name="child_connect2" value="' . $_POST['child_connect2'] . '">';
-            $confirm .= ' <input type="Submit" name="child_connecting" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-            $confirm .= ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+            $confirm .= ' <input type="submit" name="child_connecting" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
+            $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
             $confirm .= '</form>';
             $confirm .= '</div>';
         } else {
@@ -1086,8 +1086,8 @@ if (isset($_GET['child_disconnect'])) {
     $confirm .= '<input type="hidden" name="family_id" value="' . $_GET['family_id'] . '">';
     $confirm .= '<input type="hidden" name="child_disconnect2" value="' . $_GET['child_disconnect'] . '">';
     $confirm .= '<input type="hidden" name="child_disconnect_gedcom" value="' . $_GET['child_disconnect_gedcom'] . '">';
-    $confirm .= ' <input type="Submit" name="child_disconnecting" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-    $confirm .= ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+    $confirm .= ' <input type="submit" name="child_disconnecting" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
+    $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
     $confirm .= '</form>';
     $confirm .= '</div>';
 }
@@ -1318,7 +1318,6 @@ if (isset($_POST['relation_add2']) and $_POST['relation_add2'] != '') {
 }
 
 
-//if ($menu_admin=='marriage' AND $person->pers_fams){
 // *** Switch parents ***
 if (isset($_POST['parents_switch'])) {
     $sql = "UPDATE humo_families SET
@@ -2006,8 +2005,8 @@ if (isset($_GET['event_drop'])) {
         $confirm .= ' <input type="checkbox" name="event_ancestors" value="alive"' . $selected . '> ' . __('Ancestors') . '<br>';
     }
 
-    $confirm .= ' <input type="Submit" name="event_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-    $confirm .= ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+    $confirm .= ' <input type="submit" name="event_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
+    $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
     $confirm .= '</form>';
     $confirm .= '</div>';
 }
@@ -2488,8 +2487,8 @@ if (isset($_GET['connect_drop'])) {
             ?>
 
             <strong><?= __('Are you sure you want to remove this event?'); ?></strong>
-            <input type="Submit" name="connect_drop2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="connect_drop2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
         </form>
     </div>
 <?php
@@ -2620,42 +2619,6 @@ if (isset($_GET['connect_up'])) {
 // *** Save source ***
 // *******************
 
-// *** Add a new shared source in page "Shared sources" without connections ***
-if (isset($_POST['source_add'])) {
-    // *** Generate new GEDCOM number ***
-    $new_gedcomnumber = 'S' . $db_functions->generate_gedcomnr($tree_id, 'source');
-
-    //source_shared='1',
-    $sql = "INSERT INTO humo_sources SET
-        source_tree_id='" . $tree_id . "',
-        source_gedcomnr='" . $new_gedcomnumber . "',
-        source_status='" . $editor_cls->text_process($_POST['source_status']) . "',
-        source_title='" . $editor_cls->text_process($_POST['source_title']) . "',
-        source_date='" . safe_text_db($_POST['source_date']) . "',
-        source_place='" . $editor_cls->text_process($_POST['source_place']) . "',
-        source_publ='" . $editor_cls->text_process($_POST['source_publ']) . "',
-        source_refn='" . $editor_cls->text_process($_POST['source_refn']) . "',
-        source_auth='" . $editor_cls->text_process($_POST['source_auth']) . "',
-        source_subj='" . $editor_cls->text_process($_POST['source_subj']) . "',
-        source_item='" . $editor_cls->text_process($_POST['source_item']) . "',
-        source_kind='" . $editor_cls->text_process($_POST['source_kind']) . "',
-        source_repo_caln='" . $editor_cls->text_process($_POST['source_repo_caln']) . "',
-        source_repo_page='" . safe_text_db($_POST['source_repo_page']) . "',
-        source_repo_gedcomnr='" . $editor_cls->text_process($_POST['source_repo_gedcomnr']) . "',
-        source_text='" . $editor_cls->text_process($_POST['source_text']) . "',
-        source_new_user='" . $username . "',
-        source_new_date='" . $gedcom_date . "',
-        source_new_time='" . $gedcom_time . "'";
-    $result = $dbh->query($sql);
-
-    //$new_source_qry= "SELECT * FROM humo_sources
-    //	WHERE source_tree_id='".$tree_id."' ORDER BY source_id DESC LIMIT 0,1";
-    //$new_source_result = $dbh->query($new_source_qry);
-    //$new_source=$new_source_result->fetch(PDO::FETCH_OBJ);
-    //$_POST['source_id']=$new_source->source_id;
-    $_POST['source_id'] = $dbh->lastInsertId();
-}
-
 // *** december 2020: new combined source and shared source system ***
 if (isset($_GET['source_add2'])) {
     $username = $_SESSION['user_name_admin'];
@@ -2683,7 +2646,6 @@ if (isset($_GET['source_add2'])) {
         source_new_user='" . $username . "',
         source_new_date='" . $gedcom_date . "',
         source_new_time='" . $gedcom_time . "'";
-    //echo $sql.'<br>';
     $result = $dbh->query($sql);
 
     $sql = "UPDATE humo_connections SET
@@ -2692,7 +2654,6 @@ if (isset($_GET['source_add2'])) {
         connect_new_time='" . $gedcom_time . "',
         connect_source_id='" . $new_gedcomnumber . "'
         WHERE connect_id='" . safe_text_db($_GET["connect_id"]) . "'";
-    //echo $sql.'<br>';
     $result = $dbh->query($sql);
 }
 
@@ -2872,8 +2833,8 @@ if (isset($_GET['note_drop']) and is_numeric($_GET['note_drop'])) {
     $confirm .= ' <form method="post" action="' . $phpself . '" style="display : inline;">';
     $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';
     $confirm .= '<input type="hidden" name="note_drop" value="' . $_GET['note_drop'] . '">';
-    $confirm .= ' <input type="Submit" name="note_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-    $confirm .= ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+    $confirm .= ' <input type="submit" name="note_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
+    $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
     $confirm .= '</form>';
     $confirm .= '</div>';
 }

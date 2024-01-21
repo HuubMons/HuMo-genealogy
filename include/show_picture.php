@@ -5,7 +5,7 @@ function show_media($event_connect_kind, $event_connect_id)
 {
     global $dbh, $db_functions, $tree_id, $user, $dataDb, $uri_path;
     global $sect, $screen_mode; // *** RTF Export ***
-    global $data;
+    global $data, $page;
 
     $templ_person = array(); // local version
     $process_text = '';
@@ -21,7 +21,7 @@ function show_media($event_connect_kind, $event_connect_id)
         }
 
         //TODO check PDF code
-        if ($screen_mode == 'PDF') $tree_pict_path = __DIR__ . '/../'.$tree_pict_path;
+        if ($screen_mode == 'PDF') $tree_pict_path = __DIR__ . '/../' . $tree_pict_path;
 
         // *** Standard connected media by person and family ***
         $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
@@ -232,14 +232,17 @@ function show_media($event_connect_kind, $event_connect_id)
             }
 
             if ($screen_mode != 'RTF') {
-                // *** Show source by picture ***
-                $source_array = '';
-                if ($event_connect_kind == 'person') {
-                    $source_array = show_sources2("person", "pers_event_source", $media_event_id[$i]);
-                } else {
-                    $source_array = show_sources2("family", "fam_event_source", $media_event_id[$i]);
+                // Jan. 2024: Don't connect a source to a picture if source page is shown.
+                if ($page != 'source') {
+                    // *** Show source by picture ***
+                    $source_array = '';
+                    if ($event_connect_kind == 'person') {
+                        $source_array = show_sources2("person", "pers_event_source", $media_event_id[$i]);
+                    } else {
+                        $source_array = show_sources2("family", "fam_event_source", $media_event_id[$i]);
+                    }
+                    if ($source_array) $picture_text .= $source_array['text'];
                 }
-                if ($source_array) $picture_text .= $source_array['text'];
 
                 $process_text .= '<div class="photo">';
                 $process_text .= $picture;

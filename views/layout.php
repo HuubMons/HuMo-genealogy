@@ -71,6 +71,7 @@ if (isset($_POST['favorite_remove'])) {
     }
 }
 
+// TODO this is probably disabled allready.
 // *** Cookie for "show descendant chart below fanchart"
 // Set default ("0" is OFF, "1" is ON):
 $showdesc = "0";
@@ -96,6 +97,35 @@ if ($language["dir"] == "rtl") {   // right to left language
 if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
     $html_text = '';
 }
+
+function getActiveTopMenu(string $page = 'home')
+{
+    $menu_top = 'home';
+    $menu_top_items = [
+        'home' => ['index'],
+        'information' => ['cms_pages'],
+        'tree_menu' => [
+            'tree_index', 'persons', 'family', 'family_rtf', 'descendant', 'ancestor_report',
+            'ancestor_chart', 'ancestor_sheet', 'list', 'list_names', 'source', 'sources',
+            'places', 'list_places_families', 'photoalbum', 'addresses', 'address'
+        ],
+        'tool_menu' => ['anniversary', 'statistics', 'relations', 'maps', 'mailform', 'latest_changes'],
+        'user_menu' => ['login', 'register'],
+        'setting_menu' => ['user_settings']
+    ];
+
+    foreach ($menu_top_items as $menu_top_item => $sub_menu_items) {
+        if (in_array($page, $sub_menu_items)) {
+            $menu_top = $menu_top_item;
+            break;
+        }
+    }
+
+    return $menu_top;
+}
+$menu_top = getActiveTopMenu($page);
+//if ($menu_top === 'tool_menu') echo 'active';
+
 ?>
 
 <!DOCTYPE html>
@@ -110,19 +140,19 @@ if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE
 
     <title><?= $head_text; ?></title>
 
-    <?php
-    if ($humo_option["searchengine"] == "j") {
-        echo $humo_option["robots_option"];
-    }
-    if ($base_href) {
-        echo '<base href="' . $base_href . '">' . "\n";
-    }
-    ?>
+    <?php if ($humo_option["searchengine"] == "j") { ?>
+        <?= $humo_option["robots_option"]; ?>
+    <?php } ?>
+
+    <?php if ($base_href) { ?>
+        <base href="<?= $base_href; ?>">
+    <?php } ?>
 
     <!-- Bootstrap added in dec. 2023 -->
     <link href="css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="css/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Default CSS settings -->
     <link href="css/gedcom.css" rel="stylesheet" type="text/css">
 
     <!-- TODO this is only needed for outline report -->
@@ -185,10 +215,12 @@ if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE
     echo '<script src="include/popup_menu/popup_menu.js"></script>';
     echo '<link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">';
 
-    // *** Always load script, because of "Random photo" at homepage ***
+    // TODO replace with bootstrap carousel.
+    // *** Always load script, because of "Random photo" at homepage (also used in other pages showing pictures) ***
     // *** Photo lightbox effect using GLightbox ***
     echo '<link rel="stylesheet" href="include/glightbox/css/glightbox.css">';
     echo '<script src="include/glightbox/js/glightbox.min.js"></script>';
+    // TODO: could be done here using "defer". But bootstrap will be tried first.
     // *** Remark: there is also a script in footer script, otherwise GLightbox doesn't work ***
 
     // *** CSS changes for mobile devices ***
@@ -441,8 +473,9 @@ if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE
             </button>
             <div class="collapse navbar-collapse" id="main_nav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item <?php if ($page == 'index') echo 'genealogy_active'; ?>">
-                        <a class="nav-link <?php if ($page == 'index') echo 'active'; ?>" href="<?= $menu_path_home; ?>"><?= __('Home'); ?></a>
+
+                    <li class="nav-item <?php if ($menu_top === 'home') echo 'genealogy_active'; ?>">
+                        <a class="nav-link <?php if ($menu_top === 'home') echo 'active'; ?>" href="<?= $menu_path_home; ?>"><?= __('Home'); ?></a>
                     </li>
 
                     <?php
@@ -452,47 +485,20 @@ if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE
                         $cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
                         if ($cms_qry->rowCount() > 0) {
                     ?>
-                            <li class="nav-item <?php if ($page == 'cms_pages') echo 'genealogy_active'; ?>">
-                                <a class="nav-link <?php if ($page == 'cms_pages') echo 'active'; ?>" href="<?= $menu_path_cms; ?>"><?= __('Information'); ?></a>
+                            <li class="nav-item <?php if ($menu_top == 'information') echo 'genealogy_active'; ?>">
+                                <a class="nav-link <?php if ($menu_top == 'information') echo 'active'; ?>" href="<?= $menu_path_cms; ?>"><?= __('Information'); ?></a>
                             </li>
                     <?php
                         }
                     }
                     ?>
 
-                    <?php
-                    $menu_top = '';
-                    if ($page == 'tree_index') {
-                        $menu_top = 'active';
-                    }
-                    if ($page == 'persons' || $page == 'family' || $page == 'family_rtf' || $page == 'descendant' || $page == 'ancestor_report' || $page == 'ancestor_chart' || $page == 'ancestor_sheet' || $page == 'list') {
-                        $menu_top = 'active';
-                    }
-                    if ($page == 'list_names') {
-                        $menu_top = 'active';
-                    }
-                    if ($page == 'sources' || $page == 'source') {
-                        $menu_top = 'active';
-                    }
-                    if ($page == 'places') {
-                        $menu_top = 'active';
-                    }
-                    if ($page == 'list_places_families') {
-                        $menu_top = 'active';
-                    }
-                    if ($page == 'photoalbum') {
-                        $menu_top = 'active';
-                    }
-                    if ($page == 'addresses' || $page == 'address') {
-                        $menu_top = 'active';
-                    }
-                    ?>
                     <?php if (!$bot_visit) { ?>
-                        <li class="nav-item dropdown active <?php if ($menu_top) echo 'genealogy_active'; ?>">
+                        <li class="nav-item dropdown active <?php if ($menu_top == 'tree_menu') echo 'genealogy_active'; ?>">
                             <?php // TODO add active if dropdown item is selected ;
                             ?>
 
-                            <a class="nav-link dropdown-toggle <?= $menu_top ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
+                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'tree_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
                                 <!-- <img src="images/family_tree.png" class="mobile_hidden" alt="' . __('Family tree') . '"> -->
                                 <?= __('Family tree'); ?>
                             </a>
@@ -566,30 +572,8 @@ if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE
                         ) {
                     ?>
 
-                            <?php
-                            $menu_top = '';
-                            if ($page == 'anniversary') {
-                                $menu_top = 'active';
-                            }
-                            if ($page == 'statistics') {
-                                $menu_top = 'active';
-                            }
-                            if ($page == 'relations') {
-                                $menu_top = 'active';
-                            }
-                            if ($page == 'maps') {
-                                $menu_top = 'active';
-                            }
-                            if ($page == 'mailform') {
-                                $menu_top = 'active';
-                            }
-                            if ($page == 'latest_changes') {
-                                $menu_top = 'active';
-                            }
-                            ?>
-
-                            <li class="nav-item dropdown <?php if ($menu_top) echo 'genealogy_active'; ?>">
-                                <a class="nav-link dropdown-toggle <?= $menu_top; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
+                            <li class="nav-item dropdown <?php if ($menu_top == 'tool_menu') echo 'genealogy_active'; ?>">
+                                <a class="nav-link dropdown-toggle <?php if ($menu_top == 'tool_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
                                     <?= __('Tools'); ?>
                                 </a>
 
@@ -627,18 +611,10 @@ if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE
                         <?php } ?>
                     <?php } ?>
 
-
-                    <?php
-                    $menu_top = '';
-                    if ($page == 'login' || $page == 'register') {
-                        $menu_top = 'active';
-                    }
-                    ?>
-
                     <!-- Only show login/ register if user isn't logged in -->
                     <?php if ($user['group_menu_login'] == 'j' and !$user["user_name"]) { ?>
-                        <li class="nav-item dropdown <?php if ($menu_top) echo 'genealogy_active'; ?>">
-                            <a class="nav-link dropdown-toggle <?= $menu_top; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
+                        <li class="nav-item dropdown <?php if ($menu_top == 'user_menu') echo 'genealogy_active'; ?>">
+                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'user_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
                                 <?= __('Login'); ?>
                             </a>
                             <ul class="dropdown-menu genealogy_menu">
@@ -652,27 +628,18 @@ if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE
                         </li>
                     <?php } ?>
 
-                    <?php
-                    $menu_top = '';
-                    if ($page == 'settings') {
-                        $menu_top = 'active';
-                    }
-                    ?>
-
                     <!-- Menu: Control menu -->
                     <?php if (!$bot_visit) { ?>
-                        <li class="nav-item dropdown <?php if ($menu_top) echo 'genealogy_active'; ?>">
-                            <a class="nav-link dropdown-toggle <?= $menu_top; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
+                        <li class="nav-item dropdown <?php if ($menu_top == 'setting_menu') echo 'genealogy_active'; ?>">
+                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'setting_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
                                 <?= __('Control'); ?>
                             </a>
                             <ul class="dropdown-menu genealogy_menu">
-                                <?php if ($user["group_birthday_list"] == 'j') {; ?>
-                                    <li><a class="dropdown-item <?php if ($page == 'settings') echo 'active'; ?>" href="<?= $menu_path_user_settings; ?>"><?= __('User settings'); ?></a></li>
-                                <?php } ?>
+                                <li><a class="dropdown-item <?php if ($page == 'settings') echo 'active'; ?>" href="<?= $menu_path_user_settings; ?>"><?= __('User settings'); ?></a></li>
 
                                 <!-- Admin pages -->
                                 <?php if ($user['group_edit_trees'] or $user['group_admin'] == 'j') {; ?>
-                                    <li><a class="dropdown-item" href="<?= $menu_path_admin; ?>"><?= __('Admin'); ?></a></li>
+                                    <li><a class="dropdown-item" href="<?= $menu_path_admin; ?>" target="_blank"><?= __('Admin'); ?></a></li>
                                 <?php } ?>
 
                                 <!-- Login - Logoff -->
@@ -836,6 +803,7 @@ if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE
             or $page == 'ancestor_report'
             or $page == 'ancestor_sheet'
             or $page == 'ancestor_chart'
+            or $page == 'fanchart'
         ) { ?>
         </div>
     <?php } ?>

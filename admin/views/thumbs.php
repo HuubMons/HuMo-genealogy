@@ -138,7 +138,7 @@ if (isset($_GET['menu_admin'])) {
                 echo '<input type="radio" value="no" name="default_path" ' . $checked2 . '> ';
 
                 echo '<input type="text" name="tree_pict_path" value="' . $tree_pict_path . '" size="40" placeholder="../pictures/">';
-                echo ' <input type="Submit" name="change_tree_data" value="' . __('Change') . '"><br>';
+                echo ' <input type="submit" name="change_tree_data" value="' . __('Change') . '"><br>';
                 printf(__('Example of picture path:<br>
 www.myhomepage.nl/humo-gen/ => folder for %s files.<br>
 www.myhomepage.nl/pictures/ => folder for pictures.<br>
@@ -199,7 +199,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                     // *** Feb. 2023: no user changable picture size ***
                     //echo __('Thumbnail height: ').' <input type="text" name="pict_height" value="'.$thumb_height.'" size="4"> pixels';
-                    echo ' <input type="Submit" name="thumbnail" value="' . __('Create thumbnails') . '">';
+                    echo ' <input type="submit" name="thumbnail" value="' . __('Create thumbnails') . '">';
                     echo '</form>';
                     echo '</td></tr>';
                 }
@@ -216,7 +216,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 <input type="hidden" name="page" value="thumbs">
                                 <input type="hidden" name="menu_admin" value="picture_show">
                                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                                <input type="Submit" name="change_filename" value="<?= __('Show thumbnails'); ?>">
+                                <input type="submit" name="change_filename" value="<?= __('Show thumbnails'); ?>">
                                 <?= ' ' . __('You can change filenames here.'); ?>
                             </form>
                         </td>
@@ -511,7 +511,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 echo '<input type="hidden" name="picture_path" value="' . $selected_picture_folder . '">';
                                 echo '<input type="hidden" name="filename_old" value="' . $filename . '">';
                                 echo '<input type="text" name="filename" value="' . $filename . '" size="20">';
-                                echo '<input type="Submit" name="change_filename" value="' . __('Change filename') . '">';
+                                echo '<input type="submit" name="change_filename" value="' . __('Change filename') . '">';
                                 echo '</form>';
                             } else {
                                 echo '<div class="photobooktext">' . $filename . '</div>';
@@ -664,7 +664,7 @@ function categories()
             ?>
         </table>
         <br>
-        <div style="margin-left:auto; margin-right:auto; text-align:center;"><input type="Submit" name="save_cat" value="<?= __('Save changes'); ?>"></div>
+        <div style="margin-left:auto; margin-right:auto; text-align:center;"><input type="submit" name="save_cat" value="<?= __('Save changes'); ?>"></div>
     </form>
 <?php
 }

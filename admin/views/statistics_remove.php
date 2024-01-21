@@ -29,5 +29,5 @@ if (isset($_POST['remove2']) and is_numeric($_POST['stat_month']) and is_numeric
     <input type="text" name="stat_day" value="1" size="1">
     <input type="text" name="stat_month" value="<?= $month; ?>" size="1">
     <input type="text" name="stat_year" value="<?= $year; ?>" size="2"> <?= __('d-m-yyyy'); ?><br>
-    <input type="Submit" name="remove2" value="<?= __('REMOVE statistic data'); ?>">
+    <input type="submit" name="remove2" value="<?= __('REMOVE statistic data'); ?>">
 </form>

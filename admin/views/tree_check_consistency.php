@@ -27,12 +27,12 @@ if (isset($_POST['mark_all'])) $checked = ' checked';
 
 echo '<h3>' . __('Check consistency of dates') . '</h3>';
 echo __('You can mark or unmark any of the check options and change defaults. Then press ');
-echo '<input type="Submit" style="font-size:120%" name="final_check" value="' . __('Check') . '"><br>';
+echo '<input type="submit" style="font-size:120%" name="final_check" value="' . __('Check') . '"><br>';
 echo __('(with default settings a full check may take between 12-15 seconds per 10,000 persons)') . '<br><br>';
 if ($rtlmarker == "ltr") echo '<table class="humo" style="width:100%;text-align:left;border:none"><tr><td style="border:none;width:50%">';
 else echo '<table class="humo" style="width:100%;text-align:right;border:none"><tr><td style="border:none;width:50%">';
-echo '<input type="Submit" style="font-size:90%" name="unmark" value="' . __('Unmark all options') . '">&nbsp;';
-echo '<input type="Submit" style="font-size:90%" name="mark_all" value="' . __('Mark all options') . '"><br>';
+echo '<input type="submit" style="font-size:90%" name="unmark" value="' . __('Unmark all options') . '">&nbsp;';
+echo '<input type="submit" style="font-size:90%" name="mark_all" value="' . __('Mark all options') . '"><br>';
 echo '<input type="checkbox" id="1" name="birth_date1" value="1" ' . $checked . '>' . __('Birth date - after bapt/marr/death/burial date') . '<br>';
 // id 2 was moved to end
 echo '<input type="checkbox" id="3" name="birth_date3" value="1" ' . $checked . '>' . __('Birth date - more than ');

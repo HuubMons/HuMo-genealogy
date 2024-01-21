@@ -53,7 +53,7 @@
                     <label class="form-check-label"><?= __('Add field for Bar/ Bat Mitsva before baptise fields (instead of in "events" list)'); ?></label>
                 </div><br>
 
-                <input type="Submit" style="margin:3px" name="save_option3" class="btn btn-success" value="<?= __('Change'); ?>">
+                <input type="submit" style="margin:3px" name="save_option3" class="btn btn-success" value="<?= __('Change'); ?>">
             </td>
         </tr>
 

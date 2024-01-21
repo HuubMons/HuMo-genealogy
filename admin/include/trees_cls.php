@@ -111,7 +111,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
-                        <input type="Submit" value="<?= __('Back to main merge menu'); ?>">
+                        <input type="submit" value="<?= __('Back to main merge menu'); ?>">
                     </form>
 
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -122,7 +122,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                         <input type="hidden" name="no_increase" value="1">
                         <input type="hidden" name="left" value="<?= $right; ?>">
                         <input type="hidden" name="right" value="<?= $left; ?>">
-                        <input type="Submit" name="duplicate_compare" value="<?= __('<- Switch left and right ->'); ?>">
+                        <input type="submit" name="duplicate_compare" value="<?= __('<- Switch left and right ->'); ?>">
                     </form>
 
                     &nbsp;&nbsp;&nbsp;&nbsp;
@@ -130,7 +130,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
-                        <input type="Submit" name="duplicate_compare" value="<?= __('Skip to next'); ?>">
+                        <input type="submit" name="duplicate_compare" value="<?= __('Skip to next'); ?>">
                     </form>
 
                     &nbsp;&nbsp;&nbsp;&nbsp;<?= __('Skip to nr: '); ?>
@@ -148,7 +148,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                             echo '<option value="' . $x . '" ' . $selected . '>' . ($x + 1) . '</option>';
                         }
                         echo '</select>';
-                        echo '<input type="Submit" name="duplicate_compare" value="' . __('Go!') . '">';
+                        echo '<input type="submit" name="duplicate_compare" value="' . __('Go!') . '">';
                         ?>
                     </form>
 
@@ -159,7 +159,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                         echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                         echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
                         echo '<input type="hidden" name="dupl" value="1">';
-                        echo '<input type="Submit" name="merge" value="' . __('Merge right into left') . '">';
+                        echo '<input type="submit" name="merge" value="' . __('Merge right into left') . '">';
 
                         echo '<br><br>';
                         $this->show_pair($left, $right, 'duplicate');
@@ -179,7 +179,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
+                echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
                 echo '</form>';
             }
         }
@@ -197,7 +197,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" name="manual" value="' . __('Choose another pair') . '">';
+                echo '<input type="submit" name="manual" value="' . __('Choose another pair') . '">';
                 echo '</form>';
             } elseif ($per1Db->pers_gedcomnumber == $per2Db->pers_gedcomnumber) { // trying to merge same person!!
                 echo '<br>' . __('This is one person already - you can\'t merge! Please try again') . '<br><br>';
@@ -206,7 +206,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" name="manual" value="' . __('Choose another pair') . '">';
+                echo '<input type="submit" name="manual" value="' . __('Choose another pair') . '">';
                 echo '</form>';
             } else {
                 echo '<br>' . __('Carefully compare these two persons. Only if you are <b>absolutely sure</b> they are identical, press "Merge right into left"') . '.<br>';
@@ -217,7 +217,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
+                echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
                 echo '</form>';
 
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -227,7 +227,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
                 echo '<input type="hidden" name="left" value="' . $_POST['right'] . '">';
                 echo '<input type="hidden" name="right" value="' . $_POST['left'] . '">';
-                echo '<input type="Submit" name="manual_compare" value="' . __('<- Switch left and right ->') . '">';
+                echo '<input type="submit" name="manual_compare" value="' . __('<- Switch left and right ->') . '">';
                 echo '</form>';
 
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -235,7 +235,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" name="manual" value="' . __('Choose another pair') . '">';
+                echo '<input type="submit" name="manual" value="' . __('Choose another pair') . '">';
                 echo '</form>';
 
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -246,7 +246,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="manu" value="1">';
                 echo '<input type="hidden" name="left" value="' . $_POST['left'] . '">';
                 echo '<input type="hidden" name="right" value="' . $_POST['right'] . '">';
-                echo '<input type="Submit" name="merge" value="' . __('Merge right into left') . '">';
+                echo '<input type="submit" name="merge" value="' . __('Merge right into left') . '">';
 
                 echo '<br><br>';
                 $this->show_pair($_POST['left'], $_POST['right'], 'manual');
@@ -303,7 +303,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
+                echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
                 echo '</form>';
 
                 // button skip
@@ -312,7 +312,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
                 echo '<input type="hidden" name="skip_rel" value="1">';
-                echo '<input type="Submit" name="relatives" value="' . __('Skip to next') . '">';
+                echo '<input type="submit" name="relatives" value="' . __('Skip to next') . '">';
                 echo '</form>';
 
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -323,7 +323,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="swap" value="1">';
                 echo '<input type="hidden" name="left" value="' . $right . '">';
                 echo '<input type="hidden" name="right" value="' . $left . '">';
-                echo '<input type="Submit" name="relatives" value="' . __('<- Switch left and right ->') . '">';
+                echo '<input type="submit" name="relatives" value="' . __('<- Switch left and right ->') . '">';
                 echo '</form>';
 
                 // button merge
@@ -334,7 +334,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="left" value="' . $left . '">';
                 echo '<input type="hidden" name="right" value="' . $right . '">';
                 echo '<input type="hidden" name="rela" value="1">';
-                echo '<input type="Submit" name="relatives" value="' . __('Merge right into left') . '">';
+                echo '<input type="submit" name="relatives" value="' . __('Merge right into left') . '">';
                 echo '<br><br>';
                 $this->show_pair($left, $right, 'relatives');
                 echo '<br>';
@@ -346,7 +346,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
+                echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
                 echo '</form>';
             }
         }
@@ -393,7 +393,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" style="min-width:150px" name="duplicate_compare" value="' . __('Continue duplicate merge') . '">';
+                echo '<input type="submit" style="min-width:150px" name="duplicate_compare" value="' . __('Continue duplicate merge') . '">';
                 echo '</form>';
             }
 
@@ -402,7 +402,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
             echo '&nbsp;&nbsp;' . __('Find doubles only within this family name (optional)') . ': <input type="text" name="famname_search">&nbsp;&nbsp;&nbsp;&nbsp;';
-            echo '<input type="Submit" style="min-width:150px" name="duplicate" value="' . __('Generate new duplicate merge') . '">';
+            echo '<input type="submit" style="min-width:150px" name="duplicate" value="' . __('Generate new duplicate merge') . '">';
             echo '</form>';
 
             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -410,7 +410,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-            echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
+            echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
             echo '</form>';
         }
 
@@ -467,7 +467,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" name="duplicate_compare" value="' . __('Start comparing duplicates') . '">'; // start comparing duplicates
+                echo '<input type="submit" name="duplicate_compare" value="' . __('Start comparing duplicates') . '">'; // start comparing duplicates
                 echo '</form>';
             } else {
                 echo '<br>' . __('No duplicates found. Duplicate merge and Automatic merge won\'t result in merges!') . '<br>'; // no duplicates were found
@@ -478,7 +478,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
+                echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
                 echo '</form>';
             }
         }
@@ -540,7 +540,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 $_SESSION["search1"] = $_SESSION["search2"];
                 $_SESSION["search2"] = $temp;
             }
-            // if joomla component will be continued the following line has to be adjusted for joomla
+
             echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
@@ -745,14 +745,14 @@ You will be notified of results as the action is completed');
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-            echo '<input type="Submit" name="auto_merge" value="' . __('Start automatic merge') . '">';
+            echo '<input type="submit" name="auto_merge" value="' . __('Start automatic merge') . '">';
             echo '</form>';
             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
             echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-            echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
+            echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
             echo '</form>';
         }
 
@@ -853,7 +853,7 @@ You will be notified of results as the action is completed');
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" style="font-weight:bold;font-size:120%" name="relatives" value="' . __('Relatives merge') . '">';
+                echo '<input type="submit" style="font-weight:bold;font-size:120%" name="relatives" value="' . __('Relatives merge') . '">';
                 echo '</form>';
             } else {
                 echo __('You may wish to proceed with duplicate merge or manual merge.') . '<br><br>';
@@ -863,14 +863,14 @@ You will be notified of results as the action is completed');
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" name="duplicate_choices" value="' . __('Duplicate merge') . '">';
+                echo '<input type="submit" name="duplicate_choices" value="' . __('Duplicate merge') . '">';
                 echo '</form>';
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                 echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" name="manual" value="' . __('Manual merge') . '">';
+                echo '<input type="submit" name="manual" value="' . __('Manual merge') . '">';
                 echo '</form>';
             }
             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -878,7 +878,7 @@ You will be notified of results as the action is completed');
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-            echo '<input type="Submit" value="' . __('Back to main merge menu') . '">';
+            echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
             echo '</form>';
 
             if (isset($mergedlist)) { // there is a list of merged persons
@@ -1022,8 +1022,8 @@ You will be notified of results as the action is completed');
 
             echo '</td></tr>';
 
-            echo '<tr><td colspan="2" style="text-align:center"><input type="Submit" name="settings" value="' . __('Save') . '">';
-            echo '&nbsp;&nbsp;&nbsp;<input type="Submit" name="reset" value="' . __('Reset') . '"></td>';
+            echo '<tr><td colspan="2" style="text-align:center"><input type="submit" name="settings" value="' . __('Save') . '">';
+            echo '&nbsp;&nbsp;&nbsp;<input type="submit" name="reset" value="' . __('Reset') . '"></td>';
 
             echo '</td><td>';
             echo '</tr></table><br><br><br>';
@@ -1051,7 +1051,7 @@ As a last resort you can perform manual merges.');
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-            echo '<input type="Submit" style="min-width:150px" name="automatic" value="' . __('Automatic merge') . '">';
+            echo '<input type="submit" style="min-width:150px" name="automatic" value="' . __('Automatic merge') . '">';
             echo '</form>';
             echo '</td><td>';
             echo __('You will be shown the set of strict criteria used for automatic merging and then you can decide whether to continue.');
@@ -1063,7 +1063,7 @@ As a last resort you can perform manual merges.');
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" style="min-width:150px" name="relatives" value="' . __('Relatives merge') . '">';
+                echo '<input type="submit" style="min-width:150px" name="relatives" value="' . __('Relatives merge') . '">';
                 echo '</form>';
             } else {
                 echo __('Relatives merge');
@@ -1081,7 +1081,7 @@ Surrounding relatives are saved to the database and you can also return to it at
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-            echo '<input type="Submit" style="min-width:150px" name="duplicate_choices" value="' . __('Duplicate merge') . '">';
+            echo '<input type="submit" style="min-width:150px" name="duplicate_choices" value="' . __('Duplicate merge') . '">';
             echo '</form>';
             echo '</td><td>';
 
@@ -1095,7 +1095,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-            echo '<input type="Submit" style="min-width:150px" name="manual" value="' . __('Manual merge') . '">';
+            echo '<input type="submit" style="min-width:150px" name="manual" value="' . __('Manual merge') . '">';
             echo '</form>';
             echo '</td><td>';
             echo __('You can pick two persons out of the database to consider for merging.');
@@ -1106,7 +1106,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
             echo '<input type="hidden" name="page" value="' . $page . '">';
             echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
             echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-            echo '<input type="Submit" style="min-width:150px" name="settings" value="' . __('Settings') . '">';
+            echo '<input type="submit" style="min-width:150px" name="settings" value="' . __('Settings') . '">';
             echo '</form>';
             echo '</td><td>' . __('Here you can change the default filters for the different merge options.');
             echo '</td></tr></table>';
@@ -2606,16 +2606,16 @@ This is the easiest way to make sure you don\'t forget anyone.');
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="Submit" style="font-weight:bold;font-size:120%" name="relatives" value="' . __('Relatives merge') . '">';
+                echo '<input type="submit" style="font-weight:bold;font-size:120%" name="relatives" value="' . __('Relatives merge') . '">';
                 echo '</form>';
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<form method="post" action="' . $phpself . '" style="display : inline;">';
                 echo '<input type="hidden" name="page" value="' . $page . '">';
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
                 if (isset($_POST['left'])) { // manual merge
-                    echo '<input type="Submit" name="manual" value="' . __('Continue manual merge') . '">';
+                    echo '<input type="submit" name="manual" value="' . __('Continue manual merge') . '">';
                 } else { // duplicate merge
-                    echo '<input type="Submit" name="duplicate_compare" value="' . __('Continue duplicate merge') . '">';
+                    echo '<input type="submit" name="duplicate_compare" value="' . __('Continue duplicate merge') . '">';
                 }
                 echo '</form>';
             } else {
@@ -2624,9 +2624,9 @@ This is the easiest way to make sure you don\'t forget anyone.');
                 echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                 echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
                 if (isset($_POST['left'])) { // manual merge
-                    echo '<input type="Submit" name="manual" value="' . __('Choose another pair') . '">';
+                    echo '<input type="submit" name="manual" value="' . __('Choose another pair') . '">';
                 } else { // duplicate merge
-                    echo '<input type="Submit" name="duplicate_compare" value="' . __('Continue with next pair') . '">';
+                    echo '<input type="submit" name="duplicate_compare" value="' . __('Continue with next pair') . '">';
                 }
                 echo '</form>';
             }

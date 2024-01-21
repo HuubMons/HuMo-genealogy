@@ -135,8 +135,8 @@ if (isset($_GET['cms_item']) and $_GET['cms_item'] == 'settings') {
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="cms_pages" value="cms_page">
                     <input type="hidden" name="page_id" value="<?= $_GET['page_remove']; ?>">
-                    <input type="Submit" name="page_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                    <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                    <input type="submit" name="page_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                    <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
                 </form>
             <?php } ?>
         </div>
@@ -201,8 +201,8 @@ Please disconnect the pages from this menu first.'); ?></strong>
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="cms_menu" value="cms_menu">
                     <input type="hidden" name="menu_id" value="<?= $_GET['menu_remove']; ?>">
-                    <input type="Submit" name="menu_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                    <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                    <input type="submit" name="menu_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                    <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
                 </form>
             <?php } ?>
         </div>
@@ -375,9 +375,9 @@ Please disconnect the pages from this menu first.'); ?></strong>
                         echo ' <input type="CHECKBOX" name="page_status"' . $checked . '>' . __('Published');
 
                         if ($page_edit == 'add') {
-                            echo ' <input type="Submit" name="add_page" value="' . __('Save') . '">';
+                            echo ' <input type="submit" name="add_page" value="' . __('Save') . '">';
                         } else {
-                            echo ' <input type="Submit" name="change_page" value="' . __('Save') . '">';
+                            echo ' <input type="submit" name="change_page" value="' . __('Save') . '">';
                         }
                         ?>
                         <?= __('Visitors counter'); ?>: <?= $page_counter; ?><br>
@@ -428,7 +428,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                             ?>
                         </td>
                         <td><input type="text" name="menu_name" value="<?= $cms_pagesDb->menu_name; ?>" size=50></td>
-                        <td><input type="Submit" name="change_menu" value="<?= __('Save'); ?>"></td>
+                        <td><input type="submit" name="change_menu" value="<?= __('Save'); ?>"></td>
                     </tr>
                 </form>
             <?php
@@ -441,7 +441,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                 <tr bgcolor="green">
                     <td><br></td>
                     <td><input type="text" name="menu_name" value="" size=50></td>
-                    <td><input type="Submit" name="add_menu" value="<?= __('Add'); ?>"></td>
+                    <td><input type="submit" name="add_menu" value="<?= __('Add'); ?>"></td>
                 </tr>
             </form>
         </table>
@@ -521,7 +521,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
             <table class="humo" border="1" cellspacing="0" width="95%">
                 <tr class="table_header">
                     <th><?= __('CMS Settings'); ?></th>
-                    <th><input type="Submit" name="cms_settings" value="<?= __('Change'); ?>"></th>
+                    <th><input type="submit" name="cms_settings" value="<?= __('Change'); ?>"></th>
                 </tr>
 
                 <tr>
