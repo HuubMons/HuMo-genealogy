@@ -26,7 +26,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 
     <table class="humo" border="1">
         <tr class="table_header">
-            <th colspan="2"><?= __('General settings'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('General settings'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
 
         <tr>
@@ -136,7 +136,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <tr class="table_header">
-            <th colspan="2"><?= __('Search engine settings'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Search engine settings'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
 
         <tr class="humo_color">
@@ -170,7 +170,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <tr class="table_header">
-            <th colspan="2"><?= __('Contact & registration form settings'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Contact & registration form settings'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
 
         <tr>
@@ -248,7 +248,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <tr class="table_header">
-            <th colspan="2"><?= __('Email Settings'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Email Settings'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
 
         <tr>
@@ -332,7 +332,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <tr class="table_header">
-            <th colspan="2"><?= __('International settings'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('International settings'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
 
         <tr>
@@ -435,7 +435,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <tr class="table_header">
-            <th colspan="2"><?= __('Settings Main Menu'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Settings Main Menu'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
 
         <tr>
@@ -471,7 +471,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 
         <!-- FAMILY -->
         <tr class="table_header">
-            <th colspan="2"><?= __('Settings family page'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Settings family page'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
 
         <tr>
@@ -486,7 +486,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 
         <!-- Watermark text and color in PDF file -->
         <tr class="table_header">
-            <th colspan="2"><?= __('Watermark text in PDF file'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Watermark text in PDF file'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
         <tr>
             <td style="white-space:nowrap;"><?= __('Watermark text in PDF file'); ?></td>
@@ -504,7 +504,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 
         <!-- Display for One Name Study web sites -->
         <tr class="table_header">
-            <th colspan="2"><?= __('Display for One Name Study web sites'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Display for One Name Study web sites'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
         <tr>
             <td style="white-space:nowrap;"><?= __('One Name Study display'); ?>?</td>
@@ -523,7 +523,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <tr class="table_header">
-            <th colspan="2">'<?= __('Save settings'); ?> <input type="Submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2">'<?= __('Save settings'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
     </table>
 </form>

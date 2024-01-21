@@ -3,6 +3,7 @@
 // *** Marriages and children list ***
 // ***********************************
 
+// TODO check line.
 if ($add_person == false) {
 ?>
     <table class="humo" border="1">
@@ -27,7 +28,7 @@ if ($add_person == false) {
                         echo '<form method="POST" action="' . $phpself . '">';
                         echo '<input type="hidden" name="page" value="' . $page . '">';
                         echo '<input type="hidden" name="marriage_nr" value="' . $familyDb->fam_gedcomnumber . '">';
-                        echo ' <input type="Submit" name="dummy3" value="' . __('Select family') . ' ' . ($i + 1) . '">';
+                        echo ' <input type="submit" name="dummy3" value="' . __('Select family') . ' ' . ($i + 1) . '">';
                         echo '</form>';
                     } else {
                         //echo ucfirst(__('marriage')).' '.($i+1);
@@ -84,7 +85,7 @@ if ($add_person == false) {
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <?= __('Or add relation with existing person:'); ?> <input class="fonts" type="text" name="relation_add2" value="" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>" required>
                         <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id=<?= $tree_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
-                        <input type="Submit" name="dummy4" value="<?= __('Add relation'); ?>">
+                        <input type="submit" name="dummy4" value="<?= __('Add relation'); ?>">
                     </form>
                 </td>
             </tr>
@@ -196,7 +197,7 @@ if ($add_person == false) {
 
             // *** Remove marriage ***
             if (isset($marriage)) {
-                echo '<td id="target1">' . $hide_show_all . '<a name="marriage"></a><input type="Submit" name="fam_remove" value="' . __('Delete relation') . '"></td>';
+                echo '<td id="target1">' . $hide_show_all . '<a name="marriage"></a><input type="submit" name="fam_remove" value="' . __('Delete relation') . '"></td>';
             } else {
                 echo '<td id="target1">' . $hide_show_all . '<a name="marriage"></a><br></td>';
             }
@@ -207,7 +208,7 @@ if ($add_person == false) {
             echo '[' . $fam_gedcomnumber . '] ' . show_person($man_gedcomnumber) . ' ' . __('and') . ' ' . show_person($woman_gedcomnumber) . '<br>';
 
             echo '<td id="target3">';
-            echo '<input type="Submit" name="marriage_change" value="' . __('Save') . '">';
+            echo '<input type="submit" name="marriage_change" value="' . __('Save') . '">';
             echo '</td></tr>';
 
             if (isset($marriage)) {
@@ -739,7 +740,7 @@ if ($add_person == false) {
             echo '<tr class="table_header_large">';
             echo '<td></td><td colspan="2"></td>';
             echo '<td style="border-left: none; text-align:left; font-size: 1.5em;">';
-            echo '<input type="Submit" name="marriage_change" value="' . __('Save') . '">';
+            echo '<input type="submit" name="marriage_change" value="' . __('Save') . '">';
             echo '</td>';
             echo '</tr>';
             ?>
@@ -882,7 +883,7 @@ if ($add_person == false) {
 
             echo '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id=' . $tree_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
 
-            echo ' <input type="Submit" name="dummy4" value="' . __('Select child') . '">';
+            echo ' <input type="submit" name="dummy4" value="' . __('Select child') . '">';
             echo '</form><br>';
 
             // *** Order children using drag and drop using jquery and jqueryui ***

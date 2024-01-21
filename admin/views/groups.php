@@ -4,300 +4,25 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-global $selected_language;
-
 $phpself = 'index.php';
 
-echo '<h1 class="center">' . __('User groups') . '</h1>';
 
-if (isset($_POST['group_add'])) {
-    $sql = "INSERT INTO humo_groups SET group_name='new groep', group_privacy='n', group_menu_places='n', group_admin='n',
-        group_sources='n', group_source_presentation='title', group_text_presentation='show', group_citation_generation='n',
-        group_user_notes='n', group_user_notes_show='n', group_show_restricted_source='y',
-        group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j',
-        group_religion='n', group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n',
-        group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n', group_texts='j',
-        group_family_presentation='compact', group_maps_presentation='hide',
-        group_menu_cms='y', group_menu_persons='j', group_menu_names='j', group_menu_login='j', group_menu_change_password='y',
-        group_showstatistics='j', group_relcalc='j', group_googlemaps='j', group_contact='j', group_latestchanges='j',
-        group_text_pers='j', group_texts_pers='j', group_texts_fam='j', group_alive='n', group_alive_date_act='j',
-        group_alive_date='1920', group_death_date_act='j', group_death_date='1980',
-        group_filter_death='n', group_filter_total='n', group_filter_name='j',
-        group_filter_fam='j', group_filter_pers_show_act='j', group_filter_pers_show='*', group_filter_pers_hide_act='n',
-        group_filter_pers_hide='#'";
-    $db_update = $dbh->query($sql);
-}
 
-if (isset($_POST['group_change'])) {
-    if ($_POST["group_filter_pers_show"] == '') {
-        $_POST["group_filter_pers_show"] = '*';
-    }
-    if ($_POST["group_filter_pers_hide"] == '') {
-        $_POST["group_filter_pers_hide"] = '#';
-    }
-    if ($_POST["group_pers_hide_totally"] == '') {
-        $_POST["group_pers_hide_totally"] = 'X';
-    }
+// TODO create seperate controller script.
+require_once  __DIR__ . "/../models/groups.php";
+$groupsModel = new GroupsModel($dbh);
+$groupsModel->set_group_id();
+$groupsModel->update_group($dbh);
+$groups['group_id'] = $groupsModel->get_group_id();
 
-    $group_admin = 'n';
-    if (isset($_POST["group_admin"])) {
-        $group_admin = 'j';
-    }
-    //$group_editor='n'; if (isset($_POST["group_editor"])){ $group_editor='j'; }
-    $group_statistics = 'n';
-    if (isset($_POST["group_statistics"])) {
-        $group_statistics = 'j';
-    }
-    $group_birthday_rss = 'n';
-    if (isset($_POST["group_birthday_rss"])) {
-        $group_birthday_rss = 'j';
-    }
-    $group_menu_cms = 'n';
-    if (isset($_POST["group_menu_cms"])) {
-        $group_menu_cms = 'y';
-    }
-    $group_menu_persons = 'n';
-    if (isset($_POST["group_menu_persons"])) {
-        $group_menu_persons = 'j';
-    }
-    $group_menu_names = 'n';
-    if (isset($_POST["group_menu_names"])) {
-        $group_menu_names = 'j';
-    }
-    $group_menu_places = 'n';
-    if (isset($_POST["group_menu_places"])) {
-        $group_menu_places = 'j';
-    }
-    $group_addresses = 'n';
-    if (isset($_POST["group_addresses"])) {
-        $group_addresses = 'j';
-    }
-    $group_pictures = 'n';
-    if (isset($_POST["group_pictures"])) {
-        $group_pictures = 'j';
-    }
-    // *** If photobook is enabled, also enable pictures ***
-    $group_photobook = 'n';
-    if (isset($_POST["group_photobook"])) {
-        $group_photobook = 'j';
-        $group_pictures = 'j';
-    }
-    $group_birthday_list = 'n';
-    if (isset($_POST["group_birthday_list"])) {
-        $group_birthday_list = 'j';
-    }
-    $group_showstatistics = 'n';
-    if (isset($_POST["group_showstatistics"])) {
-        $group_showstatistics = 'j';
-    }
-    $group_relcalc = 'n';
-    if (isset($_POST["group_relcalc"])) {
-        $group_relcalc = 'j';
-    }
-    $group_googlemaps = 'n';
-    if (isset($_POST["group_googlemaps"])) {
-        $group_googlemaps = 'j';
-    }
-    $group_contact = 'n';
-    if (isset($_POST["group_contact"])) {
-        $group_contact = 'j';
-    }
-    $group_latestchanges = 'n';
-    if (isset($_POST["group_latestchanges"])) {
-        $group_latestchanges = 'j';
-    }
-    $group_menu_login = 'n';
-    if (isset($_POST["group_menu_login"])) {
-        $group_menu_login = 'j';
-    }
-    $group_menu_change_password = 'n';
-    if (isset($_POST["group_menu_change_password"])) {
-        $group_menu_change_password = 'y';
-    }
-    $group_gedcomnr = 'n';
-    if (isset($_POST["group_gedcomnr"])) {
-        $group_gedcomnr = 'j';
-    }
-    $group_living_place = 'n';
-    if (isset($_POST["group_living_place"])) {
-        $group_living_place = 'j';
-    }
-    $group_places = 'n';
-    if (isset($_POST["group_places"])) {
-        $group_places = 'j';
-    }
-    $group_religion = 'n';
-    if (isset($_POST["group_religion"])) {
-        $group_religion = 'j';
-    }
-    $group_event = 'n';
-    if (isset($_POST["group_event"])) {
-        $group_event = 'j';
-    }
-    $group_own_code = 'n';
-    if (isset($_POST["group_own_code"])) {
-        $group_own_code = 'j';
-    }
-    $group_pdf_button = 'n';
-    if (isset($_POST["group_pdf_button"])) {
-        $group_pdf_button = 'y';
-    }
-    $group_rtf_button = 'n';
-    if (isset($_POST["group_rtf_button"])) {
-        $group_rtf_button = 'y';
-    }
-    $group_citation_generation = 'n';
-    if (isset($_POST["group_citation_generation"])) {
-        $group_citation_generation = 'y';
-    }
-    $group_show_age_living_person = 'n';
-    if (isset($_POST["group_show_age_living_person"])) {
-        $group_show_age_living_person = 'y';
-    }
 
-    //if (!isset($_POST["group_user_notes"])){ $_POST["group_user_notes"]='n'; }
-    $group_user_notes = 'n';
-    if (isset($_POST["group_user_notes"])) {
-        $group_user_notes = 'y';
-    }
-    $group_user_notes_show = 'n';
-    if (isset($_POST["group_user_notes_show"])) {
-        $group_user_notes_show = 'y';
-    }
 
-    $group_show_restricted_source = 'n';
-    if (isset($_POST["group_show_restricted_source"])) {
-        $group_show_restricted_source = 'y';
-    }
-    $group_work_text = 'n';
-    if (isset($_POST["group_work_text"])) {
-        $group_work_text = 'j';
-    }
-    $group_text_pers = 'n';
-    if (isset($_POST["group_text_pers"])) {
-        $group_text_pers = 'j';
-    }
-    $group_texts_pers = 'n';
-    if (isset($_POST["group_texts_pers"])) {
-        $group_texts_pers = 'j';
-    }
-    $group_texts_fam = 'n';
-    if (isset($_POST["group_texts_fam"])) {
-        $group_texts_fam = 'j';
-    }
-    // *** BE AWARE: REVERSED CHECK OF VARIABLE! ***
-    $group_privacy = 'j';
-    if (isset($_POST["group_privacy"])) {
-        $group_privacy = 'n';
-    }
-    $group_alive = 'n';
-    if (isset($_POST["group_alive"])) {
-        $group_alive = 'j';
-    }
-    $group_alive_date_act = 'n';
-    if (isset($_POST["group_alive_date_act"])) {
-        $group_alive_date_act = 'j';
-    }
-    $group_death_date_act = 'n';
-    if (isset($_POST["group_death_date_act"])) {
-        $group_death_date_act = 'j';
-    }
-    $group_filter_death = 'n';
-    if (isset($_POST["group_filter_death"])) {
-        $group_filter_death = 'j';
-    }
-    $group_filter_pers_show_act = 'n';
-    if (isset($_POST["group_filter_pers_show_act"])) {
-        $group_filter_pers_show_act = 'j';
-    }
-    $group_filter_pers_hide_act = 'n';
-    if (isset($_POST["group_filter_pers_hide_act"])) {
-        $group_filter_pers_hide_act = 'j';
-    }
-    $group_pers_hide_totally_act = 'n';
-    if (isset($_POST["group_pers_hide_totally_act"])) {
-        $group_pers_hide_totally_act = 'j';
-    }
-    $group_filter_date = 'n';
-    if (isset($_POST["group_filter_date"])) {
-        $group_filter_date = 'j';
-    }
-    $group_gen_protection = 'n';
-    if (isset($_POST["group_gen_protection"])) {
-        $group_gen_protection = 'j';
-    }
+?>
+<h1 class="center"><?= __('User groups'); ?></h1>
 
-    //group_editor='".$group_editor."',
-    $sql = "UPDATE humo_groups SET
-    group_name='" . $_POST["group_name"] . "',
-    group_statistics='" . $group_statistics . "',
-    group_privacy='" . $group_privacy . "',
-    group_menu_places='" . $group_menu_places . "',
-    group_admin='" . $group_admin . "',
-    group_sources='" . $_POST["group_sources"] . "',
-    group_show_restricted_source='" . $group_show_restricted_source . "',
-    group_source_presentation='" . $_POST["group_source_presentation"] . "',
-    group_text_presentation='" . $_POST["group_text_presentation"] . "',
-    group_citation_generation='" . $group_citation_generation . "',
-    group_user_notes='" . $group_user_notes . "',
-    group_user_notes_show='" . $group_user_notes_show . "',
-    group_birthday_rss='" . $group_birthday_rss . "',
-    group_menu_cms='" . $group_menu_cms . "',
-    group_menu_persons='" . $group_menu_persons . "',
-    group_menu_names='" . $group_menu_names . "',
-    group_menu_login='" . $group_menu_login . "',
-    group_menu_change_password='" . $group_menu_change_password . "',
-    group_birthday_list='" . $group_birthday_list . "',
-    group_showstatistics='" . $group_showstatistics . "',
-    group_relcalc='" . $group_relcalc . "',
-    group_googlemaps='" . $group_googlemaps . "',
-    group_contact='" . $group_contact . "',
-    group_latestchanges='" . $group_latestchanges . "',
-    group_photobook='" . $group_photobook . "',
-    group_pictures='" . $group_pictures . "',
-    group_gedcomnr='" . $group_gedcomnr . "',
-    group_living_place='" . $group_living_place . "',
-    group_places='" . $group_places . "',
-    group_religion='" . $group_religion . "',
-    group_place_date='" . $_POST["group_place_date"] . "',
-    group_kindindex='" . $_POST["group_kindindex"] . "',
-    group_event='" . $group_event . "',
-    group_addresses='" . $group_addresses . "',
-    group_own_code='" . $group_own_code . "',
-    group_pdf_button='" . $group_pdf_button . "',
-    group_rtf_button='" . $group_rtf_button . "',
-    group_family_presentation='" . $_POST["group_family_presentation"] . "',
-    group_maps_presentation='" . $_POST["group_maps_presentation"] . "',
-    group_show_age_living_person='" . $group_show_age_living_person . "',
-    group_work_text='" . $group_work_text . "',
-    group_texts='" . $_POST["group_texts"] . "',
-    group_text_pers='" . $group_text_pers . "',
-    group_texts_pers='" . $group_texts_pers . "',
-    group_texts_fam='" . $group_texts_fam . "',
-    group_alive='" . $group_alive . "',
-    group_alive_date_act='" . $group_alive_date_act . "',
-    group_alive_date='" . $_POST["group_alive_date"] . "',
-    group_death_date_act='" . $group_death_date_act . "',
-    group_death_date='" . $_POST["group_death_date"] . "',
-    group_filter_death='" . $group_filter_death . "',
-    group_filter_total='" . $_POST["group_filter_total"] . "',
-    group_filter_name='" . $_POST["group_filter_name"] . "',
-    group_filter_fam='" . $_POST["group_filter_fam"] . "',
-    group_filter_date='" . $group_filter_date . "',
-    group_filter_pers_show_act='" . $group_filter_pers_show_act . "',
-    group_filter_pers_show='" . $_POST["group_filter_pers_show"] . "',
-    group_filter_pers_hide_act='" . $group_filter_pers_hide_act . "',
-    group_filter_pers_hide='" . $_POST["group_filter_pers_hide"] . "',
-    group_pers_hide_totally_act='" . $group_pers_hide_totally_act . "',
-    group_pers_hide_totally='" . $_POST["group_pers_hide_totally"] . "',
-    group_gen_protection='" . $group_gen_protection . "'
-    WHERE group_id=" . $_POST["id"];
-    //echo $sql;
-    $result = $dbh->query($sql);
-}
-
+<?php
 if (isset($_POST['group_remove'])) {
-    $usersql = "SELECT * FROM humo_users WHERE user_group_id=" . $_POST["id"];
+    $usersql = "SELECT * FROM humo_users WHERE user_group_id=" . $groups['group_id'];
     $user = $dbh->query($usersql);
     $nr_users = $user->rowCount();
 ?>
@@ -309,22 +34,13 @@ if (isset($_POST['group_remove'])) {
             <strong><?= __('Are you sure you want to remove the group:'); ?> "<?= $_POST['group_name']; ?>"?</strong>
             <form method="post" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
-                <input type="hidden" name="id" value="<?= $_POST['id']; ?>">
-                <input type="Submit" name="group_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
+                <input type="submit" name="group_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
             </form>
         <?php } ?>
     </div>
 <?php
-}
-if (isset($_POST['group_remove2'])) {
-    $sql = "DELETE FROM humo_groups WHERE group_id='" . $_POST["id"] . "'";
-    $db_update = $dbh->query($sql);
-}
-
-$show_group_id = '3'; // *** Default group to show ***
-if (isset($_POST['show_group_id'])) {
-    $show_group_id = $_POST['show_group_id'];
 }
 
 // *** User groups ***
@@ -334,7 +50,7 @@ Group "guest" = <b>guests at the website (who are not logged in).</b><br>
 Group "admin" = website administrator.<br>
 Group "family" = family members or genealogists.'), 'HuMo-genealogy');
 
-$groupsql = "SELECT * FROM humo_groups";
+$groupsql = "SELECT group_id, group_name FROM humo_groups";
 $groupresult = $dbh->query($groupsql);
 ?>
 <br>
@@ -345,15 +61,15 @@ $groupresult = $dbh->query($groupsql);
             <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
                 <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
-                    <input type="hidden" name="show_group_id" value="<?= $groupDb->group_id; ?>">
-                    <input type="Submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?php if ($show_group_id == $groupDb->group_id) echo ' class="selected_item"'; ?>>
+                    <input type="hidden" name="group_id" value="<?= $groupDb->group_id; ?>">
+                    <input type="submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?php if ($groupDb->group_id == $groups['group_id']) echo ' class="selected_item"'; ?>>
                 </form>
             <?php } ?>
 
             <!-- Add group -->
             <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
-                <input type="Submit" name="group_add" value="<?= __('ADD GROUP'); ?>">
+                <input type="submit" name="group_add" value="<?= __('ADD GROUP'); ?>">
             </form>
         </td>
     </tr>
@@ -390,22 +106,21 @@ if (!isset($field['group_show_age_living_person'])) {
 }
 
 // *** Show usergroup ***
-$groupsql = "SELECT * FROM humo_groups WHERE group_id='" . $show_group_id . "'";
+$groupsql = "SELECT * FROM humo_groups WHERE group_id='" . $groups['group_id'] . "'";
 $groupresult = $dbh->query($groupsql);
 $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
 ?>
 <form method="POST" action="<?= $phpself; ?>">
     <input type="hidden" name="page" value="<?= $page; ?>">
-    <input type="hidden" name="show_group_id" value="<?= $show_group_id; ?>">
-    <input type="hidden" name="id" value="<?= $groupDb->group_id; ?>">
+    <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
     <table class="humo standard" border="1">
         <?php
         echo '<tr class="table_header"><th>' . __('Group');
         if ($groupDb->group_id > '3') {
-            echo ' <input type="Submit" name="group_remove" value="' . __('REMOVE GROUP') . '">';
+            echo ' <input type="submit" name="group_remove" value="' . __('REMOVE GROUP') . '">';
         }
-        echo '</th><th><input type="Submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        echo '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
 
         echo '<tr><td>' . __('Group name') . '</td><td><input type="text" name="group_name" value="' . $groupDb->group_name . '" size="15"></td></tr>';
 
@@ -428,7 +143,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <tr class="table_header">
             <th><?= __('Menu'); ?></th>
-            <th><input type="Submit" name="group_change" value="<?= __('Change'); ?>"></th>
+            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>"></th>
         </tr>
 
         <tr>
@@ -513,8 +228,8 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         if ($groupDb->group_menu_change_password != 'n') $check = ' checked';
         echo '<td><input type="checkbox" name="group_menu_change_password"' . $check . '></td></tr>';
 
-        //echo '<tr style="background-color:green; color:white"><th>'.__('General').'</font></th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
-        echo '<tr class="table_header"><th>' . __('General') . '</font></th><th><input type="Submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        //echo '<tr style="background-color:green; color:white"><th>'.__('General').'</font></th><th><input type="submit" name="group_change" value="'.__('Change').'"></th></tr>';
+        echo '<tr class="table_header"><th>' . __('General') . '</font></th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
 
         echo '<tr><td>' . __('Show pictures');
         echo ' <i>' . __('(option can only be disabled if option "Show photobook in submenu" is disabled)') . '</i>';
@@ -638,8 +353,8 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         echo '<td><input type="checkbox" name="group_user_notes_show"' . $check . $disabled . '></td></tr>';
 
         // *** Sources ***
-        //echo '<tr style="background-color:green; color:white"><th>'.__('Sources').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
-        echo '<tr class="table_header"><th>' . __('Sources') . '</th><th><input type="Submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        //echo '<tr style="background-color:green; color:white"><th>'.__('Sources').'</th><th><input type="submit" name="group_change" value="'.__('Change').'"></th></tr>';
+        echo '<tr class="table_header"><th>' . __('Sources') . '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
 
         echo '<tr><td>' . __('Don\'t show sources') . '<br>';
         echo __('Only show source titles') . '<br>';
@@ -686,8 +401,8 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         if ($groupDb->group_show_restricted_source != 'n') $check = ' checked';
         echo '<td><input type="checkbox" name="group_show_restricted_source"' . $check . '></td></tr>';
 
-        //echo '<tr style="background-color:green; color:white"><th>'.__('Texts').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
-        echo '<tr class="table_header"><th>' . __('Texts') . '</th><th><input type="Submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        //echo '<tr style="background-color:green; color:white"><th>'.__('Texts').'</th><th><input type="submit" name="group_change" value="'.__('Change').'"></th></tr>';
+        echo '<tr class="table_header"><th>' . __('Texts') . '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
 
         // *** First default presentation of texts, by administrator (visitor can override value) ***
         echo '<tr><td>' . __('Default presentation of text') . '</td>';
@@ -737,8 +452,8 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         if ($groupDb->group_texts_fam != 'n') $check = ' checked';
         echo '<td><input type="checkbox" name="group_texts_fam"' . $check . '></td></tr>';
 
-        //echo '<tr style="background-color:green; color:white"><th>'.__('Privacy filter').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
-        echo '<tr class="table_header"><th>' . __('Privacy filter') . '</th><th><input type="Submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        //echo '<tr style="background-color:green; color:white"><th>'.__('Privacy filter').'</th><th><input type="submit" name="group_change" value="'.__('Change').'"></th></tr>';
+        echo '<tr class="table_header"><th>' . __('Privacy filter') . '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
 
         echo '<tr><th>' . __('Activate privacy filter') . '</th><td></td></tr>';
 
@@ -841,7 +556,7 @@ If possible, try to filter with that') . '</i></td>';
         //$selected=''; if ($groupDb->group_filter_total=='n'){ $selected=' selected'; }
         //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
 
-        echo __('Save all changes') . '</th><th><input type="Submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        echo __('Save all changes') . '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
 
         ?>
     </table>
@@ -852,7 +567,8 @@ If possible, try to filter with that') . '</i></td>';
     $edit_tree_array = explode(";", $groupDb->group_edit_trees);
 
     // *** Update tree settings ***
-    if (isset($_POST['group_change']) and is_numeric($_POST["id"])) {
+    //if (isset($_POST['group_change']) and is_numeric($_POST["id"])) {
+    if (isset($_POST['group_change']) and is_numeric($_POST["group_id"])) {
         $group_hide_trees = '';
         $group_edit_trees = '';
         $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY'");
@@ -875,10 +591,8 @@ If possible, try to filter with that') . '</i></td>';
                 $group_edit_trees .= $data3Db->tree_id;
             }
         }
-        $sql = "UPDATE humo_groups SET
-        group_hide_trees='" . $group_hide_trees . "', 
-        group_edit_trees='" . $group_edit_trees . "' 
-        WHERE group_id=" . $_POST["id"];
+        //$sql = "UPDATE humo_groups SET group_hide_trees='" . $group_hide_trees . "',  group_edit_trees='" . $group_edit_trees . "' WHERE group_id=" . $_POST["id"];
+        $sql = "UPDATE humo_groups SET group_hide_trees='" . $group_hide_trees . "',  group_edit_trees='" . $group_edit_trees . "' WHERE group_id=" . $_POST["group_id"];
         $result = $dbh->query($sql);
 
         $hide_tree_array = explode(";", $group_hide_trees);
@@ -891,7 +605,7 @@ If possible, try to filter with that') . '</i></td>';
     echo __('These settings can also be set per user!');
 
     echo '<table class="humo standard" border="1">';
-    echo '<tr class="table_header"><th>' . __('Family tree') . '</th><th>' . __('Show tree?') . '</th><th>' . __('Edit tree?') . ' <input type="Submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+    echo '<tr class="table_header"><th>' . __('Family tree') . '</th><th>' . __('Show tree?') . '</th><th>' . __('Edit tree?') . ' <input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
 
     $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
     while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
@@ -964,9 +678,7 @@ If possible, try to filter with that') . '</i></td>';
         // *** Remove array, so it can be re-used ***
         unset($photocat_prefix_array);
 
-        $sql = "UPDATE humo_groups
-            SET group_hide_photocat='" . $group_hide_photocat . "' 
-            WHERE group_id=" . $_POST["id"];
+        $sql = "UPDATE humo_groups SET group_hide_photocat='" . $group_hide_photocat . "'  WHERE group_id=" . $_POST["id"];
         $result = $dbh->query($sql);
 
         $hide_photocat_array = explode(";", $group_hide_photocat);
@@ -977,7 +689,7 @@ If possible, try to filter with that') . '</i></td>';
     <table class="humo standard" border="1">
         <tr class="table_header">
             <th><?= __('Category prefix'); ?></th>
-            <th><?= __('Show category?'); ?> <input type="Submit" name="change_photocat" value="<?= __('Change'); ?>"></th>
+            <th><?= __('Show category?'); ?> <input type="submit" name="change_photocat" value="<?= __('Change'); ?>"></th>
         </tr>
         <?php
 

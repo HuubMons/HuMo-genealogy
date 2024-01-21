@@ -169,10 +169,26 @@ if (file_exists($filenames[0][0])) {
         $handle = fopen("languages/default_timelines/" . $tml . '.txt', "r");
     }
 }
-($data["isborn"] == 1 and $data["bornyear"] == '') ? $byear = $data["baptyear"] : $byear = $data["bornyear"]; // if only bapt date available use that
-$beginyear = $byear - (($byear % $step) + $step);    // if beginyear=1923 and step is 5 this makes it 1915
-($data["isdeath"] == 1 and $data["deathyear"] == '') ? $dyear = $data["burryear"] : $dyear = $data["deathyear"]; // if only burial date available use that
-$endyear = $dyear + (($step - ($dyear % $step))) + ($step); // if endyear=1923 and step is 5 this makes it 1929
+/*
+// if only bapt date available use that
+($data["isborn"] == 1 and $data["bornyear"] == '') ? $byear = $data["baptyear"] : $byear = $data["bornyear"]; 
+// if beginyear=1923 and step is 5 this makes it 1915
+$beginyear = $byear - (($byear % $step) + $step);
+// if only burial date available use that
+($data["isdeath"] == 1 and $data["deathyear"] == '') ? $dyear = $data["burryear"] : $dyear = $data["deathyear"];
+// if endyear=1923 and step is 5 this makes it 1929
+$endyear = $dyear + (($step - ($dyear % $step))) + ($step);
+*/
+
+// if only bapt date available use that
+($data["isborn"] == 1 and $data["bornyear"] == '') ? $byear = $data["baptyear"] : $byear = $data["bornyear"];
+// if beginyear=1923 and step is 5 this makes it 1915
+$beginyear = intval($byear) - ((intval($byear) % intval($step)) + intval($step));
+// if only burial date available use that
+($data["isdeath"] == 1 and $data["deathyear"] == '') ? $dyear = $data["burryear"] : $dyear = $data["deathyear"];
+// if endyear=1923 and step is 5 this makes it 1929 
+$endyear = intval($dyear) + ((intval($step) - (intval($dyear) % intval($step)))) + intval($step);
+
 if ($endyear > date("Y")) {
     $endyear = date("Y");
 }

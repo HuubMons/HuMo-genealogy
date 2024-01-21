@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once(__DIR__."/editor_cls.php");
+include_once(__DIR__ . "/editor_cls.php");
 $editor_cls = new editor_cls;
 
 if (isset($_SESSION['admin_pers_gedcomnumber'])) {
@@ -45,7 +45,7 @@ $phpself2 = 'index.php?page=editor_sources&connect_kind=' . $connect_kind . '&co
 $phpself2 .= $event_link;
 
 // *** Process queries ***
-include_once(__DIR__."/editor_inc.php");
+include_once(__DIR__ . "/editor_inc.php");
 
 // **************************
 // *** Show source editor ***
@@ -226,10 +226,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 ?>
 
     <form method="POST" action="<?= $phpself2; ?>">
+        <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="submit" name="submit" title="submit" value="<?= __('Save'); ?>">
 
         <?php
-        echo '<input type="hidden" name="page" value="' . $page . '">';
         if (isset($_POST['event_person']) or isset($_GET['event_person']))
             echo '<input type="hidden" name="event_person" value="1">';
         if (isset($_POST['event_family']) or isset($_GET['event_family']))
@@ -483,15 +483,13 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
             }
 
             if ($nr_sources > 0) {
-                echo ' <input type="Submit" name="connect_add" value="' . __('Add another source') . '">';
+                echo ' <input type="submit" name="connect_add" value="' . __('Add another source') . '">';
             } else {
-                echo ' <input type="Submit" name="connect_add" value="' . __('Add source') . '">';
+                echo ' <input type="submit" name="connect_add" value="' . __('Add source') . '">';
             }
             ?>
         </form>
-    <?php
-    }
-    ?>
+    <?php } ?>
     <p>
     <?php
 }

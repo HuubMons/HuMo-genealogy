@@ -4,82 +4,40 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-echo '<h1 class="center">' . __('Users') . '</h1>';
 
-if (isset($_POST['change_user'])) {
-    $usersql = "SELECT * FROM humo_users ORDER BY user_name";
-    $user = $dbh->query($usersql);
-    while ($userDb = $user->fetch(PDO::FETCH_OBJ)) {
-        if (is_numeric($_POST[$userDb->user_id . "group_id"]) and is_numeric($_POST[$userDb->user_id . "user_id"])) {
-            $username = $_POST[$userDb->user_id . "username"];
-            $usermail = $_POST[$userDb->user_id . "usermail"];
-            if ($_POST[$userDb->user_id . "username"] == "") {
-                $username = 'GEEN NAAM / NO NAME';
-            }
-            $sql = "UPDATE humo_users SET
-                user_name='" . safe_text_db($username) . "',
-                user_mail='" . safe_text_db($usermail) . "', ";
-            if (isset($_POST[$userDb->user_id . "password"]) and $_POST[$userDb->user_id . "password"]) {
-                $hashToStoreInDb = password_hash($_POST[$userDb->user_id . "password"], PASSWORD_DEFAULT);
-                $sql = $sql . "user_password_salted='" . $hashToStoreInDb . "', user_password='', ";
-            }
-            $sql .= "user_group_id='" . safe_text_db($_POST[$userDb->user_id . "group_id"]);
-            $sql .= "' WHERE user_id=" . safe_text_db($_POST[$userDb->user_id . "user_id"]);
-            //$result=$dbh->query($sql);
-            try {
-                $result = $dbh->query($sql);
-            } catch (PDOException $e) {
-                echo __('Error: user name probably allready exist.') . '<br>';
-            }
-        }
-    }
-}
 
-if (isset($_POST['add_user']) and is_numeric($_POST["add_group_id"])) {
-    $user_prep = $dbh->prepare("INSERT INTO humo_users SET
-        user_name=:add_username, user_mail=:add_usermail,
-        user_password_salted=:add_password_salted, user_group_id=:add_group_id");
-    $user_prep->bindValue(':add_username', $_POST["add_username"], PDO::PARAM_STR);
-    $user_prep->bindValue(':add_usermail', $_POST["add_usermail"]);
-    $hashToStoreInDb = password_hash($_POST["add_password"], PASSWORD_DEFAULT);
-    $user_prep->bindValue(':add_password_salted', $hashToStoreInDb);
-    $user_prep->bindValue(':add_group_id', $_POST["add_group_id"], PDO::PARAM_INT);
-    try {
-        $user_prep->execute();
-    } catch (PDOException $e) {
-        echo __('Error: user name probably allready exist.') . '<br>';
-    }
-}
+// TODO create seperate controller script.
+require_once  __DIR__ . "/../models/users.php";
+$usersModel = new UsersModel($dbh);
+//$usersModel->set_user_id();
+$users['alert'] = $usersModel->update_user($dbh);
+//$users['user_id'] = $usersModel->get_user_id();
 
-// *** Remove user ***
-if (isset($_GET['remove_user'])) {
+
+
 ?>
+<h1 class="center"><?= __('Users');?></h1>
+
+<!-- Remove user -->
+<?php if (isset($_GET['remove_user'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to delete this user?'); ?></strong>
         <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $_GET['page']; ?>">
             <input type="hidden" name="remove_user" value="<?= $_GET['remove_user']; ?>">
-            <input type="Submit" name="remove_user2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="remove_user2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
         </form>
     </div>
+<?php } ?>
+
+<?php if ($users['alert']) { ?>
+    <div class="alert alert-warning">
+        <strong><?= $users['alert']; ?></strong>
+    </div>
+<?php }; ?>
+
 <?php
-}
-if (isset($_POST['remove_user2']) and is_numeric($_POST['remove_user'])) {
-    // *** Delete source connection ***
-    $sql = "DELETE FROM humo_users WHERE user_id='" . safe_text_db($_POST['remove_user']) . "'";
-    $result = $dbh->query($sql);
-}
-
-if (isset($_GET['unblock_ip_address'])) {
-    $sql = "DELETE FROM humo_user_log WHERE log_ip_address='" . safe_text_db($_GET['unblock_ip_address']) . "' AND log_status='failed'";
-    $result = $dbh->query($sql);
-}
-
-// *************
-// *** Users ***
-// *************
-
 // *** Check for standard admin username and password ***
 $check_admin_user = false;
 $check_admin_pw = false;
@@ -99,7 +57,6 @@ if ($check_admin_user and $check_admin_pw) {
     echo '<b><span style="color:red">' . __('Standard admin password is used.') . '</span></b>';
 }
 
-
 $usersql = "SELECT * FROM humo_users ORDER BY user_name";
 $user = $dbh->query($usersql);
 ?>
@@ -114,12 +71,10 @@ $user = $dbh->query($usersql);
             <th><?= __('User group'); ?></th>
             <th><?= __('Extra settings'); ?></th>
             <th><?= __('Statistics'); ?></th>
-            <th><input type="Submit" name="change_user" value="<?= __('Change'); ?>"></th>
+            <th><input type="submit" name="change_user" value="<?= __('Change'); ?>"></th>
         </tr>
 
-        <?php
-        while ($userDb = $user->fetch(PDO::FETCH_OBJ)) {
-        ?>
+        <?php while ($userDb = $user->fetch(PDO::FETCH_OBJ)) { ?>
             <tr align="center">
                 <td>
                     <?php
@@ -148,8 +103,8 @@ $user = $dbh->query($usersql);
                     }
                     ?>
                 </td>
-                <?php
 
+                <?php
                 //*** User groups ***
                 if ($userDb->user_id == '1') { //1st user is always admin.
                     print '<td><input type="hidden" name="' . $userDb->user_id . 'group_id" value="1"><b>admin</b></td>';
@@ -174,8 +129,8 @@ $user = $dbh->query($usersql);
                 <td>
                     <a href="#" onClick='window.open("index.php?page=editor_user_settings&user=<?= $userDb->user_id; ?>","","scrollbars=1,width=900,height=500,top=100,left=100")' ;><img src=<?= $extra_icon; ?> alt="<?= __('Search'); ?>"></a>
                 </td>
-                <?php
 
+                <?php
                 // *** Show statistics ***
                 $logbooksql = "SELECT COUNT(log_date) as nr_login FROM humo_user_log WHERE log_username='" . safe_text_db($userDb->user_name) . "'";
                 $logbook = $dbh->query($logbooksql);
@@ -231,7 +186,7 @@ $user = $dbh->query($usersql);
             </td>
             <td></td>
             <td></td>
-            <td><input type="Submit" name="add_user" value="<?= __('Add'); ?>"></td>
+            <td><input type="submit" name="add_user" value="<?= __('Add'); ?>"></td>
         </tr>
     </table>
 </form>

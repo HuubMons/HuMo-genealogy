@@ -20,14 +20,13 @@
 
 
 // TODO TEMP Controller here
-// Test for tab menu: ancestors. Probably have to rebuild selection menu first (put selection menu at top)
-/*
+// *** Needed for tab menu: ancestors ***
 require_once  __DIR__ . "/../app/model/ancestor.php";
 $get_ancestorModel = new AncestorModel($dbh);
 $main_person = $get_ancestorModel->getMainPerson();
-$data['ancestor_header'] = $get_ancestorModel->getAncestorHeader('Ancestor chart', $tree_id, $main_person);
-TEST: echo $data['ancestor_header']
-*/
+$data['ancestor_header'] = $get_ancestorModel->getAncestorHeader('Fanchart', $tree_id, $main_person);
+
+echo $data['ancestor_header'];
 
 
 
@@ -601,26 +600,26 @@ $realwidth = (840 * $tmp_width) / 100; // realwidth needed for next line (top te
 // *** Text on Top: Name of base person and print-help link ***
 $top_for_name = 20;
 ?>
-<div style="border:1px;z-index:80; position:absolute; top:<?= $top_for_name; ?>px; left:135px; width:<?= $realwidth; ?>px; height:30px; text-align:center; color:#000000">
-    <div style="padding:5px">
-        <strong><?= __('Fanchart') . ' - ' . $treeid[1][0]; ?></strong>
-        <!-- HELP POP-UP -->
-        <div class=<?= $rtlmarker; ?>sddm>
-            <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',0,0)" onmouseout="mclosetime()">
-                <br><strong><?= __('How to print the chart'); ?></strong>
-            </a>
-            <div class="sddm_fixed" style="z-index:40; text-align:<?= $alignmarker; ?>; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                <?= __('<u>Internet Explorer:</u><br>
+<!-- TODO replace with bootstrap popup -->
+<!-- <div style="border:1px;z-index:80; position:absolute; top:<?= $top_for_name; ?>px; left:135px; width:<?= $realwidth; ?>px; height:30px; text-align:center; color:#000000"> -->
+<div style="border:1px;z-index:80; width:<?= $realwidth; ?>px;">
+    <?php /* <strong><?= __('Fanchart') . ' - ' . $treeid[1][0]; ?></strong> */ ?>
+    <!-- HELP POP-UP -->
+    <div class=<?= $rtlmarker; ?>sddm>
+        <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',0,0)" onmouseout="mclosetime()">
+            <strong><?= __('How to print the chart'); ?></strong>
+        </a>
+        <div class="sddm_fixed" style="z-index:40; text-align:<?= $alignmarker; ?>; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+            <?= __('<u>Internet Explorer:</u><br>
 1. Set background to "white" on the menu and press "View"<br>
 2. Right-click on the chart<br>
 3. Save to disk with "Save picture as"<br>
 4. Print the saved picture'); ?>
-                <?= __('<p><u>All other browsers:</u><br>
+            <?= __('<p><u>All other browsers:</u><br>
 Just print the page .... ;-)<br>
 Print the chart in "Landscape" layout, use "Print Preview"<br>
 and adjust printing size to fit the page<br>
 (for regular charts 85%-90% of screen size)'); ?>
-            </div>
         </div>
     </div>
 </div>
@@ -660,78 +659,77 @@ $path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
 $path_tmp .= 'id=' . $person_id;
 ?>
 
-<!-- Semi-transparant MENU BOX on the left -->
-<div class="fanmenu1">
-    <div class="fanmenu2">
-        <div class="fanmenu3"></div>
-        <div style="position:absolute; left:0; top:0; color: #000000">
-            <form name="people" method="post" action="<?= $path_tmp; ?>" style="display:inline;">
-                <input type="submit" value="<?= __('View'); ?>"><br>
-
-                <!-- Fan style -->
-                <hr style="width:110px">
-                <?= __('Fan style'); ?><br>
-                <div style="text-align:<?= $alignmarker; ?>;margin-left:15%;margin-right:15%">
-                    <input type="radio" name="fan_style" value="2" <?php if ($fan_style == 2) echo ' checked'; ?>><?= __('half'); ?><br>
-                    <input type="radio" name="fan_style" value="3" <?php if ($fan_style == 3) echo ' checked'; ?>> 3/4<br>
-                    <input type="radio" name="fan_style" value="4" <?php if ($fan_style == 4) echo ' checked'; ?>><?= __('full'); ?>
-                </div>
-
-                <!-- Nr. of generations -->
-                <hr style="width:110px">
-                <?= __('Generations'); ?>:<br>
-                <select name="chosengen">
-                    <?php for ($i = 2; $i <= min(9, $maxgens); $i++) {; ?>
-                        <option value="<?= $i; ?>" <?php if ($i == $chosengen) echo ' selected'; ?>><?= $i; ?></option>
-                    <?php } ?>
-                </select><br>
-
-                <!-- Fontsize -->
-                <hr style="width:110px">
-                <?= __('Font size'); ?>:<br>
-                <select name="fontsize">
-                    <?php for ($i = 5; $i <= 12; $i++) {; ?>
-                        <option value="<?= $i; ?>" <?php if ($i == $fontsize) echo ' selected'; ?>><?= $i; ?></option>
-                    <?php }; ?>
-                </select><br>
-
-                <!-- Date display -->
-                <hr style="width:110px">
-                <?= __('Date display'); ?>:<br>
-                <div style="text-align:<?= $alignmarker; ?>;margin-left:5%;margin-right:5%">
-                    <input type="radio" name="date_display" value="1" <?php if ($date_display == "1") echo ' checked'; ?>><?= __('No dates'); ?><br>
-                    <input type="radio" name="date_display" value="2" <?php if ($date_display == "2") echo ' checked'; ?>><?= __('Years only'); ?><br>
-                    <input type="radio" name="date_display" value="3" <?php if ($date_display == "3") echo ' checked'; ?>><?= __('Full dates'); ?>
-                </div>
-
-                <!-- Fan width in percentages -->
-                <hr style="width:110px">
-                <?= __('Fan width:'); ?><br>
-                <input type="text" size="3" name="fan_width" value="<?= $menu_fan; ?>"> <b>%</b>
-                <div style="font-size:10px;"><?= __('"auto" for automatic resizing for best display, or value between 50-300'); ?></div>
-
-                <!-- Background (for printing with IE) -->
-                <hr style="width:110px">
-                <?= __('Background'); ?>:<br>
-
-                <div style="text-align:<?= $alignmarker; ?>;margin-left:5%;margin-right:5%">
-                    <input type="radio" name="printing" value="1" <?php if ($printing == 1) echo " checked"; ?>> <span style="font-size:10px;"><?= __('transparent'); ?></span><br>
-                    <input type="radio" name="printing" value="2" <?php if ($printing == 2) echo " checked"; ?>> <span style="font-size:10px;"><?= __('white'); ?></span>
-                </div>
-
-                <hr style="width:110px">
-                <div style="text-align:<?= $alignmarker; ?>;margin-left:5%;margin-right:5%">
-                    <input type="hidden" name="show_desc" value="0">
-                    <input type="checkbox" name="show_desc" value="1" <?php if ($showdesc == "1") echo ' checked'; ?>> <span style="font-size:10px;"><?= __('descendants'); ?><br>&nbsp;&nbsp;&nbsp;&nbsp;<?= __('under fanchart'); ?></span>
-                </div>
-            </form>
+<!-- Menu -->
+<div class="row genealogy_search mt-1 ms-1">
+    <div class="col">
+        <form name="people" method="post" action="<?= $path_tmp; ?>" style="display:inline;">
+            <!-- Fan style -->
+            <?= __('Fan style'); ?><br>
+            <div>
+                <input type="radio" name="fan_style" value="2" <?php if ($fan_style == 2) echo ' checked'; ?>><?= __('half'); ?><br>
+                <input type="radio" name="fan_style" value="3" <?php if ($fan_style == 3) echo ' checked'; ?>> 3/4<br>
+                <input type="radio" name="fan_style" value="4" <?php if ($fan_style == 4) echo ' checked'; ?>><?= __('full'); ?>
+            </div>
+    </div>
+    <div class="col">
+        <!-- Nr. of generations -->
+        <?= __('Generations'); ?>:<br>
+        <select name="chosengen">
+            <?php for ($i = 2; $i <= min(9, $maxgens); $i++) {; ?>
+                <option value="<?= $i; ?>" <?php if ($i == $chosengen) echo ' selected'; ?>><?= $i; ?></option>
+            <?php } ?>
+        </select><br>
+    </div>
+    <div class="col">
+        <!-- Fontsize -->
+        <?= __('Font size'); ?>:<br>
+        <select name="fontsize">
+            <?php for ($i = 5; $i <= 12; $i++) {; ?>
+                <option value="<?= $i; ?>" <?php if ($i == $fontsize) echo ' selected'; ?>><?= $i; ?></option>
+            <?php }; ?>
+        </select><br>
+    </div>
+    <div class="col">
+        <!-- Date display -->
+        <?= __('Date display'); ?>:<br>
+        <div>
+            <input type="radio" name="date_display" value="1" <?php if ($date_display == "1") echo ' checked'; ?>><?= __('No dates'); ?><br>
+            <input type="radio" name="date_display" value="2" <?php if ($date_display == "2") echo ' checked'; ?>><?= __('Years only'); ?><br>
+            <input type="radio" name="date_display" value="3" <?php if ($date_display == "3") echo ' checked'; ?>><?= __('Full dates'); ?>
         </div>
     </div>
+    <div class="col">
+        <!-- Fan width in percentages -->
+        <?= __('Fan width:'); ?><br>
+        <input type="text" size="3" name="fan_width" value="<?= $menu_fan; ?>"> <b>%</b>
+        <div style="font-size:10px;"><?= __('"auto" for automatic resizing for best display, or value between 50-300'); ?></div>
+    </div>
+    <div class="col">
+        <!-- Background (for printing with IE) -->
+        <?= __('Background'); ?>:<br>
+        <div>
+            <input type="radio" name="printing" value="1" <?php if ($printing == 1) echo " checked"; ?>> <?= __('transparent'); ?><br>
+            <input type="radio" name="printing" value="2" <?php if ($printing == 2) echo " checked"; ?>> <?= __('white'); ?>
+        </div>
+    </div>
+    <?php /*
+    <div class="col">
+        <div>
+            <input type="hidden" name="show_desc" value="0">
+            <input type="checkbox" name="show_desc" value="1" <?php if ($showdesc == "1") echo ' checked'; ?>> <span style="font-size:10px;"><?= __('descendants'); ?><br>&nbsp;&nbsp;&nbsp;&nbsp;<?= __('under fanchart'); ?></span>
+        </div>
+    </div>
+    */ ?>
+    <div class="col">
+        <input type="submit" value="<?= __('View'); ?>"><br>
+    </div>
+    </form>
 </div>
 
 <?php
 // *** Container for fanchart ***
-echo '<div style="position:absolute; top:60px; left:135px; width:' . (840 * $fan_width / 100) . 'px">';
+//echo '<div style="position:absolute; top:60px; left:135px; width:' . (840 * $fan_width / 100) . 'px">';
+echo '<div style="top:60px; left:135px; width:' . (840 * $fan_width / 100) . 'px">';
 echo '<div style="padding:5px">';
 $china_message = 0;
 print_fan_chart($treeid, 840 * $fan_width / 100, $fan_style * 90);
@@ -752,6 +750,7 @@ if ($china_message == 1) {
 }
 
 // *** Show descendants ***
+/*
 if ($showdesc == "1") {
     $fan_w =  9.3 * $fan_width;
     if ($fan_style == 2) $top_pos = $fan_w / 2 + 165;
@@ -760,7 +759,8 @@ if ($showdesc == "1") {
     echo '<iframe src="descendant/' . safe_text_db($_SESSION['tree_prefix']) . '/' . $indexnr . '?main_person=' . $person_id . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" >';
     echo '</iframe>';
 }
+*/
 
-echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
+echo '<br><br><br>';
 
-echo '<div style="left:135px; height:650px; width:10px"></div>';
+//echo '<div style="left:135px; height:650px; width:10px"></div>';

@@ -217,7 +217,7 @@
                     if (isset($_POST['search_period'])) {
                         openarchives_new($OAsearchname, $OAyear_or_period);
                     } else {
-                        echo '<tr class="humo_color"><td colspan="4"><input type="Submit" name="search_period" value="' . __('Search using period') . '">';
+                        echo '<tr class="humo_color"><td colspan="4"><input type="submit" name="search_period" value="' . __('Search using period') . '">';
                         echo ' <b>' . __('Search') . ': <a href="https://www.openarch.nl/search.php?name=' . urlencode($OAsearchname . $OAyear_or_period) .
                             '" target="_blank">https://www.openarch.nl/search.php?name=' . $OAsearchname . $OAyear_or_period . '</a></b><br>';
                         echo '</td></tr>';
@@ -255,7 +255,7 @@
                 $hideshow = 701;
             ?>
                 <!-- Add existing or new parents -->
-                <b><?= __('There are no parents.'); ?></b><a href="index.php?page=<?= $page; ?>&amp;menu_admin=person&amp;add_parents=1">
+                <b><?= __('There are no parents.'); ?></b><a href="index.php?page=<?= $page; ?>&amp;add_parents=1">
                     <a href="#" onclick="hideShow('<?= $hideshow; ?>');"><?= __('Add parents'); ?></a>
                     <span class="humo row701" style="margin-left:0px; display:none;">
                         <table class="humo" style="margin-left:0px;">
@@ -369,14 +369,14 @@
                             </tr>
 
                             <tr class="humo_color">
-                                <td colspan="3"><input type="Submit" name="add_parents2" value="<?= __('Add parents'); ?>"></td>
+                                <td colspan="3"><input type="submit" name="add_parents2" value="<?= __('Add parents'); ?>"></td>
                             </tr>
                         </table><br>
 
                         <?= __('Or select an existing family as parents:'); ?>
                         <input class="fonts" type="text" name="add_parents" placeholder="<?= __('GEDCOM number (ID)'); ?>" value="" size="20">
                         <a href="#" onClick='window.open("index.php?page=editor_relation_select","","<?= $field_popup; ?>")'><img src="../images/search.png" alt=<?= __('Search'); ?>></a>
-                        <input type="Submit" name="dummy2" value="<?= __('Select'); ?>">
+                        <input type="submit" name="dummy2" value="<?= __('Select'); ?>">
                     </span> <!-- End of hide item -->
                 <?php
             }
@@ -412,7 +412,7 @@
                 $hide_show_all = '<a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">[+]</span> ' . __('All') . '</a> ';
 
                 if ($add_person == false) {
-                    echo '<td>' . $hide_show_all . ' <input type="Submit" name="person_remove" value="' . __('Delete person') . '"></td>';
+                    echo '<td>' . $hide_show_all . ' <input type="submit" name="person_remove" value="' . __('Delete person') . '"></td>';
                     //echo '<td style="border-right: none"></td>';
                 } else {
                     // *** New person: no delete example link ***
@@ -443,9 +443,9 @@
                 echo '</th><td>';
 
                 if ($add_person == false) {
-                    echo '<input type="Submit" name="person_change" value="' . __('Save') . '">';
+                    echo '<input type="submit" name="person_change" value="' . __('Save') . '">';
                 } else {
-                    echo '<input type="Submit" name="person_add" value="' . __('Add') . '">';
+                    echo '<input type="submit" name="person_add" value="' . __('Add') . '">';
                 }
                 ?>
                 </td>
@@ -515,7 +515,7 @@
                     echo '<textarea rows="1" name="pers_name_text" ' . $field_text_selected . '>' . $text . '</textarea>';
 
                     //TEST
-                    //echo '<br><br><input type="Submit" name="person_change" value="' . __('Save') . '">';
+                    //echo '<br><br><input type="submit" name="person_change" value="' . __('Save') . '">';
 
                     //TEST Ajax script
                     /*
@@ -567,22 +567,6 @@
 */
 
 
-//TEST maybe for sources...
-/*
-$i=9999;
-echo '<ul id="sortable' . $i . '" class="sortable" style="padding-left:0px;">';
-    echo '<li><span style="cursor:move;" id="xxx" class="handle"><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
-    echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=cc&amp;child_disconnect_gedcom=cc">
-            <img src="images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
-    echo '&nbsp;&nbsp;Test source 1</li>';
-
-    echo '<li><span style="cursor:move;" id="xxx" class="handle"><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
-    echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=cc&amp;child_disconnect_gedcom=cc">
-            <img src="images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
-    echo '&nbsp;&nbsp;Test source 2</li>';
-echo '</ul>';
-*/
-
                     echo '</span>';
                     ?>
                 </td>
@@ -593,181 +577,87 @@ echo '</ul>';
                         // *** Source by name ***
                         //source_link('individual',$pers_gedcomnumber,'pers_name_source');
                         echo source_link2('500', $pers_gedcomnumber, 'pers_name_source', 'name');
-
-
-                        //TEST MODAL
                     ?>
-                        <!--
-<style>
-/* The Modal (background) */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  padding-top: 100px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4);
-}
 
-/* Modal Content */
-.modal-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  width: 80%;
-  height:80%;
-  overflow: auto;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s
-}
 
-/* Add Animation */
-@-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0} 
-  to {top:0; opacity:1}
-}
 
-@keyframes animatetop {
-  from {top:-300px; opacity:0}
-  to {top:0; opacity:1}
-}
+<?php /*
+<!-- TEST Bootstrap modal -->
+<!--
+Modal works. In editor.php also enable line 69 <<<<<<<<<<<<<<<<<<<<<
+TODO: add and remove sources inside a modal without reloading page
+Try: https://www.w3schools.com/jsref/met_node_appendchild.asp
 
-/* The Close Button */
-.close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
+Don't close modal is search for existing source is done?
+$('#mymodal').on('hidden.bs.modal', function() {
+  return false;
+});
 
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.modal-header {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
-}
-
-.modal-body {padding: 2px 16px;}
-
-.modal-footer {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
-}
-</style>
+Or:
+const modalToggle = document.getElementById('toggleMyModal');
+myModal.show(modalToggle)
 -->
-                        <!-- <h2>Animated Modal with Header and Footer</h2> -->
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <?= __('Source'); ?>
+</button>
 
-                        <!-- Trigger/Open The Modal -->
-                        <!-- <button id="myBtn">Open Modal</button> -->
-                        <!--
-<span id="myBtn" class="hideshowlink">Open Modal</span>
--->
-                        <!-- The Modal -->
-                        <!--
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <span class="close">&times;</span>
-      <h2>Modal Header</h2>
-    </div>
-    <div class="modal-body">
-      <p>Some text in the Modal Body</p>
-
-        <table>
-            <?php //echo edit_sources_test('500', 'person', 'pers_name_source', $pers_gedcomnumber); 
-            ?>
-        </table>
-
-    </div>
-    <div class="modal-footer">
-      <h3>Modal Footer</h3>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <?php
+        // TEST using function in editor_sources.php. Include file in editor.php.
+        source_edit("person", "pers_name_source", $pers_gedcomnumber);
+        ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
     </div>
   </div>
 </div>
 
-<script>
-// Get the modal
-var modal = document.getElementById("myModal");
+<!-- Also test second modal -->
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#pers_birth_sourceModal">
+    <?= __('Source'); ?>
+</button>
 
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
+<!-- Modal -->
+<div class="modal fade" id="pers_birth_sourceModal" tabindex="-1" aria-labelledby="pers_birth_sourceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="pers_birth_sourceModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <?php
+        // TEST using function in editor_sources.php. Include file in editor.php.
+        source_edit("person", "pers_birth_source", $pers_gedcomnumber);
+        ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+*/ ?>
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-</script>
--->
-                    <?php
-
-                    }
-                    ?>
+                    <?php } ?>
                 </td>
             </tr>
+
             <?php
-            //TEST labels en vakken naast elkaar.
-
-            /*
-echo '</tr>';
-    echo '<td>'.__('Name').'</td>';
-    echo '<td colspan="2">';
-        echo editor_label2(__('firstname'),'bold');
-        echo '<input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35"><br>';
-
-        echo editor_label2(__('prefix'));
-        echo '<input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10"> ';
-        echo __("For example: d\' or:  van_ (use _ for a space)").'<br>';
-
-        echo editor_label2(__('lastname'),'bold');
-        echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35"><br>';
-
-        echo editor_label2(__('patronymic'));
-        echo '<input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20"><br>';
-
-        // *** Person text by name ***
-        echo editor_label2(__('text'));
-        $text=$editor_cls->text_show($pers_name_text);
-        //$field_text_selected=$field_text; if ($text) $field_text_selected=$field_text_medium;
-        // *** Check if there are multiple lines in text ***
-        $field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
-        echo '<textarea rows="1" name="pers_name_text" '.$field_text_selected.'>'.$text.'</textarea>';
-    echo '</td>';
-    echo '<td></td>';
-echo '</tr>';
-*/
-
             // *** Show source by name in iframe ***
             echo edit_sources('500', 'person', 'pers_name_source', $pers_gedcomnumber);
 
@@ -1611,9 +1501,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             echo '<td></td><td colspan="2"></td>';
             echo '<td style="border-left: none; text-align:left; font-size: 1.5em;">';
             if ($add_person == false) {
-                echo '<input type="Submit" name="person_change" value="' . __('Save') . '">';
+                echo '<input type="submit" name="person_change" value="' . __('Save') . '">';
             } else {
-                echo '<input type="Submit" name="person_add" value="' . __('Add') . '">';
+                echo '<input type="submit" name="person_add" value="' . __('Add') . '">';
             }
             echo '</td>';
             echo '</tr>';

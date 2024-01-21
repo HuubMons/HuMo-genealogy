@@ -8,13 +8,21 @@ April 2022 Huub: Added OpenStreetMap.
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+
+
+
+// TODO rename script to maps?
+// TODO create seperate controller script.
+//require_once  __DIR__ . "/../models/maps.php";
+//$maps_model = new MapModel($dbh);
+
+
+
 ?>
 
 <h1 align=center><?= __('World map administration'); ?></h1>
 <table class="humo standard" border="1" style="width:900px;">
-    <?php
-    if (isset($_POST['makedatabase'])) {  // the user decided to add locations to the location database
-    ?>
+    <?php if (isset($_POST['makedatabase'])) { ?>
         <tr class="table_header">
             <th><?= __('Creating/ updating database'); ?></th>
         </tr>
@@ -82,7 +90,7 @@ if (!defined('ADMIN_PAGE')) {
                         $json = file_get_contents($url);
                         $json = json_decode($json);
                         //if(array_key_exists('status',$json)){
-                        if ($json->status == 'ok') {
+                        if (isset($json->status) and $json->status == 'ok') {
                             $map_count_found++;
                             //$address = $json->results[0]->formatted_address;
                             $latitude = $json->results[0]->geometry->location->lat;
@@ -90,7 +98,6 @@ if (!defined('ADMIN_PAGE')) {
                             //$dbh->query("INSERT INTO humo_location SET location_location='".$loc."', location_lat='".$latitude."', location_lng='".$longitude."'");
                             $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $latitude . "', location_lng='" . $longitude . "'");
                         }
-                        //}
                     } else {
                         // *** Google Maps ***
                         //$api_key = '';
@@ -225,11 +232,11 @@ if (!defined('ADMIN_PAGE')) {
         }
         if (isset($_POST['refresh_no_locs'])) { // refresh non-indexable locations table
             $new_no_locs = array();
+            // (only take bapt place if no birth place and only take burial place if no death place)
             $unionstring = "SELECT pers_birth_place FROM humo_persons
                 UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_birth_place = ''
                 UNION SELECT pers_death_place FROM humo_persons
                 UNION SELECT pers_buried_place FROM humo_persons WHERE pers_death_place = ''";
-            // (only take bapt place if no birth place and only take burial place if no death place)
 
             // from here on we can use only "pers_birth_place", since the UNION puts also all other locations under pers_birth_place
             $map_person = $dbh->query("SELECT pers_birth_place, count(*) AS quantity
@@ -272,71 +279,73 @@ if (!defined('ADMIN_PAGE')) {
                     if (isset($_POST['use_world_map']) and ($_POST['use_world_map'] == 'OpenStreetMap' or $_POST['use_world_map'] == 'Google')) {
                         $temp = $dbh->query("UPDATE humo_settings SET setting_value='" . $_POST['use_world_map'] . "' WHERE setting_variable='use_world_map'");
                         $use_world_map = $_POST['use_world_map'];
+                        $humo_option["use_world_map"] = $_POST['use_world_map'];
                     }
                 } else {
                     // *** No value in database, add new value ***
                     if (isset($_POST['use_world_map']) and $_POST['use_world_map'] == 'OpenStreetMap') {
                         $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='use_world_map', setting_value='OpenStreetMap'");
                         $use_world_map = $_POST['use_world_map'];
+                        $humo_option["use_world_map"] = $_POST['use_world_map'];
                     }
                 }
-                echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
-                $selected = '';
-                if ($use_world_map == 'Google') $selected = ' checked';
-                echo '<input type="radio" name="use_world_map" value="Google"' . $selected . '> ' . __('Use Google Maps') . '<br>';
-                $selected = '';
-                if ($use_world_map == 'OpenStreetMap') $selected = ' checked';
-                echo '<input type="radio" name="use_world_map" value="OpenStreetMap"' . $selected . '> ' . __('Use OpenStreetMap') . '<br>';
-                echo '<input type="submit" style="font-size:14px" value="' . __('Save') . '" name="api_save">';
-                echo '</form>';
+                ?>
+                <form action="index.php?page=google_maps" method="post" style="display:inline">
+                    <input type="radio" name="use_world_map" value="Google" <?= $use_world_map == 'Google' ? ' checked' : '' ?>> <?= __('Use Google Maps'); ?><br>
+                    <input type="radio" name="use_world_map" value="OpenStreetMap" <?= $use_world_map == 'OpenStreetMap' ? ' checked' : '' ?>> <?= __('Use OpenStreetMap'); ?><br>
+                    <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save">
+                </form>
 
-                echo '<h3>' . __('Google Maps API Keys') . '</h3>';
+                <?php if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'Google') {; ?>
+                    <h3><?= __('Google Maps API Keys'); ?></h3>
+                    <?= __('To use the Google maps options, you need a Google account.'); ?>
+                    <?= __('If you don\'t have a Google account, first create one. Once logged into your Google account, go to:'); ?>
+                    <?= '<a href="https://developers.google.com/maps/documentation/javascript/get-api-key#get-an-api-key" target="_blank">' . __('Get API key') . '</a>'; ?>
+                    <?= __('and follow the instructions.'); ?><br>
+                    <strong><?= __('Create two keys'); ?>:</strong><br>
+                    <ul>
+                        <li>
+                            <?= __('For the first key, set restriction to <strong>"HTTP referrers"</strong> and enter your website domain name.'); ?><br>
+                            <?= __('If your domain looks like \'www.mydomain.com\', enter:'); ?><strong> *.mydomain.com/*</strong><br><?= __('If your domain looks like \'mydomain.com\', enter:'); ?> <strong>mydomain.com/*</strong>
+                        </li><br>
 
-                echo __('To use the Google maps options, you need a Google account.');
-                echo ' ' . __('If you don\'t have a Google account, first create one. Once logged into your Google account, go to:');
-                echo ' <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#get-an-api-key" target="_blank">' . __('Get API key') . '</a> ';
-                echo __('and follow the instructions.') . "<br>";
-                echo "<strong>" . __('Create two keys') . ":</strong><br><ul><li>";
-                echo __('For the first key, set restriction to <strong>"HTTP referrers"</strong> and enter your website domain name.') . "<br>" . __('If your domain looks like \'www.mydomain.com\', enter:') . " <strong>*.mydomain.com/*</strong><br>" . __('If your domain looks like \'mydomain.com\', enter:') . " <strong>mydomain.com/*</strong></li><br>";
-
-                //Function to try every way to resolve domain IP. Is more accurate than good old: gethostbyname($_SERVER['SERVER_NAME']) or gethostbyname(gethostname()) ;
-                function get_host()
-                {
-                    if (isset($_SERVER['HTTP_X_FORWARDED_HOST']) and $host = $_SERVER['HTTP_X_FORWARDED_HOST']) {
-                        $elements = explode(',', $host);
-                        $host = trim(end($elements));
-                    } else {
-                        if (!$host = $_SERVER['HTTP_HOST']) {
-                            if (!$host = $_SERVER['SERVER_NAME']) {
-                                $host = !empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+                        <?php
+                        //Function to try every way to resolve domain IP. Is more accurate than good old: gethostbyname($_SERVER['SERVER_NAME']) or gethostbyname(gethostname()) ;
+                        function get_host()
+                        {
+                            if (isset($_SERVER['HTTP_X_FORWARDED_HOST']) and $host = $_SERVER['HTTP_X_FORWARDED_HOST']) {
+                                $elements = explode(',', $host);
+                                $host = trim(end($elements));
+                            } else {
+                                if (!$host = $_SERVER['HTTP_HOST']) {
+                                    if (!$host = $_SERVER['SERVER_NAME']) {
+                                        $host = !empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+                                    }
+                                }
                             }
+                            // Remove port number from host
+                            $host = preg_replace('/:\d+$/', '', $host);
+                            return trim($host);
                         }
-                    }
-                    // Remove port number from host
-                    $host = preg_replace('/:\d+$/', '', $host);
-                    return trim($host);
+                        // get IPv4 address
+                        $ip = gethostbyname(get_host());
+                        // get IPv6 address
+                        $ipv6 = dns_get_record(get_host(), DNS_AAAA);
+
+                        echo '<li>' . __('For the second key, set restriction to <strong>"IP addresses"</strong> and enter your server IP.') . " " . __('Not your computer\'s IP!') . "<br>";
+                        echo __('Your server IP would seem to be:') . " <strong>" . $ip . "</strong><br>";
+                        if (isset($ipv6[0]['ipv6'])) {  // contains the IPv6 address is present
+                            echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:') . " <strong>" . $ipv6[0]['ipv6'] . "</strong><br>";
+                        }
+                        echo __('If this doesn\'t work, contact your provider and try to obtain the proper IP address from them.') . '<br><br>';
+                        ?>
+                        <li><?= __('Once you receive the keys enter them in the two fields below and save.'); ?><br></li>
+                    </ul>
+                <?php
                 }
-                // get IPv4 address
-                $ip = gethostbyname(get_host());
-                // get IPv6 address
-                $ipv6 = dns_get_record(get_host(), DNS_AAAA);
-
-                echo '<li>' . __('For the second key, set restriction to <strong>"IP addresses"</strong> and enter your server IP.') . " " . __('Not your computer\'s IP!') . "<br>";
-                echo __('Your server IP would seem to be:') . " <strong>" . $ip . "</strong><br>";
-                if (isset($ipv6[0]['ipv6'])) {  // cpntains the IPv6 address is present
-                    echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:') . " <strong>" . $ipv6[0]['ipv6'] . "</strong><br>";
-                }
-                echo __('If this doesn\'t work, contact your provider and try to obtain the proper IP address from them.') . '<br><br>';
-
-                echo '<li>' . __('Once you receive the keys enter them in the two fields below and save.') . "<br></li></ul>";
-
-
 
                 $api_1 = '';
                 // *** Admin requested to delete the existing key - show field to enter updated key ***
-                if (isset($_POST['delete_api_1'])) {
-                    $temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key'");
-                }
                 $api_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key'");
                 $apiDb = $api_query->fetch(PDO::FETCH_OBJ);
                 if ($apiDb) {
@@ -355,10 +364,6 @@ if (!defined('ADMIN_PAGE')) {
                 }
 
                 $api_2 = '';
-                // *** Admin requested to delete the existing key - show field to enter updated key ***
-                if (isset($_POST['delete_api_2'])) {
-                    $temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key2'");
-                }
                 $api_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key2'");
                 $api_2Db = $api_query->fetch(PDO::FETCH_OBJ);
                 if ($api_2Db) {
@@ -375,40 +380,8 @@ if (!defined('ADMIN_PAGE')) {
                         $api_2 = $_POST['api_2'];
                     }
                 }
-                ?>
-
-                <form action="index.php?page=google_maps" method="post" style="display:inline">
-                    <?= __('API key'); ?> 1 (restriction: <strong>HTTP referrers</strong>):
-                    <input type="text" id="api_1" name="api_1" value="<?= $api_1; ?>" size="40">
-                    &nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save">
-                </form>
-                <form action="index.php?page=google_maps" method="post" style="display:inline">
-                    <?php if ($api_1) {; ?>
-                        &nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="<?= __('Delete'); ?>" name="delete_api_1">
-                    <?php } ?>
-                </form><br>
-
-                <?php
-                echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
-                echo __('API key') . " 2 (restriction: <strong>IP addresses</strong>): ";
-                echo '&nbsp;&nbsp;&nbsp;<input type="text" id="api_2" name="api_2" value="' . $api_2 . '" size="40" >';
-                echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="' . __('Save') . '" name="api2_save">';
-                echo '</form>';
-                echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
-                if ($api_2) echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="' . __('Delete') . '" name="delete_api_2">';
-                echo '</form><br>';
-
-                // *** OpenStreetMap ***
-                echo '<h3>' . __('OpenStreetMap API Keys') . '</h3>';
-                echo __('To use OpenStreetMap we need geolocation data of all places. Go to <a href="https://geokeo.com" target="_blank">https://geokeo.com</a> and create an account to get the API key.');
-
-                echo '<br>';
 
                 $api_geokeo = '';
-                // *** Admin requested to delete the existing key - show field to enter updated key ***
-                if (isset($_POST['delete_api_geokeo'])) {
-                    $temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'geokeo_api_key'");
-                }
                 $api_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'geokeo_api_key'");
                 $api_2Db = $api_query->fetch(PDO::FETCH_OBJ);
                 if ($api_2Db) {
@@ -420,22 +393,38 @@ if (!defined('ADMIN_PAGE')) {
                     }
                 } else {
                     // *** No value in database, add new value ***
-                    if (isset($_POST['api_geokeo'])) {
+                    if (isset($_POST['api_geokeo']) and ($_POST['api_geokeo'] != '')) {
                         $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='geokeo_api_key', setting_value='" . $_POST['api_geokeo'] . "'");
                         $api_geokeo = $_POST['api_geokeo'];
                     }
                 }
-
-                echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
-                echo __('API key') . " Geokeo: ";
-                echo '<input type="text" id="api_geokeo" name="api_geokeo" value="' . $api_geokeo . '" size="40" >';
-                echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="' . __('Save') . '" name="api_save">';
-                echo '</form>';
-                echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
-                if ($api_geokeo) echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="' . __('Delete') . '" name="delete_api_geokeo">';
-                echo '</form><br>';
                 ?>
-                <br>
+
+                <?php if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'Google') {; ?>
+                    <form action="index.php?page=google_maps" method="post" style="display:inline">
+                        <?= __('API key'); ?> 1 (restriction: <strong>HTTP referrers</strong>):
+                        <input type="text" id="api_1" name="api_1" value="<?= $api_1; ?>" size="40">
+                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save">
+                    </form><br>
+
+                    <form action="index.php?page=google_maps" method="post" style="display:inline">
+                        <?= __('API key') . " 2 (restriction: <strong>IP addresses</strong>): "; ?>
+                        &nbsp;&nbsp;&nbsp;<input type="text" id="api_2" name="api_2" value="<?= $api_2; ?>" size="40">
+                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api2_save">
+                    </form><br>
+                <?php } ?>
+
+                <!-- OpenStreetMap -->
+                <?php if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'OpenStreetMap') {; ?>
+                    <h3><?= __('OpenStreetMap API Keys'); ?></h3>
+                    <?= __('To use OpenStreetMap we need geolocation data of all places. Go to <a href="https://geokeo.com" target="_blank">https://geokeo.com</a> and create an account to get the API key.'); ?><br>
+
+                    <form action="index.php?page=google_maps" method="post" style="display:inline">
+                        <?= __('API key') . ' Geokeo: '; ?>
+                        <input type="text" id="api_geokeo" name="api_geokeo" value="<?= $api_geokeo; ?>" size="40">
+                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save">
+                    </form><br><br>
+                <?php } ?>
             </td>
         </tr>
 
@@ -451,24 +440,21 @@ if (!defined('ADMIN_PAGE')) {
                     $unionstring = '';
 
                     if (isset($_SESSION['geo_tree']) and $_SESSION['geo_tree'] != "all_geo_trees") {
+                        // (only take bapt place if no birth place and only take burial place if no death place)
                         $unionstring .= "SELECT pers_birth_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' UNION
-                    SELECT pers_bapt_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' AND pers_birth_place = '' UNION
-                    SELECT pers_death_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' UNION
-                    SELECT pers_buried_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' AND pers_death_place = ''";
-                        // (only take bapt place if no birth place and only take burial place if no death place)
+                            SELECT pers_bapt_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' AND pers_birth_place = '' UNION
+                            SELECT pers_death_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' UNION
+                            SELECT pers_buried_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' AND pers_death_place = ''";
                     } else {
-                        $unionstring .= "SELECT pers_birth_place FROM humo_persons
-                    UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_birth_place = ''
-                    UNION SELECT pers_death_place FROM humo_persons
-                    UNION SELECT pers_buried_place FROM humo_persons WHERE pers_death_place = ''";
                         // (only take bapt place if no birth place and only take burial place if no death place)
+                        $unionstring .= "SELECT pers_birth_place FROM humo_persons
+                            UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_birth_place = ''
+                            UNION SELECT pers_death_place FROM humo_persons
+                            UNION SELECT pers_buried_place FROM humo_persons WHERE pers_death_place = ''";
                     }
 
-                    //$unionstring = substr($unionstring,0,-7); // take off last " UNION "
-
                     // from here on we can use only "pers_birth_place", since the UNION puts also all other locations under pers_birth_place
-                    $map_person = $dbh->query("SELECT pers_birth_place, count(*) AS quantity
-            FROM (" . $unionstring . ") AS x GROUP BY pers_birth_place ");
+                    $map_person = $dbh->query("SELECT pers_birth_place, count(*) AS quantity FROM (" . $unionstring . ") AS x GROUP BY pers_birth_place ");
 
                     $add_locations = array();
 
@@ -507,9 +493,9 @@ if (!defined('ADMIN_PAGE')) {
                             //     1. id
                             //     2. name of location
                             $nolocationtbl = "CREATE TABLE humo_no_location (
-                    no_location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                    no_location_location VARCHAR(120) CHARACTER SET utf8
-                )";
+                                no_location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                no_location_location VARCHAR(120) CHARACTER SET utf8
+                            )";
                             $dbh->query($nolocationtbl);
                         }
                     }
@@ -578,7 +564,10 @@ if (!defined('ADMIN_PAGE')) {
 
                         $map_totalsecs = $new_locations * 1.25;
                         $map_mins = floor($map_totalsecs / 60);
-                        $map_secs = $map_totalsecs % 60;
+
+                        //$map_secs = $map_totalsecs % 60;
+                        $map_secs = floor($map_totalsecs) % 60; // *** Use floor to prevent error message in PHP 8.x ***
+
                         $one_tree = "";
                         if (isset($_SESSION['geo_tree']) and $_SESSION['geo_tree'] != "all_geo_trees") {
                             $tree_search_sql2 = "SELECT * FROM humo_trees WHERE tree_id='" . $_SESSION['geo_tree'] . "'";
@@ -623,51 +612,53 @@ if (!defined('ADMIN_PAGE')) {
                     echo __('Check how many new locations have to be indexed and how long the indexing may take (approximately).');
 
                     // SELECT FAMILY TREE
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
                     $tree_search_result = $dbh->query($tree_search_sql);
                     $count = 0;
-                    echo '<br><form method="POST" action="index.php?page=google_maps" style="display : inline;">';
-                    echo '<select size="1" name="database" onChange="this.form.submit();">';
                     $selected = '';
                     if (!isset($_SESSION['geo_tree']) or (isset($_POST['database']) and $_POST['database'] == "all_geo_trees")) {
                         $selected = ' selected';
                         $_SESSION['geo_tree'] = "all_geo_trees";
                     }
-                    echo '<option value="all_geo_trees"' . $selected . '>' . __('All family trees') . '</option>';
-                    while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
-
-                        $selected = '';
-                        if (isset($_POST['database'])) {
-                            if ($tree_searchDb->tree_prefix == $_POST['database']) {
-                                $selected = ' selected';
-                                $_SESSION['geo_tree'] = $tree_searchDb->tree_id;
-                            }
-                        } else {
-                            if (isset($_SESSION['geo_tree']) and $_SESSION['geo_tree'] == $tree_searchDb->tree_id) {
-                                $selected = ' selected';
-                            }
-                        }
-                        $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
-                        echo '<option value="' . $tree_searchDb->tree_prefix . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-                        $count++;
-                    }
-                    echo '</select>';
-                    echo '</form><br>';
-
-                    echo '<form method="POST" name="checkform" action="index.php?page=google_maps" style="display : inline;">';
-                    echo '<br><input type="submit" name="check_new" value="' . __('Check') . '"><br><br>';
-                    echo '</form>';
-                }
                 ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <br>
+                    <form method="POST" action="index.php?page=google_maps" style="display : inline;">
+                        <select size="1" name="database" onChange="this.form.submit();">
+                            <option value="all_geo_trees" <?= $selected; ?>><?= __('All family trees'); ?></option>
+                            <?php
+                            while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
+                                $selected = '';
+                                if (isset($_POST['database'])) {
+                                    if ($tree_searchDb->tree_prefix == $_POST['database']) {
+                                        $selected = ' selected';
+                                        $_SESSION['geo_tree'] = $tree_searchDb->tree_id;
+                                    }
+                                } else {
+                                    if (isset($_SESSION['geo_tree']) and $_SESSION['geo_tree'] == $tree_searchDb->tree_id) {
+                                        $selected = ' selected';
+                                    }
+                                }
+                                $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                                echo '<option value="' . $tree_searchDb->tree_prefix . '"' . $selected . '>' . @$treetext['name'] . '</option>';
+                                $count++;
+                            }
+                            ?>
+                        </select>
+                    </form><br>
+
+                    <form method="POST" name="checkform" action="index.php?page=google_maps" style="display : inline;">
+                        <br><input type="submit" name="check_new" value="<?= __('Check'); ?>"><br><br>
+                    </form>
+                <?php } ?>
             </td>
         </tr>
 
         <?php
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
         if ($temp->rowCount() > 0) {
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~ REFRESH BIRTH/DEATH STATUS ~~~~~~~~~~~~~~~~~~~~~~
         ?>
+            <!-- REFRESH BIRTH/DEATH STATUS -->
             <tr class="table_header">
                 <th><?= __('Refresh birth/ death status and tree affiliation of all locations'); ?></th>
             </tr>
@@ -679,20 +670,20 @@ if (!defined('ADMIN_PAGE')) {
                         refresh_status();  // see function at end of script
                         echo '<div style="color:red;font-weight:bold;">' . __('The birth/ death status and tree affiliation has been refreshed.') . '</div><br>';
                     } else {
-                        echo '<form action="index.php?page=google_maps" method="post">';
-                        printf(__('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>TIP:</b> When you import a gedcom, you can mark the option "Add new locations to geo-location database" and the location status of existing locations will also be updated automatically! (If you didn\'t mark this option on import, use the "Update geolocation database" above. This will also refresh the existing location status).<p><b>When to use this button:</b><ul><li> if you edited location data directly with the %s editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>'), 'HuMo-genealogy');
-
-                        echo '<input type="checkbox" name="purge"> ' . __('Also delete all locations that have become obsolete (not connected to any persons anymore)') . '<br>';
-                        echo '<input type="submit" style="font-size:14px" value="' . __('Refresh') . '" name="refresh">';
-                        echo '</form>';
-                    }
                     ?>
+                        <form action="index.php?page=google_maps" method="post">
+                            <?php
+                            printf(__('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>TIP:</b> When you import a gedcom, you can mark the option "Add new locations to geo-location database" and the location status of existing locations will also be updated automatically! (If you didn\'t mark this option on import, use the "Update geolocation database" above. This will also refresh the existing location status).<p><b>When to use this button:</b><ul><li> if you edited location data directly with the %s editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>'), 'HuMo-genealogy');
+
+                            echo '<input type="checkbox" name="purge"> ' . __('Also delete all locations that have become obsolete (not connected to any persons anymore)') . '<br>';
+                            echo '<input type="submit" style="font-size:14px" value="' . __('Refresh') . '" name="refresh">';
+                            ?>
+                        </form>
+                    <?php } ?>
                 </td>
             </tr>
-            <?php
 
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~ EDIT GEOLOCATION DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~
-            ?>
+            <!-- EDIT GEOLOCATION DATABASE -->
             <tr class="table_header">
                 <th><?= __('Edit geolocation database'); ?></th>
             </tr>
@@ -731,6 +722,7 @@ if (!defined('ADMIN_PAGE')) {
                 } else {
                     $api_key = '?callback=Function.prototype';
                 }
+                // TODO check this...
                 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
                     echo '<script src="https://maps.google.com/maps/api/js' . $api_key . '"></script>';
                 } else {
@@ -1000,7 +992,7 @@ if (!defined('ADMIN_PAGE')) {
                         echo '<tr><td align="center" colspan="2">';
                         echo '<input type="hidden" name="loc_del_id" value="' . $location_id . '">';
                         echo '<input type="hidden" name="loc_del_name" value="' . $location_location . '">';
-                        echo '<input type="Submit" style="color:red;font-weight:bold" name="loc_delete" value="' . __('Delete this location') . '"></td></tr>';
+                        echo '<input type="submit" style="color:red;font-weight:bold" name="loc_delete" value="' . __('Delete this location') . '"></td></tr>';
 
                         echo '<tr><td style="border:none;height:20px"></td></tr>';
                         echo '<tr><th colspan="2">' . __('Change or add locations') . '<br>' . __('(You can also drag the marker!)') . '</th></tr>';
@@ -1009,8 +1001,8 @@ if (!defined('ADMIN_PAGE')) {
                         echo '<tr><td>' . __('Latitude') . ':</td><td><input size="20" type="text" id="latbox" name="add_lat" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" value="' . $search_lat . '"></td></tr>';
                         echo '<tr><td>' . __('Longitude') . ':</td><td><input size="20" type="text" id="lngbox" name="add_lng" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" value="' . $search_lng . '"></td></tr>';
                         echo '<tr><td colspan="2">';
-                        echo '<input type="Submit" name="loc_change" value="' . __('Change this location') . '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                        echo '<input type="Submit" name="loc_add" value="' . __('Add this location') . '"></td></tr>';
+                        echo '<input type="submit" name="loc_change" value="' . __('Change this location') . '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        echo '<input type="submit" name="loc_add" value="' . __('Add this location') . '"></td></tr>';
                         ?>
                     </form>
                 </table>
@@ -1052,160 +1044,166 @@ if (!defined('ADMIN_PAGE')) {
                 //~~~~~~~~~~~~~~~~~~~~~~~~~~~ SETTINGS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 echo '<tr class="table_header"><th>' . __('Settings') . '</th></tr>';
                 echo '<tr><td>';
-                echo '<form name="slider" action="index.php?page=google_maps" method="POST">';
-                echo __('The slider has 10 steps. By default the starting year is 1560 with 9 intervals of 50 years up till 2010 and beyond.<br>You can set the starting year yourself for each tree, to suit it to the earliest years in that tree<br>The 9 intervals will be calculated automatically. Some example starting years for round intervals:<br>1110 (intv. 100), 1560 (intv. 50), 1695 (intv. 35),1740 (intv. 30), 1785 (intv. 25), 1830 (intv. 20)') . '<br><br>';
-
-                // *** Select family tree ***
-                $tree_id_string = " AND ( ";
-                $id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ;
-                foreach ($id_arr as $value) {
-                    $tree_id_string .= "tree_id='" . substr($value, 1) . "' OR ";  // substr removes leading "@" in geo_trees setting string
-                }
-                $tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " and add ")"
-
-                $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
-                $tree_search_result = $dbh->query($tree_search_sql);
-                $rowspan = $tree_search_result->rowCount() + 1;
                 ?>
-                <table>
-                    <tr>
-                        <th><?= __('Name of tree'); ?></th>
-                        <th style="text-align:center"><?= __('Starting year'); ?></th>
-                        <?php
-                        echo '<th style="text-align:center">' . __('Interval') . '</th>';
-                        echo '<th rowspan=' . $rowspan . '>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="Submit" name="submit" value="' . __('Change') . '"></th>';
-                        ?>
-                    </tr>
+                <form name="slider" action="index.php?page=google_maps" method="POST">
                     <?php
-                    echo '<form method="POST" action="maps.php" style="display : inline;">';
+                    echo __('The slider has 10 steps. By default the starting year is 1560 with 9 intervals of 50 years up till 2010 and beyond.<br>You can set the starting year yourself for each tree, to suit it to the earliest years in that tree<br>The 9 intervals will be calculated automatically. Some example starting years for round intervals:<br>1110 (intv. 100), 1560 (intv. 50), 1695 (intv. 35),1740 (intv. 30), 1785 (intv. 25), 1830 (intv. 20)') . '<br><br>';
 
-                    while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
-                        ${"slider_choice" . $tree_searchDb->tree_prefix} = "1560"; // default
-                        $query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_" . $tree_searchDb->tree_prefix . "' ";
-                        $result = $dbh->query($query);
-                        $offset = "slider_choice_" . $tree_searchDb->tree_prefix;
-                        if ($result->rowCount() > 0) {
-                            $slider_choiceDb = $result->fetch(PDO::FETCH_OBJ);
-                            ${"slider_choice" . $tree_searchDb->tree_prefix} = $slider_choiceDb->setting_value;
-                            if (isset($_POST[$offset])) {
-                                $result = $db_functions->update_settings('gslider_' . $tree_searchDb->tree_prefix, $_POST[$offset]);
-                                ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
+                    // *** Select family tree ***
+                    $tree_id_string = " AND ( ";
+                    $id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ;
+                    foreach ($id_arr as $value) {
+                        $tree_id_string .= "tree_id='" . substr($value, 1) . "' OR ";  // substr removes leading "@" in geo_trees setting string
+                    }
+                    $tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " and add ")"
+
+                    $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
+                    $tree_search_result = $dbh->query($tree_search_sql);
+                    $rowspan = $tree_search_result->rowCount() + 1;
+                    ?>
+                    <table>
+                        <tr>
+                            <th><?= __('Name of tree'); ?></th>
+                            <th style="text-align:center"><?= __('Starting year'); ?></th>
+                            <th style="text-align:center"><?= __('Interval'); ?></th>
+                            <th rowspan=<?= $rowspan; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="submit" value="<?= __('Change'); ?>"></th>
+                        </tr>
+                        <?php
+                        // TODO Form inside form??
+                        echo '<form method="POST" action="maps.php" style="display : inline;">';
+
+                        while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
+                            ${"slider_choice" . $tree_searchDb->tree_prefix} = "1560"; // default
+                            $query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_" . $tree_searchDb->tree_prefix . "' ";
+                            $result = $dbh->query($query);
+                            $offset = "slider_choice_" . $tree_searchDb->tree_prefix;
+                            if ($result->rowCount() > 0) {
+                                $slider_choiceDb = $result->fetch(PDO::FETCH_OBJ);
+                                ${"slider_choice" . $tree_searchDb->tree_prefix} = $slider_choiceDb->setting_value;
+                                if (isset($_POST[$offset])) {
+                                    $result = $db_functions->update_settings('gslider_' . $tree_searchDb->tree_prefix, $_POST[$offset]);
+                                    ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
+                                }
+                            } else {
+                                if (isset($_POST[$offset])) {
+                                    $sql = "INSERT INTO humo_settings SET setting_variable='gslider_" . $tree_searchDb->tree_prefix . "', setting_value='" . $_POST[$offset] . "'";
+                                    $dbh->query($sql);
+                                    ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
+                                }
                             }
-                        } else {
-                            if (isset($_POST[$offset])) {
-                                $sql = "INSERT INTO humo_settings SET setting_variable='gslider_" . $tree_searchDb->tree_prefix . "', setting_value='" . $_POST[$offset] . "'";
-                                $dbh->query($sql);
-                                ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
-                            }
+
+                            $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                            $interval = round((2010 - ${"slider_choice" . $tree_searchDb->tree_prefix}) / 9);
+                            echo "<tr><td>" . $treetext['name'] . "</td>";
+                            echo "<td><input style='text-align:center' type='text' name='" . $offset . "' value='{${"slider_choice" .$tree_searchDb->tree_prefix}}'></td>";
+                            echo "<td style='text-align:center'>" . $interval . "</td></tr>";
                         }
+                        ?>
+                    </table>
+                </form>
 
-                        $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
-                        echo "<tr><td>" . $treetext['name'] . "</td>";
-                        //echo "<td><input style='text-align:center' type='text' name='" . $offset . "' value='${"slider_choice" .$tree_searchDb->tree_prefix}'></td>";
-                        echo "<td><input style='text-align:center' type='text' name='" . $offset . "' value='{${"slider_choice" .$tree_searchDb->tree_prefix}}'></td>";
-                        $interval = round((2010 - ${"slider_choice" . $tree_searchDb->tree_prefix}) / 9);
-                        echo "<td style='text-align:center'>" . $interval . "</td></tr>";
-                        //echo '<td><input type="Submit" name="submit" value="'.__('Change').'"></td></tr>';
+                <?php
+                $query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_default_pos' ";
+                $result = $dbh->query($query);
+
+                if (isset($_GET['slider_default'])) {
+                    if ($result->rowCount() > 0) {
+                        $result = $db_functions->update_settings('gslider_default_pos', $_GET['slider_default']);
+                        $sl_def = $_GET['slider_default'];
+                    } else {
+                        $sql = "INSERT INTO humo_settings SET setting_variable='gslider_default_pos', setting_value='" . $_GET['slider_default'] . "'";
+                        $dbh->query($sql);
+                        $sl_def = $_GET['slider_default'];
+                    }
+                } else {
+                    if ($result->rowCount() > 0) {
+                        $sl_default_pos = $result->fetch();
+                        $sl_def = $sl_default_pos['setting_value'];
+                    } else {
+                        $sl_def = "all";
+                    }
+                }
+
+                ?>
+                <br><?= __('Default slider position'); ?>:
+                <select size="1" name="slider_default" id="slider_default" onChange="window.location='index.php?page=google_maps&slider_default='+this.value;">
+                    <?php
+                    $selected = "";
+                    if ($sl_def == "off") $selected = " selected ";
+                    echo '<option value="off" ' . $selected . '>' . __('OFF position (leftmost position)') . '</option>';
+                    $selected = "";
+                    if ($sl_def == "all") $selected = " selected ";
+                    echo '<option value="all" ' . $selected . '>' . __('Show all periods (rightmost position)') . '</option>';
+                    ?>
+                </select>
+                <?php
+
+                $query = "SELECT * FROM humo_settings WHERE setting_variable='google_map_type' ";
+                $result = $dbh->query($query);
+                if (isset($_GET['maptype_default'])) {
+                    if ($result->rowCount() > 0) {
+                        $result = $db_functions->update_settings('google_map_type', $_GET['maptype_default']);
+                        $maptype_def = $_GET['maptype_default'];
+                    } else {
+                        $sql = "INSERT INTO humo_settings SET setting_variable='google_map_type', setting_value='" . $_GET['maptype_default'] . "'";
+                        $dbh->query($sql);
+                        $maptype_def = $_GET['maptype_default'];
+                    }
+                } else {
+                    if ($result->rowCount() > 0) {
+                        $maptype_default = $result->fetch();
+                        $maptype_def = $maptype_default['setting_value'];
+                    } else {
+                        $maptype_def = "ROADMAP";
+                    }
+                }
+
+                ?>
+                <br><br><?= __('Default map type'); ?>:
+                <select size="1" name="maptype_default" id="maptype_default" onChange="window.location='index.php?page=google_maps&maptype_default='+this.value;">
+                    <?php
+                    $selected = "";
+                    if ($maptype_def == "ROADMAP") $selected = " selected ";
+                    echo '<option value="ROADMAP" ' . $selected . '>' . __('Regular map (ROADMAP)') . '</option>';
+                    $selected = "";
+                    if ($maptype_def == "HYBRID") $selected = " selected ";
+                    echo '<option value="HYBRID" ' . $selected . '>' . __('Satellite map with roads and places (HYBRID)') . '</option>';
+                    ?>
+                </select>
+                <?php
+
+                $query = "SELECT * FROM humo_settings WHERE setting_variable='google_map_zoom' ";
+                $result = $dbh->query($query);
+                if (isset($_GET['map_zoom_default'])) {
+                    if ($result->rowCount() > 0) {
+                        $result = $db_functions->update_settings('google_map_zoom', $_GET['map_zoom_default']);
+                        $mapzoom_def = $_GET['map_zoom_default'];
+                    } else {
+                        $sql = "INSERT INTO humo_settings SET setting_variable='google_map_zoom', setting_value='" . $_GET['map_zoom_default'] . "'";
+                        $dbh->query($sql);
+                        $mapzoom_def = $_GET['map_zoom_default'];
+                    }
+                } else {
+                    if ($result->rowCount() > 0) {
+                        $mapzoom_default = $result->fetch();
+                        $mapzoom_def = $mapzoom_default['setting_value'];
+                    } else {
+                        $mapzoom_def = "11";
+                    }
+                }
+                ?>
+
+                <br><br><?= __('Default zoom'); ?>:
+                <select size="1" name="map_zoom_default" id="map_zoom_default" onChange="window.location='index.php?page=google_maps&map_zoom_default='+this.value;">
+                    <?php
+                    for ($x = 1; $x < 15; $x++) {
+                        $selected = "";
+                        if ($mapzoom_def == $x) $selected = " selected ";
+                        echo '<option value="' . $x . '" ' . $selected . '>' . $x . '</option>';
                     }
                     ?>
-                </table>
+                </select>
         <?php
-            echo '</form>';
-
-            echo '<br>' . __('Default slider position') . ": ";
-            $query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_default_pos' ";
-            $result = $dbh->query($query);
-
-            if (isset($_GET['slider_default'])) {
-                if ($result->rowCount() > 0) {
-                    $result = $db_functions->update_settings('gslider_default_pos', $_GET['slider_default']);
-                    $sl_def = $_GET['slider_default'];
-                } else {
-                    $sql = "INSERT INTO humo_settings SET setting_variable='gslider_default_pos', setting_value='" . $_GET['slider_default'] . "'";
-                    $dbh->query($sql);
-                    $sl_def = $_GET['slider_default'];
-                }
-            } else {
-                if ($result->rowCount() > 0) {
-                    $sl_default_pos = $result->fetch();
-                    $sl_def = $sl_default_pos['setting_value'];
-                } else {
-                    $sl_def = "all";
-                }
-            }
-
-
-            echo '<select size="1" name="slider_default" id="slider_default" onChange="window.location=\'index.php?page=google_maps&slider_default=\'+this.value;">';
-            $selected = "";
-            if ($sl_def == "off") $selected = " selected ";
-            echo '<option value="off" ' . $selected . '>' . __('OFF position (leftmost position)') . '</option>';
-            $selected = "";
-            if ($sl_def == "all") $selected = " selected ";
-            echo '<option value="all" ' . $selected . '>' . __('Show all periods (rightmost position)') . '</option>';
-            echo '</select>';
-
-            echo '<br><br>' . __('Default map type') . ": ";
-            $query = "SELECT * FROM humo_settings WHERE setting_variable='google_map_type' ";
-            $result = $dbh->query($query);
-
-            if (isset($_GET['maptype_default'])) {
-                if ($result->rowCount() > 0) {
-                    $result = $db_functions->update_settings('google_map_type', $_GET['maptype_default']);
-                    $maptype_def = $_GET['maptype_default'];
-                } else {
-                    $sql = "INSERT INTO humo_settings SET setting_variable='google_map_type', setting_value='" . $_GET['maptype_default'] . "'";
-                    $dbh->query($sql);
-                    $maptype_def = $_GET['maptype_default'];
-                }
-            } else {
-                if ($result->rowCount() > 0) {
-                    $maptype_default = $result->fetch();
-                    $maptype_def = $maptype_default['setting_value'];
-                } else {
-                    $maptype_def = "ROADMAP";
-                }
-            }
-
-
-            echo '<select size="1" name="maptype_default" id="maptype_default" onChange="window.location=\'index.php?page=google_maps&maptype_default=\'+this.value;">';
-            $selected = "";
-            if ($maptype_def == "ROADMAP") $selected = " selected ";
-            echo '<option value="ROADMAP" ' . $selected . '>' . __('Regular map (ROADMAP)') . '</option>';
-            $selected = "";
-            if ($maptype_def == "HYBRID") $selected = " selected ";
-            echo '<option value="HYBRID" ' . $selected . '>' . __('Satellite map with roads and places (HYBRID)') . '</option>';
-            echo '</select>';
-
-            echo '<br><br>' . __('Default zoom') . ": ";
-            $query = "SELECT * FROM humo_settings WHERE setting_variable='google_map_zoom' ";
-            $result = $dbh->query($query);
-
-            if (isset($_GET['map_zoom_default'])) {
-                if ($result->rowCount() > 0) {
-                    $result = $db_functions->update_settings('google_map_zoom', $_GET['map_zoom_default']);
-                    $mapzoom_def = $_GET['map_zoom_default'];
-                } else {
-                    $sql = "INSERT INTO humo_settings SET setting_variable='google_map_zoom', setting_value='" . $_GET['map_zoom_default'] . "'";
-                    $dbh->query($sql);
-                    $mapzoom_def = $_GET['map_zoom_default'];
-                }
-            } else {
-                if ($result->rowCount() > 0) {
-                    $mapzoom_default = $result->fetch();
-                    $mapzoom_def = $mapzoom_default['setting_value'];
-                } else {
-                    $mapzoom_def = "11";
-                }
-            }
-
-
-            echo '<select size="1" name="map_zoom_default" id="map_zoom_default" onChange="window.location=\'index.php?page=google_maps&map_zoom_default=\'+this.value;">';
-            for ($x = 1; $x < 15; $x++) {
-                $selected = "";
-                if ($mapzoom_def == $x) $selected = " selected ";
-                echo '<option value="' . $x . '" ' . $selected . '>' . $x . '</option>';
-            }
-            echo '</select>';
 
             //END NEW
             //echo '</form>';
@@ -1213,12 +1211,12 @@ if (!defined('ADMIN_PAGE')) {
         }
     }
     //else {
-    //			echo '<p>'.__('No geolocation database found').'</p>';
+    //  echo __('No geolocation database found');
     //}
         ?>
-</table> <!-- end google maps admin -->
-<?php
+</table>
 
+<?php
 // *** Function to refresh location_status column ***
 function refresh_status()
 {

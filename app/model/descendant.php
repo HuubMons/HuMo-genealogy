@@ -617,12 +617,6 @@ class DescendantModel extends FamilyModel
     //*********************************************************************************
     function generate($genarray)
     {
-        //$_SESSION['genarray'] = $genarray;
-
-        //global $hsize;  // horizontal length of box
-        //global $vsize;  // vertical height of box
-        //global $hourglass;
-
         global $data;
 
         $dna = $this->getDNA();
@@ -632,9 +626,6 @@ class DescendantModel extends FamilyModel
         $chosengenanc = $this->getChosengenanc();
 
         if ($direction == 0) { // if vertical
-            //global $vbasesize; // vertical distance in between X value of parent and X value of child
-            //global $vdist; // vertical distance in between boxes of two generations
-
             if ($size == 50) {   // full size box with name and details
                 $this->hsize = 150;
                 $this->vsize = 75;
@@ -723,9 +714,6 @@ class DescendantModel extends FamilyModel
         } // end if vertical
 
         else {  // horizontal
-            //global $hbasesize; // horizontal distance in between X value of parent and X value of child
-            //global $hdist; // horizontal distance in between boxes of two generations
-
             if ($size == 50) {   // full size box with name and details
                 $this->hsize = 150;
                 if ($this->hourglass === true) $this->hsize = 170;

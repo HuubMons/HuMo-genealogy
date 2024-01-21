@@ -499,7 +499,7 @@ Other programs: convert shared addresses. The "shared address" option will be lo
         echo '</td></tr>';
 
         echo '<tr><td>' . __('GEDCOM export') . '</td><td>';
-        echo ' <input type="Submit" name="submit_button" value="' . __('Start export') . '">';
+        echo ' <input type="submit" name="submit_button" value="' . __('Start export') . '">';
 
         // *** Show processed lines ***
         if (isset($_POST['submit_button'])) {
@@ -2050,7 +2050,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
     echo '<p>' . __('GEDCOM file is generated') . '<br>';
 
     echo '<form method="POST" action="include/gedcom_download.php" target="_blank">';
-    echo ' <input type="Submit" name="something" value="' . __('Download GEDCOM file') . '">';
+    echo ' <input type="submit" name="something" value="' . __('Download GEDCOM file') . '">';
     echo '<input type="hidden" name="page" value="' . $page . '">';
     echo '<input type="hidden" name="file_name" value="' . $myFile . '">';
     echo '<input type="hidden" name="file_name_short" value="' . $gedcom_file_name . '">';
@@ -2058,7 +2058,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
     echo '<form method="POST" action="index.php">';
 
-    //echo ' <input type="Submit" name="remove_gedcom" value="'.__('Remove GEDCOM file').'">';
+    //echo ' <input type="submit" name="remove_gedcom" value="'.__('Remove GEDCOM file').'">';
     //echo '<input type="hidden" name="page" value="'.$page.'">';
     //echo '</form>';
 } // end of tree

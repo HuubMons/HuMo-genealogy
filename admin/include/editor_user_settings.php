@@ -68,7 +68,7 @@ if (is_numeric($user)) {
         <input type="hidden" name="id" value="<?= $userDb->user_id; ?>">
         <table class="humo standard" border="1">
             <?php
-            echo '<tr style="background-color:green; color:white"><th>' . __('Family tree') . '</th><th>' . __('Show tree?') . '</th><th>' . __('Edit tree?') . ' <input type="Submit" name="user_change" value="' . __('Change') . '"></th></tr>';
+            echo '<tr style="background-color:green; color:white"><th>' . __('Family tree') . '</th><th>' . __('Show tree?') . '</th><th>' . __('Edit tree?') . ' <input type="submit" name="user_change" value="' . __('Change') . '"></th></tr>';
 
             $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
             while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {

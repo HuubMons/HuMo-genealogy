@@ -50,8 +50,8 @@ if (isset($_POST['save_option'])) {
 // *** Re-read variables after changing them ***
 // *** Don't use include_once! Otherwise the old value will be shown ***
 include(__DIR__ . "/../../include/settings_global.php"); //variables
-
 ?>
+
 <h1 class="center"><?= __('Extensions'); ?></h1>
 
 <form method="post" action="index.php">
@@ -97,7 +97,7 @@ include(__DIR__ . "/../../include/settings_global.php"); //variables
                 ?>
 
                 <br>
-                <input type="Submit" name="save_option" class="btn btn-success" value="<?= __('Change'); ?>">
+                <input type="submit" name="save_option" class="btn btn-success" value="<?= __('Change'); ?>">
             </td>
         </tr>
 
@@ -124,7 +124,7 @@ include(__DIR__ . "/../../include/settings_global.php"); //variables
                     </div>
                 <?php } ?>
                 <br>
-                <input type="Submit" name="save_option" class="btn btn-success" value="<?= __('Change'); ?>">
+                <input type="submit" name="save_option" class="btn btn-success" value="<?= __('Change'); ?>">
             </td>
         </tr>
     </table>

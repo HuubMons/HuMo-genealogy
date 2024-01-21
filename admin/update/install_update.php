@@ -76,7 +76,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
     printf(__('Debug %s update'), 'HuMo-genealogy');
     echo '</h2>';
     echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
-    echo '<input type="Submit" name="debug_update" value="' . __('Debug') . '">';
+    echo '<input type="submit" name="debug_update" value="' . __('Debug') . '">';
     echo '</form>';
     echo '<br><br>';
 } elseif (isset($update['up_to_date']) and $update['up_to_date'] == 'no') {
@@ -481,30 +481,22 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                         //define("DATABASE_PASSWORD", '');
                         //define("DATABASE_NAME",     'humo-gen');
 
-                        //if (substr($buffer[$i],0,21)=='define("DATABASE_HOST'){
                         if (substr($buffer[$i], 8, 13) == 'DATABASE_HOST') {
-                            //$buffer[$i]='define("DATABASE_HOST",     "'.DATABASE_HOST.'");'."\n";
                             $buffer[$i] = 'define("DATABASE_HOST",     ' . "'" . DATABASE_HOST . "');\n";
                             $check_config = true;
                         }
 
-                        //if (substr($buffer[$i],0,25)=='define("DATABASE_USERNAME'){
                         if (substr($buffer[$i], 8, 17) == 'DATABASE_USERNAME') {
-                            //$buffer[$i]='define("DATABASE_USERNAME", "'.DATABASE_USERNAME.'");'."\n";
                             $buffer[$i] = 'define("DATABASE_USERNAME", ' . "'" . DATABASE_USERNAME . "');\n";
                             $check_config = true;
                         }
 
-                        //if (substr($buffer[$i],0,25)=='define("DATABASE_PASSWORD'){
                         if (substr($buffer[$i], 8, 17) == 'DATABASE_PASSWORD') {
-                            //$buffer[$i]='define("DATABASE_PASSWORD", "'.DATABASE_PASSWORD.'");'."\n";
                             $buffer[$i] = 'define("DATABASE_PASSWORD", ' . "'" . DATABASE_PASSWORD . "');\n";
                             $check_config = true;
                         }
 
-                        //if (substr($buffer[$i],0,21)=='define("DATABASE_NAME'){
                         if (substr($buffer[$i], 8, 13) == 'DATABASE_NAME') {
-                            //$buffer[$i]='define("DATABASE_NAME",     "'.DATABASE_NAME.'");'."\n";
                             $buffer[$i] = 'define("DATABASE_NAME",     ' . "'" . DATABASE_NAME . "');\n";
                             $check_config = true;
                         }
@@ -525,7 +517,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                 //echo '<br><br>'.__('Step 3)').' <a href="'.$path_tmp.'page=install_update&auto=1&step=3';
                 //if (isset($_GET['install_beta'])){ echo '&install_beta=1'; }
                 //echo '">'.__('Install files!').'</a><br>';
-                echo '<br><input type="Submit" name="submit" value="' . __('Install files!') . '">';
+                echo '<br><input type="submit" name="submit" value="' . __('Install files!') . '">';
             } else {
                 // *** Update settings ***
                 $result = $dbh->query("UPDATE humo_settings
@@ -639,7 +631,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
     printf(__('Check regularly for %s updates.'), 'HuMo-genealogy');
     echo '<br>';
 
-    //print '<input type="Submit" name="enable_update_check_change" value="'.__('Change').'">';
+    //print '<input type="submit" name="enable_update_check_change" value="'.__('Change').'">';
     print '<input type="hidden" name="enable_update_check_change" value="1">';
     echo '</form>';
 }

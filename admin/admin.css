@@ -62,6 +62,11 @@ a:hover {
     }
 }
 
+/* Default background color. Used for search boxes */
+.genealogy_search {
+    background-color: #f1f1f1;
+}
+
 /* Add some color in non-selected navigation tab */
 .genealogy_nav-link {
     background-color: #e4e4e4;
@@ -286,10 +291,7 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 #content_admin {
     display: block;
     position: relative;
-    z-index: 3;
-    /* height: 100%; */
-    /* max-height: 90%; */
-    /* top: 35px; */
+    /* z-index: 3; */
     /* boven, rechts, onder */
     padding: 10px 0px 10px 10px;
 }

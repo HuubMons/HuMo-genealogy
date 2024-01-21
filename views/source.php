@@ -9,6 +9,8 @@ if ($user['group_sources'] != 'j') {
     echo __('You are not authorised to see this page.');
     exit();
 }
+
+global $data; // Prevent VSCode error messages.
 ?>
 
 <h1><?= __('Source'); ?></h1>
@@ -71,6 +73,7 @@ if (!isset($data["sourceDb"]->source_id)) exit(__('No valid source number.'));
             }
 
             // *** Pictures by source ***
+            $data["picture_presentation"] = 'show'; // Show pictures in source page.
             $result = show_media('source', $data["sourceDb"]->source_gedcomnr); // *** This function can be found in file: show_picture.php! ***
             echo $result[0];
 

@@ -224,12 +224,12 @@ $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
             echo '</div>';
 
             // BUTTON: SEARCH BY SPECIFIC NAME
-            echo ' <input type="Submit" style="font-size:110%;" name="anything" onclick="document.getElementById(\'namemapping\').style.display=\'block\' ;" value="' . __('Filter by specific family name(s)') . '">';
+            echo ' <input type="submit" style="font-size:110%;" name="anything" onclick="document.getElementById(\'namemapping\').style.display=\'block\' ;" value="' . __('Filter by specific family name(s)') . '">';
 
             // BUTTON: SEARCH BY DESCENDANTS
             echo '<form method="POST" style="display:inline" name="descform" action="' . $link . '">';
             echo '<input type="hidden" name="descmap" value="1">';
-            echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anything" value="' . __('Filter by descendants') . '">';
+            echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:110%;" name="anything" value="' . __('Filter by descendants') . '">';
             echo '</form>';
 
             //echo '</td></tr>';
@@ -237,7 +237,7 @@ $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
             // BUTTON: SEARCH BY ANCESTORS
             echo '<form method="POST" style="display:inline" name="ancform" action="' . $link . '">';
             echo '<input type="hidden" name="ancmap" value="1">';
-            echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anythingelse" value="' . __('Filter by ancestors') . '">';
+            echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:110%;" name="anythingelse" value="' . __('Filter by ancestors') . '">';
             echo '</form>';
 
             echo '</td></tr>';
@@ -635,7 +635,7 @@ $fam_search_result = $dbh->query($fam_search);
                     }
                     echo '</div>';
                     echo '</td></tr><tr><td style="text-align:center">';
-                    echo '<input type="Submit" name="submit" value="' . __('Choose') . '">';
+                    echo '<input type="submit" name="submit" value="' . __('Choose') . '">';
                     echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     echo '<input type="button" name="cancelfam" onclick="document.getElementById(\'namemapping\').style.display=\'none\';"  value="' . __('Cancel') . '">';
                     echo '</td></tr>';

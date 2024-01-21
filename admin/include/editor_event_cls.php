@@ -259,7 +259,7 @@ class editor_event_cls
                         <option value="URL"><?= __('URL/ Internet link'); ?></option>
                         <option value="person_colour_mark"><?= __('Colour mark by person'); ?></option>
                     </select>
-                    <input type="Submit" name="person_event_add" value="<?= __('Add event'); ?>">
+                    <input type="submit" name="person_event_add" value="<?= __('Add event'); ?>">
 
                     <!-- Help popup -->
                     <?php $rtlmarker = "ltr"; ?>
@@ -289,7 +289,7 @@ class editor_event_cls
                         <option value="event"><?= __('Event'); ?></option>
                     </select>
 
-                    <input type="Submit" name="marriage_event_add" value="<?= __('Add event'); ?>">
+                    <input type="submit" name="marriage_event_add" value="<?= __('Add event'); ?>">
 
                     <!-- Help popup -->
                     <?php $rtlmarker = "ltr"; ?>
@@ -320,7 +320,7 @@ class editor_event_cls
                         <?php event_selection(''); ?>
                     </select>
                     <input type="text" name="event_event_name" id="event_event_name" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
-                    <input type="Submit" name="event_add_name" value="<?= __('Add'); ?>">
+                    <input type="submit" name="event_add_name" value="<?= __('Add'); ?>">
 
 
 
@@ -387,7 +387,7 @@ function myFunction() {
                 <td></td>
                 <td style="border-right:0px;"><?= __('birth declaration'); ?></td>
                 <td style="border-left:0px;">
-                    <input type="Submit" name="add_birth_declaration" value="<?= __('Add'); ?>">
+                    <input type="submit" name="add_birth_declaration" value="<?= __('Add'); ?>">
                 </td>
                 <td></td>
             </tr>
@@ -402,7 +402,7 @@ function myFunction() {
                 <td></td>
                 <td style="border-right:0px;"><?= __('baptism witness'); ?></td>
                 <td style="border-left:0px;">
-                    <input type="Submit" name="add_baptism_witness" value="<?= __('Add'); ?>">
+                    <input type="submit" name="add_baptism_witness" value="<?= __('Add'); ?>">
                 </td>
                 <td></td>
             </tr>
@@ -417,7 +417,7 @@ function myFunction() {
                 <td></td>
                 <td style="border-right:0px;"><?= __('death declaration'); ?></td>
                 <td style="border-left:0px;">
-                    <input type="Submit" name="add_death_declaration" value="<?= __('Add'); ?>">
+                    <input type="submit" name="add_death_declaration" value="<?= __('Add'); ?>">
                 </td>
                 <td></td>
             </tr>
@@ -432,7 +432,7 @@ function myFunction() {
                 <td></td>
                 <td style="border-right:0px;"><?= __('burial witness'); ?></td>
                 <td style="border-left:0px;">
-                    <input type="Submit" name="add_burial_witness" value="<?= __('Add'); ?>">
+                    <input type="submit" name="add_burial_witness" value="<?= __('Add'); ?>">
                 </td>
                 <td></td>
             </tr>
@@ -454,7 +454,7 @@ function myFunction() {
                         // *** Remark: in editor_inc.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
                     ?>
                         <input type="text" name="event_event_profession" placeholder="<?= __('Profession'); ?>" value="" size="35">
-                        <input type="Submit" name="event_add_profession" value="<?= __('Add'); ?>">
+                        <input type="submit" name="event_add_profession" value="<?= __('Add'); ?>">
                     <?php
                     }
                     ?>
@@ -476,7 +476,7 @@ function myFunction() {
                     if (!isset($_GET['add_person'])) {
                         // *** Remark: in editor_inc.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
                         echo '<input type="text" name="event_event_religion" placeholder="' . __('Religion') . '" value="" size="35">';
-                        echo ' <input type="Submit" name="event_add_religion" value="' . __('Add') . '">';
+                        echo ' <input type="submit" name="event_add_religion" value="' . __('Add') . '">';
                     }
                     ?>
                 </td>
@@ -495,11 +495,11 @@ function myFunction() {
             echo '<td colspan="2">';
 
             if ($event_kind == 'picture') {
-                echo ' <input type="Submit" name="add_picture" value="' . __('Add') . '">';
+                echo ' <input type="submit" name="add_picture" value="' . __('Add') . '">';
             } elseif ($event_kind == 'marriage_picture') {
-                echo ' <input type="Submit" name="add_marriage_picture" value="' . __('Add') . '">';
+                echo ' <input type="submit" name="add_marriage_picture" value="' . __('Add') . '">';
             } elseif ($event_kind == 'source_picture') {
-                echo ' <input type="Submit" name="add_source_picture" value="' . __('Add') . '">';
+                echo ' <input type="submit" name="add_source_picture" value="' . __('Add') . '">';
             }
 
             //TEST
@@ -621,7 +621,7 @@ function myFunction() {
                                 event_gedcom='',
                                 event_order='" . $event_order . "'";
                             $event_order++;
-                            $result = $dbh->query($sql);
+                            $dbh->query($sql);
                         } else {
                             // *** Convert OBJECTS to standard images ***
                             $sql = "UPDATE humo_events SET
@@ -631,11 +631,11 @@ function myFunction() {
                                 event_gedcom='',
                                 event_order='" . $event_order . "'
                                 WHERE event_id='" . $pictureDb->event_id . "'";
-                            $result = $dbh->query($sql);
+                            $dbh->query($sql);
                             $event_order++;
                             // *** Remove connection ***
                             $sql = "DELETE FROM humo_connections WHERE connect_id='" . $connectDb->connect_id . "'";
-                            $result = $dbh->query($sql);
+                            $dbh->query($sql);
                         }
                     }
                 }
@@ -698,7 +698,7 @@ function myFunction() {
                 <td></td>
                 <td style="border-right:0px;"><?= __('marriage witness'); ?></td>
                 <td style="border-left:0px;">
-                    <input type="Submit" name="add_marriage_witness" value="<?= __('Add'); ?>">
+                    <input type="submit" name="add_marriage_witness" value="<?= __('Add'); ?>">
                 </td>
                 <td></td>
             </tr>
@@ -713,7 +713,7 @@ function myFunction() {
                 <td></td>
                 <td style="border-right:0px;"><?= __('marriage witness (religious)'); ?></td>
                 <td style="border-left:0px;">
-                    <input type="Submit" name="add_marriage_witness_rel" value="<?= __('Add'); ?>">
+                    <input type="submit" name="add_marriage_witness_rel" value="<?= __('Add'); ?>">
                 </td>
                 <td style="border-left:0px;"></td>
             </tr>

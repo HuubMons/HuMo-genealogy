@@ -311,8 +311,8 @@ $tree_search_result = $dbh->query($tree_search_sql);
         <form method="post" action="<?= $phpself; ?>" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $_GET['remove_tree']; ?>">
-            <input type="Submit" name="remove_tree2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="remove_tree2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
         </form>
     </div>
 <?php } ;?>

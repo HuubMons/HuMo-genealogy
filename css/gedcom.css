@@ -672,6 +672,7 @@ table.index_table {
 }
 
 /* In use by several pages: index, places, timeline */
+/* TODO will be removed */
 .select_box {
     display: block;
     float: left;

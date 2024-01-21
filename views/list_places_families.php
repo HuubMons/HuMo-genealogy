@@ -3,6 +3,268 @@
  * sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
+// **************************
+// *** Generate indexlist ***
+// **************************
+
+// *** Show number of persons and pages ***
+$item = 0;
+if (isset($_GET['item'])) {
+    $item = $_GET['item'];
+}
+$start = 0;
+if (isset($_GET["start"])) {
+    $start = $_GET["start"];
+}
+$nr_persons = $humo_option['show_persons'];
+
+$person_result = $dbh->query($data["query"] . " LIMIT " . $item . "," . $nr_persons);
+
+//TODO use COUNT
+//if ($count_qry) {
+//    // *** Use COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
+//    $result = $dbh->query($count_qry);
+//    @$resultDb = $result->fetch(PDO::FETCH_OBJ);
+//    $count_persons = @$resultDb->teller;
+//} else {
+// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
+$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
+$rows = $result->fetch();
+$count_persons = $rows['found_rows'];
+//}
+
+$link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
+?>
+
+<!-- Search places -->
+<form method="post" action="<?= $link; ?>">
+    <div class="p-2 me-sm-2 genealogy_search">
+        <div class="row mb-2">
+            <div class="col-2">
+                <div class="form-check">
+                    <input type="Checkbox" name="select_marriage_notice" value="1" <?php if ($data["select_marriage_notice"] == '1') echo ' checked'; ?> class="form-check-input">
+                    <span class="place_index_selected" style="float:none;"><?= __('&infin;'); ?></span>
+                    <?= __('Marriage notice'); ?></span>
+                </div>
+            </div>
+
+            <div class="col-2">
+                <div class="form-check">
+                    <input type="Checkbox" name="select_marriage" value="1" <?php if ($data["select_marriage"] == '1') echo ' checked'; ?> class="form-check-input">
+                    <span class="place_index_selected" style="float:none;"><?= __('X'); ?></span>
+                    <?= __('Marriage'); ?></span>
+                </div>
+            </div>
+
+            <div class="col-2">
+                <div class="form-check">
+                    <input type="Checkbox" name="select_marriage_notice_religious" value="1" <?php if ($data["select_marriage_notice_religious"] == '1') echo ' checked'; ?> class="form-check-input">
+                    <span class="place_index_selected" style="float:none;"><?= __('o'); ?></span>
+                    <?= __('Married notice (religious)'); ?></span>
+                </div>
+            </div>
+
+            <div class="col-2">
+                <div class="form-check">
+                    <input type="Checkbox" name="select_marriage_religious" value="1" <?php if ($data["select_marriage_religious"] == '1') echo ' checked'; ?> class="form-check-input">
+                    <span class="place_index_selected" style="float:none;"><?= __('x'); ?></span>
+                    <?= __('Married (religious)'); ?></span><br clear="all">
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-1">
+                <label for="find_location" class="col-form-label">
+                    <?= __('Find place'); ?>:
+                </label>
+            </div>
+
+            <div class="col-2">
+                <select name="part_place_name" class="form-select form-select-sm">
+                    <option value="contains"><?= __('Contains'); ?></option>
+                    <option value="equals" <?php if ($data["part_place_name"] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
+                    <option value="starts_with" <?php if ($data["part_place_name"] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                </select>
+            </div>
+
+            <div class="col-2">
+                <input type="text" name="place_name" value="<?= safe_text_show($data["place_name"]); ?>" size="15" class="form-control form-control-sm">
+            </div>
+
+            <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
+        </div>
+
+    </div>
+</form>
+
+<?php
+$uri_path_string = $link_cls->get_link($uri_path, 'list_places_families', $tree_id, true);
+
+// *** Check for search results ***
+if (@$person_result->rowCount() == 0) {
+    //
+} else {
+    // "<="
+    $data["previous_link"] = '';
+    $data["previous_status"] = '';
+    if ($start > 1) {
+        $start2 = $start - 20;
+        $calculated = ($start - 2) * $nr_persons;
+        $data["previous_link"] = $uri_path_string . "start=" . $start2 . "&amp;item=" . $calculated;
+    }
+    if ($start <= 0) {
+        $start = 1;
+    }
+    if ($start == '1') {
+        $data["previous_status"] = 'disabled';
+    }
+
+    // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+    for ($i = $start; $i <= $start + 19; $i++) {
+        $calculated = ($i - 1) * $nr_persons;
+        if ($calculated < $count_persons) {
+            $data["page_nr"][] = $i;
+            if ($item == $calculated) {
+                $data["page_link"][$i] = '';
+                $data["page_status"][$i] = 'active';
+            } else {
+                $data["page_link"][$i] = $uri_path_string . "start=" . $start . "&amp;item=" . $calculated;
+            }
+        }
+    }
+
+    // "=>"
+    $data["next_link"] = '';
+    $data["next_status"] = '';
+    $calculated = ($i - 1) * $nr_persons;
+    if ($calculated < $count_persons) {
+        $data["next_link"] = $uri_path_string . "start=" . $i . "&amp;item=" . $calculated;
+    } else {
+        $data["next_status"] = 'disabled';
+    }
+}
+?>
+
+<div class="index_list1">
+    <?php
+    echo $count_persons . ' ' . __('families found.');
+
+    // *** Normal or expanded list ***
+    if (isset($_POST['list_expanded'])) {
+        if ($_POST['list_expanded'] == '0') {
+            $_SESSION['save_list_expanded'] = '0';
+        } else {
+            $_SESSION['save_list_expanded'] = '1';
+        }
+    }
+    $list_expanded = true; // *** Default value ***
+    if (isset($_SESSION['save_list_expanded'])) {
+        if ($_SESSION['save_list_expanded'] == '1')
+            $list_expanded = true;
+        else $list_expanded = false;
+    }
+
+    // *** Button: normal or expanded list ***
+    $button_line = "item=" . $item;
+    if (isset($_GET['start'])) {
+        $button_line .= "&amp;start=" . $_GET['start'];
+    } else {
+        $button_line .= "&amp;start=1";
+    }
+    ?>
+
+    <form method="POST" action="<?= $uri_path_string . $button_line; ?>" style="display : inline;">
+        <?php if ($list_expanded == true) { ?>
+            <input type="hidden" name="list_expanded" value="0">
+            <input type="submit" name="submit" value="<?= __('Concise view'); ?>">
+        <?php } else { ?>
+            <input type="hidden" name="list_expanded" value="1">
+            <input type="submit" name="submit" value="<?= __('Expanded view'); ?>">
+        <?php } ?>
+    </form>
+
+    <br><br>
+    <?php include __DIR__ . '/partial/pagination.php'; ?>
+
+    <?php if ($person_result->rowCount() == 0) { ?>
+        <br>
+        <div class="center"><?= __('No names found.'); ?></div>
+    <?php } ?>
+</div>
+
+<?php
+$dir = "";
+if ($language["dir"] == "rtl") {
+    $dir = "rtl"; // loads the proper CSS for rtl display (rtlindex_list2):
+}
+
+// with extra sort date column, set smaller left margin
+$listnr = "2";      // default 20% margin
+
+//*** Show persons ******************************************************************
+$privcount = 0; // *** Count privacy persons ***
+
+$selected_place = "";
+?>
+<!-- Table to hold left sort date column (when necessary) and right person list column -->
+<table class="humo index_table" align="center">
+    <tr class="table_headline">
+        <th><?= __('Places'); ?></th>
+        <th colspan="2"><?= __('Family'); ?></th>
+        <th colspan="2" width="280px"><?= ucfirst(__('Married notice (religious)')); ?></th>
+        <th colspan="2" width="280px"><?= ucfirst(__('Married (religious)')); ?></th>
+    </tr>
+
+    <?php
+    while (@$familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
+        // *** Man privacy filter ***
+        $personDb = $db_functions->get_person($familyDb->fam_man);
+        // *** Person class used for name and person pop-up data ***
+        $man_cls = new person_cls($personDb);
+
+        // *** Woman privacy filter ***
+        $personDb = $db_functions->get_person($familyDb->fam_woman);
+        // *** Person class used for name and person pop-up data ***
+        $woman_cls = new person_cls($personDb);
+
+        // *** Proces marriage using a class ***
+        $marriage_cls = new marriage_cls($familyDb, $man_cls->privacy, $woman_cls->privacy);
+        $family_privacy = $marriage_cls->privacy;
+
+        // *** $family_privacy=true => filter ***
+        if ($family_privacy)
+            $privcount++;
+        else
+            show_person($familyDb);
+    }
+    ?>
+</table><br>
+
+<?php if ($privcount) { ?>
+    <?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
+<?php } ?>
+
+<?php include __DIR__ . '/partial/pagination.php'; ?>
+<br>
+
+<?php
+// For inline use?
+echo '<script>
+    if(window.self != window.top) {
+        var framew = window.frameElement.offsetWidth; 
+        document.getElementById("content").style.width = framew-40+"px";
+        var indexes = document.getElementsByClassName("index_table");
+        for (var i = 0; i < indexes.length; i++) {
+            indexes[i].style.width = framew-40+"px";
+        }
+        var lists = document.getElementsByClassName("index_list1");
+        for (var i = 0; i < lists.length; i++) {
+            lists[i].style.width = framew-40+"px";
+        }
+    }
+</script>';
+
 // *** show person ***
 function show_person($familyDb)
 {
@@ -84,15 +346,13 @@ function show_person($familyDb)
             echo $person_cls->person_popup_menu($personDb);
 
             // *** Show picture man or wife ***
-            if ($personDb->pers_sexe == "M"){
+            if ($personDb->pers_sexe == "M") {
                 //echo $dirmark1 . ' <img src="images/man.gif" alt="man" style="vertical-align:top">';
                 echo $dirmark1 . ' <img src="images/man.gif" alt="man">';
-            }
-            elseif ($personDb->pers_sexe == "F"){
+            } elseif ($personDb->pers_sexe == "F") {
                 //echo $dirmark1 . ' <img src="images/woman.gif" alt="woman" style="vertical-align:top">';
                 echo $dirmark1 . ' <img src="images/woman.gif" alt="woman">';
-            }
-            else{
+            } else {
                 //echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown" style="vertical-align:top">';
                 echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
             }
@@ -209,240 +469,3 @@ function show_person($familyDb)
     </tr>
 <?php
 } // *** end function show person ***
-
-
-
-// **************************
-// *** Generate indexlist ***
-// **************************
-
-// *** Show number of persons and pages ***
-$item = 0;
-if (isset($_GET['item'])) {
-    $item = $_GET['item'];
-}
-$start = 0;
-if (isset($_GET["start"])) {
-    $start = $_GET["start"];
-}
-$nr_persons = $humo_option['show_persons'];
-
-$person_result = $dbh->query($data["query"] . " LIMIT " . $item . "," . $nr_persons);
-
-//TODO use COUNT
-//if ($count_qry) {
-//    // *** Use COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
-//    $result = $dbh->query($count_qry);
-//    @$resultDb = $result->fetch(PDO::FETCH_OBJ);
-//    $count_persons = @$resultDb->teller;
-//} else {
-// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
-$rows = $result->fetch();
-$count_persons = $rows['found_rows'];
-//}
-
-$link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
-?>
-
-<!-- Search places -->
-<table align="center" class="humo index_table">
-    <tr>
-        <td>
-            <form method="post" action="<?= $link; ?>">
-                <?= __('Find place'); ?>:
-                <select name="part_place_name">
-                    <option value="contains"><?= __('Contains'); ?></option>
-                    <option value="equals" <?php if ($data["part_place_name"] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
-                    <option value="starts_with" <?php if ($data["part_place_name"] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
-                </select>
-                <input type="text" name="place_name" value="<?= safe_text_show($data["place_name"]); ?>" size="15">
-                <input type="submit" value="<?= __('Search'); ?>" name="B1"><br>
-
-                <span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice" value="1" <?php if ($data["select_marriage_notice"] == '1') echo ' checked'; ?>>
-                    <span class="place_index_selected" style="float:none;"><?= __('&infin;'); ?></span>
-                    <?= __('Marriage notice'); ?></span>
-
-                <span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage" value="1" <?php if ($data["select_marriage"] == '1') echo ' checked'; ?>>
-                    <span class="place_index_selected" style="float:none;"><?= __('X'); ?></span>
-                    <?= __('Marriage'); ?></span>
-
-                <span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice_religious" value="1" <?php if ($data["select_marriage_notice_religious"] == '1') echo ' checked'; ?>>
-                    <span class="place_index_selected" style="float:none;"><?= __('o'); ?></span>
-                    <?= __('Married notice (religious)'); ?></span>
-
-                <span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_religious" value="1" <?php if ($data["select_marriage_religious"] == '1') echo ' checked'; ?>>
-                    <span class="place_index_selected" style="float:none;"><?= __('x'); ?></span>
-                    <?= __('Married (religious)'); ?></span><br clear="all">
-            </form>
-        </td>
-    </tr>
-</table>
-
-<?php
-$uri_path_string = $link_cls->get_link($uri_path, 'list_places_families', $tree_id, true);
-
-// *** Check for search results ***
-if (@$person_result->rowCount() == 0) {
-    //
-} else {
-    // "<="
-    $data["previous_link"] = '';
-    $data["previous_status"] = '';
-    if ($start > 1) {
-        $start2 = $start - 20;
-        $calculated = ($start - 2) * $nr_persons;
-        $data["previous_link"] = $uri_path_string . "start=" . $start2 . "&amp;item=" . $calculated;
-    }
-    if ($start <= 0) {
-        $start = 1;
-    }
-    if ($start == '1') {
-        $data["previous_status"] = 'disabled';
-    }
-
-    // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
-    for ($i = $start; $i <= $start + 19; $i++) {
-        $calculated = ($i - 1) * $nr_persons;
-        if ($calculated < $count_persons) {
-            $data["page_nr"][] = $i;
-            if ($item == $calculated) {
-                $data["page_link"][$i] = '';
-                $data["page_status"][$i] = 'active';
-            } else {
-                $data["page_link"][$i] = $uri_path_string . "start=" . $start . "&amp;item=" . $calculated;
-            }
-        }
-    }
-
-    // "=>"
-    $data["next_link"] = '';
-    $data["next_status"] = '';
-    $calculated = ($i - 1) * $nr_persons;
-    if ($calculated < $count_persons) {
-        $data["next_link"] = $uri_path_string . "start=" . $i . "&amp;item=" . $calculated;
-    } else {
-        $data["next_status"] = 'disabled';
-    }
-}
-?>
-
-<div class="index_list1">
-    <?php
-    echo $count_persons . ' ' . __('families found.');
-
-    // *** Normal or expanded list ***
-    if (isset($_POST['list_expanded'])) {
-        if ($_POST['list_expanded'] == '0') {
-            $_SESSION['save_list_expanded'] = '0';
-        } else {
-            $_SESSION['save_list_expanded'] = '1';
-        }
-    }
-    global $list_expanded; // for joomla
-    $list_expanded = true; // *** Default value ***
-    if (isset($_SESSION['save_list_expanded'])) {
-        if ($_SESSION['save_list_expanded'] == '1')
-            $list_expanded = true;
-        else $list_expanded = false;
-    }
-
-    // *** Button: normal or expanded list ***
-    $button_line = "item=" . $item;
-    if (isset($_GET['start'])) {
-        $button_line .= "&amp;start=" . $_GET['start'];
-    } else {
-        $button_line .= "&amp;start=1";
-    }
-    ?>
-
-    <form method="POST" action="<?= $uri_path_string . $button_line; ?>" style="display : inline;">
-        <?php if ($list_expanded == true) { ?>
-            <input type="hidden" name="list_expanded" value="0">
-            <input type="Submit" name="submit" value="<?= __('Concise view'); ?>">
-        <?php } else { ?>
-            <input type="hidden" name="list_expanded" value="1">
-            <input type="Submit" name="submit" value="<?= __('Expanded view'); ?>">
-        <?php } ?>
-    </form>
-
-    <br><br>
-    <?php include __DIR__ . '/partial/pagination.php'; ?>
-
-    <?php if ($person_result->rowCount() == 0) { ?>
-        <br>
-        <div class="center"><?= __('No names found.'); ?></div>
-    <?php } ?>
-</div>
-
-<?php
-$dir = "";
-if ($language["dir"] == "rtl") {
-    $dir = "rtl"; // loads the proper CSS for rtl display (rtlindex_list2):
-}
-
-// with extra sort date column, set smaller left margin
-$listnr = "2";      // default 20% margin
-
-//*** Show persons ******************************************************************
-$privcount = 0; // *** Count privacy persons ***
-
-$selected_place = "";
-?>
-<!-- Table to hold left sort date column (when necessary) and right person list column -->
-<table class="humo index_table" align="center">
-    <tr class="table_headline">
-        <th><?= __('Places'); ?></th>
-        <th colspan="2"><?= __('Family'); ?></th>
-        <th colspan="2" width="280px"><?= ucfirst(__('Married notice (religious)')); ?></th>
-        <th colspan="2" width="280px"><?= ucfirst(__('Married (religious)')); ?></th>
-    </tr>
-
-    <?php
-    while (@$familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
-        // *** Man privacy filter ***
-        $personDb = $db_functions->get_person($familyDb->fam_man);
-        // *** Person class used for name and person pop-up data ***
-        $man_cls = new person_cls($personDb);
-
-        // *** Woman privacy filter ***
-        $personDb = $db_functions->get_person($familyDb->fam_woman);
-        // *** Person class used for name and person pop-up data ***
-        $woman_cls = new person_cls($personDb);
-
-        // *** Proces marriage using a class ***
-        $marriage_cls = new marriage_cls($familyDb, $man_cls->privacy, $woman_cls->privacy);
-        $family_privacy = $marriage_cls->privacy;
-
-        // *** $family_privacy=true => filter ***
-        if ($family_privacy)
-            $privcount++;
-        else
-            show_person($familyDb);
-    }
-    ?>
-</table><br>
-
-<?php if ($privcount) { ?>
-    <?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
-<?php } ?>
-
-<?php include __DIR__ . '/partial/pagination.php'; ?>
-<br>
-
-<?php
-// For inline use?
-echo '<script>
-    if(window.self != window.top) {
-        var framew = window.frameElement.offsetWidth; 
-        document.getElementById("content").style.width = framew-40+"px";
-        var indexes = document.getElementsByClassName("index_table");
-        for (var i = 0; i < indexes.length; i++) {
-            indexes[i].style.width = framew-40+"px";
-        }
-        var lists = document.getElementsByClassName("index_list1");
-        for (var i = 0; i < lists.length; i++) {
-            lists[i].style.width = framew-40+"px";
-        }
-    }
-</script>';

@@ -1,7 +1,4 @@
 <?php
-//global $language, $language_tree, $language_file, $selected_language;
-//global $dbh, $page, $menu_admin, $tree_id;
-//global $phpself, $phpself2;
 
 // *** Read settings here to be sure radio buttons show proper values. ***
 include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settings ***
@@ -197,7 +194,7 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
                 <input type="hidden" name="tree_prefix" value="<?= $new_tree_prefix; ?>">
-                <input type="Submit" name="add_tree_data" value="<?= __('Add family tree'); ?>">
+                <input type="submit" name="add_tree_data" value="<?= __('Add family tree'); ?>">
             </form>
         </td>
     </tr>
@@ -212,7 +209,7 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
             <form method="post" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
-                <input type="Submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>">
+                <input type="submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>">
                 <?= __('Add empty line in list of family trees'); ?>
             </form>
         </td>
@@ -247,5 +244,5 @@ if ($collation == 'utf8_danish_ci') {
         <option value="utf8_swedish_ci" <?= $select_swedish; ?>>utf8_swedish_ci</option>
         <option value="utf8_danish_ci" <?= $select_danish; ?>>utf8_danish_ci</option>
     </select>
-    <input type="Submit" name="change_collation" value="OK">
+    <input type="submit" name="change_collation" value="OK">
 </form>

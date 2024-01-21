@@ -170,8 +170,8 @@ if (isset($step1)) {
                         echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
                         echo '<input type="hidden" name="step1" value="step1">';
                         echo '<input type="hidden" name="remove_gedcom_files2" value="' . $_POST['remove_gedcom_files'] . '">';
-                        echo ' <input type="Submit" name="remove_confirm" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-                        echo ' <input type="Submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+                        echo ' <input type="submit" name="remove_confirm" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
+                        echo ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
                         echo '</form>';
                     } elseif (isset($_POST['remove_gedcom_files2']) and isset($_POST['remove_confirm'])) {
                         // *** Remove old GEDCOM files ***
@@ -399,9 +399,9 @@ if (isset($step1)) {
             echo '<br>';
             echo '<input type="radio" value="yes" name="add_tree" onchange="document.getElementById(\'step2\').disabled = !this.checked;" ' . $checked1 . '> ' . __('Add this GEDCOM file to the existing tree') . '<br>';
 
-            echo '<br><input type="Submit" name="step2" id="step2" disabled value="' . __('Step') . ' 2"><br>';
+            echo '<br><input type="submit" name="step2" id="step2" disabled value="' . __('Step') . ' 2"><br>';
         } else {
-            echo '<p><input type="Submit" name="step2" value="' . __('Step') . ' 2"><br>';
+            echo '<p><input type="submit" name="step2" value="' . __('Step') . ' 2"><br>';
         }
 
         ?>
@@ -476,7 +476,7 @@ if (isset($_POST['step2'])) {
             echo '<input type="hidden" name="add_tree" value="1">';
         echo '<input type="hidden" name="gedcom_file" value="' . $_POST['gedcom_file'] . '">';
         echo __('ONLY use in case of a time-out, to continue click:');
-        echo ' <input type="Submit" name="step2" value="' . __('Step') . ' 2">';
+        echo ' <input type="submit" name="step2" value="' . __('Step') . ' 2">';
         echo '</form><br>';
 
         /*
@@ -932,7 +932,7 @@ if (isset($_POST['step2'])) {
 
     echo '<input type="hidden" name="gedcom_file" value="' . $_POST['gedcom_file'] . '">';
 
-    echo '<input type="Submit" name="step3" value="' . __('Step') . ' 3">';
+    echo '<input type="submit" name="step3" value="' . __('Step') . ' 3">';
     echo '</form>';
     echo '</td>';
     if (isset($_POST['add_tree'])) {
@@ -941,7 +941,7 @@ if (isset($_POST['step2'])) {
         echo '<form method="post" style="display:inline" action="' . $phpself . '">';
         echo '<input type="hidden" name="page" value="tree">';
         echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-        echo '<input type="Submit" name="back" value="' . __('Cancel') . '">';
+        echo '<input type="submit" name="back" value="' . __('Cancel') . '">';
         echo '</form>';
         echo '</td>';
     }
@@ -1075,7 +1075,7 @@ if (isset($_POST['step3'])) {
         echo '<input type="hidden" name="timeout_restart" value="1">';
         echo '<input type="hidden" name="step1" value="' . $_POST['gedcom_file'] . '">';
 
-        echo __('ONLY use in case of a time-out, to continue click:') . ' <input type="Submit" name="timeout" value="' . __('Restart') . ' ">';
+        echo __('ONLY use in case of a time-out, to continue click:') . ' <input type="submit" name="timeout" value="' . __('Restart') . ' ">';
         echo ' ' . __('Restarts reading of GEDCOM using a controlled time-out.');
         echo '</form><br><br>';
     }
@@ -1534,7 +1534,7 @@ if (isset($_POST['step3'])) {
 
                 echo '<input type="hidden" name="gedcom_file" value="' . $_POST['gedcom_file'] . '">';
                 echo '<input type="hidden" name="time_out" value="' . $time_out . '">';
-                echo '<b>' . __('Controlled time-out to continue reading of GEDCOM file, click:') . '</b> <input type="Submit" name="step3" value="' . __('Step') . ' 3"><br>';
+                echo '<b>' . __('Controlled time-out to continue reading of GEDCOM file, click:') . '</b> <input type="submit" name="step3" value="' . __('Step') . ' 3"><br>';
                 printf(' <b>' . __('Or wait %s seconds for automatic continuation. Some browsers will give a reload message...') . '</b>', '5');
 
                 echo '</form><br><br>';
@@ -1626,7 +1626,7 @@ if (isset($_POST['step3'])) {
     echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
     echo '<input type="hidden" name="gen_program" value="' . $gen_program . '">';
     echo '<input type="hidden" name="gen_program_version" value="' . $gen_program_version . '">';
-    echo '<input type="Submit" name="step4" value="' . __('Step') . ' 4">';
+    echo '<input type="submit" name="step4" value="' . __('Step') . ' 4">';
     echo '</form>';
 }
 
@@ -1647,7 +1647,7 @@ if (isset($_POST['step4'])) {
     echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
     echo '<input type="hidden" name="gen_program" value="' . $_POST['gen_program'] . '">';
     echo '<input type="hidden" name="gen_program_version" value="' . $_POST['gen_program_version'] . '">';
-    echo '<br>' . __('ONLY use in case of a time-out, to continue click:') . ' <input type="Submit" name="step4" value="' . __('Step') . ' 4">';
+    echo '<br>' . __('ONLY use in case of a time-out, to continue click:') . ' <input type="submit" name="step4" value="' . __('Step') . ' 4">';
     echo '</form><br>';
 
     // *** Show progress ***

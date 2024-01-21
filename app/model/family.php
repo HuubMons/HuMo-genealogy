@@ -209,65 +209,57 @@ class FamilyModel
         // TODO remove global
         global $humo_option, $link_cls, $uri_path;
 
-        $data['active']=array();
-        $data['link']=array();
+        $data['header_active'] = array();
+        $data['header_link'] = array();
+        $data['header_text'] = array();
 
-        //$text = '<h1 class="standard_header">';
         $vars['pers_family'] = $family_id;
         $path_tmp = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
         $path_tmp .= "main_person=" . $main_person . '&amp;descendant_report=1';
-        $data['link'][] = $path_tmp;
+        $data['header_link'][] = $path_tmp;
         if ($name == 'Descendant report') {
-            //$text .= __($name);
-            $data['active'][]='active';
+            $data['header_active'][] = 'active';
         } else {
-            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path_tmp . '">' . __('Descendant report') . '</a></span>';
-            $data['active'][]='';
+            $data['header_active'][] = '';
         }
+        $data['header_text'][] = __('Descendant report');
 
-        //$text .= ' | ';
-
+        if ($humo_option["url_rewrite"] == 'j') {
+            $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person;
+        } else {
+            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person;
+        }
+        $data['header_link'][] = $link;
         if ($name == 'Descendant chart') {
-            //$text .= __($name);
-            $data['active'][]='active';
+            $data['header_active'][] = 'active';
         } else {
-            if ($humo_option["url_rewrite"] == 'j') {
-                //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person . '">' . __('Descendant chart') . '</a></span>';
-            } else {
-                //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="descendant.php?tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '">' . __('Descendant chart') . '</a></span>';
-                //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '">' . __('Descendant chart') . '</a></span>';
-            }
-            $data['active'][]='';
+            $data['header_active'][] = '';
         }
-        $data['link'][] = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person;
-
-        //$text .= ' | ';
+        $data['header_text'][] = __('Descendant chart');
 
         $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
         $path_tmp .= 'id=' . $family_id . '&amp;main_person=' . $main_person;
-        $data['link'][] = $path_tmp;
+        $data['header_link'][] = $path_tmp;
         if ($name == 'Outline report') {
-            //$text .= __($name);
-            $data['active'][]='active';
+            $data['header_active'][] = 'active';
         } else {
-            //$text .= '<span style="font-weight: normal; font-size:70%; color:blue;"><a href="' . $path_tmp . '">' . __('Outline report') . '</a></span>';
-            $data['active'][]='';
+            $data['header_active'][] = '';
         }
+        $data['header_text'][] = __('Outline report');
 
-        //$text .= '</h1>';
-
+        // TODO Move to view? Is used in multiple views.
         // *** Tab menu ***
         $text = '
         <h1>' . __('Descendants') . '</h1>
-        <ul class="nav nav-tabs">   
+        <ul class="nav nav-tabs">
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['active'][0] . '" href="' . $data['link'][0] . '">' . __('Descendant report') . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][0] . '" href="' . $data['header_link'][0] . '">' . $data['header_text'][0] . '</a>
             </li>
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['active'][1] . '" href="' . $data['link'][1] . '">' . __('Descendant chart') . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][1] . '" href="' . $data['header_link'][1] . '">' . $data['header_text'][1] . '</a>
             </li>
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['active'][2] . '" href="' . $data['link'][2] . '">' . __('Outline report') . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][2] . '" href="' . $data['header_link'][2] . '">' . $data['header_text'][2] . '</a>
             </li>
         </ul>
         <!-- Align content to the left -->

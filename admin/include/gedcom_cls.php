@@ -1,10 +1,6 @@
 <?php
 class gedcom_cls
 {
-    //public function __destruct(){
-    //	echo 'DESTRUCTION';
-    //}
-
     /**
      * Process persons
      */
@@ -744,17 +740,17 @@ class gedcom_cls
             // *** December 2021: now processed as event **
             // *** HuMo-genealogy (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
             /*
-        if ($buffer6=='2 NICK'){
-            $processed=1;
-            if ($pers_callname){
-                $pers_callname=$pers_callname.", ".substr($buffer,7);
+            if ($buffer6=='2 NICK'){
+                $processed=1;
+                if ($pers_callname){
+                    $pers_callname=$pers_callname.", ".substr($buffer,7);
+                }
+                else {
+                    $pers_callname=substr($buffer,7);
+                }
+                $pers_callname=rtrim($pers_callname);
             }
-            else {
-                $pers_callname=substr($buffer,7);
-            }
-            $pers_callname=rtrim($pers_callname);
-        }
-        */
+            */
 
             // *** Text(s) by person ***
             if ($level[1] == 'NOTE') {
@@ -1079,11 +1075,22 @@ class gedcom_cls
                         $event['connect_id2'][$event_nr] = '';
                         $event['kind'][$event_nr] = 'godfather';
                         $event['event'][$event_nr] = substr($buffer, 7);
+                        //$event['event'][$event_nr] = '';
                         $event['event_extra'][$event_nr] = '';
                         $event['gedcom'][$event_nr] = 'GODP';
                         $event['date'][$event_nr] = '';
                         $event['text'][$event_nr] = '';
                         $event['place'][$event_nr] = '';
+
+                        // *** NOT TESTED Added in jen. 2023 ***
+                        //if (substr($buffer, 7, 1) == '@') {
+                        //    // 2 WITN @I1@
+                        //    $event['connect_kind2'][$event_nr] = 'person';
+                        //    $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
+                        //} else {
+                        //    // 2 WITN Doopgetuige1//
+                        //    $event['event'][$event_nr] = substr($buffer, 7);
+                        //}
                     }
                     if (substr($buffer, 0, 11) == '3 TYPE INDI') {
                         $processed = 1; //$event['event'][$event_nr].="godfather";
@@ -1412,6 +1419,7 @@ class gedcom_cls
                     $event_nr++;
                     $calculated_event_id++;
                     $event['connect_kind'][$event_nr] = 'person';
+                    /*
                     $event['connect_id'][$event_nr] = substr($buffer, 8, -1);
                     $event['connect_kind2'][$event_nr] = '';
                     $event['connect_id2'][$event_nr] = '';
@@ -1422,11 +1430,28 @@ class gedcom_cls
                     $event['date'][$event_nr] = '';
                     $event['text'][$event_nr] = '';
                     $event['place'][$event_nr] = '';
+                    */
+                    // *** Changed in jan. 2023 ***
+                    // Jan 2024: Database example
+                    // Field: event_connect_id = I1 (main person)
+                    // Field: event_connect_id2 = I2012 (witness)
+                    $event['connect_id'][$event_nr] = substr($buffer, 8, -1);
+                    $event['connect_kind2'][$event_nr] = 'person';
+                    $event['connect_id2'][$event_nr] = $pers_gedcomnumber;
+                    $event['kind'][$event_nr] = 'witness';
+                    $event['event'][$event_nr] = '';
+                    $event['event_extra'][$event_nr] = '';
+                    $event['gedcom'][$event_nr] = 'ASSO';
+                    $event['date'][$event_nr] = '';
+                    $event['text'][$event_nr] = '';
+                    $event['place'][$event_nr] = '';
                 }
                 if ($buffer == '2 TYPE INDI') {
                     $processed = 1;
                     if ($add_tree == true or $reassign == true) {
                         $event['connect_id'][$event_nr] = $this->reassign_ged($event['connect_id'][$event_nr], 'I');
+                        //TODO this line isn't tested yet.
+                        $event['connect_id2'][$event_nr] = $this->reassign_ged($event['connect_id2'][$event_nr], 'I');
                     }
                 }
                 if ($buffer == '2 TYPE FAM') {
@@ -1434,6 +1459,8 @@ class gedcom_cls
                     $event['connect_kind'][$event_nr] = 'family';
                     if ($add_tree == true or $reassign == true) {
                         $event['connect_id'][$event_nr] = $this->reassign_ged($event['connect_id'][$event_nr], 'F');
+                        //TODO this line isn't tested yet.
+                        $event['connect_id2'][$event_nr] = $this->reassign_ged($event['connect_id2'][$event_nr], 'F');
                     }
                 }
                 if ($buffer == '2 RELA birth registration') {
@@ -3155,7 +3182,7 @@ class gedcom_cls
                     $event['connect_id2'][$event_nr] = '';
 
                     $event['kind'][$event_nr] = 'marriage_witness';
-                    if ($temp_kind == 'religious'){
+                    if ($temp_kind == 'religious') {
                         $event['kind'][$event_nr] = 'marriage_witness_rel';
                     }
 

@@ -261,12 +261,12 @@ if (!isset($_POST['install_tables2'])) {
         if (isset($_POST['install_tables'])) {
         ?>
             <p><?= __('Install'); ?>
-                <input type="Submit" name="install_tables2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                <input type="Submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                <input type="submit" name="install_tables2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
             <?php
         } else {
             ?>
-            <p><input type="Submit" name="install_tables" class="btn btn-success" value="<?= __('Install'); ?>">
+            <p><input type="submit" name="install_tables" class="btn btn-success" value="<?= __('Install'); ?>">
             <?php
         }
 

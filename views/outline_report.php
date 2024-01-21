@@ -65,10 +65,10 @@ echo $data["descendant_header"];
             <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
             <?php if ($dates_behind_names == "1") { ?>
                 <input type="hidden" name="dates_behind_names" value="0">
-                <input type="Submit" class="btn btn-sm btn-success" name="submit" value="<?= __('Dates below names'); ?>">
+                <input type="submit" class="btn btn-sm btn-success" name="submit" value="<?= __('Dates below names'); ?>">
             <?php } else { ?>
                 <input type="hidden" name="dates_behind_names" value="1">
-                <input type="Submit" class="btn btn-sm btn-success" name="submit" value="<?= __('Dates beside names'); ?>">
+                <input type="submit" class="btn btn-sm btn-success" name="submit" value="<?= __('Dates beside names'); ?>">
             <?php } ?>
         </form>
     <?php } ?>

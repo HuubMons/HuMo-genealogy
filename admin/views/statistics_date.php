@@ -53,7 +53,7 @@ if (isset($_POST['month'])) {
             }
             ?>
         </select>
-        <input type="Submit" name="submit" value=<?= __('Select'); ?>>
+        <input type="submit" name="submit" value=<?= __('Select'); ?>>
     </form>
 
     <?php
