@@ -21,7 +21,7 @@ if (isset($_POST["screen_mode"]) and $_POST["screen_mode"] == 'RTF') {
 $db_functions->check_person($data["main_person"]);
 
 if ($screen_mode != 'RTF') {
-    //echo '<h1 class="standard_header fonts">'.__('Ancestor report').'</h1>';
+    //echo '<h1 class="standard_header">'.__('Ancestor report').'</h1>';
     echo $data["ancestor_header"];
 }
 
@@ -174,7 +174,7 @@ while (isset($ancestor_array2[0])) {
         echo '</table>';
 
         if (isset($data["rom_nr"][$generation])) {
-            echo '<h2 class="standard_header fonts">' . __('generation ') . $data["rom_nr"][$generation];
+            echo '<h2 class="standard_header">' . __('generation ') . $data["rom_nr"][$generation];
         }
         if (isset($language["gen" . $generation]) and $language["gen" . $generation]) {
             echo ' (' . $language["gen" . $generation] . ')';
@@ -490,7 +490,7 @@ if ($screen_mode != 'RTF') {
     $text = '<br><br><form method="POST" action="' . $link . '" style="display : inline;">';
     // TODO check code.
     echo '<input type="hidden" name="screen_mode" value="">';
-    $text .= '<input class="fonts" type="Submit" name="submit" value="' . __('Back') . '">';
+    $text .= '<input type="Submit" name="submit" value="' . __('Back') . '">';
     $text .= '</form> ';
     echo $text;
 }

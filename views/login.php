@@ -20,25 +20,25 @@ if (isset($_POST['forgotpw'])) {
         <br>
         <table class="humo" cellspacing="0" align="center">
             <tr class="table_headline">
-                <th class="fonts" colspan="2"><?= __('Password retrieval'); ?></th>
+                <th colspan="2"><?= __('Password retrieval'); ?></th>
             </tr>
             <tr>
                 <td><?= __('Email'); ?>:</td>
-                <td><input class="fonts" name="got_email" type="email" size="20" maxlength="50"></td>
+                <td><input name="got_email" type="email" size="20" maxlength="50"></td>
             </tr>
 
             <?php if ($humo_option["registration_use_spam_question"] == 'y') { ?>
                 <tr>
                     <td><?= __('Please answer the block-spam-question:'); ?></td>
                     <td><?= $humo_option["block_spam_question"]; ?><br>
-                        <input type="text" class="fonts" name="register_block_spam" size="80" style="background-color:#FFFFFF">
+                        <input type="text" name="register_block_spam" size="80" style="background-color:#FFFFFF">
                     </td>
                 </tr>
             <?php } ?>
 
             <tr>
                 <td><br></td>
-                <td><input class="fonts" type="submit" name="Submit" value="<?= __('Send'); ?>"></td>
+                <td><input type="submit" name="Submit" value="<?= __('Send'); ?>"></td>
             </tr>
         </table>
     </form>
@@ -97,7 +97,7 @@ elseif (isset($_POST['got_email'])) {
         // *** Email address not found in database ***
         if ($no_mail == 0) {
             echo '<br><table class="humo" cellspacing="0" align="center">';
-            echo '<tr class="table_headline"><th class="fonts">' . __('Error') . '</th></tr>';
+            echo '<tr class="table_headline"><th>' . __('Error') . '</th></tr>';
             echo '<tr><td style="font-weight:bold;color:red">';
             if ($no_mail == 0) { // mail doesn't exist, username does
                 echo __('This email address was not found in our database.') . "&nbsp;" . __('Please contact the site owner.');
@@ -109,7 +109,7 @@ elseif (isset($_POST['got_email'])) {
         // *** Check if mail address is used multiple times ***
         elseif ($no_mail > 1) {
             echo '<br><table class="humo" cellspacing="0" align="center">';
-            echo '<tr class="table_headline"><th class="fonts">' . __('Error') . '</th></tr>';
+            echo '<tr class="table_headline"><th>' . __('Error') . '</th></tr>';
             echo '<tr><td style="font-weight:bold;color:red">';
             echo __('Password activation failed because mail address is used multiple times.') . '&nbsp;' . __('Please contact the site owner.');
             echo "</td></tr><tr><td style='text-align:center'><input type='button' value='" . __('Retry') . "' onClick='history.go(-1)'></td>";
@@ -124,7 +124,7 @@ elseif (isset($_POST['got_email'])) {
         $no = $count->rowCount();
         if ($no == 1) {
             echo '<br><table class="humo" cellspacing="0" align="center">';
-            echo '<tr class="table_headline"><th class="fonts">' . __('Notice') . '</th></tr>';
+            echo '<tr class="table_headline"><th>' . __('Notice') . '</th></tr>';
             echo '<tr><td style="font-weight:bold;color:red">';
             echo __('Your password activation key was already sent to your email address, please check your inbox and spam folder');
             echo "</td></tr></table>";
@@ -176,16 +176,16 @@ elseif (isset($_POST['got_email'])) {
 
         echo '<br><table class="humo" cellspacing="0" align="center">';
         if (!$mail->send()) {
-            echo '<tr class="table_headline"><th class="fonts">' . __('Error') . '</th></tr>';
+            echo '<tr class="table_headline"><th>' . __('Error') . '</th></tr>';
             echo '<tr><td style="font-weight:bold;color:red">';
             echo $mail->ErrorInfo . '<br>' . __('We encountered a system problem in sending reset link to your email address.') . '&nbsp;' . __('Please contact the site owner.');
         } else {
-            echo '<tr class="table_headline"><th class="fonts">' . __('Success') . '</th></tr>';
+            echo '<tr class="table_headline"><th>' . __('Success') . '</th></tr>';
             echo '<tr><td style="font-weight:bold">';
             echo __('Your reset link was sent to your email address. Please check your mail in a few minutes.');
         }
     } else {
-        echo '<tr class="table_headline"><th class="fonts">' . __('Error') . '</th></tr>';
+        echo '<tr class="table_headline"><th>' . __('Error') . '</th></tr>';
         echo '<tr><td style="font-weight:bold;color:red">';
         echo $msg . "</td></tr><tr><td style='text-align:center'><input type='button' value='" . __('Retry') . "' onClick='history.go(-1)'>";
     }
@@ -214,7 +214,7 @@ elseif (isset($_GET['ak']) and $_GET['ak'] != '') {
     <input type=hidden name=ak value=$ak>
     <input type=hidden name=userid value=$userid>
 
-    <table class='humo' cellspacing='0' align='center'><tr class='table_headline'><th class='fonts' colspan='2'>" . __('New Password') . "</th></tr>
+    <table class='humo' cellspacing='0' align='center'><tr class='table_headline'><th colspan='2'>" . __('New Password') . "</th></tr>
         <tr><td>" . __('New Password') . "  
         </td><td><input type ='password' class='bginput' name='password'></td></tr>
         <tr><td>" . __('Re-enter new Password') . "  
@@ -224,7 +224,7 @@ elseif (isset($_GET['ak']) and $_GET['ak'] != '') {
     //if ($humo_option["registration_use_spam_question"]=='y'){
     echo '<tr><td>' . __('Please answer the block-spam-question:') . '</td>';
     echo '<td>' . $humo_option["block_spam_question"] . '<br>';
-    echo '<input type="text" class="fonts" name="register_block_spam" size="80" style="background-color:#FFFFFF"></td></tr>';
+    echo '<input type="text" name="register_block_spam" size="80" style="background-color:#FFFFFF"></td></tr>';
     //}
 
     echo "<tr><td></td><td><input type=submit value='" . __('Submit new Password') . "'></td></tr>
@@ -249,7 +249,7 @@ elseif (isset($_POST['ak']) and $_POST['ak'] != '') {
     $no = $sql->rowCount();
     if ($no <> 1) {
         echo '<br><table class="humo" cellspacing="0" align="center">';
-        echo '<tr class="table_headline"><th class="fonts">' . __('Error') . '</th></tr>';
+        echo '<tr class="table_headline"><th>' . __('Error') . '</th></tr>';
         echo '<tr><td style="font-weight:bold;color:red">';
         echo __('Password activation failed.') . '&nbsp;' . __('Please contact the site owner.');
         echo '</td></tr></table>';
@@ -294,11 +294,11 @@ elseif (isset($_POST['ak']) and $_POST['ak'] != '') {
                 $count = $dbh->prepare("update humo_pw_retrieval set retrieval_status='done'
                     where retrieval_pkey='" . $ak . "' and retrieval_userid='" . $userid . "' and retrieval_status='pending'");
                 $count->execute();
-                echo '<tr class="table_headline"><th class="fonts">' . __('Success') . '</th></tr>';
+                echo '<tr class="table_headline"><th>' . __('Success') . '</th></tr>';
                 echo '<tr><td style="font-weight:bold">';
                 echo __('Your new password has been stored successfully');
             } else {
-                echo '<tr class="table_headline"><th class="fonts">' . __('Error') . '</th></tr>';
+                echo '<tr class="table_headline"><th>' . __('Error') . '</th></tr>';
                 echo '<tr><td style="font-weight:bold;color:red">';
                 echo __('Failed to store new password.') . '&nbsp;' . __('Please contact the site owner.');
             }

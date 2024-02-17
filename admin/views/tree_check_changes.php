@@ -18,22 +18,22 @@ if ($show_persons) {
     if ($editor) {
         // *** Show latest changes and additions: editor is selected ***
         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
-        $person_qry = "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='' AND pers_changed_user='" . $editor . "')
-            UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL AND pers_new_user='" . $editor . "')
-            ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
+        $person_qry = "(SELECT *, pers_changed_datetime AS changed_datetime
+            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NOT NULL AND pers_changed_user_id='" . $editor . "')
+            UNION (SELECT *, pers_new_datetime AS changed_datetime
+            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL AND pers_new_user_id='" . $editor . "')
+            ORDER BY changed_datetime DESC LIMIT 0," . $limit;
         //LIMIT 0,".$limit;
     } else {
         // *** Show latest changes and additions ***
         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
-        $person_qry = "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')
-            UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL)
-            ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
-            //LIMIT 0,".$limit;
-            //FROM humo_persons WHERE pers_tree_id='".$tree_id."')
+        $person_qry = "(SELECT *, pers_changed_datetime AS changed_datetime
+            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NOT NULL)
+            UNION (SELECT *, pers_new_datetime AS changed_datetime
+            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL)
+            ORDER BY changed_datetime DESC LIMIT 0," . $limit;
+        //LIMIT 0,".$limit;
+        //FROM humo_persons WHERE pers_tree_id='".$tree_id."')
     }
 
     $person_result = $dbh->query($person_qry);
@@ -48,16 +48,37 @@ if ($show_persons) {
 
         $result_array[$row][1] = $text;
 
-        //$text='<nobr>'.strtolower($person->pers_changed_date).' '.$person->pers_changed_time.' '.$person->pers_changed_user.'</nobr>';
-        $text = '<nobr>' . language_date($person->pers_changed_date) . ' ' . $person->pers_changed_time . ' ' . $person->pers_changed_user . '</nobr>';
+        //$text = '<nobr>' . language_date($person->pers_changed_date) . ' ' . $person->pers_changed_time . ' ' . $person->pers_changed_user . '</nobr>';
+        $text = '';
+        if ($person->pers_changed_datetime) {
+            $user_name = '';
+            if ($person->pers_changed_user_id) {
+                $editor_name = $dbh->query("SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'");
+                $editorDb = $editor_name->fetch(PDO::FETCH_OBJ);
+                $user_name = $editorDb->user_name;
+            }
+
+            $text .= show_datetime($person->pers_changed_datetime) . ' ' . $user_name;
+        }
         $result_array[$row][2] = $text;
 
-        //$text='<nobr>'.strtolower($person->pers_new_date).' '.$person->pers_new_time.' '.$person->pers_new_user.'</nobr>';
-        $text = '<nobr>' . language_date($person->pers_new_date) . ' ' . $person->pers_new_time . ' ' . $person->pers_new_user . '</nobr>';
+        //$text = '<nobr>' . language_date($person->pers_new_date) . ' ' . $person->pers_new_time . ' ' . $person->pers_new_user . '</nobr>';
+        $text = '';
+        if ($person->pers_new_datetime != '1970-01-01 00:00:01') {
+            $user_name = '';
+            if ($person->pers_new_user_id) {
+                $editor_name = $dbh->query("SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'");
+                $editorDb = $editor_name->fetch(PDO::FETCH_OBJ);
+                $user_name = $editorDb->user_name;
+            }
+
+            $text .= show_datetime($person->pers_new_datetime) . ' ' . $user_name;
+        }
         $result_array[$row][3] = $text;
 
         // *** Used for ordering by date - time ***
-        $result_array[$row][4] = $person->changed_date . ' ' . $person->changed_time;
+        //$result_array[$row][4] = $person->changed_date . ' ' . $person->changed_time;
+        $result_array[$row][4] = $person->changed_datetime;
         $row++;
     }
 }
@@ -66,19 +87,19 @@ if ($show_families) {
     if ($editor) {
         // *** Show latest changes and additions: editor is selected ***
         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
-        $person_qry = "(SELECT *, STR_TO_DATE(fam_changed_date,'%d %b %Y') AS changed_date, fam_changed_time as changed_time
-            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NOT NULL AND fam_changed_date!='' AND fam_changed_user='" . $editor . "')
-            UNION (SELECT *, STR_TO_DATE(fam_new_date,'%d %b %Y') AS changed_date, fam_new_time as changed_time
-            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NULL AND fam_new_user='" . $editor . "')
-            ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
+        $person_qry = "(SELECT *, fam_changed_datetime AS changed_datetime
+            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_datetime IS NOT NULL AND fam_changed_user_id='" . $editor . "')
+            UNION (SELECT *, fam_new_datetime AS changed_datetime
+            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_datetime IS NULL AND fam_new_user_id='" . $editor . "')
+            ORDER BY changed_datetime DESC LIMIT 0," . $limit;
     } else {
         // *** Show latest changes and additions ***
         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
-        $person_qry = "(SELECT *, STR_TO_DATE(fam_changed_date,'%d %b %Y') AS changed_date, fam_changed_time as changed_time
-            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NOT NULL AND fam_changed_date!='')
-            UNION (SELECT *, STR_TO_DATE(fam_new_date,'%d %b %Y') AS changed_date, fam_new_time as changed_time
-            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_date IS NULL)
-            ORDER BY changed_date DESC, changed_time DESC LIMIT 0," . $limit;
+        $person_qry = "(SELECT *, fam_changed_datetime AS changed_datetime
+            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_datetime IS NOT NULL)
+            UNION (SELECT *, fam_new_datetime AS changed_datetime
+            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_changed_datetime IS NULL)
+            ORDER BY changed_datetime DESC LIMIT 0," . $limit;
     }
 
     $person_result = $dbh->query($person_qry);
@@ -100,94 +121,110 @@ if ($show_families) {
             $result_array[$row][1] = $text;
 
             //$text='<nobr>'.strtolower($person->fam_changed_date).' '.$person->fam_changed_time.' '.$person->fam_changed_user.'</nobr>';
-            $text = '<nobr>' . language_date($person->fam_changed_date) . ' ' . $person->fam_changed_time . ' ' . $person->fam_changed_user . '</nobr>';
+            //$text = language_date($person->fam_changed_date) . ' ' . $person->fam_changed_time . ' ' . $person->fam_changed_user;
+            $text = '';
+            if ($person->fam_changed_datetime) {
+                $user_name = '';
+                if ($person->fam_changed_user_id) {
+                    $editor_name = $dbh->query("SELECT user_name FROM humo_users WHERE user_id='" . $person->fam_changed_user_id . "'");
+                    $editorDb = $editor_name->fetch(PDO::FETCH_OBJ);
+                    $user_name = $editorDb->user_name;
+                }
+
+                $text .= show_datetime($person->fam_changed_datetime) . ' ' . $user_name;
+            }
             $result_array[$row][2] = $text;
 
             //$text='<nobr>'.strtolower($person->fam_new_date).' '.$person->fam_new_time.' '.$person->fam_new_user.'</nobr>';
-            $text = '<nobr>' . language_date($person->fam_new_date) . ' ' . $person->fam_new_time . ' ' . $person->fam_new_user . '</nobr>';
+            //$text = language_date($person->fam_new_date) . ' ' . $person->fam_new_time . ' ' . $person->fam_new_user;
+            $text = '';
+            if ($person->fam_new_datetime != '1970-01-01 00:00:01') {
+                $user_name = '';
+                if ($person->fam_new_user_id) {
+                    $editor_name = $dbh->query("SELECT user_name FROM humo_users WHERE user_id='" . $person->fam_new_user_id . "'");
+                    $editorDb = $editor_name->fetch(PDO::FETCH_OBJ);
+                    $user_name = $editorDb->user_name;
+                }
+
+                $text .= show_datetime($person->fam_new_datetime) . ' ' . $user_name;
+            }
             $result_array[$row][3] = $text;
 
             // *** Used for ordering by date - time ***
-            $result_array[$row][4] = $person->changed_date . ' ' . $person->changed_time;
+            //$result_array[$row][4] = $person->changed_date . ' ' . $person->changed_time;
+            $result_array[$row][4] = $person->changed_datetime;
             $row++;
         }
     }
 }
 
-echo '<h3>' . __('Latest changes') . '</h3>';
+// *** Order array ***
+function cmp($a, $b)
+{
+    //return strcmp($a[4], $b[4]);	// ascending
+    return strcmp($b[4], $a[4]);    // descending
+}
+usort($result_array, "cmp");
 
 // *** Select editor ***
 $editor = '';
 if (isset($_POST['editor'])) $editor = safe_text_db($_POST['editor']);
-echo '<form method="POST" action="index.php" style="display : inline;">';
-echo '<input type="hidden" name="page" value="' . $page . '">';
-echo '<input type="hidden" name="tab" value="changes">';
-
-echo __('Select editor:');  // class "noprint" hides it when printing
 
 // *** List of editors, depending of selected items (persons and/ or families) ***
-$changes_qry = "(SELECT pers_new_user AS user FROM humo_persons WHERE pers_tree_id='" . $tree_id . "')
-    UNION (SELECT pers_changed_user AS user FROM humo_persons WHERE pers_tree_id='" . $tree_id . "')";
+$select_editor_qry = "(SELECT pers_new_user_id AS user FROM humo_persons WHERE pers_tree_id='" . $tree_id . "')
+    UNION (SELECT pers_changed_user_id AS user FROM humo_persons WHERE pers_tree_id='" . $tree_id . "')";
 if ($show_families) {
-    $changes_qry .= " UNION (SELECT fam_new_user AS user FROM humo_families WHERE fam_tree_id='" . $tree_id . "')";
-    $changes_qry .= " UNION (SELECT fam_changed_user AS user FROM humo_families WHERE fam_tree_id='" . $tree_id . "')";
+    $select_editor_qry .= " UNION (SELECT fam_new_user_id AS user FROM humo_families WHERE fam_tree_id='" . $tree_id . "')";
+    $select_editor_qry .= " UNION (SELECT fam_changed_user_id AS user FROM humo_families WHERE fam_tree_id='" . $tree_id . "')";
 }
-$changes_qry .= " ORDER BY user DESC LIMIT 0,50";
-
-$changes_result = $dbh->query($changes_qry);
-echo ' <select size="1" name="editor">';
-echo '<option value="">' . __('All editors') . '</option>';
-while ($changeDb = $changes_result->fetch(PDO::FETCH_OBJ)) {
-    if ($changeDb->user) {
-        $selected = '';
-        if ($changeDb->user == $editor) {
-            $selected = ' selected';
-        }
-        echo '<option value="' . $changeDb->user . '"' . $selected . '>' . $changeDb->user . '</option>';
-    }
-}
-echo '</select>';
-
-// *** Number of results in list ***
-echo ' ' . __('Results') . ': <select size="1" name="limit">';
-echo '<option value="50">50</option>';
-$selected = '';
-if ($limit == 100) {
-    $selected = ' selected';
-}
-echo '<option value="100"' . $selected . '>100</option>';
-$selected = '';
-if ($limit == 200) {
-    $selected = ' selected';
-}
-echo '<option value="200"' . $selected . '>200</option>';
-$selected = '';
-if ($limit == 500) {
-    $selected = ' selected';
-}
-echo '<option value="500"' . $selected . '>500</option>';
-echo '</select>';
-
-// *** Select item ***
-$checked = '';
-if ($show_persons) $checked = ' checked';
-echo ' <input type="checkbox" id="1" name="show_persons" value="1" ' . $checked . '>' . __('Persons');
-$checked = '';
-if ($show_families) $checked = ' checked';
-echo ' <input type="checkbox" id="1" name="show_families" value="1" ' . $checked . '>' . __('Families');
-/*
-$checked = ''; //if($show_sources) $checked=' checked';
-echo ' <input type="checkbox" id="1" name="show_sources" value="1" '.$checked.'>'.__('Sources');
-$checked = ''; //if($show_addresses) $checked=' checked';
-echo ' <input type="checkbox" id="1" name="show_addresses" value="1" '.$checked.'>'.__('Addresses');
-*/
-
-echo ' <input type="submit" name="last_changes" value="' . __('Select') . '">';
-echo '</form><br><br>';
+$select_editor_qry .= " ORDER BY user DESC LIMIT 0,50";
+$select_editor_result = $dbh->query($select_editor_qry);
 ?>
 
+<h3><?= __('Latest changes'); ?></h3>
+
+<form method="POST" action="index.php">
+    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="tab" value="changes">
+    <?= __('Select editor:'); ?>
+
+    <select size="1" name="editor">
+        <option value=""><?= __('All editors'); ?></option>
+        <?php
+        while ($select_editorDb = $select_editor_result->fetch(PDO::FETCH_OBJ)) {
+            if ($select_editorDb->user) {
+                $qry = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $select_editorDb->user . "'");
+                $editorDb = $qry->fetch(PDO::FETCH_OBJ);
+        ?>
+                <option value="<?= $select_editorDb->user; ?>" <?= $select_editorDb->user == $editor ? ' selected' : ''; ?>>
+                    <?= $editorDb->user_name; ?>
+                </option>
+        <?php
+            }
+        }
+        ?>
+    </select>
+
+    <!-- Number of results in list -->
+    <?= __('Results'); ?>:
+    <select size="1" name="limit">
+        <option value="50">50</option>
+        <option value="100" <?= $limit == 100 ? ' selected' : ''; ?>>100</option>
+        <option value="200" <?= $limit == 200 ? ' selected' : ''; ?>>200</option>
+        <option value="500" <?= $limit == 500 ? ' selected' : ''; ?>>500</option>
+    </select>
+
+    <input type="checkbox" id="1" name="show_persons" value="1" <?= $show_persons ? ' checked' : ''; ?>> <?= __('Persons'); ?>
+    <input type="checkbox" id="1" name="show_families" value="1" <?= $show_families ? ' checked' : ''; ?>> <?= __('Families'); ?>
+
+    <!-- Future options: also select sources, addresses, etc.? -->
+
+    <input type="submit" name="last_changes" value="<?= __('Select'); ?>">
+</form><br>
+
 <!-- Show results -->
-<div style="margin-left:auto;margin-right:auto;height:350px;width:90%; overflow-y: scroll;">
+<!-- <div style="margin-left:auto; margin-right:auto; height:350px; width:90%; overflow-y: scroll;"> -->
+<div style="margin-left:auto; margin-right:auto; height:400px; overflow-y: scroll;">
     <table class="humo" style="width:100%">
         <tr>
             <th style="text-align: center"><?= __('Item'); ?></th>
@@ -196,21 +233,14 @@ echo '</form><br><br>';
             <th style="text-align: center"><?= __('When added'); ?></th>
         </tr>
 
-        <?php
-        // *** Order array ***
-        function cmp($a, $b)
-        {
-            //return strcmp($a[4], $b[4]);	// ascending
-            return strcmp($b[4], $a[4]);    // descending
-        }
-        usort($result_array, "cmp");
-
-        // *** Show results ***
-        for ($row = 0; $row < count($result_array); $row++) {
-            //echo '<tr><td>!'.$result_array[$row][4].' '.$result_array[$row][0].'</td><td>'.$result_array[$row][1].'</td>';
-            echo '<tr><td>' . $result_array[$row][0] . '</td><td>' . $result_array[$row][1] . '</td>';
-            echo '<td>' . $result_array[$row][2] . '</td><td>' . $result_array[$row][3] . '</td></tr>';
-        }
-        ?>
+        <!-- Show results -->
+        <?php for ($row = 0; $row < count($result_array); $row++) { ?>
+            <tr>
+                <td><?= $result_array[$row][0]; ?></td>
+                <td><?= $result_array[$row][1]; ?></td>
+                <td><?= $result_array[$row][2]; ?></td>
+                <td><?= $result_array[$row][3]; ?></td>
+            </tr>
+        <?php } ?>
     </table><br><br>
 </div>

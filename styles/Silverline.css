@@ -189,11 +189,6 @@ div.hour_ancestor_split {
     padding: 11px 85px 6px 5px;
 }
 
-div.photobook,
-div.photobooktext {
-    background-color: #eeeeff;
-}
-
 table.reltable td {
     border: 0px;
 }

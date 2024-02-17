@@ -140,10 +140,10 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
 
             // *** Search persons firstname/ lastname ***
             echo __('Person') . ':';
-            echo ' <input class="fonts" type="text" name="search_quicksearch" placeholder="' . __('Name') . '" value="' . $search_quicksearch . '" size="15"> ';
+            echo ' <input type="text" name="search_quicksearch" placeholder="' . __('Name') . '" value="' . $search_quicksearch . '" size="15"> ';
             echo __('or ID:');
-            echo ' <input class="fonts" type="text" name="search_id" value="' . $search_id . '" size="8">';
-            echo ' <input class="fonts" type="submit" value="' . __('Search') . '">';
+            echo ' <input type="text" name="search_id" value="' . $search_id . '" size="8">';
+            echo ' <input type="submit" value="' . __('Search') . '">';
             echo '<br>';
             unset($person_result);
 
@@ -186,11 +186,6 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
             echo '<select size="1" name="person" style="width: 300px">';
             $counter = 0;
             while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                // *** Directly select first founded person! ***
-                //$counter++;
-                //if ($counter==1 AND isset($_POST["search_quicksearch"])){
-                //	$pers_gedcomnumber=$person->pers_gedcomnumber;
-                //	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
                 $selected = '';
                 if (isset($pers_gedcomnumber)) {
                     if ($person->pers_gedcomnumber == $pers_gedcomnumber) {
@@ -202,24 +197,6 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                     $person->pers_lastname . ', ' . $person->pers_firstname . $prefix2 . ' [' . $person->pers_gedcomnumber . ']</option>';
             }
             echo '</select>';
-
-            /*
-            $pers_gedcomnumber='';
-            if(isset($_POST['person']) AND $_POST['flag_newtree']!='1') { $pers_gedcomnumber = $_POST['person']; }
-            $pers_search = $dbh->query("SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix
-                FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname, pers_firstname");
-            echo '<select size="1" name="person" style="width: 300px">';
-            while ($person=$pers_search->fetch(PDO::FETCH_OBJ)){
-                $selected='';
-                if (isset($pers_gedcomnumber)){
-                    if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' selected'; }
-                }
-                $prefix2=" ".strtolower(str_replace("_"," ",$person->pers_prefix));
-                echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
-                    $person->pers_lastname.', '.$person->pers_firstname.$prefix2.' ['.$person->pers_gedcomnumber.']</option>';
-            }
-            echo '</select>';
-            */
 
             echo '</td><tr>';
 
@@ -1223,26 +1200,16 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 }
             }
 
-
-            // *** Date and time new in database ***
+            // *** Datetime new in database ***
             // 1_NEW
             // 2 DATE 04 AUG 2004
             // 3 TIME 13:39:58
-            if ($person->pers_new_date) {
-                $buffer .= "1 _NEW\r\n";
-                $buffer .= "2 DATE " . $person->pers_new_date . "\r\n";
-                if ($person->pers_new_time) $buffer .= "3 TIME " . $person->pers_new_time . "\r\n";
-            }
-
-            // *** Date and time changed in database ***
+            $buffer .= process_datetime('new', $person->pers_new_datetime);
+            // *** Datetime changed in database ***
             // 1_CHAN
             // 2 DATE 04 AUG 2004
             // 3 TIME 13:39:58
-            if ($person->pers_changed_date) {
-                $buffer .= "1 CHAN\r\n";
-                $buffer .= "2 DATE " . $person->pers_changed_date . "\r\n";
-                if ($person->pers_changed_time) $buffer .= "3 TIME " . $person->pers_changed_time . "\r\n";
-            }
+            $buffer .= process_datetime('changed', $person->pers_changed_datetime);
         }
         // PMB end of if 'minimal' option selected don't export this
 
@@ -1399,7 +1366,21 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             $buffer .= "1 MARR\r\n";
             // PMB if 'minimal' option selected don't export this
             if ($_POST['export_type'] == 'normal') {
-                $buffer .= "2 TYPE civil\r\n";
+                // 1 MARR
+                // 2 TYPE partners
+                /*
+                living together
+                living apart together
+                intentionally unmarried mother
+                homosexual
+                non-marital
+                extramarital
+                partners
+                registered
+                unknown
+                */
+                //$buffer .= "2 TYPE civil\r\n";
+                $buffer .= '2 TYPE ' . $family->fam_kind . "\r\n";
             }
             // PMB end of if 'minimal' option selected don't export this
 
@@ -1599,25 +1580,16 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 }
             }
 
-            // *** Date and time new in database ***
+            // *** Datetime new in database ***
             // 1_NEW
             // 2 DATE 04 AUG 2004
             // 3 TIME 13:39:58
-            if ($family->fam_new_date) {
-                $buffer .= "1 _NEW\r\n";
-                $buffer .= "2 DATE " . $family->fam_new_date . "\r\n";
-                if ($family->fam_new_time) $buffer .= "3 TIME " . $family->fam_new_time . "\r\n";
-            }
-
-            // *** Date and time changed in database ***
+            $buffer .= process_datetime('new', $family->fam_new_datetime);
+            // *** Datetime changed in database ***
             // 1_CHAN
             // 2 DATE 04 AUG 2004
             // 3 TIME 13:39:58
-            if ($family->fam_changed_date) {
-                $buffer .= "1 CHAN\r\n";
-                $buffer .= "2 DATE " . $family->fam_changed_date . "\r\n";
-                if ($family->fam_changed_time) $buffer .= "3 TIME " . $family->fam_changed_time . "\r\n";
-            }
+            $buffer .= process_datetime('changed', $family->fam_changed_datetime);
         }
         // PMB end of if 'minimal' option selected don't export this
 
@@ -1754,8 +1726,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             //$family_qry=$dbh->query("SELECT * FROM humo_sources
             //	WHERE source_tree_id='".$tree_id."'
             //	AND source_shared='1'");
-            $family_qry = $dbh->query("SELECT * FROM humo_sources
-				WHERE source_tree_id='" . $tree_id . "'");
+            $family_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
             while ($family = $family_qry->fetch(PDO::FETCH_OBJ)) {
                 if ($_POST['part_tree'] == 'part'  and !in_array($family->source_gedcomnr, $source_array)) {
                     continue;
@@ -1823,25 +1794,17 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // source_repo_name, source_repo_caln, source_repo_page.
 
-                // *** Date and time new in database ***
+                // *** Datetime new in database ***
                 // 1_NEW
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                if ($family->source_new_date) {
-                    $buffer .= "1 _NEW\r\n";
-                    $buffer .= "2 DATE " . $family->source_new_date . "\r\n";
-                    if ($family->source_new_time) $buffer .= "3 TIME " . $family->source_new_time . "\r\n";
-                }
-
-                // *** Date and time changed in database ***
+                $buffer .= process_datetime('new', $family->source_new_datetime);
+                // *** Datetime changed in database ***
                 // 1_CHAN
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                if ($family->source_changed_date) {
-                    $buffer .= "1 CHAN\r\n";
-                    $buffer .= "2 DATE " . $family->source_changed_date . "\r\n";
-                    if ($family->source_changed_time) $buffer .= "3 TIME " . $family->source_changed_time . "\r\n";
-                }
+                $buffer .= process_datetime('changed', $family->source_changed_datetime);
+
 
                 // *** Write source data ***
                 $buffer = decode($buffer);
@@ -1897,25 +1860,16 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     $buffer .= '1 WWW ' . $repoDb->repo_url . "\r\n";
                 }
 
-                // *** Date and time new in database ***
+                // *** Datetime new in database ***
                 // 1_NEW
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                if ($repoDb->repo_new_date) {
-                    $buffer .= "1 _NEW\r\n";
-                    $buffer .= "2 DATE " . process_date($repoDb->repo_new_date) . "\r\n";
-                    if ($repoDb->repo_new_time) $buffer .= "3 TIME " . $repoDb->repo_new_time . "\r\n";
-                }
-
-                // *** Date and time changed in database ***
+                $buffer .= process_datetime('new', $repoDb->repo_new_datetime);
+                // *** Datetime changed in database ***
                 // 1_CHAN
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                if ($repoDb->repo_changed_date) {
-                    $buffer .= "1 CHAN\r\n";
-                    $buffer .= "2 DATE " . process_date($repoDb->repo_changed_date) . "\r\n";
-                    if ($repoDb->repo_changed_time) $buffer .= "3 TIME " . $repoDb->repo_changed_time . "\r\n";
-                }
+                $buffer .= process_datetime('changed', $repoDb->repo_changed_datetime);
 
                 // *** Write repoitory data ***
                 $buffer = decode($buffer);
@@ -2003,25 +1957,16 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     $buffer .= "0 " . $s . " NOTE\r\n";
                     $buffer .= '1 CONC ' . process_text(1, $textDb->text_text);
 
-                    // *** Date and time new in database ***
+                    // *** Datetime new in database ***
                     // 1_NEW
                     // 2 DATE 04 AUG 2004
                     // 3 TIME 13:39:58
-                    if ($textDb->text_new_date) {
-                        $buffer .= "1 _NEW\r\n";
-                        $buffer .= "2 DATE " . $textDb->text_new_date . "\r\n";
-                        if ($textDb->text_new_time) $buffer .= "3 TIME " . $textDb->text_new_time . "\r\n";
-                    }
-
-                    // *** Date and time changed in database ***
+                    $buffer .= process_datetime('new', $textDb->text_new_datetime);
+                    // *** Datetime changed in database ***
                     // 1_CHAN
                     // 2 DATE 04 AUG 2004
                     // 3 TIME 13:39:58
-                    if ($textDb->text_changed_date) {
-                        $buffer .= "1 CHAN\r\n";
-                        $buffer .= "2 DATE " . $textDb->text_changed_date . "\r\n";
-                        if ($textDb->text_changed_time) $buffer .= "3 TIME " . $textDb->text_changed_time . "\r\n";
-                    }
+                    $buffer .= process_datetime('changed', $textDb->text_changed_datetime);
                 }
             }
 
@@ -2625,4 +2570,19 @@ function export_witnesses($event_connect_kind, $event_connect_id, $event_kind)
         }
     }
     return $witnesses;
+}
+
+function process_datetime($new_changed, $datetime)
+{
+    $buffer = '';
+    if ($datetime and $datetime != '1970-01-01 00:00:01') {
+        if ($new_changed == 'new') {
+            $buffer .= "1 _NEW\r\n";
+        } else {
+            $buffer .= "1 CHAN\r\n";
+        }
+        $buffer .= "2 DATE " . strtoupper(date('d M Y', (strtotime($datetime)))) . "\r\n";
+        $buffer .= "3 TIME " . date('H:i:s', (strtotime($datetime))) . "\r\n";
+    }
+    return $buffer;
 }

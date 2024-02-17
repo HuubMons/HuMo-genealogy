@@ -45,7 +45,7 @@
                         </style>';
                     */
                     // *** Show navigation pop-up ***
-                    echo '&nbsp;&nbsp;<div class="fonts ' . $rtlmarker . 'sddm" style="display:inline;">';
+                    echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
                     echo '<a href="#" style="display:inline" ';
                     echo 'onmouseover="mopen(event,\'archive_menu\',0,0)"';
                     echo 'onmouseout="mclosetime()">';
@@ -273,7 +273,7 @@
                                 <td><?= __('prefix'); ?></td>
                                 <!-- HELP POPUP for prefix -->
                                 <td><input type="text" name="pers_prefix1" value="<?= $pers_prefix; ?>" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
-                                    <div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline;">
+                                    <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                                         <a href="#" style="display:inline" onmouseover="mopen(event,'help_prefix',100,400)" onmouseout="mclosetime()">
                                             <img src="../images/help.png" height="16" width="16">
                                         </a>
@@ -285,7 +285,7 @@
 
                                 <!-- HELP POPUP for prefix -->
                                 <td><input type="text" name="pers_prefix2" value="" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
-                                    <div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline;">
+                                    <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                                         <a href="#" style="display:inline" onmouseover="mopen(event,'help_prefix',100,400)" onmouseout="mclosetime()">
                                             <img src="../images/help.png" height="16" width="16">
                                         </a>
@@ -374,7 +374,7 @@
                         </table><br>
 
                         <?= __('Or select an existing family as parents:'); ?>
-                        <input class="fonts" type="text" name="add_parents" placeholder="<?= __('GEDCOM number (ID)'); ?>" value="" size="20">
+                        <input type="text" name="add_parents" placeholder="<?= __('GEDCOM number (ID)'); ?>" value="" size="20">
                         <a href="#" onClick='window.open("index.php?page=editor_relation_select","","<?= $field_popup; ?>")'><img src="../images/search.png" alt=<?= __('Search'); ?>></a>
                         <input type="submit" name="dummy2" value="<?= __('Select'); ?>">
                     </span> <!-- End of hide item -->
@@ -429,9 +429,7 @@
 
                     // *** Add person to admin favourite list ***
                     $fav_qry = "SELECT * FROM humo_settings
-                        WHERE setting_variable='admin_favourite'
-                        AND setting_tree_id='" . safe_text_db($tree_id) . "'
-                        AND setting_value='" . $pers_gedcomnumber . "'";
+                        WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_value='" . $pers_gedcomnumber . "'";
                     $fav_result = $dbh->query($fav_qry);
                     $rows = $fav_result->rowCount();
                     if ($rows > 0)
@@ -581,48 +579,76 @@
 
 
 
-<?php /*
+                        <?php /*
 <!-- TEST Bootstrap modal -->
 <!--
 Modal works. In editor.php also enable line 69 <<<<<<<<<<<<<<<<<<<<<
 TODO: add and remove sources inside a modal without reloading page
 Try: https://www.w3schools.com/jsref/met_node_appendchild.asp
-
-Don't close modal is search for existing source is done?
-$('#mymodal').on('hidden.bs.modal', function() {
-  return false;
-});
-
-Or:
-const modalToggle = document.getElementById('toggleMyModal');
-myModal.show(modalToggle)
 -->
+<?php
+// Partly copied from source_link2
+//function source_link2($hideshow, $connect_connect_id, $connect_sub_kind, $link = '')
+//echo source_link2('500', $pers_gedcomnumber, 'pers_name_source', 'name');
+$connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
+WHERE connect_tree_id='" . $tree_id . "'
+AND connect_sub_kind='pers_name_source' AND connect_connect_id='" . $pers_gedcomnumber . "'";
+$connect_sql = $dbh->query($connect_qry);
+$source_count = $connect_sql->rowCount();
+$source_error = 0;
+while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
+    if (!$connectDb->connect_source_id) {
+        $source_error = 1;
+        $style_source = '';
+    } else {
+        // *** Check if source is empty ***
+        $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+        if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
+            $source_error = 2;
+            $style_source = '';
+        }
+    }
+}
+?>
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <?= __('Source'); ?>
+<?php
+$colour = 'btn-primary';
+if ($source_error == 1) $colour = 'btn-danger';
+if ($source_error == 2) $colour = 'btn-warning';
+?>
+<button type="button" class="btn <?= $colour; ?> btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <?= __('Source'); ?><?= $source_error; ?> [<?= $source_count; ?>]
 </button>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-      <?php
-        // TEST using function in editor_sources.php. Include file in editor.php.
-        source_edit("person", "pers_name_source", $pers_gedcomnumber);
-        ?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php
+                // TEST using function in editor_sources.php. Include file in editor.php.
+                source_edit("person", "pers_name_source", $pers_gedcomnumber);
+                ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
+
+<!-- Show modal if save button is used, existing source is selected, etc. -->
+<?php if (isset($_POST['connect_add']) or isset($_POST['submit']) or isset($_GET['source_add2'])) { ?>
+    <script>
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {})
+        myModal.toggle()
+    </script>
+<?php } ?>
 
 <!-- Also test second modal -->
 <!-- Button trigger modal -->
@@ -632,26 +658,29 @@ myModal.show(modalToggle)
 
 <!-- Modal -->
 <div class="modal fade" id="pers_birth_sourceModal" tabindex="-1" aria-labelledby="pers_birth_sourceModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="pers_birth_sourceModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-      <?php
-        // TEST using function in editor_sources.php. Include file in editor.php.
-        source_edit("person", "pers_birth_source", $pers_gedcomnumber);
-        ?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="pers_birth_sourceModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php
+                // TEST using function in editor_sources.php. Include file in editor.php.
+                source_edit("person", "pers_birth_source", $pers_gedcomnumber);
+                ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 */ ?>
+
+
+
 
                     <?php } ?>
                 </td>
@@ -780,7 +809,7 @@ myModal.show(modalToggle)
                 <?php
 
                 // HELP POPUP
-                echo '&nbsp;&nbsp;<div class="fonts ' . $rtlmarker . 'sddm" style="display:inline;">';
+                echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
                 echo '<a href="#" style="display:inline" ';
                 echo 'onmouseover="mopen(event,\'help_date\')"';
                 echo 'onmouseout="mclosetime()">';
@@ -1107,7 +1136,7 @@ myModal.show(modalToggle)
                 echo editor_label2(__('Age'));
                 echo '<input type="text" name="pers_death_age" placeholder="' . __('Age') . '" value="' . $pers_death_age . '" size="3">';
                 // *** HELP POPUP for age by death ***
-                echo '&nbsp;&nbsp;<div class="fonts ' . $rtlmarker . 'sddm" style="display:inline;">';
+                echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
                 echo '<a href="#" style="display:inline" ';
                 echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
                 echo 'onmouseout="mclosetime()">';
@@ -1357,7 +1386,7 @@ myModal.show(modalToggle)
                 <td><?= ucfirst(__('own code')); ?></td>
                 <td colspan="2"><input type="text" name="pers_own_code" placeholder="<?= __('own code'); ?>" value="<?= htmlspecialchars($pers_own_code); ?>" style="width: 500px">
                     <!-- HELP POPUP for own code -->
-                    &nbsp;&nbsp;<div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline;">
+                    &nbsp;&nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                         <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu3',100,400)" onmouseout="mclosetime()">
                             <img src="../images/help.png" height="16" width="16">
                         </a>
@@ -1411,11 +1440,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                 */
 
                 // *** Show unprocessed GEDCOM tags ***
-                $tag_qry = "SELECT * FROM humo_unprocessed_tags
-                    WHERE tag_tree_id='" . $tree_id . "'
-                    AND tag_pers_id='" . $person->pers_id . "'";
+                $tag_qry = "SELECT * FROM humo_unprocessed_tags WHERE tag_tree_id='" . $tree_id . "' AND tag_pers_id='" . $person->pers_id . "'";
                 $tag_result = $dbh->query($tag_qry);
-                //$num_rows = $tag_result->rowCount();
                 $tagDb = $tag_result->fetch(PDO::FETCH_OBJ);
                 if (isset($tagDb->tag_tag)) {
                     $tags_array = explode('<br>', $tagDb->tag_tag);
@@ -1442,15 +1468,14 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                         <td colspan="2"><?= $tagDb->tag_tag; ?></td>
                         <td></td>
                     </tr>
-            <?php
+                <?php
                 }
 
                 // *** Show editor notes ***
                 show_editor_notes('person');
 
                 // *** Show user added notes ***
-                $note_qry = "SELECT * FROM humo_user_notes
-                    WHERE note_tree_id='" . $tree_id . "'
+                $note_qry = "SELECT * FROM humo_user_notes WHERE note_tree_id='" . $tree_id . "'
                     AND note_kind='user' AND note_connect_kind='person' AND note_connect_id='" . $pers_gedcomnumber . "'";
                 $note_result = $dbh->query($note_qry);
                 $num_rows = $note_result->rowCount();
@@ -1464,35 +1489,68 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                 else
                     printf(__('There are %d user added notes.'), 0);
                 echo '</td><td></td></tr>';
+
                 while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
-                    $user_qry = "SELECT * FROM humo_users
-                                    WHERE user_id='" . $noteDb->note_new_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                    $user_name = '';
+                    if ($noteDb->note_new_user_id) {
+                        $user_qry = "SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'";
+                        $user_result = $dbh->query($user_qry);
+                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                        $user_name = $userDb->user_name;
+                    }
+                ?>
+                    <tr class="row62" style="display:none;">
+                        <td></td>
+                        <td colspan="2">
+                            <?php
+                            echo __('Added by') . ' <b>' . $user_name . '</b> (' . show_datetime($noteDb->note_new_datetime) . ')<br>';
 
-                    echo '<tr class="row62" style="display:none;"><td></td>';
-                    echo '<td colspan="2">';
+                            echo '<b>' . $noteDb->note_names . '</b><br>';
 
-                    echo __('Added by') . ' <b>' . $userDb->user_name . '</b> (' . language_date($noteDb->note_new_date) . ' ' . $noteDb->note_new_time . ')<br>';
-
-                    echo '<b>' . $noteDb->note_names . '</b><br>';
-
-                    echo '<textarea readonly rows="1" placeholder="' . __('Text') . '" ' . $field_text_large . '>' . $editor_cls->text_show($noteDb->note_note) . '</textarea>';
-
-                    echo '</td>';
-                    echo '<td></td></tr>';
+                            echo '<textarea readonly rows="1" placeholder="' . __('Text') . '" ' . $field_text_large . '>' . $editor_cls->text_show($noteDb->note_note) . '</textarea>';
+                            ?>
+                        </td>
+                        <td></td>
+                    </tr>
+                <?php
                 }
 
                 // *** Person added by user ***
-                if ($person->pers_new_user) {
-                    echo '<tr class="table_header_large"><td>' . __('Added by') . '</td>';
-                    //echo '<td colspan="2">'.$person->pers_new_user.' ('.$person->pers_new_date.' '.$person->pers_new_time.')</td><td></td></tr>';
-                    echo '<td colspan="2">' . $person->pers_new_user . ' (' . language_date($person->pers_new_date) . ' ' . $person->pers_new_time . ')</td><td></td></tr>';
+                if ($person->pers_new_user_id or $person->pers_new_datetime) {
+                    $user_name = '';
+                    if ($person->pers_new_user_id) {
+                        $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'";
+                        $user_result = $dbh->query($user_qry);
+                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                        $user_name = $userDb->user_name;
+                    }
+                ?>
+                    <tr class="table_header_large">
+                        <td><?= __('Added by'); ?></td>
+                        <td colspan="2"><?= show_datetime($person->pers_new_datetime) . ' ' . $user_name; ?></td>
+                        <td></td>
+                    </tr>
+                <?php
                 }
+
                 // *** Person changed by user ***
-                if ($person->pers_changed_user) {
-                    echo '<tr class="table_header_large"><td>' . __('Changed by') . '</td>';
-                    echo '<td colspan="2">' . $person->pers_changed_user . ' (' . language_date($person->pers_changed_date) . ' ' . $person->pers_changed_time . ')</td><td></td></tr>';
+                if ($person->pers_changed_user_id or $person->pers_changed_datetime) {
+                    $user_name = '';
+                    if ($person->pers_changed_user_id) {
+                        $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'";
+                        $user_result = $dbh->query($user_qry);
+                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                        $user_name = $userDb->user_name;
+                    }
+                ?>
+                    <tr class="table_header_large">
+                        <td><?= __('Changed by'); ?></td>
+                        <td colspan="2">
+                            <?= show_datetime($person->pers_changed_datetime) . ' ' . $user_name; ?>
+                        </td>
+                        <td></td>
+                    </tr>
+            <?php
                 }
             }
 

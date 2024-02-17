@@ -3,7 +3,7 @@
 // *** Reset all modules ***
 if (isset($_GET['template_homepage_reset']) and $_GET['template_homepage_reset'] == '1') {
     $sql = "DELETE FROM humo_settings WHERE setting_variable='template_homepage'";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 
     // *** Reload page to get new values ***
     echo '<script> window.location="index.php?page=settings&menu_admin=settings_homepage";</script>';
@@ -18,7 +18,7 @@ if (isset($_POST['change_module'])) {
         if (isset($_POST[$dataDb->setting_id . 'module_option_2'])) $setting_value .= '|' . $_POST[$dataDb->setting_id . 'module_option_2'];
         $sql = "UPDATE humo_settings SET setting_value='" . safe_text_db($setting_value) . "' WHERE setting_id=" . safe_text_db($_POST[$dataDb->setting_id . 'id']);
         //echo $sql.'<br>';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
 }
 
@@ -27,14 +27,14 @@ if (isset($_GET['remove_module']) and is_numeric($_GET['remove_module'])) {
     $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' AND setting_id='" . $_GET['remove_module'] . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
     $sql = "DELETE FROM humo_settings WHERE setting_id='" . $dataDb->setting_id . "'";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 
     // *** Re-order links ***
     $repair_order = $dataDb->setting_order;
     $item = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' AND setting_order>" . $repair_order);
     while ($itemDb = $item->fetch(PDO::FETCH_OBJ)) {
         $sql = "UPDATE humo_settings SET setting_order='" . ($itemDb->setting_order - 1) . "' WHERE setting_id=" . $itemDb->setting_id;
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
 }
 
@@ -43,7 +43,7 @@ if (isset($_POST['add_module']) and is_numeric($_POST['module_order'])) {
     $setting_value = $_POST['module_status'] . "|" . $_POST['module_column'] . "|" . $_POST['module_item'];
     $sql = "INSERT INTO humo_settings SET setting_variable='template_homepage',
         setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['module_order']) . "'";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 
 if (isset($_GET['mod_up'])) {
@@ -53,11 +53,11 @@ if (isset($_GET['mod_up'])) {
 
     // *** Raise previous module ***
     $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['module_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 
     // *** Lower module order ***
     $sql = "UPDATE humo_settings SET setting_order='" . (safe_text_db($_GET['module_order']) - 1) . "' WHERE setting_id=" . safe_text_db($_GET['id']);
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 if (isset($_GET['mod_down'])) {
     // *** Search next link ***
@@ -66,11 +66,11 @@ if (isset($_GET['mod_down'])) {
 
     // *** Lower previous link ***
     $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['module_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 
     // *** Raise link order ***
     $sql = "UPDATE humo_settings SET setting_order='" . (safe_text_db($_GET['module_order']) + 1) . "' WHERE setting_id=" . safe_text_db($_GET['id']);
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 
 
@@ -109,7 +109,7 @@ for ($i = 0; $i < count($item_array); $i++) {
         $count_left++;
         if ($item_array[$i]['order'] != $count_left) {
             $sql = "UPDATE humo_settings SET setting_order='" . $count_left . "' WHERE setting_id='" . $item_array[$i]['id']."'";
-            $result = $dbh->query($sql);        
+            $dbh->query($sql);        
         }
     }
 
@@ -117,7 +117,7 @@ for ($i = 0; $i < count($item_array); $i++) {
         $count_center++;
         if ($item_array[$i]['order'] != $count_center) {
             $sql = "UPDATE humo_settings SET setting_order='" . $count_center . "' WHERE setting_id='" . $item_array[$i]['id']."'";
-            $result = $dbh->query($sql);        
+            $dbh->query($sql);        
         }
     }
 
@@ -125,7 +125,7 @@ for ($i = 0; $i < count($item_array); $i++) {
         $count_right++;
         if ($item_array[$i]['order'] != $count_right) {
             $sql = "UPDATE humo_settings SET setting_order='" . $count_right . "' WHERE setting_id='" . $item_array[$i]['id']."'";
-            $result = $dbh->query($sql);        
+            $dbh->query($sql);        
         }
     }
 }
@@ -390,7 +390,7 @@ if (isset($_POST['change_link'])) {
     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
         $setting_value = $_POST[$dataDb->setting_id . 'own_code'] . "|" . $_POST[$dataDb->setting_id . 'link_text'];
         $sql = "UPDATE humo_settings SET setting_value='" . safe_text_db($setting_value) . "' WHERE setting_id=" . safe_text_db($_POST[$dataDb->setting_id . 'id']);
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
 }
 
@@ -399,14 +399,14 @@ if (isset($_GET['remove_link']) and is_numeric($_GET['remove_link'])) {
     $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_id='" . $_GET['remove_link'] . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
     $sql = "DELETE FROM humo_settings WHERE setting_id='" . $dataDb->setting_id . "'";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 
     // *** Re-order links ***
     $repair_order = $dataDb->setting_order;
     $item = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_order>" . $repair_order);
     while ($itemDb = $item->fetch(PDO::FETCH_OBJ)) {
         $sql = "UPDATE humo_settings SET setting_order='" . ($itemDb->setting_order - 1) . "' WHERE setting_id=" . $itemDb->setting_id;
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
 }
 
@@ -415,7 +415,7 @@ if (isset($_POST['add_link']) and is_numeric($_POST['link_order'])) {
     $setting_value = $_POST['own_code'] . "|" . $_POST['link_text'];
     $sql = "INSERT INTO humo_settings SET setting_variable='link',
         setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['link_order']) . "'";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 
 if (isset($_GET['up'])) {
@@ -426,11 +426,11 @@ if (isset($_GET['up'])) {
     // *** Raise previous link ***
     $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['link_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
 
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
     // *** Lower link order ***
     $sql = "UPDATE humo_settings SET setting_order='" . (safe_text_db($_GET['link_order']) - 1) . "' WHERE setting_id=" . safe_text_db($_GET['id']);
 
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 if (isset($_GET['down'])) {
     // *** Search next link ***
@@ -440,11 +440,11 @@ if (isset($_GET['down'])) {
     // *** Lower previous link ***
     $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['link_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
 
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
     // *** Raise link order ***
     $sql = "UPDATE humo_settings SET setting_order='" . (safe_text_db($_GET['link_order']) + 1) . "' WHERE setting_id=" . safe_text_db($_GET['id']);
 
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 
 // *** Show all links ***

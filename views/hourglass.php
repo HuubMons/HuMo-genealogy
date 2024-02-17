@@ -70,7 +70,7 @@ $anc_hi = $anc_top + ((pow(2, $data["chosengenanc"] - 1) * $v_distance) / 2) + 1
 $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
 
 ?>
-<h1 class="standard_header fonts" style="margin:auto; text-align: center;">
+<h1 class="standard_header" style="margin:auto; text-align: center;">
     <b><?= __('Hourglass chart') . __(' of ') . $genarray[0]["nam"]; ?></b>
 </h1>
 

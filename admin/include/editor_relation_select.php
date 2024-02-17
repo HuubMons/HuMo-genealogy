@@ -39,13 +39,13 @@ $search_quicksearch_parent = '';
 if (isset($_POST['search_quicksearch_parent'])) {
     $search_quicksearch_parent = safe_text_db($_POST['search_quicksearch_parent']);
 }
-echo '<input class="fonts" type="text" name="search_quicksearch_parent" placeholder="' . __('Name') . '" value="' . $search_quicksearch_parent . '" size="15">';
+echo '<input type="text" name="search_quicksearch_parent" placeholder="' . __('Name') . '" value="' . $search_quicksearch_parent . '" size="15">';
 
 $search_person_id = '';
 if (isset($_POST['search_person_id'])) $search_person_id = safe_text_db($_POST['search_person_id']);
-echo ' ' . __('or ID:') . ' <input class="fonts" type="text" name="search_person_id" value="' . $search_person_id . '" size="5">';
+echo ' ' . __('or ID:') . ' <input type="text" name="search_person_id" value="' . $search_person_id . '" size="5">';
 
-echo ' <input class="fonts" type="submit" value="' . __('Search') . '">';
+echo ' <input type="submit" value="' . __('Search') . '">';
 echo '</form><br>';
 
 

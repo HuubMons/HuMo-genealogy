@@ -78,12 +78,12 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
     //=================================
     if ($data["dna"] == "none") {
-        //echo '<h1 class="standard_header fonts" style="align:center; text-align: center;"><b>' . __('Descendant chart') . __(' of ') . $genarray[0]["nam"] . '</b>';
+        //echo '<h1 class="standard_header" style="align:center; text-align: center;"><b>' . __('Descendant chart') . __(' of ') . $genarray[0]["nam"] . '</b>';
         echo $data["descendant_header"];
     } elseif ($data["dna"] == "ydna" or $data["dna"] == "ydnamark") {
-        echo '<h1 class="standard_header fonts" style="align:center; text-align: center;"><b>' . __('Same Y-DNA as ') . $data["base_person_name"] . '</b>';
+        echo '<h1 class="standard_header" style="align:center; text-align: center;"><b>' . __('Same Y-DNA as ') . $data["base_person_name"] . '</b>';
     } elseif ($data["dna"] == "mtdna" or $data["dna"] == "mtdnamark") {
-        echo '<h1 class="standard_header fonts" style="align:center; text-align: center;"><b>' . __('Same mtDNA as ') . $data["base_person_name"] . '</b>';
+        echo '<h1 class="standard_header" style="align:center; text-align: center;"><b>' . __('Same mtDNA as ') . $data["base_person_name"] . '</b>';
     }
     echo '</h1>';
     echo '<br><input type="button" id="imgbutton" value="' . __('Get image of chart for printing (allow popup!)') . '" onClick="showimg();">';

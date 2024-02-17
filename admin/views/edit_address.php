@@ -15,6 +15,8 @@ if (!defined('ADMIN_PAGE')) {
 include_once(__DIR__ . "/../include/editor_cls.php");
 $editor_cls = new editor_cls;
 
+include_once(__DIR__ . "/../include/select_tree.php");
+
 require_once  __DIR__ . "/../models/edit_address.php";
 $editAddressModel = new EditAddressModel($dbh);
 $editAddressModel->set_address_id();
@@ -59,28 +61,29 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
     </div>
 <?php }; ?>
 
-<form method="POST" action="<?= $phpself; ?>" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
 
-    <div class="p-3 m-2 genealogy_search">
-        <div class="row">
-            <div class="col-auto">
-                <label for="tree" class="col-form-label">
-                    <?= __('Family tree'); ?>:
-                </label>
-            </div>
+<div class="p-3 m-2 genealogy_search">
+    <div class="row">
+        <div class="col-auto">
+            <label for="tree" class="col-form-label">
+                <?= __('Family tree'); ?>:
+            </label>
+        </div>
 
-            <div class="col-auto">
-                <?= $editor_cls->select_tree($page); ?>
-            </div>
+        <div class="col-auto">
+            <?= select_tree($dbh, $page, $tree_id); ?>
+        </div>
 
-            <div class="col-auto">
-                <label for="address" class="col-form-label">
-                    <?= __('Select address'); ?>:
-                </label>
-            </div>
+        <div class="col-auto">
+            <label for="address" class="col-form-label">
+                <?= __('Select address'); ?>:
+            </label>
+        </div>
 
-            <div class="col-auto">
+        <div class="col-auto">
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+
                 <select size="1" name="address_id" class="form-select form-select-sm" onChange="this.form.submit();" style="width: 200px">
                     <option value=""><?= __('Select address'); ?></option>
                     <?php
@@ -100,23 +103,32 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
                             ?>
                             [<?= $addressDb->address_gedcomnr; ?>]
                         </option>
-                    <?php
-                    }
-                    ?>
+                    <?php } ?>
                 </select>
-            </div>
+            </form>
+        </div>
 
-            <div class="col-auto">
-                <?= __('or'); ?>:
-                <input type="submit" name="add_address" value="<?= __('Add address'); ?>" class="btn btn-sm btn-secondary">
-            </div>
+        <div class="col-auto">
+            <?= __('or'); ?>:
+            <input type="submit" name="add_address" value="<?= __('Add address'); ?>" class="btn btn-sm btn-secondary">
         </div>
     </div>
-</form>
+</div>
 <?php
 
 // *** Show selected address ***
-if ($editAddress['address_id'] or isset($_POST['add_address'])) {
+if ($editAddress['address_id']) {
+    $address_qry2 = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_id='" . $editAddress['address_id'] . "'");
+    $die_message = __('No valid address number.');
+    try {
+        $addressDb = $address_qry2->fetch(PDO::FETCH_OBJ);
+    } catch (PDOException $e) {
+        echo $die_message;
+    }
+}
+
+//if ($editAddress['address_id'] or isset($_POST['add_address'])) {
+if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
     if (isset($_POST['add_address'])) {
         $address_gedcomnr = '';
         $address_address = '';
@@ -128,15 +140,14 @@ if ($editAddress['address_id'] or isset($_POST['add_address'])) {
         //$address_photo='';
         //$address_source='';
     } else {
-        @$address_qry2 = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_id='" . $editAddress['address_id'] . "'");
-        $die_message = __('No valid address number.');
-        try {
-            @$addressDb = $address_qry2->fetch(PDO::FETCH_OBJ);
-        } catch (PDOException $e) {
-            echo $die_message;
-        }
+        //$address_qry2 = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_id='" . $editAddress['address_id'] . "'");
+        //$die_message = __('No valid address number.');
+        //try {
+        //    $addressDb = $address_qry2->fetch(PDO::FETCH_OBJ);
+        //} catch (PDOException $e) {
+        //    echo $die_message;
+        //}
         $address_gedcomnr = $addressDb->address_gedcomnr;
-
         $address_address = $addressDb->address_address;
         $address_date = $addressDb->address_date;
         $address_zip = $addressDb->address_zip;
@@ -152,49 +163,71 @@ if ($editAddress['address_id'] or isset($_POST['add_address'])) {
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
         <input type="hidden" name="address_gedcomnr" value="<?= $address_gedcomnr; ?>">
-        <?php
-        echo '<table class="humo standard" border="1">';
-        echo '<tr class="table_header"><th>' . __('Option') . '</th><th colspan="2">' . __('Value') . '</th></tr>';
+        <table class="humo standard" border="1">
+            <tr class="table_header">
+                <th><?= __('Option'); ?></th>
+                <th colspan="2"><?= __('Value'); ?></th>
+            </tr>
 
-        //$editor_cls->date_show($address_date,"address_date");
-        echo '<tr><td>' . __('Place') . '</td><td>';
-        echo '<input type="text" name="address_place" value="' . htmlspecialchars($address_place) . '" size="50"></td></tr>';
+            <tr>
+                <td><?= __('Place'); ?></td>
+                <td>
+                    <!-- $editor_cls->date_show($address_date,"address_date"); -->
+                    <input type="text" name="address_place" value="<?= htmlspecialchars($address_place); ?>" size="50">
+                </td>
+            </tr>
 
-        echo '<tr><td>' . __('Street') . '</td><td><input type="text" name="address_address" value="' . htmlspecialchars($address_address) . '" size="60" required></td></tr>';
+            <tr>
+                <td><?= __('Street'); ?></td>
+                <td><input type="text" name="address_address" value="<?= htmlspecialchars($address_address); ?>" size="60" required></td>
+            </tr>
 
-        echo '<tr><td>' . __('Zip code') . '</td><td><input type="text" name="address_zip" value="' . $address_zip . '" size="60"></td></tr>';
+            <tr>
+                <td><?= __('Zip code'); ?></td>
+                <td><input type="text" name="address_zip" value="<?= $address_zip; ?>" size="60"></td>
+            </tr>
 
-        echo '<tr><td>' . __('Phone') . '</td><td><input type="text" name="address_phone" value="' . $address_phone . '" size="60"></td></tr>';
+            <tr>
+                <td><?= __('Phone'); ?></td>
+                <td><input type="text" name="address_phone" value="<?= $address_phone; ?>" size="60"></td>
+            </tr>
 
-        //echo '<tr><td>'.__('Picture').'</td><td><input type="text" name="address_photo" value="'.$address_photo.'" size="60"></td></tr>';
+            <!-- <tr><td>'.__('Picture').'</td><td><input type="text" name="address_photo" value="'.$address_photo.'" size="60"></td></tr>'; -->
 
-        // TODO Check, doesn't work anymore?
-        // *** Source by address ***
-        echo '<tr><td>' . ucfirst(__('source')) . '</td><td>';
-        if (isset($addressDb->address_id)) {
-            echo source_link2('20', $addressDb->address_gedcomnr, 'address_source', 'addresses');
-        }
-        echo '</td></tr>';
-        // *** Show source by address ***
-        if (isset($addressDb->address_gedcomnr)) {
-            //edit_sources($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
-            echo edit_sources('20', 'address', 'address_source', $addressDb->address_gedcomnr);
-        }
+            <?php // TODO Check, doesn't work anymore?
+            ?>
+            <!-- Source by address -->
+            <tr>
+                <td><?= ucfirst(__('source')); ?></td>
+                <td>
+                    <?php
+                    if (isset($addressDb->address_id)) {
+                        echo source_link2('20', $addressDb->address_gedcomnr, 'address_source', 'addresses');
+                    }
+                    ?>
+                </td>
+            </tr>
 
-        echo '<tr><td>' . ucfirst(__('text')) . '</td><td><textarea rows="1" name="address_text" ' . $field_text_large . '>' .
-            $editor_cls->text_show($address_text) . '</textarea></td></tr>';
+            <?php
+            // *** Show source by address ***
+            if (isset($addressDb->address_gedcomnr)) {
+                //edit_sources($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
+                echo edit_sources('20', 'address', 'address_source', $addressDb->address_gedcomnr);
+            }
 
-        if (isset($_POST['add_address'])) {
-            echo '<tr><td>' . __('Add') . '</td><td><input type="submit" name="address_add" value="' . __('Add') . '"></td></tr>';
-        } else {
-            echo '<tr><td>' . __('Save') . '</td><td><input type="submit" name="address_change" value="' . __('Save') . '">';
-            echo ' ' . __('or') . ' ';
-            echo '<input type="submit" name="address_remove" value="' . __('Delete') . '">';
-            echo '</td></tr>';
-        }
+            echo '<tr><td>' . ucfirst(__('text')) . '</td><td><textarea rows="1" name="address_text" ' . $field_text_large . '>' .
+                $editor_cls->text_show($address_text) . '</textarea></td></tr>';
 
-        echo '</table>' . "\n";
-        ?>
+            if (isset($_POST['add_address'])) {
+                echo '<tr><td>' . __('Add') . '</td><td><input type="submit" name="address_add" value="' . __('Add') . '"></td></tr>';
+            } else {
+                echo '<tr><td>' . __('Save') . '</td><td><input type="submit" name="address_change" value="' . __('Save') . '">';
+                echo ' ' . __('or') . ' ';
+                echo '<input type="submit" name="address_remove" value="' . __('Delete') . '">';
+                echo '</td></tr>';
+            }
+            ?>
+        </table>
     </form>
 <?php
 
@@ -203,6 +236,7 @@ if ($editAddress['address_id'] or isset($_POST['add_address'])) {
         if ($humo_option["url_rewrite"] == "j") {
             $url = '../address/' . $tree_id . '/' . $addressDb->address_gedcomnr;
         } else {
+            //TODO CHECK LINK
             $url = '../address.php?tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
         }
 

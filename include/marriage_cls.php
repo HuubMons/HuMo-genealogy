@@ -12,7 +12,7 @@ class marriage_cls
     public $privacy = false;  // Privacy van persoon
 
     //public function __construct($familyDb, $privacy_man, $privacy_woman)
-    public function __construct($familyDb=null, $privacy_man=null, $privacy_woman=null)
+    public function __construct($familyDb = null, $privacy_man = null, $privacy_woman = null)
     {
         $this->cls_marriage_Db = $familyDb;           // Database record
         $this->privacy = $this->set_privacy($privacy_man, $privacy_woman); // Set privacy
@@ -44,7 +44,7 @@ class marriage_cls
     {
         global $dbh, $db_functions, $tree_prefix_quoted, $dataDb, $uri_path, $humo_option;
         global $language, $user, $screen_mode;
-        global $templ_person, $parent1Db, $parent2Db;
+        global $templ_relation, $parent1Db, $parent2Db;
         global $relation_check;
 
 
@@ -110,13 +110,15 @@ class marriage_cls
             $relation_kind = __('Unknown relation') . ' ';
         }
 
+
         // *** Living together ***
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_relation_date or $marriageDb->fam_relation_place) {
-            $templ_relation["marriage_date"] = date_place($marriageDb->fam_relation_date, $marriageDb->fam_relation_place);
-            $temp = "marriage_date";
-            $temp_text .= $templ_relation["marriage_date"];
+            // TODO check these variables.
+            $templ_relation["cohabit_date"] = date_place($marriageDb->fam_relation_date, $marriageDb->fam_relation_place);
+            $temp = "cohabit_date";
+            $temp_text .= $templ_relation["cohabit_date"];
         }
         if ($user["group_texts_fam"] == 'j' and process_text($marriageDb->fam_relation_text)) {
             if ($temp_text) {
@@ -127,24 +129,27 @@ class marriage_cls
                     $templ_relation[$temp] .= ' ';
                 }
             }
-            //$templ_relation["marriage_text"]=strip_tags(process_text($marriageDb->fam_relation_text));
-            $templ_relation["marriage_text"] = process_text($marriageDb->fam_relation_text);
-            $temp = "marriage_text";
-            $temp_text .= $templ_relation["marriage_text"];
+            //$templ_relation["cohabit_text"]=strip_tags(process_text($marriageDb->fam_relation_text));
+            $templ_relation["cohabit_text"] = process_text($marriageDb->fam_relation_text);
+            $temp = "cohabit_text";
+            $temp_text .= $templ_relation["cohabit_text"];
         }
 
         // *** Living together source ***
-        $source_array = show_sources2("family", "fam_relation_source", $marriageDb->fam_gedcomnumber);
-        if ($source_array) {
-            if ($screen_mode == 'PDF') {
-                $templ_relation["marriage_source"] = $source_array['text'];
-                $temp = "marriage_source";
-            } else
-                $temp_text .= $source_array['text'];
+        if ($presentation == 'standard') {
+            $source_array = show_sources2("family", "fam_relation_source", $marriageDb->fam_gedcomnumber);
+            if ($source_array) {
+                if ($screen_mode == 'PDF') {
+                    $templ_relation["cohabit_source"] = $source_array['text'];
+                    $temp = "cohabit_source";
+                } else
+                    $temp_text .= $source_array['text'];
 
-            // *** Extra item, so it's possible to add a comma or space ***
-            $templ_person["marriage_add"] = '';
-            $temp = "marriage_add";
+                // *** Extra item, so it's possible to add a comma or space ***
+                // TODO check this. Maybe templ_relation?
+                $templ_relation["cohabit_add"] = '';
+                $temp = "cohabit_add";
+            }
         }
 
         if ($temp_text) {
@@ -152,34 +157,34 @@ class marriage_cls
             $addition = __(' to: ');
             if ($text != '') {
                 $text .= "<br>\n";
-                $templ_relation["marriage_exist"] = "\n";
+                $templ_relation["cohabit_exist"] = "\n";
             }
             // *** Text "living together" already shown in "kind" ***
             // *** Just in case made an extra text "living together" here ***
-            if (!$relation_kind) {
+            //if (!$relation_kind) {
+                //if ($marriageDb->fam_kind != 'living together') {
                 $text .= '<b>' . __('Living together') . '</b>';
-                if (isset($templ_relation["marriage_exist"])) {
-                    $templ_relation["marriage_exist"] .= __('Living together') . " ";
+                if (isset($templ_relation["cohabit_exist"])) {
+                    $templ_relation["cohabit_exist"] .= __('Living together') . " ";
                 } else {
-                    $templ_relation["marriage_exist"] = __('Living together') . " ";
+                    $templ_relation["cohabit_exist"] = __('Living together') . " ";
                 }
-            }
+            //}
             $text .= ' ' . $temp_text;
         }
 
         // *** End of living together. NO end place, end text or end source yet. ***
-
         $temp_text = '';
         $temp = '';
         $fam_relation_end_place = '';
         if ($marriageDb->fam_relation_end_date or $fam_relation_end_place) {
             $temp_text .= date_place($marriageDb->fam_relation_end_date, $fam_relation_end_place);
-            $templ_relation["marriage_end"] = '';
-            if (isset($templ_relation["marriage_exist"])) {
-                $templ_relation["marriage_end"] = '. ';
+            $templ_relation["cohabit_end"] = '';
+            if (isset($templ_relation["cohabit_exist"])) {
+                $templ_relation["cohabit_end"] = '. ';
             }
-            $templ_relation["marriage_end"] .= __('End living together') . ' ' . date_place($marriageDb->fam_relation_end_date, $fam_relation_end_place);
-            $temp = "marriage_end";
+            $templ_relation["cohabit_end"] .= __('End living together') . ' ' . date_place($marriageDb->fam_relation_end_date, $fam_relation_end_place);
+            $temp = "cohabit_end";
         }
         //if ($user["group_texts_fam"]=='j' AND isset($marriageDb->fam_relation_end_text) AND process_text($marriageDb->fam_relation_end_text)){
         //	if ($temp_text){
@@ -187,19 +192,19 @@ class marriage_cls
         //		if($temp) { $templ_relation[$temp].=", "; }
         //	}
         //	$temp_text.= process_text($marriageDb->fam_relation_end_text);
-        //	//$templ_relation["marriage_text"]=process_text($marriageDb->fam_relation_end_text);
-        //	//$temp="marriage_text";
+        //	//$templ_relation["cohabit_text"]=process_text($marriageDb->fam_relation_end_text);
+        //	//$temp="cohabit_text";
         //}
         // *** Living together source ***
         // no source yet...
         if ($temp_text) {
             $marriage_check = true;
             if ($text != '' or $relation_kind) {
-                $text .= "<br>\n"; //$templ_relation["marriage_exist"]="\n";
+                $text .= "<br>\n"; //$templ_relation["cohabit_exist"]="\n";
             }
             $text .= '<b>' . __('End living together') . '</b>';
-            //if(isset($templ_relation["marriage_exist"])) {$templ_relation["marriage_exist"].=__('End living together')." "; }
-            //else {$templ_relation["marriage_exist"]=__('End living together')." ";  }
+            //if(isset($templ_relation["cohabit_exist"])) {$templ_relation["cohabit_exist"].=__('End living together')." "; }
+            //else {$templ_relation["cohabit_exist"]=__('End living together')." ";  }
             $text .= ' ' . $temp_text;
         }
 
@@ -217,8 +222,6 @@ class marriage_cls
         }
         if ($user["group_texts_fam"] == 'j' and process_text($marriageDb->fam_marr_notice_text)) {
             if ($temp_text) {
-                //$temp_text.= ', ';
-                //if($temp) { $templ_relation[$temp].=", "; }
                 $temp_text .= ' ';
                 if ($temp) {
                     $templ_relation[$temp] .= " ";
@@ -231,18 +234,20 @@ class marriage_cls
         }
 
         // *** Married notice source ***
-        $source_array = show_sources2("family", "fam_marr_notice_source", $marriageDb->fam_gedcomnumber);
-        if ($source_array) {
-            if ($screen_mode == 'PDF') {
-                $templ_relation["prew_source"] = $source_array['text'];
-                $temp = "prew_source";
-            } else {
-                $temp_text .= $source_array['text'];
-            }
+        if ($presentation == 'standard') {
+            $source_array = show_sources2("family", "fam_marr_notice_source", $marriageDb->fam_gedcomnumber);
+            if ($source_array) {
+                if ($screen_mode == 'PDF') {
+                    $templ_relation["prew_source"] = $source_array['text'];
+                    $temp = "prew_source";
+                } else {
+                    $temp_text .= $source_array['text'];
+                }
 
-            // *** Extra item, so it's possible to add a comma or space ***
-            $templ_person["prew_source_add"] = '';
-            $temp = "prew_source_add";
+                // *** Extra item, so it's possible to add a comma or space ***
+                $templ_relation["prew_source_add"] = '';
+                $temp = "prew_source_add";
+            }
         }
 
         if ($temp_text) {
@@ -289,8 +294,6 @@ class marriage_cls
         }
         if ($user["group_texts_fam"] == 'j' and process_text($marriageDb->fam_marr_text)) {
             if ($temp_text) {
-                //$temp_text.= ', ';
-                //if($temp) { $templ_relation[$temp].=", "; }
                 $temp_text .= ' ';
                 if ($temp) {
                     $templ_relation[$temp] .= " ";
@@ -300,9 +303,12 @@ class marriage_cls
             $templ_relation["wedd_text"] = process_text($marriageDb->fam_marr_text);
 
             // *** Source by family text ***
-            $source_array = show_sources2("family", "family_text", $marriageDb->fam_gedcomnumber);
-            if ($source_array)
-                $templ_relation["wedd_text"] .= $source_array['text'];
+            if ($presentation == 'standard') {
+                $source_array = show_sources2("family", "family_text", $marriageDb->fam_gedcomnumber);
+                if ($source_array) {
+                    $templ_relation["wedd_text"] .= $source_array['text'];
+                }
+            }
 
             $temp = "wedd_text";
             $temp_text .= $templ_relation["wedd_text"];
@@ -341,18 +347,20 @@ class marriage_cls
         }
 
         // *** Marriage source ***
-        $source_array = show_sources2("family", "fam_marr_source", $marriageDb->fam_gedcomnumber);
-        if ($source_array) {
-            if ($screen_mode == 'PDF') {
-                $templ_relation["wedd_source"] = $source_array['text'];
-                $temp = "wedd_source";
-            } else {
-                $temp_text .= $source_array['text'];
-            }
+        if ($presentation == 'standard') {
+            $source_array = show_sources2("family", "fam_marr_source", $marriageDb->fam_gedcomnumber);
+            if ($source_array) {
+                if ($screen_mode == 'PDF') {
+                    $templ_relation["wedd_source"] = $source_array['text'];
+                    $temp = "wedd_source";
+                } else {
+                    $temp_text .= $source_array['text'];
+                }
 
-            // *** Extra item, so it's possible to add a comma or space ***
-            $templ_person["wedd_source_add"] = '';
-            $temp = "wedd_source_add";
+                // *** Extra item, so it's possible to add a comma or space ***
+                $templ_relation["wedd_source_add"] = '';
+                $temp = "wedd_source_add";
+            }
         }
 
         if ($temp_text) {
@@ -363,16 +371,22 @@ class marriage_cls
                 $templ_relation["wedd_exist"] = "\n";
             }
 
-            if ($relation_kind == '') $text .= '<b>' . __('Married') . '</b> ';
-            $text .= $temp_text;
-
+            //if ($relation_kind == '') $text .= '<b>' . __('Married') . '</b> ';
+            //$text .= $temp_text;
             if (isset($templ_relation["wedd_exist"])) {
-                if ($relation_kind != '') $templ_relation["wedd_exist"] .= $relation_kind . ' ';
-                else $templ_relation["wedd_exist"] .= __('Married') . ' ';
+                if ($relation_kind != '') {
+                    $templ_relation["wedd_exist"] .= $relation_kind . ' ';
+                } else {
+                    $templ_relation["wedd_exist"] .= __('Married') . ' ';
+                }
             } else {
-                if ($relation_kind != '') $templ_relation["wedd_exist"] = $relation_kind . ' ';
-                else $templ_relation["wedd_exist"] = __('Married') . ' ';
+                if ($relation_kind != '') {
+                    $templ_relation["wedd_exist"] = $relation_kind . ' ';
+                } else {
+                    $templ_relation["wedd_exist"] = __('Married') . ' ';
+                }
             }
+            $text .= '<b>' . $templ_relation["wedd_exist"] . '</b>' . $temp_text;
         } else {
             // *** Marriage without further data (date or place) ***
             if ($marriageDb->fam_kind == 'civil') {
@@ -415,17 +429,19 @@ class marriage_cls
         }
 
         // *** Married church notice source ***
-        $source_array = show_sources2("family", "fam_marr_church_notice_source", $marriageDb->fam_gedcomnumber);
-        if ($source_array) {
-            if ($screen_mode == 'PDF') {
-                $templ_relation["prec_source"] = $source_array['text'];
-                $temp = "prec_source";
-            } else
-                $temp_text .= $source_array['text'];
+        if ($presentation == 'standard') {
+            $source_array = show_sources2("family", "fam_marr_church_notice_source", $marriageDb->fam_gedcomnumber);
+            if ($source_array) {
+                if ($screen_mode == 'PDF') {
+                    $templ_relation["prec_source"] = $source_array['text'];
+                    $temp = "prec_source";
+                } else
+                    $temp_text .= $source_array['text'];
 
-            // *** Extra item, so it's possible to add a comma or space ***
-            $templ_person["prec_source_add"] = '';
-            $temp = "prec_source_add";
+                // *** Extra item, so it's possible to add a comma or space ***
+                $templ_relation["prec_source_add"] = '';
+                $temp = "prec_source_add";
+            }
         }
 
         if ($temp_text) {
@@ -503,17 +519,19 @@ class marriage_cls
         }
 
         // *** Married church source ***
-        $source_array = show_sources2("family", "fam_marr_church_source", $marriageDb->fam_gedcomnumber);
-        if ($source_array) {
-            if ($screen_mode == 'PDF') {
-                $templ_relation["chur_source"] = $source_array['text'];
-                $temp = "chur_source";
-            } else
-                $temp_text .= $source_array['text'];
+        if ($presentation == 'standard') {
+            $source_array = show_sources2("family", "fam_marr_church_source", $marriageDb->fam_gedcomnumber);
+            if ($source_array) {
+                if ($screen_mode == 'PDF') {
+                    $templ_relation["chur_source"] = $source_array['text'];
+                    $temp = "chur_source";
+                } else
+                    $temp_text .= $source_array['text'];
 
-            // *** Extra item, so it's possible to add a comma or space ***
-            $templ_person["chur_source_add"] = '';
-            $temp = "chur_source_add";
+                // *** Extra item, so it's possible to add a comma or space ***
+                $templ_relation["chur_source_add"] = '';
+                $temp = "chur_source_add";
+            }
         }
 
         if ($temp_text) {
@@ -566,20 +584,21 @@ class marriage_cls
         }
 
         // *** Divorse source ***
-        $source_array = show_sources2("family", "fam_div_source", $marriageDb->fam_gedcomnumber);
-        if ($source_array) {
-            if ($screen_mode == 'PDF') {
-                $templ_relation["devr_source"] = $source_array['text'];
-                $temp = "devr_source";
-            } else
-                $temp_text .= $source_array['text'];
+        if ($presentation == 'standard') {
+            $source_array = show_sources2("family", "fam_div_source", $marriageDb->fam_gedcomnumber);
+            if ($source_array) {
+                if ($screen_mode == 'PDF') {
+                    $templ_relation["devr_source"] = $source_array['text'];
+                    $temp = "devr_source";
+                } else
+                    $temp_text .= $source_array['text'];
 
-            // *** Extra item, so it's possible to add a comma or space ***
-            $templ_person["devr_source_add"] = '';
-            $temp = "devr_source_add";
+                // *** Extra item, so it's possible to add a comma or space ***
+                $templ_relation["devr_source_add"] = '';
+                $temp = "devr_source_add";
+            }
         }
 
-        //if ($temp_text){
         // *** div_text "DIVORCE" is used for divorce without further data! ***
         if ($temp_text or $marriageDb->fam_div_text == 'DIVORCE') {
             $marriage_check = true;
@@ -662,10 +681,10 @@ class marriage_cls
         $text .= $result[0];
         if (isset($templ_relation)) $templ_relation = array_merge((array)$templ_relation, (array)$result[1]);
         else $templ_relation = $result[1];
-        //if (isset($templ_person))
-        //	$templ_person = array_merge((array)$templ_person,(array)$result[1]);
+        //if (isset($templ_relation))
+        //	$templ_relation = array_merge((array)$templ_relation,(array)$result[1]);
         //else
-        //	$templ_person=$result[1];
+        //	$templ_relation=$result[1];
 
         // *** Show objecs ***
 
@@ -718,13 +737,15 @@ class marriage_cls
                     }
 
                     // *** Sources by a family event ***
-                    $source_array = show_sources2("family", "fam_event_source", $eventDb->event_id);
-                    if ($source_array) {
-                        if ($screen_mode == 'PDF') {
-                            //$templ_relation["event_source"]=show_sources2("family","fam_event_source",$eventDb->event_id);
-                            //$temp="fam_event_source";
-                        } else
-                            $text .= $source_array['text'];
+                    if ($presentation == 'standard') {
+                        $source_array = show_sources2("family", "fam_event_source", $eventDb->event_id);
+                        if ($source_array) {
+                            if ($screen_mode == 'PDF') {
+                                //$templ_relation["event_source"]=show_sources2("family","fam_event_source",$eventDb->event_id);
+                                //$temp="fam_event_source";
+                            } else
+                                $text .= $source_array['text'];
+                        }
                     }
                 }
                 if ($num_rows > 0) {
@@ -741,7 +762,6 @@ class marriage_cls
 
         // Process english 1st, 2nd, 3rd and 4th marriage.
         $relation_number = '';
-        //if ($number!=''){
         if ($presentation == 'short' or $presentation == 'shorter') {
             if ($number == '1') {
                 $relation_number = __('1st');
@@ -796,6 +816,7 @@ class marriage_cls
                     $addition = __(' to: ');
                 }
             }
+
         }
 
         if ($presentation == 'short' or $presentation == 'shorter') {
@@ -814,20 +835,21 @@ class marriage_cls
                 $addition = '';
             }
         } else {
-            $text = '<b>' . $relation_number . $relation_kind . '</b> ' . $text;
+            // TODO bug: if there are multiple relations and living together then text is wrong.
+            //$text = '<b>' . $relation_number . $relation_kind . '</b> ' . $text;
         }
+
         if ($addition) $text .= '<b>' . $addition . '</b>';
 
-        //$templ_relation["relnr_rel"]=$relation_number.$relation_kind;
         if ($presentation == 'short' or $presentation == 'shorter') {
             $templ_relation["rel_add"] = " " . $addition;
         } else {
             $templ_relation["rel_add"] = "\n" . $addition;
         }
+
         if ($screen_mode != "PDF") {
             return $text;
         } else {
-            //return $templ_relation;
             if (isset($templ_relation)) {
                 foreach ($templ_relation as $key => $val) {
                     $templ_relation[$key] = strip_tags($val);

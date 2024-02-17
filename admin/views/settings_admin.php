@@ -18,39 +18,39 @@ if (isset($_POST['timeline_language'])) {
 
 if (isset($_POST['save_option'])) {
     // *** Update settings ***
-    $result = $db_functions->update_settings('default_skin', $_POST["default_skin"]);
+    $db_functions->update_settings('default_skin', $_POST["default_skin"]);
 
-    $result = $db_functions->update_settings('default_language', $_POST["default_language"]);
-    $result = $db_functions->update_settings('default_language_admin', $_POST["default_language_admin"]);
+    $db_functions->update_settings('default_language', $_POST["default_language"]);
+    $db_functions->update_settings('default_language_admin', $_POST["default_language_admin"]);
 
-    $result = $db_functions->update_settings('text_header', $_POST["text_header"]);
-    $result = $db_functions->update_settings('text_footer', $_POST["text_footer"]);
+    $db_functions->update_settings('text_header', $_POST["text_header"]);
+    $db_functions->update_settings('text_footer', $_POST["text_footer"]);
 
-    $result = $db_functions->update_settings('debug_front_pages', $_POST["debug_front_pages"]);
-    $result = $db_functions->update_settings('debug_admin_pages', $_POST["debug_admin_pages"]);
+    $db_functions->update_settings('debug_front_pages', $_POST["debug_front_pages"]);
+    $db_functions->update_settings('debug_admin_pages', $_POST["debug_admin_pages"]);
 
-    $result = $db_functions->update_settings('database_name', $_POST["database_name"]);
-    $result = $db_functions->update_settings('homepage', $_POST["homepage"]);
-    $result = $db_functions->update_settings('homepage_description', $_POST["homepage_description"]);
+    $db_functions->update_settings('database_name', $_POST["database_name"]);
+    $db_functions->update_settings('homepage', $_POST["homepage"]);
+    $db_functions->update_settings('homepage_description', $_POST["homepage_description"]);
 
-    $result = $db_functions->update_settings('rss_link', $_POST["rss_link"]);
+    $db_functions->update_settings('rss_link', $_POST["rss_link"]);
 
-    $result = $db_functions->update_settings('searchengine', $_POST["searchengine"]);
-    $result = $db_functions->update_settings('robots_option', $_POST["robots_option"]);
+    $db_functions->update_settings('searchengine', $_POST["searchengine"]);
+    $db_functions->update_settings('robots_option', $_POST["robots_option"]);
 
-    $result = $db_functions->update_settings('searchengine_cms_only', $_POST["searchengine_cms_only"]);
+    $db_functions->update_settings('searchengine_cms_only', $_POST["searchengine_cms_only"]);
 
-    $result = $db_functions->update_settings('block_spam_question', $_POST["block_spam_question"]);
-    $result = $db_functions->update_settings('block_spam_answer', $_POST["block_spam_answer"]);
+    $db_functions->update_settings('block_spam_question', $_POST["block_spam_question"]);
+    $db_functions->update_settings('block_spam_answer', $_POST["block_spam_answer"]);
 
-    $result = $db_functions->update_settings('use_spam_question', $_POST["use_spam_question"]);
-    $result = $db_functions->update_settings('use_newsletter_question', $_POST["use_newsletter_question"]);
+    $db_functions->update_settings('use_spam_question', $_POST["use_spam_question"]);
+    $db_functions->update_settings('use_newsletter_question', $_POST["use_newsletter_question"]);
 
-    $result = $db_functions->update_settings('visitor_registration', $_POST["visitor_registration"]);
-    $result = $db_functions->update_settings('general_email', $_POST["general_email"]);
-    $result = $db_functions->update_settings('visitor_registration_group', $_POST["visitor_registration_group"]);
-    $result = $db_functions->update_settings('registration_use_spam_question', $_POST["registration_use_spam_question"]);
-    $result = $db_functions->update_settings('password_retreival', $_POST["password_retreival"]);
+    $db_functions->update_settings('visitor_registration', $_POST["visitor_registration"]);
+    $db_functions->update_settings('general_email', $_POST["general_email"]);
+    $db_functions->update_settings('visitor_registration_group', $_POST["visitor_registration_group"]);
+    $db_functions->update_settings('registration_use_spam_question', $_POST["registration_use_spam_question"]);
+    $db_functions->update_settings('password_retreival', $_POST["password_retreival"]);
 
     /*
     ***************************
@@ -58,41 +58,41 @@ if (isset($_POST['save_option'])) {
     Save email configuration settings 
     ****************************
     */
-    $result = $db_functions->update_settings('mail_auto', $_POST["mail_auto"]);
-    $result = $db_functions->update_settings('email_user', $_POST["email_user"]);
-    $result = $db_functions->update_settings('email_password', $_POST["email_password"]);
-    $result = $db_functions->update_settings('smtp_server', $_POST["smtp_server"]);
-    $result = $db_functions->update_settings('smtp_port', $_POST["smtp_port"]);
-    $result = $db_functions->update_settings('smtp_auth', $_POST["smtp_auth"]);
-    $result = $db_functions->update_settings('smtp_encryption', $_POST["smtp_encryption"]);
-    $result = $db_functions->update_settings('smtp_debug', $_POST["smtp_debug"]);
+    $db_functions->update_settings('mail_auto', $_POST["mail_auto"]);
+    $db_functions->update_settings('email_user', $_POST["email_user"]);
+    $db_functions->update_settings('email_password', $_POST["email_password"]);
+    $db_functions->update_settings('smtp_server', $_POST["smtp_server"]);
+    $db_functions->update_settings('smtp_port', $_POST["smtp_port"]);
+    $db_functions->update_settings('smtp_auth', $_POST["smtp_auth"]);
+    $db_functions->update_settings('smtp_encryption', $_POST["smtp_encryption"]);
+    $db_functions->update_settings('smtp_debug', $_POST["smtp_debug"]);
     /*
     ***************************
     End changes
     ***************************
     */
 
-    $result = $db_functions->update_settings('descendant_generations', $_POST["descendant_generations"]);
+    $db_functions->update_settings('descendant_generations', $_POST["descendant_generations"]);
 
-    $result = $db_functions->update_settings('show_persons', $_POST["show_persons"]);
+    $db_functions->update_settings('show_persons', $_POST["show_persons"]);
 
-    $result = $db_functions->update_settings('url_rewrite', $_POST["url_rewrite"]);
+    $db_functions->update_settings('url_rewrite', $_POST["url_rewrite"]);
 
-    $result = $db_functions->update_settings('timezone', $_POST["timezone"]);
+    $db_functions->update_settings('timezone', $_POST["timezone"]);
 
-    $result = $db_functions->update_settings('watermark_text', $_POST["watermark_text"]);
-    $result = $db_functions->update_settings('watermark_color_r', $_POST["watermark_color_r"]);
-    $result = $db_functions->update_settings('watermark_color_g', $_POST["watermark_color_g"]);
-    $result = $db_functions->update_settings('watermark_color_b', $_POST["watermark_color_b"]);
-    $result = $db_functions->update_settings('min_search_chars', $_POST["min_search_chars"]);
-    $result = $db_functions->update_settings('date_display', $_POST["date_display"]);
-    $result = $db_functions->update_settings('name_order', $_POST["name_order"]);
-    $result = $db_functions->update_settings('one_name_study', $_POST["one_name_study"]);
-    $result = $db_functions->update_settings('one_name_thename', $_POST["one_name_thename"]);
+    $db_functions->update_settings('watermark_text', $_POST["watermark_text"]);
+    $db_functions->update_settings('watermark_color_r', $_POST["watermark_color_r"]);
+    $db_functions->update_settings('watermark_color_g', $_POST["watermark_color_g"]);
+    $db_functions->update_settings('watermark_color_b', $_POST["watermark_color_b"]);
+    $db_functions->update_settings('min_search_chars', $_POST["min_search_chars"]);
+    $db_functions->update_settings('date_display', $_POST["date_display"]);
+    $db_functions->update_settings('name_order', $_POST["name_order"]);
+    $db_functions->update_settings('one_name_study', $_POST["one_name_study"]);
+    $db_functions->update_settings('one_name_thename', $_POST["one_name_thename"]);
 
     if (strpos($humo_option['default_timeline'], $time_lang . "!") === false) {
         // no entry for this language yet - append it
-        $result = $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'" . safe_text_db($_POST["default_timeline"]) . "') WHERE setting_variable='default_timeline'");
+        $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'" . safe_text_db($_POST["default_timeline"]) . "') WHERE setting_variable='default_timeline'");
     } else {
         $time_arr = explode("@", substr($humo_option['default_timeline'], 0, -1));
         foreach ($time_arr as $key => $value) {
@@ -101,7 +101,7 @@ if (isset($_POST['save_option'])) {
             }
         }
         $time_str = implode("@", $time_arr) . "@";
-        $result = $db_functions->update_settings('default_timeline', $time_str);
+        $db_functions->update_settings('default_timeline', $time_str);
     }
 
     // *** Upload favicon icon to folder /media ***
@@ -146,14 +146,14 @@ if (isset($_POST['save_option'])) {
 // *** Homepage ***
 if (isset($_POST['save_option2'])) {
     // *** Slideshow ***
-    $result = $db_functions->update_settings('slideshow_show', $_POST["slideshow_show"]);
-    $result = $db_functions->update_settings('slideshow_01', $_POST["slideshow_slide_01"] . '|' . $_POST["slideshow_text_01"]);
-    $result = $db_functions->update_settings('slideshow_02', $_POST["slideshow_slide_02"] . '|' . $_POST["slideshow_text_02"]);
-    $result = $db_functions->update_settings('slideshow_03', $_POST["slideshow_slide_03"] . '|' . $_POST["slideshow_text_03"]);
-    $result = $db_functions->update_settings('slideshow_04', $_POST["slideshow_slide_04"] . '|' . $_POST["slideshow_text_04"]);
+    $db_functions->update_settings('slideshow_show', $_POST["slideshow_show"]);
+    $db_functions->update_settings('slideshow_01', $_POST["slideshow_slide_01"] . '|' . $_POST["slideshow_text_01"]);
+    $db_functions->update_settings('slideshow_02', $_POST["slideshow_slide_02"] . '|' . $_POST["slideshow_text_02"]);
+    $db_functions->update_settings('slideshow_03', $_POST["slideshow_slide_03"] . '|' . $_POST["slideshow_text_03"]);
+    $db_functions->update_settings('slideshow_04', $_POST["slideshow_slide_04"] . '|' . $_POST["slideshow_text_04"]);
 
     // *** Today in history ***
-    //$result = $db_functions->update_settings('today_in_history_show',$_POST["today_in_history_show"]);
+    //$db_functions->update_settings('today_in_history_show',$_POST["today_in_history_show"]);
 }
 
 // *** Special settings ***
@@ -162,40 +162,40 @@ if (isset($_POST['save_option3'])) {
 
     $setting_value = 'n';
     if (isset($_POST["david_stars"])) $setting_value = 'y';
-    $result = $db_functions->update_settings('david_stars', $setting_value);
+    $db_functions->update_settings('david_stars', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["death_shoa"])) $setting_value = 'y';
-    $result = $db_functions->update_settings('death_shoa', $setting_value);
+    $db_functions->update_settings('death_shoa', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["admin_hebnight"])) $setting_value = 'y';
-    $result = $db_functions->update_settings('admin_hebnight', $setting_value);
+    $db_functions->update_settings('admin_hebnight', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["admin_hebdate"])) $setting_value = 'y';
-    $result = $db_functions->update_settings('admin_hebdate', $setting_value);
+    $db_functions->update_settings('admin_hebdate', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["admin_hebname"])) $setting_value = 'y';
-    $result = $db_functions->update_settings('admin_hebname', $setting_value);
+    $db_functions->update_settings('admin_hebname', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["admin_brit"])) $setting_value = 'y';
-    $result = $db_functions->update_settings('admin_brit', $setting_value);
+    $db_functions->update_settings('admin_brit', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["admin_barm"])) $setting_value = 'y';
-    $result = $db_functions->update_settings('admin_barm', $setting_value);
+    $db_functions->update_settings('admin_barm', $setting_value);
 
     if (isset($_POST["death_char"]) and safe_text_db($_POST["death_char"]) == "y"  and $humo_option['death_char'] == "n") {
         $humo_option['death_char'] = 'y';
         include(__DIR__ . "/../../languages/change_all.php");  // change cross to infinity
-        $result = $db_functions->update_settings('death_char', 'y');
+        $db_functions->update_settings('death_char', 'y');
     } elseif ((!isset($_POST["death_char"]) or safe_text_db($_POST["death_char"]) == "n") and $humo_option['death_char'] == "y") {
         $humo_option['death_char'] = 'n';
         include(__DIR__ . "/../../languages/change_all.php");  // change infinity to cross
-        $result = $db_functions->update_settings('death_char', 'n');
+        $db_functions->update_settings('death_char', 'n');
     }
 }
 

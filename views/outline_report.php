@@ -23,7 +23,7 @@ $nr_generations = $data["nr_generations"];
 
 $path_form = $link_cls->get_link($uri_path, 'outline_report', $tree_id);
 
-//echo '<h1 class="standard_header fonts">' . __('Outline report') . '</h1>';
+//echo '<h1 class="standard_header">' . __('Outline report') . '</h1>';
 echo $data["descendant_header"];
 
 ?>
@@ -74,7 +74,7 @@ echo $data["descendant_header"];
     <?php } ?>
 
     <!-- Show button: nr. of generations -->
-    &nbsp;<span class="button fonts">
+    &nbsp;<span class="button">
         <?= __('Choose number of generations to display'); ?>:
 
         <select size=1 name="selectnr_generations" class="form-select form-select-sm" onChange="window.location=this.value;" style="display:inline; width: 60px;">

@@ -512,9 +512,8 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
                     $spouse_result = $dbh->query("SELECT " . $spouse . " FROM humo_families
                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $treeid[1][2] . "'");
-                    @$spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
-
-                    @$spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
+                    $spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
+                    $spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
 
                     $spouse_cls = new person_cls($spouse2Db);
                     $spname = $spouse_cls->person_name($spouse2Db);

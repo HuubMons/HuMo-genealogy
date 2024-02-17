@@ -8,6 +8,8 @@ global $selected_language;
 
 include_once(__DIR__ . "/../../include/language_date.php");
 
+include_once(__DIR__ . "/../include/select_tree.php");
+
 // for rtl direction in tables
 $direction = "left";
 if ($rtlmarker == "rtl") $direction = "right";
@@ -21,32 +23,23 @@ if (isset($_GET['tab'])) {
 if (isset($_POST['tab'])) {
     $tab = $_POST['tab'];
 }
+
+// *** Needed for tab "Check database integrity" ***
+$db_functions->set_tree_id($tree_id);
 ?>
 
 <h1 class="center"><?= __('Family tree data check'); ?></h1>
 
-<form method="POST" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-
-    <?php
-    // TODO use function or seperate view script to show tree selection.
-    echo '<span class="noprint">' . __('Choose tree:');  // class "noprint" hides it when printing
-    $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-    $tree_result = $dbh->query($tree_sql);
-    echo ' <select size="1" name="tree_id" onChange="this.form.submit();">';
-    while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-        $treetext = show_tree_text($treeDb->tree_id, $selected_language);
-        $selected = '';
-        if ($treeDb->tree_id == $tree_id) {
-            $selected = ' selected';
-            $db_functions->set_tree_id($tree_id);
-        }
-        echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-    }
-    echo '</select>';
-    echo '</span>';
-    ?>
-</form><br><br>
+<div class="row mb-2">
+    <div class="col-auto">
+        <label for="tree" class="col-form-label">
+            <?= __('Choose tree:'); ?>:
+        </label>
+    </div>
+    <div class="col-2">
+        <?= select_tree($dbh, $page, $tree_id); ?>
+    </div>
+</div>
 
 <ul class="nav nav-tabs">
     <li class="nav-item me-1">

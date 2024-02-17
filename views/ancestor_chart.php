@@ -25,7 +25,7 @@ if (!isset($hourglass)) {
     // *** Check if person gedcomnumber is valid ***
     $db_functions->check_person($data["main_person"]);
 
-    //echo '<h1 class="standard_header fonts">' . __('Ancestor chart') . '</h1>';
+    //echo '<h1 class="standard_header">' . __('Ancestor chart') . '</h1>';
     echo $data["ancestor_header"];
 }
 

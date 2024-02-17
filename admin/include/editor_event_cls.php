@@ -263,7 +263,7 @@ class editor_event_cls
 
                     <!-- Help popup -->
                     <?php $rtlmarker = "ltr"; ?>
-                    &nbsp;<div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline;">
+                    &nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                         <a href="#" style="display:inline" onmouseover="mopen(event,'help_event_person',0,0)" onmouseout="mclosetime()">
                             <img src="../images/help.png" height="16" width="16">
                         </a>
@@ -293,7 +293,7 @@ class editor_event_cls
 
                     <!-- Help popup -->
                     <?php $rtlmarker = "ltr"; ?>
-                    &nbsp;<div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline;">
+                    &nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                         <a href="#" style="display:inline" onmouseover="mopen(event,'help_event_family',0,0)" onmouseout="mclosetime()">
                             <img src="../images/help.png" height="16" width="16">
                         </a>
@@ -1105,7 +1105,7 @@ function myFunction() {
 
                     //$text.='<td style="border-left:0px;">';
                     echo editor_label2(__('Selected colour'));
-                    echo ' <select class="fonts" size="1" name="text_event[' . $data_listDb->event_id . ']">';
+                    echo ' <select size="1" name="text_event[' . $data_listDb->event_id . ']">';
                     echo '<option value="0">' . __('Change colour mark by person') . '</option>';
                     $selected = '';
                     if ($person_colour_mark == '1') {

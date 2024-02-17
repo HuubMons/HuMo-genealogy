@@ -523,7 +523,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <tr class="table_header">
-            <th colspan="2">'<?= __('Save settings'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Save settings'); ?> <input type="submit" name="save_option" value="<?= __('Change'); ?>"></th>
         </tr>
     </table>
 </form>

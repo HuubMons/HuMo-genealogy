@@ -479,13 +479,13 @@ class Mainindex_cls
                             $sql = "UPDATE humo_settings SET
                                 setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "'
                                 WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
-                            $result = $dbh->query($sql);
+                            $dbh->query($sql);
                         } else {
                             // *** Add new cache item ***
                             $sql = "INSERT INTO humo_settings SET
                                 setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "',
                                 setting_tree_id='" . safe_text_db($tree_id) . "'";
-                            $result = $dbh->query($sql);
+                            $dbh->query($sql);
                         }
                     }
                 } // *** End of cache ***
@@ -833,12 +833,12 @@ class Mainindex_cls
                     $sql = "UPDATE humo_settings SET
                         setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "'
                         WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 } else {
                     $sql = "INSERT INTO humo_settings SET
                         setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "',
                         setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
             }
         }

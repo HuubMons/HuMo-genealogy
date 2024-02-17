@@ -166,11 +166,6 @@ ul.humo_menu_item2 li a {
     background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
 }
 
-div.photobook,
-div.photobooktext {
-    background-color: #e5f0fa;
-}
-
 .search_bar {
     background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
 }

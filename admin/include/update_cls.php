@@ -26,7 +26,7 @@ class update_cls
             echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">OK</td></tr>';
         } else {
             echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
-            $db_update = $dbh->query("CREATE TABLE humo_tree_texts (
+            $dbh->query("CREATE TABLE humo_tree_texts (
             treetext_id smallint(5) unsigned NOT NULL auto_increment,
             treetext_tree_id smallint(5),
             treetext_language varchar(100) CHARACTER SET utf8,
@@ -56,7 +56,7 @@ class update_cls
                 treetext_mainmenu_source='" . $dataDb->bron . "',
                 treetext_family_top='Familypage'
                 ";
-                    $db_update = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
             }
 
@@ -82,7 +82,7 @@ class update_cls
             echo '<tr><td>Check table humo_tree_texts 2</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
             // *** Translate dutch table name into english ***
             $sql = 'ALTER TABLE humo_stambomen_tekst RENAME humo_tree_texts';
-            $update_Db = $dbh->query($sql);
+            $dbh->query($sql);
 
             $sql = 'ALTER TABLE humo_tree_texts
             CHANGE tekst_id treetext_id smallint(5) unsigned NOT NULL auto_increment,
@@ -94,7 +94,7 @@ class update_cls
             CHANGE gezin_kop treetext_family_top text CHARACTER SET utf8,
             CHANGE gezin_voet treetext_family_footer text CHARACTER SET utf8
             ';
-            $update_Db = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** New check ***
             $update_check2 = $dbh->query("SELECT * FROM humo_tree_texts");
@@ -115,16 +115,16 @@ class update_cls
         global $dbh;
         // *** Change names of languages in table humo_tree_texts ***
         $sql = 'UPDATE humo_tree_texts SET treetext_language="nl" WHERE treetext_language="talen/taal-nederlands.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_tree_texts SET treetext_language="de" WHERE treetext_language="talen/taal-deutsch.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_tree_texts SET treetext_language="en" WHERE treetext_language="talen/taal-english.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_tree_texts SET treetext_language="fr" WHERE treetext_language="talen/taal-francais.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
 
     public function update_v3_2()
@@ -226,10 +226,10 @@ class update_cls
         }
         if (isset($field['stat_user_agent'])) {
             $sql = "ALTER TABLE humo_stat_date CHANGE stat_user_agent stat_user_agent varchar(255) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['stat_user_agent'])) {
             $sql = "ALTER TABLE humo_stat_date ADD stat_user_agent VARCHAR(255) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
     }
 
@@ -253,14 +253,13 @@ class update_cls
 
             // *** Translate dutch table name into english ***
             $sql = 'ALTER TABLE humo_instellingen RENAME humo_settings';
-            $update_Db = $dbh->query($sql);
+            $dbh->query($sql);
 
             $sql = 'ALTER TABLE humo_settings
             CHANGE id setting_id smallint(5) unsigned NOT NULL auto_increment,
             CHANGE variabele setting_variable varchar(50) CHARACTER SET utf8,
-            CHANGE waarde setting_value text CHARACTER SET utf8
-            ';
-            $update_Db = $dbh->query($sql);
+            CHANGE waarde setting_value text CHARACTER SET utf8';
+            $dbh->query($sql);
 
             // *** New check ***
             $update_check2 = $dbh->query("SELECT * FROM humo_settings");
@@ -274,22 +273,22 @@ class update_cls
 
         // *** Change default languages in table humo_settings ***
         $sql = 'UPDATE humo_settings SET setting_value="nl" WHERE setting_value="languages/nederlands.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_settings SET setting_value="nl" WHERE setting_value="talen/taal-nederlands.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_settings SET setting_value="en" WHERE setting_value="languages/english.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_settings SET setting_value="en" WHERE setting_value="talen/taal-english.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_settings SET setting_value="de" WHERE setting_value="talen/taal-deutsch.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_settings SET setting_value="fr" WHERE setting_value="talen/taal-francais.php"';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $update_check_sql = false;
         try {
@@ -303,7 +302,7 @@ class update_cls
             echo '<tr><td>Check table humo_trees</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
             // *** Translate dutch table name into english ***
             $sql = 'ALTER TABLE humo_stambomen RENAME humo_trees';
-            $update_Db = $dbh->query($sql);
+            $dbh->query($sql);
 
             $sql = 'ALTER TABLE humo_trees
             CHANGE id tree_id smallint(5) unsigned NOT NULL auto_increment,
@@ -311,9 +310,8 @@ class update_cls
             CHANGE voorvoegsel tree_prefix varchar(10) CHARACTER SET utf8,
             CHANGE datum tree_date varchar(20) CHARACTER SET utf8,
             CHANGE personen tree_persons varchar(10) CHARACTER SET utf8,
-            CHANGE gezinnen tree_families varchar(10) CHARACTER SET utf8
-            ';
-            $update_Db = $dbh->query($sql);
+            CHANGE gezinnen tree_families varchar(10) CHARACTER SET utf8';
+            $dbh->query($sql);
 
             // *** New check ***
             $update_check2 = $dbh->query("SELECT * FROM humo_trees");
@@ -341,37 +339,37 @@ class update_cls
         // *** Automatic installation or update ***
         if (isset($field['email'])) {
             $sql = "ALTER TABLE humo_trees CHANGE email tree_email varchar(100) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['tree_email'])) {
             $sql = "ALTER TABLE humo_trees ADD tree_email VARCHAR(100) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['eigenaar'])) {
             $sql = "ALTER TABLE humo_trees CHANGE eigenaar tree_owner varchar(100) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['tree_owner'])) {
             $sql = "ALTER TABLE humo_trees ADD tree_owner VARCHAR(100) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['afbpad'])) {
             $sql = "ALTER TABLE humo_trees CHANGE afbpad tree_pict_path varchar(100) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['tree_pict_path'])) {
             $sql = "ALTER TABLE humo_trees ADD tree_pict_path VARCHAR(100) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['privacy_stamboom'])) {
             $sql = "ALTER TABLE humo_trees CHANGE privacy_stamboom tree_privacy varchar(100) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['tree_privacy'])) {
             $sql = "ALTER TABLE humo_trees ADD tree_privacy VARCHAR(100) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
 
@@ -392,13 +390,10 @@ class update_cls
                 echo '<td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
                 // *** Translate dutch table name into english ***
                 $sql = 'ALTER TABLE humo_logboek RENAME humo_user_log';
-                $update_Db = $dbh->query($sql);
+                $dbh->query($sql);
 
-                $sql = 'ALTER TABLE humo_user_log
-                CHANGE username log_username varchar(25) CHARACTER SET utf8,
-                CHANGE datum log_date varchar(20) CHARACTER SET utf8
-                ';
-                $update_Db = $dbh->query($sql);
+                $sql = 'ALTER TABLE humo_user_log CHANGE username log_username varchar(25) CHARACTER SET utf8, CHANGE datum log_date varchar(20) CHARACTER SET utf8';
+                $dbh->query($sql);
 
                 // *** New check ***
                 $update_check2 = $dbh->query("SELECT * FROM humo_user_log LIMIT 0,1");
@@ -428,9 +423,8 @@ class update_cls
             CHANGE id user_id smallint(5) NOT NULL auto_increment,
             CHANGE username user_name varchar(25) CHARACTER SET utf8,
             CHANGE paswoord user_password varchar(50) CHARACTER SET utf8,
-            CHANGE groeps_id user_group_id varchar(1) CHARACTER SET utf8
-            ';
-            $update_Db = $dbh->query($sql);
+            CHANGE groeps_id user_group_id varchar(1) CHARACTER SET utf8';
+            $dbh->query($sql);
 
             // *** New check ***
             $update_check2 = $dbh->query("SELECT * FROM humo_users LIMIT 0,1");
@@ -515,82 +509,82 @@ class update_cls
         // *** Automatic installation or update ***
         if (isset($field['group_statistics'])) {
             $sql = "ALTER TABLE humo_groups CHANGE group_statistics group_statistics varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_statistics'])) {
             $sql = "ALTER TABLE humo_groups ADD group_statistics VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['verjaardagen_rss'])) {
             $sql = "ALTER TABLE humo_groups CHANGE verjaardagen_rss group_birthday_rss varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_birthday_rss'])) {
             $sql = "ALTER TABLE humo_groups ADD group_birthday_rss VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['verjaardagen_lijst'])) {
             $sql = "ALTER TABLE humo_groups CHANGE verjaardagen_lijst group_birthday_list varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_birthday_list'])) {
             $sql = "ALTER TABLE humo_groups ADD group_birthday_list VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['filterdatum'])) {
             $sql = "ALTER TABLE humo_groups CHANGE filterdatum group_filter_date varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_filter_date'])) {
             $sql = "ALTER TABLE humo_groups ADD group_filter_date VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['gen_protection'])) {
             $sql = "ALTER TABLE humo_groups CHANGE gen_protection group_gen_protection VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_gen_protection'])) {
             $sql = "ALTER TABLE humo_groups ADD group_gen_protection VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['persoonfilter3'])) {
             $sql = "ALTER TABLE humo_groups CHANGE persoonfilter3 group_pers_hide_totally_act VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_pers_hide_totally_act'])) {
             $sql = "ALTER TABLE humo_groups ADD group_pers_hide_totally_act VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['filterkarakter3'])) {
             $sql = "ALTER TABLE humo_groups CHANGE filterkarakter3 group_pers_hide_totally varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT 'X'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_pers_hide_totally'])) {
             $sql = "ALTER TABLE humo_groups ADD group_pers_hide_totally VARCHAR(50) CHARACTER SET utf8 NOT NULL DEFAULT 'X';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['photobook'])) {
             $sql = "ALTER TABLE humo_groups CHANGE photobook group_photobook varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_photobook'])) {
             $sql = "ALTER TABLE humo_groups ADD group_photobook VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Automatic installation or update ***
         if (isset($field['hide_trees'])) {
             $sql = "ALTER TABLE humo_groups CHANGE hide_trees group_hide_trees varchar(200) CHARACTER SET utf8 NOT NULL DEFAULT ''";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } elseif (!isset($field['group_hide_trees'])) {
             $sql = "ALTER TABLE humo_groups ADD group_hide_trees VARCHAR( 200 ) NOT NULL DEFAULT '';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
     }
 
@@ -627,7 +621,7 @@ class update_cls
 
                 // *** Translate dutch table name into english ***
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'persoon RENAME ' . $updateDb->tree_prefix . 'person';
-                $update_Db = $dbh->query($sql);
+                $dbh->query($sql);
 
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'person
                 CHANGE id pers_id	mediumint(6) unsigned NOT NULL auto_increment,
@@ -667,15 +661,14 @@ class update_cls
                 CHANGE crematie pers_cremation varchar(1) CHARACTER SET utf8,
                 CHANGE plaatsindex pers_place_index text CHARACTER SET utf8,
                 CHANGE tekst pers_text text CHARACTER SET utf8,
-                CHANGE levend pers_alive varchar(20) CHARACTER SET utf8
-                ';
-                $update_Db = $dbh->query($sql);
+                CHANGE levend pers_alive varchar(20) CHARACTER SET utf8';
+                $dbh->query($sql);
                 //$update.=$sql.'<br>';
 
 
                 // *** Translate dutch table name into english ***
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'gezin RENAME ' . $updateDb->tree_prefix . 'family';
-                $update_Db = $dbh->query($sql);
+                $dbh->query($sql);
 
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'family
                 CHANGE id fam_id mediumint(6) unsigned NOT NULL auto_increment,
@@ -712,9 +705,8 @@ class update_cls
                 CHANGE scheidingsbron fam_div_source text CHARACTER SET utf8,
                 CHANGE huwtekst fam_text text CHARACTER SET utf8,
                 CHANGE levend fam_alive int(1),
-                CHANGE teller fam_counter mediumint(8)
-                ';
-                $update_Db = $dbh->query($sql);
+                CHANGE teller fam_counter mediumint(8)';
+                $dbh->query($sql);
                 //$update.=$sql.'<br>';
 
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'texts
@@ -723,9 +715,8 @@ class update_cls
                 CHANGE text_new_date text_new_date varchar(35) CHARACTER SET utf8,
                 CHANGE text_new_time text_new_time varchar(25) CHARACTER SET utf8,
                 CHANGE text_changed_date text_changed_date varchar(35) CHARACTER SET utf8,
-                CHANGE text_changed_time text_changed_time varchar(25) CHARACTER SET utf8
-                ';
-                $update_Db = $dbh->query($sql);
+                CHANGE text_changed_time text_changed_time varchar(25) CHARACTER SET utf8';
+                $dbh->query($sql);
                 //$update.=$sql.'<br>';
 
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'sources
@@ -748,9 +739,8 @@ class update_cls
                 CHANGE source_new_date source_new_date varchar(35) CHARACTER SET utf8,
                 CHANGE source_new_time source_new_time varchar(25) CHARACTER SET utf8,
                 CHANGE source_changed_date source_changed_date varchar(35) CHARACTER SET utf8,
-                CHANGE source_changed_time source_changed_time varchar(25) CHARACTER SET utf8
-                ';
-                $update_Db = $dbh->query($sql);
+                CHANGE source_changed_time source_changed_time varchar(25) CHARACTER SET utf8';
+                $dbh->query($sql);
                 //$update.=$sql.'<br>';
 
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'addresses
@@ -768,9 +758,8 @@ class update_cls
                 CHANGE address_new_date address_new_date varchar(35) CHARACTER SET utf8,
                 CHANGE address_new_time address_new_time varchar(25) CHARACTER SET utf8,
                 CHANGE address_changed_date address_changed_date varchar(35) CHARACTER SET utf8,
-                CHANGE address_changed_time address_changed_time varchar(25) CHARACTER SET utf8
-                ';
-                $update_Db = $dbh->query($sql);
+                CHANGE address_changed_time address_changed_time varchar(25) CHARACTER SET utf8';
+                $dbh->query($sql);
 
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'events
                 CHANGE event_person_id event_person_id varchar(20) CHARACTER SET utf8,
@@ -785,9 +774,8 @@ class update_cls
                 CHANGE event_new_date event_new_date varchar(35) CHARACTER SET utf8,
                 CHANGE event_new_time event_new_time varchar(25) CHARACTER SET utf8,
                 CHANGE event_changed_date event_changed_date varchar(35) CHARACTER SET utf8,
-                CHANGE event_changed_time event_changed_time varchar(25) CHARACTER SET utf8
-                ';
-                $update_Db = $dbh->query($sql);
+                CHANGE event_changed_time event_changed_time varchar(25) CHARACTER SET utf8';
+                $dbh->query($sql);
 
                 echo ' Tree updated!';
             } // *** End of tabel check ***
@@ -811,79 +799,65 @@ class update_cls
 
             // *** Automatic installation or update ***
             if (isset($field['voorvoegsel'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                CHANGE voorvoegsel pers_tree_prefix	varchar(10) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person CHANGE voorvoegsel pers_tree_prefix	varchar(10) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['pers_tree_prefix'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_tree_prefix varchar(10) CHARACTER SET utf8 AFTER pers_gedcomnumber";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_tree_prefix varchar(10) CHARACTER SET utf8 AFTER pers_gedcomnumber";
+                $dbh->query($sql);
             }
 
             // *** Automatic installation or update ***
             if (isset($field['person_text_source'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                CHANGE person_text_source pers_text_source text CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person CHANGE person_text_source pers_text_source text CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['pers_text_source'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_text_source text CHARACTER SET utf8 AFTER pers_text";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_text_source text CHARACTER SET utf8 AFTER pers_text";
+                $dbh->query($sql);
             }
 
             // *** Automatic installation or update ***
             if (isset($field['person_favorite'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                CHANGE person_favorite pers_favorite varchar(1) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person CHANGE person_favorite pers_favorite varchar(1) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['pers_favorite'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_favorite varchar(1) CHARACTER SET utf8 AFTER pers_alive";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_favorite varchar(1) CHARACTER SET utf8 AFTER pers_alive";
+                $dbh->query($sql);
             }
 
             // *** Automatic installation or update ***
             if (isset($field['person_new_date'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                CHANGE person_new_date pers_new_date varchar(35) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person CHANGE person_new_date pers_new_date varchar(35) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['pers_new_date'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_new_date varchar(35) CHARACTER SET utf8 AFTER pers_favorite";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_new_date varchar(35) CHARACTER SET utf8 AFTER pers_favorite";
+                $dbh->query($sql);
             }
 
             // *** Automatic installation or update ***
             if (isset($field['person_new_time'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                CHANGE person_new_time pers_new_time varchar(25) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person CHANGE person_new_time pers_new_time varchar(25) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['pers_new_time'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_new_time varchar(25) CHARACTER SET utf8 AFTER pers_new_date";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_new_time varchar(25) CHARACTER SET utf8 AFTER pers_new_date";
+                $dbh->query($sql);
             }
 
             // *** Automatic installation or update ***
             if (isset($field['person_changed_date'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                CHANGE person_changed_date pers_changed_date varchar(35) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person CHANGE person_changed_date pers_changed_date varchar(35) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['pers_changed_date'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_changed_date varchar(35) CHARACTER SET utf8 AFTER pers_new_time";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_changed_date varchar(35) CHARACTER SET utf8 AFTER pers_new_time";
+                $dbh->query($sql);
             }
 
             // *** Automatic installation or update ***
             if (isset($field['person_changed_time'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                CHANGE person_changed_time pers_changed_time varchar(25) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person CHANGE person_changed_time pers_changed_time varchar(25) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['pers_changed_time'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_changed_time varchar(25) CHARACTER SET utf8 AFTER pers_changed_time";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_changed_time varchar(25) CHARACTER SET utf8 AFTER pers_changed_time";
+                $dbh->query($sql);
             }
 
 
@@ -891,29 +865,28 @@ class update_cls
             // *** HuMo-genealogy 4.7 updates ***
             // *** UPDATE 1: Add pers_stillborn in ALL person tables ***
             if (!isset($field['pers_stillborn'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_stillborn VARCHAR(1) CHARACTER SET utf8  DEFAULT 'n' AFTER pers_birth_source;";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_stillborn VARCHAR(1) CHARACTER SET utf8  DEFAULT 'n' AFTER pers_birth_source;";
+                $dbh->query($sql);
             }
 
             // *** UPDATE 2: remove pers_index_bapt in ALL person tables ***
             if (isset($field['indexdoop'])) {
                 $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person DROP indexdoop";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             if (isset($field['pers_index_bapt'])) {
                 $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person DROP pers_index_bapt";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             // *** UPDATE 3: remove pers_index_death in ALL person tables ***
             if (isset($field['indexovl'])) {
                 $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person DROP indexovl";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             if (isset($field['pers_index_death'])) {
                 $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person DROP pers_index_death";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             // *** Show number of fields in table ***
@@ -933,73 +906,59 @@ class update_cls
             }
 
             if (isset($field['family_text_source'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                CHANGE family_text_source fam_text_source text CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family CHANGE family_text_source fam_text_source text CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['fam_text_source'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                ADD fam_text_source text CHARACTER SET utf8 AFTER fam_text";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_text_source text CHARACTER SET utf8 AFTER fam_text";
+                $dbh->query($sql);
             }
 
             if (isset($field['trinstantie'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                CHANGE trinstantie fam_marr_authority text CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family CHANGE trinstantie fam_marr_authority text CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['fam_marr_authority'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                ADD fam_marr_authority text CHARACTER SET utf8 AFTER fam_marr_source";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_marr_authority text CHARACTER SET utf8 AFTER fam_marr_source";
+                $dbh->query($sql);
             }
 
             if (isset($field['scheidingsinstantie'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                CHANGE scheidingsinstantie fam_div_authority text CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family CHANGE scheidingsinstantie fam_div_authority text CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['fam_div_authority'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                ADD fam_div_authority text CHARACTER SET utf8 AFTER fam_div_source";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_div_authority text CHARACTER SET utf8 AFTER fam_div_source";
+                $dbh->query($sql);
             }
 
             if (isset($field['family_new_date'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                CHANGE family_new_date fam_new_date varchar(35) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family CHANGE family_new_date fam_new_date varchar(35) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['fam_new_date'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                ADD fam_new_date varchar(35) CHARACTER SET utf8 AFTER fam_counter";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_new_date varchar(35) CHARACTER SET utf8 AFTER fam_counter";
+                $dbh->query($sql);
             }
 
             if (isset($field['family_new_time'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                CHANGE family_new_time fam_new_time varchar(25) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family CHANGE family_new_time fam_new_time varchar(25) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['fam_new_time'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                ADD fam_new_time varchar(35) CHARACTER SET utf8 AFTER fam_new_date";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_new_time varchar(35) CHARACTER SET utf8 AFTER fam_new_date";
+                $dbh->query($sql);
             }
 
             if (isset($field['family_changed_date'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                CHANGE family_changed_date fam_changed_date varchar(35) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family CHANGE family_changed_date fam_changed_date varchar(35) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['fam_changed_date'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                ADD fam_changed_date varchar(35) CHARACTER SET utf8 AFTER fam_new_time";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_changed_date varchar(35) CHARACTER SET utf8 AFTER fam_new_time";
+                $dbh->query($sql);
             }
 
             if (isset($field['family_changed_time'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                CHANGE family_changed_time fam_changed_time varchar(25) CHARACTER SET utf8";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family CHANGE family_changed_time fam_changed_time varchar(25) CHARACTER SET utf8";
+                $dbh->query($sql);
             } elseif (!isset($field['fam_changed_time'])) {
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                ADD fam_changed_time varchar(35) CHARACTER SET utf8 AFTER fam_changed_date";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_changed_time varchar(35) CHARACTER SET utf8 AFTER fam_changed_date";
+                $dbh->query($sql);
             }
 
 
@@ -1042,7 +1001,7 @@ class update_cls
                     $sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
                     //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
-                    $update_Db = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
 
                 // *** Update family table (html to utf-8) ***
@@ -1079,7 +1038,7 @@ class update_cls
                     //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
                     //$update.=$sql.'<br>';
-                    $update_Db = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
 
                 // *** Update text table (html to utf-8) ***
@@ -1092,7 +1051,7 @@ class update_cls
                     //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
                     //$update.=$sql.'<br>';
-                    $update_Db = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
 
                 // *** Update source table (html to utf-8) ***
@@ -1118,7 +1077,7 @@ class update_cls
                     //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
                     //$update.=$sql.'<br>';
-                    $update_Db = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
 
                 // *** Update address table (html to utf-8) ***
@@ -1139,7 +1098,7 @@ class update_cls
                     //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
                     //$update.=$sql.'<br>';
-                    $update_Db = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
 
                 // *** Update event table (html to utf-8) ***
@@ -1161,7 +1120,7 @@ class update_cls
                     //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
                     //$update.=$sql.'<br>';
-                    $update_Db = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
             } // end translate of tables
         } // End of reading family trees ***
@@ -1198,11 +1157,11 @@ class update_cls
             }
             if (!isset($field['log_ip_address'])) {
                 $sql = "ALTER TABLE humo_user_log ADD log_ip_address varchar(20) CHARACTER SET utf8 DEFAULT ''";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             if (!isset($field['log_user_admin'])) {
                 $sql = "ALTER TABLE humo_user_log ADD log_user_admin varchar(5) CHARACTER SET utf8 DEFAULT ''";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
         }
 
@@ -1238,9 +1197,8 @@ class update_cls
                 $tree_privacy = 'show_persons';
             }
             if ($tree_privacy) {
-                $sql = "UPDATE humo_trees
-                SET tree_privacy='" . $tree_privacy . "' WHERE tree_id='" . $updateDb->tree_id . "'";
-                $result = $dbh->query($sql);
+                $sql = "UPDATE humo_trees SET tree_privacy='" . $tree_privacy . "' WHERE tree_id='" . $updateDb->tree_id . "'";
+                $dbh->query($sql);
             }
 
             // *** Update person table ***
@@ -1258,14 +1216,14 @@ class update_cls
                 }
                 $sql = 'UPDATE ' . $updateDb->tree_prefix . 'person SET pers_alive="' . $pers_alive . '"
                 WHERE pers_id="' . $privacyDb->pers_id . '"';
-                $update_Db = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             // *** Update person table ***
             $pers_sql = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "person WHERE pers_lastname='doodgeboren kind'");
             while ($persDb = $pers_sql->fetch(PDO::FETCH_OBJ)) {
                 $sql = 'UPDATE ' . $updateDb->tree_prefix . 'person SET pers_lastname="N.N", pers_stillborn="y" WHERE pers_id="' . $persDb->pers_id . '"';
-                $update_Db = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             // *** Update event table: translate all event_kind items to english ***
@@ -1321,7 +1279,7 @@ class update_cls
                 }
                 if (isset($event_kind)) {
                     $sql = 'UPDATE ' . $updateDb->tree_prefix . 'events SET event_kind="' . $event_kind . '" WHERE event_id="' . $read_persDb->event_id . '"';
-                    $update_Db = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
             }
 
@@ -1333,7 +1291,7 @@ class update_cls
         }
 
         // *** Update "update_status" to number 1 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='1' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='1' WHERE setting_variable='update_status'");
     }
 
     public function update_v4_8()
@@ -1366,7 +1324,7 @@ class update_cls
                     $gebeurtsql .= " connect_text='" . $source_array[$i] . "'";
                 }
                 //echo $gebeurtsql.'<br>';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
         }
 
@@ -1382,7 +1340,7 @@ class update_cls
             $sql = "ALTER TABLE " . $updateDb->tree_prefix . "sources
             ADD source_status VARCHAR(10) CHARACTER SET utf8 DEFAULT '' AFTER source_id,
             ADD source_repo_gedcomnr VARCHAR(20) CHARACTER SET utf8 DEFAULT '' AFTER source_repo_page";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
             // *** Repositories table ***
             try {
                 $tbldb = $dbh->query("DROP TABLE " . $updateDb->tree_prefix . "repositories"); // Remove table.
@@ -1391,7 +1349,7 @@ class update_cls
             }
             // *** Generate new table ***
             print '<br>' . __('creating repositories...') . '<br>';
-            $tbldb = $dbh->query("CREATE TABLE " . $updateDb->tree_prefix . "repositories (
+            $dbh->query("CREATE TABLE " . $updateDb->tree_prefix . "repositories (
             repo_id mediumint(6) unsigned NOT NULL auto_increment,
             repo_gedcomnr varchar(20) CHARACTER SET utf8,
             repo_name text CHARACTER SET utf8,
@@ -1412,13 +1370,13 @@ class update_cls
             PRIMARY KEY (`repo_id`)) DEFAULT CHARSET=utf8");
             // *** Sources connections table ***
             try {
-                $tbldb = $dbh->query("DROP TABLE " . $updateDb->tree_prefix . "connections"); // Remove table.
+                $dbh->query("DROP TABLE " . $updateDb->tree_prefix . "connections"); // Remove table.
             } catch (Exception $e) {
                 //
             }
             // *** Generate new table ***
             print ' ' . __('creating connections...');
-            $tbldb = $dbh->query("CREATE TABLE " . $updateDb->tree_prefix . "connections (
+            $dbh->query("CREATE TABLE " . $updateDb->tree_prefix . "connections (
             connect_id mediumint(6) unsigned NOT NULL auto_increment,
             connect_order mediumint(6),
             connect_kind varchar(25) CHARACTER SET utf8,
@@ -1462,14 +1420,14 @@ class update_cls
                     connect_changed_date='" . $eventDb->event_changed_date . "',
                     connect_changed_time='" . $eventDb->event_changed_time . "'
                     ";
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
             // *** Commit data in database ***
             $dbh->commit();
 
             // *** Remove old addresses from connect table ***
             $sql = "DELETE FROM " . $updateDb->tree_prefix . "events WHERE event_kind='address'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Copy shared sources to new connect table ***
             // *** Batch processing ***
@@ -1523,17 +1481,17 @@ class update_cls
                         connect_date='" . $eventDb->event_date . "',
                         connect_place='" . $eventDb->event_place . "'";
                     }
-                    $result = $dbh->query($gebeurtsql);
+                    $dbh->query($gebeurtsql);
                 }
 
                 // *** Update old source fields, or remove old source records ***
                 if ($eventDb->event_kind != 'source') {
                     $sql = "UPDATE " . $updateDb->tree_prefix . "events SET event_source='SOURCE'
                     WHERE event_id='" . $eventDb->event_id . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 } else {
                     $sql = "DELETE FROM " . $updateDb->tree_prefix . "events WHERE event_id='" . $eventDb->event_id . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
             }
             // *** Commit data in database ***
@@ -1596,7 +1554,7 @@ class update_cls
                 $sql .= " WHERE pers_id='" . $read_persDb->pers_id . "'";
 
                 if ($update == true) {
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
             }
             // *** Commit data in database ***
@@ -1668,7 +1626,7 @@ class update_cls
                 $sql .= " WHERE fam_id='" . $read_famDb->fam_id . "'";
 
                 if ($update == true) {
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
             }
             // *** Commit data in database ***
@@ -1678,7 +1636,7 @@ class update_cls
         }
 
         // *** Update "update_status" to number 2 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='2' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='2' WHERE setting_variable='update_status'");
 
         // *** Processing time ***
         $end_time = time();
@@ -1698,12 +1656,12 @@ class update_cls
         echo '<tr><td>HuMo-genealogy update V4.8.2</td><td style="background-color:#00FF00">';
 
         try {
-            $db_update = $dbh->query("DROP TABLE humo_cms_menu");
+            $dbh->query("DROP TABLE humo_cms_menu");
         } catch (Exception $e) {
             //
         }
         print __('creating humo_cms_menu...') . '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_cms_menu (
+        $dbh->query("CREATE TABLE humo_cms_menu (
         menu_id int(10) NOT NULL AUTO_INCREMENT,
         menu_parent_id int(10) NOT NULL DEFAULT '0',
         menu_order int(5) NOT NULL DEFAULT '0',
@@ -1711,12 +1669,12 @@ class update_cls
         PRIMARY KEY (`menu_id`)
         ) DEFAULT CHARSET=utf8");
         try {
-            $db_update = $dbh->query("DROP TABLE humo_cms_pages");
+            $dbh->query("DROP TABLE humo_cms_pages");
         } catch (Exception $e) {
             //
         }
         print __('creating humo_cms_pages...') . '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_cms_pages (
+        $dbh->query("CREATE TABLE humo_cms_pages (
         page_id int(10) NOT NULL AUTO_INCREMENT,
         page_status varchar(1) CHARACTER SET utf8 DEFAULT '',
         page_menu_id int(10) NOT NULL DEFAULT '0',
@@ -1729,7 +1687,7 @@ class update_cls
         PRIMARY KEY (`page_id`)
         ) DEFAULT CHARSET=utf8");
         // *** Update "update_status" to number 3 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='3' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='3' WHERE setting_variable='update_status'");
 
         echo '</td></tr>';
     }
@@ -1751,15 +1709,15 @@ class update_cls
 
             // *** Update events table ***
             $sql = "ALTER TABLE " . $updateDb->tree_prefix . "events ADD event_gedcomnr varchar(20) CHARACTER SET utf8 AFTER event_id";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Update person table ***
             $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_sexe_source text CHARACTER SET utf8 AFTER pers_sexe";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Update "update_status" to number 4 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='4' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='4' WHERE setting_variable='update_status'");
 
         echo '</td></tr>';
     }
@@ -1799,72 +1757,57 @@ class update_cls
 
             if (!isset($field['pers_unprocessed_tags'])) {
                 // *** Update person table ***
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                    ADD pers_unprocessed_tags text CHARACTER SET utf8 AFTER pers_favorite";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_unprocessed_tags text CHARACTER SET utf8 AFTER pers_favorite";
+                $dbh->query($sql);
 
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                    ADD fam_unprocessed_tags text CHARACTER SET utf8 AFTER fam_counter";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_unprocessed_tags text CHARACTER SET utf8 AFTER fam_counter";
+                $dbh->query($sql);
 
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "texts
-                    ADD text_unprocessed_tags text CHARACTER SET utf8 AFTER text_text";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "texts ADD text_unprocessed_tags text CHARACTER SET utf8 AFTER text_text";
+                $dbh->query($sql);
 
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "sources
-                    ADD source_unprocessed_tags text CHARACTER SET utf8 AFTER source_repo_gedcomnr";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "sources ADD source_unprocessed_tags text CHARACTER SET utf8 AFTER source_repo_gedcomnr";
+                $dbh->query($sql);
 
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "addresses
-                    ADD address_unprocessed_tags text CHARACTER SET utf8 AFTER address_photo";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "addresses ADD address_unprocessed_tags text CHARACTER SET utf8 AFTER address_photo";
+                $dbh->query($sql);
 
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "events
-                    ADD event_unprocessed_tags text CHARACTER SET utf8 AFTER event_text";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "events ADD event_unprocessed_tags text CHARACTER SET utf8 AFTER event_text";
+                $dbh->query($sql);
 
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "connections
-                    ADD connect_unprocessed_tags text CHARACTER SET utf8 AFTER connect_status";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "connections ADD connect_unprocessed_tags text CHARACTER SET utf8 AFTER connect_status";
+                $dbh->query($sql);
 
-                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "repositories
-                    ADD repo_unprocessed_tags text CHARACTER SET utf8 AFTER repo_url";
-                $result = $dbh->query($sql);
+                $sql = "ALTER TABLE " . $updateDb->tree_prefix . "repositories ADD repo_unprocessed_tags text CHARACTER SET utf8 AFTER repo_url";
+                $dbh->query($sql);
             }
 
             // *** Update tree tables ***
-            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person
-                ADD pers_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER pers_alive";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "person ADD pers_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER pers_alive";
+            $dbh->query($sql);
 
-            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family
-                ADD fam_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER fam_alive";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD fam_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER fam_alive";
+            $dbh->query($sql);
 
-            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "texts
-                ADD text_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER text_text";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "texts ADD text_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER text_text";
+            $dbh->query($sql);
 
-            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "sources
-                ADD source_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER source_repo_gedcomnr";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "sources ADD source_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER source_repo_gedcomnr";
+            $dbh->query($sql);
 
-            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "addresses
-                ADD address_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER address_photo";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "addresses ADD address_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER address_photo";
+            $dbh->query($sql);
 
             $sql = "ALTER TABLE " . $updateDb->tree_prefix . "events
                 ADD event_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER event_text,
                 ADD event_event_extra text CHARACTER SET utf8 AFTER event_event";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
-            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "connections
-                ADD connect_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER connect_status";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "connections ADD connect_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER connect_status";
+            $dbh->query($sql);
 
-            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "repositories
-                ADD repo_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER repo_url";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE " . $updateDb->tree_prefix . "repositories ADD repo_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER repo_url";
+            $dbh->query($sql);
 
             // *** Commit data in database ***
             //$dbh->commit();
@@ -1877,10 +1820,10 @@ class update_cls
         ADD user_status varchar(1) CHARACTER SET utf8 AFTER user_remark,
         ADD user_register_date varchar(20) CHARACTER SET utf8 AFTER user_group_id,
         ADD user_last_visit varchar(25) CHARACTER SET utf8 AFTER user_register_date";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Update "update_status" to number 5 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='5' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='5' WHERE setting_variable='update_status'");
         echo ' Tree updated!';
 
         echo '</td></tr>';
@@ -1900,11 +1843,11 @@ class update_cls
         while ($updateDb = $update_sql->fetch(PDO::FETCH_OBJ)) {
             // *** Update family table ***
             $sql = "ALTER TABLE " . $updateDb->tree_prefix . "family ADD INDEX (fam_man), ADD INDEX (fam_woman)";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Update "update_status" to number 6 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='6' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='6' WHERE setting_variable='update_status'");
         echo ' Tree updated!';
         echo '</td></tr>';
     }
@@ -1933,7 +1876,7 @@ class update_cls
         $dbh->query("ALTER TABLE humo_users CHANGE user_group_id user_group_id smallint(5)");
 
         // *** Add new table, for user notes ***
-        $db_update = $dbh->query("CREATE TABLE humo_user_notes (
+        $dbh->query("CREATE TABLE humo_user_notes (
         note_id smallint(5) unsigned NOT NULL auto_increment,
         note_date varchar(20) CHARACTER SET utf8,
         note_time varchar(25) CHARACTER SET utf8,
@@ -1948,7 +1891,7 @@ class update_cls
         ) DEFAULT CHARSET=utf8");
 
         // *** Update "update_status" to number 7 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='7' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='7' WHERE setting_variable='update_status'");
 
         echo ' Database updated!';
         echo '</td></tr>';
@@ -1968,16 +1911,15 @@ class update_cls
         //echo __('Update in progress...').' <div id="information" style="display: inline; font-weight:bold;"></div><br>';
         echo __('Update in progress...') . '<br>';
 
-        $sql = "ALTER TABLE humo_settings ADD setting_tree_id smallint(5),
-        ADD setting_order smallint(5)";
-        $result = $dbh->query($sql);
+        $sql = "ALTER TABLE humo_settings ADD setting_tree_id smallint(5), ADD setting_order smallint(5)";
+        $dbh->query($sql);
 
         // *** Add ordering numbers by extra links in settings table ***
         $setting_order = 1;
         $update_sql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
         while ($updateDb = $update_sql->fetch(PDO::FETCH_OBJ)) {
             $sql = "UPDATE humo_settings SET setting_order='" . $setting_order . "' WHERE setting_id='" . $updateDb->setting_id . "'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
             $setting_order++;
         }
 
@@ -2032,7 +1974,7 @@ class update_cls
         KEY (pers_gedcomnumber),
         KEY (pers_tree_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-        $tbldb = $dbh->query($tbldbqry);
+        $dbh->query($tbldbqry);
 
         // *** New table for families ***
         $tbldbqry = "CREATE TABLE humo_families (
@@ -2082,7 +2024,7 @@ class update_cls
         KEY (fam_man),
         KEY (fam_woman)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-        $tbldb = $dbh->query($tbldbqry);
+        $dbh->query($tbldbqry);
 
 
         // *** New table for unprocessed tags ***
@@ -2111,7 +2053,7 @@ class update_cls
         KEY (tag_address_id),
         KEY (tag_text_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Get tree_id of tree_prefix humo_ ***
         $sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='humo_'");
@@ -2144,7 +2086,7 @@ class update_cls
             PRIMARY KEY (`repo_id`),
             KEY (repo_tree_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-            $tbldb = $dbh->query($tbldbqry);
+            $dbh->query($tbldbqry);
         } else {
             // *** Remove source column from repository table ***
             $qry = "ALTER TABLE humo_repositories DROP repo_source,
@@ -2153,7 +2095,7 @@ class update_cls
             $sql_get = $dbh->query($qry);
 
             // *** Add repo_tree_id value in table ***
-            $result = $dbh->query("UPDATE humo_repositories SET repo_tree_id='" . $humo_tree_id . "' WHERE repo_id!=''");
+            $dbh->query("UPDATE humo_repositories SET repo_tree_id='" . $humo_tree_id . "' WHERE repo_id!=''");
         }
 
 
@@ -2191,20 +2133,20 @@ class update_cls
             PRIMARY KEY (`source_id`),
             KEY (source_tree_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-            $tbldb = $dbh->query($tbldbqry);
+            $dbh->query($tbldbqry);
         } else {
             // *** Add primary key ***
             $sql = "ALTER TABLE humo_sources ADD PRIMARY KEY(`source_id`),
             ADD source_tree_id smallint(5) AFTER source_id,
             ADD KEY(`source_tree_id`);";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Add source_tree_id value in table ***
-            $result = $dbh->query("UPDATE humo_sources SET source_tree_id='" . $humo_tree_id . "' WHERE source_id!=''");
+            $dbh->query("UPDATE humo_sources SET source_tree_id='" . $humo_tree_id . "' WHERE source_id!=''");
 
             // *** Drop old index ***
             $sql = "ALTER TABLE humo_sources DROP INDEX source_id;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Check if table exists already if not create it ***
@@ -2224,7 +2166,7 @@ class update_cls
             PRIMARY KEY (text_id),
             KEY (text_tree_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-            $tbldb = $dbh->query($tbldbqry);
+            $dbh->query($tbldbqry);
         } else {
             // *** Add primary key ***
             $qry = "ALTER TABLE humo_texts ADD PRIMARY KEY(`text_id`),
@@ -2233,7 +2175,7 @@ class update_cls
             $sql_get = $dbh->query($qry);
 
             // *** Add repo_tree_id value in table ***
-            $result = $dbh->query("UPDATE humo_texts SET text_tree_id='" . $humo_tree_id . "' WHERE text_id!=''");
+            $dbh->query("UPDATE humo_texts SET text_tree_id='" . $humo_tree_id . "' WHERE text_id!=''");
 
             // *** Drop old index ***
             $qry = "ALTER TABLE humo_texts DROP INDEX text_id;";
@@ -2270,23 +2212,17 @@ class update_cls
             KEY (connect_connect_id),
             KEY (connect_tree_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-            $tbldb = $dbh->query($tbldbqry);
+            $dbh->query($tbldbqry);
         } else {
-            $sql = "ALTER TABLE humo_connections ADD connect_tree_id smallint(5) AFTER connect_id,
-            ADD KEY(`connect_tree_id`)";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_connections ADD connect_tree_id smallint(5) AFTER connect_id, ADD KEY(`connect_tree_id`)";
+            $dbh->query($sql);
 
             // *** Add repo_tree_id value in table ***
-            $result = $dbh->query("UPDATE humo_connections SET connect_tree_id='" . $humo_tree_id . "'
-            WHERE connect_id!=''");
-            $result = $dbh->query("UPDATE humo_connections SET connect_sub_kind='pers_event_source'
-            WHERE connect_kind='person' AND connect_sub_kind='event_source'");
-            $result = $dbh->query("UPDATE humo_connections SET connect_sub_kind='fam_event_source'
-            WHERE connect_kind='family' AND connect_sub_kind='event_source'");
-            $result = $dbh->query("UPDATE humo_connections SET connect_sub_kind='pers_address_source'
-            WHERE connect_kind='person' AND connect_sub_kind='address_source'");
-            $result = $dbh->query("UPDATE humo_connections SET connect_sub_kind='fam_address_source'
-            WHERE connect_kind='family' AND connect_sub_kind='address_source'");
+            $dbh->query("UPDATE humo_connections SET connect_tree_id='" . $humo_tree_id . "' WHERE connect_id!=''");
+            $dbh->query("UPDATE humo_connections SET connect_sub_kind='pers_event_source' WHERE connect_kind='person' AND connect_sub_kind='event_source'");
+            $dbh->query("UPDATE humo_connections SET connect_sub_kind='fam_event_source' WHERE connect_kind='family' AND connect_sub_kind='event_source'");
+            $dbh->query("UPDATE humo_connections SET connect_sub_kind='pers_address_source' WHERE connect_kind='person' AND connect_sub_kind='address_source'");
+            $dbh->query("UPDATE humo_connections SET connect_sub_kind='fam_address_source' WHERE connect_kind='family' AND connect_sub_kind='address_source'");
         }
 
         // *** Check if table exists already if not create it ***
@@ -2315,18 +2251,17 @@ class update_cls
             PRIMARY KEY (`address_id`),
             KEY (address_tree_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-            $tbldb = $dbh->query($tbldbqry);
+            $dbh->query($tbldbqry);
         } else {
-            $sql = "ALTER TABLE humo_addresses ADD address_tree_id smallint(5) AFTER address_id,
-            ADD KEY(`address_tree_id`)";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_addresses ADD address_tree_id smallint(5) AFTER address_id, ADD KEY(`address_tree_id`)";
+            $dbh->query($sql);
 
             // *** Add key ***
             //$sql = "ALTER TABLE humo_addresses ADD KEY(`address_tree_id`);";
             //$result=$dbh->query($sql);
 
             // *** Add address_tree_id value in table ***
-            $result = $dbh->query("UPDATE humo_addresses SET address_tree_id='" . $humo_tree_id . "' WHERE address_id!=''");
+            $dbh->query("UPDATE humo_addresses SET address_tree_id='" . $humo_tree_id . "' WHERE address_id!=''");
 
             // *** Remove source columns from addresses table ***
             $qry = "ALTER TABLE humo_addresses DROP address_source;";
@@ -2363,15 +2298,15 @@ class update_cls
             KEY (event_family_id),
             KEY (event_kind)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-            $tbldb = $dbh->query($tbldbqry);
+            $dbh->query($tbldbqry);
         } else {
             $sql = "ALTER TABLE humo_events ADD event_tree_id smallint(5) AFTER event_id,
             ADD event_pers_age varchar(15) CHARACTER SET utf8 AFTER event_person_id,
             ADD KEY(`event_tree_id`)";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Add event_tree_id value in table ***
-            $result = $dbh->query("UPDATE humo_events SET event_tree_id='" . $humo_tree_id . "' WHERE event_id!=''");
+            $dbh->query("UPDATE humo_events SET event_tree_id='" . $humo_tree_id . "' WHERE event_id!=''");
 
             // *** Remove source columns from event table ***
             $qry = "ALTER TABLE humo_events DROP event_source;";
@@ -2446,7 +2381,7 @@ class update_cls
                         tag_pers_id='" . $pers_id . "',
                         tag_tree_id='" . $updateDb->tree_id . "',
                         tag_tag='" . safe_text_db($getDb->pers_unprocessed_tags) . "'";
-                    $result = $dbh->query($gebeurtsql);
+                    $dbh->query($gebeurtsql);
                 }
             }
 
@@ -2455,7 +2390,7 @@ class update_cls
 
             // *** Remove old humo[nr]_repositories table ***
             $qry = "DROP TABLE " . $updateDb->tree_prefix . "person;";
-            $result = $dbh->query($qry);
+            $dbh->query($qry);
 
 
             // *** Copy items from humo[nr]_family to humo_families table ***
@@ -2510,7 +2445,7 @@ class update_cls
                         tag_rel_id='" . $fam_id . "',
                         tag_tree_id='" . $updateDb->tree_id . "',
                         tag_tag='" . safe_text_db($getDb->fam_unprocessed_tags) . "'";
-                    $result = $dbh->query($gebeurtsql);
+                    $dbh->query($gebeurtsql);
                 }
             }
 
@@ -2519,7 +2454,7 @@ class update_cls
 
             // *** Remove old humo[nr]_repositories table ***
             $qry = "DROP TABLE " . $updateDb->tree_prefix . "family;";
-            $result = $dbh->query($qry);
+            $dbh->query($qry);
 
             // *** Change @N1@ into N1 reference ***
             $qry = "UPDATE " . $updateDb->tree_prefix . "texts SET text_gedcomnr=REPLACE(text_gedcomnr, '@', '')";
@@ -2553,7 +2488,7 @@ class update_cls
 
                 // *** Remove old humo[nr]_repositories table ***
                 $qry = "DROP TABLE " . $updateDb->tree_prefix . "repositories;";
-                $result = $dbh->query($qry);
+                $dbh->query($qry);
 
                 // *** Batch processing ***
                 $dbh->beginTransaction();
@@ -2593,7 +2528,7 @@ class update_cls
 
                 // *** Remove old humo[nr]_sources table ***
                 $qry = "DROP TABLE " . $updateDb->tree_prefix . "sources;";
-                $result = $dbh->query($qry);
+                $dbh->query($qry);
 
                 // *** Batch processing ***
                 $dbh->beginTransaction();
@@ -2616,7 +2551,7 @@ class update_cls
 
                 // *** Remove old humo[nr]_texts table ***
                 $qry = "DROP TABLE " . $updateDb->tree_prefix . "texts;";
-                $result = $dbh->query($qry);
+                $dbh->query($qry);
 
                 // *** Batch processing ***
                 $dbh->beginTransaction();
@@ -2674,7 +2609,7 @@ class update_cls
 
                 // *** Remove old humo[nr]_connections table ***
                 $qry = "DROP TABLE " . $updateDb->tree_prefix . "connections;";
-                $result = $dbh->query($qry);
+                $dbh->query($qry);
 
 
                 // *** Batch processing ***
@@ -2709,7 +2644,7 @@ class update_cls
                             $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
                                 WHERE connect_tree_id='" . $updateDb->tree_id . "'
                                 AND connect_sub_kind='pers_address_source' AND connect_connect_id='" . $getDb->address_id . "'";
-                            $result = $dbh->query($qry);
+                            $dbh->query($qry);
                         }
                     }
                     // PROCESS connection id's
@@ -2719,7 +2654,7 @@ class update_cls
                             $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
                                 WHERE connect_tree_id='" . $updateDb->tree_id . "'
                                 AND connect_sub_kind='fam_address_source' AND connect_connect_id='" . $getDb->address_id . "'";
-                            $result = $dbh->query($qry);
+                            $dbh->query($qry);
                         }
                     }
                 }
@@ -2728,7 +2663,7 @@ class update_cls
 
                 // *** Remove old humo[nr]_addresses table ***
                 $qry = "DROP TABLE " . $updateDb->tree_prefix . "addresses;";
-                $result = $dbh->query($qry);
+                $dbh->query($qry);
 
 
                 // *** Batch processing ***
@@ -2764,7 +2699,7 @@ class update_cls
                             $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
                                 WHERE connect_tree_id='" . $updateDb->tree_id . "'
                                 AND connect_sub_kind='pers_event_source' AND connect_connect_id='" . $getDb->event_id . "'";
-                            $result = $dbh->query($qry);
+                            $dbh->query($qry);
                         }
                     }
                     if (isset($family_event_source[$updateDb->tree_id]) and in_array($getDb->event_id, $family_event_source[$updateDb->tree_id])) {
@@ -2773,7 +2708,7 @@ class update_cls
                             $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
                                 WHERE connect_tree_id='" . $updateDb->tree_id . "'
                                 AND connect_sub_kind='fam_event_source' AND connect_connect_id='" . $getDb->event_id . "'";
-                            $result = $dbh->query($qry);
+                            $dbh->query($qry);
                         }
                     }
                 }
@@ -2782,7 +2717,7 @@ class update_cls
 
                 // *** Remove old humo[nr]_events table ***
                 $qry = "DROP TABLE " . $updateDb->tree_prefix . "events;";
-                $result = $dbh->query($qry);
+                $dbh->query($qry);
             }
         }
 
@@ -2806,13 +2741,13 @@ class update_cls
                 tag_tree_id='" . $qryDb->source_tree_id . "',
                 tag_source_id='" . $qryDb->source_id . "',
                 tag_tag='" . safe_text_db($qryDb->source_unprocessed_tags) . "'";
-            $result = $dbh->query($gebeurtsql);
+            $dbh->query($gebeurtsql);
         }
         // *** Commit data in database ***
         $dbh->commit();
         // *** Remove tags from source table ***
         $qry = "ALTER TABLE humo_sources DROP source_unprocessed_tags;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         // *** Copy tags from repositories table to tag table ***
         $sql = "SELECT repo_id, repo_tree_id, repo_unprocessed_tags FROM humo_repositories WHERE repo_unprocessed_tags LIKE '_%'";
@@ -2822,11 +2757,11 @@ class update_cls
             tag_tree_id='" . $qryDb->repo_tree_id . "',
             tag_repo_id='" . $qryDb->repo_id . "',
             tag_tag='" . safe_text_db($qryDb->repo_unprocessed_tags) . "'";
-            $result = $dbh->query($gebeurtsql);
+            $dbh->query($gebeurtsql);
         }
         // *** Remove tags from repositories table ***
         $qry = "ALTER TABLE humo_repositories DROP repo_unprocessed_tags;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         // *** Copy tags from texts to tag table ***
         // *** Batch processing ***
@@ -2838,74 +2773,70 @@ class update_cls
                 tag_tree_id='" . $qryDb->text_tree_id . "',
                 tag_text_id='" . $qryDb->text_id . "',
                 tag_tag='" . safe_text_db($qryDb->text_unprocessed_tags) . "'";
-            $result = $dbh->query($gebeurtsql);
+            $dbh->query($gebeurtsql);
         }
         // *** Commit data in database ***
         $dbh->commit();
         // *** Remove tags from texts table ***
         $qry = "ALTER TABLE humo_texts DROP text_unprocessed_tags;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         // *** Copy tags from connections to tag table ***
         // *** Batch processing ***
         $dbh->beginTransaction();
-        $sql = "SELECT connect_id, connect_tree_id, connect_unprocessed_tags
-            FROM humo_connections WHERE connect_unprocessed_tags LIKE '_%'";
+        $sql = "SELECT connect_id, connect_tree_id, connect_unprocessed_tags FROM humo_connections WHERE connect_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
             $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
                 tag_tree_id='" . $qryDb->connect_tree_id . "',
                 tag_connect_id='" . $qryDb->connect_id . "',
                 tag_tag='" . safe_text_db($qryDb->connect_unprocessed_tags) . "'";
-            $result = $dbh->query($gebeurtsql);
+            $dbh->query($gebeurtsql);
         }
         // *** Commit data in database ***
         $dbh->commit();
         // *** Remove tags from connections table ***
         $qry = "ALTER TABLE humo_connections DROP connect_unprocessed_tags;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         // *** Copy tags from addresses to tag table ***
         // *** Batch processing ***
         $dbh->beginTransaction();
-        $sql = "SELECT address_id, address_tree_id, address_unprocessed_tags
-            FROM humo_addresses WHERE address_unprocessed_tags LIKE '_%'";
+        $sql = "SELECT address_id, address_tree_id, address_unprocessed_tags FROM humo_addresses WHERE address_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
             $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
                 tag_tree_id='" . $qryDb->address_tree_id . "',
                 tag_address_id='" . $qryDb->address_id . "',
                 tag_tag='" . safe_text_db($qryDb->address_unprocessed_tags) . "'";
-            $result = $dbh->query($gebeurtsql);
+            $dbh->query($gebeurtsql);
         }
         // *** Commit data in database ***
         $dbh->commit();
         // *** Remove tags from addresses table ***
         $qry = "ALTER TABLE humo_addresses DROP address_unprocessed_tags;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         // *** Copy tags from events to tag table ***
         // *** Batch processing ***
         $dbh->beginTransaction();
-        $sql = "SELECT event_id, event_tree_id, event_unprocessed_tags
-            FROM humo_events WHERE event_unprocessed_tags LIKE '_%'";
+        $sql = "SELECT event_id, event_tree_id, event_unprocessed_tags FROM humo_events WHERE event_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
             $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
                 tag_tree_id='" . $qryDb->event_tree_id . "',
                 tag_event_id='" . $qryDb->event_id . "',
                 tag_tag='" . safe_text_db($qryDb->event_unprocessed_tags) . "'";
-            $result = $dbh->query($gebeurtsql);
+            $dbh->query($gebeurtsql);
         }
         // *** Commit data in database ***
         $dbh->commit();
         // *** Remove tags from events table ***
         $qry = "ALTER TABLE humo_events DROP event_unprocessed_tags;";
-        $result = $dbh->query($qry);
-
+        $dbh->query($qry);
 
         // *** Update "update_status" to number 8 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='8' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='8' WHERE setting_variable='update_status'");
 
         echo ' Database updated!';
         echo '</td></tr>';
@@ -2927,16 +2858,16 @@ class update_cls
 
         // *** Update event table ***
         $sql = "ALTER TABLE humo_events ADD event_connect_kind varchar(25) DEFAULT NULL AFTER event_order";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_events SET event_connect_kind="person" WHERE event_person_id!=""';
-        $update_Db = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = 'UPDATE humo_events SET event_connect_kind="family", event_person_id=event_family_id WHERE event_family_id!=""';
-        $update_Db = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_events CHANGE event_person_id event_connect_id VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Move photo's from source to event table ***
         // *** Batch processing ***
@@ -2953,31 +2884,31 @@ class update_cls
                     event_connect_id="' . $qryDb->source_gedcomnr . '",
                     event_kind="picture",
                     event_event="' . trim($source_photo[$i]) . '"';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
         }
         // *** Commit data in database ***
         $dbh->commit();
 
         $qry = "ALTER TABLE humo_events DROP event_family_id;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         $qry = "ALTER TABLE humo_sources DROP source_photo;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         $qry = "ALTER TABLE humo_repositories DROP repo_photo;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         $qry = "ALTER TABLE humo_addresses DROP address_photo;";
-        $result = $dbh->query($qry);
+        $dbh->query($qry);
 
         // *** Update user table ***
         $sql = "ALTER TABLE humo_user_notes ADD note_guest_name varchar(25) DEFAULT NULL AFTER note_user_id,
         ADD note_guest_mail varchar(100) DEFAULT NULL AFTER note_guest_name";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Update "update_status" to number 9 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='9' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='9' WHERE setting_variable='update_status'");
 
         echo ' Database updated!';
         echo '</td></tr>';
@@ -3003,140 +2934,118 @@ class update_cls
             $field[$field_value] = $field_value;
         }
         if (!isset($field['group_source_presentation'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_source_presentation VARCHAR(20) NOT NULL DEFAULT 'title' AFTER group_sources;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_source_presentation VARCHAR(20) NOT NULL DEFAULT 'title' AFTER group_sources;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_text_presentation'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_text_presentation VARCHAR(20) NOT NULL DEFAULT 'show' AFTER group_source_presentation;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_text_presentation VARCHAR(20) NOT NULL DEFAULT 'show' AFTER group_source_presentation;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_show_restricted_source'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_show_restricted_source VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_sources;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_show_restricted_source VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_sources;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_death_date_act'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_death_date_act VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_alive_date;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_death_date_act VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_alive_date;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_death_date'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_death_date VARCHAR(4) NOT NULL DEFAULT '1980' AFTER group_death_date_act;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_death_date VARCHAR(4) NOT NULL DEFAULT '1980' AFTER group_death_date_act;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_menu_persons'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_menu_persons VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_menu_persons VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_menu_names'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_menu_names VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_menu_names VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_menu_login'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_menu_login VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_menu_names;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_menu_login VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_menu_names;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_showstatistics'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_showstatistics VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_showstatistics VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_relcalc'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_relcalc VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_relcalc VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_googlemaps'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_googlemaps VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_googlemaps VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_contact'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_contact VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_contact VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_latestchanges'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_latestchanges VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_latestchanges VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_pdf_button'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_pdf_button VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_own_code;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_pdf_button VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_own_code;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_rtf_button'])) {
             $sql = "ALTER TABLE humo_groups ADD group_rtf_button VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_pdf_button;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Show RTF button in usergroup "Admin" ***
             $sql = "UPDATE humo_groups SET group_rtf_button='y' WHERE group_id=1";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (!isset($field['group_user_notes'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_user_notes VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_own_code;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_user_notes VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_own_code;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_user_notes_show'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_user_notes_show VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_user_notes;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_user_notes_show VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_user_notes;";
+            $dbh->query($sql);
         }
 
         if (!isset($field['group_family_presentation'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_family_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'compact' AFTER group_pdf_button;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_family_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'compact' AFTER group_pdf_button;";
+            $dbh->query($sql);
         }
         if (!isset($field['group_maps_presentation'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_maps_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'hide' AFTER group_family_presentation;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_maps_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'hide' AFTER group_family_presentation;";
+            $dbh->query($sql);
         }
 
         if (!isset($field['group_edit trees'])) {
-            $sql = "ALTER TABLE humo_groups
-            ADD group_edit_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER group_hide_trees;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_groups ADD group_edit_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER group_hide_trees;";
+            $dbh->query($sql);
         }
 
         $sql = "ALTER TABLE humo_groups ADD group_hide_photocat varchar(200) NOT NULL DEFAULT ''";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Update user_log table ***
         $sql = "ALTER TABLE humo_user_log ADD log_id mediumint(6) unsigned NOT NULL auto_increment FIRST, ADD PRIMARY KEY (`log_id`),
         ADD log_status varchar(10) CHARACTER SET utf8 DEFAULT '' AFTER log_user_admin";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
-        $result = $dbh->query("UPDATE humo_user_log SET log_status='success'");
+        $dbh->query("UPDATE humo_user_log SET log_status='success'");
 
         // *** Update address table ***
         $sql = "ALTER TABLE humo_addresses ADD address_connect_kind varchar(25) DEFAULT NULL AFTER address_order,
         ADD address_connect_sub_kind varchar(30) DEFAULT NULL AFTER address_connect_kind";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
-        $sql = 'UPDATE humo_addresses SET address_connect_kind="person", address_connect_sub_kind="person"
-        WHERE address_person_id!=""';
-        $result = $dbh->query($sql);
+        $sql = 'UPDATE humo_addresses SET address_connect_kind="person", address_connect_sub_kind="person" WHERE address_person_id!=""';
+        $dbh->query($sql);
 
-        $sql = 'UPDATE humo_addresses SET address_connect_kind="family", address_connect_sub_kind="family", address_person_id=address_family_id
-        WHERE address_family_id!=""';
-        $result = $dbh->query($sql);
+        $sql = 'UPDATE humo_addresses SET address_connect_kind="family", address_connect_sub_kind="family", address_person_id=address_family_id WHERE address_family_id!=""';
+        $dbh->query($sql);
 
-        $sql = "ALTER TABLE humo_addresses CHANGE address_person_id address_connect_id VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci,
-        DROP address_family_id;";
-        $result = $dbh->query($sql);
+        $sql = "ALTER TABLE humo_addresses CHANGE address_person_id address_connect_id VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci, DROP address_family_id;";
+        $dbh->query($sql);
 
         // *** Update "update_status" to number 10 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='10' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='10' WHERE setting_variable='update_status'");
 
         echo ' Database updated!';
         echo '</td></tr>';
@@ -3166,7 +3075,7 @@ class update_cls
             CHANGE event_gedcomnr event_gedcomnr VARCHAR(25) CHARACTER SET utf8,
             CHANGE event_connect_id event_connect_id VARCHAR(25) CHARACTER SET utf8,
             CHANGE event_id event_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update events table";</script>';
@@ -3181,11 +3090,11 @@ class update_cls
         }
         if (!isset($field['user_hide_trees'])) {
             $sql = "ALTER TABLE humo_users ADD user_hide_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER user_group_id;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (!isset($field['user_edit_trees'])) {
             $sql = "ALTER TABLE humo_users ADD user_edit_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER user_hide_trees;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         unset($field);
 
@@ -3193,7 +3102,7 @@ class update_cls
         $sql = "ALTER TABLE humo_persons CHANGE pers_id pers_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE pers_gedcomnumber pers_gedcomnumber VARCHAR(25) CHARACTER SET utf8,
             CHANGE pers_indexnr pers_indexnr VARCHAR(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update pers table";</script>';
@@ -3204,7 +3113,7 @@ class update_cls
             CHANGE fam_gedcomnumber fam_gedcomnumber VARCHAR(25) CHARACTER SET utf8,
             CHANGE fam_man fam_man VARCHAR(25) CHARACTER SET utf8,
             CHANGE fam_woman fam_woman VARCHAR(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update fam table";</script>';
@@ -3214,7 +3123,7 @@ class update_cls
         $sql = "ALTER TABLE humo_addresses CHANGE address_id address_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE address_gedcomnr address_gedcomnr VARCHAR(25) CHARACTER SET utf8,
             CHANGE address_connect_id address_connect_id VARCHAR(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update address table";</script>';
@@ -3225,7 +3134,7 @@ class update_cls
             CHANGE connect_connect_id connect_connect_id VARCHAR(25) CHARACTER SET utf8,
             CHANGE connect_source_id connect_source_id VARCHAR(25) CHARACTER SET utf8,
             CHANGE connect_item_id connect_item_id VARCHAR(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update connect table";</script>';
@@ -3234,7 +3143,7 @@ class update_cls
 
         try {
             $sql = "ALTER TABLE humo_location CHANGE location_id location_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } catch (Exception $e) {
             //
         }
@@ -3248,7 +3157,7 @@ class update_cls
         $sql = "ALTER TABLE humo_sources CHANGE source_id source_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE source_gedcomnr source_gedcomnr VARCHAR(25) CHARACTER SET utf8,
             CHANGE source_repo_gedcomnr source_repo_gedcomnr VARCHAR(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update source table";</script>';
@@ -3257,7 +3166,7 @@ class update_cls
 
         $sql = "ALTER TABLE humo_texts CHANGE text_id text_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE text_gedcomnr text_gedcomnr VARCHAR(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update texts table";</script>';
@@ -3266,7 +3175,7 @@ class update_cls
 
         $sql = "ALTER TABLE humo_repositories CHANGE repo_id repo_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             CHANGE repo_gedcomnr repo_gedcomnr varchar(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update repo table";</script>';
@@ -3276,7 +3185,7 @@ class update_cls
         $sql = "ALTER TABLE humo_user_notes ADD note_tree_id mediumint(7) AFTER note_status,
             CHANGE note_pers_gedcomnumber note_pers_gedcomnumber varchar(25) CHARACTER SET utf8,
             CHANGE note_fam_gedcomnumber note_fam_gedcomnumber varchar(25) CHARACTER SET utf8;";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_unprocessed_tags
             CHANGE tag_pers_id tag_pers_id INT(10) UNSIGNED NULL DEFAULT NULL,
@@ -3289,7 +3198,7 @@ class update_cls
             CHANGE tag_text_id tag_text_id INT(10) UNSIGNED NULL DEFAULT NULL,
             CHANGE tag_repo_id tag_repo_id INT(10) UNSIGNED NULL DEFAULT NULL,
             CHANGE tag_id tag_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         //ob_start();
         echo '<script>document.getElementById("information v5_2_5").innerHTML="Update unprocessed table";</script>';
         //ob_flush();
@@ -3299,20 +3208,20 @@ class update_cls
             CHANGE stat_gedcom_fam stat_gedcom_fam varchar(25) CHARACTER SET utf8,
             CHANGE stat_gedcom_man stat_gedcom_man varchar(25) CHARACTER SET utf8,
             CHANGE stat_gedcom_woman stat_gedcom_woman varchar(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Table humo_users_notes isn't always available ***
         try {
             $sql = "ALTER TABLE humo_users_notes
                 CHANGE note_pers_gedcomnumber note_pers_gedcomnumber varchar(25) CHARACTER SET utf8,
                 CHANGE note_fam_gedcomnumber note_fam_gedcomnumber varchar(25) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         } catch (Exception $e) {
             //
         }
 
         // *** Update "update_status" to number 11 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='11' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='11' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
         //$dbh->commit();
@@ -3353,16 +3262,16 @@ class update_cls
         $sql = "ALTER TABLE humo_sources
             CHANGE source_subj source_subj varchar(248) CHARACTER SET utf8,
             CHANGE source_place source_place varchar(120) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_user_log CHANGE log_ip_address log_ip_address varchar(45) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_repositories CHANGE repo_phone repo_phone varchar(25) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_users ADD user_ip_address VARCHAR(45) CHARACTER SET utf8 DEFAULT '' AFTER user_edit_trees;";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
         while ($columnDb = $column_qry->fetch()) {
@@ -3370,14 +3279,12 @@ class update_cls
             $field[$field_value] = $field_value;
         }
         if (!isset($field['pers_new_user'])) {
-            $sql = "ALTER TABLE humo_persons
-                ADD pers_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER pers_quality;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_persons ADD pers_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER pers_quality;";
+            $dbh->query($sql);
         }
         if (!isset($field['pers_changed_user'])) {
-            $sql = "ALTER TABLE humo_persons
-                ADD pers_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER pers_new_user;";
-            $result = $dbh->query($sql);
+            $sql = "ALTER TABLE humo_persons ADD pers_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER pers_new_user;";
+            $dbh->query($sql);
         }
 
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
@@ -3387,11 +3294,11 @@ class update_cls
         }
         if (!isset($field['fam_new_user'])) {
             $sql = "ALTER TABLE humo_families ADD fam_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER fam_counter;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (!isset($field['fam_changed_user'])) {
             $sql = "ALTER TABLE humo_families ADD fam_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER fam_new_user;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_sources');
@@ -3401,11 +3308,11 @@ class update_cls
         }
         if (!isset($field['source_new_user'])) {
             $sql = "ALTER TABLE humo_sources ADD source_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER source_quality;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (!isset($field['source_changed_user'])) {
             $sql = "ALTER TABLE humo_sources ADD source_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER source_new_user;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_repositories');
@@ -3415,11 +3322,11 @@ class update_cls
         }
         if (!isset($field['repo_new_user'])) {
             $sql = "ALTER TABLE humo_repositories ADD repo_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER repo_quality;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (!isset($field['repo_changed_user'])) {
             $sql = "ALTER TABLE humo_repositories ADD repo_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER repo_new_user;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_addresses');
@@ -3429,11 +3336,11 @@ class update_cls
         }
         if (!isset($field['address_new_user'])) {
             $sql = "ALTER TABLE humo_addresses ADD address_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER address_quality;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (!isset($field['address_changed_user'])) {
             $sql = "ALTER TABLE humo_addresses ADD address_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER address_new_user;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
@@ -3443,15 +3350,15 @@ class update_cls
         }
         if (!isset($field['event_new_user'])) {
             $sql = "ALTER TABLE humo_events ADD event_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER event_quality;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (!isset($field['event_changed_user'])) {
             $sql = "ALTER TABLE humo_events ADD event_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER event_new_user;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Update "update_status" to number 12 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='12' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='12' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
         //$dbh->commit();
@@ -3485,18 +3392,18 @@ class update_cls
         }
 
         $db_update = "ALTER TABLE humo_sources ADD source_shared varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER source_gedcomnr";
-        $update_Db = $dbh->query($db_update);
+        $dbh->query($db_update);
 
         $db_update = "ALTER TABLE humo_addresses ADD address_shared varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER address_gedcomnr";
-        $update_Db = $dbh->query($db_update);
+        $dbh->query($db_update);
 
         // *** Update ALL lines in humo_source table for all family trees ***
         $sql = "UPDATE humo_sources SET source_shared='1'";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Update ALL lines in humo_address table for all family trees ***
         $sql = "UPDATE humo_addresses SET address_shared='1' WHERE address_gedcomnr LIKE '_%'";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Batch processing ***
         //$dbh->beginTransaction();
@@ -3525,7 +3432,7 @@ class update_cls
                 }
                 $sql .= "connect_connect_id='" . $addressDb->address_connect_id . "'";
                 //echo $sql.'<br>';
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
 
                 $sql = "UPDATE humo_addresses SET
                 address_gedcomnr='R" . $new_gedcomnumber . "',
@@ -3536,7 +3443,7 @@ class update_cls
                 address_connect_id=''
                 WHERE address_id='" . $addressDb->address_id . "'";
                 //echo $sql.'<br><br>';
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
 
                 $new_gedcomnumber++;
             }
@@ -3550,7 +3457,7 @@ class update_cls
                 $sql = "UPDATE humo_connections SET connect_connect_id='" . $qryDb->address_gedcomnr . "'
                 WHERE connect_id='" . $qryDb->connect_id . "'";
                 //echo $sql.'<br><br>';
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             // *** Update sources ***
@@ -3560,15 +3467,10 @@ class update_cls
 
             // *** Batch processing ***
             //$dbh->beginTransaction();
-            $sql = "SELECT * FROM humo_connections
-            WHERE connect_tree_id='" . $updateDb->tree_id . "'
-            AND substring(connect_sub_kind, -7)='_source'
-            AND connect_source_id NOT LIKE '_%'";
+            $sql = "SELECT * FROM humo_connections WHERE connect_tree_id='" . $updateDb->tree_id . "'
+            AND substring(connect_sub_kind, -7)='_source' AND connect_source_id NOT LIKE '_%'";
             $qry = $dbh->query($sql);
             while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                //source_new_user='".$username."',
-                //source_new_date='".$gedcom_date."',
-                //source_new_time='".$gedcom_time."'
                 $sql = "INSERT INTO humo_sources SET
                 source_tree_id='" . $updateDb->tree_id . "',
                 source_gedcomnr='S" . $new_gedcomnumber . "',
@@ -3585,17 +3487,11 @@ class update_cls
                 source_repo_caln='',
                 source_repo_page='',
                 source_repo_gedcomnr='',
-                source_text='" . safe_text_db($qryDb->connect_text) . "'
-                ";
-                //echo $sql.'<br>';
-                $result = $dbh->query($sql);
+                source_text='" . safe_text_db($qryDb->connect_text) . "'";
+                $dbh->query($sql);
 
-                $sql = "UPDATE humo_connections SET
-                connect_text='',
-                connect_source_id='S" . $new_gedcomnumber . "'
-                WHERE connect_id='" . $qryDb->connect_id . "'";
-                //echo $sql.'<br><br>';
-                $result = $dbh->query($sql);
+                $sql = "UPDATE humo_connections SET connect_text='', connect_source_id='S" . $new_gedcomnumber . "' WHERE connect_id='" . $qryDb->connect_id . "'";
+                $dbh->query($sql);
 
                 $new_gedcomnumber++;
             }
@@ -3605,7 +3501,7 @@ class update_cls
         }
 
         // *** Update "update_status" to number 13 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='13' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='13' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
         //$dbh->commit();
@@ -3637,37 +3533,31 @@ class update_cls
         $index_check = $dbh->query("SHOW KEYS FROM humo_addresses WHERE Key_name='address_gedcomnr'");
         if ($index_check->rowCount() == 0) {
             $update_sql = "ALTER TABLE `humo_addresses` ADD INDEX(`address_gedcomnr`);";
-            $result = $dbh->query($update_sql);
+            $dbh->query($update_sql);
         }
 
         // *** Update for IPv6 ***
-        $check_qry = "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.columns
-        WHERE table_name = 'humo_stat_date' AND COLUMN_NAME = 'stat_ip_address'";
+        $check_qry = "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.columns WHERE table_name = 'humo_stat_date' AND COLUMN_NAME = 'stat_ip_address'";
         $check_result = $dbh->query($check_qry);
         $checkDb = $check_result->fetch(PDO::FETCH_OBJ);
         if ($checkDb->CHARACTER_MAXIMUM_LENGTH == 20) {
-            $update_sql = "ALTER TABLE `humo_stat_date`
-            CHANGE `stat_ip_address` `stat_ip_address` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;";
-            $result = $dbh->query($update_sql);
+            $update_sql = "ALTER TABLE `humo_stat_date` CHANGE `stat_ip_address` `stat_ip_address` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;";
+            $dbh->query($update_sql);
         }
 
         // *** Add connect_new_user and connect_changed_user ***
-        $sql = "ALTER TABLE humo_connections
-        ADD connect_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER connect_quality;";
-        $result = $dbh->query($sql);
+        $sql = "ALTER TABLE humo_connections ADD connect_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER connect_quality;";
+        $dbh->query($sql);
 
-        $sql = "ALTER TABLE humo_connections
-        ADD connect_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER connect_new_time;";
-        $result = $dbh->query($sql);
+        $sql = "ALTER TABLE humo_connections ADD connect_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER connect_new_time;";
+        $dbh->query($sql);
 
         // *** Add text_new_user and text_changed_user ***
-        $sql = "ALTER TABLE humo_texts
-        ADD text_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER text_quality;";
-        $result = $dbh->query($sql);
+        $sql = "ALTER TABLE humo_texts ADD text_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER text_quality;";
+        $dbh->query($sql);
 
-        $sql = "ALTER TABLE humo_texts
-        ADD text_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER text_new_time;";
-        $result = $dbh->query($sql);
+        $sql = "ALTER TABLE humo_texts ADD text_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER text_new_time;";
+        $dbh->query($sql);
 
         // *** Move callname to event table ***
         // *** Batch processing ***
@@ -3690,7 +3580,7 @@ class update_cls
         //$dbh->commit();
 
         // *** Update "update_status" to number 14 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='14' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='14' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
         //$dbh->commit();
@@ -3730,9 +3620,9 @@ class update_cls
 
         // *** Add 2FA in user table ***
         $sql = "ALTER TABLE humo_users ADD user_2fa_enabled varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER user_password_salted;";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
         $sql = "ALTER TABLE humo_users ADD user_2fa_auth_secret varchar(50) CHARACTER SET utf8 DEFAULT '' AFTER user_2fa_enabled;";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Change place fields into 120 characters ***
         $sql = "ALTER TABLE humo_persons
@@ -3740,7 +3630,7 @@ class update_cls
         CHANGE pers_bapt_place pers_bapt_place VARCHAR(120) CHARACTER SET utf8,
         CHANGE pers_death_place pers_death_place VARCHAR(120) CHARACTER SET utf8,
         CHANGE pers_buried_place pers_buried_place VARCHAR(120) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_families
         CHANGE fam_relation_place fam_relation_place varchar(120) CHARACTER SET utf8,
@@ -3749,24 +3639,24 @@ class update_cls
         CHANGE fam_marr_church_notice_place fam_marr_church_notice_place varchar(120) CHARACTER SET utf8,
         CHANGE fam_marr_church_place fam_marr_church_place varchar(120) CHARACTER SET utf8,
         CHANGE fam_div_place fam_div_place varchar(120) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_repositories CHANGE repo_place repo_place varchar(120) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_connections CHANGE connect_place connect_place varchar(120) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_addresses CHANGE address_place address_place varchar(120) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "ALTER TABLE humo_events CHANGE event_place event_place varchar(120) CHARACTER SET utf8";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $tempqry = $dbh->query("SHOW TABLES LIKE 'humo_location'");
         if ($tempqry->rowCount()) {
             $sql = "ALTER TABLE humo_location CHANGE location_location location_location VARCHAR(120) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
             $exists = $result->rowCount();
@@ -3777,11 +3667,11 @@ class update_cls
         $tempqry = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
         if ($tempqry->rowCount()) {
             $sql = "ALTER TABLE humo_no_location CHANGE no_location_location no_location_location VARCHAR(120) CHARACTER SET utf8";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Update "update_status" to number 15 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='15' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='15' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
         //$dbh->commit();
@@ -3810,7 +3700,7 @@ class update_cls
             <td style="background-color:#00FF00"><?= __('Update in progress...'); ?><div id="information v6_4_1" style="display: inline; font-weight:bold;"></div>
             </td>
         </tr>
-<?php
+        <?php
         //ob_flush();
         flush();
 
@@ -3823,60 +3713,60 @@ class update_cls
         // *** Automatic update ***
         if (!isset($field['note_order'])) {
             $sql = "ALTER TABLE humo_user_notes CHANGE note_date note_new_date varchar(20) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
             $sql = "ALTER TABLE humo_user_notes CHANGE note_time note_new_time varchar(25) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
             $sql = "ALTER TABLE humo_user_notes CHANGE note_user_id note_new_user_id smallint(5);";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             $sql = "ALTER TABLE humo_user_notes ADD note_changed_date varchar(20) CHARACTER SET utf8 AFTER note_new_user_id;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
             $sql = "ALTER TABLE humo_user_notes ADD note_changed_time varchar(25) CHARACTER SET utf8 AFTER note_changed_date;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
             $sql = "ALTER TABLE humo_user_notes ADD note_changed_user_id smallint(5) AFTER note_changed_time;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             $sql = "ALTER TABLE humo_user_notes ADD note_priority varchar(15) CHARACTER SET utf8 AFTER note_status;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             $sql = "ALTER TABLE humo_user_notes CHANGE note_status note_status varchar(15) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Add note_order ***
             $sql = "ALTER TABLE humo_user_notes ADD note_order smallint(5) AFTER note_id;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Add note_connect_kind = person/ family/ source/ repository ***
             $sql = "ALTER TABLE humo_user_notes ADD note_connect_kind varchar(20) CHARACTER SET utf8 AFTER note_tree_id;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Add note_kind = user/ editor ***
             $sql = "ALTER TABLE humo_user_notes ADD note_kind varchar(10) CHARACTER SET utf8 AFTER note_tree_id;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Change all existing note_connect_kind items into 'person' ***
             $sql = "UPDATE humo_user_notes SET note_connect_kind='person';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Change note_pers_gedcomnumber into: note_connect_id ***
             $sql = "ALTER TABLE humo_user_notes CHANGE note_pers_gedcomnumber note_connect_id VARCHAR(25) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Update tree_id, could be missing in some cases ***
             $sql = "SELECT * FROM humo_user_notes LEFT JOIN humo_trees ON note_tree_prefix=tree_prefix ORDER BY note_id;";
             $qry = $dbh->query($sql);
             while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
                 $sql2 = "UPDATE humo_user_notes SET note_tree_id='" . $qryDb->tree_id . "', note_kind='user' WHERE note_id='" . $qryDb->note_id . "'";
-                $result = $dbh->query($sql2);
+                $dbh->query($sql2);
             }
 
             // *** Remove note_fam_gedcomnumber ***
             $sql = "ALTER TABLE humo_user_notes DROP note_fam_gedcomnumber;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Remove note_fam_gedcomnumber ***
             $sql = "ALTER TABLE humo_user_notes DROP note_tree_prefix;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Remove "NOT NULL" from hebnight variables ***
@@ -3887,15 +3777,15 @@ class update_cls
         }
         if (isset($field['pers_birth_date_hebnight'])) {
             $sql = "ALTER TABLE humo_persons CHANGE pers_birth_date_hebnight pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (isset($field['pers_death_date_hebnight'])) {
             $sql = "ALTER TABLE humo_persons CHANGE pers_death_date_hebnight pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (isset($field['pers_buried_date_hebnight'])) {
             $sql = "ALTER TABLE humo_persons CHANGE pers_buried_date_hebnight pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
@@ -3905,19 +3795,19 @@ class update_cls
         }
         if (isset($field['fam_marr_notice_date_hebnight'])) {
             $sql = "ALTER TABLE humo_families CHANGE fam_marr_notice_date_hebnight fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (isset($field['fam_marr_date_hebnight'])) {
             $sql = "ALTER TABLE humo_families CHANGE fam_marr_date_hebnight fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (isset($field['fam_marr_church_notice_date_hebnight'])) {
             $sql = "ALTER TABLE humo_families CHANGE fam_marr_church_notice_date_hebnight fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
         if (isset($field['fam_marr_church_date_hebnight'])) {
             $sql = "ALTER TABLE humo_families CHANGE fam_marr_church_date_hebnight fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         $column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
@@ -3927,7 +3817,7 @@ class update_cls
         }
         if (isset($field['event_date_hebnight'])) {
             $sql = "ALTER TABLE humo_events CHANGE event_date_hebnight event_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Create table humo_stat_country
@@ -3941,14 +3831,14 @@ class update_cls
             $dbh->query($qry);
         }
 
-        $result = $dbh->query("ALTER TABLE `humo_texts` ADD KEY `text_gedcomnr` (`text_gedcomnr`)");
+        $dbh->query("ALTER TABLE `humo_texts` ADD KEY `text_gedcomnr` (`text_gedcomnr`)");
 
         $sql = "ALTER TABLE humo_events
             ADD event_connect_kind2 varchar(25) CHARACTER SET utf8 AFTER event_connect_id,
             ADD event_connect_id2 varchar(25) DEFAULT NULL AFTER event_connect_kind2";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
-        $result = $dbh->query("ALTER TABLE `humo_events` ADD KEY `event_connect_id2` (`event_connect_id2`)");
+        $dbh->query("ALTER TABLE `humo_events` ADD KEY `event_connect_id2` (`event_connect_id2`)");
 
         // loop humo_events, copy @ numbers to new event_connect_id2.
         // *** Batch processing ***
@@ -3964,13 +3854,13 @@ class update_cls
                 event_connect_id2='" . substr($qryDb->event_event, 1, -1) . "',
                 event_event=''
                 WHERE event_id= '" . $qryDb->event_id . "'";
-            $result = $dbh->query($gebeurtsql);
+            $dbh->query($gebeurtsql);
         }
         // *** Commit data in database ***
         $dbh->commit();
 
         // *** Update "update_status" to number 16 ***
-        $result = $dbh->query("UPDATE humo_settings SET setting_value='16' WHERE setting_variable='update_status'");
+        $dbh->query("UPDATE humo_settings SET setting_value='16' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
         //$dbh->commit();
@@ -3982,7 +3872,148 @@ class update_cls
         flush();
     }
 
+    public function update_v6_7_2()
+    {
+        // **************************************
+        // *** Update procedure version 6.7.2 ***
+        // **************************************
+
+        global $dbh;
+
+        // *** Show update status ***
+        //ob_start();
+        ?>
+        <tr>
+            <td>HuMo-genealogy update V6.7.2</td>
+            <td style="background-color:#00FF00"><?= __('Update in progress...'); ?><div id="information v6_7_2" style="display: inline; font-weight:bold;"></div>
+            </td>
+        </tr>
+<?php
+        //ob_flush();
+        flush();
+
+        function update_datetime_username($dbh, $table, $field)
+        {
+            // *** Improve date, time and username data fields ***
+            $sql = "ALTER TABLE " . $table . "
+                ADD " . $field . "_new_datetime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER " . $field . "_new_time,
+                ADD " . $field . "_changed_datetime datetime on update CURRENT_TIMESTAMP NULL DEFAULT NULL AFTER " . $field . "_changed_time";
+            if ($field != 'note') {
+                $sql .= ", ADD " . $field . "_new_user_id SMALLINT NULL DEFAULT NULL AFTER " . $field . "_new_user,
+                    ADD " . $field . "_changed_user_id SMALLINT NULL DEFAULT NULL AFTER " . $field . "_changed_user";
+            }
+            $dbh->query($sql);
+
+            if ($field != 'note') {
+                $sql = "SELECT " . $field . "_id as id,
+                    " . $field . "_new_user as new_user,
+                    " . $field . "_new_date as new_date,
+                    " . $field . "_new_time as new_time,
+                    " . $field . "_changed_user as changed_user,
+                    " . $field . "_changed_date as changed_date,
+                    " . $field . "_changed_time as changed_time,
+                    new_user.user_id AS new_user_id,
+                    changed_user.user_id AS changed_user_id
+                    FROM " . $table . "
+                    LEFT JOIN humo_users AS new_user ON " . $field . "_new_user=new_user.user_name
+                    LEFT JOIN humo_users AS changed_user ON " . $field . "_changed_user=changed_user.user_name";
+                //WHERE ".$field."_new_user IS NOT NULL or ".$field."_changed_user IS NOT NULL";
+            } else {
+                $sql = "SELECT " . $field . "_id as id,
+                    " . $field . "_new_date as new_date,
+                    " . $field . "_new_time as new_time,
+                    " . $field . "_changed_date as changed_date,
+                    " . $field . "_changed_time as changed_time
+                    FROM " . $table;
+                //WHERE ".$field."_new_user IS NOT NULL or ".$field."_changed_user IS NOT NULL";
+            }
+            $qry = $dbh->query($sql);
+
+            // *** Batch processing ***
+            $dbh->beginTransaction();
+
+            while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                // *** Also update new datetime field ***
+                //$new_datetime = NULL;
+                $new_datetime = '1970-01-01 00:00:01';
+                if ($qryDb->new_date) {
+                    // Convert from 06 JAN 2024 to 2024-02-06 20:54:13
+                    //$new_datetime = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $qryDb->new_date . ' ' . $qryDb->new_time)));
+                    $new_datetime = date('Y-m-d H:i:s', strtotime($qryDb->new_date . ' ' . $qryDb->new_time));
+                }
+
+                $changed_datetime = NULL;
+                if ($qryDb->changed_date) {
+                    //if ($qryDb->changed_date and $qryDb->changed_date!='') {
+                    //$changed_datetime = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $qryDb->changed_date . ' ' . $qryDb->changed_time)));
+                    $changed_datetime = date('Y-m-d H:i:s', strtotime($qryDb->changed_date . ' ' . $qryDb->changed_time));
+                }
+
+                $sql = 'UPDATE ' . $table . ' SET ' . $field . '_new_datetime="' . $new_datetime . '"';
+                if ($field != 'note' and $qryDb->new_user_id) {
+                    $sql .= ', ' . $field . '_new_user_id="' . $qryDb->new_user_id . '"';
+                }
+
+                if ($changed_datetime) {
+                    $sql .= ', ' . $field . '_changed_datetime="' . $changed_datetime . '"';
+                } else {
+                    // *** Otherwise MySQL will add current date, not needed for conversion ***
+                    $sql .= ', ' . $field . '_changed_datetime=NULL';
+                }
+
+                if ($field != 'note' and $qryDb->changed_user_id) {
+                    $sql .= ', ' . $field . '_changed_user_id="' . $qryDb->changed_user_id . '"';
+                }
+                $sql .= ' WHERE ' . $field . '_id="' . $qryDb->id . '"';
+                //echo $sql . '<br>';
+                $dbh->query($sql);
+            }
+
+            // *** Commit data in database ***
+            $dbh->commit();
+
+            if ($field != 'note') {
+                $dbh->query("ALTER TABLE " . $table . "
+                DROP " . $field . "_new_user, DROP " . $field . "_new_date, DROP " . $field . "_new_time,
+                DROP " . $field . "_changed_user, DROP " . $field . "_changed_date, DROP " . $field . "_changed_time;");
+            }
+            else{
+                $dbh->query("ALTER TABLE " . $table . "
+                DROP " . $field . "_new_date, DROP " . $field . "_new_time,
+                DROP " . $field . "_changed_date, DROP " . $field . "_changed_time;");
+            }
+        }
+
+        update_datetime_username($dbh, 'humo_addresses', 'address');
+        update_datetime_username($dbh, 'humo_connections', 'connect');
+        update_datetime_username($dbh, 'humo_events', 'event');
+
+        update_datetime_username($dbh, 'humo_families', 'fam');
+        update_datetime_username($dbh, 'humo_persons', 'pers');
+
+        update_datetime_username($dbh, 'humo_repositories', 'repo');
+        update_datetime_username($dbh, 'humo_sources', 'source');
+        update_datetime_username($dbh, 'humo_texts', 'text');
+
+        // *** Allready using user_id ***
+        update_datetime_username($dbh, 'humo_user_notes', 'note');
+
+        // *** Update "update_status" to number 16 ***
+        $dbh->query("UPDATE humo_settings SET setting_value='17' WHERE setting_variable='update_status'");
+
+        // *** Commit data in database ***
+        //$dbh->commit();
+
+        // *** Show status of database update ***
+        //ob_start();
+        echo '<script>document.getElementById("information v6_7_2").innerHTML="Database updated!";</script>';
+        //ob_flush();
+        flush();
+    }
+
+
     // Next update: there is a temporary update in admin/index.php line 103.
+    // Also remove some other old datafields.
 
 
 

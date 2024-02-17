@@ -142,7 +142,7 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
     // *** Check HuMo-genealogy database status ***
     // *** Change this value if the database must be updated ***
     if (isset($humo_option["update_status"])) {
-        if ($humo_option["update_status"] < 16) {
+        if ($humo_option["update_status"] < 17) {
             $page = 'update';
             $show_menu_left = false;
         }
@@ -622,7 +622,7 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
                                 <li><?= __('Photo album categories'); ?></li>
                             </ul>
                         </li>
-                        <li><a href="<?= $path_tmp; ?>page=user_notes"><?= __('Notes'); ?></a></li>
+                        <li><a href="<?= $path_tmp; ?>page=notes"><?= __('Notes'); ?></a></li>
                         <li>
                             <a href="<?= $path_tmp; ?>page=check"><?= __('Family tree data check'); ?></a>
                             <ul>
@@ -742,8 +742,8 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
         include_once(__DIR__ . "/views/cms_pages.php");
     } elseif ($page == 'backup') {
         include_once(__DIR__ . "/views/backup.php");
-    } elseif ($page == 'user_notes') {
-        include_once(__DIR__ . "/views/user_notes.php");
+    } elseif ($page == 'notes') {
+        include_once(__DIR__ . "/views/notes.php");
     } elseif ($page == 'cal_date') {
         include_once(__DIR__ . "/views/cal_date.php");
     } elseif ($page == 'export') {
@@ -778,6 +778,7 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
         include_once(__DIR__ . "/views/index_admin.php");
     }
     ?>
+
 </div>
 
 </body>

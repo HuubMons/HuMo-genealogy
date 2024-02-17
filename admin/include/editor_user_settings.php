@@ -6,8 +6,8 @@ if (!defined('ADMIN_PAGE')) {
 ?>
 
 <h1 align=center><?= __('Extra settings'); ?></h1>
-<?php
 
+<?php
 // *** Update tree settings ***
 if (isset($_POST['user_change']) and isset($_POST["id"]) and (is_numeric($_POST["id"]))) {
     $user_hide_trees = '';

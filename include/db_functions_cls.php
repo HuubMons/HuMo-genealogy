@@ -228,7 +228,9 @@ class db_functions
      *				WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
      * RETURNS	: Check for valid person.
      */
-    public function check_person(string $pers_gedcomnumber)
+    //public function check_person(string $pers_gedcomnumber)
+    // *** If string is used, script could stop if value is NULL ***
+    public function check_person($pers_gedcomnumber)
     {
         if ($pers_gedcomnumber != '') {
             try {
@@ -260,7 +262,9 @@ class db_functions
      *				WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
      * RETURNS	: a single person.
      */
-    public function get_person(string $pers_gedcomnumber, string $item = '')
+    //public function get_person(string $pers_gedcomnumber, string $item = '')
+    // *** If string is used, script could stop if value is NULL ***
+    public function get_person($pers_gedcomnumber, string $item = '')
     {
         try {
             if ($item == 'famc-fams') {

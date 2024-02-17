@@ -67,7 +67,7 @@ while ($person_startDb = $person_start->fetch()) {
                     }
                     $sql = "UPDATE humo_persons SET pers_fams='" . $new_fams . "'
                             WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
                 $wrong_fams++;
                 echo '<tr><td><b>Missing marriage/ relation record</b></td>';
@@ -96,7 +96,7 @@ while ($person_startDb = $person_start->fetch()) {
                 else $fam_children = $person->pers_gedcomnumber;
                 $sql = "UPDATE humo_families SET fam_children='" . $fam_children . "'
                                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $person->pers_famc . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
                 $check_children = true;
                 echo '<tr><td><b>Missing child nr.</b></td>';
                 echo '<td>Fam gedcomnr: ' . $person->pers_famc . '</td>';
@@ -105,7 +105,7 @@ while ($person_startDb = $person_start->fetch()) {
                 if (isset($_POST['remove'])) {
                     $sql = "UPDATE humo_persons SET pers_famc=''
                         WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
 
                 // *** Missing parent record, no restore possible? ***
@@ -144,7 +144,7 @@ while ($famDb_start = $fam_result_start->fetch(PDO::FETCH_OBJ)) {
                 else $pers_fams = $famDb->fam_gedcomnumber;
                 $sql = "UPDATE humo_persons SET pers_fams='" . $pers_fams . "'
                         WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
 
                 echo '<tr><td><b>Missing marriage/ relation nr. in person record</b></td>';
                 echo '<td>Man gedcomnr: ' . $famDb->fam_man . '</td>';
@@ -154,7 +154,7 @@ while ($famDb_start = $fam_result_start->fetch(PDO::FETCH_OBJ)) {
             if (isset($_POST['remove'])) {
                 $sql = "UPDATE humo_families SET fam_man='0'
                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             echo '<tr><td><b>Missing man record in family</b></td>';
@@ -177,7 +177,7 @@ while ($famDb_start = $fam_result_start->fetch(PDO::FETCH_OBJ)) {
                 else $pers_fams = $famDb->fam_gedcomnumber;
                 $sql = "UPDATE humo_persons SET pers_fams='" . $pers_fams . "'
                         WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
 
                 echo '<tr><td><b>Missing marriage/ relation nr. in person record</b></td>';
                 echo '<td>Woman gedcomnr: ' . $famDb->fam_woman . '</td>';
@@ -187,7 +187,7 @@ while ($famDb_start = $fam_result_start->fetch(PDO::FETCH_OBJ)) {
             if (isset($_POST['remove'])) {
                 $sql = "UPDATE humo_families SET fam_woman='0'
                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             echo '<tr><td><b>Missing woman record in family</b></td>';
@@ -205,7 +205,7 @@ while ($famDb_start = $fam_result_start->fetch(PDO::FETCH_OBJ)) {
                 if ($person->pers_famc == '') {
                     $sql = "UPDATE humo_persons SET pers_famc='" . $famDb->fam_gedcomnumber . "'
                             WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                     echo '<tr><td><b>Missing parent connection</b></td>';
                     echo '<td>Child gedcomnr: ' . $children[$i] . '</td>';
                     echo '<td>Missing parent gedcomnr: ' . $famDb->fam_gedcomnumber . '. <b>Is restored.</b></td></tr>';
@@ -221,7 +221,7 @@ while ($famDb_start = $fam_result_start->fetch(PDO::FETCH_OBJ)) {
                     }
                     $sql = "UPDATE humo_families SET fam_children='" . $new_children . "'
                             WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
 
                 $wrong_children++;
@@ -253,7 +253,7 @@ while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
         if (!$person) {
             if (isset($_POST['remove'])) {
                 $sql = "DELETE FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_id='" . $connect->connect_id . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             echo '<tr><td><b>Missing person record</b></td>';
@@ -271,7 +271,7 @@ while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
         if (!$fam) {
             if (isset($_POST['remove'])) {
                 $sql = "DELETE FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_id='" . $connect->connect_id . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             echo '<tr><td><b>Missing family record</b></td>';
@@ -301,7 +301,7 @@ while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
         if (!$person) {
             if (isset($_POST['remove'])) {
                 $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_id='" . $connect->event_id . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             echo '<tr><td><b>Missing person record</b></td>';
@@ -320,7 +320,7 @@ while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
         if (!$person) {
             if (isset($_POST['remove'])) {
                 $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_id='" . $connect->event_id . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
 
             echo '<tr><td><b>Missing family record</b></td>';

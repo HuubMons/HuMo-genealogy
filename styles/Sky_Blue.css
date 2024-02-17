@@ -107,11 +107,6 @@ ul.humo_menu_item2 li a {
     color: #6666aa;
 }
 
-div.photobook,
-div.photobooktext {
-    background-color: #e5f0fa;
-}
-
 .search_bar {
     /* background: url("images_sky_blue/blue.png") repeat left top; */
     background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%);

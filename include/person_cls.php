@@ -2631,10 +2631,13 @@ $own_code=0;
                 // *** Show media/ pictures ***
                 $result = show_media('person', $personDb->pers_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
                 $process_text .= $result[0];
-                if (isset($templ_person))
+                if (isset($templ_person)){
                     $templ_person = array_merge((array)$templ_person, (array)$result[1]);
-                else
+                    //$templ_person = array_merge($templ_person, $result[1]);
+                }
+                else{
                     $templ_person = $result[1];
+                }
 
                 // *** Internet links (URL) ***
                 $url_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'URL');
@@ -2642,9 +2645,6 @@ $own_code=0;
                     $process_text .= "<br>\n";
                 }
                 foreach ($url_qry as $urlDb) {
-                    //if ($urlDb->event_text){ $process_text.=$urlDb->event_text.': '; }
-                    //$process_text.='<a href="'.$urlDb->event_event.'" target="_blank">'.$urlDb->event_event.'</a><br>';
-
                     //URL/ Internet link
                     $process_text .= '<b>' . __('URL/ Internet link') . '</b> <a href="' . $urlDb->event_event . '" target="_blank">' . $urlDb->event_event . '</a>';
                     if ($urlDb->event_text) {

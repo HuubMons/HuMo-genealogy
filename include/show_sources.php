@@ -279,8 +279,7 @@ function show_sources_footnotes()
         $text .= '<h3>' . __('Sources') . "</h3>\n";
 
         for ($j = 0; $j <= (count($source_footnote_connect_id) - 1); $j++) {
-            $connect_qry = "SELECT * FROM humo_connections
-                WHERE connect_id='" . $source_footnote_connect_id[$j] . "'";
+            $connect_qry = "SELECT * FROM humo_connections WHERE connect_id='" . $source_footnote_connect_id[$j] . "'";
             $connect_sql = $dbh->query($connect_qry);
             $connectDb = $connect_sql->fetch(PDO::FETCH_OBJ);
             // *** Show shared source data ***
@@ -294,7 +293,7 @@ function show_sources_footnotes()
                     if ($humo_option["url_rewrite"] == "j") {
                         $url = $uri_path . 'source/' . $tree_id . '/' . $sourceDb->source_gedcomnr;
                     } else {
-                        $url = $uri_path . 'source.php?tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
+                        $url = $uri_path . 'index.php?page=source&amp;tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
                     }
                     $text .= ' <a href="' . $url . '">' . __('source') . ': ';
                     if ($sourceDb->source_title) {

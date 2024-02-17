@@ -61,8 +61,8 @@ $quicksearch_place=''; if (isset($_POST['search_quicksearch_place'])){
     $quicksearch_place=safe_text_db($_POST['search_quicksearch_place']);
 }
 echo '<form method="POST" action="index.php?page=editor_place_select'.$url_add.'" style="display : inline;">';
-    echo '<input class="fonts" type="text" name="search_quicksearch_place" placeholder="'.__('Name').'" value="'.$quicksearch_place.'" size="15">';
-    echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
+    echo '<input type="text" name="search_quicksearch_place" placeholder="'.__('Name').'" value="'.$quicksearch_place.'" size="15">';
+    echo ' <input type="submit" value="'.__('Search').'">';
 echo '</form><br>';
 
 $search='_%'; if ($quicksearch_place) $search='%'.$quicksearch_place.'%';

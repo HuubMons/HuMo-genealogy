@@ -592,7 +592,7 @@ $menu_top = getActiveTopMenu($page);
 
                                     <?php if ($user["group_googlemaps"] == 'j') {; ?>
                                         <?php if (!$bot_visit and $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) { ?>
-                                            <li><a class="dropdown-item <?php if ($page == 'maps    ') echo 'active'; ?>" href="<?= $menu_path_map; ?>"><?= __('World map'); ?></a></li>
+                                            <li><a class="dropdown-item <?php if ($page == 'maps') echo 'active'; ?>" href="<?= $menu_path_map; ?>"><?= __('World map'); ?></a></li>
                                         <?php } ?>
                                     <?php } ?>
 

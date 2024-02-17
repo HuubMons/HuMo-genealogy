@@ -275,10 +275,10 @@ class PDF extends tFPDF
                         $pdf->SetTextColor(28, 28, 255);
 
                         /*
-					$pdf->SetLeftMargin($child_indent);
-					$pdf->SetFont('Times','',$font_size);
-					$pdf->SetTextColor(28,28,255);
-					*/
+                        $pdf->SetLeftMargin($child_indent);
+                        $pdf->SetFont('Times','',$font_size);
+                        $pdf->SetTextColor(28,28,255);
+                        */
                         $this->PDFShowSources($value);
                         $pdf->SetLeftMargin($indent);
                     } else {
@@ -326,10 +326,10 @@ class PDF extends tFPDF
                     // source link with ancestor
                     elseif (strpos($key, "source") !== false and $value != '') {   // make source link to end of document
                         /*
-					$pdf->SetLeftMargin(38);
-					$pdf->SetFont('Times','',$font_size);
-					$pdf->SetTextColor(28,28,255);
-					*/
+                        $pdf->SetLeftMargin(38);
+                        $pdf->SetFont('Times','',$font_size);
+                        $pdf->SetTextColor(28,28,255);
+                        */
                         $this->PDFShowSources($value);
 
                         //$pdf->SetTextColor(0);
@@ -435,16 +435,24 @@ class PDF extends tFPDF
                 $pdf->SetLeftMargin(38);
             }
 
-            if (!$samw and strpos($key, "marriage") !== false) {            // Living together
+            //if (!$samw and strpos($key, "marriage") !== false) {            // Living together
+            //    // Example: $pdf->show_text($text,'B',$font_size);
+            //    if (isset($templ_relation["marriage_exist"]))
+            //        $this->show_text($templ_relation["marriage_exist"], 'B', '');
+            //    $samw = 1;
+            //}
+            if (!$samw and strpos($key, "cohabit") !== false) {            // Living together
                 // Example: $pdf->show_text($text,'B',$font_size);
-                if (isset($templ_relation["marriage_exist"]))
-                    $this->show_text($templ_relation["marriage_exist"], 'B', '');
+                if (isset($templ_relation["cohabit_exist"])) {
+                    $this->show_text($templ_relation["cohabit_exist"], 'B', '');
+                }
                 $samw = 1;
             }
             if (!$prew and strpos($key, "prew") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);
-                if (isset($templ_relation["prew_exist"]))
+                if (isset($templ_relation["prew_exist"])) {
                     $this->show_text($templ_relation["prew_exist"], 'B', '');
+                }
                 $prew = 1;
             }
             if (!$wedd and strpos($key, "wedd") !== false) {
@@ -474,7 +482,6 @@ class PDF extends tFPDF
             // *** Show text: "Residences (family): " ***
             //if(strpos($key,"address_start")!==false) {
             if (!$address and strpos($key, "address") !== false) {
-
                 // For now: just add newline.
                 $pdf->Ln(4);
 

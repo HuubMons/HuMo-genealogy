@@ -496,7 +496,7 @@ $link .= "main_person=" . $data["main_person"];
     <?php if ($data["descendant_report"] == true) { ?>
         <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
     <?php } ?>
-    <input class="fonts" type="Submit" name="submit" value="<?= __('Back'); ?>">
+    <input type="Submit" name="submit" value="<?= __('Back'); ?>">
 </form>
 
 <?php

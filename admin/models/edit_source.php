@@ -29,11 +29,8 @@ class EditSourceModel
 
     public function update_source($dbh, $tree_id, $db_functions, $editor_cls)
     {
-        //$userid = false;
-        //if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
-        $username = $_SESSION['user_name_admin'];
-        $gedcom_date = strtoupper(date("d M Y"));
-        $gedcom_time = date("H:i:s");
+        $userid = false;
+        if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
 
         if (isset($_POST['source_add'])) {
             // *** Generate new GEDCOM number ***
@@ -56,9 +53,7 @@ class EditSourceModel
                 source_repo_page='" . safe_text_db($_POST['source_repo_page']) . "',
                 source_repo_gedcomnr='" . $editor_cls->text_process($_POST['source_repo_gedcomnr']) . "',
                 source_text='" . $editor_cls->text_process($_POST['source_text']) . "',
-                source_new_user='" . $username . "',
-                source_new_date='" . $gedcom_date . "',
-                source_new_time='" . $gedcom_time . "'";
+                source_new_user_id='" . $userid . "'";
             $dbh->query($sql);
 
             $this->source_id = $dbh->lastInsertId();
@@ -81,9 +76,7 @@ class EditSourceModel
             source_repo_page='" . $editor_cls->text_process($_POST['source_repo_page']) . "',
             source_repo_gedcomnr='" . $editor_cls->text_process($_POST['source_repo_gedcomnr']) . "',
             source_text='" . $editor_cls->text_process($_POST['source_text'], true) . "',
-            source_changed_user='" . $username . "',
-            source_changed_date='" . $gedcom_date . "',
-            source_changed_time='" . $gedcom_time . "'
+            source_changed_user_id='" . $userid . "'
             WHERE source_tree_id='" . $tree_id . "' AND source_id='" . $this->source_id . "'";
             $dbh->query($sql);
         }

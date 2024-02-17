@@ -822,9 +822,9 @@ div.phototext {
 
 /* Photobook */
 div.photobook {
-    background-color: #FAF1EB;
-    margin: 2px;
-    border: 1px solid #0000ff;
+    /* background-color: #FAF1EB; */
+    margin: 4px;
+    border: 1px solid #aeaeb1;
     height: 190px;
     width: 200px;
     float: left;

@@ -5,7 +5,7 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 {
     global $dbh, $db_functions, $user, $uri_path;
     global $temp, $templ_person, $templ_relation; // *** PDF export ***
-    global $tree_id;
+    global $tree_id, $humo_option;
 
     $text = '';
     $address_nr = 0;
@@ -21,14 +21,18 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
             //}
             if ($nr_addresses == '1') {
                 $residence = ucfirst(__('residence'));
-                if ($connect_kind == 'person') $templ_person["address_start"] = ucfirst(__('residence')) . ': ';
+                if ($connect_kind == 'person') {
+                    $templ_person["address_start"] = ucfirst(__('residence')) . ': ';
+                }
                 if ($connect_kind == 'family') {
                     $templ_relation["address_start"] = __('Residence (family)') . ': ';
                     $residence = __('Residence (family)');
                 }
             } else {
                 $residence = ucfirst(__('residences'));
-                if ($connect_kind == 'person') $templ_person["address_start"] = ucfirst(__('residences')) . ': ';
+                if ($connect_kind == 'person') {
+                    $templ_person["address_start"] = ucfirst(__('residences')) . ': ';
+                }
                 if ($connect_kind == 'family') {
                     $templ_relation["address_start"] = __('Residences (family)') . ': ';
                     $residence = __('Residence (family)');
@@ -59,12 +63,10 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
             //$text .= '<a href="' . $uri_path . 'address.php?gedcomnumber=' . $connectDb->connect_item_id . '">';
             //$text .= '<a href="' . $uri_path . 'address.php?id=' . $connectDb->connect_item_id . '">';
 
-//TODO check this link and global.
-            global $humo_option;
             if ($humo_option["url_rewrite"] == "j") {
-                $text .= '<a href="' . $uri_path . 'address/' . $tree_id.'/'.$connectDb->connect_item_id . '">';
+                $text .= '<a href="' . $uri_path . 'address/' . $tree_id . '/' . $connectDb->connect_item_id . '">';
             } else {
-                $text .= '<a href="' . $uri_path . 'address.php?id=' . $connectDb->connect_item_id . '">';
+                $text .= '<a href="' . $uri_path . 'index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $connectDb->connect_item_id . '">';
             }
         }
 
@@ -109,14 +111,18 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
         $text .= $connectDb->address_place;
         // *** PDF export ***
         if ($connect_kind == 'person') {
-            if (isset($templ_person["address_address" . $address_nr]))
+            if (isset($templ_person["address_address" . $address_nr])) {
                 $templ_person["address_address" . $address_nr] .= ' ' . $connectDb->address_place;
-            else
+            } else {
                 $templ_person["address_address" . $address_nr] = $connectDb->address_place;
+            }
             // *** Add date ***
-            if ($connectDb->connect_date)
+            if ($connectDb->connect_date) {
                 $templ_person["address_address" . $address_nr] .= ' (' . date_place($connectDb->connect_date, '') . ')';
-            if ($templ_person["address_address" . $address_nr] != '') $temp = "address_address" . $address_nr;
+            }
+            if ($templ_person["address_address" . $address_nr] != '') {
+                $temp = "address_address" . $address_nr;
+            }
         }
         if ($connect_kind == 'family') {
             if (isset($templ_relation["address_address" . $address_nr]))
@@ -201,11 +207,14 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
                     if ($templ_person["address_text" . $address_nr] != '') $temp = "address_text" . $address_nr;
                 }
                 if ($connect_kind == 'family') {
-                    if (isset($templ_relation["address_text" . $address_nr]))
+                    if (isset($templ_relation["address_text" . $address_nr])) {
                         $templ_relation["address_text" . $address_nr] .= ', ' . $connectDb->connect_text;
-                    else
+                    } else {
                         $templ_relation["address_text" . $address_nr] = ' ' . $connectDb->connect_text;
-                    if ($templ_relation["address_text" . $address_nr] != '') $temp = "address_text" . $address_nr;
+                    }
+                    if ($templ_relation["address_text" . $address_nr] != '') {
+                        $temp = "address_text" . $address_nr;
+                    }
                 }
 
                 $text .= ' ' . $work_text;
