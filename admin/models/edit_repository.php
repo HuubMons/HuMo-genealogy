@@ -16,11 +16,8 @@ class EditorRepositoryModel
 
     public function update_repository($dbh, $tree_id, $db_functions, $editor_cls)
     {
-        //$userid = false;
-        //if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
-        $username = $_SESSION['user_name_admin'];
-        $gedcom_date = strtoupper(date("d M Y"));
-        $gedcom_time = date("H:i:s");
+        $userid = false;
+        if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
 
         if (isset($_POST['repo_add'])) {
             // *** Generate new GEDCOM number ***
@@ -38,9 +35,7 @@ class EditorRepositoryModel
                 repo_text='" . $editor_cls->text_process($_POST['repo_text']) . "',
                 repo_mail='" . safe_text_db($_POST['repo_mail']) . "',
                 repo_url='" . safe_text_db($_POST['repo_url']) . "',
-                repo_new_user='" . $username . "',
-                repo_new_date='" . $gedcom_date . "',
-                repo_new_time='" . $gedcom_time . "'";
+                repo_new_user_id='" . $userid . "'";
             $dbh->query($sql);
 
             $this->repo_id = $dbh->lastInsertId();
@@ -57,9 +52,7 @@ class EditorRepositoryModel
                 repo_text='" . $editor_cls->text_process($_POST['repo_text']) . "',
                 repo_mail='" . safe_text_db($_POST['repo_mail']) . "',
                 repo_url='" . safe_text_db($_POST['repo_url']) . "',
-                repo_changed_user='" . $username . "',
-                repo_changed_date='" . $gedcom_date . "',
-                repo_changed_time='" . $gedcom_time . "'
+                repo_changed_user_id='" . $userid . "'
                 WHERE repo_id='" . $this->repo_id . "'";
             $dbh->query($sql);
         }

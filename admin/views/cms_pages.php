@@ -95,7 +95,7 @@ if (isset($_GET['cms_item']) and $_GET['cms_item'] == 'settings') {
             $_GET["select_page"] = safe_text_db($_POST['page_id']);
         }
 
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         if (isset($_POST['add_page'])) {
             $sql = "SELECT * FROM humo_cms_pages ORDER BY page_id DESC LIMIT 0,1";
@@ -111,7 +111,7 @@ if (isset($_GET['cms_item']) and $_GET['cms_item'] == 'settings') {
         SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
         WHERE table1.page_id='" . $_GET['page_up'] . "' AND table2.page_id='" . $_GET['select_page'] . "'";
         //echo $sql;
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
     // *** Page up, only allow numeric values ***
     if (isset($_GET['page_down']) and is_numeric($_GET['page_down']) and is_numeric($_GET['menu_id'])) {
@@ -120,7 +120,7 @@ if (isset($_GET['cms_item']) and $_GET['cms_item'] == 'settings') {
         WHERE table1.page_order='" . safe_text_db($_GET['page_down']) . "' AND table1.page_menu_id='" . $_GET['menu_id'] . "'
         AND table2.page_order='" . safe_text_db($_GET['page_down'] + 1) . "'  AND table2.page_menu_id='" . $_GET['menu_id'] . "'";
         //echo $sql;
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
 
     // *** Remove page, only allow numeric values ***
@@ -145,7 +145,7 @@ if (isset($_GET['cms_item']) and $_GET['cms_item'] == 'settings') {
     // *** Only allow numeric values ***
     if (isset($_POST['page_remove2']) and is_numeric($_POST['page_id'])) {
         $sql = "DELETE FROM humo_cms_pages WHERE page_id='" . $_POST['page_id'] . "'";
-        @$result = $dbh->query($sql);
+        @$dbh->query($sql);
     }
 
 
@@ -169,20 +169,20 @@ if (isset($_GET['cms_item']) and $_GET['cms_item'] == 'settings') {
             $sql .= "WHERE menu_id='" . safe_text_db($_POST['menu_id']) . "'";
         }
 
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
 
     if (isset($_GET['menu_up'])) {
         $sql = "UPDATE humo_cms_menu as table1, humo_cms_menu as table2
             SET table1.menu_order=table2.menu_order, table2.menu_order=table1.menu_order
             WHERE table1.menu_order='" . safe_text_db($_GET['menu_up']) . "' AND table2.menu_order='" . safe_text_db($_GET['menu_up'] - 1) . "'";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
     if (isset($_GET['menu_down'])) {
         $sql = "UPDATE humo_cms_menu as table1, humo_cms_menu as table2
             SET table1.menu_order=table2.menu_order, table2.menu_order=table1.menu_order
             WHERE table1.menu_order='" . safe_text_db($_GET['menu_down']) . "' AND table2.menu_order='" . safe_text_db($_GET['menu_down'] + 1) . "'";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
     }
 
     if (isset($_GET['menu_remove'])) {
@@ -210,14 +210,14 @@ Please disconnect the pages from this menu first.'); ?></strong>
     }
     if (isset($_POST['menu_remove2'])) {
         $sql = "DELETE FROM humo_cms_menu WHERE menu_id='" . safe_text_db($_POST['menu_id']) . "'";
-        @$result = $dbh->query($sql);
+        @$dbh->query($sql);
 
         // *** Re-order menu's ***
         $repair_order = 1;
         $item = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
         while ($itemDb = $item->fetch(PDO::FETCH_OBJ)) {
             $sql = "UPDATE humo_cms_menu SET menu_order='" . $repair_order . "' WHERE menu_id=" . $itemDb->menu_id;
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
             $repair_order++;
         }
     }
@@ -249,7 +249,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                 $sql = "UPDATE humo_cms_pages
                     SET page_order='" . $page_nr . "'
                     WHERE page_id='" . $cms_pagesDb->page_id . "'";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
         }
     ?>
@@ -453,7 +453,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
         // *** Automatic installation or update ***
         if (!isset($humo_option["cms_images_path"])) {
             $sql = "INSERT INTO humo_settings SET setting_variable='cms_images_path', setting_value='|'";
-            @$result = $dbh->query($sql);
+            @$dbh->query($sql);
             $cms_images_path = '|';
         } else {
             $cms_images_path = $humo_option["cms_images_path"];
@@ -462,7 +462,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
         // *** Automatic installation or update ***
         if (!isset($humo_option["main_page_cms_id"])) {
             $sql = "INSERT INTO humo_settings SET setting_variable='main_page_cms_id', setting_value=''";
-            @$result = $dbh->query($sql);
+            @$dbh->query($sql);
             $main_page_cms_id = '';
         } else {
             $main_page_cms_id = $humo_option["main_page_cms_id"];
@@ -477,7 +477,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
             }
 
             // *** Save settings***
-            $result = $db_functions->update_settings('cms_images_path', $cms_images_path);
+            $db_functions->update_settings('cms_images_path', $cms_images_path);
 
             //$humo_option["cms_images_path"]=$_POST["cms_images_path"];
             //$cms_images_path=$humo_option["cms_images_path"];
@@ -487,7 +487,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
 
         if (isset($_POST['main_page_cms_id'])) {
             // *** Save settings***
-            $result = $db_functions->update_settings('main_page_cms_id', $_POST["main_page_cms_id"]);
+            $db_functions->update_settings('main_page_cms_id', $_POST["main_page_cms_id"]);
 
             $humo_option["main_page_cms_id"] = $_POST["main_page_cms_id"];
             $main_page_cms_id = $humo_option["main_page_cms_id"];
@@ -507,7 +507,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                         $dbh->query("INSERT INTO humo_settings SET setting_variable='main_page_cms_id_" . $language_file[$i] . "', setting_value='" . $_POST['main_page_cms_id_' . $language_file[$i]] . "'");
                     } else {
                         // *** Save settings***
-                        $result = $db_functions->update_settings('main_page_cms_id_' . $language_file[$i], $_POST['main_page_cms_id_' . $language_file[$i]]);
+                        $db_functions->update_settings('main_page_cms_id_' . $language_file[$i], $_POST['main_page_cms_id_' . $language_file[$i]]);
                     }
                 }
             }

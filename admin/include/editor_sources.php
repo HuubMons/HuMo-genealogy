@@ -366,9 +366,9 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                         }
 
                         echo '<h3>' . __('Search existing source') . '</h3>';
-                        echo '<input type="text" class="fonts" name="source_search_gedcomnr" value="' . $source_search_gedcomnr . '" size="20" placeholder="' . __('gedcomnumber (ID)') . '">';
-                        echo ' <input type="text" class="fonts" name="source_search" value="' . $source_search . '" size="20" placeholder="' . __('text') . '">';
-                        echo ' <input class="fonts" type="submit" value="' . __('Search') . '"><br>';
+                        echo '<input type="text" name="source_search_gedcomnr" value="' . $source_search_gedcomnr . '" size="20" placeholder="' . __('gedcomnumber (ID)') . '">';
+                        echo ' <input type="text" name="source_search" value="' . $source_search . '" size="20" placeholder="' . __('text') . '">';
+                        echo ' <input type="submit" value="' . __('Search') . '"><br>';
 
                         // *** Source: pull-down menu ***
                         // TODO only get necesary items

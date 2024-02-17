@@ -44,9 +44,7 @@ if (isset($_GET['menu_admin'])) {
                 <th><?= __('IP address'); ?></th>
                 <th><?= __('Status'); ?></th>
             </tr>
-            <?php
-            while ($logbookDb = $logbook->fetch(PDO::FETCH_OBJ)) {
-            ?>
+            <?php while ($logbookDb = $logbook->fetch(PDO::FETCH_OBJ)) { ?>
                 <tr>
                     <td><?= $logbookDb->log_date; ?></td>
                     <td><?= $logbookDb->log_username; ?></td>
@@ -54,9 +52,7 @@ if (isset($_GET['menu_admin'])) {
                     <td><?= $logbookDb->log_ip_address; ?></td>
                     <td><?= $logbookDb->log_status; ?></td>
                 </tr>
-            <?php
-            }
-            ?>
+            <?php } ?>
         </table>
     <?php
     }
@@ -178,7 +174,5 @@ if (isset($_GET['menu_admin'])) {
                 ?>
             </table>
         </form>
-    <?php
-    }
-    ?>
+    <?php } ?>
 </div>

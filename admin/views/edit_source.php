@@ -15,6 +15,8 @@ if (!defined('ADMIN_PAGE')) {
 include_once(__DIR__ . "/../include/editor_cls.php");
 $editor_cls = new editor_cls;
 
+include_once(__DIR__ . "/../include/select_tree.php");
+
 // *** Process queries (needed for picture ordering and delete) ***
 $phpself = 'index.php';
 include_once(__DIR__ . "/../include/editor_inc.php");
@@ -33,8 +35,6 @@ $field_text_large = 'style="height: 100px; width:550px"';
 
 include(__DIR__ . '/../include/editor_event_cls.php');
 $event_cls = new editor_event_cls;
-
-$new_tree = false;
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) and $tree_id) {
@@ -66,29 +66,29 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
     </div>
 <?php }; ?>
 
-<form method="POST" action="<?= $phpself; ?>" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+<div class="p-3 m-2 genealogy_search">
+    <div class="row">
 
-    <div class="p-3 m-2 genealogy_search">
-        <div class="row">
+        <div class="col-auto">
+            <label for="tree" class="col-form-label">
+                <?= __('Family tree'); ?>:
+            </label>
+        </div>
 
-            <div class="col-auto">
-                <label for="tree" class="col-form-label">
-                    <?= __('Family tree'); ?>:
-                </label>
-            </div>
+        <div class="col-2">
+            <?= select_tree($dbh, $page, $tree_id); ?>
+        </div>
 
-            <div class="col-2">
-                <?php $editor_cls->select_tree($page); ?>
-            </div>
+        <div class="col-auto">
+            <label for="tree" class="col-form-label">
+                <?= __('Select source'); ?>:
+            </label>
+        </div>
 
-            <div class="col-auto">
-                <label for="tree" class="col-form-label">
-                    <?= __('Select source'); ?>:
-                </label>
-            </div>
+        <div class="col-4">
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
 
-            <div class="col-4">
                 <select size="1" name="source_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <!-- For new source in new database... -->
                     <option value=""><?= __('Select source'); ?></option>
@@ -116,15 +116,18 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
                         <option value="<?= $sourceDb->source_id; ?>" <?= $selected; ?>><?= $show_text; ?> [<?= @$sourceDb->source_gedcomnr . $restricted; ?>]</option>
                     <?php } ?>
                 </select>
-            </div>
+            </form>
+        </div>
 
-            <div class="col-auto">
-                <?= __('or'); ?>:
+        <div class="col-auto">
+            <?= __('or'); ?>:
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="submit" name="add_source" value="<?= __('Add source'); ?>" class="btn btn-sm btn-secondary">
-            </div>
+            </form>
         </div>
     </div>
-</form>
+</div>
 
 <?php
 // *** Show selected source ***
@@ -189,7 +192,7 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
             <tr>
                 <td><?= __('Status:'); ?></td>
                 <td colspan="3">
-                    <select class="fonts" size="1" name="source_status">
+                    <select size="1" name="source_status">
                         <option value="publish" <?php if ($source_status == 'publish') echo ' selected'; ?>><?= __('publish'); ?></option>
                         <option value="restricted" <?php if ($source_status == 'restricted') echo ' selected'; ?>><?= __('restricted'); ?></option>
                     </select> <?= __('restricted = only visible for selected user groups'); ?>

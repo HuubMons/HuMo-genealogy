@@ -11,8 +11,8 @@ if (isset($_POST['enable_update_check_change'])) {
         $update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
     }
 
-    $result = $db_functions->update_settings('update_text', $update_text);
-    $result = $db_functions->update_settings('update_last_check', $update_last_check);
+    $db_functions->update_settings('update_text', $update_text);
+    $db_functions->update_settings('update_last_check', $update_last_check);
 
     $humo_option['update_last_check'] = $update_last_check;
     //$humo_option['update_text']=$update_text;
@@ -26,7 +26,7 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
     // *** Manual check for update ***
     if (isset($_GET['update_check']) and $humo_option['update_last_check'] != 'DISABLED') {
         // *** Update settings ***
-        $result = $db_functions->update_settings('update_last_check', '2012-01-01');
+        $db_functions->update_settings('update_last_check', '2012-01-01');
         $humo_option['update_last_check'] = '2012-01-01';
     }
 
@@ -299,7 +299,7 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
 
             // *** Update settings ***
             $update_last_check = date("Y-m-d");
-            $result = $db_functions->update_settings('update_last_check', $update_last_check);
+            $db_functions->update_settings('update_last_check', $update_last_check);
 
             // *** Remove temporary file, used for curl method ***
             //if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
@@ -315,10 +315,10 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
 
             // *** Update settings, only check for update once a day ***
             $update_last_check = date("Y-m-d");
-            $result = $db_functions->update_settings('update_last_check', $update_last_check);
+            $db_functions->update_settings('update_last_check', $update_last_check);
         }
 
-        $result = $db_functions->update_settings('update_text', $update_text);
+        $db_functions->update_settings('update_text', $update_text);
 
         $update_text .= ' *';
 

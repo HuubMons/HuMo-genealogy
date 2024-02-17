@@ -129,9 +129,8 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
             if ($pers_cal_date == '') echo '<b>' . __('No dates') . '</b>';
             echo '<br>';
 
-            $sql = "UPDATE humo_persons SET pers_cal_date='" . $pers_cal_date . "'
-                WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $person_db->pers_id . "'";
-            $result = $dbh->query($sql);
+            $sql = "UPDATE humo_persons SET pers_cal_date='" . $pers_cal_date . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $person_db->pers_id . "'";
+            $dbh->query($sql);
         }
         echo '<b>' . __('Calculation of birth dates is completed. Sometimes more dates will be found if calculation is restarted!') . '</b>';
 

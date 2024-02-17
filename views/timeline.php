@@ -92,7 +92,7 @@ $path = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, fals
         <td>
             <form name="tmlstep" method="post" action="<?= $path; ?>" style="display:inline;">
                 <!-- Help popup -->
-                <div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline">
+                <div class="<?= $rtlmarker; ?>sddm" style="display:inline">
                     <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',10,150)" onmouseout="mclosetime()">
                         <strong><?= __('Help'); ?></strong>
                     </a>

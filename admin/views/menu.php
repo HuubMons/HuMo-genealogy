@@ -78,12 +78,12 @@ if ($popup == false) {
 
                         <!-- Family trees -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle <?php if ($page == 'tree' || $page == 'thumbs' || $page == 'user_notes' || $page == 'check' || $page == 'latest_changes' || $page == 'cal_date' || $page == 'export' || $page == 'backup' || $page == 'statistics') echo 'active'; ?>" href="<?= $path_tmp; ?>page=tree" data-bs-toggle="dropdown"><?= __('Family trees'); ?></a>
+                            <a class="nav-link dropdown-toggle <?php if ($page == 'tree' || $page == 'thumbs' || $page == 'notes' || $page == 'check' || $page == 'latest_changes' || $page == 'cal_date' || $page == 'export' || $page == 'backup' || $page == 'statistics') echo 'active'; ?>" href="<?= $path_tmp; ?>page=tree" data-bs-toggle="dropdown"><?= __('Family trees'); ?></a>
 
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item <?php if ($page == 'tree') echo 'active'; ?>" href="<?= $path_tmp; ?>page=tree"><?= __('Family trees'); ?></a></li>
                                 <li><a class="dropdown-item <?php if ($page == 'thumbs') echo 'active'; ?>" href="<?= $path_tmp; ?>page=thumbs"><?= __('Pictures/ create thumbnails'); ?></a></li>
-                                <li><a class="dropdown-item <?php if ($page == 'user_notes') echo 'active'; ?>" href="<?= $path_tmp; ?>page=user_notes"><?= __('Notes'); ?></a></li>
+                                <li><a class="dropdown-item <?php if ($page == 'notes') echo 'active'; ?>" href="<?= $path_tmp; ?>page=notes"><?= __('Notes'); ?></a></li>
                                 <li><a class="dropdown-item <?php if ($page == 'check') echo 'active'; ?>" href="<?= $path_tmp; ?>page=check"><?= __('Family tree data check'); ?></a></li>
                                 <li><a class="dropdown-item <?php if ($page == 'latest_changes') echo 'active'; ?>" href="<?= $path_tmp; ?>page=check&amp;tab=changes"><?= __('View latest changes'); ?></a></li>
                                 <li><a class="dropdown-item <?php if ($page == 'cal_date') echo 'active'; ?>" href="<?= $path_tmp; ?>page=cal_date"><?= __('Calculated birth date'); ?></a></li>

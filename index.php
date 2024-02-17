@@ -402,8 +402,9 @@ if (isset($_POST["hoofdpersoon"])) {
 // REQUEST_URI: /url_test/index.php?variabele=1
 $base_href = '';
 if ($humo_option["url_rewrite"] == "j" and $tmp_path) {
-    // *** url_rewrite ***
-    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+    // *** url_rewrite. 26 jan. 2024 Ron: Added proxy check ***
+    //if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+    if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
         $uri_path = 'https://' . $_SERVER['SERVER_NAME'] . $tmp_path;
     } else {
         $uri_path = 'http://' . $_SERVER['SERVER_NAME'] . $tmp_path;

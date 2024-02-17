@@ -15,8 +15,8 @@ if (isset($_POST['save_language'])) {
         $message = 'ERROR: FAULT IN SAVE PROCESS';
     }
 }
-
 ?>
+
 <h1 align=center><?= __('Prefix editor'); ?></h1>
 
 <?= __('These prefixes are used to process name-prefixes if a GEDCOM file is read.'); ?><br><br>

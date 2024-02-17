@@ -591,14 +591,14 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 $search_indi = $_SESSION['search_indi'];
             }
 
-            echo ' <input type="text" class="fonts relboxes" name="search_firstname" value="' . $search_firstname . '" size="15"> ';
+            echo ' <input type="text" class="relboxes" name="search_firstname" value="' . $search_firstname . '" size="15"> ';
             echo '</td><td>';
 
-            echo '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="' . $search_lastname . '" size="15">';
+            echo '&nbsp; <input class="relboxes" type="text" name="search_lastname" value="' . $search_lastname . '" size="15">';
             echo '</td><td>';
-            echo ' <input type="text" class="fonts relboxes" name="search_indi" value="' . $search_indi . '" size="10"> ';
+            echo ' <input type="text" class="relboxes" name="search_indi" value="' . $search_indi . '" size="10"> ';
             echo '</td><td>';
-            echo '&nbsp; <input class="fonts" type="submit" name="search1" value="' . __('Search') . '">';
+            echo '&nbsp; <input type="submit" name="search1" value="' . __('Search') . '">';
             echo '</td><td>';
 
             $len = 230;  // length of name pulldown box
@@ -617,7 +617,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 $search_result = $dbh->query($search_qry);
                 if ($search_result) {
                     if ($search_result->rowCount() > 0) {
-                        echo '<select class="fonts" size="1" name="left"  style="width:' . $len . 'px">';
+                        echo '<select size="1" name="left"  style="width:' . $len . 'px">';
                         while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
                             $name = $pers_cls->person_name($searchDb);
                             if ($name["show_name"]) {
@@ -675,13 +675,13 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 $search_indi2 = $_SESSION['search_indi2'];
             }
 
-            echo ' <input type="text" class="fonts relboxes" name="search_firstname2" value="' . $search_firstname2 . '" size="15"> ';
+            echo ' <input type="text" class="relboxes" name="search_firstname2" value="' . $search_firstname2 . '" size="15"> ';
             echo '</td><td>';
-            echo '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="' . $search_lastname2 . '" size="15">';
+            echo '&nbsp; <input class="relboxes" type="text" name="search_lastname2" value="' . $search_lastname2 . '" size="15">';
             echo '</td><td>';
-            echo ' <input type="text" class="fonts relboxes" name="search_indi2" value="' . $search_indi2 . '" size="10"> ';
+            echo ' <input type="text" class="relboxes" name="search_indi2" value="' . $search_indi2 . '" size="10"> ';
             echo '</td><td>';
-            echo '&nbsp; <input class="fonts" type="submit" name="search2" value="' . __('Search') . '">';
+            echo '&nbsp; <input type="submit" name="search2" value="' . __('Search') . '">';
             echo '</td><td>';
 
             if (isset($_SESSION["search2"]) and $_SESSION["search2"] == 1) {
@@ -698,7 +698,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
                 $search_result2 = $dbh->query($search_qry);
                 if ($search_result2) {
                     if ($search_result2->rowCount() > 0) {
-                        echo '<select class="fonts" size="1" name="right" style="width:' . $len . 'px">';
+                        echo '<select size="1" name="right" style="width:' . $len . 'px">';
                         while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
                             $name = $pers_cls->person_name($searchDb2);
                             if ($name["show_name"]) {

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-12 19:53+0100\n"
-"PO-Revision-Date: 2024-01-12 19:53+0100\n"
+"PO-Revision-Date: 2024-02-16 16:12+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -3590,7 +3590,7 @@ msgid ""
 "A shared address is only supported by the Haza-data and HuMo-genealogy "
 "programs."
 msgstr ""
-"Een gedeeld adres wordt alleen ondersteunt door de Haza-data en HuMo-"
+"Een gedeeld adres wordt alleen ondersteund door de Haza-data en HuMo-"
 "genealogy programma's."
 
 #: admin/views/editor.php:1593 admin/views/settings_homepage.php:212
@@ -8612,7 +8612,7 @@ msgstr "Woonplaats (gezin)"
 
 #: include/show_addresses.php:30 include/show_addresses.php:31
 msgid "residences"
-msgstr "woonplaats"
+msgstr "woonplaatsen"
 
 #: include/show_addresses.php:33
 msgid "Residences (family)"

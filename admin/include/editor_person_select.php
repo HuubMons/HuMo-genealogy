@@ -106,13 +106,13 @@ $search_quicksearch_man = '';
 if (isset($_POST['search_quicksearch_man'])) {
     $search_quicksearch_man = safe_text_db($_POST['search_quicksearch_man']);
 }
-echo ' <input class="fonts" type="text" name="search_quicksearch_man" placeholder="' . __('Name') . '" value="' . $search_quicksearch_man . '" size="15">';
+echo ' <input type="text" name="search_quicksearch_man" placeholder="' . __('Name') . '" value="' . $search_quicksearch_man . '" size="15">';
 
 $search_man_id = '';
 if (isset($_POST['search_man_id'])) $search_man_id = safe_text_db($_POST['search_man_id']);
-echo __('or ID:') . ' <input class="fonts" type="text" name="search_man_id" value="' . $search_man_id . '" size="5">';
+echo __('or ID:') . ' <input type="text" name="search_man_id" value="' . $search_man_id . '" size="5">';
 
-echo ' <input class="fonts" type="submit" name="submit" value="' . __('Search') . '">';
+echo ' <input type="submit" name="submit" value="' . __('Search') . '">';
 echo '</form><br><br>';
 
 if ($search_quicksearch_man != '') {

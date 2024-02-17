@@ -57,7 +57,7 @@ if (!isset($_GET['proceed'])) {
             // *** Start to save database status in humo_settings table ***
             $humo_option["update_status"] = '0';
             $sql = "INSERT INTO humo_settings SET setting_variable='update_status', setting_value='0'";
-            @$result = $dbh->query($sql);
+            @$dbh->query($sql);
 
             // ***************************************************************
             // *** Update procedure version 4.7 and update_status set to 1 ***
@@ -201,6 +201,15 @@ if (!isset($_GET['proceed'])) {
             echo '<tr><td>HuMo-genealogy update V6.4.1</td><td style="background-color:#00FF00">OK</td></tr>';
         } else {
             $update_cls->update_v6_4_1();
+        }
+
+        // **************************************
+        // *** Update procedure version 6.7.2 ***
+        // **************************************
+        if ($humo_option["update_status"] > '16') {
+            echo '<tr><td>HuMo-genealogy update V6.7.2</td><td style="background-color:#00FF00">OK</td></tr>';
+        } else {
+            $update_cls->update_v6_7_2();
         }
 
         /*	END OF MAIN UPDATE SCRIPT

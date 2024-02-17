@@ -3,6 +3,7 @@
 function date_place($process_date, $process_place, $hebnight = "")
 {
     global $language, $user, $screen_mode, $dirmark1, $humo_option;
+
     $self = $_SERVER['QUERY_STRING'] ?? '';
     $hebdate = '';
     if ($humo_option['admin_hebdate'] == "y") {

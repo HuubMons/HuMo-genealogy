@@ -77,8 +77,8 @@ if (file_exists($array_picture_folder[0])) {
     }
 ?>
     <form method="POST" action="index.php?page=editor_media_select&form=<?= $selected_form . '&event_id=' . $event_id; ?>">
-        <input class="fonts" type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15">
-        <input class="fonts" type="submit" name="submit" value="<?= __('Search'); ?>">
+        <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15">
+        <input type="submit" name="submit" value="<?= __('Search'); ?>">
     </form><br>
 <?php
 

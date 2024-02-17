@@ -15,7 +15,9 @@ class UsersModel
                     if ($_POST[$userDb->user_id . "username"] == "") {
                         $username = 'GEEN NAAM / NO NAME';
                     }
-                    $sql = "UPDATE humo_users SET user_name='" . safe_text_db($username) . "', user_mail='" . safe_text_db($usermail) . "', ";
+                    $sql = "UPDATE humo_users SET
+                        user_name='" . safe_text_db($username) . "',
+                        user_mail='" . safe_text_db($usermail) . "', ";
                     if (isset($_POST[$userDb->user_id . "password"]) and $_POST[$userDb->user_id . "password"]) {
                         $hashToStoreInDb = password_hash($_POST[$userDb->user_id . "password"], PASSWORD_DEFAULT);
                         $sql = $sql . "user_password_salted='" . $hashToStoreInDb . "', user_password='', ";

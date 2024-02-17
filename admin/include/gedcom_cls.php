@@ -2305,15 +2305,15 @@ class gedcom_cls
             }
             if (!isset($field['pers_birth_date_hebnight'])) {
                 $sql = "ALTER TABLE humo_persons ADD pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_birth_date;";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             if (!isset($field['pers_death_date_hebnight'])) {
                 $sql = "ALTER TABLE humo_persons ADD pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_death_date;";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             if (!isset($field['pers_buried_date_hebnight'])) {
                 $sql = "ALTER TABLE humo_persons ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_buried_date;";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             // we have to add these values to the query below
             $heb_qry .= "pers_birth_date_hebnight='" . $pers_birth_date_hebnight . "',
@@ -2367,11 +2367,10 @@ class gedcom_cls
             pers_sexe='" . $pers_sexe . "',
             pers_own_code='" . $this->text_process($person["pers_own_code"]) . "',
             pers_quality='" . $this->text_process($person["pers_quality"]) . "',
-            pers_new_date='" . $this->process_date($this->text_process($person["new_date"])) . "',
-            pers_new_time='" . $person["new_time"] . "',
-            pers_changed_date='" . $this->process_date($this->text_process($person["changed_date"])) . "',
-            pers_changed_time='" . $person["changed_time"] . "'," . $heb_qry . "
-            pers_alive='" . $pers_alive . "'";
+            pers_alive='" . $pers_alive . "',
+            
+            pers_new_datetime = '" . date('Y-m-d H:i:s', strtotime($person["new_date"] . ' ' . $person["new_time"]))  . "'
+            " . $this->changed_datetime('pers_changed_datetime', $person["changed_date"], $person["changed_time"]);
 
         if (isset($_POST['debug_mode']) and $_SESSION['debug_person'] < 2) {
             echo '<br>' . $sql . '<br>';
@@ -2379,7 +2378,7 @@ class gedcom_cls
         }
 
         // *** Process SQL ***
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $pers_id = $dbh->lastInsertId();
 
@@ -2389,7 +2388,7 @@ class gedcom_cls
             tag_pers_id='" . $pers_id . "',
             tag_tree_id='" . $tree_id . "',
             tag_tag='" . $this->text_process($person["pers_unprocessed_tags"]) . "'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         // *** Empty variable to free memory ***
@@ -2400,30 +2399,29 @@ class gedcom_cls
         if ($nrsource > 0) {
             for ($i = 1; $i <= $nrsource; $i++) {
                 $sql = "INSERT IGNORE INTO humo_sources SET
-            source_tree_id='" . $tree_id . "',
-            source_gedcomnr='" . $this->text_process($source["source_gedcomnr"][$i]) . "',
-            source_status='" . $source["source_status"][$i] . "',
-            source_title='" . $this->text_process($source["source_title"][$i]) . "',
-            source_abbr='" . $this->text_process($source["source_abbr"][$i]) . "',
-            source_date='" . $this->process_date($this->text_process($source["source_date"][$i])) . "',
-            source_publ='" . $this->text_process($source["source_publ"][$i]) . "',
-            source_place='" . $this->text_process($source["source_place"][$i]) . "',
-            source_refn='" . $this->text_process($source["source_refn"][$i]) . "',
-            source_auth='" . $this->text_process($source["source_auth"][$i]) . "',
-            source_subj='" . $this->text_process($source["source_subj"][$i]) . "',
-            source_item='" . $this->text_process($source["source_item"][$i]) . "',
-            source_kind='" . $this->text_process($source["source_kind"][$i]) . "',
-            source_text='" . $this->text_process($source["source_text"][$i]) . "',
-            source_repo_name='" . $this->text_process($source["source_repo_name"][$i]) . "',
-            source_repo_caln='" . $this->text_process($source["source_repo_caln"][$i]) . "',
-            source_repo_page='" . $this->text_process($source["source_repo_page"][$i]) . "',
-            source_repo_gedcomnr='" . $this->text_process($source["source_repo_gedcomnr"][$i]) . "',
-            source_new_date='" . $this->process_date($source['new_date'][$i]) . "',
-            source_new_time='" . $source['new_time'][$i] . "',
-            source_changed_date='" . $this->process_date($source['changed_date'][$i]) . "',
-            source_changed_time='" . $source['changed_time'][$i] . "'
-            ";
-                $result = $dbh->query($sql);
+                    source_tree_id='" . $tree_id . "',
+                    source_gedcomnr='" . $this->text_process($source["source_gedcomnr"][$i]) . "',
+                    source_status='" . $source["source_status"][$i] . "',
+                    source_title='" . $this->text_process($source["source_title"][$i]) . "',
+                    source_abbr='" . $this->text_process($source["source_abbr"][$i]) . "',
+                    source_date='" . $this->process_date($this->text_process($source["source_date"][$i])) . "',
+                    source_publ='" . $this->text_process($source["source_publ"][$i]) . "',
+                    source_place='" . $this->text_process($source["source_place"][$i]) . "',
+                    source_refn='" . $this->text_process($source["source_refn"][$i]) . "',
+                    source_auth='" . $this->text_process($source["source_auth"][$i]) . "',
+                    source_subj='" . $this->text_process($source["source_subj"][$i]) . "',
+                    source_item='" . $this->text_process($source["source_item"][$i]) . "',
+                    source_kind='" . $this->text_process($source["source_kind"][$i]) . "',
+                    source_text='" . $this->text_process($source["source_text"][$i]) . "',
+                    source_repo_name='" . $this->text_process($source["source_repo_name"][$i]) . "',
+                    source_repo_caln='" . $this->text_process($source["source_repo_caln"][$i]) . "',
+                    source_repo_page='" . $this->text_process($source["source_repo_page"][$i]) . "',
+                    source_repo_gedcomnr='" . $this->text_process($source["source_repo_gedcomnr"][$i]) . "',
+
+                    source_new_datetime = '" . date('Y-m-d H:i:s', strtotime($source["new_date"][$i] . ' ' . $source["new_time"][$i]))  . "'
+                    " . $this->changed_datetime('source_changed_datetime', $source["changed_date"][$i], $source["changed_time"][$i]);
+
+                $dbh->query($sql);
             }
             //$source_id=$dbh->lastInsertId();
             unset($source);
@@ -2456,7 +2454,7 @@ class gedcom_cls
                 address_date='" . $this->process_date($this->text_process($address_array["date"][$i])) . "',
                 address_text='" . $this->text_process($address_array["text"][$i]) . "'";
                 //echo $gebeurtsql.'<br>';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             unset($address_array);
@@ -2531,7 +2529,7 @@ class gedcom_cls
                 event_date='" . $this->process_date($this->text_process($event['date'][$i])) . "',
                 event_text='" . $this->text_process($event['text'][$i]) . "',
                 event_place='" . $this->text_process($event['place'][$i]) . "'";
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
@@ -2567,7 +2565,7 @@ class gedcom_cls
                 event_date='" . $this->process_date($this->text_process($event2['date'][$i])) . "',
                 event_text='" . $this->text_process($event2['text'][$i]) . "',
                 event_place='" . $this->text_process($event2['place'][$i]) . "'";
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
             //$event2=null;
             unset($event2);
@@ -2628,7 +2626,7 @@ class gedcom_cls
                 ";
 
                 //echo $check_connect.' !! '.$gebeurtsql.'<br>';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
@@ -2708,10 +2706,13 @@ class gedcom_cls
         $family["fam_div_authority"] = "";
         $family["fam_cal_date"] = "";
         $family["fam_unprocessed_tags"] = "";
+
         $family["new_date"] = "";
         $family["new_time"] = "";
+
         $family["changed_date"] = "";
         $family["changed_time"] = "";
+
         $family["fam_marr_date_hebnight"] = "";
         $family["fam_marr_notice_date_hebnight"] = "";
         $family["fam_marr_church_date_hebnight"] = "";
@@ -3132,16 +3133,16 @@ class gedcom_cls
                     // 2 TYPE partners
                     if ($temp_kind == 'partners') {
                         $family["fam_kind"] = 'partners';
-                        $buffer = '1 _LIV';
-                        $level[1] = '_LIV';
+                        //$buffer = '1 _LIV';
+                        //$level[1] = '_LIV';
                     } elseif ($temp_kind == 'registered') {
                         $family["fam_kind"] = 'registered';
-                        $buffer = '1 _LIV';
-                        $level[1] = '_LIV';
+                        //$buffer = '1 _LIV';
+                        //$level[1] = '_LIV';
                     } elseif ($temp_kind == 'unknown') {
                         $family["fam_kind"] = 'unknown';
-                        $buffer = '1 _LIV';
-                        $level[1] = '_LIV';
+                        //$buffer = '1 _LIV';
+                        //$level[1] = '_LIV';
                     }
                 }
             }
@@ -3364,12 +3365,14 @@ class gedcom_cls
                     $this->process_places($family["fam_" . $finrelation . "_place"], $buffer);
                 }
 
-                //TODO check $person["pers_text"]
+                //TODO check these lines.
                 if ($level[2] == 'NOTE') {
-                    $family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], $buffer, '2');
+                    //$family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], $buffer, '2');
+                    $family["fam_relation_text"] = $this->process_texts($family["fam_relation_text"], $buffer, '2');
                 }
                 if ($level[3] == 'NOTE') {
-                    $family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], $buffer, '3');
+                    //$family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], $buffer, '3');
+                    $family["fam_relation_text"] = $this->process_texts($family["fam_relation_text"], $buffer, '3');
                 }
 
                 // ***  Process sources ***
@@ -3864,19 +3867,19 @@ class gedcom_cls
             }
             if (!isset($field['fam_marr_notice_date_hebnight'])) {
                 $sql = "ALTER TABLE humo_families ADD fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_notice_date;";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             if (!isset($field['fam_marr_date_hebnight'])) {
                 $sql = "ALTER TABLE humo_families ADD fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_date;";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             if (!isset($field['fam_marr_church_notice_date_hebnight'])) {
                 $sql = "ALTER TABLE humo_families ADD fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_church_notice_date;";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             if (!isset($field['fam_marr_church_date_hebnight'])) {
                 $sql = "ALTER TABLE humo_families ADD fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_church_date;";
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             // we have to add these values to the query below
             $heb_qry .= "fam_marr_notice_date_hebnight='" . $family["fam_marr_notice_date_hebnight"] . "',fam_marr_date_hebnight='" . $family["fam_marr_date_hebnight"] . "',fam_marr_church_notice_date_hebnight='" . $family["fam_marr_church_notice_date_hebnight"] . "',fam_marr_church_date_hebnight='" . $family["fam_marr_church_date_hebnight"] . "',";
@@ -3915,12 +3918,10 @@ class gedcom_cls
             fam_div_text='" . $this->text_process($family["fam_div_text"]) . "',
             fam_div_authority='" . $this->text_process($family["fam_div_authority"]) . "',
             fam_cal_date='" . $this->process_date($this->text_process($family["fam_cal_date"])) . "',
-            fam_new_date='" . $this->process_date($family["new_date"]) . "',
-            fam_new_time='" . $family["new_time"] . "',
-            fam_changed_date='" . $this->process_date($family["changed_date"]) . "'," . $heb_qry . "
-            fam_changed_time='" . $family["changed_time"] . "'";
 
-        $result = $dbh->query($sql);
+            fam_new_datetime = '" . date('Y-m-d H:i:s', strtotime($family["new_date"] . ' ' . $family["new_time"]))  . "'
+            " . $this->changed_datetime('fam_changed_datetime', $family["changed_date"], $family["changed_time"]);
+        $dbh->query($sql);
 
         $fam_id = $dbh->lastInsertId();
 
@@ -3930,7 +3931,7 @@ class gedcom_cls
             tag_rel_id='" . $fam_id . "',
             tag_tree_id='" . $tree_id . "',
             tag_tag='" . $this->text_process($family["fam_unprocessed_tags"]) . "'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
 
         //echo '!!!!'.$nrsource.'<br>';;
@@ -3956,13 +3957,12 @@ class gedcom_cls
             source_repo_caln='" . $this->text_process($source["source_repo_caln"][$i]) . "',
             source_repo_page='" . $this->text_process($source["source_repo_page"][$i]) . "',
             source_repo_gedcomnr='" . $this->text_process($source["source_repo_gedcomnr"][$i]) . "',
-            source_new_date='" . $this->process_date($source['new_date'][$i]) . "',
-            source_new_time='" . $source['new_time'][$i] . "',
-            source_changed_date='" . $this->process_date($source['changed_date'][$i]) . "',
-            source_changed_time='" . $source['changed_time'][$i] . "'
-            ";
+
+            source_new_datetime = '" . date('Y-m-d H:i:s', strtotime($source['new_date'][$i] . ' ' . $source['new_time'][$i]))  . "'
+            " . $this->changed_datetime('source_changed_datetime', $source['changed_date'][$i], $source['changed_time'][$i]);
+
                 //echo $sql.' FAM<br>';
-                $result = $dbh->query($sql);
+                $dbh->query($sql);
             }
             //$source_id=$dbh->lastInsertId();
             unset($source);
@@ -3986,7 +3986,7 @@ class gedcom_cls
                 address_date='" . $this->process_date($this->text_process($address_array["date"][$i])) . "',
                 address_text='" . $this->text_process($address_array["text"][$i]) . "'";
                 //echo $gebeurtsql.'<br>';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
         }
         // Unprocessed items???
@@ -4064,7 +4064,7 @@ class gedcom_cls
                 event_date='" . $this->process_date($this->text_process($event['date'][$i])) . "',
                 event_text='" . $this->text_process($event['text'][$i]) . "',
                 event_place='" . $this->text_process($event['place'][$i]) . "'";
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
@@ -4110,7 +4110,7 @@ class gedcom_cls
                 connect_place='" . $this->text_process($connect['place'][$i]) . "'
                 ";
                 //echo $check_connect.' !! '.$gebeurtsql.'<br>';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
@@ -4311,13 +4311,11 @@ class gedcom_cls
         text_tree_id='" . $tree_id . "',
         text_gedcomnr='" . $this->text_process($text['text_gedcomnr']) . "',
         text_text='" . $this->text_process($text['text_text']) . "',
-        text_new_date='" . $this->process_date($text['new_date']) . "',
-        text_new_time='" . $text['new_time'] . "',
-        text_changed_date='" . $this->process_date($text['changed_date']) . "',
-        text_changed_time='" . $text['changed_time'] . "'
-        ";
+        text_new_datetime = '" . date('Y-m-d H:i:s', strtotime($text['new_date'] . ' ' . $text['new_time']))  . "'
+        " . $this->changed_datetime('text_changed_datetime', $text['changed_date'], $text['changed_time']);
+
         //echo $sql.'<br>';
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Save connections in seperate table (source connected to text) ***
         if ($connect_nr > 0) {
@@ -4348,7 +4346,7 @@ class gedcom_cls
                 connect_place='" . $this->text_process($connect['place'][$i]) . "'
                 ";
                 //echo $check_connect.' !! '.$gebeurtsql.'<br>';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
@@ -4366,7 +4364,7 @@ class gedcom_cls
             tag_text_id='" . $text_id . "',
             tag_tree_id='" . $tree_id . "',
             tag_tag='" . $this->text_process($text["text_unprocessed_tags"]) . "'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
     }
 
@@ -4801,7 +4799,7 @@ class gedcom_cls
                 event_date='" . $this->process_date($this->text_process($event['date'][$i])) . "',
                 event_text='" . $this->text_process($event['text'][$i]) . "',
                 event_place='" . $this->text_process($event['place'][$i]) . "'";
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
@@ -4846,7 +4844,7 @@ class gedcom_cls
                 connect_place='" . $this->text_process($connect['place'][$i]) . "'
                 ";
                 //echo $check_connect.' !! '.$gebeurtsql.'<br>';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
@@ -4878,12 +4876,11 @@ class gedcom_cls
     source_repo_caln='" . $this->text_process($source["source_repo_caln"]) . "',
     source_repo_page='" . $this->text_process($source["source_repo_page"]) . "',
     source_repo_gedcomnr='" . $this->text_process($source["source_repo_gedcomnr"]) . "',
-    source_new_date='" . $this->process_date($source['new_date']) . "',
-    source_new_time='" . $source['new_time'] . "',
-    source_changed_date='" . $this->process_date($source['changed_date']) . "',
-    source_changed_time='" . $source['changed_time'] . "'
-    ";
-        $result = $dbh->query($sql);
+
+    source_new_datetime = '" . date('Y-m-d H:i:s', strtotime($source['new_date'] . ' ' . $source['new_time']))  . "'
+    " . $this->changed_datetime('source_changed_datetime', $source['changed_date'], $source['changed_time']);
+
+        $dbh->query($sql);
 
         $source_id = $dbh->lastInsertId();
 
@@ -4893,7 +4890,7 @@ class gedcom_cls
             tag_source_id='" . $source_id . "',
             tag_tree_id='" . $tree_id . "',
             tag_tag='" . $this->text_process($source["source_unprocessed_tags"]) . "'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
     }
 
@@ -5179,12 +5176,11 @@ class gedcom_cls
     repo_text='" . $this->text_process($repo["repo_text"]) . "',
     repo_mail='" . $this->text_process($repo["repo_mail"]) . "',
     repo_url='" . $this->text_process($repo["repo_url"]) . "',
-    repo_new_date='" . $this->process_date($repo['repo_new_date']) . "',
-    repo_new_time='" . $repo['repo_new_time'] . "',
-    repo_changed_date='" . $this->process_date($repo['repo_changed_date']) . "',
-    repo_changed_time='" . $repo['repo_changed_time'] . "'
-    ";
-        $result = $dbh->query($sql);
+
+    repo_new_datetime = '" . date('Y-m-d H:i:s', strtotime($repo['repo_new_date'] . ' ' . $repo['repo_new_time']))  . "',
+    " . $this->changed_datetime('repo_changed_datetime', $repo['repo_changed_date'], $repo['repo_changed_time']) . "'";
+
+        $dbh->query($sql);
 
         $repo_id = $dbh->lastInsertId();
 
@@ -5194,7 +5190,7 @@ class gedcom_cls
             tag_repo_id='" . $repo_id . "',
             tag_tree_id='" . $tree_id . "',
             tag_tag='" . $this->text_process($repo["repo_unprocessed_tags"]) . "'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
     }
 
@@ -5427,7 +5423,7 @@ class gedcom_cls
                 connect_place='" . $this->text_process($connect['place'][$i]) . "'
                 ";
                 //echo $check_connect.' !! '.$gebeurtsql.'<br>';
-                $result = $dbh->query($gebeurtsql);
+                $dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
@@ -5440,19 +5436,19 @@ class gedcom_cls
 
         // *** Save addressses ***
         $sql = "INSERT IGNORE INTO humo_addresses SET
-    address_tree_id='" . $tree_id . "',
-    address_gedcomnr='" . $this->text_process($address["address_gedcomnr"]) . "',
-    address_shared='" . $this->text_process($address["address_shared"]) . "',
-    address_address='" . $this->text_process($address["address"]) . "',
-    address_zip='" . $this->text_process($address["address_zip"]) . "',
-    address_place='" . $this->text_process($address["address_place"]) . "',
-    address_phone='" . $this->text_process($address["address_phone"]) . "',
-    address_text='" . $this->text_process($address["address_text"]) . "',
-    address_new_date='" . $this->process_date($address['new_date']) . "',
-    address_new_time='" . $address['new_time'] . "',
-    address_changed_date='" . $this->process_date($address['changed_date']) . "',
-    address_changed_time='" . $address['changed_time'] . "'";
-        $result = $dbh->query($sql);
+            address_tree_id='" . $tree_id . "',
+            address_gedcomnr='" . $this->text_process($address["address_gedcomnr"]) . "',
+            address_shared='" . $this->text_process($address["address_shared"]) . "',
+            address_address='" . $this->text_process($address["address"]) . "',
+            address_zip='" . $this->text_process($address["address_zip"]) . "',
+            address_place='" . $this->text_process($address["address_place"]) . "',
+            address_phone='" . $this->text_process($address["address_phone"]) . "',
+            address_text='" . $this->text_process($address["address_text"]) . "',
+
+            address_new_datetime = '" . date('Y-m-d H:i:s', strtotime($address['new_date'] . ' ' . $address['new_time']))  . "'
+            " . $this->changed_datetime('address_changed_datetime', $address['changed_date'], $address['changed_time']);
+
+        $dbh->query($sql);
 
         $address_id = $dbh->lastInsertId();
 
@@ -5462,7 +5458,7 @@ class gedcom_cls
             tag_address_id='" . $address_id . "',
             tag_tree_id='" . $tree_id . "',
             tag_tag='" . $this->text_process($address["address_unprocessed_tags"]) . "'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
     }
 
@@ -5655,12 +5651,13 @@ class gedcom_cls
         event_date='" . $this->process_date($this->text_process($event['date'])) . "',
         event_place='" . $this->text_process($event['place']) . "',
         event_text='" . $this->text_process($event['text']) . "',
-        event_new_date='" . $this->process_date($event_new_date) . "',
-        event_new_time='" . $event_new_time . "',
-        event_changed_date='" . $this->process_date($event_changed_date) . "',
-        event_changed_time='" . $event_changed_time . "'";
+
+        event_new_datetime = '" . date('Y-m-d H:i:s', strtotime($event_new_date . ' ' . $event_new_time))  . "'
+        " . $this->changed_datetime('event_changed_datetime', $event_changed_date, $event_changed_time);
+
+
         //echo '<br>'.$eventsql.'<br>';
-        $result = $dbh->query($eventsql);
+        $dbh->query($eventsql);
 
         $event_id = $dbh->lastInsertId();
 
@@ -5670,7 +5667,7 @@ class gedcom_cls
             tag_event_id='" . $event_id . "',
             tag_tree_id='" . $tree_id . "',
             tag_tag='" . $this->text_process($event_unprocessed_tags) . "'";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
         }
     }
 
@@ -5721,7 +5718,7 @@ function non_processed_items($buffer){
 
     function process_date($date)
     {
-        // *** Convert 2 DATE Bef 1909 to: 2 DATE BEF 1909 ***
+        // *** Convert 2 DATE Bef 1909 to uppercase: 2 DATE BEF 1909 ***
         $date = strtoupper($date);
 
         // in case years under 1000 are given as 0945, make it 945
@@ -6512,12 +6509,12 @@ function non_processed_items($buffer){
     }
 
     /* EXAMPLES
- * if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_birth', $buffer);
- * if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$calculated_event_id, $buffer);
- * if ($level[2]=='OBJE') $this->process_picture('family',$gedcomnumber,'picture_fam_marr_notice', $buffer);
- * if ($level[3]=='OBJE' AND substr($buffer,7,1)!='@'){ $this->process_picture('connect',$calculated_connect_id,'picture', $buffer); }
- * if ($level[1]=='OBJE') $this->process_picture('source',$source["id"],'picture', $buffer);
- */
+    * if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_birth', $buffer);
+    * if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$calculated_event_id, $buffer);
+    * if ($level[2]=='OBJE') $this->process_picture('family',$gedcomnumber,'picture_fam_marr_notice', $buffer);
+    * if ($level[3]=='OBJE' AND substr($buffer,7,1)!='@'){ $this->process_picture('connect',$calculated_connect_id,'picture', $buffer); }
+    * if ($level[1]=='OBJE') $this->process_picture('source',$source["id"],'picture', $buffer);
+    */
     function process_picture($connect_kind, $connect_id, $picture, $buffer)
     {
         global $level, $processed;
@@ -6750,5 +6747,14 @@ function non_processed_items($buffer){
                 $this->process_sources('person', 'pers_event_source', $calculated_event_id, $buffer, $test_number2);
             }
         }
+    }
+
+    function changed_datetime($item, $changed_date, $changed_time)
+    {
+        $changed_datetime = '';
+        if ($changed_date) {
+            $changed_datetime = ", " . $item . " = '" . date('Y-m-d H:i:s', strtotime($changed_date . ' ' . $changed_time)) .  "'";
+        }
+        return $changed_datetime;
     }
 } // end class

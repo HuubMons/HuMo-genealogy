@@ -63,9 +63,383 @@ $fampath = $link_cls->get_link($uri_path, 'family', $tree_id, true);
 
 $relpath_form = $link_cls->get_link($uri_path, 'relations', $tree_id);
 
+$data_found["foundX_nr"] = '';
+$data_found["foundY_nr"] = '';
+$data_found["foundX_gen"] = '';
+$data_found["foundY_gen"] = '';
+$data_found["foundX_match"] = '';
+$data_found["foundY_match"] = '';
+$spouse = '';
+$reltext = '';
+$special_spouseX = '';
+$special_spouseY = '';
+$table = '';
+$name1 = '';
+$name2 = '';
+
+$pers_cls = new person_cls;
+
+$len = 230; // length of name pulldown box
+$limit = 500; // *** Limit results ***
+?>
+
+<!-- TODO not sure if this is still usefull in modern browsers. -->
+<?php if (isset($_POST["extended"]) or isset($_POST["next_path"])) { ?>
+    <div id="geargif"><br><img src="images/gear.gif">&nbsp;&nbsp;&nbsp;<?= __('Calculating relations'); ?></div>
+<?php } ?>
+
+<form method="POST" action="<?= $relpath_form; ?>" style="display : inline;">
+    <table class="humo relmenu">
+        <tr class="table_headline">
+            <th style="font-weight: normal;">
+                <!-- HELP POPUP -->
+                <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_address',100,200)" onmouseout="mclosetime()">
+                        <img src="images/help.png" height="16" width="16">
+                    </a>
+                    <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_address" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                        <?= __('This calculator will find the following relationships:<br>
+<ul><li>Any blood relationship between X and Y ("X is great-grandfather of Y", "X is 3rd cousin once removed of Y" etc.)</li>
+<li>Blood relationship between the spouse of X and person Y ("X is spouse of 2nd cousin of Y", "X is son-in-law of Y")</li>
+<li>Blood relationship between person X and the spouse of Y ("X is 2nd cousin of spouse of Y", "X is father-in-law of Y")</li>
+<li>Blood relationship between spouse of X and spouse of Y ("X spouse of sister-in-law of Y" etc.)</li>
+<li>Direct marital relation ("X is spouse of Y")</li></ul>
+Directions for use:<br>
+<ul><li>Enter first and/or last name (or part of names) in the search boxes and press "Search". Repeat this for person 1 and 2.</li>
+<li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
+<li>Now press the "Calculate relationships" button on the right.</li>
+<li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>'); ?>
+                    </div>
+            </th>
+            <th><?= __('Name'); ?></th>
+            <th><?= __('or: ID'); ?></th>
+            <th colspan=2><?= __('Pick a name from search results'); ?></th>
+            <th><?= __('Calculate relationships'); ?></th>
+        </tr>
+
+        <tr>
+            <td><?= __('Person') . ' 1:'; ?></td>
+
+            <!-- Start selection form -->
+            <td>
+                <input type="text" class="relboxes" name="search_name" value="<?= safe_text_show($data["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
+                <input type="submit" name="button_search_name1" value="<?= __('Search'); ?>">
+            </td>
+
+            <td>
+                <input class="relboxes" type="text" name="search_gednr" value="<?= safe_text_show($data["search_gednr1"]); ?>" size="8">
+                <input type="submit" name="button_search_id1" value="<?= __('Search'); ?>">
+            </td>
+
+            <td>
+                <?php
+                if (isset($_SESSION["button_search_name1"]) and $_SESSION["button_search_name1"] == 1) {
+                    $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=".$tree_id." ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
+
+                    if ($data["search_name1"] != '') {
+                        // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
+                        $data["search_name1"] = str_replace(' ', '%', $data["search_name1"]);
+                        // *** In case someone entered "Mons, Huub" using a comma ***
+                        $data["search_name1"] = str_replace(',', '', $data["search_name1"]);
+                        // *** August 2022: new query ***
+                        $search_qry = "
+                            SELECT * FROM humo_persons LEFT JOIN humo_events
+                            ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
+                            WHERE pers_tree_id='" . $tree_id . "' AND
+                                (
+                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
+                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
+                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
+                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
+                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
+                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
+                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
+                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
+                                )
+                                GROUP BY pers_id, event_event, event_kind, event_id
+                                ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0," . $limit;
+                    } elseif ($data["search_gednr1"] != '') {
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                            AND (pers_gedcomnumber = '" . $data["search_gednr1"] . "' OR pers_gedcomnumber = 'I" . $data["search_gednr1"] . "')";
+                    }
+
+                    // *** Link from person pop-up menu ***
+                    if (isset($_SESSION["search_pers_id"])) {
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $_SESSION["search_pers_id"] . "'";
+                    }
+
+                    $search_result = $dbh->query($search_qry);
+                    if ($search_result) {
+                        $number_results = $search_result->rowCount();
+                        if ($number_results > 0) {
+                            echo '<select size="1" name="person1" style="width:' . $len . 'px">';
+                            while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
+                                $name = $pers_cls->person_name($searchDb);
+                                if ($name["show_name"]) {
+                                    echo '<option';
+                                    if (isset($data["person1"])) {
+                                        if ($searchDb->pers_gedcomnumber == $data["person1"] and !(isset($_POST["button_search_name1"]) and $data["search_name1"] == '' and $data["search_gednr1"] == '')) {
+                                            echo ' selected';
+                                        }
+                                    }
+
+                                    $birth = '';
+                                    if ($searchDb->pers_bapt_date) {
+                                        $birth = ' ' . __('~') . ' ' . date_place($searchDb->pers_bapt_date, '');
+                                    }
+                                    if ($searchDb->pers_birth_date) {
+                                        $birth = ' ' . __('*') . ' ' . date_place($searchDb->pers_birth_date, '');
+                                    }
+                                    $search1_cls = new person_cls($searchDb);
+                                    if ($search1_cls->privacy) {
+                                        $birth = '';
+                                    }
+                                    echo ' value="' . $searchDb->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
+                                }
+                            }
+                            // *** Simple test only, if number of results = limit then show message ***
+                            if ($number_results == $limit) {
+                                echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
+                            }
+                            echo '</select>';
+                        } else {
+                ?>
+                            <select size="1" name="notfound" value="1" style="width:' . $len . 'px">
+                                <option><?= __('Person not found'); ?>
+                                </option>
+                            </select>
+                <?php
+                        }
+                    }
+                } else {
+                    echo '<select size="1" name="person" style="width:' . $len . 'px"><option></option></select>';
+                }
+                ?>
+            </td>
+
+            <td rowspan=2>
+                <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('images/turn_around.gif') top no-repeat;width:25px;height:25px">
+            </td>
+            <td rowspan=2>
+                <input type="submit" name="calculator" value="<?= __('Calculate relationships'); ?>" style="font-size:115%;">
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <!-- Second person -->
+                <?= __('Person') . ' 2:'; ?>
+            </td>
+
+            <td>
+                <input type="text" class="relboxes" name="search_name2" value="<?= safe_text_show($data["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
+                <input type="submit" name="button_search_name2" value="<?= __('Search'); ?>">
+            </td>
+
+            <td>
+                <input class="relboxes" type="text" name="search_gednr2" value="<?= safe_text_show($data["search_gednr2"]); ?>" size="8">
+                <input type="submit" name="button_search_id2" value="<?= __('Search'); ?>">
+            </td>
+
+            <td>
+                <?php
+                if (isset($_SESSION["button_search_name2"]) and $_SESSION["button_search_name2"] == 1) {
+                    $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=".$tree_id." ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
+
+                    if ($data["search_name2"] != '') {
+                        // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
+                        $data["search_name2"] = str_replace(' ', '%', $data["search_name2"]);
+                        // *** In case someone entered "Mons, Huub" using a comma ***
+                        $data["search_name2"] = str_replace(',', '', $data["search_name2"]);
+                        // *** August 2022: new query ***
+                        $search_qry = "
+                            SELECT * FROM humo_persons LEFT JOIN humo_events
+                            ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
+                            WHERE pers_tree_id='" . $tree_id . "' AND
+                                (
+                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
+                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
+                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
+                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
+                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
+                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
+                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
+                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
+                                )
+                                GROUP BY pers_id, event_event, event_kind, event_id
+                                ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0," . $limit;
+                    } elseif ($data["search_gednr2"] != '') {
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                            AND (pers_gedcomnumber = '" . $data["search_gednr2"] . "' OR pers_gedcomnumber = 'I" . $data["search_gednr2"] . "')";
+                    }
+
+                    // *** Link from person pop-up menu ***
+                    if (isset($_SESSION["search_pers_id2"])) {
+                        $search_qry = "SELECT * FROM humo_persons
+                            WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $_SESSION["search_pers_id2"] . "'";
+                    }
+
+                    $search_result2 = $dbh->query($search_qry);
+                    if ($search_result2) {
+                        $number_results = $search_result2->rowCount();
+                        if ($number_results > 0) {
+                            echo '<select size="1" name="person2" style="width:' . $len . 'px">';
+                            while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
+                                $name = $pers_cls->person_name($searchDb2);
+                                if ($name["show_name"]) {
+                                    echo '<option';
+                                    if (isset($data["person2"])) {
+                                        if ($searchDb2->pers_gedcomnumber == $data["person2"] and !(isset($_POST["button_search_name2"]) and $data["search_name2"] == '' and $data["search_gednr2"] == '')) {
+                                            echo ' selected';
+                                        }
+                                    }
+                                    $birth = '';
+                                    if ($searchDb2->pers_bapt_date) {
+                                        $birth = ' ' . __('~') . ' ' . date_place($searchDb2->pers_bapt_date, '');
+                                    }
+                                    if ($searchDb2->pers_birth_date) {
+                                        $birth = ' ' . __('*') . ' ' . date_place($searchDb2->pers_birth_date, '');
+                                    }
+                                    $search2_cls = new person_cls($searchDb2);
+                                    if ($search2_cls->privacy) {
+                                        $birth = '';
+                                    }
+                                    echo ' value="' . $searchDb2->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
+                                }
+                            }
+                            // *** Simple test only, if number of results = limit then show message ***
+                            if ($number_results == $limit) {
+                                echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
+                            }
+                            echo '</select>';
+                        } else {
+                            echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
+                        }
+                    }
+                } else {
+                    echo '<select size="1" name="person2" style="width:' . $len . 'px"><option></option></select>';
+                }
+                ?>
+            </td>
+        </tr>
+    </table>
+
+    <?php
+    if (isset($_POST["extended"]) or isset($_POST["next_path"])) {
+        if (!isset($_POST["next_path"])) {
+            $_SESSION['next_path'] = "";
+        }
+
+        echo '<script> var element = document.getElementById("geargif");  element.parentNode.removeChild(element);   </script>';
+
+        $count = 0;
+        $countfunc = 0;
+
+        $globaltrack = "";
+        $firstcall = array();
+        $firstcall[0] = $data["person1"] . "@fst@fst@" . "fst" . $data["person1"];
+
+        $globaltrack2 = "";
+        $firstcall2 = array();
+        $firstcall2[0] = $data["person2"] . "@fst@fst@" . "fst" . $data["person2"];
+
+        $total_arr = array();
+
+        if (isset($_POST["extended"]) and !isset($_POST["next_path"])) {
+            $_SESSION["couple"] = "";
+            // session[couple] flags that persons A & B are a couple. consequences: 
+            // 1. don't display that (has already been done in regular calculator)
+            // 2. in the map_tree function don't search thru the fam of the couple, since this gives errors.
+            $persDb = $db_functions->get_person($data["person1"]);
+            $pers2Db = $db_functions->get_person($data["person2"]);
+            if (isset($persDb->pers_fams) and isset($pers2Db->pers_fams)) {
+                $fam1 = explode(";", $persDb->pers_fams);
+                $fam2 = explode(";", $pers2Db->pers_fams);
+                foreach ($fam1 as $value1) {
+                    foreach ($fam2 as $value2) {
+                        if ($value1 == $value2) {
+                            $_SESSION["couple"] = $value1;
+                        }
+                    }
+                }
+            }
+        }
+
+    ?>
+        <br><br>
+        <table class="ext">
+            <tr>
+                <td>
+                    <?php
+                    $global_array = array();
+                    $global_array2 = array();
+
+                    map_tree($firstcall, $firstcall2);
+                    ?>
+                </td>
+            </tr>
+        </table>
+    <?php
+    }
+
+    // calculate or switch button is pressed
+    if (isset($_POST["calculator"]) or isset($_POST["switch"])) {
+        // 2 persons have been selected
+        if (isset($data["person1"]) and $data["person1"] != '' and isset($data["person2"]) and $data["person2"] != '') {
+            $searchDb = $db_functions->get_person($data["person1"]);
+            $searchDb2 = $db_functions->get_person($data["person2"]);
+            if (isset($searchDb)) {
+                $gednr = $searchDb->pers_gedcomnumber;
+                $name = $pers_cls->person_name($searchDb);
+                $name1 = $name["name"];
+                $sexe = '';
+                if ($searchDb->pers_sexe == 'M') {
+                    $sexe = 'm';
+                } else {
+                    $sexe = 'f';
+                }
+            }
+            if ($searchDb->pers_fams) {
+                $famsX = $searchDb->pers_fams;
+                $tempfam = explode(";", $famsX);
+                $famX = $tempfam[0];
+            } else {
+                $famX = $searchDb->pers_famc;
+            }
+
+            if (isset($searchDb2)) {
+                $gednr2 = $searchDb2->pers_gedcomnumber;
+                $name = $pers_cls->person_name($searchDb2);
+                $name2 = $name["name"];
+                $sexe2 = '';
+                if ($searchDb2->pers_sexe == 'M') {
+                    $sexe2 = 'm';
+                } else {
+                    $sexe2 = 'f';
+                }
+            }
+            if ($searchDb2->pers_fams) {
+                $famsY = $searchDb2->pers_fams;
+                $tempfam = explode(";", $famsY);
+                $famY = $tempfam[0];
+            } else {
+                $famY = $searchDb2->pers_famc;
+            }
+
+            // initiates all the comparison and calculation functions and writes result
+            display();
+        } else {
+            // "calculate" or "switch" button pressed with one or two names not selected: write warning to first choose two names
+            echo "<br><h3>&nbsp;&nbsp;&nbsp;" . __('You have to search and than choose Person 1 and Person 2 from the search result pulldown') . "</h3>";
+        }
+    }
+    ?>
+</form>
+<br><br><br>
 
 
 
+<?php
 function create_rel_array($db_functions, $gednr)
 {
     // creates array of ancestors of person with GEDCOM nr. $gednr
@@ -2853,7 +3227,6 @@ function display_table()
     // *** Use person class to show names ***
     $pers_cls = new person_cls;
 
-
     $vars['pers_family'] = $famX;
     $linkX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
 
@@ -2865,7 +3238,6 @@ function display_table()
 
     $vars['pers_family'] = $famspouseY;
     $linkSpouseY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
 
     //$border="border:1px solid #777777;";
     $border = "";
@@ -3746,378 +4118,3 @@ function display_result($result)
     </table>
 <?php
 }
-
-
-
-$data_found["foundX_nr"] = '';
-$data_found["foundY_nr"] = '';
-$data_found["foundX_gen"] = '';
-$data_found["foundY_gen"] = '';
-$data_found["foundX_match"] = '';
-$data_found["foundY_match"] = '';
-$spouse = '';
-$reltext = '';
-$special_spouseX = '';
-$special_spouseY = '';
-$table = '';
-$name1 = '';
-$name2 = '';
-
-$pers_cls = new person_cls;
-?>
-
-<!-- TODO not sure if this is still usefull in modern browsers. -->
-<?php if (isset($_POST["extended"]) or isset($_POST["next_path"])) { ?>
-    <div id="geargif"><br><img src="images/gear.gif">&nbsp;&nbsp;&nbsp;<?= __('Calculating relations'); ?></div>
-<?php } ?>
-
-<form method="POST" action="<?= $relpath_form; ?>" style="display : inline;">
-    <table class="humo relmenu">
-        <tr class="table_headline">
-            <th style="font-weight: normal;">
-                <!-- HELP POPUP -->
-                <div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline;">
-                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_address',100,200)" onmouseout="mclosetime()">
-                        <img src="images/help.png" height="16" width="16">
-                    </a>
-                    <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_address" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                        <?= __('This calculator will find the following relationships:<br>
-<ul><li>Any blood relationship between X and Y ("X is great-grandfather of Y", "X is 3rd cousin once removed of Y" etc.)</li>
-<li>Blood relationship between the spouse of X and person Y ("X is spouse of 2nd cousin of Y", "X is son-in-law of Y")</li>
-<li>Blood relationship between person X and the spouse of Y ("X is 2nd cousin of spouse of Y", "X is father-in-law of Y")</li>
-<li>Blood relationship between spouse of X and spouse of Y ("X spouse of sister-in-law of Y" etc.)</li>
-<li>Direct marital relation ("X is spouse of Y")</li></ul>
-Directions for use:<br>
-<ul><li>Enter first and/or last name (or part of names) in the search boxes and press "Search". Repeat this for person 1 and 2.</li>
-<li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
-<li>Now press the "Calculate relationships" button on the right.</li>
-<li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>'); ?>
-                    </div>
-            </th>
-            <th><?= __('Name'); ?></th>
-            <th><?= __('or: ID'); ?></th>
-            <th colspan=2><?= __('Pick a name from search results'); ?></th>
-            <th><?= __('Calculate relationships'); ?></th>
-        </tr>
-
-        <tr>
-            <td><?= __('Person') . ' 1:'; ?></td>
-
-            <!-- Start selection form -->
-            <td>
-                <input type="text" class="fonts relboxes" name="search_name" value="<?= safe_text_show($data["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
-                <input class="fonts" type="submit" name="button_search_name1" value="<?= __('Search'); ?>">
-            </td>
-
-            <td>
-                <input class="fonts relboxes" type="text" name="search_gednr" value="<?= safe_text_show($data["search_gednr1"]); ?>" size="8">
-                <input class="fonts" type="submit" name="button_search_id1" value="<?= __('Search'); ?>">
-            </td>
-
-            <?php
-            $len = 230;  // length of name pulldown box
-
-            // *** Limit results ***
-            $limit = 500;
-            ?>
-
-            <td>
-                <?php
-                if (isset($_SESSION["button_search_name1"]) and $_SESSION["button_search_name1"] == 1) {
-                    $search_qry = "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
-
-                    if ($data["search_name1"] != '') {
-                        // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-                        $data["search_name1"] = str_replace(' ', '%', $data["search_name1"]);
-                        // *** In case someone entered "Mons, Huub" using a comma ***
-                        $data["search_name1"] = str_replace(',', '', $data["search_name1"]);
-                        // *** August 2022: new query ***
-                        $search_qry = "
-                            SELECT * FROM humo_persons
-                            LEFT JOIN humo_events
-                            ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
-                            WHERE pers_tree_id='" . $tree_id . "' AND
-                                (
-                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
-                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
-                                )
-                                GROUP BY pers_id, event_event, event_kind, event_id
-                                ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0," . $limit;
-                    } elseif ($data["search_gednr1"] != '') {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                            AND (pers_gedcomnumber = '" . $data["search_gednr1"] . "' OR pers_gedcomnumber = 'I" . $data["search_gednr1"] . "')";
-                    }
-
-                    // *** Link from person pop-up menu ***
-                    if (isset($_SESSION["search_pers_id"])) {
-                        $search_qry = "SELECT * FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $_SESSION["search_pers_id"] . "'";
-                    }
-
-                    $search_result = $dbh->query($search_qry);
-                    if ($search_result) {
-                        $number_results = $search_result->rowCount();
-                        if ($number_results > 0) {
-                            echo '<select class="fonts" size="1" name="person1" style="width:' . $len . 'px">';
-                            while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
-                                $name = $pers_cls->person_name($searchDb);
-                                if ($name["show_name"]) {
-                                    echo '<option';
-                                    if (isset($data["person1"])) {
-                                        if ($searchDb->pers_gedcomnumber == $data["person1"] and !(isset($_POST["button_search_name1"]) and $data["search_name1"] == '' and $data["search_gednr1"] == '')) {
-                                            echo ' selected';
-                                        }
-                                    }
-
-                                    $birth = '';
-                                    if ($searchDb->pers_bapt_date) {
-                                        $birth = ' ' . __('~') . ' ' . date_place($searchDb->pers_bapt_date, '');
-                                    }
-                                    if ($searchDb->pers_birth_date) {
-                                        $birth = ' ' . __('*') . ' ' . date_place($searchDb->pers_birth_date, '');
-                                    }
-                                    $search1_cls = new person_cls($searchDb);
-                                    if ($search1_cls->privacy) {
-                                        $birth = '';
-                                    }
-                                    echo ' value="' . $searchDb->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
-                                }
-                            }
-                            // *** Simple test only, if number of results = limit then show message ***
-                            if ($number_results == $limit) {
-                                echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
-                            }
-                            echo '</select>';
-                        } else {
-                            echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
-                        }
-                    }
-                } else {
-                    echo '<select size="1" name="person" style="width:' . $len . 'px"><option></option></select>';
-                }
-                ?>
-            </td>
-
-            <td rowspan=2>
-                <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('images/turn_around.gif') top no-repeat;width:25px;height:25px">
-            </td>
-            <td rowspan=2>
-                <input type="submit" name="calculator" value="<?= __('Calculate relationships'); ?>" style="font-size:115%;">
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <!-- Second person -->
-                <?= __('Person') . ' 2:'; ?>
-            </td>
-
-            <td>
-                <input type="text" class="fonts relboxes" name="search_name2" value="<?= safe_text_show($data["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
-                <input class="fonts" type="submit" name="button_search_name2" value="<?= __('Search'); ?>">
-            </td>
-
-            <td>
-                <input class="fonts relboxes" type="text" name="search_gednr2" value="<?= safe_text_show($data["search_gednr2"]); ?>" size="8">
-                <input class="fonts" type="submit" name="button_search_id2" value="<?= __('Search'); ?>">
-            </td>
-
-            <td>
-                <?php
-                if (isset($_SESSION["button_search_name2"]) and $_SESSION["button_search_name2"] == 1) {
-                    $search_qry = "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
-
-                    if ($data["search_name2"] != '') {
-                        // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-                        $data["search_name2"] = str_replace(' ', '%', $data["search_name2"]);
-                        // *** In case someone entered "Mons, Huub" using a comma ***
-                        $data["search_name2"] = str_replace(',', '', $data["search_name2"]);
-                        // *** August 2022: new query ***
-                        $search_qry = "
-                            SELECT * FROM humo_persons
-                            LEFT JOIN humo_events
-                            ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
-                            WHERE pers_tree_id='" . $tree_id . "' AND
-                                (
-                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
-                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
-                                )
-                                GROUP BY pers_id, event_event, event_kind, event_id
-                                ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0," . $limit;
-                    } elseif ($data["search_gednr2"] != '') {
-                        $search_qry = "SELECT * FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "'
-                            AND (pers_gedcomnumber = '" . $data["search_gednr2"] . "' OR pers_gedcomnumber = 'I" . $data["search_gednr2"] . "')";
-                    }
-
-                    // *** Link from person pop-up menu ***
-                    if (isset($_SESSION["search_pers_id2"])) {
-                        $search_qry = "SELECT * FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $_SESSION["search_pers_id2"] . "'";
-                    }
-
-                    $search_result2 = $dbh->query($search_qry);
-                    if ($search_result2) {
-                        $number_results = $search_result2->rowCount();
-                        if ($number_results > 0) {
-                            echo '<select class="fonts" size="1" name="person2" style="width:' . $len . 'px">';
-                            while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
-                                $name = $pers_cls->person_name($searchDb2);
-                                if ($name["show_name"]) {
-                                    echo '<option';
-                                    if (isset($data["person2"])) {
-                                        if ($searchDb2->pers_gedcomnumber == $data["person2"] and !(isset($_POST["button_search_name2"]) and $data["search_name2"] == '' and $data["search_gednr2"] == '')) {
-                                            echo ' selected';
-                                        }
-                                    }
-                                    $birth = '';
-                                    if ($searchDb2->pers_bapt_date) {
-                                        $birth = ' ' . __('~') . ' ' . date_place($searchDb2->pers_bapt_date, '');
-                                    }
-                                    if ($searchDb2->pers_birth_date) {
-                                        $birth = ' ' . __('*') . ' ' . date_place($searchDb2->pers_birth_date, '');
-                                    }
-                                    $search2_cls = new person_cls($searchDb2);
-                                    if ($search2_cls->privacy) {
-                                        $birth = '';
-                                    }
-                                    echo ' value="' . $searchDb2->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
-                                }
-                            }
-                            // *** Simple test only, if number of results = limit then show message ***
-                            if ($number_results == $limit) {
-                                echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
-                            }
-                            echo '</select>';
-                        } else {
-                            echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
-                        }
-                    }
-                } else {
-                    echo '<select size="1" name="person2" style="width:' . $len . 'px"><option></option></select>';
-                }
-                ?>
-            </td>
-        </tr>
-    </table>
-
-    <?php
-    if (isset($_POST["extended"]) or isset($_POST["next_path"])) {
-        if (!isset($_POST["next_path"])) {
-            $_SESSION['next_path'] = "";
-        }
-
-        echo '<script> var element = document.getElementById("geargif");  element.parentNode.removeChild(element);   </script>';
-
-        $count = 0;
-        $countfunc = 0;
-
-        $globaltrack = "";
-        $firstcall = array();
-        $firstcall[0] = $data["person1"] . "@fst@fst@" . "fst" . $data["person1"];
-
-        $globaltrack2 = "";
-        $firstcall2 = array();
-        $firstcall2[0] = $data["person2"] . "@fst@fst@" . "fst" . $data["person2"];
-
-        $total_arr = array();
-
-        if (isset($_POST["extended"]) and !isset($_POST["next_path"])) {
-            $_SESSION["couple"] = "";
-            // session[couple] flags that persons A & B are a couple. consequences: 
-            // 1. don't display that (has already been done in regular calculator)
-            // 2. in the map_tree function don't search thru the fam of the couple, since this gives errors.
-            $persDb = $db_functions->get_person($data["person1"]);
-            $pers2Db = $db_functions->get_person($data["person2"]);
-            if (isset($persDb->pers_fams) and isset($pers2Db->pers_fams)) {
-                $fam1 = explode(";", $persDb->pers_fams);
-                $fam2 = explode(";", $pers2Db->pers_fams);
-                foreach ($fam1 as $value1) {
-                    foreach ($fam2 as $value2) {
-                        if ($value1 == $value2) {
-                            $_SESSION["couple"] = $value1;
-                        }
-                    }
-                }
-            }
-        }
-
-    ?>
-        <br><br>
-        <table class="ext">
-            <tr>
-                <td>
-                    <?php
-                    $global_array = array();
-                    $global_array2 = array();
-
-                    map_tree($firstcall, $firstcall2);
-                    ?>
-                </td>
-            </tr>
-        </table>
-    <?php
-    }
-
-    if (isset($_POST["calculator"]) or isset($_POST["switch"])) { // calculate or switch button is pressed
-        if (isset($data["person1"]) and $data["person1"] != '' and isset($data["person2"]) and $data["person2"] != '') { // 2 persons have been selected
-            $searchDb = $db_functions->get_person($data["person1"]);
-            $searchDb2 = $db_functions->get_person($data["person2"]);
-            if (isset($searchDb)) {
-                $gednr = $searchDb->pers_gedcomnumber;
-                $name = $pers_cls->person_name($searchDb);
-                $name1 = $name["name"];
-                $sexe = '';
-                if ($searchDb->pers_sexe == 'M') {
-                    $sexe = 'm';
-                } else {
-                    $sexe = 'f';
-                }
-            }
-            if ($searchDb->pers_fams) {
-                $famsX = $searchDb->pers_fams;
-                $tempfam = explode(";", $famsX);
-                $famX = $tempfam[0];
-            } else {
-                $famX = $searchDb->pers_famc;
-            }
-
-            if (isset($searchDb2)) {
-                $gednr2 = $searchDb2->pers_gedcomnumber;
-                $name = $pers_cls->person_name($searchDb2);
-                $name2 = $name["name"];
-                $sexe2 = '';
-                if ($searchDb2->pers_sexe == 'M') {
-                    $sexe2 = 'm';
-                } else {
-                    $sexe2 = 'f';
-                }
-            }
-            if ($searchDb2->pers_fams) {
-                $famsY = $searchDb2->pers_fams;
-                $tempfam = explode(";", $famsY);
-                $famY = $tempfam[0];
-            } else {
-                $famY = $searchDb2->pers_famc;
-            }
-
-            display(); // initiates all the comparison and calculation functions and writes result
-        } else {  // "calculate" or "switch" button pressed with one or two names not selected: write warning to first choose two names
-            echo "<br><h3>&nbsp;&nbsp;&nbsp;" . __('You have to search and than choose Person 1 and Person 2 from the search result pulldown') . "</h3>";
-        }
-    }
-    ?>
-</form>
-<br><br><br>

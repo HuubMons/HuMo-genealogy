@@ -142,7 +142,7 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     remove_the_folders($remove_folders);
 
     // *** Update "update_status" ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
@@ -178,7 +178,7 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     remove_the_folders($remove_folders);
 
     // *** Update "update_status" ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
@@ -221,7 +221,7 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     }
 
     // *** Update "update_status" ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
@@ -257,7 +257,7 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     }
 
     // *** Update "update_status" ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
@@ -322,7 +322,7 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     }
 
     // *** Update "update_status" ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
@@ -346,7 +346,7 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     }
 
     // *** Update "update_status" ***
-    $result = $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 

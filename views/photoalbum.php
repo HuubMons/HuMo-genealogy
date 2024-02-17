@@ -1,63 +1,34 @@
 <?php
-$show_pictures = 8; // *** Default value ***
-
-// Remark: setcookie is done in header.
-if (isset($_COOKIE["humogenphotos"]) and is_numeric($_COOKIE["humogenphotos"])) {
-    $show_pictures = $_COOKIE["humogenphotos"];
-} elseif (isset($_SESSION['save_show_pictures']) and is_numeric($_SESSION['save_show_pictures'])) {
-    $show_pictures = $_SESSION['save_show_pictures'];
-}
-
-// Remark: setcookie is done in header.
-if (isset($_POST['show_pictures']) and is_numeric($_POST['show_pictures'])) {
-    $show_pictures = $_POST['show_pictures'];
-    $_SESSION['save_show_pictures'] = $show_pictures;
-}
-// Remark: setcookie is done in header.
-if (isset($_GET['show_pictures']) and is_numeric($_GET['show_pictures'])) {
-    $show_pictures = $_GET['show_pictures'];
-    $_SESSION['save_show_pictures'] = $show_pictures;
-}
-
 // *** Check user privileges ***
 if ($user['group_pictures'] != 'j' or $user['group_photobook'] != 'j') {
     echo __('You are not authorised to see this page.');
     exit();
 }
 
+
+
+// TODO create seperate controller script.
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
 include_once(__DIR__ . "/../include/person_cls.php");
 include_once(__DIR__ . "/../include/show_picture.php");
 
-// *** Photo search ***
-$search_media = '';
-if (isset($_SESSION['save_search_media'])) {
-    $search_media = $_SESSION['save_search_media'];
-}
-if (isset($_POST['search_media'])) {
-    $search_media = safe_text_db($_POST['search_media']);
-    $_SESSION['save_search_media'] = $search_media;
-}
-if (isset($_GET['search_media'])) {
-    $search_media = safe_text_db($_GET['search_media']);
-    $_SESSION['save_search_media'] = $search_media;
-}
+require_once  __DIR__ . "/../app/model/photoalbum.php";
+$photoalbumModel = new PhotoalbumModel($dbh);
+$photoalbum['show_pictures'] = $photoalbumModel->get_show_pictures();
+$photoalbum['search_media'] = $photoalbumModel->get_search_media();
 
-$tree_pict_path = $dataDb->tree_pict_path;
-if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+
 
 // *** Get array of categories ***
 $show_categories = false; // is set true by following code if necessary
-$chosen_tab = 'none';
-if (isset($_SESSION['save_chosen_tab'])) $chosen_tab = $_SESSION['save_chosen_tab'];
 
 $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-if ($temp->rowCount()) {   // a humo_photocat table exists
+if ($temp->rowCount()) {
+    // a humo_photocat table exists
     $temp2 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none'");
-    if ($temp2->rowCount() >= 1) { //  the table contains more than the default category (otherwise display regular photoalbum)
-        //$qry = "SELECT photocat_prefix, photocat_order FROM humo_photocat GROUP BY photocat_prefix, photocat_order";
-        //$qry = "SELECT photocat_prefix FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
+    // the table contains more than the default category (otherwise display regular photoalbum)
+    if ($temp2->rowCount() >= 1) {
         $qry = "SELECT photocat_id, photocat_prefix FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
         $result = $dbh->query($qry);
         $result_arr = $result->fetchAll();
@@ -67,21 +38,24 @@ if ($temp->rowCount()) {   // a humo_photocat table exists
             $category_enabled[$row['photocat_prefix']] = false;
         }
     }
+}
+
+$chosen_tab = 'none';
+if (isset($_SESSION['save_chosen_tab'])) $chosen_tab = $_SESSION['save_chosen_tab'];
+if (isset($_GET['select_category'])) {
+    if ($_GET['select_category'] == 'none') {
+        $chosen_tab = $_GET['select_category'];
+        $_SESSION['save_chosen_tab'] = $chosen_tab;
+    }
+
     // *** Get selected category ***
-    if (isset($_GET['select_category']) and $_GET['select_category'] != 'none' and in_array($_GET['select_category'], $category_array)) {
+    if (isset($category_array) and $_GET['select_category'] != 'none' and in_array($_GET['select_category'], $category_array)) {
         $chosen_tab = $_GET['select_category'];
         $_SESSION['save_chosen_tab'] = $chosen_tab;
     }
 }
-if (isset($_GET['select_category']) and $_GET['select_category'] == 'none') {
-    $chosen_tab = $_GET['select_category'];
-    $_SESSION['save_chosen_tab'] = $chosen_tab;
-}
 
 // *** Create an array of all pics with person_id's. Also check for OBJECT (Family Tree Maker GEDCOM file) ***
-//$qry="SELECT event_event, event_kind, event_connect_kind, event_connect_id, event_gedcomnr FROM humo_events
-//	WHERE (event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_kind='picture' AND event_connect_id NOT LIKE '')
-//	OR (event_tree_id='".$tree_id."' AND event_kind='object')";
 $qry = "SELECT event_event, event_kind, event_connect_kind, event_connect_id, event_gedcomnr FROM humo_events
     WHERE (event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_kind='picture' AND event_connect_id NOT LIKE '')
     OR (event_tree_id='" . $tree_id . "' AND event_kind='object')
@@ -123,8 +97,8 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
     }
 
     // *** Use search field (search for person) to show pictures ***
-    if ($search_media) {
-        $quicksearch = str_replace(" ", "%", $search_media);
+    if ($photoalbum['search_media']) {
+        $quicksearch = str_replace(" ", "%", $photoalbum['search_media']);
         $querie = "SELECT pers_firstname, pers_prefix, pers_lastname FROM humo_persons
             WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $picqryDb->event_connect_id . "'
             AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
@@ -166,15 +140,14 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
     }
 
     if ($process_picture) {
-        //if(!isset($connected_persons[$picname])) { // this pic does not appear in the array yet
-        //	$connected_persons[$picname]=$picqryDb->event_connect_id; // example: $connected_persons['an_example.jpg']="I354"
-        //	$media_files[]=$picname;
-        //}
-
-        //if(!isset($media_files[$picname])) { // this pic does not appear in the array yet
         if (!isset($media_files) or !in_array($picname, $media_files)) { // this pic does not appear in the array yet
             //$connected_persons[$picname]=$picqryDb->event_connect_id; // example: $connected_persons['an_example.jpg']="I354"
-            $media_files[] = $picname;
+
+            // *** Skip PDF and RTF files ***
+            $check_file = strtolower($picname);
+            if (substr($check_file, -4) != '.pdf' and substr($check_file, -4) != '.rtf') {
+                $media_files[] = $picname;
+            }
         }
 
         //else { // pic already exists in array with other person_id. Append this one.
@@ -184,10 +157,6 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
     }
 
     // *** Check if media belongs to category ***
-    //if (in_array(substr($picname,0,3),$category_array)){
-    //	$show_categories=true; // *** There are categories ***
-    //	$category_enabled[substr($picname,0,3)]=true; // *** This categorie will be shown ***
-    //}
     if (isset($category_array)) {
         foreach ($category_array as $test_category) {
             // *** Check if media belongs to category ***
@@ -280,7 +249,7 @@ if (isset($media_files)) {
 // *** $pref = category ***
 function show_media_files($pref)
 {
-    global $dataDb, $search_media, $dbh, $show_pictures, $uri_path, $tree_id, $db_functions,
+    global $dataDb, $dbh, $photoalbum, $uri_path, $tree_id, $db_functions,
         $cat_string, $show_categories, $chosen_tab, $media_files, $humo_option, $link_cls;
 
     $tree_pict_path = $dataDb->tree_pict_path;
@@ -292,11 +261,6 @@ function show_media_files($pref)
     //@usort($media_files,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
     $nr_pictures = count($media_files);
 
-    //if ($humo_option["url_rewrite"] == "j") {
-    //    $albumpath = 'photoalbum/' . $tree_id . '?';
-    //} else {
-    //    $albumpath = $uri_path . 'photoalbum.php?tree_id=' . $tree_id . '&amp;';
-    //}
     $albumpath = $link_cls->get_link($uri_path, 'photoalbum', $tree_id, true);
 
     $item = 0;
@@ -313,7 +277,7 @@ function show_media_files($pref)
     $data["previous_status"] = '';
     if ($start > 1) {
         $start2 = $start - 20;
-        $calculated = ($start - 2) * $show_pictures;
+        $calculated = ($start - 2) * $photoalbum['show_pictures'];
         $data["previous_link"] = $albumpath . "start=" . $start2 . "&amp;item=" . $calculated;
     }
     if ($start <= 0) {
@@ -325,7 +289,7 @@ function show_media_files($pref)
 
     // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
     for ($i = $start; $i <= $start + 19; $i++) {
-        $calculated = ($i - 1) * $show_pictures;
+        $calculated = ($i - 1) * $photoalbum['show_pictures'];
         if ($calculated < $nr_pictures) {
             $data["page_nr"][] = $i;
             if ($item == $calculated) {
@@ -340,7 +304,7 @@ function show_media_files($pref)
     // "=>"
     $data["next_link"] = '';
     $data["next_status"] = '';
-    $calculated = ($i - 1) * $show_pictures;
+    $calculated = ($i - 1) * $photoalbum['show_pictures'];
     if ($calculated < $nr_pictures) {
         $data["page_nr"][] = $i;
         $data["next_link"] = $albumpath . "start=" . $i . "&amp;item=" . $calculated;
@@ -360,7 +324,7 @@ function show_media_files($pref)
                 <?php
                 for ($i = 4; $i <= 60; $i++) {
                     echo '<option value="' . $albumpath . 'show_pictures=' . $i . '&amp;start=0&amp;item=0&amp;select_category=' . $chosen_tab . '"';
-                    if ($i == $show_pictures) echo ' selected="selected"';
+                    if ($i == $photoalbum['show_pictures']) echo ' selected="selected"';
                     echo ">" . $i . "</option>\n";
                 }
                 ?>
@@ -380,8 +344,8 @@ function show_media_files($pref)
             //$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
             ?>
             &nbsp;<form method="post" action="<?= $path . $menu; ?>" style="display:inline">
-                <input type="text" class="fonts" name="search_media" value="<?= $search_media; ?>" size="20">
-                <input class="fonts" type="submit" value="<?= __('Search'); ?>">
+                <input type="text" name="search_media" value="<?= $photoalbum['search_media']; ?>" size="20">
+                <input type="submit" value="<?= __('Search'); ?>">
             </form>
 
             <br><br>
@@ -390,16 +354,13 @@ function show_media_files($pref)
 
         <?php
         // *** Show photos ***
-        for ($picture_nr = $item; $picture_nr < ($item + $show_pictures); $picture_nr++) {
+        for ($picture_nr = $item; $picture_nr < ($item + $photoalbum['show_pictures']); $picture_nr++) {
             if (isset($media_files[$picture_nr]) and $media_files[$picture_nr]) {
                 $filename = $media_files[$picture_nr];
                 $picture_text = '';    // Text with link to person
                 $picture_text2 = '';    // Text without link to person
 
-                //$sql="SELECT * FROM humo_events
-                //	WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
-                $sql = "SELECT * FROM humo_events
-                    WHERE event_tree_id='" . $tree_id . "'
+                $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
                     AND event_connect_kind='person' AND LEFT(event_kind,7)='picture' AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
                 $afbqry = $dbh->query($sql);
                 if (!$afbqry->rowCount()) {
@@ -433,10 +394,8 @@ function show_media_files($pref)
                 $picture_qry = $dbh->query("SELECT * FROM humo_events
                 WHERE event_tree_id='" . $tree_id . "' AND event_kind='object' AND LOWER(event_event)='" . strtolower($filename) . "'");
                 while ($pictureDb = $picture_qry->fetch(PDO::FETCH_OBJ)) {
-                    $connect_qry = $dbh->query("SELECT * FROM humo_connections
-                    WHERE connect_tree_id='" . $tree_id . "'
-                    AND connect_sub_kind='pers_object'
-                    AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
+                    $connect_qry = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
+                        AND connect_sub_kind='pers_object' AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
                     while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                         $person_cls = new person_cls;
                         @$personDb = $db_functions->get_person($connectDb->connect_connect_id);
@@ -450,11 +409,6 @@ function show_media_files($pref)
                             $picture_text2 .= $name["standard_name"];
                         }
 
-                        //if($pictureDb->event_text!='') {
-                        //	$picture_text.=$pictureDb->event_text.'<br>';
-                        //	//$picture_text2=$pictureDb->event_text; // Only use event text in lightbox.
-                        //	$picture_text2.='<br>'.$pictureDb->event_text;
-                        //}
                         $date_place = date_place($pictureDb->event_date, $pictureDb->event_place);
                         if ($pictureDb->event_text or $date_place) {
                             if ($date_place) $picture_text .= $date_place . ' ';
@@ -474,8 +428,8 @@ function show_media_files($pref)
                 } else {
                     $picture = '<img src="images/missing-image.jpg" width="' . $picture2['width'] . '" alt="' . $filename . '">';
                 }
-
         ?>
+
                 <div class="photobook">
                     <!-- Show photo using the lightbox: GLightbox effect -->
                     <a href="<?= $dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">

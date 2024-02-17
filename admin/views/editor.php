@@ -54,207 +54,75 @@ $path_prefix = '../';
 include_once(__DIR__ . "/../include/editor_cls.php");
 $editor_cls = new editor_cls;
 
+include_once(__DIR__ . "/../include/select_tree.php");
+
 // *** Used for person color selection for descendants and ancestors, etc. ***
 include_once(__DIR__ . "/../../include/ancestors_descendants.php");
 
 include(__DIR__ . '/../include/editor_event_cls.php');
 $event_cls = new editor_event_cls;
 
-require_once  __DIR__ . "/../models/editor.php";
-$editorModel = new EditorModel($dbh);
-$editorModel->set_hebrew_night($humo_option);
-
-
-//TEST
-//include (__DIR__.'/../include/editor_sources.php');
-
-
-$new_tree = false;
-
-// *** Used for new selected family tree or search person etc. ***
-if (isset($_POST["tree_id"])) {
-    $pers_gedcomnumber = '';
-    unset($_SESSION['admin_pers_gedcomnumber']);
-}
-
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) and $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
 
-// *** Delete session variables for new person ***
-if (isset($_POST['person_add'])) {
-    unset($_SESSION['admin_pers_gedcomnumber']);
-    unset($_SESSION['admin_fam_gedcomnumber']);
-}
+require_once  __DIR__ . "/../models/editor.php";
+$editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
+$editorModel->set_hebrew_night();
 
-// *** Save person GEDCOM number ***
-$pers_gedcomnumber = '';
-if (isset($_POST["person"]) and $_POST["person"]) {
-    $pers_gedcomnumber = $_POST['person'];
-    $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
+$editorModel->set_pers_gedcomnumber($db_functions);
+$editorModel->set_search_name();
+$editorModel->set_marriage();
 
-    $search_id = safe_text_db($_POST['person']);
-    $_SESSION['admin_search_id'] = $search_id;
-}
-if (isset($_GET["person"])) {
-    $pers_gedcomnumber = $_GET['person'];
-    $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
+$confirm = $editorModel->update_editor();
 
-    $search_id = safe_text_db($_GET['person']);
-    $_SESSION['admin_search_id'] = $search_id;
+$editor['pers_gedcomnumber'] = $editorModel->get_pers_gedcomnumber();
+$pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***
 
-    $_SESSION['admin_search_name'] = '';
-    $search_name = '';
-}
+$editor['search_id'] = $editorModel->get_search_id();
 
-if (isset($_SESSION['admin_pers_gedcomnumber'])) {
-    $pers_gedcomnumber = $_SESSION['admin_pers_gedcomnumber'];
-}
+$editor['search_name'] = $editorModel->get_search_name();
 
-// *** Save family GEDCOM number ***
-if (isset($pers_gedcomnumber) and $pers_gedcomnumber) {
-    $person = $db_functions->get_person($pers_gedcomnumber);
+$editor['new_tree'] = $editorModel->get_new_tree();
+$editorModel->set_favorite($dbh, $tree_id);
 
-    // *** Person no longer exists! ***
-    if (!isset($person->pers_gedcomnumber)) {
-        $pers_gedcomnumber = '';
-    }
-}
-
-$userid = false;
-if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
-$username = $_SESSION['user_name_admin'];
-$gedcom_date = strtoupper(date("d M Y"));
-$gedcom_time = date("H:i:s");
-
-// *** Child is added, show marriage page ***
-if (isset($_POST['child_connect'])) $marriage = $_POST['marriage_nr'];
-
-if (isset($person->pers_fams) and $person->pers_fams) {
-    if (isset($_POST["marriage_nr"]) and $_POST["marriage_nr"]) {
-        $marriage = $_POST['marriage_nr'];
-        $_SESSION['admin_fam_gedcomnumber'] = $marriage;
-    }
-    if (isset($_GET["marriage_nr"])) {
-        $marriage = $_GET['marriage_nr'];
-        $_SESSION['admin_fam_gedcomnumber'] = $marriage;
-    }
-
-    // *** Get marriage number, also used for 2nd, 3rd etc. relation ***
-    if (isset($_SESSION['admin_fam_gedcomnumber'])) {
-        $marriage = $_SESSION['admin_fam_gedcomnumber'];
-    } else {
-        // *** Just in case there is no marriage variable found ***
-        $fams1 = explode(";", $person->pers_fams);
-        $marriage = $fams1[0];
-        $_SESSION['admin_fam_gedcomnumber'] = $marriage;
-    }
-}
-
+$editor['marriage'] = $editorModel->get_marriage();
+$marriage = $editor['marriage']; // *** Temp variable ***
 
 // *** Check for new person ***
-$add_person = false;
-if (isset($_GET['add_person'])) {
-    $add_person = true;
+$editorModel->set_add_person();
+$editor['add_person'] = $editorModel->get_add_person();
+$add_person = $editor['add_person']; // *** Temp variable ***
+
+//TEST
+//include (__DIR__.'/../include/editor_sources.php');
+
+// TODO move items from editor_inc.php to model and view scripts.
+// *** Process queries ***
+$confirm2 = $confirm; // *** Temp variable ***
+$confirm = ''; // *** Temp variable ***
+include_once(__DIR__ . "/../include/editor_inc.php");
+$confirm .= $confirm2 . $confirm; // *** Temp variable ***
+
+if ($editor['new_tree'] == false) {
+    // *** Favourites ***
+    $fav_qry = "SELECT * FROM humo_settings LEFT JOIN humo_persons ON setting_value=pers_gedcomnumber
+        WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND pers_tree_id='" . safe_text_db($tree_id) . "'";
+    $fav_result = $dbh->query($fav_qry);
+
+    // *** Update cache for list of latest changes ***
+    cache_latest_changes();
 }
 
-if (isset($tree_id)) {
-    // *** Process queries ***
-    include_once(__DIR__ . "/../include/editor_inc.php");
-
-    // *** New family tree: no default or selected pers_gedcomnumer, add new person ***
-    if ($pers_gedcomnumber == '') {
-        // *** Open editor screen first time after starting browser ***
-        unset($_SESSION['admin_pers_gedcomnumber']);
-
-        // *** Select first person to show (also check if person still exists) ***
-        $new_nr_qry = "SELECT * FROM humo_settings LEFT JOIN humo_persons
-            ON setting_value=pers_gedcomnumber
-            WHERE setting_variable='admin_favourite'
-            AND setting_tree_id='" . safe_text_db($tree_id) . "'
-            AND pers_tree_id='" . safe_text_db($tree_id) . "'
-            LIMIT 0,1";
-        $new_nr_result = $dbh->query($new_nr_qry);
-
-        if ($new_nr_result and $new_nr_result->rowCount()) {
-            @$new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
-            $pers_gedcomnumber = $new_nr->setting_value;
-            $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
-        } else {
-            $new_nr_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . safe_text_db($tree_id) . "' LIMIT 0,1";
-            $new_nr_result = $dbh->query($new_nr_qry);
-            @$new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
-            if (isset($new_nr->pers_gedcomnumber)) {
-                $pers_gedcomnumber = $new_nr->pers_gedcomnumber;
-                $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
-            }
-        }
-
-        // *** New family tree ***
-        if ($pers_gedcomnumber == '') {
-            $add_person = true;
-            $_GET['add_person'] = '1';
-            $new_tree = true;
-        }
-    }
-
-    // *** Select person ***
-    $search_name = '';
-    $search_id = '';
-
-    if ($add_person == true) {
-        $_SESSION['admin_search_name'] = '';
-        $_SESSION['admin_search_id'] = '';
-    }
-
-    // *** Search person name ***
-    if (isset($_POST["search_quicksearch"])) {
-        $search_name = safe_text_db($_POST['search_quicksearch']);
-        $_SESSION['admin_search_name'] = $search_name;
-
-        $search_id = '';
-        $_SESSION['admin_search_id'] = '';
-    }
-    if (isset($_SESSION['admin_search_name'])) {
-        $search_name = $_SESSION['admin_search_name'];
-    }
-
-
-    // *** Search GEDCOM number ***
-    if (isset($_POST["search_id"])) {
-        $search_id = safe_text_db($_POST['search_id']);
-        $_SESSION['admin_search_id'] = $search_id;
-        $_SESSION['admin_search_name'] = '';
-        $search_name = '';
-    }
-    if (isset($_SESSION['admin_search_id'])) {
-        $search_id = $_SESSION['admin_search_id'];
-    }
-
-    if ($new_tree == false) {
-        // *** Favourites ***
-        $fav_qry = "SELECT * FROM humo_settings LEFT JOIN humo_persons ON setting_value=pers_gedcomnumber
-            WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND pers_tree_id='" . safe_text_db($tree_id) . "'";
-        $fav_result = $dbh->query($fav_qry);
-
-        // *** Update cache for list of latest changes ***
-        cache_latest_changes();
+$person_found = true;
 ?>
 
-        <div class="row">
+<div class="p-3 m-2 genealogy_search">
+    <?php if ($editor['new_tree'] == false) { ?>
+        <div class="row mb-2">
             <div class="col-auto">
-                <label for="tree" class="col-form-label">
-                    <?= __('Family tree'); ?>:
-                </label>
-            </div>
-
-            <div class="col-2">
-                <?= $editor_cls->select_tree($page);; ?>
-            </div>
-
-            <div class="col-auto">
-                &nbsp;&nbsp;&nbsp;<img src="../images/favorite_blue.png">
+                <img src="../images/favorite_blue.png">
             </div>
 
             <div class="col-2">
@@ -296,223 +164,254 @@ if (isset($tree_id)) {
                     </select>
                 </form>
             </div>
+
         </div>
-        </form>
-    <?php
-    }
+    <?php } ?>
 
-    // *** Show delete message ***
-    if ($confirm) echo $confirm;
+    <?php if ($editor['new_tree'] == false) { ?>
+        <div class="row">
 
-    if ($new_tree == false) {
-    ?>
-        <table class="humo" style="text-align:left; width:98%; margin-left: initial; margin-right: initial;">
-            <tr class="table_header_large">
-                <td>
-                    <!-- Search persons firstname/ lastname -->
-                    &nbsp;<form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
-                        <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                        <?= __('Person') . ':'; ?>
-                        <input class="fonts" type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_name; ?>" size="15">
-                        <input class="fonts" type="submit" value="<?= __('Search'); ?>">
-                    </form>
-                    <?php
+            <div class="col-auto">
+                <label for="tree" class="col-form-label">
+                    <?= __('Family tree'); ?>:
+                </label>
+            </div>
 
-                    unset($person_result);
-                    $idsearch = false; // flag for search with ID;
-                    if ($search_name != '') {
-                        // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-                        $search_name = str_replace(' ', '%', $search_name);
+            <div class="col-2">
+                <?= select_tree($dbh, $page, $tree_id); ?>
+            </div>
 
-                        // *** In case someone entered "Mons, Huub" using a comma ***
-                        $search_name = str_replace(',', '', $search_name);
+            <div class="col-auto">
+                <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <div class="input-group">
+                        <!-- Search persons firstname/ lastname -->
+                        <label for="search_name" class="col-auto col-form-label"><?= __('Person'); ?>:&nbsp;</label>
+                        <input type="text" name="search_quicksearch" id="search_name" class="form-control" placeholder="<?= __('Name'); ?>" value="<?= $editor['search_name']; ?>" size="15">
+                        <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
+                    </div>
+                </form>
+            </div>
 
-                        // *** December 2021: removed pers_callname from query ***
-                        // *** January added by Chris: GROUP BY event_id. Otherwise no results in some cases? ***
-                        $person_qry = "
-                            SELECT * FROM humo_persons
-                            LEFT JOIN humo_events
-                            ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
-                            WHERE pers_tree_id='" . $tree_id . "' AND
-                                (
-                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($search_name) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($search_name) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($search_name) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($search_name) . "%'
-                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($search_name) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($search_name) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($search_name) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($search_name) . "%'
-                                )
-                                GROUP BY pers_id
-                                ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
-                            ";
+            <!--            <div class="col-auto"> -->
+            <?php
+            unset($person_result);
+            if ($editor['search_name'] != '') {
+                // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
+                $search_name = str_replace(' ', '%', $editor['search_name']);
 
-                        // Next line was before ORDER BY line. Doesn't work if only_full_group is disabled
-                        //		GROUP BY pers_id, event_event, event_kind, event_id
+                // *** In case someone entered "Mons, Huub" using a comma ***
+                $search_name = str_replace(',', '', $search_name);
 
-                        // *** 27-03-2023: Improved for GROUP BY, there were double results ***
-                        // *** Only get pers_id, otherwise GROUP BY doesn't work properly (double results) ***
-                        //SELECT pers_gedcomnumber FROM humo_persons
-                        //	GROUP BY pers_gedcomnumber
-                        /*
-                        $person_qry="
-                            SELECT pers_id FROM humo_persons
-                            LEFT JOIN humo_events
-                            ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
-                            WHERE pers_tree_id='".$tree_id."' AND
-                                (
-                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($search_name)."%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($search_name)."%' 
-                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($search_name)."%'
+                // *** December 2021: removed pers_callname from query ***
+                // *** January added by Chris: GROUP BY event_id. Otherwise no results in some cases? ***
+                $person_qry = "
+                    SELECT * FROM humo_persons
+                    LEFT JOIN humo_events
+                    ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
+                    WHERE pers_tree_id='" . $tree_id . "' AND
+                        (
+                        CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($search_name) . "%'
+                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($search_name) . "%' 
+                        OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($search_name) . "%' 
+                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($search_name) . "%'
+                        OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($search_name) . "%'
+                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($search_name) . "%' 
+                        OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($search_name) . "%' 
+                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($search_name) . "%'
+                        )
+                        GROUP BY pers_id
+                        ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
+                    ";
 
-                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($search_name)."%' 
-                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_name)."%'
-                                )
-                                GROUP BY pers_id
-                                ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
-                        ";
-                        //echo $person_qry;
-                        */
+                // Next line was before ORDER BY line. Doesn't work if only_full_group is disabled
+                //		GROUP BY pers_id, event_event, event_kind, event_id
 
-                        $person_result = $dbh->query($person_qry);
-                    } elseif ($search_id != '') {
-                        // *** Heredis GEDCOM don't uses I, so don't add an I anymore! ***
-                        // *** Make entry "48" into "I48" ***
-                        //if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") {
-                        //	$search_id = "I".$search_id;
-                        //}
-                        $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($search_id) . "'";
-                        $person_result = $dbh->query($person_qry);
+                // *** 27-03-2023: Improved for GROUP BY, there were double results ***
+                // *** Only get pers_id, otherwise GROUP BY doesn't work properly (double results) ***
+                //SELECT pers_gedcomnumber FROM humo_persons
+                //	GROUP BY pers_gedcomnumber
+                /*
+                    $person_qry="
+                        SELECT pers_id FROM humo_persons
+                        LEFT JOIN humo_events
+                        ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
+                        WHERE pers_tree_id='".$tree_id."' AND
+                            (
+                            CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+                            OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($search_name)."%' 
+                            OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
+                            OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($search_name)."%'
 
-                        $person = $person_result->fetch(PDO::FETCH_OBJ);
-                        if ($person) $pers_gedcomnumber = $person->pers_gedcomnumber;
+                            OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+                            OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($search_name)."%' 
+                            OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
+                            OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_name)."%'
+                            )
+                            GROUP BY pers_id
+                            ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
+                    ";
+                    //echo $person_qry;
+                    */
 
-                        $idsearch = true;
-                    }
+                $person_result = $dbh->query($person_qry);
+            } elseif ($editor['pers_gedcomnumber']) {
+                // *** Heredis GEDCOM don't uses I, so don't add an I anymore! ***
+                // if(substr($editor['pers_gedcomnumber'],0,1)!="i" AND substr($editor['pers_gedcomnumber'],0,1)!="I") { $editor['pers_gedcomnumber'] = "I".$editor['pers_gedcomnumber']; }
+                $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($editor['pers_gedcomnumber']) . "'";
+                $person_result = $dbh->query($person_qry);
+                $person = $person_result->fetch(PDO::FETCH_OBJ);
+                if ($person) $pers_gedcomnumber = $person->pers_gedcomnumber;
+            }
+            ?>
+            <!--            </div> -->
 
-
-                    if ($idsearch == false and isset($person_result)) {
-                        $nr_persons = $person_result->rowCount();
-                        // *** No person found ***
-                        if ($nr_persons == 0) {
-                            echo '<b>' . __('Person not found') . '</b> ';
-                            $pers_gedcomnumber = ''; // *** Don't show a person if there are no results ***
-                        }
-                        // *** Found 1 person ***
-                        elseif ($nr_persons == 1) {
-                            // *** Don't show pull-down menu if there is only 1 result ***
-                            $person = $person_result->fetch(PDO::FETCH_OBJ);
-                            $pers_gedcomnumber = $person->pers_gedcomnumber;
-                            $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
-                            $selected = ' selected';
-
-                            // *** Reset marriage number ***
-                            $fams1 = explode(";", $person->pers_fams);
-                            $marriage = $fams1[0];
-                            $_SESSION['admin_fam_gedcomnumber'] = $marriage;
-                        }
-                        // *** Found multiple persons ***
-                        elseif ($nr_persons > 0) {
-                    ?>
-                            <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
-                                <input type="hidden" name="page" value="<?= $page; ?>">
-                                <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                                <select size="1" name="person" style="width: 200px; background-color: #ffaa80;" onChange="this.form.submit();">
-                                    <option value=""><?= __('Results'); ?></option>
-                                    <?php
-                                    $nr_persons = $person_result->rowCount();
-                                    while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                                        // *** Get all person data ***
-                                        // Probably not needed at this moment. Query contains all data.
-                                        $person2 = $db_functions->get_person_with_id($person->pers_id);
-                                        $selected = '';
-                                        if (!isset($_POST["search_quicksearch"]) and isset($pers_gedcomnumber)) {
-                                            if ($person2->pers_gedcomnumber == $pers_gedcomnumber) {
-                                                $selected = ' selected';
-                                            }
-                                        }
-
-                                        // *** Directly select first founded person! ***
-                                        if ($nr_persons == 1) {
-                                            $pers_gedcomnumber = $person2->pers_gedcomnumber;
-                                            $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
-                                            $selected = ' selected';
-
-                                            // *** Reset marriage number ***
-                                            $fams1 = explode(";", $person->pers_fams);
-                                            $marriage = $fams1[0];
-                                            $_SESSION['admin_fam_gedcomnumber'] = $marriage;
-                                        }
-                                        echo '<option value="' . $person2->pers_gedcomnumber . '"' . $selected . '>' .
-                                            $editor_cls->show_selected_person($person2) . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </form>
-                    <?php
-                        }
-                        // *** Don't show a person if there are multiple results ***
-                        if ($nr_persons > 1 and isset($_POST["search_quicksearch"])) $pers_gedcomnumber = '';
-                    }
-
-                    // *** Search person GEDCOM number ***
-                    ?>
-                    &nbsp;<form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
-                        <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                        <?= __('or ID:'); ?>
-                        <input class="fonts" type="text" name="search_id" value="<?= $search_id; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
-                        <input class="fonts" type="submit" value="<?= __('Search'); ?>">
-                    </form>
-
-                    <?php
-                    // *** Show message if no person is found ***
-                    if ($search_id != '' and $person_result->rowCount() == 0) {
-                        echo '<b>' . __('Person not found') . '</b>';
+            <div class="col-auto">
+                <?php
+                if ($editor['search_name'] != '' and isset($person_result)) {
+                    $nr_persons = $person_result->rowCount();
+                    // *** No person found ***
+                    if ($nr_persons == 0) {
+                        $person_found = false;
                         $pers_gedcomnumber = ''; // *** Don't show a person if there are no results ***
                     }
+                    // *** Found 1 person, directly select this person ***
+                    elseif ($nr_persons == 1) {
+                        // *** Don't show pull-down menu if there is only 1 result ***
+                        $person = $person_result->fetch(PDO::FETCH_OBJ);
+                        $pers_gedcomnumber = $person->pers_gedcomnumber;
+                        $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
+                        $selected = ' selected';
 
-                    // *** Add new person ***
-                    ?>
-                    &nbsp;&nbsp;&nbsp;<a href="index.php?page=<?= $page; ?>&amp;add_person=1">
-                        <img src="images/person_connect.gif" border="0" title="<?= __('Add person'); ?>" alt="<?= __('Add person'); ?>"> <?= __('Add person'); ?></a>
+                        // *** Reset marriage number ***
+                        $fams1 = explode(";", $person->pers_fams);
+                        $marriage = $fams1[0];
+                        $_SESSION['admin_fam_gedcomnumber'] = $marriage;
+                    }
+                    // *** Found multiple persons ***
+                    elseif ($nr_persons > 0) {
+                ?>
+                        <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                            <input type="hidden" name="page" value="<?= $page; ?>">
+                            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                            <select size="1" name="person" class="form-select" style="width: 200px; background-color: #ffaa80;" onChange="this.form.submit();">
+                                <option value=""><?= __('Results'); ?></option>
+                                <?php
+                                while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
+                                    // *** Get all person data ***
+                                    // Probably not needed at this moment. Query contains all data.
+                                    $person2 = $db_functions->get_person_with_id($person->pers_id);
+                                    $selected = '';
+                                    if (!isset($_POST["search_quicksearch"]) and isset($pers_gedcomnumber)) {
+                                        if ($person2->pers_gedcomnumber == $pers_gedcomnumber) {
+                                            $selected = ' selected';
+                                        }
+                                    }
 
-                    <!-- Help popup -->
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline;">
+                                    echo '<option value="' . $person2->pers_gedcomnumber . '"' . $selected . '>' .
+                                        $editor_cls->show_selected_person($person2) . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </form>
+                <?php
+                    }
+                    // *** Don't show a person if there are multiple results ***
+                    if ($nr_persons > 1 and isset($_POST["search_quicksearch"])) {
+                        $pers_gedcomnumber = '';
+                    }
+                }
+                ?>
+            </div>
+
+            <div class="col-auto">
+                <!-- Search person GEDCOM number -->
+                <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <div class="input-group">
+                        <label for="search_id" class="col-auto col-form-label"><?= __('or ID:'); ?>&nbsp;</label>
+                        <input type="text" id="search_id" name="search_id" class="form-select form-select-sm" value="<?= $editor['search_id']; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
+                        <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
+
                         <?php
-                        echo '<a href="#" style="display:inline" onmouseover="mopen(event,\'help_menu\',10,150)" onmouseout="mclosetime()">';
-                        echo '<img src="../images/help.png" height="16" width="16">';
-                        echo '</a>';
+                        // *** Show message if no person is found ***
+                        if ($editor['pers_gedcomnumber'] == '') {
+                            $person_found = false;
+                        }
+                        if ($editor['pers_gedcomnumber'] != '' and isset($person_result)) {
+                            $nr_persons = $person_result->rowCount();
+                            // *** No person found ***
+                            if ($nr_persons == 0) {
+                                $person_found = false;
+                                $pers_gedcomnumber = ''; // *** Don't show a person if there are no results ***
+                            }
+                        }
                         ?>
-                        <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                            <?= __('Examples of date entries:'); ?><br>
-                            <b><?= __('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.'); ?></b><br>
-                            <?= __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#'); ?><br>
-                            <img src="../images/search.png" alt="<?= __('Search'); ?>"> <?= __('= click to open selection popup screen.'); ?><br>
-                            <b>[+]</b> <?= __('= click to open extended editor items.'); ?>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    <?php
-    } // *** end of check for new tree ***
 
-    //} else {
-    //    echo '<br>';
-    //}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- end of check for new tree -->
+    <?php } ?>
+</div>
+
+<!-- Show message if no person is found -->
+<?php if (!$person_found) { ?>
+    <div class="alert alert-primary" role="alert">
+        <?= __('Person not found'); ?>
+    </div>
+<?php } ?>
+
+<?php
+// *** Show delete message ***
+if (isset($_POST['person_remove'])) {
+    $disabled = ' disabled';
+    $selected = '';
+    //if ($selected_alive=='alive'){ $selected=' checked'; }
+?>
+    <div class="alert alert-danger">
+        <?= __('This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?'); ?><br>
+
+        <!-- GRAYED-OUT and DISABLED! UNDER CONSTRUCTION! -->
+        <input type="checkbox" name="XXXXX" value="XXXXX" <?= $selected . $disabled; ?>> <?= __('Also remove ALL RELATED PERSONS (including all items)'); ?><br>
+        </span>
+
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="submit" name="person_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+        </form>
+    </div>
+<?php
 }
 
+// *** Disconnect child ***
+if (isset($_GET['child_disconnect'])) {
+?>
+    <div class="alert alert-danger">
+        <?= __('Are you sure you want to disconnect this child?'); ?>
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $_GET['page']; ?>">
+            <input type="hidden" name="family_id" value="<?= $_GET['family_id']; ?>">
+            <input type="hidden" name="child_disconnect2" value="<?= $_GET['child_disconnect']; ?>">
+            <input type="hidden" name="child_disconnect_gedcom" value="<?= $_GET['child_disconnect_gedcom']; ?>">
+            <input type="submit" name="child_disconnecting" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+        </form>
+    </div>
+<?php
+}
+
+if ($confirm) {
+    echo $confirm;
+}
 
 $check_person = false;
 if (isset($pers_gedcomnumber)) {
-    if ($new_tree == false and $add_person == false and !$pers_gedcomnumber) $check_person = false;
+    if ($editor['new_tree'] == false and $add_person == false and !$pers_gedcomnumber) $check_person = false;
 
     // *** Get person data to show name and calculate nr. of items ***
     $person = $db_functions->get_person($pers_gedcomnumber);
@@ -530,16 +429,16 @@ if (isset($pers_gedcomnumber)) {
             }
         }
     }
-    if (!$person and $new_tree == false and $add_person == false) $check_person = false;
+    if (!$person and $editor['new_tree'] == false and $add_person == false) $check_person = false;
 }
-if ($new_tree) $check_person = true;
+if ($editor['new_tree']) $check_person = true;
 if ($check_person) {
     // *** Exit if selection of person is needed ***
-    //if ($new_tree==false AND $add_person==false AND !$pers_gedcomnumber) exit;
+    //if ($editor['new_tree']==false AND $add_person==false AND !$pers_gedcomnumber) exit;
 
     // *** Get person data to show name and calculate nr. of items ***
     //$person = $db_functions->get_person($pers_gedcomnumber);
-    //if (!$person AND $new_tree==false AND $add_person==false) exit;
+    //if (!$person AND $editor['new_tree']==false AND $add_person==false) exit;
 
     // *** Save person GEDCOM number, needed for source pop-up ***
     $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
@@ -552,7 +451,7 @@ if ($check_person) {
     }
     if (isset($_SESSION['admin_menu_tab'])) $menu_tab = $_SESSION['admin_menu_tab'];
     if (isset($_GET['add_person'])) $menu_tab = 'person';
-    ?>
+?>
 
     <ul class="nav nav-tabs mt-1">
         <li class="nav-item me-1">
@@ -568,7 +467,7 @@ if ($check_person) {
             if ($person) {
                 // *** Browser through persons: previous button ***
                 if (substr($person->pers_gedcomnumber, 1) > 1) {
-                    // *** First do a quick check, much faster for large family trees!!!!! ***
+                    // *** First do a quick check, much faster for large family trees ***
                     $check_pers_gedcomnumber = (substr($person->pers_gedcomnumber, 1) - 1);
                     $check_pers_gedcomnumber = 'I' . $check_pers_gedcomnumber;
                     $previous_qry = "SELECT pers_gedcomnumber FROM humo_persons
@@ -647,7 +546,7 @@ if ($check_person) {
                 $check_pers_gedcomnumber = (substr($person->pers_gedcomnumber, 1) + 1);
                 $check_pers_gedcomnumber = 'I' . $check_pers_gedcomnumber;
                 $next_qry = "SELECT pers_gedcomnumber FROM humo_persons
-                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $check_pers_gedcomnumber . "'";
+                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $check_pers_gedcomnumber . "'";
                 $next_result = $dbh->query($next_qry);
                 $nextDb = $next_result->fetch(PDO::FETCH_OBJ);
 
@@ -656,7 +555,7 @@ if ($check_person) {
                     $check_pers_gedcomnumber = (substr($person->pers_gedcomnumber, 1) + 2);
                     $check_pers_gedcomnumber = 'I' . $check_pers_gedcomnumber;
                     $next_qry = "SELECT pers_gedcomnumber FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $check_pers_gedcomnumber . "'";
+                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $check_pers_gedcomnumber . "'";
                     $next_result = $dbh->query($next_qry);
                     $nextDb = $next_result->fetch(PDO::FETCH_OBJ);
                 }
@@ -665,8 +564,8 @@ if ($check_person) {
                     // *** Next button ***
                     // *** VERY SLOW in large family trees ***
                     $next_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                            AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) > '" . substr($person->pers_gedcomnumber, 1) . "'
-                            ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,1";
+                        AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) > '" . substr($person->pers_gedcomnumber, 1) . "'
+                        ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,1";
                     // BLADEREN WERKT NIET GOED:
                     //$next_qry = "SELECT pers_gedcomnumber FROM humo_persons
                     //	WHERE pers_tree_id='".$tree_id."'
@@ -693,13 +592,12 @@ if ($check_person) {
                 $nr_persons = $db_functions->count_persons($tree_id);
                 if ($nr_persons < 100000) { // *** Disabled for large family trees ***
                     $last_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                            ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
+                        ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
                     $last_result = $dbh->query($last_qry);
                     $lastDb = $last_result->fetch(PDO::FETCH_OBJ);
                     if (substr($lastDb->pers_gedcomnumber, 2) > substr($person->pers_gedcomnumber, 2)) {
                     ?>
                         <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
-
                             <input type="hidden" name="page" value="<?= $page; ?>">
                             <input type="hidden" name="person" value="<?= $lastDb->pers_gedcomnumber; ?>">
                             <input type="submit" value=">>">
@@ -722,9 +620,8 @@ if ($check_person) {
                 </style>';
 
             // *** Show navigation pop-up ***
-            echo '&nbsp;&nbsp;<div class="fonts ' . $rtlmarker . 'sddm" style="display:inline;">';
+            echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
             echo '<a href="#" style="display:inline" onmouseover="mopen(event,\'browse_menu\',0,0)" onmouseout="mclosetime()">';
-            //echo '***'.__('Navigate').'***</a>';
             echo '[' . __('Browse') . ']</a>';
             echo '<div class="sddm_fixed"
                 style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
@@ -857,8 +754,29 @@ if ($check_person) {
                 echo " <a href=\"#\" onClick=\"window.open('" . $link . "', '','width=800,height=500')\"><b>[" . __('Preview') . ']</b></a>';
             }
             ?>
+
+            <!-- Add person -->
+            &nbsp;&nbsp;&nbsp;<a href="index.php?page=<?= $page; ?>&amp;add_person=1">
+                <img src="images/person_connect.gif" border="0" title="<?= __('Add person'); ?>" alt="<?= __('Add person'); ?>"> <?= __('Add person'); ?></a>
+
+            <!-- Help popup -->
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',10,150)" onmouseout="mclosetime()">
+                    <img src="../images/help.png" height="16" width="16"> <?= __('Help'); ?>
+                </a>
+                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                    <?= __('Examples of date entries:'); ?><br>
+                    <b><?= __('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.'); ?></b><br>
+                    <?= __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#'); ?><br>
+                    <img src="../images/search.png" alt="<?= __('Search'); ?>"> <?= __('= click to open selection popup screen.'); ?><br>
+                    <b>[+]</b> <?= __('= click to open extended editor items.'); ?>
+                </div>
+            </div>
+
         </div>
     </ul>
+
     <div style="float: left; background-color:white; height:500px; padding:10px;">
 
         <?php
@@ -1140,14 +1058,14 @@ if ($check_person) {
         //$event_group.'&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id.'">
 
         $text = '<tr style="display:none;" class="row' . $hideshow . '"><td></td><td colspan="3">
-    <iframe id="source_iframe" class="source_iframe" title="source_iframe"
-        src="index.php?page=editor_sources';
+            <iframe id="source_iframe" class="source_iframe" title="source_iframe"
+                src="index.php?page=editor_sources';
         if ($connect_kind) $text .= '&connect_kind=' . $connect_kind;
         $text .= '&connect_sub_kind=' . $connect_sub_kind;
         if ($connect_connect_id) $text .= '&connect_connect_id=' . $connect_connect_id;
         $text .= '">
-    </iframe>
-    </td></tr>';
+            </iframe>
+            </td></tr>';
 
         //TEST
         //include (__DIR__.'/../index.php?page=editor_sources');
@@ -1176,8 +1094,8 @@ if ($check_person) {
         //if (!$witness) $style = 'style="background-color:#FFAA80"';
         if (!$witness and !$event_connect_id2) $style = 'style="background-color:#FFAA80"';
 
-        //$text .= '<input class="fonts" ' . $style . ' type="text" name="text_event2' . substr($multiple_rows, 1, -1) . '" value="' . $value . '" size="17" placeholder="' . __('GEDCOM number (ID)') . '">';
-        $text .= '<input class="fonts" ' . $style . ' type="text" name="event_connect_id2' . substr($multiple_rows, 1, -1) . '" value="' . $event_connect_id2 . '" size="17" placeholder="' . __('GEDCOM number (ID)') . '">';
+        //$text .= '<input ' . $style . ' type="text" name="text_event2' . substr($multiple_rows, 1, -1) . '" value="' . $value . '" size="17" placeholder="' . __('GEDCOM number (ID)') . '">';
+        $text .= '<input ' . $style . ' type="text" name="event_connect_id2' . substr($multiple_rows, 1, -1) . '" value="' . $event_connect_id2 . '" size="17" placeholder="' . __('GEDCOM number (ID)') . '">';
         $text .= '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person=0&person_item=' . $person_item . '&event_row=' . substr($multiple_rows, 1, -1) . '&tree_id=' . $tree_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
 
         // *** Witness: text field ***
@@ -1211,6 +1129,8 @@ if ($check_person) {
             if (isset($familyDb->fam_children)) {
                 echo '<input type="hidden" name="children" value="' . $familyDb->fam_children . '">';
             }
+
+            // TODO check code. Both variables show the same value.
             echo '<input type="hidden" name="family_id" value="' . $familyDb->fam_gedcomnumber . '">';
             echo '<input type="hidden" name="marriage_nr" value="' . $marriage . '">';
 
@@ -1243,8 +1163,8 @@ if ($check_person) {
             } else {
                 echo '<tr class="table_header"><th colspan="2">' . __('Add child') . '</th></tr>';
             }
-
             ?>
+
             <tr>
                 <td><b><?= __('firstname'); ?></b></td>
                 <td><input type="text" name="pers_firstname" value="" size="35" placeholder="<?= ucfirst(__('firstname')); ?>"></td>
@@ -1418,7 +1338,7 @@ if ($check_person) {
 
                 // *** HELP POPUP for address ***
                 ?>
-                &nbsp;<div class="fonts <?= $rtlmarker; ?>sddm" style="display:inline;">
+                &nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                     <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_shared',0,0)" onmouseout="mclosetime()">
                         <img src="../images/help.png" height="16" width="16">
                     </a>
@@ -1469,8 +1389,7 @@ if ($check_person) {
 
                     <?php
                     // *** Remove address ***
-                    echo '<a href="index.php?page=' . $page .
-                        '&amp;person_place_address=1&amp;connect_drop=' . $addressDb->connect_id . '">
+                    echo '<a href="index.php?page=' . $page . '&amp;person_place_address=1&amp;connect_drop=' . $addressDb->connect_id . '">
                 <img src="images/button_drop.png" border="0" alt="drop"></a>';
 
                     // *** Order addresses ***
@@ -1574,9 +1493,9 @@ if ($check_person) {
                         global $pers_gedcomnumber;
                         if ($addressDb->connect_order == $count) {
                             $sql = "UPDATE humo_persons SET
-                                pers_place_index='" . $address3Db->address_place . "'
+                                pers_place_index='" . safe_text_db($address3Db->address_place) . "'
                                 WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($pers_gedcomnumber) . "'";
-                            $result = $dbh->query($sql);
+                            $dbh->query($sql);
                         }
                     }
 
@@ -1759,7 +1678,6 @@ if ($check_person) {
     function cache_latest_changes($force_update = false)
     {
         global $dbh, $tree_id, $pers_id;
-
         $cache = '';
         $cache_count = 0;
         $cache_exists = false;
@@ -1784,11 +1702,19 @@ if ($check_person) {
 
         if ($cache_check == false) {
             // *** First get pers_id, will be quicker in very large family trees ***
+            /*
             $person_qry = "(SELECT pers_id, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')";
-            $person_qry .= " UNION (SELECT pers_id, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL) ";
-            $person_qry .= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')
+                UNION (SELECT pers_id, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL)
+                ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
+            */
+
+            $person_qry = "(SELECT pers_id, pers_changed_datetime as changed_datetime
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NOT NULL)
+                UNION (SELECT pers_id, pers_new_datetime AS changed_datetime
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL)
+                ORDER BY changed_datetime DESC LIMIT 0,15";
             $person_result = $dbh->query($person_qry);
             $count_latest_changes = $person_result->rowCount();
             while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
@@ -1805,13 +1731,19 @@ if ($check_person) {
             // *** Add or renew cache in database (only if cache_count is valid) ***
             if ($cache and ($cache_count == $count_latest_changes)) {
                 if ($cache_exists) {
-                    $sql = "UPDATE humo_settings SET
-                    setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "' WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $result = $dbh->query($sql);
+                    //$sql = "UPDATE humo_settings SET setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "' WHERE setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_variable='cache_latest_changes'";
+
+                    // Because of bug found in jan. 2024, remove value from database and insert again.
+                    $sql = "DELETE FROM humo_settings WHERE setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_variable='cache_latest_changes'";
+                    $dbh->query($sql);
+
+                    $sql = "INSERT INTO humo_settings SET
+                        setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($tree_id) . "'";
+                    $dbh->query($sql);
                 } else {
                     $sql = "INSERT INTO humo_settings SET
                     setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $result = $dbh->query($sql);
+                    $dbh->query($sql);
                 }
             }
         }
@@ -1852,31 +1784,42 @@ if ($check_person) {
             </td>
             <td></td>
         </tr>
-        <?php
-
-        while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
-            //TODO combine queries.
-            $user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'");
-            $user_addedDb = $user_result->fetch(PDO::FETCH_OBJ);
-        ?>
+        <?php while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) { ?>
             <tr>
                 <td>
                     <!-- Link to remove note -->
                     <a href="index.php?page=editor&amp;note_drop=<?= $noteDb->note_id; ?>">
-                        <img src="images/button_drop.png" border="0" alt="down"></a>
+                        <img src="images/button_drop.png" border="0" alt="down">
+                    </a>
                 </td>
                 <td colspan="2">
                     <input type="hidden" name="note_id[<?= $noteDb->note_id; ?>]" value="<?= $noteDb->note_id; ?>">
                     <input type="hidden" name="note_connect_kind[<?= $noteDb->note_id; ?>]" value="<?= $note_connect_kind; ?>">
-                    <?= __('Added by'); ?> <b><?= $user_addedDb->user_name; ?></b> (<?= language_date($noteDb->note_new_date) . ' ' . $noteDb->note_new_time; ?>)<br>
+
+                    <?php
+                    $user_name = '';
+                    if ($noteDb->note_new_user_id) {
+                        $user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'");
+                        $user_addedDb = $user_result->fetch(PDO::FETCH_OBJ);
+                        $user_name = $user_addedDb->user_name;
+                    }
+                    ?>
+                    <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_new_datetime); ?>)<br>
+
                     <?php
                     if ($noteDb->note_changed_user_id) {
                         //TODO combine queries
-                        $user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_changed_user_id . "'");
-                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                        echo __('Changed by') . ' <b>' . $userDb->user_name . '</b> (' . language_date($noteDb->note_changed_date) . ' ' . $noteDb->note_changed_time . ')<br>';
+                        $user_name = '';
+                        if ($noteDb->note_changed_user_id) {
+                            $user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_changed_user_id . "'");
+                            $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                            $user_name = $userDb->user_name;
+                        }
+
+                        echo __('Changed by') . ' <b>' . $user_name . '</b> (' . show_datetime($noteDb->note_changed_datetime) . ')<br>';
                     }
                     ?>
+
                     <b><?= $noteDb->note_names; ?></b><br>
 
                     <textarea rows="1" placeholder="<?= __('Text'); ?>" name="note_note[<?= $noteDb->note_id; ?>]" <?= $field_text_large; ?>><?= $editor_cls->text_show($noteDb->note_note); ?></textarea><br>

@@ -15,6 +15,8 @@ if (!defined('ADMIN_PAGE')) {
 include_once(__DIR__ . "/../include/editor_cls.php");
 $editor_cls = new editor_cls;
 
+include_once(__DIR__ . "/../include/select_tree.php");
+
 require_once  __DIR__ . "/../models/edit_repository.php";
 $editRepositoryModel = new EditorRepositoryModel($dbh);
 $editRepositoryModel->set_repo_id();
@@ -55,27 +57,27 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
     </div>
 <?php } ?>
 
-<form method="POST" action="<?= $phpself; ?>" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-    <div class="p-3 m-2 genealogy_search">
-        <div class="row">
-            <div class="col-auto">
-                <label for="tree" class="col-form-label">
-                    <?= __('Family tree'); ?>:
-                </label>
-            </div>
+<div class="p-3 m-2 genealogy_search">
+    <div class="row">
+        <div class="col-auto">
+            <label for="tree" class="col-form-label">
+                <?= __('Family tree'); ?>:
+            </label>
+        </div>
 
-            <div class="col-auto">
-                <?= $editor_cls->select_tree($page); ?>
-            </div>
+        <div class="col-auto">
+            <?= select_tree($dbh, $page, $tree_id); ?>
+        </div>
 
-            <div class="col-auto">
-                <label for="tree" class="col-form-label">
-                    <?= __('Select repository'); ?>
-                </label>
-            </div>
+        <div class="col-auto">
+            <label for="tree" class="col-form-label">
+                <?= __('Select repository'); ?>
+            </label>
+        </div>
 
-            <div class="col-auto">
+        <div class="col-auto">
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
                 <select size="1" name="repo_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <!--  For new repository in new database... -->
                     <option value=""><?= __('Select repository'); ?></option>
@@ -90,15 +92,18 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
                     }
                     ?>
                 </select>
-            </div>
+            </form>
+        </div>
 
-            <div class="col-auto">
-                <?= __('or'); ?>:
+        <div class="col-auto">
+            <?= __('or'); ?>:
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="submit" name="add_repo" value="<?= __('Add repository'); ?>" class="btn btn-sm btn-secondary">
-            </div>
+            </form>
         </div>
     </div>
-</form>
+</div>
 <?php
 
 // *** Show selected repository ***
@@ -113,12 +118,10 @@ if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
         $repo_text = '';
         $repo_mail = '';
         $repo_url = '';
-        $repo_new_user = '';
-        $repo_new_date = '';
-        $repo_new_time = '';
-        $repo_changed_user = '';
-        $repo_changed_date = '';
-        $repo_changed_time = '';
+        $repo_new_user_id = '';
+        $repo_new_datetime = '';
+        $repo_changed_user_id = '';
+        $repo_changed_datetime = '';
     } else {
         @$repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_id='" . $editRepository['repo_id'] . "'");
         $die_message = __('No valid repository number.');
@@ -136,12 +139,10 @@ if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
         $repo_text = $repoDb->repo_text;
         $repo_mail = $repoDb->repo_mail;
         $repo_url = $repoDb->repo_url;
-        $repo_new_user = $repoDb->repo_new_user;
-        $repo_new_date = $repoDb->repo_new_date;
-        $repo_new_time = $repoDb->repo_new_time;
-        $repo_changed_user = $repoDb->repo_changed_user;
-        $repo_changed_date = $repoDb->repo_changed_date;
-        $repo_changed_time = $repoDb->repo_changed_time;
+        $repo_new_user_id = $repoDb->repo_new_user_id;
+        $repo_new_datetime = $repoDb->repo_new_datetime;
+        $repo_changed_user_id = $repoDb->repo_changed_user_id;
+        $repo_changed_datetime = $repoDb->repo_changed_datetime;
     }
 ?>
     <form method="POST" action="<?= $phpself; ?>">

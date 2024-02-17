@@ -25,19 +25,28 @@ class Latest_changesModel
         //$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
         //$qry.= " ORDER BY pers_lastname, pers_firstname";
 
+        /*
         $person_qry = "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
             FROM humo_persons
-            WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')";
-        $person_qry .= " UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+            WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')
+            UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
             FROM humo_persons
             WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL)";
         $person_qry .= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
+        */
+
+        $person_qry = "(SELECT *, pers_changed_datetime AS changed_date FROM humo_persons
+            WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NOT NULL)
+            UNION (SELECT *, pers_new_datetime AS changed_date FROM humo_persons
+            WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL)";
+        $person_qry .= " ORDER BY changed_date DESC LIMIT 0,100";
 
         $search_name = '';
         if (isset($_POST["search_name"])) {
             $search_name = $_POST["search_name"];
 
             // *** Renewed querie because of ONLY_FULL_GROUP_BY in MySQL 5.7 ***
+            /*
             $person_qry = "
                 SELECT humo_persons2.*, humo_persons1.pers_id
                 FROM humo_persons as humo_persons2
@@ -57,8 +66,29 @@ class Latest_changesModel
                 ) as humo_persons1
                 ON humo_persons1.pers_id = humo_persons2.pers_id
                 ";
+            */
+            $person_qry = "
+            SELECT humo_persons2.*, humo_persons1.pers_id
+            FROM humo_persons as humo_persons2
+            RIGHT JOIN 
+            (
+                (
+                SELECT pers_id
+                FROM humo_persons
+                LEFT JOIN humo_events
+                    ON pers_gedcomnumber=event_connect_id AND pers_tree_id=event_tree_id AND event_kind='name'
+                WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($search_name) . "%'
+                    OR event_event LIKE '%" . safe_text_db($search_name) . "%')
+                    AND ((pers_changed_datetime IS NOT NULL) OR (pers_new_datetime IS NOT NULL))
+                    AND pers_tree_id='" . $tree_id . "'
+                GROUP BY pers_id
+                )
+            ) as humo_persons1
+            ON humo_persons1.pers_id = humo_persons2.pers_id
+            ";
 
             // *** Order by pers_changed_date or pers_new_date, also order by pers_changed_time or pers_new_time ***
+            /*
             $person_qry .= " ORDER BY
                 IF (humo_persons2.pers_changed_date IS NOT NULL AND humo_persons2.pers_changed_date!='',
                     STR_TO_DATE(humo_persons2.pers_changed_date,'%d %b %Y'),
@@ -67,14 +97,26 @@ class Latest_changesModel
                 IF (humo_persons2.pers_changed_date IS NOT NULL AND humo_persons2.pers_changed_date!='',
                     humo_persons2.pers_changed_time, humo_persons2.pers_new_time
                     ) DESC LIMIT 0,100";
+            */
+            /*
+            $person_qry .= " ORDER BY
+                IF (humo_persons2.pers_changed_datetime IS NOT NULL,
+                    STR_TO_DATE(humo_persons2.pers_changed_datetime,'%d %b %Y'),
+                    STR_TO_DATE(humo_persons2.pers_new_datetime,'%d %b %Y')
+                    ) DESC LIMIT 0,100";
+            */
+            $person_qry .= " ORDER BY
+            IF (humo_persons2.pers_changed_datetime IS NOT NULL,
+                humo_persons2.pers_changed_datetime, humo_persons2.pers_new_datetime) DESC LIMIT 0,100";
+    
         }
 
         $person_result = $dbh->query($person_qry);
         $i = 1;
         $changes = array();
         while (@$person = $person_result->fetch(PDO::FETCH_OBJ)) {
-            $pers_changed_date = '';
-            if ($person->pers_changed_date) $pers_changed_date = $person->pers_changed_date;
+            //$pers_changed_date = '';
+            //if ($person->pers_changed_date) $pers_changed_date = $person->pers_changed_date;
 
             if ($person->pers_sexe == "M") {
                 $pers_sexe = '<img src="images/man.gif" alt="man">';
@@ -93,8 +135,8 @@ class Latest_changesModel
             $changes[$i]->show_person = $person_cls->person_popup_menu($person) . $pers_sexe;
             $changes[$i]->show_person .= '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
 
-            $changes[$i]->changed_date = language_date($pers_changed_date) . ' - ' . $person->pers_changed_time;
-            $changes[$i]->new_date = language_date($person->pers_new_date) . ' - ' . $person->pers_new_time;
+            $changes[$i]->changed_date = show_datetime($person->pers_changed_datetime);
+            $changes[$i]->new_date = show_datetime($person->pers_new_datetime);
 
             $i++;
         }

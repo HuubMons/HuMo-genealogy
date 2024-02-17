@@ -521,8 +521,8 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
             } else {
                 // *** Update settings ***
                 $result = $dbh->query("UPDATE humo_settings
-					SET setting_value='2012-01-01'
-					WHERE setting_variable='update_last_check'");
+                    SET setting_value='2012-01-01'
+                    WHERE setting_variable='update_last_check'");
                 $humo_option['update_last_check'] = '2012-01-01';
 
                 // *** Remove installation files ***

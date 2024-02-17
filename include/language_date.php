@@ -176,3 +176,15 @@ function hungarian_date($date_text)
     }
     return $date_text;
 }
+
+// *** Added feb. 2024. Function to show new_datetime and changed_datetime ***
+function show_datetime($datetime)
+{
+    // *** Is used in new_datetime if date was missing: 1970-01-01 00:00:01 ***
+    if ($datetime and $datetime != '1970-01-01 00:00:01') {
+        $datetime = language_date(date('d M Y - H:i:s', (strtotime($datetime))));
+    } else {
+        $datetime = '';
+    }
+    return $datetime;
+}

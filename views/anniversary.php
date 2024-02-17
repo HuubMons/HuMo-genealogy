@@ -23,7 +23,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 ?>
 
 <!-- *** Center page *** -->
-<div class="fonts center">
+<div class="center">
     <!-- *** Show month and year *** -->
     <h1 class="standard_header"><?= ucfirst($data["show_month"]) . ' ' . date("Y"); ?></h1>
 

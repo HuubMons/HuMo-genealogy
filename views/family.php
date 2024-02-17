@@ -26,10 +26,10 @@ function topline($data)
 
     <tr class="table_headline">
         <td class="table_header">
-            <div class="family_page_toptext fonts"><?= $treetext['family_top']; ?><br></div>
+            <div class="family_page_toptext"><?= $treetext['family_top']; ?><br></div>
         </td>
 
-        <td class="table_header fonts" width="220" style="text-align:right;">
+        <td class="table_header" width="220" style="text-align:right;">
             <!-- Hide selections for bots, and second family screen (descendant report etc.) -->
             <?php if (!$bot_visit and $descendant_loop == 0 and $parent1_marr == 0) { ?>
                 <!-- Settings in pop-up screen -->
@@ -285,7 +285,7 @@ if (!$data["family_id"]) {
         <tr>
             <td colspan="4">
                 <!--  Show person data -->
-                <span class="parent1 fonts">
+                <span class="parent1">
                     <?= $parent1_cls->name_extended("parent1"); ?>
                     <?= $parent1_cls->person_data("parent1", $id); ?>
                 </span>
@@ -343,7 +343,7 @@ else {
                 echo $data["descendant_header"];
             }
 
-            echo '<h2 class="standard_header fonts">' . ucfirst(__('generation ')) . $data["number_roman"][$descendant_loop + 1] . '</h2>';
+            echo '<h2 class="standard_header">' . ucfirst(__('generation ')) . $data["number_roman"][$descendant_loop + 1] . '</h2>';
         }
 
         // *** Nr of families in one generation ***
@@ -504,7 +504,7 @@ else {
                         if ($family_nr == 1) {
                     ?>
                             <!-- Show data of parent1 -->
-                            <div class="parent1 fonts">
+                            <div class="parent1">
                                 <?php
                                 // *** Show roman number in descendant_report ***
                                 if ($data["descendant_report"] == true) {
@@ -526,7 +526,7 @@ else {
                             </div>
                         <?php
                         } else {
-                            // *** Show standard marriage text and name in 2nd, 3rd, etc. marriage ***
+                            // *** Show standard marriage text and name in 2nd, 3rd, etc. marriage (relation) ***
                             echo $marriage_cls->marriage_data($familyDb, $family_nr, 'shorter') . '<br>';
                             echo $parent1_cls->name_extended("parent1") . '<br>';
                         }
@@ -554,7 +554,7 @@ else {
 
                         ?>
                         <br>
-                        <div class="marriage fonts">
+                        <div class="marriage">
                             <?php
                             // *** $family_privacy='1' = filter ***
                             if ($family_privacy) {
@@ -572,7 +572,7 @@ else {
                     // *** Parent2 (normally the mother)                         ***
                     // *************************************************************
                     ?>
-                    <div class="parent2 fonts">
+                    <div class="parent2">
                         <?php
                         // *** Person must be totally hidden ***
                         if ($user["group_pers_hide_totally_act"] == 'j' and isset($parent2Db->pers_own_code) and strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
@@ -988,14 +988,14 @@ else {
                         }
 
                         echo '];
-                                var ' . $group . ' = L.featureGroup(' . $markers . ').addTo(' . $map . ');
-                                setTimeout(function () {
-                                    ' . $map . '.fitBounds(' . $group . '.getBounds());
-                                }, 1000);
-                                L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
-                                    attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
-                                }).addTo(' . $map . ');
-                            </script>';
+                            var ' . $group . ' = L.featureGroup(' . $markers . ').addTo(' . $map . ');
+                            setTimeout(function () {
+                                ' . $map . '.fitBounds(' . $group . '.getBounds());
+                            }, 1000);
+                            L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
+                                attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
+                            }).addTo(' . $map . ');
+                        </script>';
                     } else {
                         $show_google_map = false;
                         // *** Only show main javascript once ***
@@ -1151,9 +1151,9 @@ if ($data["descendant_report"] == false) {
     echo $treetext['family_footer'];
 
     if ($user['group_user_notes_show'] == 'y') {
-        $note_qry = "SELECT * FROM humo_user_notes
-            WHERE note_tree_id='" . $tree_id . "'
-            AND note_connect_kind='person' AND note_connect_id='" . $data["main_person"] . "' AND note_kind='user' AND note_status = 'approved'";
+        $note_qry = "SELECT * FROM humo_user_notes WHERE note_tree_id='" . $tree_id . "'
+            AND note_connect_kind='person' AND note_connect_id='" . $data["main_person"] . "'
+            AND note_kind='user' AND note_status = 'approved'";
         $note_result = $dbh->query($note_qry);
         $num_rows = $note_result->rowCount();
     ?>
@@ -1172,24 +1172,29 @@ if ($data["descendant_report"] == false) {
                     ?>
                 </th>
             </tr>
+
             <?php
-
             while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
-                $user_qry = "SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'";
-                $user_result = $dbh->query($user_qry);
-                $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-
-                echo '<tr class="humo_color"><td valign="top">';
-                echo language_date($noteDb->note_new_date) . ' ' . $noteDb->note_new_time . ' ' . $userDb->user_name . '<br>';
-                echo '</td><td>';
-                echo nl2br($noteDb->note_note);
-                echo '</td></tr>';
-            }
+                $user_name = '';
+                if ($noteDb->note_new_user_id) {
+                    $user_qry = "SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'";
+                    $user_result = $dbh->query($user_qry);
+                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                    $user_name = $userDb->user_name;
+                }
             ?>
+                <tr class="humo_color">
+                    <td valign="top">
+                        <?= show_datetime($noteDb->note_new_datetime) . ' ' . $user_name; ?><br>
+                    </td>
+                    <td>
+                        <?= nl2br($noteDb->note_note); ?>
+                    </td>
+                </tr>
+            <?php } ?>
         </table><br>
         <?php
     }
-
 
     // *** User is allowed to add a note to a person in the family tree ***
     if ($user['group_user_notes'] == 'y' and is_numeric($_SESSION['user_id'])) {
@@ -1211,8 +1216,6 @@ if ($data["descendant_report"] == false) {
 
             // *** note_status show/ hide/ moderate options ***
             $sql = "INSERT INTO humo_user_notes SET
-                note_new_date='" . $gedcom_date . "',
-                note_new_time='" . $gedcom_time . "',
                 note_new_user_id='" . safe_text_db($_SESSION['user_id']) . "',
                 note_kind='user',
                 note_note='" . safe_text_db($_POST["user_note"]) . "',
@@ -1288,7 +1291,7 @@ if ($data["descendant_report"] == false) {
                 <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
                 <table align="center" class="humo" width="40%">
                     <tr id="add_info">
-                        <th class="fonts" colspan="2">
+                        <th colspan="2">
                             <a href="<?= $start_url; ?>#add_info" onclick="hideShow(1);"><span id="hideshowlink1">[+]</span></a>
                             <?= ' ' . __('Add information or remarks'); ?>
                         </th>
@@ -1319,12 +1322,12 @@ if ($data["descendant_report"] == false) {
                     ?>
                     <tr style="display:none;" id="row1" name="row1">
                         <td><?= __('Text'); ?></td>
-                        <td><textarea name="user_note" rows="5" cols="40" class="fonts"><?= $register_text; ?></textarea></td>
+                        <td><textarea name="user_note" rows="5" cols="40"><?= $register_text; ?></textarea></td>
                     </tr>
 
                     <tr style="display:none;" id="row1" name="row1">
                         <td></td>
-                        <td><input class="fonts" type="submit" name="send_mail" value="<?= __('Send'); ?>"></td>
+                        <td><input type="submit" name="send_mail" value="<?= __('Send'); ?>"></td>
                     </tr>
                 </table>
             </form>
