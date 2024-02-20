@@ -115,36 +115,45 @@ if (isset($_GET['menu_admin'])) {
                 $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
                 $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 
-                echo '<tr><td class="line_item">';
-                echo __('Path to the pictures');
-                echo '</td><td>';
-                // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
-                if (substr($data2Db->tree_pict_path, 0, 1) == '|') {
-                    $checked1 = ' checked';
-                    $checked2 = '';
-                } else {
-                    $checked1 = '';
-                    $checked2 = ' checked';
-                }
-                $tree_pict_path = $data2Db->tree_pict_path;
-                if (substr($data2Db->tree_pict_path, 0, 1) == '|') $tree_pict_path = substr($tree_pict_path, 1);
+            ?>
+                <tr>
+                    <td class="line_item">
+                        <?= __('Path to the pictures'); ?>
+                    </td>
+                    <td>
+                        <?php
+                        // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
+                        if (substr($data2Db->tree_pict_path, 0, 1) == '|') {
+                            $checked1 = ' checked';
+                            $checked2 = '';
+                        } else {
+                            $checked1 = '';
+                            $checked2 = ' checked';
+                        }
+                        $tree_pict_path = $data2Db->tree_pict_path;
+                        if (substr($data2Db->tree_pict_path, 0, 1) == '|') $tree_pict_path = substr($tree_pict_path, 1);
 
-                echo '<form method="POST" action="index.php">';
-                echo '<input type="hidden" name="page" value="thumbs">';
-                echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
+                        ?>
+                        <form method="POST" action="index.php">
+                            <input type="hidden" name="page" value="thumbs">
+                            <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
 
-                echo '<input type="radio" value="yes" name="default_path" ' . $checked1 . '> ' . __('Use default picture path:') . ' <b>media/</b><br>';
-                echo '<input type="radio" value="no" name="default_path" ' . $checked2 . '> ';
+                            <?php
+                            echo '<input type="radio" value="yes" name="default_path" ' . $checked1 . '> ' . __('Use default picture path:') . ' <b>media/</b><br>';
+                            echo '<input type="radio" value="no" name="default_path" ' . $checked2 . '> ';
 
-                echo '<input type="text" name="tree_pict_path" value="' . $tree_pict_path . '" size="40" placeholder="../pictures/">';
-                echo ' <input type="submit" name="change_tree_data" value="' . __('Change') . '"><br>';
-                printf(__('Example of picture path:<br>
+                            echo '<input type="text" name="tree_pict_path" value="' . $tree_pict_path . '" size="40" placeholder="../pictures/">';
+                            echo ' <input type="submit" name="change_tree_data" value="' . __('Change') . '" class="btn btn-sm btn-success"><br>';
+                            printf(__('Example of picture path:<br>
 www.myhomepage.nl/humo-gen/ => folder for %s files.<br>
 www.myhomepage.nl/pictures/ => folder for pictures.<br>
 Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealogy');
-                echo '</form>';
-                echo '</td></tr>';
+                            ?>
+                        </form>
+                    </td>
+                </tr>
+                <?php
 
                 // *** Show subdirectories ***
                 function get_media_files($first, $prefx, $path)
@@ -167,46 +176,52 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 }
 
                 // *** Status of picture path ***
-                echo '<tr><td class="line_item">';
-                echo __('Status of picture path');
-                echo '</td><td>';
                 $tree_pict_path = $data2Db->tree_pict_path;
                 if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
-                //if ($data2Db->tree_pict_path!='' AND file_exists($prefx.$data2Db->tree_pict_path))
-                if ($tree_pict_path != '' and file_exists($prefx . $tree_pict_path)) {
-                    echo __('Picture path exists.');
+                ?>
+                <tr>
+                    <td class="line_item">
+                        <?php
+                        echo __('Status of picture path');
+                        echo '</td><td>';
+                        if ($tree_pict_path != '' and file_exists($prefx . $tree_pict_path)) {
+                            echo __('Picture path exists.');
 
-                    // *** Show subdirectories ***
-                    $first = false;
-                    get_media_files($first, $prefx, $tree_pict_path);
-                } else {
-                    echo '<span class="line_nok"><b>' . __('Picture path doesn\'t exist!') . '</b></span>';
-                }
-                echo '</td></tr>';
+                            // *** Show subdirectories ***
+                            $first = false;
+                            get_media_files($first, $prefx, $tree_pict_path);
+                        } else {
+                            echo '<span class="line_nok"><b>' . __('Picture path doesn\'t exist!') . '</b></span>';
+                        }
+                        ?>
+                    </td>
+                </tr>
 
+                <?php
                 // *** Create thumbnails ***
                 if (isset($menu_admin) and $menu_admin == 'picture_thumbnails') {
                     // *** Thumb height ***
                     $thumb_height = 120; // *** Standard thumb height ***
-                    // *** Feb. 2023: no user changable picture size ***
-                    //if (isset($_POST['pict_height']) AND is_numeric($_POST['pict_height'])){ $thumb_height=$_POST['pict_height']; }
-                    echo '<tr><td class="line_item">';
-                    echo __('Create thumbnails');
-                    echo '</td><td>';
-                    echo '<form method="POST" action="index.php">';
-                    echo '<input type="hidden" name="page" value="thumbs">';
-                    echo '<input type="hidden" name="menu_admin" value="picture_thumbnails">';
-                    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-                    // *** Feb. 2023: no user changable picture size ***
-                    //echo __('Thumbnail height: ').' <input type="text" name="pict_height" value="'.$thumb_height.'" size="4"> pixels';
-                    echo ' <input type="submit" name="thumbnail" value="' . __('Create thumbnails') . '">';
-                    echo '</form>';
-                    echo '</td></tr>';
+                ?>
+                    <tr>
+                        <td class="line_item">
+                            <?= __('Create thumbnails'); ?>
+                        </td>
+                        <td>
+                            <form method="POST" action="index.php">
+                                <input type="hidden" name="page" value="thumbs">
+                                <input type="hidden" name="menu_admin" value="picture_thumbnails">
+                                <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                                <input type="submit" name="thumbnail" value="<?= __('Create thumbnails'); ?>" class="btn btn-sm btn-success">
+                            </form>
+                        </td>
+                    </tr>
+                <?php
                 }
 
                 // *** Show thumbnails ***
                 if (isset($menu_admin) and $menu_admin == 'picture_show') {
-            ?>
+                ?>
                     <tr>
                         <td class="line_item">
                             <?= __('Show thumbnails'); ?>
@@ -216,7 +231,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 <input type="hidden" name="page" value="thumbs">
                                 <input type="hidden" name="menu_admin" value="picture_show">
                                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                                <input type="submit" name="change_filename" value="<?= __('Show thumbnails'); ?>">
+                                <input type="submit" name="change_filename" value="<?= __('Show thumbnails'); ?>" class="btn btn-sm btn-success">
                                 <?= ' ' . __('You can change filenames here.'); ?>
                             </form>
                         </td>
@@ -226,9 +241,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             }
             ?>
         </table><br>
+        <?= $end_text; ?><br>
     <?php
-
-        echo $end_text . '<br>';
     }
 
 
@@ -664,7 +678,7 @@ function categories()
             ?>
         </table>
         <br>
-        <div style="margin-left:auto; margin-right:auto; text-align:center;"><input type="submit" name="save_cat" value="<?= __('Save changes'); ?>"></div>
+        <div style="margin-left:auto; margin-right:auto; text-align:center;"><input type="submit" name="save_cat" value="<?= __('Save changes'); ?>" class="btn btn-sm btn-success"></div>
     </form>
 <?php
 }

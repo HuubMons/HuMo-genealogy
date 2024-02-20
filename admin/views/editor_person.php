@@ -369,14 +369,14 @@
                             </tr>
 
                             <tr class="humo_color">
-                                <td colspan="3"><input type="submit" name="add_parents2" value="<?= __('Add parents'); ?>"></td>
+                                <td colspan="3"><input type="submit" name="add_parents2" value="<?= __('Add parents'); ?>" class="btn btn-sm btn-success"></td>
                             </tr>
                         </table><br>
 
                         <?= __('Or select an existing family as parents:'); ?>
                         <input type="text" name="add_parents" placeholder="<?= __('GEDCOM number (ID)'); ?>" value="" size="20">
                         <a href="#" onClick='window.open("index.php?page=editor_relation_select","","<?= $field_popup; ?>")'><img src="../images/search.png" alt=<?= __('Search'); ?>></a>
-                        <input type="submit" name="dummy2" value="<?= __('Select'); ?>">
+                        <input type="submit" name="dummy2" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
                     </span> <!-- End of hide item -->
                 <?php
             }
@@ -412,7 +412,7 @@
                 $hide_show_all = '<a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">[+]</span> ' . __('All') . '</a> ';
 
                 if ($add_person == false) {
-                    echo '<td>' . $hide_show_all . ' <input type="submit" name="person_remove" value="' . __('Delete person') . '"></td>';
+                    echo '<td>' . $hide_show_all . ' <input type="submit" name="person_remove" value="' . __('Delete person') . '" class="btn btn-sm btn-secondary"></td>';
                     //echo '<td style="border-right: none"></td>';
                 } else {
                     // *** New person: no delete example link ***
@@ -441,9 +441,9 @@
                 echo '</th><td>';
 
                 if ($add_person == false) {
-                    echo '<input type="submit" name="person_change" value="' . __('Save') . '">';
+                    echo '<input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
                 } else {
-                    echo '<input type="submit" name="person_add" value="' . __('Add') . '">';
+                    echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
                 }
                 ?>
                 </td>
@@ -513,7 +513,7 @@
                     echo '<textarea rows="1" name="pers_name_text" ' . $field_text_selected . '>' . $text . '</textarea>';
 
                     //TEST
-                    //echo '<br><br><input type="submit" name="person_change" value="' . __('Save') . '">';
+                    //echo '<br><br><input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
 
                     //TEST Ajax script
                     /*
@@ -559,7 +559,7 @@
 <input id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" type="text">
 <label>Name:</label>
 <input id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" type="text">
-<input id="submit_ajax" type="button" value="Submit">
+<input id="submit_ajax" type="button" value="Submit" class="btn btn-sm btn-success">
     <?php
 // END TEST SCRIPT
 */
@@ -1559,9 +1559,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             echo '<td></td><td colspan="2"></td>';
             echo '<td style="border-left: none; text-align:left; font-size: 1.5em;">';
             if ($add_person == false) {
-                echo '<input type="submit" name="person_change" value="' . __('Save') . '">';
+                echo '<input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
             } else {
-                echo '<input type="submit" name="person_add" value="' . __('Add') . '">';
+                echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
             }
             echo '</td>';
             echo '</tr>';

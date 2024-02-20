@@ -115,27 +115,29 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
     <table class="humo standard" border="1">
-        <?php
-        echo '<tr class="table_header"><th>' . __('Group');
-        if ($groupDb->group_id > '3') {
-            echo ' <input type="submit" name="group_remove" value="' . __('REMOVE GROUP') . '">';
-        }
-        echo '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        <tr class="table_header">
+            <th><?= __('Group'); ?>
+                <?php
+                if ($groupDb->group_id > '3') {
+                    echo ' <input type="submit" name="group_remove" value="' . __('REMOVE GROUP') . '" class="btn btn-sm btn-secondary">';
+                }
+                echo '</th><th><input type="submit" name="group_change" value="' . __('Change') . '" class="btn btn-sm btn-success"></th></tr>';
 
-        echo '<tr><td>' . __('Group name') . '</td><td><input type="text" name="group_name" value="' . $groupDb->group_name . '" size="15"></td></tr>';
+                echo '<tr><td>' . __('Group name') . '</td><td><input type="text" name="group_name" value="' . $groupDb->group_name . '" size="15"></td></tr>';
 
-        echo '<tr><td>' . __('Administrator') . '</td>';
-        $check = '';
-        if ($groupDb->group_admin != 'n') $check = ' checked';
-        // *** Administrator group: don't change admin rights for administrator ***
-        $disabled = '';
-        if ($groupDb->group_id == '1') {
-            $disabled = ' disabled';
-            echo '<input type="hidden" name="group_admin" value="' . $groupDb->group_admin . '">';
-        }
-        echo '<td><input type="checkbox" name="group_admin"' . $check . $disabled . '></td></tr>';
+                echo '<tr><td>' . __('Administrator') . '</td>';
+                $check = '';
+                if ($groupDb->group_admin != 'n') $check = ' checked';
+                // *** Administrator group: don't change admin rights for administrator ***
+                $disabled = '';
+                if ($groupDb->group_id == '1') {
+                    $disabled = ' disabled';
+                    echo '<input type="hidden" name="group_admin" value="' . $groupDb->group_admin . '">';
+                }
+                ?>
+            <td><input type="checkbox" name="group_admin" <?= $check . $disabled; ?>></td>
+        </tr>
 
-        ?>
         <tr>
             <td><?= __('Save statistics data'); ?></td>
             <td><input type="checkbox" name="group_statistics" <?php if ($groupDb->group_statistics != 'n') echo ' checked' ?>></td>
@@ -143,7 +145,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <tr class="table_header">
             <th><?= __('Menu'); ?></th>
-            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>"></th>
+            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
 
         <tr>
@@ -201,367 +203,565 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
             <td><input type="checkbox" name="group_googlemaps" <?php if ($groupDb->group_googlemaps != 'n') echo ' checked'; ?>></td>
         </tr>
 
-        <?php
-        echo '<tr><td>' . __('TOOLS menu: show "Contact" submenu (only shown if tree owner and email were entered)') . '</td>';
-        $check = '';
-        if ($groupDb->group_contact != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_contact"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('TOOLS menu: show "Contact" submenu (only shown if tree owner and email were entered)'); ?></td>
+            <td><input type="checkbox" name="group_contact" <?= $groupDb->group_contact != 'n' ? 'checked' : ''; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('TOOLS menu: show "Latest changes" submenu') . '</td>';
-        $check = '';
-        if ($groupDb->group_latestchanges != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_latestchanges"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('TOOLS menu: show "Latest changes" submenu'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_latestchanges != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_latestchanges" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show "Login" link (can be changed in group "guest" only)') . '</td>';
-        // *** Only change this item for guest group ***
-        $disabled = '';
-        if ($groupDb->group_id != '3') {
-            $disabled = ' disabled';
-            echo '<input type="hidden" name="group_menu_login" value="' . $groupDb->group_menu_login . '">';
-        }
-        $check = '';
-        if ($groupDb->group_menu_login != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_menu_login"' . $check . $disabled . '></td></tr>';
+        <tr>
+            <td><?= __('Show "Login" link (can be changed in group "guest" only)'); ?></td>
+            <?php
+            // *** Only change this item for guest group ***
+            $disabled = '';
+            if ($groupDb->group_id != '3') {
+                $disabled = ' disabled';
+                echo '<input type="hidden" name="group_menu_login" value="' . $groupDb->group_menu_login . '">';
+            }
+            $check = '';
+            if ($groupDb->group_menu_login != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_menu_login" <?= $check . $disabled; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Is allowed to change password') . '</td>';
-        $check = '';
-        if ($groupDb->group_menu_change_password != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_menu_change_password"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Is allowed to change password'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_menu_change_password != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_menu_change_password" <?= $check; ?>></td>
+        </tr>
 
-        //echo '<tr style="background-color:green; color:white"><th>'.__('General').'</font></th><th><input type="submit" name="group_change" value="'.__('Change').'"></th></tr>';
-        echo '<tr class="table_header"><th>' . __('General') . '</font></th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        <tr class="table_header">
+            <th><?= __('General'); ?></font>
+            </th>
+            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+        </tr>
 
-        echo '<tr><td>' . __('Show pictures');
-        echo ' <i>' . __('(option can only be disabled if option "Show photobook in submenu" is disabled)') . '</i>';
-        echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">' . __('Pictures/ create thumbnails') . '.</a>';
-        echo '</td>';
-        $check = '';
-        if ($groupDb->group_pictures != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_pictures"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show pictures'); ?>
+                <i><?= __('(option can only be disabled if option "Show photobook in submenu" is disabled)'); ?></i>
+                &nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs"><?= __('Pictures/ create thumbnails'); ?></a>
+            </td>
+            <?php
+            $check = '';
+            if ($groupDb->group_pictures != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_pictures" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show Gedcom number (from gedcom file)') . '</td>';
-        $check = '';
-        if ($groupDb->group_gedcomnr != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_gedcomnr"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show Gedcom number (from gedcom file)'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_gedcomnr != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_gedcomnr" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show residence and address') . '</td>';
-        $check = '';
-        if ($groupDb->group_living_place != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_living_place"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show residence and address'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_living_place != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_living_place" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show places with bapt., birth, death and cemetery.') . '</td>';
-        $check = '';
-        if ($groupDb->group_places != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_places"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show places with bapt., birth, death and cemetery.'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_places != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_places" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show religion (with bapt. and wedding)') . '</td>';
-        $check = '';
-        if ($groupDb->group_religion != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_religion"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show religion (with bapt. and wedding)'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_religion != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_religion" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show date and place (i.e. with birth, bapt., death, cemetery.)') . '</td>';
-        echo '<td><select size="1" name="group_place_date"><option value="j">Alkmaar 18 feb 1965</option>';
-        $selected = '';
-        if ($groupDb->group_place_date == 'n') {
-            $selected = ' selected';
-        }
-        echo '<option value="n"' . $selected . '>18 feb 1965 Alkmaar</option></select></td></tr>';
+        <tr>
+            <td><?= __('Show date and place (i.e. with birth, bapt., death, cemetery.)'); ?></td>
+            <td>
+                <select size="1" name="group_place_date">
+                    <option value="j">Alkmaar 18 feb 1965</option>
+                    <?php
+                    $selected = '';
+                    if ($groupDb->group_place_date == 'n') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <option value="n" <?= $selected; ?>>18 feb 1965 Alkmaar</option>
+                </select>
+            </td>
+        </tr>
 
-        echo '<tr><td>' . __('Show name in indexes') . '</td><td><select size="1" name="group_kindindex">';
-        echo "<option value='j'>van Mons, Henk</option>";
-        $selected = '';
-        if ($groupDb->group_kindindex == 'n') {
-            $selected = ' selected';
-        }
-        echo '<option value="n"' . $selected . '>Mons, Henk van</option></select></td></tr>';
+        <tr>
+            <td><?= __('Show name in indexes'); ?></td>
+            <td><select size="1" name="group_kindindex">
+                    <option value='j'>van Mons, Henk</option>
+                    <?php
+                    $selected = '';
+                    if ($groupDb->group_kindindex == 'n') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <option value="n" <?= $selected; ?>>Mons, Henk van</option>
+                </select></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show events') . '</td>';
-        $check = '';
-        if ($groupDb->group_event != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_event"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show events'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_event != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_event" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show own code') . '</td>';
-        $check = '';
-        if ($groupDb->group_own_code != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_own_code"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show own code'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_own_code != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_own_code" <?= $check; ?>></td>
+        </tr>
 
-        // *** First default presentation of a family page (visitor can override value) ***
-        echo '<tr><td>' . __('Default presentation of family page') . '</td>';
-        echo '<td><select size="1" name="group_family_presentation">';
-        $selected = '';
-        if ($groupDb->group_family_presentation == 'compact') {
-            $selected = ' selected';
-        }
-        echo '<option value="compact"' . $selected . '>' . __('Compact view') . '</option>';
-        $selected = '';
-        if ($groupDb->group_family_presentation == 'expanded') {
-            $selected = ' selected';
-        }
-        echo '<option value="expanded"' . $selected . '>' . __('Expanded view') . '</option></select></td></tr>';
+        <!-- First default presentation of a family page (visitor can override value) -->
+        <tr>
+            <td><?= __('Default presentation of family page'); ?></td>
+            <td>
+                <select size="1" name="group_family_presentation">
+                    <?php
+                    $selected = '';
+                    if ($groupDb->group_family_presentation == 'compact') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="compact"' . $selected . '>' . __('Compact view') . '</option>';
+                    $selected = '';
+                    if ($groupDb->group_family_presentation == 'expanded') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="expanded"' . $selected . '>' . __('Expanded view') . '</option>';
+                    ?>
+                </select>
+            </td>
+        </tr>
 
-        // *** First default presentation of Google maps in family page (visitor can override value) ***
-        echo '<tr><td>' . __('Default presentation of Google maps in family page') . '</td>';
-        echo '<td><select size="1" name="group_maps_presentation">';
-        $selected = '';
-        if ($groupDb->group_maps_presentation == 'show') {
-            $selected = ' selected';
-        }
-        echo '<option value="show"' . $selected . '>' . __('Show Google maps') . '</option>';
-        $selected = '';
-        if ($groupDb->group_maps_presentation == 'hide') {
-            $selected = ' selected';
-        }
-        echo '<option value="hide"' . $selected . '>' . __('Hide Google maps') . '</option></select></td></tr>';
+        <!-- First default presentation of Google maps in family page (visitor can override value) -->
+        <tr>
+            <td><?= __('Default presentation of Google maps in family page'); ?></td>
+            <td>
+                <select size="1" name="group_maps_presentation">
+                    <?php
+                    $selected = '';
+                    if ($groupDb->group_maps_presentation == 'show') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="show"' . $selected . '>' . __('Show Google maps') . '</option>';
+                    $selected = '';
+                    if ($groupDb->group_maps_presentation == 'hide') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="hide"' . $selected . '>' . __('Hide Google maps') . '</option>';
+                    ?>
+                </select>
+            </td>
+        </tr>
 
-        // *** Show age of living person ***
-        echo '<tr><td>' . __('Show age of living person') . '</td>';
-        $check = '';
-        if ($groupDb->group_show_age_living_person != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_show_age_living_person"' . $check . '></td></tr>';
+        <!-- Show age of living person -->
+        <tr>
+            <td><?= __('Show age of living person'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_show_age_living_person != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_show_age_living_person" <?= $check; ?>></td>
+        </tr>
 
-        // *** Show PDF report button ***
-        echo '<tr><td>' . __('Show "PDF Report" button in family screen and reports') . '</td>';
-        $check = '';
-        if ($groupDb->group_pdf_button != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_pdf_button"' . $check . '></td></tr>';
+        <!-- Show PDF report button -->
+        <tr>
+            <td><?= __('Show "PDF Report" button in family screen and reports'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_pdf_button != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_pdf_button" <?= $check; ?>></td>
+        </tr>
 
-        // *** Show RTF report button ***
-        echo '<tr><td>' . __('Show "RTF Report" button in family screen and reports') . '</td>';
-        $check = '';
-        if ($groupDb->group_rtf_button != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_rtf_button"' . $check . '></td></tr>';
+        <!-- Show RTF report button -->
+        <tr>
+            <td><?= __('Show "RTF Report" button in family screen and reports'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_rtf_button != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_rtf_button" <?= $check; ?>></td>
+        </tr>
 
-        // *** Show Citation generation ***
-        echo '<tr><td>' . __('Generate citations (can be used as source).') . '</td>';
-        $check = '';
-        if ($groupDb->group_citation_generation != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_citation_generation"' . $check . '></td></tr>';
+        <!-- Show Citation generation -->
+        <tr>
+            <td><?= __('Generate citations (can be used as source).'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_citation_generation != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_citation_generation" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('User is allowed to add notes/ remarks by a person in the family tree') . '. ' . __('Disabled in group "Guest"') . '</td>';
-        $disabled = '';
-        if ($groupDb->group_id == '3') {
-            $disabled = ' disabled';
-        } // *** Disable this option in "Guest" group.
-        $check = '';
-        if ($groupDb->group_user_notes != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_user_notes"' . $check . $disabled . '></td></tr>';
+        <tr>
+            <td><?= __('User is allowed to add notes/ remarks by a person in the family tree') . '. ' . __('Disabled in group "Guest"'); ?></td>
+            <?php
+            $disabled = '';
+            if ($groupDb->group_id == '3') {
+                $disabled = ' disabled';
+            } // *** Disable this option in "Guest" group.
+            $check = '';
+            if ($groupDb->group_user_notes != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_user_notes" <?= $check . $disabled; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('User can see notes/ remarks added by other users in the family tree') . '.</td>';
-        $disabled = ''; //if ($groupDb->group_id=='3'){ $disabled=' disabled';} // *** Disable this option in "Guest" group.
-        $check = '';
-        if ($groupDb->group_user_notes_show != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_user_notes_show"' . $check . $disabled . '></td></tr>';
+        <tr>
+            <td><?= __('User can see notes/ remarks added by other users in the family tree'); ?></td>
+            <?php
+            $disabled = ''; //if ($groupDb->group_id=='3'){ $disabled=' disabled';} // *** Disable this option in "Guest" group.
+            $check = '';
+            if ($groupDb->group_user_notes_show != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_user_notes_show" <?= $check . $disabled; ?>></td>
+        </tr>
 
-        // *** Sources ***
-        //echo '<tr style="background-color:green; color:white"><th>'.__('Sources').'</th><th><input type="submit" name="group_change" value="'.__('Change').'"></th></tr>';
-        echo '<tr class="table_header"><th>' . __('Sources') . '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        <!-- Sources -->
+        <tr class="table_header">
+            <th><?= __('Sources'); ?></th>
+            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+        </tr>
 
-        echo '<tr><td>' . __('Don\'t show sources') . '<br>';
-        echo __('Only show source titles') . '<br>';
-        echo __('Show sources and menu sources') . '<br>';
-        echo '</td>';
-        $selected = '';
-        if ($groupDb->group_sources == 'n') {
-            $selected = ' checked';
-        }
-        echo '<td><input type="radio" name="group_sources" value="n"' . $selected . '><br>';
-        $selected = '';
-        if ($groupDb->group_sources == 't') {
-            $selected = ' checked';
-        }
-        echo '<input type="radio" name="group_sources" value="t"' . $selected . '><br>';
-        $selected = '';
-        if ($groupDb->group_sources == 'j') {
-            $selected = ' checked';
-        }
-        echo '<input type="radio" name="group_sources" value="j"' . $selected . '><br>';
-        echo '</td></tr>';
+        <tr>
+            <td><?= __('Don\'t show sources'); ?><br>
+                <?= __('Only show source titles'); ?><br>
+                <?= __('Show sources and menu sources'); ?><br>
+            </td>
+            <?php
+            $selected = '';
+            if ($groupDb->group_sources == 'n') {
+                $selected = ' checked';
+            }
+            echo '<td><input type="radio" name="group_sources" value="n"' . $selected . '><br>';
+            $selected = '';
+            if ($groupDb->group_sources == 't') {
+                $selected = ' checked';
+            }
+            echo '<input type="radio" name="group_sources" value="t"' . $selected . '><br>';
+            $selected = '';
+            if ($groupDb->group_sources == 'j') {
+                $selected = ' checked';
+            }
+            echo '<input type="radio" name="group_sources" value="j"' . $selected . '><br>';
+            ?>
+            </td>
+        </tr>
 
-        // *** First default presentation of sources, by administrator (visitor can override value) ***
-        echo '<tr><td>' . __('Default presentation of source') . '</td>';
-        echo '<td><select size="1" name="group_source_presentation">';
-        $selected = '';
-        if ($groupDb->group_source_presentation == 'title') {
-            $selected = ' selected';
-        }
-        echo '<option value="title"' . $selected . '>' . __('Show source') . '</option>';
-        $selected = '';
-        if ($groupDb->group_source_presentation == 'footnote') {
-            $selected = ' selected';
-        }
-        echo '<option value="footnote"' . $selected . '>' . __('Show source as footnote') . '</option>';
-        $selected = '';
-        if ($groupDb->group_source_presentation == 'hide') {
-            $selected = ' selected';
-        }
-        echo '<option value="hide"' . $selected . '>' . __('Hide sources') . '</option></select></td></tr>';
+        <!-- First default presentation of sources, by administrator (visitor can override value) -->
+        <tr>
+            <td><?= __('Default presentation of source'); ?></td>
+            <td>
+                <select size="1" name="group_source_presentation">
+                    <?php
+                    $selected = '';
+                    if ($groupDb->group_source_presentation == 'title') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="title"' . $selected . '>' . __('Show source') . '</option>';
+                    $selected = '';
+                    if ($groupDb->group_source_presentation == 'footnote') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="footnote"' . $selected . '>' . __('Show source as footnote') . '</option>';
+                    $selected = '';
+                    if ($groupDb->group_source_presentation == 'hide') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <option value="hide" <?= $selected; ?>><?= __('Hide sources'); ?></option>
+                </select>
+            </td>
+        </tr>
 
-        echo '<tr><td>' . __('Show restricted source') . '</td>';
-        $check = '';
-        if ($groupDb->group_show_restricted_source != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_show_restricted_source"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show restricted source'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_show_restricted_source != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_show_restricted_source" <?= $check; ?>></td>
+        </tr>
 
-        //echo '<tr style="background-color:green; color:white"><th>'.__('Texts').'</th><th><input type="submit" name="group_change" value="'.__('Change').'"></th></tr>';
-        echo '<tr class="table_header"><th>' . __('Texts') . '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        <tr class="table_header">
+            <th><?= __('Texts'); ?></th>
+            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+        </tr>
 
-        // *** First default presentation of texts, by administrator (visitor can override value) ***
-        echo '<tr><td>' . __('Default presentation of text') . '</td>';
-        echo '<td><select size="1" name="group_text_presentation">';
-        $selected = '';
-        if ($groupDb->group_text_presentation == 'show') {
-            $selected = ' selected';
-        }
-        echo '<option value="show"' . $selected . '>' . __('Show texts') . '</option>';
-        $selected = '';
-        if ($groupDb->group_text_presentation == 'popup') {
-            $selected = ' selected';
-        }
-        echo '<option value="popup"' . $selected . '>' . __('Show texts in popup screen') . '</option>';
-        $selected = '';
-        if ($groupDb->group_text_presentation == 'hide') {
-            $selected = ' selected';
-        }
-        echo '<option value="hide"' . $selected . '>' . __('Hide texts') . '</option></select></td></tr>';
+        <!-- First default presentation of texts, by administrator (visitor can override value) -->
+        <tr>
+            <td><?= __('Default presentation of text'); ?></td>
+            <td>
+                <select size="1" name="group_text_presentation">
+                    <?php
+                    $selected = '';
+                    if ($groupDb->group_text_presentation == 'show') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="show"' . $selected . '>' . __('Show texts') . '</option>';
+                    $selected = '';
+                    if ($groupDb->group_text_presentation == 'popup') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="popup"' . $selected . '>' . __('Show texts in popup screen') . '</option>';
+                    $selected = '';
+                    if ($groupDb->group_text_presentation == 'hide') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <option value="hide" <?= $selected; ?>><?= __('Hide texts'); ?></option>
+                </select>
+            </td>
+        </tr>
 
-        echo '<tr><td>' . __('Show hidden text/ own remarks (text between # characters in text fields, example: #check birthday#)') . '</td>';
-        $check = '';
-        if ($groupDb->group_work_text != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_work_text"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show hidden text/ own remarks (text between # characters in text fields, example: #check birthday#)'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_work_text != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_work_text" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>';
+        <tr>
+            <td>
+                <?php
+                // *** SPARE ITEM ***
+                echo '<input type="hidden" name="group_texts" value="j">';
+                //echo '<tr><td>'.__('Show text at wedding [NOT YET IN USE]').'</td>';
+                //echo '<td><select size="1" name="group_texts"><option value="j">'.__('Yes').'</option>';
+                //$selected=''; if ($groupDb->group_texts=='n'){ $selected=' selected'; }
+                //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
 
-        // *** SPARE ITEM ***
-        echo '<input type="hidden" name="group_texts" value="j">';
-        //echo '<tr><td>'.__('Show text at wedding [NOT YET IN USE]').'</td>';
-        //echo '<td><select size="1" name="group_texts"><option value="j">'.__('Yes').'</option>';
-        //$selected=''; if ($groupDb->group_texts=='n'){ $selected=' selected'; }
-        //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
+                echo __('Show text with person') . '</td>';
+                $check = '';
+                if ($groupDb->group_text_pers != 'n') $check = ' checked';
+                ?>
+            <td><input type="checkbox" name="group_text_pers" <?= $check; ?>></td>
+        </tr>
 
-        echo __('Show text with person') . '</td>';
-        $check = '';
-        if ($groupDb->group_text_pers != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_text_pers"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show text with bapt., birth, death, cemetery'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_texts_pers != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_texts_pers" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show text with bapt., birth, death, cemetery') . '</td>';
-        $check = '';
-        if ($groupDb->group_texts_pers != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_texts_pers"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Show text with pre-nuptial etc.'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_texts_fam != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_texts_fam" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Show text with pre-nuptial etc.') . '</td>';
-        $check = '';
-        if ($groupDb->group_texts_fam != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_texts_fam"' . $check . '></td></tr>';
+        <tr class="table_header">
+            <th><?= __('Privacy filter'); ?></th>
+            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+        </tr>
 
-        //echo '<tr style="background-color:green; color:white"><th>'.__('Privacy filter').'</th><th><input type="submit" name="group_change" value="'.__('Change').'"></th></tr>';
-        echo '<tr class="table_header"><th>' . __('Privacy filter') . '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
+        <tr>
+            <th><?= __('Activate privacy filter'); ?></th>
+            <td></td>
+        </tr>
 
-        echo '<tr><th>' . __('Activate privacy filter') . '</th><td></td></tr>';
+        <tr>
+            <td><?= __('Activate privacy filter'); ?><br>
+                <i><?= __('TIP: the best privacy filter is your genealogy program<br>
+If possible, try to filter with that'); ?></i>
+            </td>
+            <?php
+            // *** BE AWARE: REVERSED CHECK OF VARIABLE! ***
+            $check = '';
+            if ($groupDb->group_privacy == 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_privacy" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('Activate privacy filter') . '<br>';
-        echo '<i>' . __('TIP: the best privacy filter is your genealogy program<br>
-If possible, try to filter with that') . '</i></td>';
-        // *** BE AWARE: REVERSED CHECK OF VARIABLE! ***
-        $check = '';
-        if ($groupDb->group_privacy == 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_privacy"' . $check . '></td></tr>';
+        <tr>
+            <th><?= __('Privacy filter settings'); ?></th>
+            <td></td>
+        </tr>
 
-        echo '<tr><th>' . __('Privacy filter settings') . '</th><td></td></tr>';
+        <tr>
+            <td>1)
+                <?php printf(__('%s (alive or deceased), Aldfaer (death sign), Haza-data (filter living persons)'), 'HuMo-genealogy'); ?>
+            </td>
+            <?php
+            $check = '';
+            if ($groupDb->group_alive != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_alive" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>1) ';
-        printf(__('%s (alive or deceased), Aldfaer (death sign), Haza-data (filter living persons)'), 'HuMo-genealogy');
-        echo '</td>';
+        <tr>
+            <td>2) <?= __('Privacy filter, filter persons born in or after this year'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_alive_date_act != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_alive_date_act" <?= $check; ?>>
+                <?= __('Year'); ?>: <input type="text" name="group_alive_date" value="<?= $groupDb->group_alive_date; ?>" size="4"></td>
+        </tr>
 
-        $check = '';
-        if ($groupDb->group_alive != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_alive"' . $check . '></td></tr>';
+        <tr>
+            <td>3) <?= __('Privacy filter, filter persons deceased in or after this year'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_death_date_act != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_death_date_act" <?= $check; ?>>
+                <?= __('Year'); ?>: <input type="text" name="group_death_date" value="<?= $groupDb->group_death_date; ?>" size="4"></td>
+        </tr>
 
-        echo '<tr><td>2) ' . __('Privacy filter, filter persons born in or after this year') . '</td>';
-        $check = '';
-        if ($groupDb->group_alive_date_act != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_alive_date_act"' . $check . '>';
-        echo ' ' . __('Year') . ': <input type="text" name="group_alive_date" value="' . $groupDb->group_alive_date . '" size="4"></td></tr>';
+        <tr>
+            <td><?= __('Also filter data of deceased persons (for filter 2)'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_filter_death != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_filter_death" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>3) ' . __('Privacy filter, filter persons deceased in or after this year') . '</td>';
-        $check = '';
-        if ($groupDb->group_death_date_act != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_death_date_act"' . $check . '>';
-        echo ' ' . __('Year') . ': <input type="text" name="group_death_date" value="' . $groupDb->group_death_date . '" size="4"></td></tr>';
+        <tr>
+            <th><?= __('Privacy filter exceptions'); ?></th>
+            <td></td>
+        </tr>
 
-        echo '<tr><td>' . __('Also filter data of deceased persons (for filter 2)') . '</td>';
-        $check = '';
-        if ($groupDb->group_filter_death != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_filter_death"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('DO show privacy data of persons (with the following text in own code)'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_filter_pers_show_act != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_filter_pers_show_act" <?= $check; ?>>
+                <?= __('Text'); ?>: <input type="text" name="group_filter_pers_show" value="<?= $groupDb->group_filter_pers_show; ?>" size="10"></td>
+        </tr>
 
-        echo '<tr><th>' . __('Privacy filter exceptions') . '</th><td></td></tr>';
+        <tr>
+            <td><?= __('HIDE privacy data of persons (with the following text in own code)'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_filter_pers_hide_act != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_filter_pers_hide_act" <?= $check; ?>>
+                <?= __('Text'); ?>: <input type="text" name="group_filter_pers_hide" value="<?= $groupDb->group_filter_pers_hide; ?>" size="10"></td>
+        </tr>
 
-        echo '<tr><td>' . __('DO show privacy data of persons (with the following text in own code)') . '</td>';
-        $check = '';
-        if ($groupDb->group_filter_pers_show_act != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_filter_pers_show_act"' . $check . '>';
-        echo ' ' . __('Text') . ': <input type="text" name="group_filter_pers_show" value="' . $groupDb->group_filter_pers_show . '" size="10"></td></tr>';
+        <tr>
+            <td><?= __('TOTALLY filter persons (with the following text in own code)'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_pers_hide_totally_act != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_pers_hide_totally_act" <?= $check; ?>>
+                <?= __('Text'); ?>: <input type="text" name="group_pers_hide_totally" value="<?= $groupDb->group_pers_hide_totally; ?>" size="10"></td>
+        </tr>
 
-        echo '<tr><td>' . __('HIDE privacy data of persons (with the following text in own code)') . '</td>';
-        $check = '';
-        if ($groupDb->group_filter_pers_hide_act != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_filter_pers_hide_act"' . $check . '>';
-        echo ' ' . __('Text') . ': <input type="text" name="group_filter_pers_hide" value="' . $groupDb->group_filter_pers_hide . '" size="10"></td></tr>';
+        <tr>
+            <th><?= __('Extra privacy filter option'); ?></th>
+            <td></td>
+        </tr>
 
-        echo '<tr><td>' . __('TOTALLY filter persons (with the following text in own code)') . '</td>';
-        $check = '';
-        if ($groupDb->group_pers_hide_totally_act != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_pers_hide_totally_act"' . $check . '>';
-        echo ' ' . __('Text') . ': <input type="text" name="group_pers_hide_totally" value="' . $groupDb->group_pers_hide_totally . '" size="10"></td></tr>';
+        <tr>
+            <td><?= __('Show persons with no date information<br>
+<i>with these persons the privacy filter cannot calculate if they are alive</i>'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_filter_date != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_filter_date" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><th>' . __('Extra privacy filter option') . '</th><td></td></tr>';
+        <tr>
+            <td><?= __('With privacy show names'); ?></td>
+            <td>
+                <select size="1" name="group_filter_name">
+                    <option value="j"><?= __('Yes'); ?></option>
+                    <?php
+                    $selected = '';
+                    if ($groupDb->group_filter_name == 'n') {
+                        $selected = ' selected';
+                    }
+                    echo '<option value="n"' . $selected . '>' . __('No') . '</option>';
+                    $selected = '';
+                    if ($groupDb->group_filter_name == 'i') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <option value="i" <?= $selected; ?>><?= __('Show initials: D. E. Duck'); ?></option>
+                </select>
+            </td>
+        </tr>
 
-        echo '<tr><td>' . __('Show persons with no date information<br>
-<i>with these persons the privacy filter cannot calculate if they are alive</i>') . '</td>';
-        $check = '';
-        if ($groupDb->group_filter_date != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_filter_date"' . $check . '></td></tr>';
+        <tr>
+            <td><?= __('Genealogical copy protection<br>
+<i>family browsing disabled, no family trees</i>'); ?></td>
+            <?php
+            $check = '';
+            if ($groupDb->group_gen_protection != 'n') $check = ' checked';
+            ?>
+            <td><input type="checkbox" name="group_gen_protection" <?= $check; ?>></td>
+        </tr>
 
-        echo '<tr><td>' . __('With privacy show names') . '</td>';
-        echo '<td><select size="1" name="group_filter_name"><option value="j">' . __('Yes') . '</option>';
-        $selected = '';
-        if ($groupDb->group_filter_name == 'n') {
-            $selected = ' selected';
-        }
-        echo '<option value="n"' . $selected . '>' . __('No') . '</option>';
-        $selected = '';
-        if ($groupDb->group_filter_name == 'i') {
-            $selected = ' selected';
-        }
-        echo '<option value="i"' . $selected . '>' . __('Show initials: D. E. Duck') . '</option></select></td></tr>';
+        <tr class="table_header">
+            <th>
+                <?php
+                // *** SPARE ITEM ***
+                echo '<input type="hidden" name="group_filter_fam" value="n">';
+                //echo '<tr><td>'.__('Filter family').'</td>';
+                //echo '<td><select size="1" name="group_filter_fam"><option value="j">'.__('Yes').'</option>';
+                //$selected=''; if ($groupDb->group_filter_fam=='n'){ $selected=' selected'; }
+                //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
 
-        echo '<tr><td>' . __('Genealogical copy protection<br>
-<i>family browsing disabled, no family trees</i>') . '</td>';
-        $check = '';
-        if ($groupDb->group_gen_protection != 'n') $check = ' checked';
-        echo '<td><input type="checkbox" name="group_gen_protection"' . $check . '></td></tr>';
+                // *** SPARE ITEM ***
+                echo '<input type="hidden" name="group_filter_total" value="n">';
+                //echo '<tr><td>'.__('Filter totally').'</td>';
+                //echo '<td><select size="1" name="group_filter_total"><option value="j">'.__('Yes').'</option>';
+                //$selected=''; if ($groupDb->group_filter_total=='n'){ $selected=' selected'; }
+                //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
+                ?>
 
-        //echo '<tr style="background-color:green; color:white"><th bgcolor=green>';
-        echo '<tr class="table_header"><th>';
-
-        // *** SPARE ITEM ***
-        echo '<input type="hidden" name="group_filter_fam" value="n">';
-        //echo '<tr><td>'.__('Filter family').'</td>';
-        //echo '<td><select size="1" name="group_filter_fam"><option value="j">'.__('Yes').'</option>';
-        //$selected=''; if ($groupDb->group_filter_fam=='n'){ $selected=' selected'; }
-        //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
-
-        // *** SPARE ITEM ***
-        echo '<input type="hidden" name="group_filter_total" value="n">';
-        //echo '<tr><td>'.__('Filter totally').'</td>';
-        //echo '<td><select size="1" name="group_filter_total"><option value="j">'.__('Yes').'</option>';
-        //$selected=''; if ($groupDb->group_filter_total=='n'){ $selected=' selected'; }
-        //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
-
-        echo __('Save all changes') . '</th><th><input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
-
-        ?>
+                <?= __('Save all changes'); ?></th>
+            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+        </tr>
     </table>
-    <?php
 
+    <?php
     // *** User settings per family tree (hide or show tree, edit tree etc.) ***
     $hide_tree_array = explode(";", $groupDb->group_hide_trees);
     $edit_tree_array = explode(";", $groupDb->group_edit_trees);
@@ -598,44 +798,54 @@ If possible, try to filter with that') . '</i></td>';
         $hide_tree_array = explode(";", $group_hide_trees);
         $edit_tree_array = explode(";", $group_edit_trees);
     }
+    ?>
 
+    <h2 align="center"><?= __('Hide or show family trees per user group.'); ?></h2>
+    <?= __('Editor') . ': ' . __('If an .htpasswd file is used: add username in .htpasswd file.'); ?><br>
+    <?= __('These settings can also be set per user!'); ?>
 
-    echo '<h2 align="center">' . __('Hide or show family trees per user group.') . '</h2>';
-    echo __('Editor') . ': ' . __('If an .htpasswd file is used: add username in .htpasswd file.') . '<br>';
-    echo __('These settings can also be set per user!');
+    <table class="humo standard" border="1">
+        <tr class="table_header">
+            <th><?= __('Family tree'); ?></th>
+            <th><?= __('Show tree?'); ?></th>
+            <th><?= __('Edit tree?'); ?> <input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+        </tr>
+        <?php
+        $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+        while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
+            $treetext = show_tree_text($data3Db->tree_id, $selected_language);
+            $treetext_name = $treetext['name'];
+        ?>
+            <tr>
+                <td><?= $data3Db->tree_id; ?> <?= $treetext_name; ?></td>
+                <?php
+                // *** Show/ hide tree for user ***
+                $check = ' checked';
+                if (in_array($data3Db->tree_id, $hide_tree_array)) $check = '';
+                ?>
+                <td><input type="checkbox" name="show_tree_<?= $data3Db->tree_id; ?>" <?= $check; ?>></td>
 
-    echo '<table class="humo standard" border="1">';
-    echo '<tr class="table_header"><th>' . __('Family tree') . '</th><th>' . __('Show tree?') . '</th><th>' . __('Edit tree?') . ' <input type="submit" name="group_change" value="' . __('Change') . '"></th></tr>';
-
-    $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-    while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
-        $treetext = show_tree_text($data3Db->tree_id, $selected_language);
-        $treetext_name = $treetext['name'];
-        echo '<tr><td>' . $data3Db->tree_id . ' ' . $treetext_name . '</td>';
-
-        // *** Show/ hide tree for user ***
-        $check = ' checked';
-        if (in_array($data3Db->tree_id, $hide_tree_array)) $check = '';
-        echo '<td><input type="checkbox" name="show_tree_' . $data3Db->tree_id . '"' . $check . '></td>';
-
-        // *** Editor rights per family tree (NOT USED FOR ADMINISTRATOR) ***
-        echo '<td>';
-        $check = '';
-        if (in_array($data3Db->tree_id, $edit_tree_array)) $check = ' checked';
-        $disabled = '';
-        if ($groupDb->group_admin == 'j') {
-            $check = ' checked';
-            $disabled = ' disabled';
-            echo '<input type="hidden" name="edit_tree_' . $data3Db->tree_id . '" value="1">';
+                <td>
+                    <?php
+                    // *** Editor rights per family tree (NOT USED FOR ADMINISTRATOR) ***
+                    $check = '';
+                    if (in_array($data3Db->tree_id, $edit_tree_array)) $check = ' checked';
+                    $disabled = '';
+                    if ($groupDb->group_admin == 'j') {
+                        $check = ' checked';
+                        $disabled = ' disabled';
+                        echo '<input type="hidden" name="edit_tree_' . $data3Db->tree_id . '" value="1">';
+                    }
+                    ?>
+                    <input type="checkbox" name="edit_tree_<?= $data3Db->tree_id; ?>" <?= $check . $disabled; ?>>
+                </td>
+            </tr>
+        <?php
         }
-        echo '<input type="checkbox" name="edit_tree_' . $data3Db->tree_id . '"' . $check . $disabled . '>';
-        echo '</td>';
+        ?>
+    </table>
 
-        echo '</tr>';
-    }
-    echo '</table>';
-
-
+    <?php
     // *** Photo categories ***
     // *** User settings per photo category ***
     $hide_photocat_array = explode(";", $groupDb->group_hide_photocat);
@@ -683,16 +893,16 @@ If possible, try to filter with that') . '</i></td>';
 
         $hide_photocat_array = explode(";", $group_hide_photocat);
     }
-
     ?>
+
     <h2 align="center"><?= __('Hide or show photo categories per user group.'); ?></h2>
     <table class="humo standard" border="1">
         <tr class="table_header">
             <th><?= __('Category prefix'); ?></th>
-            <th><?= __('Show category?'); ?> <input type="submit" name="change_photocat" value="<?= __('Change'); ?>"></th>
+            <th><?= __('Show category?'); ?> <input type="submit" name="change_photocat" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
-        <?php
 
+        <?php
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
         if ($temp->rowCount()) {   // a humo_photocat table exists
             /*

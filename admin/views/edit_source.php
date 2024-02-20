@@ -269,10 +269,10 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
             }
 
             if (isset($_POST['add_source'])) {
-                echo '<tr><td>' . __('Add') . '</td><td colspan="3"><input type="submit" name="source_add" value="' . __('Add') . '"></td></tr>';
+                echo '<tr><td>' . __('Add') . '</td><td colspan="3"><input type="submit" name="source_add" value="' . __('Add') . '" class="btn btn-sm btn-success"></td></tr>';
             } else {
-                echo '<tr><td>' . __('Save') . '</td><td colspan="3"><input type="submit" name="source_change2" value="' . __('Save') . '">';
-                echo ' ' . __('or') . ' <input type="submit" name="source_remove" value="' . __('Delete') . '">';
+                echo '<tr><td>' . __('Save') . '</td><td colspan="3"><input type="submit" name="source_change2" value="' . __('Save') . '" class="btn btn-sm btn-success">';
+                echo ' ' . __('or') . ' <input type="submit" name="source_remove" value="' . __('Delete') . '" class="btn btn-sm btn-secondary">';
                 echo '</td></tr>';
             }
             ?>

@@ -614,7 +614,7 @@ class EditorModel
                 } elseif ($_POST["even_hebname"] != '') {  // new Hebrew name event: INSERT
                     // *** Add event. If event is new, use: $new_event=true. ***
                     // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                    add_event(false, 'person', $this->pers_gedcomnumber, 'name', $_POST["even_hebname"], '_HEBN', '', '', '');
+                    $this->add_event(false, 'person', $this->pers_gedcomnumber, 'name', $_POST["even_hebname"], '_HEBN', '', '', '');
                 }
             }
 
@@ -642,7 +642,7 @@ class EditorModel
 
                     // *** Add event. If event is new, use: $new_event=true. ***
                     // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                    add_event(false, 'person', $this->pers_gedcomnumber, 'event', '', '_BRTM', 'even_brit_date', $_POST["even_brit_place"], $_POST["even_brit_text"]);
+                    $this->add_event(false, 'person', $this->pers_gedcomnumber, 'event', '', '_BRTM', 'even_brit_date', $_POST["even_brit_place"], $_POST["even_brit_text"]);
                 }
             }
 
@@ -673,7 +673,7 @@ class EditorModel
 
                     // *** Add event. If event is new, use: $new_event=true. ***
                     // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                    add_event(false, 'person', $this->pers_gedcomnumber, 'event', '', $barmbasm, 'even_barm_date', $_POST["even_barm_place"], $_POST["even_barm_text"]);
+                    $this->add_event(false, 'person', $this->pers_gedcomnumber, 'event', '', $barmbasm, 'even_barm_date', $_POST["even_barm_place"], $_POST["even_barm_text"]);
                 }
             }
 
@@ -798,7 +798,7 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(true, 'person', $new_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
+                $this->add_event(true, 'person', $new_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
             }
 
             // *** New person: add profession ***
@@ -811,7 +811,7 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', $event_date, $event_place, $event_text);
+                $this->add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', $event_date, $event_place, $event_text);
             }
 
             // *** New person: add religion ***
@@ -823,7 +823,7 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(true, 'person', $new_gedcomnumber, 'religion', $_POST["event_religion"], 'RELI', 'event_date_religion', $event_place, $event_text);
+                $this->add_event(true, 'person', $new_gedcomnumber, 'religion', $_POST["event_religion"], 'RELI', 'event_date_religion', $event_place, $event_text);
             }
 
             if (!isset($_POST['child_connect'])) {
@@ -1029,7 +1029,7 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(true, 'person', $man_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
+                $this->add_event(true, 'person', $man_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
             }
 
             // *** Add profession ***
@@ -1041,7 +1041,7 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(true, 'person', $man_gedcomnumber, 'profession', $_POST["event_profession1"], '', '', $event_place, $event_text);
+                $this->add_event(true, 'person', $man_gedcomnumber, 'profession', $_POST["event_profession1"], '', '', $event_place, $event_text);
             }
 
             // only needed for jewish settings
@@ -1098,7 +1098,7 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(true, 'person', $woman_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
+                $this->add_event(true, 'person', $woman_gedcomnumber, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text);
             }
 
             // *** Add profession ***
@@ -1110,7 +1110,7 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(true, 'person', $woman_gedcomnumber, 'profession', $_POST["event_profession2"], '', '', $event_place, $event_text);
+                $this->add_event(true, 'person', $woman_gedcomnumber, 'profession', $_POST["event_profession2"], '', '', $event_place, $event_text);
             }
 
             // only needed for jewish settings
@@ -1604,6 +1604,45 @@ class EditorModel
 
         $tree_date = date("Y-m-d H:i");
         $sql = "UPDATE humo_trees SET tree_persons='" . $nr_persons . "', tree_families='" . $nr_families . "', tree_date='" . $tree_date . "' WHERE tree_id='" . $this->tree_id . "'";
+        $this->dbh->query($sql);
+    }
+
+    // *** Add event. $new_event=false/true ***
+    // *** COPIED FROM editor_inc.php (double function at this moment) ***
+    // $event_date='event_date'
+    function add_event($new_event, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text, $multiple_rows = '')
+    {
+        // *** Generate new order number ***
+        $event_order = 1;
+        if (!$new_event) {
+            $event_sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
+            AND event_connect_kind='" . $event_connect_kind . "'
+            AND event_connect_id='" . $event_connect_id . "'
+            AND event_kind='" . $event_kind . "'
+            ORDER BY event_order DESC LIMIT 0,1";
+            $event_qry = $this->dbh->query($event_sql);
+            $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
+            $event_order = 0;
+            if (isset($eventDb->event_order)) {
+                $event_order = $eventDb->event_order;
+            }
+            $event_order++;
+        }
+
+        $sql = "INSERT INTO humo_events SET
+        event_tree_id='" . $this->tree_id . "',
+        event_connect_kind='" . $event_connect_kind . "',
+        event_connect_id='" . safe_text_db($event_connect_id) . "',
+        event_kind='" . $event_kind . "',
+        event_event='" . safe_text_db($event_event) . "',
+        event_gedcom='" . safe_text_db($event_gedcom) . "',";
+        if ($event_date) {
+            $sql .= " event_date='" . $this->editor_cls->date_process($event_date, $multiple_rows) . "',";
+        }
+        $sql .= " event_place='" . safe_text_db($event_place) . "',
+        event_text='" . safe_text_db($event_text) . "',
+        event_order='" . $event_order . "',
+        event_new_user_id='" . $this->userid . "'";
         $this->dbh->query($sql);
     }
 }

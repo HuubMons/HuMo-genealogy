@@ -69,7 +69,6 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
                 <?= __('Family tree'); ?>:
             </label>
         </div>
-
         <div class="col-auto">
             <?= select_tree($dbh, $page, $tree_id); ?>
         </div>
@@ -79,11 +78,9 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
                 <?= __('Select address'); ?>:
             </label>
         </div>
-
         <div class="col-auto">
             <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
-
                 <select size="1" name="address_id" class="form-select form-select-sm" onChange="this.form.submit();" style="width: 200px">
                     <option value=""><?= __('Select address'); ?></option>
                     <?php
@@ -110,7 +107,10 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
 
         <div class="col-auto">
             <?= __('or'); ?>:
-            <input type="submit" name="add_address" value="<?= __('Add address'); ?>" class="btn btn-sm btn-secondary">
+            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <input type="hidden" name="page" value="<?= $page; ?>">
+                <input type="submit" name="add_address" value="<?= __('Add address'); ?>" class="btn btn-sm btn-secondary">
+            </form>
         </div>
     </div>
 </div>
@@ -215,18 +215,26 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
                 echo edit_sources('20', 'address', 'address_source', $addressDb->address_gedcomnr);
             }
 
-            echo '<tr><td>' . ucfirst(__('text')) . '</td><td><textarea rows="1" name="address_text" ' . $field_text_large . '>' .
-                $editor_cls->text_show($address_text) . '</textarea></td></tr>';
-
-            if (isset($_POST['add_address'])) {
-                echo '<tr><td>' . __('Add') . '</td><td><input type="submit" name="address_add" value="' . __('Add') . '"></td></tr>';
-            } else {
-                echo '<tr><td>' . __('Save') . '</td><td><input type="submit" name="address_change" value="' . __('Save') . '">';
-                echo ' ' . __('or') . ' ';
-                echo '<input type="submit" name="address_remove" value="' . __('Delete') . '">';
-                echo '</td></tr>';
-            }
             ?>
+            <tr>
+                <td><?= ucfirst(__('text')); ?></td>
+                <td><textarea rows="1" name="address_text" <?= $field_text_large; ?>><?= $editor_cls->text_show($address_text); ?></textarea></td>
+            </tr>
+
+            <?php if (isset($_POST['add_address'])) { ?>
+                <tr>
+                    <td><?= __('Add'); ?></td>
+                    <td><input type="submit" name="address_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>
+                </tr>
+            <?php } else { ?>
+                <tr>
+                    <td><?= __('Save'); ?></td>
+                    <td><input type="submit" name="address_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                        <?= __('or'); ?>
+                        <input type="submit" name="address_remove" value="<?= __('Delete'); ?>" class="btn btn-sm btn-secondary">
+                    </td>
+                </tr>
+            <?php } ?>
         </table>
     </form>
 <?php

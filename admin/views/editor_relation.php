@@ -30,7 +30,7 @@ if ($add_person == false) {
                                 <form method="POST" action="<?= $phpself; ?>">
                                     <input type="hidden" name="page" value="<?= $page; ?>">
                                     <input type="hidden" name="marriage_nr" value="<?= $familyDb->fam_gedcomnumber; ?>">
-                                    <input type="submit" name="dummy3" value="<?= __('Select family') . ' ' . ($i + 1); ?>">
+                                    <input type="submit" name="dummy3" value="<?= __('Select family') . ' ' . ($i + 1); ?>" class="btn btn-sm btn-secondary">
                                 </form>
                             <?php
                             } else {
@@ -91,7 +91,7 @@ if ($add_person == false) {
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <?= __('Or add relation with existing person:'); ?> <input type="text" name="relation_add2" value="" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>" required>
                         <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id=<?= $tree_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
-                        <input type="submit" name="dummy4" value="<?= __('Add relation'); ?>">
+                        <input type="submit" name="dummy4" value="<?= __('Add relation'); ?>" class="btn btn-sm btn-success">
                     </form>
                 </td>
             </tr>
@@ -217,7 +217,7 @@ if ($add_person == false) {
                         <?php
                         // *** Remove marriage ***
                         if (isset($marriage)) {
-                            echo '<input type="submit" name="fam_remove" value="' . __('Delete relation') . '">';
+                            echo '<input type="submit" name="fam_remove" value="' . __('Delete relation') . '" class="btn btn-sm btn-secondary">';
                         } else {
                             echo '<br>';
                         }
@@ -229,7 +229,7 @@ if ($add_person == false) {
                     </th>
 
                     <td id="target3">
-                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>">
+                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                     </td>
                 </tr>
 
@@ -268,7 +268,7 @@ if ($add_person == false) {
                         echo '<br>' . __('and');
 
                         if (!isset($_GET['add_marriage'])) {
-                            echo ' <BUTTON TYPE="submit" name="parents_switch" title="Switch Persons" class="button"><img src="images/turn_around.gif" width="17"></BUTTON>';
+                            echo ' <button type="submit" name="parents_switch" title="Switch Persons" class="button"><img src="images/turn_around.gif" width="17"></button>';
                         }
                         echo '<br>';
 
@@ -473,68 +473,16 @@ if ($add_person == false) {
                         ?>
                         <select size="1" name="fam_kind">
                             <option value=""><?= __('Marriage/ Related'); ?></option>
-
-                            <?php
-                            $selected = '';
-                            if ($fam_kind == 'civil') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="civil"' . $selected . '>' . __('Married') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'living together') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="living together"' . $selected . '>' . __('Living together') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'living apart together') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="living apart together"' . $selected . '>' . __('Living apart together') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'intentionally unmarried mother') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="intentionally unmarried mother"' . $selected . '>' . __('Intentionally unmarried mother') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'homosexual') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="homosexual"' . $selected . '>' . __('Homosexual') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'non-marital') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="non-marital"' . $selected . '>' . __('Non_marital') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'extramarital') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="extramarital"' . $selected . '>' . __('Extramarital') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'partners') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="partners"' . $selected . '>' . __('Partner') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'registered') {
-                                $selected = ' selected';
-                            }
-                            echo '<option value="registered"' . $selected . '>' . __('Registered partnership') . '</option>';
-
-                            $selected = '';
-                            if ($fam_kind == 'unknown') {
-                                $selected = ' selected';
-                            }
-                            ?>
-                            <option value="unknown" <?= $selected; ?>><?= __('Unknown relation'); ?></option>
+                            <option value="civil" <?= $fam_kind == 'civil' ? ' selected' : ''; ?>><?= __('Married'); ?></option>
+                            <option value="living together" <?= $fam_kind == 'living together' ? ' selected' : ''; ?>><?= __('Living together'); ?></option>
+                            <option value="living apart together" <?= $fam_kind == 'living apart together' ? ' selected' : ''; ?>><?= __('Living apart together'); ?></option>
+                            <option value="intentionally unmarried mother" <?= $fam_kind == 'intentionally unmarried mother' ? ' selected' : ''; ?>><?= __('Intentionally unmarried mother'); ?></option>
+                            <option value="homosexual" <?= $fam_kind == 'homosexual' ? ' selected' : ''; ?>><?= __('Homosexual'); ?></option>
+                            <option value="non-marital" <?= $fam_kind == 'non-marital' ? ' selected' : ''; ?>><?= __('Non_marital'); ?></option>
+                            <option value="extramarital" <?= $fam_kind == 'extramarital' ? ' selected' : ''; ?>><?= __('Extramarital'); ?></option>
+                            <option value="partners" <?= $fam_kind == 'partners' ? ' selected' : ''; ?>><?= __('Partner'); ?></option>
+                            <option value="registered" <?= $fam_kind == 'registered' ? ' selected' : ''; ?>><?= __('Registered partnership'); ?></option>
+                            <option value="unknown" <?= $fam_kind == 'unknown' ? ' selected' : ''; ?>><?= __('Unknown relation'); ?></option>
                         </select><br>
 
                         <?php
@@ -876,7 +824,7 @@ if ($add_person == false) {
                     <td></td>
                     <td colspan="2"></td>
                     <td style="border-left: none; text-align:left; font-size: 1.5em;">
-                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>">
+                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                     </td>
                 </tr>
             </table><br>
@@ -1018,7 +966,7 @@ if ($add_person == false) {
                 <input type="hidden" name="family_id" value="<?= $familyDb->fam_gedcomnumber; ?>">
                 <?= __('Or add existing person as a child:'); ?> <input type="text" name="child_connect2" value="" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>" required>
                 <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id=<?= $tree_id; ?>","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                <input type="submit" name="dummy4" value="<?= __('Select child'); ?>">
+                <input type="submit" name="dummy4" value="<?= __('Select child'); ?>" class="btn btn-sm btn-success">
             </form><br><br>
 
             <!-- Order children using drag and drop using jquery and jqueryui -->

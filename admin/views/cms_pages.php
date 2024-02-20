@@ -375,9 +375,9 @@ Please disconnect the pages from this menu first.'); ?></strong>
                         echo ' <input type="CHECKBOX" name="page_status"' . $checked . '>' . __('Published');
 
                         if ($page_edit == 'add') {
-                            echo ' <input type="submit" name="add_page" value="' . __('Save') . '">';
+                            echo ' <input type="submit" name="add_page" value="' . __('Save') . '" class="btn btn-sm btn-success">';
                         } else {
-                            echo ' <input type="submit" name="change_page" value="' . __('Save') . '">';
+                            echo ' <input type="submit" name="change_page" value="' . __('Save') . '" class="btn btn-sm btn-success">';
                         }
                         ?>
                         <?= __('Visitors counter'); ?>: <?= $page_counter; ?><br>
@@ -428,7 +428,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                             ?>
                         </td>
                         <td><input type="text" name="menu_name" value="<?= $cms_pagesDb->menu_name; ?>" size=50></td>
-                        <td><input type="submit" name="change_menu" value="<?= __('Save'); ?>"></td>
+                        <td><input type="submit" name="change_menu" value="<?= __('Save'); ?>" class="btn btn-sm btn-success"></td>
                     </tr>
                 </form>
             <?php
@@ -441,7 +441,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                 <tr bgcolor="green">
                     <td><br></td>
                     <td><input type="text" name="menu_name" value="" size=50></td>
-                    <td><input type="submit" name="add_menu" value="<?= __('Add'); ?>"></td>
+                    <td><input type="submit" name="add_menu" value="<?= __('Add'); ?>" class="btn btn-sm btn-primary"></td>
                 </tr>
             </form>
         </table>
@@ -521,7 +521,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
             <table class="humo" border="1" cellspacing="0" width="95%">
                 <tr class="table_header">
                     <th><?= __('CMS Settings'); ?></th>
-                    <th><input type="submit" name="cms_settings" value="<?= __('Change'); ?>"></th>
+                    <th><input type="submit" name="cms_settings" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
                 </tr>
 
                 <tr>

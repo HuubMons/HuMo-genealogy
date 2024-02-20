@@ -35,9 +35,6 @@ if (isset($_POST['language_tree'])) {
     $language_tree = $_POST['language_tree'];
 }
 
-include(__DIR__ . '/../include/trees_cls.php');
-$tree_cls = new tree_cls;
-
 // ******************************************
 // *** Show texts of selected family tree ***
 // ******************************************
@@ -163,7 +160,7 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
     }
     // *** Show merge screen ***
     if ($menu_admin == 'tree_merge') {
-        $tree_cls->tree_merge();
+        include(__DIR__ . '/tree_merge.php');
     }
     ?>
 </div>

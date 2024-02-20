@@ -3,10 +3,7 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-?>
-<h1 class="center"><?= __('Log'); ?></h1>
 
-<?php
 // *** Tab menu ***
 $prefx = '../'; // to get out of the admin map
 
@@ -18,6 +15,8 @@ if (isset($_GET['menu_admin'])) {
     $menu_admin = $_GET['menu_admin'];
 }
 ?>
+
+<h1 class="center"><?= __('Log'); ?></h1>
 
 <ul class="nav nav-tabs">
     <li class="nav-item me-1">
@@ -136,35 +135,39 @@ if (isset($_GET['menu_admin'])) {
                     $teller = 1;
                     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                         $lijst = explode("|", $dataDb->setting_value);
-                        echo '<tr>';
-                        echo '<td>';
-                        echo '<input type="hidden" name="' . $dataDb->setting_id . 'id" value="' . $dataDb->setting_id . '">' . $teller;
+                ?>
+                        <tr>
+                            <td>
+                                <?php
+                                echo '<input type="hidden" name="' . $dataDb->setting_id . 'id" value="' . $dataDb->setting_id . '">' . $teller;
 
-                        if ($dataDb->setting_order != '1') {
-                            echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;up=1&amp;link_order=' . $dataDb->setting_order .
-                                '&amp;id=' . $dataDb->setting_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
-                        }
-                        if ($dataDb->setting_order != $count_links) {
-                            echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;down=1&amp;link_order=' . $dataDb->setting_order . '&amp;id=' .
-                                $dataDb->setting_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
-                        }
-                        echo '</td>';
-                        echo '<td><input type="text" name="' . $dataDb->setting_id . 'own_code" value="' . $lijst[0] . '" size="5"></td>';
-                        echo '<td><input type="text" name="' . $dataDb->setting_id . 'link_text" value="' . $lijst[1] . '" size="20"></td>';
-                        echo '<td><input type="submit" name="change_link" value="' . __('Change') . '"></td>';
-                        echo '<td bgcolor="red"><input type="submit" name="' . $dataDb->setting_id . 'remove_link" value="' . __('Remove') . '"></td>';
-                        echo "</tr>";
+                                if ($dataDb->setting_order != '1') {
+                                    echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;up=1&amp;link_order=' . $dataDb->setting_order .
+                                        '&amp;id=' . $dataDb->setting_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
+                                }
+                                if ($dataDb->setting_order != $count_links) {
+                                    echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;down=1&amp;link_order=' . $dataDb->setting_order . '&amp;id=' .
+                                        $dataDb->setting_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
+                                }
+                                ?>
+                            </td>
+                            <td><input type="text" name="<?= $dataDb->setting_id; ?>own_code" value="<?= $lijst[0]; ?>" size="5"></td>
+                            <td><input type="text" name="<?= $dataDb->setting_id; ?>link_text" value="<?= $lijst[1]; ?>" size="20"></td>
+                            <td><input type="submit" name="change_link" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></td>
+                            <td><input type="submit" name="<?= $dataDb->setting_id; ?>remove_link" value="<?= __('Remove'); ?>" class="btn btn-sm btn-warning"></td>
+                        </tr>
+                    <?php
                         $teller++;
                     }
 
                     // *** Add new link ***
-                ?>
+                    ?>
                     <tr>
                         <td><br></td>
                         <input type="hidden" name="link_order" value="<?= $new_number; ?>">
                         <td><input type="text" name="own_code" placeholder="<?= __('IP Address'); ?>" size="5"></td>
                         <td><input type="text" name="link_text" placeholder="<?= __('Description'); ?>" size="20"></td>
-                        <td><input type="submit" name="add_link" value="<?= __('Add'); ?>"></td>
+                        <td><input type="submit" name="add_link" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>
                         <td><br></td>
                     </tr>
                 <?php
