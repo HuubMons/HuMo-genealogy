@@ -1206,7 +1206,7 @@ if (isset($_GET['source_add2'])) {
     $sql = "UPDATE humo_connections SET
         connect_tree_id='" . $tree_id . "',
         connect_source_id='" . $new_gedcomnumber . "',
-        connect_changed_user_id='" . $userid . "',
+        connect_changed_user_id='" . $userid . "'
     WHERE connect_id='" . safe_text_db($_GET["connect_id"]) . "'";
     $dbh->query($sql);
 }
@@ -1411,6 +1411,7 @@ function remove_sources($tree_id, $connect_sub_kind, $connect_connect_id)
 }
 
 // *** Add event. $new_event=false/true ***
+// *** This function is also copied to editor.php ***
 // $event_date='event_date'
 function add_event($new_event, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text, $multiple_rows = '')
 {

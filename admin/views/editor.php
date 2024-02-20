@@ -676,9 +676,12 @@ if ($check_person) {
                             <?php
                                 }
                             }
+                            ?>
 
-                            echo '</td><td style="vertical-align: top;">';
+                        </td>
+                        <td style="vertical-align: top;">
 
+                            <?php
                             // *** Show parents and siblings (brothers and sisters) ***
                             echo '<b>' . __('Parents') . '</b><br>';
                             if ($person->pers_famc) {
@@ -1266,9 +1269,9 @@ if ($check_person) {
             <?php
 
             if ($person_kind == 'partner') {
-                echo '<tr class="humo_color"><td></td><td><input type="submit" name="relation_add" value="' . __('Add relation') . '"></td></tr>';
+                echo '<tr class="humo_color"><td></td><td><input type="submit" name="relation_add" value="' . __('Add relation') . '" class="btn btn-sm btn-success"></td></tr>';
             } else {
-                echo '<tr class="humo_color"><td></td><td><input type="submit" name="person_add" value="' . __('Add child') . '"></td></tr>';
+                echo '<tr class="humo_color"><td></td><td><input type="submit" name="person_add" value="' . __('Add child') . '" class="btn btn-sm btn-success"></td></tr>';
             }
             ?>
         </table>

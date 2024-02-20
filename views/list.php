@@ -521,6 +521,7 @@ if ($person_result->rowCount() > 0) {
                 $data["page_status"][$i] = 'active';
             } else {
                 $data["page_link"][$i] = $uri_path_string . "index_list=" . $index_list . "&amp;start=" . $start . "&amp;item=" . $calculated;
+                $data["page_status"][$i] = '';
             }
         }
     }

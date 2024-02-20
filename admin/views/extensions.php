@@ -50,82 +50,62 @@ if (isset($_POST['save_option'])) {
 // *** Re-read variables after changing them ***
 // *** Don't use include_once! Otherwise the old value will be shown ***
 include(__DIR__ . "/../../include/settings_global.php"); //variables
+
+$hide_languages_array = explode(";", $humo_option["hide_languages"]);
 ?>
 
 <h1 class="center"><?= __('Extensions'); ?></h1>
 
-<form method="post" action="index.php">
+<form method="post" action="index.php" class="ms-3">
     <input type="hidden" name="page" value="<?= $page; ?>">
-    <table class="humo standard" border="1">
-        <tr class="table_header">
-            <th colspan="2"><?= __('Languages'); ?></th>
-        </tr>
 
-        <tr>
-            <td><?= __('Show/ hide languages'); ?></td>
-            <td>
-                <?php
-                $hide_languages_array = explode(";", $humo_option["hide_languages"]);
+    <h2><?= __('Show/ hide languages'); ?></h2>
 
-                // *** Language choice ***
-                for ($i = 0; $i < count($language_file); $i++) {
-                    // *** Get language name ***
-                    include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
+    <?php
+    // *** Language choice ***
+    for ($i = 0; $i < count($language_file); $i++) {
+        // *** Get language name ***
+        include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
 
-                    $checked = ' checked';
-                    if (in_array($language_file[$i], $hide_languages_array)) $checked = '';
+        $checked = ' checked';
+        if (in_array($language_file[$i], $hide_languages_array)) $checked = '';
 
-                    $disabled = '';
-                    if ($language_file[$i] == $humo_option["default_language"]) {
-                        $disabled = ' disabled';
-                        $checked = ' checked';
-                    }
-                    if ($language_file[$i] == $humo_option["default_language_admin"]) {
-                        $disabled = ' disabled';
-                        $checked = ' checked';
-                    }
-                ?>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="<?= $language_file[$i]; ?>" <?= $checked . $disabled; ?>>
-                        <label class="form-check-label">
-                            <img src="../languages/<?= $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"><?= $language["name"]; ?><br>
-                        </label>
-                    </div>
-                <?php
+        $disabled = '';
+        if ($language_file[$i] == $humo_option["default_language"]) {
+            $disabled = ' disabled';
+            $checked = ' checked';
+        }
+        if ($language_file[$i] == $humo_option["default_language_admin"]) {
+            $disabled = ' disabled';
+            $checked = ' checked';
+        }
+    ?>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="<?= $language_file[$i]; ?>" <?= $checked . $disabled; ?>>
+            <label class="form-check-label">
+                <img src="../languages/<?= $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"><?= $language["name"]; ?><br>
+            </label>
+        </div>
+    <?php } ?>
 
-                }
-                ?>
+    <input type="submit" name="save_option" class="btn btn-sm btn-success" value="<?= __('Change'); ?>">
 
-                <br>
-                <input type="submit" name="save_option" class="btn btn-success" value="<?= __('Change'); ?>">
-            </td>
-        </tr>
 
-        <tr class="table_header">
-            <th colspan="2"><?= __('Themes'); ?></th>
-        </tr>
-
-        <tr>
-            <td><?= __('Show/ hide theme\'s'); ?></td>
-            <td>
-                <?php
-                $hide_themes_array = explode(";", $humo_option["hide_themes"]);
-                for ($i = 0; $i < count($theme_folder); $i++) {
-                    $theme = $theme_folder[$i];
-                    $theme = str_replace(".css", "", $theme);
-                    $checked = ' checked';
-                    if (in_array($theme, $hide_themes_array)) $checked = '';
-                ?>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="<?= $theme; ?>" <?= $checked; ?>>
-                        <label class="form-check-label">
-                            <?= $theme; ?><br>
-                        </label>
-                    </div>
-                <?php } ?>
-                <br>
-                <input type="submit" name="save_option" class="btn btn-success" value="<?= __('Change'); ?>">
-            </td>
-        </tr>
-    </table>
+    <h2 class="mt-2"><?= __('Show/ hide theme\'s'); ?></h2>
+    <?php
+    $hide_themes_array = explode(";", $humo_option["hide_themes"]);
+    for ($i = 0; $i < count($theme_folder); $i++) {
+        $theme = $theme_folder[$i];
+        $theme = str_replace(".css", "", $theme);
+        $checked = ' checked';
+        if (in_array($theme, $hide_themes_array)) $checked = '';
+    ?>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="<?= $theme; ?>" <?= $checked; ?>>
+            <label class="form-check-label">
+                <?= $theme; ?><br>
+            </label>
+        </div>
+    <?php } ?>
+    <input type="submit" name="save_option" class="btn btn-sm btn-success" value="<?= __('Change'); ?>">
 </form>

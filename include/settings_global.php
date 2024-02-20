@@ -3,7 +3,7 @@
 
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"] = '6.7.2';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"] = '6.7.3';  // Version line, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Beta (not stable enough for production, but it's functional ***
@@ -12,7 +12,7 @@ $humo_option["version"] = '6.7.2';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"] = '2024-02-17';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"] = '2024-02-20';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Test lines for update procedure ***

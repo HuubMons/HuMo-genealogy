@@ -196,12 +196,12 @@ if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
 
             <?php
             if (isset($_POST['add_repo'])) {
-                echo '<tr><td>' . __('Add') . '</td><td><input type="submit" name="repo_add" value="' . __('Add') . '"></td></tr>';
+                echo '<tr><td>' . __('Add') . '</td><td><input type="submit" name="repo_add" value="' . __('Add') . '" class="btn btn-sm btn-success"></td></tr>';
             } else {
-                echo '<tr><td>' . __('Save') . '</td><td><input type="submit" name="repo_change" value="' . __('Save') . '">';
+                echo '<tr><td>' . __('Save') . '</td><td><input type="submit" name="repo_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
 
                 echo ' ' . __('or') . ' ';
-                echo '<input type="submit" name="repo_remove" value="' . __('Delete') . '">';
+                echo '<input type="submit" name="repo_remove" value="' . __('Delete') . '" class="btn btn-sm btn-secondary">';
 
                 echo '</td></tr>';
             }

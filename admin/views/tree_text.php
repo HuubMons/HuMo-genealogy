@@ -1,14 +1,14 @@
 <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+    <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+    <input type="hidden" name="language_tree" value="<?= $language_tree; ?>">
     <?php
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="hidden" name="language_tree" value="' . $language_tree . '">';
     if (isset($treetext_id)) {
         echo '<input type="hidden" name="treetext_id" value="' . $treetext_id . '">';
     }
-
     ?>
+
     <br>
     <table class="humo" cellspacing="0" width="100%">
         <tr class="table_header">
@@ -36,24 +36,25 @@
                 echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
                 $select_top = '';
                 echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="../languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="../images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
-                echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
-                echo '<ul class="humo_menu_item2">';
-                for ($i = 0; $i < count($language_file); $i++) {
-                    // *** Get language name ***
-                    if ($language_file[$i] != $language_tree2) {
-                        include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
-                        echo '<li style="float:left; width:124px;">';
-                        echo '<a href="index.php?page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
-                        echo '<img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
-                        echo $language["name"];
-                        echo '</a>';
-                        echo '</li>';
-                    }
-                }
-                echo '</ul>';
-                echo '</div>';
-                echo '</div>';
                 ?>
+                <div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">
+                    <ul class="humo_menu_item2">
+                        <?php
+                        for ($i = 0; $i < count($language_file); $i++) {
+                            // *** Get language name ***
+                            if ($language_file[$i] != $language_tree2) {
+                                include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
+                                echo '<li style="float:left; width:124px;">';
+                                echo '<a href="index.php?page=tree&amp;menu_admin=tree_text&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
+                                echo '<img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
+                                echo $language["name"];
+                                echo '</a>';
+                                echo '</li>';
+                            }
+                        }
+                        ?>
+                    </ul>
+                </div>
             </td>
         </tr>
 
@@ -94,11 +95,14 @@
 
         <tr>
             <td>
+                <?= __('Change'); ?>
+            </td>
+            <td>
                 <?php
                 if (isset($treetext_id)) {
-                    echo __('Change') . '</td><td><input type="submit" name="change_tree_text" value="' . __('Change') . '">';
+                    echo '<input type="submit" name="change_tree_text" value="' . __('Change') . '" class="btn btn-sm btn-success">';
                 } else {
-                    echo __('Change') . '</td><td><input type="submit" name="add_tree_text" value="' . __('Change') . '">';
+                    echo '<input type="submit" name="add_tree_text" value="' . __('Change') . '" class="btn btn-sm btn-success">';
                 }
                 ?>
             </td>

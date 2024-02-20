@@ -552,7 +552,7 @@ if (isset($_POST['save_settings_database'])) {
 
                 <form method="POST" action="<?= $path_tmp; ?>" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
-                    <input type="submit" name="login_info" class="btn btn-success" value="<?= __('INFO'); ?>">
+                    <input type="submit" name="login_info" class="btn btn-sm btn-success" value="<?= __('INFO'); ?>">
                 </form>
 
                 <?php if (isset($_POST['login_info'])) { ?>
@@ -581,7 +581,7 @@ The file .htpasswd will look something like this:<br>'); ?>
                                 <input type="hidden" name="page" value="<?= $page; ?>">
                                 <input type="text" name="username" value="username" class="form-control" size="20"><br>
                                 <input type="text" name="password" value="password" class="form-control" size="20"><br>
-                                <input type="submit" name="login_info" class="btn btn-success" value="<?= __('Generate new ht-password'); ?>">
+                                <input type="submit" name="login_info" class="btn btn-sm btn-success" value="<?= __('Generate new ht-password'); ?>">
                         </form>
                         <?php
 
@@ -669,13 +669,13 @@ The file .htpasswd will look something like this:<br>'); ?>
                             <form method="post" action="<?= $path_tmp; ?>" style="display : inline;">
                                 <input type="hidden" name="page" value="tree">
                                 <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
-                                <input type="submit" name="step1" class="btn btn-success" value="<?= __('Import Gedcom file'); ?>">
+                                <input type="submit" name="step1" class="btn btn-sm btn-success" value="<?= __('Import Gedcom file'); ?>">
                             </form>
 
                             <!-- Editor -->
                             <?= __('or'); ?> <form method="post" action="index.php?page=editor" style="display : inline;">
                                 <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
-                                <input type="submit" name="submit" class="btn btn-success" value="<?= __('Editor'); ?>">
+                                <input type="submit" name="submit" class="btn btn-sm btn-success" value="<?= __('Editor'); ?>">
                             </form>
                         <?php } ?>
                         </td>

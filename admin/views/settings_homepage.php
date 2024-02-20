@@ -147,7 +147,7 @@ for ($i = 0; $i < count($item_array); $i++) {
             <th><?= __('Position'); ?></th>
             <th><?= __('Item'); ?></th>
             <th><br></th>
-            <th><input type="submit" name="change_module" value="<?= __('Change'); ?>"></th>
+            <th><input type="submit" name="change_module" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
 
         <?php
@@ -372,7 +372,7 @@ for ($i = 0; $i < count($item_array); $i++) {
 
                 <td><br></td>
 
-                <td><input type="submit" name="add_module" value="<?= __('Add'); ?>"></td>
+                <td><input type="submit" name="add_module" value="<?= __('Add'); ?>" class="btn btn-sm btn-primary"></td>
             </tr>
         <?php
         } else {
@@ -464,7 +464,7 @@ if (isset($_GET['down'])) {
             <th>Nr.</th>
             <th><?= __('Own code'); ?></th>
             <th><?= __('Description'); ?></th>
-            <th><input type="submit" name="change_link" value="<?= __('Change'); ?>"></th>
+            <th><input type="submit" name="change_link" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
         <?php
         $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' ORDER BY setting_order");
@@ -510,7 +510,7 @@ if (isset($_GET['down'])) {
                 <input type="hidden" name="link_order" value="<?= $new_number; ?>">
                 <td><input type="text" name="own_code" value="Code" size="5"></td>
                 <td><input type="text" name="link_text" value="<?= __('Owner of tree'); ?>" size="20"></td>
-                <td><input type="submit" name="add_link" value="<?= __('Add'); ?>"></td>
+                <td><input type="submit" name="add_link" value="<?= __('Add'); ?>" class="btn btn-sm btn-primary"></td>
             </tr>
         <?php
         } else {
@@ -540,7 +540,7 @@ $slideshow_04 = explode('|', $humo_option["slideshow_04"]);
     <table class="humo" border="1">
 
         <tr class="table_header">
-            <th colspan="2"><?= __('Slideshow on the homepage'); ?> <input type="submit" name="save_option2" value="<?= __('Change'); ?>"></th>
+            <th colspan="2"><?= __('Slideshow on the homepage'); ?> <input type="submit" name="save_option2" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
 
         <tr>

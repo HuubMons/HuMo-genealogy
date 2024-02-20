@@ -181,58 +181,58 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
         <div class="alert alert-success"><?= $language_editor['message']; ?></div>
     <?php } ?>
 
-    <!-- TODO rebuild to Bootstrap form, remove table -->
-    <table class="humo" border="" cellspacing="0" width="98%" style="border-width:0px;margin-left:auto;margin-right:auto">
-        <tr class="table_header_large">
-            <td>
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?= '../languages/' . $language_editor['language']; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>"> <?= $language["name"]; ?>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <?php
-                        for ($i = 0; $i < count($language_file); $i++) {
-                            // *** Get language name ***
-                            if ($language_file[$i] != $language_editor['language'] and !in_array($language_file[$i], $hide_languages_array)) {
-                                include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
-                        ?>
-                                <li>
-                                    <a class="dropdown-item" href="../admin/index.php?page=language_editor&amp;editor_language=<?= $language_file[$i]; ?>">
-                                        <img src="<?= '../languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;">
-                                        <?= $language["name"]; ?>
-                                    </a>
-                                </li>
-                            <?php } ?>
+    <div class="row p-2 mb-3 mx-sm-1 genealogy_search">
+
+        <div class="col-auto">
+            <div class="dropdown">
+                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="<?= '../languages/' . $language_editor['language']; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>"> <?= $language["name"]; ?>
+                </button>
+                <ul class="dropdown-menu">
+                    <?php
+                    for ($i = 0; $i < count($language_file); $i++) {
+                        // *** Get language name ***
+                        if ($language_file[$i] != $language_editor['language'] and !in_array($language_file[$i], $hide_languages_array)) {
+                            include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
+                    ?>
+                            <li>
+                                <a class="dropdown-item" href="../admin/index.php?page=language_editor&amp;editor_language=<?= $language_file[$i]; ?>">
+                                    <img src="<?= '../languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;">
+                                    <?= $language["name"]; ?>
+                                </a>
+                            </li>
                         <?php } ?>
-                    </ul>
-                </div>
-            </td>
+                    <?php } ?>
+                </ul>
+            </div>
+        </div>
 
-            <td>
-                <!-- Navigation links -->
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <a class="page-link" href="index.php?page=language_editor<?= $previous; ?>&amp;editor_language=<?= $language_editor['language']; ?>" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#"><?= $_SESSION['present_page'] + 1; ?></a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="index.php?page=language_editor<?= $next; ?>&amp;editor_language=<?= $language_editor['language']; ?>" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </td>
+        <div class="col-1">
+            <!-- Navigation links -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination mb-0">
+                    <li class="page-item">
+                        <a class="page-link" href="index.php?page=language_editor<?= $previous; ?>&amp;editor_language=<?= $language_editor['language']; ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#"><?= $_SESSION['present_page'] + 1; ?></a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="index.php?page=language_editor<?= $next; ?>&amp;editor_language=<?= $language_editor['language']; ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
 
-            <td style="text-align:center">
+        <div class="col-auto">
+            <div class="input-group">
                 <!-- Max items per page choice -->
                 <?= __('Max items per page: '); ?>
-                <select size="1" name="maxlines" style="width:50px" onChange="this.form.submit();">
+                <select size="1" name="maxlines" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value="10" <?= $_SESSION['maxlines'] == 10 ? ' selected' : ''; ?>>10</option>
                     <option value="20" <?= $_SESSION['maxlines'] == 20 ? ' selected' : ''; ?>>20</option>
                     <option value="30" <?= $_SESSION['maxlines'] == 30 ? ' selected' : ''; ?>>30</option>
@@ -242,35 +242,41 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
                     <option value="300" <?= $_SESSION['maxlines'] == 300 ? ' selected' : ''; ?>>300</option>
                     <option value="400" <?= $_SESSION['maxlines'] == 400 ? ' selected' : ''; ?>>400</option>
                 </select>
-            </td>
-            <td style="text-align:center">
-                <!-- Items found -->
-                <?= __('Total items found: ') . $count_lines; ?>
-            </td>
-            <td style="text-align:center">
+            </div>
+        </div>
+
+        <div class="col-auto">
+            <div class="input-group">
                 <!-- Search box -->
                 <?php
                 $langsearchtext = "";
                 if (isset($_SESSION['langsearchtext']) and $_SESSION['langsearchtext'] != "") {
                     $langsearchtext = $_SESSION['langsearchtext'];
                 }
-                echo '<input type="text" style="width:200px;" name="langsearchtext" value="' . $langsearchtext . '">';
-                echo '<input type="submit" name="langsearch" value="' . __('Search') . '">';
                 ?>
-            </td>
-            <td style="width:150px;text-align:center">
-                <!-- Save  button -->
-                <?php
-                if (@is_writable($language_editor['file'])) {
-                    $num = count($_SESSION['line_array']);
-                    echo ' <input type="submit" name="save_button" class="btn btn-primary" value="' . __('Save') . '">';
-                } else {
-                    echo '<b>' . __('FILE IS NOT WRITABLE!') . '</b>';
-                }
-                ?>
-            </td>
-        </tr>
-    </table><br>
+                <input type="text" style="width:200px;" name="langsearchtext" class="form-control form-control-sm" value="<?= $langsearchtext; ?>">
+                <input type="submit" name="langsearch" class="btn btn-sm btn-success" value="<?= __('Search'); ?>">
+            </div>
+        </div>
+
+        <div class="col-2">
+            <!-- Items found -->
+            <?= __('Total items found: ') . $count_lines; ?>
+        </div>
+
+        <div class="col-2">
+            <!-- Save  button -->
+            <?php
+            if (@is_writable($language_editor['file'])) {
+                $num = count($_SESSION['line_array']);
+                echo ' <input type="submit" name="save_button" class="btn btn-sm btn-primary" value="' . __('Save') . '">';
+            } else {
+                echo '<b>' . __('FILE IS NOT WRITABLE!') . '</b>';
+            }
+            ?>
+        </div>
+
+    </div>
 
     <?php include(__DIR__ . '/../../languages/' . $language_editor['language'] . '/language_data.php'); ?>
 

@@ -71,7 +71,7 @@ $user = $dbh->query($usersql);
             <th><?= __('User group'); ?></th>
             <th><?= __('Extra settings'); ?></th>
             <th><?= __('Statistics'); ?></th>
-            <th><input type="submit" name="change_user" value="<?= __('Change'); ?>"></th>
+            <th><input type="submit" name="change_user" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
 
         <?php while ($userDb = $user->fetch(PDO::FETCH_OBJ)) { ?>
@@ -186,7 +186,7 @@ $user = $dbh->query($usersql);
             </td>
             <td></td>
             <td></td>
-            <td><input type="submit" name="add_user" value="<?= __('Add'); ?>"></td>
+            <td><input type="submit" name="add_user" value="<?= __('Add'); ?>" class="btn btn-sm btn-primary"></td>
         </tr>
     </table>
 </form>

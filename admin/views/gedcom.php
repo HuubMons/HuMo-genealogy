@@ -73,11 +73,10 @@ if (isset($step1)) {
     <p>
     <table class="humo" style="width:100%;">
         <tr class="table_header">
-            <th colspan="2"><?= __('Add and remove GEDCOM files'); ?></th>
+            <th><?= __('Add and remove GEDCOM files'); ?></th>
         </tr>
 
         <tr>
-            <td><?= __('Add GEDCOM file'); ?></td>
             <td>
                 <?= __('Here you can upload a GEDCOM file (for example: gedcom_name.ged or gedcom_name.zip).'); ?><br>
 
@@ -131,9 +130,15 @@ if (isset($step1)) {
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                        <input type="file" name="upload_file">
                         <input type="hidden" name="upload" value="Upload">
-                        <input type="submit" name="step1" value="Upload">
+                        <div class="row mt-2">
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <input type="file" name="upload_file" class="form-control form-control-sm">
+                                    <input type="submit" name="step1" value="<?= __('Upload'); ?>" class="btn btn-sm btn-success">
+                                </div>
+                            </div>
+                        </div>
                     </form><br>
 
                     <?= __('ATTENTION: the privileges of the file map may have to be adjusted!'); ?><br>
@@ -142,7 +147,6 @@ if (isset($step1)) {
         </tr>
 
         <tr>
-            <td><?= __('Remove GEDCOM files'); ?></td>
             <td>
                 <!-- Form to remove GEDCOM files -->
                 <?php if (isset($_POST['remove_gedcom_files'])) { ?>
@@ -193,16 +197,22 @@ if (isset($step1)) {
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                        <select size="1" name="remove_gedcom_files">
-                            <option value="gedcom_files_all"><?= __('Remove all GEDCOM files'); ?></option>
-                            <option value="gedcom_files_1_month">
-                                <?php printf(__('Remove GEDCOM files older than %d month(s)'), 1); ?>
-                            </option>
-                            <option value="gedcom_files_1_year">
-                                <?php printf(__('Remove GEDCOM files older than %d year(s)'), 1); ?>
-                            </option>
-                        </select>
-                        <input type="submit" name="step1" value="<?= __('Remove'); ?>">
+                        <div class="row mt-2">
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <select size="1" name="remove_gedcom_files" class="form-select form-select-sm">
+                                        <option value="gedcom_files_all"><?= __('Remove all GEDCOM files'); ?></option>
+                                        <option value="gedcom_files_1_month">
+                                            <?php printf(__('Remove GEDCOM files older than %d month(s)'), 1); ?>
+                                        </option>
+                                        <option value="gedcom_files_1_year">
+                                            <?php printf(__('Remove GEDCOM files older than %d year(s)'), 1); ?>
+                                        </option>
+                                    </select>
+                                    <input type="submit" name="step1" value="<?= __('Remove'); ?>" class="btn btn-sm btn-success">
+                                </div>
+                            </div>
+                        </div>
                     </form><br>
             <?php
                     }
@@ -229,31 +239,31 @@ if (isset($step1)) {
         <p>
         <table class="humo" style="width:100%;">
             <tr class="table_header">
-                <th colspan="2"><?= __('Select GEDCOM file and settings'); ?></th>
-            </tr>
-
-            </tr>
-            <td><br><?= __('Select GEDCOM file'); ?><br><br></td>
-            <td>
-                <br><select size="1" name="gedcom_file">
-                    <?php
-                    $result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
-                    $treegedDb = $result->fetch();
-                    $gedfile = $treegedDb['tree_gedcom'];
-                    for ($i = 0; $i < count($filenames); $i++) {
-                        // *** if this was last GEDCOM file that was used for this tree - select it ***
-                        $selected = '';
-                        if ($gedfile == $filenames[$i]) $selected = " selected ";
-                        echo '<option value="' . $filenames[$i] . '" ' . $selected . '>' . $filenames[$i] . '</option>';
-                    }
-                    ?>
-                </select><br><br>
-            </td>
+                <th><?= __('Select GEDCOM file and settings'); ?></th>
             </tr>
 
             <tr>
-                <td><?= __('GEDCOM settings'); ?></td>
                 <td>
+                    <?= __('Select GEDCOM file'); ?><br>
+                    <br><select size="1" name="gedcom_file" class="form-select form-select-sm">
+                        <?php
+                        $result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
+                        $treegedDb = $result->fetch();
+                        $gedfile = $treegedDb['tree_gedcom'];
+                        for ($i = 0; $i < count($filenames); $i++) {
+                            // *** if this was last GEDCOM file that was used for this tree - select it ***
+                            $selected = '';
+                            if ($gedfile == $filenames[$i]) $selected = " selected ";
+                            echo '<option value="' . $filenames[$i] . '" ' . $selected . '>' . $filenames[$i] . '</option>';
+                        }
+                        ?>
+                    </select><br>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <?= __('GEDCOM settings'); ?><br>
                     <?php
                     $check = '';
                     if ($humo_option["gedcom_read_add_source"] == 'y') {
@@ -313,53 +323,57 @@ if (isset($step1)) {
                     <br>
                 </td>
             </tr>
+
             <tr>
-                <td><?= __('GEDCOM process settings'); ?></td>
                 <td>
+                    <?= __('GEDCOM process settings'); ?><br>
+                    <input type="checkbox" name="check_processed"> <?= __('Show non-processed items when processing GEDCOM (can be a long list!'); ?><br>
+                    <input type="checkbox" name="show_gedcomnumbers"> <?= __('Show all numbers when processing GEDCOM (useful when a time-out occurs!)'); ?><br>
+                    <input type="checkbox" name="debug_mode"> <?= __('Debug mode'); ?><br>
+
+                    <input type="checkbox" name="commit_checkbox" checked disabled> <?= __('Batch processing'); ?>:
+                    <select size="1" name="commit_records" style="width: 300px">
+                        <?php
+                        echo '<option value="1">' . __('1 record (slow processing, but needs less server-memory)') . '</option>';
+                        $selected = '';
+                        if ($humo_option["gedcom_read_commit_records"] == '10') {
+                            $selected = ' selected';
+                        }
+                        echo '<option value="10"' . $selected . '>10 ' . __('records per batch') . '</option>';
+                        $selected = '';
+                        if ($humo_option["gedcom_read_commit_records"] == '100') {
+                            $selected = ' selected';
+                        }
+                        echo '<option value="100"' . $selected . '>100 ' . __('records per batch') . '</option>';
+                        $selected = '';
+                        if ($humo_option["gedcom_read_commit_records"] == '500') {
+                            $selected = ' selected';
+                        }
+                        echo '<option value="500"' . $selected . '>500 ' . __('records per batch') . '</option>';
+                        $selected = '';
+                        if ($humo_option["gedcom_read_commit_records"] == '1000') {
+                            $selected = ' selected';
+                        }
+                        echo '<option value="1000"' . $selected . '>1000 ' . __('records per batch') . '</option>';
+                        $selected = '';
+                        if ($humo_option["gedcom_read_commit_records"] == '5000') {
+                            $selected = ' selected';
+                        }
+                        echo '<option value="5000"' . $selected . '>5000 ' . __('records per batch') . '</option>';
+                        $selected = '';
+                        if ($humo_option["gedcom_read_commit_records"] == '10000') {
+                            $selected = ' selected';
+                        }
+                        echo '<option value="10000"' . $selected . '>10000 ' . __('records per batch') . '</option>';
+                        $selected = '';
+                        if ($humo_option["gedcom_read_commit_records"] == '9000000') {
+                            $selected = ' selected';
+                        }
+                        echo '<option value="9000000"' . $selected . '>' . __('ALL records (fast processing, but needs server-memory)') . '</option>';
+                        ?>
+                    </select>
+
                     <?php
-                    echo '<input type="checkbox" name="check_processed"> ' . __('Show non-processed items when processing GEDCOM (can be a long list!') . "<br>\n";
-                    echo '<input type="checkbox" name="show_gedcomnumbers"> ' . __('Show all numbers when processing GEDCOM (useful when a time-out occurs!)') . "<br>\n";
-                    echo '<input type="checkbox" name="debug_mode"> ' . __('Debug mode') . "<br>\n";
-
-                    echo '<input type="checkbox" name="commit_checkbox" checked disabled> ' . __('Batch processing') . ': <select size="1" name="commit_records" style="width: 200px">';
-                    echo '<option value="1">' . __('1 record (slow processing, but needs less server-memory)') . '</option>';
-                    $selected = '';
-                    if ($humo_option["gedcom_read_commit_records"] == '10') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="10"' . $selected . '>10 ' . __('records per batch') . '</option>';
-                    $selected = '';
-                    if ($humo_option["gedcom_read_commit_records"] == '100') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="100"' . $selected . '>100 ' . __('records per batch') . '</option>';
-                    $selected = '';
-                    if ($humo_option["gedcom_read_commit_records"] == '500') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="500"' . $selected . '>500 ' . __('records per batch') . '</option>';
-                    $selected = '';
-                    if ($humo_option["gedcom_read_commit_records"] == '1000') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="1000"' . $selected . '>1000 ' . __('records per batch') . '</option>';
-                    $selected = '';
-                    if ($humo_option["gedcom_read_commit_records"] == '5000') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="5000"' . $selected . '>5000 ' . __('records per batch') . '</option>';
-                    $selected = '';
-                    if ($humo_option["gedcom_read_commit_records"] == '10000') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="10000"' . $selected . '>10000 ' . __('records per batch') . '</option>';
-                    $selected = '';
-                    if ($humo_option["gedcom_read_commit_records"] == '9000000') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="9000000"' . $selected . '>' . __('ALL records (fast processing, but needs server-memory)') . '</option>';
-                    echo '</select>';
-
                     // *** Controlled time-out ***
                     $time_out = 0;
                     if ($humo_option["gedcom_read_time_out"]) $time_out = $humo_option["gedcom_read_time_out"];
@@ -393,9 +407,9 @@ if (isset($step1)) {
             echo '<br>';
             echo '<input type="radio" value="yes" name="add_tree" onchange="document.getElementById(\'step2\').disabled = !this.checked;" ' . $checked1 . '> ' . __('Add this GEDCOM file to the existing tree') . '<br>';
 
-            echo '<br><input type="submit" name="step2" id="step2" disabled value="' . __('Step') . ' 2"><br>';
+            echo '<br><input type="submit" name="step2" id="step2" disabled value="' . __('Step') . ' 2" class="btn btn-sm btn-success"><br>';
         } else {
-            echo '<p><input type="submit" name="step2" value="' . __('Step') . ' 2"><br>';
+            echo '<p><input type="submit" name="step2" value="' . __('Step') . ' 2" class="btn btn-sm btn-success"><br>';
         }
         ?>
     </form><br>
@@ -479,7 +493,7 @@ if (isset($_POST['step2'])) {
             }
             ?>
             <?= __('ONLY use in case of a time-out, to continue click:'); ?>
-            <input type="submit" name="step2" value="<?= __('Step'); ?> 2">
+            <input type="submit" name="step2" value="<?= __('Step'); ?> 2" class="btn btn-sm btn-secondary">
         </form><br>
     <?php
 
@@ -930,7 +944,7 @@ if (isset($_POST['step2'])) {
             echo '<input type="hidden" name="add_tree" value="">';
         }
         ?>
-        <input type="submit" name="step3" value="<?= __('Step'); ?> 3">
+        <input type="submit" name="step3" value="<?= __('Step'); ?> 3" class="btn btn-sm btn-success">
     </form>
 
     <?php if (isset($_POST['add_tree']) and $_POST['add_tree'] == 'yes') { ?>
@@ -1076,7 +1090,7 @@ if (isset($_POST['step3'])) {
                 echo '<input type="hidden" name="debug_mode" value="' . $_POST['debug_mode'] . '">';
             }
             ?>
-            <?= __('ONLY use in case of a time-out, to continue click:'); ?> <input type="submit" name="timeout" value="<?= __('Restart'); ?>">
+            <?= __('ONLY use in case of a time-out, to continue click:'); ?> <input type="submit" name="timeout" value="<?= __('Restart'); ?>" class="btn btn-sm btn-secondary">
             <?= __('Restarts reading of GEDCOM using a controlled time-out.'); ?>
         </form><br><br>
     <?php
@@ -1620,14 +1634,17 @@ if (isset($_POST['step3'])) {
         ob_flush();
         flush();
     }
-    echo '<br><form method="post" action="' . $phpself . '">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="gen_program" value="' . $gen_program . '">';
-    echo '<input type="hidden" name="gen_program_version" value="' . $gen_program_version . '">';
-    echo '<input type="submit" name="step4" value="' . __('Step') . ' 4">';
-    echo '</form>';
+    ?>
+    <br>
+    <form method="post" action="<?= $phpself; ?>">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+        <input type="hidden" name="gen_program" value="<?= $gen_program; ?>">
+        <input type="hidden" name="gen_program_version" value="<?= $gen_program_version; ?>">
+        <input type="submit" name="step4" value="<?= __('Step'); ?> 4" class="btn btn-sm btn-success">
+    </form>
+<?php
 }
 
 // *** Step 4 ***
@@ -1635,21 +1652,21 @@ if (isset($_POST['step4'])) {
     $start_time = time();
     $gen_program = $_POST['gen_program'];
     $gen_program_version = $_POST['gen_program_version'];
+?>
 
-    ?>
     <b><?= __('STEP 4) Final database processing:'); ?></b><br>
+
+    <!-- To proceed if a (30 seconds) timeout has occured -->
+    <form method="post" action="<?= $phpself; ?>">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+        <input type="hidden" name="gen_program" value="<?= $_POST['gen_program']; ?>">
+        <input type="hidden" name="gen_program_version" value="<?= $_POST['gen_program_version']; ?>">
+        <br><?= __('ONLY use in case of a time-out, to continue click:'); ?> <input type="submit" name="step4" value="<?= __('Step'); ?> 4" class="btn btn-sm btn-secondary">
+    </form><br>
+
 <?php
-
-    // *** To proceed if a (30 seconds) timeout has occured ***
-    echo '<form method="post" action="' . $phpself . '">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="gen_program" value="' . $_POST['gen_program'] . '">';
-    echo '<input type="hidden" name="gen_program_version" value="' . $_POST['gen_program_version'] . '">';
-    echo '<br>' . __('ONLY use in case of a time-out, to continue click:') . ' <input type="submit" name="step4" value="' . __('Step') . ' 4">';
-    echo '</form><br>';
-
     // *** Show progress ***
     echo '<div id="progress" style="width:500px;border:1px solid #ccc;"></div>';
     echo '<!-- Progress information -->';

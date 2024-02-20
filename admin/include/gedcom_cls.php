@@ -66,8 +66,8 @@ class gedcom_cls
         $pers_sexe = "";
         $person["pers_quality"] = '';
         $person["pers_unprocessed_tags"] = '';
-        $person["new_date"] = "";
-        $person["new_time"] = "";
+        $person["new_date"] = "1970-01-01";
+        $person["new_time"] = "00:00:01";
         $person["changed_date"] = "";
         $person["changed_time"] = "";
         $pers_birth_date_hebnight = '';
@@ -2707,8 +2707,8 @@ class gedcom_cls
         $family["fam_cal_date"] = "";
         $family["fam_unprocessed_tags"] = "";
 
-        $family["new_date"] = "";
-        $family["new_time"] = "";
+        $family["new_date"] = "1970-01-01";
+        $family["new_time"] = "00:00:01";
 
         $family["changed_date"] = "";
         $family["changed_time"] = "";
@@ -4135,8 +4135,8 @@ class gedcom_cls
         $buffer = $line2[0];
         $text['text_text'] = '';
         $text["text_unprocessed_tags"] = "";
-        $text["new_date"] = '';
-        $text["new_time"] = '';
+        $text["new_date"] = '1970-01-01';
+        $text["new_time"] = '00:00:01';
         $text["changed_date"] = '';
         $text["changed_time"] = '';
         // *** For source connect table ***
@@ -4406,8 +4406,8 @@ class gedcom_cls
         $source["source_repo_page"] = "";
         $source["source_repo_gedcomnr"] = "";
         $source["source_unprocessed_tags"] = "";
-        $source["new_date"] = '';
-        $source["new_time"] = '';
+        $source["new_date"] = '1970-01-01';
+        $source["new_time"] = '00:00:01';
         $source["changed_date"] = '';
         $source["changed_time"] = '';
         //$source["source_shared"]="1";
@@ -4919,8 +4919,8 @@ class gedcom_cls
         $repo["repo_mail"] = "";
         $repo["repo_url"] = "";
         $repo["repo_unprocessed_tags"] = "";
-        $repo["repo_new_date"] = "";
-        $repo["repo_new_time"] = "";
+        $repo["repo_new_date"] = "1970-01-01";
+        $repo["repo_new_time"] = "00:00:01";
         $repo["repo_changed_date"] = "";
         $repo["repo_changed_time"] = "";
 
@@ -5165,21 +5165,20 @@ class gedcom_cls
 
         // *** Save repository ***
         $sql = "INSERT IGNORE INTO humo_repositories SET
-    repo_tree_id='" . $tree_id . "',
-    repo_gedcomnr='" . $this->text_process($repo["repo_gedcomnr"]) . "',
-    repo_name='" . $this->text_process($repo["repo_name"]) . "',
-    repo_address='" . $this->text_process($repo["repo_address"]) . "',
-    repo_zip='" . $this->text_process($repo["repo_zip"]) . "',
-    repo_place='" . $this->text_process($repo["repo_place"]) . "',
-    repo_phone='" . $this->text_process($repo["repo_phone"]) . "',
-    repo_date='" . $this->process_date($this->text_process($repo["repo_date"])) . "',
-    repo_text='" . $this->text_process($repo["repo_text"]) . "',
-    repo_mail='" . $this->text_process($repo["repo_mail"]) . "',
-    repo_url='" . $this->text_process($repo["repo_url"]) . "',
+            repo_tree_id='" . $tree_id . "',
+            repo_gedcomnr='" . $this->text_process($repo["repo_gedcomnr"]) . "',
+            repo_name='" . $this->text_process($repo["repo_name"]) . "',
+            repo_address='" . $this->text_process($repo["repo_address"]) . "',
+            repo_zip='" . $this->text_process($repo["repo_zip"]) . "',
+            repo_place='" . $this->text_process($repo["repo_place"]) . "',
+            repo_phone='" . $this->text_process($repo["repo_phone"]) . "',
+            repo_date='" . $this->process_date($this->text_process($repo["repo_date"])) . "',
+            repo_text='" . $this->text_process($repo["repo_text"]) . "',
+            repo_mail='" . $this->text_process($repo["repo_mail"]) . "',
+            repo_url='" . $this->text_process($repo["repo_url"]) . "',
 
-    repo_new_datetime = '" . date('Y-m-d H:i:s', strtotime($repo['repo_new_date'] . ' ' . $repo['repo_new_time']))  . "',
-    " . $this->changed_datetime('repo_changed_datetime', $repo['repo_changed_date'], $repo['repo_changed_time']) . "'";
-
+            repo_new_datetime = '" . date('Y-m-d H:i:s', strtotime($repo['repo_new_date'] . ' ' . $repo['repo_new_time']))  . "'
+            " . $this->changed_datetime('repo_changed_datetime', $repo['repo_changed_date'], $repo['repo_changed_time']);
         $dbh->query($sql);
 
         $repo_id = $dbh->lastInsertId();
@@ -5232,8 +5231,8 @@ class gedcom_cls
             $address["address_gedcomnr"] = $this->reassign_ged($address["address_gedcomnr"], 'R');
         }
         $address["address_unprocessed_tags"] = "";
-        $address["new_date"] = '';
-        $address["new_time"] = '';
+        $address["new_date"] = '1970-01-01';
+        $address["new_time"] = '00:00:01';
         $address["changed_date"] = '';
         $address["changed_time"] = '';
 
@@ -5496,8 +5495,8 @@ class gedcom_cls
         $event['place'] = '';
         $event['text'] = ''; // $event['source']='';
         $event_unprocessed_tags = "";
-        $event_new_date = '';
-        $event_new_time = '';
+        $event_new_date = '1970-01-01';
+        $event_new_time = '00:00:01';
         $event_changed_date = '';
         $event_changed_time = '';
 
@@ -6356,8 +6355,8 @@ function non_processed_items($buffer){
                 $source["source_repo_page"][$nrsource] = '';
                 $source["source_repo_gedcomnr"][$nrsource] = '';
                 $source["source_unprocessed_tags"][$nrsource] = '';
-                $source["new_date"][$nrsource] = '';
-                $source["new_time"][$nrsource] = '';
+                $source["new_date"][$nrsource] = '1970-01-01';
+                $source["new_time"][$nrsource] = '00:00:01';
                 $source["changed_date"][$nrsource] = '';
                 $source["changed_time"][$nrsource] = '';
 

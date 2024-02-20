@@ -266,7 +266,7 @@ if (!isset($_POST['install_tables2'])) {
             <?php
         } else {
             ?>
-            <p><input type="submit" name="install_tables" class="btn btn-success" value="<?= __('Install'); ?>">
+            <p><input type="submit" name="install_tables" class="btn btn-sm btn-success" value="<?= __('Install'); ?>">
             <?php
         }
 

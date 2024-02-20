@@ -221,7 +221,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
 $show_line_pages = false;
 // *** Check for search results ***
-if (@$person->rowCount() > 0) { 
+if (@$person->rowCount() > 0) {
     if ($humo_option["url_rewrite"] == "j") {
         $uri_path_string = $uri_path . 'list_names/' . $tree_id . '/' . $last_name . '?';
     } else {
@@ -255,6 +255,7 @@ if (@$person->rowCount() > 0) {
             } else {
                 $show_line_pages = true;
                 $data["page_link"][$i] = $uri_path_string . "start=" . $start . "&amp;item=" . $calculated;
+                $data["page_status"][$i] = '';
             }
         }
     }

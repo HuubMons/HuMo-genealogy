@@ -297,6 +297,7 @@ function show_media_files($pref)
                 $data["page_status"][$i] = 'active';
             } else {
                 $data["page_link"][$i] = $albumpath . "start=" . $start . "&amp;item=" . $calculated;
+                $data["page_status"][$i] = '';
             }
         }
     }
