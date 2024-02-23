@@ -131,11 +131,9 @@ $person_found = true;
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
                         <option value=""><?= __('Favourites list'); ?></option>
-                        <?php
-                        while ($favDb = $fav_result->fetch(PDO::FETCH_OBJ)) {
-                            echo '<option value="' . $favDb->setting_value . '">' . $editor_cls->show_selected_person($favDb) . '</option>';
-                        }
-                        ?>
+                        <?php while ($favDb = $fav_result->fetch(PDO::FETCH_OBJ)) { ?>
+                            <option value="<?= $favDb->setting_value; ?>"><?= $editor_cls->show_selected_person($favDb); ?></option>
+                        <?php } ?>
                     </select>
                 </form>
             </div>
@@ -154,9 +152,26 @@ $person_found = true;
                                 $person2 = $person2_result->fetch(PDO::FETCH_OBJ);
                                 if ($person2) {
                                     $pers_user = '';
-                                    if ($person2->pers_new_user) $pers_user = ' [' . __('Added by') . ': ' . $person2->pers_new_user . ']';
-                                    elseif ($person2->pers_changed_user) $pers_user = ' [' . __('Changed by') . ': ' . $person2->pers_changed_user . ']';
-                                    echo '<option value="' . $person2->pers_gedcomnumber . '">' . $editor_cls->show_selected_person($person2) . $pers_user . '</option>';
+                                    if ($person2->pers_new_user_id) {
+                                        // TODO improve query using join.
+                                        $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person2->pers_new_user_id . "'";
+                                        $user_result = $dbh->query($user_qry);
+                                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                                        $user_name = $userDb->user_name;
+
+                                        $pers_user = ' [' . __('Added by') . ': ' . $user_name . ']';
+                                    } elseif ($person2->pers_changed_user_id) {
+                                        // TODO improve query using join.
+                                        $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person2->pers_changed_user_id . "'";
+                                        $user_result = $dbh->query($user_qry);
+                                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                                        $user_name = $userDb->user_name;
+
+                                        $pers_user = ' [' . __('Changed by') . ': ' . $user_name . ']';
+                                    }
+                        ?>
+                                    <option value="<?= $person2->pers_gedcomnumber; ?>"><?= $editor_cls->show_selected_person($person2) . $pers_user; ?></option>
+                        <?php
                                 }
                             }
                         }

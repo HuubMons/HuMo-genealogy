@@ -417,7 +417,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
         <input type="submit" value="<?= __('Back to main merge menu'); ?>">
     </form>
-<?php
+    <?php
 }
 
 // this is called when the "duplicate merge" button is used on the duplicate_choices page
@@ -468,13 +468,16 @@ elseif (isset($_POST['duplicate'])) {
     if (isset($dupl_arr)) {
         $_SESSION['dupl_arr_' . $data2Db->tree_prefix] = $dupl_arr;
         $_SESSION['present_compare_' . $data2Db->tree_prefix] = -1;
-        echo '<br>' . __('Possible duplicates found: ') . count($dupl_arr) . '<br><br>'; // possible duplicates found
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-        echo '<input type="submit" name="duplicate_compare" value="' . __('Start comparing duplicates') . '">'; // start comparing duplicates
-        echo '</form>';
+    ?>
+        <!-- possible duplicates found -->
+        <br><?= __('Possible duplicates found: ') . count($dupl_arr); ?><br><br>
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+            <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+            <input type="submit" name="duplicate_compare" value="<?= __('Start comparing duplicates'); ?>">
+        </form>
+<?php
     } else {
         echo '<br>' . __('No duplicates found. Duplicate merge and Automatic merge won\'t result in merges!') . '<br>'; // no duplicates were found
         echo __('You can try one of the other merge options') . '<br><br>'; // try other options
@@ -767,30 +770,30 @@ elseif (isset($_POST['auto_merge'])) {
     echo '<br>' . __('Please wait while the automatic merges are processed...') . '<br>';
     $merges = 0;
     $qry = "SELECT pers_id, pers_lastname, pers_firstname, pers_birth_date, pers_death_date, pers_famc
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                AND pers_lastname !=''
-                AND pers_firstname !=''
-                AND (pers_birth_date !='' OR pers_death_date !='')
-                AND pers_famc !=''
-                ORDER BY pers_id";
+        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+        AND pers_lastname !=''
+        AND pers_firstname !=''
+        AND (pers_birth_date !='' OR pers_death_date !='')
+        AND pers_famc !=''
+        ORDER BY pers_id";
     $pers = $dbh->query($qry);
     while ($persDb = $pers->fetch(PDO::FETCH_OBJ)) {
         $qry2 = "SELECT pers_id, pers_lastname, pers_firstname, pers_birth_date, pers_death_date, pers_famc FROM humo_persons
-                WHERE pers_tree_id='" . $tree_id . "'
-                AND pers_id > " . $persDb->pers_id . "
-                AND (pers_lastname !='' AND pers_lastname = '" . $persDb->pers_lastname . "')
-                AND (pers_firstname !='' AND pers_firstname = '" . $persDb->pers_firstname . "')
-                AND ((pers_birth_date !='' AND pers_birth_date ='" . $persDb->pers_birth_date . "')
-                    OR (pers_death_date !='' AND pers_death_date ='" . $persDb->pers_death_date . "'))
-                AND pers_famc !=''
-                ORDER BY pers_id";
+            WHERE pers_tree_id='" . $tree_id . "'
+            AND pers_id > " . $persDb->pers_id . "
+            AND (pers_lastname !='' AND pers_lastname = '" . $persDb->pers_lastname . "')
+            AND (pers_firstname !='' AND pers_firstname = '" . $persDb->pers_firstname . "')
+            AND ((pers_birth_date !='' AND pers_birth_date ='" . $persDb->pers_birth_date . "')
+                OR (pers_death_date !='' AND pers_death_date ='" . $persDb->pers_death_date . "'))
+            AND pers_famc !=''
+            ORDER BY pers_id";
 
         $pers2 = $dbh->query($qry2);
         if ($pers2) {
             while ($pers2Db = $pers2->fetch(PDO::FETCH_OBJ)) {
                 // get the two families
                 $qry = "SELECT fam_man, fam_woman, fam_marr_date FROM humo_families
-                            WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $persDb->pers_famc . "'";
+                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $persDb->pers_famc . "'";
                 $fam1 = $dbh->query($qry);
                 $fam1Db = $fam1->fetch(PDO::FETCH_OBJ);
 
@@ -811,20 +814,20 @@ elseif (isset($_POST['auto_merge'])) {
                     if ($go) {
                         // no use doing all this if the marriage date doesn't match
                         $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
-                                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam1Db->fam_man . "'";
+                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam1Db->fam_man . "'";
                         $fath1 = $dbh->query($qry);
                         $fath1Db = $fath1->fetch(PDO::FETCH_OBJ);
                         $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
-                                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam1Db->fam_woman . "'";
+                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam1Db->fam_woman . "'";
                         $moth1 = $dbh->query($qry);
                         $moth1Db = $moth1->fetch(PDO::FETCH_OBJ);
 
                         $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
-                                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam2Db->fam_man . "'";
+                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam2Db->fam_man . "'";
                         $fath2 = $dbh->query($qry);
                         $fath2Db = $fath2->fetch(PDO::FETCH_OBJ);
                         $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
-                                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam2Db->fam_woman . "'";
+                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam2Db->fam_woman . "'";
                         $moth2 = $dbh->query($qry);
                         $moth2Db = $moth2->fetch(PDO::FETCH_OBJ);
                         if ($fath1->rowCount() > 0 and $moth1->rowCount() > 0 and $fath2->rowCount() > 0 and $moth2->rowCount() > 0) {
