@@ -106,12 +106,14 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                 $checked = ' checked ';
                 if (isset($_POST['part_tree']) and $_POST['part_tree'] == "part") $checked = '';
                 echo '<input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" ' . $checked . '>' . __('Whole tree:');
+
                 $checked = '';
                 if (isset($_POST['part_tree']) and $_POST['part_tree'] == "part") $checked = ' checked ';
                 echo '<br><input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" ' . $checked . '>' . __('Partial tree:');
                 ?>
             </td>
         </tr>
+
         <?php
         if (isset($_POST['part_tree']) and $_POST['part_tree'] == "part") {
         ?>
@@ -147,7 +149,7 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                     <?= __('Person'); ?>:
                     <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15">
                     <?= __('or ID:'); ?> <input type="text" name="search_id" value="<?= $search_id; ?>" size="8">
-                    <input type="submit" value="<?= __('Search'); ?>"><br>
+                    <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary"><br>
 
                     <?php
                     unset($person_result);
@@ -517,7 +519,7 @@ Other programs: convert shared addresses. The "shared address" option will be lo
         <tr>
             <td><?= __('GEDCOM export'); ?></td>
             <td>
-                <input type="submit" name="submit_button" value="<?= __('Start export'); ?>">
+                <input type="submit" name="submit_button" value="<?= __('Start export'); ?>" class="btn btn-sm btn-success">
                 <?php
                 // *** Show processed lines ***
                 if (isset($_POST['submit_button'])) {

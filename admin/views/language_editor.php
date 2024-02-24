@@ -181,7 +181,8 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
         <div class="alert alert-success"><?= $language_editor['message']; ?></div>
     <?php } ?>
 
-    <div class="row p-2 mb-3 mx-sm-1 genealogy_search">
+    <!-- <div class="row p-2 mb-3 mx-sm-1 genealogy_search"> -->
+    <div class="row p-2 mb-3 mx-sm-1 align-items-center genealogy_search">
 
         <div class="col-auto">
             <div class="dropdown">
@@ -231,8 +232,8 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
         <div class="col-auto">
             <div class="input-group">
                 <!-- Max items per page choice -->
-                <?= __('Max items per page: '); ?>
-                <select size="1" name="maxlines" class="form-select form-select-sm" onChange="this.form.submit();">
+                <label for="maxlines" class="col-sm-auto col-form-label"><?= __('Max items per page: '); ?>&nbsp;</label>
+                <select size="1" name="maxlines" id="maxlines" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value="10" <?= $_SESSION['maxlines'] == 10 ? ' selected' : ''; ?>>10</option>
                     <option value="20" <?= $_SESSION['maxlines'] == 20 ? ' selected' : ''; ?>>20</option>
                     <option value="30" <?= $_SESSION['maxlines'] == 30 ? ' selected' : ''; ?>>30</option>

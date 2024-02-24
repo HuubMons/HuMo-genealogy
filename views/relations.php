@@ -134,7 +134,7 @@ Directions for use:<br>
             <td>
                 <?php
                 if (isset($_SESSION["button_search_name1"]) and $_SESSION["button_search_name1"] == 1) {
-                    $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=".$tree_id." ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
+                    $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
 
                     if ($data["search_name1"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
@@ -244,7 +244,7 @@ Directions for use:<br>
             <td>
                 <?php
                 if (isset($_SESSION["button_search_name2"]) and $_SESSION["button_search_name2"] == 1) {
-                    $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=".$tree_id." ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
+                    $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
 
                     if ($data["search_name2"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
@@ -586,6 +586,31 @@ function calculate_rel($data_found)
         $table = 6;
         if ($sexe == 'm') {
             $reltext = __('brother of ');
+            //***Greek ***
+            /**In the Greek language, the gender of the second person plays a role in expressing the blood relationship that exists between two people.
+             * For example, father:
+             * If it is a boy we say (father ΤΟΥ John).
+             * If it's a girl, (father ΤΗΣ Helen).
+             */
+
+            /** Στην ελληνική γλώσσα για την διατύπωση της συγγένειας αίματος  που υπάρχει μεταξύ δύο ατόμων παίζει ρόλο το γένος του δεύτερου προσώπου.
+             *Για παράδειγμα, πατέρας:
+             *Αν είναι αγόρι λέμε (πατέρας ΤΟΥ Γιάννη).
+             *Αν είναι κορίτσι, πατέρας ΤΗΣ Ελένης.
+             */
+
+            // *** Ελληνικά αδελφός***
+            if ($selected_language == "gr") {
+                if ($sexe == 'm') {
+                    if ($sexe2 == 'm') {
+                        $reltext = 'αδελφός του ';
+                    } else {
+                        $reltext = __('αδελφός της ');
+                    }
+                }
+            }
+            // *** Ελληνικά τέλος***
+            // *** Greek end***            
             if ($selected_language == "cn") {
                 if ($sexe2 == "m") {
                     $reltext = '兄弟是';
@@ -597,6 +622,19 @@ function calculate_rel($data_found)
             if ($spouse == 1) {
                 $reltext = __('sister-in-law of ');
                 $special_spouseX = 1;  //comparing spouse of X with Y
+                // *** Greek***
+                // *** Ελληνικά κουνιάδα***
+                if ($selected_language == "gr") {
+                    if ($sexe == "m") {
+                        if ($sexe2 == 'm') {
+                            $reltext = 'κουνιάδα του ';
+                        } else {
+                            $reltext = 'κουνιάδα της ';
+                        }
+                    }
+                    // *** Ελληνικά τέλος***
+                    // *** Greek end*** 
+                }
                 if ($selected_language == "cn") {
                     if ($sexe2 == "m") {
                         $reltext = '大爷(小叔)是';
@@ -612,6 +650,17 @@ function calculate_rel($data_found)
                 //comparing X with spouse of Y or comparing 2 spouses
                 //$special_spouseX flags not to enter "spouse of" for X in display function
                 //$special_spouseY flags not to enter "spouse of" for Y in display function
+                // *** Greek***
+                // *** Ελληνικά κουνιάδος***
+                if ($selected_language == "gr" and $spouse == 2) {
+                    if ($sexe2 == "m") {
+                        $reltext = 'κουνιάδος του ';
+                    } else {
+                        $reltext = 'κουνιάδος της ';
+                    }
+                }
+                // *** Ελληνικά τέλος***
+                // *** Greek end***                 
                 if ($selected_language == "cn" and $spouse == 2) {
                     if ($sexe2 == "m") {
                         $reltext = '姊夫(妹夫)是';
@@ -620,6 +669,17 @@ function calculate_rel($data_found)
                         $reltext = '嫂(弟妇)是';
                     }  // "A's sister-in-law is B" (brother's wife) 
                 }
+                //***Greek ***                
+                // *** Ελληνικά κουνιάδος***                
+                if ($selected_language == "gr" and $spouse == 3) {
+                    if ($sexe2 == "m") {
+                        $reltext = 'κουνιάδος του ';
+                    } else {
+                        $reltext = 'κουνιάδος της ';
+                    }
+                }
+                // *** Ελληνικά τέλος***
+                // *** Greek end*** 
                 if ($selected_language == "cn" and $spouse == 3) {
                     if ($sexe2 == "m") {
                         $reltext = '大姑丈(小姑丈)是';
@@ -631,6 +691,17 @@ function calculate_rel($data_found)
             }
         } else {
             $reltext = __('sister of ');
+            // *** Greek***
+            // *** Ελληνικά αδελφή***            
+            if ($selected_language == "gr") {
+                if ($sexe2 == "m") {
+                    $reltext = 'αδελφή του ';
+                } else {
+                    $reltext = 'αδελφή της ';
+                }
+            }
+            // *** Ελληνικά τέλος***
+            // *** Greek end***             
             if ($selected_language == "cn") {
                 if ($sexe2 == "m") {
                     $reltext = '兄弟是';
@@ -642,6 +713,17 @@ function calculate_rel($data_found)
             if ($spouse == 1) {
                 $reltext =  __('brother-in-law of ');
                 $special_spouseX = 1;  //comparing spouse of X with Y
+                // *** Greek***
+                // *** Ελληνικά κουνιάδος***                
+                if ($selected_language == "gr") {
+                    if ($sexe2 == "m") {
+                        $reltext = 'κουνιάδος του ';
+                    } else {
+                        $reltext = 'κουνιάδος της ';
+                    }
+                }
+                // *** Ελληνικά τέλος***
+                // *** Greek end***           
                 if ($selected_language == "cn") {
                     if ($sexe2 == "m") {
                         $reltext = '大舅(小舅)是';
@@ -656,6 +738,17 @@ function calculate_rel($data_found)
                 $special_spouseY = 1; //comparing X with spouse of Y or comparing 2 spouses
                 //$special_spouseX flags not to enter "spouse of" for X in display function
                 //$special_spouseY flags not to enter "spouse of" for Y in display function
+                // *** Greek***
+                // *** Ελληνικά κουνιάδα***                  
+                if ($selected_language == "gr" and $spouse == 2) {
+                    if ($sexe2 == "m") {
+                        $reltext = 'κουνιάδα του ';
+                    } else {
+                        $reltext = 'κουνιάδα της ';
+                    }
+                }
+                // *** Ελληνικά τέλος***
+                // *** Greek end*** 
                 if ($selected_language == "cn" and $spouse == 2) {
                     if ($sexe2 == "m") {
                         $reltext = '姊夫(妹夫)是';
@@ -781,6 +874,25 @@ function calculate_ancestor($pers)
     } else {
         $parent = __('mother');
     }
+    // *** Greek***
+    // *** Ελληνικά πατέρας μητέρα***  
+    if ($selected_language == "gr") {
+        if ($sexe == 'm') {
+            if ($sexe2 == 'm') {
+                $parent = 'πατέρας του ';
+            } else {
+                $parent = 'πατέρας της  ';
+            }
+        } else {
+            if ($sexe2 == 'm') {
+                $parent = 'μητέρα του ';
+            } else {
+                $parent = 'μητέρα της  ';
+            }
+        }
+    }
+    // *** Ελληνικά τέλος***
+    // *** Greek end***   
     if ($selected_language == "cn") {
         // chinese instead of A is father of B we say: A's son is B
         // therefore we need sex of B instead of A and use son/daughter instead of father/mother
@@ -800,6 +912,25 @@ function calculate_ancestor($pers)
             } else {
                 $parent = __('mother-in-law');
             }
+            // *** Greek***
+            // *** Ελληνικά πεθερός πεθερά***  
+            if ($selected_language == "gr") {
+                if ($sexe == "m") {
+                    if ($sexe2 == "m") {
+                        $parent = 'πεθερός του ';
+                    } else {
+                        $parent = 'πεθερός της ';
+                    }
+                } else {
+                    if ($sexe2 == "m") {
+                        $parent = 'πεθερά του ';
+                    } else {
+                        $parent = 'πεθερά της ';
+                    }
+                }
+            }
+            // *** Ελληνικά τέλος***
+            // *** Greek end*** 
             if ($selected_language == "cn") {
                 if ($sexe2 == "m") {
                     $parent = '女婿';
@@ -809,7 +940,11 @@ function calculate_ancestor($pers)
                 } // daughter-in-law
             }
         }
-        $reltext = $parent . __(' of ');
+        if ($selected_language == "gr") {
+            $reltext = $parent . __(' ');
+        } else {
+            $reltext = $parent . __(' of ');
+        }
         if ($selected_language == "da") {
             $reltext = $parent . ' til ';
         }
@@ -824,6 +959,80 @@ function calculate_ancestor($pers)
                 $gennr = $pers - 2;
                 $dutchtext =  "(" . $ancestortext . $parent . " = " . $gennr . __('th') . ' ' . __('great-grand') . $parent . ")";
             }
+            // *** Greek***
+            // *** Ελληνικά παππούς γιαγιά***       
+        } elseif ($selected_language == "gr") {
+            // TODO improve code
+            if ($parent == __('father')) {
+                $grparent = __('παππούς');
+                $grgrparent = __('προπάππος');
+                $grnumber = "oς";
+            } else {
+                $grparent = __('γιαγιά');
+                $grgrparent = __('προγιαγιά');
+                $grnumber = "η";
+            }
+        }
+        $gennr = $pers - 1;
+        $degree = $gennr . $grnumber;
+        if ($pers == 2) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __('παππούς του ');
+                } else {
+                    $reltext = __('παππούς της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = __('γιαγιά του ');
+                } else {
+                    $reltext = __('γιαγιά της ');
+                }
+            }
+        } elseif ($pers == 3) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __('προπάππος') . " (" . $gennr . "oς" . " " . 'παππούς' . ")" . __(' του ');
+                } else {
+                    $reltext = __('προπάππος') . " (" . $gennr . "oς" . " " . 'παππούς' . ")" . __(' της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = __('προγιαγιά') . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                } else {
+                    $reltext = __('προγιαγιά') . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                }
+            }
+        } elseif ($pers == 4) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __('προπάππος') . " (" . $gennr . "oς" . " " . 'παππούς' . ")" . __(' του ');
+                } else {
+                    $reltext = __('προπάππος') . " (" . $gennr . "oς" . " " . 'παππούς' . ")" . __(' της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = __('προγιαγιά') . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                } else {
+                    $reltext = __('προγιαγιά') . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                }
+            }
+        } elseif ($pers == 5) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __('προπάππος') . " (" . $gennr . "oς" . " " . 'παππούς' . ")" . __(' του ');
+                } else {
+                    $reltext = __('προπάππος') . " (" . $gennr . "oς" . " " . 'παππούς' . ")" . __(' της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = __('προγιαγιά') . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                } else {
+                    $reltext = __('προγιαγιά') . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                }
+            }
+            // *** Ελληνικά τέλος***
+            // *** Greek end*** 
         } elseif ($selected_language == "es") {
             // TODO improve code
             if ($parent == __('father')) {
@@ -1150,6 +1359,25 @@ function calculate_descendant($pers)
     } else {
         $child = __('daughter');
     }
+    // *** Greek***
+    // *** Ελληνικά γιος κόρη***  
+    if ($selected_language == "gr") {
+        if ($sexe == 'm') {
+            if ($sexe2 == 'm') {
+                $child = 'γιος του ';
+            } else {
+                $child = 'γιος της ';
+            }
+        } else {
+            if ($sexe2 == 'm') {
+                $child = 'κόρη του ';
+                $child = 'κόρη της ';
+            }
+        }
+        // *** Ελληνικά τέλος***
+        // *** Greek end***
+    }
+
     if ($selected_language == "cn") {
         // chinese instead of A is son of B we say: A's father is B
         // therefore we need sex of B instead of A and use father/ mother instead of son/ daughter
@@ -1167,6 +1395,25 @@ function calculate_descendant($pers)
                 $child = __('son-in-law');
             }
             $special_spouseX = 1;
+            // *** Greek***
+            // *** Ελληνικά νύφη γαμπρός***
+            if ($selected_language == "gr") {
+                if ($sexe == "m") {
+                    if ($sexe2 == "m") {
+                        $child = 'νύφη του ';
+                    } else {
+                        $child = 'νύφη της';
+                    }
+                } else {
+                    if ($sexe2 == "m") {
+                        $child = 'γαμπρός του ';
+                    } else {
+                        $child = 'γαμπρός της ';
+                    }
+                }
+            }
+            // *** Ελληνικά τέλος***
+            // *** Greek end*** 
             if ($selected_language == "cn") {  // A's father/mother-in-law is B (instead of A is son/daughter-in-law of B)
                 if ($sexe2 == "m") {
                     if ($sexe == "f") {
@@ -1185,10 +1432,71 @@ function calculate_descendant($pers)
                 }
             }
         }
-        $reltext = $child . __(' of ');
+        if ($selected_language == "gr") {
+            $reltext = $child . __('  ');
+        } else {
+            $reltext = $child . __(' of ');
+        }
         if ($selected_language == "cn") {
             $reltext = $child . '是';
         }
+        // *** Greek***
+        // *** Ελληνικά εγγονός***
+    } elseif ($selected_language == "gr") {
+        if ($child == __('son')) {
+            $grchild = 'εγγονός';
+            $grnumber = "ος";
+        } else {
+            $grchild = 'εγγονή';
+            $grnumber = "η";
+        }
+        $gennr = $pers - 1;
+        $degree = $gennr . $grnumber . " " . $grchild;
+        if ($pers == 2) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __('εγγονός του ');
+                } else {
+                    $reltext =  __('εγγονός της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = __('εγγονή του ');
+                } else {
+                    $reltext = __('εγγονή της ');
+                }
+            }
+        } elseif ($pers = 3) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __('δισέγγονος') . " (" . $degree . " " . ")" . __(' του ');
+                } else {
+                    $reltext =  __('δισέγγονος') . " (" . $degree . " " . ")" . __(' της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = __('δισέγγονη') . " (" . $degree . " " . ")" . __(' του ');
+                } else {
+                    $reltext =  __('δισέγγονη') . " (" . $degree . " " . ")" . __(' της ');
+                }
+            }
+        } elseif ($pers = 4) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __('δισέγγονος') . " (" . $degree . " " . ")" . __(' του ');
+                } else {
+                    $reltext =  __('δισέγγονος') . " (" . $degree . " " . ")" . __(' της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = __('δισέγγονη') . " (" . $degree . " " . ")" . __(' του ');
+                } else {
+                    $reltext =  __('δισέγγονη') . " (" . $degree . " " . ")" . __(' της ');
+                }
+            }
+        }
+        // *** Ελληνικά τέλος***
+        // *** Greek end*** 
     } elseif ($selected_language == "es") {
         if ($child == __('son')) {
             $grchild = 'nieto';
@@ -1458,7 +1766,74 @@ function calculate_nephews($generX)
     global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
     global $data_found;
 
-    if ($selected_language == "es") {
+    // *** Greek***
+    // *** Ελληνικά***
+    if ($selected_language == "gr") {
+        if ($sexe == "m") {
+            $neph = __('ανιψιος');
+            $span_postfix = "ος ";
+            $grson = 'εγγονός';
+        } else {
+            $neph = __('ανιψιά');
+            $span_postfix = "η ";
+            $grson = 'εγγονή';
+        }
+        $gendiff = $generX - 1;
+        $gennr = $gendiff - 1;
+        $degree = $grson . " " . $gennr . $span_postfix;
+        if ($gendiff == 1) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = $neph . __(' του ');
+                } else {
+                    $reltext = $neph . __(' της ');
+                }
+            } else {
+                if ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $reltext = $neph . __(' του ');
+                    } else {
+                        $reltext = $neph . __(' της ');
+                    }
+                }
+            }
+        } elseif ($gendiff > 1 and $gendiff < 3) {
+            $spantext = spanish_degrees($gendiff, $grson);
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = $neph . " " . $spantext . __(' του ');
+                } else {
+                    $reltext = $neph . " " . $spantext . __(' της ');
+                }
+            } else {
+                if ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $reltext = $neph . " " . $spantext . __(' του ');
+                    } else {
+                        $reltext = $neph . " " . $spantext . __(' της ');
+                    }
+                }
+            }
+        } else {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = $neph . " " . __(' δισέγγονος ') . __(' του ');
+                } else {
+                    $reltext = $neph . " " . __(' δισέγγονος ') . __(' της ');
+                }
+            } else {
+                if ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $reltext = $neph . " " . __(' δισέγγονη ') . __(' του ');
+                    } else {
+                        $reltext = $neph . " " . __(' δισέγγονη ') . __(' της ');
+                    }
+                }
+            }
+        }
+        // *** Ελληνικά τέλος***
+        // *** Greek end*** 
+    } elseif ($selected_language == "es") {
         if ($sexe == "m") {
             $neph = __('nephew');
             $span_postfix = "o ";
@@ -1766,7 +2141,6 @@ function calculate_nephews($generX)
     }
 }
 
-
 function calculate_uncles($generY)
 { // handed generations y is removed from common ancestor
     global $db_functions, $reltext,  $sexe, $sexe2, $dutchtext, $selected_language, $rel_arrayspouseY, $spouse;
@@ -1977,6 +2351,68 @@ function calculate_uncles($generY)
             $gennr = $generY - 3;
             $dutchtext =  "(" . $ancestortext . $uncleaunt . " = " . $gennr . __('th') . ' ' . __('great-grand') . $uncleaunt . ")";
         }
+        // *** Greek***
+        // *** Ελληνικά θείος***
+    } elseif ($selected_language == "gr") {
+        // TODO improve code
+        if ($sexe == "m") {
+            $uncle = __('θείος');
+            $span_postfix = "ος ";
+            $gran = 'παππούς';
+        } else {
+            $uncle = __('θεία');
+            $span_postfix = "η ";
+            $gran = 'γιαγιά';
+        }
+        $gendiff = $generY - 1;
+        $gennr = $gendiff - 1;
+        $degree = $gran . " " . $gennr . $span_postfix;
+        if ($gendiff == 1) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = $uncle . __(' του ');
+                } else {
+                    $reltext = $uncle . __(' της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = $uncle . __(' του ');
+                } else {
+                    $reltext =  $uncle . __(' της ');
+                }
+            }
+        } elseif ($gendiff == 2) {
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = $uncle . " " . __(' παππούς ') . __(' του ');
+                } else {
+                    $reltext = $uncle . " " .  __(' παππούς ') . __(' της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = $uncle . " " .  __(' γιαγιά ') . __(' του ');
+                } else {
+                    $reltext = $uncle . " " . __(' γιαγιά ') . __(' της ');
+                }
+            }
+        } elseif ($gendiff > 2 and $gendiff < 27) {
+
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = $uncle . " " . __(' προπάππος ') . __(' του ');
+                } else {
+                    $reltext = $uncle . " " .  __(' προπάππος ') . __(' της ');
+                }
+            } else {
+                if ($sexe2 == 'm') {
+                    $reltext = $uncle . " " .  __(' προγιαγιά ') . __(' του ');
+                } else {
+                    $reltext = $uncle . " " . __(' προγιαγιά ') . __(' της ');
+                }
+            }
+        }
+        // *** Ελληνικά τέλος***
+        // *** Greek end*** 
     } elseif ($selected_language == "es") {
         if ($sexe == "m") {
             $uncle = __('uncle');
@@ -2162,6 +2598,8 @@ function calculate_cousins($generX, $generY)
     global $reltext_nor, $reltext_nor2; // for Norwegian
     global $data_found;
 
+
+
     if ($selected_language == "es") {
         $gendiff = abs($generX - $generY);
 
@@ -2221,6 +2659,164 @@ function calculate_cousins($generX, $generY)
             }
             $reltext = $relname . " " . $generY . $span_postfix . __(' of ');
         }
+        // *** Greek***
+        // *** Ελληνικά ξαδέλφια***
+    } elseif ($selected_language == "gr") {
+        // TODO improve code
+        $gendiff = abs($generX - $generY);
+
+        if ($gendiff == 0) {
+            //if($sexe=="m") { $cousin=__('COUSIN_MALE'); $span_postfix="o "; $sibling=__('1st [COUSIN]'); }
+            //else { $cousin=__('COUSIN_FEMALE'); $span_postfix="a "; $sibling='hermana';}
+            if ($sexe == "m") {
+                $cousin = __('cousin.male');
+                $span_postfix = "ος ";
+                $sibling = __('1st [COUSIN]');
+            } else {
+                $cousin = __('cousin.female');
+                $span_postfix = "η ";
+                $sibling = __('1st [COUSIN]');
+            }
+            if ($generX == 2) {
+                if ($sexe == 'm') {
+                    if ($sexe2 == 'm') {
+                        $reltext = $sibling . $span_postfix . $cousin . " " . __(' του ');
+                    } else {
+                        $reltext = $sibling . $span_postfix . $cousin . " "  . __(' της ');
+                    }
+                } elseif ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $reltext = $sibling . $span_postfix . $cousin . " " . __(' του ');
+                    } else {
+                        $reltext = $sibling . $span_postfix . $cousin . " " .  __(' της ');
+                    }
+                }
+            } elseif ($generX > 2) {
+                $degree = $generX - 1;
+                if ($sexe == 'm') {
+                    if ($sexe2 == 'm') {
+                        $reltext =  $degree . $span_postfix . $cousin . " " . __(' του ');
+                    } else {
+                        $reltext =  $degree . $span_postfix . $cousin . " " . __(' της ');
+                    }
+                } elseif ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $reltext =  $degree . $span_postfix . $cousin . " " . __(' του ');
+                    } else {
+                        $reltext =  $degree . $span_postfix . $cousin . " " . __(' της ');
+                    }
+                }
+            }
+        } elseif ($generX < $generY) {
+            if ($sexe == "m") {
+                $uncle = __('uncle');
+                $span_postfix = "ος ";
+                $gran = 'παππούς';
+            } else {
+                $uncle = __('aunt');
+                $span_postfix = "η ";
+                $gran = 'γιαγιά';
+            }
+            if ($gendiff == 1) {
+                if ($sexe == 'm') {
+                    if ($sexe2 == 'm') {
+                        $relname = $uncle . __(' του ');
+                    } else {
+                        $relname = $uncle . __(' της ');
+                    }
+                } elseif ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $relname = $uncle . __(' του ');
+                    } else {
+                        $relname = $uncle . __(' της ');
+                    }
+                }
+            } elseif ($gendiff == 2) {
+                $spantext = spanish_degrees($gendiff, $gran);
+                if ($sexe == 'm') {
+                    if ($sexe2 == 'm') {
+                        $relname = $uncle . " " . $spantext . __(' του ');
+                    } else {
+                        $relname = $uncle . " " . $spantext . __(' της ');
+                    }
+                } elseif ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $relname = $uncle . " " . $spantext . __(' του ');
+                    } else {
+                        $relname = $uncle . " " . $spantext . __(' της ');
+                    }
+                }
+            } elseif ($gendiff == 2) {
+            }
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __(' θείος ') . " " . $gran . __(' του ');
+                } else {
+                    $reltext = __(' θείος ') . " " . $gran . __(' της ');
+                }
+            } elseif ($sexe == 'f') {
+                if ($sexe2 == 'm') {
+                    $reltext = __(' θεία ') . " " . $gran . __(' του ');
+                } else {
+                    $reltext = __(' θεία ') . " " . $gran . __(' της ');
+                }
+            }
+        } else {
+            if ($sexe == "m") {
+                $nephew = __('ανιψιος');
+                $span_postfix = "ος ";
+                $grson = 'εγγονός';
+            } else {
+                $nephew = __('ανιψιά');
+                $span_postfix = "η ";
+                $grson = 'εγγονή';
+            }
+            if ($gendiff == 1) {
+                if ($sexe == 'm') {
+                    if ($sexe2 == 'm') {
+                        $relname = $nephew . __(' του ');
+                    } else {
+                        $relname = $nephew . __(' της ');
+                    }
+                } elseif ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $relname = $nephew . __(' του ');
+                    } else {
+                        $relname = $nephew . __(' της ');
+                    }
+                }
+            } else {
+                $spantext = spanish_degrees($gendiff, $grson);
+                if ($sexe == 'm') {
+                    if ($sexe2 == 'm') {
+                        $relname = $nephew . " " . __(' του ');
+                    } else {
+                        $relname = $nephew . " " . __(' του ');
+                    }
+                } elseif ($sexe == 'f') {
+                    if ($sexe2 == 'm') {
+                        $relname = $nephew . " " . __(' του ');
+                    } else {
+                        $relname = $nephew . " " . __(' του ');
+                    }
+                }
+            }
+            if ($sexe == 'm') {
+                if ($sexe2 == 'm') {
+                    $reltext = __(' ανιψιός ') . " " . $generY . $span_postfix . __(' του');
+                } else {
+                    $reltext = __(' ανιψιός ') . " " . $generY . $span_postfix . __(' της ');
+                }
+            } elseif ($sexe == 'f') {
+                if ($sexe2 == 'm') {
+                    $reltext = __(' ανιψιά ') . " " . $generY . $span_postfix . __(' του ');
+                } else {
+                    $reltext = __(' ανιψιά ') . " " . $generY . $span_postfix . __(' της ');
+                }
+            }
+        }
+        // *** Ελληνικά τέλος***
+        // *** Greek end***    
     } elseif ($selected_language == "he") {
         if ($sexe == 'm') {
             $cousin = __('COUSIN_MALE');
@@ -3227,6 +3823,7 @@ function display_table()
     // *** Use person class to show names ***
     $pers_cls = new person_cls;
 
+
     $vars['pers_family'] = $famX;
     $linkX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
 
@@ -3238,6 +3835,7 @@ function display_table()
 
     $vars['pers_family'] = $famspouseY;
     $linkSpouseY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+
 
     //$border="border:1px solid #777777;";
     $border = "";

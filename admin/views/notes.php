@@ -29,7 +29,7 @@ $notesModel->update_note($dbh);
     <input type="hidden" name="page" value="notes">
 
     <div class="p-3 m-2 genealogy_search">
-        <div class="row">
+        <div class="row align-items-center">
             <div class="col-auto">
                 <label for="tree" class="col-form-label">
                     <?= __('Family tree'); ?>:
