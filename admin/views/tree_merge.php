@@ -477,18 +477,20 @@ elseif (isset($_POST['duplicate'])) {
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
             <input type="submit" name="duplicate_compare" value="<?= __('Start comparing duplicates'); ?>">
         </form>
-<?php
+    <?php
     } else {
-        echo '<br>' . __('No duplicates found. Duplicate merge and Automatic merge won\'t result in merges!') . '<br>'; // no duplicates were found
-        echo __('You can try one of the other merge options') . '<br><br>'; // try other options
+    ?>
+        <br><?= __('No duplicates found. Duplicate merge and Automatic merge won\'t result in merges!'); ?><br>
+        <?= __('You can try one of the other merge options'); ?><br><br>
 
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;';
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-        echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
-        echo '</form>';
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+            <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+            <input type="submit" value="<?= __('Back to main merge menu'); ?>">
+        </form>
+    <?php
     }
 }
 
@@ -496,6 +498,7 @@ elseif (isset($_POST['duplicate'])) {
 // the pairs will be presented by the show_pair function
 elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["search2"]) or isset($_POST["switch"])) {
 
+    // TODO: improve search of persons. Example, see: relationship calculator.
     echo '<br>' . __('Pick the two persons you want to check for merging') . '.';
     echo ' ' . __('You can enter names (or part of names) or GEDCOM no. (INDI), or leave boxes empty') . '<br>';
     echo __('<b>TIP: when you click "search" with all boxes left empty you will get a list with all persons in the database. (May take a few seconds)</b>') . '<br><br>';
@@ -550,29 +553,6 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
         $_SESSION["search2"] = $temp;
     }
 
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<table class="humo" style="text-align:center; width:100%;">';
-    echo '<tr class="table_header"><td>';
-    echo '&nbsp;';
-    echo '</td><td>';
-    echo __('First name');
-    echo '</td><td>';
-    echo __('Last name');
-    echo '</td><td>';
-    echo __('GEDCOM no. ("I43")');
-    echo '</td><td>';
-    echo __('Search');
-    echo '</td><td colspan=2>' . __('Pick a name from search results') . '</td><td>';
-    echo __('Show details');
-
-    echo '</td></tr><tr><td style="white-space:nowrap">';
-    $language_person = __('Person') . ' ';
-    echo $language_person . '1';
-    echo '</td><td>';
-
     $search_firstname = '';
     if (isset($_POST["search_firstname"]) and !isset($_POST["switch"])) {
         $search_firstname = trim(safe_text_db($_POST['search_firstname']));
@@ -600,63 +580,6 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
         $search_indi = $_SESSION['search_indi'];
     }
 
-    echo ' <input type="text" class="relboxes" name="search_firstname" value="' . $search_firstname . '" size="15"> ';
-    echo '</td><td>';
-
-    echo '&nbsp; <input class="relboxes" type="text" name="search_lastname" value="' . $search_lastname . '" size="15">';
-    echo '</td><td>';
-    echo ' <input type="text" class="relboxes" name="search_indi" value="' . $search_indi . '" size="10"> ';
-    echo '</td><td>';
-    echo '&nbsp; <input type="submit" name="search1" value="' . __('Search') . '">';
-    echo '</td><td>';
-
-    $len = 230;  // length of name pulldown box
-
-    if (isset($_SESSION["search1"]) and $_SESSION["search1"] == 1) {
-        $indi_string = "";
-        if (isset($_SESSION["search_indi"]) and $_SESSION["search_indi"] != "") {
-            // make sure it works with "I436", "i436" and "436"
-            $indi = (substr($search_indi, 0, 1) == "I" or substr($search_indi, 0, 1) == "i") ? strtoupper($search_indi) : "I" . $search_indi;
-            $indi_string = " AND pers_gedcomnumber ='" . $indi . "' ";
-        }
-        $search_qry = "SELECT * FROM humo_persons
-                    WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
-                    LIKE '%" . $search_lastname . "%' AND pers_firstname LIKE '%" . $search_firstname . "%' " . $indi_string . "
-                    ORDER BY pers_lastname, pers_firstname";
-        $search_result = $dbh->query($search_qry);
-        if ($search_result) {
-            if ($search_result->rowCount() > 0) {
-                echo '<select size="1" name="left"  style="width:' . $len . 'px">';
-                while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
-                    $name = $pers_cls->person_name($searchDb);
-                    if ($name["show_name"]) {
-                        echo '<option';
-                        if (isset($left)) {
-                            if ($searchDb->pers_id == $left and !(isset($_POST["search1"]) and $search_lastname == '' and $search_firstname == '')) {
-                                echo ' selected';
-                            }
-                        }
-                        echo ' value="' . $searchDb->pers_id . '">' . $name["index_name"] . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
-                    }
-                }
-                echo '</select>';
-            } else {
-                echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
-            }
-        }
-    } else {
-        echo '<select size="1" name="left" style="width:' . $len . 'px"><option></option></select>';
-    }
-    echo '</td><td rowspan=2>';
-    echo '<input type="submit" alt="' . __('Switch persons') . '" title="' . __('Switch persons') . '" value=" " name="switch" style="background: #fff url(\'../images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
-    echo '</td><td rowspan=2>';
-    echo '<input type="submit" name="manual_compare" value="' . __('Show details') . '" style="font-size:115%;">';
-    echo '</td></tr><tr><td  style="white-space:nowrap">';
-
-    // SECOND PERSON
-    echo $language_person . '2';
-    echo '</td><td>';
-
     $search_firstname2 = '';
     if (isset($_POST["search_firstname2"]) and !isset($_POST["switch"])) {
         $search_firstname2 = trim(safe_text_db($_POST['search_firstname2']));
@@ -683,56 +606,144 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
     if (isset($_SESSION['search_indi2'])) {
         $search_indi2 = $_SESSION['search_indi2'];
     }
+    ?>
 
-    echo ' <input type="text" class="relboxes" name="search_firstname2" value="' . $search_firstname2 . '" size="15"> ';
-    echo '</td><td>';
-    echo '&nbsp; <input class="relboxes" type="text" name="search_lastname2" value="' . $search_lastname2 . '" size="15">';
-    echo '</td><td>';
-    echo ' <input type="text" class="relboxes" name="search_indi2" value="' . $search_indi2 . '" size="10"> ';
-    echo '</td><td>';
-    echo '&nbsp; <input type="submit" name="search2" value="' . __('Search') . '">';
-    echo '</td><td>';
+    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+        <table class="humo" style="text-align:center; width:100%;">
+            <tr class="table_header">
+                <td>&nbsp;</td>
+                <td><?= __('First name'); ?></td>
+                <td><?= __('Last name'); ?></td>
+                <td><?= __('GEDCOM no. ("I43")'); ?></td>
+                <td><?= __('Search'); ?></td>
+                <td colspan=2><?= __('Pick a name from search results'); ?></td>
+                <td><?= __('Show details'); ?></td>
+            </tr>
+            <tr>
+                <td style="white-space:nowrap"><?= __('Person'); ?> 1</td>
+                <td>
+                    <input type="text" name="search_firstname" value="<?= $search_firstname; ?>" size="15">
+                </td>
+                <td>
+                    &nbsp;<input type="text" name="search_lastname" value="<?= $search_lastname; ?>" size="15">
+                </td>
+                <td>
+                    <input type="text" name="search_indi" value="<?= $search_indi; ?>" size="10">
+                </td>
+                <td>
+                    &nbsp; <input type="submit" name="search1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                </td>
+                <td>
+                    <?php
+                    $len = 230;  // length of name pulldown box
 
-    if (isset($_SESSION["search2"]) and $_SESSION["search2"] == 1) {
-        $indi_string2 = "";
-        if (isset($_SESSION["search_indi2"]) and $_SESSION["search_indi2"] != "") {
-            // make sure it works with "I436", "i436" and "436"
-            $indi2 = (substr($search_indi2, 0, 1) == "I" or substr($search_indi2, 0, 1) == "i") ? strtoupper($search_indi2) : "I" . $search_indi2;
-            $indi_string2 = " AND pers_gedcomnumber ='" . $indi2 . "' ";
-        }
-        $search_qry = "SELECT * FROM humo_persons
-                WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
-                LIKE '%" . $search_lastname2 . "%' AND pers_firstname LIKE '%" . $search_firstname2 . "%' " . $indi_string2 . "
-                ORDER BY pers_lastname, pers_firstname";
-        $search_result2 = $dbh->query($search_qry);
-        if ($search_result2) {
-            if ($search_result2->rowCount() > 0) {
-                echo '<select size="1" name="right" style="width:' . $len . 'px">';
-                while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
-                    $name = $pers_cls->person_name($searchDb2);
-                    if ($name["show_name"]) {
-                        echo '<option';
-                        if (isset($right)) {
-                            if ($searchDb2->pers_id == $right and !(isset($_POST["search2"]) and $search_lastname2 == '' and $search_firstname2 == '')) {
-                                echo ' selected';
+                    if (isset($_SESSION["search1"]) and $_SESSION["search1"] == 1) {
+                        $indi_string = "";
+                        if (isset($_SESSION["search_indi"]) and $_SESSION["search_indi"] != "") {
+                            // make sure it works with "I436", "i436" and "436"
+                            $indi = (substr($search_indi, 0, 1) == "I" or substr($search_indi, 0, 1) == "i") ? strtoupper($search_indi) : "I" . $search_indi;
+                            $indi_string = " AND pers_gedcomnumber ='" . $indi . "' ";
+                        }
+                        $search_qry = "SELECT * FROM humo_persons
+                            WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
+                            LIKE '%" . $search_lastname . "%' AND pers_firstname LIKE '%" . $search_firstname . "%' " . $indi_string . "
+                            ORDER BY pers_lastname, pers_firstname";
+                        $search_result = $dbh->query($search_qry);
+                        if ($search_result) {
+                            if ($search_result->rowCount() > 0) {
+                                echo '<select size="1" name="left"  style="width:' . $len . 'px">';
+                                while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
+                                    $name = $pers_cls->person_name($searchDb);
+                                    if ($name["show_name"]) {
+                                        echo '<option';
+                                        if (isset($left)) {
+                                            if ($searchDb->pers_id == $left and !(isset($_POST["search1"]) and $search_lastname == '' and $search_firstname == '')) {
+                                                echo ' selected';
+                                            }
+                                        }
+                                        echo ' value="' . $searchDb->pers_id . '">' . $name["index_name"] . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
+                                    }
+                                }
+                                echo '</select>';
+                            } else {
+                                echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
                             }
                         }
-                        echo ' value="' . $searchDb2->pers_id . '">' . $name["index_name"] . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
+                    } else {
+                        echo '<select size="1" name="left" style="width:' . $len . 'px"><option></option></select>';
                     }
-                }
-                echo '</select>';
-            } else {
-                echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
-            }
-        }
-    } else {
-        echo '<select size="1" name="right" style="width:' . $len . 'px"><option></option></select>';
-    }
-    echo '</td></tr></table>';
-    echo '</form>';
-
-    // ===== END SEARCH BOX SYSTEM
-
+                    ?>
+                </td>
+                <td rowspan=2>
+                    <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('../images/turn_around.gif') top no-repeat;width:25px;height:25px">
+                </td>
+                <td rowspan=2>
+                    <input type="submit" name="manual_compare" value="<?= __('Show details'); ?>" class="btn btn-sm btn-success">
+                </td>
+            </tr>
+            <tr>
+                <td style="white-space:nowrap">
+                    <!-- SECOND PERSON -->
+                    <?= __('Person'); ?> 2
+                </td>
+                <td>
+                    <input type="text" name="search_firstname2" value="<?= $search_firstname2; ?>" size="15">
+                </td>
+                <td>
+                    &nbsp;<input type="text" name="search_lastname2" value="<?= $search_lastname2; ?>" size="15">
+                </td>
+                <td>
+                    <input type="text" name="search_indi2" value="<?= $search_indi2; ?>" size="10">
+                </td>
+                <td>
+                    &nbsp; <input type="submit" name="search2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                </td>
+                <td>
+                    <?php
+                    if (isset($_SESSION["search2"]) and $_SESSION["search2"] == 1) {
+                        $indi_string2 = "";
+                        if (isset($_SESSION["search_indi2"]) and $_SESSION["search_indi2"] != "") {
+                            // make sure it works with "I436", "i436" and "436"
+                            $indi2 = (substr($search_indi2, 0, 1) == "I" or substr($search_indi2, 0, 1) == "i") ? strtoupper($search_indi2) : "I" . $search_indi2;
+                            $indi_string2 = " AND pers_gedcomnumber ='" . $indi2 . "' ";
+                        }
+                        $search_qry = "SELECT * FROM humo_persons
+                            WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
+                            LIKE '%" . $search_lastname2 . "%' AND pers_firstname LIKE '%" . $search_firstname2 . "%' " . $indi_string2 . "
+                            ORDER BY pers_lastname, pers_firstname";
+                        $search_result2 = $dbh->query($search_qry);
+                        if ($search_result2) {
+                            if ($search_result2->rowCount() > 0) {
+                                echo '<select size="1" name="right" style="width:' . $len . 'px">';
+                                while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
+                                    $name = $pers_cls->person_name($searchDb2);
+                                    if ($name["show_name"]) {
+                                        echo '<option';
+                                        if (isset($right)) {
+                                            if ($searchDb2->pers_id == $right and !(isset($_POST["search2"]) and $search_lastname2 == '' and $search_firstname2 == '')) {
+                                                echo ' selected';
+                                            }
+                                        }
+                                        echo ' value="' . $searchDb2->pers_id . '">' . $name["index_name"] . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
+                                    }
+                                }
+                                echo '</select>';
+                            } else {
+                                echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
+                            }
+                        }
+                    } else {
+                        echo '<select size="1" name="right" style="width:' . $len . 'px"><option></option></select>';
+                    }
+                    ?>
+                </td>
+            </tr>
+        </table>
+    </form>
+<?php
 }
 
 // this is the screen that will show when you choose "automatic merge" from the main merge page
@@ -747,22 +758,23 @@ elseif (isset($_POST['automatic'])) {
 <b>Please note that the automatic merge may take quite some time, depending on the size of the database and the number of merges.</b><br>
 You will be notified of results as the action is completed');
     echo '<br><br>';
+?>
 
-
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="submit" name="auto_merge" value="' . __('Start automatic merge') . '">';
-    echo '</form>';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
-    echo '</form>';
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+        <input type="submit" name="auto_merge" value="<?= __('Start automatic merge'); ?>">
+    </form>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+        <input type="submit" value="<?= __('Back to main merge menu'); ?>">
+    </form>
+<?php
 }
 
 // this checks the persons that can be merged automatically and merges them with the "merge_them" function

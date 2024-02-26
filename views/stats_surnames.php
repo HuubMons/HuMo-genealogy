@@ -95,6 +95,7 @@ if (isset($_POST['freqsurnames'])) {
         <div class="col-sm-3 text-end">
             <?= __('Number of displayed surnames'); ?>:
         </div>
+
         <div class="col-sm-1">
             <?php
             echo '<select size=1 class="form-select form-select-sm" name="freqsurnames" onChange="this.form.submit();">';

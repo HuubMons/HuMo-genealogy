@@ -125,49 +125,65 @@ if (isset($_POST['freqfirstnames'])) {
 ?>
 <div style="text-align:center">
     <form method="POST" action="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?> " style="display:inline;" id="frqfirnames">
-        <?= __('Number of displayed first names'); ?>: <select size=1 name="freqfirstnames" onChange="this.form.submit();" style="width: 50px; height:20px;">
-            <?php
-            $selected = '';
-            if ($maxnames == 30) $selected = " selected ";
-            echo '<option value="30" ' . $selected . '>30</option>';
-            $selected = '';
-            if ($maxnames == 50) $selected = " selected ";
-            echo '<option value="50" ' . $selected . '">50</option>';
-            $selected = '';
-            if ($maxnames == 76) $selected = " selected ";
-            echo '<option value="76" ' . $selected . '">75</option>';
-            $selected = '';
-            if ($maxnames == 100) $selected = " selected ";
-            echo '<option value="100" ' . $selected . '">100</option>';
-            $selected = '';
-            if ($maxnames == 200) $selected = " selected ";
-            echo '<option value="200" ' . $selected . '">200</option>';
-            $selected = '';
-            if ($maxnames == 300) $selected = " selected ";
-            echo '<option value="300" ' . $selected . '">300</option>';
-            $selected = '';
-            if ($maxnames == 100000) $selected = " selected ";
-            echo '<option value="100000" ' . $selected . '">' . __('All') . '</option>';
-            ?>
-        </select>
+
+        <div class="mb-2 row">
+            <div class="col-sm-2"></div>
+
+            <div class="col-sm-3 text-end">
+                <?= __('Number of displayed first names'); ?>:
+            </div>
+
+            <div class="col-sm-1">
+                <select size=1 name="freqfirstnames" onChange="this.form.submit();" class="form-select form-select-sm">
+                    <?php
+                    $selected = '';
+                    if ($maxnames == 30) $selected = " selected ";
+                    echo '<option value="30" ' . $selected . '>30</option>';
+                    $selected = '';
+                    if ($maxnames == 50) $selected = " selected ";
+                    echo '<option value="50" ' . $selected . '">50</option>';
+                    $selected = '';
+                    if ($maxnames == 76) $selected = " selected ";
+                    echo '<option value="76" ' . $selected . '">75</option>';
+                    $selected = '';
+                    if ($maxnames == 100) $selected = " selected ";
+                    echo '<option value="100" ' . $selected . '">100</option>';
+                    $selected = '';
+                    if ($maxnames == 200) $selected = " selected ";
+                    echo '<option value="200" ' . $selected . '">200</option>';
+                    $selected = '';
+                    if ($maxnames == 300) $selected = " selected ";
+                    echo '<option value="300" ' . $selected . '">300</option>';
+                    $selected = '';
+                    if ($maxnames == 100000) $selected = " selected ";
+                    echo '<option value="100000" ' . $selected . '">' . __('All') . '</option>';
+                    ?>
+                </select>
+            </div>
+        </div>
     </form>
 </div><br>
 
 <table style="width:90%;" class="humo nametbl" align="center">
     <tr class=table_headline style="height:25px">
-        <?php
-        echo '<th style="border-right-width:6px;width:50%" colspan="4"><span style="font-size:135%">' . __('Male') . '</span></th><th  style="width:50%" colspan="4"><span style="font-size:135%">' . __('Female') . '</span></th></tr><tr class=table_headline>';
-        echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
-        echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:6px;width:6%">' . __('Total') . '</th>';
-        echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
-        echo '<th width="19%">' . __('First name') . '</th><th style="text-align:center;font-size:90%;width:6%">' . __('Total') . '</th>';
-        ?>
+        <th style="border-right-width:6px;width:50%" colspan="4"><span style="font-size:135%"><?= __('Male'); ?></span></th>
+        <th style="width:50%" colspan="4"><span style="font-size:135%"><?= __('Female'); ?></span></th>
+    </tr>
+    <tr class=table_headline>
+        <th width="19%"><?= __('First name'); ?></th>
+        <th style="text-align:center;font-size:90%;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
+        <th width="19%"><?= __('First name'); ?></th>
+        <th style="text-align:center;font-size:90%;border-right-width:6px;width:6%"><?= __('Total'); ?></th>
+        <th width="19%"><?= __('First name'); ?></th>
+        <th style="text-align:center;font-size:90%;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
+        <th width="19%"><?= __('First name'); ?></th>
+        <th style="text-align:center;font-size:90%;width:6%"><?= __('Total'); ?></th>
     </tr>
     <!-- displays table and gets return value -->
     <?php $baseperc = first_names($maxnames); ?>
 </table><br>
-<?php
 
+<?php
 // *** Show lightgray bars ***
 $baseperc_arr = explode("@", $baseperc);
 $m_baseperc = $baseperc_arr[0];  // nr of occurrences for most frequent male name - becomes 100%

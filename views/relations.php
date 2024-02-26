@@ -122,13 +122,13 @@ Directions for use:<br>
 
             <!-- Start selection form -->
             <td>
-                <input type="text" class="relboxes" name="search_name" value="<?= safe_text_show($data["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
-                <input type="submit" name="button_search_name1" value="<?= __('Search'); ?>">
+                <input type="text" name="search_name" value="<?= safe_text_show($data["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
+                <input type="submit" name="button_search_name1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
             </td>
 
             <td>
-                <input class="relboxes" type="text" name="search_gednr" value="<?= safe_text_show($data["search_gednr1"]); ?>" size="8">
-                <input type="submit" name="button_search_id1" value="<?= __('Search'); ?>">
+                <input type="text" name="search_gednr" value="<?= safe_text_show($data["search_gednr1"]); ?>" size="8">
+                <input type="submit" name="button_search_id1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
             </td>
 
             <td>
@@ -221,7 +221,7 @@ Directions for use:<br>
                 <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('images/turn_around.gif') top no-repeat;width:25px;height:25px">
             </td>
             <td rowspan=2>
-                <input type="submit" name="calculator" value="<?= __('Calculate relationships'); ?>" style="font-size:115%;">
+                <input type="submit" name="calculator" value="<?= __('Calculate relationships'); ?>" class="btn btn-sm btn-success">
             </td>
         </tr>
 
@@ -232,13 +232,13 @@ Directions for use:<br>
             </td>
 
             <td>
-                <input type="text" class="relboxes" name="search_name2" value="<?= safe_text_show($data["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
-                <input type="submit" name="button_search_name2" value="<?= __('Search'); ?>">
+                <input type="text" name="search_name2" value="<?= safe_text_show($data["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
+                <input type="submit" name="button_search_name2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
             </td>
 
             <td>
-                <input class="relboxes" type="text" name="search_gednr2" value="<?= safe_text_show($data["search_gednr2"]); ?>" size="8">
-                <input type="submit" name="button_search_id2" value="<?= __('Search'); ?>">
+                <input type="text" name="search_gednr2" value="<?= safe_text_show($data["search_gednr2"]); ?>" size="8">
+                <input type="submit" name="button_search_id2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
             </td>
 
             <td>
@@ -3628,7 +3628,7 @@ function display()
 
             echo __('MARITAL RELATIONSHIP: ');
 
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="print_version"><input style="font-size:110%" type="submit" name="extended" value="' . __('Use Extended Calculator') . '"></span>';
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="print_version"><input type="submit" name="extended" value="' . __('Use Extended Calculator') . '" class="btn btn-sm btn-success"></span>';
 
             echo "<br><br>";
             $spousetext1 = '';
@@ -3800,7 +3800,7 @@ This will find connections that span over many marital relations and generations
 Computing time will vary depending on the size of the tree and the distance between the two persons.<br>
 For example, in a 10,000 person tree even the most distant persons will usually be found within 1-2 seconds.<br>
 In a 75,000 person tree the most distant persons may take up to 8 sec to find.");
-        echo '<br><br><input type="submit" name="extended" value="' . __('Perform extended marital calculation') . '" style="font-size:115%;">';
+        echo '<br><br><input type="submit" name="extended" value="' . __('Perform extended marital calculation') . '" class="btn btn-sm btn-success">';
         echo "</td></tr></table>";
     } else {
         echo '</td></tr></table>';
@@ -4566,7 +4566,7 @@ function display_result($result)
     ?>
 
     <div class="print_version" style="padding:3px;width:auto;background-color:#eeeeee">
-        <input type="submit" name="next_path" value="<?= __('Try to find another path'); ?>" style="font-size:115%;">
+        <input type="submit" name="next_path" value="<?= __('Try to find another path'); ?>" class="btn btn-sm btn-success">
         &nbsp;&nbsp;<?= __('(With each consecutive search the path may get longer and computing time may increase!)'); ?>
     </div>
     <?php

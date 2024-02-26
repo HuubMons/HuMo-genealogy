@@ -1110,19 +1110,6 @@ table.relmenu {
     /* background-color:#FFEEFF; */
 }
 
-/*
-table.relmenu tr:last-of-type td:last-of-type {
-	border-radius: 0px;
-}
-table.relmenu tr:nth-of-type(2) td:last-of-type {
-	border-radius: 0px 0px 6px 0px;
-}
-*/
-.relboxes {
-    /* makes name search boxes same height as pulldown menus */
-    height: 17px;
-}
-
 .pale {
     color: #A0A0A0;
 }
