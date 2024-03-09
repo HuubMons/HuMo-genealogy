@@ -323,53 +323,52 @@ class editor_event_cls
                     <input type="submit" name="event_add_name" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
 
 
-
                     <!-- Test to add line inside table -->
                     <!--
-<button type="button" onclick="myFunction()">Test</button>
+                    <button type="button" onclick="myFunction()">Test</button>
 
-//https://www.w3schools.com/jsref/met_table_insertrow.asp
-<script>
-function myFunction() {
-  var table = document.getElementById("table_editor");
-  var row = table.insertRow(8);
+                    //https://www.w3schools.com/jsref/met_table_insertrow.asp
+                    <script>
+                    function myFunction() {
+                    var table = document.getElementById("table_editor");
+                    var row = table.insertRow(8);
 
-  //APEND!!!!!!
-  //var row = table.insertRow(-1);
-  //var cell = row.insertCell(-1);
+                    //APEND!!!!!!
+                    //var row = table.insertRow(-1);
+                    //var cell = row.insertCell(-1);
 
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  //row.id = "xyz"; //you can add your id like this
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    var cell4 = row.insertCell(3);
+                    //row.id = "xyz"; //you can add your id like this
 
-  var str = document.getElementById("event_gedcom_add");
-  var stra = str.value;
+                    var str = document.getElementById("event_gedcom_add");
+                    var stra = str.value;
 
-  var str2 = document.getElementById("event_event_name");
-  var str2a = str2.value;
+                    var str2 = document.getElementById("event_event_name");
+                    var str2a = str2.value;
 
 
-  // https://www.w3schools.com/js/tryit.asp?filename=tryjs_ajax_database
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = function() {
-    cell2.innerHTML = this.responseText;
-  }
-  xhttp.open("GET", "include/editor_ajax.php?event_gedcom_add="+stra+"&event_event_name="+str2a);
-  xhttp.send();
+                    // https://www.w3schools.com/js/tryit.asp?filename=tryjs_ajax_database
+                    const xhttp = new XMLHttpRequest();
+                    xhttp.onload = function() {
+                        cell2.innerHTML = this.responseText;
+                    }
+                    xhttp.open("GET", "include/editor_ajax.php?event_gedcom_add="+stra+"&event_event_name="+str2a);
+                    xhttp.send();
 
-  cell1.innerHTML = "NEW CELL1";
-  //cell2.innerHTML = "NEW CELL2";
+                    cell1.innerHTML = "NEW CELL1";
+                    //cell2.innerHTML = "NEW CELL2";
 
-  var event_gedcom_add = document.getElementById("event_gedcom_add");
-  var value = event_gedcom_add.value;
-  cell3.innerHTML = value;
+                    var event_gedcom_add = document.getElementById("event_gedcom_add");
+                    var value = event_gedcom_add.value;
+                    cell3.innerHTML = value;
 
-  cell4.innerHTML = "NEW CELL4";
-}
-</script>
--->
+                    cell4.innerHTML = "NEW CELL4";
+                    }
+                    </script>
+                    -->
 
 
                 </td>

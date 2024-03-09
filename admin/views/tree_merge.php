@@ -774,7 +774,7 @@ You will be notified of results as the action is completed');
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
         <input type="submit" value="<?= __('Back to main merge menu'); ?>">
     </form>
-<?php
+    <?php
 }
 
 // this checks the persons that can be merged automatically and merges them with the "merge_them" function
@@ -868,40 +868,43 @@ elseif (isset($_POST['auto_merge'])) {
         echo '<br>' . __('Automatic merge completed') . ' ' . $merges . __(' merges were performed') . '<br><br>';
     }
     if ($relatives_merge != '') {
-        echo __('It is recommended to continue with <b>"Relatives merge"</b> to consider merging persons affected by previous merges that were performed.') . '<br><br>';
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-        echo '<input type="submit" style="font-weight:bold;font-size:120%" name="relatives" value="' . __('Relatives merge') . '">';
-        echo '</form>';
-    } else {
-        echo __('You may wish to proceed with duplicate merge or manual merge.') . '<br><br>';
+    ?>
+        <?= __('It is recommended to continue with <b>"Relatives merge"</b> to consider merging persons affected by previous merges that were performed.'); ?><br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+            <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+            <input type="submit" style="font-weight:bold;font-size:120%" name="relatives" value="<?= __('Relatives merge'); ?>">
+        </form>
+    <?php } else { ?>
+        <?= __('You may wish to proceed with duplicate merge or manual merge.'); ?><br><br>
 
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-        echo '<input type="submit" name="duplicate_choices" value="' . __('Duplicate merge') . '">';
-        echo '</form>';
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-        echo '<input type="submit" name="manual" value="' . __('Manual merge') . '">';
-        echo '</form>';
-    }
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="submit" value="' . __('Back to main merge menu') . '">';
-    echo '</form>';
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+            <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+            <input type="submit" name="duplicate_choices" value="<?= __('Duplicate merge'); ?>">
+        </form>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <input type="hidden" name="page" value="<?= $page; ?>">
+            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+            <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+            <input type="submit" name="manual" value="<?= __('Manual merge'); ?>">
+        </form>
+    <?php } ?>
 
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+        <input type="submit" value="<?= __('Back to main merge menu'); ?>">
+    </form>
+
+    <?php
     if (isset($mergedlist)) { // there is a list of merged persons
         echo '<br><br><b><u>' . __('These are the persons that were merged:') . '</u></b><br>';
         for ($i = 0; $i < count($mergedlist); $i++) {
@@ -913,224 +916,269 @@ elseif (isset($_POST['auto_merge'])) {
 
 // The settings screen with "Save" and "Reset" buttons and explanations
 elseif (isset($_POST['settings']) or isset($_POST['reset'])) {
-    echo '<br>';
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
+    ?>
+    <br>
+    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
 
-    if (isset($_POST['reset'])) { // reset to default
-        $result = $db_functions->update_settings('merge_chars', '10');
-    } elseif (isset($_POST['merge_chars'])) { // the "Save" button was pressed
-        $merge_chars = $_POST['merge_chars'];  // store into variable and write to database
-        $result = $db_functions->update_settings('merge_chars', $merge_chars);
-    }
-    $chars = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_chars'");
-    $charsDb = $chars->fetch(PDO::FETCH_OBJ);
+        <?php
+        if (isset($_POST['reset'])) { // reset to default
+            $result = $db_functions->update_settings('merge_chars', '10');
+        } elseif (isset($_POST['merge_chars'])) { // the "Save" button was pressed
+            $merge_chars = $_POST['merge_chars'];  // store into variable and write to database
+            $result = $db_functions->update_settings('merge_chars', $merge_chars);
+        }
+        $chars = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_chars'");
+        $charsDb = $chars->fetch(PDO::FETCH_OBJ);
 
-    if (isset($_POST['reset'])) {
-        $result = $db_functions->update_settings('merge_dates', 'YES');
-    } elseif (isset($_POST['merge_dates'])) {
-        $merge_dates = $_POST['merge_dates'];
-        $result = $db_functions->update_settings('merge_dates', $merge_dates);
-    }
-    $dates = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_dates'");
-    $datesDb = $dates->fetch(PDO::FETCH_OBJ);
+        if (isset($_POST['reset'])) {
+            $result = $db_functions->update_settings('merge_dates', 'YES');
+        } elseif (isset($_POST['merge_dates'])) {
+            $merge_dates = $_POST['merge_dates'];
+            $result = $db_functions->update_settings('merge_dates', $merge_dates);
+        }
+        $dates = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_dates'");
+        $datesDb = $dates->fetch(PDO::FETCH_OBJ);
 
-    if (isset($_POST['reset'])) {
-        $result = $db_functions->update_settings('merge_lastname', 'YES');
-    } elseif (isset($_POST['merge_lastname'])) {
-        $merge_lastname = $_POST['merge_lastname'];
-        $result = $db_functions->update_settings('merge_lastname', $merge_lastname);
-    }
-    $lastn = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_lastname'");
-    $lastnDb = $lastn->fetch(PDO::FETCH_OBJ);
+        if (isset($_POST['reset'])) {
+            $result = $db_functions->update_settings('merge_lastname', 'YES');
+        } elseif (isset($_POST['merge_lastname'])) {
+            $merge_lastname = $_POST['merge_lastname'];
+            $result = $db_functions->update_settings('merge_lastname', $merge_lastname);
+        }
+        $lastn = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_lastname'");
+        $lastnDb = $lastn->fetch(PDO::FETCH_OBJ);
 
-    if (isset($_POST['reset'])) {
-        $result = $db_functions->update_settings('merge_firstname', 'YES');
-    } elseif (isset($_POST['merge_firstname'])) {
-        $merge_firstname = $_POST['merge_firstname'];
-        $result = $db_functions->update_settings('merge_firstname', $merge_firstname);
-    }
-    $firstn = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_firstname'");
-    $firstnDb = $firstn->fetch(PDO::FETCH_OBJ);
+        if (isset($_POST['reset'])) {
+            $result = $db_functions->update_settings('merge_firstname', 'YES');
+        } elseif (isset($_POST['merge_firstname'])) {
+            $merge_firstname = $_POST['merge_firstname'];
+            $result = $db_functions->update_settings('merge_firstname', $merge_firstname);
+        }
+        $firstn = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_firstname'");
+        $firstnDb = $firstn->fetch(PDO::FETCH_OBJ);
 
-    if (isset($_POST['reset'])) {
-        $result = $db_functions->update_settings('merge_parentsdate', 'YES');
-    } elseif (isset($_POST['merge_parentsdate'])) {
-        $merge_parentsdate = $_POST['merge_parentsdate'];
-        $result = $db_functions->update_settings('merge_parentsdate', $merge_parentsdate);
-    }
-    $pard = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_parentsdate'");
-    $pardDb = $pard->fetch(PDO::FETCH_OBJ);
+        if (isset($_POST['reset'])) {
+            $result = $db_functions->update_settings('merge_parentsdate', 'YES');
+        } elseif (isset($_POST['merge_parentsdate'])) {
+            $merge_parentsdate = $_POST['merge_parentsdate'];
+            $result = $db_functions->update_settings('merge_parentsdate', $merge_parentsdate);
+        }
+        $pard = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_parentsdate'");
+        $pardDb = $pard->fetch(PDO::FETCH_OBJ);
+        ?>
 
-    echo '<table class="humo" style="width:900px;">';
-    echo '<tr class="table_header"><th colspan="3">' . __('Merge filter settings') . '</th></tr>';
-    echo '<tr><th style="width:300px" colspan="2">' . __('Settings') . '</th><th style="width:600px">' . __('Explanation') . '</th></tr>';
-    echo '<tr><td style="font-weight:bold;text-align:left;vertical-align:top" colspan="3">';
+        <table class="humo" style="width:900px;">
+            <tr class="table_header">
+                <th colspan="3"><?= __('Merge filter settings'); ?></th>
+            </tr>
 
-    echo __('General') . '</td></tr><tr><td>';
-    echo __('Max characters to match firstname:');
-    echo '</td><td>';
-    echo '<input type="text" name="merge_chars" value="' . $charsDb->setting_value . '"size="1">';
-    echo '</td><td>'; // explanation
+            <tr>
+                <td style="font-weight:bold;text-align:left;vertical-align:top" colspan="3"><?= __('General'); ?></td>
+            </tr>
 
-    echo __('In different trees, first names may be listed differently: Thomas Julian Booth, Thomas J. Booth, Thomas Booth etc. By default a match of the first 10 characters of the first name will be considered a match. You can change this to another value. Try and find the right balance: if you set a low number of chars you will get many unwanted possible matches. If you set it too high, you may miss possible matches as in the example names above.');
+            <tr>
+                <td><?= __('Max characters to match firstname:'); ?></td>
+                <td>
+                    <input type="text" name="merge_chars" value="<?= $charsDb->setting_value; ?>" size="1">
+                </td>
+                <td>
+                    <?= __('In different trees, first names may be listed differently: Thomas Julian Booth, Thomas J. Booth, Thomas Booth etc. By default a match of the first 10 characters of the first name will be considered a match. You can change this to another value. Try and find the right balance: if you set a low number of chars you will get many unwanted possible matches. If you set it too high, you may miss possible matches as in the example names above.'); ?>
+                </td>
+            </tr>
 
-    echo '</td></tr><tr><td style="font-weight:bold;text-align:left;vertical-align:top" colspan="3">';
-    echo __('Duplicate merge');
-    echo '</td></tr><tr><td>' . __('include blank lastnames');
-    echo '</td><td>';
-    echo '<select size="1" name="merge_lastname">';
-    if ($lastnDb->setting_value == 'YES') {
-        echo '<option value="YES" selected>' . __('Yes') . '</option>';
-        echo '<option value="NO">' . __('No') . '</option>';
-    } else {
-        echo '<option value="NO" selected>' . __('No') . '</option>';
-        echo '<option value="YES">' . __('Yes') . '</option>';
-    }
-    echo "</select>";
-    echo '</td><td>'; // explanation
+            <tr>
+                <td style="font-weight:bold;text-align:left;vertical-align:top" colspan="3"><?= __('Duplicate merge'); ?></td>
+            </tr>
 
-    echo __('By default two persons with missing lastnames will be included as possible duplicates. Two persons called "John" without lastname will be considered a possible match. If you have many cases like this you could get a very long list of possible duplicates and you might want to disable this, so only persons with lastnames will be included.');
+            <tr>
+                <td><?= __('include blank lastnames'); ?></td>
+                <td>
+                    <select size="1" name="merge_lastname">
+                        <?php
+                        if ($lastnDb->setting_value == 'YES') {
+                            echo '<option value="YES" selected>' . __('Yes') . '</option>';
+                            echo '<option value="NO">' . __('No') . '</option>';
+                        } else {
+                            echo '<option value="NO" selected>' . __('No') . '</option>';
+                            echo '<option value="YES">' . __('Yes') . '</option>';
+                        }
+                        ?>
+                    </select>
+                </td>
+                <td>
+                    <?= __('By default two persons with missing lastnames will be included as possible duplicates. Two persons called "John" without lastname will be considered a possible match. If you have many cases like this you could get a very long list of possible duplicates and you might want to disable this, so only persons with lastnames will be included.'); ?>
+                </td>
+            </tr>
 
-    echo '</td></tr><tr><td>' . __('include blank firstnames');
-    echo '</td><td>';
-    echo '<select size="1" name="merge_firstname">';
-    if ($firstnDb->setting_value == 'YES') {
-        echo '<option value="YES" selected>' . __('Yes') . '</option>';
-        echo '<option value="NO">' . __('No') . '</option>';
-    } else {
-        echo '<option value="NO" selected>' . __('No') . '</option>';
-        echo '<option value="YES">' . __('Yes') . '</option>';
-    }
-    echo "</select>";
-    echo '</td><td>'; // explanation
+            <tr>
+                <td><?= __('include blank firstnames'); ?></td>
+                <td>
+                    <select size="1" name="merge_firstname">
+                        <?php
+                        if ($firstnDb->setting_value == 'YES') {
+                            echo '<option value="YES" selected>' . __('Yes') . '</option>';
+                            echo '<option value="NO">' . __('No') . '</option>';
+                        } else {
+                            echo '<option value="NO" selected>' . __('No') . '</option>';
+                            echo '<option value="YES">' . __('Yes') . '</option>';
+                        }
+                        ?>
+                    </select>
+                </td>
+                <td>
+                    <?= __('Same as above, but for first names. When enabled (default), all persons called "Smith" without first name will be considered possible duplicates of each other. If you have many cases like this it could give you a long list and you might want to disable it.'); ?>
+                </td>
+            </tr>
 
-    echo __('Same as above, but for first names. When enabled (default), all persons called "Smith" without first name will be considered possible duplicates of each other. If you have many cases like this it could give you a long list and you might want to disable it.');
+            <tr>
+                <td><?= __('include blank dates'); ?></td>
+                <td>
+                    <select size="1" name="merge_dates">
+                        <?php
+                        if ($datesDb->setting_value == 'YES') {
+                            echo '<option value="YES" selected>' . __('Yes') . '</option>';
+                            echo '<option value="NO">' . __('No') . '</option>';
+                        } else {
+                            echo '<option value="NO" selected>' . __('No') . '</option>';
+                            echo '<option value="YES">' . __('Yes') . '</option>';
+                        }
+                        ?>
+                    </select>
+                </td>
+                <td>
+                    <?= __('By default, two persons with identical names, but with one or both missing birth/death dates are considered possible duplicates. In certain trees this can give a long list of possible duplicates. You can choose to disable this so only persons who both have a birth or death date and this date is identical, will be considered a possible match. This can drastically cut down the number of possible duplicates, but of course you may also miss out on pairs that actually are duplicates.'); ?>
+                </td>
+            </tr>
 
-    echo '</td></tr><tr><td>' . __('include blank dates');
-    echo '</td><td>';
-    echo '<select size="1" name="merge_dates">';
-    if ($datesDb->setting_value == 'YES') {
-        echo '<option value="YES" selected>' . __('Yes') . '</option>';
-        echo '<option value="NO">' . __('No') . '</option>';
-    } else {
-        echo '<option value="NO" selected>' . __('No') . '</option>';
-        echo '<option value="YES">' . __('Yes') . '</option>';
-    }
-    echo "</select>";
-    echo '</td><td>'; // explanation
+            <tr>
+                <td style="font-weight:bold;text-align:left;vertical-align:top" colspan="3"><?= __('Automatic merge'); ?></td>
+            </tr>
 
-    echo __('By default, two persons with identical names, but with one or both missing birth/death dates are considered possible duplicates. In certain trees this can give a long list of possible duplicates. You can choose to disable this so only persons who both have a birth or death date and this date is identical, will be considered a possible match. This can drastically cut down the number of possible duplicates, but of course you may also miss out on pairs that actually are duplicates.');
+            <tr>
+                <td><?= __('include parents marriage date:'); ?></td>
+                <td>
+                    <select size="1" name="merge_parentsdate">
+                        <?php
+                        if ($pardDb->setting_value == 'YES') {
+                            echo '<option value="YES" selected>' . __('Yes') . '</option>';
+                            echo '<option value="NO">' . __('No') . '</option>';
+                        } else {
+                            echo '<option value="NO" selected>' . __('No') . '</option>';
+                            echo '<option value="YES">' . __('Yes') . '</option>';
+                        }
+                        ?>
+                    </select>
+                </td>
+                <td>
+                    <?= __('Automatic merging is a dangerous business. Therefore many clauses are used to make sure the persons are indeed identical. Besides identical names, identical birth or death dates and identical names of parents, also the parents\' wedding date is included. If you consider this too much and rely on the above clauses, you can disable this.'); ?>
+                </td>
+            </tr>
 
-    echo '</td></tr><tr><td style="font-weight:bold;text-align:left;vertical-align:top" colspan="3">';
-    echo __('Automatic merge');
-    echo '</td></tr><tr><td>' . __('include parents marriage date:');
-    echo '</td><td>';
-    echo '<select size="1" name="merge_parentsdate">';
-    if ($pardDb->setting_value == 'YES') {
-        echo '<option value="YES" selected>' . __('Yes') . '</option>';
-        echo '<option value="NO">' . __('No') . '</option>';
-    } else {
-        echo '<option value="NO" selected>' . __('No') . '</option>';
-        echo '<option value="YES">' . __('Yes') . '</option>';
-    }
-    echo "</select>";
-    echo '</td><td>'; // explanation
+            <tr>
+                <td></td>
+                <td></td>
+                <td style="text-align:center">
+                    <input type="submit" name="settings" value="<?= __('Save'); ?>">
+                    &nbsp;&nbsp;&nbsp;<input type="submit" name="reset" value="<?= __('Reset'); ?>">
+                </td>
+            </tr>
 
-    echo __('Automatic merging is a dangerous business. Therefore many clauses are used to make sure the persons are indeed identical. Besides identical names, identical birth or death dates and identical names of parents, also the parents\' wedding date is included. If you consider this too much and rely on the above clauses, you can disable this.');
-
-    echo '</td></tr>';
-
-    echo '<tr><td colspan="2" style="text-align:center"><input type="submit" name="settings" value="' . __('Save') . '">';
-    echo '&nbsp;&nbsp;&nbsp;<input type="submit" name="reset" value="' . __('Reset') . '"></td>';
-
-    echo '</td><td>';
-    echo '</tr></table><br><br><br>';
-    echo '</form>';
+        </table><br><br><br>
+    </form>
+<?php
 }
 
 // The default entry to the merge feature (the main screen) with the merge modes and settings
 else {
-    echo '<br>';
-    echo '<table class="humo" style="width:98%;">';
-    echo '<tr class="table_header"><th colspan="2">' . __('Merge Options') . '</th></tr>';
-    echo '<tr><td colspan="2" style="padding:10px">';
-
-    echo __('<b>NOTE:</b> None of these buttons will cause immediate merging. You will first be presented with information and can then decide to make a merge.<br><br>
+?>
+    <br>
+    <table class="humo" style="width:98%;">
+        <tr class="table_header">
+            <th colspan="2"><?= __('Merge Options'); ?></th>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding:10px">
+                <?= __('<b>NOTE:</b> None of these buttons will cause immediate merging. You will first be presented with information and can then decide to make a merge.<br><br>
 <b>TIP:</b> Start with automatic merge to get rid of all obvious merges. (If no automatic merge options are found, try the duplicate merge option).<br>
 These will likely cause surrounding relatives to be found, so continue with the "Relatives merge" option.<br>
 Once you finish that, most needed merges will have been performed. You can then use "Duplicate merge" to see if there are duplicates left to consider for merging.<br>
-As a last resort you can perform manual merges.');
-
-    echo '</td></tr>';
-    echo '<tr><td style="vertical-align:center;text-align:center;width:200px">';
-
-    // automatic merge option button
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="submit" style="min-width:150px" name="automatic" value="' . __('Automatic merge') . '" class="btn btn-sm btn-success">';
-    echo '</form>';
-    echo '</td><td>';
-    echo __('You will be shown the set of strict criteria used for automatic merging and then you can decide whether to continue.');
-
-    // relatives merge option button (only shown as button if previous merges created a "surrounding relatives" array)
-    echo '</td></tr><tr><td style="vertical-align:center;text-align:center;width:200px">';
-    if ($relatives_merge != '') {
-        echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-        echo '<input type="hidden" name="page" value="' . $page . '">';
-        echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-        echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-        echo '<input type="submit" style="min-width:150px" name="relatives" value="' . __('Relatives merge') . '" class="btn btn-sm btn-success">';
-        echo '</form>';
-    } else {
-        echo __('Relatives merge');
-    }
-    echo '</td><td>';
-
-    echo __('This button will become available if you have made merges, and surrounding relatives (parents, children or spouses) have to be considered for merging too.<br>
+As a last resort you can perform manual merges.'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align:center;text-align:center;width:200px">
+                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                    <input type="submit" style="min-width:150px" name="automatic" value="<?= __('Automatic merge'); ?>" class="btn btn-sm btn-success">
+                </form>
+            </td>
+            <td>
+                <?= __('You will be shown the set of strict criteria used for automatic merging and then you can decide whether to continue.'); ?>
+                <!-- relatives merge option button (only shown as button if previous merges created a "surrounding relatives" array) -->
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align:center;text-align:center;width:200px">
+                <?php if ($relatives_merge != '') { ?>
+                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                        <input type="hidden" name="page" value="<?= $page; ?>">
+                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                        <input type="submit" style="min-width:150px" name="relatives" value="<?= __('Relatives merge'); ?>" class="btn btn-sm btn-success">
+                    </form>
+                <?php } else { ?>
+                    <?= __('Relatives merge'); ?>
+                <?php } ?>
+            </td>
+            <td>
+                <?= __('This button will become available if you have made merges, and surrounding relatives (parents, children or spouses) have to be considered for merging too.<br>
 By pressing this button, you can then continue to check the surrounding relatives, pair by pair, and merge them if necessary. If those merges will create additional surrounding relatives to consider, they will be automatically added to the list.<br>
-Surrounding relatives are saved to the database and you can also return to it at a later stage.');
-
-    echo '</td></tr><tr><td style="vertical-align:center;text-align:center;width:200px">';
-
-    // duplicate merge option button
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="submit" style="min-width:150px" name="duplicate_choices" value="' . __('Duplicate merge') . '" class="btn btn-sm btn-success">';
-    echo '</form>';
-    echo '</td><td>';
-
-    echo __('You will be presented, one after the other, with pairs of possible duplicates to consider for merging.<br>
-After a merge you can switch to "relatives merge" and after that return to duplicate search where you left off.');
-
-    echo '</td></tr><tr><td style="min-height:50px;vertical-align:center;text-align:center;width:200px">';
-
-    // manual merge option button
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="submit" style="min-width:150px" name="manual" value="' . __('Manual merge') . '" class="btn btn-sm btn-success">';
-    echo '</form>';
-    echo '</td><td>';
-    echo __('You can pick two persons out of the database to consider for merging.');
-    echo '</td></tr><tr><td style="vertical-align:center;text-align:center;width:200px">';
-
-    // settings option button
-    echo '<form method="post" action="' . $phpself . '" style="display : inline;">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-    echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-    echo '<input type="submit" style="min-width:150px" name="settings" value="' . __('Settings') . '" class="btn btn-sm btn-success">';
-    echo '</form>';
-    echo '</td><td>' . __('Here you can change the default filters for the different merge options.');
-    echo '</td></tr></table>';
+Surrounding relatives are saved to the database and you can also return to it at a later stage.'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align:center;text-align:center;width:200px">
+                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                    <input type="submit" style="min-width:150px" name="duplicate_choices" value="<?= __('Duplicate merge'); ?>" class="btn btn-sm btn-success">
+                </form>
+            </td>
+            <td>
+                <?= __('You will be presented, one after the other, with pairs of possible duplicates to consider for merging.<br>
+After a merge you can switch to "relatives merge" and after that return to duplicate search where you left off.'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td style="min-height:50px;vertical-align:center;text-align:center;width:200px">
+                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                    <input type="submit" style="min-width:150px" name="manual" value="<?= __('Manual merge'); ?>" class="btn btn-sm btn-success">
+                </form>
+            </td>
+            <td><?= __('You can pick two persons out of the database to consider for merging.'); ?></td>
+        </tr>
+        <tr>
+            <td style="vertical-align:center;text-align:center;width:200px">
+                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                    <input type="submit" style="min-width:150px" name="settings" value="<?= __('Settings'); ?>" class="btn btn-sm btn-success">
+                </form>
+            </td>
+            <td><?= __('Here you can change the default filters for the different merge options.'); ?></td>
+        </tr>
+    </table>
+<?php
 }
 
 //*********************************************************************************************

@@ -464,8 +464,10 @@ $menu_top = getActiveTopMenu($page);
         <!-- <nav class="mt-5 navbar navbar-expand-lg bg-light border-bottom border-success"> -->
         <!-- <nav class="mt-5 navbar navbar-expand-lg border-bottom border-success genealogy_menu" style="margin: 0 !important;"> -->
         <!-- <nav class="mt-5 navbar navbar-expand-lg border-bottom border-dark-subtle genealogy_menu"> -->
-        <nav class="navbar navbar-expand-lg border-bottom border-dark-subtle genealogy_menu">
-            <!-- <div class="container-fluid"> -->
+        <!-- <nav class="navbar navbar-expand-lg border-bottom border-dark-subtle genealogy_menu"> -->
+        <nav class="navbar navbar-expand-md border-bottom border-dark-subtle genealogy_menu">
+
+        <!-- <div class="container-fluid"> -->
             <?php // <a class="navbar-brand" href="#">Brand</a> ;
             ?>
             <button class="navbar-toggler genealogy_toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
