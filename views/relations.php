@@ -4637,9 +4637,9 @@ function display_result($result)
             }
         }
     }
-
-    // the following code displays the graphical view of the found trail
     ?>
+
+    <!-- the following code displays the graphical view of the found trail -->
     <br>
     <table style="border:0px;border-collapse:separate;border-spacing:30px 1px;">
         <?php for ($a = 1; $a <= $maxy; $a++) { ?>
@@ -4655,10 +4655,14 @@ function display_result($result)
                             $border = "border:1px solid #777777;";
 
                             $ancDb = $db_functions->get_person($map[$x][4]);
-                            if ($ancDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                            else $ext_cls = "extended_woman ";
+                            if ($ancDb->pers_sexe == "M") {
+                                $ext_cls = "extended_man ";
+                            } else {
+                                $ext_cls = "extended_woman ";
+                            }
 
-                            if ($map[$x][4] == $data["person1"] or $map[$x][4] == $data["person2"]) {  // person A and B (first and last) get thicker border
+                            // person A and B (first and last) get thicker border
+                            if ($map[$x][4] == $data["person1"] or $map[$x][4] == $data["person2"]) {
                                 $color = "#72fe95";
                                 $border = "border:2px solid #666666;";
                             }

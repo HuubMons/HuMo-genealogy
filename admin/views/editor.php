@@ -536,9 +536,7 @@ if ($check_person) {
                         <input type="submit" value="<<">
                     </form>
 
-                    <?php
-                    if ($previousDb) {
-                    ?>
+                    <?php if ($previousDb) { ?>
                         <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
                             <input type="hidden" name="person" value="<?= $previousDb->pers_gedcomnumber; ?>">
@@ -1236,13 +1234,18 @@ if ($check_person) {
                 // *** Add new child ***
                 $form = 6;
             }
+            ?>
+            <!-- Born -->
+            <tr>
+                <td><?= ucfirst(__('born')); ?></td>
+                <td>
+                    <?= $editor_cls->date_show('', 'pers_birth_date', '', '', '', 'pers_birth_date_hebnight'); ?>
+                    <input type="text" name="pers_birth_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </td>
+            </tr>
 
-            // *** Born ***
-            echo '<tr><td>' . ucfirst(__('born')) . '</td><td>';
-            echo $editor_cls->date_show('', 'pers_birth_date', '', '', '', 'pers_birth_date_hebnight') . ' ';
-            echo ' <input type="text" name="pers_birth_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
-            echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_birth_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a></td></tr>';
-
+            <?php
             // *** Birth time and stillborn option ***
             if ($person_kind == 'child') {
                 echo '<tr><td style="border-right:0px;">' . __('birth time') . '</td><td style="border-left:0px;"><input type="text" placeholder="' . __('birth time') . '" name="pers_birth_time" value="" size="' . $field_date . '">';
@@ -1269,17 +1272,17 @@ if ($check_person) {
             echo $editor_cls->date_show('', 'pers_buried_date', '', '', '', 'pers_buried_date_hebnight') . ' ';
             echo '  <input type="text" name="pers_buried_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
             echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_buried_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a></td></tr>';
-
-            // *** Profession ***
             ?>
+
+            <!-- Profession -->
             <tr>
                 <td><?= __('Profession'); ?></td>
                 <td>
                     <input type="text" name="event_profession" placeholder="<?= __('Profession'); ?>" value="" size="35">
                 </td>
             </tr>
-            <?php
 
+            <?php
             if ($person_kind == 'partner') {
                 echo '<tr class="humo_color"><td></td><td><input type="submit" name="relation_add" value="' . __('Add relation') . '" class="btn btn-sm btn-success"></td></tr>';
             } else {

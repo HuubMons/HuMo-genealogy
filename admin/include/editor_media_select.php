@@ -80,8 +80,8 @@ if (file_exists($array_picture_folder[0])) {
         <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15">
         <input type="submit" name="submit" value="<?= __('Search'); ?>">
     </form><br>
-<?php
 
+<?php
     // *** List of media files ***
     $ignore = array('.', '..', 'cms', 'readme.txt', 'slideshow', 'thumbs');
     $dirname_start = strlen($prefx . $pict_path);
