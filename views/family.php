@@ -113,7 +113,6 @@ function topline($data)
                                             echo '<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'maps_presentation=hide&xx=\'+this.value"' . $selected2 . '>' . __('Hide family map') . "<br>\n";
                                         }
                                     }
-
                                     ?>
                                 </td>
                                 <td valign="top">
@@ -150,8 +149,8 @@ function topline($data)
                         </table>
                     </div>
                 </div>
-                <?php
 
+                <?php
                 //TODO check variables in forms (database -> tree_id).
 
                 // *** PDF button ***
@@ -413,8 +412,7 @@ else {
 
                         // *** June 2023: get country code for statistics ***
                         // *** Check if country code is known for this IP address ***
-                        $sql = "SELECT stat_country_ip_address FROM humo_stat_country
-                                WHERE stat_country_ip_address = :stat_country_ip_address";
+                        $sql = "SELECT stat_country_ip_address FROM humo_stat_country WHERE stat_country_ip_address = :stat_country_ip_address";
                         try {
                             $qry = $dbh->prepare($sql);
                             $qry->bindValue(':stat_country_ip_address', $visitor_ip, PDO::PARAM_STR);
@@ -486,10 +484,8 @@ else {
                             <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">'); ?>
                         </b><br><br>
                     </div>
-                <?php
-                }
+                <?php } ?>
 
-                ?>
                 <table class="humo standard">
                     <?php
                     // *** Show family top line (family top text, settings, favourite) ***
@@ -551,8 +547,8 @@ else {
                         ) {
                             $family_privacy = true;
                         }
-
                         ?>
+
                         <br>
                         <div class="marriage">
                             <?php
@@ -584,8 +580,8 @@ else {
                         }
                         ?>
                     </div>
-                    <?php
 
+                    <?php
                     // *************************************************************
                     // *** Marriagetext                                          ***
                     // *************************************************************

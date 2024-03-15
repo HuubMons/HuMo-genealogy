@@ -100,10 +100,7 @@ $add_person = $editor['add_person']; // *** Temp variable ***
 
 // TODO move items from editor_inc.php to model and view scripts.
 // *** Process queries ***
-//$confirm2 = $confirm; // *** Temp variable ***
-//$confirm = ''; // *** Temp variable ***
 include_once(__DIR__ . "/../include/editor_inc.php");
-//$confirm .= $confirm2 . $confirm; // *** Temp variable ***
 
 if ($editor['new_tree'] == false) {
     // *** Favourites ***
