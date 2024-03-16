@@ -32,16 +32,19 @@ $data["picture_presentation"] =  $get_ancestor->getTextPresentation();
 
 
 
-// TODO remove this code. $tree_id allready processed in header.
-// At this moment it can't be removed yet...
-//if (isset($_SESSION['tree_prefix'])) {
-//    $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-//        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-//        AND humo_tree_texts.treetext_language='" . $selected_language . "'
-//        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
-//    @$datasql = $dbh->query($dataqry);
-//    @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
-//}
+// TODO improve this code. $tree_id allready processed in header.
+// 2024: at this moment this can't be removed yet...
+//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in show_picture.php!!!
+// *** Set variable for queries ***
+$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
+if (isset($_SESSION['tree_prefix'])) {
+    $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
+        ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
+        AND humo_tree_texts.treetext_language='" . $selected_language . "'
+        WHERE tree_prefix='" . $tree_prefix_quoted . "'";
+    @$datasql = $dbh->query($dataqry);
+    @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
+}
 //$tree_prefix = $dataDb->tree_prefix;
 //$tree_id = $dataDb->tree_id;
 

@@ -456,8 +456,10 @@ while (isset($ancestor_array2[0])) {
                 $rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
                 $cell = $table->getCell(1, 3);
                 $cell->writeText($rtf_text, $arial12, $parNames);
-                $rtf_text = strip_tags($man_cls->person_data("standard", $ancestor_array[$i]), "<b><i>");
-                $rtf_text = substr($rtf_text, 0, -1); // take off newline
+                if ($man_cls->person_data("standard", $ancestor_array[$i])) {
+                    $rtf_text = strip_tags($man_cls->person_data("standard", $ancestor_array[$i]), "<b><i>");
+                    $rtf_text = substr($rtf_text, 0, -1); // take off newline
+                }
                 $cell->writeText($rtf_text, $arial12, $parNames);
             }
         }
