@@ -451,17 +451,17 @@ if (!isset($hourglass)) {
         //	onrendered: function( canvas ) {
 
         html2canvas(document.querySelector('#png')).then(canvas => {
-                var img = canvas.toDataURL();
-                /*   document.getElementById('helppopup').style.visibility = 'visible';
-                document.getElementById('menubox').style.visibility = 'visible'; */
-                document.getElementById('imgbutton').style.visibility = 'visible';
-                document.getElementById('png').style.width = 'auto';
-                document.getElementById('png').style.height= 'auto';
-                var newWin = window.open();
-                newWin.document.open();
-                newWin.document.write('<!DOCTYPE html><head></head><body>" . __('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ') . "<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>" . __('If you have a plotter you can use its software to print the image on one large sheet.') . "<br><br><img src=\"' + img + '\"></body></html>');
-                newWin.document.close();
-                }
+            var img = canvas.toDataURL();
+            /*   document.getElementById('helppopup').style.visibility = 'visible';
+            document.getElementById('menubox').style.visibility = 'visible'; */
+            document.getElementById('imgbutton').style.visibility = 'visible';
+            document.getElementById('png').style.width = 'auto';
+            document.getElementById('png').style.height= 'auto';
+            var newWin = window.open();
+            newWin.document.open();
+            newWin.document.write('<!DOCTYPE html><head></head><body>" . __('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ') . "<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>" . __('If you have a plotter you can use its software to print the image on one large sheet.') . "<br><br><img src=\"' + img + '\"></body></html>');
+            newWin.document.close();
+            }
         //}
         );
     }

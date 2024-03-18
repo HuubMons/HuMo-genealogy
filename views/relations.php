@@ -79,7 +79,9 @@ $name2 = '';
 
 $pers_cls = new person_cls;
 
-$len = 230; // length of name pulldown box
+// No longer needed? Allready removed multiple $len variables.
+//$len = 230; // length of name pulldown box
+
 $limit = 500; // *** Limit results ***
 ?>
 
@@ -89,49 +91,31 @@ $limit = 500; // *** Limit results ***
 <?php } ?>
 
 <form method="POST" action="<?= $relpath_form; ?>" style="display : inline;">
-    <table class="humo relmenu">
-        <tr class="table_headline">
-            <th style="font-weight: normal;">
-                <!-- HELP POPUP -->
-                <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_address',100,200)" onmouseout="mclosetime()">
-                        <img src="images/help.png" height="16" width="16">
-                    </a>
-                    <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_address" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                        <?= __('This calculator will find the following relationships:<br>
-<ul><li>Any blood relationship between X and Y ("X is great-grandfather of Y", "X is 3rd cousin once removed of Y" etc.)</li>
-<li>Blood relationship between the spouse of X and person Y ("X is spouse of 2nd cousin of Y", "X is son-in-law of Y")</li>
-<li>Blood relationship between person X and the spouse of Y ("X is 2nd cousin of spouse of Y", "X is father-in-law of Y")</li>
-<li>Blood relationship between spouse of X and spouse of Y ("X spouse of sister-in-law of Y" etc.)</li>
-<li>Direct marital relation ("X is spouse of Y")</li></ul>
-Directions for use:<br>
-<ul><li>Enter first and/or last name (or part of names) in the search boxes and press "Search". Repeat this for person 1 and 2.</li>
-<li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
-<li>Now press the "Calculate relationships" button on the right.</li>
-<li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>'); ?>
-                    </div>
-            </th>
-            <th><?= __('Name'); ?></th>
-            <th><?= __('or: ID'); ?></th>
-            <th colspan=2><?= __('Pick a name from search results'); ?></th>
-            <th><?= __('Calculate relationships'); ?></th>
-        </tr>
+    <div class="p-2 me-sm-2 genealogy_search">
+        <div class="row">
+            <div class="col-md-2"><b><?= __('Person') . ' 1'; ?></b></div>
+        </div>
 
-        <tr>
-            <td><?= __('Person') . ' 1:'; ?></td>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-auto">
+                <?= __('Name'); ?>
+                <div class="input-group mb-3">
+                    <input type="text" name="search_name" value="<?= safe_text_show($data["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+                    <input type="submit" name="button_search_name1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                </div>
+            </div>
 
-            <!-- Start selection form -->
-            <td>
-                <input type="text" name="search_name" value="<?= safe_text_show($data["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
-                <input type="submit" name="button_search_name1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
-            </td>
+            <div class="col-md-auto">
+                <?= __('or: ID'); ?>
+                <div class="input-group mb-3">
+                    <input type="text" name="search_gednr" value="<?= safe_text_show($data["search_gednr1"]); ?>" size="8" class="form-control form-control-sm">
+                    <input type="submit" name="button_search_id1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                </div>
+            </div>
 
-            <td>
-                <input type="text" name="search_gednr" value="<?= safe_text_show($data["search_gednr1"]); ?>" size="8">
-                <input type="submit" name="button_search_id1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
-            </td>
-
-            <td>
+            <div class="col-md-3">
+                <?= __('Pick a name from search results'); ?>
                 <?php
                 if (isset($_SESSION["button_search_name1"]) and $_SESSION["button_search_name1"] == 1) {
                     $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
@@ -172,76 +156,81 @@ Directions for use:<br>
                     if ($search_result) {
                         $number_results = $search_result->rowCount();
                         if ($number_results > 0) {
-                            echo '<select size="1" name="person1" style="width:' . $len . 'px">';
-                            while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
-                                $name = $pers_cls->person_name($searchDb);
-                                if ($name["show_name"]) {
-                                    echo '<option';
-                                    if (isset($data["person1"])) {
-                                        if ($searchDb->pers_gedcomnumber == $data["person1"] and !(isset($_POST["button_search_name1"]) and $data["search_name1"] == '' and $data["search_gednr1"] == '')) {
-                                            echo ' selected';
-                                        }
-                                    }
-
-                                    $birth = '';
-                                    if ($searchDb->pers_bapt_date) {
-                                        $birth = ' ' . __('~') . ' ' . date_place($searchDb->pers_bapt_date, '');
-                                    }
-                                    if ($searchDb->pers_birth_date) {
-                                        $birth = ' ' . __('*') . ' ' . date_place($searchDb->pers_birth_date, '');
-                                    }
-                                    $search1_cls = new person_cls($searchDb);
-                                    if ($search1_cls->privacy) {
-                                        $birth = '';
-                                    }
-                                    echo ' value="' . $searchDb->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
-                                }
-                            }
-                            // *** Simple test only, if number of results = limit then show message ***
-                            if ($number_results == $limit) {
-                                echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
-                            }
-                            echo '</select>';
-                        } else {
                 ?>
-                            <select size="1" name="notfound" value="1" style="width:' . $len . 'px">
+                            <select size="1" name="person1" class="form-select form-select-sm">
+                                <?php
+                                while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
+                                    $name = $pers_cls->person_name($searchDb);
+                                    if ($name["show_name"]) {
+                                        $birth = '';
+                                        if ($searchDb->pers_bapt_date) {
+                                            $birth = ' ' . __('~') . ' ' . date_place($searchDb->pers_bapt_date, '');
+                                        }
+                                        if ($searchDb->pers_birth_date) {
+                                            $birth = ' ' . __('*') . ' ' . date_place($searchDb->pers_birth_date, '');
+                                        }
+                                        $search1_cls = new person_cls($searchDb);
+                                        if ($search1_cls->privacy) {
+                                            $birth = '';
+                                        }
+
+                                        echo '<option';
+                                        if (isset($data["person1"])) {
+                                            if ($searchDb->pers_gedcomnumber == $data["person1"] and !(isset($_POST["button_search_name1"]) and $data["search_name1"] == '' and $data["search_gednr1"] == '')) {
+                                                echo ' selected';
+                                            }
+                                        }
+                                        echo ' value="' . $searchDb->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
+                                    }
+                                }
+                                // *** Simple test only, if number of results = limit then show message ***
+                                if ($number_results == $limit) {
+                                    echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
+                                }
+                                ?>
+                            </select>
+                        <?php } else { ?>
+                            <select size="1" name="notfound" value="1" class="form-select form-select-sm">
                                 <option><?= __('Person not found'); ?>
                                 </option>
                             </select>
-                <?php
+                    <?php
                         }
                     }
                 } else {
-                    echo '<select size="1" name="person" style="width:' . $len . 'px"><option></option></select>';
-                }
-                ?>
-            </td>
+                    ?>
+                    <select size="1" name="person" class="form-select form-select-sm">
+                        <option></option>
+                    </select>
+                <?php } ?>
+            </div>
+        </div>
 
-            <td rowspan=2>
-                <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('images/turn_around.gif') top no-repeat;width:25px;height:25px">
-            </td>
-            <td rowspan=2>
-                <input type="submit" name="calculator" value="<?= __('Calculate relationships'); ?>" class="btn btn-sm btn-success">
-            </td>
-        </tr>
+        <!-- Second person -->
+        <div class="row">
+            <div class="col-md-2"><b><?= __('Person') . ' 2'; ?></b></div>
+        </div>
 
-        <tr>
-            <td>
-                <!-- Second person -->
-                <?= __('Person') . ' 2:'; ?>
-            </td>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-auto">
+                <?= __('Search'); ?>
+                <div class="input-group mb-3">
+                    <input type="text" name="search_name2" value="<?= safe_text_show($data["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+                    <input type="submit" name="button_search_name2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                </div>
+            </div>
 
-            <td>
-                <input type="text" name="search_name2" value="<?= safe_text_show($data["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>">
-                <input type="submit" name="button_search_name2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
-            </td>
+            <div class="col-md-auto">
+                <?= __('or: ID'); ?>
+                <div class="input-group mb-3">
+                    <input type="text" name="search_gednr2" value="<?= safe_text_show($data["search_gednr2"]); ?>" size="8" class="form-control form-control-sm">
+                    <input type="submit" name="button_search_id2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                </div>
+            </div>
 
-            <td>
-                <input type="text" name="search_gednr2" value="<?= safe_text_show($data["search_gednr2"]); ?>" size="8">
-                <input type="submit" name="button_search_id2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
-            </td>
-
-            <td>
+            <div class="col-md-3">
+                <?= __('Pick a name from search results'); ?>
                 <?php
                 if (isset($_SESSION["button_search_name2"]) and $_SESSION["button_search_name2"] == 1) {
                     $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
@@ -275,54 +264,97 @@ Directions for use:<br>
 
                     // *** Link from person pop-up menu ***
                     if (isset($_SESSION["search_pers_id2"])) {
-                        $search_qry = "SELECT * FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $_SESSION["search_pers_id2"] . "'";
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $_SESSION["search_pers_id2"] . "'";
                     }
 
                     $search_result2 = $dbh->query($search_qry);
                     if ($search_result2) {
                         $number_results = $search_result2->rowCount();
                         if ($number_results > 0) {
-                            echo '<select size="1" name="person2" style="width:' . $len . 'px">';
-                            while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
-                                $name = $pers_cls->person_name($searchDb2);
-                                if ($name["show_name"]) {
-                                    echo '<option';
-                                    if (isset($data["person2"])) {
-                                        if ($searchDb2->pers_gedcomnumber == $data["person2"] and !(isset($_POST["button_search_name2"]) and $data["search_name2"] == '' and $data["search_gednr2"] == '')) {
-                                            echo ' selected';
-                                        }
-                                    }
-                                    $birth = '';
-                                    if ($searchDb2->pers_bapt_date) {
-                                        $birth = ' ' . __('~') . ' ' . date_place($searchDb2->pers_bapt_date, '');
-                                    }
-                                    if ($searchDb2->pers_birth_date) {
-                                        $birth = ' ' . __('*') . ' ' . date_place($searchDb2->pers_birth_date, '');
-                                    }
-                                    $search2_cls = new person_cls($searchDb2);
-                                    if ($search2_cls->privacy) {
+                ?>
+                            <select size="1" name="person2" class="form-select form-select-sm">
+                                <?php
+                                while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
+                                    $name = $pers_cls->person_name($searchDb2);
+                                    if ($name["show_name"]) {
                                         $birth = '';
+                                        if ($searchDb2->pers_bapt_date) {
+                                            $birth = ' ' . __('~') . ' ' . date_place($searchDb2->pers_bapt_date, '');
+                                        }
+                                        if ($searchDb2->pers_birth_date) {
+                                            $birth = ' ' . __('*') . ' ' . date_place($searchDb2->pers_birth_date, '');
+                                        }
+                                        $search2_cls = new person_cls($searchDb2);
+                                        if ($search2_cls->privacy) {
+                                            $birth = '';
+                                        }
+
+                                        echo '<option';
+                                        if (isset($data["person2"])) {
+                                            if ($searchDb2->pers_gedcomnumber == $data["person2"] and !(isset($_POST["button_search_name2"]) and $data["search_name2"] == '' and $data["search_gednr2"] == '')) {
+                                                echo ' selected';
+                                            }
+                                        }
+                                        echo ' value="' . $searchDb2->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
                                     }
-                                    echo ' value="' . $searchDb2->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
                                 }
-                            }
-                            // *** Simple test only, if number of results = limit then show message ***
-                            if ($number_results == $limit) {
-                                echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
-                            }
-                            echo '</select>';
-                        } else {
-                            echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
+                                // *** Simple test only, if number of results = limit then show message ***
+                                if ($number_results == $limit) {
+                                    echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
+                                }
+                                ?>
+                            </select>
+                        <?php } else { ?>
+                            <select size="1" name="notfound" value="1" class="form-select form-select-sm">
+                                <option><?= __('Person not found'); ?></option>
+                            </select>
+                    <?php
                         }
                     }
                 } else {
-                    echo '<select size="1" name="person2" style="width:' . $len . 'px"><option></option></select>';
-                }
+                    ?>
+                    <select size="1" name="person2" class="form-select form-select-sm">
+                        <option></option>
+                    </select>
+                <?php } ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-auto">
+                <!-- HELP POPUP -->
+                <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_address',100,200)" onmouseout="mclosetime()">
+                        <img src="images/help.png">
+                    </a>
+                    <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_address" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                        <?= __('This calculator will find the following relationships:<br>
+<ul><li>Any blood relationship between X and Y ("X is great-grandfather of Y", "X is 3rd cousin once removed of Y" etc.)</li>
+<li>Blood relationship between the spouse of X and person Y ("X is spouse of 2nd cousin of Y", "X is son-in-law of Y")</li>
+<li>Blood relationship between person X and the spouse of Y ("X is 2nd cousin of spouse of Y", "X is father-in-law of Y")</li>
+<li>Blood relationship between spouse of X and spouse of Y ("X spouse of sister-in-law of Y" etc.)</li>
+<li>Direct marital relation ("X is spouse of Y")</li></ul>
+Directions for use:<br>
+<ul><li>Enter first and/or last name (or part of names) in the search boxes and press "Search". Repeat this for person 1 and 2.</li>
+<li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
+<li>Now press the "Calculate relationships" button on the right.</li>
+<li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>'); ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-auto">
+                <?php
+                /* <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('images/turn_around.gif') top no-repeat;width:25px;height:25px"> */
                 ?>
-            </td>
-        </tr>
-    </table>
+                <input type="submit" name="switch" value="<?= __('Switch persons'); ?>" class="btn btn-sm btn-secondary">
+            </div>
+            <div class="col-md-auto">
+                <input type="submit" name="calculator" value="<?= __('Calculate relationships'); ?>" class="btn btn-sm btn-success">
+            </div>
+        </div>
+    </div>
 
     <?php
     if (isset($_POST["extended"]) or isset($_POST["next_path"])) {
@@ -607,7 +639,7 @@ function calculate_rel($data_found)
                     if ($sexe2 == 'm') {
                         $reltext = 'αδελφός του ';
                     } else {
-                        $reltext = __('αδελφός της ');
+                        $reltext = 'αδελφός της ';
                     }
                 }
             }
@@ -943,7 +975,7 @@ function calculate_ancestor($pers)
             }
         }
         if ($selected_language == "gr") {
-            $reltext = $parent . __(' ');
+            $reltext = $parent . ' ';
         } else {
             $reltext = $parent . __(' of ');
         }
@@ -966,12 +998,12 @@ function calculate_ancestor($pers)
         } elseif ($selected_language == "gr") {
             // TODO improve code
             if ($parent == __('father')) {
-                $grparent = __('παππούς');
-                $grgrparent = __('προπάππος');
+                $grparent = 'παππούς';
+                $grgrparent = 'προπάππος';
                 $gr_postfix = "oς";
             } else {
-                $grparent = __('γιαγιά');
-                $grgrparent = __('προγιαγιά');
+                $grparent = 'γιαγιά';
+                $grgrparent = 'προγιαγιά';
                 $gr_postfix = "η";
             }
 
@@ -980,57 +1012,57 @@ function calculate_ancestor($pers)
             if ($pers == 2) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $reltext = $grparent . __(' του ');
+                        $reltext = $grparent . ' του ';
                     } else {
-                        $reltext = $grparent . __(' της ');
+                        $reltext = $grparent . ' της ';
                     }
                 } else {
                     if ($sexe2 == 'm') {
-                        $reltext = $grparent . __(' του ');
+                        $reltext = $grparent . ' του ';
                     } else {
-                        $reltext = $grparent . __(' της ');
+                        $reltext = $grparent . ' της ';
                     }
                 }
             } elseif ($pers == 3) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
-                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 } else {
                     if ($sexe2 == 'm') {
-                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
-                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 }
             } elseif ($pers == 4) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
-                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                        $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 } else {
                     if ($sexe2 == 'm') {
-                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
-                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 }
             } elseif ($pers == 5) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
-                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 } else {
                     if ($sexe2 == 'm') {
-                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' του ');
+                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
-                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ")" . __(' της ');
+                        $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 }
             }
@@ -1436,7 +1468,7 @@ function calculate_descendant($pers)
             }
         }
         if ($selected_language == "gr") {
-            $reltext = $child . __('  ');
+            $reltext = $child . '  ';
         } else {
             $reltext = $child . __(' of ');
         }
@@ -1460,29 +1492,29 @@ function calculate_descendant($pers)
         if ($pers == 2) {
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $grchild . __(' του ');
+                    $reltext = $grchild . ' του ';
                 } else {
-                    $reltext = $grchild . __(' της ');
+                    $reltext = $grchild . ' της ';
                 }
             } else {
                 if ($sexe2 == 'm') {
-                    $reltext = $grchild . __(' του ');
+                    $reltext = $grchild . ' του ';
                 } else {
-                    $reltext = $grchild . __(' της ');
+                    $reltext = $grchild . ' της ';
                 }
             }
         } elseif ($pers > 2) {
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $grgrchild . " (" . $degree . " " . ")" . __(' του ');
+                    $reltext = $grgrchild . " (" . $degree . ' ) του ';
                 } else {
-                    $reltext = $grgrchild . " (" . $degree . " " . ")" . __(' της ');
+                    $reltext = $grgrchild . " (" . $degree . ' ) της ';
                 }
             } else {
                 if ($sexe2 == 'm') {
-                    $reltext = $grgrchild . " (" . $degree . " " . ")" . __(' του ');
+                    $reltext = $grgrchild . " (" . $degree . ' ) του ';
                 } else {
-                    $reltext =  $grgrchild . " (" . $degree . " " . ")" . __(' της ');
+                    $reltext =  $grgrchild . " (" . $degree . ' ) της ';
                 }
             }
         }
@@ -1761,12 +1793,12 @@ function calculate_nephews($generX)
     // *** Ελληνικά***
     if ($selected_language == "gr") {
         if ($sexe == "m") {
-            $neph = __('ανιψιος');
+            $neph = 'ανιψιος';
             $gr_postfix = "ος ";
             $grson = 'εγγονός';
             $grgrson = 'δισέγγονος';
         } else {
-            $neph = __('ανιψιά');
+            $neph = 'ανιψιά';
             $gr_postfix = "η ";
             $grson = 'εγγονή';
             $grgrson = 'δισέγγονη';
@@ -1777,48 +1809,48 @@ function calculate_nephews($generX)
         if ($gendiff == 1) {
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $neph . __(' του ');
+                    $reltext = $neph . ' του ';
                 } else {
-                    $reltext = $neph . __(' της ');
+                    $reltext = $neph . ' της ';
                 }
             } else {
                 if ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $reltext = $neph . __(' του ');
+                        $reltext = $neph . ' του ';
                     } else {
-                        $reltext = $neph . __(' της ');
+                        $reltext = $neph . ' της ';
                     }
                 }
             }
         } elseif ($gendiff == 2) {
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $neph . " " . $grson . __(' του ');
+                    $reltext = $neph . " " . $grson . ' του ';
                 } else {
-                    $reltext = $neph . " " . $grson . __(' της ');
+                    $reltext = $neph . " " . $grson . ' της ';
                 }
             } else {
                 if ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $reltext = $neph . " " . $grson . __(' του ');
+                        $reltext = $neph . " " . $grson . ' του ';
                     } else {
-                        $reltext = $neph . " " . $grson . __(' της ');
+                        $reltext = $neph . " " . $grson . ' της ';
                     }
                 }
             }
         } else {
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $neph . " " . $grgrson . __(' του ');
+                    $reltext = $neph . " " . $grgrson . ' του ';
                 } else {
-                    $reltext = $neph . " " . $grgrson . __(' της ');
+                    $reltext = $neph . " " . $grgrson . ' της ';
                 }
             } else {
                 if ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $reltext = $neph . " " . $grgrson . __(' του ');
+                        $reltext = $neph . " " . $grgrson . ' του ';
                     } else {
-                        $reltext = $neph . " " . $grgrson . __(' της ');
+                        $reltext = $neph . " " . $grgrson . ' της ';
                     }
                 }
             }
@@ -2348,15 +2380,15 @@ function calculate_uncles($generY)
     } elseif ($selected_language == "gr") {
         // TODO improve code
         if ($sexe == "m") {
-            $uncle = __('θείος');
+            $uncle = 'θείος';
             $gr_postfix = "ος ";
             $gran = 'παππούς';
-            $grgrparent = __('προπάππος');
+            $grgrparent = 'προπάππος';
         } else {
-            $uncle = __('θεία');
+            $uncle = 'θεία';
             $gr_postfix = "η ";
             $gran = 'γιαγιά';
-            $grgrparent = __('προγιαγιά');
+            $grgrparent = 'προγιαγιά';
         }
         $gendiff = $generY - 1;
         $gennr = $gendiff - 1;
@@ -2364,44 +2396,44 @@ function calculate_uncles($generY)
         if ($gendiff == 1) {
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $uncle . __(' του ');
+                    $reltext = $uncle . ' του ';
                 } else {
-                    $reltext = $uncle . __(' της ');
+                    $reltext = $uncle . ' της ';
                 }
             } else {
                 if ($sexe2 == 'm') {
-                    $reltext = $uncle . __(' του ');
+                    $reltext = $uncle . ' του ';
                 } else {
-                    $reltext =  $uncle . __(' της ');
+                    $reltext =  $uncle . ' της ';
                 }
             }
         } elseif ($gendiff == 2) {
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $uncle . " " . $gran . __(' του ');
+                    $reltext = $uncle . " " . $gran . ' του ';
                 } else {
-                    $reltext = $uncle . " " . $gran . __(' της ');
+                    $reltext = $uncle . " " . $gran . ' της ';
                 }
             } else {
                 if ($sexe2 == 'm') {
-                    $reltext = $uncle . " " . $gran . __(' του ');
+                    $reltext = $uncle . " " . $gran . ' του ';
                 } else {
-                    $reltext = $uncle . " " . $gran . __(' της ');
+                    $reltext = $uncle . " " . $gran . ' της ';
                 }
             }
         } elseif ($gendiff > 2) {
 
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $uncle . " " . $grgrparent . __(' του ');
+                    $reltext = $uncle . " " . $grgrparent . ' του ';
                 } else {
-                    $reltext = $uncle . " " . $grgrparent . __(' της ');
+                    $reltext = $uncle . " " . $grgrparent . ' της ';
                 }
             } else {
                 if ($sexe2 == 'm') {
-                    $reltext = $uncle . " " . $grgrparent . __(' του ');
+                    $reltext = $uncle . " " . $grgrparent . ' του ';
                 } else {
-                    $reltext = $uncle . " " . $grgrparent . __(' της ');
+                    $reltext = $uncle . " " . $grgrparent . ' της ';
                 }
             }
         }
@@ -2674,30 +2706,30 @@ function calculate_cousins($generX, $generY)
             if ($generX == 2) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $reltext = $sibling . $gr_postfix . $cousin . " " . __(' του ');
+                        $reltext = $sibling . $gr_postfix . $cousin . '  του ';
                     } else {
-                        $reltext = $sibling . $gr_postfix . $cousin . " "  . __(' της ');
+                        $reltext = $sibling . $gr_postfix . $cousin . ' της ';
                     }
                 } elseif ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $reltext = $sibling . $gr_postfix . $cousin . " " . __(' του ');
+                        $reltext = $sibling . $gr_postfix . $cousin . ' του ';
                     } else {
-                        $reltext = $sibling . $gr_postfix . $cousin . " " .  __(' της ');
+                        $reltext = $sibling . $gr_postfix . $cousin . ' της ';
                     }
                 }
             } elseif ($generX > 2) {
                 $degree = $generX - 1;
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $reltext =  $degree . $gr_postfix . $cousin . " " . __(' του ');
+                        $reltext =  $degree . $gr_postfix . $cousin . ' του ';
                     } else {
-                        $reltext =  $degree . $gr_postfix . $cousin . " " . __(' της ');
+                        $reltext =  $degree . $gr_postfix . $cousin . ' της ';
                     }
                 } elseif ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $reltext =  $degree . $gr_postfix . $cousin . " " . __(' του ');
+                        $reltext =  $degree . $gr_postfix . $cousin . ' του ';
                     } else {
-                        $reltext =  $degree . $gr_postfix . $cousin . " " . __(' της ');
+                        $reltext =  $degree . $gr_postfix . $cousin . ' της ';
                     }
                 }
             }
@@ -2714,111 +2746,111 @@ function calculate_cousins($generX, $generY)
             if ($gendiff == 1) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $relname = $uncle . __(' του ');
+                        $relname = $uncle . ' του ';
                     } else {
-                        $relname = $uncle . __(' της ');
+                        $relname = $uncle . ' της ';
                     }
                 } elseif ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $relname = $uncle . __(' του ');
+                        $relname = $uncle . ' του ';
                     } else {
-                        $relname = $uncle . __(' της ');
+                        $relname = $uncle . ' της ';
                     }
                 }
             } else {
 
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $relname = $uncle . " " . __(' του ');
+                        $relname = $uncle . ' του ';
                     } else {
-                        $relname = $uncle . " " . __(' του ');
+                        $relname = $uncle . ' του ';
                     }
                 } elseif ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $relname = $uncle . " " . __(' του ');
+                        $relname = $uncle . ' του ';
                     } else {
-                        $relname = $uncle . " " . __(' του ');
+                        $relname = $uncle . ' του ';
                     }
                 }
             }
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $uncle . " " . $generX . $gr_postfix . __(' του');
+                    $reltext = $uncle . " " . $generX . $gr_postfix . ' του';
                 } else {
-                    $reltext = $uncle . " " . $generX . $gr_postfix . __(' της ');
+                    $reltext = $uncle . " " . $generX . $gr_postfix . ' της ';
                 }
             } elseif ($sexe == 'f') {
                 if ($sexe2 == 'm') {
-                    $reltext = $uncle . " " . $generX . $gr_postfix . __(' του ');
+                    $reltext = $uncle . " " . $generX . $gr_postfix . ' του ';
                 } else {
-                    $reltext = $uncle . " " . $generX . $gr_postfix . __(' της ');
+                    $reltext = $uncle . " " . $generX . $gr_postfix . ' της ';
                 }
             }
             if ($gendiff == 2) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $reltext = $uncle . " " . $gran . __(' του');
+                        $reltext = $uncle . " " . $gran . ' του';
                     } else {
-                        $reltext = $uncle . " " . $gran . __(' της ');
+                        $reltext = $uncle . " " . $gran . ' της ';
                     }
                 } elseif ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $reltext = $uncle . " " . $gran . __(' του ');
+                        $reltext = $uncle . " " . $gran . ' του ';
                     } else {
-                        $reltext = $uncle . " " . $gran . __(' της ');
+                        $reltext = $uncle . " " . $gran . ' της ';
                     }
                 }
             }
         } else {
             if ($sexe == "m") {
-                $nephew = __('ανιψιος');
+                $nephew = 'ανιψιος';
                 $gr_postfix = "ος ";
                 $grson = 'εγγονός';
             } else {
-                $nephew = __('ανιψιά');
+                $nephew = 'ανιψιά';
                 $gr_postfix = "η ";
                 $grson = 'εγγονή';
             }
             if ($gendiff == 1) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $relname = $nephew . " " . __(' του ');
+                        $relname = $nephew . ' του ';
                     } else {
-                        $relname = $nephew . " " . __(' του ');
+                        $relname = $nephew . ' του ';
                     }
                 } elseif ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $relname = $nephew . " " . __(' του ');
+                        $relname = $nephew . ' του ';
                     } else {
-                        $relname = $nephew . " " . __(' του ');
+                        $relname = $nephew . ' του ';
                     }
                 }
             }
             if ($sexe == 'm') {
                 if ($sexe2 == 'm') {
-                    $reltext = $nephew . " " . $generY . $gr_postfix . __(' του');
+                    $reltext = $nephew . " " . $generY . $gr_postfix . ' του';
                 } else {
-                    $reltext = $nephew . " " . $generY . $gr_postfix . __(' της ');
+                    $reltext = $nephew . " " . $generY . $gr_postfix . ' της ';
                 }
             } elseif ($sexe == 'f') {
                 if ($sexe2 == 'm') {
-                    $reltext = $nephew . " " . $generY . $gr_postfix . __(' του ');
+                    $reltext = $nephew . " " . $generY . $gr_postfix . ' του ';
                 } else {
-                    $reltext = $nephew . " " . $generY . $gr_postfix . __(' της ');
+                    $reltext = $nephew . " " . $generY . $gr_postfix . ' της ';
                 }
             }
             if ($gendiff == 2) {
                 if ($sexe == 'm') {
                     if ($sexe2 == 'm') {
-                        $reltext = $nephew . " " . $grson . __(' του');
+                        $reltext = $nephew . " " . $grson . ' του';
                     } else {
-                        $reltext = $nephew . " " . $grson . __(' της ');
+                        $reltext = $nephew . " " . $grson . ' της ';
                     }
                 } elseif ($sexe == 'f') {
                     if ($sexe2 == 'm') {
-                        $reltext = $nephew . " " . $grson . __(' του ');
+                        $reltext = $nephew . " " . $grson . ' του ';
                     } else {
-                        $reltext = $nephew . " " . $grson . __(' της ');
+                        $reltext = $nephew . " " . $grson . ' της ';
                     }
                 }
             }
@@ -3590,8 +3622,7 @@ function display()
             //check if this is involves a marriage or a partnership of any kind
             $relmarriedX = 0;
             if (isset($famspouseX)) {
-                $kindrel = $dbh->query("SELECT fam_kind FROM humo_families
-                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famspouseX . "'");
+                $kindrel = $dbh->query("SELECT fam_kind FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famspouseX . "'");
                 @$kindrelDb = $kindrel->fetch(PDO::FETCH_OBJ);
                 if (
                     $kindrelDb->fam_kind != 'living together' and
@@ -3818,8 +3849,6 @@ In a 75,000 person tree the most distant persons may take up to 8 sec to find.")
 }
 
 
-
-
 function display_table()
 {
     global $db_functions;
@@ -3830,7 +3859,6 @@ function display_table()
 
     // *** Use person class to show names ***
     $pers_cls = new person_cls;
-
 
     $vars['pers_family'] = $famX;
     $linkX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
@@ -3843,7 +3871,6 @@ function display_table()
 
     $vars['pers_family'] = $famspouseY;
     $linkSpouseY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
 
     //$border="border:1px solid #777777;";
     $border = "";
@@ -4703,11 +4730,9 @@ function display_result($result)
                 }
                 ?>
             </tr>
-            <?php
 
-            // The following code places a row with arrows (or blanks) under a row with name boxes
-            if ($a != $maxy) {
-            ?>
+            <!-- The following code places a row with arrows (or blanks) under a row with name boxes -->
+            <?php if ($a != $maxy) { ?>
                 <tr>
                     <?php
                     $nextline = substr($nextline, 0, -1);
@@ -4717,9 +4742,7 @@ function display_result($result)
                         <td style='padding:2px;color:black;width:10px;font-weight:bold;font-size:140%;text-align:center;'>
                             <?= $value; ?>
                         </td>
-                    <?php
-                    }
-                    ?>
+                    <?php } ?>
                 </tr>
         <?php
             }

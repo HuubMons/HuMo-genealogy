@@ -81,7 +81,6 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
     </tr>
 
     <?php foreach ($data["listsources"] as $sourceDb) { ?>
-
         <?php
         // TODO use function
         if ($humo_option["url_rewrite"] == "j") {
@@ -114,9 +113,7 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
             <td><?= date_place($sourceDb->source_date, ''); ?></td>
             <td><?= $sourceDb->source_place; ?></td>
         </tr>
-    <?php
-    }
-    ?>
+    <?php } ?>
 </table>
 <br>
 

@@ -1254,25 +1254,37 @@ if ($check_person) {
             } else {
                 echo '<input type="hidden" name="pers_birth_time" value="">';
             }
-
-            // *** Baptise ***
-            echo '<tr><td>' . ucfirst(__('baptised')) . '</td><td>';
-            echo $editor_cls->date_show('', 'pers_bapt_date', '', '', '', 'pers_bapt_date_hebnight') . ' ';
-            echo ' <input type="text" name="pers_bapt_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
-            echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_bapt_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a></td></tr>';
-
-            // *** Died ***
-            echo '<tr><td>' . ucfirst(__('died')) . '</td><td>';
-            echo $editor_cls->date_show('', 'pers_death_date', '', '', '', 'pers_death_date_hebnight') . ' ';
-            echo '  <input type="text" name="pers_death_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
-            echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_death_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a></td></tr>';
-
-            // *** Buried ***
-            echo '<tr><td>' . ucfirst(__('buried')) . '</td><td>';
-            echo $editor_cls->date_show('', 'pers_buried_date', '', '', '', 'pers_buried_date_hebnight') . ' ';
-            echo '  <input type="text" name="pers_buried_place" placeholder="' . ucfirst(__('place')) . '" value="" size="' . $field_place . '">';
-            echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=pers_buried_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a></td></tr>';
             ?>
+
+            <!-- Baptise -->
+            <tr>
+                <td><?= ucfirst(__('baptised')); ?></td>
+                <td>
+                    <?= $editor_cls->date_show('', 'pers_bapt_date', '', '', '', 'pers_bapt_date_hebnight'); ?>
+                    <input type="text" name="pers_bapt_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </td>
+            </tr>
+
+            <!-- Died -->
+            <tr>
+                <td><?= ucfirst(__('died')); ?></td>
+                <td>
+                    <?= $editor_cls->date_show('', 'pers_death_date', '', '', '', 'pers_death_date_hebnight'); ?>
+                    <input type="text" name="pers_death_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </td>
+            </tr>
+
+            <!-- Buried -->
+            <tr>
+                <td><?= ucfirst(__('buried')); ?></td>
+                <td>
+                    <?= $editor_cls->date_show('', 'pers_buried_date', '', '', '', 'pers_buried_date_hebnight'); ?>
+                    <input type="text" name="pers_buried_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </td>
+            </tr>
 
             <!-- Profession -->
             <tr>
@@ -1439,8 +1451,8 @@ if ($check_person) {
                 <?php
                 // *** Show addresses by person or relation ***
                 $address3_qry = $dbh->query("SELECT * FROM humo_addresses
-                WHERE address_tree_id='" . $tree_id . "'
-                AND address_gedcomnr='" . $addressDb->connect_item_id . "'");
+                    WHERE address_tree_id='" . $tree_id . "'
+                    AND address_gedcomnr='" . $addressDb->connect_item_id . "'");
                 $address3Db = $address3_qry->fetch(PDO::FETCH_OBJ);
 
                 if ($address3Db) {
@@ -1450,202 +1462,205 @@ if ($check_person) {
                     $display = ' display:none;';
                     if ($address3Db->address_address == '' and $address3Db->address_place == '') $display = '';
                 }
+                ?>
 
-                echo '<td colspan="2">';
-                // *** Source ***
-                // There is no source used in the CONNECTION. Only at the address.
-                //  echo '<input type="hidden" name="connect_source_id[' . $key . ']" value="">';
-                //  echo '<input type="hidden" name="connect_text[' . $key . ']" value="">';
-
-                //echo '<div style="border: 2px solid red">';
-                if ($address3Db) {
-                    $address = $address3Db->address_address . ' ' . $address3Db->address_place;
-                    if ($address3Db->address_address == '' and $address3Db->address_place == '') $address = __('EMPTY LINE');
-
-                    // *** Also show date and place ***
-                    //if ($addressDb->connect_date) $address.=', '.date_place($addressDb->connect_date,'');
-                    if ($addressDb->connect_date) $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
-
-                    echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $address;
-                    if ($address3Db->address_text or $addressDb->connect_text) echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-                    echo '</span>';
-
-                    echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
-                    echo '<br>';
-
-                    echo '<input type="hidden" name="change_address_id[' . $address3Db->address_id . ']" value="' . $address3Db->address_id . '">';
-
-                    // *** Send old values, so changes of values can be detected ***
-                    echo '<input type="hidden" name="address_shared_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_shared . '">';
-                    echo '<input type="hidden" name="address_address_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_address . '">';
-                    echo '<input type="hidden" name="address_place_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_place . '">';
-                    echo '<input type="hidden" name="address_text_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_text . '">';
-                    echo '<input type="hidden" name="address_phone_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_phone . '">';
-                    echo '<input type="hidden" name="address_zip_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_zip . '">';
-
-                    echo '<input type="hidden" name="connect_item_id_old[' . $address3Db->address_id . ']" value="' . $addressDb->connect_item_id . '">';
-
-                    echo __('Address GEDCOM number:') . ' ' . $address3Db->address_gedcomnr . '&nbsp;&nbsp;&nbsp;&nbsp;';
-
-                    // *** Shared address, to connect address to multiple persons or relations ***
-                    $checked = '';
-                    if ($address3Db->address_shared) $checked = ' checked';
-                    echo '<input type="checkbox" name="address_shared_' . $address3Db->address_id . '" value="no_data"' . $checked . '> ' . __('Shared address') . '<br>';
-
-                    // *** Don't use date here. Date of connection table will be used ***
-                    //echo $editor_cls->date_show($address3Db->address_date,'address_date',"[$address3Db->address_id]").' ';
-                    echo editor_label2(__('Place'));
-                    echo '<input type="text" name="address_place_' . $address3Db->address_id . '" placeholder="' . __('Place') . '" value="' . $address3Db->address_place . '" size="' . $field_place . '">';
-
-                    if ($connect_kind == 'person') {
-                        $form = 1;
-                        //$place_item='place_person';
-                    } else {
-                        $form = 2;
-                        //$place_item='place_relation';
-                    }
-                    echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=address_place&amp;address_id=' . $address3Db->address_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
-
-                    // *** Save latest place in table humo_persons as person_place_index (in use for place index) ***
-                    if ($connect_kind == 'person') {
-                        global $pers_gedcomnumber;
-                        if ($addressDb->connect_order == $count) {
-                            $sql = "UPDATE humo_persons SET
-                                pers_place_index='" . safe_text_db($address3Db->address_place) . "'
-                                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($pers_gedcomnumber) . "'";
-                            $dbh->query($sql);
-                        }
-                    }
-
-                    // *** Source by address (now shown in red box, so it's clear it belongs to the address) ***
-                    if ($address3Db) {
-                        echo '&nbsp;&nbsp;' . __('Source') . ' ';
-
-                        //if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
-                        //	else $connect_sub_kind2='fam_address_source';
-                        ////function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
-                        //echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
-
-                        echo source_link2('20' . $addressDb->connect_id, $address3Db->address_gedcomnr, 'address_source', 'addresses');
-                    }
-                    echo '<br>';
-
-                    // *** Edit address ***
-                    echo editor_label2(__('Street'));
-                    echo '<input type="text" name="address_address_' . $address3Db->address_id . '" placeholder="' . __('Street') . '" value="' . $address3Db->address_address . '"  style="width: 500px"><br>';
-
-                    // *** Edit Zip code ***
-                    echo editor_label2(__('Zip code'));
-                    echo '<input type="text" name="address_zip_' . $address3Db->address_id . '" placeholder="' . __('Zip code') . '" value="' . $address3Db->address_zip . '"  style="width: 200px"><br>';
-
-                    // *** Edit phone ***
-                    echo editor_label2(__('Phone'));
-                    echo '<input type="text" name="address_phone_' . $address3Db->address_id . '" placeholder="' . __('Phone') . '" value="' . $address3Db->address_phone . '"  style="width: 200px"><br>';
-
-                    // *** Edit text ***
-                    echo editor_label2(__('Text'));
-                    echo '<textarea rows="1" name="address_text_' . $address3Db->address_id . '" placeholder="' . __('Text') . '"' . $field_text . '>' .
-                        $editor_cls->text_show($address3Db->address_text) . '</textarea><br>';
-
-                    // *** Edit address date and address role ***
-                    echo editor_label2(__('Date'));
-                    echo $editor_cls->date_show($addressDb->connect_date, 'connect_date', "[$addressDb->connect_id]") . '<br>';
-
-                    echo editor_label2(__('Addressrole'));
-                    $connect_role = '';
-                    if (isset($addressDb->connect_role)) $connect_role = htmlspecialchars($addressDb->connect_role);
-                    echo '<input type="text" name="connect_role[' . $key . ']" value="' . $connect_role . '" size="6"><br>';
+                <td colspan="2">
+                    <?php
+                    // *** Source ***
+                    // There is no source used in the CONNECTION. Only at the address.
+                    //  echo '<input type="hidden" name="connect_source_id[' . $key . ']" value="">';
+                    //  echo '<input type="hidden" name="connect_text[' . $key . ']" value="">';
 
                     //echo '<div style="border: 2px solid red">';
-                    // *** Extra text by address ***
-                    echo editor_label2(__('Extra text by address'));
-                    echo '<textarea name="connect_text[' . $addressDb->connect_id . ']" placeholder="' . __('Extra text by address') . '" ' . $field_text . '>' . $editor_cls->text_show($addressDb->connect_text) . '</textarea>';
-                    //echo '</div>';
+                    if ($address3Db) {
+                        $address = $address3Db->address_address . ' ' . $address3Db->address_place;
+                        if ($address3Db->address_address == '' and $address3Db->address_place == '') $address = __('EMPTY LINE');
 
-                    // *** Use hideshow to show and hide the editor lines ***
-                    if (isset($hideshow) and substr($hideshow, 0, 4) == '8000') echo '</span>';
-                } else {
-                    // *** Add new address ***
-                    echo '<input type="hidden" name="connect_date[' . $key . ']" value="">';
-                    echo '<input type="hidden" name="connect_date_prefix[' . $key . ']" value="">';
-                    echo '<input type="hidden" name="connect_role[' . $key . ']" value="">';
+                        // *** Also show date and place ***
+                        //if ($addressDb->connect_date) $address.=', '.date_place($addressDb->connect_date,'');
+                        if ($addressDb->connect_date) $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
 
-                    $addressqry = $dbh->query("SELECT * FROM humo_addresses
-                        WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'
-                        ORDER BY address_place, address_address");
-                    echo ' ' . __('Address') . ' ';
-                    echo '<select size="1" name="connect_item_id[' . $key . ']" style="width: 300px">';
-                    echo '<option value="">' . __('Select address') . '</option>';
-                    while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) {
-                        // *** Only share address if address is shared ***
-                        $selected = '';
-                        if ($addressDb->connect_item_id == $address2Db->address_gedcomnr) $selected = ' selected';
-                        echo '<option value="' . $address2Db->address_gedcomnr . '"' . $selected . '>' .
-                            @$address2Db->address_place . ', ' . $address2Db->address_address;
+                        echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $address;
+                        if ($address3Db->address_text or $addressDb->connect_text) echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
+                        echo '</span>';
 
-                        if ($address2Db->address_text) {
-                            echo ' ' . substr($address2Db->address_text, 0, 40);
-                            if (strlen($address2Db->address_text) > 40) echo '...';
+                        echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
+                        echo '<br>';
+
+                        echo '<input type="hidden" name="change_address_id[' . $address3Db->address_id . ']" value="' . $address3Db->address_id . '">';
+
+                        // *** Send old values, so changes of values can be detected ***
+                        echo '<input type="hidden" name="address_shared_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_shared . '">';
+                        echo '<input type="hidden" name="address_address_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_address . '">';
+                        echo '<input type="hidden" name="address_place_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_place . '">';
+                        echo '<input type="hidden" name="address_text_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_text . '">';
+                        echo '<input type="hidden" name="address_phone_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_phone . '">';
+                        echo '<input type="hidden" name="address_zip_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_zip . '">';
+
+                        echo '<input type="hidden" name="connect_item_id_old[' . $address3Db->address_id . ']" value="' . $addressDb->connect_item_id . '">';
+
+                        echo __('Address GEDCOM number:') . ' ' . $address3Db->address_gedcomnr . '&nbsp;&nbsp;&nbsp;&nbsp;';
+
+                        // *** Shared address, to connect address to multiple persons or relations ***
+                        $checked = '';
+                        if ($address3Db->address_shared) $checked = ' checked';
+                        echo '<input type="checkbox" name="address_shared_' . $address3Db->address_id . '" value="no_data"' . $checked . '> ' . __('Shared address') . '<br>';
+
+                        // *** Don't use date here. Date of connection table will be used ***
+                        //echo $editor_cls->date_show($address3Db->address_date,'address_date',"[$address3Db->address_id]").' ';
+                        echo editor_label2(__('Place'));
+                        echo '<input type="text" name="address_place_' . $address3Db->address_id . '" placeholder="' . __('Place') . '" value="' . $address3Db->address_place . '" size="' . $field_place . '">';
+
+                        if ($connect_kind == 'person') {
+                            $form = 1;
+                            //$place_item='place_person';
+                        } else {
+                            $form = 2;
+                            //$place_item='place_relation';
+                        }
+                        echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=address_place&amp;address_id=' . $address3Db->address_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
+
+                        // *** Save latest place in table humo_persons as person_place_index (in use for place index) ***
+                        if ($connect_kind == 'person') {
+                            global $pers_gedcomnumber;
+                            if ($addressDb->connect_order == $count) {
+                                $sql = "UPDATE humo_persons SET
+                                pers_place_index='" . safe_text_db($address3Db->address_place) . "'
+                                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($pers_gedcomnumber) . "'";
+                                $dbh->query($sql);
+                            }
                         }
 
-                        echo ' [' . @$address2Db->address_gedcomnr . ']</option>';
+                        // *** Source by address (now shown in red box, so it's clear it belongs to the address) ***
+                        if ($address3Db) {
+                            echo '&nbsp;&nbsp;' . __('Source') . ' ';
+
+                            //if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
+                            //	else $connect_sub_kind2='fam_address_source';
+                            ////function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
+                            //echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
+
+                            echo source_link2('20' . $addressDb->connect_id, $address3Db->address_gedcomnr, 'address_source', 'addresses');
+                        }
+                        echo '<br>';
+
+                        // *** Edit address ***
+                        echo editor_label2(__('Street'));
+                        echo '<input type="text" name="address_address_' . $address3Db->address_id . '" placeholder="' . __('Street') . '" value="' . $address3Db->address_address . '"  style="width: 500px"><br>';
+
+                        // *** Edit Zip code ***
+                        echo editor_label2(__('Zip code'));
+                        echo '<input type="text" name="address_zip_' . $address3Db->address_id . '" placeholder="' . __('Zip code') . '" value="' . $address3Db->address_zip . '"  style="width: 200px"><br>';
+
+                        // *** Edit phone ***
+                        echo editor_label2(__('Phone'));
+                        echo '<input type="text" name="address_phone_' . $address3Db->address_id . '" placeholder="' . __('Phone') . '" value="' . $address3Db->address_phone . '"  style="width: 200px"><br>';
+
+                        // *** Edit text ***
+                        echo editor_label2(__('Text'));
+                        echo '<textarea rows="1" name="address_text_' . $address3Db->address_id . '" placeholder="' . __('Text') . '"' . $field_text . '>' .
+                            $editor_cls->text_show($address3Db->address_text) . '</textarea><br>';
+
+                        // *** Edit address date and address role ***
+                        echo editor_label2(__('Date'));
+                        echo $editor_cls->date_show($addressDb->connect_date, 'connect_date', "[$addressDb->connect_id]") . '<br>';
+
+                        echo editor_label2(__('Addressrole'));
+                        $connect_role = '';
+                        if (isset($addressDb->connect_role)) $connect_role = htmlspecialchars($addressDb->connect_role);
+                        echo '<input type="text" name="connect_role[' . $key . ']" value="' . $connect_role . '" size="6"><br>';
+
+                        //echo '<div style="border: 2px solid red">';
+                        // *** Extra text by address ***
+                        echo editor_label2(__('Extra text by address'));
+                        echo '<textarea name="connect_text[' . $addressDb->connect_id . ']" placeholder="' . __('Extra text by address') . '" ' . $field_text . '>' . $editor_cls->text_show($addressDb->connect_text) . '</textarea>';
+                        //echo '</div>';
+
+                        // *** Use hideshow to show and hide the editor lines ***
+                        if (isset($hideshow) and substr($hideshow, 0, 4) == '8000') echo '</span>';
+                    } else {
+                        // *** Add new address ***
+                        echo '<input type="hidden" name="connect_date[' . $key . ']" value="">';
+                        echo '<input type="hidden" name="connect_date_prefix[' . $key . ']" value="">';
+                        echo '<input type="hidden" name="connect_role[' . $key . ']" value="">';
+
+                        $addressqry = $dbh->query("SELECT * FROM humo_addresses
+                        WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'
+                        ORDER BY address_place, address_address");
+                        echo ' ' . __('Address') . ' ';
+                        echo '<select size="1" name="connect_item_id[' . $key . ']" style="width: 300px">';
+                        echo '<option value="">' . __('Select address') . '</option>';
+                        while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) {
+                            // *** Only share address if address is shared ***
+                            $selected = '';
+                            if ($addressDb->connect_item_id == $address2Db->address_gedcomnr) $selected = ' selected';
+                            echo '<option value="' . $address2Db->address_gedcomnr . '"' . $selected . '>' .
+                                @$address2Db->address_place . ', ' . $address2Db->address_address;
+
+                            if ($address2Db->address_text) {
+                                echo ' ' . substr($address2Db->address_text, 0, 40);
+                                if (strlen($address2Db->address_text) > 40) echo '...';
+                            }
+
+                            echo ' [' . @$address2Db->address_gedcomnr . ']</option>';
+                        }
+                        echo '</select>';
+
+                        echo ' ' . __('Or: add new address');
+                        //echo ' <a href="index.php?page='.$page.
+                        //&amp;person_place_address=1
+                        //&amp;address_add2=1
+                        //&amp;connect_id='.$addressDb->connect_id.'
+                        //&amp;connect_kind='.$addressDb->connect_kind.'
+                        //&amp;connect_sub_kind='.$addressDb->connect_sub_kind.'
+                        //&amp;connect_connect_id='.$addressDb->connect_connect_id.'
+                        //#addresses">['.__('Add').']</a> ';
+                        echo ' <a href="index.php?page=' . $page;
+                        if ($connect_kind == 'person') {
+                            echo '&amp;person_place_address=1';
+                        } else {
+                            echo '&amp;family_place_address=1';
+                        }
+                        echo '&amp;address_add2=1
+                            &amp;connect_id=' . $addressDb->connect_id . '
+                            &amp;connect_kind=' . $addressDb->connect_kind . '
+                            &amp;connect_sub_kind=' . $addressDb->connect_sub_kind . '
+                            &amp;connect_connect_id=' . $addressDb->connect_connect_id . '
+                            #addresses">[' . __('Add') . ']</a> ';
                     }
-                    echo '</select>';
 
-                    echo ' ' . __('Or: add new address');
-                    //echo ' <a href="index.php?page='.$page.
-                    //&amp;person_place_address=1
-                    //&amp;address_add2=1
-                    //&amp;connect_id='.$addressDb->connect_id.'
-                    //&amp;connect_kind='.$addressDb->connect_kind.'
-                    //&amp;connect_sub_kind='.$addressDb->connect_sub_kind.'
-                    //&amp;connect_connect_id='.$addressDb->connect_connect_id.'
-                    //#addresses">['.__('Add').']</a> ';
-                    echo ' <a href="index.php?page=' . $page;
-                    if ($connect_kind == 'person')
-                        echo '&amp;person_place_address=1';
-                    else
-                        echo '&amp;family_place_address=1';
-                    echo '&amp;address_add2=1
-                    &amp;connect_id=' . $addressDb->connect_id . '
-                    &amp;connect_kind=' . $addressDb->connect_kind . '
-                    &amp;connect_sub_kind=' . $addressDb->connect_sub_kind . '
-                    &amp;connect_connect_id=' . $addressDb->connect_connect_id . '
-                    #addresses">[' . __('Add') . ']</a> ';
-                }
+                    //echo '</div>';
 
-                //echo '</div>';
+                    /*
+                    // *** Edit address date and address role ***
+                    echo $editor_cls->date_show($addressDb->connect_date,'connect_date',"[$addressDb->connect_id]");
+                    $connect_role=''; if (isset($addressDb->connect_role)) $connect_role=htmlspecialchars($addressDb->connect_role);
+                    echo ' '.__('Addressrole').' <input type="text" name="connect_role['.$key.']" value="'.$connect_role.'" size="6">';
 
-                /*
-                // *** Edit address date and address role ***
-                echo $editor_cls->date_show($addressDb->connect_date,'connect_date',"[$addressDb->connect_id]");
-                $connect_role=''; if (isset($addressDb->connect_role)) $connect_role=htmlspecialchars($addressDb->connect_role);
-                echo ' '.__('Addressrole').' <input type="text" name="connect_role['.$key.']" value="'.$connect_role.'" size="6">';
+                    // *** Extra text by address ***
+                    echo '<br><textarea name="connect_text['.$addressDb->connect_id.']" placeholder="'.__('Extra text by address').'" '.$field_text.'>'.$editor_cls->text_show($addressDb->connect_text).'</textarea>';
+                    */
+                    ?>
+                </td>
+                <td style="vertical-align:bottom;">
+                    <?php
+                    // *** Source by address-connection ***
+                    if ($address3Db) {
+                        // *** This part is moved to the red address box ***
+                        //if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
+                        //	else $connect_sub_kind2='fam_address_source';
+                        //function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
+                        //echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
 
-                // *** Extra text by address ***
-                echo '<br><textarea name="connect_text['.$addressDb->connect_id.']" placeholder="'.__('Extra text by address').'" '.$field_text.'>'.$editor_cls->text_show($addressDb->connect_text).'</textarea>';
-                */
-
-                echo '</td>';
-                echo '<td style="vertical-align:bottom;">';
-                // *** Source by address-connection ***
-                if ($address3Db) {
-                    // *** This part is moved to the red address box ***
-                    //if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
-                    //	else $connect_sub_kind2='fam_address_source';
-                    //function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
-                    //echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
-
-                    if ($connect_kind == 'person') $connect_sub_kind2 = 'pers_address_connect_source';
-                    else $connect_sub_kind2 = 'fam_address_connect_source';
-                    //function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
-                    echo source_link2('21' . $addressDb->connect_id, $addressDb->connect_id, $connect_sub_kind2, 'addresses');
-                }
-                echo '</td>';
-                ?>
+                        if ($connect_kind == 'person') $connect_sub_kind2 = 'pers_address_connect_source';
+                        else $connect_sub_kind2 = 'fam_address_connect_source';
+                        //function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
+                        echo source_link2('21' . $addressDb->connect_id, $addressDb->connect_id, $connect_sub_kind2, 'addresses');
+                    }
+                    ?>
+                </td>
             </tr>
         <?php
-
             // *** Show source by address ***
             if (isset($address3Db->address_gedcomnr)) {
                 //edit_sources($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)

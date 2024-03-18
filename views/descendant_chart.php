@@ -125,8 +125,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
         // Don't use &amp; for javascript.
         $path2 = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
     }
-
     ?>
+
     <form method="POST" name="desc_form" action="<?= $path . 'chosensize=' . $data["size"]; ?>" style="display : inline;">
         <?php
         //echo '<input type="hidden" name="id" value="' . $data["family_id"] . '">';
@@ -149,8 +149,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
         }
         ?>
     </form>
-    <?php
 
+    <?php
     // TODO check code. This query isn't used?
     $result = $dbh->query("SELECT pers_sexe FROM humo_persons
         WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $data["main_person"] . "'");
