@@ -38,9 +38,6 @@ if (isset($_POST['event_person']) or isset($_GET['event_person']))
 if (isset($_POST['event_family']) or isset($_GET['event_family']))
     $event_link = '&event_family=1';
 
-$gedcom_date = strtoupper(date("d M Y"));
-$gedcom_time = date("H:i:s");
-
 $phpself2 = 'index.php?page=editor_sources&connect_kind=' . $connect_kind . '&connect_sub_kind=' . $connect_sub_kind . '&connect_connect_id=' . $connect_connect_id;
 $phpself2 .= $event_link;
 
@@ -365,11 +362,6 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                             $source_search = safe_text_db($_POST['source_search']);
                         }
 
-                        echo '<h3>' . __('Search existing source') . '</h3>';
-                        echo '<input type="text" name="source_search_gedcomnr" value="' . $source_search_gedcomnr . '" size="20" placeholder="' . __('gedcomnumber (ID)') . '">';
-                        echo ' <input type="text" name="source_search" value="' . $source_search . '" size="20" placeholder="' . __('text') . '">';
-                        echo ' <input type="submit" value="' . __('Search') . '"><br>';
-
                         // *** Source: pull-down menu ***
                         // TODO only get necesary items
                         $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . safe_text_db($tree_id) . "'";
@@ -384,6 +376,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                         $source_qry = $dbh->query($qry);
                     ?>
 
+                        <h3><?= __('Search existing source'); ?></h3>
+                        <input type="text" name="source_search_gedcomnr" value="<?= $source_search_gedcomnr; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>">
+                        <input type="text" name="source_search" value="<?= $source_search; ?>" size="20" placeholder="<?= __('text'); ?>">
+                        <input type="submit" value="<?= __('Search'); ?>"><br>
                         <select size="1" name="connect_source_id[<?= $connectDb->connect_id; ?>]" style="width: 300px">
                             <option value=""><?= __('Select existing source'); ?>:</option>
                             <?php
@@ -410,26 +406,28 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 
                         &nbsp;&nbsp;<input type="submit" name="submit" title="submit" value="<?= __('Select'); ?>">
 
+                        <!-- Add new source -->
+                        <br><br><?= __('Or:'); ?>
+                        <a href="index.php?page=<?= $page; ?>&amp;source_add2=1&amp;connect_id=<?= $connectDb->connect_id; ?>
+                            &amp;connect_order=<?= $connectDb->connect_order; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>
+                            &amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>
                     <?php
-                        // *** Add new source ***
-                        echo '<br><br>' . __('Or:') . ' ';
-                        echo '<a href="index.php?page=' . $page . '&amp;source_add2=1&amp;connect_id=' . $connectDb->connect_id . '
-&amp;connect_order=' . $connectDb->connect_order . '&amp;connect_kind=' . $connectDb->connect_kind . '&amp;connect_sub_kind=' . $connectDb->connect_sub_kind . '&amp;connect_connect_id=' . $connectDb->connect_connect_id;
                         if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
                             echo '&amp;event_person=1';
                         }
                         if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
                             echo '&amp;event_family=1';
                         }
-                        echo '#addresses">' . __('add new source') . '</a> ';
+                    ?>
+                        #addresses"><?= __('add new source'); ?></a>
 
+                    <?php
                         echo '<input type="hidden" name="connect_role[' . $connectDb->connect_id . ']" value="">';
                         echo '<input type="hidden" name="connect_page[' . $connectDb->connect_id . ']" value="">';
                         echo '<input type="hidden" name="connect_quality[' . $connectDb->connect_id . ']" value="">';
                         echo '<input type="hidden" name="connect_text[' . $connectDb->connect_id . ']" value="">';
                     }
                     ?>
-
                 </li>
             <?php } ?>
         </ul>
@@ -439,24 +437,12 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
     <?php if (count($connect_sql) > 0) { ?>
         <script>
             $('#sortable<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>').sortable({
-                handle: '.handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>'
-            }).bind('sortupdate', function() {
-                var childstring = "";
-                var chld_arr = document.getElementsByClassName("handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>");
-                for (var z = 0; z < chld_arr.length; z++) {
-                    childstring = childstring + chld_arr[z].id + ";";
-                    //document.getElementById('chldnum' + chld_arr[z].id).innerHTML = (z + 1);
-                }
-                childstring = childstring.substring(0, childstring.length - 1);
-                $.ajax({
-                    url: "include/drag.php?drag_kind=sources&sourcestring=" + childstring,
-                    success: function(data) {},
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(xhr.status);
-                        alert(thrownError);
-                    }
-                });
-            });
+                    handle: '.handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>'
+                }).bind('sortupdate', function() {
+                        var childstring = "";
+                        var chld_arr = document.getElementsByClassName(" handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>");
+                        for (var z = 0; z < chld_arr.length; z++) {
+                            childstring = childstring + chld_arr[z].id + ";"; //document.getElementById('chldnum' + chld_arr[z].id).innerHTML=(z + 1); } childstring=childstring.substring(0, childstring.length - 1); $.ajax({ url: "include/drag.php?drag_kind=sources&sourcestring=" + childstring, success: function(data) {}, error: function(xhr, ajaxOptions, thrownError) { alert(xhr.status); alert(thrownError); } }); }); 
         </script>
     <?php
     }
@@ -467,8 +453,8 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
     ?>
         <h3><?= __('Add'); ?></h3>
         <form method="POST" action="<?= $phpself2; ?>">
+            <input type="hidden" name="page" value="<?= $page; ?>">
             <?php
-            echo '<input type="hidden" name="page" value="' . $page . '">';
             if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
                 echo '<input type="hidden" name="event_person" value="1">';
             }
@@ -489,7 +475,6 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
             }
             ?>
         </form>
-    <?php } ?>
-    <p>
-    <?php
+<?php
+    }
 }

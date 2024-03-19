@@ -199,12 +199,12 @@ class editor_event_cls
             WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='religion' ORDER BY event_order";
         }
         /*
-    elseif ($event_kind=='picture'){
-        $qry="SELECT * FROM humo_events
-            WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND
-            event_kind='picture' ORDER BY event_order";
-    }
-    */ elseif ($event_kind == 'picture') {
+        elseif ($event_kind=='picture'){
+            $qry="SELECT * FROM humo_events
+                WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND
+                event_kind='picture' ORDER BY event_order";
+        }
+        */ elseif ($event_kind == 'picture') {
             $search_picture = "";
             $searchpic = "";
             if (isset($_POST['searchpic'])) {
@@ -487,131 +487,132 @@ class editor_event_cls
         // *** Show pictures by person, family and (shared) source ***
         if ($event_kind == 'picture' or $event_kind == 'marriage_picture' or $event_kind == 'source_picture') {
             $link = 'picture';
+        ?>
+            <tr class="table_header_large" id="picture">
+                <td style="border-right:0px;">
+                    <b><?= __('Picture/ Media'); ?></b>
+                </td>
+                <td colspan="2">
+                    <?php
+                    if ($event_kind == 'picture') {
+                        echo ' <input type="submit" name="add_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
+                    } elseif ($event_kind == 'marriage_picture') {
+                        echo ' <input type="submit" name="add_marriage_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
+                    } elseif ($event_kind == 'source_picture') {
+                        echo ' <input type="submit" name="add_source_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
+                    }
 
-            echo '<tr class="table_header_large" id="picture">';
-            echo '<td style="border-right:0px;">';
-            echo '<b>' . __('Picture/ Media') . '</b></td>';
-            echo '<td colspan="2">';
+                    //TEST
+                    /*
+                    // *** JUNE 2021: disabled drag and drop to get a clearer editor page ***
+                    if ($count>1) { echo "&nbsp;&nbsp;".__('(Drag pictures to change display order)'); }
+                    echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
+                    echo '<ul id="sortable_pic" class="sortable_pic handle_pic">';
+                        echo '<li id="xxxxxxxxxxx" class="mediamove">';
+                        echo '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
+                        echo '&nbsp;Test<br>';
+                        echo '<img src="../../humo-gen-afb/mons/thumb_huub_linda_mons.jpg" style="height:80px;">';
+                        echo '</li>';
 
-            if ($event_kind == 'picture') {
-                echo ' <input type="submit" name="add_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
-            } elseif ($event_kind == 'marriage_picture') {
-                echo ' <input type="submit" name="add_marriage_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
-            } elseif ($event_kind == 'source_picture') {
-                echo ' <input type="submit" name="add_source_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
-            }
+                        echo '<li id="xxxxxxxxxxx" class="mediamove">';
+                        echo '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
+                        echo '&nbsp;Test<br>';
+                        echo '<img src="../../humo-gen-afb/mons/thumb_huub_linda_mons.jpg" style="height:80px;">';
+                        echo '</li>';
+                    echo '</ul>';
+                    */
 
-            //TEST
-            /*
-            // *** JUNE 2021: disabled drag and drop to get a clearer editor page ***
-            if ($count>1) { echo "&nbsp;&nbsp;".__('(Drag pictures to change display order)'); }
-            echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
-            echo '<ul id="sortable_pic" class="sortable_pic handle_pic">';
-                echo '<li id="xxxxxxxxxxx" class="mediamove">';
-                echo '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
-                echo '&nbsp;Test<br>';
-                echo '<img src="../../humo-gen-afb/mons/thumb_huub_linda_mons.jpg" style="height:80px;">';
-                echo '</li>';
+                    /*
+                    // *** JUNE 2021: disabled drag and drop to get a clearer editor page ***
+                    if ($count>1) { $text.="&nbsp;&nbsp;".__('(Drag pictures to change display order)'); }
+                    $text.='&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
 
-                echo '<li id="xxxxxxxxxxx" class="mediamove">';
-                echo '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
-                echo '&nbsp;Test<br>';
-                echo '<img src="../../humo-gen-afb/mons/thumb_huub_linda_mons.jpg" style="height:80px;">';
-                echo '</li>';
-            echo '</ul>';
-            */
-
-            /*
-            // *** JUNE 2021: disabled drag and drop to get a clearer editor page ***
-            if ($count>1) { $text.="&nbsp;&nbsp;".__('(Drag pictures to change display order)'); }
-            $text.='&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
-
-            $text.='<ul id="sortable_pic" class="sortable_pic handle_pic" style="width:auto">';
-            while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
-                $text.='<li style="word-wrap:break-word;hight:auto;" id="'.$data_listDb->event_id.'" class="mediamove">';
-                $text.='<div style="position:relative">';
-                if ($count>1) {
-                    $text.='<div style="position:absolute;top:0;left:0">';
-                    $show_image= '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
-                    $text.=$show_image;
-                    $text.='</div>';
-                }
-                $text.='<div style="overflow:hidden">';
-                $tree_pict_path2 = $tree_pict_path;  // we change it only if category subfolders exist
-                $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-                if($temp->rowCount()) {  // there is a category table 
-                    $catgr = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
-                    if($catgr->rowCount()) { 
-                        while($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {  
-                            if(substr($data_listDb->event_event,0,3)==$catDb->photocat_prefix AND is_dir($path_prefix.$tree_pict_path2.substr($data_listDb->event_event,0,2)))  {   // there is a subfolder of this prefix
-                                $tree_pict_path2 = $tree_pict_path2.substr($data_listDb->event_event,0,2).'/';  // look in that subfolder
+                    $text.='<ul id="sortable_pic" class="sortable_pic handle_pic" style="width:auto">';
+                    while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
+                        $text.='<li style="word-wrap:break-word;hight:auto;" id="'.$data_listDb->event_id.'" class="mediamove">';
+                        $text.='<div style="position:relative">';
+                        if ($count>1) {
+                            $text.='<div style="position:absolute;top:0;left:0">';
+                            $show_image= '<img src="images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">';
+                            $text.=$show_image;
+                            $text.='</div>';
+                        }
+                        $text.='<div style="overflow:hidden">';
+                        $tree_pict_path2 = $tree_pict_path;  // we change it only if category subfolders exist
+                        $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+                        if($temp->rowCount()) {  // there is a category table 
+                            $catgr = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+                            if($catgr->rowCount()) { 
+                                while($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {  
+                                    if(substr($data_listDb->event_event,0,3)==$catDb->photocat_prefix AND is_dir($path_prefix.$tree_pict_path2.substr($data_listDb->event_event,0,2)))  {   // there is a subfolder of this prefix
+                                        $tree_pict_path2 = $tree_pict_path2.substr($data_listDb->event_event,0,2).'/';  // look in that subfolder
+                                    }
+                                }
                             }
                         }
-                    }
-                }
 
-                $thumb_prefix='';
-                if (file_exists($path_prefix.$tree_pict_path2.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
-                $extensions_check=substr($path_prefix.$tree_pict_path2.$data_listDb->event_event,-3,3);
-                if($extensions_check=="jpg" OR $extensions_check=="gif" OR $extensions_check=="png" OR $extensions_check=="bmp") {
-                    if (file_exists($path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event))
-                        $show_image= '<img src="'.$path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event.'" style="height:80px;">';
-                    else
-                        $show_image= '<img src="../images/thumb_missing-image.jpg" height="60">';
-                    if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="60">';
-                    $text.=$show_image;
-                }
-                else {
-                    $ext = substr($data_listDb->event_event,-3,3);
-                    if($ext=="tif" OR $ext=="iff") { $text.='<span style="font-size:80%">['.__('Format not supported')."]</span>"; }
-                    elseif($ext=="pdf") { $text.='<img src="../images/pdf.jpeg" style="width:30px;height:30px;">';}
-                    elseif($ext=="doc" OR $ext=="ocx") { $text.='<img src="../images/msdoc.gif" style="width:30px;height:30px;">';}
-                    elseif($ext=="avi" OR $ext=="wmv" OR $ext=="mpg" OR $ext=="mp4" OR $ext=="mov") { $text.='<img src="../images/video-file.png" style="width:30px;height:30px;">'; }
-                    elseif($ext=="wma" OR $ext=="wav" OR $ext=="mp3" OR $ext=="mid" OR $ext=="ram" OR $ext==".ra" ) { $text.='<img src="../images/audio.gif" style="width:30px;height:30px;">';}
+                        $thumb_prefix='';
+                        if (file_exists($path_prefix.$tree_pict_path2.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
+                        $extensions_check=substr($path_prefix.$tree_pict_path2.$data_listDb->event_event,-3,3);
+                        if($extensions_check=="jpg" OR $extensions_check=="gif" OR $extensions_check=="png" OR $extensions_check=="bmp") {
+                            if (file_exists($path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event))
+                                $show_image= '<img src="'.$path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event.'" style="height:80px;">';
+                            else
+                                $show_image= '<img src="../images/thumb_missing-image.jpg" height="60">';
+                            if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="60">';
+                            $text.=$show_image;
+                        }
+                        else {
+                            $ext = substr($data_listDb->event_event,-3,3);
+                            if($ext=="tif" OR $ext=="iff") { $text.='<span style="font-size:80%">['.__('Format not supported')."]</span>"; }
+                            elseif($ext=="pdf") { $text.='<img src="../images/pdf.jpeg" style="width:30px;height:30px;">';}
+                            elseif($ext=="doc" OR $ext=="ocx") { $text.='<img src="../images/msdoc.gif" style="width:30px;height:30px;">';}
+                            elseif($ext=="avi" OR $ext=="wmv" OR $ext=="mpg" OR $ext=="mp4" OR $ext=="mov") { $text.='<img src="../images/video-file.png" style="width:30px;height:30px;">'; }
+                            elseif($ext=="wma" OR $ext=="wav" OR $ext=="mp3" OR $ext=="mid" OR $ext=="ram" OR $ext==".ra" ) { $text.='<img src="../images/audio.gif" style="width:30px;height:30px;">';}
 
-                    $text.='<br><span style="font-size:85%">'.$data_listDb->event_event.'</span>';
-                }
-                // *** No picture selected yet, show dummy picture ***
-                if (!$data_listDb->event_event) $text.='<img src="../images/thumb_missing-image.jpg" height="60">';
-                $text.='</div>';
-                $text.='</div>';
-                $text.='</li>';
-            } 
-            $text.='</ul>';
-            */
+                            $text.='<br><span style="font-size:85%">'.$data_listDb->event_event.'</span>';
+                        }
+                        // *** No picture selected yet, show dummy picture ***
+                        if (!$data_listDb->event_event) $text.='<img src="../images/thumb_missing-image.jpg" height="60">';
+                        $text.='</div>';
+                        $text.='</div>';
+                        $text.='</li>';
+                    } 
+                    $text.='</ul>';
+                    */
 
 
 
-            // MAY 2023: convert OBJECTS to standard images.
-            // DEC 2015: OLD: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
-            // *** Search for all external connected objects by a person or a family ***
-            if ($event_connect_kind == 'person') {
-                $connect_qry = "SELECT * FROM humo_connections
+                    // MAY 2023: convert OBJECTS to standard images.
+                    // DEC 2015: OLD: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
+                    // *** Search for all external connected objects by a person or a family ***
+                    if ($event_connect_kind == 'person') {
+                        $connect_qry = "SELECT * FROM humo_connections
                     WHERE connect_tree_id='" . $tree_id . "'
                     AND connect_sub_kind='pers_object'
                     AND connect_connect_id='" . $event_connect_id . "'
                     ORDER BY connect_order";
-            } elseif ($event_connect_kind == 'family') {
-                $connect_qry = "SELECT * FROM humo_connections
+                    } elseif ($event_connect_kind == 'family') {
+                        $connect_qry = "SELECT * FROM humo_connections
                     WHERE connect_tree_id='" . $tree_id . "'
                     AND connect_sub_kind='fam_object'
                     AND connect_connect_id='" . $event_connect_id . "'
                     ORDER BY connect_order";
-            }
-            if ($event_connect_kind == 'person' or $event_connect_kind == 'family') {
-                $event_order = 1;
+                    }
+                    if ($event_connect_kind == 'person' or $event_connect_kind == 'family') {
+                        $event_order = 1;
 
-                $connect_sql = $dbh->query($connect_qry);
-                while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
-                    $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
+                        $connect_sql = $dbh->query($connect_qry);
+                        while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
+                            $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
                         AND event_gedcomnr='" . $connectDb->connect_source_id . "' AND event_kind='object'
                         ORDER BY event_order");
-                    while ($pictureDb = $picture_qry->fetch(PDO::FETCH_OBJ)) {
-                        // *** Check if humo_events was allready updated... => THEN OBJECT IS USED MULTIPLE TIMES ***
-                        // *** Maybe this isn't used, but just in case created this insert script ***
-                        if ($pictureDb->event_connect_kind or $pictureDb->event_connect_id) {
-                            //	Don't use UPDATE but create a new EVENT!!
-                            $sql = "INSERT INTO humo_events SET
+                            while ($pictureDb = $picture_qry->fetch(PDO::FETCH_OBJ)) {
+                                // *** Check if humo_events was allready updated... => THEN OBJECT IS USED MULTIPLE TIMES ***
+                                // *** Maybe this isn't used, but just in case created this insert script ***
+                                if ($pictureDb->event_connect_kind or $pictureDb->event_connect_id) {
+                                    //	Don't use UPDATE but create a new EVENT!!
+                                    $sql = "INSERT INTO humo_events SET
                                 event_tree_id='" . $pictureDb->event_tree_id . "',
                                 event_connect_kind='" . $event_connect_kind . "',
                                 event_connect_id='" . safe_text_db($event_connect_id) . "',
@@ -619,74 +620,75 @@ class editor_event_cls
                                 event_event='" . $pictureDb->event_event . "',
                                 event_gedcom='',
                                 event_order='" . $event_order . "'";
-                            $event_order++;
-                            $dbh->query($sql);
-                        } else {
-                            // *** Convert OBJECTS to standard images ***
-                            $sql = "UPDATE humo_events SET
+                                    $event_order++;
+                                    $dbh->query($sql);
+                                } else {
+                                    // *** Convert OBJECTS to standard images ***
+                                    $sql = "UPDATE humo_events SET
                                 event_connect_kind='" . $event_connect_kind . "',
                                 event_connect_id='" . safe_text_db($event_connect_id) . "',
                                 event_kind='picture',
                                 event_gedcom='',
                                 event_order='" . $event_order . "'
                                 WHERE event_id='" . $pictureDb->event_id . "'";
-                            $dbh->query($sql);
-                            $event_order++;
-                            // *** Remove connection ***
-                            $sql = "DELETE FROM humo_connections WHERE connect_id='" . $connectDb->connect_id . "'";
-                            $dbh->query($sql);
+                                    $dbh->query($sql);
+                                    $event_order++;
+                                    // *** Remove connection ***
+                                    $sql = "DELETE FROM humo_connections WHERE connect_id='" . $connectDb->connect_id . "'";
+                                    $dbh->query($sql);
+                                }
+                            }
                         }
                     }
-                }
-            }
 
-            /*
-            $text.= '
-            <script>
-            $(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
-                var mediastring = ""; 
-                var media_arr = document.getElementsByClassName("mediamove"); 
-                for (var z = 0; z < media_arr.length; z++) { 
-                    // create the new order after dragging to store in database with ajax
-                    mediastring = mediastring + media_arr[z].id + ";"; 
-                    // change the order numbers of the pics in the pulldown (that was generated before the drag
-                    // so that if one presses on delete before refresh the right pic will be deleted !!
-                }
-                mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
-                
-                var parnode = document.getElementById(\'pic_main_\' + media_arr[0].id).parentNode; 
-                //var picdomclass = document.getElementsByClassName("pic_row2");
-                //var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
-                var nextnode = document.getElementById(\'pic_main_\' + media_arr[1].id); 
+                    /*
+                    $text.= '
+                    <script>
+                    $(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
+                        var mediastring = ""; 
+                        var media_arr = document.getElementsByClassName("mediamove"); 
+                        for (var z = 0; z < media_arr.length; z++) { 
+                            // create the new order after dragging to store in database with ajax
+                            mediastring = mediastring + media_arr[z].id + ";"; 
+                            // change the order numbers of the pics in the pulldown (that was generated before the drag
+                            // so that if one presses on delete before refresh the right pic will be deleted !!
+                        }
+                        mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
+                        
+                        var parnode = document.getElementById(\'pic_main_\' + media_arr[0].id).parentNode; 
+                        //var picdomclass = document.getElementsByClassName("pic_row2");
+                        //var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
+                        var nextnode = document.getElementById(\'pic_main_\' + media_arr[1].id); 
 
-                for(var d=media_arr.length-1; d >=0 ; d--) {
-                    //parnode.insertBefore(document.getElementById(\'pic_row2_\' + media_arr[d].id),nextnode);
-                    //nextnode = document.getElementById(\'pic_row2_\' + media_arr[d].id);
+                        for(var d=media_arr.length-1; d >=0 ; d--) {
+                            //parnode.insertBefore(document.getElementById(\'pic_row2_\' + media_arr[d].id),nextnode);
+                            //nextnode = document.getElementById(\'pic_row2_\' + media_arr[d].id);
 
-                    //parnode.insertBefore(document.getElementById(\'pic_row1_\' + media_arr[d].id),nextnode);
-                    //nextnode = document.getElementById(\'pic_row1_\' + media_arr[d].id);
+                            //parnode.insertBefore(document.getElementById(\'pic_row1_\' + media_arr[d].id),nextnode);
+                            //nextnode = document.getElementById(\'pic_row1_\' + media_arr[d].id);
 
-                    parnode.insertBefore(document.getElementById(\'pic_main_\' + media_arr[d].id),nextnode);
-                    nextnode = document.getElementById(\'pic_main_\' + media_arr[d].id);  
-                }
+                            parnode.insertBefore(document.getElementById(\'pic_main_\' + media_arr[d].id),nextnode);
+                            nextnode = document.getElementById(\'pic_main_\' + media_arr[d].id);  
+                        }
 
-                $.ajax({ 
-                    url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
-                    success: function(data){
-                    } ,
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        alert(xhr.status);
-                        alert(thrownError);
-                    }
-                });
-            });
-            </script>';
-            */
+                        $.ajax({ 
+                            url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
+                            success: function(data){
+                            } ,
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                alert(xhr.status);
+                                alert(thrownError);
+                            }
+                        });
+                    });
+                    </script>';
+                    */
+                    ?>
 
-
-            echo '</td>';
-            echo '<td></td>';
-            echo '</tr>';
+                </td>
+                <td></td>
+            </tr>
+        <?php
         }
 
         // *** Add marriage witness by family ***
@@ -998,8 +1000,8 @@ class editor_event_cls
                             $thumb_prefix = 'thumb_';
                         }
                         $picture = $path_prefix . $tree_pict_path3 . $thumb_prefix . $data_listDb->event_event;
-//$tree_pic_path3 is missing for family picture
-//                        echo $path_prefix .'-'. $tree_pict_path3.'-'.$data_listDb->event_event;
+                        //$tree_pic_path3 is missing for family picture
+                        //                        echo $path_prefix .'-'. $tree_pict_path3.'-'.$data_listDb->event_event;
                         // *** Check if picture is in subdirectory ***
                         // Example: subdir1_test/xy/2022_02_12 Scheveningen.jpg
                         if ($thumb_prefix == '') {
@@ -1019,7 +1021,7 @@ class editor_event_cls
                             //$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'"'.$size.'>';
                             $show_image = '<img src="' . $picture . '"' . $size . '>';
                         } else
-                            $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
+                        $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
                         //Check line above. If thumb if missing, missing picture is shown...
 
                         if (!$data_listDb->event_event) $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';

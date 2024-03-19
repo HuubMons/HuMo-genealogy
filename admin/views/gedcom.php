@@ -1571,6 +1571,7 @@ if (isset($_POST['step3'])) {
     if ($humo_option["gedcom_read_add_source"] == 'y') {
         // *** Generate new GEDCOM number ***
         $new_gedcomnumber = 'S' . $db_functions->generate_gedcomnr($tree_id, 'source');
+        $gedcom_date = strtoupper(date("d M Y"));
 
         $sql = "INSERT INTO humo_sources SET
             source_tree_id='" . $tree_id . "',

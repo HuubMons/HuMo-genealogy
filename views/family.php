@@ -1207,9 +1207,6 @@ if ($data["descendant_report"] == false) {
             $start_url = $parent1_cls->person_url2($parent1Db->pers_tree_id, $parent1Db->pers_famc, $parent1Db->pers_fams, $parent1Db->pers_gedcomnumber);
 
         if (isset($_POST['send_mail'])) {
-            $gedcom_date = strtoupper(date("d M Y"));
-            $gedcom_time = date("H:i:s");
-
             // *** note_status show/ hide/ moderate options ***
             $sql = "INSERT INTO humo_user_notes SET
                 note_new_user_id='" . safe_text_db($_SESSION['user_id']) . "',

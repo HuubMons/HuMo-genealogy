@@ -33,6 +33,16 @@ $editSource['source_id'] = $editSourceModel->get_source_id();
 $phpself = 'index.php';
 $field_text_large = 'style="height: 100px; width:550px"';
 
+// TODO check if code could be improved. Also in editor_inc.php line 233.
+// *** Show picture ***
+// *** get path of pictures folder 
+$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
+$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+$tree_pict_path = $dataDb->tree_pict_path;
+if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+$path_prefix = '../';
+
+
 include(__DIR__ . '/../include/editor_event_cls.php');
 $event_cls = new editor_event_cls;
 

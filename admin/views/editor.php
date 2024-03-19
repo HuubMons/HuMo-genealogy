@@ -76,6 +76,7 @@ $editorModel->set_search_name();
 $editorModel->set_marriage();
 
 $confirm = $editorModel->update_editor();
+$confirm_note = $editorModel->update_note();
 
 $editor['pers_gedcomnumber'] = $editorModel->get_pers_gedcomnumber();
 $pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***
@@ -419,6 +420,9 @@ if (isset($_GET['child_disconnect'])) {
 
 if ($confirm) {
     echo $confirm;
+}
+if ($confirm_note) {
+    echo $confirm_note;
 }
 
 $check_person = false;

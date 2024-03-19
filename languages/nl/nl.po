@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-18 18:50+0100\n"
-"PO-Revision-Date: 2024-03-18 18:50+0100\n"
+"PO-Revision-Date: 2024-03-19 21:52+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -1190,7 +1190,7 @@ msgstr "Selecteer bestaande bron"
 #: admin/include/editor_sources.php:408
 msgid "Results are limited, use search to find more sources."
 msgstr ""
-"Resultaten zijn beperkt, gebruik de zoek optie om meer ouders te vinden."
+"Resultaten zijn beperkt, gebruik de zoek optie om meer bronnen te vinden."
 
 #: admin/include/editor_sources.php:411 admin/views/cal_date.php:40
 #: admin/views/edit_rename_place.php:75 admin/views/editor_person.php:379

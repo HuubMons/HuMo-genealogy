@@ -73,9 +73,6 @@ if (isset($_SESSION['admin_tree_id'])) {
 
 <?php
     //if ($pers_name_text) echo ' <img src="images/text.png" height="16">';
-
-    //$gedcom_date = strtoupper(date("d M Y"));
-    //$gedcom_time = date("H:i:s");
     /*
     // Establishing connection with server by passing "server_name", "user_id", "password".
     $connection = mysql_connect("localhost", "root", "");
