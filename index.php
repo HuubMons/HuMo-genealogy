@@ -32,10 +32,10 @@
 // *** Disabled 18-01-2023 ***
 //ini_set('url_rewriter.tags','');
 
-session_cache_limiter('private, must-revalidate'); //tb edit
+//session_cache_limiter('private, must-revalidate'); //tb edit
 session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
-session_regenerate_id();
+//session_regenerate_id();
 
 if (isset($_GET['log_off'])) {
     unset($_SESSION['user_name']);

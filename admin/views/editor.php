@@ -338,6 +338,20 @@ $person_found = true;
                 ?>
             </div>
 
+            <?php
+            // *** Show message if no person is found ***
+            if ($editor['pers_gedcomnumber'] == '') {
+                $person_found = false;
+            }
+            if ($editor['pers_gedcomnumber'] != '' and isset($person_result)) {
+                $nr_persons = $person_result->rowCount();
+                // *** No person found ***
+                if ($nr_persons == 0) {
+                    $person_found = false;
+                    $pers_gedcomnumber = ''; // *** Don't show a person if there are no results ***
+                }
+            }
+            ?>
             <div class="col-auto">
                 <!-- Search person GEDCOM number -->
                 <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
@@ -347,22 +361,6 @@ $person_found = true;
                         <label for="search_id" class="col-auto col-form-label"><?= __('or ID:'); ?>&nbsp;</label>
                         <input type="text" id="search_id" name="search_id" class="form-select form-select-sm" value="<?= $editor['search_id']; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
                         <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
-
-                        <?php
-                        // *** Show message if no person is found ***
-                        if ($editor['pers_gedcomnumber'] == '') {
-                            $person_found = false;
-                        }
-                        if ($editor['pers_gedcomnumber'] != '' and isset($person_result)) {
-                            $nr_persons = $person_result->rowCount();
-                            // *** No person found ***
-                            if ($nr_persons == 0) {
-                                $person_found = false;
-                                $pers_gedcomnumber = ''; // *** Don't show a person if there are no results ***
-                            }
-                        }
-                        ?>
-
                     </div>
                 </form>
             </div>
@@ -1483,13 +1481,18 @@ if ($check_person) {
                         // *** Also show date and place ***
                         //if ($addressDb->connect_date) $address.=', '.date_place($addressDb->connect_date,'');
                         if ($addressDb->connect_date) $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
+                    ?>
 
-                        echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $address;
-                        if ($address3Db->address_text or $addressDb->connect_text) echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-                        echo '</span>';
+                        <span class="hideshowlink" onclick="hideShow(<?= $hideshow; ?>);"><?= $address; ?>
+                            <?php
+                            if ($address3Db->address_text or $addressDb->connect_text) {
+                                echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
+                            }
+                            ?>
+                        </span>
 
-                        echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
-                        echo '<br>';
+<?php
+                        echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '"><br>';
 
                         echo '<input type="hidden" name="change_address_id[' . $address3Db->address_id . ']" value="' . $address3Db->address_id . '">';
 
@@ -1529,8 +1532,8 @@ if ($check_person) {
                             global $pers_gedcomnumber;
                             if ($addressDb->connect_order == $count) {
                                 $sql = "UPDATE humo_persons SET
-                                pers_place_index='" . safe_text_db($address3Db->address_place) . "'
-                                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($pers_gedcomnumber) . "'";
+                                    pers_place_index='" . safe_text_db($address3Db->address_place) . "'
+                                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($pers_gedcomnumber) . "'";
                                 $dbh->query($sql);
                             }
                         }
@@ -1693,17 +1696,17 @@ if ($check_person) {
             //if (isset($_GET['pers_place'])) $link_id='54';
             if (isset($_GET['person_place_address']) or isset($_GET['family_place_address'])) $link_id = '55';
             echo '
-        <script>
-        function Show(el_id){
-            // *** Hide or show item ***
-            var arr = document.getElementsByClassName(\'row\'+el_id);
-            for (i=0; i<arr.length; i++){
-                arr[i].style.display="";
+            <script>
+            function Show(el_id){
+                // *** Hide or show item ***
+                var arr = document.getElementsByClassName(\'row\'+el_id);
+                for (i=0; i<arr.length; i++){
+                    arr[i].style.display="";
+                }
+                // *** Change [+] into [-] ***
+                document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
             }
-            // *** Change [+] into [-] ***
-            document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
-        }
-        </script>';
+            </script>';
 
             echo '<script>
             Show("' . $link_id . '");

@@ -33,7 +33,7 @@
 
 session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
-session_regenerate_id();
+//session_regenerate_id();
 
 $page = 'index';
 

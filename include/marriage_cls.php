@@ -835,8 +835,7 @@ class marriage_cls
                 $addition = '';
             }
         } else {
-            // TODO bug: if there are multiple relations and living together then text is wrong.
-            //$text = '<b>' . $relation_number . $relation_kind . '</b> ' . $text;
+            $text = '<b>' . $relation_number . $relation_kind . '</b> ' . $text;
         }
 
         if ($addition) $text .= '<b>' . $addition . '</b>';

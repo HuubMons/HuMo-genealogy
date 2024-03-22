@@ -321,11 +321,6 @@ class EditorModel
 
     public function update_editor()
     {
-        //$userid = false;
-        //if (is_numeric($_SESSION['user_id_admin'])) {
-        //    $userid = $_SESSION['user_id_admin'];
-        //}
-
         // *** Return deletion confim box in $confirm variabele ***
         $confirm = '';
         $confirm_relation = '';
@@ -1648,7 +1643,7 @@ class EditorModel
 
     public function update_note()
     {
-        $confirm='';
+        $confirm = '';
 
         // *** Add editor note ***
         if (isset($_GET['note_add']) and $_GET['note_add']) {
