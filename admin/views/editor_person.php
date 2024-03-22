@@ -455,7 +455,12 @@
                 $hideshow = '1';
                 $display = ' display:none;';
                 // *** New person: show all name fields ***
-                if (!$pers_gedcomnumber) $display = '';
+                if (!$pers_gedcomnumber) {
+                    $display = '';
+                }
+                if ($pers_gedcomnumber) {
+                    $check_sources_text = check_sources('person', 'pers_name_source', $pers_gedcomnumber);
+                }
                 ?>
                 <td><a name="name"></a><b><?= __('Name'); ?></b></td>
                 <td colspan="2">
@@ -464,59 +469,90 @@
                     if ($pers_gedcomnumber) {
                         echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');"><b>';
                         echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
+
                         if ($pers_name_text) echo ' <img src="images/text.png" height="16">';
+
+                        if ($check_sources_text) {
+                            echo ' ' . $check_sources_text;
+                        }
                         echo '</b></span><br>';
                     }
-                    echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
+                    ?>
 
-                    // *** Firstname ***
-                    //echo '<input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35" placeholder="'.ucfirst(__('firstname')).'"><br>';
-                    echo editor_label(__('firstname'), 'bold');
-                    echo '<input type="text" name="pers_firstname" value="' . $pers_firstname . '"  size="35"><br>';
+                    <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
+                        <!-- Firstname -->
+                        <div class="row mb-2 mt-2">
+                            <label for "firstname" class="col-sm-3 col-form-label"><b><?= ucfirst(__('firstname')); ?></b></label>
+                            <div class="col-md-7">
+                                <input type="text" name="pers_firstname" value="<?= $pers_firstname; ?>" size="35" class="form-control form-control-sm">
+                            </div>
+                        </div>
 
-                    // *** Prefix ***
-                    //echo '<input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'"> '.__("For example: d\' or:  van_ (use _ for a space)").'<br>';
-                    echo editor_label(__('prefix') . '. ' . __("For example: d\' or:  van_ (use _ for a space)"));
-                    echo '<input type="text" name="pers_prefix" value="' . $pers_prefix . '" size="10"><br>';
+                        <!-- Prefix -->
+                        <div class="row mb-2">
+                            <label for "prefix" class="col-sm-3 col-form-label"><?= ucfirst(__('prefix')); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="pers_prefix" value="<?= $pers_prefix; ?>" size="35" class="form-control form-control-sm">
+                                <span style="font-size: 13px;"><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></span>
+                            </div>
+                        </div>
 
-                    // *** Lastname ***
-                    //echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'"> ';
-                    //echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'">';
-                    echo editor_label(__('lastname'), 'bold');
-                    echo '<input type="text" name="pers_lastname" value="' . $pers_lastname . '" size="35"><br>';
+                        <!-- Lastname -->
+                        <div class="row mb-2">
+                            <label for "lastname" class="col-sm-3 col-form-label"><b><?= ucfirst(__('lastname')); ?></b></label>
+                            <div class="col-md-7">
+                                <input type="text" name="pers_lastname" value="<?= $pers_lastname; ?>" size="35" class="form-control form-control-sm">
+                            </div>
+                        </div>
 
-                    // *** Patronym *** 
-                    echo editor_label(__('patronymic'));
-                    echo '<input type="text" name="pers_patronym" value="' . $pers_patronym . '" size="20">';
+                        <!-- Patronym -->
+                        <div class="row mb-2">
+                            <label for "patronym" class="col-sm-3 col-form-label"><?= ucfirst(__('patronymic')); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="pers_patronym" value="<?= $pers_patronym; ?>" size="35" class="form-control form-control-sm">
+                            </div>
+                        </div>
 
-                    if ($humo_option['admin_hebname'] == "y") {  // user requested hebrew name field to be displayed here, not under "events"
-                        $sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_kind='name' AND event_connect_kind='person'";
-                        $result = $dbh->query($sql);
-                        if ($result->rowCount() > 0) {
-                            $hebnameDb = $result->fetch(PDO::FETCH_OBJ);
-                            $he_name =  $hebnameDb->event_event;
-                        } else {
-                            $he_name = "";
+                        <?php
+                        if ($humo_option['admin_hebname'] == "y") {  // user requested hebrew name field to be displayed here, not under "events"
+                            $sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_kind='name' AND event_connect_kind='person'";
+                            $result = $dbh->query($sql);
+                            if ($result->rowCount() > 0) {
+                                $hebnameDb = $result->fetch(PDO::FETCH_OBJ);
+                                $he_name =  $hebnameDb->event_event;
+                            } else {
+                                $he_name = '';
+                            }
+                        ?>
+                            <!-- Hebrew name -->
+                            <div class="row mb-2">
+                                <label for "hebrew_name" class="col-sm-3 col-form-label"><?= ucfirst(__('Hebrew name')); ?></label>
+                                <div class="col-md-7">
+                                    <input type="text" name="even_hebname" value="<?= htmlspecialchars($he_name); ?>" size="35" class="form-control form-control-sm">
+                                    <span style="font-size: 13px;"><?= __("For example: Joseph ben Hirsch Zvi"); ?></span>
+                                </div>
+                            </div>
+                        <?php
                         }
 
-                        echo editor_label(__('Hebrew name') . '. ' . __('For example: Joseph ben Hirsch Zvi'));
-                        echo '<input type="text" name="even_hebname" value="' . htmlspecialchars($he_name) . '" size="35"> ';
-                    }
+                        // *** Person text by name ***
+                        $text = $editor_cls->text_show($pers_name_text);
+                        // *** Check if there are multiple lines in text ***
+                        $field_text_selected = $field_text;
+                        if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                        ?>
+                        <!-- Text -->
+                        <div class="row mb-2">
+                            <label for "text" class="col-sm-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                            <div class="col-md-7">
+                                <textarea rows="1" name="pers_name_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                            </div>
+                        </div>
 
-                    // *** Person text by name ***
-                    echo editor_label(__('text'));
-                    $text = $editor_cls->text_show($pers_name_text);
-                    //$field_text_selected=$field_text; if ($text) $field_text_selected=$field_text_medium;
-                    // *** Check if there are multiple lines in text ***
-                    $field_text_selected = $field_text;
-                    if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                    echo '<textarea rows="1" name="pers_name_text" ' . $field_text_selected . '>' . $text . '</textarea>';
+                        <?php
 
-                    //TEST
-                    //echo '<br><br><input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
-
-                    //TEST Ajax script
-                    /*
+                        //TEST Ajax script
+                        /*
 ?>
 <script>
     $(document).ready(function() {
@@ -565,16 +601,31 @@
 */
 
 
-                    echo '</span>';
-                    ?>
+                        // *** Source by name ***
+                        // *** source_link3($connect_kind, $connect_sub_kind, $connect_connect_id) ***
+                        if (!isset($_GET['add_person'])) {
+                        ?>
+                            <!-- Source -->
+                            <div class="row mb-2">
+                                <label for "source" class="col-sm-3 col-form-label"><?= ucfirst(__('source')); ?></label>
+                                <div class="col-md-7">
+                                    <?php
+                                    source_link3('person', 'pers_name_source', $pers_gedcomnumber);
+                                    if ($check_sources_text) {
+                                        echo $check_sources_text;
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </span>
                 </td>
 
                 <td>
                     <?php
                     if (!isset($_GET['add_person'])) {
                         // *** Source by name ***
-                        //source_link('individual',$pers_gedcomnumber,'pers_name_source');
-                        echo source_link2('500', $pers_gedcomnumber, 'pers_name_source', 'name');
+                        //echo source_link2('500', $pers_gedcomnumber, 'pers_name_source', 'name');
                     ?>
 
 
@@ -688,7 +739,7 @@ if ($source_error == 2) $colour = 'btn-warning';
 
             <?php
             // *** Show source by name in iframe ***
-            echo edit_sources('500', 'person', 'pers_name_source', $pers_gedcomnumber);
+            //echo edit_sources('500', 'person', 'pers_name_source', $pers_gedcomnumber);
 
             if ($add_person == false) {
                 // *** Event name (also show ADD line for prefix, suffix, title etc. ***
@@ -773,7 +824,6 @@ if ($source_error == 2) $colour = 'btn-warning';
                     <td>
                         <?php
                         if (!isset($_GET['add_person'])) {
-                            //source_link('individual',$pers_gedcomnumber,'pers_sexe_source');
                             echo source_link2('501', $pers_gedcomnumber, 'pers_sexe_source', 'sex');
                         }
                         ?>
@@ -872,7 +922,6 @@ if ($source_error == 2) $colour = 'btn-warning';
                 // *** Source by birth ***
                 echo '<td>';
                 if (!isset($_GET['add_person'])) {
-                    //source_link('individual',$pers_gedcomnumber,'pers_birth_source');
                     echo source_link2('502', $pers_gedcomnumber, 'pers_birth_source', 'born');
                 }
                 ?>
@@ -1044,7 +1093,6 @@ if ($source_error == 2) $colour = 'btn-warning';
                 // *** Source by baptise ***
                 echo '<td>';
                 if (!isset($_GET['add_person'])) {
-                    //source_link('individual',$pers_gedcomnumber,'pers_bapt_source');
                     echo source_link2('503', $pers_gedcomnumber, 'pers_bapt_source', 'baptised');
                 }
                 ?>
@@ -1251,7 +1299,6 @@ if ($source_error == 2) $colour = 'btn-warning';
                 // *** Source by death ***
                 echo '</td><td>';
                 if (!isset($_GET['add_person'])) {
-                    //source_link('individual',$pers_gedcomnumber,'pers_death_source');
                     echo source_link2('504', $pers_gedcomnumber, 'pers_death_source', 'died');
                 }
                 echo '</td>';
@@ -1332,7 +1379,6 @@ if ($source_error == 2) $colour = 'btn-warning';
                 // *** Source by burial ***
                 echo '<td>';
                 if (!isset($_GET['add_person'])) {
-                    //source_link('individual',$pers_gedcomnumber,'pers_buried_source');
                     echo source_link2('505', $pers_gedcomnumber, 'pers_buried_source', 'buried');
                 }
                 echo '</td>';
@@ -1359,7 +1405,6 @@ if ($source_error == 2) $colour = 'btn-warning';
                     <?php
                     // *** Source by text ***
                     if (!isset($_GET['add_person'])) {
-                        //source_link('individual',$pers_gedcomnumber,'pers_text_source');
                         echo source_link2('506', $pers_gedcomnumber, 'pers_text_source', 'text_person');
                     }
                     ?>
@@ -1373,7 +1418,6 @@ if ($source_error == 2) $colour = 'btn-warning';
                 // *** Person sources in new person editor screen ***
                 echo '<tr><td><a name="source_person"></a>' . __('Source for person') . '</td><td colspan="2"></td>';
                 echo '<td>';
-                //source_link('individual',$pers_gedcomnumber,'person_source');
                 echo source_link2('507', $pers_gedcomnumber, 'person_source', 'source_person');
                 echo '</td></tr>';
                 // *** Show source by person in iframe ***

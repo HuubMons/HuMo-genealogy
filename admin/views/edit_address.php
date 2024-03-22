@@ -298,8 +298,8 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
         </div>
         </div>
     </form>
-<?php
 
+    <?php
     // *** Example of address in IFRAME ***
     if (!isset($_POST['add_address'])) {
         if ($humo_option["url_rewrite"] == "j") {
@@ -307,55 +307,11 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
         } else {
             $url = '../index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
         }
-
-        echo '<p>' . __('Preview') . '<br>';
-        echo '<iframe src ="' . $url . '" class="iframe">';
-        echo '  <p>Your browser does not support iframes.</p>';
-        echo '</iframe>';
+    ?>
+        <p><?= __('Preview'); ?><br>
+            <iframe src="<?= $url; ?>" class="iframe">
+                <p>Your browser does not support iframes.</p>
+            </iframe>
+    <?php
     }
 }
-
-
-// *****************
-// *** FUNCTIONS ***
-// *****************
-
-// *** Show link to sources (version 2) ***
-/*
-function source_link2($hideshow, $connect_connect_id, $connect_sub_kind, $link = '')
-{
-    global $tree_id, $dbh, $db_functions, $style_source;
-
-    // *** Standard: hide source. If there is an error: show source ***
-    $style_source = ' style="display:none;"';
-
-    $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
-        WHERE connect_tree_id='" . $tree_id . "'
-        AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
-    $connect_sql = $dbh->query($connect_qry);
-    $source_count = $connect_sql->rowCount();
-    $source_error = 0;
-    while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
-        if (!$connectDb->connect_source_id) {
-            $source_error = 1;
-            $style_source = '';
-        } else {
-            // *** Check if source is empty ***
-            $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-            if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
-                $source_error = 2;
-                $style_source = '';
-            }
-        }
-    }
-
-    $text = '&nbsp;';
-
-    $style = '';
-    if ($source_error == '1') $style = ' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
-    if ($source_error == '2') $style = ' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
-    $text .= '<span class="hideshowlink"' . $style . ' onclick="hideShow(' . $hideshow . ');">' . __('source') . ' [' . $source_count . ']</span>';
-
-    return $text;
-}
-*/

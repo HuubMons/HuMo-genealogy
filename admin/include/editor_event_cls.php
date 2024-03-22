@@ -214,27 +214,27 @@ class editor_event_cls
                 $searchpic = " AND event_event LIKE '%" . $search_picture . "%' ";
             }
             $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND
-            event_kind='picture' " . $searchpic . " ORDER BY event_order";
+                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND
+                event_kind='picture' " . $searchpic . " ORDER BY event_order";
         } elseif ($event_kind == 'family') {
             $qry = "SELECT * FROM humo_events 
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "'
-            AND event_kind!='marriage_witness'
-            AND event_kind!='marriage_witness_rel'
-            AND event_kind!='picture'
-            ORDER BY event_kind, event_order";
+                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "'
+                AND event_kind!='marriage_witness'
+                AND event_kind!='marriage_witness_rel'
+                AND event_kind!='picture'
+                ORDER BY event_kind, event_order";
         } elseif ($event_kind == 'marriage_witness') {
             $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness' ORDER BY event_kind, event_order";
+                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness' ORDER BY event_kind, event_order";
         } elseif ($event_kind == 'marriage_witness_rel') {
             $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
+                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
         } elseif ($event_kind == 'marriage_picture') {
             $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
+                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
         } elseif ($event_kind == 'source_picture') {
             $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='source' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
+                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='source' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
         }
 
         $data_list_qry = $dbh->query($qry);

@@ -838,8 +838,7 @@ if ($check_person) {
             //else
             //	document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[+]";
         }
-        </script>
-        ';
+        </script>';
 
         // *******************
         // *** Show person ***
@@ -1027,7 +1026,44 @@ if ($check_person) {
         return '<option value="' . $event . '"' . $selected . '>' . language_event($event) . '</option>';
     }
 
+    // *** New function mar. 2024 ***
+    // *** Show number of sources and show indication if source is connected ***
+    function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
+    {
+        global $tree_id, $dbh, $db_functions;
+
+        $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
+                            WHERE connect_tree_id='" . $tree_id . "'
+                            AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
+        $connect_sql = $dbh->query($connect_qry);
+        $source_count = $connect_sql->rowCount();
+        $source_error = 0;
+        while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
+            if (!$connectDb->connect_source_id) {
+                $source_error = 1;
+            } else {
+                // *** Check if source is empty ***
+                $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+                if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
+                    $source_error = 2;
+                }
+            }
+        }
+
+        $style = '';
+        if ($source_error == '1') $style = ' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
+        if ($source_error == '2') $style = ' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
+
+        if ($source_count){
+            return '<span ' . $style . '>[' . $source_count . ']</span>';
+        }
+        else{
+            return;
+        }
+    }
+
     // *** Show link to sources (version 2) ***
+    // TODO use source_link3 (function below this function)
     function source_link2($hideshow, $connect_connect_id, $connect_sub_kind, $link = '')
     {
         global $tree_id, $dbh, $db_functions, $style_source;
@@ -1065,6 +1101,42 @@ if ($check_person) {
         return $text;
     }
 
+    // *** Show link to sources (mar. 2024 version 3) ***
+    function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id)
+    {
+        ?>
+        <!-- Button trigger modal for sources -->
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal">
+            <?= ucfirst(__('source')); ?>
+        </button>
+
+        <div class="modal fade" id="sourceModal" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="sourceModalLabel"><?= ucfirst(__('source')); ?></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <?php
+                        $url = 'index.php?page=editor_sources';
+                        if ($connect_kind) $url .= '&connect_kind=' . $connect_kind;
+                        $url .= '&connect_sub_kind=' . $connect_sub_kind;
+                        if ($connect_connect_id) $url .= '&connect_connect_id=' . $connect_connect_id;
+                        ?>
+                        <!-- TODO only load iframe if there are sources? Otherwise add link to add sources? -->
+                        <iframe id="source_iframe" class="source_iframe" title="source_iframe" src="<?= $url; ?>"></iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-sm btn-primary">Save changes</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
+    }
+
     // *** Source in iframe ***
     function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_connect_id)
     {
@@ -1073,8 +1145,7 @@ if ($check_person) {
         //$event_group.'&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id.'">
 
         $text = '<tr style="display:none;" class="row' . $hideshow . '"><td></td><td colspan="3">
-            <iframe id="source_iframe" class="source_iframe" title="source_iframe"
-                src="index.php?page=editor_sources';
+            <iframe id="source_iframe" class="source_iframe" title="source_iframe" src="index.php?page=editor_sources';
         if ($connect_kind) $text .= '&connect_kind=' . $connect_kind;
         $text .= '&connect_sub_kind=' . $connect_sub_kind;
         if ($connect_connect_id) $text .= '&connect_connect_id=' . $connect_connect_id;
@@ -1156,7 +1227,7 @@ if ($check_person) {
                 $pers_lastname = $personDb->pers_lastname;
             }
         }
-        ?>
+    ?>
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="pers_name_text" value="">
         <input type="hidden" name="pers_birth_text" value="">
@@ -1491,7 +1562,7 @@ if ($check_person) {
                             ?>
                         </span>
 
-<?php
+                    <?php
                         echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '"><br>';
 
                         echo '<input type="hidden" name="change_address_id[' . $address3Db->address_id . ']" value="' . $address3Db->address_id . '">';
@@ -1592,8 +1663,8 @@ if ($check_person) {
                         echo '<input type="hidden" name="connect_role[' . $key . ']" value="">';
 
                         $addressqry = $dbh->query("SELECT * FROM humo_addresses
-                        WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'
-                        ORDER BY address_place, address_address");
+                            WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'
+                            ORDER BY address_place, address_address");
                         echo ' ' . __('Address') . ' ';
                         echo '<select size="1" name="connect_item_id[' . $key . ']" style="width: 300px">';
                         echo '<option value="">' . __('Select address') . '</option>';

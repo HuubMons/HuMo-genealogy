@@ -59,27 +59,26 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
 
 <div class="p-3 m-2 genealogy_search">
     <div class="row">
-        <div class="col-auto">
+        <div class="col-md-auto">
             <label for="tree" class="col-form-label">
                 <?= __('Family tree'); ?>:
             </label>
         </div>
 
-        <div class="col-auto">
+        <div class="col-md-auto">
             <?= select_tree($dbh, $page, $tree_id); ?>
         </div>
 
-        <div class="col-auto">
+        <div class="col-md-auto">
             <label for="tree" class="col-form-label">
                 <?= __('Select repository'); ?>
             </label>
         </div>
 
-        <div class="col-auto">
+        <div class="col-md-auto">
             <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <select size="1" name="repo_id" class="form-select form-select-sm" onChange="this.form.submit();">
-                    <!--  For new repository in new database... -->
                     <option value=""><?= __('Select repository'); ?></option>
                     <?php
                     while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) {
@@ -145,68 +144,123 @@ if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
         $repo_changed_datetime = $repoDb->repo_changed_datetime;
     }
 ?>
+
     <form method="POST" action="<?= $phpself; ?>">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
-        <table class="humo standard" border="1">
-            <tr class="table_header">
-                <th><?= __('Option'); ?></th>
-                <th colspan="2"><?= __('Value'); ?></th>
-            </tr>
+        <div class="p-2 me-sm-2 genealogy_search">
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('Title'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="repo_name" value="<?= htmlspecialchars($repo_name); ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Title'); ?></td>
-                <td><input type="text" name="repo_name" value="<?= htmlspecialchars($repo_name); ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('Address'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="repo_address" value="<?= htmlspecialchars($repo_address); ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Address'); ?></td>
-                <td><input type="text" name="repo_address" value="<?= htmlspecialchars($repo_address); ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('Zip code'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="repo_zip" value="<?= $repo_zip; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Zip code'); ?></td>
-                <td><input type="text" name="repo_zip" value="<?= $repo_zip; ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= ucfirst(__('date')); ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $editor_cls->date_show($repo_date, "repo_date"); ?>
+                </div>
+            </div>
 
-            <tr>
-                <td><?= ucfirst(__('date')) . ' - ' . __('place'); ?></td>
-                <td><?= $editor_cls->date_show($repo_date, "repo_date"); ?> <input type="text" name="repo_place" value="<?= htmlspecialchars($repo_place); ?>" placeholder="<?= ucfirst(__('place')); ?>" size="50"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= ucfirst(__('place')); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="repo_place" value="<?= htmlspecialchars($repo_place); ?>" placeholder="<?= ucfirst(__('place')); ?>" size="50" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Phone'); ?></td>
-                <td><input type="text" name="repo_phone" value="<?= $repo_phone; ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('Phone'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="repo_phone" value="<?= $repo_phone; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= ucfirst(__('text')); ?></td>
-                <td><textarea rows="1" name="repo_text" <?= $field_text_large; ?>><?= $editor_cls->text_show($repo_text); ?></textarea></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= ucfirst(__('text')); ?>
+                </div>
+                <div class="col-md-4">
+                    <textarea rows="1" name="repo_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($repo_text); ?></textarea>
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('E-mail'); ?></td>
-                <td><input type="text" name="repo_mail" value="<?= $repo_mail; ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('E-mail'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="repo_mail" value="<?= $repo_mail; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('URL/ Internet link'); ?></td>
-                <td><input type="text" name="repo_url" value="<?= $repo_url; ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('URL/ Internet link'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="repo_url" value="<?= $repo_url; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <?php
-            if (isset($_POST['add_repo'])) {
-                echo '<tr><td>' . __('Add') . '</td><td><input type="submit" name="repo_add" value="' . __('Add') . '" class="btn btn-sm btn-success"></td></tr>';
-            } else {
-                echo '<tr><td>' . __('Save') . '</td><td><input type="submit" name="repo_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <?php if (isset($_POST['add_repo'])) { ?>
+                    <div class="col-md-2">
+                        <?= __('Add'); ?>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="submit" name="repo_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                    </div>
+                <?php } else { ?>
+                    <div class="col-md-2">
+                        <?= __('Save'); ?>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="submit" name="repo_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                        <?= __('or'); ?>
+                        <input type="submit" name="repo_remove" value="<?= __('Delete'); ?>" class="btn btn-sm btn-secondary">
+                    </div>
+                <?php } ?>
+            </div>
 
-                echo ' ' . __('or') . ' ';
-                echo '<input type="submit" name="repo_remove" value="' . __('Delete') . '" class="btn btn-sm btn-secondary">';
-
-                echo '</td></tr>';
-            }
-            ?>
-        </table>
+        </div>
     </form>
 <?php
 }

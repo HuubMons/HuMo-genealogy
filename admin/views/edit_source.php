@@ -279,27 +279,33 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
             }
 
             if (isset($_POST['add_source'])) {
-                echo '<tr><td>' . __('Add') . '</td><td colspan="3"><input type="submit" name="source_add" value="' . __('Add') . '" class="btn btn-sm btn-success"></td></tr>';
-            } else {
-                echo '<tr><td>' . __('Save') . '</td><td colspan="3"><input type="submit" name="source_change2" value="' . __('Save') . '" class="btn btn-sm btn-success">';
-                echo ' ' . __('or') . ' <input type="submit" name="source_remove" value="' . __('Delete') . '" class="btn btn-sm btn-secondary">';
-                echo '</td></tr>';
-            }
             ?>
+                <tr>
+                    <td><?= __('Add'); ?></td>
+                    <td colspan="3"><input type="submit" name="source_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>
+                </tr>
+            <?php } else { ?>
+                <tr>
+                    <td><?= __('Save'); ?></td>
+                    <td colspan="3"><input type="submit" name="source_change2" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                        <?= __('or'); ?> <input type="submit" name="source_remove" value="<?= __('Delete'); ?>" class="btn btn-sm btn-secondary">
+                    </td>
+                </tr>
+            <?php } ?>
         </table>
     </form>
 
-<?php
+    <?php
     // *** Source example in IFRAME ***
     if (!isset($_POST['add_source'])) {
         $vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
         $sourcestring = $link_cls->get_link('../', 'source', $tree_id, false, $vars);
-
-        echo '<p>' . __('Preview') . '<br>';
-        echo '<iframe src ="' . $sourcestring . '" class="iframe">';
-        //TODO TRANSLATE
-        echo '  <p>Your browser does not support iframes.</p>';
-        echo '</iframe>';
+    ?>
+        <p><?= __('Preview'); ?><br>
+            <iframe src="<?= $sourcestring; ?>" class="iframe">
+                <p>Your browser does not support iframes.</p>
+            </iframe>
+    <?php
     }
 }
 

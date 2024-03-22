@@ -28,7 +28,7 @@ class editor_cls
                 $selected = ' selected';
             }
             $text .= '<option value="BEF "' . $selected . '>' . __('before') . '</option>';
-
+            
             $selected = '';
             if (substr($process_date, 0, 4) == 'ABT ') {
                 $selected = ' selected';
