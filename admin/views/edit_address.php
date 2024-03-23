@@ -260,7 +260,7 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
 
                     </div>
                 </div>
-            <? } ?>
+            <?php } ?>
 
             <div class="row mb-2">
                 <div class="col-md-1"></div>
@@ -308,10 +308,10 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
             $url = '../index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
         }
     ?>
-        <p><?= __('Preview'); ?><br>
-            <iframe src="<?= $url; ?>" class="iframe">
-                <p>Your browser does not support iframes.</p>
-            </iframe>
-    <?php
+        <br><?= __('Preview'); ?><br>
+        <iframe src="<?= $url; ?>" class="iframe">
+            <p>Your browser does not support iframes.</p>
+        </iframe>
+<?php
     }
 }

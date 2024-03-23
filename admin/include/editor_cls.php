@@ -15,7 +15,7 @@ class editor_cls
         if (!isset($process_date)) $process_date = '';
 
         // *** Process BEF, ABT, AFT and BET in a easier pulldown menu ***
-        global $language, $field_date, $humo_option;
+        global $field_date, $humo_option;
         $text = '';
         $style = '';
         $placeholder = '';
@@ -28,7 +28,7 @@ class editor_cls
                 $selected = ' selected';
             }
             $text .= '<option value="BEF "' . $selected . '>' . __('before') . '</option>';
-            
+
             $selected = '';
             if (substr($process_date, 0, 4) == 'ABT ') {
                 $selected = ' selected';
@@ -121,15 +121,21 @@ class editor_cls
 
         $text .= '" size="' . $field_date . '" ' . $disabled . '>';
 
+        echo $text;
+
         if ($humo_option['admin_hebnight'] == "y" and $hebnight != 'n') {  // user wants checkbox for jewish setting of events after nightfall for specific events AND it is to be placed with this event
             $checked = '';
             if ($hebnight == 'y') {
                 $checked = " checked ";
             }
-            $text .= '<span style="white-space: nowrap"><input type="checkbox" id="' . $hebvar . '" value="y" name="' . $hebvar . '" ' . $checked . '>  <label for="' . $hebvar . '">' . __('After nightfall') . '</label></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+?>
+            <span style="white-space: nowrap">
+                <input type="checkbox" id="<?= $hebvar; ?>" value="y" name="<?= $hebvar; ?>" <?= $checked; ?>> <label for="<?= $hebvar; ?>"><?= __('After nightfall'); ?></label>
+            </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<?php
         }
 
-        return $text;
+        //return $text;
     }
 
     public function date_process($process_name, $multiple_rows = '')
