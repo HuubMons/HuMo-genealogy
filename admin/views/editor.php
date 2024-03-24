@@ -812,8 +812,10 @@ if ($check_person) {
         $field_date = 10;
         $field_place = 25;
         $field_popup = "width=800,height=500,top=100,left=50,scrollbars=yes";
-        $field_text = 'style="height: 45px; width:550px;"';
-        $field_text_medium = 'style="height: 45px; width:550px;"';
+        //$field_text = 'style="height: 45px; width:550px;"';
+        $field_text = 'style="height: 45px;"';
+        //$field_text_medium = 'style="height: 45px; width:550px;"';
+        $field_text_medium = 'style="height: 45px;"';
         $field_text_large = 'style="height: 100px; width:550px"';
 
         // *** Script voor expand and collapse of items ***
@@ -1054,10 +1056,9 @@ if ($check_person) {
         if ($source_error == '1') $style = ' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
         if ($source_error == '2') $style = ' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
 
-        if ($source_count){
+        if ($source_count) {
             return '<span ' . $style . '>[' . $source_count . ']</span>';
-        }
-        else{
+        } else {
             return;
         }
     }
@@ -1312,9 +1313,22 @@ if ($check_person) {
             <tr>
                 <td><?= ucfirst(__('born')); ?></td>
                 <td>
-                    <?= $editor_cls->date_show('', 'pers_birth_date', '', '', '', 'pers_birth_date_hebnight'); ?>
-                    <input type="text" name="pers_birth_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <div class="row mb-2">
+                        <label for "pers_birth_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show('', 'pers_birth_date', '', '', 'pers_birth_date_hebnight'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="pers_birth_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
 
@@ -1333,9 +1347,22 @@ if ($check_person) {
             <tr>
                 <td><?= ucfirst(__('baptised')); ?></td>
                 <td>
-                    <?= $editor_cls->date_show('', 'pers_bapt_date', '', '', '', 'pers_bapt_date_hebnight'); ?>
-                    <input type="text" name="pers_bapt_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <div class="row mb-2">
+                        <label for "pers_bapt_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show('', 'pers_bapt_date', '', '', 'pers_bapt_date_hebnight'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="pers_bapt_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
 
@@ -1343,9 +1370,22 @@ if ($check_person) {
             <tr>
                 <td><?= ucfirst(__('died')); ?></td>
                 <td>
-                    <?= $editor_cls->date_show('', 'pers_death_date', '', '', '', 'pers_death_date_hebnight'); ?>
-                    <input type="text" name="pers_death_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <div class="row mb-2">
+                        <label for "pers_death_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show('', 'pers_death_date', '', '', 'pers_death_date_hebnight'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="pers_death_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
 
@@ -1353,9 +1393,22 @@ if ($check_person) {
             <tr>
                 <td><?= ucfirst(__('buried')); ?></td>
                 <td>
-                    <?= $editor_cls->date_show('', 'pers_buried_date', '', '', '', 'pers_buried_date_hebnight'); ?>
-                    <input type="text" name="pers_buried_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <div class="row mb-2">
+                        <label for "pers_buried_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show('', 'pers_buried_date', '', '', 'pers_buried_date_hebnight'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_buried_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="pers_buried_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
 
@@ -1957,15 +2010,7 @@ if ($check_person) {
         }
     }
 
-    function editor_label($label, $style = '')
-    {
-        $text = '<div class="editor_item">';
-        if ($style == 'bold') $text .= '<b>';
-        $text .= ucfirst($label);
-        if ($style == 'bold') $text .= '</b>';
-        $text .= '</div>';
-        return $text;
-    }
+    // TODO this function will be removed.
     function editor_label2($label, $style = '')
     {
         //$text = '<span style="display: inline-block; width:220px; vertical-align: top;">';

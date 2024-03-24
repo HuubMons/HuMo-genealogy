@@ -1309,7 +1309,6 @@ class editor_event_cls
 
                         <?php
 */
-
                         }
 
                         if ($data_listDb->event_kind == 'NPFX') {
@@ -1442,9 +1441,16 @@ class editor_event_cls
 
                         // *** Date and place by event ***
                         echo '<br>';
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($data_listDb->event_date, 'event_date', "[$data_listDb->event_id]") . '<br>';
+                        ?>
 
+                        <div class="row mb-2">
+                            <label for "event_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($data_listDb->event_date, 'event_date', "[$data_listDb->event_id]"); ?>
+                            </div>
+                        </div>
+
+                        <?php
                         // *** To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id ***
                         echo editor_label2(__('place'));
                         echo '<input type="text" name="event_place' . $data_listDb->event_id . '" placeholder="' . __('place') . '" value="' . $data_listDb->event_place . '" size="' . $field_place . '">';
@@ -1508,20 +1514,66 @@ class editor_event_cls
                 <tr>
                     <td style="border-right:0px;"><?= __('Profession'); ?></td>
                     <td colspan="2">
-                        <input type="text" name="event_profession" placeholder="<?= __('Profession'); ?>" value="" size="60"><br>
-                        <?= $editor_cls->date_show("", "event_date_profession", "") . ' ' . __('place'); ?> <input type="text" name="event_place_profession" placeholder="<?= __('place'); ?>" value="" size="<?= $field_date; ?>"><br>
-                        <textarea rows="1" name="event_text_profession" <?= $field_text; ?> placeholder="<?= __('text'); ?>"><?= $editor_cls->text_show(""); ?></textarea>
+                        <div class="row mb-2">
+                            <label for "event_profession" class="col-sm-3 col-form-label"><?= __('Profession'); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="event_profession" placeholder="<?= __('Profession'); ?>" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for "event_date_profession" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show("", "event_date_profession", ""); ?>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for "event_place_profession" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="event_place_profession" placeholder="<?= __('place'); ?>" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for "event_text_profession" class="col-sm-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                            <div class="col-md-7">
+                                <textarea rows="1" name="event_text_profession" <?= $field_text; ?> placeholder="<?= __('text'); ?>" class="form-control form-control-sm"><?= $editor_cls->text_show(""); ?></textarea>
+                            </div>
+                        </div>
                     </td>
                 </tr>
-            <?php
-            } elseif ($event_kind == 'religion') {
-            ?>
+            <?php } elseif ($event_kind == 'religion') { ?>
                 <tr>
                     <td style="border-right:0px;"><?= __('Religion'); ?></td>
                     <td colspan="2">
-                        <input type="text" name="event_religion" placeholder="<?= __('Religion'); ?>" value="" size="60"><br>
-                        <?= $editor_cls->date_show("", "event_date_religion", "") . ' ' . __('place'); ?> <input type="text" name="event_place_religion" placeholder="<?= __('place'); ?>" value="" size="<?= $field_date; ?>"><br>
-                        <textarea rows="1" name="event_text_religion" <?= $field_text; ?> placeholder="<?= __('text'); ?>"><?= $editor_cls->text_show(""); ?></textarea>
+                        <div class="row mb-2">
+                            <label for "event_religion" class="col-sm-3 col-form-label"><?= __('Religion'); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="event_religion" placeholder="<?= __('Religion'); ?>" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for "event_date_religion" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show("", "event_date_religion", ""); ?>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for "event_place_religion" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="event_place_religion" placeholder="<?= __('place'); ?>" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for "event_text_religion" class="col-sm-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                            <div class="col-md-7">
+                                <textarea rows="1" name="event_text_religion" <?= $field_text; ?> placeholder="<?= __('text'); ?>" class="form-control form-control-sm"><?= $editor_cls->text_show(""); ?></textarea>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             <?php

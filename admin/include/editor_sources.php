@@ -293,7 +293,8 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                     if ($connectDb->connect_source_id != '') {
                         //$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
                         $field_date = 12; // Size of date field (function date_show).
-                        $field_text = 'style="height: 60px; width:550px"';
+                        //$field_text = 'style="height: 60px; width:550px"';
+                        $field_text = 'style="height: 60px;"';
                         $connect_role = '';
                         if ($connectDb->connect_role) $connect_role = $connectDb->connect_role;
                         $connect_place = '';
@@ -308,8 +309,12 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                                 <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Title'); ?></span>
                                 <input type="text" name="source_title[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_title); ?>" size="60" placeholder="<?= __('Title'); ?>"><br>
 
-                                <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Date'); ?></span>
-                                <?= $editor_cls->date_show($sourceDb->source_date, 'source_date', "[$connectDb->connect_id]"); ?><br>
+                                <div class="row mb-2">
+                                    <label for "source_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                                    <div class="col-md-7">
+                                        <?php $editor_cls->date_show($sourceDb->source_date, 'source_date', "[$connectDb->connect_id]"); ?>
+                                    </div>
+                                </div>
 
                                 <span style="display: inline-block; width:150px; vertical-align: top;"><?= ucfirst(__('place')); ?></span>
                                 <input type="text" name="source_place[<?= $connectDb->connect_id; ?>]" placeholder="<?= ucfirst(__('place')) . '" value="' . htmlspecialchars($sourceDb->source_place); ?>" size="15"><br>
@@ -342,8 +347,12 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                                 <option value="3" <?php if ($connectDb->connect_quality == '3') echo ' selected'; ?>><?= ucfirst(__('quality: data from direct source')); ?></option>
                             </select><br>
 
-                            <span style="display: inline-block; width:150px; vertical-align: top;"><?= __('Date'); ?></span>
-                            <?= $editor_cls->date_show($connectDb->connect_date, 'connect_date', "[$connectDb->connect_id]"); ?><br>
+                            <div class="row mb-2">
+                                <label for "connect_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($connectDb->connect_date, 'connect_date', "[$connectDb->connect_id]"); ?>
+                                </div>
+                            </div>
 
                             <span style="display: inline-block; width:150px; vertical-align: top;"><?= ucfirst(__('place')); ?></span>
                             <input type="text" name="connect_place[<?= $connectDb->connect_id; ?>]" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($connect_place); ?>" size="15"><br>

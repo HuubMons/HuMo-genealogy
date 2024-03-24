@@ -798,7 +798,7 @@ class EditorModel
 
             // *** New person: add profession ***
             if (isset($_POST["event_profession"]) and $_POST["event_profession"] != "" and $_POST["event_profession"] != "Profession") {
-                $event_date = '';
+                //$event_date = '';
                 $event_place = "";
                 if (isset($_POST["event_place_profession"])) $event_place = $_POST["event_place_profession"];
                 $event_text = "";
@@ -806,7 +806,8 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                $this->add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', $event_date, $event_place, $event_text);
+                //$this->add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', $event_date, $event_place, $event_text);
+                $this->add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', 'event_date_profession', $event_place, $event_text);
             }
 
             // *** New person: add religion ***

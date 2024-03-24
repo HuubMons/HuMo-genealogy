@@ -220,8 +220,27 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
             </tr>
 
             <tr>
-                <td><?= __('date') . ' - ' . __('place'); ?></td>
-                <td colspan="3"><?= $editor_cls->date_show($source_date, "source_date"); ?> <input type="text" name="source_place" value="<?= htmlspecialchars($source_place); ?>" placeholder=<?= ucfirst(__('place')); ?> size="50"></td>
+                <td><?= ucfirst(__('date')); ?></td>
+                <td colspan="3">
+                    <div class="row mb-2">
+                        <label for "source_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show($source_date, "source_date"); ?>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td><?= ucfirst(__('place')); ?></td>
+                <td colspan="3">
+                    <div class="row mb-2">
+                        <label for "source_place" class="col-sm-3 col-form-label"><?= ucfirst(__('Place')); ?></label>
+                        <div class="col-md-7">
+                        <input type="text" name="source_place" value="<?= htmlspecialchars($source_place); ?>" placeholder=<?= ucfirst(__('place')); ?> size="50" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                </td>
             </tr>
 
             <tr>
@@ -309,7 +328,7 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
     }
 }
 
-// *** Needed to add pictures ***
+// *** Needed to add pictures, TODO can be removed later ***
 function editor_label2($label, $style = '')
 {
     $text = '<span style="display: inline-block; width:150px; vertical-align: top;">';

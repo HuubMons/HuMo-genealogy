@@ -154,11 +154,13 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
         <div class="p-2 me-sm-2 genealogy_search">
             <div class="row mb-2">
                 <div class="col-md-1"></div>
+
+                <!-- date -->
+
                 <div class="col-md-2">
                     <?= __('Place'); ?>
                 </div>
                 <div class="col-md-4">
-                    <!-- $editor_cls->date_show($address_date,"address_date"); -->
                     <input type="text" name="address_place" value="<?= htmlspecialchars($address_place); ?>" size="50" class="form-control form-control-sm">
                 </div>
             </div>

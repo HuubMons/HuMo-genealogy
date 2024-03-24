@@ -214,22 +214,15 @@ if ($add_person == false) {
                     <td id="target1">
                         <a href="#marriage" onclick="hideShowAll2();"><span id="hideshowlinkall2">[+]</span> <?= __('All'); ?></a>
                         <a name="marriage"></a>
-                        <?php
-                        // *** Remove marriage ***
-                        if (isset($marriage)) {
-                            echo '<input type="submit" name="fam_remove" value="' . __('Delete relation') . '" class="btn btn-sm btn-secondary">';
-                        } else {
-                            echo '<br>';
-                        }
-                        ?>
                     </td>
 
                     <th id="target2" colspan="2" style="font-size: 1.5em;">
+                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                         [<?= $fam_gedcomnumber; ?>] <?= show_person($man_gedcomnumber); ?> <?= __('and'); ?> <?= show_person($woman_gedcomnumber); ?>
                     </th>
 
                     <td id="target3">
-                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                        <br>
                     </td>
                 </tr>
 
@@ -325,10 +318,15 @@ if ($add_person == false) {
                             $hideshow_text .= ' ' . __('End living together') . ' ' . $fam_relation_end_date;
                         }
                         echo hideshow_editor($hideshow, $hideshow_text, $fam_relation_text);
+                        ?>
+                        <div class="row mb-2">
+                            <label for "fam_relation_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($fam_relation_date, 'fam_relation_date'); ?>
+                            </div>
+                        </div>
 
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_relation_date, 'fam_relation_date') . '<br>';
-
+                        <?php
                         echo editor_label2(__('place'));
                         echo '<input type="text" name="fam_relation_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_relation_place) . '" size="' . $field_place . '">';
                         echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_relation_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
@@ -336,6 +334,17 @@ if ($add_person == false) {
                         // *** End of living together ***
                         echo editor_label2(__('End date'));
                         echo $editor_cls->date_show($fam_relation_end_date, "fam_relation_end_date") . '<br>';
+
+                        /*
+                        ?>
+                        <div class="row mb-2">
+                            <label for "even_brit_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($britdate, 'even_brit_date'); ?>
+                            </div>
+                        </div>
+                        <?php
+                        */
 
                         // *** Check if there are multiple lines in text ***
                         $field_text_selected = $field_text;
@@ -376,10 +385,16 @@ if ($add_person == false) {
                         <?php
                         $hideshow_text = hideshow_date_place($fam_marr_notice_date, $fam_marr_notice_place);
                         echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_notice_text);
+                        ?>
 
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_marr_notice_date, "fam_marr_notice_date", "", "", $fam_marr_notice_date_hebnight, "fam_marr_notice_date_hebnight") . '<br>';
+                        <div class="row mb-2">
+                            <label for "fam_marr_notice_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($fam_marr_notice_date, "fam_marr_notice_date", "", $fam_marr_notice_date_hebnight, "fam_marr_notice_date_hebnight"); ?>
+                            </div>
+                        </div>
 
+                        <?php
                         echo editor_label2(__('place'));
                         echo '<input type="text" name="fam_marr_notice_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_notice_place) . '" size="' . $field_place . '">';
                         echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_notice_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
@@ -438,10 +453,16 @@ if ($add_person == false) {
                         }
 
                         echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_text);
+                        ?>
 
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_marr_date, "fam_marr_date", "", "", $fam_marr_date_hebnight, "fam_marr_date_hebnight") . '<br>';
+                        <div class="row mb-2">
+                            <label for "fam_marr_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($fam_marr_date, "fam_marr_date", "", $fam_marr_date_hebnight, "fam_marr_date_hebnight"); ?>
+                            </div>
+                        </div>
 
+                        <?php
                         echo editor_label2(__('place'));
                         echo '<input type="text" name="fam_marr_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_place) . '" size="' . $field_place . '">';
                         echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
@@ -533,10 +554,16 @@ if ($add_person == false) {
                         <?php
                         $hideshow_text = hideshow_date_place($fam_marr_church_notice_date, $fam_marr_church_notice_place);
                         echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_notice_text);
+                        ?>
 
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_marr_church_notice_date, "fam_marr_church_notice_date", "", "", $fam_marr_church_notice_date_hebnight, "fam_marr_church_notice_date_hebnight") . '<br>';
+                        <div class="row mb-2">
+                            <label for "fam_marr_church_notice_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($fam_marr_church_notice_date, "fam_marr_church_notice_date", "", $fam_marr_church_notice_date_hebnight, "fam_marr_church_notice_date_hebnight"); ?>
+                            </div>
+                        </div>
 
+                        <?php
                         echo editor_label2(__('place'));
                         echo '<input type="text" name="fam_marr_church_notice_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_church_notice_place) . '" size="' . $field_place . '">';
                         echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_notice_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
@@ -580,10 +607,16 @@ if ($add_person == false) {
                         <?php
                         $hideshow_text = hideshow_date_place($fam_marr_church_date, $fam_marr_church_place);
                         echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_text);
+                        ?>
 
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_marr_church_date, "fam_marr_church_date", "", "", $fam_marr_church_date_hebnight, "fam_marr_church_date_hebnight") . '<br>';
+                        <div class="row mb-2">
+                            <label for "fam_marr_church_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($fam_marr_church_date, "fam_marr_church_date", "", $fam_marr_church_date_hebnight, "fam_marr_church_date_hebnight"); ?>
+                            </div>
+                        </div>
 
+                        <?php
                         echo editor_label2(__('place'));
                         echo '<input type="text" name="fam_marr_church_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_church_place) . '" size="' . $field_place . '">';
                         echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
@@ -650,10 +683,16 @@ if ($add_person == false) {
                         }
 
                         echo hideshow_editor($hideshow, $hideshow_text, $fam_div_text);
+                        ?>
 
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_div_date, "fam_div_date") . '<br>';
+                        <div class="row mb-2">
+                            <label for "fam_div_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($fam_div_date, "fam_div_date"); ?>
+                            </div>
+                        </div>
 
+                        <?php
                         echo editor_label2(__('place'));
                         echo '<input type="text" name="fam_div_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_div_place) . '" size="' . $field_place . '">';
                         echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_div_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
@@ -822,9 +861,18 @@ if ($add_person == false) {
                 ?>
                 <tr class="table_header_large">
                     <td></td>
-                    <td colspan="2"></td>
-                    <td style="border-left: none; text-align:left; font-size: 1.5em;">
+                    <td colspan="2">
                         <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+
+                        <?= __('or'); ?>
+
+                        <!-- Remove marriage -->
+                        <?php if (isset($marriage)) { ?>
+                            <input type="submit" name="fam_remove" value="<?= __('Delete relation'); ?>" class="btn btn-sm btn-secondary">
+                        <?php } ?>
+                    </td>
+                    <td>
+                        <br>
                     </td>
                 </tr>
             </table><br>
@@ -879,8 +927,7 @@ if ($add_person == false) {
                 //echo '<br>&gt;&gt;&gt; '.__('Order children...');
 
                 //TODO only get children...
-                $fam_qry = $dbh->query("SELECT * FROM humo_families
-                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $marriage . "'");
+                $fam_qry = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $marriage . "'");
                 $famDb = $fam_qry->fetch(PDO::FETCH_OBJ);
                 $child_array = explode(";", $famDb->fam_children);
                 $nr_children = count($child_array);
@@ -910,8 +957,7 @@ if ($add_person == false) {
                     }
 
                     if ($famDb->fam_children != $fam_children) {
-                        $sql = "UPDATE humo_families SET fam_children='" . $fam_children . "'
-                            WHERE fam_id='" . $famDb->fam_id . "'";
+                        $sql = "UPDATE humo_families SET fam_children='" . $fam_children . "' WHERE fam_id='" . $famDb->fam_id . "'";
                         $dbh->query($sql);
                     }
                 }
