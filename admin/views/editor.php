@@ -689,10 +689,9 @@ if ($check_person) {
                                 }
                             }
                             ?>
-
                         </td>
-                        <td style="vertical-align: top;">
 
+                        <td style="vertical-align: top;">
                             <?php
                             // *** Show parents and siblings (brothers and sisters) ***
                             echo '<b>' . __('Parents') . '</b><br>';
@@ -1035,8 +1034,8 @@ if ($check_person) {
         global $tree_id, $dbh, $db_functions;
 
         $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
-                            WHERE connect_tree_id='" . $tree_id . "'
-                            AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
+            WHERE connect_tree_id='" . $tree_id . "'
+            AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
         $connect_sql = $dbh->query($connect_qry);
         $source_count = $connect_sql->rowCount();
         $source_error = 0;
@@ -1057,7 +1056,8 @@ if ($check_person) {
         if ($source_error == '2') $style = ' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
 
         if ($source_count) {
-            return '<span ' . $style . '>[' . $source_count . ']</span>';
+            //return '<span ' . $style . '>[' . $source_count . ']</span>';
+            return '<span ' . $style . '>#' . $source_count . '</span>';
         } else {
             return;
         }
@@ -1105,13 +1105,15 @@ if ($check_person) {
     // *** Show link to sources (mar. 2024 version 3) ***
     function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id)
     {
+        // TODO improve this unique_id.
+        $unique_id = $connect_kind . $connect_sub_kind . $connect_connect_id;
         ?>
         <!-- Button trigger modal for sources -->
-        <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal<?= $unique_id; ?>">
             <?= ucfirst(__('source')); ?>
         </button>
 
-        <div class="modal fade" id="sourceModal" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
+        <div class="modal fade" id="sourceModal<?= $unique_id; ?>" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -1160,42 +1162,6 @@ if ($check_person) {
 
         return $text;
     }
-
-
-    function witness_edit($event_connect_id2, $event_text, $witness, $multiple_rows = '')
-    {
-        global $tree_id, $menu_tab, $field_popup;
-        $text = '';
-
-        // *** Witness select popup screen ***
-        //$value = '';
-        //if (substr($witness, 0, 1) == '@') {
-        //    $value = substr($witness, 1, -1);
-        //}
-
-        $person_item = 'person_witness';
-        if ($menu_tab == 'marriage') $person_item = 'marriage_witness';
-
-        // *** Orange items if no witness name is selected or added in text ***
-        $style = '';
-        //if (!$witness) $style = 'style="background-color:#FFAA80"';
-        if (!$witness and !$event_connect_id2) $style = 'style="background-color:#FFAA80"';
-
-        //$text .= '<input ' . $style . ' type="text" name="text_event2' . substr($multiple_rows, 1, -1) . '" value="' . $value . '" size="17" placeholder="' . __('GEDCOM number (ID)') . '">';
-        $text .= '<input ' . $style . ' type="text" name="event_connect_id2' . substr($multiple_rows, 1, -1) . '" value="' . $event_connect_id2 . '" size="17" placeholder="' . __('GEDCOM number (ID)') . '">';
-        $text .= '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person=0&person_item=' . $person_item . '&event_row=' . substr($multiple_rows, 1, -1) . '&tree_id=' . $tree_id . '","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
-
-        // *** Witness: text field ***
-        //$witness_value = $witness;
-        //if (substr($witness, 0, 1) == '@') {
-        //    $witness_value = '';
-        //}
-        //$text .= ' <b>' . __('or') . ':</b> <input type="text" ' . $style . ' name="text_event' . $multiple_rows . '" value="' . htmlspecialchars($witness_value) . '" placeholder="' . $event_text . '" size="44">';
-        $text .= ' <b>' . __('or') . ':</b> <input type="text" ' . $style . ' name="text_event' . $multiple_rows . '" value="' . htmlspecialchars($witness) . '" placeholder="' . $event_text . '" size="44">';
-
-        return $text;
-    }
-
 
     // *** New function aug. 2021: Add partner or child ***
     function add_person($person_kind, $pers_sexe)
@@ -2053,8 +2019,8 @@ if ($check_person) {
 
     // *** Set same width of columns (in 2 different tables) in tab family ***
     echo '
-<script>
-$("#chtd1").width($("#target1").width());
-$("#chtd2").width($("#target3").width());
-$("#chtd3").width($("#target2").width());
-</script> ';
+    <script>
+        $("#chtd1").width($("#target1").width());
+        $("#chtd2").width($("#target3").width());
+        $("#chtd3").width($("#target2").width());
+    </script> ';

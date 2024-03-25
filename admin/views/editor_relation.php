@@ -53,7 +53,7 @@ if ($add_person == false) {
                             }
                             ?>
                         </td>
-                        <td id="chtd3" colspan="2">
+                        <td id="chtd3">
                             <b><?= show_person($familyDb->fam_man) . ' ' . __('and') . ' ' . show_person($familyDb->fam_woman); ?></b>
                             <?php
                             if ($familyDb->fam_marr_date) {
@@ -235,9 +235,9 @@ if ($add_person == false) {
                 <tr>
                     <td><?= ucfirst(__('marriage/ relation')); ?></td>
                     <td colspan="2">
-                        <?php
-                        echo __('Select person 1') . ' <input type="text" name="connect_man" value="' . $man_gedcomnumber . '" size="5">';
+                        <?= __('Select person 1'); ?> <input type="text" name="connect_man" value="<?= $man_gedcomnumber; ?>" size="5">
 
+                        <?php
                         echo '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person_item=man&person=' . $man_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
 
                         $person = $db_functions->get_person($man_gedcomnumber);
@@ -284,11 +284,10 @@ if ($add_person == false) {
 
                         echo ' <b>' . $editor_cls->show_selected_person($person) . '</b>';
 
-                        // *** Use old value to detect change of woman in marriage ***
-                        echo '<input type="hidden" name="connect_woman_old" value="' . $woman_gedcomnumber . '">';
                         ?>
+                        <!-- Use old value to detect change of woman in marriage -->
+                        <input type="hidden" name="connect_woman_old" value="<?= $woman_gedcomnumber; ?>">
                     </td>
-                    <td></td>
                 </tr>
 
                 <?php
@@ -647,7 +646,6 @@ if ($add_person == false) {
                 echo $event_cls->show_event('family', $marriage, 'marriage_witness_rel');
 
                 // *** Religion ***
-                //echo '<tr class="humo_color"><td rowspan="1">'.__('Religion').'</td>';
                 ?>
                 <tr class="humo_color">
                     <td rowspan="1"></td>
@@ -657,7 +655,6 @@ if ($add_person == false) {
                         echo '<input type="text" placeholder="' . __('Religion') . '" name="fam_religion" value="' . htmlspecialchars($fam_religion) . '" size="60">';
                         ?>
                     </td>
-                    <td></td>
                 </tr>
 
                 <?php
@@ -733,10 +730,9 @@ if ($add_person == false) {
                         <input type="checkbox" name="fam_div_no_data" value="no_data" <?= $fam_div_no_data ? ' checked' : ''; ?>>
                         <?= __('Divorce (use this checkbox for a divorce without further data).'); ?>
                     </td>
-                    <td></td>
                 </tr>
-                <?php
 
+                <?php
                 // *** General text by relation ***
                 ?>
                 <tr class="humo_color">
@@ -806,12 +802,10 @@ if ($add_person == false) {
                             }
                             ?>
                         </td>
-                        <td></td>
                     </tr>
                     <tr style="display:none;" class="row110">
                         <td></td>
                         <td colspan="2"><?= $tagDb->tag_tag; ?></td>
-                        <td></td>
                     </tr>
                 <?php
                 }
@@ -834,7 +828,6 @@ if ($add_person == false) {
                     <tr class="table_header_large">
                         <td><?= __('Added by'); ?></td>
                         <td colspan="2"><?= show_datetime($familyDb->fam_new_datetime) . ' ' . $user_name; ?></td>
-                        <td></td>
                     </tr>
                 <?php
                 }
@@ -852,7 +845,6 @@ if ($add_person == false) {
                     <tr class="table_header_large">
                         <td><?= __('Changed by'); ?></td>
                         <td colspan="2"><?= show_datetime($familyDb->fam_changed_datetime) . ' ' . $user_name; ?></td>
-                        <td></td>
                     </tr>
                 <?php
                 }
@@ -870,9 +862,6 @@ if ($add_person == false) {
                         <?php if (isset($marriage)) { ?>
                             <input type="submit" name="fam_remove" value="<?= __('Delete relation'); ?>" class="btn btn-sm btn-secondary">
                         <?php } ?>
-                    </td>
-                    <td>
-                        <br>
                     </td>
                 </tr>
             </table><br>
@@ -975,25 +964,29 @@ if ($add_person == false) {
 
                 //echo __('Children').':<br>';
                 $fam_children_array = explode(";", $familyDb->fam_children);
-                echo '<ul id="sortable' . $i . '" class="sortable">';
-                foreach ($fam_children_array as $j => $value) {
-                    // *** Create new children variabele, for disconnect child ***
-                    $fam_children = '';
-                    foreach ($fam_children_array as $k => $value) {
-                        if ($k != $j) {
-                            $fam_children .= $fam_children_array[$k] . ';';
+        ?>
+                <ul id="sortable<?= $i; ?>" class="sortable">
+                    <?php
+                    foreach ($fam_children_array as $j => $value) {
+                        // *** Create new children variabele, for disconnect child ***
+                        $fam_children = '';
+                        foreach ($fam_children_array as $k => $value) {
+                            if ($k != $j) {
+                                $fam_children .= $fam_children_array[$k] . ';';
+                            }
                         }
-                    }
-                    $fam_children = substr($fam_children, 0, -1); // *** strip last ; character ***
+                        $fam_children = substr($fam_children, 0, -1); // *** strip last ; character ***
 
-                    echo '<li><span style="cursor:move;" id="' . $fam_children_array[$j] . '" class="handle' . $i . '" ><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
+                        echo '<li><span style="cursor:move;" id="' . $fam_children_array[$j] . '" class="handle' . $i . '" ><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
 
-                    echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=' . $fam_children .
-                        '&amp;child_disconnect_gedcom=' . $fam_children_array[$j] . '">
+                        echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=' . $fam_children .
+                            '&amp;child_disconnect_gedcom=' . $fam_children_array[$j] . '">
                         <img src="images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
-                    echo '&nbsp;&nbsp;<span id="chldnum' . $fam_children_array[$j] . '">' . ($j + 1) . '</span>. ' . show_person($fam_children_array[$j], true) . '</li>';
-                }
-                echo '</ul>';
+                        echo '&nbsp;&nbsp;<span id="chldnum' . $fam_children_array[$j] . '">' . ($j + 1) . '</span>. ' . show_person($fam_children_array[$j], true) . '</li>';
+                    }
+                    ?>
+                </ul>
+            <?php
             }
 
             // *** Add child ***
@@ -1001,7 +994,7 @@ if ($add_person == false) {
             add_person('child', $pers_sexe);
 
             // *** Search existing person as child ***
-        ?>
+            ?>
             <form method="POST" action="<?= $phpself; ?>" style="display : inline;" name="form7" id="form7">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <?php
