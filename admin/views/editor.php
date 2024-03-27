@@ -2005,14 +2005,15 @@ if ($check_person) {
 
     function hideshow_editor($hideshow, $text, $check_text)
     {
-        $display = ' display:none;';
+        //$display = ' display:none;';
         if (!$text) $text = '[' . __('Add') . ']';
 
         $return_text = '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
         if ($check_text) $return_text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
         $return_text .= '</span>';
 
-        $return_text .= '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '"><br>';
+        //$return_text .= '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '"><br>';
+        $return_text .= '<span class="humo row' . $hideshow . '" style="margin-left:0px; display:none;"><br>';
 
         return $return_text;
     }

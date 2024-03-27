@@ -36,17 +36,13 @@
                     // *** Show archive list ***
                     // *** Show navigation pop-up ***
                     echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
-                    echo '<a href="#" style="display:inline" ';
-                    echo 'onmouseover="mopen(event,\'archive_menu\',0,0)"';
-                    echo 'onmouseout="mclosetime()">';
+                    echo '<a href="#" style="display:inline" onmouseover="mopen(event,\'archive_menu\',0,0)" onmouseout="mclosetime()">';
                     echo '[' . __('Archives') . ']</a>';
                     echo '<div class="sddm_fixed"
                         style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
                         direction:' . $rtlmarker . ';
-                        box-shadow: 2px 2px 2px #999;
-                        border-radius: 3px;"
-                        id="archive_menu"
-                        onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+                        box-shadow: 2px 2px 2px #999; border-radius: 3px;"
+                        id="archive_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
                     // *** Show box with list link to archives ***
                     if ($add_person == false) {
@@ -685,24 +681,15 @@
 
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?php
-                source_link3('sex', 'pers_sexe_source', $pers_gedcomnumber);
-                echo $check_sources_text;
-                ?>
-
-            </td>
-            <td>
-                <?php
-                //if (!isset($_GET['add_person'])) {
-                //    echo source_link2('501', $pers_gedcomnumber, 'pers_sexe_source', 'sex');
-                //}
+                if (!isset($_GET['add_person'])) {
+                    source_link3('sex', 'pers_sexe_source', $pers_gedcomnumber);
+                    echo $check_sources_text;
+                }
                 ?>
             </td>
         </tr>
+
         <?php
-        // *** Show source by sexe in iframe ***
-        //echo edit_sources('501', 'person', 'pers_sexe_source', $pers_gedcomnumber);
-
-
         // *** Born ***
         // *** Use hideshow to show and hide the editor lines ***
         $hideshow = '2';
@@ -721,6 +708,13 @@
                 }
                 //TEST
                 //if (!$hideshow_text) $hideshow_text=ucfirst(__('born'));
+
+                $check_sources_text = '';
+                if ($pers_gedcomnumber) {
+                    $check_sources_text = check_sources('born', 'pers_birth_source', $pers_gedcomnumber);
+                    $hideshow_text .= ' ' . $check_sources_text;
+                }
+
                 echo hideshow_editor($hideshow, $hideshow_text, $pers_birth_text);
                 ?>
                 <div class="row mb-2">
@@ -762,25 +756,26 @@
                     </div>
                 </div>
 
+                <?php if (!isset($_GET['add_person'])) { ?>
+                    <div class="row mb-2">
+                        <label for "pers_birth_text" class="col-sm-3 col-form-label"><?= __('Source'); ?></label>
+                        <div class="col-md-7">
+                            <?php
+                            source_link3('born', 'pers_birth_source', $pers_gedcomnumber);
+                            echo $check_sources_text;
+                            ?>
+                        </div>
+                    </div>
+                <?php } ?>
+
                 <!-- End of hideshow_editor span -->
                 <?php
                 echo '</span>';
                 ?>
             </td>
-
-            <td>
-                <?php
-                // *** Source by birth ***
-                if (!isset($_GET['add_person'])) {
-                    echo source_link2('502', $pers_gedcomnumber, 'pers_birth_source', 'born');
-                }
-                ?>
-            </td>
         </tr>
-        <?php
-        // *** Show source by birth in iframe ***
-        echo edit_sources('502', 'person', 'pers_birth_source', $pers_gedcomnumber);
 
+        <?php
         // *** Birth declaration ***
         if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'birth_declaration');
 
@@ -796,15 +791,17 @@
             $result = $dbh->query($sql);
             if ($result->rowCount() > 0) {
                 $britDb = $result->fetch(PDO::FETCH_OBJ);
+                $britid = $britDb->event_id;
                 $britdate = $britDb->event_date;
                 $britplace = $britDb->event_place;
                 $brittext = $britDb->event_text;
             } else {
+                $britid = '';
                 $britdate = "";
                 $britplace = "";
                 $brittext = "";
             }
-            $britDb = $result->fetch(PDO::FETCH_OBJ);
+            //$britDb = $result->fetch(PDO::FETCH_OBJ);
 
         ?>
             <tr>
@@ -820,19 +817,43 @@
                             <?php $editor_cls->date_show($britdate, 'even_brit_date'); ?>
                         </div>
                     </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_birth_text" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="even_brit_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($britplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
                     <?php
-
-                    echo editor_label2(__('place'));
-                    echo '<input type="text" name="even_brit_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($britplace) . '" size="' . $field_place . '"><br>';
-
                     // *** Check if there are multiple lines in text ***
                     $text = $editor_cls->text_show($brittext);
                     $field_text_selected = $field_text;
                     if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                    echo editor_label2(__('text'));
-                    echo '<textarea rows="1" placeholder="' . __('text') . '" name="even_brit_text" ' . $field_text_selected . '>' . $text . '</textarea>';
+                    ?>
+                    <div class="row mb-2">
+                        <label for "pers_birth_text" class="col-sm-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="even_brit_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                        </div>
+                    </div>
+                    <?php
 
-                    echo '<br>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"');
+                    if (!isset($_GET['add_person'])) {
+                    ?>
+                        <div class="row mb-2">
+                            <label for "pers_birth_text" class="col-sm-3 col-form-label"><?= __('Source'); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                source_link3('person', 'pers_event_source', $britid);
+                                //echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
+                    <?php
+                    }
+
+                    echo '<i>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"') . '</i>';
                     // echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_brit_place","","'.$field_popup.'")\'><img src="../images/search.png" alt="'.__('Search').'"></a>';
                     // *** End of hideshow_editor span ***
                     echo '</span>';
@@ -853,10 +874,12 @@
             $result = $dbh->query($sql);
             if ($result->rowCount() > 0) {
                 $barmDb = $result->fetch(PDO::FETCH_OBJ);
+                $barid =  $barmDb->event_id;
                 $bardate =  $barmDb->event_date;
                 $barplace =  $barmDb->event_place;
                 $bartext =  $barmDb->event_text;
             } else {
+                $barid = "";
                 $bardate = "";
                 $barplace = "";
                 $bartext = "";
@@ -886,19 +909,40 @@
                         </div>
                     </div>
 
-                    <?php
-                    echo editor_label2(__('place'));
-                    echo '<input type="text" name="even_barm_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($barplace) . '" size="' . $field_place . '"><br>';
-                    //echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_barm_place","","'.$field_popup.'")\><img src="../images/search.png" alt="'.__('Search').'"></a>';
+                    <div class="row mb-2">
+                        <label for "even_barm_date" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="even_barm_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($barplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
 
+                    <?php
                     // *** Check if there are multiple lines in text ***
                     $text = $editor_cls->text_show($bartext);
                     $field_text_selected = $field_text;
                     if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                    echo editor_label2(__('text'));
-                    echo '<textarea rows="1" placeholder="' . __('text') . '" name="even_barm_text" ' . $field_text_selected . '>' . $text . '</textarea>';
+                    ?>
+                    <div class="row mb-2">
+                        <label for "even_barm_date" class="col-sm-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="even_barm_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                        </div>
+                    </div>
 
-                    echo '<br>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"');
+                    <?php if (!isset($_GET['add_person'])) { ?>
+                        <div class="row mb-2">
+                            <label for "pers_birth_text" class="col-sm-3 col-form-label"><?= __('Source'); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                source_link3('person', 'pers_event_source', $barid);
+                                //echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
+                    <?php
+                    }
+
+                    echo '<i>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"') . '</i>';
                     echo '</span>';
                     ?>
                 </td>
@@ -928,11 +972,17 @@
                     </div>
                 </div>
 
-                <?php
-                echo editor_label2(__('place'));
-                echo '<input type="text" name="pers_bapt_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_bapt_place) . '" size="' . $field_place . '">';
-                echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
+                <div class="row mb-2">
+                    <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                    <div class="col-md-7">
+                        <div class="input-group">
+                            <input type="text" name="pers_bapt_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_bapt_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                            <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                        </div>
+                    </div>
+                </div>
 
+                <?php
                 $text = htmlspecialchars($pers_religion);
                 echo editor_label2(__('religion'));
                 echo '<input type="text" name="pers_religion" placeholder="' . __('religion') . '" value="' . $text . '" size="20"><br>';
@@ -1038,15 +1088,24 @@
                 echo editor_label2(__('place'));
                 echo '<input type="text" name="pers_death_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_death_place) . '" size="' . $field_place . '">';
                 echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
+                /*
+                <div class="row mb-2">
+                    <label for "pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                    <div class="col-md-7">
+                        <div class="input-group">
+                            <input type="text" name="pers_birth_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_birth_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                            <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                        </div>
+                    </div>
+                </div>
+*/
 
                 // *** Age by death ***
                 echo editor_label2(__('Age'));
                 echo '<input type="text" name="pers_death_age" placeholder="' . __('Age') . '" value="' . $pers_death_age . '" size="3">';
                 // *** HELP POPUP for age by death ***
                 echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
-                echo '<a href="#" style="display:inline" ';
-                echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
-                echo 'onmouseout="mclosetime()">';
+                echo '<a href="#" style="display:inline" onmouseover="mopen(event,\'help_menu2\',100,400)" onmouseout="mclosetime()">';
                 echo '<img src="../images/help.png" height="16" width="16">';
                 echo '</a>';
                 echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -1058,7 +1117,6 @@
                 echo '<input type="text" name="pers_death_time" placeholder="' . __('death time') . '" value="' . $pers_death_time . '" size="' . $field_date . '"><br>';
 
                 echo editor_label2(__('cause'));
-                //echo ' ' . __('cause') . ' ';
                 $cause = false;
                 ?>
                 <select size="1" name="pers_death_cause">
@@ -1201,6 +1259,17 @@
                 echo editor_label2(__('place'));
                 echo '<input type="text" name="pers_buried_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_buried_place) . '" size="' . $field_place . '">';
                 echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
+                /*
+                <div class="row mb-2">
+                    <label for "pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                    <div class="col-md-7">
+                        <div class="input-group">
+                            <input type="text" name="pers_birth_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_birth_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                            <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                        </div>
+                    </div>
+                </div>
+*/
 
                 echo editor_label2(__('method of burial'));
                 ?>
