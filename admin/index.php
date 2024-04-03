@@ -33,7 +33,7 @@
 
 session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
-session_regenerate_id();
+//session_regenerate_id();
 
 $page = 'index';
 
@@ -703,7 +703,7 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
     } elseif ($page == 'editor_sources') {
         include_once(__DIR__ . "/include/editor_sources.php");
     }
-    // NEW edit_sources for all source links...
+    // edit_sources for all source links...
     elseif ($page == 'edit_sources') {
         include_once(__DIR__ . "/views/edit_source.php");
     } elseif ($page == 'edit_repositories') {

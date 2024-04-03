@@ -73,5 +73,4 @@ class PHPRtfLite_Autoloader
             throw new Exception("Class $className could not be found!");
         }
     }
-
 }

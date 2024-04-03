@@ -53,9 +53,7 @@ if ($data["authorised"] != '') {
         <td>
             <!-- *** Show persons connected to address *** -->
             <?= $data["address_connected_persons"]; ?>
-        <?php
-            }
-        ?>
+        <?php } ?>
         </td>
     </tr>
 </table>

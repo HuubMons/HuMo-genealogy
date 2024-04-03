@@ -33,7 +33,7 @@ $db_functions->set_tree_id($tree_id);
 <div class="row mb-2">
     <div class="col-auto">
         <label for="tree" class="col-form-label">
-            <?= __('Choose tree:'); ?>:
+            <?= __('Choose tree:'); ?>
         </label>
     </div>
     <div class="col-2">

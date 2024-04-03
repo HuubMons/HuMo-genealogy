@@ -33,6 +33,16 @@ $editSource['source_id'] = $editSourceModel->get_source_id();
 $phpself = 'index.php';
 $field_text_large = 'style="height: 100px; width:550px"';
 
+// TODO check if code could be improved. Also in editor_inc.php line 233.
+// *** Show picture ***
+// *** get path of pictures folder 
+$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
+$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+$tree_pict_path = $dataDb->tree_pict_path;
+if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+$path_prefix = '../';
+
+
 include(__DIR__ . '/../include/editor_event_cls.php');
 $event_cls = new editor_event_cls;
 
@@ -210,8 +220,27 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
             </tr>
 
             <tr>
-                <td><?= __('date') . ' - ' . __('place'); ?></td>
-                <td colspan="3"><?= $editor_cls->date_show($source_date, "source_date"); ?> <input type="text" name="source_place" value="<?= htmlspecialchars($source_place); ?>" placeholder=<?= ucfirst(__('place')); ?> size="50"></td>
+                <td><?= ucfirst(__('date')); ?></td>
+                <td colspan="3">
+                    <div class="row mb-2">
+                        <label for "source_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show($source_date, "source_date"); ?>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td><?= ucfirst(__('place')); ?></td>
+                <td colspan="3">
+                    <div class="row mb-2">
+                        <label for "source_place" class="col-sm-3 col-form-label"><?= ucfirst(__('Place')); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="source_place" value="<?= htmlspecialchars($source_place); ?>" placeholder=<?= ucfirst(__('place')); ?> size="50" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                </td>
             </tr>
 
             <tr>
@@ -269,37 +298,32 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
             }
 
             if (isset($_POST['add_source'])) {
-                echo '<tr><td>' . __('Add') . '</td><td colspan="3"><input type="submit" name="source_add" value="' . __('Add') . '" class="btn btn-sm btn-success"></td></tr>';
-            } else {
-                echo '<tr><td>' . __('Save') . '</td><td colspan="3"><input type="submit" name="source_change2" value="' . __('Save') . '" class="btn btn-sm btn-success">';
-                echo ' ' . __('or') . ' <input type="submit" name="source_remove" value="' . __('Delete') . '" class="btn btn-sm btn-secondary">';
-                echo '</td></tr>';
-            }
             ?>
+                <tr>
+                    <td><?= __('Add'); ?></td>
+                    <td colspan="3"><input type="submit" name="source_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>
+                </tr>
+            <?php } else { ?>
+                <tr>
+                    <td><?= __('Save'); ?></td>
+                    <td colspan="3"><input type="submit" name="source_change2" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                        <?= __('or'); ?> <input type="submit" name="source_remove" value="<?= __('Delete'); ?>" class="btn btn-sm btn-secondary">
+                    </td>
+                </tr>
+            <?php } ?>
         </table>
     </form>
 
-<?php
+    <?php
     // *** Source example in IFRAME ***
     if (!isset($_POST['add_source'])) {
         $vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
         $sourcestring = $link_cls->get_link('../', 'source', $tree_id, false, $vars);
-
-        echo '<p>' . __('Preview') . '<br>';
-        echo '<iframe src ="' . $sourcestring . '" class="iframe">';
-        //TODO TRANSLATE
-        echo '  <p>Your browser does not support iframes.</p>';
-        echo '</iframe>';
+    ?>
+        <p><?= __('Preview'); ?><br>
+            <iframe src="<?= $sourcestring; ?>" class="iframe">
+                <p>Your browser does not support iframes.</p>
+            </iframe>
+    <?php
     }
-}
-
-// *** Needed to add pictures ***
-function editor_label2($label, $style = '')
-{
-    $text = '<span style="display: inline-block; width:150px; vertical-align: top;">';
-    if ($style == 'bold') $text .= '<b>';
-    $text .= ucfirst($label);
-    if ($style == 'bold') $text .= '</b>';
-    $text .= '</span>';
-    return $text;
 }

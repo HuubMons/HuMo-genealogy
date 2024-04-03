@@ -9,74 +9,15 @@ class editor_cls
     // BET 1986 AND 1987 = bet 1986 and 1987
 
     // *** $multiple_rows = addition for editing in multiple rows. Example: name = "event_date[]" ***
-    public function date_show($process_date, $process_name, $multiple_rows = '', $disabled = '', $hebnight = 'n', $hebvar = '')
+    public function date_show($process_date, $process_name, $multiple_rows = '', $hebnight = 'n', $hebvar = '')
     {
-        // *** Prevent error in PHP 8.1.1 ***
-        if (!isset($process_date)) $process_date = '';
-
-        // *** Process BEF, ABT, AFT and BET in a easier pulldown menu ***
-        global $language, $field_date, $humo_option;
-        $text = '';
+        // *** Process BEF, ABT, AFT and BET in an easier pulldown menu ***
+        global $field_date, $humo_option;
         $style = '';
         $placeholder = '';
-        if ($disabled == '') {
-            $text = '<select size="1" id="' . $process_name . '_prefix' . $multiple_rows . '"  name="' . $process_name . '_prefix' . $multiple_rows . '" ' . $disabled . '>';
-            $text .= '<option value="">=</option>';
 
-            $selected = '';
-            if (substr($process_date, 0, 4) == 'BEF ') {
-                $selected = ' selected';
-            }
-            $text .= '<option value="BEF "' . $selected . '>' . __('before') . '</option>';
-
-            $selected = '';
-            if (substr($process_date, 0, 4) == 'ABT ') {
-                $selected = ' selected';
-            }
-            $text .= '<option value="ABT "' . $selected . '>' . __('&#177;') . '</option>';
-
-            $selected = '';
-            if (substr($process_date, 0, 4) == 'AFT ') {
-                $selected = ' selected';
-            }
-            $text .= '<option value="AFT "' . $selected . '>' . __('after') . '</option>';
-
-            $selected = '';
-            if (substr($process_date, 0, 4) == 'BET ') {
-                $selected = ' selected';
-            }
-            $text .= '<option value="BET "' . $selected . '>' . __('between') . '</option>';
-
-            // *** New added april 2020 ***
-            $selected = '';
-            if (substr($process_date, 0, 4) == 'INT ') {
-                $selected = ' selected';
-            }
-            $text .= '<option value="INT "' . $selected . '>' . __('interpreted') . '</option>';
-
-            $selected = '';
-            if (substr($process_date, 0, 4) == 'EST ') {
-                $selected = ' selected';
-            }
-            $text .= '<option value="EST "' . $selected . '>' . __('estimated') . '</option>';
-
-            $selected = '';
-            if (substr($process_date, 0, 4) == 'CAL ') {
-                $selected = ' selected';
-            }
-            $text .= '<option value="CAL "' . $selected . '>' . __('calculated') . '</option>';
-            $text .= '</select>';
-
-            // *** '!' is added after an invalid date, change background color if date is invalid ***
-            $style = '';
-            if (substr($process_date, -1) == '!') {
-                $process_date = substr($process_date, 0, -1);
-                $style = '; background-color:red"';
-            }
-            $placeholder = ucfirst(__('date'));
-        }
-
-        $text .= '<input type="text" name="' . $process_name . $multiple_rows . '" placeholder="' . $placeholder . '" style="direction:ltr' . $style . '" value="';
+        // *** Prevent error in PHP 8.1.1 ***
+        if (!isset($process_date)) $process_date = '';
 
         // *** Show month in selected language ***
         $process_date = str_replace("JAN", __('jan'), $process_date);
@@ -93,44 +34,84 @@ class editor_cls
         $process_date = str_replace("DEC", __('dec'), $process_date);
         $process_date = str_replace(" AND ", __(' and '), $process_date);
 
-        // *** Show BC with uppercase, check case-insensitive ***
-        if (strtolower(substr($process_date, -3)) == ' bc')
-            $process_date = substr($process_date, 0, -3) . ' BC';
-        if (strtolower(substr($process_date, -5)) == ' b.c.')
-            $process_date = substr($process_date, 0, -5) . ' B.C.';
-
-        // *** Strip tags BEF, ABT, AFT, etc. are allready shown in date_prefix. Variable $text must be case sensitive. ***
+        // *** Strip tags BEF, ABT, AFT, etc. are allready shown in date_prefix. Variable $text_value must be case sensitive. ***
         $process_date2 = strtolower($process_date);
+        $text_value = '';
         if (substr($process_date2, 0, 4) == 'bef ') {
-            $text .= substr($process_date, 4);
+            $text_value = substr($process_date, 4);
         } elseif (substr($process_date2, 0, 4) == 'abt ') {
-            $text .= substr($process_date, 4);
+            $text_value = substr($process_date, 4);
         } elseif (substr($process_date2, 0, 4) == 'aft ') {
-            $text .= substr($process_date, 4);
+            $text_value = substr($process_date, 4);
         } elseif (substr($process_date2, 0, 4) == 'bet ') {
-            $text .= substr($process_date, 4);
+            $text_value = substr($process_date, 4);
         } elseif (substr($process_date2, 0, 4) == 'int ') {
-            $text .= substr($process_date, 4);
+            $text_value = substr($process_date, 4);
         } elseif (substr($process_date2, 0, 4) == 'est ') {
-            $text .= substr($process_date, 4);
+            $text_value = substr($process_date, 4);
         } elseif (substr($process_date2, 0, 4) == 'cal ') {
-            $text .= substr($process_date, 4);
+            $text_value = substr($process_date, 4);
         } else {
-            $text .= $process_date;
+            $text_value = $process_date;
         }
 
-        $text .= '" size="' . $field_date . '" ' . $disabled . '>';
-
-        if ($humo_option['admin_hebnight'] == "y" and $hebnight != 'n') {  // user wants checkbox for jewish setting of events after nightfall for specific events AND it is to be placed with this event
-            $checked = '';
-            if ($hebnight == 'y') {
-                $checked = " checked ";
-            }
-            $text .= '<span style="white-space: nowrap"><input type="checkbox" id="' . $hebvar . '" value="y" name="' . $hebvar . '" ' . $checked . '>  <label for="' . $hebvar . '">' . __('After nightfall') . '</label></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+        // *** Show BC with uppercase, check case-insensitive ***
+        if (strtolower(substr($process_date, -3)) == ' bc') {
+            $process_date = substr($process_date, 0, -3) . ' BC';
+        }
+        if (strtolower(substr($process_date, -5)) == ' b.c.') {
+            $process_date = substr($process_date, 0, -5) . ' B.C.';
         }
 
-        return $text;
+        // *** '!' is added after an invalid date, change background color if date is invalid ***
+        $style = '';
+        if (substr($process_date, -1) == '!') {
+            $process_date = substr($process_date, 0, -1);
+            $style = '; background-color:red"';
+        }
+        $placeholder = ucfirst(__('date'));
+?>
+        <div class="input-group">
+            <select size="1" id="<?= $process_name . '_prefix' . $multiple_rows; ?>" name="<?= $process_name . '_prefix' . $multiple_rows; ?>" class="form-select form-select-sm">
+                <option value="">=</option>
+                <option value="BEF " <?= substr($process_date, 0, 4) == 'BEF ' ? 'selected' : ''; ?>><?= __('before'); ?></option>
+                <option value="ABT " <?= substr($process_date, 0, 4) == 'ABT ' ? 'selected' : ''; ?>><?= __('&#177;'); ?></option>
+                <option value="AFT " <?= substr($process_date, 0, 4) == 'AFT ' ? 'selected' : ''; ?>><?= __('after'); ?></option>
+                <option value="BET " <?= substr($process_date, 0, 4) == 'BET ' ? 'selected' : ''; ?>><?= __('between'); ?></option>
+                <!-- New added april 2020 -->
+                <option value="INT " <?= substr($process_date, 0, 4) == 'INT ' ? 'selected' : ''; ?>><?= __('interpreted'); ?></option>
+                <option value="EST " <?= substr($process_date, 0, 4) == 'EST ' ? 'selected' : ''; ?>><?= __('estimated'); ?></option>
+                <option value="CAL " <?= substr($process_date, 0, 4) == 'CAL ' ? 'selected' : ''; ?>><?= __('calculated'); ?></option>
+            </select>
+
+            <input type="text" name="<?= $process_name . $multiple_rows; ?>" placeholder="<?= $placeholder; ?>" style="direction:ltr<?= $style; ?>" value="<?= $text_value; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+        </div>
+
+        <?php
+        // user wants checkbox for jewish setting of events after nightfall for specific events AND it is to be placed with this event
+        if ($humo_option['admin_hebnight'] == "y" and $hebnight != 'n') {
+        ?>
+            <span style="white-space: nowrap">
+                <input type="checkbox" id="<?= $hebvar; ?>" value="y" name="<?= $hebvar; ?>" <?= $hebnight == 'y' ? 'checked' : ''; ?> class="form-check-input"> <label for="<?= $hebvar; ?>"><?= __('After nightfall'); ?></label>
+            </span>
+        <?php
+        }
     }
+
+    /*
+    public function hebrew_after_nightfall($hebnight = 'n', $hebvar = '')
+    {
+        global $humo_option;
+        // user wants checkbox for jewish setting of events after nightfall for specific events AND it is to be placed with this event
+        if ($humo_option['admin_hebnight'] == "y" and $hebnight != 'n') {
+        ?>
+            <span style="white-space: nowrap">
+                <input type="checkbox" id="<?= $hebvar; ?>" value="y" name="<?= $hebvar; ?>" <?= $hebnight == 'y' ? 'checked' : ''; ?>> <label for="<?= $hebvar; ?>"><?= __('After nightfall'); ?></label>
+            </span>
+<?php
+        }
+    }
+    */
 
     public function date_process($process_name, $multiple_rows = '')
     {
@@ -296,7 +277,7 @@ class editor_cls
             $text = $find_text;
             if (substr($find_text, 0, 1) == '@') {
                 $search_text = $dbh->query("SELECT * FROM humo_texts
-                WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($find_text, 1, -1) . "'");
+                    WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($find_text, 1, -1) . "'");
                 @$search_textDb = $search_text->fetch(PDO::FETCH_OBJ);
                 @$text = $search_textDb->text_text;
                 $text = str_replace("<br>", "<br>\n", $text);

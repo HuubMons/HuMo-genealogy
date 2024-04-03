@@ -90,52 +90,39 @@ if (isset($_POST['freqsurnames'])) {
 
 <form method="POST" action="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>" style="display:inline;" id="frqnames">
     <div class="mb-2 row">
-        <div class="col-sm-1"></div>
+        <div class="col-md-1"></div>
 
-        <div class="col-sm-3 text-end">
+        <div class="col-md-3 text-end">
             <?= __('Number of displayed surnames'); ?>:
         </div>
-        <div class="col-sm-1">
-            <?php
-            echo '<select size=1 class="form-select form-select-sm" name="freqsurnames" onChange="this.form.submit();">';
-            $selected = '';
-            if ($maxnames == 25) $selected = " selected ";
-            echo '<option value="25" ' . $selected . '>25</option>';
-            $selected = '';
-            if ($maxnames == 51) $selected = " selected ";
-            echo '<option value="51" ' . $selected . '>50</option>'; // 51 so no empty last field (if more names than this)
-            $selected = '';
-            if ($maxnames == 75) $selected = " selected ";
-            echo '<option value="75" ' . $selected . '>75</option>';
-            $selected = '';
-            if ($maxnames == 100) $selected = " selected ";
-            echo '<option value="100" ' . $selected . '>100</option>';
-            $selected = '';
-            if ($maxnames == 201) $selected = " selected ";
-            echo '<option value="201" ' . $selected . '>200</option>'; // 201 so no empty last field (if more names than this)
-            $selected = '';
-            if ($maxnames == 300) $selected = " selected ";
-            echo '<option value="300" ' . $selected . '>300</option>';
-            $selected = '';
-            if ($maxnames == 100000) $selected = " selected ";
-            echo '<option value="100000" ' . $selected . '">' . __('All') . '</option>';
-            echo '</select>';
-            ?>
+
+        <div class="col-md-1">
+            <select size=1 class="form-select form-select-sm" name="freqsurnames" onChange="this.form.submit();">
+                <option value="25" <?= $maxnames == 25 ? 'selected' : ''; ?>>25</option>
+                <!-- 51 so no empty last field (if more names than this) -->
+                <option value="51" <?= $maxnames == 51 ? 'selected' : ''; ?>>50</option>'; 
+                <option value="75" <?= $maxnames == 75 ? 'selected' : ''; ?>>75</option>'; 
+                <option value="100" <?= $maxnames == 100 ? 'selected' : ''; ?>>100</option>'; 
+                <!-- 201 so no empty last field (if more names than this) -->
+                <option value="201" <?= $maxnames == 201 ? 'selected' : ''; ?>>200</option>'; 
+                <option value="300" <?= $maxnames == 300 ? 'selected' : ''; ?>>300</option>'; 
+                <option value="100000" <?= $maxnames == 100000 ? 'selected' : ''; ?>><?= __('All');?></option>'; 
+            </select>
         </div>
 
-        <div class="col-sm-3 text-end">
+        <div class="col-md-3 text-end">
             <?= __('Number of columns'); ?>:
         </div>
-        <div class="col-sm-1">
-            <?php
-            echo '<select size=1 class="form-select form-select-sm" name="maxcols" onChange="this.form.submit();">';
-            for ($i = 1; $i < 7; $i++) {
-                $selected = '';
-                if ($maxcols == $i) $selected = " selected ";
-                echo '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
-            }
-            echo '</select>';
-            ?>
+        <div class="col-md-1">
+            <select size=1 class="form-select form-select-sm" name="maxcols" onChange="this.form.submit();">
+                <?php
+                for ($i = 1; $i < 7; $i++) {
+                    $selected = '';
+                    if ($maxcols == $i) $selected = " selected ";
+                    echo '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
+                }
+                ?>
+            </select>
         </div>
 
     </div>

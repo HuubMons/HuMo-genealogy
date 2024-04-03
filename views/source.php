@@ -174,8 +174,7 @@ if (!isset($data["sourceDb"]->source_id)) exit(__('No valid source number.'));
                     elseif ($connectDb->connect_sub_kind == 'pers_address_connect_source') {
                         // *** connect_sub_kind=pers_address_source/connect_connect_id=Rxx/connect_source_id=Sxx.
                         // *** connect_sub_kind=person_address/connect_connect_id=Ixx/connect_item_id=Rxx
-                        $address_qry = "SELECT * FROM humo_connections
-                            WHERE connect_id='" . $connectDb->connect_connect_id . "'";
+                        $address_qry = "SELECT * FROM humo_connections WHERE connect_id='" . $connectDb->connect_connect_id . "'";
                         $address_sql = $dbh->query($address_qry);
                         $addressDb = $address_sql->fetch(PDO::FETCH_OBJ);
                         // Show person that has connected address.
@@ -296,7 +295,15 @@ if (!isset($data["sourceDb"]->source_id)) exit(__('No valid source number.'));
                     if ($addressDb->address_place) $text .= ' ' . $addressDb->address_place;
 
                     echo __('Source for address:');
-                    echo ' <a href="address.php?gedcomnumber=' . $addressDb->address_gedcomnr . '">' . $text . '</a>';
+
+                    if ($humo_option["url_rewrite"] == "j") {
+                        $url = 'address/' . $tree_id . '/' . $addressDb->address_gedcomnr;
+                    } else {
+                        $url = 'index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
+                    }           
+                    ?>
+                    <a href="<?= $url;?>"><?= $text;?></a>
+                    <?php
                 }
 
                 // *** Extra source connect information by every source ***

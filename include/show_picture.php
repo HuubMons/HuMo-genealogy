@@ -12,8 +12,9 @@ function show_media($event_connect_kind, $event_connect_id)
     $media_nr = 0;
 
     // *** Pictures/ media ***
-    if ($user['group_pictures'] == 'j' and $data["picture_presentation"] != 'hide') {
-        $tree_pict_path = $dataDb->tree_pict_path;
+    //if ($user['group_pictures'] == 'j' and $data["picture_presentation"] != 'hide') {
+    if ($user['group_pictures'] == 'j' and isset($data["picture_presentation"]) and $data["picture_presentation"] != 'hide') {
+            $tree_pict_path = $dataDb->tree_pict_path;
 
         // *** Use default folder: media ***
         if (substr($tree_pict_path, 0, 1) == '|') {

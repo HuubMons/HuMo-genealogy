@@ -257,20 +257,13 @@ if (!isset($_POST['install_tables2'])) {
             <label class="form-check-label"><?= __('(Re) create all family tree tables. <b>*** ALL EXISTING FAMILY TREES WILL BE REMOVED! ***</b>'); ?></label>
         </div>
 
-        <?php
-        if (isset($_POST['install_tables'])) {
-        ?>
+        <?php if (isset($_POST['install_tables'])) { ?>
             <p><?= __('Install'); ?>
                 <input type="submit" name="install_tables2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
                 <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
-            <?php
-        } else {
-            ?>
+            <?php } else { ?>
             <p><input type="submit" name="install_tables" class="btn btn-sm btn-success" value="<?= __('Install'); ?>">
-            <?php
-        }
-
-            ?>
+            <?php } ?>
             <b><?= __('Are you sure? Old settings will be deleted!'); ?></b><br>
     </form>
 <?php

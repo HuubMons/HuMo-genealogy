@@ -6,7 +6,7 @@
 // TODO check line.
 if ($add_person == false) {
 ?>
-    <table class="humo" border="1">
+    <table class="humo" border="1" style="margin-left: 0px;">
         <?php
         if ($person->pers_fams) {
             // *** Search for own family ***
@@ -53,7 +53,7 @@ if ($add_person == false) {
                             }
                             ?>
                         </td>
-                        <td id="chtd3" colspan="2">
+                        <td id="chtd3">
                             <b><?= show_person($familyDb->fam_man) . ' ' . __('and') . ' ' . show_person($familyDb->fam_woman); ?></b>
                             <?php
                             if ($familyDb->fam_marr_date) {
@@ -204,8 +204,8 @@ if ($add_person == false) {
                 echo $confirm_relation;
             }
             ?>
-            <table class="humo" border="1">
 
+            <table class="humo" border="1">
                 <!-- Empty line in table -->
                 <!-- <tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr> -->
 
@@ -214,23 +214,12 @@ if ($add_person == false) {
                     <td id="target1">
                         <a href="#marriage" onclick="hideShowAll2();"><span id="hideshowlinkall2">[+]</span> <?= __('All'); ?></a>
                         <a name="marriage"></a>
-                        <?php
-                        // *** Remove marriage ***
-                        if (isset($marriage)) {
-                            echo '<input type="submit" name="fam_remove" value="' . __('Delete relation') . '" class="btn btn-sm btn-secondary">';
-                        } else {
-                            echo '<br>';
-                        }
-                        ?>
                     </td>
 
                     <th id="target2" colspan="2" style="font-size: 1.5em;">
+                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                         [<?= $fam_gedcomnumber; ?>] <?= show_person($man_gedcomnumber); ?> <?= __('and'); ?> <?= show_person($woman_gedcomnumber); ?>
                     </th>
-
-                    <td id="target3">
-                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
-                    </td>
                 </tr>
 
                 <?php
@@ -242,9 +231,9 @@ if ($add_person == false) {
                 <tr>
                     <td><?= ucfirst(__('marriage/ relation')); ?></td>
                     <td colspan="2">
-                        <?php
-                        echo __('Select person 1') . ' <input type="text" name="connect_man" value="' . $man_gedcomnumber . '" size="5">';
+                        <?= __('Select person 1'); ?> <input type="text" name="connect_man" value="<?= $man_gedcomnumber; ?>" size="5">
 
+                        <?php
                         echo '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person_item=man&person=' . $man_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
 
                         $person = $db_functions->get_person($man_gedcomnumber);
@@ -291,11 +280,10 @@ if ($add_person == false) {
 
                         echo ' <b>' . $editor_cls->show_selected_person($person) . '</b>';
 
-                        // *** Use old value to detect change of woman in marriage ***
-                        echo '<input type="hidden" name="connect_woman_old" value="' . $woman_gedcomnumber . '">';
                         ?>
+                        <!-- Use old value to detect change of woman in marriage -->
+                        <input type="hidden" name="connect_woman_old" value="<?= $woman_gedcomnumber; ?>">
                     </td>
-                    <td></td>
                 </tr>
 
                 <?php
@@ -324,48 +312,72 @@ if ($add_person == false) {
                             if ($hideshow_text) $hideshow_text .= '.';
                             $hideshow_text .= ' ' . __('End living together') . ' ' . $fam_relation_end_date;
                         }
-                        echo hideshow_editor($hideshow, $hideshow_text, $fam_relation_text);
-
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_relation_date, 'fam_relation_date') . '<br>';
-
-                        echo editor_label2(__('place'));
-                        echo '<input type="text" name="fam_relation_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_relation_place) . '" size="' . $field_place . '">';
-                        echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_relation_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                        // *** End of living together ***
-                        echo editor_label2(__('End date'));
-                        echo $editor_cls->date_show($fam_relation_end_date, "fam_relation_end_date") . '<br>';
-
-                        // *** Check if there are multiple lines in text ***
-                        $field_text_selected = $field_text;
-                        if ($fam_relation_text and preg_match('/\R/', $fam_relation_text)) $field_text_selected = $field_text_medium;
-                        echo editor_label2(__('text'));
-                        echo '<textarea rows="1" placeholder="' . __('text') . '" name="fam_relation_text" ' . $field_text_selected . '>' . $fam_relation_text . '</textarea>';
-                        echo '</span>';
-                        ?>
-                    </td>
-                    <td>
-                        <?php
-                        // *** Source by relation ***
-                        if (isset($marriage) and !isset($_GET['add_marriage'])) {
-                            echo source_link2('600', $marriage, 'fam_relation_source', 'relation');
+                        if ($marriage) {
+                            $check_sources_text = check_sources('family', 'fam_relation_source', $marriage);
+                            $hideshow_text .= $check_sources_text;
                         }
+                        echo hideshow_editor($hideshow, $hideshow_text, $fam_relation_text);
                         ?>
+                        <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+                            <div class="row mb-2">
+                                <label for "fam_relation_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($fam_relation_date, 'fam_relation_date'); ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for "fam_relation_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <input type="text" name="fam_relation_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($fam_relation_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_relation_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- End of living together -->
+                            <div class="row mb-2">
+                                <label for "fam_relation_end_date" class="col-md-3 col-form-label"><?= __('End date'); ?></label>
+                                <div class="col-md-7">
+                                    <?= $editor_cls->date_show($fam_relation_end_date, "fam_relation_end_date"); ?>
+                                </div>
+                            </div>
+
+                            <?php
+                            // *** Check if there are multiple lines in text ***
+                            $field_text_selected = $field_text;
+                            if ($fam_relation_text and preg_match('/\R/', $fam_relation_text)) $field_text_selected = $field_text_medium;
+                            ?>
+                            <div class="row mb-2">
+                                <label for "fam_relation_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                                <div class="col-md-7">
+                                    <textarea rows="1" placeholder="<?= __('text'); ?>" name="fam_relation_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_relation_text; ?></textarea>
+                                </div>
+                            </div>
+
+                            <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                                <div class="row mb-2">
+                                    <label for "fam_relation_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                    <div class="col-md-7">
+                                        <?php
+                                        source_link3('family', 'fam_relation_source', $marriage);
+                                        echo $check_sources_text;
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </span>
                     </td>
                 </tr>
 
                 <?php
-                // *** Show source by relation in iframe ***
-                echo edit_sources('600', 'family', 'fam_relation_source', $marriage);
-
                 // *** Marriage notice ***
                 // *** Use hideshow to show and hide the editor lines ***
                 $hideshow = '7';
                 // *** If items are missing show all editor fields ***
                 $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
                 ?>
-
                 <tr>
                     <td><a name="marr_notice"></a>
                         <!-- <a href="#marriage" onclick="hideShow(7);"><span id="hideshowlink7">[+]</span></a> -->
@@ -375,38 +387,58 @@ if ($add_person == false) {
                     <td colspan="2">
                         <?php
                         $hideshow_text = hideshow_date_place($fam_marr_notice_date, $fam_marr_notice_place);
-                        echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_notice_text);
-
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_marr_notice_date, "fam_marr_notice_date", "", "", $fam_marr_notice_date_hebnight, "fam_marr_notice_date_hebnight") . '<br>';
-
-                        echo editor_label2(__('place'));
-                        echo '<input type="text" name="fam_marr_notice_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_notice_place) . '" size="' . $field_place . '">';
-                        echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_notice_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                        // *** Check if there are multiple lines in text ***
-                        $field_text_selected = $field_text;
-                        if ($fam_marr_notice_text and preg_match('/\R/', $fam_marr_notice_text)) $field_text_selected = $field_text_medium;
-                        echo editor_label2(__('text'));
-                        echo '<textarea rows="1" placeholder="' . __('text') . '" name="fam_marr_notice_text" ' . $field_text_selected . '>' . $fam_marr_notice_text . '</textarea>';
-                        echo '</span>';
-                        ?>
-                    </td>
-
-                    <td>
-                        <?php
-                        // *** Source by fam_marr_notice ***
-                        if (isset($marriage) and !isset($_GET['add_marriage'])) {
-                            echo source_link2('601', $marriage, 'fam_marr_notice_source', 'marr_notice');
+                        if ($marriage) {
+                            $check_sources_text = check_sources('family', 'fam_marr_notice_source', $marriage);
+                            $hideshow_text .= $check_sources_text;
                         }
+                        echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_notice_text);
                         ?>
+                        <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+                            <div class="row mb-2">
+                                <label for "fam_marr_notice_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($fam_marr_notice_date, "fam_marr_notice_date", "", $fam_marr_notice_date_hebnight, "fam_marr_notice_date_hebnight"); ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for "fam_marr_notice_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <input type="text" name="fam_marr_notice_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($fam_marr_notice_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_notice_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php
+                            // *** Check if there are multiple lines in text ***
+                            $field_text_selected = $field_text;
+                            if ($fam_marr_notice_text and preg_match('/\R/', $fam_marr_notice_text)) $field_text_selected = $field_text_medium;
+                            ?>
+                            <div class="row mb-2">
+                                <label for "fam_marr_notice_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                                <div class="col-md-7">
+                                    <textarea rows="1" placeholder="<?= __('text'); ?>" name="fam_marr_notice_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_marr_notice_text; ?></textarea>
+                                </div>
+                            </div>
+
+                            <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                                <div class="row mb-2">
+                                    <label for "fam_marr_notice_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                    <div class="col-md-7">
+                                        <?php
+                                        source_link3('family', 'fam_marr_notice_source', $marriage);
+                                        echo $check_sources_text;
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </span>
                     </td>
                 </tr>
 
                 <?php
-                // *** Show source by relation in iframe ***
-                echo edit_sources('601', 'family', 'fam_marr_notice_source', $marriage);
-
                 // *** Marriage ***
                 // *** Use hideshow to show and hide the editor lines ***
                 $hideshow = '8';
@@ -437,82 +469,122 @@ if ($add_person == false) {
                             $hideshow_text .= ' [' . $fam_marr_authority . ']';
                         }
 
-                        echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_text);
-
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_marr_date, "fam_marr_date", "", "", $fam_marr_date_hebnight, "fam_marr_date_hebnight") . '<br>';
-
-                        echo editor_label2(__('place'));
-                        echo '<input type="text" name="fam_marr_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_place) . '" size="' . $field_place . '">';
-                        echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                        // *** Age of man by marriage ***
-                        echo editor_label2(__('Age person 1'));
-                        echo '<input type="text" name="fam_man_age" placeholder="' . __('Age') . '" value="' . $fam_man_age . '" size="3">';
-
-                        // *** HELP POPUP for age by marriage ***
-                        echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
-                        echo '<a href="#" style="display:inline" ';
-                        echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
-                        echo 'onmouseout="mclosetime()">';
-                        echo '<img src="../images/help.png" height="16" width="16">';
-                        echo '</a>';
-                        echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-                        echo '<b>' . __('If birth year of man or woman is empty it will be calculated automatically using age by marriage.') . '</b><br>';
-                        echo '</div>';
-                        echo '</div><br>';
-
-                        // *** Age of woman by marriage ***
-                        echo editor_label2(__('Age person 2'));
-                        echo '<input type="text" name="fam_woman_age" placeholder="' . __('Age') . '" value="' . $fam_woman_age . '" size="3"><br>';
-
-                        if (!$fam_kind)
-                            echo editor_label2('<span style="background-color:#FFAA80">' . __('Marriage/ Related') . '</span>');
-                        else
-                            echo editor_label2(__('Marriage/ Related'));
-                        ?>
-                        <select size="1" name="fam_kind">
-                            <option value=""><?= __('Marriage/ Related'); ?></option>
-                            <option value="civil" <?= $fam_kind == 'civil' ? ' selected' : ''; ?>><?= __('Married'); ?></option>
-                            <option value="living together" <?= $fam_kind == 'living together' ? ' selected' : ''; ?>><?= __('Living together'); ?></option>
-                            <option value="living apart together" <?= $fam_kind == 'living apart together' ? ' selected' : ''; ?>><?= __('Living apart together'); ?></option>
-                            <option value="intentionally unmarried mother" <?= $fam_kind == 'intentionally unmarried mother' ? ' selected' : ''; ?>><?= __('Intentionally unmarried mother'); ?></option>
-                            <option value="homosexual" <?= $fam_kind == 'homosexual' ? ' selected' : ''; ?>><?= __('Homosexual'); ?></option>
-                            <option value="non-marital" <?= $fam_kind == 'non-marital' ? ' selected' : ''; ?>><?= __('Non_marital'); ?></option>
-                            <option value="extramarital" <?= $fam_kind == 'extramarital' ? ' selected' : ''; ?>><?= __('Extramarital'); ?></option>
-                            <option value="partners" <?= $fam_kind == 'partners' ? ' selected' : ''; ?>><?= __('Partner'); ?></option>
-                            <option value="registered" <?= $fam_kind == 'registered' ? ' selected' : ''; ?>><?= __('Registered partnership'); ?></option>
-                            <option value="unknown" <?= $fam_kind == 'unknown' ? ' selected' : ''; ?>><?= __('Unknown relation'); ?></option>
-                        </select><br>
-
-                        <?php
-                        echo editor_label2(__('Registrar'));
-                        echo '<input type="text" placeholder="' . __('Registrar') . '" name="fam_marr_authority" value="' . $fam_marr_authority . '" size="60"><br>';
-
-                        // *** Check if there are multiple lines in text ***
-                        $field_text_selected = $field_text;
-                        if ($fam_marr_text and preg_match('/\R/', $fam_marr_text)) $field_text_selected = $field_text_medium;
-                        echo editor_label2(__('text'));
-                        echo '<textarea rows="1" placeholder="' . __('text') . '" name="fam_marr_text" ' . $field_text_selected . '>' . $fam_marr_text . '</textarea>';
-
-                        echo '</span>';
-                        ?>
-                    </td>
-
-                    <td>
-                        <?php
-                        // *** Source by fam_marr ***
-                        if (isset($marriage) and !isset($_GET['add_marriage'])) {
-                            echo source_link2('602', $marriage, 'fam_marr_source', 'marriage_relation');
+                        if ($marriage) {
+                            $check_sources_text = check_sources('family', 'fam_marr_source', $marriage);
+                            $hideshow_text .= $check_sources_text;
                         }
+
+                        echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_text);
                         ?>
+                        <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+
+                            <div class="row mb-2">
+                                <label for "fam_marr_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($fam_marr_date, "fam_marr_date", "", $fam_marr_date_hebnight, "fam_marr_date_hebnight"); ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for "fam_marr_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <input type="text" name="fam_marr_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($fam_marr_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Age of man by marriage -->
+                            <div class="row mb-2">
+                                <label for "fam_man_age" class="col-md-3 col-form-label"><?= __('Age person 1'); ?></label>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <input type="text" name="fam_man_age" placeholder="<?= __('Age'); ?>" value="<?= $fam_man_age; ?>" size="3" class="form-control form-control-sm">
+
+                                        &nbsp;&nbsp;
+                                        <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                                            <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu2',100,400)" onmouseout="mclosetime()">
+                                                <img src="../images/help.png" height="16" width="16">
+                                            </a>
+                                            <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                                                <b><?= __('If birth year of man or woman is empty it will be calculated automatically using age by marriage.'); ?></b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Age of woman by marriage -->
+                            <div class="row mb-2">
+                                <label for "fam_woman_age" class="col-md-3 col-form-label"><?= __('Age person 2'); ?></label>
+                                <div class="col-md-3">
+                                    <input type="text" name="fam_woman_age" placeholder="<?= __('Age'); ?>" value="<?= $fam_woman_age; ?>" size="3" class="form-control form-control-sm">
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for "fam_woman_age" class="col-md-3 col-form-label">
+                                    <?php if (!$fam_kind) { ?>
+                                        <span style="background-color:#FFAA80"><?= __('Marriage/ Related'); ?></span>
+                                    <?php } else { ?>
+                                        <?= __('Marriage/ Related'); ?>
+                                    <?php } ?>
+                                </label>
+                                <div class="col-md-3">
+                                    <select size="1" name="fam_kind" class="form-select form-select-sm">
+                                        <option value=""><?= __('Marriage/ Related'); ?></option>
+                                        <option value="civil" <?= $fam_kind == 'civil' ? ' selected' : ''; ?>><?= __('Married'); ?></option>
+                                        <option value="living together" <?= $fam_kind == 'living together' ? ' selected' : ''; ?>><?= __('Living together'); ?></option>
+                                        <option value="living apart together" <?= $fam_kind == 'living apart together' ? ' selected' : ''; ?>><?= __('Living apart together'); ?></option>
+                                        <option value="intentionally unmarried mother" <?= $fam_kind == 'intentionally unmarried mother' ? ' selected' : ''; ?>><?= __('Intentionally unmarried mother'); ?></option>
+                                        <option value="homosexual" <?= $fam_kind == 'homosexual' ? ' selected' : ''; ?>><?= __('Homosexual'); ?></option>
+                                        <option value="non-marital" <?= $fam_kind == 'non-marital' ? ' selected' : ''; ?>><?= __('Non_marital'); ?></option>
+                                        <option value="extramarital" <?= $fam_kind == 'extramarital' ? ' selected' : ''; ?>><?= __('Extramarital'); ?></option>
+                                        <option value="partners" <?= $fam_kind == 'partners' ? ' selected' : ''; ?>><?= __('Partner'); ?></option>
+                                        <option value="registered" <?= $fam_kind == 'registered' ? ' selected' : ''; ?>><?= __('Registered partnership'); ?></option>
+                                        <option value="unknown" <?= $fam_kind == 'unknown' ? ' selected' : ''; ?>><?= __('Unknown relation'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for "fam_marr_authority" class="col-md-3 col-form-label"><?= __('Age person 2'); ?></label>
+                                <div class="col-md-7">
+                                    <input type="text" placeholder="<?= __('Registrar'); ?>" name="fam_marr_authority" value="<?= $fam_marr_authority; ?>" size="60" class="form-control form-control-sm">
+                                </div>
+                            </div>
+
+                            <?php
+                            // *** Check if there are multiple lines in text ***
+                            $field_text_selected = $field_text;
+                            if ($fam_marr_text and preg_match('/\R/', $fam_marr_text)) $field_text_selected = $field_text_medium;
+                            ?>
+                            <div class="row mb-2">
+                                <label for "fam_marr_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                                <div class="col-md-7">
+                                    <textarea rows="1" placeholder="<?= __('text'); ?>" name="fam_marr_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_marr_text; ?></textarea>
+                                </div>
+                            </div>
+
+                            <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                                <div class="row mb-2">
+                                    <label for "fam_marr_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                    <div class="col-md-7">
+                                        <?php
+                                        source_link3('family', 'fam_marr_source', $marriage);
+                                        echo $check_sources_text;
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
+                        </span>
                     </td>
+
                 </tr>
 
                 <?php
-                // *** Show source by relation in iframe ***
-                echo edit_sources('602', 'family', 'fam_marr_source', $marriage);
-
                 // *** Marriage Witness ***
                 echo $event_cls->show_event('family', $marriage, 'marriage_witness');
 
@@ -532,38 +604,63 @@ if ($add_person == false) {
                     <td colspan="2">
                         <?php
                         $hideshow_text = hideshow_date_place($fam_marr_church_notice_date, $fam_marr_church_notice_place);
-                        echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_notice_text);
 
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_marr_church_notice_date, "fam_marr_church_notice_date", "", "", $fam_marr_church_notice_date_hebnight, "fam_marr_church_notice_date_hebnight") . '<br>';
-
-                        echo editor_label2(__('place'));
-                        echo '<input type="text" name="fam_marr_church_notice_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_church_notice_place) . '" size="' . $field_place . '">';
-                        echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_notice_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                        // *** Check if there are multiple lines in text ***
-                        $field_text_selected = $field_text;
-                        if ($fam_marr_church_notice_text and preg_match('/\R/', $fam_marr_church_notice_text)) $field_text_selected = $field_text_medium;
-                        echo editor_label2(__('text'));
-                        echo '<textarea rows="1" placeholder="' . __('text') . '" name="fam_marr_church_notice_text" ' . $field_text_selected . '>' . $fam_marr_church_notice_text . '</textarea>';
-                        echo '</span>';
-                        ?>
-                    </td>
-
-                    <td>
-                        <?php
-                        // *** Source by fam_marr_church_notice ***
-                        if (isset($marriage) and !isset($_GET['add_marriage'])) {
-                            echo source_link2('603', $marriage, 'fam_marr_church_notice_source', 'marr_church_notice');
+                        if ($marriage) {
+                            $check_sources_text = check_sources('family', 'fam_marr_church_notice_source', $marriage);
+                            $hideshow_text .= $check_sources_text;
                         }
+
+                        echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_notice_text);
                         ?>
+                        <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+
+                            <div class="row mb-2">
+                                <label for "fam_marr_church_notice_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($fam_marr_church_notice_date, "fam_marr_church_notice_date", "", $fam_marr_church_notice_date_hebnight, "fam_marr_church_notice_date_hebnight"); ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for "fam_marr_church_notice_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <input type="text" name="fam_marr_church_notice_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($fam_marr_church_notice_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_notice_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php
+                            // *** Check if there are multiple lines in text ***
+                            $field_text_selected = $field_text;
+                            if ($fam_marr_church_notice_text and preg_match('/\R/', $fam_marr_church_notice_text)) $field_text_selected = $field_text_medium;
+                            ?>
+                            <div class="row mb-2">
+                                <label for "fam_marr_church_notice_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                                <div class="col-md-7">
+                                    <textarea rows="1" placeholder="<?= __('text'); ?>" name="fam_marr_church_notice_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_marr_church_notice_text; ?></textarea>
+                                </div>
+                            </div>
+
+                            <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                                <div class="row mb-2">
+                                    <label for "fam_marr_church_notice_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                    <div class="col-md-7">
+                                        <?php
+                                        source_link3('family', 'fam_marr_church_notice_source', $marriage);
+                                        echo $check_sources_text;
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
+                        </span>
                     </td>
+
                 </tr>
 
                 <?php
-                // *** Show source by relation in iframe ***
-                echo edit_sources('603', 'family', 'fam_marr_church_notice_source', $marriage);
-
                 // *** Church marriage ***
                 // *** Use hideshow to show and hide the editor lines ***
                 $hideshow = '10';
@@ -579,52 +676,78 @@ if ($add_person == false) {
                     <td colspan="2">
                         <?php
                         $hideshow_text = hideshow_date_place($fam_marr_church_date, $fam_marr_church_place);
-                        echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_text);
 
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_marr_church_date, "fam_marr_church_date", "", "", $fam_marr_church_date_hebnight, "fam_marr_church_date_hebnight") . '<br>';
-
-                        echo editor_label2(__('place'));
-                        echo '<input type="text" name="fam_marr_church_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_marr_church_place) . '" size="' . $field_place . '">';
-                        echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                        // *** Check if there are multiple lines in text ***
-                        $field_text_selected = $field_text;
-                        if ($fam_marr_church_text and preg_match('/\R/', $fam_marr_church_text)) $field_text_selected = $field_text_medium;
-                        echo editor_label2(__('text'));
-                        echo '<textarea rows="1" placeholder="' . __('text') . '" name="fam_marr_church_text" ' . $field_text_selected . '>' . $fam_marr_church_text . '</textarea>';
-                        echo '</span>';
-                        ?>
-                    </td>
-
-                    <td>
-                        <?php
-                        // *** Source by fam_marr_church ***
-                        if (isset($marriage) and !isset($_GET['add_marriage'])) {
-                            echo source_link2('604', $marriage, 'fam_marr_church_source', 'marr_church');
+                        if ($marriage) {
+                            $check_sources_text = check_sources('family', 'fam_marr_church_source', $marriage);
+                            $hideshow_text .= $check_sources_text;
                         }
-                        ?>
-                    </td>
-                </tr>
-                <?php
-                // *** Show source in iframe ***
-                echo edit_sources('604', 'family', 'fam_marr_church_source', $marriage);
 
+                        echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_text);
+                        ?>
+                        <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+
+                            <div class="row mb-2">
+                                <label for "fam_marr_church_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($fam_marr_church_date, "fam_marr_church_date", "", $fam_marr_church_date_hebnight, "fam_marr_church_date_hebnight"); ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for "fam_marr_church_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <input type="text" name="fam_marr_church_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($fam_marr_church_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php
+                            // *** Check if there are multiple lines in text ***
+                            $field_text_selected = $field_text;
+                            if ($fam_marr_church_text and preg_match('/\R/', $fam_marr_church_text)) $field_text_selected = $field_text_medium;
+                            ?>
+                            <div class="row mb-2">
+                                <label for "fam_marr_church_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                                <div class="col-md-7">
+                                    <textarea rows="1" placeholder="<?= __('text'); ?>" name="fam_marr_church_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_marr_church_text; ?></textarea>
+                                </div>
+                            </div>
+
+                            <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                                <div class="row mb-2">
+                                    <label for "fam_marr_church_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                    <div class="col-md-7">
+                                        <?php
+                                        source_link3('family', 'fam_marr_church_source', $marriage);
+                                        echo $check_sources_text;
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
+                        </span>
+                    </td>
+
+                </tr>
+
+                <?php
                 // *** Marriage Witness (church) ***
                 echo $event_cls->show_event('family', $marriage, 'marriage_witness_rel');
-
-                // *** Religion ***
-                //echo '<tr class="humo_color"><td rowspan="1">'.__('Religion').'</td>';
                 ?>
+
+                <!-- Religion -->
                 <tr class="humo_color">
                     <td rowspan="1"></td>
                     <td colspan="2">
-                        <?php
-                        echo editor_label2(__('Religion'));
-                        echo '<input type="text" placeholder="' . __('Religion') . '" name="fam_religion" value="' . htmlspecialchars($fam_religion) . '" size="60">';
-                        ?>
+                        <div class="row mb-2">
+                            <label for "fam_marr_authority" class="col-md-3 col-form-label"><?= __('Religion'); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" placeholder="<?= __('Religion'); ?>" name="fam_religion" value="<?= htmlspecialchars($fam_religion); ?>" size="60" class="form-control form-control-sm">
+                            </div>
+                        </div>
                     </td>
-                    <td></td>
                 </tr>
 
                 <?php
@@ -649,43 +772,75 @@ if ($add_person == false) {
                             $hideshow_text .= ' [' . $fam_div_authority . ']';
                         }
 
-                        echo hideshow_editor($hideshow, $hideshow_text, $fam_div_text);
-
-                        echo editor_label2(__('Date'));
-                        echo $editor_cls->date_show($fam_div_date, "fam_div_date") . '<br>';
-
-                        echo editor_label2(__('place'));
-                        echo '<input type="text" name="fam_div_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($fam_div_place) . '" size="' . $field_place . '">';
-                        echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_div_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                        $text = '';
-                        if ($fam_div_authority) $text = htmlspecialchars($fam_div_authority);
-                        echo editor_label2(__('Registrar'));
-                        echo '<input type="text" placeholder="' . __('Registrar') . '" name="fam_div_authority" value="' . $text . '" size="60"><br>';
-
-                        if ($fam_div_text == 'DIVORCE') $fam_div_text = ''; // *** Hide this text, it's a hidden value for a divorce without data ***
-                        // *** Check if there are multiple lines in text ***
-                        $field_text_selected = $field_text;
-                        if ($fam_div_text and preg_match('/\R/', $fam_div_text)) $field_text_selected = $field_text_medium;
-                        echo editor_label2(__('text'));
-                        echo '<textarea rows="1" placeholder="' . __('text') . '" name="fam_div_text" ' . $field_text_selected . '>' . $fam_div_text . '</textarea>';
-                        echo '</span>';
-                        ?>
-                    </td>
-
-                    <td>
-                        <?php
-                        // *** Source by fam_div ***
-                        if (isset($marriage) and !isset($_GET['add_marriage'])) {
-                            echo source_link2('605', $marriage, 'fam_div_source', 'divorce');
+                        if ($marriage) {
+                            $check_sources_text = check_sources('family', 'fam_div_source', $marriage);
+                            $hideshow_text .= $check_sources_text;
                         }
-                        ?>
-                    </td>
-                </tr>
-                <?php
-                // *** Show source by relation in iframe ***
-                echo edit_sources('605', 'family', 'fam_div_source', $marriage);
 
+                        echo hideshow_editor($hideshow, $hideshow_text, $fam_div_text);
+                        ?>
+                        <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+
+                            <div class="row mb-2">
+                                <label for "fam_div_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($fam_div_date, "fam_div_date"); ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for "fam_div_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <input type="text" name="fam_div_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($fam_div_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_div_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php
+                            $text = '';
+                            if ($fam_div_authority) $text = htmlspecialchars($fam_div_authority);
+                            ?>
+                            <div class="row mb-2">
+                                <label for "fam_marr_church_text" class="col-md-3 col-form-label"><?= __('Registrar'); ?></label>
+                                <div class="col-md-7">
+                                    <input type="text" placeholder="<?= __('Registrar'); ?>" name="fam_div_authority" value="<?= $text; ?>" size="60" class="form-control form-control-sm">
+                                </div>
+                            </div>
+
+                            <?php
+                            if ($fam_div_text == 'DIVORCE') $fam_div_text = ''; // *** Hide this text, it's a hidden value for a divorce without data ***
+                            // *** Check if there are multiple lines in text ***
+                            $field_text_selected = $field_text;
+                            if ($fam_div_text and preg_match('/\R/', $fam_div_text)) $field_text_selected = $field_text_medium;
+                            ?>
+                            <div class="row mb-2">
+                                <label for "fam_div_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                                <div class="col-md-7">
+                                    <textarea rows="1" placeholder="<?= __('text'); ?>" name="fam_div_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_div_text; ?></textarea>
+                                </div>
+                            </div>
+
+                            <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                                <div class="row mb-2">
+                                    <label for "fam_div_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                    <div class="col-md-7">
+                                        <?php
+                                        source_link3('family', 'fam_div_source', $marriage);
+                                        echo $check_sources_text;
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
+                        </span>
+                    </td>
+
+                </tr>
+
+                <?php
+                // TODO: move to diverse lines?
                 // *** Use checkbox for divorse without further data ***
                 ?>
                 <tr>
@@ -694,10 +849,9 @@ if ($add_person == false) {
                         <input type="checkbox" name="fam_div_no_data" value="no_data" <?= $fam_div_no_data ? ' checked' : ''; ?>>
                         <?= __('Divorce (use this checkbox for a divorce without further data).'); ?>
                     </td>
-                    <td></td>
                 </tr>
-                <?php
 
+                <?php
                 // *** General text by relation ***
                 ?>
                 <tr class="humo_color">
@@ -705,35 +859,59 @@ if ($add_person == false) {
                     <td style="border-right:0px;"></td>
                     <td style="border-left:0px;">
                         <textarea rows="1" placeholder="<?= __('Text by relation'); ?>" name="fam_text" <?= $field_text_large; ?>><?= $fam_text; ?></textarea>
-                    </td>
-                    <td>
                         <?php
-                        // *** Source by text ***
-                        if (isset($marriage) and !isset($_GET['add_marriage'])) {
-                            echo source_link2('606', $marriage, 'fam_text_source', 'fam_text');
-                        }
+                        /*
+                            <div class="row mb-2">
+                                <label for "even_brit_date" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                                <div class="col-md-7">
+                                    <textarea rows="1" placeholder="<?= __('text'); ?>" name="fam_relation_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_relation_text; ?></textarea>
+                                </div>
+                            </div>
+                            */
                         ?>
+
+                        <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                            <div class="row mb-2">
+                                <!-- <label for "fam_text_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
+                                <div class="col-md-7">
+                                    <?php
+                                    source_link3('family', 'fam_text_source', $marriage);
+
+                                    if ($marriage) {
+                                        $check_sources_text = check_sources('family', 'fam_text_source', $marriage);
+                                        echo $check_sources_text;
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        <?php } ?>
                     </td>
                 </tr>
 
-                <?php
-                // *** Show source by relation in iframe ***
-                echo edit_sources('606', 'family', 'fam_text_source', $marriage);
-
-                // *** Relation sources in new person editor screen ***
-                if (isset($marriage) and !isset($_GET['add_marriage'])) {
-                ?>
+                <!-- Relation sources -->
+                <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
                     <tr>
                         <td><a name="fam_source"></a><?= __('Source by relation'); ?></td>
-                        <td colspan="2"></td>
-                        <td>
-                            <?= source_link2('607', $marriage, 'family_source', 'fam_source'); ?>
+                        <td colspan="2">
+                            <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                                <div class="row mb-2">
+                                    <!-- <label for "family_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
+                                    <div class="col-md-7">
+                                        <?php
+                                        source_link3('family', 'family_source', $marriage);
+
+                                        if ($marriage) {
+                                            $check_sources_text = check_sources('family', 'family_source', $marriage);
+                                            echo $check_sources_text;
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
                         </td>
                     </tr>
                 <?php
                 }
-                // *** Show source by relation in iframe ***
-                echo edit_sources('607', 'family', 'family_source', $marriage);
 
                 // *** Picture ***
                 echo $event_cls->show_event('family', $marriage, 'marriage_picture');
@@ -767,12 +945,10 @@ if ($add_person == false) {
                             }
                             ?>
                         </td>
-                        <td></td>
                     </tr>
                     <tr style="display:none;" class="row110">
                         <td></td>
                         <td colspan="2"><?= $tagDb->tag_tag; ?></td>
-                        <td></td>
                     </tr>
                 <?php
                 }
@@ -795,7 +971,6 @@ if ($add_person == false) {
                     <tr class="table_header_large">
                         <td><?= __('Added by'); ?></td>
                         <td colspan="2"><?= show_datetime($familyDb->fam_new_datetime) . ' ' . $user_name; ?></td>
-                        <td></td>
                     </tr>
                 <?php
                 }
@@ -813,7 +988,6 @@ if ($add_person == false) {
                     <tr class="table_header_large">
                         <td><?= __('Changed by'); ?></td>
                         <td colspan="2"><?= show_datetime($familyDb->fam_changed_datetime) . ' ' . $user_name; ?></td>
-                        <td></td>
                     </tr>
                 <?php
                 }
@@ -822,9 +996,15 @@ if ($add_person == false) {
                 ?>
                 <tr class="table_header_large">
                     <td></td>
-                    <td colspan="2"></td>
-                    <td style="border-left: none; text-align:left; font-size: 1.5em;">
+                    <td colspan="2">
                         <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+
+                        <?= __('or'); ?>
+
+                        <!-- Remove marriage -->
+                        <?php if (isset($marriage)) { ?>
+                            <input type="submit" name="fam_remove" value="<?= __('Delete relation'); ?>" class="btn btn-sm btn-secondary">
+                        <?php } ?>
                     </td>
                 </tr>
             </table><br>
@@ -879,8 +1059,7 @@ if ($add_person == false) {
                 //echo '<br>&gt;&gt;&gt; '.__('Order children...');
 
                 //TODO only get children...
-                $fam_qry = $dbh->query("SELECT * FROM humo_families
-                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $marriage . "'");
+                $fam_qry = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $marriage . "'");
                 $famDb = $fam_qry->fetch(PDO::FETCH_OBJ);
                 $child_array = explode(";", $famDb->fam_children);
                 $nr_children = count($child_array);
@@ -910,8 +1089,7 @@ if ($add_person == false) {
                     }
 
                     if ($famDb->fam_children != $fam_children) {
-                        $sql = "UPDATE humo_families SET fam_children='" . $fam_children . "'
-                            WHERE fam_id='" . $famDb->fam_id . "'";
+                        $sql = "UPDATE humo_families SET fam_children='" . $fam_children . "' WHERE fam_id='" . $famDb->fam_id . "'";
                         $dbh->query($sql);
                     }
                 }
@@ -929,25 +1107,29 @@ if ($add_person == false) {
 
                 //echo __('Children').':<br>';
                 $fam_children_array = explode(";", $familyDb->fam_children);
-                echo '<ul id="sortable' . $i . '" class="sortable">';
-                foreach ($fam_children_array as $j => $value) {
-                    // *** Create new children variabele, for disconnect child ***
-                    $fam_children = '';
-                    foreach ($fam_children_array as $k => $value) {
-                        if ($k != $j) {
-                            $fam_children .= $fam_children_array[$k] . ';';
+        ?>
+                <ul id="sortable<?= $i; ?>" class="sortable">
+                    <?php
+                    foreach ($fam_children_array as $j => $value) {
+                        // *** Create new children variabele, for disconnect child ***
+                        $fam_children = '';
+                        foreach ($fam_children_array as $k => $value) {
+                            if ($k != $j) {
+                                $fam_children .= $fam_children_array[$k] . ';';
+                            }
                         }
-                    }
-                    $fam_children = substr($fam_children, 0, -1); // *** strip last ; character ***
+                        $fam_children = substr($fam_children, 0, -1); // *** strip last ; character ***
 
-                    echo '<li><span style="cursor:move;" id="' . $fam_children_array[$j] . '" class="handle' . $i . '" ><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
+                        echo '<li><span style="cursor:move;" id="' . $fam_children_array[$j] . '" class="handle' . $i . '" ><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
 
-                    echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=' . $fam_children .
-                        '&amp;child_disconnect_gedcom=' . $fam_children_array[$j] . '">
+                        echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=' . $fam_children .
+                            '&amp;child_disconnect_gedcom=' . $fam_children_array[$j] . '">
                         <img src="images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
-                    echo '&nbsp;&nbsp;<span id="chldnum' . $fam_children_array[$j] . '">' . ($j + 1) . '</span>. ' . show_person($fam_children_array[$j], true) . '</li>';
-                }
-                echo '</ul>';
+                        echo '&nbsp;&nbsp;<span id="chldnum' . $fam_children_array[$j] . '">' . ($j + 1) . '</span>. ' . show_person($fam_children_array[$j], true) . '</li>';
+                    }
+                    ?>
+                </ul>
+            <?php
             }
 
             // *** Add child ***
@@ -955,7 +1137,7 @@ if ($add_person == false) {
             add_person('child', $pers_sexe);
 
             // *** Search existing person as child ***
-        ?>
+            ?>
             <form method="POST" action="<?= $phpself; ?>" style="display : inline;" name="form7" id="form7">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <?php

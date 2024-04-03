@@ -206,7 +206,7 @@ if ($show_categories) {
                         $menutab_name = __('NO NAME');
                     }
                 }
-                $path = 'index.php?page=photoalbum.php?tree_id=' . $tree_id . '&amp;select_category=' . $category;
+                $path = 'index.php?page=photoalbum?tree_id=' . $tree_id . '&amp;select_category=' . $category;
                 if ($humo_option["url_rewrite"] == "j") {
                     $path = 'photoalbum/' . $tree_id . '?select_category=' . $category;
                 }
@@ -317,39 +317,51 @@ function show_media_files($pref)
     if ($show_categories === true) {
         $style = ' style="float: left; background-color:white; height:auto; width:98%;padding:5px;"';
     }
+
+    //$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
+    $path = 'index.php?page=photoalbum?tree_id=' . $tree_id;
+    if ($show_categories === true) {
+        $path .= '&amp;select_category=' . $pref;
+    }
+
+    if ($humo_option["url_rewrite"] == "j") {
+        $path = 'photoalbum/' . $tree_id;
+        if ($show_categories === true) {
+            $path .= '?select_category=' . $pref;
+        }
+    }
 ?>
+
     <div<?= $style; ?>>
+
+        <form method="post" action="<?= $path; ?>" style="display:inline">
+            <div class="row mb-2">
+                <div class="col-3"></div>
+
+                <div class="col-auto">
+                    <label for="show-pictures" class="col-form-label"><?= __('Photo\'s per page'); ?></label>
+                </div>
+                <div class="col-auto">
+                    <select name="show_pictures" id="show_pictures" onChange="window.location=this.value" class="form-select form-select-sm">
+                        <?php for ($i = 4; $i <= 60; $i++) { ?>
+                            <option value="<?= $albumpath; ?>show_pictures=<?= $i; ?>&amp;start=0&amp;item=0&amp;select_category=<?= $chosen_tab; ?>" <?= $i == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>
+                                <?= $i; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <!-- Search by photo name -->
+                <div class="col-auto">
+                    <input type="text" name="search_media" value="<?= $photoalbum['search_media']; ?>" size="20" class="form-control form-control-sm">
+                </div>
+                <div class="col-auto">
+                    <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-success">
+                </div>
+            </div>
+        </form>
+
         <div style="padding:5px" class="center">
-            <?= __('Photo\'s per page'); ?>
-            <select name="show_pictures" onChange="window.location=this.value">
-                <?php
-                for ($i = 4; $i <= 60; $i++) {
-                    echo '<option value="' . $albumpath . 'show_pictures=' . $i . '&amp;start=0&amp;item=0&amp;select_category=' . $chosen_tab . '"';
-                    if ($i == $photoalbum['show_pictures']) echo ' selected="selected"';
-                    echo ">" . $i . "</option>\n";
-                }
-                ?>
-            </select>
-
-            <?php
-            // *** Search by photo name ***
-            $menu = "";
-            if ($show_categories === true) {
-                //TODO add in $_POST as hidden value?
-                $menu = '?select_category=' . $pref;
-            }
-            $path = 'photoalbum.php';
-            if ($humo_option["url_rewrite"] == "j") {
-                $path = 'photoalbum/' . $tree_id;
-            }
-            //$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
-            ?>
-            &nbsp;<form method="post" action="<?= $path . $menu; ?>" style="display:inline">
-                <input type="text" name="search_media" value="<?= $photoalbum['search_media']; ?>" size="20">
-                <input type="submit" value="<?= __('Search'); ?>">
-            </form>
-
-            <br><br>
             <?php include __DIR__ . '/partial/pagination.php'; ?>
         </div>
 

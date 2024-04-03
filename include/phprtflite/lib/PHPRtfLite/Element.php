@@ -30,6 +30,10 @@
 class PHPRtfLite_Element
 {
 
+    // Mar. 2024 added by Huub.
+    protected $_rtf                = '';
+
+
     /**
      * @var string
      */
@@ -60,11 +64,12 @@ class PHPRtfLite_Element
      * @param PHPRtfLite_Font       $font
      * @param PHPRtfLite_ParFormat  $parFormat
      */
-    public function __construct(PHPRtfLite $rtf,
-                                $text,
-                                PHPRtfLite_Font $font = null,
-                                PHPRtfLite_ParFormat $parFormat = null)
-    {
+    public function __construct(
+        PHPRtfLite $rtf,
+        $text,
+        PHPRtfLite_Font $font = null,
+        PHPRtfLite_ParFormat $parFormat = null
+    ) {
         if ($font) {
             $rtf->registerFont($font);
         }
@@ -178,8 +183,8 @@ class PHPRtfLite_Element
             '|<SECTNUM\s*(/)?\s*>|smi',
             '|<SUP\s*>(.*?)</SUP\s*>|smi',
             '|<SUB\s*>(.*?)</SUB\s*>|smi',
-//            '|<PAGE\s*(/)?\s*>|smi',
-//            '|<SECT\s*(/)?\s*>|smi'
+            //            '|<PAGE\s*(/)?\s*>|smi',
+            //            '|<SECT\s*(/)?\s*>|smi'
         );
 
         $replace = array(
@@ -210,8 +215,8 @@ class PHPRtfLite_Element
             '\sectnum ',
             '{\super \1\super0}',
             '{\sub \1\sub0}',
-//            '\page ',
-//            '\sect '
+            //            '\page ',
+            //            '\sect '
         );
 
         $text = preg_replace($search, $replace, $text);
@@ -271,5 +276,4 @@ class PHPRtfLite_Element
 
         $stream->write($this->getClosingToken() . "\r\n");
     }
-
 }

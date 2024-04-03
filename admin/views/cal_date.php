@@ -13,34 +13,38 @@ $tree_result = $db_functions->get_trees();
 These calculated dates will be used for persons where all dates are missing (no birth, baptise, death or burial dates).<br>
 Calculation will be done using birth, baptise, death, burial and marriage dates of persons and these dates of parents and children.'); ?><br><br>
 
-<table class="humo standard" style="width:800px;" border="1">
-    <tr class="table_header">
-        <th colspan="2"><?= __('Calculated birth date'); ?></th>
-    </tr>
+<form method="POST" action="index.php">
+    <input type="hidden" name="page" value="cal_date">
 
-    <tr>
-        <td><?= __('Choose family tree'); ?></td>
-        <td>
-            <form method="POST" action="index.php">
-                <input type="hidden" name="page" value="cal_date">
-                <select size="1" name="tree_id">
-                    <?php
-                    foreach ($tree_result as $treeDb) {
-                        $treetext = show_tree_text($treeDb->tree_id, $selected_language);
-                        $selected = '';
-                        if (isset($tree_id) and ($treeDb->tree_id == $tree_id)) {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
+    <div class="row justify-content-center align-items-center"">
+        <div class="col-auto">
+            <?= __('Choose family tree'); ?>
+        </div>
+
+        <div class="col-auto">
+            <select size="1" name="tree_id" class="form-select form-select-sm">
+                <?php
+                foreach ($tree_result as $treeDb) {
+                    $treetext = show_tree_text($treeDb->tree_id, $selected_language);
+                    $selected = '';
+                    if (isset($tree_id) and ($treeDb->tree_id == $tree_id)) {
+                        $selected = ' selected';
                     }
-                    ?>
-                </select>
-                <input type="submit" name="submit_button" value="<?= __('Select'); ?>">
-            </form>
-        </td>
-    </tr>
-    <?php
+                    echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . $treetext['name'] . '</option>';
+                }
+                ?>
+            </select>
+        </div>
 
+        <div class="col-auto">
+            <input type="submit" name="submit_button" class="btn btn-sm btn-success" value="<?= __('Select'); ?>">
+        </div>
+    </div>
+</form><br>
+
+<!-- TODO use div instead of table -->
+<table class="humo standard" style="width:800px;" border="1">
+    <?php
     if (isset($_POST['submit_button']) and isset($tree_id)) {
         $db_functions->set_tree_id($tree_id);
 
@@ -136,6 +140,5 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
 
         echo '</td></tr>';
     }
-
     ?>
 </table>
