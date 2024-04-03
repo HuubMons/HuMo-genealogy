@@ -24,7 +24,7 @@
         ?>
             <!-- Open Archives -->
             <tr>
-                <th class="table_header_large" colspan="4"><?= __('Open Archives'); ?>
+                <th class="table_header_large" colspan="3"><?= __('Open Archives'); ?>
                     <!-- Ignore the Are You Sure script -->
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <select size="1" name="admin_online_search" onChange="this.form.submit();" class="ays-ignore">
@@ -34,34 +34,15 @@
                     <?php
 
                     // *** Show archive list ***
-                    // *** Change CSS links ***
-                    /*
-                    echo '
-                        <style>
-                        .ltrsddm div a {
-                            display:inline;
-                            padding: 0px;
-                        }
-                        </style>';
-                    */
                     // *** Show navigation pop-up ***
                     echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
-                    echo '<a href="#" style="display:inline" ';
-                    echo 'onmouseover="mopen(event,\'archive_menu\',0,0)"';
-                    echo 'onmouseout="mclosetime()">';
+                    echo '<a href="#" style="display:inline" onmouseover="mopen(event,\'archive_menu\',0,0)" onmouseout="mclosetime()">';
                     echo '[' . __('Archives') . ']</a>';
-                    //echo '<div class="sddm_fixed"
-                    //	style="text-align:left; z-index:400; padding:4px;
-                    //	direction:'.$rtlmarker.'"
-                    //	id="browse_menu"
-                    //	onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
                     echo '<div class="sddm_fixed"
                         style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
                         direction:' . $rtlmarker . ';
-                        box-shadow: 2px 2px 2px #999;
-                        border-radius: 3px;"
-                        id="archive_menu"
-                        onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+                        box-shadow: 2px 2px 2px #999; border-radius: 3px;"
+                        id="archive_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
                     // *** Show box with list link to archives ***
                     if ($add_person == false) {
@@ -133,6 +114,7 @@
                     ?>
                 </th>
             </tr>
+
             <?php
             if ($humo_option["admin_online_search"] == 'y') {
 
@@ -151,10 +133,16 @@
                         curl_close($ch);
 
                         $jsonData = json_decode($result, TRUE);
-                        echo '<tr class="humo_color"><td colspan="4">';
-                        echo '<b>' . __('Search') . ': <a href="https://www.openarch.nl/search.php?name=' . urlencode($name . $year_or_period) .
-                            '" target="_blank">https://www.openarch.nl/search.php?name=' . $name . $year_or_period . '</a></b><br>';
-                        echo '</td></tr>';
+            ?>
+                        <tr class="humo_color">
+                            <td colspan="3">
+                                <?php
+                                echo '<b>' . __('Search') . ': <a href="https://www.openarch.nl/search.php?name=' . urlencode($name . $year_or_period) .
+                                    '" target="_blank">https://www.openarch.nl/search.php?name=' . $name . $year_or_period . '</a></b><br>';
+                                ?>
+                            </td>
+                        </tr>
+            <?php
                         if (isset($jsonData["response"]["docs"]) and count($jsonData["response"]["docs"]) > 0) {
                             foreach ($jsonData["response"]["docs"] as $OAresult) {   # het voordeel van JSON/json_dcode is dat je er eenvoudig mee kunt werken (geen Iterator nodig)
                                 $OAday = '';
@@ -167,7 +155,7 @@
                                 if (isset($OAresult["eventdate"]["year"])) $OAyear = $OAresult["eventdate"]["year"];
                                 $OAeventdate = join(" ", array($OAday, $OAmonthName, $OAyear));
 
-                                echo '<tr><td colspan="4">';
+                                echo '<tr><td colspan="3">';
                                 echo '<a href="' . $OAresult["url"] . '" target="openarch.nl">';   # geen aparte 'link' maar heeft de regel als link, door target steeds zelfde window
                                 echo $OAresult["personname"] . ' (' . $OAresult["relationtype"] . ')';
                                 echo ', ' . $OAresult["eventtype"] . ' ' . $OAeventdate . ' ' . $OAresult["eventplace"];
@@ -175,7 +163,7 @@
                                 echo '</a></td></tr>';
                             }
                         } else {
-                            echo '<tr><td colspan="4">' . __('No results found') . '</td></tr>';
+                            echo '<tr><td colspan="3">' . __('No results found') . '</td></tr>';
                         }
                     }
                 }
@@ -217,7 +205,7 @@
                     if (isset($_POST['search_period'])) {
                         openarchives_new($OAsearchname, $OAyear_or_period);
                     } else {
-                        echo '<tr class="humo_color"><td colspan="4"><input type="submit" name="search_period" value="' . __('Search using period') . '">';
+                        echo '<tr class="humo_color"><td colspan="3"><input type="submit" name="search_period" value="' . __('Search using period') . '">';
                         echo ' <b>' . __('Search') . ': <a href="https://www.openarch.nl/search.php?name=' . urlencode($OAsearchname . $OAyear_or_period) .
                             '" target="_blank">https://www.openarch.nl/search.php?name=' . $OAsearchname . $OAyear_or_period . '</a></b><br>';
                         echo '</td></tr>';
@@ -226,163 +214,165 @@
             }
 
             // *** Empty line in table ***
-            //echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
-
-            // *** April 2023, temporary text ***
-            echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">';
-            echo __('If links in this page are not good visible, refresh the page once using: [CTRL] - Refresh.');
-            echo '&nbsp;</td></tr>';
-
-            //echo '<tr><th class="table_header_large" colspan="4">'.ucfirst(__('parents')).'</tr>';
-
-            echo '<tr><td><b>' . ucfirst(__('parents')) . '</b></td><td colspan="3">';
-            $parent_text = '';
-
-            if ($person->pers_famc) {
-                // *** Search for parents ***
-                $family_parentsDb = $db_functions->get_family($person->pers_famc, 'man-woman');
-
-                //*** Father ***
-                if ($family_parentsDb->fam_man) $parent_text .= show_person($family_parentsDb->fam_man);
-                //	else $parent_text=__('N.N.');
-
-                $parent_text .= ' ' . __('and') . ' ';
-
-                //*** Mother ***
-                if ($family_parentsDb->fam_woman) $parent_text .= show_person($family_parentsDb->fam_woman);
-                //	else $parent_text.=__('N.N.');
-            } else {
-                $hideshow = 701;
             ?>
-                <!-- Add existing or new parents -->
-                <b><?= __('There are no parents.'); ?></b><a href="index.php?page=<?= $page; ?>&amp;add_parents=1">
-                    <a href="#" onclick="hideShow('<?= $hideshow; ?>');"><?= __('Add parents'); ?></a>
-                    <span class="humo row701" style="margin-left:0px; display:none;">
-                        <table class="humo" style="margin-left:0px;">
-                            <tr class="table_header">
-                                <th></th>
-                                <th><?= __('Father'); ?></th>
-                                <th><?= __('Mother'); ?></th>
-                            </tr>
-                            <tr>
-                                <td><b><?= __('firstname'); ?></b></td>
-                                <td><input type="text" name="pers_firstname1" value="" size="35" placeholder="<?= ucfirst(__('firstname')); ?>"></td>
-                                <td><input type="text" name="pers_firstname2" value="" size="35" placeholder="<?= ucfirst(__('firstname')); ?>"></td>
-                            </tr>
-                            <tr>
-                                <td><?= __('prefix'); ?></td>
-                                <!-- HELP POPUP for prefix -->
-                                <td><input type="text" name="pers_prefix1" value="<?= $pers_prefix; ?>" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
-                                    <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                                        <a href="#" style="display:inline" onmouseover="mopen(event,'help_prefix',100,400)" onmouseout="mclosetime()">
-                                            <img src="../images/help.png" height="16" width="16">
-                                        </a>
-                                        <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                            <b><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></b><br>
-                                        </div>
-                                    </div>
-                                </td>
+            <tr>
+                <td colspan="3" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td>
+            </tr>
 
-                                <!-- HELP POPUP for prefix -->
-                                <td><input type="text" name="pers_prefix2" value="" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
-                                    <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                                        <a href="#" style="display:inline" onmouseover="mopen(event,'help_prefix',100,400)" onmouseout="mclosetime()">
-                                            <img src="../images/help.png" height="16" width="16">
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+            <tr>
+                <td><b><?= ucfirst(__('parents')); ?></b></td>
+                <td colspan="2">
+                    <?php
+                    $parent_text = '';
 
-                            <!-- Lastname -->
-                            <tr>
-                                <td><b><?= __('lastname'); ?></b></td>
-                                <td>
-                                    <input type="text" name="pers_lastname1" value="<?= $pers_lastname; ?>" size="35" placeholder="<?= ucfirst(__('lastname')); ?>">
-                                </td>
-                                <td><input type="text" name="pers_lastname2" value="" size="35" placeholder="<?= ucfirst(__('lastname')); ?>"></td>
-                            </tr>
+                    if ($person->pers_famc) {
+                        // *** Search for parents ***
+                        $family_parentsDb = $db_functions->get_family($person->pers_famc, 'man-woman');
 
-                            <!--  Patronym -->
-                            <tr>
-                                <td><?= __('patronymic'); ?></td>
-                                <td>
-                                    <input type="text" name="pers_patronym1" value="<?= $pers_patronym; ?>" size="35" placeholder="<?= ucfirst(__('patronymic')); ?>">
-                                </td>
-                                <td><input type="text" name="pers_patronym2" value="" size="35" placeholder="<?= ucfirst(__('patronymic')); ?>"></td>
-                            </tr>
+                        //*** Father ***
+                        if ($family_parentsDb->fam_man) $parent_text .= show_person($family_parentsDb->fam_man);
+                        //	else $parent_text=__('N.N.');
 
-                            <tr>
-                                <td><br>
-                                </td>
-                                <td>
-                                    <select size="1" name="event_gedcom_add1" style="width: 150px">
-                                        <!-- Nickname, alias, adopted name, hebrew name, etc. -->
-                                        <?php event_selection($data_listDb->event_gedcom); ?>
-                                    </select><br>
-                                    <input type="text" name="event_event_name1" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
-                                </td>
-                                <td>
-                                    <select size="1" name="event_gedcom_add2" style="width: 150px">
-                                        <!-- Nickname, alias, adopted name, hebrew name, etc. -->
-                                        <?php event_selection($data_listDb->event_gedcom); ?>
-                                    </select><br>
-                                    <input type="text" name="event_event_name2" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
-                                </td>
-                            </tr>
+                        $parent_text .= ' ' . __('and') . ' ';
 
-                            <!-- Privacy filter -->
-                            <tr>
-                                <td><?= __('Privacy filter'); ?></td>
-                                <td>
-                                    <input type="radio" name="pers_alive1" value="alive"><?= __('alive'); ?>
-                                    <input type="radio" name="pers_alive1" value="deceased"><?= __('deceased'); ?>
-                                </td>
-                                <td>
-                                    <input type="radio" name="pers_alive2" value="alive"><?= __('alive'); ?>
-                                    <input type="radio" name="pers_alive2" value="deceased"><?= __('deceased'); ?>
-                                </td>
-                            </tr>
+                        //*** Mother ***
+                        if ($family_parentsDb->fam_woman) $parent_text .= show_person($family_parentsDb->fam_woman);
+                        //	else $parent_text.=__('N.N.');
+                    } else {
+                        $hideshow = 701;
+                    ?>
+                        <!-- Add existing or new parents -->
+                        <b><?= __('There are no parents.'); ?></b><a href="index.php?page=<?= $page; ?>&amp;add_parents=1">
+                            <a href="#" onclick="hideShow('<?= $hideshow; ?>');"><?= __('Add parents'); ?></a>
+                            <span class="humo row701" style="margin-left:0px; display:none;">
+                                <table class="humo" style="margin-left:0px;">
+                                    <tr class="table_header">
+                                        <th></th>
+                                        <th><?= __('Father'); ?></th>
+                                        <th><?= __('Mother'); ?></th>
+                                    </tr>
+                                    <tr>
+                                        <td><b><?= __('firstname'); ?></b></td>
+                                        <td><input type="text" name="pers_firstname1" value="" size="35" placeholder="<?= ucfirst(__('firstname')); ?>"></td>
+                                        <td><input type="text" name="pers_firstname2" value="" size="35" placeholder="<?= ucfirst(__('firstname')); ?>"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?= __('prefix'); ?></td>
+                                        <!-- HELP POPUP for prefix -->
+                                        <td><input type="text" name="pers_prefix1" value="<?= $pers_prefix; ?>" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
+                                            <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_prefix',100,400)" onmouseout="mclosetime()">
+                                                    <img src="../images/help.png" height="16" width="16">
+                                                </a>
+                                                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                                                    <b><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></b><br>
+                                                </div>
+                                            </div>
+                                        </td>
 
-                            <tr>
-                                <td><?= __('Sex'); ?></td>
-                                <td>
-                                    <input type="radio" name="pers_sexe1" value="M" checked><?= __('male'); ?>
-                                    <input type="radio" name="pers_sexe1" value="F"><?= __('female'); ?>
-                                    <input type="radio" name="pers_sexe1" value="">?
-                                </td>
-                                <td>
-                                    <input type="radio" name="pers_sexe2" value="M"><?= __('male'); ?>
-                                    <input type="radio" name="pers_sexe2" value="F" checked><?= __('female'); ?>
-                                    <input type="radio" name="pers_sexe2" value=""> ?
-                                </td>
-                            </tr>
+                                        <!-- HELP POPUP for prefix -->
+                                        <td><input type="text" name="pers_prefix2" value="" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
+                                            <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_prefix',100,400)" onmouseout="mclosetime()">
+                                                    <img src="../images/help.png" height="16" width="16">
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                            <!-- Profession -->
-                            <tr>
-                                <td><?= __('Profession'); ?></td>
-                                <td>
-                                    <input type="text" name="event_profession1" placeholder="<?= __('Profession'); ?>" value="" size="35">
-                                </td>
-                                <td>
-                                    <input type="text" name="event_profession2" placeholder="<?= __('Profession'); ?>" value="" size="35">
-                                </td>
-                            </tr>
+                                    <!-- Lastname -->
+                                    <tr>
+                                        <td><b><?= __('lastname'); ?></b></td>
+                                        <td>
+                                            <input type="text" name="pers_lastname1" value="<?= $pers_lastname; ?>" size="35" placeholder="<?= ucfirst(__('lastname')); ?>">
+                                        </td>
+                                        <td><input type="text" name="pers_lastname2" value="" size="35" placeholder="<?= ucfirst(__('lastname')); ?>"></td>
+                                    </tr>
 
-                            <tr class="humo_color">
-                                <td colspan="3"><input type="submit" name="add_parents2" value="<?= __('Add parents'); ?>" class="btn btn-sm btn-success"></td>
-                            </tr>
-                        </table><br>
+                                    <!--  Patronym -->
+                                    <tr>
+                                        <td><?= __('patronymic'); ?></td>
+                                        <td>
+                                            <input type="text" name="pers_patronym1" value="<?= $pers_patronym; ?>" size="35" placeholder="<?= ucfirst(__('patronymic')); ?>">
+                                        </td>
+                                        <td><input type="text" name="pers_patronym2" value="" size="35" placeholder="<?= ucfirst(__('patronymic')); ?>"></td>
+                                    </tr>
 
-                        <?= __('Or select an existing family as parents:'); ?>
-                        <input type="text" name="add_parents" placeholder="<?= __('GEDCOM number (ID)'); ?>" value="" size="20">
-                        <a href="#" onClick='window.open("index.php?page=editor_relation_select","","<?= $field_popup; ?>")'><img src="../images/search.png" alt=<?= __('Search'); ?>></a>
-                        <input type="submit" name="dummy2" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
-                    </span> <!-- End of hide item -->
-                <?php
-            }
+                                    <tr>
+                                        <td><br>
+                                        </td>
+                                        <td>
+                                            <select size="1" name="event_gedcom_add1" style="width: 150px">
+                                                <!-- Nickname, alias, adopted name, hebrew name, etc. -->
+                                                <?php event_selection($data_listDb->event_gedcom); ?>
+                                            </select><br>
+                                            <input type="text" name="event_event_name1" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
+                                        </td>
+                                        <td>
+                                            <select size="1" name="event_gedcom_add2" style="width: 150px">
+                                                <!-- Nickname, alias, adopted name, hebrew name, etc. -->
+                                                <?php event_selection($data_listDb->event_gedcom); ?>
+                                            </select><br>
+                                            <input type="text" name="event_event_name2" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
+                                        </td>
+                                    </tr>
 
-            echo $parent_text . '</td></tr>';
+                                    <!-- Privacy filter -->
+                                    <tr>
+                                        <td><?= __('Privacy filter'); ?></td>
+                                        <td>
+                                            <input type="radio" name="pers_alive1" value="alive"><?= __('alive'); ?>
+                                            <input type="radio" name="pers_alive1" value="deceased"><?= __('deceased'); ?>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="pers_alive2" value="alive"><?= __('alive'); ?>
+                                            <input type="radio" name="pers_alive2" value="deceased"><?= __('deceased'); ?>
+                                        </td>
+                                    </tr>
 
+                                    <tr>
+                                        <td><?= __('Sex'); ?></td>
+                                        <td>
+                                            <input type="radio" name="pers_sexe1" value="M" checked><?= __('male'); ?>
+                                            <input type="radio" name="pers_sexe1" value="F"><?= __('female'); ?>
+                                            <input type="radio" name="pers_sexe1" value="">?
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="pers_sexe2" value="M"><?= __('male'); ?>
+                                            <input type="radio" name="pers_sexe2" value="F" checked><?= __('female'); ?>
+                                            <input type="radio" name="pers_sexe2" value=""> ?
+                                        </td>
+                                    </tr>
+
+                                    <!-- Profession -->
+                                    <tr>
+                                        <td><?= __('Profession'); ?></td>
+                                        <td>
+                                            <input type="text" name="event_profession1" placeholder="<?= __('Profession'); ?>" value="" size="35">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="event_profession2" placeholder="<?= __('Profession'); ?>" value="" size="35">
+                                        </td>
+                                    </tr>
+
+                                    <tr class="humo_color">
+                                        <td colspan="2"><input type="submit" name="add_parents2" value="<?= __('Add parents'); ?>" class="btn btn-sm btn-success"></td>
+                                    </tr>
+                                </table><br>
+
+                                <?= __('Or select an existing family as parents:'); ?>
+                                <input type="text" name="add_parents" placeholder="<?= __('GEDCOM number (ID)'); ?>" value="" size="20">
+                                <a href="#" onClick='window.open("index.php?page=editor_relation_select","","<?= $field_popup; ?>")'><img src="../images/search.png" alt=<?= __('Search'); ?>></a>
+                                <input type="submit" name="dummy2" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
+                            </span> <!-- End of hide item -->
+                        <?php
+                    }
+                        ?>
+                        <?= $parent_text; ?>
+                </td>
+            </tr>
+
+            <?php
             // *** Show message if age < 0 or > 120 ***
             $error_color = '';
             $show_message = '&nbsp;';
@@ -396,35 +386,24 @@
                 }
             }
 
-                ?>
-                <tr>
-                    <!-- Show empty line or error message in table -->
-                    <td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;<?= $error_color; ?>">
-                        <?= $show_message; ?>
-                    </td>
-                </tr>
-            <?php
-        }
             ?>
-            <tr class="table_header_large">
+            <tr>
+                <!-- Show empty line or error message in table -->
+                <td colspan="3" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;<?= $error_color; ?>">
+                    <?= $show_message; ?>
+                </td>
+            </tr>
+        <?php
+        }
+        ?>
+        <tr class="table_header_large">
+            <td><a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">[+]</span> <?= __('All'); ?></a></td>
+
+            <th style="border-left: none; text-align:left; font-size: 1.5em;" colspan="2">
                 <?php
-                // *** Hide or show all hide-show items ***
-                $hide_show_all = '<a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">[+]</span> ' . __('All') . '</a> ';
-
                 if ($add_person == false) {
-                    echo '<td>' . $hide_show_all . ' <input type="submit" name="person_remove" value="' . __('Delete person') . '" class="btn btn-sm btn-secondary"></td>';
-                    //echo '<td style="border-right: none"></td>';
-                } else {
-                    // *** New person: no delete example link ***
-                    echo '<td>' . $hide_show_all . '</td>';
-                    //echo '<td style="border-right: none"><br></td>';
-                }
+                    echo '<input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
 
-                //echo '<th style="border-left: none; text-align:left;">'.__('Person');
-                echo '<th style="border-left: none; text-align:left; font-size: 1.5em;" colspan="2">';
-
-                if ($add_person == false) {
-                    //echo ': ['.$pers_gedcomnumber.'] '.show_person($person->pers_gedcomnumber,false,false);
                     echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
 
                     // *** Add person to admin favourite list ***
@@ -432,63 +411,81 @@
                         WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_value='" . $pers_gedcomnumber . "'";
                     $fav_result = $dbh->query($fav_qry);
                     $rows = $fav_result->rowCount();
-                    if ($rows > 0)
+                    if ($rows > 0) {
                         echo '<a href="' . $phpself . '?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=0"><img src="../images/favorite_blue.png" style="border: 0px"></a>';
-                    else
+                    } else {
                         echo '<a href="' . $phpself . '?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=1"><img src="../images/favorite.png" style="border: 0px"></a>';
-                    echo '<br>';
-                }
-                echo '</th><td>';
-
-                if ($add_person == false) {
-                    echo '<input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
+                    }
                 } else {
                     echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
                 }
                 ?>
-                </td>
-            </tr>
+            </th>
+        </tr>
 
-            <tr>
-                <!-- Name-->
-                <?php
-                $hideshow = '1';
-                $display = ' display:none;';
-                // *** New person: show all name fields ***
-                if (!$pers_gedcomnumber) $display = '';
-                ?>
-                <td><a name="name"></a><b><?= __('Name'); ?></b></td>
-                <td colspan="2">
+        <tr>
+            <!-- Name-->
+            <?php
+            $hideshow = '1';
+            $display = ' display:none;';
+            // *** New person: show all name fields ***
+            if (!$pers_gedcomnumber) {
+                $display = '';
+            }
+            $check_sources_text = '';
+            if ($pers_gedcomnumber) {
+                $check_sources_text = check_sources('person', 'pers_name_source', $pers_gedcomnumber);
+            }
+            ?>
+            <td><a name="name"></a><b><?= __('Name'); ?></b></td>
+            <td colspan="2">
+                <?php if ($pers_gedcomnumber) { ?>
+                    <span class="hideshowlink" onclick="hideShow(<?= $hideshow; ?>);">
+                        <b>
+                            <?php
+                            echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
+                            if ($pers_name_text) echo ' <img src="images/text.png" height="16">';
+                            echo ' ' . $check_sources_text;
+                            ?>
+                        </b>
+                    </span><br>
+                <?php } ?>
+
+                <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
+                    <!-- Firstname -->
+                    <div class="row mb-2 mt-2">
+                        <label for "firstname" class="col-md-3 col-form-label"><b><?= ucfirst(__('firstname')); ?></b></label>
+                        <div class="col-md-7">
+                            <input type="text" name="pers_firstname" value="<?= $pers_firstname; ?>" size="35" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <!-- Prefix -->
+                    <div class="row mb-2">
+                        <label for "prefix" class="col-md-3 col-form-label"><?= ucfirst(__('prefix')); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="pers_prefix" value="<?= $pers_prefix; ?>" size="35" class="form-control form-control-sm">
+                            <span style="font-size: 13px;"><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></span>
+                        </div>
+                    </div>
+
+                    <!-- Lastname -->
+                    <div class="row mb-2">
+                        <label for "lastname" class="col-md-3 col-form-label"><b><?= ucfirst(__('lastname')); ?></b></label>
+                        <div class="col-md-7">
+                            <input type="text" name="pers_lastname" value="<?= $pers_lastname; ?>" size="35" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <!-- Patronym -->
+                    <div class="row mb-2">
+                        <label for "patronym" class="col-md-3 col-form-label"><?= ucfirst(__('patronymic')); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="pers_patronym" value="<?= $pers_patronym; ?>" size="35" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
                     <?php
-                    // *** Use hideshow to show and hide the editor lines ***
-                    if ($pers_gedcomnumber) {
-                        echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');"><b>';
-                        echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
-                        if ($pers_name_text) echo ' <img src="images/text.png" height="16">';
-                        echo '</b></span><br>';
-                    }
-                    echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
-
-                    // *** Firstname ***
-                    //echo '<input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35" placeholder="'.ucfirst(__('firstname')).'"><br>';
-                    echo editor_label(__('firstname'), 'bold');
-                    echo '<input type="text" name="pers_firstname" value="' . $pers_firstname . '"  size="35"><br>';
-
-                    // *** Prefix ***
-                    //echo '<input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'"> '.__("For example: d\' or:  van_ (use _ for a space)").'<br>';
-                    echo editor_label(__('prefix') . '. ' . __("For example: d\' or:  van_ (use _ for a space)"));
-                    echo '<input type="text" name="pers_prefix" value="' . $pers_prefix . '" size="10"><br>';
-
-                    // *** Lastname ***
-                    //echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'"> ';
-                    //echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'">';
-                    echo editor_label(__('lastname'), 'bold');
-                    echo '<input type="text" name="pers_lastname" value="' . $pers_lastname . '" size="35"><br>';
-
-                    // *** Patronym *** 
-                    echo editor_label(__('patronymic'));
-                    echo '<input type="text" name="pers_patronym" value="' . $pers_patronym . '" size="20">';
-
                     if ($humo_option['admin_hebname'] == "y") {  // user requested hebrew name field to be displayed here, not under "events"
                         $sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_kind='name' AND event_connect_kind='person'";
                         $result = $dbh->query($sql);
@@ -496,24 +493,35 @@
                             $hebnameDb = $result->fetch(PDO::FETCH_OBJ);
                             $he_name =  $hebnameDb->event_event;
                         } else {
-                            $he_name = "";
+                            $he_name = '';
                         }
-
-                        echo editor_label(__('Hebrew name') . '. ' . __('For example: Joseph ben Hirsch Zvi'));
-                        echo '<input type="text" name="even_hebname" value="' . htmlspecialchars($he_name) . '" size="35"> ';
+                    ?>
+                        <!-- Hebrew name -->
+                        <div class="row mb-2">
+                            <label for "hebrew_name" class="col-md-3 col-form-label"><?= ucfirst(__('Hebrew name')); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="even_hebname" value="<?= htmlspecialchars($he_name); ?>" size="35" class="form-control form-control-sm">
+                                <span style="font-size: 13px;"><?= __("For example: Joseph ben Hirsch Zvi"); ?></span>
+                            </div>
+                        </div>
+                    <?php
                     }
 
                     // *** Person text by name ***
-                    echo editor_label(__('text'));
                     $text = $editor_cls->text_show($pers_name_text);
-                    //$field_text_selected=$field_text; if ($text) $field_text_selected=$field_text_medium;
                     // *** Check if there are multiple lines in text ***
                     $field_text_selected = $field_text;
                     if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                    echo '<textarea rows="1" name="pers_name_text" ' . $field_text_selected . '>' . $text . '</textarea>';
+                    ?>
+                    <!-- Text -->
+                    <div class="row mb-2">
+                        <label for "text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" name="pers_name_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                        </div>
+                    </div>
 
-                    //TEST
-                    //echo '<br><br><input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
+                    <?php
 
                     //TEST Ajax script
                     /*
@@ -565,516 +573,476 @@
 */
 
 
-                    echo '</span>';
-                    ?>
-                </td>
-
-                <td>
-                    <?php
+                    // *** Source by name ***
+                    // *** source_link3($connect_kind, $connect_sub_kind, $connect_connect_id) ***
                     if (!isset($_GET['add_person'])) {
-                        // *** Source by name ***
-                        //source_link('individual',$pers_gedcomnumber,'pers_name_source');
-                        echo source_link2('500', $pers_gedcomnumber, 'pers_name_source', 'name');
                     ?>
-
-
-
-                        <?php /*
-<!-- TEST Bootstrap modal -->
-<!--
-Modal works. In editor.php also enable line 69 <<<<<<<<<<<<<<<<<<<<<
-TODO: add and remove sources inside a modal without reloading page
-Try: https://www.w3schools.com/jsref/met_node_appendchild.asp
--->
-<?php
-// Partly copied from source_link2
-//function source_link2($hideshow, $connect_connect_id, $connect_sub_kind, $link = '')
-//echo source_link2('500', $pers_gedcomnumber, 'pers_name_source', 'name');
-$connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
-WHERE connect_tree_id='" . $tree_id . "'
-AND connect_sub_kind='pers_name_source' AND connect_connect_id='" . $pers_gedcomnumber . "'";
-$connect_sql = $dbh->query($connect_qry);
-$source_count = $connect_sql->rowCount();
-$source_error = 0;
-while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
-    if (!$connectDb->connect_source_id) {
-        $source_error = 1;
-        $style_source = '';
-    } else {
-        // *** Check if source is empty ***
-        $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-        if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
-            $source_error = 2;
-            $style_source = '';
-        }
-    }
-}
-?>
-<!-- Button trigger modal -->
-<?php
-$colour = 'btn-primary';
-if ($source_error == 1) $colour = 'btn-danger';
-if ($source_error == 2) $colour = 'btn-warning';
-?>
-<button type="button" class="btn <?= $colour; ?> btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <?= __('Source'); ?><?= $source_error; ?> [<?= $source_count; ?>]
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php
-                // TEST using function in editor_sources.php. Include file in editor.php.
-                source_edit("person", "pers_name_source", $pers_gedcomnumber);
-                ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Show modal if save button is used, existing source is selected, etc. -->
-<?php if (isset($_POST['connect_add']) or isset($_POST['submit']) or isset($_GET['source_add2'])) { ?>
-    <script>
-        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {})
-        myModal.toggle()
-    </script>
-<?php } ?>
-
-<!-- Also test second modal -->
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#pers_birth_sourceModal">
-    <?= __('Source'); ?>
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="pers_birth_sourceModal" tabindex="-1" aria-labelledby="pers_birth_sourceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="pers_birth_sourceModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php
-                // TEST using function in editor_sources.php. Include file in editor.php.
-                source_edit("person", "pers_birth_source", $pers_gedcomnumber);
-                ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-*/ ?>
-
-
-
-
+                        <!-- Source -->
+                        <div class="row mb-2">
+                            <label for "source" class="col-md-3 col-form-label"><?= ucfirst(__('source')); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                source_link3('person', 'pers_name_source', $pers_gedcomnumber);
+                                echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
                     <?php } ?>
-                </td>
-            </tr>
+                </span>
+            </td>
+        </tr>
 
-            <?php
-            // *** Show source by name in iframe ***
-            echo edit_sources('500', 'person', 'pers_name_source', $pers_gedcomnumber);
+        <?php
+        if ($add_person == false) {
+            // *** Event name (also show ADD line for prefix, suffix, title etc. ***
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'name');
 
-            if ($add_person == false) {
-                // *** Event name (also show ADD line for prefix, suffix, title etc. ***
-                echo $event_cls->show_event('person', $pers_gedcomnumber, 'name');
+            //TEST if editing is done in table, Ajax could be used.
+            //echo '<tr><td></td><td colspan="2"><table class="humo">';
+            //echo $event_cls->show_event('person', $pers_gedcomnumber, 'name');
+            //echo '</table></td></tr>';
 
-                //TEST if editing is done in table, Ajax could be used.
-                //echo '<tr><td></td><td colspan="3"><table class="humo">';
-                //echo $event_cls->show_event('person', $pers_gedcomnumber, 'name');
-                //echo '</table></td></tr>';
+            // *** NPFX Name prefix like: Lt. Cmndr. ***
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'NPFX');
 
-                // *** NPFX Name prefix like: Lt. Cmndr. ***
-                echo $event_cls->show_event('person', $pers_gedcomnumber, 'NPFX');
+            // *** NSFX Name suffix like: jr. ***
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'NSFX');
 
-                // *** NSFX Name suffix like: jr. ***
-                echo $event_cls->show_event('person', $pers_gedcomnumber, 'NSFX');
+            // *** Title of Nobility ***
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'nobility');
 
-                // *** Title of Nobility ***
-                echo $event_cls->show_event('person', $pers_gedcomnumber, 'nobility');
+            // *** Title ***
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'title');
 
-                // *** Title ***
-                echo $event_cls->show_event('person', $pers_gedcomnumber, 'title');
+            // *** Lordship ***
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'lordship');
+        }
 
-                // *** Lordship ***
-                echo $event_cls->show_event('person', $pers_gedcomnumber, 'lordship');
-            }
+        // *** Alive ***
 
-            // *** Alive ***
+        // *** Disable radio boxes if person is deceased ***
+        $disabled = '';
+        if ($pers_death_date or $pers_death_place or $pers_buried_date or $pers_buried_place) {
+            $disabled = ' disabled';
+        }
 
-            // *** Disable radio boxes if person is deceased ***
-            $disabled = '';
-            if ($pers_death_date or $pers_death_place or $pers_buried_date or $pers_buried_place) {
-                $disabled = ' disabled';
-            }
-
-            if ($pers_alive == 'deceased') {
-                $selected_alive = '';
-                $selected_deceased = ' checked';
-            } else {
-                $selected_alive = ' checked';
-                $selected_deceased = '';
-            }
-            ?>
-            <tr class="humo_color">
-                <td><?= __('Privacy filter'); ?></td>
-                <td colspan="2">
-                    <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?>> <?= __('alive'); ?>
-                    <?php
-
-                    echo ' <input type="radio" name="pers_alive" value="deceased"' . $selected_deceased . $disabled . '> ' . __('deceased');
-
-                    // *** Estimated/ calculated (birth) date, can be used for privacy filter ***
-                    if (!$pers_cal_date) $pers_cal_date = 'dd mmm yyyy';
-                    echo '<span style="color:#6D7B8D;">';
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date">' . __('Calculated birth date') . ':</a> ' . language_date($pers_cal_date);
-                    echo '</span>';
-                    ?>
-                </td>
-                <td></td>
-            </tr>
-            <?php
-
-            // *** Sexe ***
-            $colour = '';
-            // *** If sexe = unknown then show a red line (new person = other colour). ***
-            if ($pers_sexe == '') $colour = ' bgcolor="#FFAA80"';
-            if ($add_person == true and $pers_sexe == '') $colour = ' bgcolor="#FFAA80"';
-
-            $selected_m = '';
-            if ($pers_sexe == 'M') $selected_m = ' checked';
-            $selected_f = '';
-            if ($pers_sexe == 'F') $selected_f = ' checked';
-            $selected_u = '';
-            if ($pers_sexe == '') $selected_u = ' checked';
-            ?>
-            <tr>
-                <td><a name="sex"></a><?= __('Sex'); ?></td>
-                <td<?= $colour; ?> colspan="2">
-                    <input type="radio" name="pers_sexe" value="M" <?= $selected_m; ?>> <?= __('male'); ?>
-                    <input type="radio" name="pers_sexe" value="F" <?= $selected_f; ?>> <?= __('female'); ?>
-                    <input type="radio" name="pers_sexe" value="" <?= $selected_u; ?>> ?
-                    </td>
-                    <td>
-                        <?php
-                        if (!isset($_GET['add_person'])) {
-                            //source_link('individual',$pers_gedcomnumber,'pers_sexe_source');
-                            echo source_link2('501', $pers_gedcomnumber, 'pers_sexe_source', 'sex');
-                        }
-                        ?>
-                    </td>
-            </tr>
-            <?php
-            // *** Show source by sexe in iframe ***
-            echo edit_sources('501', 'person', 'pers_sexe_source', $pers_gedcomnumber);
-
-            //TEST (also after other items in this script)
-            // *** Empty line in table ***
-            //$divider='<tr style="height:8px;"><td colspan="4" class="table_empty_line"></td></tr>';
-            //echo $divider;
-
-
-            // *** Born ***
-            // *** Use hideshow to show and hide the editor lines ***
-            $hideshow = '2';
-            // *** If items are missing show all editor fields ***
-            $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
-
-            ?>
-            <tr class="humo_color">
-                <td><a name="born"></a>
-                    <b><?= ucfirst(__('born')); ?></b>
-                </td>
+        if ($pers_alive == 'deceased') {
+            $selected_alive = '';
+            $selected_deceased = ' checked';
+        } else {
+            $selected_alive = ' checked';
+            $selected_deceased = '';
+        }
+        ?>
+        <tr class="humo_color">
+            <td><?= __('Privacy filter'); ?></td>
+            <td colspan="2">
+                <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?>> <?= __('alive'); ?>
                 <?php
-                /*
-                <td style="border-right:0px; vertical-align: top;">
-                    <?= ucfirst(__('born')); ?>
-                    <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
-                <br><?= __('date'); ?>
+                echo ' <input type="radio" name="pers_alive" value="deceased"' . $selected_deceased . $disabled . '> ' . __('deceased');
+
+                // *** Estimated/ calculated (birth) date, can be used for privacy filter ***
+                if (!$pers_cal_date) $pers_cal_date = 'dd mmm yyyy';
+                ?>
+                <span style="color:#6D7B8D;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= language_date($pers_cal_date); ?>
+                </span>
+            </td>
+        </tr>
+
+        <?php
+        // *** Sexe ***
+        $colour = '';
+        // *** If sexe = unknown then show a red line (new person = other colour). ***
+        if ($pers_sexe == '') $colour = ' bgcolor="#FFAA80"';
+        if ($add_person == true and $pers_sexe == '') $colour = ' bgcolor="#FFAA80"';
+
+        $selected_m = '';
+        if ($pers_sexe == 'M') $selected_m = ' checked';
+        $selected_f = '';
+        if ($pers_sexe == 'F') $selected_f = ' checked';
+        $selected_u = '';
+        if ($pers_sexe == '') $selected_u = ' checked';
+
+        $check_sources_text = '';
+        if ($pers_gedcomnumber) {
+            $check_sources_text = check_sources('person', 'pers_name_source', $pers_gedcomnumber);
+        }
+        ?>
+        <tr>
+            <td><a name="sex"></a><?= __('Sex'); ?></td>
+            <td <?= $colour; ?> colspan="2">
+                <input type="radio" name="pers_sexe" value="M" <?= $selected_m; ?>> <?= __('male'); ?>
+                <input type="radio" name="pers_sexe" value="F" <?= $selected_f; ?>> <?= __('female'); ?>
+                <input type="radio" name="pers_sexe" value="" <?= $selected_u; ?>> ?
+
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?php
+                if (!isset($_GET['add_person'])) {
+                    source_link3('sex', 'pers_sexe_source', $pers_gedcomnumber);
+                    echo $check_sources_text;
+                }
+                ?>
+            </td>
+        </tr>
 
-                // HELP POPUP
-                echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
-                echo '<a href="#" style="display:inline" ';
-                echo 'onmouseover="mopen(event,\'help_date\')"';
-                echo 'onmouseout="mclosetime()">';
-                echo '<img src="../images/help.png" height="16" width="16">';
-                echo '</a>';
-                echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_date" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-                echo __('Examples of date entries:') . '<br>';
-                echo '<b>' . __('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.') . '</b><br>';
-                echo '</div>';
-                echo '</div><br>';
-
-                echo __('birth time') . '<br>';
-                echo ucfirst(__('text'));
-                echo '</span>';
-                echo '</td>';
-*/
-
-                echo '<td colspan="2">';
+        <?php
+        // *** Born ***
+        // *** Use hideshow to show and hide the editor lines ***
+        $hideshow = '2';
+        // *** If items are missing show all editor fields ***
+        $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+        ?>
+        <tr class="humo_color">
+            <td><a name="born"></a>
+                <b><?= ucfirst(__('born')); ?></b>
+            </td>
+            <td colspan="2">
+                <?php
                 $hideshow_text = hideshow_date_place($pers_birth_date, $pers_birth_place);
                 if ($pers_birth_time) {
                     $hideshow_text .= ' ' . __('at') . ' ' . $pers_birth_time . ' ' . __('hour');
                 }
                 //TEST
                 //if (!$hideshow_text) $hideshow_text=ucfirst(__('born'));
+
+                if ($pers_gedcomnumber) {
+                    $check_sources_text = check_sources('born', 'pers_birth_source', $pers_gedcomnumber);
+                    $hideshow_text .= $check_sources_text;
+                }
+
                 echo hideshow_editor($hideshow, $hideshow_text, $pers_birth_text);
-
-                echo editor_label2(__('Date'));
-                echo $editor_cls->date_show($pers_birth_date, 'pers_birth_date', '', '', $pers_birth_date_hebnight, 'pers_birth_date_hebnight') . '<br>';
-
-                echo editor_label2(__('place'));
-                echo '<input type="text" name="pers_birth_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_birth_place) . '" size="' . $field_place . '">';
-                //echo '<input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
-
-                // *** Auto complete doesn't work properly yet... ***
-                //echo __('place').' <input list="place_auto_complete" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
-
-                echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                echo editor_label2(__('birth time'));
-                echo '<input type="text" placeholder="' . __('birth time') . '" name="pers_birth_time" value="' . $pers_birth_time . '" size="' . $field_date . '">';
-                //echo '<input type="text" name="pers_birth_time" value="'.$pers_birth_time.'" size="'.$field_date.'">';
-                // *** Stillborn child ***
-                $check = '';
-                if (isset($pers_stillborn) and $pers_stillborn == 'y') {
-                    $check = ' checked';
-                }
-                echo '<input type="checkbox" name="pers_stillborn" ' . $check . '> ' . __('stillborn child') . '<br>';
-
-                // *** Check if there are multiple lines in text ***
-                $field_text_selected = $field_text;
-                if ($pers_birth_text and preg_match('/\R/', $pers_birth_text)) $field_text_selected = $field_text_medium;
-                echo editor_label2(__('text'));
-                echo '<textarea rows="1" placeholder="' . __('text') . '" name="pers_birth_text" ' . $field_text_selected . '>' .
-                    $editor_cls->text_show($pers_birth_text) . '</textarea>';
-
-                // *** End of hideshow_editor span ***
-                echo '</span>';
-                echo '</td>';
-
-                // *** Source by birth ***
-                echo '<td>';
-                if (!isset($_GET['add_person'])) {
-                    //source_link('individual',$pers_gedcomnumber,'pers_birth_source');
-                    echo source_link2('502', $pers_gedcomnumber, 'pers_birth_source', 'born');
-                }
                 ?>
-                </td>
-            </tr>
-            <?php
-            // *** Show source by birth in iframe ***
-            echo edit_sources('502', 'person', 'pers_birth_source', $pers_gedcomnumber);
+                <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+                    <div class="row mb-2">
+                        <label for "pers_birth_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show($pers_birth_date, 'pers_birth_date', '', $pers_birth_date_hebnight, 'pers_birth_date_hebnight'); ?>
+                        </div>
+                    </div>
 
-            // *** Birth declaration ***
-            if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'birth_declaration');
+                    <div class="row mb-2">
+                        <label for "pers_birth_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="pers_birth_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_birth_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                            </div>
+                        </div>
+                    </div>
 
-            // **** BRIT MILA ***
-            if ($humo_option['admin_brit'] == "y" and $pers_sexe != "F") {
+                    <div class="row mb-2">
+                        <label for "pers_birth_time" class="col-md-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
+                        <div class="col-md-2">
+                            <input type="text" placeholder="<?= __('birth time'); ?>" name="pers_birth_time" value="<?= $pers_birth_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="checkbox" name="pers_stillborn" <?= (isset($pers_stillborn) and $pers_stillborn == 'y') ? 'checked' : ''; ?> class="form-check-input"> <?= __('stillborn child'); ?>
+                        </div>
+                    </div>
 
-                // *** Use hideshow to show and hide the editor lines ***
-                $hideshow = '20';
-                // *** If items are missing show all editor fields ***
-                $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+                    <?php
+                    // *** Check if there are multiple lines in text ***
+                    $field_text_selected = $field_text;
+                    if ($pers_birth_text and preg_match('/\R/', $pers_birth_text)) $field_text_selected = $field_text_medium;
+                    ?>
+                    <div class="row mb-2">
+                        <label for "pers_birth_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="pers_birth_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($pers_birth_text); ?></textarea>
+                        </div>
+                    </div>
 
-                $sql = "SELECT * FROM humo_events WHERE event_gedcom = '_BRTM' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
-                $result = $dbh->query($sql);
-                if ($result->rowCount() > 0) {
-                    $britDb = $result->fetch(PDO::FETCH_OBJ);
-                    $britdate = $britDb->event_date;
-                    $britplace = $britDb->event_place;
-                    $brittext = $britDb->event_text;
-                } else {
-                    $britdate = "";
-                    $britplace = "";
-                    $brittext = "";
-                }
+                    <?php if (!isset($_GET['add_person'])) { ?>
+                        <div class="row mb-2">
+                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                source_link3('born', 'pers_birth_source', $pers_gedcomnumber);
+                                echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </span>
+            </td>
+        </tr>
+
+        <?php
+        // *** Birth declaration ***
+        if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'birth_declaration');
+
+        // **** BRIT MILA ***
+        if ($humo_option['admin_brit'] == "y" and $pers_sexe != "F") {
+
+            // *** Use hideshow to show and hide the editor lines ***
+            $hideshow = '20';
+            // *** If items are missing show all editor fields ***
+            $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
+            $sql = "SELECT * FROM humo_events WHERE event_gedcom = '_BRTM' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
+            $result = $dbh->query($sql);
+            if ($result->rowCount() > 0) {
                 $britDb = $result->fetch(PDO::FETCH_OBJ);
-
-                echo '<tr>';
-                //echo '<td><a href="#" onclick="hideShow(20);"><span id="hideshowlink20">[+]</span></a> ';
-                echo '<td>' . ucfirst(__('Brit Mila')) . '</td>';
-
-                echo '<td colspan="2">';
-                $hideshow_text = hideshow_date_place($britdate, $britplace);
-                echo hideshow_editor($hideshow, $hideshow_text, $brittext);
-
-                echo editor_label2(__('Date'));
-                echo $editor_cls->date_show($britdate, 'even_brit_date') . '<br>';
-
-                echo editor_label2(__('place'));
-                echo '<input type="text" name="even_brit_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($britplace) . '" size="' . $field_place . '"><br>';
-
-                // *** Check if there are multiple lines in text ***
-                $text = $editor_cls->text_show($brittext);
-                $field_text_selected = $field_text;
-                if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                echo editor_label2(__('text'));
-                echo '<textarea rows="1" placeholder="' . __('text') . '" name="even_brit_text" ' . $field_text_selected . '>' . $text . '</textarea>';
-
-                echo '<br>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"');
-                // echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_brit_place","","'.$field_popup.'")\'><img src="../images/search.png" alt="'.__('Search').'"></a>';
-                // *** End of hideshow_editor span ***
-                echo '</span>';
-                echo '</td>';
-
-                // *** Source by Brit Mila ***
-                echo '<td>';
-                // No source yet.
-                echo '</td></tr>';
+                $britid = $britDb->event_id;
+                $britdate = $britDb->event_date;
+                $britplace = $britDb->event_place;
+                $brittext = $britDb->event_text;
+            } else {
+                $britid = '';
+                $britdate = "";
+                $britplace = "";
+                $brittext = "";
             }
-
-            //*** BAR/BAT MITSVA ***
-            if ($humo_option['admin_barm'] == "y") {
-                // *** Use hideshow to show and hide the editor lines ***
-                $hideshow = '21';
-                // *** If items are missing show all editor fields ***
-                $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
-
-                $sql = "SELECT * FROM humo_events WHERE (event_gedcom = 'BARM' OR event_gedcom = 'BASM') AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
-                $result = $dbh->query($sql);
-                if ($result->rowCount() > 0) {
-                    $barmDb = $result->fetch(PDO::FETCH_OBJ);
-                    $bardate =  $barmDb->event_date;
-                    $barplace =  $barmDb->event_place;
-                    $bartext =  $barmDb->event_text;
-                } else {
-                    $bardate = "";
-                    $barplace = "";
-                    $bartext = "";
-                }
-
-                echo '<tr>';
-                //echo '<td><a href="#" onclick="hideShow(21);"><span id="hideshowlink21">[+]</span></a> ';
-                echo '<td>';
-                if ($pers_sexe == "F") {
-                    echo __('Bat Mitzvah');
-                } else {
-                    echo __('Bar Mitzvah');
-                }
-                echo '</td>';
-
-                echo '<td colspan="2">';
-                $hideshow_text = hideshow_date_place($bardate, $barplace);
-                echo hideshow_editor($hideshow, $hideshow_text, $bartext);
-
-                echo editor_label2(__('Date'));
-                echo $editor_cls->date_show($bardate, 'even_barm_date') . '<br>';
-
-                echo editor_label2(__('place'));
-                echo '<input type="text" name="even_barm_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($barplace) . '" size="' . $field_place . '"><br>';
-                //echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_barm_place","","'.$field_popup.'")\><img src="../images/search.png" alt="'.__('Search').'"></a>';
-
-                // *** Check if there are multiple lines in text ***
-                $text = $editor_cls->text_show($bartext);
-                $field_text_selected = $field_text;
-                if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                echo editor_label2(__('text'));
-                echo '<textarea rows="1" placeholder="' . __('text') . '" name="even_barm_text" ' . $field_text_selected . '>' . $text . '</textarea>';
-
-                echo '<br>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"');
-                echo '</span>';
-                echo '</td>';
-
-                // *** Source by Bar Mitsva ***
-                echo '<td>';
-                //if (!isset($_GET['add_person'])){
-                //	// no source yet
-                //}
-                echo '</td></tr>';
-            }
-
-
-            // *** Empty line in table ***
-            //echo $divider;
-
-
-            // *** Baptise ***
-            // *** Use hideshow to show and hide the editor lines ***
-            $hideshow = '3';
-            // *** If items are missing show all editor fields ***
-            $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
-            ?>
+            //$britDb = $result->fetch(PDO::FETCH_OBJ);
+        ?>
             <tr>
-                <td><a name="baptised"></a><b><?= ucfirst(__('baptised')); ?></b></td>
-                <?php
-                echo '<td colspan="2">';
-                $hideshow_text = hideshow_date_place($pers_bapt_date, $pers_bapt_place);
+                <td><?= ucfirst(__('Brit Mila')); ?></td>
+                <td colspan="2">
+                    <?php
+                    $hideshow_text = hideshow_date_place($britdate, $britplace);
+                    if ($pers_gedcomnumber and $britid) {
+                        $check_sources_text = check_sources('person', 'pers_event_source', $britid);
+                        $hideshow_text .= $check_sources_text;
+                    }
+                    echo hideshow_editor($hideshow, $hideshow_text, $brittext);
+                    ?>
+                    <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
-                if ($pers_religion) $hideshow_text .= ' (' . __('religion') . ': ' . $pers_religion . ')';
+                        <div class="row mb-2">
+                            <label for "even_brit_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($britdate, 'even_brit_date'); ?>
+                            </div>
+                        </div>
 
-                echo hideshow_editor($hideshow, $hideshow_text, $pers_bapt_text);
+                        <div class="row mb-2">
+                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="even_brit_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($britplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
 
-                echo editor_label2(__('Date'));
-                echo $editor_cls->date_show($pers_bapt_date, 'pers_bapt_date') . '<br>';
+                        <?php
+                        // *** Check if there are multiple lines in text ***
+                        $text = $editor_cls->text_show($brittext);
+                        $field_text_selected = $field_text;
+                        if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                        ?>
+                        <div class="row mb-2">
+                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                            <div class="col-md-7">
+                                <textarea rows="1" placeholder="<?= __('text'); ?>" name="even_brit_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                            </div>
+                        </div>
 
-                echo editor_label2(__('place'));
-                echo '<input type="text" name="pers_bapt_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_bapt_place) . '" size="' . $field_place . '">';
-                echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
+                        <?php if (!isset($_GET['add_person'])) { ?>
+                            <div class="row mb-2">
+                                <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                <div class="col-md-7">
+                                    <?php
+                                    source_link3('person', 'pers_event_source', $britid);
+                                    echo $check_sources_text;
+                                    ?>
+                                </div>
+                            </div>
+                        <?php
+                        }
 
-                $text = htmlspecialchars($pers_religion);
-                echo editor_label2(__('religion'));
-                echo '<input type="text" name="pers_religion" placeholder="' . __('religion') . '" value="' . $text . '" size="20"><br>';
-
-                $text = $editor_cls->text_show($pers_bapt_text);
-                // *** Check if there are multiple lines in text ***
-                $field_text_selected = $field_text;
-                if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                echo editor_label2(__('text'));
-                echo '<textarea rows="1" placeholder="' . __('text') . '" name="pers_bapt_text" ' . $field_text_selected . '>' . $text . '</textarea>';
-                echo '</span>';
-                echo '</td>';
-
-                // *** Source by baptise ***
-                echo '<td>';
-                if (!isset($_GET['add_person'])) {
-                    //source_link('individual',$pers_gedcomnumber,'pers_bapt_source');
-                    echo source_link2('503', $pers_gedcomnumber, 'pers_bapt_source', 'baptised');
-                }
-                ?>
+                        echo '<i>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"') . '</i>';
+                        // echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_brit_place","","'.$field_popup.'")\'><img src="../images/search.png" alt="'.__('Search').'"></a>';
+                        ?>
+                    </span>
                 </td>
             </tr>
-            <?php
-            // *** Show source by baptise in iframe ***
-            echo edit_sources('503', 'person', 'pers_bapt_source', $pers_gedcomnumber);
+        <?php
+        }
 
-            // *** Baptism Witness ***
-            if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'baptism_witness');
-
-
-            // *** Empty line in table ***
-            //echo $divider;
-
-            // *** Died ***
+        //*** BAR/BAT MITSVA ***
+        if ($humo_option['admin_barm'] == "y") {
             // *** Use hideshow to show and hide the editor lines ***
-            $hideshow = '4';
+            $hideshow = '21';
             // *** If items are missing show all editor fields ***
             $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
-            ?>
-            <tr class="humo_color">
-                <td><a name="died"></a>
-                    <b><?= ucfirst(__('died')); ?></b>
-                </td>
-                <?php
+            $sql = "SELECT * FROM humo_events WHERE (event_gedcom = 'BARM' OR event_gedcom = 'BASM') AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
+            $result = $dbh->query($sql);
+            if ($result->rowCount() > 0) {
+                $barmDb = $result->fetch(PDO::FETCH_OBJ);
+                $barid =  $barmDb->event_id;
+                $bardate =  $barmDb->event_date;
+                $barplace =  $barmDb->event_place;
+                $bartext =  $barmDb->event_text;
+            } else {
+                $barid = "";
+                $bardate = "";
+                $barplace = "";
+                $bartext = "";
+            }
+        ?>
 
-                echo '<td colspan="2">';
+            <tr>
+                <td>
+                    <?php
+                    if ($pers_sexe == "F") {
+                        echo __('Bat Mitzvah');
+                    } else {
+                        echo __('Bar Mitzvah');
+                    }
+                    ?>
+                </td>
+
+                <td colspan="2">
+                    <?php
+                    $hideshow_text = hideshow_date_place($bardate, $barplace);
+                    if ($pers_gedcomnumber and $barid) {
+                        $check_sources_text = check_sources('person', 'pers_event_source', $barid);
+                        $hideshow_text .= $check_sources_text;
+                    }
+                    echo hideshow_editor($hideshow, $hideshow_text, $bartext);
+                    ?>
+                    <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+                        <div class="row mb-2">
+                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?php $editor_cls->date_show($bardate, 'even_barm_date'); ?>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="even_barm_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($barplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <?php
+                        // *** Check if there are multiple lines in text ***
+                        $text = $editor_cls->text_show($bartext);
+                        $field_text_selected = $field_text;
+                        if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                        ?>
+                        <div class="row mb-2">
+                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                            <div class="col-md-7">
+                                <textarea rows="1" placeholder="<?= __('text'); ?>" name="even_barm_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                            </div>
+                        </div>
+
+                        <?php if (!isset($_GET['add_person'])) { ?>
+                            <div class="row mb-2">
+                                <label for "pers_event_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                <div class="col-md-7">
+                                    <?php
+                                    source_link3('person', 'pers_event_source', $barid);
+                                    echo $check_sources_text;
+                                    ?>
+                                </div>
+                            </div>
+                        <?php
+                        }
+
+                        echo '<i>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"') . '</i>';
+                        ?>
+                    </span>
+                </td>
+            </tr>
+        <?php
+        }
+
+
+        // *** Baptise ***
+        // *** Use hideshow to show and hide the editor lines ***
+        $hideshow = '3';
+        // *** If items are missing show all editor fields ***
+        $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+        ?>
+        <tr>
+            <td><a name="baptised"></a><b><?= ucfirst(__('baptised')); ?></b></td>
+            <td colspan="2">
+                <?php
+                $hideshow_text = hideshow_date_place($pers_bapt_date, $pers_bapt_place);
+                if ($pers_religion) $hideshow_text .= ' (' . __('religion') . ': ' . $pers_religion . ')';
+                if ($pers_gedcomnumber) {
+                    $check_sources_text = check_sources('person', 'pers_bapt_source', $pers_gedcomnumber);
+                    $hideshow_text .= $check_sources_text;
+                }
+                echo hideshow_editor($hideshow, $hideshow_text, $pers_bapt_text);
+                ?>
+                <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+
+                    <div class="row mb-2">
+                        <label for "pers_bapt_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show($pers_bapt_date, 'pers_bapt_date'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_bapt_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="pers_bapt_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_bapt_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_religion" class="col-md-3 col-form-label"><?= ucfirst(__('religion')); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="pers_religion" placeholder="<?= __('religion'); ?>" value="<?= htmlspecialchars($pers_religion); ?>" size="20" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <?php
+                    $text = $editor_cls->text_show($pers_bapt_text);
+                    // *** Check if there are multiple lines in text ***
+                    $field_text_selected = $field_text;
+                    if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                    ?>
+                    <div class="row mb-2">
+                        <label for "pers_bapt_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="pers_bapt_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                        </div>
+                    </div>
+
+                    <?php if (!isset($_GET['add_person'])) { ?>
+                        <div class="row mb-2">
+                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                source_link3('person', 'pers_bapt_source', $pers_gedcomnumber);
+                                echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
+                    <?php
+                    } ?>
+
+                </span>
+            </td>
+        </tr>
+        <?php
+
+        // *** Baptism Witness ***
+        if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'baptism_witness');
+
+
+        // *** Died ***
+        // *** Use hideshow to show and hide the editor lines ***
+        $hideshow = '4';
+        // *** If items are missing show all editor fields ***
+        $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
+        ?>
+        <tr class="humo_color">
+            <td><a name="died"></a>
+                <b><?= ucfirst(__('died')); ?></b>
+            </td>
+            <td colspan="2">
+                <?php
                 $hideshow_text = hideshow_date_place($pers_death_date, $pers_death_place);
 
                 if ($pers_death_time)
@@ -1119,454 +1087,459 @@ if ($source_error == 2) $colour = 'btn-warning';
                     if ($pers_death_cause2) {
                         $hideshow_text .= $pers_death_cause2;
                     } else {
-                        $hideshow_text .= __('cause of death') . ' ' . $pers_death_cause;
+                        $hideshow_text .= __('cause of death') . ': ' . $pers_death_cause;
                     }
+                }
+
+                if ($pers_gedcomnumber) {
+                    $check_sources_text = check_sources('person', 'pers_death_source', $pers_gedcomnumber);
+                    $hideshow_text .= $check_sources_text;
                 }
 
                 echo hideshow_editor($hideshow, $hideshow_text, $pers_death_text);
-
-                echo editor_label2(__('Date'));
-                echo $editor_cls->date_show($pers_death_date, 'pers_death_date', '', '', $pers_death_date_hebnight, 'pers_death_date_hebnight') . '<br>';
-
-                echo editor_label2(__('place'));
-                echo '<input type="text" name="pers_death_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_death_place) . '" size="' . $field_place . '">';
-                echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                // *** Age by death ***
-                echo editor_label2(__('Age'));
-                echo '<input type="text" name="pers_death_age" placeholder="' . __('Age') . '" value="' . $pers_death_age . '" size="3">';
-                // *** HELP POPUP for age by death ***
-                echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
-                echo '<a href="#" style="display:inline" ';
-                echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
-                echo 'onmouseout="mclosetime()">';
-                echo '<img src="../images/help.png" height="16" width="16">';
-                echo '</a>';
-                echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-                echo '<b>' . __('If death year and age are used, then birth year is calculated automatically (when empty).') . '</b><br>';
-                echo '</div>';
-                echo '</div><br>';
-
-                echo editor_label2(__('death time'));
-                echo '<input type="text" name="pers_death_time" placeholder="' . __('death time') . '" value="' . $pers_death_time . '" size="' . $field_date . '"><br>';
-
-                echo editor_label2(__('cause'));
-                //echo ' ' . __('cause') . ' ';
-                $cause = false;
-                echo '<select size="1" name="pers_death_cause">';
-                echo '<option value=""></option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'murdered') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="murdered"' . $selected . '>' . __('murdered') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'drowned') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="drowned"' . $selected . '>' . __('drowned') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'perished') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="perished"' . $selected . '>' . __('perished') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'killed in action') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="killed in action"' . $selected . '>' . __('killed in action') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'being missed') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="being missed"' . $selected . '>' . __('being missed') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'committed suicide') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="committed suicide"' . $selected . '>' . __('committed suicide') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'executed') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="executed"' . $selected . '>' . __('executed') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'died young') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="died young"' . $selected . '>' . __('died young') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'died unmarried') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="died unmarried"' . $selected . '>' . __('died unmarried') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'registration') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="registration"' . $selected . '>' . __('registration') . '</option>';
-
-                $selected = '';
-                if ($pers_death_cause == 'declared death') {
-                    $cause = true;
-                    $selected = ' selected';
-                }
-                echo '<option value="declared death"' . $selected . '>' . __('declared death') . '</option>';
-
-                echo '</select>';
-
-                echo ' <b>' . __('or') . ':</b> ';
-                $pers_death_cause2 = '';
-                if ($pers_death_cause and $cause == false) $pers_death_cause2 = $pers_death_cause;
-                echo '<input type="text" name="pers_death_cause2" placeholder="' . __('cause') . '" value="' . $pers_death_cause2 . '" size="' . $field_date . '"><br>';
-
-                $text = $editor_cls->text_show($pers_death_text);
-                // *** Check if there are multiple lines in text ***
-                $field_text_selected = $field_text;
-                if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                echo editor_label2(__('text'));
-                echo '<textarea rows="1" placeholder="' . __('text') . '" name="pers_death_text" ' . $field_text_selected . '>' . $text . '</textarea>';
-                echo '</span>';
-
-                // *** Source by death ***
-                echo '</td><td>';
-                if (!isset($_GET['add_person'])) {
-                    //source_link('individual',$pers_gedcomnumber,'pers_death_source');
-                    echo source_link2('504', $pers_gedcomnumber, 'pers_death_source', 'died');
-                }
-                echo '</td>';
                 ?>
-            </tr>
-            <?php
-            // *** Show source by death in iframe ***
-            echo edit_sources('504', 'person', 'pers_death_source', $pers_gedcomnumber);
-
-            // *** Death Declaration ***
-            if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'death_declaration');
-
-            // *** Empty line in table ***
-            //echo $divider;
-
-            // *** Buried ***
-            // *** Use hideshow to show and hide the editor lines ***
-            $hideshow = '5';
-            // *** If items are missing show all editor fields ***
-            $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
-
-            ?>
-            <tr>
-                <?php
-                echo '<td><a name="buried"></a>';
-                //echo '<a href="#" onclick="hideShow(5);"><span id="hideshowlink5">[+]</span></a> ';
-                echo '<b>' . __('Buried') . '</b></td>';
-
-                echo '<td colspan="2">';
-                $hideshow_text = hideshow_date_place($pers_buried_date, $pers_buried_place);
-                echo hideshow_editor($hideshow, $hideshow_text, $pers_buried_text);
-
-                echo editor_label2(__('Date'));
-                echo $editor_cls->date_show($pers_buried_date, 'pers_buried_date', '', '', $pers_buried_date_hebnight, 'pers_buried_date_hebnight') . '<br>';
-
-                echo editor_label2(__('place'));
-                echo '<input type="text" name="pers_buried_place" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($pers_buried_place) . '" size="' . $field_place . '">';
-                echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","' . $field_popup . '")\'><img src="../images/search.png" alt="' . __('Search') . '"></a><br>';
-
-                echo editor_label2(__('method of burial'));
-                echo '<select size="1" name="pers_cremation">';
-                echo '<option value="">' . __('buried') . '</option>';
-
-                $selected = '';
-                if ($pers_cremation == '1') {
-                    $selected = ' selected';
-                }
-                echo '<option value="1"' . $selected . '>' . __('cremation') . '</option>';
-
-                $selected = '';
-                if ($pers_cremation == 'R') {
-                    $selected = ' selected';
-                }
-                echo '<option value="R"' . $selected . '>' . __('resomated') . '</option>';
-
-                $selected = '';
-                if ($pers_cremation == 'S') {
-                    $selected = ' selected';
-                }
-                echo '<option value="S"' . $selected . '>' . __('sailor\'s grave') . '</option>';
-
-                $selected = '';
-                if ($pers_cremation == 'D') {
-                    $selected = ' selected';
-                }
-                echo '<option value="D"' . $selected . '>' . __('donated to science') . '</option>';
-                echo '</select><br>';
-
-                $text = $editor_cls->text_show($pers_buried_text);
-                // *** Check if there are multiple lines in text ***
-                $field_text_selected = $field_text;
-                if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
-                echo editor_label2(__('text'));
-                echo '<textarea rows="1" placeholder="' . __('text') . '" name="pers_buried_text" ' . $field_text_selected . '>' . $text . '</textarea>';
-                echo '</span>';
-                echo '</td>';
-
-                // *** Source by burial ***
-                echo '<td>';
-                if (!isset($_GET['add_person'])) {
-                    //source_link('individual',$pers_gedcomnumber,'pers_buried_source');
-                    echo source_link2('505', $pers_gedcomnumber, 'pers_buried_source', 'buried');
-                }
-                echo '</td>';
-
-                ?>
-            </tr>
-            <?php
-            // *** Show source by burial in iframe ***
-            echo edit_sources('505', 'person', 'pers_buried_source', $pers_gedcomnumber);
-
-            // *** Burial Witness ***
-            if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'burial_witness');
-
-            // *** Empty line in table ***
-            //echo $divider;
-
-            // *** General text by person ***
-            ?>
-            <tr class="humo_color">
-                <td><a name="text_person"></a><?= __('Text for person'); ?></td>
-                <td colspan="2"><textarea rows="1" placeholder="<?= __('Text for person'); ?>" name="person_text" <?= $field_text_large; ?>><?= $editor_cls->text_show($person_text); ?></textarea>
-                </td>
-                <td>
-                    <?php
-                    // *** Source by text ***
-                    if (!isset($_GET['add_person'])) {
-                        //source_link('individual',$pers_gedcomnumber,'pers_text_source');
-                        echo source_link2('506', $pers_gedcomnumber, 'pers_text_source', 'text_person');
-                    }
-                    ?>
-                </td>
-            </tr>
-            <?php
-            // *** Show source by person tekst in iframe ***
-            echo edit_sources('506', 'person', 'pers_text_source', $pers_gedcomnumber);
-
-            if (!isset($_GET['add_person'])) {
-                // *** Person sources in new person editor screen ***
-                echo '<tr><td><a name="source_person"></a>' . __('Source for person') . '</td><td colspan="2"></td>';
-                echo '<td>';
-                //source_link('individual',$pers_gedcomnumber,'person_source');
-                echo source_link2('507', $pers_gedcomnumber, 'person_source', 'source_person');
-                echo '</td></tr>';
-                // *** Show source by person in iframe ***
-                echo edit_sources('507', 'person', 'person_source', $pers_gedcomnumber);
-            }
-
-            // *** Own code ***
-            ?>
-            <tr class="humo_color">
-                <td><?= ucfirst(__('own code')); ?></td>
-                <td colspan="2"><input type="text" name="pers_own_code" placeholder="<?= __('own code'); ?>" value="<?= htmlspecialchars($pers_own_code); ?>" style="width: 500px">
-                    <!-- HELP POPUP for own code -->
-                    &nbsp;&nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                        <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu3',100,400)" onmouseout="mclosetime()">
-                            <img src="../images/help.png" height="16" width="16">
-                        </a>
-                        <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                            <b><?= __('Use own code for your own remarks.<br>
-It\'s possible to use own code for special privacy options, see Admin > Users > Groups.<br>
-It\'s also possible to add your own icons by a person! Add the icon in the images folder e.g. \'person.gif\', and add \'person\' in the own code field.'); ?></b><br>
+                <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+                    <div class="row mb-2">
+                        <label for "pers_death_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show($pers_death_date, 'pers_death_date', '', $pers_death_date_hebnight, 'pers_death_date_hebnight'); ?>
                         </div>
                     </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_death_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="pers_death_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_death_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Age by death -->
+                    <div class="row mb-2">
+                        <label for "pers_death_age" class="col-md-3 col-form-label"><?= __('Age'); ?></label>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <input type="text" name="pers_death_age" placeholder="<?= __('Age'); ?>" value="<?= $pers_death_age; ?>" size="3" class="form-control form-control-sm">
+                                &nbsp;&nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu2',100,400)" onmouseout="mclosetime()">
+                                        <img src="../images/help.png" height="16" width="16">
+                                    </a>
+                                    <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                                        <b><?= __('If death year and age are used, then birth year is calculated automatically (when empty).'); ?></b><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_death_place" class="col-md-3 col-form-label"><?= ucfirst(__('death time')); ?></label>
+                        <div class="col-md-2">
+                            <input type="text" name="pers_death_time" placeholder="<?= __('death time'); ?>" value="<?= $pers_death_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <!-- Death cause -->
+                    <?php
+                    $check_cause = false;
+                    $pers_death_cause2 = '';
+                    $cause_array = array('murdered', 'drowned', 'perished', 'killed in action', 'being missed', 'committed suicide', 'executed', 'died young', 'died unmarried', 'registration', 'declared death');
+                    if (!in_array($pers_death_cause, $cause_array)) {
+                        $check_cause = true;
+                        $pers_death_cause2 = $pers_death_cause;
+                    }
+                    ?>
+                    <div class="row mb-2">
+                        <label for "pers_death_cause" class="col-md-3 col-form-label"><?= ucfirst(__('cause')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <select size="1" name="pers_death_cause" class="form-select form-select-sm">
+                                    <option value=""></option>
+                                    <option value="murdered" <?= $pers_death_cause == 'murdered' ? 'selected' : ''; ?>><?= __('murdered'); ?></option>
+                                    <option value="drowned" <?= $pers_death_cause == 'drowned' ? 'selected' : ''; ?>><?= __('drowned'); ?></option>
+                                    <option value="perished" <?= $pers_death_cause == 'perished' ? 'selected' : ''; ?>><?= __('perished'); ?></option>
+                                    <option value="killed in action" <?= $pers_death_cause == 'killed in action' ? 'selected' : ''; ?>><?= __('killed in action'); ?></option>
+                                    <option value="being missed" <?= $pers_death_cause == 'being missed' ? 'selected' : ''; ?>><?= __('being missed'); ?></option>
+                                    <option value="committed suicide" <?= $pers_death_cause == 'committed suicide' ? 'selected' : ''; ?>><?= __('committed suicide'); ?></option>
+                                    <option value="executed" <?= $pers_death_cause == 'executed' ? 'selected' : ''; ?>><?= __('executed'); ?></option>
+                                    <option value="died young" <?= $pers_death_cause == 'died young' ? 'selected' : ''; ?>><?= __('died young'); ?></option>
+                                    <option value="died unmarried" <?= $pers_death_cause == 'died unmarried' ? 'selected' : ''; ?>><?= __('died unmarried'); ?></option>
+                                    <option value="registration" <?= $pers_death_cause == 'registration' ? 'selected' : ''; ?>><?= __('registration'); ?></option>
+                                    <option value="declared death" <?= $pers_death_cause == 'declared death' ? 'selected' : ''; ?>><?= __('declared death'); ?></option>
+                                </select>
+                                &nbsp;<b><?= __('or'); ?>:</b>&nbsp;
+                                <input type="text" name="pers_death_cause2" placeholder="<?php if ($pers_death_cause and $check_cause == false) __('cause'); ?>" value="<?= $pers_death_cause2; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                    $text = $editor_cls->text_show($pers_death_text);
+                    // *** Check if there are multiple lines in text ***
+                    $field_text_selected = $field_text;
+                    if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                    ?>
+                    <div class="row mb-2">
+                        <label for "pers_death_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="pers_death_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                        </div>
+                    </div>
+
+                    <?php if (!isset($_GET['add_person'])) { ?>
+                        <div class="row mb-2">
+                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                source_link3('person', 'pers_death_source', $pers_gedcomnumber);
+                                echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                </span>
+            </td>
+        </tr>
+        <?php
+        // *** Death Declaration ***
+        if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'death_declaration');
+
+
+        // *** Buried ***
+        // *** Use hideshow to show and hide the editor lines ***
+        $hideshow = '5';
+        // *** If items are missing show all editor fields ***
+        $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+        ?>
+
+        <tr>
+            <td><a name="buried"></a>
+                <b><?= __('Buried'); ?></b>
+            </td>
+            <td colspan="2">
+                <?php
+                $hideshow_text = hideshow_date_place($pers_buried_date, $pers_buried_place);
+                if ($pers_gedcomnumber) {
+                    $check_sources_text = check_sources('person', 'pers_buried_source', $pers_gedcomnumber);
+                    $hideshow_text .= $check_sources_text;
+                }
+                echo hideshow_editor($hideshow, $hideshow_text, $pers_buried_text);
+                ?>
+                <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+                    <div class="row mb-2">
+                        <label for "pers_buried_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show($pers_buried_date, 'pers_buried_date', '', $pers_buried_date_hebnight, 'pers_buried_date_hebnight'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_buried_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="pers_buried_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_buried_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for "pers_cremation" class="col-md-3 col-form-label"><?= ucfirst(__('method of burial')); ?></label>
+                        <div class="col-md-7">
+                            <select size="1" name="pers_cremation" class="form-select form-select-sm">
+                                <option value=""><?= __('buried'); ?></option>
+                                <option value="1" <?= $pers_cremation == '1' ? 'selected' : ''; ?>><?= __('cremation'); ?></option>
+                                <option value="R" <?= $pers_cremation == 'R' ? 'selected' : ''; ?>><?= __('resomated'); ?></option>
+                                <option value="S" <?= $pers_cremation == 'S' ? 'selected' : ''; ?>><?= __('sailor\'s grave'); ?></option>
+                                <option value="D" <?= $pers_cremation == 'D' ? 'selected' : ''; ?>><?= __('donated to science'); ?></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <?php
+                    $text = $editor_cls->text_show($pers_buried_text);
+                    // *** Check if there are multiple lines in text ***
+                    $field_text_selected = $field_text;
+                    if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                    ?>
+                    <div class="row mb-2">
+                        <label for "pers_buried_date" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="pers_buried_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                        </div>
+                    </div>
+
+                    <?php if (!isset($_GET['add_person'])) { ?>
+                        <div class="row mb-2">
+                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                source_link3('person', 'pers_buried_source', $pers_gedcomnumber);
+                                echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                </span>
+            </td>
+        </tr>
+
+        <?php
+        // *** Burial Witness ***
+        if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'burial_witness');
+
+
+        // *** General text by person ***
+        ?>
+        <tr class="humo_color">
+            <td><a name="text_person"></a><?= __('Text for person'); ?></td>
+            <td colspan="2">
+                <textarea rows="1" placeholder="<?= __('Text for person'); ?>" name="person_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($person_text); ?></textarea>
+
+                <?php if (!isset($_GET['add_person'])) { ?>
+                    <div class="row mb-2">
+                        <!-- <label for "pers_text_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
+                        <div class="col-md-7">
+                            <?php
+                            source_link3('person', 'pers_text_source', $pers_gedcomnumber);
+
+                            if ($pers_gedcomnumber) {
+                                $check_sources_text = check_sources('person', 'pers_text_source', $pers_gedcomnumber);
+                                echo $check_sources_text;
+                            }
+                            ?>
+                        </div>
+                    </div>
+                <?php } ?>
+            </td>
+        </tr>
+
+        <?php
+        if (!isset($_GET['add_person'])) {
+            // *** Person sources in new person editor screen ***
+        ?>
+            <tr>
+                <td><a name="source_person"></a><?= __('Source for person'); ?></td>
+                <td>
+                    <?php if (!isset($_GET['add_person'])) { ?>
+                        <div class="row mb-2">
+                            <!-- <label for "pers_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
+                            <div class="col-md-7">
+                                <?php
+                                source_link3('person', 'person_source', $pers_gedcomnumber);
+                                if ($pers_gedcomnumber) {
+                                    $check_sources_text = check_sources('person', 'person_source', $pers_gedcomnumber);
+                                    echo $check_sources_text;
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </td>
+            </tr>
+        <?php
+        }
+
+        // *** Own code ***
+        ?>
+        <tr class="humo_color">
+            <td><?= ucfirst(__('own code')); ?></td>
+            <td colspan="2">
+                <div class="row mb-2">
+                    <!-- <label for "pers_buried_place" class="col-md-3 col-form-label"><?= ucfirst(__('own code')); ?></label> -->
+                    <div class="col-md-7">
+                        <div class="input-group">
+                            <input type="text" name="pers_own_code" placeholder="<?= __('own code'); ?>" value="<?= htmlspecialchars($pers_own_code); ?>" class="form-control form-control-sm">
+                            <!-- HELP POPUP for own code -->
+                            &nbsp;&nbsp;
+                            <div class=" <?= $rtlmarker; ?>sddm" style="display:inline;">
+                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu3',100,400)" onmouseout="mclosetime()">
+                                    <img src="../images/help.png" height="16" width="16">
+                                </a>
+                                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                                    <b><?= __('Use own code for your own remarks.<br>
+It\'s possible to use own code for special privacy options, see Admin > Users > Groups.<br>
+It\'s also possible to add your own icons by a person! Add the icon in the images folder e.g. \'person.gif\', and add \'person\' in the own code field.'); ?></b><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <?php
+
+        // *** Profession(s) ***
+        echo $event_cls->show_event('person', $pers_gedcomnumber, 'profession');
+
+        // *** Religion ***
+        echo $event_cls->show_event('person', $pers_gedcomnumber, 'religion');
+
+        if (!isset($_GET['add_person'])) {
+            // *** Show and edit places by person ***
+            edit_addresses('person', 'person_address', $pers_gedcomnumber);
+        } // *** End of check for new person ***
+
+        if (!isset($_GET['add_person'])) {
+            // *** Person event editor ***
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'person');
+
+            // *** Picture ***
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'picture');
+
+            // *** Quality ***
+            // Disabled quality by person. Quality officially belongs to a source...
+            /*
+            <tr><td><?= __('Quality of data');?></td>
+                <td style="border-right:0px;"></td>
+                <td style="border-left:0px;">
+                    <select size="1" name="pers_quality" style="width: 400px">
+                        <option value=""><?= ucfirst(__('quality: default'));?></option>
+                        $selected=''; if ($pers_quality=='0'){ $selected=' selected'; }
+                        <option value="0"<?= $selected;?>><?= ucfirst(__('quality: unreliable evidence or estimated data'));?></option>
+                        $selected=''; if ($pers_quality=='1'){ $selected=' selected'; }
+                        <option value="1"<?= $selected;?>><?= ucfirst(__('quality: questionable reliability of evidence'));?></option>
+                        $selected=''; if ($pers_quality=='2'){ $selected=' selected'; }
+                        <option value="2"<?= $selected;?>><?= ucfirst(__('quality: data from secondary evidence'));?></option>
+                        $selected=''; if ($pers_quality=='3'){ $selected=' selected'; }
+                        <option value="3"<?= $selected;?>><?= ucfirst(__('quality: data from direct source'));?></option>
+                    </select>
                 </td>
                 <td></td>
             </tr>
+            */
+
+            // *** Show unprocessed GEDCOM tags ***
+            $tag_qry = "SELECT * FROM humo_unprocessed_tags WHERE tag_tree_id='" . $tree_id . "' AND tag_pers_id='" . $person->pers_id . "'";
+            $tag_result = $dbh->query($tag_qry);
+            $tagDb = $tag_result->fetch(PDO::FETCH_OBJ);
+            if (isset($tagDb->tag_tag)) {
+                $tags_array = explode('<br>', $tagDb->tag_tag);
+                $num_rows = count($tags_array);
+        ?>
+                <tr class="humo_tags_pers humo_color">
+                    <td>
+                        <a href="#humo_tags_pers" onclick="hideShow(61);"><span id="hideshowlink61">[+]</span></a>
+                        <?= __('GEDCOM tags'); ?>
+                    </td>
+                    <td colspan="2">
+                        <?php
+                        if ($tagDb->tag_tag) {
+                            printf(__('There are %d unprocessed GEDCOM tags.'), $num_rows);
+                        } else {
+                            printf(__('There are %d unprocessed GEDCOM tags.'), 0);
+                        }
+                        ?>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr style="display:none;" class="row61">
+                    <td></td>
+                    <td colspan="2"><?= $tagDb->tag_tag; ?></td>
+                    <td></td>
+                </tr>
             <?php
-
-            // *** Profession(s) ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'profession');
-
-            // *** Religion ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'religion');
-
-            if (!isset($_GET['add_person'])) {
-                // *** Show and edit places by person ***
-                edit_addresses('person', 'person_address', $pers_gedcomnumber);
-            } // *** End of check for new person ***
-
-            if (!isset($_GET['add_person'])) {
-                // *** Person event editor ***
-                echo $event_cls->show_event('person', $pers_gedcomnumber, 'person');
-
-                // *** Picture ***
-                echo $event_cls->show_event('person', $pers_gedcomnumber, 'picture');
-
-                // *** Quality ***
-                // Disabled quality by person. Quality officially belongs to a source...
-                /*
-                echo '<tr><td>'.__('Quality of data').'</td>';
-                echo '<td style="border-right:0px;"></td>';
-                    echo '<td style="border-left:0px;"><select size="1" name="pers_quality" style="width: 400px">';
-                    echo '<option value="">'.ucfirst(__('quality: default')).'</option>';
-                    $selected=''; if ($pers_quality=='0'){ $selected=' selected'; }
-                    echo '<option value="0"'.$selected.'>'.ucfirst(__('quality: unreliable evidence or estimated data')).'</option>';
-                    $selected=''; if ($pers_quality=='1'){ $selected=' selected'; }
-                    echo '<option value="1"'.$selected.'>'.ucfirst(__('quality: questionable reliability of evidence')).'</option>';
-                    $selected=''; if ($pers_quality=='2'){ $selected=' selected'; }
-                    echo '<option value="2"'.$selected.'>'.ucfirst(__('quality: data from secondary evidence')).'</option>';
-                    $selected=''; if ($pers_quality=='3'){ $selected=' selected'; }
-                    echo '<option value="3"'.$selected.'>'.ucfirst(__('quality: data from direct source')).'</option>';
-                    echo '</select></td>';
-                echo '<td></td>';
-                echo '</tr>';
-                */
-
-                // *** Show unprocessed GEDCOM tags ***
-                $tag_qry = "SELECT * FROM humo_unprocessed_tags WHERE tag_tree_id='" . $tree_id . "' AND tag_pers_id='" . $person->pers_id . "'";
-                $tag_result = $dbh->query($tag_qry);
-                $tagDb = $tag_result->fetch(PDO::FETCH_OBJ);
-                if (isset($tagDb->tag_tag)) {
-                    $tags_array = explode('<br>', $tagDb->tag_tag);
-                    $num_rows = count($tags_array);
-            ?>
-                    <tr class="humo_tags_pers humo_color">
-                        <td>
-                            <a href="#humo_tags_pers" onclick="hideShow(61);"><span id="hideshowlink61">[+]</span></a>
-                            <?= __('GEDCOM tags'); ?>
-                        </td>
-                        <td colspan="2">
-                            <?php
-                            if ($tagDb->tag_tag) {
-                                printf(__('There are %d unprocessed GEDCOM tags.'), $num_rows);
-                            } else {
-                                printf(__('There are %d unprocessed GEDCOM tags.'), 0);
-                            }
-                            ?>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr style="display:none;" class="row61">
-                        <td></td>
-                        <td colspan="2"><?= $tagDb->tag_tag; ?></td>
-                        <td></td>
-                    </tr>
-                <?php
-                }
-
-                // *** Show editor notes ***
-                show_editor_notes('person');
-
-                // *** Show user added notes ***
-                $note_qry = "SELECT * FROM humo_user_notes WHERE note_tree_id='" . $tree_id . "'
-                    AND note_kind='user' AND note_connect_kind='person' AND note_connect_id='" . $pers_gedcomnumber . "'";
-                $note_result = $dbh->query($note_qry);
-                $num_rows = $note_result->rowCount();
-
-                echo '<tr class="table_header_large"><td>';
-                if ($num_rows)
-                    echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a> ';
-                echo __('User notes') . '</td><td colspan="2">';
-                if ($num_rows)
-                    printf(__('There are %d user added notes.'), $num_rows);
-                else
-                    printf(__('There are %d user added notes.'), 0);
-                echo '</td><td></td></tr>';
-
-                while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
-                    $user_name = '';
-                    if ($noteDb->note_new_user_id) {
-                        $user_qry = "SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'";
-                        $user_result = $dbh->query($user_qry);
-                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                        $user_name = $userDb->user_name;
-                    }
-                ?>
-                    <tr class="row62" style="display:none;">
-                        <td></td>
-                        <td colspan="2">
-                            <?php
-                            echo __('Added by') . ' <b>' . $user_name . '</b> (' . show_datetime($noteDb->note_new_datetime) . ')<br>';
-
-                            echo '<b>' . $noteDb->note_names . '</b><br>';
-
-                            echo '<textarea readonly rows="1" placeholder="' . __('Text') . '" ' . $field_text_large . '>' . $editor_cls->text_show($noteDb->note_note) . '</textarea>';
-                            ?>
-                        </td>
-                        <td></td>
-                    </tr>
-                <?php
-                }
-
-                // *** Person added by user ***
-                if ($person->pers_new_user_id or $person->pers_new_datetime) {
-                    $user_name = '';
-                    if ($person->pers_new_user_id) {
-                        $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'";
-                        $user_result = $dbh->query($user_qry);
-                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                        $user_name = $userDb->user_name;
-                    }
-                ?>
-                    <tr class="table_header_large">
-                        <td><?= __('Added by'); ?></td>
-                        <td colspan="2"><?= show_datetime($person->pers_new_datetime) . ' ' . $user_name; ?></td>
-                        <td></td>
-                    </tr>
-                <?php
-                }
-
-                // *** Person changed by user ***
-                if ($person->pers_changed_user_id or $person->pers_changed_datetime) {
-                    $user_name = '';
-                    if ($person->pers_changed_user_id) {
-                        $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'";
-                        $user_result = $dbh->query($user_qry);
-                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                        $user_name = $userDb->user_name;
-                    }
-                ?>
-                    <tr class="table_header_large">
-                        <td><?= __('Changed by'); ?></td>
-                        <td colspan="2">
-                            <?= show_datetime($person->pers_changed_datetime) . ' ' . $user_name; ?>
-                        </td>
-                        <td></td>
-                    </tr>
-            <?php
-                }
             }
 
-            // *** Extra "Save" line ***
-            echo '<tr class="table_header_large">';
-            echo '<td></td><td colspan="2"></td>';
-            echo '<td style="border-left: none; text-align:left; font-size: 1.5em;">';
-            if ($add_person == false) {
-                echo '<input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
-            } else {
-                echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
-            }
-            echo '</td>';
-            echo '</tr>';
+            // *** Show editor notes ***
+            show_editor_notes('person');
 
+            // *** Show user added notes ***
+            $note_qry = "SELECT * FROM humo_user_notes WHERE note_tree_id='" . $tree_id . "'
+                AND note_kind='user' AND note_connect_kind='person' AND note_connect_id='" . $pers_gedcomnumber . "'";
+            $note_result = $dbh->query($note_qry);
+            $num_rows = $note_result->rowCount();
+
+            echo '<tr class="table_header_large"><td>';
+            if ($num_rows)
+                echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a> ';
+            echo __('User notes') . '</td><td colspan="2">';
+            if ($num_rows)
+                printf(__('There are %d user added notes.'), $num_rows);
+            else
+                printf(__('There are %d user added notes.'), 0);
+            echo '</td></tr>';
+
+            while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
+                $user_name = '';
+                if ($noteDb->note_new_user_id) {
+                    $user_qry = "SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'";
+                    $user_result = $dbh->query($user_qry);
+                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                    $user_name = $userDb->user_name;
+                }
             ?>
+                <tr class="row62" style="display:none;">
+                    <td></td>
+                    <td colspan="2">
+                        <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_new_datetime); ?>)<br>
+                        <b><?= $noteDb->note_names; ?></b><br>
+                        <textarea readonly rows="1" placeholder="<?= __('Text'); ?>" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea>
+                    </td>
+                </tr>
+            <?php
+            }
+
+            // *** Person added by user ***
+            if ($person->pers_new_user_id or $person->pers_new_datetime) {
+                $user_name = '';
+                if ($person->pers_new_user_id) {
+                    $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'";
+                    $user_result = $dbh->query($user_qry);
+                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                    $user_name = $userDb->user_name;
+                }
+            ?>
+                <tr class="table_header_large">
+                    <td><?= __('Added by'); ?></td>
+                    <td colspan="2"><?= show_datetime($person->pers_new_datetime) . ' ' . $user_name; ?></td>
+                </tr>
+            <?php
+            }
+
+            // *** Person changed by user ***
+            if ($person->pers_changed_user_id or $person->pers_changed_datetime) {
+                $user_name = '';
+                if ($person->pers_changed_user_id) {
+                    $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'";
+                    $user_result = $dbh->query($user_qry);
+                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                    $user_name = $userDb->user_name;
+                }
+            ?>
+                <tr class="table_header_large">
+                    <td><?= __('Changed by'); ?></td>
+                    <td colspan="2">
+                        <?= show_datetime($person->pers_changed_datetime) . ' ' . $user_name; ?>
+                    </td>
+                </tr>
+        <?php
+            }
+        }
+        ?>
+
+        <!-- Extra "Save" line -->
+        <tr class="table_header_large">
+            <td></td>
+            <td colspan="2">
+                <?php
+                if ($add_person == false) {
+                ?>
+                    <input type="submit" name="person_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                    <?= __('or'); ?>
+                    <input type="submit" name="person_remove" value="<?= __('Delete person'); ?>" class="btn btn-sm btn-secondary">
+                <?php
+                } else {
+                    echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
+                }
+                ?>
+            </td>
+        </tr>
+
     </table><br>
     <!-- End of person form -->
 </form>

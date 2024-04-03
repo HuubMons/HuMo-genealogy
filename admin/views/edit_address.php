@@ -61,27 +61,26 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
     </div>
 <?php }; ?>
 
+<form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+    <input type="hidden" name="page" value="<?= $page; ?>">
+    <div class="p-3 m-2 genealogy_search">
+        <div class="row">
+            <div class="col-md-auto">
+                <label for="tree" class="col-form-label">
+                    <?= __('Family tree'); ?>:
+                </label>
+            </div>
+            <div class="col-md-auto">
+                <?= select_tree($dbh, $page, $tree_id); ?>
+            </div>
 
-<div class="p-3 m-2 genealogy_search">
-    <div class="row">
-        <div class="col-auto">
-            <label for="tree" class="col-form-label">
-                <?= __('Family tree'); ?>:
-            </label>
-        </div>
-        <div class="col-auto">
-            <?= select_tree($dbh, $page, $tree_id); ?>
-        </div>
-
-        <div class="col-auto">
-            <label for="address" class="col-form-label">
-                <?= __('Select address'); ?>:
-            </label>
-        </div>
-        <div class="col-auto">
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
-                <select size="1" name="address_id" class="form-select form-select-sm" onChange="this.form.submit();" style="width: 200px">
+            <div class="col-md-auto">
+                <label for="address" class="col-form-label">
+                    <?= __('Select address'); ?>:
+                </label>
+            </div>
+            <div class="col-md-3">
+                <select size="1" name="address_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select address'); ?></option>
                     <?php
                     while ($addressDb = $address_qry->fetch(PDO::FETCH_OBJ)) {
@@ -102,20 +101,17 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
                         </option>
                     <?php } ?>
                 </select>
-            </form>
-        </div>
+            </div>
 
-        <div class="col-auto">
-            <?= __('or'); ?>:
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
+            <div class="col-auto">
+                <?= __('or'); ?>:
                 <input type="submit" name="add_address" value="<?= __('Add address'); ?>" class="btn btn-sm btn-secondary">
-            </form>
+            </div>
         </div>
     </div>
-</div>
-<?php
+</form>
 
+<?php
 // *** Show selected address ***
 if ($editAddress['address_id']) {
     $address_qry2 = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_id='" . $editAddress['address_id'] . "'");
@@ -127,7 +123,6 @@ if ($editAddress['address_id']) {
     }
 }
 
-//if ($editAddress['address_id'] or isset($_POST['add_address'])) {
 if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
     if (isset($_POST['add_address'])) {
         $address_gedcomnr = '';
@@ -140,13 +135,6 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
         //$address_photo='';
         //$address_source='';
     } else {
-        //$address_qry2 = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_id='" . $editAddress['address_id'] . "'");
-        //$die_message = __('No valid address number.');
-        //try {
-        //    $addressDb = $address_qry2->fetch(PDO::FETCH_OBJ);
-        //} catch (PDOException $e) {
-        //    echo $die_message;
-        //}
         $address_gedcomnr = $addressDb->address_gedcomnr;
         $address_address = $addressDb->address_address;
         $address_date = $addressDb->address_date;
@@ -157,160 +145,175 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
         //$address_photo=$addressDb->address_photo;
         //$address_source=$addressDb->address_source;
     }
-
 ?>
+
     <form method="POST" action="<?= $phpself; ?>">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
         <input type="hidden" name="address_gedcomnr" value="<?= $address_gedcomnr; ?>">
-        <table class="humo standard" border="1">
-            <tr class="table_header">
-                <th><?= __('Option'); ?></th>
-                <th colspan="2"><?= __('Value'); ?></th>
-            </tr>
+        <div class="p-2 me-sm-2 genealogy_search">
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
 
-            <tr>
-                <td><?= __('Place'); ?></td>
-                <td>
-                    <!-- $editor_cls->date_show($address_date,"address_date"); -->
-                    <input type="text" name="address_place" value="<?= htmlspecialchars($address_place); ?>" size="50">
-                </td>
-            </tr>
+                <!-- date -->
 
-            <tr>
-                <td><?= __('Street'); ?></td>
-                <td><input type="text" name="address_address" value="<?= htmlspecialchars($address_address); ?>" size="60" required></td>
-            </tr>
+                <div class="col-md-2">
+                    <?= __('Place'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="address_place" value="<?= htmlspecialchars($address_place); ?>" size="50" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Zip code'); ?></td>
-                <td><input type="text" name="address_zip" value="<?= $address_zip; ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('Street'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="address_address" value="<?= htmlspecialchars($address_address); ?>" size="60" required class="form-control form-control-sm"></td>
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Phone'); ?></td>
-                <td><input type="text" name="address_phone" value="<?= $address_phone; ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('Zip code'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="address_zip" value="<?= $address_zip; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <!-- <tr><td>'.__('Picture').'</td><td><input type="text" name="address_photo" value="'.$address_photo.'" size="60"></td></tr>'; -->
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= __('Phone'); ?>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="address_phone" value="<?= $address_phone; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <?php // TODO Check, doesn't work anymore?
-            ?>
+            <!-- <tr><td>'.__('Picture').'</td><td><input type="text" name="address_photo" value="'.$address_photo.'" size="60" class="form-control form-control-sm"></td></tr>'; -->
+
             <!-- Source by address -->
-            <tr>
-                <td><?= ucfirst(__('source')); ?></td>
-                <td>
-                    <?php
-                    if (isset($addressDb->address_id)) {
-                        echo source_link2('20', $addressDb->address_gedcomnr, 'address_source', 'addresses');
-                    }
-                    ?>
-                </td>
-            </tr>
+            <?php if (!isset($_POST['add_address'])) { ?>
+                <div class="row mb-2">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <?= ucfirst(__('source')); ?>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- Button trigger modal for sources -->
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal">
+                            <?= ucfirst(__('source')); ?>
+                        </button>
 
-            <?php
-            // *** Show source by address ***
-            if (isset($addressDb->address_gedcomnr)) {
-                //edit_sources($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
-                echo edit_sources('20', 'address', 'address_source', $addressDb->address_gedcomnr);
-            }
+                        <!-- Modal -->
+                        <div class="modal fade" id="sourceModal" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="sourceModalLabel"><?= ucfirst(__('source')); ?></h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Show source by address -->
+                                        <?php if (isset($addressDb->address_gedcomnr)) { ?>
+                                            <iframe id="source_iframe" class="source_iframe" title="source_iframe" src="index.php?page=editor_sources&connect_kind=address&connect_sub_kind=address_source&connect_connect_id=<?= $addressDb->address_gedcomnr; ?>" style="width:750px;height:400px;">
+                                            </iframe>
+                                        <?php }   ?>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <!-- <button type="button" class="btn btn-sm btn-primary">Save changes</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            ?>
-            <tr>
-                <td><?= ucfirst(__('text')); ?></td>
-                <td><textarea rows="1" name="address_text" <?= $field_text_large; ?>><?= $editor_cls->text_show($address_text); ?></textarea></td>
-            </tr>
+                        <?php
+                        // *** Show number of sources, and indication of properly connected sources ***
+                        $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
+                            WHERE connect_tree_id='" . $tree_id . "'
+                            AND connect_sub_kind='address_source' AND connect_connect_id='" . $addressDb->address_gedcomnr . "'";
+                        $connect_sql = $dbh->query($connect_qry);
+                        $source_count = $connect_sql->rowCount();
+                        $source_error = 0;
+                        while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
+                            if (!$connectDb->connect_source_id) {
+                                $source_error = 1;
+                                $style_source = '';
+                            } else {
+                                // *** Check if source is empty ***
+                                $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+                                if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
+                                    $source_error = 2;
+                                    $style_source = '';
+                                }
+                            }
+                        }
+                        $style = '';
+                        if ($source_error == '1') $style = ' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
+                        if ($source_error == '2') $style = ' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
+                        ?>
+                        <span <?= $style; ?>">[<?= $source_count; ?>]</span>
+
+                    </div>
+                </div>
+            <?php } ?>
+
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <?= ucfirst(__('text')); ?>
+                </div>
+                <div class="col-md-4">
+                    <textarea rows="1" name="address_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address_text); ?></textarea>
+                </div>
+            </div>
 
             <?php if (isset($_POST['add_address'])) { ?>
-                <tr>
-                    <td><?= __('Add'); ?></td>
-                    <td><input type="submit" name="address_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>
-                </tr>
+                <div class="row mb-2">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <?= __('Add'); ?>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="submit" name="address_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                    </div>
+                </div>
             <?php } else { ?>
-                <tr>
-                    <td><?= __('Save'); ?></td>
-                    <td><input type="submit" name="address_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                <div class="row mb-2">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <?= __('Save'); ?>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="submit" name="address_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                         <?= __('or'); ?>
                         <input type="submit" name="address_remove" value="<?= __('Delete'); ?>" class="btn btn-sm btn-secondary">
-                    </td>
-                </tr>
+                    </div>
+                </div>
             <?php } ?>
-        </table>
+        </div>
+        </div>
     </form>
-<?php
 
-    // *** Example in IFRAME ***
+    <?php
+    // *** Example of address in IFRAME ***
     if (!isset($_POST['add_address'])) {
         if ($humo_option["url_rewrite"] == "j") {
             $url = '../address/' . $tree_id . '/' . $addressDb->address_gedcomnr;
         } else {
-            //TODO CHECK LINK
-            $url = '../address.php?tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
+            $url = '../index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
         }
-
-        echo '<p>' . __('Preview') . '<br>';
-        echo '<iframe src ="' . $url . '" class="iframe">';
-        echo '  <p>Your browser does not support iframes.</p>';
-        echo '</iframe>';
+    ?>
+        <br><?= __('Preview'); ?><br>
+        <iframe src="<?= $url; ?>" class="iframe">
+            <p>Your browser does not support iframes.</p>
+        </iframe>
+<?php
     }
-}
-
-
-// *****************
-// *** FUNCTIONS ***
-// *****************
-
-// *** Show link to sources (version 2) ***
-function source_link2($hideshow, $connect_connect_id, $connect_sub_kind, $link = '')
-{
-    global $tree_id, $dbh, $db_functions, $style_source;
-
-    // *** Standard: hide source. If there is an error: show source ***
-    $style_source = ' style="display:none;"';
-
-    $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
-        WHERE connect_tree_id='" . $tree_id . "'
-        AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
-    $connect_sql = $dbh->query($connect_qry);
-    $source_count = $connect_sql->rowCount();
-    $source_error = 0;
-    while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
-        if (!$connectDb->connect_source_id) {
-            $source_error = 1;
-            $style_source = '';
-        } else {
-            // *** Check if source is empty ***
-            $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-            if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
-                $source_error = 2;
-                $style_source = '';
-            }
-        }
-    }
-
-    $text = '&nbsp;';
-
-    $style = '';
-    if ($source_error == '1') $style = ' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
-    if ($source_error == '2') $style = ' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
-    $text .= '<span class="hideshowlink"' . $style . ' onclick="hideShow(' . $hideshow . ');">' . __('source') . ' [' . $source_count . ']</span>';
-
-    return $text;
-}
-
-// *** Source in iframe ***
-//function iframe_source($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id){
-function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_connect_id)
-{
-    // *** Example ***
-    //src="index.php?page=editor_sources&'.$event_group.'&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id.'">
-    $text = '<tr style="display:none;" class="row' . $hideshow . '"><td></td><td colspan="3">
-    <iframe id="source_iframe" class="source_iframe" title="source_iframe" src="index.php?page=editor_sources';
-    if ($connect_kind) $text .= '&connect_kind=' . $connect_kind;
-    $text .= '&connect_sub_kind=' . $connect_sub_kind;
-    if ($connect_connect_id) $text .= '&connect_connect_id=' . $connect_connect_id;
-    $text .= '">
-    </iframe>
-    </td></tr>';
-    return $text;
 }

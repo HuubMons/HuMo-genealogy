@@ -530,15 +530,15 @@ public function search_day($search_date) {
                 $age = ' (' . sprintf(__('married %s'), $age) . ')';
 
                 /*
-// TEST: must be checked fot type of relation. $age is filtered in marriage_cls.php line 574.
-global $relation_check;
-if ($relation_check==true){
-    $age=' ('.sprintf(__('relation %s'), $age).')';
-}
-else{
-    $age=' ('.sprintf(__('married %s'), $age).')';
-}
-*/
+                // TEST: must be checked for type of relation. $age is filtered in marriage_cls.php line 574.
+                global $relation_check;
+                if ($relation_check==true){
+                    $age=' ('.sprintf(__('relation %s'), $age).')';
+                }
+                else{
+                    $age=' ('.sprintf(__('married %s'), $age).')';
+                }
+                */
             }
 
             if ($calculated_age > 80) {

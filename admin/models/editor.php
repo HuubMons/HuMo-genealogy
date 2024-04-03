@@ -321,11 +321,6 @@ class EditorModel
 
     public function update_editor()
     {
-        //$userid = false;
-        //if (is_numeric($_SESSION['user_id_admin'])) {
-        //    $userid = $_SESSION['user_id_admin'];
-        //}
-
         // *** Return deletion confim box in $confirm variabele ***
         $confirm = '';
         $confirm_relation = '';
@@ -803,7 +798,7 @@ class EditorModel
 
             // *** New person: add profession ***
             if (isset($_POST["event_profession"]) and $_POST["event_profession"] != "" and $_POST["event_profession"] != "Profession") {
-                $event_date = '';
+                //$event_date = '';
                 $event_place = "";
                 if (isset($_POST["event_place_profession"])) $event_place = $_POST["event_place_profession"];
                 $event_text = "";
@@ -811,7 +806,8 @@ class EditorModel
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                $this->add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', $event_date, $event_place, $event_text);
+                //$this->add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', $event_date, $event_place, $event_text);
+                $this->add_event(true, 'person', $new_gedcomnumber, 'profession', $_POST["event_profession"], '', 'event_date_profession', $event_place, $event_text);
             }
 
             // *** New person: add religion ***
@@ -1616,10 +1612,10 @@ class EditorModel
         $event_order = 1;
         if (!$new_event) {
             $event_sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-            AND event_connect_kind='" . $event_connect_kind . "'
-            AND event_connect_id='" . $event_connect_id . "'
-            AND event_kind='" . $event_kind . "'
-            ORDER BY event_order DESC LIMIT 0,1";
+                AND event_connect_kind='" . $event_connect_kind . "'
+                AND event_connect_id='" . $event_connect_id . "'
+                AND event_kind='" . $event_kind . "'
+                ORDER BY event_order DESC LIMIT 0,1";
             $event_qry = $this->dbh->query($event_sql);
             $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
             $event_order = 0;
@@ -1630,12 +1626,12 @@ class EditorModel
         }
 
         $sql = "INSERT INTO humo_events SET
-        event_tree_id='" . $this->tree_id . "',
-        event_connect_kind='" . $event_connect_kind . "',
-        event_connect_id='" . safe_text_db($event_connect_id) . "',
-        event_kind='" . $event_kind . "',
-        event_event='" . safe_text_db($event_event) . "',
-        event_gedcom='" . safe_text_db($event_gedcom) . "',";
+            event_tree_id='" . $this->tree_id . "',
+            event_connect_kind='" . $event_connect_kind . "',
+            event_connect_id='" . safe_text_db($event_connect_id) . "',
+            event_kind='" . $event_kind . "',
+            event_event='" . safe_text_db($event_event) . "',
+            event_gedcom='" . safe_text_db($event_gedcom) . "',";
         if ($event_date) {
             $sql .= " event_date='" . $this->editor_cls->date_process($event_date, $multiple_rows) . "',";
         }
@@ -1644,5 +1640,87 @@ class EditorModel
         event_order='" . $event_order . "',
         event_new_user_id='" . $this->userid . "'";
         $this->dbh->query($sql);
+    }
+
+    public function update_note()
+    {
+        $confirm = '';
+
+        // *** Add editor note ***
+        if (isset($_GET['note_add']) and $_GET['note_add']) {
+            // *** $note_connect_kind = person or family ***
+            $note_connect_kind = 'person';
+            if ($_GET['note_add'] == 'family') $note_connect_kind = 'family';
+
+            // *** $note_connect_id = I123 or F123 ***
+            $note_connect_id = $this->pers_gedcomnumber;
+            if ($note_connect_kind == 'family') $note_connect_id = $this->marriage;
+
+            // *** Name of selected person in family tree ***
+            @$persDb = $this->db_functions->get_person($this->pers_gedcomnumber);
+            // *** Use class to process person ***
+            $pers_cls = new person_cls($persDb);
+            $name = $pers_cls->person_name($persDb);
+            $note_names = safe_text_db($name["standard_name"]);
+
+            //note_connect_kind='person',
+            $sql = "INSERT INTO humo_user_notes SET
+                note_new_user_id='" . $this->userid . "',
+                note_note='',
+                note_kind='editor',
+                note_status='Not started',
+                note_priority='Normal',
+                note_connect_kind='" . $note_connect_kind . "',
+                note_connect_id='" . safe_text_db($note_connect_id) . "',
+                note_names='" . safe_text_db($note_names) . "',
+                note_tree_id='" . $this->tree_id . "'";
+            $this->dbh->query($sql);
+        }
+
+        // *** Change editor note ***
+        if (isset($_POST['note_id'])) {
+            foreach ($_POST['note_id'] as $key => $value) {
+                $note_id = $_POST["note_id"][$key];
+                if (is_numeric($note_id)) {
+                    // *** Read old values ***
+                    $note_qry = "SELECT * FROM humo_user_notes WHERE note_id='" . $note_id . "'";
+                    $note_result = $this->dbh->query($note_qry);
+                    $noteDb = $note_result->fetch(PDO::FETCH_OBJ);
+                    $note_changed = false;
+                    if ($noteDb->note_status != $_POST["note_status"][$key]) $note_changed = true;
+                    if ($noteDb->note_priority != $_POST["note_priority"][$key]) $note_changed = true;
+                    if ($noteDb->note_note != $_POST["note_note"][$key]) $note_changed = true;
+
+                    if ($note_changed) {
+                        $sql = "UPDATE humo_user_notes SET
+                            note_note='" . $this->editor_cls->text_process($_POST["note_note"][$key]) . "',
+                            note_status='" . $this->editor_cls->text_process($_POST["note_status"][$key]) . "',
+                            note_priority='" . $this->editor_cls->text_process($_POST["note_priority"][$key]) . "',
+                            note_changed_user_id='" . $this->userid . "'
+                            WHERE note_id='" . $note_id . "'";
+                        $this->dbh->query($sql);
+                    }
+                }
+            }
+        }
+
+        // *** Remove editor note ***
+        if (isset($_GET['note_drop']) and is_numeric($_GET['note_drop'])) {
+            $confirm .= '<div class="alert alert-danger">';
+            $confirm .= __('Are you sure you want to remove this note?');
+            $confirm .= ' <form method="post" action="index.php" style="display : inline;">';
+            $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';
+            $confirm .= '<input type="hidden" name="note_drop" value="' . $_GET['note_drop'] . '">';
+            $confirm .= ' <input type="submit" name="note_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
+            $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+            $confirm .= '</form>';
+            $confirm .= '</div>';
+        }
+        if (isset($_POST['note_drop2']) and is_numeric($_POST['note_drop'])) {
+            $sql = "DELETE FROM humo_user_notes WHERE note_id='" . safe_text_db($_POST['note_drop']) . "'";
+            $this->dbh->query($sql);
+        }
+
+        return $confirm;
     }
 }

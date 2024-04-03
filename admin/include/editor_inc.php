@@ -9,9 +9,6 @@ if (is_numeric($_SESSION['user_id_admin'])) {
     $userid = $_SESSION['user_id_admin'];
 }
 
-$gedcom_date = strtoupper(date("d M Y"));
-$gedcom_time = date("H:i:s");
-
 // *** Return deletion confim box in $confirm variabele ***
 $confirm = '';
 $confirm_relation = '';
@@ -1303,84 +1300,6 @@ if (isset($_POST['change_address_id'])) {
             $dbh->query($sql);
         }
     }
-}
-
-// *** Add editor note ***
-if (isset($_GET['note_add']) and $_GET['note_add']) {
-    $gedcom_date = strtoupper(date("d M Y"));
-    $gedcom_time = date("H:i:s");
-
-    // *** $note_connect_kind = person or family ***
-    $note_connect_kind = 'person';
-    if ($_GET['note_add'] == 'family') $note_connect_kind = 'family';
-
-    // *** $note_connect_id = I123 or F123 ***
-    $note_connect_id = $pers_gedcomnumber;
-    if ($note_connect_kind == 'family') $note_connect_id = $marriage;
-
-    // *** Name of selected person in family tree ***
-    @$persDb = $db_functions->get_person($pers_gedcomnumber);
-    // *** Use class to process person ***
-    $pers_cls = new person_cls($persDb);
-    $name = $pers_cls->person_name($persDb);
-    $note_names = safe_text_db($name["standard_name"]);
-
-    //note_connect_kind='person',
-    $sql = "INSERT INTO humo_user_notes SET
-        note_new_user_id='" . $userid . "',
-        note_note='',
-        note_kind='editor',
-        note_status='Not started',
-        note_priority='Normal',
-        note_connect_kind='" . $note_connect_kind . "',
-        note_connect_id='" . safe_text_db($note_connect_id) . "',
-        note_names='" . safe_text_db($note_names) . "',
-        note_tree_id='" . $tree_id . "'";
-    $dbh->query($sql);
-}
-// *** Change editor note ***
-if (isset($_POST['note_id'])) {
-    foreach ($_POST['note_id'] as $key => $value) {
-        $note_id = $_POST["note_id"][$key];
-        if (is_numeric($note_id)) {
-            // *** Read old values ***
-            $note_qry = "SELECT * FROM humo_user_notes WHERE note_id='" . $note_id . "'";
-            $note_result = $dbh->query($note_qry);
-            $noteDb = $note_result->fetch(PDO::FETCH_OBJ);
-            $note_changed = false;
-            if ($noteDb->note_status != $_POST["note_status"][$key]) $note_changed = true;
-            if ($noteDb->note_priority != $_POST["note_priority"][$key]) $note_changed = true;
-            if ($noteDb->note_note != $_POST["note_note"][$key]) $note_changed = true;
-
-            if ($note_changed) {
-                $gedcom_date = strtoupper(date("d M Y"));
-                $gedcom_time = date("H:i:s");
-                $sql = "UPDATE humo_user_notes SET
-                    note_note='" . $editor_cls->text_process($_POST["note_note"][$key]) . "',
-                    note_status='" . $editor_cls->text_process($_POST["note_status"][$key]) . "',
-                    note_priority='" . $editor_cls->text_process($_POST["note_priority"][$key]) . "',
-                    note_changed_user_id='" . $userid . "'
-                    WHERE note_id='" . $note_id . "'";
-                $dbh->query($sql);
-            }
-        }
-    }
-}
-// *** Remove editor note ***
-if (isset($_GET['note_drop']) and is_numeric($_GET['note_drop'])) {
-    $confirm .= '<div class="alert alert-danger">';
-    $confirm .= __('Are you sure you want to remove this note?');
-    $confirm .= ' <form method="post" action="' . $phpself . '" style="display : inline;">';
-    $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';
-    $confirm .= '<input type="hidden" name="note_drop" value="' . $_GET['note_drop'] . '">';
-    $confirm .= ' <input type="submit" name="note_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-    $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
-    $confirm .= '</form>';
-    $confirm .= '</div>';
-}
-if (isset($_POST['note_drop2']) and is_numeric($_POST['note_drop'])) {
-    $sql = "DELETE FROM humo_user_notes WHERE note_id='" . safe_text_db($_POST['note_drop']) . "'";
-    $dbh->query($sql);
 }
 
 // *** Remove all sources from an item ***

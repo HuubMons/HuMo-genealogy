@@ -47,7 +47,6 @@ class marriage_cls
         global $templ_relation, $parent1Db, $parent2Db;
         global $relation_check;
 
-
         if ($marriageDb == '') {
             $marriageDb = $this->cls_marriage_Db;
         }
@@ -366,6 +365,7 @@ class marriage_cls
         if ($temp_text) {
             $marriage_check = true;
             $addition = __(' to: ');
+            $templ_relation["wedd_exist"]='';
             if ($text != '') {
                 $text .= "<br>\n";
                 $templ_relation["wedd_exist"] = "\n";
@@ -835,8 +835,7 @@ class marriage_cls
                 $addition = '';
             }
         } else {
-            // TODO bug: if there are multiple relations and living together then text is wrong.
-            //$text = '<b>' . $relation_number . $relation_kind . '</b> ' . $text;
+            $text = '<b>' . $relation_number . $relation_kind . '</b> ' . $text;
         }
 
         if ($addition) $text .= '<b>' . $addition . '</b>';

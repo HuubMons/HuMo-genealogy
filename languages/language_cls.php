@@ -20,6 +20,7 @@ class Language_cls
                 elseif ($file == 'fi') $language_order[] = 'Suomi';
                 elseif ($file == 'fr') $language_order[] = 'French';
                 elseif ($file == 'fur') $language_order[] = 'Furlan';
+                elseif ($file == 'gr') $language_order[] = 'Greek';
                 elseif ($file == 'he') $language_order[] = 'Hebrew';
                 elseif ($file == 'id') $language_order[] = 'Indonesian';
                 elseif ($file == 'hu') $language_order[] = 'Magyar';

@@ -139,8 +139,8 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
             }
             ?>
         </table>
-        <?php
 
+        <?php
         if ($privcount) {
             echo "<br>" . $privcount . __(' persons are not shown due to privacy settings') . ".<br>";
         }

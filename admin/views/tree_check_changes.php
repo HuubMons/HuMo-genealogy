@@ -186,40 +186,59 @@ $select_editor_result = $dbh->query($select_editor_qry);
 <form method="POST" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="tab" value="changes">
-    <?= __('Select editor:'); ?>
 
-    <select size="1" name="editor">
-        <option value=""><?= __('All editors'); ?></option>
-        <?php
-        while ($select_editorDb = $select_editor_result->fetch(PDO::FETCH_OBJ)) {
-            if ($select_editorDb->user) {
-                $qry = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $select_editorDb->user . "'");
-                $editorDb = $qry->fetch(PDO::FETCH_OBJ);
-        ?>
-                <option value="<?= $select_editorDb->user; ?>" <?= $select_editorDb->user == $editor ? ' selected' : ''; ?>>
-                    <?= $editorDb->user_name; ?>
-                </option>
-        <?php
-            }
-        }
-        ?>
-    </select>
+    <!-- <div class="row p-2 mb-3 mx-sm-1"> -->
+    <div class="row gy-2 gx-3 align-items-center">
+        <div class="col-auto">
 
-    <!-- Number of results in list -->
-    <?= __('Results'); ?>:
-    <select size="1" name="limit">
-        <option value="50">50</option>
-        <option value="100" <?= $limit == 100 ? ' selected' : ''; ?>>100</option>
-        <option value="200" <?= $limit == 200 ? ' selected' : ''; ?>>200</option>
-        <option value="500" <?= $limit == 500 ? ' selected' : ''; ?>>500</option>
-    </select>
+            <div class="input-group">
+                <label for="editor" class="col-sm-auto col-form-label"><?= __('Select editor:'); ?>&nbsp;</label>
+                <select size="1" name="editor" id="editor" class="form-select form-select-sm">
+                    <option value=""><?= __('All editors'); ?></option>
+                    <?php
+                    while ($select_editorDb = $select_editor_result->fetch(PDO::FETCH_OBJ)) {
+                        if ($select_editorDb->user) {
+                            $qry = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $select_editorDb->user . "'");
+                            $editorDb = $qry->fetch(PDO::FETCH_OBJ);
+                    ?>
+                            <option value="<?= $select_editorDb->user; ?>" <?= $select_editorDb->user == $editor ? ' selected' : ''; ?>>
+                                <?= $editorDb->user_name; ?>
+                            </option>
+                    <?php
+                        }
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
 
-    <input type="checkbox" id="1" name="show_persons" value="1" <?= $show_persons ? ' checked' : ''; ?>> <?= __('Persons'); ?>
-    <input type="checkbox" id="1" name="show_families" value="1" <?= $show_families ? ' checked' : ''; ?>> <?= __('Families'); ?>
+        <!-- Number of results in list -->
+        <div class="col-auto">
+            <div class="input-group">
+                <label for="limit" class="col-sm-auto col-form-label"><?= __('Results'); ?>:&nbsp;</label>
+                <select size="1" name="limit" id="limit" class="form-select form-select-sm">
+                    <option value="50">50</option>
+                    <option value="100" <?= $limit == 100 ? ' selected' : ''; ?>>100</option>
+                    <option value="200" <?= $limit == 200 ? ' selected' : ''; ?>>200</option>
+                    <option value="500" <?= $limit == 500 ? ' selected' : ''; ?>>500</option>
+                </select>
+            </div>
+        </div>
 
-    <!-- Future options: also select sources, addresses, etc.? -->
+        <div class="col-auto">
+            <input type="checkbox" id="1" name="show_persons" id="show_persons" class="form-check-input" value="1" <?= $show_persons ? ' checked' : ''; ?>>
+            <label class="form-check-label" for="show_persons"><?= __('Persons'); ?></label>
 
-    <input type="submit" name="last_changes" value="<?= __('Select'); ?>">
+            <input type="checkbox" id="1" name="show_families" id="show_families" class="form-check-input ms-2" value="1" <?= $show_families ? ' checked' : ''; ?>>
+            <label class="form-check-label" for="show_families"><?= __('Families'); ?></label>
+        </div>
+
+        <!-- Future options: also select sources, addresses, etc.? -->
+
+        <div class="col-auto">
+            <input type="submit" name="last_changes" class="btn btn-sm btn-success" value="<?= __('Select'); ?>">
+        </div>
+    </div>
 </form><br>
 
 <!-- Show results -->
