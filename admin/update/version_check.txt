@@ -4,7 +4,8 @@ version=6.7.4
 version_date=2024-04-03
 version_download=http://sourceforge.net/projects/humo-gen
 version_auto_download=http://humo-gen.com/update/humo-gen_update.zip
-new_version_auto_download_github=https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip
+DISABLED_new_version_auto_download_github=https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip
+new_version_auto_download_github=https://github.com/HuubMons/HuMo-genealogy/archive/refs/tags/v6.7.4.zip
 
 // Beta version
 beta_version=2019-11-28
