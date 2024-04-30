@@ -22,24 +22,6 @@ body {
 	font-family: "Monotype Corsiva", "URW Chancery L", cursive, "Comic Sans MS", Tahoma, Verdana;
 }
 
-/*
-#top_familytree_name {
-	color: #347c17;
-	font-weight: normal;
-	font-family: Tahoma, "URW Chancery L", Verdana;
-	font-size: 25px;
-}
-*/
-
-ul.humo_menu_item li a {
-	font-weight: normal;
-	color: #000000;
-}
-
-ul.humo_menu_item li {
-	border-right: none;
-}
-
 #content {
 	background: #ffffff url('images_antique/sepiathin.jpg') repeat;
 }

@@ -673,11 +673,8 @@ if (isset($database_check) and $database_check) { // Otherwise we can't make $db
     </div>
     <?php
 
-
-
     // *** Show menu ***
     include_once(__DIR__ . '/views/menu.php');
-
 
     if ($popup == false) {
     ?>

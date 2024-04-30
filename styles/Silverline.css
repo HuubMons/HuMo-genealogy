@@ -18,17 +18,6 @@ body {
     font-weight: normal;
 }
 
-/*
-#top_familytree_name {
-    color: #347c17;
-    font-weight: normal;
-}
-*/
-
-ul.humo_menu_item2 li a:hover {
-    background: url("images_silverline/menuhover1.jpg") repeat left top;
-}
-
 a#current_top {
     color: #000000;
     font-weight: bold;
@@ -39,24 +28,6 @@ a#current_top {
     color: #000000;
     font-weight: bold;
     background: url("images_silverline/menuhover1.jpg") repeat left top;
-}
-
-ul.humo_menu_item2 li {
-    background: url("images_silverline/silver.gif") repeat left top;
-}
-
-ul.humo_menu_item2 li a {
-    background: url("images_silverline/silver.gif") repeat left top;
-    font-weight: normal;
-}
-
-ul.humo_menu_item li a {
-    font-weight: normal;
-    color: #000000;
-}
-
-ul.humo_menu_item li {
-    border-right: none;
 }
 
 #content {
@@ -183,10 +154,6 @@ div.hour_ancestor_split {
 /* table header  */
 .table_headline {
     background: url("images_silverline/menuhover.jpg") repeat left top;
-}
-
-#country_flags {
-    padding: 11px 85px 6px 5px;
 }
 
 table.reltable td {

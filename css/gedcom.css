@@ -69,14 +69,6 @@ body {
     font-size: 22px;
 }
 
-/*
-#top_familytree_name {
-    color: #333;
-    font-size: 13px;
-    font-weight: bold;
-}
-*/
-
 /* Border pop-up menu */
 div.ltrsddm div {
     border: 1px solid #EED4D4;
@@ -104,6 +96,7 @@ div.rtlsddm #mft ul {
 
 
 /* More space around person pop-up menu */
+/* TODO: remove old popup system */
 #content div.ltrsddm div {
     padding: 5px;
     box-shadow: 2px 2px 2px #c0c0c0;
@@ -123,90 +116,6 @@ div.rtlsddm #mft ul {
 
 #content div.rtlsddm div a {
     padding: 1px 8px 1px 10px;
-}
-
-/* Main menu */
-ul.humo_menu_item {
-    margin: 0;
-    list-style: none;
-    padding-left: 0px;
-    /* was 15 px */
-}
-
-/* Pop-up menu */
-ul.humo_menu_item2 {
-    margin: 0;
-    list-style: none;
-    padding-left: 0px;
-    /* was 15 px */
-}
-
-/* Main menu */
-ul.humo_menu_item li {
-    float: left;
-    margin: 0;
-    border-left: 1px solid rgba(255, 255, 255, 0.4);
-    border-right: 1px solid rgba(255, 255, 255, 1);
-}
-
-/* Pop-up menu */
-ul.humo_menu_item2 li {
-    float: none;
-    display: block;
-    border-right: none;
-    margin: 0;
-}
-
-/* Double column for country flags in full version */
-#m4x {
-    width: 250px;
-}
-
-#m4x ul li {
-    float: left;
-    width: 124px;
-}
-
-/* Main menu */
-ul.humo_menu_item li a {
-    display: block;
-    /* up, right, bottom */
-    /* padding:8px 5px 7px 5px; */
-    padding: 8px 8px 7px 8px;
-    text-decoration: none;
-    color: #333;
-    border-right: 1px solid #b0b0b0;
-}
-
-/* Pop-up menu */
-ul.humo_menu_item2 li a {
-    display: block;
-    /* font-size: 13px; */
-    font-size: 15px;
-    padding: 8px 5px 6px 5px;
-    text-decoration: none;
-    color: #333;
-    border-right: none;
-    /* background: linear-gradient(to top, rgba(236, 204, 179, 1) 0%, rgba(250, 241, 235, 1) 91%, rgba(250, 241, 235, 1) 100%); */
-    background: linear-gradient(to top, rgb(209, 184, 143) 0%, rgb(250, 241, 235) 73%);
-}
-
-/* iPhone/iPad hack */
-ul.humo_menu_item li ul.humo_menu_item2 {
-    display: none;
-}
-
-ul.humo_menu_item li:hover ul.humo_menu_item2 {
-    display: block;
-}
-
-#country_flags {
-    float: right;
-    display: block;
-    padding: 8px 85px 6px 5px;
-    text-decoration: none;
-    color: #333;
-    border-right: none;
 }
 
 * html #top_menu,

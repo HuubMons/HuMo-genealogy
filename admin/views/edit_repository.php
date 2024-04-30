@@ -26,7 +26,8 @@ $editRepository['repo_id'] = $editRepositoryModel->get_repo_id();
 
 
 $phpself = 'index.php';
-$field_text_large = 'style="height: 100px; width:550px"';
+//$field_text_large = 'style="height: 100px; width:550px"';
+$field_text_large = 'style="height: 100px;"';
 
 // *** Editor icon for admin and editor: select family tree ***
 //if (isset($tree_id) and $tree_id) {
@@ -57,7 +58,7 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
     </div>
 <?php } ?>
 
-<div class="p-3 m-2 genealogy_search">
+<div class="p-3 my-md-2 genealogy_search container-md">
     <div class="row">
         <div class="col-md-auto">
             <label for="tree" class="col-form-label">
@@ -148,7 +149,7 @@ if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
     <form method="POST" action="<?= $phpself; ?>">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
-        <div class="p-2 me-sm-2 genealogy_search">
+        <div class="p-2 my-md-2 genealogy_search container-md">
             <div class="row mb-2">
                 <div class="col-md-1"></div>
                 <div class="col-md-2">
@@ -182,7 +183,7 @@ if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
             <div class="row mb-2">
                 <div class="col-md-1"></div>
                 <div class="col-md-2">
-                    <?= ucfirst(__('date')); ?>
+                    <?= __('Date'); ?>
                 </div>
                 <div class="col-md-4">
                     <?= $editor_cls->date_show($repo_date, "repo_date"); ?>
@@ -192,10 +193,10 @@ if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
             <div class="row mb-2">
                 <div class="col-md-1"></div>
                 <div class="col-md-2">
-                    <?= ucfirst(__('place')); ?>
+                    <?= __('Place'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_place" value="<?= htmlspecialchars($repo_place); ?>" placeholder="<?= ucfirst(__('place')); ?>" size="50" class="form-control form-control-sm">
+                    <input type="text" name="repo_place" value="<?= htmlspecialchars($repo_place); ?>" size="50" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -212,7 +213,7 @@ if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
             <div class="row mb-2">
                 <div class="col-md-1"></div>
                 <div class="col-md-2">
-                    <?= ucfirst(__('text')); ?>
+                    <?= __('Text'); ?>
                 </div>
                 <div class="col-md-4">
                     <textarea rows="1" name="repo_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($repo_text); ?></textarea>

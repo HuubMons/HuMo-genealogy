@@ -454,6 +454,19 @@ else {
                     $pdf->Cell(0, 2, " ", 'B', 1);
 
                     $show_privacy_text = false;
+
+                    // TODO show text in PDF export
+                    // *** Show "Child(ren):" ***
+                    /*
+                    echo '<div class="py-3"><b>';
+                    if (count($child_array) == '1') {
+                        echo __('Child') . ':';
+                    } else {
+                        echo __('Children') . ':';
+                    }
+                    echo '</b></div>';
+                    */
+
                     foreach ($child_array as $i => $value) {
                         @$childDb = $db_functions->get_person($child_array[$i]);
                         // *** Use person class ***

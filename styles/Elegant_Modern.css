@@ -50,25 +50,6 @@ body {
     background: #9a3f3a;
 }
 
-/* Main menu */
-ul.humo_menu_item li {
-    border-left: none;
-    border-right: none;
-}
-
-ul.humo_menu_item li a {
-    background: none;
-    color: #FFFFFF;
-    /* border-right:none; */
-    border-right: 1px solid #b0b0b0;
-}
-
-/* Pop-up menu */
-ul.humo_menu_item2 li a {
-    color: #fff;
-    background: #333333;
-}
-
 .mobile_icon {
     filter: invert(100%);
 }

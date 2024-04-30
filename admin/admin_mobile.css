@@ -18,35 +18,6 @@ body {
     height: initial;
 }
 
-/* Pop-up menu */
-ul.humo_menu_item2 li a {
-    display: block;
-    font-size: 13px;
-    padding: 5px 4px 5px 4px;
-}
-
-/* Single column for country flags in mobile version */
-#m40x {
-    width: 35px;
-}
-
-#m40x ul li {
-    width: 35px;
-}
-
-/* Main menu */
-ul.humo_menu_item li a {
-    /* up, right, bottom */
-    /* padding:8px 8px 7px 8px; */
-    padding: 8px 2px 7px 2px;
-}
-
-/* Pop-up menu */
-ul.humo_menu_item2 li a {
-    /* padding:8px 5px 6px 5px; */
-    padding: 4px 5px 4px 5px;
-}
-
 #content_admin {
     /* boven, rechts, onder */
     padding: 10px 5px 10px 5px;

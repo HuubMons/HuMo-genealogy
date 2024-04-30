@@ -14,8 +14,6 @@
  *
  * https://humo-gen.com
  *
- * ----------
- *
  * Copyright (C) 2008-2024 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * René Janssen, Yossi Beck
@@ -66,88 +64,99 @@ if (isset($step1)) {
     if (@file_exists("../../gedcom-bestanden")) {
         $gedcom_directory = "../../gedcom-bestanden";
     }
+
+    $upload_success = '';
+    $upload_failed = '';
+
+    if (isset($_POST['upload'])) {
+        // *** Only needed for Huub's test server ***
+        if (file_exists("../gedcom-bestanden")) {
+            $gedcom_directory = "../gedcom-bestanden";
+        } elseif (file_exists("gedcom_files")) {
+            $gedcom_directory = "gedcom_files";
+        } else {
+            $gedcom_directory = ".";
+        }
+
+        // *** Only upload .ged or .zip files ***
+        if (strtolower(substr($_FILES['upload_file']['name'], -4)) == '.zip' or strtolower(substr($_FILES['upload_file']['name'], -4)) == '.ged') {
+            $new_upload = $gedcom_directory . '/' . basename($_FILES['upload_file']['name']);
+            // *** Move and check for succesful upload ***
+            //echo '<p><b>' . $new_upload . '<br>';
+            if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $new_upload)) {
+                $upload_success = $new_upload . '<br>' . __('File successfully uploaded.') . '</b>';
+            } else {
+                $upload_failed = $new_upload . '<br>' . __('Upload has failed.') . '</b>';
+            }
+
+            // *** If file is zipped, unzip it ***
+            if (strtolower(substr($new_upload, -4)) == '.zip') {
+                $zip = new ZipArchive;
+                $res = $zip->open($new_upload);
+                if ($res === TRUE) {
+
+                    // *** Only unzip .ged files ***
+                    $check_gedcom = true;
+                    for ($i = 0; $i < $zip->numFiles; $i++) {
+                        $filename = $zip->getNameIndex($i);
+                        if (strtolower(substr($filename, -4)) != '.ged') $check_gedcom = false;
+                    }
+                    if ($check_gedcom) {
+                        $zip->extractTo($gedcom_directory);
+                        $zip->close();
+                        $upload_success .= '<br>Succesfully unzipped file!';
+                    }
+                } else {
+                    $upload_failed .= '<br>Error in unzipping file!';
+                }
+            }
+        } else {
+            $upload_failed = __('Upload has failed.');
+        }
+    }
 ?>
 
     <b><?= __('STEP 1) Select GEDCOM file:'); ?></b>
 
-    <p>
-    <table class="humo" style="width:100%;">
-        <tr class="table_header">
-            <th><?= __('Add and remove GEDCOM files'); ?></th>
-        </tr>
+    <div class="p-3 mt-2 me-sm-2 genealogy_search">
 
-        <tr>
-            <td>
-                <?= __('Here you can upload a GEDCOM file (for example: gedcom_name.ged or gedcom_name.zip).'); ?><br>
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-7"><?= __('Add and remove GEDCOM files'); ?></div>
+        </div>
 
-                <?php
-                if (isset($_POST['upload'])) {
-                    // *** Only needed for Huub's test server ***
-                    if (file_exists("../gedcom-bestanden")) {
-                        $gedcom_directory = "../gedcom-bestanden";
-                    } elseif (file_exists("gedcom_files")) {
-                        $gedcom_directory = "gedcom_files";
-                    } else {
-                        $gedcom_directory = ".";
-                    }
+        <div class="row mb-12">
+            <div class="col-md-auto">
+                <?php if ($upload_success) { ?>
+                    <div class="alert alert-success" role="alert"><b><?= $upload_success; ?></b></div>
+                <?php } ?>
 
-                    // *** Only upload .ged or .zip files ***
-                    if (strtolower(substr($_FILES['upload_file']['name'], -4)) == '.zip' or strtolower(substr($_FILES['upload_file']['name'], -4)) == '.ged') {
-                        $new_upload = $gedcom_directory . '/' . basename($_FILES['upload_file']['name']);
-                        // *** Move and check for succesful upload ***
-                        echo '<p><b>' . $new_upload . '<br>';
-                        if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $new_upload))
-                            echo __('File successfully uploaded.') . '</b>';
-                        else
-                            echo __('Upload has failed.') . '</b>';
+                <?php if ($upload_failed) { ?>
+                    <div class="alert alert-danger" role="alert"><b><?= $upload_failed; ?></b></div>
+                <?php } ?>
 
-                        // *** If file is zipped, unzip it ***
-                        if (strtolower(substr($new_upload, -4)) == '.zip') {
-                            $zip = new ZipArchive;
-                            $res = $zip->open($new_upload);
-                            if ($res === TRUE) {
-
-                                // *** Only unzip .ged files ***
-                                $check_gedcom = true;
-                                for ($i = 0; $i < $zip->numFiles; $i++) {
-                                    $filename = $zip->getNameIndex($i);
-                                    if (strtolower(substr($filename, -4)) != '.ged') $check_gedcom = false;
-                                }
-                                if ($check_gedcom) {
-                                    $zip->extractTo($gedcom_directory);
-                                    $zip->close();
-                                    echo '<br>Succesfully unzipped file!';
-                                }
-                            } else {
-                                echo '<br>Error in unzipping file!';
-                            }
-                        }
-                    }
-                } else {
-                    // *** Upload form ***
-                ?>
-                    <form name='uploadform' enctype='multipart/form-data' action="<?= $phpself; ?>" method="post">
-                        <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
-                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                        <input type="hidden" name="upload" value="Upload">
-                        <div class="row mt-2">
-                            <div class="col-8">
-                                <div class="input-group">
-                                    <input type="file" name="upload_file" class="form-control form-control-sm">
-                                    <input type="submit" name="step1" value="<?= __('Upload'); ?>" class="btn btn-sm btn-success">
-                                </div>
+                <!-- Upload form -->
+                <form name='uploadform' enctype='multipart/form-data' action="<?= $phpself; ?>" method="post">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="upload" value="Upload">
+                    <div class="row mt-2">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="file" name="upload_file" class="form-control form-control-sm">
+                                <input type="submit" name="step1" value="<?= __('Upload'); ?>" class="btn btn-sm btn-success">
                             </div>
                         </div>
-                    </form><br>
+                    </div>
+                </form><br>
+                <?= __('Here you can upload a GEDCOM file (for example: gedcom_name.ged or gedcom_name.zip).'); ?><br>
+                <?= __('ATTENTION: the privileges of the file map may have to be adjusted!'); ?><br>
+                <?= __('Another option is to upload GEDCOM files manually by using FTP to folder: /humo-gen/admin/gedcom_files/'); ?><br><br>
+            </div>
+        </div>
 
-                    <?= __('ATTENTION: the privileges of the file map may have to be adjusted!'); ?><br>
-                    <?= __('Another option is to upload GEDCOM files manually by using FTP to folder: /humo-gen/admin/gedcom_files/'); ?><br><br>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
+        <div class="row mb-12">
+            <div class="col-md-auto">
                 <!-- Form to remove GEDCOM files -->
                 <?php if (isset($_POST['remove_gedcom_files'])) { ?>
                     <?= __('Are you sure to remove GEDCOM files?'); ?>
@@ -161,36 +170,36 @@ if (isset($step1)) {
                         <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
                     </form>
                 <?php
-                    } elseif (isset($_POST['remove_gedcom_files2']) and isset($_POST['remove_confirm'])) {
-                        // *** Remove old GEDCOM files ***
-                        $dh  = opendir($gedcom_directory);
-                        while (false !== ($filename = readdir($dh))) {
-                            if (strtolower(substr($filename, -3)) == "ged") {
-                                if ($_POST['remove_gedcom_files2'] == 'gedcom_files_all') {
+                } elseif (isset($_POST['remove_gedcom_files2']) and isset($_POST['remove_confirm'])) {
+                    // *** Remove old GEDCOM files ***
+                    $dh  = opendir($gedcom_directory);
+                    while (false !== ($filename = readdir($dh))) {
+                        if (strtolower(substr($filename, -3)) == "ged") {
+                            if ($_POST['remove_gedcom_files2'] == 'gedcom_files_all') {
+                                $filenames[] = $gedcom_directory . '/' . $filename;
+                            } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_month') {
+                                if (time() - filemtime($gedcom_directory . '/' . $filename) >= 60 * 60 * 24 * 30) { // 30 days
                                     $filenames[] = $gedcom_directory . '/' . $filename;
-                                } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_month') {
-                                    if (time() - filemtime($gedcom_directory . '/' . $filename) >= 60 * 60 * 24 * 30) { // 30 days
-                                        $filenames[] = $gedcom_directory . '/' . $filename;
-                                    }
-                                } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_year') {
-                                    if (time() - filemtime($gedcom_directory . '/' . $filename) >= 60 * 60 * 24 * 365) { // 365 days
-                                        $filenames[] = $gedcom_directory . '/' . $filename;
-                                    }
+                                }
+                            } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_year') {
+                                if (time() - filemtime($gedcom_directory . '/' . $filename) >= 60 * 60 * 24 * 365) { // 365 days
+                                    $filenames[] = $gedcom_directory . '/' . $filename;
                                 }
                             }
                         }
-                        // *** Order GEDCOM files by alfabet ***
-                        if (isset($filenames)) usort($filenames, 'strnatcasecmp');
-                        echo '<br>';
-                        for ($i = 0; $i < count($filenames); $i++) {
-                            if (strpos($filenames[$i], 'HuMo-genealogy test gedcomfile.ged') > 1)
-                                echo '<b>' . $filenames[$i] . '</b><br>';
-                            else {
-                                echo $filenames[$i] . ' ' . _('GEDCOM file is REMOVED.') . '<br>';
-                                unlink($filenames[$i]);
-                            }
+                    }
+                    // *** Order GEDCOM files by alfabet ***
+                    if (isset($filenames)) usort($filenames, 'strnatcasecmp');
+                    echo '<br>';
+                    for ($i = 0; $i < count($filenames); $i++) {
+                        if (strpos($filenames[$i], 'HuMo-genealogy test gedcomfile.ged') > 1)
+                            echo '<b>' . $filenames[$i] . '</b><br>';
+                        else {
+                            echo $filenames[$i] . ' ' . _('GEDCOM file is REMOVED.') . '<br>';
+                            unlink($filenames[$i]);
                         }
-                    } else {
+                    }
+                } else {
                 ?>
                     <?= __('If needed remove GEDCOM files (except test GEDCOM file):'); ?>
                     <form name="remove_gedcomfiles" action="<?= $phpself; ?>" method="post">
@@ -198,7 +207,7 @@ if (isset($step1)) {
                         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <div class="row mt-2">
-                            <div class="col-8">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <select size="1" name="remove_gedcom_files" class="form-select form-select-sm">
                                         <option value="gedcom_files_all"><?= __('Remove all GEDCOM files'); ?></option>
@@ -209,209 +218,232 @@ if (isset($step1)) {
                                             <?php printf(__('Remove GEDCOM files older than %d year(s)'), 1); ?>
                                         </option>
                                     </select>
-                                    <input type="submit" name="step1" value="<?= __('Remove'); ?>" class="btn btn-sm btn-success">
+                                    <input type="submit" name="step1" value="<?= __('Remove'); ?>" class="btn btn-sm btn-warning">
                                 </div>
                             </div>
                         </div>
                     </form><br>
-            <?php
-                    }
-                }
-            ?>
-            </td>
-        </tr>
-    </table>
+                <?php } ?>
+            </div>
+        </div>
 
-    <?php $_SESSION['debug_person'] = 1; ?>
+    </div>
+
+    <?php
+    $_SESSION['debug_person'] = 1;
+
+    $dh  = opendir($gedcom_directory);
+    while (false !== ($filename = readdir($dh))) {
+        if (strtolower(substr($filename, -3)) == "ged") $filenames[] = $gedcom_directory . "/" . $filename;
+    }
+    // *** Order GEDCOM files by alfabet ***
+    if (isset($filenames)) usort($filenames, 'strnatcasecmp');
+
+    $result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
+    $treegedDb = $result->fetch();
+    ?>
     <form method="post" action="<?= $phpself; ?>" style="display : inline">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
 
-        <?php
-        $dh  = opendir($gedcom_directory);
-        while (false !== ($filename = readdir($dh))) {
-            if (strtolower(substr($filename, -3)) == "ged") $filenames[] = $gedcom_directory . "/" . $filename;
-        }
-        // *** Order GEDCOM files by alfabet ***
-        if (isset($filenames)) usort($filenames, 'strnatcasecmp');
-        ?>
-        <p>
-        <table class="humo" style="width:100%;">
-            <tr class="table_header">
-                <th><?= __('Select GEDCOM file and settings'); ?></th>
-            </tr>
+        <div class="p-3 mt-3 me-sm-2 genealogy_search">
 
-            <tr>
-                <td>
-                    <?= __('Select GEDCOM file'); ?><br>
-                    <br><select size="1" name="gedcom_file" class="form-select form-select-sm">
-                        <?php
-                        $result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
-                        $treegedDb = $result->fetch();
-                        $gedfile = $treegedDb['tree_gedcom'];
-                        for ($i = 0; $i < count($filenames); $i++) {
-                            // *** if this was last GEDCOM file that was used for this tree - select it ***
-                            $selected = '';
-                            if ($gedfile == $filenames[$i]) $selected = " selected ";
-                            echo '<option value="' . $filenames[$i] . '" ' . $selected . '>' . $filenames[$i] . '</option>';
-                        }
-                        ?>
-                    </select><br>
-                </td>
-            </tr>
+            <div class="row mb-2 p-2 bg-primary-subtle">
+                <div class="col-md-7"><?= __('Select GEDCOM file and settings'); ?></div>
+            </div>
 
-            <tr>
-                <td>
-                    <?= __('GEDCOM settings'); ?><br>
-                    <?php
-                    $check = '';
-                    if ($humo_option["gedcom_read_add_source"] == 'y') {
-                        $check = ' checked';
-                    }
-                    echo '<input type="checkbox" name="add_source"' . $check . '> ' . __('Add a general source connected to all persons in this GEDCOM file.') . "<br>\n";
-
-                    $check = '';
-                    if ($humo_option["gedcom_read_reassign_gedcomnumbers"] == 'y') {
-                        $check = ' checked';
-                    }
-                    echo '<input type="checkbox" name="reassign_gedcomnumbers"' . $check . '> ' . __('Reassign new ID numbers for persons, fams etc. (don\'t use IDs from GEDCOM)') . "<br>\n";
-
-                    $check = '';
-                    if ($humo_option["gedcom_read_order_by_date"] == 'y') {
-                        $check = ' checked';
-                    }
-                    echo '<input type="checkbox" name="order_by_date"' . $check . '> ' . __('Order children by date (only needed if children are in wrong order)') . "<br>\n";
-
-                    $check = '';
-                    if ($humo_option["gedcom_read_order_by_fams"] == 'y') {
-                        $check = ' checked';
-                    }
-                    echo '<input type="checkbox" name="order_by_fams"' . $check . '> ' . __('Order families by date (only needed if families are in wrong order)') . "<br>\n";
-
-                    // *** if a humo_location table exists, refresh the location_status column ***
-                    $res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-                    if ($res->rowCount()) {
-                        $check = '';
-                        if ($humo_option["gedcom_read_process_geo_location"] == 'y') {
-                            $check = ' checked';
-                        }
-                        echo "<input type='checkbox' name='process_geo_location'" . $check . "> " . __('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of GEDCOM file!') . "<br>\n";
-                    }
-
-                    // *** Process full picture path of files ***
-                    echo '<input type="checkbox" name="check_gedcom_process_pict_path" checked disabled> <select size="1" name="gedcom_process_pict_path" style="width: 550px">';
-                    $selected = '';
-                    if ($humo_option["gedcom_process_pict_path"] == 'file_name') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="file_name"' . $selected . '>' . __('Only process picture file name. For example: picture.jpg [DEFAULT]') . '</option>';
-                    $selected = '';
-                    if ($humo_option["gedcom_process_pict_path"] == 'full_path') {
-                        $selected = ' selected';
-                    }
-                    echo '<option value="full_path"' . $selected . '>' . __('Process full picture path. For example: picture_path&#92;picture.jpg') . '</option>';
-                    echo '</select><br>';
-
-                    $check = '';
-                    if ($humo_option["gedcom_read_save_pictures"] == 'y') {
-                        $check = ' checked';
-                    }
-                    echo '<input type="checkbox" name="save_pictures"' . $check . '> ' . __('Don\'t remove picture links from database (only needed for Geneanet GEDCOM file).') . "<br>\n";
-                    echo __('In Geneanet add HuMo-genealogy picture id in the source by a person. Using this example: #media1254,media13454#') . "<br>\n";
-                    ?>
-                    <br>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <?= __('GEDCOM process settings'); ?><br>
-                    <input type="checkbox" name="check_processed"> <?= __('Show non-processed items when processing GEDCOM (can be a long list!'); ?><br>
-                    <input type="checkbox" name="show_gedcomnumbers"> <?= __('Show all numbers when processing GEDCOM (useful when a time-out occurs!)'); ?><br>
-                    <input type="checkbox" name="debug_mode"> <?= __('Debug mode'); ?><br>
-
-                    <input type="checkbox" name="commit_checkbox" checked disabled> <?= __('Batch processing'); ?>:
-                    <select size="1" name="commit_records" style="width: 300px">
-                        <?php
-                        echo '<option value="1">' . __('1 record (slow processing, but needs less server-memory)') . '</option>';
-                        $selected = '';
-                        if ($humo_option["gedcom_read_commit_records"] == '10') {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="10"' . $selected . '>10 ' . __('records per batch') . '</option>';
-                        $selected = '';
-                        if ($humo_option["gedcom_read_commit_records"] == '100') {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="100"' . $selected . '>100 ' . __('records per batch') . '</option>';
-                        $selected = '';
-                        if ($humo_option["gedcom_read_commit_records"] == '500') {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="500"' . $selected . '>500 ' . __('records per batch') . '</option>';
-                        $selected = '';
-                        if ($humo_option["gedcom_read_commit_records"] == '1000') {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="1000"' . $selected . '>1000 ' . __('records per batch') . '</option>';
-                        $selected = '';
-                        if ($humo_option["gedcom_read_commit_records"] == '5000') {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="5000"' . $selected . '>5000 ' . __('records per batch') . '</option>';
-                        $selected = '';
-                        if ($humo_option["gedcom_read_commit_records"] == '10000') {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="10000"' . $selected . '>10000 ' . __('records per batch') . '</option>';
-                        $selected = '';
-                        if ($humo_option["gedcom_read_commit_records"] == '9000000') {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="9000000"' . $selected . '>' . __('ALL records (fast processing, but needs server-memory)') . '</option>';
-                        ?>
+            <div class="row mb-3">
+                <div class="col-md-auto"><?= __('Select GEDCOM file'); ?></div>
+                <div class="col-md-auto">
+                    <select size="1" name="gedcom_file" class="form-select form-select-sm">
+                        <?php for ($i = 0; $i < count($filenames); $i++) { ?>
+                            <!-- if this was last GEDCOM file that was used for this tree - select it -->
+                            <option value="<?= $filenames[$i]; ?>" <?= $filenames[$i] == $treegedDb['tree_gedcom'] ? 'selected' : ''; ?>><?= $filenames[$i]; ?></option>
+                        <?php } ?>
                     </select>
+                </div>
+            </div>
 
-                    <?php
-                    // *** Controlled time-out ***
-                    $time_out = 0;
-                    if ($humo_option["gedcom_read_time_out"]) $time_out = $humo_option["gedcom_read_time_out"];
-                    echo '<p>';
-                    if (isset($_POST['timeout_restart'])) {
-                        if (isset($_SESSION['save_process_time']) and $_SESSION['save_process_time']) $time_out = ($_SESSION['save_process_time'] - 3);
-                        echo '<b>' . __('Time-out detected! Controlled time-out setting is adjusted. Retry reading of GEDCOM with new setting.') . '</b><br>';
-                    }
-                    echo '&nbsp;<input type="text" name="time_out" value="' . $time_out . '" size="2"> ';
-                    $max_time = ini_get("max_execution_time");
-                    echo __('seconds. Controlled time-out, the GEDCOM script will restart and continue.<br>Use this if the server has a time-out setting (set less seconds then server time-out).<br>0 = disable controlled time-out.') . ' ';
-                    printf(__('Your server time-out setting is: %s seconds.'), $max_time);
-                    ?>
-                    <br>
-                </td>
-            </tr>
-        </table>
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            <?= __('GEDCOM settings'); ?>
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
 
-        <?php
-        // *** Show extra warning if there is an existing family tree ***
-        $nr_persons = $db_functions->count_persons($tree_id);
-        if ($nr_persons > 0) {
-            // *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
-            $treetext = show_tree_text($tree_id, $selected_language);
-            $treetext2 = '';
-            if ($treetext['name']) $treetext2 = $treetext['name'];
-            $checked1 = '';
-            $checked2 = '';
-            echo '<br><input type="radio" value="no" name="add_tree" onchange="document.getElementById(\'step2\').disabled = !this.checked;" ' . $checked2 . '> ';
-            printf(__('Yes, replace existing family tree: <b>"%1$s"</b> with %2$s persons!'), $treetext2, $nr_persons);
-            echo '<br>';
-            echo '<input type="radio" value="yes" name="add_tree" onchange="document.getElementById(\'step2\').disabled = !this.checked;" ' . $checked1 . '> ' . __('Add this GEDCOM file to the existing tree') . '<br>';
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="add_source" value="" id="add_source" <?= $humo_option["gedcom_read_add_source"] == 'y' ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="add_source">
+                                    <?= __('Add a general source connected to all persons in this GEDCOM file.'); ?>
+                                </label>
+                            </div>
 
-            echo '<br><input type="submit" name="step2" id="step2" disabled value="' . __('Step') . ' 2" class="btn btn-sm btn-success"><br>';
-        } else {
-            echo '<p><input type="submit" name="step2" value="' . __('Step') . ' 2" class="btn btn-sm btn-success"><br>';
-        }
-        ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="reassign_gedcomnumbers" value="" id="reassign_gedcomnumbers" <?= $humo_option["gedcom_read_reassign_gedcomnumbers"] == 'y' ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="reassign_gedcomnumbers">
+                                    <?= __('Reassign new ID numbers for persons, fams etc. (don\'t use IDs from GEDCOM)'); ?>
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="order_by_date" value="" id="order_by_date" <?= $humo_option["gedcom_read_order_by_date"] == 'y' ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="order_by_date">
+                                    <?= __('Order children by date (only needed if children are in wrong order)'); ?>
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="order_by_fams" value="" id="order_by_fams" <?= $humo_option["gedcom_read_order_by_fams"] == 'y' ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="order_by_fams">
+                                    <?= __('Order families by date (only needed if families are in wrong order)'); ?>
+                                </label>
+                            </div>
+
+                            <?php
+                            // *** if a humo_location table exists, refresh the location_status column ***
+                            $res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+                            if ($res->rowCount()) {
+                            ?>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="process_geo_location" value="" id="process_geo_location" <?= $humo_option["gedcom_read_process_geo_location"] == 'y' ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="process_geo_location">
+                                        <?= __('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of GEDCOM file!'); ?>
+                                    </label>
+                                </div>
+                            <?php } ?>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="save_pictures" value="" id="save_pictures" <?= $humo_option["gedcom_read_save_pictures"] == 'y' ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="save_pictures">
+                                    <?= __('Don\'t remove picture links from database (only needed for Geneanet GEDCOM file).'); ?><br>
+                                    <span style="font-size: 13px;"><?= __('In Geneanet add HuMo-genealogy picture id in the source by a person. Using this example: #media1254,media13454#'); ?></span>
+                                </label>
+                            </div>
+
+                            <!-- <input type="checkbox" name="check_gedcom_process_pict_path" checked disabled> -->
+                            <div class="row mt-2 mb-3">
+                                <div class="col-md-auto"><?= __('Picture settings'); ?></div>
+                                <div class="col-md-auto">
+                                    <select size="1" name="gedcom_process_pict_path" class="form-select form-select-sm">
+                                        <option value="file_name" <?= $humo_option["gedcom_process_pict_path"] == 'file_name' ? 'selected' : ''; ?>>
+                                            <?= __('Only process picture file name. For example: picture.jpg [DEFAULT]'); ?>
+                                        </option>
+                                        <option value="full_path" <?= $humo_option["gedcom_process_pict_path"] == 'full_path' ? 'selected' : ''; ?>>
+                                            <?= __('Process full picture path. For example: picture_path&#92;picture.jpg'); ?>
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <?= __('GEDCOM process settings'); ?>
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="check_processed" value="" id="check_processed">
+                                <label class="form-check-label" for="check_processed">
+                                    <?= __('Show non-processed items when processing GEDCOM (can be a long list!'); ?>
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="show_gedcomnumbers" value="" id="show_gedcomnumbers">
+                                <label class="form-check-label" for="show_gedcomnumbers">
+                                    <?= __('Show all numbers when processing GEDCOM (useful when a time-out occurs!)'); ?>
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="debug_mode" value="" id="debug_mode">
+                                <label class="form-check-label" for="debug_mode">
+                                    <?= __('Debug mode'); ?>
+                                </label>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-md-auto"><?= __('Batch processing'); ?></div>
+                                <div class="col-md-auto">
+                                    <select size="1" name="commit_records" class="form-select form-select-sm">
+                                        <option value="1"><?= __('1 record (slow processing, but needs less server-memory)'); ?></option>
+                                        <option value="10" <?= $humo_option["gedcom_read_commit_records"] == '10' ? 'selected' : ''; ?>>10 <?= __('records per batch'); ?></option>
+                                        <option value="100" <?= $humo_option["gedcom_read_commit_records"] == '100' ? 'selected' : ''; ?>>100 <?= __('records per batch'); ?></option>
+                                        <option value="500" <?= $humo_option["gedcom_read_commit_records"] == '500' ? 'selected' : ''; ?>>500 <?= __('records per batch'); ?></option>
+                                        <option value="1000" <?= $humo_option["gedcom_read_commit_records"] == '1000' ? 'selected' : ''; ?>>1000 <?= __('records per batch'); ?></option>
+                                        <option value="5000" <?= $humo_option["gedcom_read_commit_records"] == '5000' ? 'selected' : ''; ?>>5000 <?= __('records per batch'); ?></option>
+                                        <option value="10000" <?= $humo_option["gedcom_read_commit_records"] == '10000' ? 'selected' : ''; ?>>10000 <?= __('records per batch'); ?></option>
+                                        <option value="9000000" <?= $humo_option["gedcom_read_commit_records"] == '9000000' ? 'selected' : ''; ?>> <?= __('ALL records (fast processing, but needs server-memory)'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <?php
+                            // *** Controlled time-out ***
+                            $time_out = 0;
+                            if ($humo_option["gedcom_read_time_out"]) $time_out = $humo_option["gedcom_read_time_out"];
+                            if (isset($_POST['timeout_restart'])) {
+                                if (isset($_SESSION['save_process_time']) and $_SESSION['save_process_time']) $time_out = ($_SESSION['save_process_time'] - 3);
+                                echo '<b>' . __('Time-out detected! Controlled time-out setting is adjusted. Retry reading of GEDCOM with new setting.') . '</b><br>';
+                            }
+                            $max_time = ini_get("max_execution_time");
+                            ?>
+                            <div class="row mb-2">
+                                <div class="col-md-1">
+                                    <input type="text" name="time_out" value="<?= $time_out; ?>" size="2" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-md-7">
+                                    <?= __('seconds. Controlled time-out, the GEDCOM script will restart and continue.<br>Use this if the server has a time-out setting (set less seconds then server time-out).<br>0 = disable controlled time-out.'); ?>
+                                    <?php printf(__('Your server time-out setting is: %s seconds.'), $max_time); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="p-3 mt-3 me-sm-2 genealogy_search">
+            <?php
+            // *** Show extra warning if there is an existing family tree ***
+            $nr_persons = $db_functions->count_persons($tree_id);
+            if ($nr_persons > 0) {
+                // *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
+                $treetext = show_tree_text($tree_id, $selected_language);
+                $treetext2 = '';
+                if ($treetext['name']) $treetext2 = $treetext['name'];
+            ?>
+                <div class="form-check">
+                    <input type="radio" value="no" name="add_tree" onchange="document.getElementById('step2').disabled = !this.checked;" class="form-check-input">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        <?php printf(__('Yes, replace existing family tree: <b>"%1$s"</b> with %2$s persons!'), $treetext2, $nr_persons); ?>
+                    </label>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="radio" value="yes" name="add_tree" onchange="document.getElementById('step2').disabled = !this.checked;" class="form-check-input">
+                    <label class="form-check-label" for="flexRadioDefault1"><?= __('Add this GEDCOM file to the existing tree'); ?></label>
+                </div>
+
+                <input type="submit" name="step2" id="step2" disabled value="<?= __('Step'); ?> 2" class="btn btn-sm btn-success">
+            <?php } else { ?>
+                <input type="submit" name="step2" value="<?= __('Step'); ?> 2" class="btn btn-sm btn-success">
+            <?php } ?>
+        </div>
     </form><br>
     <?php
 }
@@ -495,8 +527,8 @@ if (isset($_POST['step2'])) {
             <?= __('ONLY use in case of a time-out, to continue click:'); ?>
             <input type="submit" name="step2" value="<?= __('Step'); ?> 2" class="btn btn-sm btn-secondary">
         </form><br>
-    <?php
 
+    <?php
         /*
         // *** Batch processing ***
         $dbh->beginTransaction();
@@ -1103,10 +1135,15 @@ if (isset($_POST['step3'])) {
     $progress2 = $_SESSION['save_progress2'];
 
     if (!isset($_POST['show_gedcomnumbers'])) {
-        echo '<div id="progress" style="width:500px;border:1px solid #ccc;"></div>';
-        echo '<!-- Progress information -->';
-        echo '<div id="information" style="width"></div>';
+    ?>
+        <div class="progress" style="height:20px">
+            <div class="progress-bar"></div>
+        </div>
 
+        <!-- Progress information -->
+        <div id="information"></div>
+
+    <?php
         $i = $_SESSION['save_progress2']; // save number of lines processed
         $perc = $_SESSION['save_perc'];   // save percentage processed
 
@@ -1128,7 +1165,7 @@ if (isset($_POST['step3'])) {
                 if (substr($line, -6, 6) == '@ RESI') {
                     $address_gedcomnr = substr($line, 4, -6);
                     if ($address_gedcomnr > $address_high) $address_high = $address_gedcomnr;
-                    $_SESSION['new_address_gedcomnr'] = $address_high + 1;
+                    $_SESSION['new_address_gedcomnr'] = (int)$address_high + 1;
                     //echo 'ADDRESS: '.$address_gedcomnr.'!'.$address_high.' '.$_SESSION['new_address_gedcomnr'].'<br>';
                 }
 
@@ -1156,7 +1193,6 @@ if (isset($_POST['step3'])) {
             $percent = "0.5%";
         } // show at least some green 
         echo '<script>';
-        echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
         echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $total . ' ' . __('lines processed') . ' (' . $perc . '%).";';
         echo '</script>';
         // This is for the buffer achieve the minimum size in order to flush data
@@ -1502,9 +1538,16 @@ if (isset($_POST['step3'])) {
 
                 // Javascript for updating the progress bar and information
                 echo '<script>';
-                echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
-                echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $total . ' ' . __('lines processed') . ' (' . $percent . ')";';
+                //echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $total . ' ' . __('lines processed') . ' (' . $percent . ')";';
+                echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $total . ' ' . __('lines processed') . '";';
                 echo '</script>';
+
+                // *** Apr. 2024 New bootstrap bar ***
+                echo '<script>
+                    var bar = document.querySelector(".progress-bar");
+                    bar.style.width = ' . $perc . ' + "%";
+                    bar.innerText = ' . $perc . ' + "%";
+                </script>';
 
                 // This is for the buffer achieve the minimum size in order to flush data
                 echo str_repeat(' ', 1024 * 64);
@@ -1629,9 +1672,17 @@ if (isset($_POST['step3'])) {
     }
     if (!isset($_POST['show_gedcomnumbers'])) {
         echo '<script>';
-        echo 'document.getElementById("progress").innerHTML="<div style=\"width:100%;background-color:#00CC00;\">&nbsp;</div>";';
-        echo 'document.getElementById("information").innerHTML="' . $total . ' / ' . $total . ' ' . __('lines processed') . ' (100%).";';
+        //echo 'document.getElementById("information").innerHTML="' . $total . ' / ' . $total . ' ' . __('lines processed') . ' (100%).";';
+        echo 'document.getElementById("information").innerHTML="' . $total . ' / ' . $total . ' ' . __('lines processed') . '";';
         echo '</script>';
+
+        // *** Apr. 2024 New bootstrap bar ***
+        echo '<script>
+            var bar = document.querySelector(".progress-bar");
+            bar.style.width = 100 + "%";
+            bar.innerText = 100 + "%";
+        </script>';
+
         ob_flush();
         flush();
     }
@@ -1667,11 +1718,18 @@ if (isset($_POST['step4'])) {
         <br><?= __('ONLY use in case of a time-out, to continue click:'); ?> <input type="submit" name="step4" value="<?= __('Step'); ?> 4" class="btn btn-sm btn-secondary">
     </form><br>
 
-<?php
+    <?php
     // *** Show progress ***
-    echo '<div id="progress" style="width:500px;border:1px solid #ccc;"></div>';
-    echo '<!-- Progress information -->';
-    echo '<div id="information" style="width"></div>';
+    //echo '<div id="progress" style="width:500px;border:1px solid #ccc;"></div>';
+    ?>
+    <div class="progress" style="height:20px">
+        <div class="progress-bar"></div>
+    </div>
+
+    <!-- Progress information -->
+    <div id="information"></div>
+
+<?php
     $total = 1;
     $i = 0;
 
@@ -1718,7 +1776,7 @@ if (isset($_POST['step4'])) {
                 $percent = "0.5%";
             } // show at least some green 
             echo '<script>';
-            echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
+            //echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
             echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $perc . '%).";';
             echo '</script>';
             // This is for the buffer achieve the minimum size in order to flush data
@@ -1728,12 +1786,14 @@ if (isset($_POST['step4'])) {
             flush();
 
             $devider = 50; // determines the steps in percentages - regular: 2%
+            // 1% for larger files with over 200,000 lines
             if ($nr_records > 200000) {
                 $devider = 100;
-            } // 1% for larger files with over 200,000 lines
+            }
+            // 0.5% for very large files
             if ($nr_records > 1000000) {
                 $devider = 200;
-            } // 0.5% for very large files
+            }
             $step = round($nr_records / $devider);
         }
 
@@ -1869,24 +1929,12 @@ if (isset($_POST['step4'])) {
                 //echo $sql.'<hr>';
                 $dbh->query($sql);
 
-                // *** Update progress ***
-                /*
-                $total++;
-                ob_start();
-                echo '<script>';
-                //echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').'";';
-                $status = ' [' . __('persons') . ' ' . ($total_texts - $total_processed_texts) . ']';
-                echo 'document.getElementById("information").innerHTML="' . $total . ' ' . __('lines processed') . $status . '";';
-                echo '</script>';
-                ob_flush();
-                flush();
-                */
-
                 // *** progress bar ***
                 //if (!isset($_POST['show_gedcomnumbers'])) {
                 $i++;
                 $_SESSION['save_progress2'] = $i;
 
+                // TODO check value $step. In some cases 0.
                 // Calculate the percentage
                 if ($i % $step == 0) {
                     if ($devider == 50) {
@@ -1901,9 +1949,17 @@ if (isset($_POST['step4'])) {
 
                     // Javascript for updating the progress bar and information
                     echo '<script>';
-                    echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
-                    echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $percent . ')' . ' ' . __('persons') . '";';
+                    //echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
+                    //echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $percent . ')' . ' ' . __('persons') . '";';
+                    echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' ' . __('persons') . '";';
                     echo '</script>';
+
+                    // *** Apr. 2024 New bootstrap bar ***
+                    echo '<script>
+                        var bar = document.querySelector(".progress-bar");
+                        bar.style.width = ' . $perc . ' + "%";
+                        bar.innerText = ' . $perc . ' + "%";
+                    </script>';
 
                     // This is for the buffer achieve the minimum size in order to flush data
                     echo str_repeat(' ', 1024 * 64);
@@ -2136,11 +2192,27 @@ if (isset($_POST['step4'])) {
         }
 
         echo '<script>';
-        echo 'document.getElementById("progress").innerHTML="<div style=\"width:100%;background-color:#00CC00;\">&nbsp;</div>";';
-        echo 'document.getElementById("information").innerHTML="' . $nr_records . ' / ' . $nr_records . ' ' . __('lines processed') . ' (100%).";';
+        //echo 'document.getElementById("progress").innerHTML="<div style=\"width:100%;background-color:#00CC00;\">&nbsp;</div>";';
+        //echo 'document.getElementById("information").innerHTML="' . $nr_records . ' / ' . $nr_records . ' ' . __('lines processed') . ' (100%).";';
+        echo 'document.getElementById("information").innerHTML="' . $nr_records . ' / ' . $nr_records . ' ' . __('lines processed') . '";';
         echo '</script>';
+
+        // *** Apr. 2024 New bootstrap bar ***
+        echo '<script>
+            var bar = document.querySelector(".progress-bar");
+            bar.style.width = 100 + "%";
+            bar.innerText = 100 + "%";
+        </script>';
+
         ob_flush();
         flush();
+    } else {
+        // *** Apr. 2024 New bootstrap bar ***
+        echo '<script>
+            var bar = document.querySelector(".progress-bar");
+            bar.style.width = 100 + "%";
+            bar.innerText = 100 + "%";
+        </script>';
     }
 
 
@@ -2413,15 +2485,13 @@ if (isset($_POST['step4'])) {
             $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
 
             if ($new_nr->fam_man) {
-                $sql = "UPDATE humo_events SET
-                    event_event='" . $new_nr->fam_man . "' WHERE event_id='" . $famc_adoptiveDb->event_id . "'";
+                $sql = "UPDATE humo_events SET event_event='" . $new_nr->fam_man . "' WHERE event_id='" . $famc_adoptiveDb->event_id . "'";
                 $dbh->query($sql);
                 fams_remove($new_nr->fam_man, $fam);
             }
             unset($fams2);
             if ($new_nr->fam_woman) {
-                $sql = "UPDATE humo_events SET
-                    event_event='" . $new_nr->fam_woman . "' WHERE event_id='" . $famc_adoptiveDb->event_id . "'";
+                $sql = "UPDATE humo_events SET event_event='" . $new_nr->fam_woman . "' WHERE event_id='" . $famc_adoptiveDb->event_id . "'";
                 $dbh->query($sql);
                 fams_remove($new_nr->fam_woman, $fam);
             }
@@ -2481,8 +2551,7 @@ if (isset($_POST['step4'])) {
     $dbh->query($sql);
 
     // *** Remove cache ***
-    $sql = "DELETE FROM humo_settings
-        WHERE setting_variable LIKE 'cache%' AND setting_tree_id='" . safe_text_db($tree_id) . "'";
+    $sql = "DELETE FROM humo_settings WHERE setting_variable LIKE 'cache%' AND setting_tree_id='" . safe_text_db($tree_id) . "'";
     $result = $dbh->query($sql);
 
     // Show process time:

@@ -64,6 +64,7 @@ if ($show_persons) {
 
         //$text = '<nobr>' . language_date($person->pers_new_date) . ' ' . $person->pers_new_time . ' ' . $person->pers_new_user . '</nobr>';
         $text = '';
+        // TODO check if this could be added in query.
         if ($person->pers_new_datetime != '1970-01-01 00:00:01') {
             $user_name = '';
             if ($person->pers_new_user_id) {
@@ -243,7 +244,8 @@ $select_editor_result = $dbh->query($select_editor_qry);
 
 <!-- Show results -->
 <!-- <div style="margin-left:auto; margin-right:auto; height:350px; width:90%; overflow-y: scroll;"> -->
-<div style="margin-left:auto; margin-right:auto; height:400px; overflow-y: scroll;">
+<!-- <div style="margin-left:auto; margin-right:auto; height:400px; overflow-y: scroll;"> -->
+<div style="margin-left:auto; margin-right:auto;">
     <table class="humo" style="width:100%">
         <tr>
             <th style="text-align: center"><?= __('Item'); ?></th>

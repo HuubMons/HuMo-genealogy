@@ -61,7 +61,7 @@ if (isset($_POST['upload_the_file'])) {
                 <h3><?= __('Create backup file'); ?></h3>
 
                 <form action="index.php?page=backup" method="post">
-                    &nbsp;&nbsp;<input type="submit" style="font-size:14px" value="<?= __('Create backup file'); ?>" name="create_backup">
+                    &nbsp;&nbsp;<input type="submit" value="<?= __('Create backup file'); ?>" name="create_backup" class="btn btn-sm btn-success">
                 </form>
             <?php
             }
@@ -112,7 +112,7 @@ if (isset($_POST['upload_the_file'])) {
 
                 <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">
                     <input type="file" id="upload_file" name="upload_file">
-                    <input type="submit" style="margin-top:4px" name="upload_the_file" value="<?= __('Upload'); ?>"><br>
+                    <input type="submit" style="margin-top:4px" name="upload_the_file" value="<?= __('Upload'); ?>" class="btn btn-sm btn-secondary"><br>
                 </form>
             <?php
             }
@@ -160,12 +160,38 @@ if (isset($_POST['upload_the_file'])) {
 function backup_tables()
 {
     global $dbh, $backup_files;
-    echo '<div id="red_text" style="color:red">' . __('Creating backup file. This may take some time. Please wait...') . '</div>';
+
+    ob_start();
+
     $tables = array();
     $result = $dbh->query('SHOW TABLES');
     while ($row = $result->fetch(PDO::FETCH_NUM)) {
         $tables[] = $row[0];
     }
+
+
+    // *** Count rows in all tables ***
+    $total_rows = 0;
+    foreach ($tables as $table) {
+        $result = $dbh->query('SELECT * FROM ' . $table);
+        $count_text = $result->rowCount();
+        $total_rows = $total_rows + $count_text;
+        //echo $count_text . '!' . $total_rows . '<br>';
+    }
+    $devider = floor($total_rows / 100);
+?>
+    <div id="red_text" style="color:red"><?= __('Creating backup file. This may take some time. Please wait...'); ?></div>
+
+    <div class="progress" style="height:20px">
+        <div class="progress-bar"></div>
+    </div>
+
+<?php
+    // This is for the buffer achieve the minimum size in order to flush data
+    echo str_repeat(' ', 1024 * 64);
+    // Send output to browser immediately
+    ob_flush();
+    flush();
 
     // *** Cycle through ***
     // *** Name of backup file: 2023_02_10_12_55_humo-genealogy_backup.sql.zip ***
@@ -176,6 +202,8 @@ function backup_tables()
     $return = "\n\n" . 'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";' . "\n\n";
     fwrite($handle, $return);
 
+    $count_rows = 0;
+    $perc = 0;
     foreach ($tables as $table) {
         // *** Skip tables names that contains a space in it ***
         if (strpos($table, ' ')) {
@@ -225,6 +253,26 @@ function backup_tables()
                 $return .= ");\n";
                 fwrite($handle, $return);
                 //unset($return); 
+
+                $count_rows++;
+                if ($count_rows == $devider) {
+                    $perc += 1;
+                    $count_rows = 0;
+
+                    // *** Apr. 2024 New bootstrap bar ***
+                    echo '<script>
+                        var bar = document.querySelector(".progress-bar");
+                        bar.style.width = ' . $perc . ' + "%";
+                        bar.innerText = ' . $perc . ' + "%";
+                    </script>';
+
+                    // This is for the buffer achieve the minimum size in order to flush data
+                    echo str_repeat(' ', 1024 * 64);
+
+                    // Send output to browser immediately
+                    ob_flush();
+                    flush();
+                }
             }
             $return = "\n\n\n";
             fwrite($handle, $return);

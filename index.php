@@ -344,11 +344,10 @@ $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 $db_functions->set_tree_id($_SESSION['tree_id']);
 
 // *** If an HuMo-gen upgrade is done, automatically update language files ***
-// TODO For some reason an empty line is shown once when update is done.
 if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
     $str = file_get_contents("languages/en/en.po");
     if (strpos($str, 'msgstr "&#134;"') or strpos($str, 'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
-        include(__DIR__ . "/../languages/change_all.php");
+        include(__DIR__ . "/languages/change_all.php");
     }
 }
 

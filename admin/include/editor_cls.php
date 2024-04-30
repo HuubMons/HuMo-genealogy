@@ -14,7 +14,6 @@ class editor_cls
         // *** Process BEF, ABT, AFT and BET in an easier pulldown menu ***
         global $field_date, $humo_option;
         $style = '';
-        $placeholder = '';
 
         // *** Prevent error in PHP 8.1.1 ***
         if (!isset($process_date)) $process_date = '';
@@ -69,7 +68,6 @@ class editor_cls
             $process_date = substr($process_date, 0, -1);
             $style = '; background-color:red"';
         }
-        $placeholder = ucfirst(__('date'));
 ?>
         <div class="input-group">
             <select size="1" id="<?= $process_name . '_prefix' . $multiple_rows; ?>" name="<?= $process_name . '_prefix' . $multiple_rows; ?>" class="form-select form-select-sm">
@@ -84,7 +82,7 @@ class editor_cls
                 <option value="CAL " <?= substr($process_date, 0, 4) == 'CAL ' ? 'selected' : ''; ?>><?= __('calculated'); ?></option>
             </select>
 
-            <input type="text" name="<?= $process_name . $multiple_rows; ?>" placeholder="<?= $placeholder; ?>" style="direction:ltr<?= $style; ?>" value="<?= $text_value; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+            <input type="text" name="<?= $process_name . $multiple_rows; ?>" style="direction:ltr<?= $style; ?>" value="<?= $text_value; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
         </div>
 
         <?php

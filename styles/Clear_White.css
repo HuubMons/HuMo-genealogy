@@ -1,18 +1,7 @@
-/*
-html {
-    margin: 0 auto;
-}
-*/
-
 body {
     /* background: url(images_white/background.gif) repeat-y top center #fff; */
     background: white;
     color: #404040;
-}
-
-/* Pop-up menu */
-ul.humo_menu_item2 li a {
-    background: linear-gradient(rgb(244, 244, 255) 0%, rgb(219, 219, 219) 100%);
 }
 
 .search_bar {

@@ -76,7 +76,7 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
     </div>
 <?php }; ?>
 
-<div class="p-3 m-2 genealogy_search">
+<div class="p-3 my-md-2 genealogy_search container-md">
     <div class="row">
 
         <div class="col-auto">
@@ -85,7 +85,7 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
             </label>
         </div>
 
-        <div class="col-2">
+        <div class="col-md-2">
             <?= select_tree($dbh, $page, $tree_id); ?>
         </div>
 
@@ -95,7 +95,7 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
             </label>
         </div>
 
-        <div class="col-4">
+        <div class="col-md-4">
             <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
 
@@ -193,60 +193,58 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
         <input type="hidden" name="source_gedcomnr" value="<?= $source_gedcomnr; ?>">
-        <table class="humo standard" border="1">
-            <tr class="table_header">
-                <th><?= __('Option'); ?></th>
-                <th colspan="3"><?= __('Value'); ?></th>
-            </tr>
 
-            <tr>
-                <td><?= __('Status:'); ?></td>
-                <td colspan="3">
-                    <select size="1" name="source_status">
+        <div class="p-2 my-sm-2 genealogy_search container-md">
+
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Status'); ?></div>
+                <div class="col-md-4">
+                    <select size="1" name="source_status" class="form-select form-select-sm">
                         <option value="publish" <?php if ($source_status == 'publish') echo ' selected'; ?>><?= __('publish'); ?></option>
                         <option value="restricted" <?php if ($source_status == 'restricted') echo ' selected'; ?>><?= __('restricted'); ?></option>
-                    </select> <?= __('restricted = only visible for selected user groups'); ?>
-                </td>
-            </tr>
+                    </select>
+                    <span style="font-size: 13px;"><?= __('restricted = only visible for selected user groups'); ?></span>
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Title'); ?></td>
-                <td colspan="3"><input type="text" name="source_title" value="<?= htmlspecialchars($source_title); ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Title'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_title" value="<?= htmlspecialchars($source_title); ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Subject'); ?></td>
-                <td colspan="3"><input type="text" name="source_subj" value="<?= htmlspecialchars($source_subj); ?>" size="60"></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Subject'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_subj" value="<?= htmlspecialchars($source_subj); ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= ucfirst(__('date')); ?></td>
-                <td colspan="3">
-                    <div class="row mb-2">
-                        <label for "source_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-                        <div class="col-md-7">
-                            <?php $editor_cls->date_show($source_date, "source_date"); ?>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Date'); ?></div>
+                <div class="col-md-4">
+                    <?php $editor_cls->date_show($source_date, "source_date"); ?>
+                </div>
+            </div>
 
-            <tr>
-                <td><?= ucfirst(__('place')); ?></td>
-                <td colspan="3">
-                    <div class="row mb-2">
-                        <label for "source_place" class="col-sm-3 col-form-label"><?= ucfirst(__('Place')); ?></label>
-                        <div class="col-md-7">
-                            <input type="text" name="source_place" value="<?= htmlspecialchars($source_place); ?>" placeholder=<?= ucfirst(__('place')); ?> size="50" class="form-control form-control-sm">
-                        </div>
-                    </div>
-                </td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Place'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_place" value="<?= htmlspecialchars($source_place); ?>" size="50" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Repository'); ?></td>
-                <td colspan="3">
-                    <select size="1" name="source_repo_gedcomnr">
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Repository'); ?></div>
+                <div class="col-md-4">
+                    <select size="1" name="source_repo_gedcomnr" class="form-select form-select-sm">
                         <option value=""></option>
                         <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
                             <option value="<?= $repoDb->repo_gedcomnr; ?>" <?= $repoDb->repo_gedcomnr == $source_repo_gedcomnr ? ' selected' : ''; ?>>
@@ -254,64 +252,103 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
                         <?php } ?>
                     </select>
                     <!-- For new repository in new database... -->
-                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=edit_repositories"><?= __('Add repositories'); ?></a>
-                </td>
-            </tr>
+                    <span style="font-size: 13px;"><a href="index.php?page=edit_repositories"><?= __('Add repositories'); ?></a></span>
+                </div>
+            </div>
 
-            <tr>
-                <td><?= __('Publication'); ?></td>
-                <td colspan="3"><input type="text" name="source_publ" value="<?= htmlspecialchars($source_publ); ?>" size="60"> https://... <?= __('will be shown as a link.'); ?></td>
-            </tr>
-            <tr>
-                <td><?= __('Own code'); ?></td>
-                <td colspan="3"><input type="text" name="source_refn" value="<?= $source_refn; ?>" size="60"></td>
-            </tr>
-            <tr>
-                <td><?= __('Author'); ?></td>
-                <td colspan="3"><input type="text" name="source_auth" value="<?= $source_auth; ?>" size="60"></td>
-            </tr>
-            <tr>
-                <td><?= __('Nr.'); ?></td>
-                <td colspan="3"><input type="text" name="source_item" value="<?= $source_item; ?>" size="60"></td>
-            </tr>
-            <tr>
-                <td><?= __('Kind'); ?></td>
-                <td colspan="3"><input type="text" name="source_kind" value="<?= $source_kind; ?>" size="60"></td>
-            </tr>
-            <tr>
-                <td><?= __('Archive'); ?></td>
-                <td colspan="3"><input type="text" name="source_repo_caln" value="<?= $source_repo_caln; ?>" size="60"></td>
-            </tr>
-            <tr>
-                <td><?= __('Page'); ?></td>
-                <td colspan="3"><input type="text" name="source_repo_page" value="<?= $source_repo_page; ?>" size="60"></td>
-            </tr>
-            <tr>
-                <td><?= __('text'); ?></td>
-                <td colspan="3"><textarea rows="6" cols="80" name="source_text" <?= $field_text_large; ?>><?= $editor_cls->text_show($source_text); ?></textarea></td>
-            </tr>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Publication'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_publ" value="<?= htmlspecialchars($source_publ); ?>" size="60" class="form-control form-control-sm">
+                    <span style="font-size: 13px;">https://... <?= __('will be shown as a link.'); ?></span>
+                </div>
+            </div>
 
-            <?php
-            // *** Picture by source ***
-            if (!isset($_POST['add_source'])) {
-                echo $event_cls->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
-            }
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Own code'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_refn" value="<?= $source_refn; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
 
-            if (isset($_POST['add_source'])) {
-            ?>
-                <tr>
-                    <td><?= __('Add'); ?></td>
-                    <td colspan="3"><input type="submit" name="source_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>
-                </tr>
-            <?php } else { ?>
-                <tr>
-                    <td><?= __('Save'); ?></td>
-                    <td colspan="3"><input type="submit" name="source_change2" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Author'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_auth" value="<?= $source_auth; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Nr.'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_item" value="<?= $source_item; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Kind'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_kind" value="<?= $source_kind; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Archive'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_repo_caln" value="<?= $source_repo_caln; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Page'); ?></div>
+                <div class="col-md-4">
+                    <input type="text" name="source_repo_page" value="<?= $source_repo_page; ?>" size="60" class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <div class="col-md-2"><?= __('Text'); ?></div>
+                <div class="col-md-4">
+                    <textarea rows="6" cols="80" name="source_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($source_text); ?></textarea>
+                </div>
+            </div>
+
+            <!-- TODO replace table with div. Function must be rebuild -->
+            <table class="humo standard" border="1">
+                <!-- Picture by source -->
+                <?php
+                if (!isset($_POST['add_source'])) {
+                    echo $event_cls->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
+                } ?>
+            </table>
+
+            <br>
+            <div class="row mb-2">
+                <div class="col-md-1"></div>
+                <?php if (isset($_POST['add_source'])) { ?>
+                    <div class="col-md-2"><?= __('Add'); ?></div>
+                    <div class="col-md-4">
+                        <input type="submit" name="source_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                    </div>
+                <?php } else { ?>
+                    <div class="col-md-2"><?= __('Save'); ?></div>
+                    <div class="col-md-4">
+                        <input type="submit" name="source_change2" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                         <?= __('or'); ?> <input type="submit" name="source_remove" value="<?= __('Delete'); ?>" class="btn btn-sm btn-secondary">
-                    </td>
-                </tr>
-            <?php } ?>
-        </table>
+                    </div>
+                <?php } ?>
+            </div>
+
+        </div>
+
     </form>
 
     <?php
@@ -320,10 +357,10 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
         $vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
         $sourcestring = $link_cls->get_link('../', 'source', $tree_id, false, $vars);
     ?>
-        <p><?= __('Preview'); ?><br>
-            <iframe src="<?= $sourcestring; ?>" class="iframe">
-                <p>Your browser does not support iframes.</p>
-            </iframe>
-    <?php
+        <br><br><?= __('Preview'); ?><br>
+        <iframe src="<?= $sourcestring; ?>" class="iframe">
+            <p>Your browser does not support iframes.</p>
+        </iframe>
+<?php
     }
 }
