@@ -7,113 +7,113 @@
     <input type="hidden" name="pers_birth_date_previous" value="<?= $pers_birth_date; ?>">
     <input type="hidden" name="pers_bapt_date_previous" value="<?= $pers_bapt_date; ?>">
 
-    <!-- <table class="humo" border="1" style="line-height: 180%;"> -->
-    <!-- <table class="humo" border="1" style="line-height: 150%;"> -->
-    <table class="humo" id="table_editor" border="1" style="line-height: 150%;">
-        <?php
-        // *** Show mother and father with a link ***
-        if ($add_person == false) {
-            // *** Update settings ***
-            if (isset($_POST['admin_online_search'])) {
-                if ($_POST['admin_online_search'] == 'y' or $_POST['admin_online_search'] == 'n') {
-                    $result = $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
-                    $humo_option["admin_online_search"] = $_POST['admin_online_search'];
-                }
+    <?php
+    if ($add_person == false) {
+        // *** Update settings ***
+        if (isset($_POST['admin_online_search'])) {
+            if ($_POST['admin_online_search'] == 'y' or $_POST['admin_online_search'] == 'n') {
+                $result = $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
+                $humo_option["admin_online_search"] = $_POST['admin_online_search'];
             }
+        }
+    ?>
 
-        ?>
-            <!-- Open Archives -->
-            <tr>
-                <th class="table_header_large" colspan="3"><?= __('Open Archives'); ?>
+        <!-- Archives ->
+        <!-- <div class="p-3 m-2 genealogy_search"> -->
+        <div class="p-2 m-2 genealogy_search">
+            <div class="row">
+
+                <div class="col-md-2">
+                    <label for="admin_online_search" class="col-form-label">
+                        <b><?= __('Open Archives'); ?></b>
+                    </label>
+                </div>
+
+                <div class="col-auto">
                     <!-- Ignore the Are You Sure script -->
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <select size="1" name="admin_online_search" onChange="this.form.submit();" class="ays-ignore">
+                    <select size="1" name="admin_online_search" onChange="this.form.submit();" class="ays-ignore form-select form-select-sm">
                         <option value="y"><?= __('Online search enabled'); ?></option>
                         <option value="n" <?php if ($humo_option["admin_online_search"] != 'y') echo ' selected'; ?>><?= __('Online search disabled'); ?></option>
                     </select>
-                    <?php
+                </div>
 
-                    // *** Show archive list ***
-                    // *** Show navigation pop-up ***
-                    echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
-                    echo '<a href="#" style="display:inline" onmouseover="mopen(event,\'archive_menu\',0,0)" onmouseout="mclosetime()">';
-                    echo '[' . __('Archives') . ']</a>';
-                    echo '<div class="sddm_fixed"
-                        style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
-                        direction:' . $rtlmarker . ';
-                        box-shadow: 2px 2px 2px #999; border-radius: 3px;"
-                        id="archive_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+                <div class="col-auto">
+                    <label for="admin_online_search" class="col-form-label">
+                        <!-- Show archive list -->
+                        &nbsp;&nbsp;
+                        <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                            <a href="#" style="display:inline" onmouseover="mopen(event,'archive_menu',0,0)" onmouseout="mclosetime()">[<?= __('Archives'); ?>]</a>
+                            <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153); direction:<?= $rtlmarker; ?>; box-shadow: 2px 2px 2px #999; border-radius: 3px;" id="archive_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                                <?php
+                                // *** Show box with list link to archives ***
+                                if ($add_person == false) {
+                                    $OAfromyear = '';
+                                    if ($person->pers_birth_date) {
+                                        if (substr($person->pers_birth_date, -4)) $OAfromyear = substr($person->pers_birth_date, -4);
+                                    } elseif ($person->pers_bapt_date) {
+                                        if (substr($person->pers_bapt_date, -4)) $OAfromyear = substr($person->pers_bapt_date, -4);
+                                    }
 
-                    // *** Show box with list link to archives ***
-                    if ($add_person == false) {
-                        $OAfromyear = '';
-                        if ($person->pers_birth_date) {
-                            if (substr($person->pers_birth_date, -4)) $OAfromyear = substr($person->pers_birth_date, -4);
-                        } elseif ($person->pers_bapt_date) {
-                            if (substr($person->pers_bapt_date, -4)) $OAfromyear = substr($person->pers_bapt_date, -4);
-                        }
+                                    // *** Show person ***
+                                    //echo '<b>'.__('Person').'</b><br>';
+                                    //echo '<span style="font-weight:bold; font-size:12px">'.show_person($person->pers_gedcomnumber).'</span><br>';
+                                    //echo show_person($person->pers_gedcomnumber).'<br>';
+                                    echo show_person($person->pers_gedcomnumber, false, false) . '<br><br>';
 
-                        // *** Show person ***
-                        //echo '<b>'.__('Person').'</b><br>';
-                        //echo '<span style="font-weight:bold; font-size:12px">'.show_person($person->pers_gedcomnumber).'</span><br>';
-                        //echo show_person($person->pers_gedcomnumber).'<br>';
-                        echo show_person($person->pers_gedcomnumber, false, false) . '<br><br>';
+                                    // *** GeneaNet ***
+                                    // https://nl.geneanet.org/fonds/individus/?size=10&amp;
+                                    //nom=Heijnen&prenom=Andreas&ampprenom_operateur=or&amp;place__0__=Wouw+Nederland&amp;go=1
+                                    $link = 'https://geneanet.org/fonds/individus/?size=10&amp;nom=' . urlencode($person->pers_lastname) . '&amp;prenom=' . urlencode($person->pers_firstname);
+                                    //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&birthdate_until='.$OAfromyear;
+                                    echo '<a href="' . $link . '&amp;go=1" target="_blank">Geneanet.org</a><br><br>';
 
-                        // *** GeneaNet ***
-                        // https://nl.geneanet.org/fonds/individus/?size=10&amp;
-                        //nom=Heijnen&prenom=Andreas&ampprenom_operateur=or&amp;place__0__=Wouw+Nederland&amp;go=1
-                        $link = 'https://geneanet.org/fonds/individus/?size=10&amp;nom=' . urlencode($person->pers_lastname) . '&amp;prenom=' . urlencode($person->pers_firstname);
-                        //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&birthdate_until='.$OAfromyear;
-                        echo '<a href="' . $link . '&amp;go=1" target="_blank">Geneanet.org</a><br><br>';
+                                    // *** StamboomZoeker.nl ***
+                                    // UITLEG: https://www.stamboomzoeker.nl/page/16/zoekhulp
+                                    // sn: Familienaam
+                                    // fn: Voornaam
+                                    // bd: Twee geboortejaren met een streepje (-) er tussen
+                                    // bp: Geboorteplaats
+                                    // http://www.stamboomzoeker.nl/?a=search&fn=andreas&sn=heijnen&np=1&bd1=1655&bd2=1655&bp=wouw+nederland
+                                    $link = 'http://www.stamboomzoeker.nl/?a=search&amp;fn=' . urlencode($person->pers_firstname) . '&amp;sn=' . urlencode($person->pers_lastname);
+                                    if ($OAfromyear != '') $link .= '&amp;bd1=' . $OAfromyear . '&amp;bd2=' . $OAfromyear;
+                                    echo '<a href="' . $link . '" target="_blank">Familytreeseeker.com/ StamboomZoeker.nl</a><br><br>';
 
-                        // *** StamboomZoeker.nl ***
-                        // UITLEG: https://www.stamboomzoeker.nl/page/16/zoekhulp
-                        // sn: Familienaam
-                        // fn: Voornaam
-                        // bd: Twee geboortejaren met een streepje (-) er tussen
-                        // bp: Geboorteplaats
-                        // http://www.stamboomzoeker.nl/?a=search&fn=andreas&sn=heijnen&np=1&bd1=1655&bd2=1655&bp=wouw+nederland
-                        $link = 'http://www.stamboomzoeker.nl/?a=search&amp;fn=' . urlencode($person->pers_firstname) . '&amp;sn=' . urlencode($person->pers_lastname);
-                        if ($OAfromyear != '') $link .= '&amp;bd1=' . $OAfromyear . '&amp;bd2=' . $OAfromyear;
-                        echo '<a href="' . $link . '" target="_blank">Familytreeseeker.com/ StamboomZoeker.nl</a><br><br>';
+                                    // *** GenealogieOnline ***
+                                    //https://www.genealogieonline.nl/zoeken/index.php?q=mons&vn=nikus&pn=harderwijk
+                                    $link = 'https://genealogieonline.nl/zoeken/index.php?q=' . urlencode($person->pers_lastname) . '&amp;vn=' . urlencode($person->pers_firstname);
+                                    //if ($OAfromyear!='') $link.='&amp;bd1='.$OAfromyear.'&amp;bd2='.$OAfromyear;
+                                    echo '<a href="' . $link . '" target="_blank">Genealogyonline.nl/ Genealogieonline.nl</a><br><br>';
 
-                        // *** GenealogieOnline ***
-                        //https://www.genealogieonline.nl/zoeken/index.php?q=mons&vn=nikus&pn=harderwijk
-                        $link = 'https://genealogieonline.nl/zoeken/index.php?q=' . urlencode($person->pers_lastname) . '&amp;vn=' . urlencode($person->pers_firstname);
-                        //if ($OAfromyear!='') $link.='&amp;bd1='.$OAfromyear.'&amp;bd2='.$OAfromyear;
-                        echo '<a href="' . $link . '" target="_blank">Genealogyonline.nl/ Genealogieonline.nl</a><br><br>';
+                                    // FamilySearch
+                                    //https://www.familysearch.org/search/record/results?q.givenName=Marie&q.surname=CORNEZ&count=20
+                                    $link = 'http://www.familysearch.org/search/record/results?count=20&q.givenName=' . urlencode($person->pers_firstname) . '&q.surname=' . urlencode($person->pers_lastname);
+                                    //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
+                                    echo '<a href="' . $link . '" target="_blank">FamilySearch</a><br><br>';
 
-                        // FamilySearch
-                        //https://www.familysearch.org/search/record/results?q.givenName=Marie&q.surname=CORNEZ&count=20
-                        $link = 'http://www.familysearch.org/search/record/results?count=20&q.givenName=' . urlencode($person->pers_firstname) . '&q.surname=' . urlencode($person->pers_lastname);
-                        //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
-                        echo '<a href="' . $link . '" target="_blank">FamilySearch</a><br><br>';
+                                    // *** GrafTombe ***
+                                    // http://www.graftombe.nl/names/search?forename=Andreas&surname=Heijnen&birthdate_from=1655
+                                    // &amp;birthdate_until=1655&amp;submit=Zoeken&amp;r=names-search
+                                    $link = 'http://www.graftombe.nl/names/search?forename=' . urlencode($person->pers_firstname) . '&amp;surname=' . urlencode($person->pers_lastname);
+                                    if ($OAfromyear != '') $link .= '&amp;birthdate_from=' . $OAfromyear . '&amp;birthdate_until=' . $OAfromyear;
+                                    echo '<a href="' . $link . '&amp;submit=Zoeken&amp;r=names-search" target="_blank">Graftombe.nl</a><br><br>';
 
-                        // *** GrafTombe ***
-                        // http://www.graftombe.nl/names/search?forename=Andreas&surname=Heijnen&birthdate_from=1655
-                        // &amp;birthdate_until=1655&amp;submit=Zoeken&amp;r=names-search
-                        $link = 'http://www.graftombe.nl/names/search?forename=' . urlencode($person->pers_firstname) . '&amp;surname=' . urlencode($person->pers_lastname);
-                        if ($OAfromyear != '') $link .= '&amp;birthdate_from=' . $OAfromyear . '&amp;birthdate_until=' . $OAfromyear;
-                        echo '<a href="' . $link . '&amp;submit=Zoeken&amp;r=names-search" target="_blank">Graftombe.nl</a><br><br>';
+                                    // *** WieWasWie ***
+                                    // https://www.wiewaswie.nl/nl/zoeken/?q=Andreas+Adriaensen+Heijnen
+                                    $link = 'https://www.wiewaswie.nl/nl/zoeken/?q=' . urlencode($person->pers_firstname) .
+                                        '+' . urlencode($person->pers_lastname);
+                                    //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
+                                    echo '<a href="' . $link . '" target="_blank">WieWasWie</a><br><br>';
 
-                        // *** WieWasWie ***
-                        // https://www.wiewaswie.nl/nl/zoeken/?q=Andreas+Adriaensen+Heijnen
-                        $link = 'https://www.wiewaswie.nl/nl/zoeken/?q=' . urlencode($person->pers_firstname) .
-                            '+' . urlencode($person->pers_lastname);
-                        //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
-                        echo '<a href="' . $link . '" target="_blank">WieWasWie</a><br><br>';
-
-                        // *** StamboomOnderzoek ***
-                        // https://www.stamboomonderzoek.com/default/search.php?
-                        // myfirstname=Andreas&mylastname=Heijnen&lnqualify=startswith&mybool=AND&showdeath=1&tree=-x--all--x-
-                    }
-
-                    echo '</div>';
-                    echo '</div>';
-                    // *** End of archive list pop-up ***
-                    ?>
-                </th>
-            </tr>
+                                    // *** StamboomOnderzoek ***
+                                    // https://www.stamboomonderzoek.com/default/search.php?
+                                    // myfirstname=Andreas&mylastname=Heijnen&lnqualify=startswith&mybool=AND&showdeath=1&tree=-x--all--x-
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
 
             <?php
             if ($humo_option["admin_online_search"] == 'y') {
@@ -134,15 +134,8 @@
 
                         $jsonData = json_decode($result, TRUE);
             ?>
-                        <tr class="humo_color">
-                            <td colspan="3">
-                                <?php
-                                echo '<b>' . __('Search') . ': <a href="https://www.openarch.nl/search.php?name=' . urlencode($name . $year_or_period) .
-                                    '" target="_blank">https://www.openarch.nl/search.php?name=' . $name . $year_or_period . '</a></b><br>';
-                                ?>
-                            </td>
-                        </tr>
-            <?php
+                        <b><?= __('Search'); ?>: <a href="https://www.openarch.nl/search.php?name=<?= urlencode($name . $year_or_period); ?>" target="_blank">https://www.openarch.nl/search.php?name=<?= $name . $year_or_period; ?></a></b><br>
+                        <?php
                         if (isset($jsonData["response"]["docs"]) and count($jsonData["response"]["docs"]) > 0) {
                             foreach ($jsonData["response"]["docs"] as $OAresult) {   # het voordeel van JSON/json_dcode is dat je er eenvoudig mee kunt werken (geen Iterator nodig)
                                 $OAday = '';
@@ -154,16 +147,29 @@
                                 $OAyear = '';
                                 if (isset($OAresult["eventdate"]["year"])) $OAyear = $OAresult["eventdate"]["year"];
                                 $OAeventdate = join(" ", array($OAday, $OAmonthName, $OAyear));
-
-                                echo '<tr><td colspan="3">';
-                                echo '<a href="' . $OAresult["url"] . '" target="openarch.nl">';   # geen aparte 'link' maar heeft de regel als link, door target steeds zelfde window
-                                echo $OAresult["personname"] . ' (' . $OAresult["relationtype"] . ')';
-                                echo ', ' . $OAresult["eventtype"] . ' ' . $OAeventdate . ' ' . $OAresult["eventplace"];
-                                echo ', ' . $OAresult["archive"] . '/' . $OAresult["sourcetype"];
-                                echo '</a></td></tr>';
+                        ?>
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-auto">
+                                        <!-- geen aparte 'link' maar heeft de regel als link, door target steeds zelfde window -->
+                                        <a href="<?= $OAresult["url"]; ?>" target="openarch.nl">
+                                            <?= $OAresult["personname"]; ?> (<?= $OAresult["relationtype"]; ?>),
+                                            <?= $OAresult["eventtype"]; ?> <?= $OAeventdate; ?> <?= $OAresult["eventplace"]; ?>,
+                                            <?= $OAresult["archive"]; ?>/<?= $OAresult["sourcetype"]; ?>
+                                        </a><br>
+                                    </div>
+                                </div>
+                            <?php
                             }
                         } else {
-                            echo '<tr><td colspan="3">' . __('No results found') . '</td></tr>';
+                            ?>
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-auto">
+                                    <?= __('No results found'); ?>
+                                </div>
+                            </div>
+                        <?php
                         }
                     }
                 }
@@ -205,173 +211,111 @@
                     if (isset($_POST['search_period'])) {
                         openarchives_new($OAsearchname, $OAyear_or_period);
                     } else {
-                        echo '<tr class="humo_color"><td colspan="3"><input type="submit" name="search_period" value="' . __('Search using period') . '">';
-                        echo ' <b>' . __('Search') . ': <a href="https://www.openarch.nl/search.php?name=' . urlencode($OAsearchname . $OAyear_or_period) .
-                            '" target="_blank">https://www.openarch.nl/search.php?name=' . $OAsearchname . $OAyear_or_period . '</a></b><br>';
-                        echo '</td></tr>';
+                        ?>
+                        <b><?= __('Search'); ?>: <a href="https://www.openarch.nl/search.php?name=<?= urlencode($OAsearchname . $OAyear_or_period); ?>" target="_blank">https://www.openarch.nl/search.php?name=<?= $OAsearchname . $OAyear_or_period; ?></a></b><br>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-auto">
+                                <input type="submit" name="search_period" value="<?= __('Search using period'); ?>">
+                            </div>
+                        </div>
+                <?php
                     }
                 }
-            }
+                ?>
+            <?php } ?>
+        </div>
 
-            // *** Empty line in table ***
+        <!-- Parents -->
+        <div class="p-2 m-2 genealogy_search">
+
+            <?php
+            if ($person->pers_famc) {
+                // *** Search for parents ***
+                $family_parentsDb = $db_functions->get_family($person->pers_famc, 'man-woman');
+
+                echo '<b>' . ucfirst(__('parents')) . '</b>';
+
+                //*** Father ***
+                if ($family_parentsDb->fam_man) {
+                    echo ' ' . show_person($family_parentsDb->fam_man);
+                }
+
+                echo ' ' . __('and') . ' ';
+
+                //*** Mother ***
+                if ($family_parentsDb->fam_woman) {
+                    echo show_person($family_parentsDb->fam_woman);
+                }
+            } else {
+                $hideshow = 701;
             ?>
-            <tr>
-                <td colspan="3" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td>
-            </tr>
+                <!-- Add existing or new parents -->
+                <b><?= __('There are no parents.'); ?></b>
+                <a href="#" onclick="hideShow('<?= $hideshow; ?>');"><?= __('Add parents'); ?></a>
+                <span class="humo row701" style="margin-left:0px; display:none;"> <!-- Show/ hide parents form -->
 
-            <tr>
-                <td><b><?= ucfirst(__('parents')); ?></b></td>
-                <td colspan="2">
-                    <?php
-                    $parent_text = '';
+                    <!-- Add father -->
+                    <div class="row m-2">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-7 bg-primary-subtle">
+                            <h2><?= __('Father'); ?></h2>
+                        </div>
+                    </div>
+                    <?= edit_firstname('pers_firstname1', ''); ?>
+                    <?= edit_prefix('pers_prefix1', ''); ?>
+                    <?= edit_lastname('pers_lastname1', ''); ?>
+                    <?= edit_patronymic('pers_patronym1', ''); ?>
+                    <?= edit_event_name('event_gedcom_add1','event_event_name1', ''); ?>
+                    <?= edit_privacyfilter('pers_alive1', ''); ?>
+                    <?= edit_sexe('pers_sexe1', 'M'); ?>
+                    <?= edit_profession('pers_profession1', ''); ?>
 
-                    if ($person->pers_famc) {
-                        // *** Search for parents ***
-                        $family_parentsDb = $db_functions->get_family($person->pers_famc, 'man-woman');
+                    <!-- Add mother -->
+                    <div class="row mb-2">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-7 bg-primary-subtle">
+                            <h2><?= __('Mother'); ?></h2>
+                        </div>
+                    </div>
+                    <?= edit_firstname('pers_firstname2', ''); ?>
+                    <?= edit_prefix('pers_prefix2', ''); ?>
+                    <?= edit_lastname('pers_lastname2', ''); ?>
+                    <?= edit_patronymic('pers_patronym2', ''); ?>
+                    <?= edit_event_name('event_gedcom_add2','event_event_name2', ''); ?>
+                    <?= edit_privacyfilter('pers_alive2', ''); ?>
+                    <?= edit_sexe('pers_sexe2', 'F'); ?>
+                    <?= edit_profession('pers_profession2', ''); ?>
 
-                        //*** Father ***
-                        if ($family_parentsDb->fam_man) $parent_text .= show_person($family_parentsDb->fam_man);
-                        //	else $parent_text=__('N.N.');
+                    <div class="row mb-2">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-7">
+                            <input type="submit" name="add_parents2" value="<?= __('Add parents'); ?>" class="btn btn-sm btn-success">
+                        </div>
+                    </div>
 
-                        $parent_text .= ' ' . __('and') . ' ';
-
-                        //*** Mother ***
-                        if ($family_parentsDb->fam_woman) $parent_text .= show_person($family_parentsDb->fam_woman);
-                        //	else $parent_text.=__('N.N.');
-                    } else {
-                        $hideshow = 701;
-                    ?>
-                        <!-- Add existing or new parents -->
-                        <b><?= __('There are no parents.'); ?></b><a href="index.php?page=<?= $page; ?>&amp;add_parents=1">
-                            <a href="#" onclick="hideShow('<?= $hideshow; ?>');"><?= __('Add parents'); ?></a>
-                            <span class="humo row701" style="margin-left:0px; display:none;">
-                                <table class="humo" style="margin-left:0px;">
-                                    <tr class="table_header">
-                                        <th></th>
-                                        <th><?= __('Father'); ?></th>
-                                        <th><?= __('Mother'); ?></th>
-                                    </tr>
-                                    <tr>
-                                        <td><b><?= __('firstname'); ?></b></td>
-                                        <td><input type="text" name="pers_firstname1" value="" size="35" placeholder="<?= ucfirst(__('firstname')); ?>"></td>
-                                        <td><input type="text" name="pers_firstname2" value="" size="35" placeholder="<?= ucfirst(__('firstname')); ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><?= __('prefix'); ?></td>
-                                        <!-- HELP POPUP for prefix -->
-                                        <td><input type="text" name="pers_prefix1" value="<?= $pers_prefix; ?>" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
-                                            <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_prefix',100,400)" onmouseout="mclosetime()">
-                                                    <img src="../images/help.png" height="16" width="16">
-                                                </a>
-                                                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                                    <b><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></b><br>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- HELP POPUP for prefix -->
-                                        <td><input type="text" name="pers_prefix2" value="" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
-                                            <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_prefix',100,400)" onmouseout="mclosetime()">
-                                                    <img src="../images/help.png" height="16" width="16">
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Lastname -->
-                                    <tr>
-                                        <td><b><?= __('lastname'); ?></b></td>
-                                        <td>
-                                            <input type="text" name="pers_lastname1" value="<?= $pers_lastname; ?>" size="35" placeholder="<?= ucfirst(__('lastname')); ?>">
-                                        </td>
-                                        <td><input type="text" name="pers_lastname2" value="" size="35" placeholder="<?= ucfirst(__('lastname')); ?>"></td>
-                                    </tr>
-
-                                    <!--  Patronym -->
-                                    <tr>
-                                        <td><?= __('patronymic'); ?></td>
-                                        <td>
-                                            <input type="text" name="pers_patronym1" value="<?= $pers_patronym; ?>" size="35" placeholder="<?= ucfirst(__('patronymic')); ?>">
-                                        </td>
-                                        <td><input type="text" name="pers_patronym2" value="" size="35" placeholder="<?= ucfirst(__('patronymic')); ?>"></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><br>
-                                        </td>
-                                        <td>
-                                            <select size="1" name="event_gedcom_add1" style="width: 150px">
-                                                <!-- Nickname, alias, adopted name, hebrew name, etc. -->
-                                                <?php event_selection($data_listDb->event_gedcom); ?>
-                                            </select><br>
-                                            <input type="text" name="event_event_name1" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
-                                        </td>
-                                        <td>
-                                            <select size="1" name="event_gedcom_add2" style="width: 150px">
-                                                <!-- Nickname, alias, adopted name, hebrew name, etc. -->
-                                                <?php event_selection($data_listDb->event_gedcom); ?>
-                                            </select><br>
-                                            <input type="text" name="event_event_name2" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
-                                        </td>
-                                    </tr>
-
-                                    <!-- Privacy filter -->
-                                    <tr>
-                                        <td><?= __('Privacy filter'); ?></td>
-                                        <td>
-                                            <input type="radio" name="pers_alive1" value="alive"><?= __('alive'); ?>
-                                            <input type="radio" name="pers_alive1" value="deceased"><?= __('deceased'); ?>
-                                        </td>
-                                        <td>
-                                            <input type="radio" name="pers_alive2" value="alive"><?= __('alive'); ?>
-                                            <input type="radio" name="pers_alive2" value="deceased"><?= __('deceased'); ?>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><?= __('Sex'); ?></td>
-                                        <td>
-                                            <input type="radio" name="pers_sexe1" value="M" checked><?= __('male'); ?>
-                                            <input type="radio" name="pers_sexe1" value="F"><?= __('female'); ?>
-                                            <input type="radio" name="pers_sexe1" value="">?
-                                        </td>
-                                        <td>
-                                            <input type="radio" name="pers_sexe2" value="M"><?= __('male'); ?>
-                                            <input type="radio" name="pers_sexe2" value="F" checked><?= __('female'); ?>
-                                            <input type="radio" name="pers_sexe2" value=""> ?
-                                        </td>
-                                    </tr>
-
-                                    <!-- Profession -->
-                                    <tr>
-                                        <td><?= __('Profession'); ?></td>
-                                        <td>
-                                            <input type="text" name="event_profession1" placeholder="<?= __('Profession'); ?>" value="" size="35">
-                                        </td>
-                                        <td>
-                                            <input type="text" name="event_profession2" placeholder="<?= __('Profession'); ?>" value="" size="35">
-                                        </td>
-                                    </tr>
-
-                                    <tr class="humo_color">
-                                        <td colspan="2"><input type="submit" name="add_parents2" value="<?= __('Add parents'); ?>" class="btn btn-sm btn-success"></td>
-                                    </tr>
-                                </table><br>
-
-                                <?= __('Or select an existing family as parents:'); ?>
-                                <input type="text" name="add_parents" placeholder="<?= __('GEDCOM number (ID)'); ?>" value="" size="20">
+                    <div class="row mb-2">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-7">
+                            <?= __('Or select an existing family as parents:'); ?>
+                            <div class="input-group">
+                                <input type="text" name="add_parents" placeholder="<?= __('GEDCOM number (ID)'); ?>" value="" size="20" class="form-control form-control-sm">
                                 <a href="#" onClick='window.open("index.php?page=editor_relation_select","","<?= $field_popup; ?>")'><img src="../images/search.png" alt=<?= __('Search'); ?>></a>
-                                <input type="submit" name="dummy2" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
-                            </span> <!-- End of hide item -->
-                        <?php
-                    }
-                        ?>
-                        <?= $parent_text; ?>
-                </td>
-            </tr>
+                                &nbsp;<input type="submit" name="dummy2" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
+                            </div>
+                        </div>
+                    </div>
 
+                </span> <!-- End of hide item -->
+            <?php } ?>
+
+        </div>
+    <?php } ?>
+
+
+
+    <table class="humo" id="table_editor" border="1" style="line-height: 150%;">
+        <?php if ($add_person == false) { ?>
             <?php
             // *** Show message if age < 0 or > 120 ***
             $error_color = '';
@@ -385,17 +329,17 @@
                     $show_message = '&nbsp;' . __('age') . ' ' . $age . ' ' . __('year');
                 }
             }
-
             ?>
-            <tr>
-                <!-- Show empty line or error message in table -->
-                <td colspan="3" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;<?= $error_color; ?>">
+
+            <!-- TODO improve layout of message, use bootstrap message? -->
+            <?php if ($show_message) { ?>
+                <div style="<?= $error_color; ?>">
                     <?= $show_message; ?>
-                </td>
-            </tr>
-        <?php
-        }
-        ?>
+                </div>
+            <?php } ?>
+
+        <?php } ?>
+
         <tr class="table_header_large">
             <td><a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">[+]</span> <?= __('All'); ?></a></td>
 
@@ -452,38 +396,10 @@
                 <?php } ?>
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
-                    <!-- Firstname -->
-                    <div class="row mb-2 mt-2">
-                        <label for "firstname" class="col-md-3 col-form-label"><b><?= ucfirst(__('firstname')); ?></b></label>
-                        <div class="col-md-7">
-                            <input type="text" name="pers_firstname" value="<?= $pers_firstname; ?>" size="35" class="form-control form-control-sm">
-                        </div>
-                    </div>
-
-                    <!-- Prefix -->
-                    <div class="row mb-2">
-                        <label for "prefix" class="col-md-3 col-form-label"><?= ucfirst(__('prefix')); ?></label>
-                        <div class="col-md-7">
-                            <input type="text" name="pers_prefix" value="<?= $pers_prefix; ?>" size="35" class="form-control form-control-sm">
-                            <span style="font-size: 13px;"><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></span>
-                        </div>
-                    </div>
-
-                    <!-- Lastname -->
-                    <div class="row mb-2">
-                        <label for "lastname" class="col-md-3 col-form-label"><b><?= ucfirst(__('lastname')); ?></b></label>
-                        <div class="col-md-7">
-                            <input type="text" name="pers_lastname" value="<?= $pers_lastname; ?>" size="35" class="form-control form-control-sm">
-                        </div>
-                    </div>
-
-                    <!-- Patronym -->
-                    <div class="row mb-2">
-                        <label for "patronym" class="col-md-3 col-form-label"><?= ucfirst(__('patronymic')); ?></label>
-                        <div class="col-md-7">
-                            <input type="text" name="pers_patronym" value="<?= $pers_patronym; ?>" size="35" class="form-control form-control-sm">
-                        </div>
-                    </div>
+                    <?= edit_firstname('pers_firstname', $pers_firstname); ?>
+                    <?= edit_prefix('pers_prefix', $pers_prefix); ?>
+                    <?= edit_lastname('pers_lastname', $pers_lastname); ?>
+                    <?= edit_patronymic('pers_patronym', $pers_patronym); ?>
 
                     <?php
                     if ($humo_option['admin_hebname'] == "y") {  // user requested hebrew name field to be displayed here, not under "events"
@@ -515,7 +431,7 @@
                     ?>
                     <!-- Text -->
                     <div class="row mb-2">
-                        <label for "text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <label for "text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
                             <textarea rows="1" name="pers_name_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                         </div>
@@ -579,7 +495,7 @@
                     ?>
                         <!-- Source -->
                         <div class="row mb-2">
-                            <label for "source" class="col-md-3 col-form-label"><?= ucfirst(__('source')); ?></label>
+                            <label for "source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'pers_name_source', $pers_gedcomnumber);
@@ -637,16 +553,22 @@
         <tr class="humo_color">
             <td><?= __('Privacy filter'); ?></td>
             <td colspan="2">
-                <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?>> <?= __('alive'); ?>
-                <?php
-                echo ' <input type="radio" name="pers_alive" value="deceased"' . $selected_deceased . $disabled . '> ' . __('deceased');
+                <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?> class="form-check-input"> <?= __('alive'); ?>
+                <input type="radio" name="pers_alive" value="deceased" <?= $selected_deceased . $disabled; ?> class="form-check-input"> <?= __('deceased'); ?>
 
-                // *** Estimated/ calculated (birth) date, can be used for privacy filter ***
-                if (!$pers_cal_date) $pers_cal_date = 'dd mmm yyyy';
-                ?>
+                <!-- Estimated/ calculated (birth) date, can be used for privacy filter -->
+                <?php if (!$pers_cal_date) $pers_cal_date = 'dd mmm yyyy'; ?>
                 <span style="color:#6D7B8D;">
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= language_date($pers_cal_date); ?>
                 </span>
+
+                <?php
+                /*
+                <?= edit_privacyfilter('pers_alive', ''); ?>
+*/
+                ?>
+
+
             </td>
         </tr>
 
@@ -666,15 +588,15 @@
 
         $check_sources_text = '';
         if ($pers_gedcomnumber) {
-            $check_sources_text = check_sources('person', 'pers_name_source', $pers_gedcomnumber);
+            $check_sources_text = check_sources('person', 'pers_sexe_source', $pers_gedcomnumber);
         }
         ?>
         <tr>
             <td><a name="sex"></a><?= __('Sex'); ?></td>
             <td <?= $colour; ?> colspan="2">
-                <input type="radio" name="pers_sexe" value="M" <?= $selected_m; ?>> <?= __('male'); ?>
-                <input type="radio" name="pers_sexe" value="F" <?= $selected_f; ?>> <?= __('female'); ?>
-                <input type="radio" name="pers_sexe" value="" <?= $selected_u; ?>> ?
+                <input type="radio" name="pers_sexe" value="M" <?= $selected_m; ?> class="form-check-input"> <?= __('male'); ?>
+                <input type="radio" name="pers_sexe" value="F" <?= $selected_f; ?> class="form-check-input"> <?= __('female'); ?>
+                <input type="radio" name="pers_sexe" value="" <?= $selected_u; ?> class="form-check-input"> ?
 
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?php
@@ -683,6 +605,13 @@
                     echo $check_sources_text;
                 }
                 ?>
+
+                <?php
+                /*
+                <?= edit_sexe('pers_sexe2', $pers_sexe); ?>
+                */
+                ?>
+
             </td>
         </tr>
 
@@ -722,10 +651,10 @@
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_birth_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <label for "pers_birth_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="pers_birth_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_birth_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <input type="text" name="pers_birth_place" value="<?= htmlspecialchars($pers_birth_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                                 <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
                             </div>
                         </div>
@@ -734,9 +663,9 @@
                     <div class="row mb-2">
                         <label for "pers_birth_time" class="col-md-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
                         <div class="col-md-2">
-                            <input type="text" placeholder="<?= __('birth time'); ?>" name="pers_birth_time" value="<?= $pers_birth_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            <input type="text" name="pers_birth_time" value="<?= $pers_birth_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-5">
                             <input type="checkbox" name="pers_stillborn" <?= (isset($pers_stillborn) and $pers_stillborn == 'y') ? 'checked' : ''; ?> class="form-check-input"> <?= __('stillborn child'); ?>
                         </div>
                     </div>
@@ -747,9 +676,9 @@
                     if ($pers_birth_text and preg_match('/\R/', $pers_birth_text)) $field_text_selected = $field_text_medium;
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_birth_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
-                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="pers_birth_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($pers_birth_text); ?></textarea>
+                            <textarea rows="1" name="pers_birth_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($pers_birth_text); ?></textarea>
                         </div>
                     </div>
 
@@ -817,9 +746,9 @@
                         </div>
 
                         <div class="row mb-2">
-                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="even_brit_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($britplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <input type="text" name="even_brit_place" value="<?= htmlspecialchars($britplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -830,9 +759,9 @@
                         if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
                         ?>
                         <div class="row mb-2">
-                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" placeholder="<?= __('text'); ?>" name="even_brit_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                                <textarea rows="1" name="even_brit_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                             </div>
                         </div>
 
@@ -910,9 +839,9 @@
                         </div>
 
                         <div class="row mb-2">
-                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="even_barm_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($barplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <input type="text" name="even_barm_place" value="<?= htmlspecialchars($barplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -923,9 +852,9 @@
                         if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
                         ?>
                         <div class="row mb-2">
-                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" placeholder="<?= __('text'); ?>" name="even_barm_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                                <textarea rows="1" name="even_barm_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                             </div>
                         </div>
 
@@ -979,10 +908,10 @@
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_bapt_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <label for "pers_bapt_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="pers_bapt_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_bapt_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <input type="text" name="pers_bapt_place" value="<?= htmlspecialchars($pers_bapt_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                                 <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
                             </div>
                         </div>
@@ -991,7 +920,7 @@
                     <div class="row mb-2">
                         <label for "pers_religion" class="col-md-3 col-form-label"><?= ucfirst(__('religion')); ?></label>
                         <div class="col-md-7">
-                            <input type="text" name="pers_religion" placeholder="<?= __('religion'); ?>" value="<?= htmlspecialchars($pers_religion); ?>" size="20" class="form-control form-control-sm">
+                            <input type="text" name="pers_religion" value="<?= htmlspecialchars($pers_religion); ?>" size="20" class="form-control form-control-sm">
                         </div>
                     </div>
 
@@ -1002,9 +931,9 @@
                     if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_bapt_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <label for "pers_bapt_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
-                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="pers_bapt_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                            <textarea rows="1" name="pers_bapt_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                         </div>
                     </div>
 
@@ -1107,10 +1036,10 @@
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_death_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <label for "pers_death_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="pers_death_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_death_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <input type="text" name="pers_death_place" value="<?= htmlspecialchars($pers_death_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                                 <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
                             </div>
                         </div>
@@ -1121,7 +1050,7 @@
                         <label for "pers_death_age" class="col-md-3 col-form-label"><?= __('Age'); ?></label>
                         <div class="col-md-2">
                             <div class="input-group">
-                                <input type="text" name="pers_death_age" placeholder="<?= __('Age'); ?>" value="<?= $pers_death_age; ?>" size="3" class="form-control form-control-sm">
+                                <input type="text" name="pers_death_age" value="<?= $pers_death_age; ?>" size="3" class="form-control form-control-sm">
                                 &nbsp;&nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                                     <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu2',100,400)" onmouseout="mclosetime()">
                                         <img src="../images/help.png" height="16" width="16">
@@ -1137,7 +1066,7 @@
                     <div class="row mb-2">
                         <label for "pers_death_place" class="col-md-3 col-form-label"><?= ucfirst(__('death time')); ?></label>
                         <div class="col-md-2">
-                            <input type="text" name="pers_death_time" placeholder="<?= __('death time'); ?>" value="<?= $pers_death_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            <input type="text" name="pers_death_time" value="<?= $pers_death_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
                         </div>
                     </div>
 
@@ -1170,7 +1099,7 @@
                                     <option value="declared death" <?= $pers_death_cause == 'declared death' ? 'selected' : ''; ?>><?= __('declared death'); ?></option>
                                 </select>
                                 &nbsp;<b><?= __('or'); ?>:</b>&nbsp;
-                                <input type="text" name="pers_death_cause2" placeholder="<?php if ($pers_death_cause and $check_cause == false) __('cause'); ?>" value="<?= $pers_death_cause2; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                                <input type="text" name="pers_death_cause2" value="<?= $pers_death_cause2; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
                             </div>
                         </div>
                     </div>
@@ -1182,9 +1111,9 @@
                     if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_death_text" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <label for "pers_death_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
-                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="pers_death_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                            <textarea rows="1" name="pers_death_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                         </div>
                     </div>
 
@@ -1237,10 +1166,10 @@
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_buried_place" class="col-md-3 col-form-label"><?= ucfirst(__('place')); ?></label>
+                        <label for "pers_buried_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="pers_buried_place" placeholder="<?= ucfirst(__('place')); ?>" value="<?= htmlspecialchars($pers_buried_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <input type="text" name="pers_buried_place" value="<?= htmlspecialchars($pers_buried_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                                 <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
                             </div>
                         </div>
@@ -1266,9 +1195,9 @@
                     if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_buried_date" class="col-md-3 col-form-label"><?= ucfirst(__('text')); ?></label>
+                        <label for "pers_buried_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
-                            <textarea rows="1" placeholder="<?= __('text'); ?>" name="pers_buried_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
+                            <textarea rows="1" name="pers_buried_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                         </div>
                     </div>
 
@@ -1298,7 +1227,7 @@
         <tr class="humo_color">
             <td><a name="text_person"></a><?= __('Text for person'); ?></td>
             <td colspan="2">
-                <textarea rows="1" placeholder="<?= __('Text for person'); ?>" name="person_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($person_text); ?></textarea>
+                <textarea rows="1" name="person_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($person_text); ?></textarea>
 
                 <?php if (!isset($_GET['add_person'])) { ?>
                     <div class="row mb-2">
@@ -1353,7 +1282,7 @@
                     <!-- <label for "pers_buried_place" class="col-md-3 col-form-label"><?= ucfirst(__('own code')); ?></label> -->
                     <div class="col-md-7">
                         <div class="input-group">
-                            <input type="text" name="pers_own_code" placeholder="<?= __('own code'); ?>" value="<?= htmlspecialchars($pers_own_code); ?>" class="form-control form-control-sm">
+                            <input type="text" name="pers_own_code" value="<?= htmlspecialchars($pers_own_code); ?>" class="form-control form-control-sm">
                             <!-- HELP POPUP for own code -->
                             &nbsp;&nbsp;
                             <div class=" <?= $rtlmarker; ?>sddm" style="display:inline;">
@@ -1478,7 +1407,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                     <td colspan="2">
                         <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_new_datetime); ?>)<br>
                         <b><?= $noteDb->note_names; ?></b><br>
-                        <textarea readonly rows="1" placeholder="<?= __('Text'); ?>" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea>
+                        <textarea readonly rows="1" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea>
                     </td>
                 </tr>
             <?php

@@ -20,7 +20,7 @@ require_once  __DIR__ . "/../app/model/family.php";
 $get_family = new FamilyModel($dbh);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
-$data["family_expanded"]=false;
+$data["family_expanded"] = false;
 $data["source_presentation"] =  $get_family->getSourcePresentation();
 $data["picture_presentation"] =  $get_family->getPicturePresentation();
 $data["text_presentation"] =  $get_family->getTextPresentation();
@@ -51,7 +51,7 @@ if (isset($_POST['descendant_report'])) {
 }
 
 require_once __DIR__ . '/../include/phprtflite/lib/PHPRtfLite.php';
-$data["family_expanded"]=false;
+$data["family_expanded"] = false;
 
 // *** registers PHPRtfLite autoloader (spl) ***
 PHPRtfLite::registerAutoloader();
@@ -287,8 +287,15 @@ else {
                         $rtf_text = strip_tags($marriage_cls->marriage_data($familyDb, $family_nr, 'shorter'), "<b><i>");
                         $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 
+                        // *** Start new line ***
+                        $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+
+                        // *** Start new line ***
+                        $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+
                         $rtf_text = strip_tags($parent1_cls->name_extended("parent1"), "<b><i>");
-                        $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+                        //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+                        $sect->writeText($rtf_text, $arial12);
                     }
                     $family_nr++;
                 } // *** End check of PRO-GEN ***

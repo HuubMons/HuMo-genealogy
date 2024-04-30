@@ -435,12 +435,6 @@ class PDF extends tFPDF
                 $pdf->SetLeftMargin(38);
             }
 
-            //if (!$samw and strpos($key, "marriage") !== false) {            // Living together
-            //    // Example: $pdf->show_text($text,'B',$font_size);
-            //    if (isset($templ_relation["marriage_exist"]))
-            //        $this->show_text($templ_relation["marriage_exist"], 'B', '');
-            //    $samw = 1;
-            //}
             if (!$samw and strpos($key, "cohabit") !== false) {            // Living together
                 // Example: $pdf->show_text($text,'B',$font_size);
                 if (isset($templ_relation["cohabit_exist"])) {

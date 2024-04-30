@@ -8,7 +8,6 @@
 
 class person_cls
 {
-    //public $personDb = '';  // Database record
     public $personDb = null;  // Database record
     public $privacy = false;  // Person privacy
 
@@ -202,6 +201,237 @@ class person_cls
         return $url;
     }
 
+    // *** Show nicknames (shown as "Nickname") ***
+    function get_nickname($db_functions, $pers_gedcomnumber)
+    {
+        $nickname = '';
+        $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'name');
+        foreach ($name_qry as $nameDb) {
+            if ($nameDb->event_gedcom == 'NICK') {
+                if ($nickname) $nickname .= ', ';
+                $nickname .= $nameDb->event_event;
+                // *** Remark: date, place and source are shown in function: person_data ***
+            }
+        }
+        unset($name_qry);
+        return $nickname;
+    }
+
+    // *** Aldfaer: nobility (predikaat) by name ***
+    function get_nobility($db_functions, $pers_gedcomnumber, $show_name_texts)
+    {
+        $nobility = '';
+        $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'nobility');
+        foreach ($name_qry as $nameDb) {
+            if ($nobility) $nobility .= ' ';
+            $nobility .= $nameDb->event_event;
+
+            if ($show_name_texts == true and $nameDb->event_text) {
+                if ($nobility) $nobility .= ' ';
+                $nobility .= process_text($nameDb->event_text);
+            }
+        }
+        unset($name_qry);
+        return $nobility;
+    }
+
+    // *** Aldfaer: lordship (heerlijkheid) after name ***
+    function get_lordship($db_functions, $pers_gedcomnumber, $show_name_texts)
+    {
+        $lordship = '';
+        $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'lordship');
+        foreach ($name_qry as $nameDb) {
+            if ($lordship) $lordship .= ', ';
+            $lordship .= $nameDb->event_event;
+
+            if ($show_name_texts == true and $nameDb->event_text) {
+                if ($lordship) $lordship .= ' ';
+                $lordship .= process_text($nameDb->event_text);
+            }
+        }
+        unset($name_qry);
+        return $lordship;
+    }
+
+    // *** Gedcom 5.5 title: NPFX ***
+    function get_title_before($db_functions, $pers_gedcomnumber, $show_name_texts)
+    {
+        $title_before = '';
+        $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'NPFX');
+        foreach ($name_qry as $nameDb) {
+            if ($title_before) $title_before .= ' ';
+            $title_before .= $nameDb->event_event;
+
+            if ($show_name_texts == true and $nameDb->event_text) {
+                if ($title_before) $title_before .= ' ';
+                $title_before .= process_text($nameDb->event_text);
+            }
+        }
+        unset($name_qry);
+        return $title_before;
+    }
+
+    // *** Gedcom 5.5 title: NSFX ***
+    function get_title_after($db_functions, $pers_gedcomnumber, $show_name_texts)
+    {
+        $title_after = '';
+        $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'NSFX');
+        foreach ($name_qry as $nameDb) {
+            if ($title_after) $title_after .= ' ';
+            $title_after .= $nameDb->event_event;
+
+            if ($show_name_texts == true and $nameDb->event_text) {
+                if ($title_after) $title_after .= ' ';
+                $title_after .= process_text($nameDb->event_text);
+            }
+        }
+        unset($name_qry);
+        return $title_after;
+    }
+
+    // *** Aldfaer: title by name ***
+    /*
+    DUTCH Titles FOR DUTCH Genealogical program ALDFAER!
+    Title BEFORE name:
+        Prof., Dr., Dr.h.c., Dr.h.c.mult., Ir., Mr., Drs., Lic., Kand., Bacc., Ing., Bc., em., Ds.
+    Title BETWEEN pers_firstname and pers_lastname:
+        prins, prinses, hertog, hertogin, markies, markiezin, markgraaf, markgravin, graaf,
+        gravin, burggraaf, burggravin, baron, barones, ridder
+    Title AFTER name:
+        All other titles.
+    */
+    function get_title_aldfaer($db_functions, $pers_gedcomnumber, $show_name_texts)
+    {
+        $title['before'] = '';
+        $title['between'] = '';
+        $title['after'] = '';
+
+        $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'title');
+        foreach ($name_qry as $nameDb) {
+            $title_position = 'after';
+            if ($nameDb->event_event == 'Prof.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Dr.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Dr.h.c.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Dr.h.c.mult.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Ir.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Mr.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Drs.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Lic.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Kand.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Bacc.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Ing.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Bc.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'em.') {
+                $title_position = 'before';
+            }
+            if ($nameDb->event_event == 'Ds.') {
+                $title_position = 'before';
+            }
+
+            if ($nameDb->event_event == 'prins') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'prinses') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'hertog') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'hertogin') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'markies') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'markiezin') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'markgraaf') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'markgravin') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'graaf') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'gravin') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'burggraaf') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'burggravin') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'baron') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'barones') {
+                $title_position = 'between';
+            }
+            if ($nameDb->event_event == 'ridder') {
+                $title_position = 'between';
+            }
+
+            if ($title_position == 'before') {
+                if ($title['before']) $title['before'] .= ' ';
+                $title['before'] .= $nameDb->event_event;
+
+                if ($show_name_texts == true and $nameDb->event_text) {
+                    if ($title['before']) $title['before'] .= ' ';
+                    $title['before'] .= process_text($nameDb->event_text);
+                }
+            }
+            if ($title_position == 'between') {
+                if ($title['between']) $title['between'] .= ' ';
+                $title['between'] .= $nameDb->event_event;
+
+                if ($show_name_texts == true and $nameDb->event_text) {
+                    if ($title['between']) $title['between'] .= ' ';
+                    $title['between'] .= process_text($nameDb->event_text);
+                }
+            }
+            if ($title_position == 'after') {
+                if ($title['after']) $title['after'] .= ' ';
+                $title['after'] .= $nameDb->event_event;
+
+                if ($show_name_texts == true and $nameDb->event_text) {
+                    if ($title['after']) $title['after'] .= ' ';
+                    $title['after'] .= process_text($nameDb->event_text);
+                }
+            }
+        }
+        unset($name_qry);
+        return $title;
+    }
+
+
+
     // *************************************************************
     // *** Show person name standard                             ***
     // *************************************************************
@@ -212,223 +442,47 @@ class person_cls
         global $dbh, $db_functions, $user, $language, $screen_mode, $selection;
         global $humo_option;
 
-        $pers_tree_id = 0;
-        if ($personDb) $pers_tree_id = $personDb->pers_tree_id;
-        $db_functions->set_tree_id($pers_tree_id);
-
-        $stillborn = '';
-        $nobility = '';
-        $lordship = '';
-        $nickname = '';
-        $title_before = '';
-        $title_between = '';
-        $title_after = '';
-
         if (isset($personDb->pers_gedcomnumber) and $personDb->pers_gedcomnumber) {
-            // *** Show nicknames (shown as "Nickname") ***
-            $name_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'name');
-            foreach ($name_qry as $nameDb) {
-                if ($nameDb->event_gedcom == 'NICK') {
-                    if ($nickname) $nickname .= ', ';
-                    $nickname .= $nameDb->event_event;
+            $db_functions->set_tree_id($personDb->pers_tree_id);
 
-                    // *** Remark: date, place and source are shown in function: person_data ***
-                }
-            }
-            unset($name_qry);
+            // *** Show nicknames (shown as "Nickname") ***
+            $nickname = $this->get_nickname($db_functions, $personDb->pers_gedcomnumber);
 
             // *** Aldfaer: nobility (predikaat) by name ***
-            $name_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'nobility');
-            foreach ($name_qry as $nameDb) {
-                if ($nobility) $nobility .= ' ';
-                $nobility .= $nameDb->event_event;
-
-                if ($show_name_texts == true and $nameDb->event_text) {
-                    if ($nobility) $nobility .= ' ';
-                    $nobility .= process_text($nameDb->event_text);
-                }
-            }
-            unset($name_qry);
+            $nobility = $this->get_nobility($db_functions, $personDb->pers_gedcomnumber, $show_name_texts);
 
             // *** Aldfaer: lordship (heerlijkheid) after name ***
-            $name_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'lordship');
-            foreach ($name_qry as $nameDb) {
-                if ($lordship) $lordship .= ', ';
-                $lordship .= $nameDb->event_event;
-
-                if ($show_name_texts == true and $nameDb->event_text) {
-                    if ($lordship) $lordship .= ' ';
-                    $lordship .= process_text($nameDb->event_text);
-                }
-            }
-            unset($name_qry);
+            $lordship = $this->get_lordship($db_functions, $personDb->pers_gedcomnumber, $show_name_texts);
 
             // *** Gedcom 5.5 title: NPFX ***
-            $name_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'NPFX');
-            foreach ($name_qry as $nameDb) {
-                if ($title_before) $title_before .= ' ';
-                $title_before .= $nameDb->event_event;
-
-                if ($show_name_texts == true and $nameDb->event_text) {
-                    if ($title_before) $title_before .= ' ';
-                    $title_before .= process_text($nameDb->event_text);
-                }
-            }
-            unset($name_qry);
+            $title_before = $this->get_title_before($db_functions, $personDb->pers_gedcomnumber, $show_name_texts);
 
             // *** Gedcom 5.5 title: NSFX ***
-            $name_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'NSFX');
-            foreach ($name_qry as $nameDb) {
-                if ($title_after) $title_after .= ' ';
-                $title_after .= $nameDb->event_event;
-
-                if ($show_name_texts == true and $nameDb->event_text) {
-                    if ($title_after) $title_after .= ' ';
-                    $title_after .= process_text($nameDb->event_text);
-                }
-            }
-            unset($name_qry);
+            $title_after = $this->get_title_after($db_functions, $personDb->pers_gedcomnumber, $show_name_texts);
 
             // *** Aldfaer: title by name ***
-            /*
-            DUTCH Titles FOR DUTCH Genealogical program ALDFAER!
-            Title BEFORE name:
-                Prof., Dr., Dr.h.c., Dr.h.c.mult., Ir., Mr., Drs., Lic., Kand., Bacc., Ing., Bc., em., Ds.
-            Title BETWEEN pers_firstname and pers_lastname:
-                prins, prinses, hertog, hertogin, markies, markiezin, markgraaf, markgravin, graaf,
-                gravin, burggraaf, burggravin, baron, barones, ridder
-            Title AFTER name:
-                All other titles.
-            */
-            $name_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'title');
-            foreach ($name_qry as $nameDb) {
-                $title_position = 'after';
-                if ($nameDb->event_event == 'Prof.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Dr.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Dr.h.c.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Dr.h.c.mult.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Ir.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Mr.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Drs.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Lic.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Kand.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Bacc.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Ing.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Bc.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'em.') {
-                    $title_position = 'before';
-                }
-                if ($nameDb->event_event == 'Ds.') {
-                    $title_position = 'before';
-                }
-
-                if ($nameDb->event_event == 'prins') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'prinses') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'hertog') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'hertogin') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'markies') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'markiezin') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'markgraaf') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'markgravin') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'graaf') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'gravin') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'burggraaf') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'burggravin') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'baron') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'barones') {
-                    $title_position = 'between';
-                }
-                if ($nameDb->event_event == 'ridder') {
-                    $title_position = 'between';
-                }
-
-                if ($title_position == 'before') {
-                    if ($title_before) $title_before .= ' ';
-                    $title_before .= $nameDb->event_event;
-
-                    if ($show_name_texts == true and $nameDb->event_text) {
-                        if ($title_before) $title_before .= ' ';
-                        $title_before .= process_text($nameDb->event_text);
-                    }
-                }
-                if ($title_position == 'between') {
-                    if ($title_between) $title_between .= ' ';
-                    $title_between .= $nameDb->event_event;
-
-                    if ($show_name_texts == true and $nameDb->event_text) {
-                        if ($title_between) $title_between .= ' ';
-                        $title_between .= process_text($nameDb->event_text);
-                    }
-                }
-                if ($title_position == 'after') {
-                    if ($title_after) $title_after .= ' ';
-                    $title_after .= $nameDb->event_event;
-
-                    if ($show_name_texts == true and $nameDb->event_text) {
-                        if ($title_after) $title_after .= ' ';
-                        $title_after .= process_text($nameDb->event_text);
-                    }
-                }
+            $title_between = '';
+            $title_array = $this->get_title_aldfaer($db_functions, $personDb->pers_gedcomnumber, $show_name_texts);
+            if ($title_array['before']) {
+                if ($title_before) $title_before .= ' ';
+                $title_before .= $title_array['before'];
             }
-            unset($name_qry);
+            if ($title_between) $title_between .= $title_array['between'];
+            if ($title_array['after']) {
+                if ($title_after) $title_after .= ' ';
+                $title_after .= $title_array['after'];
+            }
 
             // ***Still born child ***
+            $stillborn = '';
             if (isset($personDb->pers_stillborn) and $personDb->pers_stillborn == "y") {
                 if ($personDb->pers_sexe == 'M') {
-                    $stillborn .= __('stillborn boy');
+                    $stillborn = __('stillborn boy');
                 } elseif ($personDb->pers_sexe == 'F') {
-                    $stillborn .= __('stillborn girl');
-                } else $stillborn .= __('stillborn child');
+                    $stillborn = __('stillborn girl');
+                } else {
+                    $stillborn = __('stillborn child');
+                }
             }
 
             // *** Re-calculate privacy filter for witness names and parents ***
@@ -565,10 +619,8 @@ class person_cls
                     }
 
                     // *** Callname shown as "Huub" ***
-                    //if ($personDb->pers_callname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
                     if ($nickname and (!$privacy or ($privacy and $user['group_filter_name'] == 'j'))) {
                         if ($name_array["standard_name"]) $name_array["standard_name"] .= ' ';
-                        //$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
                         $name_array["standard_name"] .= '&quot;' . $nickname . '&quot;';
                     }
 
@@ -607,10 +659,8 @@ class person_cls
                     $name_array["standard_name"] .= $title_between;
 
                     // *** Callname shown as "Huub" ***
-                    //if ($personDb->pers_callname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
                     if ($nickname and (!$privacy or ($privacy and $user['group_filter_name'] == 'j'))) {
                         if ($name_array["standard_name"]) $name_array["standard_name"] .= ' ';
-                        //$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
                         $name_array["standard_name"] .= '&quot;' . $nickname . '&quot;';
                     }
                 }
@@ -1067,6 +1117,102 @@ class person_cls
     }
 
 
+
+    //*** Show spouse/ partner by child ***
+    function get_child_partner($db_functions, $personDb, $person_kind)
+    {
+        global $bot_visit, $dirmark1;
+        $child_marriage = '';
+        if (!$bot_visit and $person_kind == 'child' and $personDb->pers_fams) {
+            $marriage_array = explode(";", $personDb->pers_fams);
+            $nr_marriages = count($marriage_array);
+            for ($x = 0; $x <= $nr_marriages - 1; $x++) {
+                $fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
+
+                // *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
+                if ($personDb->pers_gedcomnumber == $fam_partnerDb->fam_man)
+                    $partner_id = $fam_partnerDb->fam_woman;
+                else
+                    $partner_id = $fam_partnerDb->fam_man;
+
+                //$relation_short=__('&');
+                $relation_short = __('relationship with');
+                if ($fam_partnerDb->fam_marr_date or $fam_partnerDb->fam_marr_place or $fam_partnerDb->fam_marr_church_date or $fam_partnerDb->fam_marr_church_place or $fam_partnerDb->fam_kind == 'civil') {
+                    //$relation_short=__('X');
+                    $relation_short = __('married to');
+                    if ($nr_marriages > 1) $relation_short = __('marriage with');
+                }
+
+                // *** Added in jan. 2021 (also see: marriage_cls.php) ***
+                if ($fam_partnerDb->fam_kind == 'living together') {
+                    $relation_short = __('Living together');
+                }
+                if ($fam_partnerDb->fam_kind == 'living apart together') {
+                    $relation_short = __('Living apart together');
+                }
+                if ($fam_partnerDb->fam_kind == 'intentionally unmarried mother') {
+                    $relation_short = __('Intentionally unmarried mother');
+                }
+                if ($fam_partnerDb->fam_kind == 'homosexual') {
+                    $relation_short = __('Homosexual');
+                }
+                if ($fam_partnerDb->fam_kind == 'non-marital') {
+                    $relation_short = __('Non marital');
+                }
+                if ($fam_partnerDb->fam_kind == 'extramarital') {
+                    $relation_short = __('Extramarital');
+                }
+                if ($fam_partnerDb->fam_kind == "PRO-GEN") {
+                    $relation_short = __('Extramarital');
+                }
+                if ($fam_partnerDb->fam_kind == 'partners') {
+                    $relation_short = __('Partner');
+                }
+                if ($fam_partnerDb->fam_kind == 'registered') {
+                    $relation_short = __('Registered');
+                }
+                if ($fam_partnerDb->fam_kind == 'unknown') {
+                    $relation_short = __('Unknown relation');
+                }
+
+                if ($fam_partnerDb->fam_div_date or $fam_partnerDb->fam_div_place) {
+                    //$relation_short=__(') (');
+                    $relation_short = __('divorced from');
+                    if ($nr_marriages > 1) $relation_short = __('marriage (divorced) with');
+                }
+
+                if ($partner_id != '0' and $partner_id != '') {
+                    $partnerDb = $db_functions->get_person($partner_id);
+                    $partner_cls = new person_cls;
+                    $name = $partner_cls->person_name($partnerDb);
+
+                    // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                    $url = $this->person_url2($partnerDb->pers_tree_id, $partnerDb->pers_famc, $partnerDb->pers_fams, $partnerDb->pers_gedcomnumber);
+                } else {
+                    $name["standard_name"] = __('N.N.');
+
+                    // *** Link for N.N. partner, not in database ***
+                    // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                    $url = $this->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                }
+                $name["standard_name"] = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+
+                $child_marriage.='<b>';
+                if ($nr_marriages > 1) {
+                    if ($x == 0) $child_marriage .= ' ' . __('1st');
+                    elseif ($x == 1) $child_marriage .= ', ' . __('2nd');
+                    elseif ($x == 2) $child_marriage .= ', ' . __('3rd');
+                    elseif ($x > 2) $child_marriage .= ', ' . ($x + 1) . __('th');
+                } else
+                    $child_marriage .= ' ';
+
+                $child_marriage .= ' ' . ucfirst($relation_short) . '</b> ' . $dirmark1 . $name["standard_name"] . $dirmark1;
+            }
+        }
+        return $child_marriage;
+    }
+
+
     // ************************************************************************
     // *** Show person name and name of parents                             ***
     // *** $person_kind = 'child' generates a link by a child to his family ***
@@ -1475,98 +1621,11 @@ class person_cls
                 }
             }
 
-
             //*** Show spouse/ partner by child ***
-            if (!$bot_visit and $person_kind == 'child' and $personDb->pers_fams) {
-                $marriage_array = explode(";", $personDb->pers_fams);
-                $nr_marriages = count($marriage_array);
-                for ($x = 0; $x <= $nr_marriages - 1; $x++) {
-                    $fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
-
-                    // *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
-                    if ($personDb->pers_gedcomnumber == $fam_partnerDb->fam_man)
-                        $partner_id = $fam_partnerDb->fam_woman;
-                    else
-                        $partner_id = $fam_partnerDb->fam_man;
-
-                    //$relation_short=__('&');
-                    $relation_short = __('relationship with');
-                    if ($fam_partnerDb->fam_marr_date or $fam_partnerDb->fam_marr_place or $fam_partnerDb->fam_marr_church_date or $fam_partnerDb->fam_marr_church_place or $fam_partnerDb->fam_kind == 'civil') {
-                        //$relation_short=__('X');
-                        $relation_short = __('married to');
-                        if ($nr_marriages > 1) $relation_short = __('marriage with');
-                    }
-
-                    // *** Added in jan. 2021 (also see: marriage_cls.php) ***
-                    if ($fam_partnerDb->fam_kind == 'living together') {
-                        $relation_short = __('Living together');
-                    }
-                    if ($fam_partnerDb->fam_kind == 'living apart together') {
-                        $relation_short = __('Living apart together');
-                    }
-                    if ($fam_partnerDb->fam_kind == 'intentionally unmarried mother') {
-                        $relation_short = __('Intentionally unmarried mother');
-                    }
-                    if ($fam_partnerDb->fam_kind == 'homosexual') {
-                        $relation_short = __('Homosexual');
-                    }
-                    if ($fam_partnerDb->fam_kind == 'non-marital') {
-                        $relation_short = __('Non marital');
-                    }
-                    if ($fam_partnerDb->fam_kind == 'extramarital') {
-                        $relation_short = __('Extramarital');
-                    }
-                    if ($fam_partnerDb->fam_kind == "PRO-GEN") {
-                        $relation_short = __('Extramarital');
-                    }
-                    if ($fam_partnerDb->fam_kind == 'partners') {
-                        $relation_short = __('Partner');
-                    }
-                    if ($fam_partnerDb->fam_kind == 'registered') {
-                        $relation_short = __('Registered');
-                    }
-                    if ($fam_partnerDb->fam_kind == 'unknown') {
-                        $relation_short = __('Unknown relation');
-                    }
-
-                    if ($fam_partnerDb->fam_div_date or $fam_partnerDb->fam_div_place) {
-                        //$relation_short=__(') (');
-                        $relation_short = __('divorced from');
-                        if ($nr_marriages > 1) $relation_short = __('marriage (divorced) with');
-                    }
-
-                    if ($partner_id != '0' and $partner_id != '') {
-                        $partnerDb = $db_functions->get_person($partner_id);
-                        $partner_cls = new person_cls;
-                        $name = $partner_cls->person_name($partnerDb);
-
-                        // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $this->person_url2($partnerDb->pers_tree_id, $partnerDb->pers_famc, $partnerDb->pers_fams, $partnerDb->pers_gedcomnumber);
-                    } else {
-                        $name["standard_name"] = __('N.N.');
-
-                        // *** Link for N.N. partner, not in database ***
-                        // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $this->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
-                    }
-                    $name["standard_name"] = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
-
-                    //$child_marriage.=' <span class="index_partner" style="font-size:10px;">';
-                    if ($nr_marriages > 1) {
-                        if ($x == 0) $child_marriage .= ' ' . __('1st');
-                        elseif ($x == 1) $child_marriage .= ', ' . __('2nd');
-                        elseif ($x == 2) $child_marriage .= ', ' . __('3rd');
-                        elseif ($x > 2) $child_marriage .= ', ' . ($x + 1) . __('th');
-                    } else
-                        $child_marriage .= ' ';
-
-                    $child_marriage .= ' ' . $relation_short . ' ' . $dirmark1 . $name["standard_name"] . $dirmark1;
-                    //$child_marriage.='</span>';
-
-                    $templ_name["name_partner"] = $child_marriage;
-                }
-            }
-            // *** End spouse/ partner ***
+            // Apr. 2024 moved to person_data function.
+            // TODO remove $child_marriage variable from this function.
+            //$child_marriage = $this->get_child_partner($db_functions, $personDb, $person_kind);
+            //if ($child_marriage) $templ_name["name_partner"] = $child_marriage;
 
         }
 
@@ -1620,9 +1679,9 @@ $own_code=0;
 
             // for now, only process own_code
             if(strpos($key,"own_code")!==false) {
-                        if(strpos($key,"text")!==false) {  $text.='<b>'; }
-                        $text.=$key;
-                        if(strpos($key,"text")!==false) {  $text.='</b>'; }
+                if(strpos($key,"text")!==false) {  $text.='<b>'; }
+                $text.=$key;
+                if(strpos($key,"text")!==false) {  $text.='</b>'; }
             }
 
         }
@@ -2054,15 +2113,6 @@ $own_code=0;
                 }
                 // *** Death time ***
                 if (isset($personDb->pers_death_time) and $personDb->pers_death_time) {
-                    //$templ_person["dead_dateplacetime"]=' '.$personDb->pers_death_time;
-                    //			if ($templ_person["dead_dateplacetime"])
-                    //				$templ_person["dead_dateplacetime"].=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
-                    //			else
-                    //				$templ_person["dead_dateplacetime"]=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
-                    //			$temp="dead_dateplacetime";
-                    //			$text.=$templ_person["dead_dateplacetime"];
-
-
                     $templ_person["dead_time"] = ' ' . __('at') . ' ' . $personDb->pers_death_time . ' ' . __('hour');
                     $temp = "dead_time";
                     $text .= $templ_person["dead_time"];
@@ -2071,9 +2121,6 @@ $own_code=0;
                 if ($user["group_texts_pers"] == 'j') {
                     $work_text = process_text($personDb->pers_death_text);
                     if ($work_text) {
-                        //$text.=", ".$work_text;
-                        //if($temp) { $templ_person[$temp].=", "; }
-                        //$templ_person["dead_text"]=' '.strip_tags($work_text);
                         $templ_person["dead_text"] = ' ' . $work_text;
                         $temp = "dead_text";
                         $text .= $templ_person["dead_text"];
@@ -2549,6 +2596,7 @@ $own_code=0;
             } //*** END PRIVACY PART ***
 
             // *** Use a link for multiple marriages by parent2 ***
+            // TODO improve extended view.
             if ($person_kind == 'parent2') {
                 $marriage_array = explode(";", $personDb->pers_fams);
                 if (isset($marriage_array[1])) {
@@ -2631,11 +2679,10 @@ $own_code=0;
                 // *** Show media/ pictures ***
                 $result = show_media('person', $personDb->pers_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
                 $process_text .= $result[0];
-                if (isset($templ_person)){
+                if (isset($templ_person)) {
                     $templ_person = array_merge((array)$templ_person, (array)$result[1]);
                     //$templ_person = array_merge($templ_person, $result[1]);
-                }
-                else{
+                } else {
                     $templ_person = $result[1];
                 }
 
@@ -2750,6 +2797,14 @@ $own_code=0;
                     }
                 }
             } // End of privacy
+
+            // *** April 2024: added child marriage below child items ***
+            //*** Show spouse/ partner by child ***
+            $child_marriage = $this->get_child_partner($db_functions, $personDb, $person_kind);
+            if ($child_marriage) {
+                $templ_person["pers_child_spouse"] = "\n" . $child_marriage;
+                $process_text .= "<br>\n" . $child_marriage;
+            }
 
             // *** Return person data ***
             if ($screen_mode == "mobile") {

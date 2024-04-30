@@ -123,8 +123,8 @@ $person_found = true;
                 <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                    <div class="input-group">
-                        <label for="favourites" class="col-auto col-form-label"><img src="../images/favorite_blue.png">&nbsp;</label>
+                    <div class="input-group input-group-sm">
+                        <label for="favourites" class="input-group-text"><img src="../images/favorite_blue.png">&nbsp;</label>
 
                         <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
                             <option value=""><?= __('Favourites list'); ?></option>
@@ -238,14 +238,14 @@ $person_found = true;
                         ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
                     ";
 
-                    // Next line was before ORDER BY line. Doesn't work if only_full_group is disabled
-                    //		GROUP BY pers_id, event_event, event_kind, event_id
+                // Next line was before ORDER BY line. Doesn't work if only_full_group is disabled
+                //		GROUP BY pers_id, event_event, event_kind, event_id
 
-                    // *** 27-03-2023: Improved for GROUP BY, there were double results ***
-                    // *** Only get pers_id, otherwise GROUP BY doesn't work properly (double results) ***
-                    //SELECT pers_gedcomnumber FROM humo_persons
-                    //	GROUP BY pers_gedcomnumber
-                    /*
+                // *** 27-03-2023: Improved for GROUP BY, there were double results ***
+                // *** Only get pers_id, otherwise GROUP BY doesn't work properly (double results) ***
+                //SELECT pers_gedcomnumber FROM humo_persons
+                //	GROUP BY pers_gedcomnumber
+                /*
                     $person_qry="
                         SELECT pers_id FROM humo_persons
                         LEFT JOIN humo_events
@@ -1071,14 +1071,14 @@ if ($check_person) {
         ?>
         <!-- Button trigger modal for sources -->
         <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal<?= $unique_id; ?>">
-            <?= ucfirst(__('source')); ?>
+            <?= __('Source'); ?>
         </button>
 
         <div class="modal fade" id="sourceModal<?= $unique_id; ?>" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="sourceModalLabel"><?= ucfirst(__('source')); ?></h1>
+                        <h1 class="modal-title fs-5" id="sourceModalLabel"><?= __('Source'); ?></h1>
                         <button type="button" class="btn-close" id="source<?= $unique_id; ?>" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -1102,6 +1102,122 @@ if ($check_person) {
     <?php
     }
 
+
+
+
+
+    // *** Person edit lines (in use for adding person/ parents/ children) ***
+    function edit_firstname($name, $value)
+    {
+    ?>
+        <div class="row mb-2">
+            <div class="col-md-3"><b><?= ucfirst(__('firstname')); ?></b></div>
+            <div class="col-md-7"><input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm"></div>
+        </div>
+    <?php
+    }
+
+    function edit_prefix($name, $value)
+    {
+    ?>
+        <div class="row mb-2">
+            <div class="col-md-3"><?= ucfirst(__('prefix')); ?></div>
+            <div class="col-md-7">
+                <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="10" class="form-control form-control-sm">
+                <span style="font-size: 13px;"><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></span>
+            </div>
+        </div>
+    <?php
+    }
+
+    function edit_lastname($name, $value)
+    {
+    ?>
+        <div class="row mb-2">
+            <div class="col-md-3"><b><?= ucfirst(__('lastname')); ?></b></div>
+            <div class="col-md-7">
+                <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+            </div>
+        </div>
+    <?php
+    }
+
+    function edit_patronymic($name, $value)
+    {
+    ?>
+        <div class="row mb-2">
+            <div class="col-md-3"><?= ucfirst(__('patronymic')); ?></div>
+            <div class="col-md-7">
+                <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+            </div>
+        </div>
+    <?php
+    }
+
+    function edit_event_name($name_select, $name_text, $value)
+    {
+    ?>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <select size="1" name="<?= $name_select; ?>" class="form-select form-select-sm">
+                    <!-- Nickname, alias, adopted name, hebrew name, etc. -->
+                    <?php event_selection(''); ?>
+                </select>
+            </div>
+            <div class="col-md-7">
+                <input type="text" name="<?= $name_text; ?>" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+            </div>
+        </div>
+    <?php
+    }
+
+    function edit_privacyfilter($name, $value)
+    {
+    ?>
+        <div class="row mb-2">
+            <div class="col-md-3"><?= __('Privacy filter'); ?></div>
+            <div class="col-md-7">
+                <input type="radio" name="<?= $name; ?>" value="alive" class="form-check-input" id="<?= $name; ?>">
+                <label class="form-check-label" for="<?= $name; ?>"><?= __('alive'); ?></label>
+
+                <input type="radio" name="<?= $name; ?>" value="deceased" class="form-check-input" id="<?= $name; ?>">
+                <label class="form-check-label" for="<?= $name; ?>"><?= __('deceased'); ?></label>
+            </div>
+        </div>
+    <?php
+    }
+
+    function edit_sexe($name, $checked)
+    {
+    ?>
+        <div class="row mb-2">
+            <div class="col-md-3"><?= __('Sex'); ?></div>
+            <div class="col-md-7">
+                <input type="radio" name="<?= $name; ?>" value="M" class="form-check-input" id="<?= $name; ?>" <?= $checked == 'M' ? 'checked' : ''; ?>>
+                <label class="form-check-label" for="<?= $name; ?>"><?= __('male'); ?></label>
+
+                <input type="radio" name="<?= $name; ?>" value="F" class="form-check-input" id="<?= $name; ?>" <?= $checked == 'F' ? 'checked' : ''; ?>>
+                <label class="form-check-label" for="<?= $name; ?>"><?= __('female'); ?></label>
+
+                <input type="radio" name="<?= $name; ?>" value="" class="form-check-input" id="<?= $name; ?>" <?= $checked == '' ? 'checked' : ''; ?>>
+                <label class="form-check-label" for="<?= $name; ?>">?</label>
+            </div>
+        </div>
+    <?php
+    }
+
+    function edit_profession($name, $value)
+    {
+    ?>
+        <div class="row mb-2">
+            <div class="col-md-3"><?= __('Profession'); ?></div>
+            <div class="col-md-7">
+                <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+            </div>
+        </div>
+    <?php
+    }
+
     // *** New function aug. 2021: Add partner or child ***
     function add_person($person_kind, $pers_sexe)
     {
@@ -1112,9 +1228,11 @@ if ($check_person) {
         $pers_lastname = '';
 
         if ($person_kind == 'partner') {
+            $form = 5;
             echo ' <form method="POST" style="display: inline;" action="' . $phpself . '#marriage" name="form5" id="form5">';
         } else {
             // *** Add child to family ***
+            $form = 6;
             echo ' <form method="POST" style="display: inline;" action="' . $phpself . '#marriage" name="form6" id="form6">';
 
             echo '<input type="hidden" name="child_connect" value="1">';
@@ -1148,191 +1266,133 @@ if ($check_person) {
         <input type="hidden" name="person_text" value="">
         <input type="hidden" name="pers_own_code" value="">
 
-        <table class="humo" style="margin-left:0px;">
-            <?php
-            if ($person_kind == 'partner') {
-                echo '<tr class="table_header"><th colspan="2">' . __('Add relation') . '</th></tr>';
-            } else {
-                echo '<tr class="table_header"><th colspan="2">' . __('Add child') . '</th></tr>';
-            }
-            ?>
+        <div class="row m-2">
+            <div class="col-md-3"></div>
+            <div class="col-md-7">
+                <h2>
+                    <?= $person_kind == 'partner' ? __('Add relation') : __('Add child'); ?>
+                </h2>
+            </div>
+        </div>
 
-            <tr>
-                <td><b><?= __('firstname'); ?></b></td>
-                <td><input type="text" name="pers_firstname" value="" size="35" placeholder="<?= ucfirst(__('firstname')); ?>"></td>
-            </tr>
+        <?= edit_firstname('pers_firstname', ''); ?>
+        <?= edit_prefix('pers_prefix', $pers_prefix); ?>
+        <?= edit_lastname('pers_lastname', $pers_lastname); ?>
+        <?= edit_patronymic('pers_patronym', ''); ?>
+        <?= edit_event_name('event_gedcom_new', 'event_event_name_new', ''); ?>
+        <?= edit_privacyfilter('pers_alive', ''); ?>
+        <?= edit_sexe('pers_sexe', $pers_sexe); ?>
 
-            <tr>
-                <td><?= __('prefix'); ?></td>
-                <td><input type="text" name="pers_prefix" value="<?= $pers_prefix; ?>" size="10" placeholder="<?= ucfirst(__('prefix')); ?>">
-                    <span style="font-size:13px;"><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></span><br>
-                </td>
-            </tr>
+        <!-- Birth -->
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-3"><?= ucfirst(__('born')); ?></div>
+        </div>
+        <div class="row mb-2">
+            <label for "pers_birth_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <div class="col-md-7">
+                <?php $editor_cls->date_show('', 'pers_birth_date', '', '', 'pers_birth_date_hebnight'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for "pers_birth_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <input type="text" name="pers_birth_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+        </div>
+        <!-- Birth time and stillborn option -->
+        <?php if ($person_kind == 'child') { ?>
+            <div class="row mb-2">
+                <label for "pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
+                <div class="col-md-2">
+                    <input type="text" name="pers_birth_time" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-5">
+                    <input type="checkbox" name="pers_stillborn" class="form-check-input"> <?= __('stillborn child'); ?>
+                </div>
+            </div>
+        <?php } else { ?>
+            <input type="hidden" name="pers_birth_time" value="">
+        <?php } ?>
 
-            <tr>
-                <td><b><?= __('lastname'); ?></b></td>
-                <td>
-                    <input type="text" name="pers_lastname" value="<?= $pers_lastname; ?>" size="35" placeholder="<?= ucfirst(__('lastname')); ?>">
-                    <?= __('patronymic'); ?> <input type="text" name="pers_patronym" value="" size="20" placeholder="<?= ucfirst(__('patronymic')); ?>">
-                </td>
-            </tr>
+        <!-- Baptise -->
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-3"><?= ucfirst(__('baptised')); ?></div>
+        </div>
+        <div class="row mb-2">
+            <label for "pers_bapt_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <div class="col-md-7">
+                <?php $editor_cls->date_show('', 'pers_bapt_date', '', '', 'pers_bapt_date_hebnight'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <input type="text" name="pers_bapt_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+        </div>
 
-            <!-- Nickname, alias, adopted name, hebrew name, etc. -->
-            <tr>
-                <td><br></td>
-                <td>
-                    <select size="1" name="event_gedcom_new" style="width: 150px">
-                        <?php event_selection(''); ?>
-                    </select>
-                    <input type="text" name="event_event_name_new" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35">
-                </td>
-            </tr>
+        <!-- Died -->
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-3"><?= ucfirst(__('died')); ?></div>
+        </div>
+        <div class="row mb-2">
+            <label for "pers_death_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <div class="col-md-7">
+                <?php $editor_cls->date_show('', 'pers_death_date', '', '', 'pers_death_date_hebnight'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <input type="text" name="pers_death_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+        </div>
 
-            <tr>
-                <td><?= __('Privacy filter'); ?></td>
-                <td>
-                    <input type="radio" name="pers_alive" value="alive"> <?= __('alive'); ?>
-                    <input type="radio" name="pers_alive" value="deceased"> <?= __('deceased'); ?>
-                </td>
-            </tr>
+        <!-- Buried -->
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-3"><?= ucfirst(__('buried')); ?></div>
+        </div>
+        <div class="row mb-2">
+            <label for "pers_buried_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <div class="col-md-7">
+                <?php $editor_cls->date_show('', 'pers_buried_date', '', '', 'pers_buried_date_hebnight'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for "pers_buried_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <input type="text" name="pers_buried_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+        </div>
 
-            <tr>
-                <td><?= __('Sex'); ?></td>
-                <td>
-                    <input type="radio" name="pers_sexe" value="M" <?php if ($pers_sexe == 'M') echo ' checked'; ?>> <?= __('male'); ?>
-                    <input type="radio" name="pers_sexe" value="F" <?php if ($pers_sexe == 'F') echo ' checked'; ?>> <?= __('female'); ?>
-                    <input type="radio" name="pers_sexe" value="" <?php if ($pers_sexe == '') echo ' checked'; ?>> ?
-                </td>
-            </tr>
+        <!-- Profession -->
+        <input type="hidden" name="event_date_profession_prefix" value=''>
+        <input type="hidden" name="event_date_profession" value=''>
+        <?= edit_profession('event_profession', ''); ?>
 
-            <?php
-            if ($person_kind == 'partner') {
-                // *** Add new partner ***
-                $form = 5;
-            } else {
-                // *** Add new child ***
-                $form = 6;
-            }
-            ?>
-            <!-- Born -->
-            <tr>
-                <td><?= ucfirst(__('born')); ?></td>
-                <td>
-                    <div class="row mb-2">
-                        <label for "pers_birth_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-                        <div class="col-md-7">
-                            <?php $editor_cls->date_show('', 'pers_birth_date', '', '', 'pers_birth_date_hebnight'); ?>
-                        </div>
-                    </div>
+        <div class="row mb-2">
+            <div class="col-md-3"></div>
+            <div class="col-md-7">
+                <?php if ($person_kind == 'partner') { ?>
+                    <input type="submit" name="relation_add" value="<?= __('Add relation'); ?>" class="btn btn-sm btn-success">
+                <?php } else { ?>
+                    <input type="submit" name="person_add" value="<?= __('Add child'); ?>" class="btn btn-sm btn-success">
+                <?php } ?>
+            </div>
+        </div>
 
-                    <div class="row mb-2">
-                        <label for "pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
-                        <div class="col-md-7">
-                            <div class="input-group">
-                                <input type="text" name="pers_birth_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <?php
-            // *** Birth time and stillborn option ***
-            if ($person_kind == 'child') {
-                echo '<tr><td style="border-right:0px;">' . __('birth time') . '</td><td style="border-left:0px;"><input type="text" placeholder="' . __('birth time') . '" name="pers_birth_time" value="" size="' . $field_date . '">';
-                echo '<input type="checkbox" name="pers_stillborn"> ' . __('stillborn child');
-                echo '</td></tr>';
-            } else {
-                echo '<input type="hidden" name="pers_birth_time" value="">';
-            }
-            ?>
-
-            <!-- Baptise -->
-            <tr>
-                <td><?= ucfirst(__('baptised')); ?></td>
-                <td>
-                    <div class="row mb-2">
-                        <label for "pers_bapt_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-                        <div class="col-md-7">
-                            <?php $editor_cls->date_show('', 'pers_bapt_date', '', '', 'pers_bapt_date_hebnight'); ?>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
-                        <div class="col-md-7">
-                            <div class="input-group">
-                                <input type="text" name="pers_bapt_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <!-- Died -->
-            <tr>
-                <td><?= ucfirst(__('died')); ?></td>
-                <td>
-                    <div class="row mb-2">
-                        <label for "pers_death_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-                        <div class="col-md-7">
-                            <?php $editor_cls->date_show('', 'pers_death_date', '', '', 'pers_death_date_hebnight'); ?>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
-                        <div class="col-md-7">
-                            <div class="input-group">
-                                <input type="text" name="pers_death_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <!-- Buried -->
-            <tr>
-                <td><?= ucfirst(__('buried')); ?></td>
-                <td>
-                    <div class="row mb-2">
-                        <label for "pers_buried_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-                        <div class="col-md-7">
-                            <?php $editor_cls->date_show('', 'pers_buried_date', '', '', 'pers_buried_date_hebnight'); ?>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <label for "pers_buried_place" class="col-sm-3 col-form-label"><?= ucfirst(__('place')); ?></label>
-                        <div class="col-md-7">
-                            <div class="input-group">
-                                <input type="text" name="pers_buried_place" placeholder="<?= ucfirst(__('place')); ?>" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <!-- Profession -->
-            <tr>
-                <td><?= __('Profession'); ?></td>
-                <td>
-                    <input type="text" name="event_profession" placeholder="<?= __('Profession'); ?>" value="" size="35">
-                </td>
-            </tr>
-
-            <?php
-            if ($person_kind == 'partner') {
-                echo '<tr class="humo_color"><td></td><td><input type="submit" name="relation_add" value="' . __('Add relation') . '" class="btn btn-sm btn-success"></td></tr>';
-            } else {
-                echo '<tr class="humo_color"><td></td><td><input type="submit" name="person_add" value="' . __('Add child') . '" class="btn btn-sm btn-success"></td></tr>';
-            }
-            ?>
-        </table>
     <?php
         echo '</form>';
     }
@@ -1516,13 +1576,13 @@ if ($check_person) {
                             if ($addressDb->connect_id) {
                                 if ($connect_kind == 'person') {
                                     $connect_kind = 'person';
-                                    $connect_sub_kind = 'pers_address_connect_source';
+                                    $connect_sub_kind_source = 'pers_address_connect_source';
                                 } else {
                                     $connect_kind = 'family';
-                                    $connect_sub_kind = 'fam_address_connect_source';
+                                    $connect_sub_kind_source = 'fam_address_connect_source';
                                 }
-    
-                                $check_sources_text = check_sources($connect_kind, $connect_sub_kind, $addressDb->connect_id);
+
+                                $check_sources_text = check_sources($connect_kind, $connect_sub_kind_source, $addressDb->connect_id);
                                 echo $check_sources_text;
                             }
                             ?>
@@ -1530,19 +1590,21 @@ if ($check_person) {
 
                         <?php
                         echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '"><br>';
+                        ?>
 
-                        echo '<input type="hidden" name="change_address_id[' . $address3Db->address_id . ']" value="' . $address3Db->address_id . '">';
+                        <input type="hidden" name="change_address_id[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_id; ?>">
 
-                        // *** Send old values, so changes of values can be detected ***
-                        echo '<input type="hidden" name="address_shared_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_shared . '">';
-                        echo '<input type="hidden" name="address_address_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_address . '">';
-                        echo '<input type="hidden" name="address_place_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_place . '">';
-                        echo '<input type="hidden" name="address_text_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_text . '">';
-                        echo '<input type="hidden" name="address_phone_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_phone . '">';
-                        echo '<input type="hidden" name="address_zip_old[' . $address3Db->address_id . ']" value="' . $address3Db->address_zip . '">';
+                        <!-- Send old values, so changes of values can be detected -->
+                        <input type="hidden" name="address_shared_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_shared; ?>">
+                        <input type="hidden" name="address_address_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_address; ?>">
+                        <input type="hidden" name="address_place_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_place; ?>">
+                        <input type="hidden" name="address_text_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_text; ?>">
+                        <input type="hidden" name="address_phone_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_phone; ?>">
+                        <input type="hidden" name="address_zip_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_zip; ?>">
 
-                        echo '<input type="hidden" name="connect_item_id_old[' . $address3Db->address_id . ']" value="' . $addressDb->connect_item_id . '">';
+                        <input type="hidden" name="connect_item_id_old[<?= $address3Db->address_id; ?>]" value="<?= $addressDb->connect_item_id; ?>">
 
+                        <?php
                         echo __('Address GEDCOM number:') . ' ' . $address3Db->address_gedcomnr . '&nbsp;&nbsp;&nbsp;&nbsp;';
 
                         // *** Shared address, to connect address to multiple persons or relations ***
@@ -1577,7 +1639,7 @@ if ($check_person) {
                             <label for "address_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="address_place_<?= $address3Db->address_id; ?>" placeholder="<?= __('Place'); ?>" value="<?= $address3Db->address_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                    <input type="text" name="address_place_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                                     <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=address_place&amp;address_id=<?= $address3Db->address_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
                                 </div>
                             </div>
@@ -1606,7 +1668,7 @@ if ($check_person) {
                         <div class="row mb-2">
                             <label for "address_address" class="col-md-3 col-form-label"><?= __('Street'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="address_address_<?= $address3Db->address_id; ?>" placeholder="<?= __('Street'); ?>" value="<?= $address3Db->address_address; ?>" class="form-control form-control-sm">
+                                <input type="text" name="address_address_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_address; ?>" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -1614,7 +1676,7 @@ if ($check_person) {
                         <div class="row mb-2">
                             <label for "address_zip" class="col-md-3 col-form-label"><?= __('Zip code'); ?></label>
                             <div class="col-md-3">
-                                <input type="text" name="address_zip_<?= $address3Db->address_id; ?>" placeholder="<?= __('Zip code'); ?>" value="<?= $address3Db->address_zip; ?>" class="form-control form-control-sm">
+                                <input type="text" name="address_zip_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_zip; ?>" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -1622,7 +1684,7 @@ if ($check_person) {
                         <div class="row mb-2">
                             <label for "address_phone" class="col-md-3 col-form-label"><?= __('Phone'); ?></label>
                             <div class="col-md-3">
-                                <input type="text" name="address_phone_<?= $address3Db->address_id; ?>" placeholder="<?= __('Phone'); ?>" value="<?= $address3Db->address_phone; ?>" class="form-control form-control-sm">
+                                <input type="text" name="address_phone_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_phone; ?>" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -1630,7 +1692,7 @@ if ($check_person) {
                         <div class="row mb-2">
                             <label for "address_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" name="address_text_<?= $address3Db->address_id; ?>" placeholder="<?= __('Text'); ?>" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address3Db->address_text); ?></textarea>
+                                <textarea rows="1" name="address_text_<?= $address3Db->address_id; ?>" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address3Db->address_text); ?></textarea>
                             </div>
                         </div>
 
@@ -1656,7 +1718,7 @@ if ($check_person) {
                         <div class="row mb-2">
                             <label for "pers_buried_place" class="col-md-3 col-form-label"><?= __('Extra text by address'); ?></label>
                             <div class="col-md-7">
-                                <textarea name="connect_text[<?= $addressDb->connect_id; ?>]" placeholder="<?= __('Extra text by address'); ?>" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($addressDb->connect_text); ?></textarea>
+                                <textarea name="connect_text[<?= $addressDb->connect_id; ?>]" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($addressDb->connect_text); ?></textarea>
                             </div>
                         </div>
 
@@ -1664,17 +1726,17 @@ if ($check_person) {
                             <?php
                             if ($connect_kind == 'person') {
                                 $connect_kind = 'person';
-                                $connect_sub_kind = 'pers_address_connect_source';
+                                $connect_sub_kind_source = 'pers_address_connect_source';
                             } else {
                                 $connect_kind = 'family';
-                                $connect_sub_kind = 'fam_address_connect_source';
+                                $connect_sub_kind_source = 'fam_address_connect_source';
                             }
                             ?>
                             <div class="row mb-2">
                                 <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
                                     <?php
-                                    source_link3($connect_kind, $connect_sub_kind, $addressDb->connect_id);
+                                    source_link3($connect_kind, $connect_sub_kind_source, $addressDb->connect_id);
                                     echo $check_sources_text;
                                     ?>
                                 </div>
@@ -1686,15 +1748,18 @@ if ($check_person) {
                         if (isset($hideshow) and substr($hideshow, 0, 4) == '8000') echo '</span>';
                     } else {
                         // *** Add new address ***
-                        echo '<input type="hidden" name="connect_date[' . $key . ']" value="">';
-                        echo '<input type="hidden" name="connect_date_prefix[' . $key . ']" value="">';
-                        echo '<input type="hidden" name="connect_role[' . $key . ']" value="">';
-
                         $addressqry = $dbh->query("SELECT * FROM humo_addresses
                             WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'
                             ORDER BY address_place, address_address");
-                        echo ' ' . __('Address') . ' ';
                         ?>
+                        <input type="hidden" name="connect_date[<?= $key; ?>]" value="">
+                        <input type="hidden" name="connect_date_prefix[<?= $key; ?>]" value="">
+                        <input type="hidden" name="connect_role[<?= $key; ?>]" value="">
+
+                        <!-- Added april 2024 -->
+                        <input type="hidden" name="connect_text[<?= $key; ?>]" value="">
+
+                        <?= __('Address'); ?>
                         <select size="1" name="connect_item_id[<?= $key; ?>]" style="width: 300px">
                             <option value=""><?= __('Select address'); ?></option>
                             <?php
@@ -1703,20 +1768,20 @@ if ($check_person) {
                                 $selected = '';
                                 if ($addressDb->connect_item_id == $address2Db->address_gedcomnr) $selected = ' selected';
                                 echo '<option value="' . $address2Db->address_gedcomnr . '"' . $selected . '>' .
-                                    @$address2Db->address_place . ', ' . $address2Db->address_address;
+                                    $address2Db->address_place . ', ' . $address2Db->address_address;
 
                                 if ($address2Db->address_text) {
                                     echo ' ' . substr($address2Db->address_text, 0, 40);
                                     if (strlen($address2Db->address_text) > 40) echo '...';
                                 }
 
-                                echo ' [' . @$address2Db->address_gedcomnr . ']</option>';
+                                echo ' [' . $address2Db->address_gedcomnr . ']</option>';
                             }
                             ?>
                         </select>
 
+                        <?= __('Or: add new address'); ?>
                     <?php
-                        echo ' ' . __('Or: add new address');
                         echo ' <a href="index.php?page=' . $page;
                         if ($connect_kind == 'person') {
                             echo '&amp;person_place_address=1';
@@ -1909,7 +1974,7 @@ if ($check_person) {
 
                     <b><?= $noteDb->note_names; ?></b><br>
 
-                    <textarea rows="1" placeholder="<?= __('Text'); ?>" name="note_note[<?= $noteDb->note_id; ?>]" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea><br>
+                    <textarea rows="1" name="note_note[<?= $noteDb->note_id; ?>]" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea><br>
 
                     <?= __('Priority'); ?>
                     <select size="1" name="note_priority[<?= $noteDb->note_id; ?>]">
@@ -1957,12 +2022,3 @@ if ($check_person) {
 
         return $return_text;
     }
-
-    // TODO: serveral layout tables are removed. If tables are removed, this code isn't needed anymore.
-    // *** Set same width of columns (in 2 different tables) in tab family ***
-    //echo '
-    //<script>
-    //    $("#chtd1").width($("#target1").width());
-    //    $("#chtd2").width($("#target3").width());
-    //    $("#chtd3").width($("#target2").width());
-    //</script> ';

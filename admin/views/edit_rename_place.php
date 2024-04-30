@@ -31,7 +31,7 @@ $field_text_large = 'style="height: 100px; width:550px"';
 
 <h1 class="center"><?= __('Rename places'); ?></h1>
 
-<div class="p-3 m-2 genealogy_search">
+<div class="p-3 my-md-2 genealogy_search container-md">
     <div class="row">
         <div class="col-auto">
             <label for="tree" class="col-form-label">

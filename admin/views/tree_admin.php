@@ -2,6 +2,13 @@
 
 // *** Read settings here to be sure radio buttons show proper values. ***
 include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settings ***
+
+// *** Language choice ***
+$language_tree2 = $language_tree;
+if ($language_tree == 'default') $language_tree2 = $selected_language;
+include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
+include_once(__DIR__ . "/../../views/partial/select_language.php");
+$language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
 ?>
 
 <br>
@@ -18,34 +25,14 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
     <tr class="table_header">
         <td></td>
         <td>
-            <a href="index.php?page=tree&amp;language_tree=default&amp;tree_id=<?= $tree_id; ?>"><?= __('Default'); ?></a>
-            <?php
-            // *** Language choice ***
-            $language_tree2 = $language_tree;
-            if ($language_tree == 'default') $language_tree2 = $selected_language;
-            echo '&nbsp;&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
-            echo '<a href="index.php?option=com_humo-gen"';
-            include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
-            echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
-            $select_top = '';
-            echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="../languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="../images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
-            ?>
-            <div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">
-                <ul class="humo_menu_item2">
-                    <?php
-                    for ($i = 0; $i < count($language_file); $i++) {
-                        // *** Get language name ***
-                        if ($language_file[$i] != $language_tree2) {
-                            include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
-                            echo '<li style="float:left; width:124px;">';
-                            echo '<a href="index.php?page=tree&amp;language_tree=' . $language_file[$i] . '&amp;tree_id=' . $tree_id . '">';
-                            echo '<img src="../languages/' . $language_file[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none;"> ';
-                            echo $language["name"] . '</a>';
-                            echo '</li>';
-                        }
-                    }
-                    ?>
-                </ul>
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <a href="index.php?page=tree&amp;language_tree=default&amp;tree_id=<?= $tree_id; ?>"><?= __('Default'); ?></a>
+                </div>
+
+                <div class="col-md-auto ms-2">
+                    <?= show_country_flags($language_tree2, '../', 'language_tree', $language_path); ?>
+                </div>
             </div>
         </td>
         <td></td>
@@ -53,7 +40,7 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
     </tr>
 
     <?php
-    // *** Check number of real family tree number, because last tree is not allowed to be removed ***
+    // *** Check number of family trees, because last tree is not allowed to be removed ***
     $count_trees = 0;
     $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
     $count_trees = $datasql->rowCount();
@@ -246,12 +233,24 @@ if ($collation == 'utf8_danish_ci') {
 
 <form method="post" action="<?= $phpself; ?>" style="display : inline;">
     <input type="hidden" name="page" value="<?= $page; ?>">
-    <br><?= __('Collation'); ?>
-    <select size="1" name="tree_collation" style="width:250px;">
-        <!-- Default collation -->
-        <option value="utf8_general_ci">utf8_general_ci (default)</option>
-        <option value="utf8_swedish_ci" <?= $select_swedish; ?>>utf8_swedish_ci</option>
-        <option value="utf8_danish_ci" <?= $select_danish; ?>>utf8_danish_ci</option>
-    </select>
-    <input type="submit" name="change_collation" value="OK">
+
+    <br>
+    <div class="row mb-2">
+        <div class="col-md-auto">
+            <label for="tree_collation" class="col-form-label"><?= __('Collation'); ?></label>
+        </div>
+
+        <div class="col-md-auto">
+            <select size="1" name="tree_collation" class="form-select form-select-sm">
+                <!-- Default collation -->
+                <option value="utf8_general_ci">utf8_general_ci (default)</option>
+                <option value="utf8_swedish_ci" <?= $select_swedish; ?>>utf8_swedish_ci</option>
+                <option value="utf8_danish_ci" <?= $select_danish; ?>>utf8_danish_ci</option>
+            </select>
+        </div>
+
+        <div class="col-md-auto">
+            <input type="submit" name="change_collation" value="OK" class="btn btn-sm btn-secondary">
+        </div>
+    </div>
 </form>

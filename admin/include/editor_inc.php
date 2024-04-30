@@ -946,8 +946,10 @@ if (isset($_POST['connect_change'])) {
             if (isset($_POST['connect_sub_kind'][$key]))
                 $sql .= " connect_sub_kind='" . safe_text_db($_POST['connect_sub_kind'][$key]) . "',";
             $sql .= " connect_page='" . $editor_cls->text_process($_POST["connect_page"][$key]) . "',
-                connect_role='" . $editor_cls->text_process($_POST["connect_role"][$key]) . "',
-                connect_source_id='" . safe_text_db($_POST['connect_source_id'][$key]) . "',";
+                connect_role='" . $editor_cls->text_process($_POST["connect_role"][$key]) . "',";
+
+            if (isset($_POST['connect_source_id'][$key]))
+                $sql .= "connect_source_id='" . safe_text_db($_POST['connect_source_id'][$key]) . "',";
 
             if (isset($_POST['connect_date'][$key]))
                 $sql .= "connect_date='" . $editor_cls->date_process("connect_date", $key) . "',";
@@ -965,8 +967,8 @@ if (isset($_POST['connect_change'])) {
             if (isset($_POST['connect_item_id'][$key]) and ($_POST['connect_item_id'][$key]))
                 $sql .= " connect_item_id='" . safe_text_db($_POST['connect_item_id'][$key]) . "',";
 
-            $sql .= " connect_changed_user_id='" . $userid . "'";
-            $sql .= " WHERE connect_id='" . safe_text_db($_POST["connect_change"][$key]) . "'";
+            $sql .= " connect_changed_user_id='" . $userid . "'
+                WHERE connect_id='" . safe_text_db($_POST["connect_change"][$key]) . "'";
             //echo $sql.'<br>';
             $dbh->query($sql);
         }

@@ -63,7 +63,7 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
 
 <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
     <input type="hidden" name="page" value="<?= $page; ?>">
-    <div class="p-3 m-2 genealogy_search">
+    <div class="p-3 my-md-2 genealogy_search container-md">
         <div class="row">
             <div class="col-md-auto">
                 <label for="tree" class="col-form-label">
@@ -151,7 +151,7 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
         <input type="hidden" name="address_gedcomnr" value="<?= $address_gedcomnr; ?>">
-        <div class="p-2 me-sm-2 genealogy_search">
+        <div class="p-2 my-md-2 genealogy_search container-md">
             <div class="row mb-2">
                 <div class="col-md-1"></div>
 
@@ -202,12 +202,12 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
                 <div class="row mb-2">
                     <div class="col-md-1"></div>
                     <div class="col-md-2">
-                        <?= ucfirst(__('source')); ?>
+                        <?= __('Source'); ?>
                     </div>
                     <div class="col-md-4">
                         <!-- Button trigger modal for sources -->
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal">
-                            <?= ucfirst(__('source')); ?>
+                            <?= __('Source'); ?>
                         </button>
 
                         <!-- Modal -->
@@ -215,7 +215,7 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="sourceModalLabel"><?= ucfirst(__('source')); ?></h1>
+                                        <h1 class="modal-title fs-5" id="sourceModalLabel"><?= __('Source'); ?></h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -267,7 +267,7 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
             <div class="row mb-2">
                 <div class="col-md-1"></div>
                 <div class="col-md-2">
-                    <?= ucfirst(__('text')); ?>
+                    <?= __('Text'); ?>
                 </div>
                 <div class="col-md-4">
                     <textarea rows="1" name="address_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address_text); ?></textarea>

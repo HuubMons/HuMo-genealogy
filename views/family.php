@@ -523,8 +523,12 @@ else {
                         <?php
                         } else {
                             // *** Show standard marriage text and name in 2nd, 3rd, etc. marriage (relation) ***
-                            echo $marriage_cls->marriage_data($familyDb, $family_nr, 'shorter') . '<br>';
-                            echo $parent1_cls->name_extended("parent1") . '<br>';
+                        ?>
+                            <div class="py-3">
+                                <?= $marriage_cls->marriage_data($familyDb, $family_nr, 'shorter'); ?>
+                            </div>
+                            <?= $parent1_cls->name_extended("parent1"); ?><br>
+                        <?php
                         }
                         $family_nr++;
                     } // *** End check of PRO-GEN ***
@@ -623,15 +627,17 @@ else {
                     if ($familyDb->fam_children) {
                         $childnr = 1;
                         $child_array = explode(";", $familyDb->fam_children);
-
-                        // *** Show "Child(ren):" ***
-                        if (count($child_array) == '1') {
-                            echo '<p><b>' . __('Child') . ':</b></p>';
-                        } else {
-                            echo '<p><b>' . __('Children') . ':</b></p>';
-                        }
-
                         $show_privacy_text = false;
+
+                        // TODO improve layout in RTF export
+                    ?>
+                        <div class="py-3">
+                            <b>
+                                <?= (count($child_array) == '1') ? __('Child') . ':' : __('Children') . ':'; ?>
+                            </b>
+                        </div>
+
+                        <?php
                         foreach ($child_array as $i => $value) {
                             @$childDb = $db_functions->get_person($child_array[$i]);
                             // *** Use person class ***
@@ -647,7 +653,7 @@ else {
                                 continue;
                             }
 
-                    ?>
+                        ?>
                             <div class="children">
                                 <div class="child_nr" id="person_<?= $childDb->pers_gedcomnumber; ?>"><?= $childnr; ?>.</div>
                                 <?php

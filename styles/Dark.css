@@ -45,38 +45,6 @@ p {
     font-weight: normal;
 }
 
-/*
-#top_familytree_name {
-    color: #ff8888;
-    font-weight: normal;
-}
-*/
-
-ul.humo_menu_item2 li a:hover {
-    background: url("images_dark/menuhover1.jpg") repeat left top;
-}
-
-ul.humo_menu_item2 li {
-    background: url("images_dark/silver.jpg") repeat left top;
-}
-
-ul.humo_menu_item2 li a {
-    background: url("images_dark/silver.jpg") repeat left top;
-}
-
-ul.humo_menu_item li a {
-    font-weight: normal;
-    color: #d0d0d0;
-}
-
-ul.humo_menu_item li {
-    border-right: none;
-}
-
-#country_flags {
-    padding: 11px 85px 6px 5px;
-}
-
 .loginname {
     color: #ff6600;
     font-weight: bold;

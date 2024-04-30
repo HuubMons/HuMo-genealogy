@@ -467,7 +467,7 @@ $menu_top = getActiveTopMenu($page);
         <!-- <nav class="navbar navbar-expand-lg border-bottom border-dark-subtle genealogy_menu"> -->
         <nav class="navbar navbar-expand-md border-bottom border-dark-subtle genealogy_menu">
 
-        <!-- <div class="container-fluid"> -->
+            <!-- <div class="container-fluid"> -->
             <?php // <a class="navbar-brand" href="#">Brand</a> ;
             ?>
             <button class="navbar-toggler genealogy_toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -657,33 +657,12 @@ $menu_top = getActiveTopMenu($page);
                         </li>
                     <?php } ?>
 
-                    <!-- Country flags -->
+                    <!-- Select language using country flags -->
                     <?php if (!$bot_visit) { ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="index.php?option=com_humo-gen" onmouseover="mopen(event,'m4x','?','?')" onmouseout="mclosetime()" data-bs-toggle="dropdown">
-                                <img src="<?= 'languages/' . $selected_language; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>">
-                            </a>
-
-                            <ul class="dropdown-menu genealogy_menu">
-                                <?php
-                                $hide_languages_array = explode(";", $humo_option["hide_languages"]);
-                                for ($i = 0; $i < count($language_file); $i++) {
-                                    // *** Get language name ***
-                                    if ($language_file[$i] != $selected_language and !in_array($language_file[$i], $hide_languages_array)) {
-                                        include(__DIR__ . '/../languages/' . $language_file[$i] . '/language_data.php');
-                                        $language_path = $link_cls->get_link($uri_path, 'language', '', true);
-                                ?>
-                                        <li>
-                                            <a class="dropdown-item" href="<?= $language_path . 'language=' . $language_file[$i]; ?>">
-                                                <img src="<?= 'languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;">
-                                                <?= $language["name"]; ?>
-                                            </a>
-                                        </li>
-                                <?php
-                                    }
-                                }
-                                ?>
-                            </ul>
+                            <?php include_once(__DIR__ . "/partial/select_language.php"); ?>
+                            <?php $language_path = $link_cls->get_link($uri_path, 'language', '', true);?>
+                            <?= show_country_flags($selected_language, '', 'language', $language_path); ?>
                         </li>
                     <?php } ?>
                 </ul>

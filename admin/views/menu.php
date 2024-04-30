@@ -45,11 +45,8 @@ if ($popup == false) {
                     </a>
 
                     <ul class="dropdown-menu">
-                        <?php if ($group_administrator == 'j') {; ?>
-                            <li><a class="dropdown-item <?php if ($page == 'admin') echo 'active'; ?>" href="<?= $path_tmp; ?>page=admin"><?= __('Administration'); ?> - <?= __('Main menu'); ?></a></li>
-
-                            <li><a class="dropdown-item" href="<?= $menu_path_website; ?>"><?= __('Website'); ?></a></li>
-                        <?php }; ?>
+                        <li><a class="dropdown-item <?php if ($page == 'admin') echo 'active'; ?>" href="<?= $path_tmp; ?>page=admin"><?= __('Administration'); ?> - <?= __('Main menu'); ?></a></li>
+                        <li><a class="dropdown-item" href="<?= $menu_path_website; ?>"><?= __('Website'); ?></a></li>
 
                         <?php if (isset($_SESSION["user_name_admin"])) {; ?>
                             <li><a class="dropdown-item" href="<?= $menu_path_logoff ?>"><?= __('Logoff'); ?></a></li>
@@ -121,33 +118,15 @@ if ($popup == false) {
                     <?php }; ?>
                 <?php }; ?>
 
-                <!-- TODO almost same code as frontpage -->
-                <!-- Country flags -->
+                <!-- Select language using country flags -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="index.php?option=com_humo-gen" onmouseover="mopen(event,'m4x','?','?')" onmouseout="mclosetime()" data-bs-toggle="dropdown">
-                        <img src="<?= '../languages/' . $selected_language; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>">
-                    </a>
-
-                    <ul class="dropdown-menu genealogy_menu">
-                        <?php
-                        if (!isset($humo_option["hide_languages"])) $humo_option["hide_languages"] = '';
-                        $hide_languages_array = explode(";", $humo_option["hide_languages"]);
-                        for ($i = 0; $i < count($language_file); $i++) {
-                            // *** Get language name ***
-                            if ($language_file[$i] != $selected_language and !in_array($language_file[$i], $hide_languages_array)) {
-                                include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
-                        ?>
-                                <li>
-                                    <a class="dropdown-item" href="<?= $path_tmp . 'language_choice=' . $language_file[$i]; ?>">
-                                        <img src="<?= '../languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;">
-                                        <?= $language["name"]; ?>
-                                    </a>
-                                </li>
-                        <?php
-                            }
-                        }
-                        ?>
-                    </ul>
+                    <?php include_once(__DIR__ . "/../../views/partial/select_language.php"); ?>
+                    <?php /*
+                    $language_path = $link_cls->get_link('', 'language', '', true);
+                    */
+                    ?>
+                    <?php $language_path = 'index.php?'; ?>
+                    <?= show_country_flags($selected_language, '../', 'language_choice', $language_path); ?>
                 </li>
 
             </ul>

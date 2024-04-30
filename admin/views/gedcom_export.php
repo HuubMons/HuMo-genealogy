@@ -45,7 +45,6 @@ $noteids = array();
 @set_time_limit(3000);
 
 // *** Name of GEDCOM file: 2023_02_10_12_55_tree_x.ged ***
-//$gedcom_file_name=date('Y_m_d_H_i').'_gedcom.ged';
 $gedcom_file_name = date('Y_m_d_H_i') . '_tree_' . $tree_id . '.ged';
 $myFile = 'gedcom_files/' . $gedcom_file_name;
 
@@ -53,12 +52,12 @@ $myFile = 'gedcom_files/' . $gedcom_file_name;
 if (@file_exists("../../gedcom-bestanden")) $myFile = '../../gedcom-bestanden/' . $gedcom_file_name;
 if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestanden/' . $gedcom_file_name;
 
-// *** Remove GEDCOM file ***
-//if (isset($_POST['remove_gedcom'])){
-//	unlink($myFile);
-//	echo '<h2>'.__('GEDCOM file is REMOVED.').'</h2>';
-//}
+$export["part_tree"] = '';
+if (isset($_POST['part_tree']) and $_POST['part_tree']) {
+    $export["part_tree"] = $_POST['part_tree'];
+}
 ?>
+
 <h1 class="center"><?= __('GEDCOM file export'); ?></h1>
 
 <b><?= __('Don\'t use a GEDCOM file as a backup for your genealogical data!'); ?></b><br>
@@ -77,25 +76,27 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                 $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
                 $tree_result = $dbh->query($tree_sql);
                 $onchange = '';
-                if (isset($_POST['part_tree']) and $_POST['part_tree'] == 'part') {
+                if ($export["part_tree"] == 'part') {
                     // we have to refresh so that the persons to choose from will belong to this tree!
                     echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
                     $onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
                 }
-                echo '<select ' . $onchange . ' size="1" name="tree_id">';
-                while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-                    $treetext = show_tree_text($treeDb->tree_id, $selected_language);
-                    $selected = '';
-                    if ($treeDb->tree_id == $tree_id) {
-                        $selected = ' selected';
-                        // *** Needed for submitter ***
-                        $tree_owner = $treeDb->tree_owner;
-                        $db_functions->set_tree_id($tree_id);
-                    }
-                    echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-                }
-                echo '</select>';
                 ?>
+                <select <?= $onchange; ?> size="1" name="tree_id">
+                    <?php
+                    while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
+                        $treetext = show_tree_text($treeDb->tree_id, $selected_language);
+                        $selected = '';
+                        if ($treeDb->tree_id == $tree_id) {
+                            $selected = ' selected';
+                            // *** Needed for submitter ***
+                            $tree_owner = $treeDb->tree_owner;
+                            $db_functions->set_tree_id($tree_id);
+                        }
+                        echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
+                    }
+                    ?>
+                </select>
             </td>
         </tr>
 
@@ -104,19 +105,19 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
             <td>
                 <?php
                 $checked = ' checked ';
-                if (isset($_POST['part_tree']) and $_POST['part_tree'] == "part") $checked = '';
-                echo '<input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" ' . $checked . '>' . __('Whole tree:');
-
-                $checked = '';
-                if (isset($_POST['part_tree']) and $_POST['part_tree'] == "part") $checked = ' checked ';
-                echo '<br><input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" ' . $checked . '>' . __('Partial tree:');
+                if ($export["part_tree"] == "part") $checked = '';
                 ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" <?= $checked; ?>><?= __('Whole tree:'); ?>
+
+                <?php
+                $checked = '';
+                if ($export["part_tree"] == "part") $checked = ' checked ';
+                ?>
+                <br><input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" <?= $checked; ?>><?= __('Partial tree:'); ?>
             </td>
         </tr>
 
-        <?php
-        if (isset($_POST['part_tree']) and $_POST['part_tree'] == "part") {
-        ?>
+        <?php if ($export["part_tree"] == "part") { ?>
             <tr>
                 <td><?= __('Choose person:'); ?></td>
                 <td>
@@ -189,22 +190,23 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                         $pers_gedcomnumber = $_POST['person'];
                     }
 
-                    echo '<input type="hidden" name="page" value="' . $page . '">';
-                    echo '<select size="1" name="person" style="width: 300px">';
-                    $counter = 0;
-                    while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                        $selected = '';
-                        if (isset($pers_gedcomnumber)) {
-                            if ($person->pers_gedcomnumber == $pers_gedcomnumber) {
-                                $selected = ' selected';
-                            }
-                        }
-                        $prefix2 = " " . strtolower(str_replace("_", " ", $person->pers_prefix));
-                        echo '<option value="' . $person->pers_gedcomnumber . '"' . $selected . '>' .
-                            $person->pers_lastname . ', ' . $person->pers_firstname . $prefix2 . ' [' . $person->pers_gedcomnumber . ']</option>';
-                    }
-                    echo '</select>';
                     ?>
+                    <select size="1" name="person" style="width: 300px">
+                        <?php
+                        $counter = 0;
+                        while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
+                            $selected = '';
+                            if (isset($pers_gedcomnumber)) {
+                                if ($person->pers_gedcomnumber == $pers_gedcomnumber) {
+                                    $selected = ' selected';
+                                }
+                            }
+                            $prefix2 = " " . strtolower(str_replace("_", " ", $person->pers_prefix));
+                            echo '<option value="' . $person->pers_gedcomnumber . '"' . $selected . '>' .
+                                $person->pers_lastname . ', ' . $person->pers_firstname . $prefix2 . ' [' . $person->pers_gedcomnumber . ']</option>';
+                        }
+                        ?>
+                    </select>
                 </td>
             <tr>
 
@@ -219,9 +221,9 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                             if (isset($_POST['generations']) and $_POST['generations'] == $i) {
                                 $selected = " selected ";
                             }
-                            echo '<option value="' . $i . '"' . $selected . '>' . ($i + 1) . '</option>';
-                        }
                         ?>
+                            <option value="<?= $i; ?>" <?= $selected; ?>><?= ($i + 1); ?></option>
+                        <?php } ?>
                     </select>
                 </td>
             </tr>
@@ -487,10 +489,12 @@ if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestan
                     if (isset($_POST['gedcom_shared_addresses']) and $_POST['gedcom_shared_addresses'] == 'standard') {
                         $selected = ' selected';
                     }
-                    echo '<select size="1" name="gedcom_shared_addresses">';
-                    echo '<option value="non_standard">' . __('Export shared addresses') . '</option>';
-                    echo '<option value="standard"' . $selected . '>' . __('Convert all shared addresses as single addresses') . '</option>';
-                    echo '</select><br>';
+                ?>
+                    <select size="1" name="gedcom_shared_addresses">
+                        <option value="non_standard"><?= __('Export shared addresses'); ?></option>
+                        <option value="standard" <?= $selected; ?>><?= __('Convert all shared addresses as single addresses'); ?></option>
+                    </select><br>
+                <?php
                     echo __('"Shared addresses" is <b>only compatible</b> with HuMo-genealogy and Haza-21 programs.<br>
 Other programs: convert shared addresses. The "shared address" option will be lost.');
                 } else {
@@ -525,9 +529,9 @@ Other programs: convert shared addresses. The "shared address" option will be lo
                 if (isset($_POST['submit_button'])) {
                     $line_nr = 0;
                     $line_counter = 500;  // Count down
-                    echo ' <div id="information" style="display: inline;"></div> ' . __('Processed lines...');
                 }
                 ?>
+                <div id="information" style="display: inline;"></div> <?= __('Processed lines...'); ?>
             </td>
         </tr>
     </table>
@@ -536,7 +540,7 @@ Other programs: convert shared addresses. The "shared address" option will be lo
 <?php
 if (isset($tree_id) and isset($_POST['submit_button'])) {
 
-    if (isset($_POST['part_tree']) and $_POST['part_tree'] == 'part' and isset($_POST['kind_tree']) and $_POST['kind_tree'] == "descendant") {
+    if ($export["part_tree"] == 'part' and isset($_POST['kind_tree']) and $_POST['kind_tree'] == "descendant") {
         // map descendants
         $desc_fams = '';
         $desc_pers = $_POST['person'];
@@ -556,7 +560,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         $pers_fams = explode(";", $desc_fams);
         descendants($pers_fams[0], $desc_pers, $generation_number, $max_gens);
     }
-    if (isset($_POST['part_tree']) and $_POST['part_tree'] == 'part' and isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") {
+    if ($export["part_tree"] == 'part' and isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") {
         // map ancestors
         $anc_pers = $_POST['person'];
         $max_gens = $_POST['generations'] + 2;
@@ -680,7 +684,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         // *** Now read all person items ***
         $person = $db_functions->get_person_with_id($persons->pers_id);
 
-        if (isset($_POST['part_tree']) and $_POST['part_tree'] == 'part' and !in_array($person->pers_gedcomnumber, $persids)) {
+        if ($export["part_tree"] == 'part' and !in_array($person->pers_gedcomnumber, $persids)) {
             continue;
         }
 
@@ -723,8 +727,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Export all name items, like 2 _AKAN etc. ***
             $nameqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-				AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
-				AND event_kind='name' ORDER BY event_order");
+                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
+                AND event_kind='name' ORDER BY event_order");
             while ($nameDb = $nameqry->fetch(PDO::FETCH_OBJ)) {
                 $eventgedcom = $nameDb->event_gedcom;
                 // *** 2 _RUFNAME is only used in BK, HuMo-genealogy uses 2 _RUFN ***
@@ -889,8 +893,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Occupation ***
             $professionqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-				AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
-				AND event_kind='profession' ORDER BY event_order");
+                AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
+                AND event_kind='profession' ORDER BY event_order");
             while ($professionDb = $professionqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= '1 OCCU ' . $professionDb->event_event . "\r\n";
 
@@ -908,8 +912,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Religion. REMARK: this is religion event 1 RELI. Baptise religion is saved as 1 CHR -> 2 RELI. ***
             $professionqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-				AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
-				AND event_kind='religion' ORDER BY event_order");
+                AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
+                AND event_kind='religion' ORDER BY event_order");
             while ($professionDb = $professionqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= '1 RELI ' . $professionDb->event_event . "\r\n";
 
@@ -932,8 +936,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Person pictures ***
             $sourceqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-				AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
-				AND event_kind='picture' ORDER BY event_order");
+                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
+                AND event_kind='picture' ORDER BY event_order");
             while ($sourceDb = $sourceqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= "1 OBJE\r\n";
                 $buffer .= "2 FORM jpg\r\n";
@@ -957,8 +961,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Person color marks ***
             $sourceqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-				AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
-				AND event_kind='person_colour_mark' ORDER BY event_order");
+                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
+                AND event_kind='person_colour_mark' ORDER BY event_order");
             while ($sourceDb = $sourceqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= '1 _COLOR ' . $sourceDb->event_event . "\r\n";
                 //if ($gedcom_sources=='yes'){
@@ -968,8 +972,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Person events ***
             $event_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-				AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
-				AND event_kind='event' ORDER BY event_order");
+                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
+                AND event_kind='event' ORDER BY event_order");
             while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                 $process_event = false;
                 $process_event2 = false;
@@ -1168,13 +1172,13 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 }
 
                 /* No longer in use
-				// *** Text is added in the first line: 1 _MILT military items. ***
-				if ($process_event){
-					if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
-					if ($eventDb->event_date) $buffer.='2 DATE '.process_date($eventDb->event_date)."\r\n";
-					if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
-				}
-				*/
+                // *** Text is added in the first line: 1 _MILT military items. ***
+                if ($process_event){
+                    if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
+                    if ($eventDb->event_date) $buffer.='2 DATE '.process_date($eventDb->event_date)."\r\n";
+                    if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
+                }
+                */
 
                 // *** No text behind first line, add text at second NOTE line ***
                 if ($process_event2) {
@@ -1205,7 +1209,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         if ($person->pers_fams) {
             $pers_fams = explode(";", $person->pers_fams);
             foreach ($pers_fams as $i => $value) {
-                if ($_POST['part_tree'] == 'part' and !in_array($pers_fams[$i], $famsids)) {
+                if ($export["part_tree"] == 'part' and !in_array($pers_fams[$i], $famsids)) {
                     continue;
                 }
                 $buffer .= '1 FAMS @' . $pers_fams[$i] . "@\r\n";
@@ -1214,7 +1218,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
         // *** FAMC ***
         if ($person->pers_famc) {
-            if ($_POST['part_tree'] == 'part' and !in_array($person->pers_famc, $famsids)) {
+            if ($export["part_tree"] == 'part' and !in_array($person->pers_famc, $famsids)) {
             } // don't export FAMC
             else {
                 $buffer .= '1 FAMC @' . $person->pers_famc . "@\r\n";
@@ -1311,7 +1315,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         $family_qry = $dbh->query("SELECT * FROM humo_families WHERE fam_id='" . $families->fam_id . "'");
         $family = $family_qry->fetch(PDO::FETCH_OBJ);
 
-        if ($_POST['part_tree'] == 'part'  and !in_array($family->fam_gedcomnumber, $famsids)) {
+        if ($export["part_tree"] == 'part'  and !in_array($family->fam_gedcomnumber, $famsids)) {
             continue;
         }
 
@@ -1321,7 +1325,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         if (isset($_POST['gedcom_status']) and $_POST['gedcom_status'] == 'yes') echo $family->fam_gedcomnumber . ' ';
 
         if ($family->fam_man) {
-            if ($_POST['part_tree'] == 'part' and !in_array($family->fam_man, $persids)) {
+            if ($export["part_tree"] == 'part' and !in_array($family->fam_man, $persids)) {
                 // skip if not included (e.g. if spouse of base person in ancestor export or spouses of descendants in desc export are not checked for export)
             } else {
                 $buffer .= '1 HUSB @' . $family->fam_man . "@\r\n";
@@ -1329,7 +1333,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         }
 
         if ($family->fam_woman) {
-            if ($_POST['part_tree'] == 'part' and !in_array($family->fam_woman, $persids)) {
+            if ($export["part_tree"] == 'part' and !in_array($family->fam_woman, $persids)) {
                 // skip if not included
             } else {
                 $buffer .= '1 WIFE @' . $family->fam_woman . "@\r\n";
@@ -1518,7 +1522,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         if ($family->fam_children) {
             $child = explode(";", $family->fam_children);
             foreach ($child as $i => $value) {
-                if ($_POST['part_tree'] == 'part' and !in_array($child[$i], $persids)) {
+                if ($export["part_tree"] == 'part' and !in_array($child[$i], $persids)) {
                     continue;
                 }
                 $buffer .= '1 CHIL @' . $child[$i] . "@\r\n";
@@ -1539,8 +1543,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Family pictures ***
             $sourceqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-				AND event_connect_kind='family' AND event_connect_id='" . $family->fam_gedcomnumber . "'
-				AND event_kind='picture' ORDER BY event_order");
+                AND event_connect_kind='family' AND event_connect_id='" . $family->fam_gedcomnumber . "'
+                AND event_kind='picture' ORDER BY event_order");
             while ($sourceDb = $sourceqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= "1 OBJE\r\n";
                 $buffer .= "2 FORM jpg\r\n";
@@ -1564,8 +1568,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Family events ***
             $event_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-				AND event_connect_kind='family' AND event_connect_id='" . $family->fam_gedcomnumber . "'
-				AND event_kind='event' ORDER BY event_order");
+                AND event_connect_kind='family' AND event_connect_id='" . $family->fam_gedcomnumber . "'
+                AND event_kind='event' ORDER BY event_order");
             while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                 $process_event = false;
                 $process_event2 = false;
@@ -1674,11 +1678,11 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         //2 DSCR Beschrijving
         //1 NOTE Persoonskaarten (van overleden personen) besteld bij CBVG te Den Haag.
 
-        if ($_POST['part_tree'] == 'part') {  // only include sources that are used by the people in this partial tree
+        if ($export["part_tree"] == 'part') {  // only include sources that are used by the people in this partial tree
             $source_array = array();
             // find all sources referred to by persons (I233) or families (F233)
             $qry = $dbh->query("SELECT connect_connect_id, connect_source_id FROM humo_connections
-				WHERE connect_tree_id='" . $tree_id . "' AND connect_source_id != ''");
+                WHERE connect_tree_id='" . $tree_id . "' AND connect_source_id != ''");
             while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($qryDb->connect_connect_id, $persids) or in_array($qryDb->connect_connect_id, $famsids)) {
                     $source_array[] = $qryDb->connect_source_id;
@@ -1688,7 +1692,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             // shared addresses: we need a three-fold procedure....
             // First: in the connections table search for exported persons/families that have an RESI number connection (R34)
             $address_connect_qry = $dbh->query("SELECT connect_connect_id, connect_item_id
-				FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind LIKE '%_address'");
+                FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind LIKE '%_address'");
             $resi_array = array();
             while ($address_connect_qryDb = $address_connect_qry->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($address_connect_qryDb->connect_connect_id, $persids) or in_array($address_connect_qryDb->connect_connect_id, $famsids)) {
@@ -1697,7 +1701,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             }
             // Second: in the address table search for the previously found R numbers and get their id number (33)
             $address_address_qry = $dbh->query("SELECT address_gedcomnr, address_id FROM humo_addresses
-				WHERE address_tree_id='" . $tree_id . "' AND address_gedcomnr !='' ");
+                WHERE address_tree_id='" . $tree_id . "' AND address_gedcomnr !='' ");
             $resi_id_array = array();
             while ($address_address_qryDb = $address_address_qry->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($address_address_qryDb->address_gedcomnr, $resi_array)) {
@@ -1706,8 +1710,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             }
             // Third: back in the connections table, find the previously found address id numbers and get the associated source ged number ($23)
             $address_connect2_qry = $dbh->query("SELECT connect_connect_id, connect_source_id
-				FROM humo_connections
-				WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind = 'address_source'");
+                FROM humo_connections
+                WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind = 'address_source'");
             while ($address_connect2_qry_qryDb = $address_connect2_qry->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($address_connect2_qry_qryDb->connect_connect_id, $resi_id_array)) {
                     $source_array[] = $address_connect2_qry_qryDb->connect_source_id;
@@ -1715,8 +1719,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             }
             // "direct" addresses
             $addressqry = $dbh->query("SELECT address_id, address_connect_sub_kind, address_connect_id
-				FROM humo_addresses
-				WHERE address_tree_id='" . $tree_id . "'");
+                FROM humo_addresses
+                WHERE address_tree_id='" . $tree_id . "'");
             $source_address_array = array();
             while ($addressqryDb = $addressqry->fetch(PDO::FETCH_OBJ)) {
                 if ($addressqryDb->address_connect_sub_kind == 'person' and in_array($addressqryDb->address_connect_id, $persids)) {
@@ -1727,7 +1731,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 }
             }
             $addresssourceqry = $dbh->query("SELECT connect_source_id, connect_connect_id
-				FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind LIKE 'address_%'");
+                FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind LIKE 'address_%'");
             while ($addresssourceqryDb = $addresssourceqry->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($addresssourceqryDb->connect_connect_id, $source_address_array)) {
                     $source_array[] = $addresssourceqryDb->connect_source_id;
@@ -1752,7 +1756,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 }
             }
             $eventsourceqry = $dbh->query("SELECT connect_source_id, connect_connect_id
-				FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind LIKE 'event_%'");
+                FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind LIKE 'event_%'");
             while ($eventsourceqryDb = $eventsourceqry->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($eventsourceqryDb->connect_connect_id, $source_event_array)) {
                     $source_array[] = $eventsourceqryDb->connect_source_id;
@@ -1766,13 +1770,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         }
 
         if ($gedcom_sources == 'yes') {
-            // *** Only generate seperated sources if source is shared ***
-            //$family_qry=$dbh->query("SELECT * FROM humo_sources
-            //	WHERE source_tree_id='".$tree_id."'
-            //	AND source_shared='1'");
             $family_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
             while ($family = $family_qry->fetch(PDO::FETCH_OBJ)) {
-                if ($_POST['part_tree'] == 'part'  and !in_array($family->source_gedcomnr, $source_array)) {
+                if ($export["part_tree"] == 'part'  and !in_array($family->source_gedcomnr, $source_array)) {
                     continue;
                 }
 
@@ -1819,8 +1819,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // *** Source pictures ***
                 $sourceqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-					AND event_connect_kind='source' AND event_connect_id='" . $family->source_gedcomnr . "'
-					AND event_kind='picture' ORDER BY event_order");
+                    AND event_connect_kind='source' AND event_connect_id='" . $family->source_gedcomnr . "'
+                    AND event_kind='picture' ORDER BY event_order");
                 while ($sourceDb = $sourceqry->fetch(PDO::FETCH_OBJ)) {
                     $buffer .= "1 OBJE\r\n";
                     $buffer .= "2 FORM jpg\r\n";
@@ -1871,15 +1871,13 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             }
 
             /*
-			repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
-			repo_date='".process_date('repo_date')."',
-			repo_mail='".safe_text_db($_POST['repo_mail'])."',
-			repo_url='".safe_text_db($_POST['repo_url'])."',
-			*/
+            repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
+            repo_date='".process_date('repo_date')."',
+            repo_mail='".safe_text_db($_POST['repo_mail'])."',
+            repo_url='".safe_text_db($_POST['repo_url'])."',
+            */
             // *** Repository data ***
-            $repo_qry = $dbh->query("SELECT * FROM humo_repositories
-				WHERE repo_tree_id='" . $tree_id . "'
-				ORDER BY repo_name, repo_place");
+            $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
             while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) {
                 $buffer = '0 @' . $repoDb->repo_gedcomnr . "@ REPO\r\n";
                 if ($repoDb->repo_name) {
@@ -1944,8 +1942,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         if (isset($_POST['gedcom_shared_addresses']) and $_POST['gedcom_shared_addresses'] == 'standard') $export_addresses = false;
         if ($export_addresses) {
             $family_qry = $dbh->query("SELECT * FROM humo_addresses
-				WHERE address_tree_id='" . $tree_id . "'
-				AND address_shared='1'");
+                WHERE address_tree_id='" . $tree_id . "'
+                AND address_shared='1'");
             while ($family = $family_qry->fetch(PDO::FETCH_OBJ)) {
                 // 0 @R1@ RESI *** Gedcomnumber ***
                 $buffer = '0 @' . $family->address_gedcomnr . "@ RESI\r\n";
@@ -1995,7 +1993,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             natsort($noteids);
             foreach ($noteids as $s) {
                 $text_query = "SELECT * FROM humo_texts
-					WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($s, 1, -1) . "'";
+                    WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($s, 1, -1) . "'";
                 $text_sql = $dbh->query($text_query);
                 while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
                     $buffer .= "0 " . $s . " NOTE\r\n";
@@ -2032,26 +2030,21 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
     }
     // PMB end of if 'minimal' option selected don't export this
 
-
     fwrite($fh, '0 TRLR');
     fclose($fh);
+?>
 
-    echo '<p>' . __('GEDCOM file is generated') . '<br>';
+    <p><?= __('GEDCOM file is generated'); ?><br>
 
-    echo '<form method="POST" action="include/gedcom_download.php" target="_blank">';
-    echo ' <input type="submit" name="something" value="' . __('Download GEDCOM file') . '">';
-    echo '<input type="hidden" name="page" value="' . $page . '">';
-    echo '<input type="hidden" name="file_name" value="' . $myFile . '">';
-    echo '<input type="hidden" name="file_name_short" value="' . $gedcom_file_name . '">';
-    echo '</form><br>';
+    <form method="POST" action="include/gedcom_download.php" target="_blank">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="file_name" value="<?= $myFile; ?>">
+        <input type="hidden" name="file_name_short" value="<?= $gedcom_file_name; ?>">
+        <input type="submit" name="something" value="<?= __('Download GEDCOM file'); ?>">
+    </form><br>
 
-    echo '<form method="POST" action="index.php">';
-
-    //echo ' <input type="submit" name="remove_gedcom" value="'.__('Remove GEDCOM file').'">';
-    //echo '<input type="hidden" name="page" value="'.$page.'">';
-    //echo '</form>';
+<?php
 } // end of tree
-
 
 function decode($buffer)
 {
@@ -2159,8 +2152,7 @@ function process_place($place, $number)
     if (isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'yes') {
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
         if ($temp->rowCount() > 0) {
-            $geo_location_sql = "SELECT * FROM humo_location
-                WHERE location_location='" . addslashes($place) . "'";
+            $geo_location_sql = "SELECT * FROM humo_location WHERE location_location='" . addslashes($place) . "'";
             $geo_location_qry = $dbh->query($geo_location_sql);
             $geo_locationDb = $geo_location_qry->fetch(PDO::FETCH_OBJ);
             if ($geo_locationDb) {
@@ -2364,8 +2356,7 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
         return;
     }
 
-    $family = $dbh->query("SELECT fam_man, fam_woman FROM humo_families
-        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $family_id . "'");
+    $family = $dbh->query("SELECT fam_man, fam_woman FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $family_id . "'");
     try {
         @$familyDb = $family->fetch(PDO::FETCH_OBJ);
     } catch (PDOException $e) {
@@ -2443,8 +2434,7 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
             }
         }
         if (isset($_POST['desc_sp_parents'])) { // if set, add parents of spouse
-            $spqry = $dbh->query("SELECT pers_famc FROM humo_persons
-                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber = '" . $desc_sp . "'");
+            $spqry = $dbh->query("SELECT pers_famc FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber = '" . $desc_sp . "'");
             $spqryDb = $spqry->fetch(PDO::FETCH_OBJ);
             if (isset($spqryDb->pers_famc) and $spqryDb->pers_famc) {
                 $famqryDb = $db_functions->get_family($spqryDb->pers_famc);
@@ -2463,8 +2453,7 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
         if ($familyDb->fam_children) {
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {
-                $child = $dbh->query("SELECT * FROM humo_persons
-                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $child_array[$i] . "'");
+                $child = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $child_array[$i] . "'");
                 @$childDb = $child->fetch(PDO::FETCH_OBJ);
                 //@$childDb = $db_functions->get_person($child_array[$i]);
                 if ($child->rowCount() > 0) {

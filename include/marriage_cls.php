@@ -7,11 +7,9 @@
 
 class marriage_cls
 {
-    //public $cls_marriage_Db = '';  // Database record
     public $cls_marriage_Db = null;  // Database record
     public $privacy = false;  // Privacy van persoon
 
-    //public function __construct($familyDb, $privacy_man, $privacy_woman)
     public function __construct($familyDb = null, $privacy_man = null, $privacy_woman = null)
     {
         $this->cls_marriage_Db = $familyDb;           // Database record
@@ -44,8 +42,11 @@ class marriage_cls
     {
         global $dbh, $db_functions, $tree_prefix_quoted, $dataDb, $uri_path, $humo_option;
         global $language, $user, $screen_mode;
-        global $templ_relation, $parent1Db, $parent2Db;
+        global $parent1Db, $parent2Db;
         global $relation_check;
+
+
+        $templ_relation = array();  //reset array
 
         if ($marriageDb == '') {
             $marriageDb = $this->cls_marriage_Db;
@@ -161,13 +162,13 @@ class marriage_cls
             // *** Text "living together" already shown in "kind" ***
             // *** Just in case made an extra text "living together" here ***
             //if (!$relation_kind) {
-                //if ($marriageDb->fam_kind != 'living together') {
-                $text .= '<b>' . __('Living together') . '</b>';
-                if (isset($templ_relation["cohabit_exist"])) {
-                    $templ_relation["cohabit_exist"] .= __('Living together') . " ";
-                } else {
-                    $templ_relation["cohabit_exist"] = __('Living together') . " ";
-                }
+            //if ($marriageDb->fam_kind != 'living together') {
+            $text .= '<b>' . __('Living together') . '</b>';
+            if (isset($templ_relation["cohabit_exist"])) {
+                $templ_relation["cohabit_exist"] .= __('Living together') . " ";
+            } else {
+                $templ_relation["cohabit_exist"] = __('Living together') . " ";
+            }
             //}
             $text .= ' ' . $temp_text;
         }
@@ -365,7 +366,7 @@ class marriage_cls
         if ($temp_text) {
             $marriage_check = true;
             $addition = __(' to: ');
-            $templ_relation["wedd_exist"]='';
+            $templ_relation["wedd_exist"] = '';
             if ($text != '') {
                 $text .= "<br>\n";
                 $templ_relation["wedd_exist"] = "\n";
@@ -816,7 +817,6 @@ class marriage_cls
                     $addition = __(' to: ');
                 }
             }
-
         }
 
         if ($presentation == 'short' or $presentation == 'shorter') {
@@ -838,13 +838,17 @@ class marriage_cls
             $text = '<b>' . $relation_number . $relation_kind . '</b> ' . $text;
         }
 
-        if ($addition) $text .= '<b>' . $addition . '</b>';
+        if ($addition) {
+            $text .= '<b>' . $addition . '</b>';
 
-        if ($presentation == 'short' or $presentation == 'shorter') {
-            $templ_relation["rel_add"] = " " . $addition;
-        } else {
-            $templ_relation["rel_add"] = "\n" . $addition;
+            $templ_relation["rel_add"] = $addition;
         }
+
+        //if ($presentation == 'short' or $presentation == 'shorter') {
+        //    $templ_relation["rel_add"] = " " . $addition;
+        //} else {
+        //    $templ_relation["rel_add"] = "\n" . $addition;
+        //}
 
         if ($screen_mode != "PDF") {
             return $text;

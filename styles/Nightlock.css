@@ -22,15 +22,6 @@ body {
     font-weight: bold;
 }
 
-/*
-#top_familytree_name {
-    color: #689BDD;
-    font-family: Deliciousx, Verdana, Arial;
-    font-size: 16px;
-    font-weight: normal;
-}
-*/
-
 /* Links */
 a:link {
     color: #0058af;
@@ -144,26 +135,6 @@ td.table_header {
     /* For IE: */
     color: #FFFFFF;
     background-color: #aaccee;
-}
-
-ul.humo_menu_item li {
-    border-left: none;
-    border-right: none;
-}
-
-ul.humo_menu_item li a {
-    display: block;
-    /* up, right, bottom */
-    padding: 8px 5px 7px 5px;
-    text-decoration: none;
-    color: #FFFFFF;
-    border-right: 1px solid #FFFFFF;
-}
-
-/* Pop-up menu */
-ul.humo_menu_item2 li a {
-    background-color: #999;
-    background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
 }
 
 .search_bar {

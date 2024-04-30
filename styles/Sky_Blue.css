@@ -13,15 +13,6 @@ body {
     font-size: 18px;
 }
 
-/*
-#top_familytree_name {
-    color: #333;
-    font-family: Deliciousx, Verdana, Arial;
-    font-size: 16px;
-    font-weight: normal;
-}
-*/
-
 /* Links */
 a:link {
     color: #0058af;
@@ -73,32 +64,11 @@ td.style_tree_text {
     border: 0px;
 }
 
-ul.humo_menu_item li {
-    border-left: none;
-    border-right: none;
-}
-
-ul.humo_menu_item li a {
-    display: block;
-    /* up, right, bottom */
-    padding: 8px 5px 7px 5px;
-    text-decoration: none;
-    color: #333;
-    /* border-right:1px solid #61a0d9; */
-    border-right: 0px;
-}
-
 /* Hide pull down icon */
 .pull_down_icon {
     visibility: hidden;
     width: 0px;
     height: 0px;
-}
-
-/* Pop-up menu */
-ul.humo_menu_item2 li a {
-    background-color: #999;
-    background: url("images_sky_blue/blue.png") repeat left top;
 }
 
 /* Menu */

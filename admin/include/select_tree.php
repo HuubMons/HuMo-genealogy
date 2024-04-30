@@ -1,5 +1,5 @@
 <?php
-function select_tree($dbh, $page, $tree_id)
+function select_tree($dbh, $page, $tree_id, $menu_tab = '')
 {
     global $group_edit_trees, $group_administrator, $selected_language;
 
@@ -9,6 +9,11 @@ function select_tree($dbh, $page, $tree_id)
 ?>
     <form method="POST" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
+
+        <?php if ($menu_tab) { ?>
+            <input type="hidden" name="menu_tab" value="<?= $menu_tab; ?>">
+        <?php } ?>
+
         <select size="1" name="tree_id" onChange="this.form.submit();" class="form-select form-select-sm">
             <option value=""><?= __('Select a family tree:'); ?></option>
             <?php
