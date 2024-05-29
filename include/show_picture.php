@@ -13,16 +13,18 @@ function show_media($event_connect_kind, $event_connect_id)
 
     // *** Pictures/ media ***
     //if ($user['group_pictures'] == 'j' and $data["picture_presentation"] != 'hide') {
-    if ($user['group_pictures'] == 'j' and isset($data["picture_presentation"]) and $data["picture_presentation"] != 'hide') {
-            $tree_pict_path = $dataDb->tree_pict_path;
+    if ($user['group_pictures'] == 'j' && isset($data["picture_presentation"]) && $data["picture_presentation"] != 'hide') {
+        $tree_pict_path = $dataDb->tree_pict_path;
 
         // *** Use default folder: media ***
-        if (substr($tree_pict_path, 0, 1) == '|') {
+        if (substr($tree_pict_path, 0, 1) === '|') {
             $tree_pict_path = 'media/';
         }
 
         //TODO check PDF code
-        if ($screen_mode == 'PDF') $tree_pict_path = __DIR__ . '/../' . $tree_pict_path;
+        if ($screen_mode == 'PDF') {
+            $tree_pict_path = __DIR__ . '/../' . $tree_pict_path;
+        }
 
         // *** Standard connected media by person and family ***
         $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
@@ -38,8 +40,9 @@ function show_media($event_connect_kind, $event_connect_id)
             $media_event_place[$media_nr] = $pictureDb->event_place;
             $media_event_text[$media_nr] = $pictureDb->event_text;
             // *** Remove last seperator ***
-            if ($media_event_text[$media_nr] and substr(rtrim($media_event_text[$media_nr]), -1) == "|")
+            if ($media_event_text[$media_nr] && substr(rtrim($media_event_text[$media_nr]), -1) === "|") {
                 $media_event_text[$media_nr] = substr($media_event_text[$media_nr], 0, -1);
+            }
             //$media_event_source[$media_nr]=$pictureDb->event_source;
         }
 
@@ -52,7 +55,7 @@ function show_media($event_connect_kind, $event_connect_id)
             $connect_sql = $db_functions->get_connections_connect_id('source', 'source_object', $event_connect_id);
         }
 
-        if ($event_connect_kind == 'person' or $event_connect_kind == 'family' or $event_connect_kind == 'source') {
+        if ($event_connect_kind == 'person' || $event_connect_kind == 'family' || $event_connect_kind == 'source') {
             foreach ($connect_sql as $connectDb) {
                 $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
                     AND event_gedcomnr='" . safe_text_db($connectDb->connect_source_id) . "' AND event_kind='object'
@@ -65,7 +68,9 @@ function show_media($event_connect_kind, $event_connect_id)
                     $media_event_place[$media_nr] = $pictureDb->event_place;
                     $media_event_text[$media_nr] = $pictureDb->event_text;
                     // *** Remove last seperator ***
-                    if (substr(rtrim($media_event_text[$media_nr]), -1) == "|") $media_event_text[$media_nr] = substr($media_event_text[$media_nr], 0, -1);
+                    if (substr(rtrim($media_event_text[$media_nr]), -1) === "|") {
+                        $media_event_text[$media_nr] = substr($media_event_text[$media_nr], 0, -1);
+                    }
                     //$media_event_source[$media_nr]=$pictureDb->event_source;
                 }
             }
@@ -75,8 +80,11 @@ function show_media($event_connect_kind, $event_connect_id)
         // *** Show media ***
         // ******************
         if ($media_nr > 0) {
-            if ($screen_mode == "RTF") $process_text .= "\n";
-            else $process_text .= '<br>';
+            if ($screen_mode == "RTF") {
+                $process_text .= "\n";
+            } else {
+                $process_text .= '<br>';
+            }
         }
 
         $picpath = $uri_path;
@@ -98,7 +106,7 @@ function show_media($event_connect_kind, $event_connect_id)
                 $catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
                 if ($catg->rowCount()) {
                     while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
-                        if (substr($event_event, 0, 3) == $catDb->photocat_prefix and is_dir($tree_pict_path . '/' . substr($event_event, 0, 2))) {  // there is a subfolder of this prefix
+                        if (substr($event_event, 0, 3) == $catDb->photocat_prefix && is_dir($tree_pict_path . '/' . substr($event_event, 0, 2))) {  // there is a subfolder of this prefix
                             $tree_pict_path .= substr($event_event, 0, 2) . '/';  // look in that subfolder
                         }
                     }
@@ -111,66 +119,66 @@ function show_media($event_connect_kind, $event_connect_id)
             }
 
             // *** Show PDF file ***
-            if (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "pdf") {
+            if (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "pdf") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/pdf.jpeg" alt="PDF"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '"><img src="' . $picpath . 'images/pdf.jpeg" alt="PDF"></a>';
             }
             // *** Show DOC file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "doc" or substr($tree_pict_path . $event_event, -4, 4) == "docx") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "doc" || substr($tree_pict_path . $event_event, -4, 4) === "docx") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/msdoc.gif" alt="DOC"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '"><img src="' . $picpath . 'images/msdoc.gif" alt="DOC"></a>';
             }
             // *** Show AVI Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "avi") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "avi") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="AVI"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="AVI"></a>';
             }
             // *** Show WMV Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "wmv") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "wmv") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="WMV"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="WMV"></a>';
             }
             // *** Show MPG Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "mpg") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mpg") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MPG"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="MPG"></a>';
             }
             // *** Show MP4 Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "mp4") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mp4") {
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="MP4"></a>';
             }
             // *** Show MOV Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "mov") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mov") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MOV"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="MOV"></a>';
             }
             // *** Show WMA Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "wma") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "wma") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif" alt="WMA"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif" alt="WMA"></a>';
             }
             // *** Show MP3 Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "mp3") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mp3") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="MP3"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="MP3"></a>';
             }
             // *** Show WAV Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "wav") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "wav") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="WAV"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="WAV"></a>';
             }
             // *** Show MID Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "mid") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mid") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="MID"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="MID"></a>';
             }
             // *** Show RAM Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) == "ram") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "ram") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RAM"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="RAM"></a>';
             }
             // *** Show RA Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -2, 2)) == "ra") {
+            elseif (strtolower(substr($tree_pict_path . $event_event, -2, 2)) === "ra") {
                 //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RA"></a>';
                 $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="RA"></a>';
             } else {
@@ -183,12 +191,16 @@ function show_media($event_connect_kind, $event_connect_id)
                 $picture_array['picture'] = str_ireplace("%2F", "/", rawurlencode($picture_array['picture']));
 
                 $line_pos = 0;
-                if ($media_event_text[$i]) $line_pos = strpos($media_event_text[$i], "|");
+                if ($media_event_text[$i]) {
+                    $line_pos = strpos($media_event_text[$i], "|");
+                }
                 //$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
                 $title_txt = $media_event_text[$i];
                 //if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
                 //if(isset($line_pos)) $title_txt = substr($media_event_text[$i],0,$line_pos);
-                if ($line_pos > 0) $title_txt = substr($media_event_text[$i], 0, $line_pos);
+                if ($line_pos > 0) {
+                    $title_txt = substr($media_event_text[$i], 0, $line_pos);
+                }
 
                 // *** Old Slimbox lightbox ***
                 //$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $title_txt).'">';
@@ -212,7 +224,7 @@ function show_media($event_connect_kind, $event_connect_id)
 
             // *** Show picture date and place ***
             $picture_text = '';
-            if ($media_event_date[$i] or $media_event_place[$i]) {
+            if ($media_event_date[$i] || $media_event_place[$i]) {
                 if ($screen_mode != 'RTF') {
                     $picture_text = $date_place . ' ';
                 }
@@ -220,7 +232,7 @@ function show_media($event_connect_kind, $event_connect_id)
             }
 
             // *** Show text by picture of little space ***
-            if (isset($media_event_text[$i]) and $media_event_text[$i]) {
+            if (isset($media_event_text[$i]) && $media_event_text[$i]) {
                 if ($screen_mode != 'RTF') {
                     //$picture_text.=' '.str_replace("&", "&amp;", $media_event_text[$i]);
                     $picture_text .= ' ' . str_replace("&", "&amp;", process_text($media_event_text[$i]));
@@ -242,12 +254,16 @@ function show_media($event_connect_kind, $event_connect_id)
                     } else {
                         $source_array = show_sources2("family", "fam_event_source", $media_event_id[$i]);
                     }
-                    if ($source_array) $picture_text .= $source_array['text'];
+                    if ($source_array) {
+                        $picture_text .= $source_array['text'];
+                    }
                 }
 
                 $process_text .= '<div class="photo">';
                 $process_text .= $picture;
-                if (isset($picture_array['picture']) and $picture_array['picture'] == 'missing-image.jpg') $picture_text .= '<br><b>' . __('Missing image') . ':<br>' . $tree_pict_path . $event_event . '</b>';
+                if (isset($picture_array['picture']) && $picture_array['picture'] == 'missing-image.jpg') {
+                    $picture_text .= '<br><b>' . __('Missing image') . ':<br>' . $tree_pict_path . $event_event . '</b>';
+                }
                 // *** Show text by picture ***
                 if (isset($picture_text)) {
                     $process_text .= '<div class="phototext">' . $picture_text . '</div>';
@@ -286,7 +302,7 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
         $cat1 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
         if ($cat1->rowCount()) {
             while ($catDb = $cat1->fetch(PDO::FETCH_OBJ)) {
-                if (substr($picture_org, 0, 3) == $catDb->photocat_prefix and is_dir($picture_path . '/' . substr($picture_org, 0, 2))) {  // there is a subfolder of this prefix
+                if (substr($picture_org, 0, 3) == $catDb->photocat_prefix && is_dir($picture_path . '/' . substr($picture_org, 0, 2))) {  // there is a subfolder of this prefix
                     $picture_path .= substr($picture_org, 0, 2) . '/';  // look in that subfolder
                 }
             }
@@ -322,7 +338,7 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
 
     // *** Check if picture is in subdirectory ***
     // Example: subdir1_test/xy/2022_02_12 Scheveningen.jpg
-    if ($picture['thumb'] == '') {
+    if ($picture['thumb'] === '') {
         $dirname = dirname($picture['picture']); // subdir1_test/xy/2022_02_12
         $basename = basename($picture['picture']); // 2022_02_12 Scheveningen.jpg
         if (file_exists($picture["path"] . $dirname . '/thumb_' . $basename)) {
@@ -335,14 +351,18 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
     // *** No picture selected yet (in editor) ***
     if (!$picture['picture']) {
         $picture['path'] = 'images/';
-        if ($screen_mode == 'PDF' or $screen_mode == 'RTF') $picture['path'] = __DIR__ . '/../images/';
+        if ($screen_mode == 'PDF' || $screen_mode == 'RTF') {
+            $picture['path'] = __DIR__ . '/../images/';
+        }
         $picture['thumb'] = 'thumb_';
         $picture['picture'] = 'missing-image.jpg';
     }
 
     if (!$found_picture) {
         $picture['path'] = 'images/';
-        if ($screen_mode == 'PDF' or $screen_mode == 'RTF') $picture['path'] = __DIR__ . '/../images/';
+        if ($screen_mode == 'PDF' || $screen_mode == 'RTF') {
+            $picture['path'] = __DIR__ . '/../images/';
+        }
         $picture['thumb'] = 'thumb_';
         $picture['picture'] = 'missing-image.jpg';
     }
@@ -350,7 +370,7 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
     // *** If photo is too wide, correct the size ***
     list($width, $height) = getimagesize($picture["path"] . $picture['thumb'] . $picture['picture']);
 
-    if ($pict_width > 0 and $pict_height > 0) {
+    if ($pict_width > 0 && $pict_height > 0) {
         /*
         // *** Change width and height ***
         $factor=$height/$pict_height;

@@ -70,7 +70,7 @@ class AncestorModel extends FamilyModel
     //TODO this is also defined in family script.
     public function getNumberRoman()
     {
-        $number_roman = array(
+        return array(
             1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI', 7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X',
             11 => 'XI', 12 => 'XII', 13 => 'XIII', 14 => 'XIV', 15 => 'XV', 16 => 'XVI', 17 => 'XVII', 18 => 'XVIII', 19 => 'XIX', 20 => 'XX',
             21 => 'XXI', 22 => 'XXII', 23 => 'XXIII', 24 => 'XXIV', 25 => 'XXV', 26 => 'XXVII', 27 => 'XXVII', 28 => 'XXVIII', 29 => 'XXIX', 30 => 'XXX',
@@ -78,7 +78,6 @@ class AncestorModel extends FamilyModel
             41 => 'XLI', 42 => 'XLII', 43 => 'XLIII', 44 => 'XLIV', 45 => 'XLV', 46 => 'XLVII', 47 => 'XLVII', 48 => 'XLVIII', 49 => 'XLIX', 50 => 'L',
             51 => 'LI',  52 => 'LII',  53 => 'LIII',  54 => 'LIV',  55 => 'LV',  56 => 'LVII',  57 => 'LVII',  58 => 'LVIII',  59 => 'LIX',  60 => 'LX',
         );
-        return $number_roman;
     }
 
     function getAncestorHeader($name, $tree_id, $main_person)
@@ -93,11 +92,7 @@ class AncestorModel extends FamilyModel
         $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
         $link .= 'screen_mode=ancestor_chart';
         $data['header_link'][] = $link;
-        if ($name == 'Ancestor report') {
-            $data['header_active'][] = 'active';
-        } else {
-            $data['header_active'][] = '';
-        }
+        $data['header_active'][] = $name == 'Ancestor report' ? 'active' : '';
         $data['header_text'][] = __('Ancestor report');
 
         // TODO improve paths and variables.
@@ -107,11 +102,7 @@ class AncestorModel extends FamilyModel
             $path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
         }
         $data['header_link'][] = $path;
-        if ($name == 'Ancestor chart') {
-            $data['header_active'][] = 'active';
-        } else {
-            $data['header_active'][] = '';
-        }
+        $data['header_active'][] = $name == 'Ancestor chart' ? 'active' : '';
         $data['header_text'][] = __('Ancestor chart');
 
         if ($humo_option["url_rewrite"] == 'j') {
@@ -120,22 +111,14 @@ class AncestorModel extends FamilyModel
             $path = 'index.php?page=ancestor_sheet&amp;tree_id=' . $tree_id . '&amp;id=' . $main_person;
         }
         $data['header_link'][] = $path;
-        if ($name == 'Ancestor sheet') {
-            $data['header_active'][] = 'active';
-        } else {
-            $data['header_active'][] = '';
-        }
+        $data['header_active'][] = $name == 'Ancestor sheet' ? 'active' : '';
         $data['header_text'][] = __('Ancestor sheet');
 
         // *** Fanchart ***
         $path = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
         $path .= 'id=' . $main_person;
         $data['header_link'][] = $path;
-        if ($name == 'Fanchart') {
-            $data['header_active'][] = 'active';
-        } else {
-            $data['header_active'][] = '';
-        }
+        $data['header_active'][] = $name == 'Fanchart' ? 'active' : '';
         $data['header_text'][] = __('Fanchart');
 
         // TODO Move to view (is used multiple times)?

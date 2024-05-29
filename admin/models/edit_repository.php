@@ -3,9 +3,9 @@ class EditorRepositoryModel
 {
     private $repo_id;
 
-    public function set_repo_id()
+    public function set_repo_id(): void
     {
-        if (isset($_POST['repo_id']) and is_numeric(($_POST['repo_id']))) {
+        if (isset($_POST['repo_id']) && is_numeric(($_POST['repo_id']))) {
             $this->repo_id = $_POST['repo_id'];
         }
     }
@@ -14,10 +14,12 @@ class EditorRepositoryModel
         return $this->repo_id;
     }
 
-    public function update_repository($dbh, $tree_id, $db_functions, $editor_cls)
+    public function update_repository($dbh, $tree_id, $db_functions, $editor_cls): void
     {
         $userid = false;
-        if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
+        if (is_numeric($_SESSION['user_id_admin'])) {
+            $userid = $_SESSION['user_id_admin'];
+        }
 
         if (isset($_POST['repo_add'])) {
             // *** Generate new GEDCOM number ***

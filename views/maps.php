@@ -58,7 +58,9 @@ $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
                             // *** Check if family tree is shown or hidden for user group ***
                             $hide_tree_array = explode(";", $user['group_hide_trees']);
                             $hide_tree = false;
-                            if (in_array($tree_searchDb->tree_id, $hide_tree_array)) $hide_tree = true;
+                            if (in_array($tree_searchDb->tree_id, $hide_tree_array)) {
+                                $hide_tree = true;
+                            }
                             if ($hide_tree == false) {
                                 $selected = '';
                                 if (isset($_SESSION['tree_prefix'])) {
@@ -68,14 +70,12 @@ $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
                                         $_SESSION['tree_id'] = $tree_id;
                                         $db_functions->set_tree_id($tree_id);
                                     }
-                                } else {
-                                    if ($count == 0) {
-                                        $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
-                                        $selected = ' selected';
-                                        $tree_id = $tree_searchDb->tree_id;
-                                        $_SESSION['tree_id'] = $tree_id;
-                                        $db_functions->set_tree_id($tree_id);
-                                    }
+                                } elseif ($count == 0) {
+                                    $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
+                                    $selected = ' selected';
+                                    $tree_id = $tree_searchDb->tree_id;
+                                    $_SESSION['tree_id'] = $tree_id;
+                                    $db_functions->set_tree_id($tree_id);
                                 }
                                 $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
                                 echo '<option value="' . $tree_searchDb->tree_prefix . '"' . $selected . '>' . @$treetext['name'] . '</option>';
@@ -88,15 +88,15 @@ $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
 
                 <?php
                 // SET BIRTH OR DEATH MAP
-                if (!isset($_SESSION['type_birth']) and !isset($_SESSION['type_death'])) {
+                if (!isset($_SESSION['type_birth']) && !isset($_SESSION['type_death'])) {
                     $_SESSION['type_birth'] = 1;
                     $_SESSION['type_death'] = 0;
                 }
-                if (isset($_POST['map_type']) and $_POST['map_type'] == "type_birth") {
+                if (isset($_POST['map_type']) && $_POST['map_type'] == "type_birth") {
                     $_SESSION['type_birth'] = 1;
                     $_SESSION['type_death'] = 0;
                 }
-                if (isset($_POST['map_type']) and $_POST['map_type'] == "type_death") {
+                if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
                     $_SESSION['type_death'] = 1;
                     $_SESSION['type_birth'] = 0;
                 }
@@ -108,13 +108,13 @@ $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
                     <select style="max-width:200px" size="1" onChange="document.type_form.submit()" id="map_type" name="map_type">
                         <?php
                         $selected = '';
-                        if (isset($_SESSION['type_birth']) and $_SESSION['type_birth'] == 1) {
+                        if (isset($_SESSION['type_birth']) && $_SESSION['type_birth'] == 1) {
                             $selected = ' selected ';
                         }
                         echo '<option value="type_birth" ' . $selected . '>' . __('Birth locations') . '</option>';
 
                         $selected = '';
-                        if (isset($_SESSION['type_death']) and $_SESSION['type_death'] == 1) {
+                        if (isset($_SESSION['type_death']) && $_SESSION['type_death'] == 1) {
                             $selected = ' selected ';
                         }
                         echo '<option value="type_death" ' . $selected . '>' . __('Death locations') . '</option>';
@@ -126,7 +126,7 @@ $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
 
         <?php
         // *** OpenStreetMap ***
-        if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'OpenStreetMap') {
+        if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
             //dummy
         } else {
             // 2nd MENU BAR
@@ -371,8 +371,8 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                             $last = '';
                             $last = substr($value, 0, $pos);
                             $pref = substr($value, $pos + 1);
-                            if ($pref != '') {
-                                $pref = $pref . ' ';
+                            if ($pref !== '') {
+                                $pref .= ' ';
                             }
                             //$names .= $value.", ";
                             $names .= $pref . $last . ", ";
@@ -387,7 +387,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                     $flag_desc_search = 0;
                     $chosenperson = '';
                     $persfams = '';
-                    if (isset($_GET['persged']) and isset($_GET['persfams'])) {
+                    if (isset($_GET['persged']) && isset($_GET['persfams'])) {
                         $flag_desc_search = 1;
                         $chosenperson = $_GET['persged'];
                         $persfams = $_GET['persfams'];
@@ -448,13 +448,11 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                                         // *** Show data of man ***
 
                                         if ($swap_parent1_parent2 == true) {
-                                            if ($person_womanDb->pers_birth_place or $person_womanDb->pers_bapt_place) {
+                                            if ($person_womanDb->pers_birth_place || $person_womanDb->pers_bapt_place) {
                                                 $desc_array[] = $person_womanDb->pers_gedcomnumber;
                                             }
-                                        } else {
-                                            if ($person_manDb->pers_birth_place or $person_manDb->pers_bapt_place) {
-                                                $desc_array[] = $person_manDb->pers_gedcomnumber;
-                                            }
+                                        } elseif ($person_manDb->pers_birth_place || $person_manDb->pers_bapt_place) {
+                                            $desc_array[] = $person_manDb->pers_gedcomnumber;
                                         }
                                     } else {
                                     }   // don't take person twice!
@@ -477,7 +475,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                                             $child1stfam = $child_family[0];
                                             outline($child1stfam, $childDb->pers_gedcomnumber, $generation_number);  // recursive
                                         } else {    // Child without own family
-                                            if ($childDb->pers_birth_place or $childDb->pers_bapt_place) {
+                                            if ($childDb->pers_birth_place || $childDb->pers_bapt_place) {
                                                 $desc_array[] = $childDb->pers_gedcomnumber;
                                             }
                                         }
@@ -514,7 +512,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                     $flag_anc_search = 0;
                     $chosenperson = '';
                     $persfams = '';
-                    if (isset($_GET['anc_persged']) and isset($_GET['anc_persfams'])) {
+                    if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
                         $flag_anc_search = 1;
                         $chosenperson = $_GET['anc_persged'];
                         $persfams = $_GET['anc_persfams'];
@@ -550,9 +548,11 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                                 unset($marriage_gedcomnumber);
                                 $marriage_gedcomnumber = $marriage_gedcomnumber2;
                                 unset($marriage_gedcomnumber2);
+                                // *** Loop per generation ***
+                                $counter = count($ancestor_array);
 
                                 // *** Loop per generation ***
-                                for ($i = 0; $i < count($ancestor_array); $i++) {
+                                for ($i = 0; $i < $counter; $i++) {
                                     $listednr = '';
 
                                     foreach ($listed_array as $key => $value) {
@@ -572,7 +572,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                                         @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
 
                                         // ==	Check for parents
-                                        if ($person_manDb->pers_famc  and $listednr == '') {
+                                        if ($person_manDb->pers_famc && $listednr == '') {
                                             @$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
                                             if ($family_parentsDb->fam_man) {
                                                 $ancestor_array2[] = $family_parentsDb->fam_man;
@@ -609,6 +609,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
                         foreach ($listed_array as $value) {
                             $anc_array[] = $value;
                         }
+                        //$anc_array = $listed_array;
                     ?>
                         <div id="anc_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">
                             <?php
@@ -637,8 +638,7 @@ $fam_search_result = $dbh->query($fam_search);
     <form method="POST" action="'.$link.'" name="yossi" style="display : inline;">
         <table style="z-index:200;">
             <tr>
-                <td style="text-align:center"><?= __('Mark checkbox next to name(s)'); ?>
-                </td>
+                <td style="text-align:center"><?= __('Mark checkbox next to name(s)'); ?></td>
             </tr>
             <tr>
                 <td>
@@ -650,17 +650,20 @@ $fam_search_result = $dbh->query($fam_search);
                             $last = '';
                             $last = substr($fam_searchDb->totalname, 0, $pos);
                             $pref = substr($fam_searchDb->totalname, $pos + 1);
-                            if ($pref != '') {
+                            if ($pref !== '') {
                                 $pref = ', ' . $pref;
                             }
                             echo '<input type="checkbox" name="items[]" value="' . $fam_searchDb->totalname . '">' . $last . $pref . '<br>';
                         }
                         ?>
                     </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">
+                    <input type="submit" name="submit" value="<?= __('Choose'); ?>">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <?php
-                    echo '</td></tr><tr><td style="text-align:center">';
-                    echo '<input type="submit" name="submit" value="' . __('Choose') . '">';
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     echo '<input type="button" name="cancelfam" onclick="document.getElementById(\'namemapping\').style.display=\'none\';"  value="' . __('Cancel') . '">';
                     ?>
                 </td>
@@ -678,10 +681,7 @@ if (isset($_POST['descmap'])) {
     if (isset($_SERVER["HTTP_USER_AGENT"]) or ($_SERVER["HTTP_USER_AGENT"] != "")) { //adjust pulldown for mobiles/tablets
         $visitor_user_agent = $_SERVER["HTTP_USER_AGENT"];
         if (
-            strstr($visitor_user_agent, "Android") !== false or
-            strstr($visitor_user_agent, "iOS") !== false or
-            strstr($visitor_user_agent, "iPad") !== false or
-            strstr($visitor_user_agent, "iPhone") !== false
+            strstr($visitor_user_agent, "Android") !== false || strstr($visitor_user_agent, "iOS") !== false || strstr($visitor_user_agent, "iPad") !== false || strstr($visitor_user_agent, "iPhone") !== false
         ) {
             $select_size = "";
             $select_height = '100px';
@@ -691,97 +691,95 @@ if (isset($_POST['descmap'])) {
 ?>
     <div id="descmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
         <?php
-        if ($user['group_kindindex'] == "j") {
-            $orderlast = "CONCAT(pers_prefix,pers_lastname)";
-        } else {
-            $orderlast = "pers_lastname";
-        }
+        $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
         $desc_search = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
         $desc_search_result = $dbh->query($desc_search);
         echo '&nbsp;&nbsp;<strong>' . __('Filter by descendants of a person') . '</strong><br>';
         echo '&nbsp;&nbsp;' . __('Pick a name or enter ID:') . '<br>';
-        echo '<form method="POST" action="" style="display : inline;">';
-        echo '<select style="max-width:396px;background:#eee" ' . $select_size . ' onChange="window.location=this.value;" id="desc_map" name="desc_map">';
-        echo '<option value="toptext">' . __('Pick a name from the pulldown list') . '</option>';
-        //prepared statement out of loop
-        $chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber =? AND fam_children != ''");
-        $chld_prep->bindParam(1, $chld_var);
-        while ($desc_searchDb = $desc_search_result->fetch(PDO::FETCH_OBJ)) {
-            $countmarr = 0;
-            $fam_arr = explode(";", $desc_searchDb->pers_fams);
-            foreach ($fam_arr as $value) {
-                //this person is already listed
-                if ($countmarr == 1) {
-                    break;
-                }
-                $chld_var = $value;
-                $chld_prep->execute();
-                while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
-                    $countmarr = 1;
-                    $selected = '';
-                    //if($desc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
-                    $man_cls = new person_cls($desc_searchDb);
-                    $privacy_man = $man_cls->privacy;
-                    $date = '';
-                    if (!$privacy_man) {
-                        // if a person has privacy set (even if only for data, not for name,
-                        // we won't put them on the list. Most likely it concerns recent people.
-                        // Also, using the $man_cls->person_name functions takes too much time...
-                        $b_date = $desc_searchDb->pers_birth_date;
-                        $b_sign = __('born') . ' ';
-                        if (!$desc_searchDb->pers_birth_date and $desc_searchDb->pers_bapt_date) {
-                            $b_date = $desc_searchDb->pers_bapt_date;
-                            $b_sign = __('baptised') . ' ';
+        ?>
+        <form method="POST" action="" style="display : inline;">
+            <select style="max-width:396px;background:#eee" <?= $select_size; ?> onChange="window.location=this.value;" id="desc_map" name="desc_map">
+                <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
+                <?php
+                //prepared statement out of loop
+                $chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber =? AND fam_children != ''");
+                $chld_prep->bindParam(1, $chld_var);
+                while ($desc_searchDb = $desc_search_result->fetch(PDO::FETCH_OBJ)) {
+                    $countmarr = 0;
+                    $fam_arr = explode(";", $desc_searchDb->pers_fams);
+                    foreach ($fam_arr as $value) {
+                        //this person is already listed
+                        if ($countmarr == 1) {
+                            break;
                         }
-                        $d_date = $desc_searchDb->pers_death_date;
-                        $d_sign = __('died') . ' ';
-                        if (!$desc_searchDb->pers_death_date and $desc_searchDb->pers_buried_date) {
-                            $d_date = $desc_searchDb->pers_buried_date;
-                            $d_sign = __('buried') . ' ';
-                        }
-                        $date = '';
-                        if ($b_date and !$d_date) {
-                            $date = ' (' . $b_sign . date_place($b_date, '') . ')';
-                        }
-                        if ($b_date and $d_date) {
-                            $date .= ' (' . $b_sign . date_place($b_date, '') . ' - ' . $d_sign . date_place($d_date, '') . ')';
-                        }
-                        if (!$b_date and $d_date) {
-                            $date = '(' . $d_sign . date_place($d_date, '') . ')';
-                        }
-                        $name = '';
-                        $pref = '';
-                        $last = '- , ';
-                        $first = '-';
-                        if ($desc_searchDb->pers_lastname) {
-                            $last = $desc_searchDb->pers_lastname . ', ';
-                        }
-                        if ($desc_searchDb->pers_firstname) {
-                            $first = $desc_searchDb->pers_firstname;
-                        }
-                        if ($desc_searchDb->pers_prefix) {
-                            $pref = strtolower(str_replace('_', '', $desc_searchDb->pers_prefix));
-                        }
+                        $chld_var = $value;
+                        $chld_prep->execute();
+                        while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
+                            $countmarr = 1;
+                            $selected = '';
+                            //if($desc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
+                            $man_cls = new person_cls($desc_searchDb);
+                            $privacy_man = $man_cls->privacy;
+                            $date = '';
+                            if (!$privacy_man) {
+                                // if a person has privacy set (even if only for data, not for name,
+                                // we won't put them on the list. Most likely it concerns recent people.
+                                // Also, using the $man_cls->person_name functions takes too much time...
+                                $b_date = $desc_searchDb->pers_birth_date;
+                                $b_sign = __('born') . ' ';
+                                if (!$desc_searchDb->pers_birth_date && $desc_searchDb->pers_bapt_date) {
+                                    $b_date = $desc_searchDb->pers_bapt_date;
+                                    $b_sign = __('baptised') . ' ';
+                                }
+                                $d_date = $desc_searchDb->pers_death_date;
+                                $d_sign = __('died') . ' ';
+                                if (!$desc_searchDb->pers_death_date && $desc_searchDb->pers_buried_date) {
+                                    $d_date = $desc_searchDb->pers_buried_date;
+                                    $d_sign = __('buried') . ' ';
+                                }
+                                $date = '';
+                                if ($b_date && !$d_date) {
+                                    $date = ' (' . $b_sign . date_place($b_date, '') . ')';
+                                }
+                                if ($b_date && $d_date) {
+                                    $date .= ' (' . $b_sign . date_place($b_date, '') . ' - ' . $d_sign . date_place($d_date, '') . ')';
+                                }
+                                if (!$b_date && $d_date) {
+                                    $date = '(' . $d_sign . date_place($d_date, '') . ')';
+                                }
+                                $name = '';
+                                $pref = '';
+                                $last = '- , ';
+                                $first = '-';
+                                if ($desc_searchDb->pers_lastname) {
+                                    $last = $desc_searchDb->pers_lastname . ', ';
+                                }
+                                if ($desc_searchDb->pers_firstname) {
+                                    $first = $desc_searchDb->pers_firstname;
+                                }
+                                if ($desc_searchDb->pers_prefix) {
+                                    $pref = strtolower(str_replace('_', '', $desc_searchDb->pers_prefix));
+                                }
 
-                        if ($user['group_kindindex'] == "j") {
-                            if ($desc_searchDb->pers_prefix) {
-                                $pref = strtolower(str_replace('_', '', $desc_searchDb->pers_prefix)) . ' ';
+                                if ($user['group_kindindex'] == "j") {
+                                    if ($desc_searchDb->pers_prefix) {
+                                        $pref = strtolower(str_replace('_', '', $desc_searchDb->pers_prefix)) . ' ';
+                                    }
+                                    $name = $pref . $last . $first;
+                                } else {
+                                    if ($desc_searchDb->pers_prefix) {
+                                        $pref = ' ' . strtolower(str_replace('_', '', $desc_searchDb->pers_prefix));
+                                    }
+                                    $name = $last . $first . $pref;
+                                }
+                                echo '<option value="' . $link2 . 'persged=' . $desc_searchDb->pers_gedcomnumber . '&persfams=' . $desc_searchDb->pers_fams . '" ' . $selected . '>' . $name . $date . ' [#' . $desc_searchDb->pers_gedcomnumber . ']</option>';
                             }
-                            $name = $pref . $last . $first;
-                        } else {
-                            if ($desc_searchDb->pers_prefix) {
-                                $pref = ' ' . strtolower(str_replace('_', '', $desc_searchDb->pers_prefix));
-                            }
-                            $name = $last . $first . $pref;
                         }
-                        echo '<option value="' . $link2 . 'persged=' . $desc_searchDb->pers_gedcomnumber . '&persfams=' . $desc_searchDb->pers_fams . '" ' . $selected . '>' . $name . $date . ' [#' . $desc_searchDb->pers_gedcomnumber . ']</option>';
                     }
                 }
-            }
-        }
-        echo '</select>';
-        echo '</form>';
-        ?>
+                ?>
+            </select>
+        </form>
         <script>
             function findGednr(pers_id) {
                 for (var i = 1; i < desc_map.length - 1; i++) {
@@ -799,142 +797,136 @@ if (isset($_POST['descmap'])) {
 <?php
 }
 
-// NEW~~~~~~~~~~~~~~~~~~~~~~~~~~`
 // FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH ANCESTORS
 if (isset($_POST['ancmap'])) {
     //adjust pulldown for mobiles/tablets
     $select_size = 'size="20"';
     $select_height = '400px';
-    if (isset($_SERVER["HTTP_USER_AGENT"]) or ($_SERVER["HTTP_USER_AGENT"] != "")) { //adjust pulldown for mobiles/tablets
+    if (isset($_SERVER["HTTP_USER_AGENT"]) || $_SERVER["HTTP_USER_AGENT"] != "") { //adjust pulldown for mobiles/tablets
         $visitor_user_agent = $_SERVER["HTTP_USER_AGENT"];
         if (
-            strstr($visitor_user_agent, "Android") !== false or
-            strstr($visitor_user_agent, "iOS") !== false or
-            strstr($visitor_user_agent, "iPad") !== false or
-            strstr($visitor_user_agent, "iPhone") !== false
+            strstr($visitor_user_agent, "Android") !== false || strstr($visitor_user_agent, "iOS") !== false || strstr($visitor_user_agent, "iPad") !== false || strstr($visitor_user_agent, "iPhone") !== false
         ) {
             $select_size = "";
             $select_height = '100px';
         }
     }
 
-    echo '<div id="ancmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:' . $select_height . '; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">';
-    if ($user['group_kindindex'] == "j") {
-        $orderlast = "CONCAT(pers_prefix,pers_lastname)";
-    } else {
-        $orderlast = "pers_lastname";
-    }
-    $anc_search = "SELECT * FROM humo_persons
-        WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
-    $anc_search_result = $dbh->query($anc_search);
-    echo '&nbsp;&nbsp;<strong>' . __('Filter by ancestors of a person') . '</strong><br>';
-    echo '&nbsp;&nbsp;' . __('Pick a name or enter ID:') . '<br>';
-    echo '<form method="POST" action="" style="display : inline;">';
-    echo '<select style="max-width:396px;background:#eee" ' . $select_size . ' onChange="window.location=this.value;" id="anc_map" name="anc_map">';
-    echo '<option value="toptext">' . __('Pick a name from the pulldown list') . '</option>';
-    //prepared statement out of loop
-    $chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families
-        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber =? AND fam_children != ''");
-    $chld_prep->bindParam(1, $chld_var);
-    while ($anc_searchDb = $anc_search_result->fetch(PDO::FETCH_OBJ)) {
-        $countmarr = 0;
-        $fam_arr = explode(";", $anc_searchDb->pers_fams);
-        foreach ($fam_arr as $value) {
-            if ($countmarr == 1) {
-                break;
-            } //this person is already listed
-            $chld_var = $value;
-            $chld_prep->execute();
-            while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
-                $countmarr = 1;
-                $selected = '';
-                //if($anc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
-                $man_cls = new person_cls($anc_searchDb);
-                $privacy_man = $man_cls->privacy;
-                $date = '';
-                if (!$privacy_man) { // don't show dates if privacy is set for this person
-                    // if a person has privacy set (even if only for data, not for name,
-                    // we won't put them on the list. Most likely it concerns recent people.
-                    // Also, using the $man_cls->person_name functions takes too much time...
-                    $b_date = $anc_searchDb->pers_birth_date;
-                    $b_sign = __('born') . ' ';
-                    if (!$anc_searchDb->pers_birth_date and $anc_searchDb->pers_bapt_date) {
-                        $b_date = $anc_searchDb->pers_bapt_date;
-                        $b_sign = __('baptised') . ' ';
-                    }
-                    $d_date = $anc_searchDb->pers_death_date;
-                    $d_sign = __('died') . ' ';
-                    if (!$anc_searchDb->pers_death_date and $anc_searchDb->pers_buried_date) {
-                        $d_date = $anc_searchDb->pers_buried_date;
-                        $d_sign = __('buried') . ' ';
-                    }
-                    $date = '';
-                    if ($b_date and !$d_date) {
-                        $date = ' (' . $b_sign . date_place($b_date, '') . ')';
-                    }
-                    if ($b_date and $d_date) {
-                        $date .= ' (' . $b_sign . date_place($b_date, '') . ' - ' . $d_sign . date_place($d_date, '') . ')';
-                    }
-                    if (!$b_date and $d_date) {
-                        $date = '(' . $d_sign . date_place($d_date, '') . ')';
-                    }
-                }
-                if (!$privacy_man or ($privacy_man and $user['group_filter_name'] == "j")) {
-                    // don't show the person at all on the list if names are hidden when privacy is set for person
-                    $name = '';
-                    $pref = '';
-                    $last = '- , ';
-                    $first = '-';
-                    if ($anc_searchDb->pers_lastname) {
-                        $last = $anc_searchDb->pers_lastname . ', ';
-                    }
-                    if ($anc_searchDb->pers_firstname) {
-                        $first = $anc_searchDb->pers_firstname;
-                    }
-                    if ($anc_searchDb->pers_prefix) {
-                        $pref = strtolower(str_replace('_', '', $anc_searchDb->pers_prefix));
-                    }
-
-                    if ($user['group_kindindex'] == "j") {
-                        if ($anc_searchDb->pers_prefix) {
-                            $pref = strtolower(str_replace('_', '', $anc_searchDb->pers_prefix)) . ' ';
-                        }
-                        $name = $pref . $last . $first;
-                    } else {
-                        if ($anc_searchDb->pers_prefix) {
-                            $pref = ' ' . strtolower(str_replace('_', '', $anc_searchDb->pers_prefix));
-                        }
-                        $name = $last . $first . $pref;
-                    }
-                    echo '<option value="' . $link2 . 'anc_persged=' . $anc_searchDb->pers_gedcomnumber . '&anc_persfams=' . $anc_searchDb->pers_fams . '" ' . $selected . '>' . $name . $date . ' [#' . $anc_searchDb->pers_gedcomnumber . ']</option>';
-                }
-            }
-        }
-    }
-    echo '</select>';
-    echo '</form>';
-
 ?>
-    <script>
-        function findGednr(pers_id) {
-            for (var i = 1; i < anc_map.length - 1; i++) {
-                if (anc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || anc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1) {
-                    window.location = anc_map.options[i].value;
+    <div id="ancmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
+        <?php
+        $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
+        $anc_search = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
+        $anc_search_result = $dbh->query($anc_search);
+        echo '&nbsp;&nbsp;<strong>' . __('Filter by ancestors of a person') . '</strong><br>';
+        echo '&nbsp;&nbsp;' . __('Pick a name or enter ID:') . '<br>';
+        ?>
+        <form method="POST" action="" style="display : inline;">
+            <select style="max-width:396px;background:#eee" <?= $select_size; ?> onChange="window.location=this.value;" id="anc_map" name="anc_map">
+                <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
+                <?php
+                //prepared statement out of loop
+                $chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber =? AND fam_children != ''");
+                $chld_prep->bindParam(1, $chld_var);
+                while ($anc_searchDb = $anc_search_result->fetch(PDO::FETCH_OBJ)) {
+                    $countmarr = 0;
+                    $fam_arr = explode(";", $anc_searchDb->pers_fams);
+                    foreach ($fam_arr as $value) {
+                        if ($countmarr == 1) {
+                            break;
+                        } //this person is already listed
+                        $chld_var = $value;
+                        $chld_prep->execute();
+                        while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
+                            $countmarr = 1;
+                            $selected = '';
+                            //if($anc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
+                            $man_cls = new person_cls($anc_searchDb);
+                            $privacy_man = $man_cls->privacy;
+                            $date = '';
+                            if (!$privacy_man) { // don't show dates if privacy is set for this person
+                                // if a person has privacy set (even if only for data, not for name,
+                                // we won't put them on the list. Most likely it concerns recent people.
+                                // Also, using the $man_cls->person_name functions takes too much time...
+                                $b_date = $anc_searchDb->pers_birth_date;
+                                $b_sign = __('born') . ' ';
+                                if (!$anc_searchDb->pers_birth_date && $anc_searchDb->pers_bapt_date) {
+                                    $b_date = $anc_searchDb->pers_bapt_date;
+                                    $b_sign = __('baptised') . ' ';
+                                }
+                                $d_date = $anc_searchDb->pers_death_date;
+                                $d_sign = __('died') . ' ';
+                                if (!$anc_searchDb->pers_death_date && $anc_searchDb->pers_buried_date) {
+                                    $d_date = $anc_searchDb->pers_buried_date;
+                                    $d_sign = __('buried') . ' ';
+                                }
+                                $date = '';
+                                if ($b_date && !$d_date) {
+                                    $date = ' (' . $b_sign . date_place($b_date, '') . ')';
+                                }
+                                if ($b_date && $d_date) {
+                                    $date .= ' (' . $b_sign . date_place($b_date, '') . ' - ' . $d_sign . date_place($d_date, '') . ')';
+                                }
+                                if (!$b_date && $d_date) {
+                                    $date = '(' . $d_sign . date_place($d_date, '') . ')';
+                                }
+                            }
+                            if (!$privacy_man || ($privacy_man && $user['group_filter_name'] == "j")) {
+                                // don't show the person at all on the list if names are hidden when privacy is set for person
+                                $name = '';
+                                $pref = '';
+                                $last = '- , ';
+                                $first = '-';
+                                if ($anc_searchDb->pers_lastname) {
+                                    $last = $anc_searchDb->pers_lastname . ', ';
+                                }
+                                if ($anc_searchDb->pers_firstname) {
+                                    $first = $anc_searchDb->pers_firstname;
+                                }
+                                if ($anc_searchDb->pers_prefix) {
+                                    $pref = strtolower(str_replace('_', '', $anc_searchDb->pers_prefix));
+                                }
+
+                                if ($user['group_kindindex'] == "j") {
+                                    if ($anc_searchDb->pers_prefix) {
+                                        $pref = strtolower(str_replace('_', '', $anc_searchDb->pers_prefix)) . ' ';
+                                    }
+                                    $name = $pref . $last . $first;
+                                } else {
+                                    if ($anc_searchDb->pers_prefix) {
+                                        $pref = ' ' . strtolower(str_replace('_', '', $anc_searchDb->pers_prefix));
+                                    }
+                                    $name = $last . $first . $pref;
+                                }
+                                echo '<option value="' . $link2 . 'anc_persged=' . $anc_searchDb->pers_gedcomnumber . '&anc_persfams=' . $anc_searchDb->pers_fams . '" ' . $selected . '>' . $name . $date . ' [#' . $anc_searchDb->pers_gedcomnumber . ']</option>';
+                            }
+                        }
+                    }
+                }
+                ?>
+            </select>
+        </form>
+        <script>
+            function findGednr(pers_id) {
+                for (var i = 1; i < anc_map.length - 1; i++) {
+                    if (anc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || anc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1) {
+                        window.location = anc_map.options[i].value;
+                    }
                 }
             }
-        }
-    </script>
+        </script>
+        <?php
+        echo '<br><div style="margin-top:5px;text-align:left">&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="' . __('Go!') . '" onclick="findGednr(getElementById(\'id_field\').value);">';
+        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . $link . '">' . __('Cancel') . '</a></div>';
+        ?>
+    </div>
 <?php
-    echo '<br><div style="margin-top:5px;text-align:left">&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="' . __('Go!') . '" onclick="findGednr(getElementById(\'id_field\').value);">';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . $link . '">' . __('Cancel') . '</a></div>';
-    echo '</div>';
 }
 // END NEW~~~~~~~~~~~~~~~~~~~~~~
 
 
-
 // *** OpenStreetMap ***
-if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'OpenStreetMap') {
+if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
     $location_array[] = '';
     $lat_array[] = '';
     $lon_array[] = '';
@@ -983,19 +975,19 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
         if ($_SESSION['type_birth'] == 1) {
             $place = $personDb->pers_birth_place;
             $date = $personDb->pers_birth_date;
-            if (!$personDb->pers_birth_place and $personDb->pers_bapt_place) {
+            if (!$personDb->pers_birth_place && $personDb->pers_bapt_place) {
                 $place = $personDb->pers_bapt_place;
             }
-            if (!$personDb->pers_birth_date and $personDb->pers_bapt_date) {
+            if (!$personDb->pers_birth_date && $personDb->pers_bapt_date) {
                 $date = $personDb->pers_bapt_date;
             }
         } elseif ($_SESSION['type_death'] == 1) {
             $place = $personDb->pers_death_place;
             $date = $personDb->pers_death_date;
-            if (!$personDb->pers_death_place and $personDb->pers_buried_place) {
+            if (!$personDb->pers_death_place && $personDb->pers_buried_place) {
                 $place = $personDb->pers_buried_place;
             }
-            if (!$personDb->pers_death_date and $personDb->pers_buried_date) {
+            if (!$personDb->pers_death_date && $personDb->pers_buried_date) {
                 $date = $personDb->pers_buried_date;
             }
         }
@@ -1022,14 +1014,16 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
 
 
                 $key = array_search($locarray[$place][0], $location_array);
-                if (isset($key) and $key > 0) {
+                if (isset($key) && $key > 0) {
                     // *** Check the number of lines of the text_array ***
                     $text_count_array[$key]++;
                     // *** For now: limited results in text box of OpenStreetMap ***
-                    if ($text_count_array[$key] < 26)
+                    if ($text_count_array[$key] < 26) {
                         $text_array[$key] .= '<br>' . addslashes($name["standard_name"] . ' ' . $locarray[$place][0]);
-                    if ($text_count_array[$key] == 26)
+                    }
+                    if ($text_count_array[$key] == 26) {
                         $text_array[$key] .= '<br>' . __('Results are limited.');
+                    }
                 } else {
                     $location_array[] = htmlspecialchars($locarray[$place][0]);
                     $lat_array[] = $locarray[$place][1];
@@ -1044,20 +1038,21 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
             //echo $locarray[$place][1].'!'.$locarray[$place][2];
         }
     }
+?>
 
-    echo '<link rel="stylesheet" href="include/leaflet/leaflet.css">';
-    echo '<script src="include/leaflet/leaflet.js"></script>';
+    <link rel="stylesheet" href="include/leaflet/leaflet.css">
+    <script src="include/leaflet/leaflet.js"></script>
 
-    // *** Show map ***
-    echo '<div id="map" style="width:1000px; height:520px"></div>';
+    <!-- Show map -->
+    <div id="map" style="width:1000px; height:520px"></div>
 
+<?php
     // *** Map using fitbound (all markers visible) ***
     echo '<script>
         var map = L.map("map").setView([48.85, 2.35], 10);
         var markers = [';
 
     //echo 'L.marker([51,5, -0.09]) .bindPopup(\'Test\')';
-
 
     //include_once(__DIR__ . "/../googlemaps/google_initiate.php");
 
@@ -1098,9 +1093,8 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
     }
     </script>';
 
-
     $api_key = '';
-    if (isset($humo_option['google_api_key']) and $humo_option['google_api_key'] != '') {
+    if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
         $api_key = '?key=' . $humo_option['google_api_key'] . '&callback=Function.prototype'; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
     }
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {

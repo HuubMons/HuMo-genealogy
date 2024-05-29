@@ -5,7 +5,7 @@
 //echo '<H1 align=center>'.__('GEDCOM file export').'</H1>';
 
 $myFile = '';
-if (isset($_POST['file_name']) and file_exists('../' . $_POST['file_name'])) {
+if (isset($_POST['file_name']) && file_exists('../' . $_POST['file_name'])) {
     $myFile = $_POST['file_name'];
 
     //$file = "http://example.com/go.exe"; 

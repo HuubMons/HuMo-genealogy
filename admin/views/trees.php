@@ -58,8 +58,12 @@ if ($data2Db) {
 }
 
 $menu_admin = 'tree_main';
-if (isset($_POST['menu_admin'])) $menu_admin = $_POST['menu_admin'];
-if (isset($_GET['menu_admin'])) $menu_admin = $_GET['menu_admin'];
+if (isset($_POST['menu_admin'])) {
+    $menu_admin = $_POST['menu_admin'];
+}
+if (isset($_GET['menu_admin'])) {
+    $menu_admin = $_GET['menu_admin'];
+}
 
 // *** Select family tree ***
 $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
@@ -68,7 +72,7 @@ $tree_search_result = $dbh->query($tree_search_sql);
 
 <h1 class="center"><?= __('Family tree administration'); ?></h1>
 
-<?php if (isset($_GET['remove_tree']) and is_numeric($_GET['remove_tree'])) { ?>
+<?php if (isset($_GET['remove_tree']) && is_numeric($_GET['remove_tree'])) { ?>
     <div class="alert alert-danger">
         <b><?= __('Selected:'); ?> <?= $_GET['treetext_name']; ?></b>
         <?= __('Are you sure you want to remove this tree <b>AND all its statistics</b>?'); ?>
@@ -136,11 +140,11 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 <div style="float: left; background-color:white; height:500px; padding:10px;">
     <?php
     // *** Show main tree screen ***
-    if (isset($menu_admin) and $menu_admin == 'tree_main') {
+    if (isset($menu_admin) && $menu_admin == 'tree_main') {
         include(__DIR__ . '/tree_admin.php');
     }
     // *** Import GEDCOM file ***
-    if (isset($menu_admin) and $menu_admin == 'tree_gedcom') {
+    if (isset($menu_admin) && $menu_admin == 'tree_gedcom') {
         include(__DIR__ . '/gedcom.php');
     }
 

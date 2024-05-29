@@ -140,7 +140,9 @@ function statistics_line($familyDb)
     global $dbh, $language, $person_cls, $selected_language, $db_functions, $link_cls;
 
     $tree_id = $familyDb->tree_id;
-    if (isset($tree_id) and $tree_id) $db_functions->set_tree_id($tree_id);
+    if (isset($tree_id) && $tree_id) {
+        $db_functions->set_tree_id($tree_id);
+    }
 
     echo '<tr>';
     if (isset($familyDb->count_lines)) {
@@ -157,7 +159,9 @@ function statistics_line($familyDb)
     // *** Check if family is still in the genealogy! ***
     $checkDb = $db_functions->get_family($familyDb->stat_gedcom_fam);
     $check = false;
-    if ($checkDb and $checkDb->fam_man == $familyDb->stat_gedcom_man and $checkDb->fam_woman == $familyDb->stat_gedcom_woman) $check = true;
+    if ($checkDb && $checkDb->fam_man == $familyDb->stat_gedcom_man && $checkDb->fam_woman == $familyDb->stat_gedcom_woman) {
+        $check = true;
+    }
 
     if ($check == true) {
         $vars['pers_family'] = $familyDb->stat_gedcom_fam;
@@ -167,9 +171,9 @@ function statistics_line($familyDb)
         //*** Man ***
         $personDb = $db_functions->get_person($familyDb->stat_gedcom_man);
 
-        if (!$familyDb->stat_gedcom_man)
+        if (!$familyDb->stat_gedcom_man) {
             echo 'N.N.';
-        else {
+        } else {
             $name = $person_cls->person_name($personDb);
             echo $name["standard_name"];
         }
@@ -178,9 +182,9 @@ function statistics_line($familyDb)
 
         //*** Woman ***
         $personDb = $db_functions->get_person($familyDb->stat_gedcom_woman);
-        if (!$familyDb->stat_gedcom_woman)
+        if (!$familyDb->stat_gedcom_woman) {
             echo 'N.N.';
-        else {
+        } else {
             $name = $person_cls->person_name($personDb);
             echo $name["standard_name"];
         }

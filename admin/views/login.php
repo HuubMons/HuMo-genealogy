@@ -1,6 +1,8 @@
 <h2 align="center" class="my-4"><?= __('Administration menu login'); ?></h2>
 
-<?php if ($fault) echo '<p align="center"><font color="red">' . __('Please enter a valid username or password. ') . '</font>'; ?>
+<?php if ($fault) {
+    echo '<p align="center"><font color="red">' . __('Please enter a valid username or password. ') . '</font>';
+} ?>
 
 <br>
 

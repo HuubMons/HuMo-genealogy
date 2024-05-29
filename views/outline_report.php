@@ -212,11 +212,11 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     <?php
                     if ($swap_parent1_parent2 == true) {
                         echo $woman_cls->name_extended("outline");
-                        if ($show_details and !$privacy_woman) {
+                        if ($show_details && !$privacy_woman) {
                             echo $woman_cls->person_data("outline", $familyDb->fam_gedcomnumber);
                         }
 
-                        if ($show_date == "1" and !$privacy_woman and !$show_details) {
+                        if ($show_date == "1" && !$privacy_woman && !$show_details) {
                             echo $dirmark1 . ',';
                             if ($dates_behind_names == false) {
                                 echo '<br>';
@@ -225,11 +225,11 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                         }
                     } else {
                         echo $man_cls->name_extended("outline");
-                        if ($show_details and !$privacy_man) {
+                        if ($show_details && !$privacy_man) {
                             echo $man_cls->person_data("outline", $familyDb->fam_gedcomnumber);
                         }
 
-                        if ($show_date == "1" and !$privacy_man and !$show_details) {
+                        if ($show_date == "1" && !$privacy_man && !$show_details) {
                             echo $dirmark1 . ',';
                             if ($dates_behind_names == false) {
                                 echo '<br>';
@@ -293,14 +293,14 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
             }
         }
 
-        if ($show_parent2 and $swap_parent1_parent2) {
+        if ($show_parent2 && $swap_parent1_parent2) {
             echo "&nbsp;&nbsp;&nbsp;&nbsp;";
             echo $man_cls->name_extended("outline");
-            if ($show_details and !$privacy_man) {
+            if ($show_details && !$privacy_man) {
                 echo $man_cls->person_data("outline", $familyDb->fam_gedcomnumber);
             }
 
-            if ($show_date == "1" and !$privacy_man and !$show_details) {
+            if ($show_date == "1" && !$privacy_man && !$show_details) {
                 echo $dirmark1 . ',';
                 if ($dates_behind_names == false) {
                     echo '<br>';
@@ -312,11 +312,11 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;";
             }
             echo $woman_cls->name_extended("outline");
-            if ($show_details and !$privacy_woman) {
+            if ($show_details && !$privacy_woman) {
                 echo $woman_cls->person_data("outline", $familyDb->fam_gedcomnumber);
             }
 
-            if ($show_date == "1" and !$privacy_woman and !$show_details) {
+            if ($show_date == "1" && !$privacy_woman && !$show_details) {
                 echo $dirmark1 . ',';
                 if ($dates_behind_names == false) {
                     echo '<br>';
@@ -339,8 +339,8 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 @$childDb = $db_functions->get_person($child_array[$i]);
 
                 // *** Totally hide children if setting is active ***
-                if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
-                    if ($screen_mode != "PDF" and !$show_privacy_text) {
+                if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                    if ($screen_mode != "PDF" && !$show_privacy_text) {
                         echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         $show_privacy_text = true;
                     }

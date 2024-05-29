@@ -34,7 +34,7 @@ if (!isset($_GET['add_person'])) {
         $event_add = 'add_name';
     }
     // *** If "Save" is clicked, also save event names ***
-    if (isset($_POST['event_event_name']) and $_POST['event_event_name'] != '') {
+    if (isset($_POST['event_event_name']) && $_POST['event_event_name'] != '') {
         $new_event = true;
         $event_add = 'add_name';
     }
@@ -71,7 +71,7 @@ if (!isset($_GET['add_person'])) {
         $event_add = 'add_profession';
     }
     // *** If "Save" is clicked, also save event names ***
-    if (isset($_POST['event_event_profession']) and $_POST['event_event_profession'] != '') {
+    if (isset($_POST['event_event_profession']) && $_POST['event_event_profession'] != '') {
         $new_event = true;
         $event_add = 'add_profession';
     }
@@ -82,7 +82,7 @@ if (!isset($_GET['add_person'])) {
         $event_add = 'add_religion';
     }
     // *** If "Save" is clicked, also save event names ***
-    if (isset($_POST['event_event_religion']) and $_POST['event_event_religion'] != '') {
+    if (isset($_POST['event_event_religion']) && $_POST['event_event_religion'] != '') {
         $new_event = true;
         $event_add = 'add_religion';
     }
@@ -102,18 +102,30 @@ if (!isset($_GET['add_person'])) {
     }
 }
 if ($new_event) {
-    if (isset($_POST['marriage'])) $marriage = $_POST['marriage']; // *** Needed to check $_POST for multiple relations ***
+    if (isset($_POST['marriage'])) {
+        $marriage = $_POST['marriage'];
+    } // *** Needed to check $_POST for multiple relations ***
 
     if ($event_add == 'add_name') {
         $event_connect_kind = 'person';
         $event_connect_id = $pers_gedcomnumber;
         $event_kind = 'name';
 
-        if ($_POST['event_gedcom_add'] == 'NPFX') $event_kind = 'NPFX';
-        if ($_POST['event_gedcom_add'] == 'NSFX') $event_kind = 'NSFX';
-        if ($_POST['event_gedcom_add'] == 'nobility') $event_kind = 'nobility';
-        if ($_POST['event_gedcom_add'] == 'title') $event_kind = 'title';
-        if ($_POST['event_gedcom_add'] == 'lordship') $event_kind = 'lordship';
+        if ($_POST['event_gedcom_add'] == 'NPFX') {
+            $event_kind = 'NPFX';
+        }
+        if ($_POST['event_gedcom_add'] == 'NSFX') {
+            $event_kind = 'NSFX';
+        }
+        if ($_POST['event_gedcom_add'] == 'nobility') {
+            $event_kind = 'nobility';
+        }
+        if ($_POST['event_gedcom_add'] == 'title') {
+            $event_kind = 'title';
+        }
+        if ($_POST['event_gedcom_add'] == 'lordship') {
+            $event_kind = 'lordship';
+        }
 
         $event_event = $_POST['event_event_name'];
         $event_gedcom = $_POST['event_gedcom_add'];
@@ -226,12 +238,14 @@ if (isset($_POST['marriage_event_add'])) {
 
 
 // *** Upload images ***
-if (isset($_FILES['photo_upload']) and $_FILES['photo_upload']['name']) {
+if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
     // *** get path of pictures folder 
     $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
     $tree_pict_path = $dataDb->tree_pict_path;
-    if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+    if (substr($tree_pict_path, 0, 1) === '|') {
+        $tree_pict_path = 'media/';
+    }
     $dir = $path_prefix . $tree_pict_path;
 
     // check if this is a category file (file with existing category prefix) and if a subfolder for this category exists, place it there.
@@ -241,8 +255,7 @@ if (isset($_FILES['photo_upload']) and $_FILES['photo_upload']['name']) {
         if ($catgry->rowCount()) {
             while ($catDb = $catgry->fetch(PDO::FETCH_OBJ)) {
                 if (
-                    is_dir($dir . substr($_FILES['photo_upload']['name'], 0, 2)) and
-                    substr($_FILES['photo_upload']['name'], 0, 3) == $catDb->photocat_prefix
+                    is_dir($dir . substr($_FILES['photo_upload']['name'], 0, 2)) && substr($_FILES['photo_upload']['name'], 0, 3) == $catDb->photocat_prefix
                 ) {   // there is a subfolder of this prefix
                     $dir = $dir . substr($_FILES['photo_upload']['name'], 0, 2) . '/';  // place uploaded file in that subfolder
                 }
@@ -257,7 +270,7 @@ if (isset($_FILES['photo_upload']) and $_FILES['photo_upload']['name']) {
         // 100000=100kb.
         //if($_FILES['photo_upload']['size']>2000000){ $fault=__('Photo too large'); }
 
-        if (!$fault) {
+        if ($fault === '') {
             $picture_original = $dir . $_FILES['photo_upload']['name'];
             $picture_original_tmp = $dir . '0_temp.jpg';
             $picture_thumb = $dir . 'thumb_' . $_FILES['photo_upload']['name'];
@@ -265,33 +278,26 @@ if (isset($_FILES['photo_upload']) and $_FILES['photo_upload']['name']) {
                 echo __('Photo upload failed, check folder rights');
             } else {
                 // *** Resize uploaded picture and create thumbnail ***
-                if (strtolower(substr($picture_original, -3)) == "jpg") {
+                if (strtolower(substr($picture_original, -3)) === "jpg") {
                     // *** Get width and height of original file ***
                     list($width, $height) = getimagesize($picture_original);
 
                     // *** If filesize > 2MB: resize image to: height 720px/ width 1280px or: width 1920px/ height 1080px ***
-                    if ($_FILES['photo_upload']['size'] > 2000000) {
-                        if ($height > 1080) {
-                            // *** First rename original file to temp. file name ***
-                            rename($picture_original, $picture_original_tmp);
-
-                            $newheight = 1080;
-                            $factor = $height / $newheight;
-                            $newwidth = $width / $factor;
-
-                            $resize_media = imagecreatetruecolor($newwidth, $newheight);
-                            $source = imagecreatefromjpeg($picture_original_tmp);
-
-                            // *** Resize ***
-                            imagecopyresized($resize_media, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-                            @imagejpeg($resize_media, $picture_original);
-
-                            // *** Remove temp. file ***
-                            unlink($picture_original_tmp);
-
-                            // *** Recalculate width and height of file, needed for thumbnail ***
-                            list($width, $height) = getimagesize($picture_original);
-                        }
+                    if ($_FILES['photo_upload']['size'] > 2000000 && $height > 1080) {
+                        // *** First rename original file to temp. file name ***
+                        rename($picture_original, $picture_original_tmp);
+                        $newheight = 1080;
+                        $factor = $height / $newheight;
+                        $newwidth = $width / $factor;
+                        $resize_media = imagecreatetruecolor($newwidth, $newheight);
+                        $source = imagecreatefromjpeg($picture_original_tmp);
+                        // *** Resize ***
+                        imagecopyresized($resize_media, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+                        @imagejpeg($resize_media, $picture_original);
+                        // *** Remove temp. file ***
+                        unlink($picture_original_tmp);
+                        // *** Recalculate width and height of file, needed for thumbnail ***
+                        list($width, $height) = getimagesize($picture_original);
                     }
 
                     $create_thumb_height = 120;
@@ -405,8 +411,9 @@ if (isset($_FILES['photo_upload']) and $_FILES['photo_upload']['name']) {
 if (isset($_POST['event_id'])) {
     foreach ($_POST['event_id'] as $key => $value) {
         $event_event = '';
-        if (isset($_POST["text_event"][$key]))
+        if (isset($_POST["text_event"][$key])) {
             $event_event = $editor_cls->text_process($_POST["text_event"][$key]);
+        }
 
         // *** Replaced array function, because witness popup javascript doesn't work using an html-form-array ***
         //if (isset($_POST["text_event2" . $key]) and $_POST["text_event2" . $key] != '') {
@@ -415,13 +422,13 @@ if (isset($_POST['event_id'])) {
         $event_connect_kind2 = '';
         $event_connect_id2 = '';
         // *** Replaced array function, because witness popup javascript doesn't work using an html-form-array ***
-        if (isset($_POST["event_connect_id2" . $key]) and $_POST["event_connect_id2" . $key] != '') {
+        if (isset($_POST["event_connect_id2" . $key]) && $_POST["event_connect_id2" . $key] != '') {
             $event_connect_kind2 = 'person';
             $event_connect_id2 = $_POST["event_connect_id2" . $key];
         }
 
         // *** Media selection pop-up option *** 
-        if (isset($_POST["text_event" . $key]) and $_POST["text_event" . $key] != '') {
+        if (isset($_POST["text_event" . $key]) && $_POST["text_event" . $key] != '') {
             $event_event = $editor_cls->text_process($_POST["text_event" . $key]);
         }
 
@@ -434,9 +441,13 @@ if (isset($_POST['event_id'])) {
             $eventDb = $event_result->fetch(PDO::FETCH_OBJ);
             $event_changed = false;
 
-            if ($event_event != $eventDb->event_event) $event_changed = true;
+            if ($event_event != $eventDb->event_event) {
+                $event_changed = true;
+            }
 
-            if ($event_connect_id2 != $eventDb->event_connect_id2) $event_changed = true;
+            if ($event_connect_id2 != $eventDb->event_connect_id2) {
+                $event_changed = true;
+            }
 
             // *** Compare date case-insensitive (for PHP 8.1 check if variabele is used) ***
             //if (isset($_POST["event_date_prefix"][$key]) OR isset($_POST["event_date"][$key])){
@@ -447,15 +458,21 @@ if (isset($_POST['event_id'])) {
             //if (isset($eventDb->event_date)){
             if (isset($_POST["event_date"][$key])) {
                 $event_date = '';
-                if (isset($eventDb->event_date)) $event_date = $eventDb->event_date;
-                if (strcasecmp($_POST["event_date_prefix"][$key] . $_POST["event_date"][$key], $event_date) != 0) $event_changed = true;
+                if (isset($eventDb->event_date)) {
+                    $event_date = $eventDb->event_date;
+                }
+                if (strcasecmp($_POST["event_date_prefix"][$key] . $_POST["event_date"][$key], $event_date) != 0) {
+                    $event_changed = true;
+                }
             }
-            if ($_POST["event_place" . $key] != $eventDb->event_place) $event_changed = true;
-            if (isset($_POST["event_gedcom"][$key])) {
-                if ($_POST["event_gedcom"][$key] != $eventDb->event_gedcom) $event_changed = true;
+            if ($_POST["event_place" . $key] != $eventDb->event_place) {
+                $event_changed = true;
             }
-            if (isset($_POST["event_text"][$key])) {
-                if ($_POST["event_text"][$key] != $eventDb->event_text) $event_changed = true;
+            if (isset($_POST["event_gedcom"][$key]) && $_POST["event_gedcom"][$key] != $eventDb->event_gedcom) {
+                $event_changed = true;
+            }
+            if (isset($_POST["event_text"][$key]) && $_POST["event_text"][$key] != $eventDb->event_text) {
+                $event_changed = true;
             }
 
             if ($event_changed) {
@@ -498,9 +515,13 @@ if (isset($_POST['event_id'])) {
                 $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
 
                 $event_gedcom = '';
-                if (isset($_POST["event_gedcom"][$key])) $event_gedcom = $_POST["event_gedcom"][$key];
+                if (isset($_POST["event_gedcom"][$key])) {
+                    $event_gedcom = $_POST["event_gedcom"][$key];
+                }
                 $event_text = '';
-                if (isset($_POST["event_text"][$key])) $event_text = $_POST["event_text"][$key];
+                if (isset($_POST["event_text"][$key])) {
+                    $event_text = $_POST["event_text"][$key];
+                }
 
                 // *** Descendant already has this color, change it ***
                 if (isset($eventDb->event_event)) {
@@ -541,9 +562,13 @@ if (isset($_POST['event_id'])) {
                 $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
 
                 $event_gedcom = '';
-                if (isset($_POST["event_gedcom"][$key])) $event_gedcom = $_POST["event_gedcom"][$key];
+                if (isset($_POST["event_gedcom"][$key])) {
+                    $event_gedcom = $_POST["event_gedcom"][$key];
+                }
                 $event_text = '';
-                if (isset($_POST["event_text"][$key])) $event_text = $_POST["event_text"][$key];
+                if (isset($_POST["event_text"][$key])) {
+                    $event_text = $_POST["event_text"][$key];
+                }
 
                 // *** Ancestor already has this color, change it ***
                 if (isset($eventDb->event_event)) {
@@ -572,16 +597,24 @@ if (isset($_GET['event_drop'])) {
     $confirm .= '<div class="alert alert-danger">';
     $confirm .= '<strong>' . __('Are you sure you want to remove this event?') . '</strong>';
     $confirm .= ' <form method="post" action="' . $phpself;
-    if (isset($_GET['source_id'])) $confirm .= '?source_id=' . $_GET['source_id'];
+    if (isset($_GET['source_id'])) {
+        $confirm .= '?source_id=' . $_GET['source_id'];
+    }
     $confirm .= '" style="display : inline;">';
     $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';
-    if (isset($_GET['event_person'])) $confirm .= '<input type="hidden" name="event_person" value="event_person">';
-    if (isset($_GET['event_family'])) $confirm .= '<input type="hidden" name="event_family" value="event_family">';
-    if (isset($_GET['event_source'])) $confirm .= '<input type="hidden" name="event_source" value="event_source">';
+    if (isset($_GET['event_person'])) {
+        $confirm .= '<input type="hidden" name="event_person" value="event_person">';
+    }
+    if (isset($_GET['event_family'])) {
+        $confirm .= '<input type="hidden" name="event_family" value="event_family">';
+    }
+    if (isset($_GET['event_source'])) {
+        $confirm .= '<input type="hidden" name="event_source" value="event_source">';
+    }
     $confirm .= '<input type="hidden" name="event_kind" value="' . $_GET['event_kind'] . '">';
     $confirm .= '<input type="hidden" name="event_drop" value="' . $_GET['event_drop'] . '">';
 
-    if (isset($_GET['event_kind']) and $_GET['event_kind'] == 'person_colour_mark') {
+    if (isset($_GET['event_kind']) && $_GET['event_kind'] == 'person_colour_mark') {
         $selected = ''; //if ($selected_alive=='alive'){ $selected=' checked'; }
         $confirm .= '<br>' . __('Also remove colour marks of');
         $confirm .= ' <input type="checkbox" name="event_descendants" value="alive"' . $selected . '> ' . __('Descendants');
@@ -611,7 +644,7 @@ if (isset($_POST['event_drop2'])) {
         // *** Remove sources ***
         remove_sources($tree_id, 'pers_event_source', $eventDb->event_id);
 
-        if (isset($_POST['event_descendants']) or isset($_POST['event_ancestors'])) {
+        if (isset($_POST['event_descendants']) || isset($_POST['event_ancestors'])) {
             // *** Get event_event from selected person, needed to remove colour from descendant and/ or ancestors ***
             $event_sql = "SELECT event_event FROM humo_events
                 WHERE event_tree_id='" . $tree_id . "'
@@ -924,14 +957,22 @@ if (isset($_POST['connect_change'])) {
         if (isset($_POST['connect_date_old'][$key])) {
             $connect_changed = false;
             // *** Compare date case-insensitive ***
-            if (strcasecmp($_POST["connect_date_prefix"][$key] . $_POST["connect_date"][$key], $_POST["connect_date_old"][$key]) != 0) $connect_changed = true;
-            if ($_POST["connect_role"][$key] != $_POST["connect_role_old"][$key]) $connect_changed = true;
-            if ($_POST['connect_text'][$key] != $_POST["connect_text_old"][$key]) $connect_changed = true;
+            if (strcasecmp($_POST["connect_date_prefix"][$key] . $_POST["connect_date"][$key], $_POST["connect_date_old"][$key]) != 0) {
+                $connect_changed = true;
+            }
+            if ($_POST["connect_role"][$key] != $_POST["connect_role_old"][$key]) {
+                $connect_changed = true;
+            }
+            if ($_POST['connect_text'][$key] != $_POST["connect_text_old"][$key]) {
+                $connect_changed = true;
+            }
 
             // *** Save shared address (even if role or extra text isn't used) ***
             if (isset($_POST['connect_item_id'][$key])) {
                 if (isset($_POST["connect_item_id_old"][$key])) {
-                    if ($_POST['connect_item_id'][$key] !== $_POST["connect_item_id_old"][$key]) $connect_changed = true;
+                    if ($_POST['connect_item_id'][$key] !== $_POST["connect_item_id_old"][$key]) {
+                        $connect_changed = true;
+                    }
                 } else {
                     $connect_changed = true;
                 }
@@ -941,31 +982,39 @@ if (isset($_POST['connect_change'])) {
         // *** Remark: connect_kind and connect_sub_kind is missing if someone clicks "Add address" twice. ***
         if ($connect_changed) {
             $sql = "UPDATE humo_connections SET";
-            if (isset($_POST['connect_kind'][$key]))
+            if (isset($_POST['connect_kind'][$key])) {
                 $sql .= " connect_kind='" . safe_text_db($_POST['connect_kind'][$key]) . "',";
-            if (isset($_POST['connect_sub_kind'][$key]))
+            }
+            if (isset($_POST['connect_sub_kind'][$key])) {
                 $sql .= " connect_sub_kind='" . safe_text_db($_POST['connect_sub_kind'][$key]) . "',";
+            }
             $sql .= " connect_page='" . $editor_cls->text_process($_POST["connect_page"][$key]) . "',
                 connect_role='" . $editor_cls->text_process($_POST["connect_role"][$key]) . "',";
 
-            if (isset($_POST['connect_source_id'][$key]))
+            if (isset($_POST['connect_source_id'][$key])) {
                 $sql .= "connect_source_id='" . safe_text_db($_POST['connect_source_id'][$key]) . "',";
+            }
 
-            if (isset($_POST['connect_date'][$key]))
+            if (isset($_POST['connect_date'][$key])) {
                 $sql .= "connect_date='" . $editor_cls->date_process("connect_date", $key) . "',";
+            }
 
-            if (isset($_POST['connect_place'][$key]))
+            if (isset($_POST['connect_place'][$key])) {
                 $sql .= "connect_place='" . $editor_cls->text_process($_POST["connect_place"][$key]) . "',";
+            }
 
             // *** Extra text for source ***
-            if (isset($_POST['connect_text'][$key]))
+            if (isset($_POST['connect_text'][$key])) {
                 $sql .= "connect_text='" . safe_text_db($_POST['connect_text'][$key]) . "',";
+            }
 
-            if (isset($_POST['connect_quality'][$key]))
+            if (isset($_POST['connect_quality'][$key])) {
                 $sql .= " connect_quality='" . safe_text_db($_POST['connect_quality'][$key]) . "',";
+            }
 
-            if (isset($_POST['connect_item_id'][$key]) and ($_POST['connect_item_id'][$key]))
+            if (isset($_POST['connect_item_id'][$key]) && $_POST['connect_item_id'][$key]) {
                 $sql .= " connect_item_id='" . safe_text_db($_POST['connect_item_id'][$key]) . "',";
+            }
 
             $sql .= " connect_changed_user_id='" . $userid . "'
                 WHERE connect_id='" . safe_text_db($_POST["connect_change"][$key]) . "'";
@@ -1004,21 +1053,29 @@ if (isset($_POST['connect_change'])) {
 if (isset($_GET['connect_drop'])) {
     // *** Needed for event sources ***
     $connect_kind = '';
-    if (isset($_GET['connect_kind'])) $connect_kind = $_GET['connect_kind'];
+    if (isset($_GET['connect_kind'])) {
+        $connect_kind = $_GET['connect_kind'];
+    }
 
     $connect_sub_kind = '';
-    if (isset($_GET['connect_sub_kind'])) $connect_sub_kind = $_GET['connect_sub_kind'];
+    if (isset($_GET['connect_sub_kind'])) {
+        $connect_sub_kind = $_GET['connect_sub_kind'];
+    }
 
     // *** Needed for event sources ***
     $connect_connect_id = '';
-    if (isset($_GET['connect_connect_id']) and $_GET['connect_connect_id']) $connect_connect_id = $_GET['connect_connect_id'];
+    if (isset($_GET['connect_connect_id']) && $_GET['connect_connect_id']) {
+        $connect_connect_id = $_GET['connect_connect_id'];
+    }
     //if (isset($_POST['connect_connect_id']) AND $_POST['connect_connect_id']) $connect_connect_id=$_POST['connect_connect_id'];
 
     $event_link = '';
-    if (isset($_POST['event_person']) or isset($_GET['event_person']))
+    if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
         $event_link = '&event_person=1';
-    if (isset($_POST['event_family']) or isset($_GET['event_family']))
+    }
+    if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
         $event_link = '&event_family=1';
+    }
     $phpself2 = 'index.php?page=' . $page . '&connect_kind=' . $connect_kind . '&connect_sub_kind=' . $connect_sub_kind . '&connect_connect_id=' . $connect_connect_id;
     $phpself2 .= $event_link;
 
@@ -1031,10 +1088,10 @@ if (isset($_GET['connect_drop'])) {
             <input type="hidden" name="connect_connect_id" value="<?= $connect_connect_id; ?>">
 
             <?php
-            if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+            if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
                 echo '<input type="hidden" name="event_person" value="1">';
             }
-            if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+            if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
                 echo '<input type="hidden" name="event_family" value="1">';
             }
 
@@ -1086,7 +1143,7 @@ if (isset($_POST['connect_drop2'])) {
     */
 
     // *** Remove NON SHARED addresses ***
-    if ($connect_sub_kind == 'person_address' or $connect_sub_kind == 'family_address') {
+    if ($connect_sub_kind == 'person_address' || $connect_sub_kind == 'family_address') {
         $address_sql = "SELECT * FROM humo_addresses
             WHERE address_gedcomnr='" . safe_text_db($eventDb->connect_item_id) . "'
             AND address_shared!='1'";
@@ -1098,10 +1155,12 @@ if (isset($_POST['connect_drop2'])) {
         }
 
         // *** Remove sources ***
-        if ($connect_sub_kind == 'person_address')
+        if ($connect_sub_kind == 'person_address') {
             remove_sources($tree_id, 'pers_address_source', $eventDb->connect_item_id);
-        if ($connect_sub_kind == 'family_address')
+        }
+        if ($connect_sub_kind == 'family_address') {
             remove_sources($tree_id, 'fam_address_source', $eventDb->connect_item_id);
+        }
     }
 
     $sql = "DELETE FROM humo_connections WHERE connect_id='" . safe_text_db($_POST['connect_drop']) . "'";
@@ -1213,9 +1272,13 @@ if (isset($_GET['source_add2'])) {
 //source_shared='".$editor_cls->text_process($_POST['source_shared'])."',
 //if (isset($_POST['source_change'])){
 $save_source_data = false;
-if (isset($_POST['source_change'])) $save_source_data = true;
+if (isset($_POST['source_change'])) {
+    $save_source_data = true;
+}
 // *** Also save source data if media is added ***
-if (isset($_POST['add_source_picture'])) $save_source_data = true;
+if (isset($_POST['add_source_picture'])) {
+    $save_source_data = true;
+}
 if ($save_source_data) {
     $sql = "UPDATE humo_sources SET
     source_status='" . $editor_cls->text_process($_POST['source_status']) . "',
@@ -1277,17 +1340,31 @@ if (isset($_POST['change_address_id'])) {
         // *** Date for address is processed in connection table ***
         //address_date='".$editor_cls->date_process("address_date",$key)."',
         $address_shared = '';
-        if (isset($_POST["address_shared_" . $key])) $address_shared = '1';
+        if (isset($_POST["address_shared_" . $key])) {
+            $address_shared = '1';
+        }
 
         // *** Only update if there are changed values! Otherwise all address_change variables will be changed... ***
         $address_changed = false;
         // Or: get old values out of the database. See editor notes (below in this script).
-        if ($address_shared != $_POST["address_shared_old"][$key]) $address_changed = true;
-        if ($_POST["address_address_" . $key] != $_POST["address_address_old"][$key]) $address_changed = true;
-        if ($_POST["address_place_" . $key] != $_POST["address_place_old"][$key]) $address_changed = true;
-        if ($_POST["address_text_" . $key] != $_POST["address_text_old"][$key]) $address_changed = true;
-        if ($_POST["address_phone_" . $key] != $_POST["address_phone_old"][$key]) $address_changed = true;
-        if ($_POST["address_zip_" . $key] != $_POST["address_zip_old"][$key]) $address_changed = true;
+        if ($address_shared != $_POST["address_shared_old"][$key]) {
+            $address_changed = true;
+        }
+        if ($_POST["address_address_" . $key] != $_POST["address_address_old"][$key]) {
+            $address_changed = true;
+        }
+        if ($_POST["address_place_" . $key] != $_POST["address_place_old"][$key]) {
+            $address_changed = true;
+        }
+        if ($_POST["address_text_" . $key] != $_POST["address_text_old"][$key]) {
+            $address_changed = true;
+        }
+        if ($_POST["address_phone_" . $key] != $_POST["address_phone_old"][$key]) {
+            $address_changed = true;
+        }
+        if ($_POST["address_zip_" . $key] != $_POST["address_zip_old"][$key]) {
+            $address_changed = true;
+        }
 
         if ($address_changed) {
             $sql = "UPDATE humo_addresses SET

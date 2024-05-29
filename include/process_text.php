@@ -4,10 +4,14 @@ function process_text($text_process, $text_sort = 'standard')
     global $dbh, $tree_id, $user;
     global $screen_mode, $data, $link_cls, $uri_path;
 
-    if (!isset($data["text_presentation"])) $data["text_presentation"]='';
-    if (!isset($data["picture_presentation"])) $data["picture_presentation"]='';
+    if (!isset($data["text_presentation"])) {
+        $data["text_presentation"] = '';
+    }
+    if (!isset($data["picture_presentation"])) {
+        $data["picture_presentation"] = '';
+    }
 
-    if ($data["text_presentation"] != 'hide' and $text_process) {
+    if ($data["text_presentation"] != 'hide' && $text_process) {
         //1 NOTE Text by person#werktekst#
         //2 CONT 2e line text persoon#2e werktekst#
         //2 CONT 3e line #3e werktekst# tekst persoon
@@ -18,7 +22,7 @@ function process_text($text_process, $text_sort = 'standard')
         $text_result = '';
         for ($i = 0; $i <= (count($text_pieces) - 1); $i++) {
             // *** Search for Aldfaer texts ***
-            if (substr($text_pieces[$i], 0, 1) == '@') {
+            if (substr($text_pieces[$i], 0, 1) === '@') {
                 $text_check = substr($text_pieces[$i], 1, -1);
                 $qry = "SELECT * FROM humo_texts
                     WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . safe_text_db($text_check) . "'";
@@ -69,27 +73,39 @@ function process_text($text_process, $text_sort = 'standard')
                 $flag_table = 0;
                 $new_text_process = '';
                 foreach ($txt_arr as $value) {
-                    if (strpos($value, "<table") !== false) $flag_table = 1; // we're in a table -> table flag ON
-                    elseif (strpos($value, "</table>") !== false) $flag_table = 0; // we're leaving table -> table flag OFF
-                    if ($flag_table == 1) $new_text_process .= $value; // this is a table line -> don't give it a <br>
-                    else $new_text_process .= $value . "<br>"; // add a <br> to the non-table lines
+                    if (strpos($value, "<table") !== false) {
+                        $flag_table = 1;
+                    } elseif (strpos($value, "</table>") !== false) {
+                        $flag_table = 0;
+                    } // we're leaving table -> table flag OFF
+                    if ($flag_table == 1) {
+                        $new_text_process .= $value;
+                    } else {
+                        $new_text_process .= $value . "<br>";
+                    } // add a <br> to the non-table lines
                 }
                 $text_process = $new_text_process;
-            } else $text_process = nl2br($text_process);
+            } else {
+                $text_process = nl2br($text_process);
+            }
         }
 
         if ($text_process) {
-            if ($screen_mode == 'RTF')
+            if ($screen_mode == 'RTF') {
                 $text_process = '<i>' . $text_process . '</i>';
-            else
+            } else {
                 $text_process = '<span class="text">' . $text_process . '</span>';
+            }
         }
 
         // *** Show tekst in popup screen ***
-        if ($data["text_presentation"] == 'popup' and $screen_mode != 'PDF' and $screen_mode != 'RTF' and $text_process) {
+        if ($data["text_presentation"] == 'popup' && $screen_mode != 'PDF' && $screen_mode != 'RTF' && $text_process) {
             global $data, $rtlmarker, $alignmarker, $text_nr;
-            if (isset($text_nr)) $text_nr++;
-            else $text_nr = 1;
+            if (isset($text_nr)) {
+                $text_nr++;
+            } else {
+                $text_nr = 1;
+            }
             $text = '<div class="' . $rtlmarker . 'sddm" style="left:10px;top:10px;display:inline;">';
 
             $vars['pers_family'] = $data["family_id"];
@@ -100,17 +116,19 @@ function process_text($text_process, $text_sort = 'standard')
             $text .= ' style="display:inline" ';
             $text .= 'onmouseover="mopen(event,\'show_text' . $text_nr . '\',0,0)"';
             $text .= 'onmouseout="mclosetime()">';
-            if ($text_sort == 'standard')
+            if ($text_sort == 'standard') {
                 $text .= '[' . lcfirst(__('Text')) . ']';
-            else
+            } else {
                 $text .= '<b>[' . (__('Text')) . ']</b>';
+            }
             $text .= '</a>';
 
-            if (substr_count($text_process, '<br>') > 10 or substr_count($text_process, '<br>') > 10) {
+            if (substr_count($text_process, '<br>') > 10 || substr_count($text_process, '<br>') > 10) {
                 // *** Don't use too large pop-up, because the pop-up will be off the screen ***
                 $text .= '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $alignmarker . '; direction:' . $rtlmarker . '; height:300px; width:50%; overflow-y: scroll;" id="show_text' . $text_nr . '" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-            } else
+            } else {
                 $text .= '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $alignmarker . '; direction:' . $rtlmarker . ';" id="show_text' . $text_nr . '" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+            }
 
             // *** Show a correct website link in text ***
             $text_process = str_ireplace('<a href', '<a style="display:inline" href', $text_process);
@@ -120,7 +138,9 @@ function process_text($text_process, $text_sort = 'standard')
             $text .= '</div>';
             $text_process = $text;
         }
-    } else $text_process = '';
+    } else {
+        $text_process = '';
+    }
 
     return $text_process;
 }

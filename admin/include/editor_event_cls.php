@@ -14,27 +14,49 @@ class editor_event_cls
     // *** Show event_kind text ***
     function event_text($event_kind)
     {
-        if ($event_kind == 'picture') $event_text = __('Picture/ Media');
-        elseif ($event_kind == 'profession') $event_text = __('Profession');
-        elseif ($event_kind == 'event') $event_text = __('Event');
-        elseif ($event_kind == 'birth_declaration') $event_text = __('birth declaration');
-        elseif ($event_kind == 'baptism_witness') $event_text = __('baptism witness');
-        elseif ($event_kind == 'death_declaration') $event_text = __('death declaration');
-        elseif ($event_kind == 'burial_witness') $event_text = __('burial witness');
-        elseif ($event_kind == 'name') $event_text = __('Name');
-        elseif ($event_kind == 'NPFX') $event_text = __('Prefix');
-        elseif ($event_kind == 'NSFX') $event_text = __('Suffix');
-        elseif ($event_kind == 'nobility') $event_text = __('Title of Nobility');
-        elseif ($event_kind == 'title') $event_text = __('Title');
-        elseif ($event_kind == 'adoption') $event_text = __('Adoption');
-        elseif ($event_kind == 'lordship') $event_text = __('Title of Lordship');
-        elseif ($event_kind == 'URL') $event_text = __('URL/ Internet link');
-        elseif ($event_kind == 'person_colour_mark') $event_text = __('Colour mark by person');
-        elseif ($event_kind == 'marriage_witness') $event_text = __('marriage witness');
-        elseif ($event_kind == 'marriage_witness_rel') $event_text = __('marriage witness (religious)');
-        elseif ($event_kind == 'source_picture') $event_text = __('Picture/ Media');
-        elseif ($event_kind == 'religion') $event_text = __('Religion');
-        else $event_text = ucfirst($event_kind);
+        if ($event_kind == 'picture') {
+            $event_text = __('Picture/ Media');
+        } elseif ($event_kind == 'profession') {
+            $event_text = __('Profession');
+        } elseif ($event_kind == 'event') {
+            $event_text = __('Event');
+        } elseif ($event_kind == 'birth_declaration') {
+            $event_text = __('birth declaration');
+        } elseif ($event_kind == 'baptism_witness') {
+            $event_text = __('baptism witness');
+        } elseif ($event_kind == 'death_declaration') {
+            $event_text = __('death declaration');
+        } elseif ($event_kind == 'burial_witness') {
+            $event_text = __('burial witness');
+        } elseif ($event_kind == 'name') {
+            $event_text = __('Name');
+        } elseif ($event_kind == 'NPFX') {
+            $event_text = __('Prefix');
+        } elseif ($event_kind == 'NSFX') {
+            $event_text = __('Suffix');
+        } elseif ($event_kind == 'nobility') {
+            $event_text = __('Title of Nobility');
+        } elseif ($event_kind == 'title') {
+            $event_text = __('Title');
+        } elseif ($event_kind == 'adoption') {
+            $event_text = __('Adoption');
+        } elseif ($event_kind == 'lordship') {
+            $event_text = __('Title of Lordship');
+        } elseif ($event_kind == 'URL') {
+            $event_text = __('URL/ Internet link');
+        } elseif ($event_kind == 'person_colour_mark') {
+            $event_text = __('Colour mark by person');
+        } elseif ($event_kind == 'marriage_witness') {
+            $event_text = __('marriage witness');
+        } elseif ($event_kind == 'marriage_witness_rel') {
+            $event_text = __('marriage witness (religious)');
+        } elseif ($event_kind == 'source_picture') {
+            $event_text = __('Picture/ Media');
+        } elseif ($event_kind == 'religion') {
+            $event_text = __('Religion');
+        } else {
+            $event_text = ucfirst($event_kind);
+        }
         return $event_text;
     }
 
@@ -47,20 +69,33 @@ class editor_event_cls
         $display = ' display:none;';
         $event_event = $data_listDb->event_event;
         //if (!$data_listDb->event_event and !$data_listDb->event_date and !$data_listDb->event_place and !$data_listDb->event_text) {
-        if (!$data_listDb->event_event and !$data_listDb->event_connect_id2 and !$data_listDb->event_date and !$data_listDb->event_place and !$data_listDb->event_text) {
+        if (!$data_listDb->event_event && !$data_listDb->event_connect_id2 && !$data_listDb->event_date && !$data_listDb->event_place && !$data_listDb->event_text) {
             //$event_event=__('EMPTY LINE');
             $display = '';
         }
-        if ($alternative_text) $event_event = $alternative_text;
+        if ($alternative_text) {
+            $event_event = $alternative_text;
+        }
 
         // *** Also show date and place ***
         //if ($data_listDb->event_date) $event_event.=', '.date_place($data_listDb->event_date,$data_listDb->event_place);
-        if ($data_listDb->event_date) $event_event .= ', ' . hideshow_date_place($data_listDb->event_date, $data_listDb->event_place);
+        if ($data_listDb->event_date) {
+            $event_event .= ', ' . hideshow_date_place($data_listDb->event_date, $data_listDb->event_place);
+        }
 
-        if ($event_event or $data_listDb->event_text) {
+        if ($event_event || $data_listDb->event_text || $data_listDb->event_kind == 'picture') {
             echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $event_event;
-            if ($data_listDb->event_text) echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-            echo '</span><br>';
+            if ($data_listDb->event_text) {
+                echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
+            }
+            echo '</span>';
+
+            // *** Could be used to connect a picture in a text field (Geneanet doesnt have constant GEDCOM numbers or an own text field) ***
+            if ($data_listDb->event_kind == 'picture') {
+                echo '&nbsp;<span style="font-size:smaller;">' . __('ID') . ': ' . $data_listDb->event_id . '</span>';
+            }
+
+            echo '<br>';
         }
 
         echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
@@ -79,18 +114,20 @@ class editor_event_cls
         $text = '';
 
         //if ($event_kind == 'picture') {
-        if ($event_kind == 'picture' or $event_kind == 'marriage_picture') {
+        if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
             $picture_array = array();
             // *** Picture list for selecting pictures ***
             $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'");
             $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
             $tree_pict_path = $dataDb->tree_pict_path;
-            if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+            if (substr($tree_pict_path, 0, 1) === '|') {
+                $tree_pict_path = 'media/';
+            }
             $dir = $path_prefix . $tree_pict_path;
             if (file_exists($dir)) {
                 $dh  = opendir($dir);
                 while (false !== ($filename = readdir($dh))) {
-                    if (substr($filename, 0, 6) != 'thumb_' and $filename != '.' and $filename != '..' and !is_dir($dir . $filename)) {
+                    if (substr($filename, 0, 6) !== 'thumb_' && $filename !== '.' && $filename !== '..' && !is_dir($dir . $filename)) {
                         $picture_array[] = $filename;
                     }
                 }
@@ -109,7 +146,7 @@ class editor_event_cls
                         if (is_dir($dir . substr($catDb->photocat_prefix, 0, 2))) {  // there is a subfolder for this prefix
                             $dh  = opendir($dir . substr($catDb->photocat_prefix, 0, 2));
                             while (false !== ($filename = readdir($dh))) {
-                                if (substr($filename, 0, 6) != 'thumb_' and $filename != '.' and $filename != '..') {
+                                if (substr($filename, 0, 6) !== 'thumb_' && $filename !== '.' && $filename !== '..') {
                                     $picture_array2[] = $filename;
                                     $is_cat = true;
                                 }
@@ -132,9 +169,15 @@ class editor_event_cls
 
         // 2021: No longer in use (only needed if source is edited in a pop-up screen)?
         //$event_group='event_person=1';
-        if ($event_connect_kind == 'person') $event_group = 'event_person=1';
-        if ($event_connect_kind == 'family') $event_group = 'event_family=1';
-        if ($event_connect_kind == 'source') $event_group = 'event_source=1';
+        if ($event_connect_kind == 'person') {
+            $event_group = 'event_person=1';
+        }
+        if ($event_connect_kind == 'family') {
+            $event_group = 'event_family=1';
+        }
+        if ($event_connect_kind == 'source') {
+            $event_group = 'event_source=1';
+        }
 
         // *** Show all events EXCEPT for events already processed by person data (profession etc.) ***
 
@@ -240,7 +283,9 @@ class editor_event_cls
 
         $show_event_add = false;
         $count = $data_list_qry->rowCount();
-        if ($count > 0) $show_event_add = true;
+        if ($count > 0) {
+            $show_event_add = true;
+        }
 
 
         // *** Show events by person ***
@@ -263,7 +308,7 @@ class editor_event_cls
                             </select>
                         </div>
                         <div class="col-3">
-                            <input type="submit" name="person_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-secondary">
+                            <input type="submit" name="person_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-outline-primary">
                         </div>
 
                         <div class="col-1">
@@ -303,7 +348,7 @@ class editor_event_cls
                         </div>
 
                         <div class="col-3">
-                            <input type="submit" name="marriage_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-secondary">
+                            <input type="submit" name="marriage_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-outline-primary">
                         </div>
 
                         <div class="col-3">
@@ -345,7 +390,7 @@ class editor_event_cls
                             <input type="text" name="event_event_name" id="event_event_name" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-2">
-                            <input type="submit" name="event_add_name" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
+                            <input type="submit" name="event_add_name" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
                         </div>
                     </div>
 
@@ -402,62 +447,6 @@ class editor_event_cls
         <?php
         }
 
-        // *** Show birth declaration by person ***
-        if ($event_kind == 'birth_declaration') {
-            $link = 'born';
-        ?>
-            <tr class="table_header_large row2" style="display:none;" name="row2">
-                <td></td>
-                <td style="border-right:0px;"><?= __('birth declaration'); ?></td>
-                <td style="border-left:0px;">
-                    <input type="submit" name="add_birth_declaration" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** Show baptism witness by person ***
-        if ($event_kind == 'baptism_witness') {
-            $link = 'baptised';
-        ?>
-            <tr style="display:none;" class="table_header_large row3" name="row3">
-                <td></td>
-                <td style="border-right:0px;"><?= __('baptism witness'); ?></td>
-                <td style="border-left:0px;">
-                    <input type="submit" name="add_baptism_witness" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** Show death declaration by person ***
-        if ($event_kind == 'death_declaration') {
-            $link = 'died';
-        ?>
-            <tr style="display:none;" class="table_header_large row4" name="row4">
-                <td></td>
-                <td style="border-right:0px;"><?= __('death declaration'); ?></td>
-                <td style="border-left:0px;">
-                    <input type="submit" name="add_death_declaration" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** Show burial witness by person ***
-        if ($event_kind == 'burial_witness') {
-            $link = 'buried';
-        ?>
-            <tr style="display:none;" class="table_header_large row5" name="row5">
-                <td></td>
-                <td style="border-right:0px;"><?= __('burial witness'); ?></td>
-                <td style="border-left:0px;">
-                    <input type="submit" name="add_burial_witness" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
-                </td>
-            </tr>
-        <?php
-        }
-
         // *** Show profession by person ***
         if ($event_kind == 'profession') {
             $link = 'profession';
@@ -477,7 +466,7 @@ class editor_event_cls
                                 <input type="text" name="event_event_profession" placeholder="<?= __('Profession'); ?>" value="" size="35" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-4">
-                                <input type="submit" name="event_add_profession" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
+                                <input type="submit" name="event_add_profession" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
                             </div>
                         </div>
                     <?php } ?>
@@ -503,7 +492,7 @@ class editor_event_cls
                                 <input type="text" name="event_event_religion" placeholder="<?= __('Religion'); ?>" value="" size="35" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-4">
-                                <input type="submit" name="event_add_religion" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
+                                <input type="submit" name="event_add_religion" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
                             </div>
                         </div>
                     <?php
@@ -515,7 +504,7 @@ class editor_event_cls
         }
 
         // *** Show pictures by person, family and (shared) source ***
-        if ($event_kind == 'picture' or $event_kind == 'marriage_picture' or $event_kind == 'source_picture') {
+        if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
             $link = 'picture';
         ?>
             <tr class="table_header_large" id="picture">
@@ -525,11 +514,11 @@ class editor_event_cls
                 <td colspan="2">
                     <?php
                     if ($event_kind == 'picture') {
-                        echo ' <input type="submit" name="add_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
+                        echo ' <input type="submit" name="add_picture" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
                     } elseif ($event_kind == 'marriage_picture') {
-                        echo ' <input type="submit" name="add_marriage_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
+                        echo ' <input type="submit" name="add_marriage_picture" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
                     } elseif ($event_kind == 'source_picture') {
-                        echo ' <input type="submit" name="add_source_picture" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
+                        echo ' <input type="submit" name="add_source_picture" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
                     }
 
                     //TEST
@@ -629,7 +618,7 @@ class editor_event_cls
                             AND connect_connect_id='" . $event_connect_id . "'
                             ORDER BY connect_order";
                     }
-                    if ($event_connect_kind == 'person' or $event_connect_kind == 'family') {
+                    if ($event_connect_kind == 'person' || $event_connect_kind == 'family') {
                         $event_order = 1;
 
                         $connect_sql = $dbh->query($connect_qry);
@@ -640,7 +629,7 @@ class editor_event_cls
                             while ($pictureDb = $picture_qry->fetch(PDO::FETCH_OBJ)) {
                                 // *** Check if humo_events was allready updated... => THEN OBJECT IS USED MULTIPLE TIMES ***
                                 // *** Maybe this isn't used, but just in case created this insert script ***
-                                if ($pictureDb->event_connect_kind or $pictureDb->event_connect_id) {
+                                if ($pictureDb->event_connect_kind || $pictureDb->event_connect_id) {
                                     //	Don't use UPDATE but create a new EVENT!!
                                     $sql = "INSERT INTO humo_events SET
                                         event_tree_id='" . $pictureDb->event_tree_id . "',
@@ -684,7 +673,7 @@ class editor_event_cls
                             // so that if one presses on delete before refresh the right pic will be deleted !!
                         }
                         mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
-                        
+
                         var parnode = document.getElementById(\'pic_main_\' + media_arr[0].id).parentNode; 
                         //var picdomclass = document.getElementsByClassName("pic_row2");
                         //var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
@@ -718,34 +707,6 @@ class editor_event_cls
                 </td>
             </tr>
         <?php
-        }
-
-        // *** Add marriage witness by family ***
-        if ($event_kind == 'marriage_witness') {
-            $link = 'marriage_relation';
-        ?>
-            <tr style="display:none;" class="row8 table_header_large" name="row8">
-                <td></td>
-                <td style="border-right:0px;"><?= __('marriage witness'); ?></td>
-                <td style="border-left:0px;">
-                    <input type="submit" name="add_marriage_witness" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** Add marriage witness (religious) by family ***
-        if ($event_kind == 'marriage_witness_rel') {
-            $link = 'marr_church';
-        ?>
-            <tr style="display:none;" class="row10 table_header_large" name="row10">
-                <td></td>
-                <td style="border-right:0px;"><?= __('marriage witness (religious)'); ?></td>
-                <td style="border-left:0px;">
-                    <input type="submit" name="add_marriage_witness_rel" value="<?= __('Add'); ?>" class="btn btn-sm btn-secondary">
-                </td>
-            </tr>
-            <?php
         }
 
         if (!isset($_GET['add_person'])) {
@@ -809,28 +770,36 @@ class editor_event_cls
                 if ($event_kind == 'birth_declaration') {
                     //$expand_link=' style="display:none;" class="row2 humo_color" name="row2"';
                     $expand_link = '';
-                    if ($data_listDb->event_order == '1') $expand_link = ' id="birth_declaration"';
+                    if ($data_listDb->event_order == '1') {
+                        $expand_link = ' id="birth_declaration"';
+                    }
                     //$change_bg_colour='';
                     $change_bg_colour = ' class="humo_color"';
                 }
                 if ($event_kind == 'baptism_witness') {
                     //$expand_link=' style="display:none;" class="row3" name="row3"';
                     $expand_link = '';
-                    if ($data_listDb->event_order == '1') $expand_link = ' id="baptism_witness"';
+                    if ($data_listDb->event_order == '1') {
+                        $expand_link = ' id="baptism_witness"';
+                    }
                     //$change_bg_colour=' class="humo_color"';
                     $change_bg_colour = '';
                 }
                 if ($event_kind == 'death_declaration') {
                     //$expand_link=' style="display:none;" class="row4 humo_color" name="row4"';
                     $expand_link = '';
-                    if ($data_listDb->event_order == '1') $expand_link = ' id="death_declaration"';
+                    if ($data_listDb->event_order == '1') {
+                        $expand_link = ' id="death_declaration"';
+                    }
                     //$change_bg_colour='';
                     $change_bg_colour = ' class="humo_color"';
                 }
                 if ($event_kind == 'burial_witness') {
                     //$expand_link=' style="display:none;" class="row5" name="row5"';
                     $expand_link = '';
-                    if ($data_listDb->event_order == '1') $expand_link = ' id="burial_witness"';
+                    if ($data_listDb->event_order == '1') {
+                        $expand_link = ' id="burial_witness"';
+                    }
                     //$change_bg_colour=' class="humo_color"';
                     $change_bg_colour = '';
                 }
@@ -848,7 +817,7 @@ class editor_event_cls
                     $change_bg_colour = '';
                     $internal_link = '#religion';
                 }
-                if ($event_kind == 'picture' or $event_kind == 'marriage_picture' or $event_kind == 'source_picture') {
+                if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
                     //$expand_link=' style="display:none;" id="pic_main_'.$data_listDb->event_id.'" class="pic_main row53 humo_color" name="row53"';
                     $expand_link = '';
                     //$change_bg_colour='';
@@ -858,7 +827,9 @@ class editor_event_cls
                 if ($event_kind == 'marriage_witness') {
                     //$expand_link=' style="display:none;" class="row8 humo_color" name="row8"';
                     $expand_link = '';
-                    if ($data_listDb->event_order == '1') $expand_link = ' id="marriage_witness"';
+                    if ($data_listDb->event_order == '1') {
+                        $expand_link = ' id="marriage_witness"';
+                    }
                     //$change_bg_colour='';
                     $change_bg_colour = ' class="humo_color"';
                     $internal_link = '#event_family_link';
@@ -866,7 +837,9 @@ class editor_event_cls
                 if ($event_kind == 'marriage_witness_rel') {
                     //$expand_link=' style="display:none;" class="row10 humo_color" name="row10"';
                     $expand_link = '';
-                    if ($data_listDb->event_order == '1') $expand_link = ' id="marriage_witness_rel"';
+                    if ($data_listDb->event_order == '1') {
+                        $expand_link = ' id="marriage_witness_rel"';
+                    }
                     //$change_bg_colour='';
                     $change_bg_colour = ' class="humo_color"';
                     $internal_link = '#event_family_link';
@@ -886,7 +859,9 @@ class editor_event_cls
                         echo '<a href="index.php?page=' . $page . $newpers . '&amp;' . $event_group .
                             '&amp;event_kind=' . $data_listDb->event_kind . '&amp;event_drop=' . $data_listDb->event_order;
                         // *** Remove picture by source ***
-                        if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                        if ($event_kind == 'source_picture') {
+                            echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                        }
                         echo '"><img src="images/button_drop.png" border="0" alt="down"></a>';
 
                         //if ($data_listDb->event_kind !='picture'){
@@ -909,7 +884,9 @@ class editor_event_cls
                         if ($data_listDb->event_order < $count) {
                             echo ' <a href="index.php?page=' . $page . '&amp;' . $event_group . '&amp;event_down=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
                             // *** Edit picture by source in seperate source page ***
-                            if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                            if ($event_kind == 'source_picture') {
+                                echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                            }
                             echo '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
                         } else {
                             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -919,7 +896,9 @@ class editor_event_cls
                         if ($data_listDb->event_order > 1) {
                             echo ' <a href="index.php?page=' . $page . '&amp;' . $event_group . '&amp;event_up=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
                             // *** Edit picture by source in seperate source page ***
-                            if ($event_kind == 'source_picture') echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                            if ($event_kind == 'source_picture') {
+                                echo '&amp;source_id=' . $data_listDb->event_connect_id;
+                            }
                             echo '&amp;dummy=' . $data_listDb->event_id . $internal_link;
                             echo '"><img src="images/arrow_up.gif" border="0" alt="down"></a>';
                         } else {
@@ -941,9 +920,7 @@ class editor_event_cls
 
                         // *** Witness and declaration persons ***
                         if (
-                            $data_listDb->event_kind == 'baptism_witness' or $data_listDb->event_kind == 'birth_declaration'
-                            or $data_listDb->event_kind == 'death_declaration' or $data_listDb->event_kind == 'burial_witness'
-                            or $data_listDb->event_kind == 'marriage_witness' or $data_listDb->event_kind == 'marriage_witness_rel'
+                            $data_listDb->event_kind == 'baptism_witness' || $data_listDb->event_kind == 'birth_declaration' || $data_listDb->event_kind == 'death_declaration' || $data_listDb->event_kind == 'burial_witness' || $data_listDb->event_kind == 'marriage_witness' || $data_listDb->event_kind == 'marriage_witness_rel'
                         ) {
                             // *** Hide or show editor fields ***
                             if ($data_listDb->event_connect_id2) {
@@ -963,7 +940,7 @@ class editor_event_cls
                             }
                             // *** Orange items if no witness name is selected or added in text ***
                             $style = '';
-                            if (!$data_listDb->event_event and !$data_listDb->event_connect_id2) {
+                            if (!$data_listDb->event_event && !$data_listDb->event_connect_id2) {
                                 $style = 'style="background-color:#FFAA80"';
                             }
                         ?>
@@ -999,7 +976,7 @@ class editor_event_cls
                                     $catgr = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
                                     if ($catgr->rowCount()) {
                                         while ($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {
-                                            if (substr($data_listDb->event_event, 0, 3) == $catDb->photocat_prefix and is_dir($path_prefix . $tree_pict_path3 . substr($data_listDb->event_event, 0, 2))) {   // there is a subfolder of this prefix
+                                            if (substr($data_listDb->event_event, 0, 3) == $catDb->photocat_prefix && is_dir($path_prefix . $tree_pict_path3 . substr($data_listDb->event_event, 0, 2))) {   // there is a subfolder of this prefix
                                                 $tree_pict_path3 = $tree_pict_path3 . substr($data_listDb->event_event, 0, 2) . '/';  // look in that subfolder
                                             }
                                         }
@@ -1007,53 +984,53 @@ class editor_event_cls
                                 }
 
                                 $extensions_check = substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -3, 3);
-                                if (strtolower($extensions_check) == "pdf") {
+                                if (strtolower($extensions_check) === "pdf") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="../images/pdf.jpeg"></a>';
-                                } elseif (strtolower($extensions_check) == "doc" or strtolower(substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -4, 4)) == "docx") {
+                                } elseif (strtolower($extensions_check) === "doc" || strtolower(substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -4, 4)) === "docx") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="../images/msdoc.gif"></a>';
                                 }
                                 // *** Show AVI Video file ***
-                                elseif ($extensions_check == "avi") {
+                                elseif ($extensions_check === "avi") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                                 }
                                 // *** Show WMV Video file ***
-                                elseif ($extensions_check == "wmv") {
+                                elseif ($extensions_check === "wmv") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                                 }
                                 // *** Show MPG Video file ***
-                                elseif (strtolower($extensions_check) == "mpg") {
+                                elseif (strtolower($extensions_check) === "mpg") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                                 }
                                 // *** Show MP4 Video file ***
-                                elseif (strtolower($extensions_check) == "mp4") {
+                                elseif (strtolower($extensions_check) === "mp4") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                                 }
                                 // *** Show MOV Video file ***
-                                elseif (strtolower($extensions_check) == "mov") {
+                                elseif (strtolower($extensions_check) === "mov") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
                                 }
                                 // *** Show WMA Audio file ***
-                                elseif (strtolower($extensions_check) == "wma") {
+                                elseif (strtolower($extensions_check) === "wma") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                                 }
                                 // *** Show WAV Audio file ***
-                                elseif (strtolower($extensions_check) == "wav") {
+                                elseif (strtolower($extensions_check) === "wav") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                                 }
                                 // *** Show MP3 Audio file ***
-                                elseif (strtolower($extensions_check) == "mp3") {
+                                elseif (strtolower($extensions_check) === "mp3") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                                 }
                                 // *** Show MID Audio file ***
-                                elseif (strtolower($extensions_check) == "mid") {
+                                elseif (strtolower($extensions_check) === "mid") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                                 }
                                 // *** Show RAM Audio file ***
-                                elseif (strtolower($extensions_check) == "ram") {
+                                elseif (strtolower($extensions_check) === "ram") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                                 }
                                 // *** Show RA Audio file ***
-                                elseif (strtolower($extensions_check) == ".ra") {
+                                elseif (strtolower($extensions_check) === ".ra") {
                                     echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
                                 } else {
                                     $show_image = '';
@@ -1068,7 +1045,7 @@ class editor_event_cls
                                     //    echo $path_prefix .'-'. $tree_pict_path3.'-'.$data_listDb->event_event;
                                     // *** Check if picture is in subdirectory ***
                                     // Example: subdir1_test/xy/2022_02_12 Scheveningen.jpg
-                                    if ($thumb_prefix == '') {
+                                    if ($thumb_prefix === '') {
                                         $dirname = dirname($data_listDb->event_event); // subdir1_test/xy/2022_02_12
                                         $basename = basename($data_listDb->event_event); // 2022_02_12 Scheveningen.jpg
                                         if (file_exists($path_prefix . $tree_pict_path3 . $dirname . '/thumb_' . $basename)) {
@@ -1077,18 +1054,23 @@ class editor_event_cls
                                         $picture = $path_prefix . $tree_pict_path3 . $dirname . '/' . $thumb_prefix . $basename;
                                     }
 
-                                    if ($data_listDb->event_event and file_exists($picture)) {
+                                    if ($data_listDb->event_event && file_exists($picture)) {
                                         // *** Get size of original picture ***
                                         list($width, $height) = getimagesize($picture);
                                         $size = ' style="width:100px"';
-                                        if ($height > $width) $size = ' style="height:80px"';
+                                        if ($height > $width) {
+                                            $size = ' style="height:80px"';
+                                        }
                                         //$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'"'.$size.'>';
                                         $show_image = '<img src="' . $picture . '"' . $size . '>';
-                                    } else
+                                    } else {
                                         $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
+                                    }
                                     //Check line above. If thumb if missing, missing picture is shown...
 
-                                    if (!$data_listDb->event_event) $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
+                                    if (!$data_listDb->event_event) {
+                                        $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
+                                    }
                                     echo $show_image;
                                 }
                                 ?>
@@ -1105,8 +1087,12 @@ class editor_event_cls
                             // *** Use text box for pictures and pop-up window ***
                             // *** To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id ***
                             $form = 1;
-                            if ($event_connect_kind == 'family') $form = 2;
-                            if ($event_connect_kind == 'source') $form = 3;
+                            if ($event_connect_kind == 'family') {
+                                $form = 2;
+                            }
+                            if ($event_connect_kind == 'source') {
+                                $form = 3;
+                            }
                             ?>
                             <div class="row mb-1">
                                 <label for "event" class="col-md-3 col-form-label"><?= __('Picture/ Media'); ?></label>
@@ -1172,20 +1158,48 @@ class editor_event_cls
 
                             $pers_colour = '';
                             $person_colour_mark = $data_listDb->event_event;
-                            if ($person_colour_mark == '1') $pers_colour = 'style="color:#FF0000;"';
-                            if ($person_colour_mark == '2') $pers_colour = 'style="color:#00FF00;"';
-                            if ($person_colour_mark == '3') $pers_colour = 'style="color:#0000FF;"';
-                            if ($person_colour_mark == '4') $pers_colour = 'style="color:#FF00FF;"';
-                            if ($person_colour_mark == '5') $pers_colour = 'style="color:#FFFF00;"';
-                            if ($person_colour_mark == '6') $pers_colour = 'style="color:#00FFFF;"';
-                            if ($person_colour_mark == '7') $pers_colour = 'style="color:#C0C0C0;"';
-                            if ($person_colour_mark == '8') $pers_colour = 'style="color:#800000;"';
-                            if ($person_colour_mark == '9') $pers_colour = 'style="color:#008000;"';
-                            if ($person_colour_mark == '10') $pers_colour = 'style="color:#000080;"';
-                            if ($person_colour_mark == '11') $pers_colour = 'style="color:#800080;"';
-                            if ($person_colour_mark == '12') $pers_colour = 'style="color:#A52A2A;"';
-                            if ($person_colour_mark == '13') $pers_colour = 'style="color:#008080;"';
-                            if ($person_colour_mark == '14') $pers_colour = 'style="color:#808080;"';
+                            if ($person_colour_mark == '1') {
+                                $pers_colour = 'style="color:#FF0000;"';
+                            }
+                            if ($person_colour_mark == '2') {
+                                $pers_colour = 'style="color:#00FF00;"';
+                            }
+                            if ($person_colour_mark == '3') {
+                                $pers_colour = 'style="color:#0000FF;"';
+                            }
+                            if ($person_colour_mark == '4') {
+                                $pers_colour = 'style="color:#FF00FF;"';
+                            }
+                            if ($person_colour_mark == '5') {
+                                $pers_colour = 'style="color:#FFFF00;"';
+                            }
+                            if ($person_colour_mark == '6') {
+                                $pers_colour = 'style="color:#00FFFF;"';
+                            }
+                            if ($person_colour_mark == '7') {
+                                $pers_colour = 'style="color:#C0C0C0;"';
+                            }
+                            if ($person_colour_mark == '8') {
+                                $pers_colour = 'style="color:#800000;"';
+                            }
+                            if ($person_colour_mark == '9') {
+                                $pers_colour = 'style="color:#008000;"';
+                            }
+                            if ($person_colour_mark == '10') {
+                                $pers_colour = 'style="color:#000080;"';
+                            }
+                            if ($person_colour_mark == '11') {
+                                $pers_colour = 'style="color:#800080;"';
+                            }
+                            if ($person_colour_mark == '12') {
+                                $pers_colour = 'style="color:#A52A2A;"';
+                            }
+                            if ($person_colour_mark == '13') {
+                                $pers_colour = 'style="color:#008080;"';
+                            }
+                            if ($person_colour_mark == '14') {
+                                $pers_colour = 'style="color:#808080;"';
+                            }
                             //$text.=' <span '.$pers_colour.'>'.__('Selected colour').'</span>';
                             $person_colour = ' <span ' . $pers_colour . '>' . __('Selected colour') . '</span>';
 
@@ -1284,7 +1298,9 @@ class editor_event_cls
                             }
 
                             $event_text = $data_listDb->event_event;
-                            if (!$event_text) $event_text = language_event($data_listDb->event_gedcom);
+                            if (!$event_text) {
+                                $event_text = language_event($data_listDb->event_gedcom);
+                            }
 
                             if ($check_sources_text) {
                                 $event_text .= ' ' . $check_sources_text;
@@ -1443,8 +1459,12 @@ class editor_event_cls
                         <!-- To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id -->
                         <?php
                         $form = 1;
-                        if ($event_connect_kind == 'family') $form = 2;
-                        if ($event_connect_kind == 'source') $form = 3;
+                        if ($event_connect_kind == 'family') {
+                            $form = 2;
+                        }
+                        if ($event_connect_kind == 'source') {
+                            $form = 3;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "event_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
@@ -1459,7 +1479,9 @@ class editor_event_cls
                         <?php
                         // *** Text by event ***
                         $field_text_selected = $field_text;
-                        if ($data_listDb->event_text and preg_match('/\R/', $data_listDb->event_text)) $field_text_selected = $field_text_medium;
+                        if ($data_listDb->event_text && preg_match('/\R/', $data_listDb->event_text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "event_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -1486,7 +1508,9 @@ class editor_event_cls
                             </div>
                         </div>
 
-                        <?php if (isset($hideshow) and substr($hideshow, 0, 4) == '9000') echo '</span>'; ?>
+                        <?php if (isset($hideshow) && substr($hideshow, 0, 4) === '9000') {
+                            echo '</span>';
+                        } ?>
                     </td>
 
                 </tr>
@@ -1569,7 +1593,7 @@ class editor_event_cls
             }
         }
 
-        if ($event_kind == 'picture' or $event_kind == 'marriage_picture') {
+        if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
             // *** Upload image ***
             ?>
             <tr class="table_header_large">
@@ -1577,7 +1601,7 @@ class editor_event_cls
                 <td colspan="2">
                     <?= __('Upload new image'); ?>
                     <input type="file" name="photo_upload">
-                    <input type="submit" name="<?php echo ($event_kind == 'picture') ? 'person_add_media' : 'relation_add_media'; ?>" title="submit" value="<?= __('Upload'); ?>" class="btn btn-sm btn-secondary">
+                    <input type="submit" name="<?php echo ($event_kind == 'picture') ? 'person_add_media' : 'relation_add_media'; ?>" title="submit" value="<?= __('Upload'); ?>" class="btn btn-sm btn-outline-primary">
                 </td>
             </tr>
         <?php
@@ -1702,8 +1726,8 @@ function event_selection($event_gedcom)
             }
             echo '<option value="_HEBN"' . $selected . '>_HEBN ' . __('Hebrew name') . '</option>';
         }
-
         ?>
+
         <option value="_CENN" <?php if ($event_gedcom == '_CENN') echo ' selected'; ?>>_CENN <?= __('Census name'); ?></option>
         <option value="_MARN" <?php if ($event_gedcom == '_MARN') echo ' selected'; ?>>_MARN <?= __('Married name'); ?></option>
 
@@ -1803,12 +1827,12 @@ echo '<script>
 */
 
     // *** If profession is added, jump to profession part of screen ***
-    if (isset($_POST['event_event_profession']) and $_POST['event_event_profession'] != '') {
+    if (isset($_POST['event_event_profession']) && $_POST['event_event_profession'] != '') {
         echo '<script>window.location = window.location.origin + window.location.pathname + "#profession";</script>';
     }
 
     // *** If religion is added, jump to religion part of screen ***
-    if (isset($_POST['event_event_religion']) and $_POST['event_event_religion'] != '') {
+    if (isset($_POST['event_event_religion']) && $_POST['event_event_religion'] != '') {
         echo '<script>window.location = window.location.origin + window.location.pathname + "#religion";</script>';
     }
 

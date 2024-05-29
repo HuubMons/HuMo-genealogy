@@ -41,7 +41,7 @@ class Latest_changesModel
         $person_qry .= " ORDER BY changed_date DESC LIMIT 0,100";
 
         $search_name = '';
-        if (isset($_POST["search_name"]) AND $_POST["search_name"]) {
+        if (isset($_POST["search_name"]) && $_POST["search_name"]) {
             $search_name = $_POST["search_name"];
 
             // *** Renewed querie because of ONLY_FULL_GROUP_BY in MySQL 5.7 ***
@@ -68,7 +68,7 @@ class Latest_changesModel
             // *** Order by pers_changed_date or pers_new_date, also order by pers_changed_time or pers_new_time ***
             $person_qry .= " ORDER BY
             IF (humo_persons2.pers_changed_datetime IS NOT NULL,
-                humo_persons2.pers_changed_datetime, humo_persons2.pers_new_datetime) DESC LIMIT 0,100";    
+                humo_persons2.pers_changed_datetime, humo_persons2.pers_new_datetime) DESC LIMIT 0,100";
         }
 
         $person_result = $dbh->query($person_qry);

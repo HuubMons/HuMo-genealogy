@@ -31,130 +31,150 @@ function topline($data)
 
         <td class="table_header" width="220" style="text-align:right;">
             <!-- Hide selections for bots, and second family screen (descendant report etc.) -->
-            <?php if (!$bot_visit and $descendant_loop == 0 and $parent1_marr == 0) { ?>
+            <?php if (!$bot_visit && $descendant_loop == 0 && $parent1_marr == 0) { ?>
+                <?php
+                $vars['pers_family'] = $data["family_id"];
+                $settings_url = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                $url_add = '';
+                if ($data["main_person"]) {
+                    $settings_url .= "main_person=" . $data["main_person"];
+                    $url_add = '&amp;';
+                }
+
+                $desc_rep = '';
+                if ($data["descendant_report"] == true) {
+                    $desc_rep = '&amp;descendant_report=1';
+                }
+                ?>
+
                 <!-- Settings in pop-up screen -->
-                <div class="<?= $rtlmarker; ?>sddm" style="left:10px; top:10px; display:inline-block; vertical-align:middle;">
-                    <?php
-                    $vars['pers_family'] = $data["family_id"];
-                    $settings_url = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-                    $url_add = '';
-                    if ($data["main_person"]) {
-                        $settings_url .= "main_person=" . $data["main_person"];
-                        $url_add = '&amp;';
-                    }
-                    ?>
+                <div class="dropdown dropend d-inline">
+                    <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="images/settings.png" alt="<?= __('Settings'); ?>">
+                    </button>
+                    <ul class="dropdown-menu p-2" style="width:400px;">
+                        <li>
+                            <h4><?= __('Settings family screen'); ?></h4>
+                        </li>
 
-                    <a href="<?= $settings_url; ?>" style="display:inline" onmouseover="mopen(event,'help_menu',0,0)" onmouseout="mclosetime()"><img src="images/settings.png" alt="<?= __('Settings'); ?>"></a>
+                        <li>
+                            <!-- Compact / Expanded view buttons -->
+                            <b><?= __('Family Page'); ?></b><br>
+                            <input type="radio" name="keuze0" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=compact<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'compact' ? 'checked' : ''; ?>> <?= __('Compact view'); ?><br>
+                            <input type="radio" name="keuze0" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=expanded1<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'expanded1' ? 'checked' : ''; ?>> <?= __('Expanded view'); ?> 1<br>
+                            <input type="radio" name="keuze0" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=expanded2<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'expanded2' ? 'checked' : ''; ?>> <?= __('Expanded view'); ?> 2<br>
+                        </li>
 
-                    <div class="sddm_fixed" style="z-index:10; padding:4px; text-align:<?= $alignmarker; ?>;  direction:<?= $rtlmarker; ?>;" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                        <h3><?= __('Settings family screen'); ?></h3>
-                        <table>
-                            <tr>
-                                <td>
-                                    <!-- Extended view button -->
-                                    <b><?= __('Family Page'); ?></b><br>
-                                    <?php
-                                    $desc_rep = '';
-                                    if ($data["descendant_report"] == true) {
-                                        $desc_rep = '&amp;descendant_report=1';
-                                    }
-
+                        <!-- Select source presentation (as title/ footnote or hide sources) -->
+                        <?php if ($user['group_sources'] != 'n') { ?>
+                            <li>&nbsp;</li>
+                            <li>
+                                <b><?= __('Sources'); ?></b><br>
+                                <?php
+                                $selected = '';
+                                if ($data["source_presentation"] == 'title') {
                                     $selected = ' checked';
+                                }
+                                echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=title' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show source') . "<br>\n";
+
+                                $selected = '';
+                                if ($data["source_presentation"] == 'footnote') {
+                                    $selected = ' checked';
+                                }
+                                echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=footnote' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show source as footnote') . "<br>\n";
+
+                                $selected = '';
+                                if ($data["source_presentation"] == 'hide') {
+                                    $selected = ' checked';
+                                }
+                                echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Hide sources') . "<br>\n";
+                                ?>
+                            </li>
+                        <?php
+                        }
+
+                        // *** Show/ hide maps ***
+                        if ($user["group_googlemaps"] == 'j' && $data["descendant_report"] == false) {
+                        ?>
+                            <li>&nbsp;</li>
+                            <li>
+                                <?php
+                                // *** Only show selection if there is a location database ***
+                                global $dbh;
+                                $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+                                if ($temp->rowCount()) {
+                                    echo '<b>' . __('Family map') . '</b><br>';
+                                    $selected = '';
                                     $selected2 = '';
-                                    if ($data["family_expanded"] == true) {
-                                        $selected = '';
+                                    if ($data["maps_presentation"] == 'hide') {
                                         $selected2 = ' checked';
-                                    }
-                                    echo '<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'family_expanded=0' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Compact view') . "<br>\n";
-                                    echo '<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'family_expanded=1' . $desc_rep . '&xx=\'+this.value"' . $selected2 . '>' . __('Expanded view') . "<br>\n";
-
-                                    // *** Select source presentation (as title/ footnote or hide sources) ***
-                                    if ($user['group_sources'] != 'n') {
-                                        echo '<hr>';
-                                        echo '<b>' . __('Sources') . '</b><br>';
-                                        $desc_rep = '';
-                                        if ($data["descendant_report"] == true) {
-                                            $desc_rep = '&amp;descendant_report=1';
-                                        }
-
-                                        $selected = '';
-                                        if ($data["source_presentation"] == 'title') {
-                                            $selected = ' checked';
-                                        }
-                                        echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=title' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show source') . "<br>\n";
-
-                                        $selected = '';
-                                        if ($data["source_presentation"] == 'footnote') {
-                                            $selected = ' checked';
-                                        }
-                                        echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=footnote' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show source as footnote') . "<br>\n";
-
-                                        $selected = '';
-                                        if ($data["source_presentation"] == 'hide') {
-                                            $selected = ' checked';
-                                        }
-                                        echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Hide sources') . "<br>\n";
+                                    } else {
+                                        $selected = ' checked';
                                     }
 
-                                    // *** Show/ hide maps ***
-                                    if ($user["group_googlemaps"] == 'j' and $data["descendant_report"] == false) {
-                                        // *** Only show selection if there is a location database ***
-                                        global $dbh;
-                                        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-                                        if ($temp->rowCount()) {
-                                            echo '<hr><b>' . __('Family map') . '</b><br>';
-                                            $selected = '';
-                                            $selected2 = '';
-                                            if ($data["maps_presentation"] == 'hide') $selected2 = ' checked';
-                                            else $selected = ' checked';
+                                    echo '<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'maps_presentation=show&xx=\'+this.value"' . $selected . '> ' . __('Show family map') . "<br>\n";
 
-                                            echo '<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'maps_presentation=show&xx=\'+this.value"' . $selected . '>' . __('Show family map') . "<br>\n";
+                                    echo '<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'maps_presentation=hide&xx=\'+this.value"' . $selected2 . '> ' . __('Hide family map') . "<br>\n";
+                                }
+                                ?>
+                            </li>
+                        <?php } ?>
 
-                                            echo '<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'maps_presentation=hide&xx=\'+this.value"' . $selected2 . '>' . __('Hide family map') . "<br>\n";
-                                        }
-                                    }
-                                    ?>
-                                </td>
-                                <td valign="top">
-                                    <?php
-                                    if ($user['group_pictures'] == 'j') {
-                                        echo '<b>' . __('Pictures') . '</b><br>';
-                                        $selected = '';
-                                        $selected2 = '';
-                                        if ($data["picture_presentation"] == 'hide') $selected2 = ' checked';
-                                        else $selected = ' checked';
+                        <?php if ($user['group_pictures'] == 'j') { ?>
+                            <li>&nbsp;</li>
+                            <li>
+                                <?php
+                                echo '<b>' . __('Pictures') . '</b><br>';
+                                $selected = '';
+                                $selected2 = '';
+                                if ($data["picture_presentation"] == 'hide') {
+                                    $selected2 = ' checked';
+                                } else {
+                                    $selected = ' checked';
+                                }
 
-                                        echo '<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'picture_presentation=show' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show pictures') . "<br>\n";
+                                echo '<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'picture_presentation=show' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show pictures') . "<br>\n";
 
-                                        echo '<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'picture_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected2 . '>' . __('Hide pictures') . "<br>\n";
+                                echo '<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'picture_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected2 . '> ' . __('Hide pictures') . "<br>\n";
+                                ?>
+                            </li>
+                        <?php } ?>
 
-                                        echo '<hr>';
-                                    }
+                        <li>&nbsp;</li>
+                        <li>
+                            <b><?= __('Texts'); ?></b><br>
+                            <?php
+                            $selected = '';
+                            if ($data["text_presentation"] == 'show') {
+                                $selected = ' checked';
+                            }
+                            echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=show' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show texts') . "<br>\n";
+                            ?>
 
-                                    echo '<b>' . __('Texts') . '</b><br>';
-                                    $selected = '';
-                                    if ($data["text_presentation"] == 'show') $selected = ' checked';
-                                    echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=show' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show texts') . "<br>\n";
+                            <?php
+                            $selected = '';
+                            if ($data["text_presentation"] == 'popup') {
+                                $selected = ' checked';
+                            }
+                            echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=popup' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show texts in popup screen') . "<br>\n";
+                            ?>
 
-                                    $selected = '';
-                                    if ($data["text_presentation"] == 'popup') $selected = ' checked';
-                                    echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=popup' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Show texts in popup screen') . "<br>\n";
-
-                                    $selected = '';
-                                    if ($data["text_presentation"] == 'hide') $selected = ' checked';
-                                    echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected . '>' . __('Hide texts') . "<br>\n";
-                                    ?>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+                            <?php
+                            $selected = '';
+                            if ($data["text_presentation"] == 'hide') {
+                                $selected = ' checked';
+                            }
+                            echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Hide texts') . "<br>\n";
+                            ?>
+                        </li>
+                    </ul>
                 </div>
 
                 <?php
                 //TODO check variables in forms (database -> tree_id).
 
                 // *** PDF button ***
-                if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
+                if ($user["group_pdf_button"] == 'y' && $language["dir"] != "rtl" && $language["name"] != "简体中文") {
                 ?>
                     &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $uri_path; ?>views/family_pdf.php" style="display:inline-block; vertical-align:middle;">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
@@ -172,7 +192,7 @@ function topline($data)
                 }
 
                 // *** RTF button ***
-                if ($user["group_rtf_button"] == 'y' and $language["dir"] != "rtl") {
+                if ($user["group_rtf_button"] == 'y' && $language["dir"] != "rtl") {
                     if ($humo_option["url_rewrite"] == "j") {
                         echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'family_rtf" style="display:inline-block; vertical-align:middle;">';
                     } else {
@@ -396,7 +416,7 @@ else {
                     $old_stat_prep->execute();
 
                     // *** Extended statistics ***
-                    if ($data["descendant_report"] == false and $user['group_statistics'] == 'j') {
+                    if ($data["descendant_report"] == false && $user['group_statistics'] == 'j') {
                         $stat_easy_id = $familyDb->fam_tree_id . '-' . $familyDb->fam_gedcomnumber . '-' . $familyDb->fam_man . '-' . $familyDb->fam_woman;
                         $update_sql = "INSERT INTO humo_stat_date SET
                             stat_easy_id='" . $stat_easy_id . "',
@@ -478,7 +498,7 @@ else {
                 }
 
                 // *** Add tip in family screen ***
-                if (!$bot_visit and $descendant_loop == 0 and $parent1_marr == 0) {
+                if (!$bot_visit && $descendant_loop == 0 && $parent1_marr == 0) {
     ?>
                     <div class="print_version"><b>
                             <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">'); ?>
@@ -512,7 +532,7 @@ else {
                                 echo $parent1_cls->person_data("parent1", $id);
 
                                 // *** Change page title ***
-                                if ($descendant_loop == 0 and $descendant_loop2 == 0) {
+                                if ($descendant_loop == 0 && $descendant_loop2 == 0) {
                                     $name = $parent1_cls->person_name($parent1Db);
                                     echo '<script>';
                                     echo 'document.title = "' . __('Family Page') . ': ' . $name["index_name"] . '";';
@@ -540,14 +560,12 @@ else {
                     if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
                         // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                         if (
-                            $user["group_pers_hide_totally_act"] == 'j' and isset($parent1Db->pers_own_code)
-                            and strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                            $user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
                         ) {
                             $family_privacy = true;
                         }
                         if (
-                            $user["group_pers_hide_totally_act"] == 'j' and isset($parent2Db->pers_own_code)
-                            and strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                            $user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
                         ) {
                             $family_privacy = true;
                         }
@@ -575,7 +593,7 @@ else {
                     <div class="parent2">
                         <?php
                         // *** Person must be totally hidden ***
-                        if ($user["group_pers_hide_totally_act"] == 'j' and isset($parent2Db->pers_own_code) and strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                        if ($user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
                             echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         } else {
                             $show_name_texts = true;
@@ -593,15 +611,12 @@ else {
 
                     if ($family_privacy) {
                         // No marriage data
-                    } else {
-                        if ($user["group_texts_fam"] == 'j' and process_text($familyDb->fam_text)) {
-                            echo '<br>' . process_text($familyDb->fam_text, 'family');
-
-                            // *** BK: source by family text ***
-                            $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
-                            if ($source_array) {
-                                echo $source_array['text'];
-                            }
+                    } elseif ($user["group_texts_fam"] == 'j' && process_text($familyDb->fam_text)) {
+                        echo '<br>' . process_text($familyDb->fam_text, 'family');
+                        // *** BK: source by family text ***
+                        $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
+                        if ($source_array) {
+                            echo $source_array['text'];
                         }
                     }
 
@@ -645,7 +660,7 @@ else {
 
                             // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                             // *** Person must be totally hidden ***
-                            if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                            if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
                                 if (!$show_privacy_text) {
                                     echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                                 }
@@ -660,18 +675,21 @@ else {
                                 echo $child_cls->name_extended("child");
 
                                 // *** Build descendant_report ***
-                                if ($data["descendant_report"] == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
+                                if ($data["descendant_report"] == true && $childDb->pers_fams && $descendant_loop < $max_generation) {
                                     // *** 1st family of child ***
                                     $child_family = explode(";", $childDb->pers_fams);
 
                                     // *** Check for double families in descendant report (if a person relates or marries another person in the same family) ***
-                                    if (isset($check_double) and in_array($child_family[0], $check_double)) {
+                                    if (isset($check_double) && in_array($child_family[0], $check_double)) {
                                         // *** Don't show this family, double... ***
-                                    } else
+                                    } else {
                                         $descendant_family_id2[] = $child_family[0];
+                                    }
+                                    // *** Save all marriages of person in check array ***
+                                    $counter = count($child_family);
 
                                     // *** Save all marriages of person in check array ***
-                                    for ($k = 0; $k < count($child_family); $k++) {
+                                    for ($k = 0; $k < $counter; $k++) {
                                         $check_double[] = $child_family[$k];
                                         // *** Save "Follows: " text in array, also needed for doubles... ***
                                         $follows_array[] = $data["number_roman"][$descendant_loop + 2] . '-' . $data["number_generation"][count($descendant_family_id2)];
@@ -721,10 +739,15 @@ else {
                         $child_cls = new person_cls($childDb);
 
                         echo '<tr><td colspan="4"><div class="children">';
-                        if ($famc_adoptiveDb->event_gedcom == 'steph') echo '<b>' . __('Stepchild') . ':</b>';
-                        elseif ($famc_adoptiveDb->event_gedcom == 'legal') echo '<b>' . __('Legal child') . ':</b>';
-                        elseif ($famc_adoptiveDb->event_gedcom == 'foster') echo '<b>' . __('Foster child') . ':</b>';
-                        else echo '<b>' . __('Adopted child:') . '</b>';
+                        if ($famc_adoptiveDb->event_gedcom == 'steph') {
+                            echo '<b>' . __('Stepchild') . ':</b>';
+                        } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
+                            echo '<b>' . __('Legal child') . ':</b>';
+                        } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
+                            echo '<b>' . __('Foster child') . ':</b>';
+                        } else {
+                            echo '<b>' . __('Adopted child:') . '</b>';
+                        }
 
                         echo ' ' . $child_cls->name_extended("child");
                         echo '</div></td></tr>' . "\n";
@@ -739,10 +762,15 @@ else {
                         $child_cls = new person_cls($childDb);
 
                         echo '<tr><td colspan="4"><div class="children">';
-                        if ($famc_adoptiveDb->event_gedcom == 'steph') echo '<b>' . __('Stepchild') . ':</b>';
-                        elseif ($famc_adoptiveDb->event_gedcom == 'legal') echo '<b>' . __('Legal child') . ':</b>';
-                        elseif ($famc_adoptiveDb->event_gedcom == 'foster') echo '<b>' . __('Foster child') . ':</b>';
-                        else echo '<b>' . __('Adopted child:') . '</b>';
+                        if ($famc_adoptiveDb->event_gedcom == 'steph') {
+                            echo '<b>' . __('Stepchild') . ':</b>';
+                        } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
+                            echo '<b>' . __('Legal child') . ':</b>';
+                        } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
+                            echo '<b>' . __('Foster child') . ':</b>';
+                        } else {
+                            echo '<b>' . __('Adopted child:') . '</b>';
+                        }
 
                         echo ' ' . $child_cls->name_extended("child");
                         echo '</div></td></tr>' . "\n";
@@ -752,7 +780,7 @@ else {
 
                 <?php
                 // *** Show Google or OpenStreetMap map ***
-                if ($user["group_googlemaps"] == 'j' and $data["descendant_report"] == false and $data["maps_presentation"] == 'show') {
+                if ($user["group_googlemaps"] == 'j' && $data["descendant_report"] == false && $data["maps_presentation"] == 'show') {
                     unset($location_array);
                     unset($lat_array);
                     unset($lon_array);
@@ -764,7 +792,9 @@ else {
                     $text_array[] = '';
 
                     $newline = "\\n";
-                    if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'OpenStreetMap') $newline = '<br>';
+                    if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
+                        $newline = '<br>';
+                    }
 
 
                     // BIRTH man
@@ -792,7 +822,7 @@ else {
                     }
 
                     // BIRTH woman
-                    if ($parent2Db and !$parent2_cls->privacy) {
+                    if ($parent2Db && !$parent2_cls->privacy) {
                         $location_var = $parent2Db->pers_birth_place;
                         if ($location_var != '') {
                             $short = __('BORN_SHORT');
@@ -807,7 +837,7 @@ else {
                                 $name = $parent2_cls->person_name($parent2Db);
                                 $google_name = $name["standard_name"];
                                 $key = array_search($location_var, $location_array);
-                                if (isset($key) and $key > 0) {
+                                if (isset($key) && $key > 0) {
                                     $text_array[$key] .= $newline . addslashes($google_name . ", " . $short . ' ' . $location_var);
                                 } else {
                                     $location_array[] = $location_var;
@@ -820,7 +850,7 @@ else {
                     }
 
                     // DEATH man
-                    if ($parent1Db and !$parent1_cls->privacy) {
+                    if ($parent1Db && !$parent1_cls->privacy) {
                         $location_var = $parent1Db->pers_death_place;
                         $short = __('DIED_SHORT');
                         if ($location_var == '') {
@@ -837,7 +867,7 @@ else {
                                 $name = $parent1_cls->person_name($parent1Db);
                                 $google_name = $name["standard_name"];
                                 $key = array_search($location_var, $location_array);
-                                if (isset($key) and $key > 0) {
+                                if (isset($key) && $key > 0) {
                                     $text_array[$key] .= $newline . addslashes($google_name . ", " . $short . ' ' . $location_var);
                                 } else {
                                     $location_array[] = $location_var;
@@ -850,7 +880,7 @@ else {
                     }
 
                     // DEATH woman
-                    if ($parent2Db and !$parent2_cls->privacy) {
+                    if ($parent2Db && !$parent2_cls->privacy) {
                         $location_var = $parent2Db->pers_death_place;
                         $short = __('DIED_SHORT');
                         if ($location_var == '') {
@@ -866,7 +896,7 @@ else {
                                 $name = $parent2_cls->person_name($parent2Db);
                                 $google_name = $name["standard_name"];
                                 $key = array_search($location_var, $location_array);
-                                if (isset($key) and $key > 0) {
+                                if (isset($key) && $key > 0) {
                                     $text_array[$key] .= $newline . addslashes($google_name . ", " . $short . ' ' . $location_var);
                                 } else {
                                     $location_array[] = $location_var;
@@ -893,9 +923,9 @@ else {
                             $name = $parent2_cls->person_name($parent2Db);
                             $google_name .= ' & ' . $name["standard_name"];
 
-                            if (!$parent1_cls->privacy and !$parent2_cls->privacy) {
+                            if (!$parent1_cls->privacy && !$parent2_cls->privacy) {
                                 $key = array_search($familyDb->fam_marr_place, $location_array);
-                                if (isset($key) and $key > 0) {
+                                if (isset($key) && $key > 0) {
                                     $text_array[$key] .= $newline . addslashes($google_name . ", " . __('married') . ' ' . $familyDb->fam_marr_place);
                                 } else {
                                     $location_array[] = $familyDb->fam_marr_place;
@@ -928,7 +958,7 @@ else {
                                         $name = $person_cls->person_name($childDb);
                                         $google_name = $name["standard_name"];
                                         $key = array_search($childDb->pers_birth_place, $location_array);
-                                        if (isset($key) and $key > 0) {
+                                        if (isset($key) && $key > 0) {
                                             $text_array[$key] .= $newline . addslashes($google_name . ", " . __('BORN_SHORT') . ' ' . $childDb->pers_birth_place);
                                         } else {
                                             $location_array[] = $childDb->pers_birth_place;
@@ -950,7 +980,7 @@ else {
                                         $name = $person_cls->person_name($childDb);
                                         $google_name = $name["standard_name"];
                                         $key = array_search($childDb->pers_death_place, $location_array);
-                                        if (isset($key) and $key > 0) {
+                                        if (isset($key) && $key > 0) {
                                             $text_array[$key] .= $newline . addslashes($google_name . ", " . __('DIED_SHORT') . ' ' . $childDb->pers_death_place);
                                         } else {
                                             $location_array[] = $childDb->pers_death_place;
@@ -966,7 +996,7 @@ else {
 
 
                     // *** OpenStreetMap ***
-                    if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'OpenStreetMap') {
+                    if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
                         if ($family_nr == 2) { // *** Only include once ***
                             echo '<link rel="stylesheet" href="include/leaflet/leaflet.css">';
                             echo '<script src="include/leaflet/leaflet.js"></script>';
@@ -1003,7 +1033,7 @@ else {
                         // *** Only show main javascript once ***
                         if ($family_nr == 2) {
                             $api_key = '';
-                            if (isset($humo_option['google_api_key']) and $humo_option['google_api_key'] != '') {
+                            if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
                                 $api_key = "&key=" . $humo_option['google_api_key'];
                             }
 
@@ -1058,7 +1088,7 @@ else {
                         for ($i = 1; $i < count($location_array); $i++) {
                             $show_google_map = true;
                             $api_key = '';
-                            if (isset($humo_option['google_api_key']) and $humo_option['google_api_key'] != '') {
+                            if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
                                 $api_key = "&key=" . $humo_option['google_api_key'];
                             }
 
@@ -1093,7 +1123,7 @@ else {
 } // End of single person
 
 // *** If source footnotes are selected, show them here ***
-if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_presentation'] == 'footnote') {
+if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
     echo show_sources_footnotes();
 }
 
@@ -1103,7 +1133,9 @@ if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_pres
 */
 if ($user['group_citation_generation'] == 'y') {
     $name1 = $parent1_cls->person_name($parent1Db);
-    if (isset($parent2Db)) $name2 = $parent2_cls->person_name($parent2Db);
+    if (isset($parent2Db)) {
+        $name2 = $parent2_cls->person_name($parent2Db);
+    }
     ?>
     <br><b><?= __('Citation for:') . ' ' . __('Family Page'); ?></b><br>
 
@@ -1111,7 +1143,9 @@ if ($user['group_citation_generation'] == 'y') {
         <?php
         // *** Name of citation ***
         echo '"' . __('Family Page') . ': ' . $name1['name'];
-        if (isset($name2['name']) and $name2['name']) echo ' &amp; ' . $name2['name'] . '."';
+        if (isset($name2['name']) && $name2['name']) {
+            echo ' &amp; ' . $name2['name'] . '."';
+        }
 
         // *** Link to family page ***
         echo ' HuMo-genealogy - ' . $humo_option["database_name"] . ' (';
@@ -1133,10 +1167,10 @@ if ($user['group_citation_generation'] == 'y') {
             echo ' ' . $name1['name'] . ' #' . $parent1Db->pers_gedcomnumber;
 
             // *** Birth or baptise date ***
-            if (isset($family_privacy) and !$family_privacy) {
-                if ($parent1Db->pers_birth_date or $parent1Db->pers_birth_place) {
+            if (isset($family_privacy) && !$family_privacy) {
+                if ($parent1Db->pers_birth_date || $parent1Db->pers_birth_place) {
                     echo ', ' . __('born') . ' ' . date_place($parent1Db->pers_birth_date, $parent1Db->pers_birth_place);
-                } elseif ($parent1Db->pers_bapt_date or $parent1Db->pers_bapt_place) {
+                } elseif ($parent1Db->pers_bapt_date || $parent1Db->pers_bapt_place) {
                     echo ', ' . __('baptised') . ' ' . date_place($parent1Db->pers_bapt_date, $parent1Db->pers_bapt_place);
                 }
             }
@@ -1167,10 +1201,11 @@ if ($data["descendant_report"] == false) {
                 </th>
                 <th colspan="2">
                     <?php
-                    if ($num_rows)
+                    if ($num_rows) {
                         printf(__('There are %d user added notes.'), $num_rows);
-                    else
+                    } else {
                         printf(__('There are %d user added notes.'), 0);
+                    }
                     ?>
                 </th>
             </tr>
@@ -1199,7 +1234,7 @@ if ($data["descendant_report"] == false) {
     }
 
     // *** User is allowed to add a note to a person in the family tree ***
-    if ($user['group_user_notes'] == 'y' and is_numeric($_SESSION['user_id'])) {
+    if ($user['group_user_notes'] == 'y' && is_numeric($_SESSION['user_id'])) {
         // *** Find user that adds a note ***
         $usersql = 'SELECT * FROM humo_users WHERE user_id="' . $_SESSION['user_id'] . '"';
         $user_note = $dbh->query($usersql);
@@ -1209,8 +1244,9 @@ if ($data["descendant_report"] == false) {
         $name = $parent1_cls->person_name($parent1Db);
         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
         $start_url = '';
-        if (isset($parent1Db->pers_tree_id))
+        if (isset($parent1Db->pers_tree_id)) {
             $start_url = $parent1_cls->person_url2($parent1Db->pers_tree_id, $parent1Db->pers_famc, $parent1Db->pers_fams, $parent1Db->pers_gedcomnumber);
+        }
 
         if (isset($_POST['send_mail'])) {
             // *** note_status show/ hide/ moderate options ***

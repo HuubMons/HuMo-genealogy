@@ -2,7 +2,7 @@
 class update_cls
 {
 
-    public function update_v3_1()
+    public function update_v3_1(): void
     {
         // ********************************
         // *** HuMo-genealogy update 1 (V3.1) ***
@@ -22,7 +22,7 @@ class update_cls
             //
         }
 
-        if ($update_check or $update_check2) {
+        if ($update_check || $update_check2) {
             echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">OK</td></tr>';
         } else {
             echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
@@ -64,7 +64,7 @@ class update_cls
         }
     }
 
-    public function update_v4_6()
+    public function update_v4_6(): void
     {
         // ********************************
         // *** HuMo-genealogy update 4 (V4.6) ***
@@ -107,7 +107,7 @@ class update_cls
         }
     }
 
-    public function update_v4_2()
+    public function update_v4_2(): void
     {
         // *********************************
         // *** HuMo-genealogy update 3 (V 4.2) ***
@@ -127,7 +127,7 @@ class update_cls
         $dbh->query($sql);
     }
 
-    public function update_v3_2()
+    public function update_v3_2(): void
     {
         // ********************************
         // *** HuMo-genealogy update 2 (V3.2) ***
@@ -148,7 +148,7 @@ class update_cls
             //
         }
 
-        if ($update_check or $update_check2) {
+        if ($update_check || $update_check2) {
             echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">OK</td></tr>';
         } else {
             echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
@@ -233,7 +233,7 @@ class update_cls
         }
     }
 
-    public function update_v4_6_update_2()
+    public function update_v4_6_update_2(): void
     {
         // ********************************
         // *** HuMo-genealogy update 4 (V4.6) ***
@@ -588,7 +588,7 @@ class update_cls
         }
     }
 
-    public function update_v4_6_update_3()
+    public function update_v4_6_update_3(): void
     {
         global $dbh;
         // *** Check for update version 4.6 ***
@@ -1131,7 +1131,7 @@ class update_cls
         // *** End of update version 4.6 ***
     }
 
-    public function update_v4_7()
+    public function update_v4_7(): void
     {
         // ************************************
         // *** Update procedure version 4.7 ***
@@ -1294,7 +1294,7 @@ class update_cls
         $dbh->query("UPDATE humo_settings SET setting_value='1' WHERE setting_variable='update_status'");
     }
 
-    public function update_v4_8()
+    public function update_v4_8(): void
     {
         // ************************************
         // *** Update procedure version 4.8 ***
@@ -1318,7 +1318,7 @@ class update_cls
                 connect_sub_kind='" . $connect_sub_kind . "',
                 connect_connect_id='" . $connect_connect_id . "',";
                 // *** Check if old source was a link or a text ***
-                if (substr($source_array[$i], 0, 1) == '@') {
+                if (substr($source_array[$i], 0, 1) === '@') {
                     $gebeurtsql .= " connect_source_id='" . substr($source_array[$i], 1, -1) . "'";
                 } else {
                     $gebeurtsql .= " connect_text='" . $source_array[$i] . "'";
@@ -1469,7 +1469,7 @@ class update_cls
                     connect_connect_id='" . $connect_connect_id . "',";
 
                     // *** Check if old source was a link or a text ***
-                    if (substr($source_array[$i], 0, 1) == '@') {
+                    if (substr($source_array[$i], 0, 1) === '@') {
                         $gebeurtsql .= " connect_source_id='" . substr($source_array[$i], 1, -1) . "'";
                     } else {
                         $gebeurtsql .= " connect_text='" . $source_array[$i] . "'";
@@ -1645,7 +1645,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    public function update_v4_8_2()
+    public function update_v4_8_2(): void
     {
         // **************************************
         // *** Update procedure version 4.8.2 ***
@@ -1692,7 +1692,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    public function update_v4_8_8()
+    public function update_v4_8_8(): void
     {
         // **************************************
         // *** Update procedure version 4.8.8 ***
@@ -1722,7 +1722,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    public function update_v4_8_9()
+    public function update_v4_8_9(): void
     {
         // ************************************
         // *** Update procedure version 4.8.9 ***
@@ -1829,7 +1829,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    public function update_v4_9_1()
+    public function update_v4_9_1(): void
     {
         // **************************************
         // *** Update procedure version 4.9.1 ***
@@ -1852,7 +1852,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    public function update_v5_0()
+    public function update_v5_0(): void
     {
         // ************************************
         // *** Update procedure version 5.0 ***
@@ -1897,7 +1897,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    public function update_v5_1()
+    public function update_v5_1(): void
     {
         // ************************************
         // *** Update procedure version 5.1 ***
@@ -2564,19 +2564,19 @@ class update_cls
                     //person | address_source
                     //family | address_source
                     $connect_sub_kind = $getDb->connect_sub_kind;
-                    if ($getDb->connect_kind == 'person' and $getDb->connect_sub_kind == 'event_source') {
+                    if ($getDb->connect_kind == 'person' && $getDb->connect_sub_kind == 'event_source') {
                         $person_event_source[$updateDb->tree_id][] = $getDb->connect_connect_id;
                         $connect_sub_kind = 'pers_event_source';
                     }
-                    if ($getDb->connect_kind == 'family' and $getDb->connect_sub_kind == 'event_source') {
+                    if ($getDb->connect_kind == 'family' && $getDb->connect_sub_kind == 'event_source') {
                         $family_event_source[$updateDb->tree_id][] = $getDb->connect_connect_id;
                         $connect_sub_kind = 'fam_event_source';
                     }
-                    if ($getDb->connect_kind == 'person' and $getDb->connect_sub_kind == 'address_source') {
+                    if ($getDb->connect_kind == 'person' && $getDb->connect_sub_kind == 'address_source') {
                         $person_address_source[$updateDb->tree_id][] = $getDb->connect_connect_id;
                         $connect_sub_kind = 'pers_address_source';
                     }
-                    if ($getDb->connect_kind == 'family' and $getDb->connect_sub_kind == 'address_source') {
+                    if ($getDb->connect_kind == 'family' && $getDb->connect_sub_kind == 'address_source') {
                         $family_address_source[$updateDb->tree_id][] = $getDb->connect_connect_id;
                         $connect_sub_kind = 'fam_address_source';
                     }
@@ -2638,24 +2638,20 @@ class update_cls
                     $dbh->query($sql_put);
 
                     // PROCESS connection id's
-                    if (isset($person_address_source[$updateDb->tree_id]) and in_array($getDb->address_id, $person_address_source[$updateDb->tree_id])) {
-                        // UPDATE connection table
-                        if ($dbh->lastInsertId() != 0) {
-                            $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
+                    // UPDATE connection table
+                    if ((isset($person_address_source[$updateDb->tree_id]) and in_array($getDb->address_id, $person_address_source[$updateDb->tree_id])) && $dbh->lastInsertId() != 0) {
+                        $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
                                 WHERE connect_tree_id='" . $updateDb->tree_id . "'
                                 AND connect_sub_kind='pers_address_source' AND connect_connect_id='" . $getDb->address_id . "'";
-                            $dbh->query($qry);
-                        }
+                        $dbh->query($qry);
                     }
                     // PROCESS connection id's
-                    if (isset($family_address_source[$updateDb->tree_id]) and in_array($getDb->address_id, $family_address_source[$updateDb->tree_id])) {
-                        // UPDATE connection table
-                        if ($dbh->lastInsertId() != 0) {
-                            $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
+                    // UPDATE connection table
+                    if ((isset($family_address_source[$updateDb->tree_id]) and in_array($getDb->address_id, $family_address_source[$updateDb->tree_id])) && $dbh->lastInsertId() != 0) {
+                        $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
                                 WHERE connect_tree_id='" . $updateDb->tree_id . "'
                                 AND connect_sub_kind='fam_address_source' AND connect_connect_id='" . $getDb->address_id . "'";
-                            $dbh->query($qry);
-                        }
+                        $dbh->query($qry);
                     }
                 }
                 // *** Commit data in database ***
@@ -2693,23 +2689,19 @@ class update_cls
                     $dbh->query($sql_put);
 
                     // PROCESS connection id's
-                    if (isset($person_event_source[$updateDb->tree_id]) and in_array($getDb->event_id, $person_event_source[$updateDb->tree_id])) {
-                        // UPDATE connection table
-                        if ($dbh->lastInsertId() != 0) {
-                            $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
+                    // UPDATE connection table
+                    if ((isset($person_event_source[$updateDb->tree_id]) and in_array($getDb->event_id, $person_event_source[$updateDb->tree_id])) && $dbh->lastInsertId() != 0) {
+                        $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
                                 WHERE connect_tree_id='" . $updateDb->tree_id . "'
                                 AND connect_sub_kind='pers_event_source' AND connect_connect_id='" . $getDb->event_id . "'";
-                            $dbh->query($qry);
-                        }
+                        $dbh->query($qry);
                     }
-                    if (isset($family_event_source[$updateDb->tree_id]) and in_array($getDb->event_id, $family_event_source[$updateDb->tree_id])) {
-                        // UPDATE connection table
-                        if ($dbh->lastInsertId() != 0) {
-                            $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
+                    // UPDATE connection table
+                    if ((isset($family_event_source[$updateDb->tree_id]) and in_array($getDb->event_id, $family_event_source[$updateDb->tree_id])) && $dbh->lastInsertId() != 0) {
+                        $qry = "UPDATE humo_connections SET connect_connect_id='" . $dbh->lastInsertId() . "'
                                 WHERE connect_tree_id='" . $updateDb->tree_id . "'
                                 AND connect_sub_kind='fam_event_source' AND connect_connect_id='" . $getDb->event_id . "'";
-                            $dbh->query($qry);
-                        }
+                        $dbh->query($qry);
                     }
                 }
                 // *** Commit data in database ***
@@ -2842,7 +2834,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    public function update_v5_1_6()
+    public function update_v5_1_6(): void
     {
         // **************************************
         // *** Update procedure version 5.1.6 ***
@@ -2914,7 +2906,7 @@ class update_cls
         echo '</td></tr>';
     }
 
-    public function update_v5_1_9()
+    public function update_v5_1_9(): void
     {
         // **************************************
         // *** Update procedure version 5.1.9 ***
@@ -3052,7 +3044,7 @@ class update_cls
     }
 
 
-    public function update_v5_2_5()
+    public function update_v5_2_5(): void
     {
         // **************************************
         // *** Update procedure version 5.2.5 ***
@@ -3234,7 +3226,7 @@ class update_cls
     }
 
 
-    public function update_v5_6_1()
+    public function update_v5_6_1(): void
     {
         // **************************************
         // *** Update procedure version 5.6.1 ***
@@ -3371,7 +3363,7 @@ class update_cls
     }
 
 
-    public function update_v5_7()
+    public function update_v5_7(): void
     {
         // ************************************
         // *** Update procedure version 5.7 ***
@@ -3514,7 +3506,7 @@ class update_cls
     }
 
 
-    public function update_v5_9()
+    public function update_v5_9(): void
     {
         // ************************************
         // *** Update procedure version 5.9 ***
@@ -3593,7 +3585,7 @@ class update_cls
     }
 
 
-    public function update_v6_0_1()
+    public function update_v6_0_1(): void
     {
         // **************************************
         // *** Update procedure version 6.0.1 ***
@@ -3684,7 +3676,7 @@ class update_cls
     }
 
 
-    public function update_v6_4_1()
+    public function update_v6_4_1(): void
     {
         // **************************************
         // *** Update procedure version 6.4.1 ***
@@ -3872,7 +3864,7 @@ class update_cls
         flush();
     }
 
-    public function update_v6_7_2()
+    public function update_v6_7_2(): void
     {
         // **************************************
         // *** Update procedure version 6.7.2 ***
@@ -3950,7 +3942,7 @@ class update_cls
                 }
 
                 $sql = 'UPDATE ' . $table . ' SET ' . $field . '_new_datetime="' . $new_datetime . '"';
-                if ($field != 'note' and $qryDb->new_user_id) {
+                if ($field != 'note' && $qryDb->new_user_id) {
                     $sql .= ', ' . $field . '_new_user_id="' . $qryDb->new_user_id . '"';
                 }
 
@@ -3961,7 +3953,7 @@ class update_cls
                     $sql .= ', ' . $field . '_changed_datetime=NULL';
                 }
 
-                if ($field != 'note' and $qryDb->changed_user_id) {
+                if ($field != 'note' && $qryDb->changed_user_id) {
                     $sql .= ', ' . $field . '_changed_user_id="' . $qryDb->changed_user_id . '"';
                 }
                 $sql .= ' WHERE ' . $field . '_id="' . $qryDb->id . '"';
@@ -3976,8 +3968,7 @@ class update_cls
                 $dbh->query("ALTER TABLE " . $table . "
                 DROP " . $field . "_new_user, DROP " . $field . "_new_date, DROP " . $field . "_new_time,
                 DROP " . $field . "_changed_user, DROP " . $field . "_changed_date, DROP " . $field . "_changed_time;");
-            }
-            else{
+            } else {
                 $dbh->query("ALTER TABLE " . $table . "
                 DROP " . $field . "_new_date, DROP " . $field . "_new_time,
                 DROP " . $field . "_changed_date, DROP " . $field . "_changed_time;");

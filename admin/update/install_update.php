@@ -24,7 +24,7 @@ if (isset($_GET['re_install'])) {
     $update['up_to_date'] = 'no';
 }
 
-if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
+if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
     // *** Show HuMo-genealogy version number ***
     echo '<br><br><h2>HuMo-genealogy</h2>';
     echo __('Version:') . ' ';
@@ -56,7 +56,9 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 
     // *** Check for HuMo-genealogy beta version SAME CODE AS CODE BELOW... ***
     $check = ' checked';
-    if ($humo_option['update_last_check'] == 'DISABLED') $check = '';
+    if ($humo_option['update_last_check'] == 'DISABLED') {
+        $check = '';
+    }
     echo '<br><br><h2>';
     printf(__('Enable/ disable %s update check.'), 'HuMo-genealogy');
     echo '</h2>';
@@ -71,7 +73,9 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 <?php
     // *** Debug update check ***
     $check = ' checked';
-    if ($humo_option['update_last_check'] == 'DISABLED') $check = '';
+    if ($humo_option['update_last_check'] == 'DISABLED') {
+        $check = '';
+    }
     echo '<br><br><h2>';
     printf(__('Debug %s update'), 'HuMo-genealogy');
     echo '</h2>';
@@ -79,7 +83,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
     echo '<input type="submit" name="debug_update" value="' . __('Debug') . '">';
     echo '</form>';
     echo '<br><br>';
-} elseif (isset($update['up_to_date']) and $update['up_to_date'] == 'no') {
+} elseif (isset($update['up_to_date']) && $update['up_to_date'] == 'no') {
 
     if (isset($_GET['auto'])) {
         echo '<h2>' . __('Automatic update') . '</h2>';
@@ -141,7 +145,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
         }
 
         // *** STEP 1: Download humo-genealogy.zip and unzip to update folder ***
-        if (isset($_GET['step']) and $_GET['step'] == '1') {
+        if (isset($_GET['step']) && $_GET['step'] == '1') {
             $download = false;
 
             // *** Check update folder permissions ***
@@ -313,7 +317,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
         }
 
         // *** STEP 2: check files ***
-        if (isset($_GET['step']) and ($_GET['step'] == '2' or $_GET['step'] == '3')) {
+        if (isset($_GET['step']) && ($_GET['step'] == '2' || $_GET['step'] == '3')) {
             echo '<br>' . __('Step 2) Compare existing and update files (no installation yet)...') . '<br>';
 
             if ($_GET['step'] == '3') {
@@ -378,7 +382,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 
                     $exist_sha1 = sha1_file($existing_dir[$key] . '/' . $existing_files[$key]);
                     $update_sha1 = sha1_file($update_dir[$i] . '/' . $update_files[$i]);
-                    if ($exist_sha1 != $update_sha1) {
+                    if ($exist_sha1 !== $update_sha1) {
                         $create_file = '../' . substr($update_dir[$i] . '/' . $update_files[$i], 25);
 
                         // *** Optional installation of file ***
@@ -393,13 +397,11 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                         echo $create_file;
 
                         // *** Copy update file to existing file ***
-                        if ($_GET['step'] == '3') {
-                            if (isset($_POST['install_file' . $i])) {
-                                if (!copy($update_dir[$i] . '/' . $update_files[$i], $create_file)) {
-                                    echo ' <b>' . __('Installation of file failed') . '</b>';
-                                } else {
-                                    echo ' ' . __('File installed!');
-                                }
+                        if ($_GET['step'] == '3' && isset($_POST['install_file' . $i])) {
+                            if (!copy($update_dir[$i] . '/' . $update_files[$i], $create_file)) {
+                                echo ' <b>' . __('Installation of file failed') . '</b>';
+                            } else {
+                                echo ' ' . __('File installed!');
                             }
                         }
                         echo '<br>';
@@ -413,10 +415,8 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                     } else {
                         $create_dir = '../' . substr($update_dir[$i] . '/' . $update_files[$i], 25);
                         echo $create_dir;
-                        if ($_GET['step'] == '3') {
-                            if (mkdir($create_dir)) {
-                                echo ' ' . __('Directory created.');
-                            }
+                        if ($_GET['step'] == '3' && mkdir($create_dir)) {
+                            echo ' ' . __('Directory created.');
                         }
                         echo '<br>';
                     }
@@ -446,10 +446,8 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
                         echo $create_file;
 
                         // *** Copy update file to existing file ***
-                        if ($_GET['step'] == '3') {
-                            if (isset($_POST['remove_file' . $i])) {
-                                unlink($create_file);
-                            }
+                        if ($_GET['step'] == '3' && isset($_POST['remove_file' . $i])) {
+                            unlink($create_file);
                         }
                         echo '<br>';
                     }
@@ -458,7 +456,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 
             echo '</div>';
 
-            if ($_GET['step'] == '3' and DATABASE_HOST) {
+            if ($_GET['step'] == '3' && DATABASE_HOST) {
                 echo '<br>' . __('Update new db_login.php file...') . '<br>';
 
                 $login_file = "../include/db_login.php";
@@ -584,7 +582,7 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
     echo '<br>' . __('2. Rename the zip file into: humo-gen_update.zip') . '<br>';
 
     // *** Upload file ***
-    if (isset($_FILES['update_file']) and $_FILES['update_file']['name']) {
+    if (isset($_FILES['update_file']) && $_FILES['update_file']['name']) {
         $fault = "";
         if (!$fault) {
             $update_new = 'update/humo-gen_update.zip';
@@ -621,7 +619,9 @@ if (isset($update['up_to_date']) and $update['up_to_date'] == 'yes') {
 
     // *** Check for HuMo-genealogy beta version SAME CODE AS CODE ABOVE ***
     $check = ' checked';
-    if ($humo_option['update_last_check'] == 'DISABLED') $check = '';
+    if ($humo_option['update_last_check'] == 'DISABLED') {
+        $check = '';
+    }
     echo '<h2>';
     printf(__('Enable/ disable %s update check.'), 'HuMo-genealogy');
     echo '</h2>';

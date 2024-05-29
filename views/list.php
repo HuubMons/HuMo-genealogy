@@ -1,48 +1,34 @@
 <?php
 
-$index_list = $data["index_list"];
-
 // *** Extra reset needed for "search in all family trees" ***
-if ($index_list != 'search' and $index_list != 'quicksearch') unset($_SESSION["save_select_trees"]);
+if ($list["index_list"] != 'search' && $list["index_list"] != 'quicksearch') {
+    unset($_SESSION["save_select_trees"]);
+}
 
 // *** Save selected "search" family tree (can be used to erase search values if tree is changed) ***
 $_SESSION["save_search_tree_prefix"] = safe_text_db($_SESSION['tree_prefix']);
 
-
-$order = $data["order"];
-$desc_asc = $data["desc_asc"];
-$selectsort = $data["order_select"];
-$orderby = $data["orderby"];
-$make_date = $data["make_date"];
-
+$order = $list["order"];
 // *** Search in 1 or more family trees ***
-$select_trees = $data["select_trees"];
-
-$selection = $data["selection"];
-$quicksearch = $data["quicksearch"];
-$adv_search = $data["adv_search"];
-
-$person_result = $data["person_result"];
-$start = $data["start"];
-$nr_persons = $data["nr_persons"];
-$count_persons = $data["count_persons"];
-$item = $data["item"];
+$select_trees = $list["select_trees"];
+$selection = $list["selection"];
+$start = $list["start"];
 
 
 $list_var = $link_cls->get_link($uri_path, 'list', $tree_id, false);
 $list_var2 = $link_cls->get_link($uri_path, 'list', $tree_id, true);
 
-if ($index_list == 'places') {
+if ($list["index_list"] == 'places') {
 ?>
     <!--  Search places -->
     <form method="post" action="<?= $list_var; ?>">
-        <input type="hidden" name="index_list" value="<?= $index_list; ?>">
+        <input type="hidden" name="index_list" value="places">
 
         <div class="p-2 me-sm-2 genealogy_search">
             <div class="row mb-2">
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_birth" id="select_birth" value="1" <?php if ($data["select_birth"] == '1') echo ' checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_birth" id="select_birth" value="1" <?php if ($list["select_birth"] == '1') echo ' checked'; ?> class="form-check-input">
 
                         <label class="form-check-label" for="select_birth">
                             <span class="place_index_selected" style="float:none;"><?= __('*'); ?></span>
@@ -54,7 +40,7 @@ if ($index_list == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_bapt" value="1" <?php if ($data["select_bapt"] == '1') echo ' checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_bapt" value="1" <?php if ($list["select_bapt"] == '1') echo ' checked'; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= __('~'); ?></span>
                         <?= __('bapt pl.'); ?>
                     </div>
@@ -62,7 +48,7 @@ if ($index_list == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_place" value="1" <?php if ($data["select_place"] == '1') echo ' checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_place" value="1" <?php if ($list["select_place"] == '1') echo ' checked'; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= __('^'); ?></span>
                         <?= __('residence'); ?>
                     </div>
@@ -70,7 +56,7 @@ if ($index_list == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_death" value="1" <?php if ($data["select_death"] == '1') echo 'checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_death" value="1" <?php if ($list["select_death"] == '1') echo 'checked'; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= __('&#134;'); ?></span>
                         <?= __('death pl.'); ?>
                     </div>
@@ -78,7 +64,7 @@ if ($index_list == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_buried" value="1" <?php if ($data["select_buried"] == '1') echo 'checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_buried" value="1" <?php if ($list["select_buried"] == '1') echo 'checked'; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= __('[]'); ?></span>
                         <?= __('bur pl.'); ?>
                     </div>
@@ -86,7 +72,7 @@ if ($index_list == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_event" value="1" <?php if ($data["select_event"] == '1') echo ' checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_event" value="1" <?php if ($list["select_event"] == '1') echo ' checked'; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= substr(__('Events'), 0, 1); ?></span>
                         <?= __('Events'); ?>
                     </div>
@@ -102,13 +88,13 @@ if ($index_list == 'places') {
                 <div class="col-2">
                     <select name="part_place_name" class="form-select form-select-sm">
                         <option value="contains"><?= __('Contains'); ?></option>
-                        <option value="equals" <?php if ($data["part_place_name"] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
-                        <option value="starts_with" <?php if ($data["part_place_name"] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                        <option value="equals" <?php if ($list["part_place_name"] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
+                        <option value="starts_with" <?php if ($list["part_place_name"] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                     </select>
                 </div>
 
                 <div class="col-2">
-                    <input type="text" name="place_name" value="<?= safe_text_show($data["place_name"]); ?>" size="15" class="form-control form-control-sm">
+                    <input type="text" name="place_name" value="<?= safe_text_show($list["place_name"]); ?>" size="15" class="form-control form-control-sm">
                 </div>
 
                 <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
@@ -119,7 +105,7 @@ if ($index_list == 'places') {
 }
 
 // *** Search fields ***
-if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quicksearch') {
+if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $list["index_list"] == 'quicksearch') {
     $datasql2 = $dbh->query("SELECT * FROM humo_trees");
     $num_rows2 = $datasql2->rowCount();
 ?>
@@ -129,7 +115,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
         <div class="py-2 me-sm-2 genealogy_search">
 
             <!-- Standard search box -->
-            <?php if ($adv_search == false) { ?>
+            <?php if ($list["adv_search"] == false) { ?>
 
                 <div class="row">
                     <div class="col-sm-2"></div>
@@ -148,18 +134,8 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                     <div class="col-sm-2"></div>
 
                     <div class="col-sm-3">
+                        <input type="hidden" name="index_list" value="quicksearch">
                         <?php
-                        echo '<input type="hidden" name="index_list" value="quicksearch">';
-
-                        $quicksearch = '';
-                        if (isset($_POST['quicksearch'])) {
-                            $quicksearch = safe_text_show($_POST['quicksearch']);
-                            $_SESSION["save_quicksearch"] = $quicksearch;
-                        }
-                        if (isset($_SESSION["save_quicksearch"])) {
-                            $quicksearch = $_SESSION["save_quicksearch"];
-                        }
-
                         if ($humo_option['min_search_chars'] == 1) {
                             $pattern = "";
                             $min_chars = " 1 ";
@@ -168,10 +144,10 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                             $min_chars = " " . $humo_option['min_search_chars'] . " ";
                         }
                         ?>
-                        <input type="text" class="form-control form-control-sm" name="quicksearch" value="<?= $quicksearch; ?>" placeholder="<?= __('Name'); ?>" size="30" <?= $pattern; ?> title="<?= __('Minimum:') . $min_chars . __('characters'); ?>">
+                        <input type="text" class="form-control form-control-sm" name="quicksearch" value="<?= $list["quicksearch"]; ?>" placeholder="<?= __('Name'); ?>" size="30" <?= $pattern; ?> title="<?= __('Minimum:') . $min_chars . __('characters'); ?>">
                     </div>
 
-                    <?php if ($num_rows2 > 1 and $humo_option['one_name_study'] == 'n') { ?>
+                    <?php if ($num_rows2 > 1 && $humo_option['one_name_study'] == 'n') { ?>
                         <div class="col-sm-2">
                             <!-- <?= __('Family tree'); ?> -->
                             <select name="select_trees" class="form-select form-select-sm">
@@ -180,7 +156,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                                 <option value="all_but_this" <?php if ($select_trees == "all_but_this") echo 'selected'; ?>><?= __('All but selected tree'); ?></option>
                             </select>
                         </div>
-                    <?php } elseif ($num_rows2 > 1 and $humo_option['one_name_study'] == 'y') { ?>
+                    <?php } elseif ($num_rows2 > 1 && $humo_option['one_name_study'] == 'y') { ?>
                         <input type="hidden" name="select_trees" value="all_trees">
                     <?php } ?>
 
@@ -193,7 +169,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
             <?php } ?>
 
             <!-- Advanced search box -->
-            <?php if ($adv_search == true) { ?>
+            <?php if ($list["adv_search"] == true) { ?>
                 <div class="row">
 
                     <div class="col-sm-1"></div>
@@ -213,7 +189,9 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                     <?php
                     if ($humo_option['one_name_study'] != 'y') {
                         $pers_prefix = $selection['pers_prefix'];
-                        if ($pers_prefix == 'EMPTY') $pers_prefix = '';
+                        if ($pers_prefix == 'EMPTY') {
+                            $pers_prefix = '';
+                        }
                     ?>
                         <div class="col-sm-4">
                             <?= __('Last name'); ?>:
@@ -294,6 +272,21 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                     </div>
 
                 </div>
+
+
+
+                <!--
+                <div class="accordion mx-4 mb-2" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                <?= __('Advanced search'); ?>
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse">
+                            <div class="accordion-body genealogy_search">
+                    -->
+
 
                 <div class="row">
                     <div class="col-sm-1"></div>
@@ -433,10 +426,19 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
 
                 </div>
 
+
+                <!--
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    -->
+
+
                 <div class="row mb-3">
                     <div class="col-sm-1"></div>
 
-                    <?php if ($num_rows2 > 1 and $humo_option['one_name_study'] == 'n') { ?>
+                    <?php if ($num_rows2 > 1 && $humo_option['one_name_study'] == 'n') { ?>
                         <div class="col-sm-2">
                             <!-- <?= __('Family tree'); ?> -->
                             <select name="select_trees" class="form-select form-select-sm">
@@ -445,7 +447,7 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                                 <option value="all_but_this" <?php if ($select_trees == "all_but_this") echo 'selected'; ?>><?= __('All but selected tree'); ?></option>
                             </select>
                         </div>
-                    <?php } elseif ($num_rows2 > 1 and $humo_option['one_name_study'] == 'y') { ?>
+                    <?php } elseif ($num_rows2 > 1 && $humo_option['one_name_study'] == 'y') { ?>
                         <input type="hidden" name="select_trees" value="all_trees">
                     <?php } ?>
 
@@ -464,10 +466,8 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
                         <div class="sddm_fixed" style="z-index:40; text-align:<?= $alignmarker; ?>; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                             <table style="width:98%;" class="humo">
                                 <tr>
-                                    <td>
-                                        <?= __('Wildcards:'); ?></td>
-                                    <td><?= __('_ = 1 character'); ?><br><?= __('% = >1 character'); ?>
-                                    </td>
+                                    <td><?= __('Wildcards:'); ?></td>
+                                    <td><?= __('_ = 1 character'); ?><br><?= __('% = >1 character'); ?></td>
                                 </tr>
 
                                 <tr>
@@ -495,14 +495,14 @@ if ($index_list == 'standard' or $index_list == 'search' or $index_list == 'quic
 $uri_path_string = $link_cls->get_link($uri_path, 'list', $tree_id, true);
 
 // *** Check for search results ***
-if ($person_result->rowCount() > 0) {
+if ($list["person_result"]->rowCount() > 0) {
     // "<="
     $data["previous_link"] = '';
     $data["previous_status"] = '';
     if ($start > 1) {
         $start2 = $start - 20;
-        $calculated = ($start - 2) * $nr_persons;
-        $data["previous_link"] = $uri_path_string . "index_list=" . $index_list . "&amp;start=" . $start2 . "&amp;item=" . $calculated;
+        $calculated = ($start - 2) * $list["nr_persons"];
+        $data["previous_link"] = $uri_path_string . "index_list=" . $list["index_list"] . "&amp;start=" . $start2 . "&amp;item=" . $calculated;
     }
     if ($start <= 0) {
         $start = 1;
@@ -513,14 +513,14 @@ if ($person_result->rowCount() > 0) {
 
     // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
     for ($i = $start; $i <= $start + 19; $i++) {
-        $calculated = ($i - 1) * $nr_persons;
-        if ($calculated < $count_persons) {
+        $calculated = ($i - 1) * $list["nr_persons"];
+        if ($calculated < $list["count_persons"]) {
             $data["page_nr"][] = $i;
-            if ($item == $calculated) {
+            if ($list["item"] == $calculated) {
                 $data["page_link"][$i] = '';
                 $data["page_status"][$i] = 'active';
             } else {
-                $data["page_link"][$i] = $uri_path_string . "index_list=" . $index_list . "&amp;start=" . $start . "&amp;item=" . $calculated;
+                $data["page_link"][$i] = $uri_path_string . "index_list=" . $list["index_list"] . "&amp;start=" . $start . "&amp;item=" . $calculated;
                 $data["page_status"][$i] = '';
             }
         }
@@ -529,9 +529,9 @@ if ($person_result->rowCount() > 0) {
     // "=>" 
     $data["next_link"] = '';
     $data["next_status"] = '';
-    $calculated = ($i - 1) * $nr_persons;
-    if ($calculated < $count_persons) {
-        $data["next_link"] = $uri_path_string . "index_list=" . $index_list . "&amp;start=" . $i . "&amp;item=" . $calculated;
+    $calculated = ($i - 1) * $list["nr_persons"];
+    if ($calculated < $list["count_persons"]) {
+        $data["next_link"] = $uri_path_string . "index_list=" . $list["index_list"] . "&amp;start=" . $i . "&amp;item=" . $calculated;
     } else {
         $data["next_status"] = 'disabled';
     }
@@ -541,48 +541,50 @@ if ($person_result->rowCount() > 0) {
 <div class="index_list1">
     <?php
     // *** Don't use this code if search is done with partner or for people with only mother or only father***
-    if (!$selection['spouse_firstname'] and !$selection['spouse_lastname'] and $selection['parent_status'] != "motheronly" and $selection['parent_status'] != "fatheronly") {
-        echo $count_persons . __(' persons found.');
+    if (!$selection['spouse_firstname'] && !$selection['spouse_lastname'] && $selection['parent_status'] != "motheronly" && $selection['parent_status'] != "fatheronly") {
+        echo $list["count_persons"] . __(' persons found.');
     } else {
         echo '<div id="found_div">&nbsp;</div>';
     }
 
     // *** Normal or expanded list ***
     if (isset($_POST['list_expanded'])) {
-        if ($_POST['list_expanded'] == '0') {
-            $_SESSION['save_list_expanded'] = '0';
-        } else {
-            $_SESSION['save_list_expanded'] = '1';
-        }
+        $_SESSION['save_list_expanded'] = $_POST['list_expanded'] == '0' ? '0' : '1';
     }
     $list_expanded = true; // *** Default value ***
     if (isset($_SESSION['save_list_expanded'])) {
-        if ($_SESSION['save_list_expanded'] == '1')
+        if ($_SESSION['save_list_expanded'] == '1') {
             $list_expanded = true;
-        else $list_expanded = false;
+        } else {
+            $list_expanded = false;
+        }
     }
 
     // *** Button: normal or expanded list ***
-    $button_line = "item=" . $item;   // the ? or & is already included in the $uri_path_string created above
+    $button_line = "item=" . $list["item"];   // the ? or & is already included in the $uri_path_string created above
     if (isset($_GET['start'])) {
         $button_line .= "&amp;start=" . $_GET['start'];
     } else {
         $button_line .= "&amp;start=1";
     }
-    $button_line .=  "&amp;index_list=" . $index_list;
+    $button_line .=  "&amp;index_list=" . $list["index_list"];
+    ?>
 
-    echo ' <form method="POST" action="' . $uri_path_string . $button_line . '" style="display : inline;">';
-    if ($list_expanded == true) {
-        echo '<input type="hidden" name="list_expanded" value="0">';
-        echo '<input type="submit" name="submit" value="' . __('Concise view') . '">';
-    } else {
-        echo '<input type="hidden" name="list_expanded" value="1">';
-        echo '<input type="submit" name="submit" value="' . __('Expanded view') . '">';
-    }
-    echo '</form>';
+    <form method="POST" action="<?= $uri_path_string . $button_line; ?>" style="display : inline;">
+        <?php
+        if ($list_expanded == true) {
+            echo '<input type="hidden" name="list_expanded" value="0">';
+            echo '<input type="submit" name="submit" value="' . __('Concise view') . '" class="btn btn-sm btn-secondary">';
+        } else {
+            echo '<input type="hidden" name="list_expanded" value="1">';
+            echo '<input type="submit" name="submit" value="' . __('Expanded view') . '" class="btn btn-sm btn-secondary">';
+        }
+        ?>
+    </form>
 
+    <?php
     // *** Don't use code if search is done with partner or for people with only mother or only father***
-    if (isset($data["page_nr"]) and !$selection['spouse_firstname'] and !$selection['spouse_lastname'] and $selection['parent_status'] != "motheronly" and $selection['parent_status'] != "fatheronly") {
+    if (isset($data["page_nr"]) && !$selection['spouse_firstname'] && !$selection['spouse_lastname'] && $selection['parent_status'] != "motheronly" && $selection['parent_status'] != "fatheronly") {
     ?>
         <br><br>
     <?php
@@ -590,7 +592,7 @@ if ($person_result->rowCount() > 0) {
     }
 
     // *** No results ***
-    if ($person_result->rowCount() == 0) {
+    if ($list["person_result"]->rowCount() == 0) {
         echo '<br><div class="center">' . __('No names found.') . '</div>';
     }
     ?>
@@ -604,7 +606,7 @@ if ($language["dir"] == "rtl") {
 
 // with extra sort date column, set smaller left margin
 $listnr = "2";      // default 20% margin
-//if($index_list != "places" AND ($selectsort=='sort_birthdate' OR $selectsort=='sort_deathdate' OR $selectsort=='sort_baptdate' OR $selectsort=='sort_burieddate')) {
+//if($list["index_list"] != "places" AND ($list["order_select"]=='sort_birthdate' OR $list["order_select"]=='sort_deathdate' OR $list["order_select"]=='sort_baptdate' OR $list["order_select"]=='sort_burieddate')) {
 //	$listnr="3";   // 5% margin
 //}
 //echo '<div class="'.$dir.'index_list'.$listnr.'">';
@@ -618,7 +620,9 @@ $selected_place = "";
 //echo '<table style="cellpadding:0px; border-collapse:collapse;">';
 //$index_table = '';
 $index_table = 'index_table';
-if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') $index_table = 'index_table';
+if ($select_trees == 'all_trees' || $select_trees == 'all_but_this') {
+    $index_table = 'index_table';
+}
 
 
 // TODO Allready added in model. But needed for spouse in this script for now...
@@ -638,15 +642,19 @@ function name_qry($search_name, $search_part)
 
 <table class="humo <?= $index_table; ?>" align="center">
     <tr class=table_headline>
-        <?php if ($index_list == 'places') echo '<th>' . __('Places') . '</th>'; ?>
+        <?php if ($list["index_list"] == 'places') { ?>
+            <th><?= __('Places'); ?></th>
+        <?php } ?>
         <th colspan="2"><?= __('Name'); ?></th>
         <th colspan="2" width="250px"><?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?></th>
         <th colspan="2" width="250px"><?= ucfirst(__('died')) . '/ ' . ucfirst(__('buried')); ?></th>
-        <?php if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') echo '<th>' . __('Family tree') . '</th>'; ?>
+        <?php if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
+            echo '<th>' . __('Family tree') . '</th>';
+        } ?>
     </tr>
 
     <?php
-    if ($index_list != 'places') {
+    if ($list["index_list"] != 'places') {
         $link = $link_cls->get_link($uri_path, 'list', $tree_id, true);
     ?>
 
@@ -655,7 +663,7 @@ function name_qry($search_name, $search_part)
             $style = '';
             $sort_reverse = $order;
             $img = '';
-            if ($selectsort == "sort_firstname") {
+            if ($list["order_select"] == "sort_firstname") {
                 $style = ' style="background-color:#ffffa0"';
                 $sort_reverse = '1';
                 if ($order == '1') {
@@ -663,69 +671,86 @@ function name_qry($search_name, $search_part)
                     $img = 'up';
                 }
             }
-            echo '<th colspan="2">' . __('Sort by:') . ' <a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_firstname&sort_desc=' . $sort_reverse . '"' . $style . '>' . ucfirst(__('firstname')) . ' <img src="images/button3' . $img . '.png"></a>';
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($selectsort == "sort_lastname") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
-                }
-            }
-            echo ' <a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_lastname&sort_desc=' . $sort_reverse . '"' . $style . '>' . ucfirst(__('lastname')) . ' <img src="images/button3' . $img . '.png"></a></th>';
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($selectsort == "sort_birthdate") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
-                }
-            }
-            echo '<th><a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_birthdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($selectsort == "sort_birthplace") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
-                }
-            }
-            echo '<th><a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_birthplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($selectsort == "sort_deathdate") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
-                }
-            }
-            echo '<th><a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_deathdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($selectsort == "sort_deathplace") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
-                }
-            }
-            echo '<th><a href="' . $link . 'index_list=' . $index_list . '&start=1&item=0&sort=sort_deathplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+            ?>
+            <th colspan="2">
+                <?= __('Sort by:'); ?> <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_firstname&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
+                    <?= ucfirst(__('firstname')); ?> <img src="images/button3<?= $img; ?>.png">
+                </a>
 
-            if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') echo '<th><br></th>';
+                <?php
+                $style = '';
+                $sort_reverse = $order;
+                $img = '';
+                if ($list["order_select"] == "sort_lastname") {
+                    $style = ' style="background-color:#ffffa0"';
+                    $sort_reverse = '1';
+                    if ($order == '1') {
+                        $sort_reverse = '0';
+                        $img = 'up';
+                    }
+                }
+                ?>
+                <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_lastname&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
+                    <?= ucfirst(__('lastname')); ?> <img src="images/button3<?= $img; ?>.png">
+                </a>
+            </th>
+
+            <?php
+            $style = '';
+            $sort_reverse = $order;
+            $img = '';
+            if ($list["order_select"] == "sort_birthdate") {
+                $style = ' style="background-color:#ffffa0"';
+                $sort_reverse = '1';
+                if ($order == '1') {
+                    $sort_reverse = '0';
+                    $img = 'up';
+                }
+            }
+            echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_birthdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+
+            $style = '';
+            $sort_reverse = $order;
+            $img = '';
+            if ($list["order_select"] == "sort_birthplace") {
+                $style = ' style="background-color:#ffffa0"';
+                $sort_reverse = '1';
+                if ($order == '1') {
+                    $sort_reverse = '0';
+                    $img = 'up';
+                }
+            }
+            echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_birthplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+
+            $style = '';
+            $sort_reverse = $order;
+            $img = '';
+            if ($list["order_select"] == "sort_deathdate") {
+                $style = ' style="background-color:#ffffa0"';
+                $sort_reverse = '1';
+                if ($order == '1') {
+                    $sort_reverse = '0';
+                    $img = 'up';
+                }
+            }
+            echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_deathdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+
+            $style = '';
+            $sort_reverse = $order;
+            $img = '';
+            if ($list["order_select"] == "sort_deathplace") {
+                $style = ' style="background-color:#ffffa0"';
+                $sort_reverse = '1';
+                if ($order == '1') {
+                    $sort_reverse = '0';
+                    $img = 'up';
+                }
+            }
+            echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_deathplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+
+            if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
+                echo '<th><br></th>';
+            }
             ?>
         </tr>
     <?php
@@ -733,13 +758,13 @@ function name_qry($search_name, $search_part)
     $pers_counter = 0;
 
     /*
-    if ($adv_search == true and $selection['parent_status'] != "allpersons" and $selection['parent_status'] != "noparents") {
+    if ($list["adv_search"] == true and $selection['parent_status'] != "allpersons" and $selection['parent_status'] != "noparents") {
         echo '<script>document.getElementById("found_div").innerHTML = "' . __('Loading...') . '";</script>';
     }
     */
 
-    while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
-        //while (@$person1Db = $person_result->fetch(PDO::FETCH_OBJ)) {
+    while (@$personDb = $list["person_result"]->fetch(PDO::FETCH_OBJ)) {
+        //while (@$person1Db = $list["person_result"]->fetch(PDO::FETCH_OBJ)) {
 
         // *** Preparation for second query. Needed to solve GROUP BY problems ***
         //$personDb = $db_functions->get_person_with_id($person1Db->pers_id);
@@ -747,12 +772,12 @@ function name_qry($search_name, $search_part)
         $spouse_found = true;
 
         // *** Search name of spouse ***
-        if ($selection['spouse_firstname'] or $selection['spouse_lastname']) {
+        if ($selection['spouse_firstname'] || $selection['spouse_lastname']) {
             $spouse_found = false;
             $person_fams = explode(";", $personDb->pers_fams);
-
             // *** Search all persons with a spouse IN the same tree as the 1st person ***
-            for ($marriage_loop = 0; $marriage_loop < count($person_fams); $marriage_loop++) {
+            $counter = count($person_fams);
+            for ($marriage_loop = 0; $marriage_loop < $counter; $marriage_loop++) {
                 $famDb = $db_functions->get_family($person_fams[$marriage_loop], 'man-woman');
 
                 // *** Search all persons with a spouse IN the same tree as the 1st person ***
@@ -794,21 +819,21 @@ function name_qry($search_name, $search_part)
 
         // *** Search parent status (no parents, only mother, only father) ***
         $parent_status_found = '1';
-        if ($adv_search == true and $selection['parent_status'] != "allpersons" and $selection['parent_status'] != "noparents") {
+        if ($list["adv_search"] == true && $selection['parent_status'] != "allpersons" && $selection['parent_status'] != "noparents") {
             $parent_status_found = '0';
             $par_famc = "";
-            if (isset($personDb->pers_famc)) $par_famc = $personDb->pers_famc;
+            if (isset($personDb->pers_famc)) {
+                $par_famc = $personDb->pers_famc;
+            }
             if ($par_famc != "") {
                 $parDb = $db_functions->get_family($par_famc, 'man-woman');
 
                 if (
-                    $selection['parent_status'] == "fatheronly" and substr($parDb->fam_man, 0, 1) == "I"
-                    and substr($parDb->fam_woman, 0, 1) != "I"
+                    $selection['parent_status'] == "fatheronly" && substr($parDb->fam_man, 0, 1) === "I" && substr($parDb->fam_woman, 0, 1) !== "I"
                 ) {
                     $parent_status_found = '1';
                 } elseif (
-                    $selection['parent_status'] == "motheronly" and substr($parDb->fam_man, 0, 1) != "I"
-                    and substr($parDb->fam_woman, 0, 1) == "I"
+                    $selection['parent_status'] == "motheronly" && substr($parDb->fam_man, 0, 1) !== "I" && substr($parDb->fam_woman, 0, 1) === "I"
                 ) {
                     $parent_status_found = '1';
                 }
@@ -816,7 +841,7 @@ function name_qry($search_name, $search_part)
         }
 
         // *** Show search results ***
-        if ($spouse_found == true and ($parent_status_found == '1' or ($parent_status_found != '1' and !isset($_POST['adv_search'])))) {
+        if ($spouse_found == true && ($parent_status_found === '1' || $parent_status_found !== '1' && !isset($_POST['adv_search']))) {
             $pers_counter++; // needed for spouses search and mother/father only search
             $person_cls = new person_cls($personDb);
             $privacy = $person_cls->privacy;
@@ -844,7 +869,7 @@ function name_qry($search_name, $search_part)
 //echo '</div>';
 
 // *** Don't execute this code if spouse search is used or mother/father only persons***
-if (isset($data["page_nr"]) and !$selection['spouse_firstname'] and !$selection['spouse_lastname'] and $selection['parent_status'] != "motheronly" and $selection['parent_status'] != "fatheronly") {
+if (isset($data["page_nr"]) && !$selection['spouse_firstname'] && !$selection['spouse_lastname'] && $selection['parent_status'] != "motheronly" && $selection['parent_status'] != "fatheronly") {
 ?>
     <br>
 <?php
@@ -880,20 +905,19 @@ echo '<script>
 
 echo '<br>';
 //for testing only:
-//echo 'Query: <pre>'.$query."</pre> LIMIT ".safe_text_db($item).",".$nr_persons.'<br>';
+//echo 'Query: <pre>'.$query."</pre> LIMIT ".safe_text_db($list["item"]).",".$list["nr_persons"].'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';
-//echo '<p>index_list: '.$index_list;
-//echo '<br>nr. of persons: '.$count_persons;
+//echo '<p>index_list: '.$list["index_list"];
+//echo '<br>nr. of persons: '.$list["count_persons"];
 
 
 // *** show person ***
 function show_person($personDb)
 {
-    global $dbh, $db_functions, $index_list, $selected_place, $language, $user;
+    global $dbh, $db_functions, $selected_place, $language, $user;
     global $bot_visit, $humo_option, $uri_path, $select_trees, $list_expanded;
     global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
-    global $data;
-    global $selectsort;
+    global $list;
 
     $db_functions->set_tree_id($personDb->pers_tree_id);
 
@@ -907,116 +931,117 @@ function show_person($personDb)
         $index_name = __('Name filtered');
     } else {
         // *** If there is no lastname, show a - character. ***
-        if ($personDb->pers_lastname == "") {
-            // Don't show a "-" by pers_patronymes
-            if (!isset($_GET['pers_patronym'])) {
-                $index_name = "-&nbsp;&nbsp;";
-            }
+        // Don't show a "-" by pers_patronymes
+        if ($personDb->pers_lastname == "" && !isset($_GET['pers_patronym'])) {
+            $index_name = "-&nbsp;&nbsp;";
         }
         $index_name .= $name["index_name_extended"] . $name["colour_mark"];
     }
-
 ?>
     <tr>
         <?php
         // *** Show extra columns before a person in index places ***
-        if ($index_list == 'places') {
+        if ($list["index_list"] == 'places') {
             if ($selected_place != $personDb->place_order) {
                 echo '<td colspan="7"><b>' . $dirmark2 . $personDb->place_order . '</b></td></tr><tr>';
-                //$data["show_place"] = $personDb->place_order;
+                //$list["show_place"] = $personDb->place_order;
             } else {
-                //$data["show_place"] = '';
+                //$list["show_place"] = '';
             }
             $selected_place = $personDb->place_order;
-
-            echo '<td valign="top" style="white-space:nowrap;width:105px">';
-
-            if ($data["select_birth"] == '1') {
-                if ($selected_place == $personDb->pers_birth_place)
-                    echo '<span class="place_index place_index_selected">' . __('*') . '</span>';
-                else
-                    echo '<span class="place_index">&nbsp;</span>';
-            }
-
-            if ($data["select_bapt"] == '1') {
-                if ($selected_place == $personDb->pers_bapt_place)
-                    echo '<span class="place_index place_index_selected">' . __('~') . '</span>';
-                else
-                    echo '<span class="place_index">&nbsp;</span>';
-            }
-
-            if ($data["select_place"] == '1') {
-                // *** Check if this is the living place of a person. Can't be checked using query variables... ***
-                $query = "SELECT address_place FROM humo_addresses, humo_connections
-                    WHERE address_tree_id='" . $personDb->pers_tree_id . "' AND connect_tree_id='" . $personDb->pers_tree_id . "'
-                    AND connect_connect_id='" . $personDb->pers_gedcomnumber . "'
-                    AND connect_item_id=address_gedcomnr
-                    AND address_place='" . safe_text_db($personDb->place_order) . "'";
-                $result = $dbh->query($query);
-                @$resultDb = $result->fetch(PDO::FETCH_OBJ);
-
-                //if ($selected_place==$personDb->pers_place_index)
-                if (@$resultDb->address_place == $personDb->place_order and $selected_place == $personDb->place_order)
-                    echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
-                else
-                    echo '<span class="place_index">&nbsp;</span>';
-            }
-
-            if ($data["select_death"] == '1') {
-                if ($selected_place == $personDb->pers_death_place)
-                    echo '<span class="place_index place_index_selected">' . __('&#134;') . '</span>';
-                else
-                    echo '<span class="place_index">&nbsp;</span>';
-            }
-
-            if ($data["select_buried"] == '1') {
-                if ($selected_place == $personDb->pers_buried_place)
-                    echo '<span class="place_index place_index_selected">' . __('[]') . '</span>';
-                else
-                    echo '<span class="place_index">&nbsp;</span>';
-            }
-
-            // *** Places by events like occupations etc. ***
-            if ($data["select_event"] == '1') {
-                // *** Check if this is the living place of a person. Can't be checked using query variables... ***
-                $query = "SELECT event_place FROM humo_events
-                    WHERE event_tree_id='" . $personDb->pers_tree_id . "' AND event_connect_id='" . $personDb->pers_gedcomnumber . "'
-                    AND event_place='" . safe_text_db($personDb->place_order) . "'";
-                $result = $dbh->query($query);
-                @$resultDb = $result->fetch(PDO::FETCH_OBJ);
-
-                if (@$resultDb->event_place == $personDb->place_order and $selected_place == $personDb->place_order)
-                    echo '<span class="place_index place_index_selected">' . substr(__('Events'), 0, 1) . '</span>';
-                else
-                    echo '<span class="place_index">&nbsp;</span>';
-            }
-            echo '</td>';
-        }
         ?>
 
-        <td valign="top" style="border-right:0px; white-space:nowrap;">
-            <?php
-            // *** Show person popup menu ***
-            echo $person_cls->person_popup_menu($personDb);
+            <td valign="top" style="white-space:nowrap;width:105px">
+                <?php
+                if ($list["select_birth"] == '1') {
+                    if ($selected_place == $personDb->pers_birth_place) {
+                        echo '<span class="place_index place_index_selected">' . __('*') . '</span>';
+                    } else {
+                        echo '<span class="place_index">&nbsp;</span>';
+                    }
+                }
 
+                if ($list["select_bapt"] == '1') {
+                    if ($selected_place == $personDb->pers_bapt_place) {
+                        echo '<span class="place_index place_index_selected">' . __('~') . '</span>';
+                    } else {
+                        echo '<span class="place_index">&nbsp;</span>';
+                    }
+                }
+
+                if ($list["select_place"] == '1') {
+                    // *** Check if this is the living place of a person. Can't be checked using query variables... ***
+                    $query = "SELECT address_place FROM humo_addresses, humo_connections
+                        WHERE address_tree_id='" . $personDb->pers_tree_id . "' AND connect_tree_id='" . $personDb->pers_tree_id . "'
+                        AND connect_connect_id='" . $personDb->pers_gedcomnumber . "'
+                        AND connect_item_id=address_gedcomnr
+                        AND address_place='" . safe_text_db($personDb->place_order) . "'";
+                    $result = $dbh->query($query);
+                    @$resultDb = $result->fetch(PDO::FETCH_OBJ);
+
+                    //if ($selected_place==$personDb->pers_place_index)
+                    if (@$resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                        echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
+                    } else {
+                        echo '<span class="place_index">&nbsp;</span>';
+                    }
+                }
+
+                if ($list["select_death"] == '1') {
+                    if ($selected_place == $personDb->pers_death_place) {
+                        echo '<span class="place_index place_index_selected">' . __('&#134;') . '</span>';
+                    } else {
+                        echo '<span class="place_index">&nbsp;</span>';
+                    }
+                }
+
+                if ($list["select_buried"] == '1') {
+                    if ($selected_place == $personDb->pers_buried_place) {
+                        echo '<span class="place_index place_index_selected">' . __('[]') . '</span>';
+                    } else {
+                        echo '<span class="place_index">&nbsp;</span>';
+                    }
+                }
+
+                // *** Places by events like occupations etc. ***
+                if ($list["select_event"] == '1') {
+                    // *** Check if this is the living place of a person. Can't be checked using query variables... ***
+                    $query = "SELECT event_place FROM humo_events
+                        WHERE event_tree_id='" . $personDb->pers_tree_id . "' AND event_connect_id='" . $personDb->pers_gedcomnumber . "'
+                        AND event_place='" . safe_text_db($personDb->place_order) . "'";
+                    $result = $dbh->query($query);
+                    @$resultDb = $result->fetch(PDO::FETCH_OBJ);
+
+                    if (@$resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                        echo '<span class="place_index place_index_selected">' . substr(__('Events'), 0, 1) . '</span>';
+                    } else {
+                        echo '<span class="place_index">&nbsp;</span>';
+                    }
+                }
+                ?>
+            </td>
+        <?php } ?>
+
+        <td valign="top" style="border-right:0px; white-space:nowrap;">
+            <!-- Show person popup menu -->
+            <?= $person_cls->person_popup_menu($personDb); ?>
+            <?= $dirmark1; ?>
+
+            <?php
             // *** Show picture man or wife ***
             if ($personDb->pers_sexe == "M") {
-                //echo $dirmark1 . ' <img src="images/man.gif" alt="man" style="vertical-align:top">';
-                echo $dirmark1 . ' <img src="images/man.gif" alt="man">';
+                echo ' <img src="images/man.gif" alt="man">';
             } elseif ($personDb->pers_sexe == "F") {
-                //echo $dirmark1 . ' <img src="images/woman.gif" alt="woman" style="vertical-align:top">';
-                echo $dirmark1 . ' <img src="images/woman.gif" alt="woman">';
+                echo ' <img src="images/woman.gif" alt="woman">';
             } else {
-                //echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown" style="vertical-align:top">';
-                echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
+                echo ' <img src="images/unknown.gif" alt="unknown">';
             }
 
             if ($humo_option['david_stars'] == "y") {
                 $camps = "Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
 
                 if (
-                    preg_match("/($camps)/i", $personDb->pers_death_place) !== 0 or
-                    preg_match("/($camps)/i", $personDb->pers_buried_place) !== 0  or strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !== FALSE
+                    preg_match("/($camps)/i", $personDb->pers_death_place) !== 0 || preg_match("/($camps)/i", $personDb->pers_buried_place) !== 0 || stripos($personDb->pers_death_place, "oorlogsslachtoffer") !== FALSE
                 ) {
                     echo '<img src="images/star.gif" alt="star">&nbsp;';
                 }
@@ -1030,10 +1055,12 @@ function show_person($personDb)
             }
 
             // *** Show camera icon if there is a photo ***
-            if ($user['group_pictures'] == 'j' and !$privacy) {
+            if ($user['group_pictures'] == 'j' && !$privacy) {
                 global $dataDb;
                 $tree_pict_path = $dataDb->tree_pict_path;
-                if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+                if (substr($tree_pict_path, 0, 1) === '|') {
+                    $tree_pict_path = 'media/';
+                }
                 $picture_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'picture');
                 // *** Only check 1st picture ***
                 if (isset($picture_qry[0])) {
@@ -1043,7 +1070,6 @@ function show_person($personDb)
             ?>
         </td>
         <td style="border-left:0px;">
-
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -1052,29 +1078,34 @@ function show_person($personDb)
             //echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';
             // *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
             $direct_link = '';
-            if ($personDb->pers_fams == '') $direct_link = '#person_' . $personDb->pers_gedcomnumber;
+            if ($personDb->pers_fams == '') {
+                $direct_link = '#person_' . $personDb->pers_gedcomnumber;
+            }
             echo ' <a href="' . $start_url . $direct_link . '">' . trim($index_name) . '</a>';
 
             //*** Show spouse/ partner ***
-            if ($list_expanded == true and $personDb->pers_fams) {
+            if ($list_expanded == true && $personDb->pers_fams) {
                 $marriage_array = explode(";", $personDb->pers_fams);
                 $nr_marriages = count($marriage_array);
                 for ($x = 0; $x <= $nr_marriages - 1; $x++) {
                     $fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
 
                     // *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
-                    if ($personDb->pers_gedcomnumber == $fam_partnerDb->fam_man)
+                    if ($personDb->pers_gedcomnumber == $fam_partnerDb->fam_man) {
                         $partner_id = $fam_partnerDb->fam_woman;
-                    else
+                    } else {
                         $partner_id = $fam_partnerDb->fam_man;
+                    }
 
                     $relation_short = __('&amp;');
-                    if ($fam_partnerDb->fam_marr_date or $fam_partnerDb->fam_marr_place or $fam_partnerDb->fam_marr_church_date or $fam_partnerDb->fam_marr_church_place or $fam_partnerDb->fam_kind == 'civil')
+                    if ($fam_partnerDb->fam_marr_date || $fam_partnerDb->fam_marr_place || $fam_partnerDb->fam_marr_church_date || $fam_partnerDb->fam_marr_church_place || $fam_partnerDb->fam_kind == 'civil') {
                         $relation_short = __('X');
-                    if ($fam_partnerDb->fam_div_date or $fam_partnerDb->fam_div_place)
+                    }
+                    if ($fam_partnerDb->fam_div_date || $fam_partnerDb->fam_div_place) {
                         $relation_short = __(') (');
+                    }
 
-                    if ($partner_id != '0' and $partner_id != '') {
+                    if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
                         $partner_cls = new person_cls;
                         $name = $partner_cls->person_name($partnerDb);
@@ -1082,87 +1113,112 @@ function show_person($personDb)
                         $name["standard_name"] = __('N.N.');
                     }
 
-                    if ($nr_marriages > 1 and $x > 0) echo ',';
+                    if ($nr_marriages > 1 && $x > 0) {
+                        echo ',';
+                    }
                     echo ' <span class="index_partner">';
                     if ($nr_marriages > 1) {
-                        if ($x == 0) echo __('1st');
-                        elseif ($x == 1) echo __('2nd');
-                        elseif ($x == 2) echo __('3rd');
-                        elseif ($x > 2) echo ($x + 1) . __('th');
+                        if ($x == 0) {
+                            echo __('1st');
+                        } elseif ($x == 1) {
+                            echo __('2nd');
+                        } elseif ($x == 2) {
+                            echo __('3rd');
+                        } elseif ($x > 2) {
+                            echo ($x + 1) . __('th');
+                        }
                     }
                     echo ' ' . $relation_short . ' ' . rtrim($name["standard_name"]) . '</span>';
                 }
             }
             // *** End spouse/ partner ***
             ?>
-
         </td>
         <td style="white-space:nowrap;">
             <?php
             $info = "";
-            if ($personDb->pers_bapt_date)
+            if ($personDb->pers_bapt_date) {
                 $info = __('~') . ' ' . date_place($personDb->pers_bapt_date, '');
-            if ($personDb->pers_birth_date)
+            }
+            if ($personDb->pers_birth_date) {
                 $info = __('*') . ' ' . date_place($personDb->pers_birth_date, '');
-            if ($privacy and $info) echo ' ' . __('PRIVACY FILTER');
-            else echo $info;
-
-            ?>
-        </td>
-        <td>
-            <?php
-            $info = "";
-            if ($personDb->pers_bapt_place)
-                $info = __('~') . ' ' . $personDb->pers_bapt_place;
-            if ($personDb->pers_birth_place)
-                $info = __('*') . ' ' . $personDb->pers_birth_place;
-            if ($privacy and $info) echo ' ' . __('PRIVACY FILTER');
-            else echo $info;
-            ?>
-        </td>
-        <td style="white-space:nowrap;">
-            <?php
-            $info = "";
-            if ($personDb->pers_buried_date)
-                $info = __('[]') . ' ' . date_place($personDb->pers_buried_date, '');
-            if ($personDb->pers_death_date)
-                $info = __('&#134;') . ' ' . date_place($personDb->pers_death_date, '');
-            if ($privacy and $info) echo ' ' . __('PRIVACY FILTER');
-            else echo $info;
-            ?>
-        </td>
-        <td>
-            <?php
-            $info = "";
-            if ($personDb->pers_buried_place)
-                $info = __('[]') . ' ' . $personDb->pers_buried_place;
-            if ($personDb->pers_death_place)
-                $info = __('&#134;') . ' ' . $personDb->pers_death_place;
-            if ($privacy and $info) echo ' ' . __('PRIVACY FILTER');
-            else echo $info;
-
-            // *** Show name of family tree, if search in multiple family trees is used ***
-            if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
-                //$treetext=show_tree_text($pers_tree_id, $selected_language);
-                $treetext = show_tree_text($personDb->pers_tree_id, $selected_language);
-                echo '</td><td>';
-                echo '<i><font size="-1">' . $treetext['name'] . '</font></i>';
+            }
+            if ($privacy && $info) {
+                $info =  __('PRIVACY FILTER');
             }
             ?>
+            <?= $info; ?>
         </td>
+        <td>
+            <?php
+            $info = "";
+            if ($personDb->pers_bapt_place) {
+                $info = __('~') . ' ' . $personDb->pers_bapt_place;
+            }
+            if ($personDb->pers_birth_place) {
+                $info = __('*') . ' ' . $personDb->pers_birth_place;
+            }
+            if ($privacy && $info) {
+                $info =  __('PRIVACY FILTER');
+            }
+            ?>
+            <?= $info; ?>
+        </td>
+        <td style="white-space:nowrap;">
+            <?php
+            $info = "";
+            if ($personDb->pers_buried_date) {
+                $info = __('[]') . ' ' . date_place($personDb->pers_buried_date, '');
+            }
+            if ($personDb->pers_death_date) {
+                $info = __('&#134;') . ' ' . date_place($personDb->pers_death_date, '');
+            }
+            if ($privacy && $info) {
+                $info =  __('PRIVACY FILTER');
+            }
+            ?>
+            <?= $info; ?>
+        </td>
+        <td>
+            <?php
+            $info = "";
+            if ($personDb->pers_buried_place) {
+                $info = __('[]') . ' ' . $personDb->pers_buried_place;
+            }
+            if ($personDb->pers_death_place) {
+                $info = __('&#134;') . ' ' . $personDb->pers_death_place;
+            }
+            if ($privacy && $info) {
+                $info =  __('PRIVACY FILTER');
+            }
+            ?>
+            <?= $info; ?>
+        </td>
+
+        <?php
+        // *** Show name of family tree, if search in multiple family trees is used ***
+        if ($select_trees == 'all_trees' || $select_trees == 'all_but_this') {
+            $treetext = show_tree_text($personDb->pers_tree_id, $selected_language);
+        ?>
+            <td>
+                <i>
+                    <font size="-1"><?= $treetext['name']; ?></font>
+                </i>
+            </td>
+        <?php } ?>
     </tr>
 
     <!-- TEST -->
     <?php
     /*
-    <?php if ($data["show_place"]) { ?>
+    <?php if ($list["show_place"]) { ?>
         <tr>
-            <td colspan="7"><b><?= $dirmark2 . $data["show_place"]; ?></b></td>
+            <td colspan="7"><b><?= $dirmark2 . $list["show_place"]; ?></b></td>
         </tr>
     <?php } ?>
 
     <tr>
-    <?php if ($data[places]){ ?>
+    <?php if ($list[places]){ ?>
         <td valign="top" style="white-space:nowrap;width:105px">
 
         echo '<span class="place_index place_index_selected">' . __('*') . '</span>';

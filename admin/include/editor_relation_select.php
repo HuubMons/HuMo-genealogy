@@ -6,7 +6,9 @@ if (!defined('ADMIN_PAGE')) {
 
 // *** Used to select adoption parents ***
 $adoption_id = '';
-if (isset($_GET['adoption_id']) and is_numeric($_GET['adoption_id'])) $adoption_id = $_GET['adoption_id'];
+if (isset($_GET['adoption_id']) && is_numeric($_GET['adoption_id'])) {
+    $adoption_id = $_GET['adoption_id'];
+}
 
 if ($adoption_id) {
     echo '<h1 class="center">' . __('Select adoption parents') . '</h1>';
@@ -33,7 +35,9 @@ echo '
 
 //echo '<form method="POST" action="index.php?page=editor_relation_select" style="display : inline;">';
 $link = 'index.php?page=editor_relation_select';
-if ($adoption_id) $link .= '&amp;adoption_id=' . $adoption_id;
+if ($adoption_id) {
+    $link .= '&amp;adoption_id=' . $adoption_id;
+}
 echo '<form method="POST" action="' . $link . '" style="display : inline;">';
 $search_quicksearch_parent = '';
 if (isset($_POST['search_quicksearch_parent'])) {
@@ -42,7 +46,9 @@ if (isset($_POST['search_quicksearch_parent'])) {
 echo '<input type="text" name="search_quicksearch_parent" placeholder="' . __('Name') . '" value="' . $search_quicksearch_parent . '" size="15">';
 
 $search_person_id = '';
-if (isset($_POST['search_person_id'])) $search_person_id = safe_text_db($_POST['search_person_id']);
+if (isset($_POST['search_person_id'])) {
+    $search_person_id = safe_text_db($_POST['search_person_id']);
+}
 echo ' ' . __('or ID:') . ' <input type="text" name="search_person_id" value="' . $search_person_id . '" size="5">';
 
 echo ' <input type="submit" value="' . __('Search') . '">';
@@ -115,6 +121,6 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     echo '<a href="" onClick=\'return select_item("' . str_replace("'", "&prime;", $parentsDb->fam_gedcomnumber) . '")\'>[' . $parentsDb->fam_gedcomnumber . '] ' . $parent2_text . '</a><br>';
 }
 
-if ($search_quicksearch_parent == '' and $search_person_id == '') {
+if ($search_quicksearch_parent == '' && $search_person_id == '') {
     echo __('Results are limited, use search to find more parents.');
 }

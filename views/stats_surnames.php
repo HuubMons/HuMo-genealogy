@@ -36,7 +36,9 @@ function tablerow($nr, $lastcol = false)
             }
         }
         echo '&amp;part_lastname=equals">' . $top_pers_lastname . "</a>";
-    } else echo '~';
+    } else {
+        echo '~';
+    }
     echo '</td>';
 
     if ($lastcol == false) {
@@ -45,8 +47,11 @@ function tablerow($nr, $lastcol = false)
         echo '</td><td class="namenr" style="text-align:center">'; // no thick border
     }
 
-    if (isset($freq_last_names[$nr])) echo $freq_count_last_names[$nr];
-    else echo '~';
+    if (isset($freq_last_names[$nr])) {
+        echo $freq_count_last_names[$nr];
+    } else {
+        echo '~';
+    }
     echo '</td>';
 }
 
@@ -100,13 +105,13 @@ if (isset($_POST['freqsurnames'])) {
             <select size=1 class="form-select form-select-sm" name="freqsurnames" onChange="this.form.submit();">
                 <option value="25" <?= $maxnames == 25 ? 'selected' : ''; ?>>25</option>
                 <!-- 51 so no empty last field (if more names than this) -->
-                <option value="51" <?= $maxnames == 51 ? 'selected' : ''; ?>>50</option>'; 
-                <option value="75" <?= $maxnames == 75 ? 'selected' : ''; ?>>75</option>'; 
-                <option value="100" <?= $maxnames == 100 ? 'selected' : ''; ?>>100</option>'; 
+                <option value="51" <?= $maxnames == 51 ? 'selected' : ''; ?>>50</option>';
+                <option value="75" <?= $maxnames == 75 ? 'selected' : ''; ?>>75</option>';
+                <option value="100" <?= $maxnames == 100 ? 'selected' : ''; ?>>100</option>';
                 <!-- 201 so no empty last field (if more names than this) -->
-                <option value="201" <?= $maxnames == 201 ? 'selected' : ''; ?>>200</option>'; 
-                <option value="300" <?= $maxnames == 300 ? 'selected' : ''; ?>>300</option>'; 
-                <option value="100000" <?= $maxnames == 100000 ? 'selected' : ''; ?>><?= __('All');?></option>'; 
+                <option value="201" <?= $maxnames == 201 ? 'selected' : ''; ?>>200</option>';
+                <option value="300" <?= $maxnames == 300 ? 'selected' : ''; ?>>300</option>';
+                <option value="100000" <?= $maxnames == 100000 ? 'selected' : ''; ?>><?= __('All'); ?></option>';
             </select>
         </div>
 
@@ -115,13 +120,9 @@ if (isset($_POST['freqsurnames'])) {
         </div>
         <div class="col-md-1">
             <select size=1 class="form-select form-select-sm" name="maxcols" onChange="this.form.submit();">
-                <?php
-                for ($i = 1; $i < 7; $i++) {
-                    $selected = '';
-                    if ($maxcols == $i) $selected = " selected ";
-                    echo '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
-                }
-                ?>
+                <?php for ($i = 1; $i < 7; $i++) { ?>
+                    <option value="<?= $i; ?>" <?= $maxcols == $i ? 'selected' : ''; ?>><?= $i; ?></option>
+                <?php } ?>
             </select>
         </div>
 
@@ -136,14 +137,15 @@ if (isset($_POST['freqsurnames'])) {
         for ($x = 1; $x < $maxcols; $x++) {
             echo '<th width="' . $col_width . '">' . __('Surname') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
         }
-        echo '<th width="' . $col_width . '">' . __('Surname') . '</th><th style="text-align:center;font-size:90%;width:6%">' . __('Total') . '</th>';
         ?>
+        <th width="<?= $col_width; ?>"><?= __('Surname'); ?></th>
+        <th style="text-align:center;font-size:90%;width:6%"><?= __('Total'); ?></th>
     </tr>
     <!-- displays the table and sets the $baseperc (= the name with highest frequency that will be 100%) -->
     <?php $baseperc = last_names($maxnames); ?>
 </table>
-<?php
 
+<?php
 // *** Show gray bar in name box. Graphical indication of number of names ***
 echo '
 <script>

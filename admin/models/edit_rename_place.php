@@ -2,7 +2,7 @@
 class RenamePlaceModel
 {
 
-    function update_place($dbh, $tree_id, $editor_cls)
+    function update_place($dbh, $tree_id, $editor_cls): void
     {
         if (isset($_POST['place_change'])) {
             $sql = "UPDATE humo_persons SET pers_birth_place='" . $editor_cls->text_process($_POST['place_new']) . "'
@@ -95,7 +95,7 @@ class RenamePlaceModel
     function get_place_select()
     {
         $place_select = '';
-        if (isset($_POST["place_select"]) and $_POST["place_select"]) {
+        if (isset($_POST["place_select"]) && $_POST["place_select"]) {
             $place_select = $_POST["place_select"];
         }
         return $place_select;

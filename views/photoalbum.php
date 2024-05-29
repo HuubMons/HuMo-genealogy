@@ -1,6 +1,6 @@
 <?php
 // *** Check user privileges ***
-if ($user['group_pictures'] != 'j' or $user['group_photobook'] != 'j') {
+if ($user['group_pictures'] != 'j' || $user['group_photobook'] != 'j') {
     echo __('You are not authorised to see this page.');
     exit();
 }
@@ -41,7 +41,9 @@ if ($temp->rowCount()) {
 }
 
 $chosen_tab = 'none';
-if (isset($_SESSION['save_chosen_tab'])) $chosen_tab = $_SESSION['save_chosen_tab'];
+if (isset($_SESSION['save_chosen_tab'])) {
+    $chosen_tab = $_SESSION['save_chosen_tab'];
+}
 if (isset($_GET['select_category'])) {
     if ($_GET['select_category'] == 'none') {
         $chosen_tab = $_GET['select_category'];
@@ -49,7 +51,7 @@ if (isset($_GET['select_category'])) {
     }
 
     // *** Get selected category ***
-    if (isset($category_array) and $_GET['select_category'] != 'none' and in_array($_GET['select_category'], $category_array)) {
+    if (isset($category_array) && $_GET['select_category'] != 'none' && in_array($_GET['select_category'], $category_array)) {
         $chosen_tab = $_GET['select_category'];
         $_SESSION['save_chosen_tab'] = $chosen_tab;
     }
@@ -66,12 +68,12 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
 
     // *** Show all media, or show only media from selected category ***
     $process_picture = false;
-    if ($chosen_tab == 'none' and !isset($category_array)) {
+    if ($chosen_tab == 'none' && !isset($category_array)) {
         // *** No categories ***
         $process_picture = true;
     }
     // *** Example in subdir: subdir1/subdir2/ak_akte_mons.gif ***
-    elseif ($chosen_tab != 'none' and strpos($picname, $chosen_tab) !== false) {
+    elseif ($chosen_tab != 'none' && strpos($picname, $chosen_tab) !== false) {
         // *** One category is selected ***
         $process_picture = true;
     }
@@ -81,7 +83,7 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
         $process_picture = true;
     }
     // *** If there are categories: filter category photo's from results ***
-    elseif ($chosen_tab == 'none' and isset($category_array)) {
+    elseif ($chosen_tab == 'none' && isset($category_array)) {
         // *** There are categories: filter these items in main page ***
         $process_picture = true;
         // *** Example in subdir: subdir1/subdir2/ak_akte_mons.gif ***
@@ -140,12 +142,12 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
     }
 
     if ($process_picture) {
-        if (!isset($media_files) or !in_array($picname, $media_files)) { // this pic does not appear in the array yet
+        if (!isset($media_files) || !in_array($picname, $media_files)) { // this pic does not appear in the array yet
             //$connected_persons[$picname]=$picqryDb->event_connect_id; // example: $connected_persons['an_example.jpg']="I354"
 
             // *** Skip PDF and RTF files ***
             $check_file = strtolower($picname);
-            if (substr($check_file, -4) != '.pdf' and substr($check_file, -4) != '.rtf') {
+            if (substr($check_file, -4) !== '.pdf' && substr($check_file, -4) !== '.rtf') {
                 $media_files[] = $picname;
             }
         }
@@ -253,7 +255,9 @@ function show_media_files($pref)
         $cat_string, $show_categories, $chosen_tab, $media_files, $humo_option, $link_cls;
 
     $tree_pict_path = $dataDb->tree_pict_path;
-    if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+    if (substr($tree_pict_path, 0, 1) === '|') {
+        $tree_pict_path = 'media/';
+    }
     $dir = $tree_pict_path;
 
     // *** Calculate pages ***
@@ -373,7 +377,7 @@ function show_media_files($pref)
         <?php
         // *** Show photos ***
         for ($picture_nr = $item; $picture_nr < ($item + $photoalbum['show_pictures']); $picture_nr++) {
-            if (isset($media_files[$picture_nr]) and $media_files[$picture_nr]) {
+            if (isset($media_files[$picture_nr]) && $media_files[$picture_nr]) {
                 $filename = $media_files[$picture_nr];
                 $picture_text = '';    // Text with link to person
                 $picture_text2 = '';    // Text without link to person
@@ -397,13 +401,17 @@ function show_media_files($pref)
                     }
 
                     $date_place = date_place($afbDb->event_date, $afbDb->event_place);
-                    if ($afbDb->event_text or $date_place) {
-                        if ($date_place) $picture_text .= $date_place . ' ';
+                    if ($afbDb->event_text || $date_place) {
+                        if ($date_place) {
+                            $picture_text .= $date_place . ' ';
+                        }
                         $picture_text .= $afbDb->event_text . '<br>';
 
                         //$picture_text2.=$afbDb->event_text; // Only use event text in lightbox.
                         $picture_text2 .= '<br>';
-                        if ($date_place) $picture_text2 .= $date_place . ' ';
+                        if ($date_place) {
+                            $picture_text2 .= $date_place . ' ';
+                        }
                         $picture_text2 .= $afbDb->event_text;
                     }
                 }
@@ -422,18 +430,24 @@ function show_media_files($pref)
                         if (!$privacy) {
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                             $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
-                            if ($picture_text) $picture_text .= '<br>';
+                            if ($picture_text !== '' && $picture_text !== '0') {
+                                $picture_text .= '<br>';
+                            }
                             $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
                             $picture_text2 .= $name["standard_name"];
                         }
 
                         $date_place = date_place($pictureDb->event_date, $pictureDb->event_place);
-                        if ($pictureDb->event_text or $date_place) {
-                            if ($date_place) $picture_text .= $date_place . ' ';
+                        if ($pictureDb->event_text || $date_place) {
+                            if ($date_place) {
+                                $picture_text .= $date_place . ' ';
+                            }
                             $picture_text .= $pictureDb->event_text . '<br>';
 
                             $picture_text2 .= '<br>';
-                            if ($date_place) $picture_text2 .= $date_place . ' ';
+                            if ($date_place) {
+                                $picture_text2 .= $date_place . ' ';
+                            }
                             $picture_text2 .= $pictureDb->event_text;
                         }
                     }

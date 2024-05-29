@@ -20,7 +20,7 @@ if (isset($_GET['form'])) {
 
     // *** Multiple events: add event_id ***
     $event_id = '';
-    if (isset($_GET['event_id']) and is_numeric($_GET['event_id'])) {
+    if (isset($_GET['event_id']) && is_numeric($_GET['event_id'])) {
         $event_id = $_GET['event_id'];
         $place_item .= $_GET['event_id'];
     }
@@ -43,7 +43,9 @@ $prefx = '../'; // to get out of the admin map
 $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
 $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 $pict_path = $data2Db->tree_pict_path;
-if (substr($pict_path, 0, 1) == '|') $pict_path = 'media/';
+if (substr($pict_path, 0, 1) === '|') {
+    $pict_path = 'media/';
+}
 $array_picture_folder[] = $prefx . $pict_path;
 //$array_picture_sub_dir[]='';
 
@@ -56,14 +58,12 @@ if (file_exists($array_picture_folder[0])) {
         $ignore = array('cms', 'slideshow', 'thumbs', '.', '..');
         $dh = opendir($prefx . $path);
         while (false !== ($filename = readdir($dh))) {
-            if (!in_array($filename, $ignore)) {
-                // *** Only process directories here. So list of media files will be in directory order ***
-                if (is_dir($prefx . $path . $filename)) {
-                    $array_picture_folder[] = $prefx . $path . $filename . '/';
-                    //sub-sub dir: alles in $array_picture_folder zonder $prefx en $path...
-                    //$array_picture_sub_dir[]=$filename.'/';
-                    get_dirs($prefx, $path . $filename . '/');
-                }
+            // *** Only process directories here. So list of media files will be in directory order ***
+            if (!in_array($filename, $ignore) && is_dir($prefx . $path . $filename)) {
+                $array_picture_folder[] = $prefx . $path . $filename . '/';
+                //sub-sub dir: alles in $array_picture_folder zonder $prefx en $path...
+                //$array_picture_sub_dir[]=$filename.'/';
+                get_dirs($prefx, $path . $filename . '/');
             }
         }
         closedir($dh);
@@ -95,16 +95,14 @@ if (file_exists($array_picture_folder[0])) {
         while (false !== ($filename = readdir($dh))) {
             if (is_dir($selected_picture_folder . $filename)) {
                 //
-            } else {
-                if (!in_array($filename, $ignore) and substr($filename, 0, 6) != 'thumb_') {
-                    // *** stripos = case-insensitive search ***
-                    if ($search_quicksearch == '' or ($search_quicksearch != '' and stripos($filename, $search_quicksearch) !== false)) {
-                        $sub_dir = substr($selected_picture_folder, $dirname_start);
-                        $list_filename[] = $filename;
-                        $list_filename_order[] = strtolower($filename); // *** So ordering is case-insensitive ***
-                        // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
-                        //echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$filename).'")\'>'.$sub_dir.$filename.'</a><br>';
-                    }
+            } elseif (!in_array($filename, $ignore) && substr($filename, 0, 6) !== 'thumb_') {
+                // *** stripos = case-insensitive search ***
+                if ($search_quicksearch == '' || $search_quicksearch != '' && stripos($filename, $search_quicksearch) !== false) {
+                    $sub_dir = substr($selected_picture_folder, $dirname_start);
+                    $list_filename[] = $filename;
+                    $list_filename_order[] = strtolower($filename); // *** So ordering is case-insensitive ***
+                    // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
+                    //echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$filename).'")\'>'.$sub_dir.$filename.'</a><br>';
                 }
             }
         }
@@ -114,7 +112,9 @@ if (file_exists($array_picture_folder[0])) {
             array_multisort($list_filename_order, $list_filename);
             foreach ($list_filename as $selected_filename) {
                 $thumb = '';
-                if (is_file($selected_picture_folder . 'thumb_' . $selected_filename)) $thumb = 'thumb_';
+                if (is_file($selected_picture_folder . 'thumb_' . $selected_filename)) {
+                    $thumb = 'thumb_';
+                }
 
                 echo '<div class="photobook">';
                 echo '<img src="' . $selected_picture_folder . $thumb . $selected_filename . '">';

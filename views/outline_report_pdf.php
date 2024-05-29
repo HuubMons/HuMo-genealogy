@@ -186,7 +186,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     $pdf->Write(8, pdf_convert($woman_cls->name_extended("outline")));
                     $pdf->SetFont($pdf_font, '', 12);
 
-                    if ($show_date == "1" and !$privacy_woman and !$show_details) {
+                    if ($show_date == "1" && !$privacy_woman && !$show_details) {
                         if ($dates_behind_names == false) {
                             $pdf->SetLeftMargin($generation_number * 10 + 4);
                             $pdf->Write(8, "\n");
@@ -198,7 +198,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     $pdf->SetFont($pdf_font, 'B', 12);
                     $pdf->Write(8, pdf_convert($man_cls->name_extended("outline")));
                     $pdf->SetFont($pdf_font, '', 12);
-                    if ($show_date == "1" and !$privacy_man and !$show_details) {
+                    if ($show_date == "1" && !$privacy_man && !$show_details) {
                         if ($dates_behind_names == false) {
                             $pdf->SetLeftMargin($generation_number * 10 + 4);
                             $pdf->Write(8, "\n");
@@ -236,11 +236,11 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         $pdf->Write(8, "\n");
         $pdf->Write(8, 'x  ');
 
-        if ($show_parent2 and $swap_parent1_parent2) {
+        if ($show_parent2 && $swap_parent1_parent2) {
             $pdf->SetFont($pdf_font, 'BI', 12);
             $pdf->Write(8, pdf_convert($man_cls->name_extended("outline")));
             $pdf->SetFont($pdf_font, '', 12);
-            if ($show_date == "1" and !$privacy_man and !$show_details) {
+            if ($show_date == "1" && !$privacy_man && !$show_details) {
                 if ($dates_behind_names == false) {
                     $pdf->SetLeftMargin($generation_number * 10 + 4);
                     $pdf->Write(8, "\n");
@@ -253,7 +253,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
             $pdf->Write(8, pdf_convert($woman_cls->name_extended("outline")));
             $pdf->SetFont($pdf_font, '', 12);
 
-            if ($show_date == "1" and !$privacy_woman and !$show_details) {
+            if ($show_date == "1" && !$privacy_woman && !$show_details) {
                 if ($dates_behind_names == false) {
                     $pdf->SetLeftMargin($generation_number * 10 + 4);
                     $pdf->Write(8, "\n");
@@ -276,8 +276,8 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 @$childDb = $db_functions->get_person($child_array[$i]);
 
                 // *** Totally hide children if setting is active ***
-                if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
-                    if ($screen_mode != "PDF" and !$show_privacy_text) {
+                if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                    if ($screen_mode != "PDF" && !$show_privacy_text) {
                         //echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         //$show_privacy_text = true;
                     }

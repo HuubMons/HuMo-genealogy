@@ -40,10 +40,15 @@ $anc_top = (pow(2, $data["chosengenanc"] - 1) * $boxhight) / 2;
 
 if ($genarray[0]["posy"] < $anc_top) { // if desc base pers higher on screen than base person of ancestor chart - has to be lowered to there.
     $offset = $anc_top - $genarray[0]["posy"];
-    for ($a = 0; $a < count($genarray); $a++) {
+    $counter = count($genarray);
+    for ($a = 0; $a < $counter; $a++) {
         $genarray[$a]["posy"] += $offset;
-        if (isset($genarray[$a]["fst"])) $genarray[$a]["fst"] += $offset;
-        if (isset($genarray[$a]["lst"])) $genarray[$a]["lst"] += $offset;
+        if (isset($genarray[$a]["fst"])) {
+            $genarray[$a]["fst"] += $offset;
+        }
+        if (isset($genarray[$a]["lst"])) {
+            $genarray[$a]["lst"] += $offset;
+        }
     }
 }
 if ($genarray[0]["posy"] > $anc_top) { // if desc base person lower, we have to lower base person of anc chart.
@@ -52,7 +57,8 @@ if ($genarray[0]["posy"] > $anc_top) { // if desc base person lower, we have to 
 //Set height of chart, both for screen and img-to-print
 //Descendant chart bottom coordinates
 $desc_hi = 0;
-for ($i = 0; $i < count($genarray); $i++) {
+$counter = count($genarray);
+for ($i = 0; $i < $counter; $i++) {
     if ($genarray[$i]["posy"] > $desc_hi) {
         $desc_hi = $genarray[$i]["posy"];
     }
@@ -68,8 +74,8 @@ $anc_hi = $anc_top + ((pow(2, $data["chosengenanc"] - 1) * $v_distance) / 2) + 1
 
 // Find longest chart and set as bottom of div
 $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
-
 ?>
+
 <h1 class="standard_header" style="margin:auto; text-align: center;">
     <b><?= __('Hourglass chart') . __(' of ') . $genarray[0]["nam"]; ?></b>
 </h1>
@@ -126,7 +132,9 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
         for ($i = 2; $i <= 12; $i++) {
             echo '<option value="' . $path_tmp . '&amp;direction=' . $data["direction"] . '&amp;chosensize=' .
                 $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '&amp;chosengenanc=' . $i . '"';
-            if ($i == $data["chosengenanc"]) echo "selected=\"selected\" ";
+            if ($i == $data["chosengenanc"]) {
+                echo "selected=\"selected\" ";
+            }
             echo ">" . $i . "</option>";
         }
         ?>
@@ -138,7 +146,9 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
         for ($i = 2; $i <= 15; $i++) {
             echo '<option value="' . $path_tmp . '&amp;direction=' . $data["direction"] . '&amp;chosensize=' .
                 $data["size"] . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $data["chosengenanc"] . '"';
-            if ($i == $data["chosengen"]) echo "selected=\"selected\" ";
+            if ($i == $data["chosengen"]) {
+                echo "selected=\"selected\" ";
+            }
             echo ">" . $i . "</option>";
         }
 
@@ -242,7 +252,7 @@ for ($x = $data["chosengenanc"]; $x > 1; $x--) {
     for ($i = 0; $i < $blocks; $i++) {
         $sexe_colour = '';
         $backgr_col = "#FFFFFF";
-        if (isset($sexe[$i + $blocks]) and $sexe[$i + $blocks] != "") {
+        if (isset($sexe[$i + $blocks]) && $sexe[$i + $blocks] != "") {
             if ($sexe[$i + $blocks] == 'F') {
                 $sexe_colour = ' ancestor_woman';
                 $backgr_col = "#FBDEC0";
@@ -256,7 +266,7 @@ for ($x = $data["chosengenanc"]; $x > 1; $x--) {
         }
         echo '<div class="ancestorName' . $sexe_colour . '" style="background-color:' . $backgr_col . '; top: ' . $this_top . 'px; left: ' . $left . 'px; height: ' . $height . 'px; width:' . $width . 'px;';
         echo '">';
-        if (isset($sexe[$i + $blocks]) and $sexe[$i + $blocks] != "") {
+        if (isset($sexe[$i + $blocks]) && $sexe[$i + $blocks] != "") {
             echo ancestor_chart_person($i + $blocks, 'hour' . $data["size"]);
         } else {
             echo "&nbsp;"; // otherwise background color doesn't work and lines show through
@@ -282,12 +292,12 @@ for ($x = $data["chosengenanc"]; $x > 1; $x--) {
         echo '<div class="ancestor_line" style="border-bottom:none;top: ' . ($this_top + $hi / 2) . 'px; left: ' . ($left + $width + 12) . 'px; height:1px;"></div>';
     }
     // prepare for next generation
-    $top = $top + $incr / 2;
+    $top += $incr / 2;
     $hi *= 2;
     $gap *= 2;
     $incr *= 2;
-    $blocks = $blocks / 2;
-    if ($x > $data["chosengenanc"] - 1 or $data["size"] < 45) { // maybe just: if($x==$data["chosengenanc"])     ;-)
+    $blocks /= 2;
+    if ($x > $data["chosengenanc"] - 1 || $data["size"] < 45) { // maybe just: if($x==$data["chosengenanc"])     ;-)
         $left += $width + 20;
     } else {
         $left += $width / 2 + 20;
@@ -295,7 +305,7 @@ for ($x = $data["chosengenanc"]; $x > 1; $x--) {
 }
 
 // SET CHART DIMENSIONS AND CAPTIONS ^^^^^
-if ($data["size"] == 50 or $data["size"] == 45) {
+if ($data["size"] == 50 || $data["size"] == 45) {
     if ($data["chosengenanc"] > 2) {
         $anc_len = (2 * ($width + 20)) + (($data["chosengenanc"] - 3) * (($data["size"] / 2) + 40));
     } else {
@@ -309,7 +319,9 @@ if ($data["size"] == 50) {
     $desc_len = $data["chosengen"] * ($width + 60);
 } elseif ($data["size"] == 45) {
     $desc_len = $data["chosengen"] * ($width + 50);
-} else $desc_len = $data["chosengen"] * ($width + $data["size"]);
+} else {
+    $desc_len = $data["chosengen"] * ($width + $data["size"]);
+}
 
 $divlen = 10 + $anc_len + $desc_len;
 

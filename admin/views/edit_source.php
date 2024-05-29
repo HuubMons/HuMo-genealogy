@@ -39,7 +39,9 @@ $field_text_large = 'style="height: 100px; width:550px"';
 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
 $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 $tree_pict_path = $dataDb->tree_pict_path;
-if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+if (substr($tree_pict_path, 0, 1) === '|') {
+    $tree_pict_path = 'media/';
+}
 $path_prefix = '../';
 
 
@@ -47,7 +49,7 @@ include(__DIR__ . '/../include/editor_event_cls.php');
 $event_cls = new editor_event_cls;
 
 // *** Editor icon for admin and editor: select family tree ***
-if (isset($tree_id) and $tree_id) {
+if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
 
@@ -118,10 +120,14 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
                             $show_text = $sourceDb->source_title;
                         } else {
                             $show_text = substr($sourceDb->source_text, 0, 40);
-                            if (strlen($sourceDb->source_text) > 40) $show_text .= '...';
+                            if (strlen($sourceDb->source_text) > 40) {
+                                $show_text .= '...';
+                            }
                         }
                         $restricted = '';
-                        if (@$sourceDb->source_status == 'restricted') $restricted = ' *' . __('restricted') . '*';
+                        if (@$sourceDb->source_status == 'restricted') {
+                            $restricted = ' *' . __('restricted') . '*';
+                        }
                     ?>
                         <option value="<?= $sourceDb->source_id; ?>" <?= $selected; ?>><?= $show_text; ?> [<?= @$sourceDb->source_gedcomnr . $restricted; ?>]</option>
                     <?php } ?>
@@ -141,7 +147,7 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
 
 <?php
 // *** Show selected source ***
-if ($editSource['source_id'] or isset($_POST['add_source'])) {
+if ($editSource['source_id'] || isset($_POST['add_source'])) {
     if (isset($_POST['add_source'])) {
         $source_gedcomnr = '';
         $source_status = '';
@@ -150,7 +156,6 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
         $source_place = '';
         $source_publ = '';
         $source_refn = '';
-        $source_auth = '';
         $source_auth = '';
         $source_subj = '';
         $source_item = '';
@@ -201,8 +206,8 @@ if ($editSource['source_id'] or isset($_POST['add_source'])) {
                 <div class="col-md-2"><?= __('Status'); ?></div>
                 <div class="col-md-4">
                     <select size="1" name="source_status" class="form-select form-select-sm">
-                        <option value="publish" <?php if ($source_status == 'publish') echo ' selected'; ?>><?= __('publish'); ?></option>
-                        <option value="restricted" <?php if ($source_status == 'restricted') echo ' selected'; ?>><?= __('restricted'); ?></option>
+                        <option value="publish" <?= $source_status == 'publish' ? ' selected' : ''; ?>><?= __('publish'); ?></option>
+                        <option value="restricted" <?= $source_status == 'restricted' ? ' selected' : ''; ?>><?= __('restricted'); ?></option>
                     </select>
                     <span style="font-size: 13px;"><?= __('restricted = only visible for selected user groups'); ?></span>
                 </div>

@@ -106,7 +106,7 @@ else{
     }
 }
 
-if (isset($database_check) and $database_check == 1) {
+if (isset($database_check) && $database_check == 1) {
     // TODO improve genealogical dates in database, then remove this code.
     // *** Added in mar. 2022: disable NO_ZERO_DATE and NO_ZERO_IN_DATE. To solve sorting problems in genealogical dates. ***
     $dbh->query("SET SESSION sql_mode=(SELECT

@@ -35,7 +35,9 @@ if (isset($_POST['month'])) {
         // *** Find oldest record in database ***
         $datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
         $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-        if (isset($dataDb->stat_date_linux)) $first_year = date("Y", $dataDb->stat_date_linux);
+        if (isset($dataDb->stat_date_linux)) {
+            $first_year = date("Y", $dataDb->stat_date_linux);
+        }
 
         $present_year = date("Y");
         $year = $present_year;
@@ -63,7 +65,7 @@ if (isset($_POST['month'])) {
 <?php
 
 // Graphic of present month
-if ($month == $present_month and $year == $present_year) {
+if ($month == $present_month && $year == $present_year) {
     calender($month, $year, true);
 } else {
     calender($month, $year, false);

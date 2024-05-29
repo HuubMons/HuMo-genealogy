@@ -28,7 +28,7 @@ echo '</h1>';
 
 // *** Upload backup file ***
 if (isset($_POST['upload_the_file'])) {
-    if (substr($_FILES['upload_file']['name'], -4) == ".sql" or substr($_FILES['upload_file']['name'], -8) == ".sql.zip") {
+    if (substr($_FILES['upload_file']['name'], -4) === ".sql" || substr($_FILES['upload_file']['name'], -8) === ".sql.zip") {
         if (move_uploaded_file($_FILES['upload_file']['tmp_name'], './backup_files/' . $_FILES['upload_file']['name'])) {
             // file was successfully uploaded...
         } else {
@@ -38,9 +38,9 @@ if (isset($_POST['upload_the_file'])) {
         echo '<span style="color:red;font-weight:bold">' . __('Invalid backup file: has to be file with extension ".sql" or ".sql.zip"') . '</span><br>';
     }
 }
-
-// *** CREATE BACKUP FILE *** 
 ?>
+
+<!-- CREATE BACKUP FILE -->
 <table class="humo standard" style="width:800px;" border="1">
     <tr class="table_header">
         <th><?= __('Create backup file'); ?></th>
@@ -56,7 +56,6 @@ if (isset($_POST['upload_the_file'])) {
 2) Just for sure: export a GEDCOM file. This is not a full family tree backup! But it will contain all basic genealogical data.<br>
 3) Use the %s backup page.'), 'HuMo-genealogy', 'HuMo-genealogy', 'HuMo-genealogy');
                 echo '<br>';
-
             ?>
                 <h3><?= __('Create backup file'); ?></h3>
 
@@ -69,7 +68,7 @@ if (isset($_POST['upload_the_file'])) {
             // *** Get list of backup files ***
             $dh  = opendir('./backup_files');
             while (false !== ($filename = readdir($dh))) {
-                if (substr($filename, -4) == ".sql" or substr($filename, -8) == ".sql.zip") {
+                if (substr($filename, -4) === ".sql" || substr($filename, -8) === ".sql.zip") {
                     $backup_files[] = $filename;
                 }
             }
@@ -78,9 +77,9 @@ if (isset($_POST['upload_the_file'])) {
                 $backup_count = count($backup_files);
                 rsort($backup_files); // *** Most recent backup file will be shown first ***
             }
-
-            // *** Download most recent backup file ***
             ?>
+
+            <!-- Download most recent backup file -->
             <h3><?= __('Download backup file'); ?></h3>
             <?= __('We recommend downloading the most recent backup file in case the data on your server (including the backup file) might get deleted or corrupted.'); ?><br>
             <?php
@@ -123,9 +122,7 @@ if (isset($_POST['upload_the_file'])) {
                     if (is_file($restore_file)) {
                         // *** restore from backup on server made by HuMo-genealogy backup ***
                         echo '<br><span style="color:red">' . __('Starting to restore database. This may take some time. Please wait...') . '</span><br>';
-                        if (is_file($restore_file)) {
-                            restore_tables($restore_file);
-                        }
+                        restore_tables($restore_file);
                     }
                 }
 
@@ -138,7 +135,9 @@ if (isset($_POST['upload_the_file'])) {
                         <?php
                         for ($i = 0; $i < $backup_count; $i++) {
                             echo '<option value="' . $backup_files[$i] . '">' . $backup_files[$i];
-                            if ($i == 0) echo ' * ' . __('Most recent backup!') . ' *';
+                            if ($i == 0) {
+                                echo ' * ' . __('Most recent backup!') . ' *';
+                            }
                             echo '</option>';
                         }
                         ?>
@@ -169,14 +168,30 @@ function backup_tables()
         $tables[] = $row[0];
     }
 
-
     // *** Count rows in all tables ***
     $total_rows = 0;
     foreach ($tables as $table) {
-        $result = $dbh->query('SELECT * FROM ' . $table);
-        $count_text = $result->rowCount();
-        $total_rows = $total_rows + $count_text;
-        //echo $count_text . '!' . $total_rows . '<br>';
+        // *** Skip tables names that contains a space in it ***
+        if (strpos($table, ' ')) {
+            //
+        } else {
+            /*
+            $result = $dbh->query('SELECT * FROM ' . $table);
+            $count_text = $result->rowCount();
+            if (isset($count_text) and is_numeric($count_text)) {
+                $total_rows += $count_text;
+            }
+            */
+
+            $result = $dbh->query('SELECT COUNT(*) as counter FROM ' . $table);
+            $resultDb = $result->fetch(PDO::FETCH_OBJ);
+            $count_text = $resultDb->counter;
+            if (isset($count_text) and is_numeric($count_text)) {
+                $total_rows += $count_text;
+            }
+
+            //echo $count_text . '!' . $total_rows . '<br>';
+        }
     }
     $devider = floor($total_rows / 100);
 ?>
@@ -289,7 +304,7 @@ function backup_tables()
         $zip->addFile($name);
         $zip->close();
         unlink($name);
-        $name = $name . '.zip'; // last backup file is always stored in /admin as: humo_backup.sql.zip
+        $name .= '.zip'; // last backup file is always stored in /admin as: humo_backup.sql.zip
     }
     echo '<div>' . __('A backup file was saved to the server. We strongly suggest you download a copy to your computer in case you might need it later.') . '</div>';
 }
@@ -318,7 +333,7 @@ function restore_tables($filename)
     }
 
     // Read in entire file
-    if ($zip_success == 1 and is_file($filename) and substr($filename, -4) == ".sql") {
+    if ($zip_success == 1 && is_file($filename) && substr($filename, -4) === ".sql") {
         // wipe contents of database (we don't do this until we know we've got a proper backup file to work with...
         $result = $dbh->query("show tables"); // run the query and assign the result to $result
         while ($table = $result->fetch()) { // go through each row that was returned in $result
@@ -342,13 +357,13 @@ function restore_tables($filename)
             $line = fgets($handle);
 
             // Skip it if it's a comment
-            if (substr($line, 0, 2) == '--' || $line == '') {
+            if (substr($line, 0, 2) === '--' || $line == '') {
                 continue;
             }
             // Add this line to the current segment
             $templine .= $line;
             // If it has a semicolon at the end, it's the end of the query
-            if (substr(trim($line), -1, 1) == ';') {
+            if (substr(trim($line), -1, 1) === ';') {
                 // Perform the query
                 try {
                     $dbh->query($templine);
@@ -376,7 +391,9 @@ function restore_tables($filename)
             }
             $commit_data++;
         }
-        if ($dbh->inTransaction() and $commit_data > 1) $dbh->commit();
+        if ($dbh->inTransaction() && $commit_data > 1) {
+            $dbh->commit();
+        }
         fclose($handle);
 
         //if($original_name != 'humo_backup.sql.zip') {
@@ -397,7 +414,7 @@ function restore_tables($filename)
         if (!is_file($filename)) {
             echo "file " . $filename . " does not exist";
         }
-        if (is_file($filename) and substr($filename, -4) != ".sql") {
+        if (is_file($filename) && substr($filename, -4) !== ".sql") {
             echo "This is not a valid back up file (no .sql extension)";
         }
     }

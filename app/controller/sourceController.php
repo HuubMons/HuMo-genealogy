@@ -16,14 +16,12 @@ class SourceController extends Controller
         $sourceDb = $sourceModel->GetSource($this->db_functions, $id);
         $get_source_connections = $sourceModel->GetSourceConnections($this->dbh, $this->tree_id, $sourceDb->source_gedcomnr);
 
-        $data = array(
+        return array(
             "sourceDb" => $sourceDb,
             "source_connections" => $get_source_connections,
             "title" => __('Source')
         );
 
         //$data = array_merge($data, $sourceDb);
-
-        return $data;
     }
 }

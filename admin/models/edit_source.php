@@ -3,9 +3,9 @@ class EditSourceModel
 {
     private $source_id;
 
-    public function set_source_id($dbh, $tree_id)
+    public function set_source_id($dbh, $tree_id): void
     {
-        if (isset($_POST['source_id']) and is_numeric(($_POST['source_id']))) {
+        if (isset($_POST['source_id']) && is_numeric(($_POST['source_id']))) {
             $this->source_id = $_POST['source_id'];
         }
 
@@ -27,10 +27,12 @@ class EditSourceModel
         return $this->source_id;
     }
 
-    public function update_source($dbh, $tree_id, $db_functions, $editor_cls)
+    public function update_source($dbh, $tree_id, $db_functions, $editor_cls): void
     {
         $userid = false;
-        if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
+        if (is_numeric($_SESSION['user_id_admin'])) {
+            $userid = $_SESSION['user_id_admin'];
+        }
 
         if (isset($_POST['source_add'])) {
             // *** Generate new GEDCOM number ***

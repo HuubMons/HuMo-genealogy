@@ -55,7 +55,7 @@ class Authenticator
 
         $value = unpack('N', $hashpart);
         $value = $value[1];
-        $value = $value & 0x7FFFFFFF;
+        $value &= 0x7FFFFFFF;
 
         $modulo = pow(10, $this->length);
 
@@ -125,7 +125,7 @@ class Authenticator
         for ($i = 0; $i < 4; ++$i) {
             if (
                 $paddingCharCount == $allowedValues[$i] &&
-                substr($secret, - ($allowedValues[$i])) != str_repeat($base32chars[32], $allowedValues[$i])
+                substr($secret, - ($allowedValues[$i])) !== str_repeat($base32chars[32], $allowedValues[$i])
             ) {
                 return false;
             }
@@ -158,7 +158,7 @@ class Authenticator
         $safeLen = strlen($safeString);
         $userLen = strlen($userString);
 
-        if ($userLen != $safeLen) {
+        if ($userLen !== $safeLen) {
             return false;
         }
 

@@ -42,7 +42,7 @@ $notesModel->update_note($dbh);
                     while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
                         $treetext = show_tree_text($treeDb->tree_id, $selected_language);
                         $selected = '';
-                        if (isset($tree_id) and ($treeDb->tree_id == $tree_id)) {
+                        if (isset($tree_id) && $treeDb->tree_id == $tree_id) {
                             $selected = ' selected';
                             // TODO check this variable.
                             $note_tree_id = $treeDb->tree_id;
@@ -96,7 +96,7 @@ $notesModel->update_note($dbh);
         <th colspan="2"><?= __('Notes'); ?></th>
     </tr>
 
-    <?php if (isset($_POST['note_status']) and is_numeric($_POST['note_id']) and $_POST['note_status'] == 'remove') { ?>
+    <?php if (isset($_POST['note_status']) && is_numeric($_POST['note_id']) && $_POST['note_status'] == 'remove') { ?>
         <div class="alert alert-danger">
             <strong><?= __('Are you sure you want to remove this note?'); ?></strong>
             <form method="post" action="index.php" style="display : inline;">
@@ -110,7 +110,7 @@ $notesModel->update_note($dbh);
     <?php
     }
 
-    if (isset($_POST['note_remove']) and is_numeric($_POST["note_id"])) {
+    if (isset($_POST['note_remove']) && is_numeric($_POST["note_id"])) {
         // *** Delete source ***
         $sql = "DELETE FROM humo_user_notes WHERE note_id='" . safe_text_db($_POST["note_id"]) . "'";
         $result = $dbh->query($sql);
@@ -124,9 +124,15 @@ $notesModel->update_note($dbh);
     // *** Show user added notes ***
     // TODO check this line.
     if (isset($note_tree_id)) {
-        if ($notes['user_notes']) $note_kind = "AND note_kind='user'";
-        if ($notes['editor_notes']) $note_kind = "AND note_kind='editor'";
-        if ($notes['user_notes'] and $notes['editor_notes']) $note_kind = '';
+        if ($notes['user_notes']) {
+            $note_kind = "AND note_kind='user'";
+        }
+        if ($notes['editor_notes']) {
+            $note_kind = "AND note_kind='editor'";
+        }
+        if ($notes['user_notes'] && $notes['editor_notes']) {
+            $note_kind = '';
+        }
         $note_qry = "SELECT * FROM humo_user_notes WHERE note_tree_id='" . $note_tree_id . "' " . $note_kind . " LIMIT 0," . $notes['limit'];
         $note_result = $dbh->query($note_qry);
         $num_rows = $note_result->rowCount();
@@ -154,8 +160,10 @@ $notesModel->update_note($dbh);
             }
 
             $note_status = '';
-            if ($noteDb->note_status) $note_status = $noteDb->note_status;
-            ?>
+            if ($noteDb->note_status) {
+                $note_status = $noteDb->note_status;
+            }
+        ?>
             <tr class="humo_color">
                 <td style="min-width:250px">
                     <?php
@@ -191,7 +199,7 @@ $notesModel->update_note($dbh);
 
                     <?php
                     // *** Link: index.php?page=editor&amp;tree_id=2_&amp;person=I313 ***
-                    if (substr($noteDb->note_connect_id, 0, 1) == 'F') {
+                    if (substr($noteDb->note_connect_id, 0, 1) === 'F') {
                         // *** Editor note by family ***
                         @$find_parent1Db = $db_functions->get_family($noteDb->note_connect_id);
                         if ($find_parent1Db->fam_man != "") {

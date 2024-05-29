@@ -23,10 +23,11 @@ function witness($gedcomnr, $event, $field = 'person')
     $text = '';
     if ($gedcomnr) {
         $witness_cls = new person_cls;
-        if ($field == 'person')
+        if ($field == 'person') {
             $witness_qry = $db_functions->get_events_connect('person', $gedcomnr, $event);
-        else
+        } else {
             $witness_qry = $db_functions->get_events_connect('family', $gedcomnr, $event);
+        }
 
         foreach ($witness_qry as $witnessDb) {
             $counter++;
@@ -48,7 +49,7 @@ function witness($gedcomnr, $event, $field = 'person')
                 $text .= $witnessDb->event_event;
             }
 
-            if ($witnessDb->event_date or $witnessDb->event_place) {
+            if ($witnessDb->event_date || $witnessDb->event_place) {
                 $text .= ' ' . date_place($witnessDb->event_date, $witnessDb->event_place);
             }
 
@@ -70,10 +71,11 @@ function witness($gedcomnr, $event, $field = 'person')
         }
     }
 
-    if (isset($text_array))
+    if (isset($text_array)) {
         return $text_array;
-    else
+    } else {
         return '';
+    }
 }
 
 /*
@@ -125,37 +127,47 @@ function witness_by_events($gedcomnr)
                 }
             }
             $counter++;
-            if ($witnessDb->event_kind == 'birth_declaration' and $witness_line != 'birth declaration') {
-                if ($witness_line != '') $text .= ".<br>\n";
+            if ($witnessDb->event_kind == 'birth_declaration' && $witness_line !== 'birth declaration') {
+                if ($witness_line !== '') {
+                    $text .= ".<br>\n";
+                }
                 $text .= __('birth declaration') . ': ';
                 $witness_line = 'birth declaration';
-            } elseif ($witnessDb->event_kind == 'baptism_witness' and $witness_line != 'baptism witness') {
-                if ($witness_line != '') $text .= ".<br>\n";
+            } elseif ($witnessDb->event_kind == 'baptism_witness' && $witness_line !== 'baptism witness') {
+                if ($witness_line !== '') {
+                    $text .= ".<br>\n";
+                }
                 $text .= __('baptism witness') . ': ';
                 $witness_line = 'baptism witness';
-            } elseif ($witnessDb->event_kind == 'death_declaration' and $witness_line != 'death declaration') {
-                if ($witness_line != '') $text .= ".<br>\n";
+            } elseif ($witnessDb->event_kind == 'death_declaration' && $witness_line !== 'death declaration') {
+                if ($witness_line !== '') {
+                    $text .= ".<br>\n";
+                }
                 $text .= __('death declaration') . ': ';
                 $witness_line = 'death declaration';
-            } elseif ($witnessDb->event_kind == 'burial_witness' and $witness_line != 'burial_witness') {
-                if ($witness_line != '') $text .= ".<br>\n";
+            } elseif ($witnessDb->event_kind == 'burial_witness' && $witness_line !== 'burial_witness') {
+                if ($witness_line !== '') {
+                    $text .= ".<br>\n";
+                }
                 $text .= __('burial witness') . ': ';
                 $witness_line = 'burial_witness';
-            } elseif ($witnessDb->event_kind == 'marriage_witness' and $witness_line != 'marriage_witness') {
-                if ($witness_line != '') $text .= ".<br>\n";
+            } elseif ($witnessDb->event_kind == 'marriage_witness' && $witness_line !== 'marriage_witness') {
+                if ($witness_line !== '') {
+                    $text .= ".<br>\n";
+                }
                 $text .= __('marriage witness') . ': ';
                 $witness_line = 'marriage_witness';
-            } elseif ($witnessDb->event_kind == 'marriage_witness_rel' and $witness_line != 'marriage_witness_rel') {
-                if ($witness_line != '') $text .= ".<br>\n";
+            } elseif ($witnessDb->event_kind == 'marriage_witness_rel' && $witness_line !== 'marriage_witness_rel') {
+                if ($witness_line !== '') {
+                    $text .= ".<br>\n";
+                }
                 $text .= __('marriage witness (religious)') . ': ';
                 $witness_line = 'marriage_witness_rel';
-            } else {
-                if ($counter > 1) {
-                    $text .= ', ';
-                }
+            } elseif ($counter > 1) {
+                $text .= ', ';
             }
 
-            if ($witnessDb->event_kind == 'marriage_witness' or $witnessDb->event_kind == 'marriage_witness_rel') {
+            if ($witnessDb->event_kind == 'marriage_witness' || $witnessDb->event_kind == 'marriage_witness_rel') {
                 // *** Connected witness by a family ***
                 $fam_db = $db_functions->get_family($witnessDb->event_connect_id, 'man_woman');
 

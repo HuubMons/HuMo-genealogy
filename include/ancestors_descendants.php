@@ -13,14 +13,14 @@
  * $generation_number = generation number to process.
  * $nr_generations = maximum number of generations.
  *
- *	Descendant array:
- *	person					descendant[1]
- *	child1					descendant[2]
- *	child2					descendant[3]
+ *  Descendant array:
+ *  person                  descendant[1]
+ *  child1                  descendant[2]
+ *  child2                  descendant[3]
  *
- *	children of child1:
- *	child1					descendant[4]
- *	child2					descendant[5]
+ *  children of child1:
+ *  child1                  descendant[4]
+ *  child2                  descendant[5]
  */
 $generation_number = 0;    // *** Generation number ***
 $descendant_id = 0;
@@ -33,7 +33,9 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
     $descendant_id++;
     $descendant_array[$descendant_id] = $main_person;
     $generation_number++;
-    if ($nr_generations < $generation_number) return;
+    if ($nr_generations < $generation_number) {
+        return;
+    }
 
     // *** Count marriages of main person (man) ***
     // *** YB: if needed show woman as main_person ***
@@ -42,7 +44,9 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
     $parent2 = '';
     $swap_parent1_parent2 = false;
     // *** Standard main_person is the father ***
-    if ($familyDb->fam_man) $parent1 = $familyDb->fam_man;
+    if ($familyDb->fam_man) {
+        $parent1 = $familyDb->fam_man;
+    }
     // *** If mother is selected, mother will be main_person ***
     if ($familyDb->fam_woman == $main_person) {
         $parent1 = $familyDb->fam_woman;
@@ -126,7 +130,7 @@ function get_ancestors($db_functions, $main_person)
         if (isset($ancestor_array[$counter])) {
             $personDb = $db_functions->get_person($ancestor_array[$counter], 'famc-fams');
             // *** Get parents ***
-            if (isset($personDb->pers_famc) and $personDb->pers_famc) {
+            if (isset($personDb->pers_famc) && $personDb->pers_famc) {
                 $father_counter = $counter * 2;
                 $mother_counter = $father_counter + 1;
                 $parentDb = $db_functions->get_family($personDb->pers_famc, 'man-woman');
@@ -134,13 +138,17 @@ function get_ancestors($db_functions, $main_person)
                 // *** Check if man is in array allready ***
                 if (!in_array($parentDb->fam_man, $ancestor_array)) {
                     $ancestor_array[$father_counter] = $parentDb->fam_man;
-                    if ($father_counter > $count_max) $count_max = $father_counter;
+                    if ($father_counter > $count_max) {
+                        $count_max = $father_counter;
+                    }
                 }
 
                 // *** Check if woman is in array allready ***
                 if (!in_array($parentDb->fam_woman, $ancestor_array)) {
                     $ancestor_array[$mother_counter] = $parentDb->fam_woman;
-                    if ($mother_counter > $count_max) $count_max = $mother_counter;
+                    if ($mother_counter > $count_max) {
+                        $count_max = $mother_counter;
+                    }
                 }
             }
         }

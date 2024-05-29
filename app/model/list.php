@@ -14,11 +14,15 @@ class ListModel
     {
         $index_list = 'quicksearch';
         // *** Reset if necessary ***
-        if (isset($_POST['pers_firstname']) or isset($_GET['pers_lastname']) or isset($_GET['pers_firstname']) or isset($_GET['reset']) or isset($_POST['quicksearch'])) {
+        if (isset($_POST['pers_firstname']) || isset($_GET['pers_lastname']) || isset($_GET['pers_firstname']) || isset($_GET['reset']) || isset($_POST['quicksearch'])) {
             $index_list = 'search';
         }
-        if (isset($_POST["index_list"])) $index_list = $_POST['index_list'];
-        if (isset($_GET["index_list"])) $index_list = $_GET['index_list'];
+        if (isset($_POST["index_list"])) {
+            $index_list = $_POST['index_list'];
+        }
+        if (isset($_GET["index_list"])) {
+            $index_list = $_GET['index_list'];
+        }
         return $index_list;
     }
 
@@ -26,11 +30,7 @@ class ListModel
     {
         $order = 0;
         if (isset($_SESSION['sort_desc'])) {
-            if ($_SESSION['sort_desc'] == 1) {
-                $order = 1;
-            } else {
-                $order = 0;
-            }
+            $order = $_SESSION['sort_desc'] == 1 ? 1 : 0;
         }
         if (isset($_GET['sort_desc'])) {
             if ($_GET['sort_desc'] == 1) {
@@ -46,18 +46,13 @@ class ListModel
 
     public function getDescAsc($order)
     {
-        if ($order == 1) {
-            $desc_asc = " DESC ";
-        } else {
-            $desc_asc = " ASC ";
-        }
-        return $desc_asc;
+        return $order == 1 ? " DESC " : " ASC ";
     }
 
     public function getOrderSelect()
     {
         $selectsort = '';
-        if (isset($_SESSION['sort']) and !isset($_GET['sort'])) {
+        if (isset($_SESSION['sort']) && !isset($_GET['sort'])) {
             $selectsort = $_SESSION['sort'];
         }
 
@@ -104,12 +99,12 @@ class ListModel
             $select_trees = $_GET['select_trees'];
             $_SESSION["save_select_trees"] = $select_trees;
         }
-        if (isset($humo_option['one_name_study']) and $humo_option['one_name_study'] == 'y') {
+        if (isset($humo_option['one_name_study']) && $humo_option['one_name_study'] == 'y') {
             $select_trees = "all_trees";
             $_SESSION["save_select_trees"] = $select_trees;
         }
         // *** Read session for multiple pages ***
-        if (isset($_GET['item']) and isset($_SESSION["save_select_trees"])) {
+        if (isset($_GET['item']) && isset($_SESSION["save_select_trees"])) {
             $select_trees = $_SESSION["save_select_trees"];
         }
         return $select_trees;
@@ -117,41 +112,41 @@ class ListModel
 
     public function getSelection()
     {
-        $change=false;
+        $change = false;
 
         $selection['pers_firstname'] = '';
         if (isset($_POST['pers_firstname'])) {
             $selection['pers_firstname'] = $_POST['pers_firstname'];
             //$selection['pers_firstname']=htmlentities($_POST['pers_firstname'],ENT_QUOTES,'UTF-8');
-            $change=true;
+            $change = true;
         }
         // *** Used for frequent firstnames in statistics page ***
         if (isset($_GET['pers_firstname'])) {
             $selection['pers_firstname'] = $_GET['pers_firstname'];
             $_GET['adv_search'] = '1';
-            $change=true;
+            $change = true;
         }
 
         $selection['part_firstname'] = '';
         if (isset($_POST['part_firstname'])) {
             $selection['part_firstname'] = $_POST['part_firstname'];
-            $change=true;
+            $change = true;
         }
         if (isset($_GET['part_firstname'])) {
             $selection['part_firstname'] = $_GET['part_firstname'];
-            $change=true;
+            $change = true;
         }
 
         // *** Prefix (names list and most frequent names in main menu.) ***
         $selection['pers_prefix'] = '';
         if (isset($_POST['pers_prefix'])) {
             $selection['pers_prefix'] = $_POST['pers_prefix'];
-            $change=true;
+            $change = true;
         }
         if (isset($_GET['pers_prefix'])) {
             $selection['pers_prefix'] = $_GET['pers_prefix'];
             //$selection['pers_prefix']=htmlentities($_GET['pers_prefix'],ENT_QUOTES,'UTF-8');
-            $change=true;
+            $change = true;
         }
 
         // *** Lastname ***
@@ -159,212 +154,208 @@ class ListModel
         if (isset($_POST['pers_lastname'])) {
             $selection['pers_lastname'] = $_POST['pers_lastname'];
             //$selection['pers_lastname']=htmlentities($_POST['pers_lastname'],ENT_QUOTES,'UTF-8');
-            $change=true;
+            $change = true;
         }
-        if (isset($humo_option['one_name_study']) and $humo_option['one_name_study'] == 'y') {
-            if ((isset($_GET['adv_search']) and $_GET['adv_search'] == 1) or (isset($_GET['index_list']) and $_GET['index_list'] == 'search') or (isset($_GET['reset']) and $_GET['reset'] == 1)) {
-                $selection['pers_lastname'] = $humo_option['one_name_thename'];
-                $change=true;
-            }
+        if ((isset($humo_option['one_name_study']) and $humo_option['one_name_study'] == 'y') && (isset($_GET['adv_search']) && $_GET['adv_search'] == 1 || isset($_GET['index_list']) && $_GET['index_list'] == 'search' || isset($_GET['reset']) && $_GET['reset'] == 1)) {
+            $selection['pers_lastname'] = $humo_option['one_name_thename'];
+            $change = true;
         }
         if (isset($_GET["pers_lastname"])) {
             $selection['pers_lastname'] = $_GET['pers_lastname'];
             //$selection['pers_lastname']=htmlentities($_GET['pers_lastname'],ENT_QUOTES,'UTF-8');
             $selection['pers_lastname'] = str_replace("|", "&", $selection['pers_lastname']);  // Don't use a & character in a GET link
-            $change=true;
+            $change = true;
         }
 
         $selection['part_lastname'] = '';
         if (isset($_POST['part_lastname'])) {
             $selection['part_lastname'] = $_POST['part_lastname'];
-            $change=true;
+            $change = true;
         }
         // *** Used for clicking in the names list ***
         if (isset($_GET['part_lastname'])) {
             $selection['part_lastname'] = $_GET['part_lastname'];
-            $change=true;
+            $change = true;
         }
 
         // ***  ADVANCED SEARCH added by Yossi Beck, translated and integrated in person search screen by Huub. *** //
         $selection['birth_place'] = '';
         if (isset($_POST['birth_place'])) {
             $selection['birth_place'] = $_POST['birth_place'];
-            $change=true;
+            $change = true;
         }
         $selection['part_birth_place'] = '';
         if (isset($_POST['part_birth_place'])) {
             $selection['part_birth_place'] = $_POST['part_birth_place'];
-            $change=true;
+            $change = true;
         }
 
         $selection['death_place'] = '';
         if (isset($_POST['death_place'])) {
             $selection['death_place'] = $_POST['death_place'];
-            $change=true;
+            $change = true;
         }
         $selection['part_death_place'] = '';
         if (isset($_POST['part_death_place'])) {
             $selection['part_death_place'] = $_POST['part_death_place'];
-            $change=true;
+            $change = true;
         }
 
         $selection['birth_year'] = '';
         if (isset($_POST['birth_year'])) {
             $selection['birth_year'] = $_POST['birth_year'];
-            $change=true;
+            $change = true;
         }
         $selection['birth_year_end'] = '';
         if (isset($_POST['birth_year_end'])) {
             $selection['birth_year_end'] = $_POST['birth_year_end'];
-            $change=true;
+            $change = true;
         }
 
         $selection['death_year'] = '';
         if (isset($_POST['death_year'])) {
             $selection['death_year'] = $_POST['death_year'];
-            $change=true;
+            $change = true;
         }
         $selection['death_year_end'] = '';
         if (isset($_POST['death_year_end'])) {
             $selection['death_year_end'] = $_POST['death_year_end'];
-            $change=true;
+            $change = true;
         }
 
         $selection['spouse_firstname'] = '';
         if (isset($_POST['spouse_firstname'])) {
             $selection['spouse_firstname'] = $_POST['spouse_firstname'];
             //$selection['spouse_firstname']=htmlentities($_POST['spouse_firstname'],ENT_QUOTES,'UTF-8');
-            $change=true;
+            $change = true;
         }
         $selection['part_spouse_firstname'] = '';
         if (isset($_POST['part_spouse_firstname'])) {
             $selection['part_spouse_firstname'] = $_POST['part_spouse_firstname'];
-            $change=true;
+            $change = true;
         }
 
         $selection['spouse_lastname'] = '';
         if (isset($_POST['spouse_lastname'])) {
             $selection['spouse_lastname'] = $_POST['spouse_lastname'];
             //$selection['spouse_lastname']=htmlentities($_POST['spouse_lastname'],ENT_QUOTES,'UTF-8');
-            $change=true;
+            $change = true;
         }
         $selection['part_spouse_lastname'] = '';
         if (isset($_POST['part_spouse_lastname'])) {
             $selection['part_spouse_lastname'] = $_POST['part_spouse_lastname'];
-            $change=true;
+            $change = true;
         }
 
         $selection['sexe'] = '';
         if (isset($_POST['sexe'])) {
             $selection['sexe'] = $_POST['sexe'];
-            $change=true;
+            $change = true;
         } elseif (isset($_GET['sexe'])) {
             $selection['sexe'] = $_GET['sexe'];
-            $change=true;
+            $change = true;
         }
 
         // *** Own Code ***
         $selection['own_code'] = '';
         if (isset($_POST['own_code'])) {
             $selection['own_code'] = $_POST['own_code'];
-            $change=true;
+            $change = true;
         }
         $selection['part_own_code'] = '';
         if (isset($_POST['part_own_code'])) {
             $selection['part_own_code'] = $_POST['part_own_code'];
-            $change=true;
+            $change = true;
         }
 
         // *** Gedcomnumber ***
         $selection['gednr'] = '';
         if (isset($_POST['gednr'])) {
             $selection['gednr'] = $_POST['gednr'];
-            $change=true;
+            $change = true;
         }
         $selection['part_gednr'] = '';
         if (isset($_POST['part_gednr'])) {
             $selection['part_gednr'] = $_POST['part_gednr'];
-            $change=true;
+            $change = true;
         }
 
         // *** Profession ***
         $selection['pers_profession'] = '';
         if (isset($_POST['pers_profession'])) {
             $selection['pers_profession'] = $_POST['pers_profession'];
-            $change=true;
+            $change = true;
         }
         $selection['part_profession'] = '';
         if (isset($_POST['part_profession'])) {
             $selection['part_profession'] = $_POST['part_profession'];
-            $change=true;
+            $change = true;
         }
 
         // *** Text ***
         $selection['text'] = '';
         if (isset($_POST['text'])) {
             $selection['text'] = $_POST['text'];
-            $change=true;
+            $change = true;
         }
         $selection['part_text'] = '';
         if (isset($_POST['part_text'])) {
             $selection['part_text'] = $_POST['part_text'];
-            $change=true;
+            $change = true;
         }
 
         // *** Place ***
         $selection['pers_place'] = '';
         if (isset($_POST['pers_place'])) {
             $selection['pers_place'] = $_POST['pers_place'];
-            $change=true;
+            $change = true;
         }
         $selection['part_place'] = '';
         if (isset($_POST['part_place'])) {
             $selection['part_place'] = $_POST['part_place'];
-            $change=true;
+            $change = true;
         }
 
         // *** Zip code ***
         $selection['zip_code'] = '';
         if (isset($_POST['zip_code'])) {
             $selection['zip_code'] = $_POST['zip_code'];
-            $change=true;
+            $change = true;
         }
         $selection['part_zip_code'] = '';
         if (isset($_POST['part_zip_code'])) {
             $selection['part_zip_code'] = $_POST['part_zip_code'];
-            $change=true;
+            $change = true;
         }
 
         // *** Research status ***
         $selection['parent_status'] = '';
-        if (!isset($_POST['quicksearch']) and isset($_POST['parent_status'])) {
+        if (!isset($_POST['quicksearch']) && isset($_POST['parent_status'])) {
             $selection['parent_status'] = $_POST['parent_status'];
-            $change=true;
+            $change = true;
         }
 
         // *** Witness ***
         $selection['witness'] = '';
         if (isset($_POST['witness'])) {
             $selection['witness'] = $_POST['witness'];
-            $change=true;
+            $change = true;
         }
         $selection['part_witness'] = '';
         if (isset($_POST['part_witness'])) {
             $selection['part_witness'] = $_POST['part_witness'];
-            $change=true;
+            $change = true;
         }
 
         // *** Store selection if an item is changed ***
-        if ($change==true){
+        if ($change == true) {
             $_SESSION["save_selection"] = $selection;
         }
 
         // *** Read session for multiple pages ***
-        if (isset($_GET['item'])) {
-            // *** Multiple search values ***
-            if (isset($_SESSION["save_selection"])) {
-                $selection = $_SESSION["save_selection"];
-            }
+        // *** Multiple search values ***
+        if (isset($_GET['item']) && isset($_SESSION["save_selection"])) {
+            $selection = $_SESSION["save_selection"];
         }
 
         return $selection;
@@ -374,13 +365,15 @@ class ListModel
     {
         // *** SOME DEFAULTS ***
         $last_or_patronym = " pers_lastname ";
-        if ($index_list == 'patronym') $last_or_patronym = " pers_patronym ";
+        if ($index_list == 'patronym') {
+            $last_or_patronym = " pers_patronym ";
+        }
 
         //REMARK: at this moment also used to select birth/baptise or death/buried place...
         $make_date = ''; // we only need this when sorting by date
 
         $orderby = $last_or_patronym . $desc_asc . ", pers_firstname " . $desc_asc;
-        if ($user['group_kindindex'] == "j" and $index_list != 'patronym') {
+        if ($user['group_kindindex'] == "j" && $index_list != 'patronym') {
             $orderby = " concat_name " . $desc_asc;
         }
 
@@ -388,7 +381,7 @@ class ListModel
         if ($selectsort) {
             if ($selectsort == "sort_lastname") {
                 $orderby = $last_or_patronym . $desc_asc . ", pers_firstname " . $desc_asc;
-                if ($user['group_kindindex'] == "j" and $index_list != 'patronym') {
+                if ($user['group_kindindex'] == "j" && $index_list != 'patronym') {
                     $orderby = " concat_name " . $desc_asc;
                 }
             }
@@ -584,15 +577,13 @@ class ListModel
             $quicksearch = $_POST['quicksearch'];
             $_SESSION["save_quicksearch"] = $quicksearch;
         }
-        if (isset($_GET['adv_search']) and $_GET['adv_search'] == '0') {
-            // *** Switch from advanced search to standard search (now quick search) ***
-            if (isset($_SESSION["save_quicksearch"])) {
-                $quicksearch = $_SESSION["save_quicksearch"];
-            }
+        // *** Switch from advanced search to standard search (now quick search) ***
+        if ((isset($_GET['adv_search']) and $_GET['adv_search'] == '0') && isset($_SESSION["save_quicksearch"])) {
+            $quicksearch = $_SESSION["save_quicksearch"];
         }
         // *** Read session for multiple pages ***
-        if (isset($_GET['item'])) {
-            if (isset($_SESSION["save_quicksearch"])) $quicksearch = $_SESSION["save_quicksearch"];
+        if (isset($_GET['item']) && isset($_SESSION["save_quicksearch"])) {
+            $quicksearch = $_SESSION["save_quicksearch"];
         }
         return $quicksearch;
     }
@@ -618,8 +609,8 @@ class ListModel
             $_SESSION["save_adv_search"] = $adv_search;
         }
         // *** Read session for multiple pages ***
-        if (isset($_GET['item'])) {
-            if (isset($_SESSION["save_adv_search"])) $adv_search = $_SESSION["save_adv_search"];
+        if (isset($_GET['item']) && isset($_SESSION["save_adv_search"])) {
+            $adv_search = $_SESSION["save_adv_search"];
         }
         return $adv_search;
     }
@@ -685,8 +676,12 @@ class ListModel
 
         // *** Search for places in birth-baptise-died places etc. ***
         if ($index_list == 'places') {
-            if (isset($_SESSION["save_place_name"])) $data["place_name"] = $_SESSION["save_place_name"];
-            if (isset($_SESSION["save_part_place_name"])) $data["part_place_name"] = $_SESSION["save_part_place_name"];
+            if (isset($_SESSION["save_place_name"])) {
+                $data["place_name"] = $_SESSION["save_place_name"];
+            }
+            if (isset($_SESSION["save_part_place_name"])) {
+                $data["part_place_name"] = $_SESSION["save_part_place_name"];
+            }
 
             // *** Enable select boxes ***
             if (isset($_GET['reset'])) {
@@ -766,12 +761,7 @@ class ListModel
         //*** Results of searchform in mainmenu ***
         //*** Or: search in lastnames ***
         if (
-            $selection['pers_firstname'] or $selection['pers_prefix'] or $selection['pers_lastname']
-            or $selection['birth_place'] or $selection['death_place']
-            or $selection['birth_year'] or $selection['death_year'] or ($selection['sexe'] and $selection['sexe'] != 'both')
-            or $selection['own_code'] or $selection['gednr'] or $selection['pers_profession']
-            or $selection['pers_place'] or $selection['text']
-            or $selection['zip_code'] or $selection['witness'] or $selection['parent_status'] != ""
+            $selection['pers_firstname'] || $selection['pers_prefix'] || $selection['pers_lastname'] || $selection['birth_place'] || $selection['death_place'] || $selection['birth_year'] || $selection['death_year'] || $selection['sexe'] && $selection['sexe'] != 'both' || $selection['own_code'] || $selection['gednr'] || $selection['pers_profession'] || $selection['pers_place'] || $selection['text'] || $selection['zip_code'] || $selection['witness'] || $selection['parent_status'] != ""
         ) {
 
             // *** Build query ***
@@ -862,7 +852,7 @@ class ListModel
                 }
             }
 
-            if ($selection['sexe'] == "M" or $selection['sexe'] == "F") {
+            if ($selection['sexe'] == "M" || $selection['sexe'] == "F") {
                 $query .= $and . "pers_sexe='" . $selection['sexe'] . "'";
                 $and = " AND ";
             }
@@ -877,7 +867,7 @@ class ListModel
             }
 
             if ($selection['gednr']) {
-                if (strtoupper(substr($_POST['gednr'], 0, 1)) != 'I') {
+                if (strtoupper(substr($_POST['gednr'], 0, 1)) !== 'I') {
                     $selection['gednr'] = 'I' . $_POST['gednr']; // if only number was entered - add "I" before
                 } else {
                     $selection['gednr'] = strtoupper($_POST['gednr']); // in case lowercase "i" was entered before number, make it "I"
@@ -919,36 +909,40 @@ class ListModel
                 $add_event_qry = true;
             }
 
-            if ($selection['parent_status'] and $selection['parent_status'] == "noparents") {
+            if ($selection['parent_status'] && $selection['parent_status'] == "noparents") {
                 $query .= $and . " (pers_famc = '') ";
                 $and = " AND ";
                 $add_event_qry = true;
             }
 
             // *** Change query if searched for spouse ***
-            if ($selection['spouse_firstname'] or $selection['spouse_lastname']) {
+            if ($selection['spouse_firstname'] || $selection['spouse_lastname']) {
                 $query .= $and . "pers_fams!=''";
                 $and = " AND ";
             }
 
 
             // *** Build SELECT part of query. Search with option "ALL family trees" or "All but selected" ***
-            if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
+            if ($select_trees == 'all_trees' || $select_trees == 'all_but_this') {
                 $query_part = $query;
 
                 $counter = 0;
                 $multi_tree = '';
                 foreach ($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $datapdo) {
-                    if ($select_trees == "all_but_this" and $datapdo['tree_prefix'] == safe_text_db($_SESSION['tree_prefix'])) {
+                    if ($select_trees == "all_but_this" && $datapdo['tree_prefix'] == safe_text_db($_SESSION['tree_prefix'])) {
                         continue;
                     }
 
                     // *** Check is family tree is shown or hidden for user group ***
                     $hide_tree_array = explode(";", $user['group_hide_trees']);
                     $hide_tree = false;
-                    if (in_array($datapdo['tree_id'], $hide_tree_array)) $hide_tree = true;
+                    if (in_array($datapdo['tree_id'], $hide_tree_array)) {
+                        $hide_tree = true;
+                    }
                     if ($hide_tree == false) {
-                        if ($counter > 0) $multi_tree .= ' OR ';
+                        if ($counter > 0) {
+                            $multi_tree .= ' OR ';
+                        }
                         $multi_tree .= 'pers_tree_id=' . $datapdo['tree_id'];
                         $counter++;
                     }
@@ -963,8 +957,12 @@ class ListModel
             // *** Aug. 2017: renewed querie because of > MySQL 5.7 ***
             $query_select = "SELECT SQL_CALC_FOUND_ROWS humo_persons.*";
 
-            if ($add_event_qry) $query_select .= ", event_event, event_kind";
-            if ($add_address_qry) $query_select .= ", address_place, address_zip";
+            if ($add_event_qry) {
+                $query_select .= ", event_event, event_kind";
+            }
+            if ($add_address_qry) {
+                $query_select .= ", address_place, address_zip";
+            }
             // Text isn't needed in results
             //	if ($add_text_qry) $query_select .= ", fam_text";
 
@@ -1037,20 +1035,24 @@ class ListModel
             // One can enter "Huub Mons", "Mons Huub", "Huub van Mons", "van Mons, Huub", "Mons, Huub van" and even "Mons van, Huub"
 
             // *** Build SELECT part of query. Search in ALL family trees ***
-            if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
+            if ($select_trees == 'all_trees' || $select_trees == 'all_but_this') {
                 $query = '';
                 $counter = 0;
                 $multi_tree = '';
                 foreach ($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
-                    if ($select_trees == "all_but_this" and $pdoresult['tree_prefix'] == safe_text_db($_SESSION['tree_prefix'])) {
+                    if ($select_trees == "all_but_this" && $pdoresult['tree_prefix'] == safe_text_db($_SESSION['tree_prefix'])) {
                         continue;
                     }
                     // *** Check if family tree is shown or hidden for user group ***
                     $hide_tree_array = explode(";", $user['group_hide_trees']);
                     $hide_tree = false;
-                    if (in_array($pdoresult['tree_id'], $hide_tree_array)) $hide_tree = true;
+                    if (in_array($pdoresult['tree_id'], $hide_tree_array)) {
+                        $hide_tree = true;
+                    }
                     if ($hide_tree == false) {
-                        if ($counter > 0) $multi_tree .= ' OR ';
+                        if ($counter > 0) {
+                            $multi_tree .= ' OR ';
+                        }
                         $multi_tree .= 'pers_tree_id=' . $pdoresult['tree_id'];
                         $counter++;
                     }
@@ -1327,16 +1329,16 @@ class ListModel
 
         //*** Show number of persons and pages *****************************************
         $item = 0;
-        if (isset($_GET['item']) and is_numeric($_GET['item'])) {
+        if (isset($_GET['item']) && is_numeric($_GET['item'])) {
             $item = $_GET['item'];
         }
         $start = 0;
-        if (isset($_GET["start"]) and is_numeric($_GET["start"])) {
+        if (isset($_GET["start"]) && is_numeric($_GET["start"])) {
             $start = $_GET["start"];
         }
         $nr_persons = $humo_option['show_persons'];
 
-        if (!$selection['spouse_firstname'] and !$selection['spouse_lastname'] and $selection['parent_status'] != "motheronly" and $selection['parent_status'] != "fatheronly") {
+        if (!$selection['spouse_firstname'] && !$selection['spouse_lastname'] && $selection['parent_status'] != "motheronly" && $selection['parent_status'] != "fatheronly") {
             $person_result = $dbh->query($query . " LIMIT " . $item . "," . $nr_persons);
 
             if ($count_qry) {

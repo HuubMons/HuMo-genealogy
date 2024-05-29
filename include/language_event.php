@@ -75,22 +75,54 @@ function language_event($text_event)
 
 function language_name($text)
 {
-    $return_text='';
-    if ($text == '_ALIA') $return_text = __('alias name') . ': ';	// For Pro-Gen
-    if ($text == '_SHON') $return_text = __('Short name (for reports)') . ': ';
-    if ($text == '_ADPN') $return_text = __('Adopted name') . ': ';
-    if ($text == '_HEBN') $return_text = __('Hebrew name') . ': ';
-    if ($text == '_CENN') $return_text = __('Census name') . ': ';
-    if ($text == '_MARN') $return_text = __('Married name') . ': ';
-    if ($text == '_GERN') $return_text = __('Given name') . ': ';
-    if ($text == '_FARN') $return_text = __('Farm name') . ': ';
-    if ($text == '_BIRN') $return_text = __('Birth name') . ': ';
-    if ($text == '_INDN') $return_text = __('Indian name') . ': ';
-    if ($text == '_FKAN') $return_text = __('Formal name') . ': ';
-    if ($text == '_CURN') $return_text = __('Current name') . ': ';
-    if ($text == '_SLDN') $return_text = __('Soldier name') . ': ';
-    if ($text == '_FRKA') $return_text = __('Formerly known as') . ': ';
-    if ($text == '_RELN') $return_text = __('Religious name') . ': ';
-    if ($text == '_OTHN') $return_text = __('Other name') . ': ';
+    $return_text = '';
+    if ($text == '_ALIA') {
+        $return_text = __('alias name') . ': ';
+    }    // For Pro-Gen
+    if ($text == '_SHON') {
+        $return_text = __('Short name (for reports)') . ': ';
+    }
+    if ($text == '_ADPN') {
+        $return_text = __('Adopted name') . ': ';
+    }
+    if ($text == '_HEBN') {
+        $return_text = __('Hebrew name') . ': ';
+    }
+    if ($text == '_CENN') {
+        $return_text = __('Census name') . ': ';
+    }
+    if ($text == '_MARN') {
+        $return_text = __('Married name') . ': ';
+    }
+    if ($text == '_GERN') {
+        $return_text = __('Given name') . ': ';
+    }
+    if ($text == '_FARN') {
+        $return_text = __('Farm name') . ': ';
+    }
+    if ($text == '_BIRN') {
+        $return_text = __('Birth name') . ': ';
+    }
+    if ($text == '_INDN') {
+        $return_text = __('Indian name') . ': ';
+    }
+    if ($text == '_FKAN') {
+        $return_text = __('Formal name') . ': ';
+    }
+    if ($text == '_CURN') {
+        $return_text = __('Current name') . ': ';
+    }
+    if ($text == '_SLDN') {
+        $return_text = __('Soldier name') . ': ';
+    }
+    if ($text == '_FRKA') {
+        $return_text = __('Formerly known as') . ': ';
+    }
+    if ($text == '_RELN') {
+        $return_text = __('Religious name') . ': ';
+    }
+    if ($text == '_OTHN') {
+        $return_text = __('Other name') . ': ';
+    }
     return $return_text;
 }

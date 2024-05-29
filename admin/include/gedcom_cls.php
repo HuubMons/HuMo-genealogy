@@ -4,7 +4,7 @@ class gedcom_cls
     /**
      * Process persons
      */
-    function process_person($person_array)
+    function process_person($person_array): void
     {
         global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
         // *** Data for connection table ***
@@ -109,7 +109,7 @@ class gedcom_cls
         // Old code: it is alowed to read tags like: I_1;
         //$buffer = str_replace("_", "", $buffer); //Aldfaer numbers
         $pers_gedcomnumber = substr($buffer, 3, -6);
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             $pers_gedcomnumber = $this->reassign_ged($pers_gedcomnumber, 'I');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
@@ -154,9 +154,11 @@ class gedcom_cls
             //echo "BUFFER: ".$z."-".$buffer."!".count($line2)."<br>";
 
             // *** Save level1 ***
-            if ($buffer1 == '1') {
+            if ($buffer1 === '1') {
                 $level[1] = rtrim(substr($buffer, 2, 5));  // *** rtrim voor CHR_. Update: rtrim not really neccesary anymore? ***
-                if (substr($buffer, 0, 6) == '1 CHR ') $level[1] = 'CHR'; // *** Update sep 2015: this is better to process HZ-21 line: 1 CHR Ned. Herv ***
+                if (substr($buffer, 0, 6) === '1 CHR ') {
+                    $level[1] = 'CHR';
+                } // *** Update sep 2015: this is better to process HZ-21 line: 1 CHR Ned. Herv ***
 
                 $level['1a'] = rtrim($buffer);  // *** Needed to test for 1 RESI @. Update: rtrim not really neccesary anymore? ***
                 $event_status = '';
@@ -167,24 +169,24 @@ class gedcom_cls
                 $famc = '';
             }
             // *** Save level2 ***
-            elseif ($buffer1 == '2') {
+            elseif ($buffer1 === '2') {
                 $level[2] = substr($buffer, 2, 4);
                 $level[3] = "";
                 $level[4] = "";
 
                 // *** Possible bug in Haza-21 program: 2 @S167@ SOUR. Rebuild to: 2 SOUR @S167@ ***
-                if ($gen_program == 'Haza-21' and substr($buffer, -4) == 'SOUR') {
+                if ($gen_program == 'Haza-21' && substr($buffer, -4) === 'SOUR') {
                     $buffer = substr($buffer, 0, 2) . 'SOUR ' . substr($buffer, 2, -5);
                     $level[2] = substr($buffer, 2, 4);
                 }
             }
             // *** Save level3 ***
-            elseif ($buffer1 == '3') {
+            elseif ($buffer1 === '3') {
                 $level[3] = substr($buffer, 2, 4);
                 $level[4] = "";
             }
             // *** Save level4 ***
-            elseif ($buffer1 == '4') {
+            elseif ($buffer1 === '4') {
                 $level[4] = substr($buffer, 2, 4);
             }
 
@@ -192,14 +194,14 @@ class gedcom_cls
             //1 _NEW
             //2 DATE 04 AUG 2004
             if ($level[1] == '_NEW') {
-                if ($buffer6 == '1 _NEW') {
+                if ($buffer6 === '1 _NEW') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $person["new_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $person["new_time"] = substr($buffer, 7);
                 }
@@ -209,14 +211,14 @@ class gedcom_cls
             //1 CHAN
             //2 DATE 04 AUG 2004
             if ($level[1] == 'CHAN') {
-                if ($buffer6 == '1 CHAN') {
+                if ($buffer6 === '1 CHAN') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $person["changed_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $person["changed_time"] = substr($buffer, 7);
                 }
@@ -225,14 +227,14 @@ class gedcom_cls
             // *** Parents ***
             if ($level[1] == 'FAMC') {
                 // 1 FAMC @F1@
-                if ($buffer8 == '1 FAMC @') {
+                if ($buffer8 === '1 FAMC @') {
                     if ($pers_famc) {
                         // *** Second famc, used for adoptive parents ***
                         $processed = 1;
                         $famc = substr($buffer, 8, -1); // Needed for Aldfaer adoptive parents
                         if ($gen_program != 'ALDFAER') {
                             $pers_famc2 = substr($buffer, 8, -1);
-                            if ($add_tree == true or $reassign == true) {
+                            if ($add_tree == true || $reassign == true) {
                                 $pers_famc2 = $this->reassign_ged($pers_famc2, 'F');
                             }
                             $event_nr++;
@@ -254,7 +256,7 @@ class gedcom_cls
                         $processed = 1;
                         $famc = substr($buffer, 8, -1); // Needed for Aldfaer adoptive parents
                         $pers_famc = substr($buffer, 8, -1);
-                        if ($add_tree == true or $reassign == true) {
+                        if ($add_tree == true || $reassign == true) {
                             $pers_famc = $this->reassign_ged($pers_famc, 'F');
                         }
                     }
@@ -266,11 +268,11 @@ class gedcom_cls
                 //2 PEDI legal
                 //2 PEDI foster
                 //2 PEDI birth     is in use in Aldfaer 8.
-                if ($buffer7 == '2 PEDI ' and $buffer != '2 PEDI birth') {
+                if ($buffer7 === '2 PEDI ' && $buffer !== '2 PEDI birth') {
                     // *** Adoption by person ***
                     $processed = 1;
                     $pers_famc2 = $famc;
-                    if ($add_tree == true or $reassign == true) {
+                    if ($add_tree == true || $reassign == true) {
                         $pers_famc2 = $this->reassign_ged($famc, 'F');
                     }
                     $event_nr++;
@@ -297,10 +299,10 @@ class gedcom_cls
             // *** Own families ***
             // 1 FAMS @F5@
             // 1 FAMS @F11@
-            if ($buffer8 == '1 FAMS @') {
+            if ($buffer8 === '1 FAMS @') {
                 $processed = 1;
                 $tempnr = substr($buffer, 8, -1);
-                if ($add_tree == true or $reassign == true) {
+                if ($add_tree == true || $reassign == true) {
                     $tempnr = $this->reassign_ged($tempnr, 'F');
                 }
                 $fams = $this->merge_texts($fams, ';', $tempnr);
@@ -360,7 +362,7 @@ class gedcom_cls
 
             // *** Pro-gen titles by name ***
             // 1 _TITL2 = title between first and last name.
-            if ($buffer8 == '1 _TITL2') {
+            if ($buffer8 === '1 _TITL2') {
                 $level[1] = 'NAME';
                 //$level[2]='NPFX';
                 $level[2] = 'SPFX';
@@ -369,7 +371,7 @@ class gedcom_cls
                 $buffer6 = substr($buffer, 0, 6);
             }
             // 1 _TITL3 = title behind lastname.
-            if ($buffer8 == '1 _TITL3') {
+            if ($buffer8 === '1 _TITL3') {
                 $level[1] = 'NAME';
                 $level[2] = 'NSFX';
                 $buffer = '2 NSFX' . substr($buffer, 8);
@@ -377,13 +379,13 @@ class gedcom_cls
             }
 
             if ($level[1] == 'NAME') {
-                if ($buffer6 == '1 NAME') {
+                if ($buffer6 === '1 NAME') {
                     $processed = 1;
                     $name = str_replace("_", " ", $buffer);
                     $name = str_replace("~", " ", $name);
 
                     // *** Second line "1 NAME" is a callname ***
-                    if ($pers_firstname) {
+                    if ($pers_firstname !== '' && $pers_firstname !== '0') {
                         //$pers_callname_org=$pers_callname; // *** If "2 TYPE aka" is used, $pers_callname can be restored ***
                         //$pers_aka=substr($name,7); // *** If "2 TYPE aka" is used
 
@@ -399,7 +401,9 @@ class gedcom_cls
                         $processed = 1;
                         $pers_aka = substr($name, 7);
                         // *** Remove / if nickname starts with / ***
-                        if (substr($pers_aka, 0, 1) == '/') $pers_aka = substr($pers_aka, 1);
+                        if (substr($pers_aka, 0, 1) === '/') {
+                            $pers_aka = substr($pers_aka, 1);
+                        }
                         $pers_aka = str_replace("/", " ", $pers_aka);
                         $pers_aka = str_replace("  ", " ", $pers_aka);
                         $pers_aka = rtrim($pers_aka);
@@ -444,11 +448,11 @@ class gedcom_cls
                 // 1 NAME Willem I/III/van Holland/
                 // 2 GIVN Willem I/III
                 // 2 SURN van Holland
-                if ($buffer6 == '2 GIVN') {
+                if ($buffer6 === '2 GIVN') {
                     $processed = 1;
                     $pers_firstname = substr($buffer, 7);
                 }
-                if ($buffer6 == '2 SURN') {
+                if ($buffer6 === '2 SURN') {
                     $processed = 1;
                     $pers_lastname = substr($buffer, 7);
 
@@ -465,7 +469,7 @@ class gedcom_cls
                 // 1 NAME Sipkje /Visser/
                 // 2 TYPE aka
                 // *** Change "NICK" into "_AKA" ***
-                if (strtoupper($buffer) == '2 TYPE AKA') {
+                if (strtoupper($buffer) === '2 TYPE AKA') {
                     $processed = 1;
                     //$pers_aka=str_replace("/", " ", $pers_aka);
                     //$pers_aka=str_replace("  ", " ", $pers_aka);
@@ -489,13 +493,13 @@ class gedcom_cls
                 }
 
                 // *** GEDCOM 5.5 lastname prefix: 2 SPFX Le ***
-                if ($buffer6 == '2 SPFX') {
+                if ($buffer6 === '2 SPFX') {
                     $processed = 1;
                     $person["pers_prefix"] = substr($buffer, 7) . '_';
                 }
 
                 // *** Title in GEDCOM 5.5: 2 NPFX Prof. ***
-                if ($buffer6 == '2 NPFX') {
+                if ($buffer6 === '2 NPFX') {
                     $processed = 1;
                     $event_nr++;
                     $calculated_event_id++;
@@ -513,7 +517,7 @@ class gedcom_cls
                 }
 
                 // *** GEDCOM 5.5 name addition: 2 NSFX Jr. ***
-                if ($buffer6 == '2 NSFX') {
+                if ($buffer6 === '2 NSFX') {
                     $processed = 1;
                     $event_nr++;
                     $calculated_event_id++;
@@ -535,7 +539,7 @@ class gedcom_cls
                     $pers_name_text = $this->process_texts($pers_name_text, $buffer, '2');
                 }
 
-                if ($gen_program == "SukuJutut" and $level[3] == 'NOTE') {
+                if ($gen_program == "SukuJutut" && $level[3] == 'NOTE') {
                     $pers_name_text = $this->process_texts($pers_name_text, $buffer, '3');
                 }
 
@@ -545,11 +549,11 @@ class gedcom_cls
                 }
 
                 $process_event = false;
-                if ($buffer7 == '2 _AKAN') {
+                if ($buffer7 === '2 _AKAN') {
                     $process_event = true;
                 }
                 // *** MyHeritage uses _AKA
-                if ($buffer6 == '2 _AKA') {
+                if ($buffer6 === '2 _AKA') {
                     $process_event = true;
                     //  *** Replace optional / characters: 2 _AKA Sijpkje /Visser/ ***
                     $buffer = str_replace("/", " ", $buffer);
@@ -559,63 +563,63 @@ class gedcom_cls
 
                 // *** HuMo-genealogy (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
                 // *** Users can change nickname for BK in language file! ***
-                if ($buffer6 == '2 NICK') {
+                if ($buffer6 === '2 NICK') {
                     $process_event = true;
                 }
 
                 // *** PG: 2 _ALIA ***
-                if ($buffer7 == '2 _ALIA') {
+                if ($buffer7 === '2 _ALIA') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _SHON') {
+                if ($buffer7 === '2 _SHON') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _ADPN') {
+                if ($buffer7 === '2 _ADPN') {
                     $process_event = true;
                 }
                 //if ($buffer7=='1 _HEBN'){ $process_event=true; }
-                if ($buffer7 == '2 _HEBN') {
+                if ($buffer7 === '2 _HEBN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _CENN') {
+                if ($buffer7 === '2 _CENN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _MARN') {
+                if ($buffer7 === '2 _MARN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _GERN') {
+                if ($buffer7 === '2 _GERN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _FARN') {
+                if ($buffer7 === '2 _FARN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _BIRN') {
+                if ($buffer7 === '2 _BIRN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _INDN') {
+                if ($buffer7 === '2 _INDN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _FKAN') {
+                if ($buffer7 === '2 _FKAN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _CURN') {
+                if ($buffer7 === '2 _CURN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _SLDN') {
+                if ($buffer7 === '2 _SLDN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _FRKA') {
+                if ($buffer7 === '2 _FRKA') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _RELN') {
+                if ($buffer7 === '2 _RELN') {
                     $process_event = true;
                 }
-                if ($buffer7 == '2 _OTHN') {
+                if ($buffer7 === '2 _OTHN') {
                     $process_event = true;
                 }
 
                 // *** For German "2 _RUFN" entries. BK uses "2 _RUFNAME" ***
-                if ($buffer7 == '2 _RUFN') {
+                if ($buffer7 === '2 _RUFN') {
                     $process_event = true;
                 }  // 2 _RUFNAME needs the isset($buffer[10] check a few lines below
 
@@ -632,15 +636,15 @@ class gedcom_cls
                     // *** $buffer[7] = check 8th character.***
                     // *** There maybe is a problem for texts like: "1 tekst" or "A text". ***
                     // *** 2 _AKA Also known as ***
-                    if (isset($buffer[6]) and $buffer[6] == ' ') {
+                    if (isset($buffer[6]) && $buffer[6] === ' ') {
                         $event['event'][$event_nr] = substr($buffer, 7);
                     }
                     // *** 2 _ALIA Alias ***
-                    elseif (isset($buffer[7]) and $buffer[7] == ' ') {
+                    elseif (isset($buffer[7]) && $buffer[7] === ' ') {
                         $event['event'][$event_nr] = substr($buffer, 8);
                     }
                     // *** X _MARNM ??  MyHeritage ***
-                    elseif (isset($buffer[8]) and $buffer[8] == ' ') {
+                    elseif (isset($buffer[8]) && $buffer[8] === ' ') {
                         $event['event'][$event_nr] = substr($buffer, 9);
                     }
                     //elseif (isset($buffer[10]) AND $buffer[10]==' ') {$event['event'][$event_nr]=substr($buffer,11);}
@@ -658,7 +662,7 @@ class gedcom_cls
                 //  3 NOTE text by Naam censusnaam
                 //  4 CONT 2nd line
                 //  4 CONT 3rd line
-                if ($buffer6 == '3 DATE') {
+                if ($buffer6 === '3 DATE') {
                     $processed = 1;
                     $event['date'][$event_nr] = substr($buffer, 7);
                 }
@@ -675,37 +679,38 @@ class gedcom_cls
                     // 2 GIVN Wilhelmina
                     // 2 SURN Brink
                     // 3 NOTE Naam kan ook zijn: Brink
-                    if (isset($event['text'][$event_nr]))
+                    if (isset($event['text'][$event_nr])) {
                         $event['text'][$event_nr] = $this->process_texts($event['text'][$event_nr], $buffer, '3');
-                    else
+                    } else {
                         $pers_name_text = $this->process_texts($pers_name_text, $buffer, '3');
+                    }
                 }
             }
 
             // *** Quality ***
             // BELONGS TO A 1 xxxx ITEM????
             // Certain/ uncertain person (onzeker persoon) HZ
-            if ($gen_program == 'Haza-Data' and $buffer8 == '2 QUAY 0') {
+            if ($gen_program == 'Haza-Data' && $buffer8 === '2 QUAY 0') {
                 $processed = 1;
                 $pers_firstname = '(?) ' . $pers_firstname;
             }
             //if ($buffer6=='2 QUAY'){ $processed=1; $person["pers_quality"]=$this->process_quality($buffer); }
 
             // *** Pro-gen: 1 _PATR Jans ***
-            if ($buffer7 == '1 _PATR') {
+            if ($buffer7 === '1 _PATR') {
                 $processed = 1;
                 $person["pers_patronym"] = substr($buffer, 8);
             }
 
             // *** Own code ***
-            if ($buffer6 == '1 REFN') {
+            if ($buffer6 === '1 REFN') {
                 $processed = 1;
                 $person["pers_own_code"] = substr($buffer, 7);
             }
 
             // *** Finnish genealogy program SukuJutut (and some other genealogical programs) ***
             // 1 ALIA Frederik Hektor /McLean/
-            if ($buffer6 == '1 ALIA') {
+            if ($buffer6 === '1 ALIA') {
                 //$processed=1;
                 //$buffer = str_replace("/", "", $buffer);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
                 //if ($pers_callname){
@@ -768,7 +773,7 @@ class gedcom_cls
             // 3 CONT vader- en werd daarom onterft.Deze was van de fam.
             if ($level[1] == 'ANCI') {
                 //if (substr($buffer, 0, 6)=='1 ANCI'){ $processed=1; $person["pers_text"].="<br>".substr($buffer,7); }
-                if ($buffer6 == '1 ANCI') {
+                if ($buffer6 === '1 ANCI') {
                     $processed = 1;
                     $person["pers_text"] .= substr($buffer, 7);
                 }
@@ -778,7 +783,7 @@ class gedcom_cls
             // ******************************************************************************************
             // *** Address(es) ***
             // ******************************************************************************************
-            if ($buffer6 == '1 ADDR' or $level[1] == 'RESI') {
+            if ($buffer6 === '1 ADDR' || $level[1] == 'RESI') {
                 $this->process_addresses('person', 'person_address', $pers_gedcomnumber, $buffer);
             }
 
@@ -814,39 +819,39 @@ class gedcom_cls
             // ******************************************************************************************
             // *** Birth ***
             if ($level[1] == 'BIRT') {
-                if ($buffer6 == '1 BIRT') {
+                if ($buffer6 === '1 BIRT') {
                     $processed = 1;
                 }
 
                 // *** Date ***
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     //FTM and dorotree programs can have multiple birth dates, only first one is saved:
-                    if (!$pers_birth_date) {
+                    if ($pers_birth_date === '' || $pers_birth_date === '0') {
                         $pers_birth_date = trim(substr($buffer, 7));
                     }
                 }
-                if ($buffer7 == '2 _HNIT') {
+                if ($buffer7 === '2 _HNIT') {
                     $pers_heb_flag = 1;
                     $processed = 1;
                     $pers_birth_date_hebnight = substr($buffer, 8);
                 }
                 // *** Aldfaer time ***
                 // 2 _ALDFAER_TIME 08:00:00
-                if (substr($buffer, 0, 15) == '2 _ALDFAER_TIME') {
+                if (substr($buffer, 0, 15) === '2 _ALDFAER_TIME') {
                     $processed = 1;
                     $pers_birth_time = substr($buffer, 16);
                 }
                 // *** Pro-gen time NOT TESTED ***
                 // 2 TIME 22.40
-                if ($buffer6 == '2 TIME') {
+                if ($buffer6 === '2 TIME') {
                     $processed = 1;
                     $pers_birth_time = substr($buffer, 7);
                 }
 
                 // *** Place ***
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $pers_birth_place = $this->process_place(substr($buffer, 7));
                     }
@@ -859,7 +864,7 @@ class gedcom_cls
                 }
 
                 // *** Text for SukuJutut***
-                if ($gen_program == "SukuJutut" and $level[3] == 'NOTE') {
+                if ($gen_program == "SukuJutut" && $level[3] == 'NOTE') {
                     $pers_birth_text = $this->process_texts($pers_birth_text, $buffer, '3');
                 }
 
@@ -870,13 +875,13 @@ class gedcom_cls
                 }
 
                 // *** Birth witness Pro-Gen ***
-                if ($buffer7 == '2 _WITN') {
+                if ($buffer7 === '2 _WITN') {
                     $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
                     $level[2] = 'WITN';
                 }
                 // 2 WITN Witness//
                 if ($level[2] == 'WITN') {
-                    if (substr($buffer, 2, 4) == 'WITN') {
+                    if (substr($buffer, 2, 4) === 'WITN') {
                         $processed = 1;
                         $buffer = str_replace("/", " ", $buffer);
                         $buffer = str_replace("  ", " ", $buffer);
@@ -890,7 +895,7 @@ class gedcom_cls
                         $event['kind'][$event_nr] = 'birth_declaration';
                         $event['event'][$event_nr] = '';
 
-                        if (substr($buffer, 7, 1) == '@') {
+                        if (substr($buffer, 7, 1) === '@') {
                             // 2 WITN @I1@
                             $event['connect_kind2'][$event_nr] = 'person';
                             $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
@@ -905,12 +910,12 @@ class gedcom_cls
                         $event['text'][$event_nr] = '';
                         $event['place'][$event_nr] = '';
                     }
-                    if ($buffer6 == '3 CONT') {
+                    if ($buffer6 === '3 CONT') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
-                    if ($buffer6 == '3 CONC') {
+                    if ($buffer6 === '3 CONC') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
@@ -920,12 +925,14 @@ class gedcom_cls
                 // *** Stillborn child ***
                 // 1 BIRT
                 // 2 TYPE stillborn
-                if (substr($buffer, 0, 16) == '2 TYPE stillborn') {
+                if (substr($buffer, 0, 16) === '2 TYPE stillborn') {
                     $processed = 1;
                     $pers_stillborn = 'y';
                 }
 
-                if ($level[2] == 'OBJE') $this->process_picture('person', $pers_gedcomnumber, 'picture_birth', $buffer);
+                if ($level[2] == 'OBJE') {
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_birth', $buffer);
+                }
             }
 
             // *******************************************************************************************
@@ -947,7 +954,7 @@ class gedcom_cls
             // 1 BAPM
             // 2 DATE 23 APR 1658
             // 2 PLAC Venlo
-            if ($gen_program == 'GeneWeb' and $buffer == '1 BAPM') {
+            if ($gen_program == 'GeneWeb' && $buffer == '1 BAPM') {
                 $level[1] = 'CHR';
                 $buffer = '1 CHR';
                 $buffer5 = '1 CHR';
@@ -956,30 +963,30 @@ class gedcom_cls
 
             //$buffer = str_replace("1 CHR ", "1 CHR", $buffer);  // For Aldfaer etc.
             if ($level[1] == 'CHR') {
-                if ($buffer5 == '1 CHR') {
+                if ($buffer5 === '1 CHR') {
                     $processed = 1;
                 }
 
                 // HZ-21
                 // 1 CHR Ned. Herv.
-                if ($buffer5 == '1 CHR' and substr($buffer, 7)) {
+                if ($buffer5 === '1 CHR' && substr($buffer, 7)) {
                     $processed = 1;
                     $pers_religion = substr($buffer, 7);
                 }
 
                 // *** Date ***
                 //if ($buffer6=='2 DATE'){ $processed=1; $pers_bapt_date=substr($buffer, 7); }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     //dorotree programm can have multiple bapt dates, only first one is saved:
-                    if (!$pers_bapt_date) {
+                    if ($pers_bapt_date === '' || $pers_bapt_date === '0') {
                         $pers_bapt_date = trim(substr($buffer, 7));
                     }
                 }
 
                 // *** Place ***
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $pers_bapt_place = $this->process_place(substr($buffer, 7));
                     }
@@ -991,7 +998,7 @@ class gedcom_cls
                     $pers_bapt_text = $this->process_texts($pers_bapt_text, $buffer, '2');
                 }
 
-                if ($gen_program == "SukuJutut" and $level[3] == 'NOTE') {
+                if ($gen_program == "SukuJutut" && $level[3] == 'NOTE') {
                     $pers_bapt_text = $this->process_texts($pers_bapt_text, $buffer, '3');
                 }
 
@@ -1002,12 +1009,12 @@ class gedcom_cls
 
                 // *** Baptise witnesses ***
                 // Pro-gen: 2 _WITN Anna van Wely
-                if ($buffer7 == '2 _WITN') {
+                if ($buffer7 === '2 _WITN') {
                     $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
                     $level[2] = 'WITN';
                 }
                 if ($level[2] == 'WITN') {
-                    if (substr($buffer, 2, 4) == 'WITN') {
+                    if (substr($buffer, 2, 4) === 'WITN') {
                         $processed = 1;
                         $buffer = str_replace("/", " ", $buffer);
                         $buffer = str_replace("  ", " ", $buffer);
@@ -1021,7 +1028,7 @@ class gedcom_cls
                         $event['kind'][$event_nr] = 'baptism_witness';
                         $event['event'][$event_nr] = '';
 
-                        if (substr($buffer, 7, 1) == '@') {
+                        if (substr($buffer, 7, 1) === '@') {
                             // 2 WITN @I1@
                             $event['connect_kind2'][$event_nr] = 'person';
                             $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
@@ -1041,17 +1048,17 @@ class gedcom_cls
                     // 2 WITN Doopgetuige1//
                     // 3 TYPE locum
                     // 2 WITN Doopgetuige2//
-                    if (substr($buffer, 0, 12) == '3 TYPE locum') {
+                    if (substr($buffer, 0, 12) === '3 TYPE locum') {
                         $processed = 1;
                         $event['event'][$event_nr] .= " i.p.v. ";
                     }
 
-                    if ($buffer6 == '3 CONT') {
+                    if ($buffer6 === '3 CONT') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
-                    if ($buffer6 == '3 CONC') {
+                    if ($buffer6 === '3 CONC') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
@@ -1065,7 +1072,7 @@ class gedcom_cls
                 //  3 TYPE INDI
                 //  3 RELA GODP
                 if ($level[2] == 'ASSO') {
-                    if (substr($buffer, 0, 6) == '2 ASSO') {
+                    if (substr($buffer, 0, 6) === '2 ASSO') {
                         $processed = 1;
                         $event_nr++;
                         $calculated_event_id++;
@@ -1092,27 +1099,29 @@ class gedcom_cls
                         //    $event['event'][$event_nr] = substr($buffer, 7);
                         //}
                     }
-                    if (substr($buffer, 0, 11) == '3 TYPE INDI') {
+                    if (substr($buffer, 0, 11) === '3 TYPE INDI') {
                         $processed = 1; //$event['event'][$event_nr].="godfather";
                     }
-                    if (substr($buffer, 0, 11) == '3 RELA GODP') {
+                    if (substr($buffer, 0, 11) === '3 RELA GODP') {
                         $processed = 1; //$event['event'][$event_nr].="godfather";
                     }
                 }
 
                 // *** Religion (1 RELI = event) ***
-                if ($buffer6 == '2 RELI') {
+                if ($buffer6 === '2 RELI') {
                     $processed = 1;
                     $pers_religion = substr($buffer, 7);
                 }
 
-                if ($level[2] == 'OBJE') $this->process_picture('person', $pers_gedcomnumber, 'picture_bapt', $buffer);
+                if ($level[2] == 'OBJE') {
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_bapt', $buffer);
+                }
             }
 
             // ******************************************************************************************
             // *** Deceased ***
             if ($level[1] == 'DEAT') {
-                if ($buffer6 == '1 DEAT') {
+                if ($buffer6 === '1 DEAT') {
                     $processed = 1;
                 }
 
@@ -1123,34 +1132,34 @@ class gedcom_cls
 
                 // *** Date ***
                 //if ($buffer6=='2 DATE'){ $processed=1; $pers_death_date=substr($buffer, 7); }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     //dorotree programm can have multiple death dates, only first one is saved:
                     if (!$pers_death_date) {
                         $pers_death_date = trim(substr($buffer, 7));
                     }
                 }
-                if ($buffer7 == '2 _HNIT') {
+                if ($buffer7 === '2 _HNIT') {
                     $pers_heb_flag = 1;
                     $processed = 1;
                     $pers_death_date_hebnight = substr($buffer, 8);
                 }
                 // *** Aldfaer time ***
                 // 2 _ALDFAER_TIME 08:00:00
-                if (substr($buffer, 0, 15) == '2 _ALDFAER_TIME') {
+                if (substr($buffer, 0, 15) === '2 _ALDFAER_TIME') {
                     $processed = 1;
                     $pers_death_time = substr($buffer, 16);
                 }
                 // *** Pro-gen time ***
                 // 2 TIME 22.40
-                if ($buffer6 == '2 TIME') {
+                if ($buffer6 === '2 TIME') {
                     $processed = 1;
                     $pers_death_time = substr($buffer, 7);
                 }
 
                 // *** Place ***
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $pers_death_place = $this->process_place(substr($buffer, 7));
                     }
@@ -1162,7 +1171,7 @@ class gedcom_cls
                     $pers_death_text = $this->process_texts($pers_death_text, $buffer, '2');
                 }
 
-                if ($gen_program == "Sukujutut" and $level == 'NOTE') {
+                if ($gen_program == "Sukujutut" && $level == 'NOTE') {
                     // *** Texts ***
                     $pers_death_text = $this->process_texts($pers_death_text, $buffer, '3');
                 }
@@ -1174,12 +1183,12 @@ class gedcom_cls
 
                 // *** Death witness Pro-Gen ***
                 // Pro-gen: 2 _WITN Anna van Wely
-                if ($buffer7 == '2 _WITN') {
+                if ($buffer7 === '2 _WITN') {
                     $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
                     $level[2] = 'WITN';
                 }
                 if ($level[2] == 'WITN') {
-                    if (substr($buffer, 2, 4) == 'WITN') {
+                    if (substr($buffer, 2, 4) === 'WITN') {
                         $processed = 1;
                         $buffer = str_replace("/", " ", $buffer);
                         $buffer = str_replace("  ", " ", $buffer);
@@ -1193,7 +1202,7 @@ class gedcom_cls
                         $event['kind'][$event_nr] = 'death_declaration';
                         $event['event'][$event_nr] = '';
 
-                        if (substr($buffer, 7, 1) == '@') {
+                        if (substr($buffer, 7, 1) === '@') {
                             // 2 WITN @I1@
                             $event['connect_kind2'][$event_nr] = 'person';
                             $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
@@ -1208,12 +1217,12 @@ class gedcom_cls
                         $event['text'][$event_nr] = '';
                         $event['place'][$event_nr] = '';
                     }
-                    if ($buffer6 == '3 CONT') {
+                    if ($buffer6 === '3 CONT') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
-                    if ($buffer6 == '3 CONC') {
+                    if ($buffer6 === '3 CONC') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
@@ -1221,27 +1230,29 @@ class gedcom_cls
                 }
 
                 // *** Pers_death_cause ***
-                if ($buffer6 == '2 CAUS') {
+                if ($buffer6 === '2 CAUS') {
                     $processed = 1;
                     $pers_death_cause = rtrim(substr($buffer, 7));
                 }
 
                 // *** Pers_death_age ***
-                if ($buffer5 == '2 AGE') {
+                if ($buffer5 === '2 AGE') {
                     $processed = 1;
                     $person["pers_death_age"] = substr($buffer, 6);
                 }
 
                 // *** Pers_death_cause Haza-data ***
-                if ($buffer6 == '2 TYPE') {
+                if ($buffer6 === '2 TYPE') {
                     $processed = 1;
                     $pers_death_cause = rtrim(substr($buffer, 7));
                 }
-                if ($pers_death_cause == 'died single') {
+                if ($pers_death_cause === 'died single') {
                     $pers_death_cause = 'died unmarried';
                 }
 
-                if ($level[2] == 'OBJE') $this->process_picture('person', $pers_gedcomnumber, 'picture_death', $buffer);
+                if ($level[2] == 'OBJE') {
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_death', $buffer);
+                }
             }
 
             // ****************************************************************************************
@@ -1252,12 +1263,12 @@ class gedcom_cls
             //2 DATE 02 MAY 2003
             //2 PLAC Schagen
 
-            if ($buffer6 == '1 CREM') {
+            if ($buffer6 === '1 CREM') {
                 $level[1] = 'BURI';
                 $buffer = '2 TYPE cremation';
             }
             if ($level[1] == 'BURI') {
-                if ($buffer6 == '1 BURI') {
+                if ($buffer6 === '1 BURI') {
                     $processed = 1;
                 }
 
@@ -1266,21 +1277,21 @@ class gedcom_cls
 
                 // *** Date ***
                 //if ($buffer6=='2 DATE'){ $processed=1; $pers_buried_date=substr($buffer, 7); }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     //dorotree programm can have multiple burial dates, only first one is saved:
                     if (!$pers_buried_date) {
                         $pers_buried_date = trim(substr($buffer, 7));
                     }
                 }
-                if ($buffer7 == '2 _HNIT') {
+                if ($buffer7 === '2 _HNIT') {
                     $pers_heb_flag = 1;
                     $processed = 1;
                     $pers_buried_date_hebnight = substr($buffer, 8);
                 }
                 // *** Place ***
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $pers_buried_place = $this->process_place(substr($buffer, 7));
                     }
@@ -1292,7 +1303,7 @@ class gedcom_cls
                     $pers_buried_text = $this->process_texts($pers_buried_text, $buffer, '2');
                 }
 
-                if ($gen_program == "Sukujutut" and $level[3] == 'NOTE') {
+                if ($gen_program == "Sukujutut" && $level[3] == 'NOTE') {
                     // *** Texts ***
                     $pers_buried_text = $this->process_texts($pers_buried_text, $buffer, '3');
                 }
@@ -1304,12 +1315,12 @@ class gedcom_cls
 
                 // *** Burial witness Pro-Gen ***
                 // Pro-gen: 2 _WITN Anna van Wely
-                if ($buffer7 == '2 _WITN') {
+                if ($buffer7 === '2 _WITN') {
                     $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
                     $level[2] = 'WITN';
                 }
                 if ($level[2] == 'WITN') {
-                    if (substr($buffer, 2, 4) == 'WITN') {
+                    if (substr($buffer, 2, 4) === 'WITN') {
                         $processed = 1;
                         $buffer = str_replace("/", " ", $buffer);
                         $buffer = str_replace("  ", " ", $buffer);
@@ -1323,7 +1334,7 @@ class gedcom_cls
                         $event['kind'][$event_nr] = 'burial_witness';
                         $event['event'][$event_nr] = '';
 
-                        if (substr($buffer, 7, 1) == '@') {
+                        if (substr($buffer, 7, 1) === '@') {
                             // 2 WITN @I1@
                             $event['connect_kind2'][$event_nr] = 'person';
                             $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
@@ -1338,12 +1349,12 @@ class gedcom_cls
                         $event['text'][$event_nr] = '';
                         $event['place'][$event_nr] = '';
                     }
-                    if ($buffer6 == '3 CONT') {
+                    if ($buffer6 === '3 CONT') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
-                    if ($buffer6 == '3 CONC') {
+                    if ($buffer6 === '3 CONC') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
@@ -1351,26 +1362,28 @@ class gedcom_cls
                 }
 
                 // *** Method of burial ***
-                if (substr($buffer, 0, 16) == '2 TYPE cremation') {
+                if (substr($buffer, 0, 16) === '2 TYPE cremation') {
                     $processed = 1;
                     $pers_cremation = '1';
                 }
-                if (substr($buffer, 0, 16) == '2 TYPE resomated') {
+                if (substr($buffer, 0, 16) === '2 TYPE resomated') {
                     $processed = 1;
                     $pers_cremation = 'R';
                 }
                 // 2 TYPE sailor's grave in GEDOM file
-                if (substr($buffer, 0, 13) == '2 TYPE sailor') {
+                if (substr($buffer, 0, 13) === '2 TYPE sailor') {
                     $processed = 1;
                     $pers_cremation = 'S';
                 }
                 // 2 TYPE donated to science in GEDCOM file
-                if (substr($buffer, 0, 14) == '2 TYPE donated') {
+                if (substr($buffer, 0, 14) === '2 TYPE donated') {
                     $processed = 1;
                     $pers_cremation = 'D';
                 }
 
-                if ($level[2] == 'OBJE') $this->process_picture('person', $pers_gedcomnumber, 'picture_buried', $buffer);
+                if ($level[2] == 'OBJE') {
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_buried', $buffer);
+                }
             }
 
             // *******************************************************************************************
@@ -1414,7 +1427,7 @@ class gedcom_cls
             //  2 RELA witness
 
             if ($level[1] == 'ASSO') {
-                if ($buffer6 == '1 ASSO') {
+                if ($buffer6 === '1 ASSO') {
                     $processed = 1;
                     $event_nr++;
                     $calculated_event_id++;
@@ -1448,7 +1461,7 @@ class gedcom_cls
                 }
                 if ($buffer == '2 TYPE INDI') {
                     $processed = 1;
-                    if ($add_tree == true or $reassign == true) {
+                    if ($add_tree == true || $reassign == true) {
                         $event['connect_id'][$event_nr] = $this->reassign_ged($event['connect_id'][$event_nr], 'I');
                         //TODO this line isn't tested yet.
                         $event['connect_id2'][$event_nr] = $this->reassign_ged($event['connect_id2'][$event_nr], 'I');
@@ -1457,7 +1470,7 @@ class gedcom_cls
                 if ($buffer == '2 TYPE FAM') {
                     $processed = 1;
                     $event['connect_kind'][$event_nr] = 'family';
-                    if ($add_tree == true or $reassign == true) {
+                    if ($add_tree == true || $reassign == true) {
                         $event['connect_id'][$event_nr] = $this->reassign_ged($event['connect_id'][$event_nr], 'F');
                         //TODO this line isn't tested yet.
                         $event['connect_id2'][$event_nr] = $this->reassign_ged($event['connect_id2'][$event_nr], 'F');
@@ -1496,7 +1509,7 @@ class gedcom_cls
             // ******************************************************************************************
             // *** Occupation ***
             if ($level[1] == 'OCCU') {
-                if ($buffer6 == '1 OCCU') {
+                if ($buffer6 === '1 OCCU') {
                     $processed = 1;
                     $event_nr++;
                     $calculated_event_id++;
@@ -1516,16 +1529,16 @@ class gedcom_cls
                 // *** Occupation, Haza-21 uses empty OCCU events... Isn't strange? ***
                 // 1 OCCU lerares
                 if ($level[1] == 'OCCU') {
-                    if ($buffer6 == '1 OCCU' and substr($buffer, 7)) {
+                    if ($buffer6 === '1 OCCU' && substr($buffer, 7)) {
                         $processed = 1;
                         $event['event'][$event_nr] = substr($buffer, 7);
                     }
                     // *** Long occupation ***
-                    if ($buffer6 == '2 CONT') {
+                    if ($buffer6 === '2 CONT') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
                     }
-                    if ($buffer6 == '2 CONC') {
+                    if ($buffer6 === '2 CONC') {
                         $processed = 1;
                         $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
                     }
@@ -1539,16 +1552,16 @@ class gedcom_cls
                 // *** Occupation in iFamily program ***
                 // 1 OCCU
                 // 2 TYPE baas van de herberg
-                if ($buffer6 == '2 TYPE') {
+                if ($buffer6 === '2 TYPE') {
                     $processed = 1;
-                    $event['event'][$event_nr] = $event['event'][$event_nr] . substr($buffer, 7);
+                    $event['event'][$event_nr] .= substr($buffer, 7);
                 }
 
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $event['date'][$event_nr] = substr($buffer, 7);
                 } // BK
-                if ($buffer6 == '2 PLAC') {
+                if ($buffer6 === '2 PLAC') {
                     $processed = 1;
                     $event['place'][$event_nr] = substr($buffer, 7);
                 }
@@ -1562,7 +1575,7 @@ class gedcom_cls
             // *** BK, FTM, HuMo-genealogy & Aldfaer: 1 RELI RK ***
             // *** Nov. 2022 religion now saved as event ***
             if ($level[1] == 'RELI') {
-                if ($buffer6 == '1 RELI') {
+                if ($buffer6 === '1 RELI') {
                     //$processed=1; $pers_religion=substr($buffer, 7);
 
                     $processed = 1;
@@ -1581,12 +1594,12 @@ class gedcom_cls
                     $event['place'][$event_nr] = '';
                 }
 
-                if ($buffer6 == '2 CONT') {
+                if ($buffer6 === '2 CONT') {
                     $processed = 1;
                     $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
                     $buffer = ""; // to prevent use of this text in other text!
                 }
-                if ($buffer6 == '2 CONC') {
+                if ($buffer6 === '2 CONC') {
                     $processed = 1;
                     $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
                     $buffer = ""; // to prevent use of this text in other text!
@@ -1597,11 +1610,11 @@ class gedcom_cls
                     $event['text'][$event_nr] = $this->process_texts($event['text'][$event_nr], $buffer, '2');
                 }
 
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $event['date'][$event_nr] = substr($buffer, 7);
                 }
-                if ($buffer6 == '2 PLAC') {
+                if ($buffer6 === '2 PLAC') {
                     $processed = 1;
                     $event['place'][$event_nr] = substr($buffer, 7);
                 }
@@ -1634,12 +1647,14 @@ class gedcom_cls
 
             // *** External object/ image ***
             // 1 OBJE @O3@
-            if ($level[1] == 'OBJE') $this->process_picture('person', $pers_gedcomnumber, 'picture', $buffer);
+            if ($level[1] == 'OBJE') {
+                $this->process_picture('person', $pers_gedcomnumber, 'picture', $buffer);
+            }
 
             // *** Haza-data pictures ***
             //1 PHOTO @#Aplaatjes\beert&id.jpg jpg@
             if ($level[1] == 'PHOTO') {
-                if ($buffer7 == '1 PHOTO') {
+                if ($buffer7 === '1 PHOTO') {
                     $processed = 1;
                     $photo = substr($buffer, 11, -6);
                     $photo = $this->humo_basename($photo);
@@ -1658,19 +1673,19 @@ class gedcom_cls
                     $event['text'][$event_nr] = '';
                     $event['place'][$event_nr] = '';
                 }
-                if ($buffer6 == '2 DSCR' or $buffer6 == '2 NAME') {
+                if ($buffer6 === '2 DSCR' || $buffer6 === '2 NAME') {
                     $processed = 1;
                     $event['text'][$event_nr] = substr($buffer, 7);
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $event['date'][$event_nr] = substr($buffer, 7);
                 }
             }
 
             // *** Sex: F or M ***
-            if (substr($level[1], 0, 3) == 'SEX') { // *** 1 SEX F/ 1 SEX M ***
-                if ($buffer5 == '1 SEX') {
+            if (substr($level[1], 0, 3) === 'SEX') { // *** 1 SEX F/ 1 SEX M ***
+                if ($buffer5 === '1 SEX') {
                     $processed = 1;
                     $pers_sexe = substr($buffer, 6);
                 }
@@ -1682,7 +1697,7 @@ class gedcom_cls
 
             // *** Colour mark by a person ***
             // 1 _COLOR 1
-            if ($buffer8 == '1 _COLOR') {
+            if ($buffer8 === '1 _COLOR') {
                 $processed = 1;
                 $event_nr++;
                 $calculated_event_id++;
@@ -1706,7 +1721,7 @@ class gedcom_cls
             // *** Gramps ***
             // 1 FACT Aaron ben Halevy
             // 2 TYPE Hebrew Name
-            if ($buffer6 == '1 FACT') {
+            if ($buffer6 === '1 FACT') {
                 $buffer = '1 EVEN ' . substr($buffer, 7);
                 $buffer6 = '1 EVEN';
                 $level[1] = 'EVEN';
@@ -1721,147 +1736,147 @@ class gedcom_cls
             }
 
             // ALL ITEMS: process text by item, like: if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
-            if ($buffer6 == '1 ADOP') { // Adopted
+            if ($buffer6 === '1 ADOP') { // Adopted
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer7 == '1 _ADPF') { // Adopted by father
+            if ($buffer7 === '1 _ADPF') { // Adopted by father
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
             }
-            if ($buffer7 == '1 _ADPM') { // Adopted by mother
+            if ($buffer7 === '1 _ADPM') { // Adopted by mother
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
             }
-            if ($buffer6 == '1 BAPL') { // LDS baptised
+            if ($buffer6 === '1 BAPL') { // LDS baptised
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 BARM') {
+            if ($buffer6 === '1 BARM') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 BASM') {
+            if ($buffer6 === '1 BASM') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 BLES') {
+            if ($buffer6 === '1 BLES') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 CENS') {
+            if ($buffer6 === '1 CENS') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 CHRA') {
+            if ($buffer6 === '1 CHRA') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 CONF') {
+            if ($buffer6 === '1 CONF') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 CONL') {
+            if ($buffer6 === '1 CONL') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 EMIG') {
+            if ($buffer6 === '1 EMIG') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 ENDL') {
+            if ($buffer6 === '1 ENDL') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 FCOM') {
+            if ($buffer6 === '1 FCOM') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer7 == '1 _FNRL') {
+            if ($buffer7 === '1 _FNRL') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
             }
-            if ($buffer6 == '1 GRAD') {
+            if ($buffer6 === '1 GRAD') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 IMMI') {
+            if ($buffer6 === '1 IMMI') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 NATU') {
+            if ($buffer6 === '1 NATU') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 ORDN') {
+            if ($buffer6 === '1 ORDN') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 PROB') {
+            if ($buffer6 === '1 PROB') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 RETI') {
+            if ($buffer6 === '1 RETI') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 SLGC') {
+            if ($buffer6 === '1 SLGC') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 WILL') { // Will
+            if ($buffer6 === '1 WILL') { // Will
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer7 == '1 _YART') {
+            if ($buffer7 === '1 _YART') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
             }
-            if ($buffer7 == '1 _INTE') {
+            if ($buffer7 === '1 _INTE') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
             }
-            if ($buffer7 == '1 _BRTM') {
+            if ($buffer7 === '1 _BRTM') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
             }
-            if ($buffer7 == '1 _NLIV') {
+            if ($buffer7 === '1 _NLIV') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
             }
-            if ($buffer7 == '1 _NMAR') {
+            if ($buffer7 === '1 _NMAR') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
             }
-            if ($buffer6 == '1 NCHI') {
+            if ($buffer6 === '1 NCHI') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
@@ -1872,160 +1887,160 @@ class gedcom_cls
             //2 NOTE Goedgekeurd.
             //3 CONT 2nd line gebeurtenis bij persoon.
             //3 CONT 3rd line.
-            if ($buffer7 == '1 _MILT') {
+            if ($buffer7 === '1 _MILT') {
                 $buffer = str_replace("_MILT", "MILI", $buffer);
                 $buffer6 = '1 MILI';
                 $level[1] = 'MILI';
             }
-            if ($buffer6 == '1 MILI') {
+            if ($buffer6 === '1 MILI') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
             //RELI Religion
-            if ($buffer6 == '1 EDUC') {
+            if ($buffer6 === '1 EDUC') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 NATI') {
+            if ($buffer6 === '1 NATI') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 CAST') {
+            if ($buffer6 === '1 CAST') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
             //REFN Ref. nr.  (oown code)
-            if ($buffer5 == '1 AFN') {
+            if ($buffer5 === '1 AFN') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 6)) {
                     $event_temp = substr($buffer, 6);
                 }
             }
-            if ($buffer5 == '1 SSN') {
+            if ($buffer5 === '1 SSN') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 6)) {
                     $event_temp = substr($buffer, 6);
                 }
             }
-            if ($buffer7 == '1 _PRMN') {
+            if ($buffer7 === '1 _PRMN') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 8)) {
                     $event_temp = substr($buffer, 8);
                 }
             }
-            if ($buffer6 == '1 IDNO') {
+            if ($buffer6 === '1 IDNO') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer7 == '1 _HEIG') {
+            if ($buffer7 === '1 _HEIG') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 8)) {
                     $event_temp = substr($buffer, 8);
                 }
             }
-            if ($buffer7 == '1 _WEIG') {
+            if ($buffer7 === '1 _WEIG') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 8)) {
                     $event_temp = substr($buffer, 8);
                 }
             }
-            if ($buffer7 == '1 _EYEC') {
+            if ($buffer7 === '1 _EYEC') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 8)) {
                     $event_temp = substr($buffer, 8);
                 }
             }
-            if ($buffer7 == '1 _HAIR') {
+            if ($buffer7 === '1 _HAIR') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 8)) {
                     $event_temp = substr($buffer, 8);
                 }
             }
-            if ($buffer6 == '1 DSCR') {
+            if ($buffer6 === '1 DSCR') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer7 == '1 _MEDC') {
+            if ($buffer7 === '1 _MEDC') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 8)) {
                     $event_temp = substr($buffer, 8);
                 }
             }
-            if ($buffer6 == '1 NCHI') {
+            if ($buffer6 === '1 NCHI') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 ANCI') {
+            if ($buffer6 === '1 ANCI') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 DESI') {
+            if ($buffer6 === '1 DESI') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 PROP') {
+            if ($buffer6 === '1 PROP') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
 
             // *** Other events (no BK?) ***
-            if ($buffer6 == '1 ARVL') { // arrived
+            if ($buffer6 === '1 ARVL') { // arrived
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 BAPM') { // baptised as child
+            if ($buffer6 === '1 BAPM') { // baptised as child
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 DIVF') {
+            if ($buffer6 === '1 DIVF') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 DPRT') {
+            if ($buffer6 === '1 DPRT') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
 
-            if ($buffer6 == '1 LEGI') {
+            if ($buffer6 === '1 LEGI') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 SLGL') {
+            if ($buffer6 === '1 SLGL') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
-            if ($buffer6 == '1 TXPY') {
+            if ($buffer6 === '1 TXPY') {
                 $processed = 1;
                 $event_status = "1";
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
             }
 
             // *** Aldfaer, title by name: 1 TITL Ir. ***
-            if ($buffer6 == '1 TITL') {
+            if ($buffer6 === '1 TITL') {
                 $processed = 1;
                 $event_status = '1';
                 if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
@@ -2051,7 +2066,7 @@ class gedcom_cls
             // 2 SOUR @S18@
 
             if ($level[1] == 'EVEN') {
-                if ($buffer6 == '1 EVEN') {
+                if ($buffer6 === '1 EVEN') {
                     $processed = 1;
                     // *** Process text after 1 EVEN ***
                     if (substr($buffer, 7)) {
@@ -2064,7 +2079,7 @@ class gedcom_cls
                 // *** Haza-data ***
                 //1 EVEN
                 //2 TYPE living
-                if (substr($buffer, 0, 13) == '2 TYPE living') {
+                if (substr($buffer, 0, 13) === '2 TYPE living') {
                     $processed = 1;
                     $pers_alive = 'alive';
                     $event_status = "";
@@ -2074,7 +2089,7 @@ class gedcom_cls
                 // *** Humo-genealogy ***
                 //1 EVEN
                 //2 TYPE deceased
-                if (substr($buffer, 0, 15) == '2 TYPE deceased') {
+                if (substr($buffer, 0, 15) === '2 TYPE deceased') {
                     $processed = 1;
                     $pers_alive = 'deceased';
                     $event_status = "";
@@ -2115,7 +2130,7 @@ class gedcom_cls
                 }
 
                 // *** Save event type ***
-                if ($buffer6 == '2 TYPE') {
+                if ($buffer6 === '2 TYPE') {
                     // *** Gramps ***
                     // 1 FACT Aaron ben Halevy
                     // 2 TYPE Hebrew Name
@@ -2172,17 +2187,17 @@ class gedcom_cls
                     // 1 EVEN
                     // 2 TYPE Telefoon
                     // 2 NOTE @N456@
-                    if (substr($buffer, 7) and $level[1] == 'EVEN' and $event['kind'][$event_nr] == 'event' and $event['event'][$event_nr] == '') {
+                    if (substr($buffer, 7) && $level[1] == 'EVEN' && $event['kind'][$event_nr] == 'event' && $event['event'][$event_nr] == '') {
                         $processed = 1;
                         $event['gedcom'][$event_nr] = substr($buffer, 7) . ":";
                     }
                 }
 
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $event['date'][$event_nr] = substr($buffer, 7);
                 }
-                if ($buffer6 == '2 PLAC') {
+                if ($buffer6 === '2 PLAC') {
                     $processed = 1;
                     $event['place'][$event_nr] = substr($buffer, 7);
                 }
@@ -2242,19 +2257,19 @@ class gedcom_cls
             // ********************************************************************************************
             $buffer = trim($buffer);
             // Skip these lines
-            if ($buffer == '0 TRLR') {
+            if ($buffer === '0 TRLR') {
                 $processed = 1;
             }
 
             // Aldfaer picture info
-            if (strtolower($buffer) == '2 form jpg') {
+            if (strtolower($buffer) === '2 form jpg') {
                 $processed = 1;
             }
 
-            if ($buffer6 == '1 RIN ') {
+            if ($buffer6 === '1 RIN ') {
                 $processed = 1;
             }
-            if ($buffer5 == '1 RFN') {
+            if ($buffer5 === '1 RFN') {
                 $processed = 1;
             }
 
@@ -2282,13 +2297,25 @@ class gedcom_cls
             }
         }  //end explode
 
-        if ($add_tree == true or $reassign == true) {
-            if ($pers_name_text) $pers_name_text = $this->reassign_ged($pers_name_text, 'N');
-            if ($person["pers_text"]) $person["pers_text"] = $this->reassign_ged($person["pers_text"], 'N');
-            if ($pers_birth_text) $pers_birth_text = $this->reassign_ged($pers_birth_text, 'N');
-            if ($pers_bapt_text) $pers_bapt_text = $this->reassign_ged($pers_bapt_text, 'N');
-            if ($pers_death_text) $pers_death_text = $this->reassign_ged($pers_death_text, 'N');
-            if ($pers_buried_text) $pers_buried_text = $this->reassign_ged($pers_buried_text, 'N');
+        if ($add_tree == true || $reassign == true) {
+            if ($pers_name_text) {
+                $pers_name_text = $this->reassign_ged($pers_name_text, 'N');
+            }
+            if ($person["pers_text"]) {
+                $person["pers_text"] = $this->reassign_ged($person["pers_text"], 'N');
+            }
+            if ($pers_birth_text) {
+                $pers_birth_text = $this->reassign_ged($pers_birth_text, 'N');
+            }
+            if ($pers_bapt_text) {
+                $pers_bapt_text = $this->reassign_ged($pers_bapt_text, 'N');
+            }
+            if ($pers_death_text) {
+                $pers_death_text = $this->reassign_ged($pers_death_text, 'N');
+            }
+            if ($pers_buried_text) {
+                $pers_buried_text = $this->reassign_ged($pers_buried_text, 'N');
+            }
         }
 
         // *** Process estimates/ calculated date for privacy filter ***
@@ -2322,7 +2349,7 @@ class gedcom_cls
 
         // Lastname prefixes, THIS PART SLOWS DOWN READING A BIT!!!
         // Check for accent or space in pers_lastname...
-        if (strpos($pers_lastname, "'") or strpos($pers_lastname, " ")) {
+        if (strpos($pers_lastname, "'") || strpos($pers_lastname, " ")) {
             $loop2 = count($prefix);
             for ($i = 0; $i < $loop2; $i++) {
                 $check_prefix = substr($pers_lastname, 0, $prefix_length[$i]);
@@ -2368,11 +2395,11 @@ class gedcom_cls
             pers_own_code='" . $this->text_process($person["pers_own_code"]) . "',
             pers_quality='" . $this->text_process($person["pers_quality"]) . "',
             pers_alive='" . $pers_alive . "',
-            
+
             pers_new_datetime = '" . date('Y-m-d H:i:s', strtotime($person["new_date"] . ' ' . $person["new_time"]))  . "'
             " . $this->changed_datetime('pers_changed_datetime', $person["changed_date"], $person["changed_time"]);
 
-        if (isset($_POST['debug_mode']) and $_SESSION['debug_person'] < 2) {
+        if (isset($_POST['debug_mode']) && $_SESSION['debug_person'] < 2) {
             echo '<br>' . $sql . '<br>';
             $_SESSION['debug_person']++; // *** Only process debug line once ***
         }
@@ -2478,7 +2505,7 @@ class gedcom_cls
             }
             for ($i = 1; $i <= $geocode_nr; $i++) {
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
-                if (!$loc_qry->rowCount() and $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
+                if (!$loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
                     $geosql = "INSERT IGNORE INTO humo_location SET
                         location_location='" . $this->text_process($geocode_plac[$i]) . "',
                         location_lat='" . $geocode_lati[$i] . "',
@@ -2486,7 +2513,7 @@ class gedcom_cls
                         location_status='" . $tree_prefix . $geocode_type[$i] . "'
                         ";
                     $dbh->query($geosql);
-                } elseif ($loc_qry->rowCount() and $geocode_type[$geocode_nr] != "") {   // location already exists, check if we need to add something in location_status
+                } elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {   // location already exists, check if we need to add something in location_status
                     $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
                     if (strpos($loc_qryDb->location_status, $tree_prefix . $geocode_type[$i]) === false) {
                         $dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' " . $tree_prefix . $geocode_type[$i] . "') WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
@@ -2599,14 +2626,14 @@ class gedcom_cls
             $check_connect = $connect['kind']['1'] . $connect['sub_kind']['1'] . $connect['connect_id']['1'];
             for ($i = 1; $i <= $connect_nr; $i++) {
                 $connect_order++;
-                if ($check_connect != $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
+                if ($check_connect !== $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
                     $connect_order = 1;
                     $check_connect = $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i];
                 }
 
                 // *** Process address order (because address and source by address) ***
-                if ($connect['sub_kind'][$i] == 'person_address') {
-                    if (isset($connect['connect_order'][$i])) $connect_order = $connect['connect_order'][$i];
+                if ($connect['sub_kind'][$i] == 'person_address' && isset($connect['connect_order'][$i])) {
+                    $connect_order = $connect['connect_order'][$i];
                 }
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_connections SET
@@ -2649,7 +2676,7 @@ class gedcom_cls
     // ************************************************************************************************
     // *** Process families ***
     // ************************************************************************************************
-    function process_family($family_array, $first_marr, $second_marr)
+    function process_family($family_array, $first_marr, $second_marr): void
     {
         global $dbh, $tree_id, $tree_prefix, $gen_program, $not_processed;
         global $processed, $level;
@@ -2742,7 +2769,7 @@ class gedcom_cls
             $gedcomnumber .= "U1";
         }  // create unique nr. if 1st is F23, then 2nd will be F23U1
 
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             $gedcomnumber = $this->reassign_ged($gedcomnumber, 'F');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
@@ -2766,7 +2793,9 @@ class gedcom_cls
 
         for ($z = 1; $z <= $loop; $z++) {
 
-            if ($second_marr > 0 and $z >= $first_marr and $z < $second_marr) continue; // skip lines that belong to 1st marriage
+            if ($second_marr > 0 && $z >= $first_marr && $z < $second_marr) {
+                continue;
+            } // skip lines that belong to 1st marriage
 
             $processed = 0;
             $buffer = $line2[$z];
@@ -2786,7 +2815,7 @@ class gedcom_cls
             //echo "BUFFER: ".$z."-".$buffer."!".count($line2)."<br>";
 
             // *** Save level1 ***
-            if ($buffer1 == '1') {
+            if ($buffer1 === '1') {
                 $level[1] = rtrim(substr($buffer, 2, 5));  //rtrim for DIV_/ CHR_
                 $level['1a'] = rtrim($buffer);  // *** Needed to test for 1 RESI @. Update: rtrim not really neccesary anymore? ***
 
@@ -2799,8 +2828,8 @@ class gedcom_cls
                 // *** Same couple: second marriage in BK program (in 1 @FAM part) ***
                 $search_marr = rtrim(substr($buffer, 2, 5));
                 //if($search_marr=="MARR" OR $search_marr=="MARB" OR $search_marr=="MARL") {
-                if ($gen_program == 'BROSKEEP' and ($search_marr == "MARR" or $search_marr == "MARB" or $search_marr == "MARL")) {
-                    if ($marr_flag == 1 and $family["fam_div"] == true) {
+                if ($gen_program == 'BROSKEEP' && ($search_marr === "MARR" || $search_marr === "MARB" || $search_marr === "MARL")) {
+                    if ($marr_flag == 1 && $family["fam_div"] == true) {
                         // this is a second MARR in this @FAM after a divorce so second marriage of these people
                         //TODO check $skipfrom
                         $this->process_family($family_array, $skipfrom, $z); // calls itself with parameters what to skip
@@ -2815,18 +2844,18 @@ class gedcom_cls
                 }
             }
             // *** Save level2 ***
-            elseif ($buffer1 == '2') {
+            elseif ($buffer1 === '2') {
                 $level[2] = substr($buffer, 2, 4);
                 $level[3] = '';
                 $level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 == '3') {
+            elseif ($buffer1 === '3') {
                 $level[3] = substr($buffer, 2, 4);
                 $level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 == '4') {
+            elseif ($buffer1 === '4') {
                 $level[4] = substr($buffer, 2, 4);
             }
 
@@ -2834,14 +2863,14 @@ class gedcom_cls
             //1 _NEW
             //2 DATE 04 AUG 2004
             if ($level[1] == '_NEW') {
-                if ($buffer6 == '1 _NEW') {
+                if ($buffer6 === '1 _NEW') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $family["new_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $family["new_time"] = substr($buffer, 7);
                 }
@@ -2851,14 +2880,14 @@ class gedcom_cls
             //1 CHAN
             //2 DATE 04 AUG 2004
             if ($level[1] == 'CHAN') {
-                if ($buffer6 == '1 CHAN') {
+                if ($buffer6 === '1 CHAN') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $family["changed_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $family["changed_time"] = substr($buffer, 7);
                 }
@@ -2867,7 +2896,7 @@ class gedcom_cls
             // *** Witnesses ***
             // 1 WITN Doeko/Mons/
             // 1 WITN Rene/Mansveld/
-            if ($buffer6 == '1 WITN') {
+            if ($buffer6 === '1 WITN') {
                 $processed = 1;
                 $buffer = str_replace("/", " ", $buffer);
                 $buffer = str_replace("  ", " ", $buffer);
@@ -2888,16 +2917,16 @@ class gedcom_cls
             }
 
             // *** Type relation (LAT etc.) ***
-            if ($buffer6 == '1 TYPE') {
+            if ($buffer6 === '1 TYPE') {
                 $processed = 1;
                 $family["fam_kind"] = substr($buffer, 7);
             }
 
             // *** Gedcomnumber man: 1 HUSB @I14@ ***
-            if ($buffer8 == '1 HUSB @') {
+            if ($buffer8 === '1 HUSB @') {
                 $processed = 1;
                 $fam_man = substr($buffer, 8, -1);
-                if ($add_tree == true or $reassign == true) {
+                if ($add_tree == true || $reassign == true) {
                     $fam_man = $this->reassign_ged($fam_man, 'I');
                 }
                 if ($second_marr > 0) {
@@ -2907,10 +2936,10 @@ class gedcom_cls
             }
 
             // *** Gedcomnumber woman: 1 WIFE @I14@ ***
-            if ($buffer8 == '1 WIFE @') {
+            if ($buffer8 === '1 WIFE @') {
                 $processed = 1;
                 $fam_woman = substr($buffer, 8, -1);
-                if ($add_tree == true or $reassign == true) {
+                if ($add_tree == true || $reassign == true) {
                     $fam_woman = $this->reassign_ged($fam_woman, 'I');
                 }
                 if ($second_marr > 0) {
@@ -2922,10 +2951,10 @@ class gedcom_cls
             // 1 CHIL @I13@
             // 1 CHIL @I14@
             if ($second_marr == 0) { // only show children in first marriage of same people
-                if ($buffer8 == '1 CHIL @') {
+                if ($buffer8 === '1 CHIL @') {
                     $processed = 1;
                     $tempnum = substr($buffer, 8, -1);
-                    if ($add_tree == true or $reassign == true) {
+                    if ($add_tree == true || $reassign == true) {
                         $tempnum = $this->reassign_ged($tempnum, 'I');
                     }
                     $fam_children = $this->merge_texts($fam_children, ';', $tempnum);
@@ -2973,29 +3002,29 @@ class gedcom_cls
             // *** Marriage license church ***
 
             // *** Marriage license Aldfaer ***
-            if ($level[1] == 'MARL' and $gen_program == 'ALDFAER') {
+            if ($level[1] == 'MARL' && $gen_program == 'ALDFAER') {
                 $level[1] = "MARB";
-                if ($buffer6 == '1 MARL') {
+                if ($buffer6 === '1 MARL') {
                     $processed = 1;
                 }
             }
 
-            if ($level[1] == 'MARB' and $temp_kind == 'religious') {
-                if ($buffer6 == '1 MARB') {
+            if ($level[1] == 'MARB' && $temp_kind === 'religious') {
+                if ($buffer6 === '1 MARB') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     if (!$family["fam_marr_church_notice_date"])   $family["fam_marr_church_notice_date"] = trim(substr($buffer, 7));
                 }
-                if ($buffer7 == '2 _HNIT') {
+                if ($buffer7 === '2 _HNIT') {
                     $heb_flag = 1;
                     $processed = 1;
                     $family["fam_marr_church_notice_date_hebnight"] = substr($buffer, 8);
                 }
 
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $family["fam_marr_church_notice_place"] = $this->process_place(substr($buffer, 7));
                     }
@@ -3016,33 +3045,35 @@ class gedcom_cls
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
                 // 3 TITL test
-                if ($level[2] == 'OBJE') $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_church_notice', $buffer);
+                if ($level[2] == 'OBJE') {
+                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_church_notice', $buffer);
+                }
             }
 
             // ******************************************************************************************
             // *** Marriage license ***
             // ******************************************************************************************
-            if ($level[1] == 'MARB' and $temp_kind != 'religious') {
+            if ($level[1] == 'MARB' && $temp_kind !== 'religious') {
                 // *** Type marriage / relation (civil or religious) ***
-                if ($buffer6 == '2 TYPE') {
+                if ($buffer6 === '2 TYPE') {
                     $processed = 1;
                     $temp_kind = strtolower(substr($buffer, 7));
                 }
-                if ($buffer6 == '1 MARB') {
+                if ($buffer6 === '1 MARB') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     if (!$family["fam_marr_notice_date"])    $family["fam_marr_notice_date"] = trim(substr($buffer, 7));
                 }
-                if ($buffer7 == '2 _HNIT') {
+                if ($buffer7 === '2 _HNIT') {
                     $heb_flag = 1;
                     $processed = 1;
                     $family["fam_marr_notice_date_hebnight"] = substr($buffer, 8);
                 }
 
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $family["fam_marr_notice_place"] = $this->process_place(substr($buffer, 7));
                     }
@@ -3063,17 +3094,19 @@ class gedcom_cls
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
                 // 3 TITL test
-                if ($level[2] == 'OBJE') $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_notice', $buffer);
+                if ($level[2] == 'OBJE') {
+                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_notice', $buffer);
+                }
 
                 // *** SAME CODE IS USED FOR AGE BY MARRIAGE_NOTICE AND MARRIAGE! ***
                 // *** Man age ***
                 // 2 HUSB
                 // 3 AGE 42y
                 if ($level[2] == 'HUSB') {
-                    if ($buffer6 == '2 HUSB') {
+                    if ($buffer6 === '2 HUSB') {
                         $processed = 1;
                     }
-                    if ($buffer5 == '3 AGE') {
+                    if ($buffer5 === '3 AGE') {
                         $processed = 1;
                         $family["fam_man_age"] = substr($buffer, 6);
                     }
@@ -3082,10 +3115,10 @@ class gedcom_cls
                 // 2 WIFE
                 // 3 AGE 42y 6m
                 if ($level[2] == 'WIFE') {
-                    if ($buffer6 == '2 WIFE') {
+                    if ($buffer6 === '2 WIFE') {
                         $processed = 1;
                     }
-                    if ($buffer5 == '3 AGE') {
+                    if ($buffer5 === '3 AGE') {
                         $processed = 1;
                         $family["fam_woman_age"] = substr($buffer, 6);
                     }
@@ -3102,7 +3135,7 @@ class gedcom_cls
                 //1 MARR
                 //2 TYPE religious
                 //2 RELI Hervormd
-                if ($buffer6 == '2 RELI') {
+                if ($buffer6 === '2 RELI') {
                     $processed = 1;
                     $family["fam_religion"] = substr($buffer, 7);
                 }
@@ -3110,18 +3143,18 @@ class gedcom_cls
                 // *** Haza-data marriage authority ***
                 // 1 MARR
                 // 2 AGNC alkmaar gemeente wettelijk
-                if ($buffer6 == '2 AGNC') {
+                if ($buffer6 === '2 AGNC') {
                     $processed = 1;
                     $family["fam_marr_authority"] = substr($buffer, 7);
                 }
 
                 // *** Type marriage / relation (civil or religious) ***
-                if ($buffer6 == '2 TYPE') {
+                if ($buffer6 === '2 TYPE') {
                     $processed = 1;
                     $temp_kind = strtolower(substr($buffer, 7));
                     // *** Save marriage type in database, to show proper text if there is no further data.
                     //     Otherwise it will be "relation". ***
-                    if ($family["fam_kind"] == '') {
+                    if ($family["fam_kind"] === '') {
                         $family["fam_kind"] = $temp_kind;
                     }
 
@@ -3131,15 +3164,15 @@ class gedcom_cls
                     // 1 WIFE @I258@
                     // 1 MARR
                     // 2 TYPE partners
-                    if ($temp_kind == 'partners') {
+                    if ($temp_kind === 'partners') {
                         $family["fam_kind"] = 'partners';
                         //$buffer = '1 _LIV';
                         //$level[1] = '_LIV';
-                    } elseif ($temp_kind == 'registered') {
+                    } elseif ($temp_kind === 'registered') {
                         $family["fam_kind"] = 'registered';
                         //$buffer = '1 _LIV';
                         //$level[1] = '_LIV';
-                    } elseif ($temp_kind == 'unknown') {
+                    } elseif ($temp_kind === 'unknown') {
                         $family["fam_kind"] = 'unknown';
                         //$buffer = '1 _LIV';
                         //$level[1] = '_LIV';
@@ -3154,7 +3187,7 @@ class gedcom_cls
             // if (substr($buffer,0,1)=='1'){
             //   $temp_kind="";
             // }
-            if ($buffer6 == '1 ORDI') {
+            if ($buffer6 === '1 ORDI') {
                 $buffer = "1 MARR";
                 $temp_kind = "religious";
                 $level[1] = 'MARR';
@@ -3167,12 +3200,12 @@ class gedcom_cls
             // 2 _WITN Aam Pieter Borgman, oud 48 jaar, herbergier, wonende te
             // 3 CONT bla bla
             // 3 CONT bla bla
-            if ($buffer7 == '2 _WITN') {
+            if ($buffer7 === '2 _WITN') {
                 $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
                 $level[2] = 'WITN';
             }
             if ($level[2] == 'WITN') {
-                if ($buffer6 == '2 WITN') {
+                if ($buffer6 === '2 WITN') {
                     // new way of saving: not tested yet.
                     $processed = 1;
                     $event_nr++;
@@ -3183,13 +3216,13 @@ class gedcom_cls
                     $event['connect_id2'][$event_nr] = '';
 
                     $event['kind'][$event_nr] = 'marriage_witness';
-                    if ($temp_kind == 'religious') {
+                    if ($temp_kind === 'religious') {
                         $event['kind'][$event_nr] = 'marriage_witness_rel';
                     }
 
                     $event['event'][$event_nr] = '';
 
-                    if (substr($buffer, 7, 1) == '@') {
+                    if (substr($buffer, 7, 1) === '@') {
                         // 2 WITN @I1@
                         $event['connect_kind2'][$event_nr] = 'family';
                         $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
@@ -3204,34 +3237,34 @@ class gedcom_cls
                     $event['text'][$event_nr] = '';
                     $event['place'][$event_nr] = '';
                 }
-                if ($buffer6 == '3 CONT') {
+                if ($buffer6 === '3 CONT') {
                     $processed = 1;
                     $event['event'][$event_nr] .= $this->cont(substr($buffer, 7));
                     $buffer = ""; // to prevent use of this text in text marriage!
                 }
-                if ($buffer6 == '3 CONC') {
+                if ($buffer6 === '3 CONC') {
                     $processed = 1;
                     $event['event'][$event_nr] .= $this->conc(substr($buffer, 7));
                     $buffer = ""; // to prevent use of this text in text marriage!
                 }
             }
 
-            if ($level[1] == 'MARR' and $temp_kind == 'religious') {
-                if ($buffer6 == '1 MARR') {
+            if ($level[1] == 'MARR' && $temp_kind === 'religious') {
+                if ($buffer6 === '1 MARR') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     if (!$family["fam_marr_church_date"])   $family["fam_marr_church_date"] = trim(substr($buffer, 7));
                 }
-                if ($buffer7 == '2 _HNIT') {
+                if ($buffer7 === '2 _HNIT') {
                     $heb_flag = 1;
                     $processed = 1;
                     $family["fam_marr_church_date_hebnight"] = substr($buffer, 8);
                 }
 
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $family["fam_marr_church_place"] = $this->process_place(substr($buffer, 7));
                     }
@@ -3252,29 +3285,31 @@ class gedcom_cls
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
                 // 3 TITL test
-                if ($level[2] == 'OBJE') $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_church', $buffer);
+                if ($level[2] == 'OBJE') {
+                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_church', $buffer);
+                }
             }
 
             // **********************************************************************************************
             // *** Marriage ***
             // **********************************************************************************************
-            if ($level[1] == 'MARR' and $temp_kind != 'religious' and $gen_program != 'SukuJutut') {
+            if ($level[1] == 'MARR' && $temp_kind !== 'religious' && $gen_program != 'SukuJutut') {
 
-                if ($buffer6 == '1 MARR') {
+                if ($buffer6 === '1 MARR') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     if (!$family["fam_marr_date"])  $family["fam_marr_date"] = trim(substr($buffer, 7));
                 }
-                if ($buffer7 == '2 _HNIT') {
+                if ($buffer7 === '2 _HNIT') {
                     $heb_flag = 1;
                     $processed = 1;
                     $family["fam_marr_date_hebnight"] = substr($buffer, 8);
                 }
 
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $family["fam_marr_place"] = $this->process_place(substr($buffer, 7));
                     }
@@ -3295,17 +3330,19 @@ class gedcom_cls
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
                 // 3 TITL test
-                if ($level[2] == 'OBJE') $this->process_picture('family', $gedcomnumber, 'picture_fam_marr', $buffer);
+                if ($level[2] == 'OBJE') {
+                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr', $buffer);
+                }
 
                 // *** SAME CODE IS USED FOR AGE BY MARRIAGE_NOTICE AND MARRIAGE! ***
                 // *** Man age ***
                 // 2 HUSB
                 // 3 AGE 42y
                 if ($level[2] == 'HUSB') {
-                    if ($buffer6 == '2 HUSB') {
+                    if ($buffer6 === '2 HUSB') {
                         $processed = 1;
                     }
-                    if ($buffer5 == '3 AGE') {
+                    if ($buffer5 === '3 AGE') {
                         $processed = 1;
                         $family["fam_man_age"] = substr($buffer, 6);
                     }
@@ -3314,10 +3351,10 @@ class gedcom_cls
                 // 2 WIFE
                 // 3 AGE 42y 6m
                 if ($level[2] == 'WIFE') {
-                    if ($buffer6 == '2 WIFE') {
+                    if ($buffer6 === '2 WIFE') {
                         $processed = 1;
                     }
-                    if ($buffer5 == '3 AGE') {
+                    if ($buffer5 === '3 AGE') {
                         $processed = 1;
                         $family["fam_woman_age"] = substr($buffer, 6);
                     }
@@ -3326,39 +3363,39 @@ class gedcom_cls
 
             // ******************************************************************************************
             // Finnish program SukuJutut uses its own code for type of relation
-            if ($level[1] == 'MARR' and $gen_program == 'SukuJutut') {
-                if ($buffer6 == '2 DATE') {
+            if ($level[1] == 'MARR' && $gen_program == 'SukuJutut') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $finrelation = 'marr';
-                    if (substr($buffer, 7, 9) == 'AVOLIITTO') {
+                    if (substr($buffer, 7, 9) === 'AVOLIITTO') {
                         $family["fam_kind"] = "living together";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) == 'LIITTO 2') {
+                    } elseif (substr($buffer, 7, 8) === 'LIITTO 2') {
                         $family["fam_kind"] = "living together";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) == 'LIITTO 3') {
+                    } elseif (substr($buffer, 7, 8) === 'LIITTO 3') {
                         $family["fam_kind"] = "engaged";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) == 'LIITTO 4') {
+                    } elseif (substr($buffer, 7, 8) === 'LIITTO 4') {
                         $family["fam_kind"] = "homosexual";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) == 'LIITTO 5') {
+                    } elseif (substr($buffer, 7, 8) === 'LIITTO 5') {
                         $family["fam_kind"] = "unknown";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) == 'LIITTO 6') {
+                    } elseif (substr($buffer, 7, 8) === 'LIITTO 6') {
                         $family["fam_kind"] = "non-marital"; // originally: father/mother of child (no relation - just conception)
                         $finrelation = 'relation';
                     } else {
                         $family["fam_marr_date"] = substr($buffer, 7);
                     }
                 }
-                if ($finrelation == 'relation' and isset($family["fam_marr_date"])) {
+                if ($finrelation === 'relation' && isset($family["fam_marr_date"])) {
                     $family["fam_relation_date"] = $family["fam_marr_date"];
                     $family["fam_marr_date"] = '';
                 }
 
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $family["fam_" . $finrelation . "_place"] = $this->process_place(substr($buffer, 7));
                     }
@@ -3386,7 +3423,7 @@ class gedcom_cls
             // ******************************************************************************************
 
             // NOT TESTED *** BK living together ***
-            if ($buffer7 == '1 _COML') {
+            if ($buffer7 === '1 _COML') {
                 $processed = 1;
                 $family["fam_kind"] = "living together";
             }
@@ -3401,7 +3438,7 @@ class gedcom_cls
             // 3 PAGE Brief  2 october 2001
             // 1 _MSTAT Partners
             // *** Code _NMR is used TWICE in this file ***
-            if ($buffer6 == '1 _NMR') {
+            if ($buffer6 === '1 _NMR') {
                 $processed = 1;
                 $family["fam_kind"] = "non-marital";
             }
@@ -3414,7 +3451,7 @@ class gedcom_cls
             // 1 _END
             // 2 DATE 02 FEB 2003
             //Haza-data: 1 TYPE non-marital > convert to '1 _LIV'
-            if (substr($buffer, 0, 18) == '1 TYPE non-marital') {
+            if (substr($buffer, 0, 18) === '1 TYPE non-marital') {
                 $buffer = '1 _LIV';
                 $level[1] = '_LIV';
             }
@@ -3426,19 +3463,19 @@ class gedcom_cls
             // 1 _END
             // 2 DATE 2006
             if ($level[1] == '_STRT') {
-                if ($buffer7 == '1 _STRT') {
+                if ($buffer7 === '1 _STRT') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     if (!$family["fam_relation_date"])  $family["fam_relation_date"] = trim(substr($buffer, 7));
                 }
             }
             if ($level[1] == '_END') {
-                if ($buffer6 == '1 _END') {
+                if ($buffer6 === '1 _END') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     if (!$family["fam_relation_end_date"])  $family["fam_relation_end_date"] = trim(substr($buffer, 7));
                 }
@@ -3447,16 +3484,16 @@ class gedcom_cls
             // *** Pro-gen & HuMo-genealogy living together: 1 _LIV ***
             //if ($buffer6=='1 _LIV'){ $processed=1; $family["fam_kind"]="living together"; }
             if ($level[1] == '_LIV') {
-                if ($buffer6 == '1 _LIV') {
+                if ($buffer6 === '1 _LIV') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     if (!$family["fam_relation_date"])  $family["fam_relation_date"] = substr($buffer, 7);
                 }
 
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $family["fam_relation_place"] = $this->process_place(substr($buffer, 7));
                     }
@@ -3482,25 +3519,25 @@ class gedcom_cls
             //2 DATE 1933
             //2 SOUR @S326@
             //2 NOTE He left his family.
-            if ($buffer7 == '1 _SEPR') {
+            if ($buffer7 === '1 _SEPR') {
                 $buffer = str_replace("1 _SEPR", "1 DIV", $buffer);
                 $level[1] = 'DIV';
             }
 
             //if ($level[1]=='DIV'){
-            if (substr($level[1], 0, 3) == 'DIV') {
-                if (substr($buffer, 0, 5) == '1 DIV') {
+            if (substr($level[1], 0, 3) === 'DIV') {
+                if (substr($buffer, 0, 5) === '1 DIV') {
                     $processed = 1;
                     $family["fam_div"] = true;
                 }
 
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     if (!$family["fam_div_date"])  $family["fam_div_date"] = trim(substr($buffer, 7));
                 }
 
                 if ($level[2] == 'PLAC') {
-                    if ($buffer6 == '2 PLAC') {
+                    if ($buffer6 === '2 PLAC') {
                         $processed = 1;
                         $family["fam_div_place"] = $this->process_place(substr($buffer, 7));
                     }
@@ -3519,7 +3556,7 @@ class gedcom_cls
                 // *** Haza-data div. authority ***
                 // 1 DIV
                 // 2 AGNC alkmaar scheiding
-                if ($buffer6 == '2 AGNC') {
+                if ($buffer6 === '2 AGNC') {
                     $processed = 1;
                     $family["fam_div_authority"] = substr($buffer, 7);
                 }
@@ -3542,7 +3579,9 @@ class gedcom_cls
             // 2 FILE C:\Documents and Settings\Mijn documenten\test.jpg
             // 2 TITL test
             //if ($level[1]=='OBJE') $this->process_picture('','','picture', $buffer);
-            if ($level[1] == 'OBJE') $this->process_picture('family', $gedcomnumber, 'picture', $buffer);
+            if ($level[1] == 'OBJE') {
+                $this->process_picture('family', $gedcomnumber, 'picture', $buffer);
+            }
 
             // *********************************************************************
             // *** Events ***
@@ -3699,15 +3738,15 @@ class gedcom_cls
                     }
                 }
                 // *** Save type ***
-                if ($buffer6 == '2 TYPE') {
+                if ($buffer6 === '2 TYPE') {
                     $processed = 1;
                     $event['event'][$event_nr] = substr($buffer, 7);
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $event['date'][$event_nr] = substr($buffer, 7);
                 }
-                if ($buffer6 == '2 PLAC') {
+                if ($buffer6 === '2 PLAC') {
                     $processed = 1;
                     $event['place'][$event_nr] = substr($buffer, 7);
                 }
@@ -3763,7 +3802,7 @@ class gedcom_cls
                 $processed = 1;
             }
 
-            if ($buffer5 == '1 RFN') {
+            if ($buffer5 === '1 RFN') {
                 $processed = 1;
             }
 
@@ -3794,10 +3833,8 @@ class gedcom_cls
 
         // SAVE
         // Pro-gen: special treatment for woman without a man... :-)
-        if ($gen_program == 'PRO-GEN') {
-            if (!$fam_man) {
-                $family["fam_kind"] = "PRO-GEN";
-            }
+        if ($gen_program == 'PRO-GEN' && !$fam_man) {
+            $family["fam_kind"] = "PRO-GEN";
         }
 
         // Aldfaer: special treatment for end of relation.
@@ -3808,7 +3845,7 @@ class gedcom_cls
         // 1 MARR
         // 2 TYPE partners
         // etc.
-        if ($gen_program == 'ALDFAER' and $family["fam_kind"] == 'partners') {
+        if ($gen_program == 'ALDFAER' && $family["fam_kind"] === 'partners') {
             $family["fam_div"] = false;
             $family["fam_relation_end_date"] = $family["fam_div_date"];
             $family["fam_div_date"] = '';
@@ -3819,7 +3856,7 @@ class gedcom_cls
             // Sources and events...
         }
 
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             if ($family["fam_text"]) {
                 $family["fam_text"] = $this->reassign_ged($family["fam_text"], 'N');
             }
@@ -3844,13 +3881,8 @@ class gedcom_cls
         }
 
         // *** Save temporary text "DIVORCE" for a divorce without further data ***
-        if ($family["fam_div"]) {
-            if (
-                !$family["fam_div_date"] and !$family["fam_div_place"] and !$family["fam_div_text"]
-                and !$family["fam_div_authority"]
-            ) {
-                $family["fam_div_text"] = 'DIVORCE';
-            }
+        if ($family["fam_div"] && (!$family["fam_div_date"] && !$family["fam_div_place"] && !$family["fam_div_text"] && !$family["fam_div_authority"])) {
+            $family["fam_div_text"] = 'DIVORCE';
         }
 
         // *** Process estimates/ calculated date for privacy filter ***
@@ -4008,7 +4040,7 @@ class gedcom_cls
             for ($i = 1; $i <= $geocode_nr; $i++) {
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
 
-                if (!$loc_qry->rowCount() and $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
+                if (!$loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
                     $geosql = "INSERT IGNORE INTO humo_location SET
                     location_location='" . $this->text_process($geocode_plac[$i]) . "',
                     location_lat='" . $geocode_lati[$i] . "',
@@ -4016,7 +4048,7 @@ class gedcom_cls
                     location_status='" . $tree_prefix . $geocode_type[$i] . "'
                     ";
                     $dbh->query($geosql);
-                } elseif ($loc_qry->rowCount() and $geocode_type[$geocode_nr] != "") {  // location already exists, check if we need to add something in location_status
+                } elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // location already exists, check if we need to add something in location_status
                     $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
                     if (strpos($loc_qryDb->location_status, $tree_prefix . $geocode_type[$i]) === false) {
                         $dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' " . $tree_prefix . $geocode_type[$i] . "') WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
@@ -4040,8 +4072,8 @@ class gedcom_cls
                     $event_order = 1;
                     $check_event_kind = $event['kind'][$i];
                 }
-                if ($add_tree == true or $reassign == true) {
-                    if ($event['text'][$i]) $event['text'][$i] = $this->reassign_ged($event['text'][$i], 'N');
+                if (($add_tree == true or $reassign == true) && $event['text'][$i]) {
+                    $event['text'][$i] = $this->reassign_ged($event['text'][$i], 'N');
                 }
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_events SET
@@ -4081,18 +4113,18 @@ class gedcom_cls
             $check_connect = $connect['kind']['1'] . $connect['sub_kind']['1'] . $connect['connect_id']['1'];
             for ($i = 1; $i <= $connect_nr; $i++) {
                 $connect_order++;
-                if ($check_connect != $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
+                if ($check_connect !== $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
                     $connect_order = 1;
                     $check_connect = $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i];
                 }
 
                 // *** Process address order (because address and source by address) ***
-                if ($connect['sub_kind'][$i] == 'family_address') {
-                    if (isset($connect['connect_order'][$i])) $connect_order = $connect['connect_order'][$i];
+                if ($connect['sub_kind'][$i] == 'family_address' && isset($connect['connect_order'][$i])) {
+                    $connect_order = $connect['connect_order'][$i];
                 }
 
-                if ($add_tree == true or $reassign == true) {
-                    if ($connect['text'][$i]) $connect['text'][$i] = $this->reassign_ged($connect['text'][$i], 'N');
+                if (($add_tree == true or $reassign == true) && $connect['text'][$i]) {
+                    $connect['text'][$i] = $this->reassign_ged($connect['text'][$i], 'N');
                 }
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_connections SET
@@ -4124,7 +4156,7 @@ class gedcom_cls
     // ************************************************************************************************
     // *** Import GEDCOM texts ***
     // ************************************************************************************************
-    function process_text($text_array)
+    function process_text($text_array): void
     {
         global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
         global $largest_pers_ged, $largest_fam_ged, $largest_source_ged, $largest_text_ged, $largest_repo_ged, $largest_address_ged;
@@ -4150,7 +4182,7 @@ class gedcom_cls
         //$text['text_gedcomnr']=substr($buffer, 2, $second_char-1);
         $text['text_gedcomnr'] = substr($buffer, 3, $second_char - 3);
 
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             $text['text_gedcomnr'] = $this->reassign_ged($text['text_gedcomnr'], 'N');
         }
 
@@ -4188,7 +4220,7 @@ class gedcom_cls
             $buffer8 = substr($buffer, 0, 8);
 
             // *** Save level1 ***
-            if ($buffer1 == '1') {
+            if ($buffer1 === '1') {
                 $level[1] = rtrim(substr($buffer, 2, 4));  //rtrim for CHR_
                 $event_status = '';
                 $event_start = '1';
@@ -4197,32 +4229,28 @@ class gedcom_cls
                 $level[4] = "";
             }
             // *** Save level2 ***
-            elseif ($buffer1 == '2') {
+            elseif ($buffer1 === '2') {
                 $level[2] = substr($buffer, 2, 4);
                 $level[3] = '';
                 $level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 == '3') {
+            elseif ($buffer1 === '3') {
                 $level[3] = substr($buffer, 2, 4);
                 $level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 == '4') {
+            elseif ($buffer1 === '4') {
                 $level[4] = substr($buffer, 2, 4);
             }
 
-            if ($level[1] == 'CONC') {
-                if (substr($buffer, 2, 4) == 'CONC') {
-                    $processed = 1;
-                    $text['text_text'] .= substr($buffer, 7);
-                }
+            if ($level[1] == 'CONC' && substr($buffer, 2, 4) === 'CONC') {
+                $processed = 1;
+                $text['text_text'] .= substr($buffer, 7);
             }
-            if ($level[1] == 'CONT') {
-                if (substr($buffer, 2, 4) == 'CONT') {
-                    $processed = 1;
-                    $text['text_text'] .= "\n" . substr($buffer, 7);
-                }
+            if ($level[1] == 'CONT' && substr($buffer, 2, 4) === 'CONT') {
+                $processed = 1;
+                $text['text_text'] .= "\n" . substr($buffer, 7);
             }
 
             // *** Reunion program: source by text ***
@@ -4232,7 +4260,7 @@ class gedcom_cls
             2 SOUR @S16@
             2 SOUR @S20@
         */
-            if ($level[2] == 'SOUR') {
+            if ($level[2] === 'SOUR') {
                 //echo $buffer.'<br>';
                 $this->process_sources('ref_text', 'ref_text_source', $text['text_gedcomnr'], $buffer, '2');
             }
@@ -4240,15 +4268,15 @@ class gedcom_cls
             // *** New date/ time ***
             //1 _NEW
             //2 DATE 04 AUG 2004
-            if ($level[1] == '_NEW') {
-                if ($buffer6 == '1 _NEW') {
+            if ($level[1] === '_NEW') {
+                if ($buffer6 === '1 _NEW') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $text["new_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $text["new_time"] = substr($buffer, 7);
                 }
@@ -4257,15 +4285,15 @@ class gedcom_cls
             // *** Changed date/ time ***
             //1 CHAN
             //2 DATE 04 AUG 2004
-            if ($level[1] == 'CHAN') {
-                if ($buffer6 == '1 CHAN') {
+            if ($level[1] === 'CHAN') {
+                if ($buffer6 === '1 CHAN') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $text["changed_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $text["changed_time"] = substr($buffer, 7);
                 }
@@ -4275,7 +4303,7 @@ class gedcom_cls
             // *** Save non-processed items ***
             // ******************************************************************************************
             // *** Skip these lines ***
-            if ($buffer == '0 TRLR') {
+            if ($buffer === '0 TRLR') {
                 $processed = 1;
             }
             if ($processed == 0) {
@@ -4323,7 +4351,7 @@ class gedcom_cls
             $check_connect = $connect['kind']['1'] . $connect['sub_kind']['1'] . $connect['connect_id']['1'];
             for ($i = 1; $i <= $connect_nr; $i++) {
                 $connect_order++;
-                if ($check_connect != $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
+                if ($check_connect !== $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
                     $connect_order = 1;
                     $check_connect = $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i];
                 }
@@ -4371,7 +4399,7 @@ class gedcom_cls
     // ************************************************************************************************
     // *** Process sources ***
     // ************************************************************************************************
-    function process_source($source_array)
+    function process_source($source_array): void
     {
         global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
         global $largest_source_ged, $largest_text_ged, $largest_repo_ged, $add_tree, $reassign;
@@ -4414,7 +4442,7 @@ class gedcom_cls
 
         //0 @S1@ SOUR
         $source["id"] = substr($buffer, 3, -6);
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             $source["id"] = $this->reassign_ged($source["id"], 'S');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
@@ -4447,7 +4475,7 @@ class gedcom_cls
             $buffer8 = substr($buffer, 0, 8);
 
             // *** Save level1 ***
-            if ($buffer1 == '1') {
+            if ($buffer1 === '1') {
                 //$level[1]=rtrim(substr($buffer,2,4));  //rtrim for CHR_
                 $level[1] = rtrim(substr($buffer, 2, 5));  //rtrim voor CHR_
                 $event_status = '';
@@ -4457,18 +4485,18 @@ class gedcom_cls
                 $level[4] = "";
             }
             // *** Save level2 ***
-            elseif ($buffer1 == '2') {
+            elseif ($buffer1 === '2') {
                 $level[2] = substr($buffer, 2, 4);
                 $level[3] = '';
                 $level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 == '3') {
+            elseif ($buffer1 === '3') {
                 $level[3] = substr($buffer, 2, 4);
                 $level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 == '4') {
+            elseif ($buffer1 === '4') {
                 $level[4] = substr($buffer, 2, 4);
             }
 
@@ -4503,23 +4531,23 @@ class gedcom_cls
             //1 WWW website
 
             // *** Restricted source ***
-            if (substr($buffer, 2, 12) == 'RESN privacy') {
+            if (substr($buffer, 2, 12) === 'RESN privacy') {
                 $processed = 1;
                 $source["source_status"] = 'restricted';
             }
 
-            if (substr($buffer, 2, 4) == 'DATE') {
+            if (substr($buffer, 2, 4) === 'DATE') {
                 // *** New date/ time ***
                 //1 _NEW
                 //2 DATE 04 AUG 2004
-                if ($level[1] == '_NEW') {
+                if ($level[1] === '_NEW') {
                     // processed later in file
                 }
 
                 // *** Changed date/ time ***
                 //1 CHAN
                 //2 DATE 04 AUG 2004
-                elseif ($level[1] == 'CHAN') {
+                elseif ($level[1] === 'CHAN') {
                     // processed later in file
                 } else {
                     $processed = 1;
@@ -4527,99 +4555,99 @@ class gedcom_cls
                 }
             }
 
-            if ($level[1] == 'TITL') {
-                if (substr($buffer, 2, 4) == 'TITL') {
+            if ($level[1] === 'TITL') {
+                if (substr($buffer, 2, 4) === 'TITL') {
                     $processed = 1;
                     $source["source_title"] = substr($buffer, 7);
                 }
-                if (substr($buffer, 2, 4) == 'CONT') {
+                if (substr($buffer, 2, 4) === 'CONT') {
                     $processed = 1;
                     $source["source_title"] .= $this->cont(substr($buffer, 7));
                 }
-                if (substr($buffer, 2, 4) == 'CONC') {
+                if (substr($buffer, 2, 4) === 'CONC') {
                     $processed = 1;
                     $source["source_title"] .= $this->conc(substr($buffer, 7));
                 }
             }
 
-            if (substr($buffer, 2, 4) == 'PLAC') {
+            if (substr($buffer, 2, 4) === 'PLAC') {
                 $processed = 1;
                 $source["source_place"] = substr($buffer, 7);
             }
-            if (substr($buffer, 2, 4) == 'REFN') {
+            if (substr($buffer, 2, 4) === 'REFN') {
                 $processed = 1;
                 $source["source_refn"] = substr($buffer, 7);
             }
 
-            if (substr($buffer, 2, 4) == 'PUBL') {
+            if (substr($buffer, 2, 4) === 'PUBL') {
                 $processed = 1;
                 $source["source_publ"] = substr($buffer, 7);
             }  // BK
-            if ($level[1] == 'PUBL') {
-                if ($level[2] == 'CONT') {
+            if ($level[1] === 'PUBL') {
+                if ($level[2] === 'CONT') {
                     $processed = 1;
                     $source["source_publ"] .= $this->cont(substr($buffer, 7));
                 }
-                if ($level[2] == 'CONC') {
+                if ($level[2] === 'CONC') {
                     $processed = 1;
                     $source["source_publ"] .= $this->conc(substr($buffer, 7));
                 }
             }
 
-            if ($level[1] == 'TEXT') {
-                if (substr($buffer, 2, 4) == 'TEXT') {
+            if ($level[1] === 'TEXT') {
+                if (substr($buffer, 2, 4) === 'TEXT') {
                     $processed = 1;
                     $source["source_text"] = $this->merge_texts($source["source_text"], ', ', substr($buffer, 7));
                 }
-                if (substr($buffer, 2, 4) == 'CONC') {
+                if (substr($buffer, 2, 4) === 'CONC') {
                     $processed = 1;
                     $source["source_text"] .= $this->conc(substr($buffer, 7));
                 }
-                if (substr($buffer, 2, 4) == 'CONT') {
+                if (substr($buffer, 2, 4) === 'CONT') {
                     $processed = 1;
                     $source["source_text"] .= $this->cont(substr($buffer, 7));
                 }
             }
 
-            if ($level[1] == 'NOTE') {
+            if ($level[1] === 'NOTE') {
                 $source["source_text"] = $this->process_texts($source["source_text"], $buffer, '1');
             }
 
-            if (substr($buffer, 2, 4) == 'SUBJ') {
+            if (substr($buffer, 2, 4) === 'SUBJ') {
                 $processed = 1;
                 $source["source_subj"] = substr($buffer, 7);
             }
-            if ($level[1] == 'AUTH') {
-                if (substr($buffer, 2, 4) == 'AUTH') {
+            if ($level[1] === 'AUTH') {
+                if (substr($buffer, 2, 4) === 'AUTH') {
                     $processed = 1;
                     $source["source_auth"] = substr($buffer, 7);
                 } // BK
-                if (substr($buffer, 2, 4) == 'CONC') {
+                if (substr($buffer, 2, 4) === 'CONC') {
                     $processed = 1;
                     $source["source_auth"] .= $this->conc(substr($buffer, 7));
                 }
-                if (substr($buffer, 2, 4) == 'CONT') {
+                if (substr($buffer, 2, 4) === 'CONT') {
                     $processed = 1;
                     $source["source_auth"] .= $this->cont(substr($buffer, 7));
                 }
             }
-            if (substr($buffer, 2, 4) == 'ITEM') {
+            if (substr($buffer, 2, 4) === 'ITEM') {
                 $processed = 1;
                 $source["source_item"] = substr($buffer, 7);
             }
-            if (substr($buffer, 2, 4) == 'KIND') {
+            if (substr($buffer, 2, 4) === 'KIND') {
                 $processed = 1;
                 $source["source_kind"] = substr($buffer, 7);
             }
-            if (substr($buffer, 2, 4) == 'ABBR') {
+            if (substr($buffer, 2, 4) === 'ABBR') {
                 $processed = 1;
                 $source["source_abbr"] = substr($buffer, 7);
             } // BK
 
             // *** Haza-data pictures ***
             //1 PHOTO @#Aplaatjes\beert&id.jpg jpg@
-            if ($level[1] == 'PHOTO') {
-                if ($buffer7 == '1 PHOTO') {
+            if ($level[1] === 'PHOTO') {
+                if ($buffer7 === '1 PHOTO') {
                     $processed = 1;
                     $photo = substr($buffer, 11, -6);
                     $photo = $this->humo_basename($photo);
@@ -4636,26 +4664,28 @@ class gedcom_cls
                     $event['text'][$event_nr] = '';
                     $event['place'][$event_nr] = '';
                 }
-                if ($buffer6 == '2 DSCR' or $buffer6 == '2 NAME') {
+                if ($buffer6 === '2 DSCR' || $buffer6 === '2 NAME') {
                     $processed = 1;
                     $event['text'][$event_nr] = substr($buffer, 7);
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $event['date'][$event_nr] = substr($buffer, 7);
                 }
             }
 
             // *** 1 OBJE ***
-            if ($level[1] == 'OBJE') $this->process_picture('source', $source["id"], 'picture', $buffer);
+            if ($level[1] === 'OBJE') {
+                $this->process_picture('source', $source["id"], 'picture', $buffer);
+            }
 
             // x REPO name
             // x REPO @R1@
-            if (substr($buffer, 2, 4) == 'REPO') {
+            if (substr($buffer, 2, 4) === 'REPO') {
                 $processed = 1;
-                if (substr($buffer, 2, 6) == 'REPO @') {
+                if (substr($buffer, 2, 6) === 'REPO @') {
                     $source["source_repo_gedcomnr"] = substr($buffer, 8, -1);
-                    if ($add_tree == true or $reassign == true) {
+                    if ($add_tree == true || $reassign == true) {
                         $source["source_repo_gedcomnr"] = $this->reassign_ged($source["source_repo_gedcomnr"], 'RP');
                     }
                 } else {
@@ -4663,11 +4693,11 @@ class gedcom_cls
                 }
             }
 
-            if (substr($buffer, 2, 4) == 'CALN') {
+            if (substr($buffer, 2, 4) === 'CALN') {
                 $processed = 1;
                 $source["source_repo_caln"] = substr($buffer, 7);
             }
-            if (substr($buffer, 2, 4) == 'PAGE') {
+            if (substr($buffer, 2, 4) === 'PAGE') {
                 $processed = 1;
                 $source["source_repo_page"] = substr($buffer, 7);
             }
@@ -4684,15 +4714,15 @@ class gedcom_cls
             // *** New date/ time ***
             //1 _NEW
             //2 DATE 04 AUG 2004
-            if ($level[1] == '_NEW') {
-                if ($buffer6 == '1 _NEW') {
+            if ($level[1] === '_NEW') {
+                if ($buffer6 === '1 _NEW') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $source["new_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $source["new_time"] = substr($buffer, 7);
                 }
@@ -4701,15 +4731,15 @@ class gedcom_cls
             // *** Changed date/ time ***
             //1 CHAN
             //2 DATE 04 AUG 2004
-            if ($level[1] == 'CHAN') {
-                if ($buffer6 == '1 CHAN') {
+            if ($level[1] === 'CHAN') {
+                if ($buffer6 === '1 CHAN') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $source["changed_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $source["changed_time"] = substr($buffer, 7);
                 }
@@ -4719,7 +4749,7 @@ class gedcom_cls
             // *** Save non-processed items ***
             // *******************************************************************************************
             //Skip these lines
-            if ($buffer == '0 TRLR') {
+            if ($buffer === '0 TRLR') {
                 $processed = 1;
             }
             //if ($buffer=='1 REPO'){ $processed=1; }
@@ -4767,8 +4797,8 @@ class gedcom_cls
         // *** If there is still no title, then use ... ***
         //if ($source["source_title"]==''){ $source["source_title"]="..."; }
 
-        if ($add_tree == true or $reassign == true) {
-            if ($source["source_text"]) $source["source_text"] = $this->reassign_ged($source["source_text"], 'N');
+        if (($add_tree == true or $reassign == true) && $source["source_text"]) {
+            $source["source_text"] = $this->reassign_ged($source["source_text"], 'N');
         }
 
         // *** Save events ***
@@ -4783,8 +4813,8 @@ class gedcom_cls
                     $check_event_kind = $event['kind'][$i];
                 }
 
-                if ($add_tree == true or $reassign == true) {
-                    if ($event['text'][$i]) $event['text'][$i] = $this->reassign_ged($event['text'][$i], 'N');
+                if (($add_tree == true or $reassign == true) && $event['text'][$i]) {
+                    $event['text'][$i] = $this->reassign_ged($event['text'][$i], 'N');
                 }
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_events SET
@@ -4815,7 +4845,7 @@ class gedcom_cls
             $check_connect = $connect['kind']['1'] . $connect['sub_kind']['1'] . $connect['connect_id']['1'];
             for ($i = 1; $i <= $connect_nr; $i++) {
                 $connect_order++;
-                if ($check_connect != $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
+                if ($check_connect !== $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
                     $connect_order = 1;
                     $check_connect = $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i];
                 }
@@ -4825,8 +4855,8 @@ class gedcom_cls
                 //	if (isset($connect['connect_order'][$i])) $connect_order=$connect['connect_order'][$i];
                 //}
 
-                if ($add_tree == true or $reassign == true) {
-                    if ($connect['text'][$i]) $connect['text'][$i] = $this->reassign_ged($connect['text'][$i], 'N');
+                if (($add_tree == true or $reassign == true) && $connect['text'][$i]) {
+                    $connect['text'][$i] = $this->reassign_ged($connect['text'][$i], 'N');
                 }
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_connections SET
@@ -4897,7 +4927,7 @@ class gedcom_cls
     // ************************************************************************************************
     // *** Process repository ***
     // ************************************************************************************************
-    function process_repository($repo_array)
+    function process_repository($repo_array): void
     {
         global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
         global $largest_text_ged, $largest_repo_ged, $add_tree, $reassign;
@@ -4950,7 +4980,7 @@ class gedcom_cls
 
         //0 @R1@ REPO
         $repo["repo_gedcomnr"] = substr($buffer, 3, -6);
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             $repo["repo_gedcomnr"] = $this->reassign_ged($repo["repo_gedcomnr"], 'RP');
         }
         //if (isset($_POST['show_gedcomnumbers'])){ print substr($repo["repo_gedcomnr"],0,-1)." "; }
@@ -4984,7 +5014,7 @@ class gedcom_cls
             $buffer8 = substr($buffer, 0, 8);
 
             // *** Save level1 ***
-            if ($buffer1 == '1') {
+            if ($buffer1 === '1') {
                 $level[1] = rtrim(substr($buffer, 2, 4));  //rtrim for CHR_
                 $event_status = '';
                 $event_start = '1';
@@ -4993,47 +5023,47 @@ class gedcom_cls
                 $level[4] = "";
             }
             // *** Save level2 ***
-            elseif ($buffer1 == '2') {
+            elseif ($buffer1 === '2') {
                 $level[2] = substr($buffer, 2, 4);
                 $level[3] = '';
                 $level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 == '3') {
+            elseif ($buffer1 === '3') {
                 $level[3] = substr($buffer, 2, 4);
                 $level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 == '4') {
+            elseif ($buffer1 === '4') {
                 $level[4] = substr($buffer, 2, 4);
             }
 
-            if (substr($buffer, 2, 4) == 'NAME') {
+            if (substr($buffer, 2, 4) === 'NAME') {
                 $processed = 1;
                 $repo["repo_name"] = substr($buffer, 7);
             }
 
-            if ($level[1] == 'ADDR') {
-                if (substr($buffer, 2, 4) == 'ADDR') {
+            if ($level[1] === 'ADDR') {
+                if (substr($buffer, 2, 4) === 'ADDR') {
                     $processed = 1;
                     $repo["repo_address"] = substr($buffer, 7);
                 }
-                if (substr($buffer, 2, 4) == 'CONC') {
+                if (substr($buffer, 2, 4) === 'CONC') {
                     $processed = 1;
                     $repo["repo_address"] .= $this->conc(substr($buffer, 7));
                 }
-                if (substr($buffer, 2, 4) == 'CONT') {
+                if (substr($buffer, 2, 4) === 'CONT') {
                     $processed = 1;
                     $repo["repo_address"] .= $this->cont(substr($buffer, 7));
                 }
             }
 
-            if (substr($buffer, 2, 4) == 'POST') {
+            if (substr($buffer, 2, 4) === 'POST') {
                 $processed = 1;
                 $repo["repo_zip"] = substr($buffer, 7);
             }
 
-            if (substr($buffer, 2, 4) == 'CITY') {
+            if (substr($buffer, 2, 4) === 'CITY') {
                 $processed = 1;
                 $repo["repo_place"] = substr($buffer, 7);
             }
@@ -5055,12 +5085,12 @@ class gedcom_cls
             // 1 PHON +1-801-240-2331 (information)
             // 1 PHON +1-801-240-1278 (gifts & donations)
             // 1 PHON +1-801-240-2584 (support)
-            if (substr($buffer, 2, 4) == 'PHON') {
+            if (substr($buffer, 2, 4) === 'PHON') {
                 $processed = 1;
                 $repo["repo_phone"] = substr($buffer, 7);
             }
 
-            if (substr($buffer, 2, 4) == 'DATE') {
+            if (substr($buffer, 2, 4) === 'DATE') {
                 $processed = 1;
                 $repo["repo_date"] = substr($buffer, 7);
             }
@@ -5070,10 +5100,10 @@ class gedcom_cls
             //2 NOTE They have birth records dating from July 1, 1907.  They hav
             //3 CONC e death records from July 1, 1907.  They have marriage reco
             //3 CONC rds from January 1, 1968.
-            if ($level[2] == 'NOTE') {
+            if ($level[2] === 'NOTE') {
                 $repo["repo_text"] = $this->process_texts($repo["repo_text"], $buffer, '2');
             }
-            if ($level[1] == 'NOTE') {
+            if ($level[1] === 'NOTE') {
                 $repo["repo_text"] = $this->process_texts($repo["repo_text"], $buffer, '1');
             }
 
@@ -5082,13 +5112,13 @@ class gedcom_cls
             //
 
             // 1 _EMAIL fhl@ldschurch.org
-            if (substr($buffer, 2, 6) == '_EMAIL') {
+            if (substr($buffer, 2, 6) === '_EMAIL') {
                 $processed = 1;
                 $repo["repo_email"] = substr($buffer, 7);
             }
 
             // 1 _URL http://www.familysearch.org
-            if (substr($buffer, 2, 4) == '_URL') {
+            if (substr($buffer, 2, 4) === '_URL') {
                 $processed = 1;
                 $repo["repo_email"] = substr($buffer, 7);
             }
@@ -5096,15 +5126,15 @@ class gedcom_cls
             // *** New date/ time ***
             //1 _NEW
             //2 DATE 04 AUG 2004
-            if ($level[1] == '_NEW') {
-                if ($buffer6 == '1 _NEW') {
+            if ($level[1] === '_NEW') {
+                if ($buffer6 === '1 _NEW') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $repo["repo_new_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $repo["repo_new_time"] = substr($buffer, 7);
                 }
@@ -5113,15 +5143,15 @@ class gedcom_cls
             // *** Changed date/ time ***
             //1 CHAN
             //2 DATE 04 AUG 2004
-            if ($level[1] == 'CHAN') {
-                if ($buffer6 == '1 CHAN') {
+            if ($level[1] === 'CHAN') {
+                if ($buffer6 === '1 CHAN') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $repo["repo_changed_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $repo["repo_changed_time"] = substr($buffer, 7);
                 }
@@ -5131,7 +5161,7 @@ class gedcom_cls
             // *** Save non-processed items ***
             // *******************************************************************************************
             //Skip these lines
-            if ($buffer == '0 TRLR') {
+            if ($buffer === '0 TRLR') {
                 $processed = 1;
             }
             if ($processed == 0) {
@@ -5159,8 +5189,8 @@ class gedcom_cls
             }
         } //end explode
 
-        if ($add_tree == true or $reassign == true) {
-            if ($repo["repo_text"]) $repo["repo_text"] = $this->reassign_ged($repo["repo_text"], 'N');
+        if (($add_tree == true or $reassign == true) && $repo["repo_text"]) {
+            $repo["repo_text"] = $this->reassign_ged($repo["repo_text"], 'N');
         }
 
         // *** Save repository ***
@@ -5196,7 +5226,7 @@ class gedcom_cls
     // ************************************************************************************************
     // *** Process (shared) addresses ***
     // ************************************************************************************************
-    function process_address($line)
+    function process_address($line): void
     {
         global $tree_id, $tree_prefix, $not_processed, $gen_program;
         global $largest_text_ged, $largest_address_ged, $add_tree, $reassign;
@@ -5227,7 +5257,7 @@ class gedcom_cls
         $address["address_phone"] = "";
         $address["address_text"] = "";
         $address["address_gedcomnr"] = substr($buffer, 3, -6);
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             $address["address_gedcomnr"] = $this->reassign_ged($address["address_gedcomnr"], 'R');
         }
         $address["address_unprocessed_tags"] = "";
@@ -5266,7 +5296,7 @@ class gedcom_cls
             $buffer8 = substr($buffer, 0, 8);
 
             // *** Save level1 ***
-            if ($buffer1 == '1') {
+            if ($buffer1 === '1') {
                 $level[1] = rtrim(substr($buffer, 2, 4));  //rtrim for CHR_
                 $event_status = '';
                 $event_start = '1';
@@ -5275,35 +5305,35 @@ class gedcom_cls
                 $level[4] = "";
             }
             // *** Save level2 ***
-            elseif ($buffer1 == '2') {
+            elseif ($buffer1 === '2') {
                 $level[2] = substr($buffer, 2, 4);
                 $level[3] = '';
                 $level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 == '3') {
+            elseif ($buffer1 === '3') {
                 $level[3] = substr($buffer, 2, 4);
                 $level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 == '4') {
+            elseif ($buffer1 === '4') {
                 $level[4] = substr($buffer, 2, 4);
             }
 
-            if (substr($buffer, 2, 4) == 'ADDR') {
+            if (substr($buffer, 2, 4) === 'ADDR') {
                 $processed = 1;
                 $address["address"] = substr($buffer, 7);
             }
-            if (substr($buffer, 2, 4) == 'ZIP ') {
+            if (substr($buffer, 2, 4) === 'ZIP ') {
                 $processed = 1;
                 $address["address_zip"] = substr($buffer, 6);
             }  //Voor BK
             //if (substr($buffer,2,4)=='DATE '){ $processed=1; $address["datum"]=substr($buffer,7); }
-            if (substr($buffer, 2, 4) == 'PLAC') {
+            if (substr($buffer, 2, 4) === 'PLAC') {
                 $processed = 1;
                 $address["address_place"] = substr($buffer, 7);
             }
-            if (substr($buffer, 2, 4) == 'PHON') {
+            if (substr($buffer, 2, 4) === 'PHON') {
                 $processed = 1;
                 $address["address_phone"] = substr($buffer, 7);
             }
@@ -5312,7 +5342,7 @@ class gedcom_cls
             $address["address_text"] = $this->process_texts($address["address_text"], $buffer, '1');
 
             // *** Source by shared address ***
-            if ($level[2] == 'SOUR') {
+            if ($level[2] === 'SOUR') {
                 $this->process_sources('address', 'address_source', $address["address_gedcomnr"], $buffer, '2');
             }
 
@@ -5323,15 +5353,15 @@ class gedcom_cls
             // *** New date/ time ***
             //1 _NEW
             //2 DATE 04 AUG 2004
-            if ($level[1] == '_NEW') {
-                if ($buffer6 == '1 _NEW') {
+            if ($level[1] === '_NEW') {
+                if ($buffer6 === '1 _NEW') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $address["new_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $address["new_time"] = substr($buffer, 7);
                 }
@@ -5340,15 +5370,15 @@ class gedcom_cls
             // *** Changed date/ time ***
             //1 CHAN
             //2 DATE 04 AUG 2004
-            if ($level[1] == 'CHAN') {
-                if ($buffer6 == '1 CHAN') {
+            if ($level[1] === 'CHAN') {
+                if ($buffer6 === '1 CHAN') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $address["changed_date"] = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $address["changed_time"] = substr($buffer, 7);
                 }
@@ -5358,7 +5388,7 @@ class gedcom_cls
             // *** Save non-processed items ***
             // *******************************************************************************************
             //Skip these lines
-            if ($buffer == '0 TRLR') {
+            if ($buffer === '0 TRLR') {
                 $processed = 1;
             }
 
@@ -5393,7 +5423,7 @@ class gedcom_cls
             $check_connect = $connect['kind']['1'] . $connect['sub_kind']['1'] . $connect['connect_id']['1'];
             for ($i = 1; $i <= $connect_nr; $i++) {
                 $connect_order++;
-                if ($check_connect != $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
+                if ($check_connect !== $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i]) {
                     $connect_order = 1;
                     $check_connect = $connect['kind'][$i] . $connect['sub_kind'][$i] . $connect['connect_id'][$i];
                 }
@@ -5403,8 +5433,8 @@ class gedcom_cls
                 //	if (isset($connect['connect_order'][$i])) $connect_order=$connect['connect_order'][$i];
                 //}
 
-                if ($add_tree == true or $reassign == true) {
-                    if ($connect['text'][$i]) $connect['text'][$i] = $this->reassign_ged($connect['text'][$i], 'N');
+                if (($add_tree == true or $reassign == true) && $connect['text'][$i]) {
+                    $connect['text'][$i] = $this->reassign_ged($connect['text'][$i], 'N');
                 }
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_connections SET
@@ -5465,7 +5495,7 @@ class gedcom_cls
     // ************************************************************************************************
     // *** Process objects ***
     // ************************************************************************************************
-    function process_object($object_array)
+    function process_object($object_array): void
     {
         global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program, $largest_object_ged;
         global $add_tree, $reassign, $processed;
@@ -5486,7 +5516,7 @@ class gedcom_cls
         // 3 TIME 09:19:50
 
         $event['gedcomnr'] = substr($buffer, 3, -6);
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             $event['gedcomnr'] = $this->reassign_ged($event['gedcomnr'], 'O');
         }
         $event['event'] = '';
@@ -5529,7 +5559,7 @@ class gedcom_cls
             $buffer8 = substr($buffer, 0, 8);
 
             // *** Save level1 ***
-            if ($buffer1 == '1') {
+            if ($buffer1 === '1') {
                 $level[1] = rtrim(substr($buffer, 2, 4));  //rtrim for CHR_
                 $event_status = '';
                 $event_start = '1';
@@ -5538,22 +5568,22 @@ class gedcom_cls
                 $level[4] = "";
             }
             // *** Save level2 ***
-            elseif ($buffer1 == '2') {
+            elseif ($buffer1 === '2') {
                 $level[2] = substr($buffer, 2, 4);
                 $level[3] = '';
                 $level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 == '3') {
+            elseif ($buffer1 === '3') {
                 $level[3] = substr($buffer, 2, 4);
                 $level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 == '4') {
+            elseif ($buffer1 === '4') {
                 $level[4] = substr($buffer, 2, 4);
             }
 
-            if ($buffer6 == '1 FILE') {
+            if ($buffer6 === '1 FILE') {
                 $processed = 1;
                 $photo = substr($buffer, 7);
                 // *** Aldfaer sometimes uses: 2 FILE \bestand.jpg ***
@@ -5561,7 +5591,7 @@ class gedcom_cls
                 $event['event'] = $photo;
             }
             //if ($buffer6=='1 TITL'){
-            if ($buffer6 == '1 TITL' or $buffer6 == '2 TITL') {
+            if ($buffer6 === '1 TITL' || $buffer6 === '2 TITL') {
                 $processed = 1;
                 $event['text'] = substr($buffer, 7);
             }
@@ -5569,15 +5599,15 @@ class gedcom_cls
             // *** New date/ time ***
             //1 _NEW
             //2 DATE 04 AUG 2004
-            if ($level[1] == '_NEW') {
-                if ($buffer6 == '1 _NEW') {
+            if ($level[1] === '_NEW') {
+                if ($buffer6 === '1 _NEW') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $event_new_date = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $event_new_time = substr($buffer, 7);
                 }
@@ -5586,15 +5616,15 @@ class gedcom_cls
             // *** Changed date/ time ***
             //1 CHAN
             //2 DATE 04 AUG 2004
-            if ($level[1] == 'CHAN') {
-                if ($buffer6 == '1 CHAN') {
+            if ($level[1] === 'CHAN') {
+                if ($buffer6 === '1 CHAN') {
                     $processed = 1;
                 }
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $event_changed_date = substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TIME') {
+                if ($buffer6 === '3 TIME') {
                     $processed = 1;
                     $event_changed_time = substr($buffer, 7);
                 }
@@ -5604,7 +5634,7 @@ class gedcom_cls
             // *** Save non-processed items ***
             // *******************************************************************************************
             //Skip these lines
-            if ($buffer == '0 TRLR') {
+            if ($buffer === '0 TRLR') {
                 $processed = 1;
             }
 
@@ -5633,7 +5663,7 @@ class gedcom_cls
             }
         } //end explode
 
-        if ($add_tree == true or $reassign == true) {
+        if ($add_tree == true || $reassign == true) {
             $event['text'] = $this->reassign_ged($event['text'], 'O');
         }
         // *** Save object ***
@@ -5724,7 +5754,7 @@ function non_processed_items($buffer){
         $date = str_replace(" 0", " ", $date); //gets rid of "bet 2 may 0954 AND jun 0951" and "5 may 0985"
         //if(substr($date,-4,1)=="0") {
         //	 // if there is still a "0" this means we had the year by itself "0985" with nothing before it
-        if (substr($date, -4, 1) == "0" and strlen($date) == 4) { // if there is still a "0" this means we had the year by itself "0985" with nothing before it
+        if (substr($date, -4, 1) === "0" && strlen($date) == 4) { // if there is still a "0" this means we had the year by itself "0985" with nothing before it
             // the strlen code was added to prevent that double dates with a 0 in position 4th from the end, will be erroneously changed  (1960/61 --> /61)
             $date = substr($date, -3, 3);
         }
@@ -5734,12 +5764,7 @@ function non_processed_items($buffer){
     // *** Merge function: text1, merge character, text2 ***
     function merge_texts($text1, $merge, $text2)
     {
-        if ($text1) {
-            $text1 = $text1 . $merge . $text2;
-        } else {
-            $text1 = $text2;
-        }
-        return $text1;
+        return $text1 ? $text1 . $merge . $text2 : $text2;
     }
 
     // CONT
@@ -5757,17 +5782,16 @@ function non_processed_items($buffer){
     {
         global $gen_program, $gen_program_version;
         $spacer = '';
-        if ($gen_program == 'HuMo-gen' or $gen_program == 'HuMo-genealogy') {
+        if ($gen_program == 'HuMo-gen' || $gen_program == 'HuMo-genealogy') {
             $spacer = ' ';
         } elseif ($gen_program == 'Haza-Data') {
             $spacer = ' ';
-        } elseif ($gen_program == 'PRO-GEN' and substr($gen_program_version, 0, 3) == '3.0') {
+        } elseif ($gen_program == 'PRO-GEN' && substr($gen_program_version, 0, 3) === '3.0') {
             $spacer = ' ';
         } elseif ($gen_program == 'Family Tree Legends') {
             $spacer = ' ';
         }
-        $text = $spacer . $text1;
-        return $text;
+        return $spacer . $text1;
     }
 
     // *** Process texts ***
@@ -5779,21 +5803,21 @@ function non_processed_items($buffer){
     {
         global $processed;
         $buffer6 = substr($buffer, 0, 6);
-        if ($buffer6 == ($number) . ' NOTE') {
+        if ($buffer6 === ($number) . ' NOTE') {
             // *** Seperator for multiple texts ***
             if ($text != '') {
                 $text .= "|";
             }
             $processed = 1;
             $text .= substr($buffer, 7);
-        } elseif ($buffer6 == ($number) . ' TITL') {
+        } elseif ($buffer6 === ($number) . ' TITL') {
             $processed = 1;
             $text .= substr($buffer, 7);
         }    // 1 OBJE -> 2 TITL 
-        elseif ($buffer6 == ($number + 1) . ' CONT') {
+        elseif ($buffer6 === ($number + 1) . ' CONT') {
             $processed = 1;
             $text .= $this->cont(substr($buffer, 7));
-        } elseif ($buffer6 == ($number + 1) . ' CONC') {
+        } elseif ($buffer6 === ($number + 1) . ' CONC') {
             $processed = 1;
             $text .= $this->conc(substr($buffer, 7));
         }
@@ -5822,7 +5846,9 @@ function non_processed_items($buffer){
 
         // **** SteveP modded 15 Jan 2022 :- Added 1 Line of Code to remove Drive designator if present ***
         // **** example Drive designator format x:/ where x can be A to Z or a to z ***
-        if (strpos($photo, ":/") == 1) $photo = substr($photo, 3, strlen($photo) - 3);
+        if (strpos($photo, ":/") == 1) {
+            $photo = substr($photo, 3, strlen($photo) - 3);
+        }
 
         return $photo;
     }
@@ -5839,7 +5865,9 @@ function non_processed_items($buffer){
         global $gen_program;
         $text = substr($buffer, -1);
         // Ancestry uses 1 - 4 in stead of 0 - 3, adjust numbers:
-        if ($gen_program == "Ancestry.com Family Trees") $text--;
+        if ($gen_program == "Ancestry.com Family Trees") {
+            $text--;
+        }
         return $text;
     }
 
@@ -5888,7 +5916,7 @@ function non_processed_items($buffer){
     }
 
     // *** Process places ***
-    function process_places($map_place, $buffer)
+    function process_places($map_place, $buffer): void
     {
         global $geocode_nr, $geocode_plac, $geocode_lati, $geocode_long, $geocode_type, $processed, $level;
 
@@ -5896,11 +5924,11 @@ function non_processed_items($buffer){
         // 3 MAP
         // 4 LATI N41.500347
         // 4 LONG W81.66687
-        if (substr($level[3], 0, 3) == 'MAP') {
+        if (substr($level[3], 0, 3) === 'MAP') {
             $buffer6 = substr($buffer, 0, 6);
             //if ($buffer6==$number.' PLAC'){ $processed=1; $place=substr($buffer, 7); }
 
-            if (substr($buffer, 0, 5) == '3 MAP') {
+            if (substr($buffer, 0, 5) === '3 MAP') {
                 $processed = 1;
                 $geocode_nr++;
                 $geocode_plac[$geocode_nr] = $map_place;
@@ -5914,23 +5942,15 @@ function non_processed_items($buffer){
                 } elseif ($level[1] == 'BURI') {
                     $geocode_type[$geocode_nr] = "buried";
                 }
-            } elseif ($buffer6 == '4 LATI') {
+            } elseif ($buffer6 === '4 LATI') {
                 $processed = 1;
                 $geocode = (substr($buffer, 7));
-                if (substr($geocode, 0, 1) == 'S') {
-                    $geocode = '-' . substr($geocode, 1);
-                } else {
-                    $geocode = substr($geocode, 1);
-                }
+                $geocode = substr($geocode, 0, 1) === 'S' ? '-' . substr($geocode, 1) : substr($geocode, 1);
                 $geocode_lati[$geocode_nr] = $geocode;
-            } elseif ($buffer6 == '4 LONG') {
+            } elseif ($buffer6 === '4 LONG') {
                 $processed = 1;
                 $geocode = (substr($buffer, 7));
-                if (substr($geocode, 0, 1) == 'W') {
-                    $geocode = '-' . substr($geocode, 1);
-                } else {
-                    $geocode = substr($geocode, 1);
-                }
+                $geocode = substr($geocode, 0, 1) === 'W' ? '-' . substr($geocode, 1) : substr($geocode, 1);
                 $geocode_long[$geocode_nr] = $geocode;
             }
         }
@@ -5939,7 +5959,7 @@ function non_processed_items($buffer){
 
 
     // *** Process addresses by person and relation ***
-    function process_addresses($connect_kind, $connect_sub_kind, $connect_id, $buffer)
+    function process_addresses($connect_kind, $connect_sub_kind, $connect_id, $buffer): void
     {
         global $gen_program, $processed, $pers_place_index;
         global $level, $add_tree, $reassign;
@@ -5955,9 +5975,9 @@ function non_processed_items($buffer){
         //1 ADDR Slikkerveer
         //1 ADDR Alkmaar
         //1 ADDR Heerhugowaard
-        if ($buffer6 == '1 ADDR') {
+        if ($buffer6 === '1 ADDR') {
             $address_gedcomnr = 'R' . $_SESSION['new_address_gedcomnr'];
-            if ($add_tree == true or $reassign == true) {
+            if ($add_tree == true || $reassign == true) {
                 $address_gedcomnr = $this->reassign_ged('R' . $_SESSION['new_address_gedcomnr'], 'R');
             }
             $_SESSION['address_gedcomnr'] = $address_gedcomnr;
@@ -5997,7 +6017,7 @@ function non_processed_items($buffer){
             $connect['date'][$connect_nr] = '';
 
             // *** Next GEDCOM number ***
-            $_SESSION['new_address_gedcomnr'] = $_SESSION['new_address_gedcomnr'] + 1;
+            $_SESSION['new_address_gedcomnr'] += 1;
         }
 
         // *** Address ***
@@ -6011,8 +6031,8 @@ function non_processed_items($buffer){
 
             // *** Use connection table to store addresses ***
             // *** Check for address links (shared addresses), @R34@ links ***
-            if (substr($level['1a'], 0, 8) == '1 RESI @') {
-                if ($buffer6 == '1 RESI') {
+            if (substr($level['1a'], 0, 8) === '1 RESI @') {
+                if ($buffer6 === '1 RESI') {
                     $processed = 1;
 
                     // *** Used for general numbering of connections ***
@@ -6032,7 +6052,7 @@ function non_processed_items($buffer){
                     $connect['text'][$connect_nr] = '';
                     // *** Save place GEDCOM number in connect_item_id field ***
                     $connect['item_id'][$connect_nr] = substr($buffer, 8, -1);
-                    if ($add_tree == true or $reassign == true) {
+                    if ($add_tree == true || $reassign == true) {
                         $connect['item_id'][$connect_nr] = $this->reassign_ged($connect['item_id'][$connect_nr], 'R');
                     }
                     $_SESSION['address_gedcomnr'] = $connect['item_id'][$connect_nr];
@@ -6046,12 +6066,12 @@ function non_processed_items($buffer){
                 }
 
                 // *** Address role ***
-                if ($buffer6 == '2 ROLE') {
+                if ($buffer6 === '2 ROLE') {
                     $processed = 1;
                     $connect['role'][$connect_nr] = substr($buffer, 7);
                 }
                 // *** Address date ***
-                if ($buffer6 == '2 DATE') {
+                if ($buffer6 === '2 DATE') {
                     $processed = 1;
                     $connect['date'][$connect_nr] = substr($buffer, 7);
                 }
@@ -6059,21 +6079,21 @@ function non_processed_items($buffer){
                 // 2 DATA
                 // 3 TEXT text ..... => Extra text by address...
                 // 4 CONT ..........
-                if ($buffer6 == '2 DATA') {
+                if ($buffer6 === '2 DATA') {
                     $processed = 1; //$connect['text'][$connect_nr]=substr($buffer, 7);
                 }
-                if ($buffer6 == '3 TEXT') {
+                if ($buffer6 === '3 TEXT') {
                     if ($connect['text'][$connect_nr]) {
                         $connect['text'][$connect_nr] .= '<br>';
                     }
                     $processed = 1;
                     $connect['text'][$connect_nr] .= substr($buffer, 7);
                 }
-                if ($buffer6 == '4 CONT') {
+                if ($buffer6 === '4 CONT') {
                     $processed = 1;
                     $connect['text'][$connect_nr] .= $this->cont(substr($buffer, 7));
                 }
-                if ($buffer6 == '4 CONC') {
+                if ($buffer6 === '4 CONC') {
                     $processed = 1;
                     $connect['text'][$connect_nr] .= $this->conc(substr($buffer, 7));
                 }
@@ -6097,12 +6117,12 @@ function non_processed_items($buffer){
             //2 PLAC AMSTERDAM-AMSTELDIJK 93/1
             //2 NOTE Tijdens ondertrouw.
             //if ($buffer6=='1 RESI' AND $gen_program!='Haza-Data' AND $gen_program!='HuMo-genealogy'){
-            if ($buffer6 == '1 RESI' and substr($buffer, 7, 1) != '@') {
+            if ($buffer6 === '1 RESI' && substr($buffer, 7, 1) !== '@') {
                 $processed = 1;
                 $nraddress2++;
 
                 $address_gedcomnr = 'R' . $_SESSION['new_address_gedcomnr'];
-                if ($add_tree == true or $reassign == true) {
+                if ($add_tree == true || $reassign == true) {
                     $address_gedcomnr = $this->reassign_ged('R' . $_SESSION['new_address_gedcomnr'], 'R');
                 }
                 $_SESSION['address_gedcomnr'] = $address_gedcomnr;
@@ -6146,7 +6166,7 @@ function non_processed_items($buffer){
                 $connect['date'][$connect_nr] = '';
 
                 // *** Next GEDCOM number ***
-                $_SESSION['new_address_gedcomnr'] = $_SESSION['new_address_gedcomnr'] + 1;
+                $_SESSION['new_address_gedcomnr'] += 1;
             }
 
             // FTM:
@@ -6164,23 +6184,18 @@ function non_processed_items($buffer){
             // *** Restore HuMo-genealogy address GEDCOM numbers ***
             // 1 RESI
             // 2 RIN 1 (GEDCOM number without R).
-            if ($gen_program == 'HuMo-gen' or $gen_program == 'HuMo-genealogy') {
-                if ($level[2] == 'RIN ') {
-                    $processed = 1;
-                    //echo substr($buffer,6).'<br>';
-                    $address_gedcomnr = 'R' . substr($buffer, 6);
-
-                    if ($add_tree == true or $reassign == true) {
-                        $address_gedcomnr = $this->reassign_ged($address_gedcomnr, 'R');
-                    }
-
-                    $address_array["gedcomnr"][$nraddress2] = $address_gedcomnr;
-                    $connect['item_id'][$connect_nr] = $address_gedcomnr;
-                    $_SESSION['address_gedcomnr'] = $address_gedcomnr;
-
-                    // *** Reset address GEDCOM number ***
-                    $_SESSION['new_address_gedcomnr'] = $_SESSION['new_address_gedcomnr'] - 1;
+            if (($gen_program == 'HuMo-gen' or $gen_program == 'HuMo-genealogy') && $level[2] == 'RIN ') {
+                $processed = 1;
+                //echo substr($buffer,6).'<br>';
+                $address_gedcomnr = 'R' . substr($buffer, 6);
+                if ($add_tree == true || $reassign == true) {
+                    $address_gedcomnr = $this->reassign_ged($address_gedcomnr, 'R');
                 }
+                $address_array["gedcomnr"][$nraddress2] = $address_gedcomnr;
+                $connect['item_id'][$connect_nr] = $address_gedcomnr;
+                $_SESSION['address_gedcomnr'] = $address_gedcomnr;
+                // *** Reset address GEDCOM number ***
+                $_SESSION['new_address_gedcomnr'] -= 1;
             }
 
             // *** Street Aldfaer/ Pro-gen ***
@@ -6188,7 +6203,7 @@ function non_processed_items($buffer){
             //2 ADDR Citystreet 18
             //3 CITY Wellen
             if ($level[2] == 'ADDR') {
-                if ($buffer6 == '2 ADDR') {
+                if ($buffer6 === '2 ADDR') {
                     $address_array["address"][$nraddress2] .= substr($buffer, 7);
                     $processed = 1;
                 }
@@ -6200,9 +6215,11 @@ function non_processed_items($buffer){
             //2 ADDR Oosteind 44
             //3 CONT Zwaag
             //3 CITY Zwaag
-            if ($buffer6 == '3 CITY') {
+            if ($buffer6 === '3 CITY') {
                 $processed = 1;
-                if ($address_array["place"][$nraddress2]) $address_array["place"][$nraddress2] .= ', ';
+                if ($address_array["place"][$nraddress2]) {
+                    $address_array["place"][$nraddress2] .= ', ';
+                }
                 $address_array["place"][$nraddress2] .= substr($buffer, 7);
                 $pers_place_index = substr($buffer, 7);
             }
@@ -6215,50 +6232,60 @@ function non_processed_items($buffer){
             // 3 POST 55555
             // 3 CTRY Mexico
             // 2 PHON 52 (55) 1234-5xxx
-            if ($buffer6 == '3 STAE') {
+            if ($buffer6 === '3 STAE') {
                 $processed = 1;
-                if ($address_array["place"][$nraddress2]) $address_array["place"][$nraddress2] .= ', ';
+                if ($address_array["place"][$nraddress2]) {
+                    $address_array["place"][$nraddress2] .= ', ';
+                }
                 $address_array["place"][$nraddress2] .= substr($buffer, 7);
             }
-            if ($buffer6 == '3 CTRY') {
+            if ($buffer6 === '3 CTRY') {
                 $processed = 1;
-                if ($address_array["place"][$nraddress2]) $address_array["place"][$nraddress2] .= ', ';
+                if ($address_array["place"][$nraddress2]) {
+                    $address_array["place"][$nraddress2] .= ', ';
+                }
                 $address_array["place"][$nraddress2] .= substr($buffer, 7);
             }
 
-            if ($buffer6 == '3 POST') {
+            if ($buffer6 === '3 POST') {
                 $processed = 1;
                 $address_array["zip"][$nraddress2] = substr($buffer, 7);
             }
 
-            if ($buffer6 == '2 PHON') {
+            if ($buffer6 === '2 PHON') {
                 $processed = 1;
                 $address_array["phone"][$nraddress2] = substr($buffer, 7);
             }
 
             // *** Living place for BK ***
-            if ($buffer6 == '2 PLAC') {
+            if ($buffer6 === '2 PLAC') {
                 $processed = 1;
-                if ($address_array["place"][$nraddress2]) $address_array["place"][$nraddress2] .= ', ';
+                if ($address_array["place"][$nraddress2]) {
+                    $address_array["place"][$nraddress2] .= ', ';
+                }
                 $address_array["place"][$nraddress2] .= substr($buffer, 7);
                 $pers_place_index = substr($buffer, 7);
             }
 
             // *** Texts by living places for BK, Aldfaer ***
             if ($level[2] == 'NOTE') {
-                if ($address_array["text"][$nraddress2]) $address_array["text"][$nraddress2] .= '. ';
+                if ($address_array["text"][$nraddress2]) {
+                    $address_array["text"][$nraddress2] .= '. ';
+                }
                 $address_array["text"][$nraddress2] = $this->process_texts($address_array["text"][$nraddress2], $buffer, '2');
             }
 
             // *** Texts by living place for SukuJutut ***
             if ($gen_program == "SukuJutut") {
-                if ($address_array["text"][$nraddress2]) $address_array["text"][$nraddress2] .= '. ';
+                if ($address_array["text"][$nraddress2]) {
+                    $address_array["text"][$nraddress2] .= '. ';
+                }
                 $address_array["text"][$nraddress2] = $this->process_texts($address_array["text"][$nraddress2], $buffer, '3');
             }
 
             // *** Date by living place for BK etc. ***
             //if ($buffer6=='2 DATE'){ $processed=1; $address_array["date"][$nraddress2]=substr($buffer,7); }
-            if ($buffer6 == '2 DATE') {
+            if ($buffer6 === '2 DATE') {
                 $processed = 1;
                 $connect['date'][$connect_nr] = substr($buffer, 7);
             }
@@ -6288,7 +6315,7 @@ function non_processed_items($buffer){
 
 
     // *** Process all kind of STANDARD sources ***
-    function process_sources($connect_kind2, $connect_sub_kind2, $connect_connect_id2, $buffer, $number)
+    function process_sources($connect_kind2, $connect_sub_kind2, $connect_connect_id2, $buffer, $number): void
     {
         global $connect_nr, $connect, $calculated_connect_id;
         global $processed, $level;
@@ -6299,7 +6326,7 @@ function non_processed_items($buffer){
         $buffer6 = substr($buffer, 0, 6);
 
         // *** Store source - connections ***
-        if ($buffer6 == $number . ' SOUR') {
+        if ($buffer6 === $number . ' SOUR') {
             $processed = 1;
             $connect_nr++;
             $calculated_connect_id++;
@@ -6318,19 +6345,19 @@ function non_processed_items($buffer){
 
             // *** Check for @ characters (=link to shared source), or save text ***
             // 1 SOUR @S1@
-            if (substr($buffer, 7, 1) == '@') {
+            if (substr($buffer, 7, 1) === '@') {
                 // *** Trim needed for MyHeritage (double spaces behind a source line) ***
                 $buffer = trim($buffer);
 
                 $connect['source_id'][$connect_nr] = substr($buffer, 8, -1);
-                if ($add_tree == true or $reassign == true) {
+                if ($add_tree == true || $reassign == true) {
                     $connect['source_id'][$connect_nr] = $this->reassign_ged(substr($buffer, 8, -1), 'S');
                 }
             } else {
                 // *** Jan. 2021: all sources are stored in the source table ***
 
                 $new_source_gedcomnr = 'S' . $_SESSION['new_source_gedcomnr'];
-                if ($add_tree == true or $reassign == true) {
+                if ($add_tree == true || $reassign == true) {
                     $new_source_gedcomnr = $this->reassign_ged('S' . $_SESSION['new_source_gedcomnr'], 'S');
                 }
                 $connect['source_id'][$connect_nr] = $new_source_gedcomnr;
@@ -6363,17 +6390,17 @@ function non_processed_items($buffer){
                 $source["source_text"][$nrsource] .= substr($buffer, 7);
 
                 // *** Next GEDCOM number ***
-                $_SESSION['new_source_gedcomnr'] = $_SESSION['new_source_gedcomnr'] + 1;
+                $_SESSION['new_source_gedcomnr'] += 1;
             }
         }
 
         // *** Source text ***
         if ($level[$number] == 'SOUR') {
-            if ($buffer6 == ($number + 1) . ' CONT') {
+            if ($buffer6 === ($number + 1) . ' CONT') {
                 $processed = 1;
                 $source["source_text"][$nrsource] .= $this->cont(substr($buffer, 7));
             }
-            if ($buffer6 == ($number + 1) . ' CONC') {
+            if ($buffer6 === ($number + 1) . ' CONC') {
                 $processed = 1;
                 $source["source_text"][$nrsource] .= $this->conc(substr($buffer, 7));
             }
@@ -6386,51 +6413,39 @@ function non_processed_items($buffer){
         // 2 TEXT Text from a source. The preferred approach is to cite sources by
         // 3 CONC links to SOURCE records.
         // 3 CONT Here is a new line of text from the source.
-        if ($number < 3) {
-            if ($level[$number + 1] == 'TEXT') {
-                if ($buffer6 == ($number + 1) . ' TEXT') {
-                    $processed = 1;
-                    if ($source["source_text"][$nrsource]) {
-                        $source["source_text"][$nrsource] .= '<br>';
-                    }
-                    $source["source_text"][$nrsource] .= substr($buffer, 7);
+        if ($number < 3 && $level[$number + 1] == 'TEXT') {
+            if ($buffer6 === ($number + 1) . ' TEXT') {
+                $processed = 1;
+                if ($source["source_text"][$nrsource]) {
+                    $source["source_text"][$nrsource] .= '<br>';
                 }
-                if ($buffer6 == ($number + 2) . ' CONT') {
-                    $processed = 1;
-                    $source["source_text"][$nrsource] .= $this->cont(substr($buffer, 7));
-                }
-                if ($buffer6 == ($number + 2) . ' CONC') {
-                    $processed = 1;
-                    $source["source_text"][$nrsource] .= $this->conc(substr($buffer, 7));
-                }
+                $source["source_text"][$nrsource] .= substr($buffer, 7);
+            }
+            if ($buffer6 === ($number + 2) . ' CONT') {
+                $processed = 1;
+                $source["source_text"][$nrsource] .= $this->cont(substr($buffer, 7));
+            }
+            if ($buffer6 === ($number + 2) . ' CONC') {
+                $processed = 1;
+                $source["source_text"][$nrsource] .= $this->conc(substr($buffer, 7));
             }
         }
-
-        // *** Source text BK and Legacy ***
-        // 1 BIRT
-        // 2 DATE 08 SEP 1909
-        // 2 PLAC DJAKARTA(BATAVIA)-INDONESIE
-        // 2 SOUR @S125@
-        // 3 DATA
-        // 4 TEXT text ..... => Extra text by source...
-        // 5 CONT ..........
-        $test_level = 'level' . ($number + 1);
-        if (isset($level[$number + 1]) and $level[$number + 1] == 'DATA') {
-            if ($buffer6 == ($number + 1) . ' DATA') {
+        if (isset($level[$number + 1]) && $level[$number + 1] == 'DATA') {
+            if ($buffer6 === ($number + 1) . ' DATA') {
                 $processed = 1; //$connect['text'][$connect_nr]=substr($buffer, 7);
             }
-            if ($buffer6 == ($number + 2) . ' TEXT') {
+            if ($buffer6 === ($number + 2) . ' TEXT') {
                 if ($connect['text'][$connect_nr]) {
                     $connect['text'][$connect_nr] .= '<br>';
                 }
                 $processed = 1;
                 $connect['text'][$connect_nr] .= substr($buffer, 7);
             }
-            if ($buffer6 == ($number + 3) . ' CONT') {
+            if ($buffer6 === ($number + 3) . ' CONT') {
                 $processed = 1;
                 $connect['text'][$connect_nr] .= $this->cont(substr($buffer, 7));
             }
-            if ($buffer6 == ($number + 3) . ' CONC') {
+            if ($buffer6 === ($number + 3) . ' CONC') {
                 $processed = 1;
                 $connect['text'][$connect_nr] .= $this->conc(substr($buffer, 7));
             }
@@ -6447,48 +6462,46 @@ function non_processed_items($buffer){
 
         //if ($level[3]=='OBJE'){
         //SKIP @xx@, otherwise this will process errors: 3 OBJE @M1@
-        if ($level[3] == 'OBJE' and substr($buffer, 7, 1) != '@') {
+        if ($level[3] == 'OBJE' && substr($buffer, 7, 1) !== '@') {
             $this->process_picture('connect', $calculated_connect_id, 'picture', $buffer);
         }
 
         // *** Source reference (own code) ***
-        if ($buffer6 == ($number + 1) . ' REFN') {
+        if ($buffer6 === ($number + 1) . ' REFN') {
             $processed = 1;
             $source["source_refn"][$nrsource] = substr($buffer, 7);
         }
 
         // *** Source page ***
-        if ($number < 3) {
-            if ($level[$number + 1] == 'PAGE') {
-                if ($buffer6 == ($number + 1) . ' PAGE') {
-                    $processed = 1;
-                    $connect['page'][$connect_nr] = substr($buffer, 7);
-                }
-                if ($buffer6 == ($number + 2) . ' CONT') {
-                    $processed = 1;
-                    $connect['page'][$connect_nr] .= $this->cont(substr($buffer, 7));
-                }
-                if ($buffer6 == ($number + 2) . ' CONC') {
-                    $processed = 1;
-                    $connect['page'][$connect_nr] .= $this->conc(substr($buffer, 7));
-                }
+        if ($number < 3 && $level[$number + 1] == 'PAGE') {
+            if ($buffer6 === ($number + 1) . ' PAGE') {
+                $processed = 1;
+                $connect['page'][$connect_nr] = substr($buffer, 7);
+            }
+            if ($buffer6 === ($number + 2) . ' CONT') {
+                $processed = 1;
+                $connect['page'][$connect_nr] .= $this->cont(substr($buffer, 7));
+            }
+            if ($buffer6 === ($number + 2) . ' CONC') {
+                $processed = 1;
+                $connect['page'][$connect_nr] .= $this->conc(substr($buffer, 7));
             }
         }
 
         // *** Source role ***
-        if ($buffer6 == ($number + 1) . ' ROLE') {
+        if ($buffer6 === ($number + 1) . ' ROLE') {
             $processed = 1;
             $connect['role'][$connect_nr] = substr($buffer, 7);
         }
 
         // *** Source date ***
-        if ($buffer6 == ($number + 1) . ' DATE') {
+        if ($buffer6 === ($number + 1) . ' DATE') {
             $processed = 1;
             $connect['date'][$connect_nr] = substr($buffer, 7);
             //$processed=1; $source["source_date"][$nrsource]=substr($buffer, 7);
         }
         // *** Source place ***
-        if ($buffer6 == ($number + 1) . ' PLAC') {
+        if ($buffer6 === ($number + 1) . ' PLAC') {
             $processed = 1;
             $connect['place'][$connect_nr] = substr($buffer, 7);
             //$processed=1; $source["source_place"][$nrsource]=substr($buffer, 7);
@@ -6501,7 +6514,7 @@ function non_processed_items($buffer){
         //}
 
         // *** Source quality, stored in connection table ***
-        if ($buffer6 == ($number + 1) . ' QUAY') {
+        if ($buffer6 === ($number + 1) . ' QUAY') {
             $processed = 1;
             $connect['quality'][$connect_nr] = $this->process_quality($buffer);
         }
@@ -6514,7 +6527,7 @@ function non_processed_items($buffer){
     * if ($level[3]=='OBJE' AND substr($buffer,7,1)!='@'){ $this->process_picture('connect',$calculated_connect_id,'picture', $buffer); }
     * if ($level[1]=='OBJE') $this->process_picture('source',$source["id"],'picture', $buffer);
     */
-    function process_picture($connect_kind, $connect_id, $picture, $buffer)
+    function process_picture($connect_kind, $connect_id, $picture, $buffer): void
     {
         global $level, $processed;
         global $event, $event_nr, $event2, $event2_nr;
@@ -6569,7 +6582,7 @@ function non_processed_items($buffer){
             $test_number2 = '3';
         }
         // *** Picture by event ***
-        elseif (substr($picture, 0, 13) == 'picture_event') {
+        elseif (substr($picture, 0, 13) === 'picture_event') {
             $event_picture = true;
             $test_level = 'level3';
             $test_number1 = '2';
@@ -6582,7 +6595,7 @@ function non_processed_items($buffer){
         // 4 FORM jpeg
         // 4 NOTE @N26@
         // 4 FILE ImgFile.JPG
-        if ($connect_kind == 'connect' and $picture == 'picture') {
+        if ($connect_kind == 'connect' && $picture == 'picture') {
             $test_level = 'level4';
             $test_number1 = '3';
             $test_number2 = '4';
@@ -6590,7 +6603,7 @@ function non_processed_items($buffer){
 
         // *** External object/ image (could be multiple lines, they will be processed!) ***
         // 1 OBJE @O3@
-        if ($buffer6 == $test_number1 . ' OBJE' and substr($buffer, 7, 1) == '@') {
+        if ($buffer6 === $test_number1 . ' OBJE' && substr($buffer, 7, 1) === '@') {
             // *** Connection to seperate object (image) stored in connection table ***
             $processed = 1;
             $connect_nr++;
@@ -6613,10 +6626,10 @@ function non_processed_items($buffer){
             $connect['source_id'][$connect_nr] = '';
             $connect['item_id'][$connect_nr] = '';
             //$connect['text'][$connect_nr]='';
-            if (substr($buffer, 7, 1) == '@') {
+            if (substr($buffer, 7, 1) === '@') {
                 // *** Saved as source_id in database, but connect_item_id is probably better... ***
                 $connect['source_id'][$connect_nr] = substr($buffer, 8, -1);
-                if ($add_tree == true or $reassign == true) {
+                if ($add_tree == true || $reassign == true) {
                     $connect['source_id'][$connect_nr] = $this->reassign_ged(substr($buffer, 8, -1), 'O');
                 }
             } else {
@@ -6633,7 +6646,7 @@ function non_processed_items($buffer){
         // *** Objects without reference ***
         // 3 OBJE H:\haza21v3\plaatjes\IM000247.jpg
         // *** Skip link to object with reference: 1 OBJE @O3@ ***
-        if ($buffer6 == $test_number1 . ' OBJE' and substr($buffer, 7, 1) != '@') {
+        if ($buffer6 === $test_number1 . ' OBJE' && substr($buffer, 7, 1) !== '@') {
             $processed = 1;
             if ($event_picture == true) {
                 // *** Process picture by event ***
@@ -6667,10 +6680,11 @@ function non_processed_items($buffer){
                 $processed = 1;
                 $photo = substr($buffer, 7);
                 $photo = $this->humo_basename($photo);
-                if ($event_picture == true)
+                if ($event_picture == true) {
                     $event2['event'][$event2_nr] = $photo;
-                else
+                } else {
                     $event['event'][$event_nr] = $photo;
+                }
             }
         }
 
@@ -6679,23 +6693,25 @@ function non_processed_items($buffer){
         // 2 FORM URL
         // 2 TITL GEDCOM 5.5 documentation web site
         // 2 FILE http://homepages.rootsweb.com/~pmcbride/gedcom/55gctoc.htm
-        if (substr($buffer, 0, 10) == $test_number2 . ' FORM URL') {
+        if (substr($buffer, 0, 10) === $test_number2 . ' FORM URL') {
             $processed = 1;
-            if ($event_picture == true)
+            if ($event_picture == true) {
                 $event2['kind'][$event2_nr] = 'URL';
-            else
+            } else {
                 $event['kind'][$event_nr] = 'URL';
+            }
         }
 
-        if ($buffer6 == $test_number2 . ' FILE') {
+        if ($buffer6 === $test_number2 . ' FILE') {
             $processed = 1;
             $photo = substr($buffer, 7);
             // *** Aldfaer sometimes uses: 2 FILE \bestand.jpg ***
             $photo = $this->humo_basename($photo);
-            if ($event_picture == true)
+            if ($event_picture == true) {
                 $event2['event'][$event2_nr] = $photo;
-            else
+            } else {
                 $event['event'][$event_nr] = $photo;
+            }
         }
 
         // *** Aldfaer ***
@@ -6704,47 +6720,49 @@ function non_processed_items($buffer){
         //if ($level[2]=='TITL'){
         if ($level[$test_number2] == 'TITL') {
             $processed = 1;
-            if ($event_picture == true)
+            if ($event_picture == true) {
                 $event2['text'][$event2_nr] = $this->process_texts($event2['text'][$event2_nr], $buffer, $test_number2);
-            else
+            } else {
                 $event['text'][$event_nr] = $this->process_texts($event['text'][$event_nr], $buffer, $test_number2);
+            }
         }
 
         // *** 2 FORM jpeg ***
         //if ($level[2]=='FORM'){
         if ($level[$test_number2] == 'FORM') {
             $processed = 1;
-            if ($event_picture == true)
+            if ($event_picture == true) {
                 $event2['event_extra'][$event2_nr] = substr($buffer, 7);
-            else
+            } else {
                 $event['event_extra'][$event_nr] = substr($buffer, 7);
+            }
         }
 
         // *** Text by photo Haza-21 ***
         if ($level[2] == 'NOTE') {
-            if ($event_picture == true)
+            if ($event_picture == true) {
                 $event2['text'][$event2_nr] = $this->process_texts($event2['text'][$event2_nr], $buffer, $test_number2);
-            else
+            } else {
                 $event['text'][$event_nr] = $this->process_texts($event['text'][$event_nr], $buffer, $test_number2);
+            }
         }
 
-        if ($buffer6 == $test_number2 . ' DATE') {
+        if ($buffer6 === $test_number2 . ' DATE') {
             $processed = 1;
-            if ($event_picture == true)
+            if ($event_picture == true) {
                 $event2['date'][$event2_nr] = substr($buffer, 7);
-            else
+            } else {
                 $event['date'][$event_nr] = substr($buffer, 7);
+            }
         }
 
         // *** Source by pictures ***
         if ($event_picture == true) {
             // no source by picture by event at this moment...
-        } else {
+        } elseif ($level[2] == 'SOUR' && $level[3] != 'OBJE') {
             //if ($level[2]=='SOUR'){
             // *** Don't process a source by a object by a source. The script will stop with error ***
-            if ($level[2] == 'SOUR' and $level[3] != 'OBJE') {
-                $this->process_sources('person', 'pers_event_source', $calculated_event_id, $buffer, $test_number2);
-            }
+            $this->process_sources('person', 'pers_event_source', $calculated_event_id, $buffer, $test_number2);
         }
     }
 

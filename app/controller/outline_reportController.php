@@ -32,7 +32,7 @@ class Outline_reportController
         $dates_behind_names = $OutlineReportModel->getDatesBehindNames();
         $nr_generations = $OutlineReportModel->getNrGenerations($humo_option);
 
-        $data = array(
+        return array(
             "family_id" => $family_id,
             "main_person" => $main_person,
             "family_expanded" => $family_expanded,
@@ -55,8 +55,6 @@ class Outline_reportController
 
         // TODO use array merge
         // *** Add array $person_data:
-        //$data = array_merge($data, $person_data);  
-
-        return $data;
+        //$data = array_merge($data, $person_data);
     }
 }

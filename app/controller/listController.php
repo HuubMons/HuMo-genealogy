@@ -30,7 +30,7 @@ class ListController
             $_GET['adv_search'] = '1';
         }
 
-        if (isset($_POST['pers_firstname']) or isset($_GET['pers_lastname']) or isset($_GET['pers_firstname']) or isset($_GET['reset']) or isset($_POST['quicksearch'])) {
+        if (isset($_POST['pers_firstname']) || isset($_GET['pers_lastname']) || isset($_GET['pers_firstname']) || isset($_GET['reset']) || isset($_POST['quicksearch'])) {
             unset($_SESSION["save_search_tree_prefix"]);
             unset($_SESSION["save_select_trees"]);
             unset($_SESSION["save_adv_search"]);
@@ -56,9 +56,7 @@ class ListController
 
 
         $person_result = $listModel->build_query($dbh, $tree_id, $user, $humo_option);
-        
-
-        $data = array(
+        return array(
             "index_list" => $index_list,
             "order" => $order,
             "desc_asc" => $desc_asc,
@@ -88,6 +86,5 @@ class ListController
             "count_persons" => $person_result["count_persons"],
             "item" => $person_result["item"],
         );
-        return $data;
     }
 }

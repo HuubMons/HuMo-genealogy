@@ -153,11 +153,7 @@ if (@$person_result->rowCount() == 0) {
 
     // *** Normal or expanded list ***
     if (isset($_POST['list_expanded'])) {
-        if ($_POST['list_expanded'] == '0') {
-            $_SESSION['save_list_expanded'] = '0';
-        } else {
-            $_SESSION['save_list_expanded'] = '1';
-        }
+        $_SESSION['save_list_expanded'] = $_POST['list_expanded'] == '0' ? '0' : '1';
     }
     $list_expanded = true; // *** Default value ***
     if (isset($_SESSION['save_list_expanded'])) {
@@ -234,10 +230,11 @@ $selected_place = "";
         $family_privacy = $marriage_cls->privacy;
 
         // *** $family_privacy=true => filter ***
-        if ($family_privacy)
+        if ($family_privacy) {
             $privcount++;
-        else
+        } else {
             show_person($familyDb);
+        }
     }
     ?>
 </table><br>
@@ -274,10 +271,7 @@ function show_person($familyDb)
     global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
     global $data;
 
-    if ($familyDb->fam_man)
-        $selected_person1 = $familyDb->fam_man;
-    else
-        $selected_person1 = $familyDb->fam_woman;
+    $selected_person1 = $familyDb->fam_man ? $familyDb->fam_man : $familyDb->fam_woman;
     $personDb = $db_functions->get_person($selected_person1);
 
     // *** Person class used for name and person pop-up data ***
@@ -292,11 +286,9 @@ function show_person($familyDb)
         $index_name = __('Name filtered');
     } else {
         // *** If there is no lastname, show a - character. ***
-        if ($personDb->pers_lastname == "") {
-            // Don't show a "-" by pers_patronymes
-            if (!isset($_GET['pers_patronym'])) {
-                $index_name = "-&nbsp;&nbsp;";
-            }
+        // Don't show a "-" by pers_patronymes
+        if ($personDb->pers_lastname == "" && !isset($_GET['pers_patronym'])) {
+            $index_name = "-&nbsp;&nbsp;";
         }
         $index_name .= $name["index_name_extended"] . $name["colour_mark"];
     }
@@ -312,31 +304,35 @@ function show_person($familyDb)
         <td valign="top" style="white-space:nowrap;width:90px">
             <?php
             if ($data["select_marriage_notice"] == '1') {
-                if ($selected_place == $familyDb->fam_marr_notice_place)
+                if ($selected_place == $familyDb->fam_marr_notice_place) {
                     echo '<span class="place_index place_index_selected">' . __('&infin;') . '</span>';
-                else
+                } else {
                     echo '<span class="place_index">&nbsp;</span>';
+                }
             }
 
             if ($data["select_marriage_notice_religious"] == '1') {
-                if ($selected_place == $familyDb->fam_marr_church_notice_place)
+                if ($selected_place == $familyDb->fam_marr_church_notice_place) {
                     echo '<span class="place_index place_index_selected">' . __('o') . '</span>';
-                else
+                } else {
                     echo '<span class="place_index">&nbsp;</span>';
+                }
             }
 
             if ($data["select_marriage"] == '1') {
-                if ($selected_place == $familyDb->fam_marr_place)
+                if ($selected_place == $familyDb->fam_marr_place) {
                     echo '<span class="place_index place_index_selected">' . __('X') . '</span>';
-                else
+                } else {
                     echo '<span class="place_index">&nbsp;</span>';
+                }
             }
 
             if ($data["select_marriage_religious"] == '1') {
-                if ($selected_place == $familyDb->fam_marr_church_place)
+                if ($selected_place == $familyDb->fam_marr_church_place) {
                     echo '<span class="place_index place_index_selected">' . __('x') . '</span>';
-                else
+                } else {
                     echo '<span class="place_index">&nbsp;</span>';
+                }
             }
             ?>
         </td>
@@ -348,13 +344,10 @@ function show_person($familyDb)
 
             // *** Show picture man or wife ***
             if ($personDb->pers_sexe == "M") {
-                //echo $dirmark1 . ' <img src="images/man.gif" alt="man" style="vertical-align:top">';
                 echo $dirmark1 . ' <img src="images/man.gif" alt="man">';
             } elseif ($personDb->pers_sexe == "F") {
-                //echo $dirmark1 . ' <img src="images/woman.gif" alt="woman" style="vertical-align:top">';
                 echo $dirmark1 . ' <img src="images/woman.gif" alt="woman">';
             } else {
-                //echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown" style="vertical-align:top">';
                 echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
             }
 
@@ -369,7 +362,7 @@ function show_person($familyDb)
             echo ' <a href="' . $start_url . '">' . rtrim($index_name) . '</a>';
 
             //*** Show spouse/ partner ***
-            if ($list_expanded == true and $personDb->pers_fams) {
+            if ($list_expanded == true && $personDb->pers_fams) {
                 $marriage_array = explode(";", $personDb->pers_fams);
                 // *** Code to show only last marriage ***
                 $nr_marriages = count($marriage_array);
@@ -378,18 +371,21 @@ function show_person($familyDb)
                     $fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
 
                     // *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
-                    if ($personDb->pers_gedcomnumber == $fam_partnerDb->fam_man)
+                    if ($personDb->pers_gedcomnumber == $fam_partnerDb->fam_man) {
                         $partner_id = $fam_partnerDb->fam_woman;
-                    else
+                    } else {
                         $partner_id = $fam_partnerDb->fam_man;
+                    }
 
                     $relation_short = __('&amp;');
-                    if ($fam_partnerDb->fam_marr_date or $fam_partnerDb->fam_marr_place or $fam_partnerDb->fam_marr_church_date or $fam_partnerDb->fam_marr_church_place)
+                    if ($fam_partnerDb->fam_marr_date || $fam_partnerDb->fam_marr_place || $fam_partnerDb->fam_marr_church_date || $fam_partnerDb->fam_marr_church_place) {
                         $relation_short = __('X');
-                    if ($fam_partnerDb->fam_div_date or $fam_partnerDb->fam_div_place)
+                    }
+                    if ($fam_partnerDb->fam_div_date || $fam_partnerDb->fam_div_place) {
                         $relation_short = __(') (');
+                    }
 
-                    if ($partner_id != '0' and $partner_id != '') {
+                    if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
 
                         $partner_cls = new person_cls;
@@ -399,20 +395,30 @@ function show_person($familyDb)
                         $name["standard_name"] = __('N.N.');
                     }
 
-                    if ($nr_marriages > 1) echo ',';
+                    if ($nr_marriages > 1) {
+                        echo ',';
+                    }
                     if (@$partnerDb->pers_gedcomnumber != $familyDb->fam_woman) {
                         // *** Show actual relation/ marriage in special font ***
                         echo ' <span class="index_partner" style="font-size:10px;">';
-                    } else echo ' ';
+                    } else {
+                        echo ' ';
+                    }
                     if ($nr_marriages > 1) {
-                        if ($x == 0) echo __('1st');
-                        elseif ($x == 1) echo ' ' . __('2nd');
-                        elseif ($x == 2) echo ' ' . __('3rd');
-                        elseif ($x > 2) echo ' ' . ($x + 1) . __('th');
+                        if ($x == 0) {
+                            echo __('1st');
+                        } elseif ($x == 1) {
+                            echo ' ' . __('2nd');
+                        } elseif ($x == 2) {
+                            echo ' ' . __('3rd');
+                        } elseif ($x > 2) {
+                            echo ' ' . ($x + 1) . __('th');
+                        }
                     }
                     echo ' ' . $relation_short . ' ' . rtrim($name["standard_name"]);
-                    if (@$partnerDb->pers_gedcomnumber != $familyDb->fam_woman)
+                    if (@$partnerDb->pers_gedcomnumber != $familyDb->fam_woman) {
                         echo '</span>';
+                    }
                 }
             }
             // *** End spouse/ partner ***
@@ -422,49 +428,69 @@ function show_person($familyDb)
         <td style="white-space:nowrap;">
             <?php
             $info = "";
-            if ($familyDb->fam_marr_church_notice_date)
+            if ($familyDb->fam_marr_church_notice_date) {
                 $info = __('o') . ' ' . date_place($familyDb->fam_marr_church_notice_date, '');
-            if ($familyDb->fam_marr_notice_date)
+            }
+            if ($familyDb->fam_marr_notice_date) {
                 $info = __('&infin;') . ' ' . date_place($familyDb->fam_marr_notice_date, '');
+            }
             //echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
-            if ($privacy and $info) echo ' ' . __('PRIVACY FILTER');
-            else echo $info;
+            if ($privacy && $info) {
+                echo ' ' . __('PRIVACY FILTER');
+            } else {
+                echo $info;
+            }
             ?>
         </td>
 
         <td>
             <?php
             $info = "";
-            if ($familyDb->fam_marr_church_notice_place)
+            if ($familyDb->fam_marr_church_notice_place) {
                 $info = __('o') . ' ' . $familyDb->fam_marr_church_notice_place;
-            if ($familyDb->fam_marr_notice_place)
+            }
+            if ($familyDb->fam_marr_notice_place) {
                 $info = __('&infin;') . ' ' . $familyDb->fam_marr_notice_place;
-            if ($privacy and $info) echo ' ' . __('PRIVACY FILTER');
-            else echo $info;
+            }
+            if ($privacy && $info) {
+                echo ' ' . __('PRIVACY FILTER');
+            } else {
+                echo $info;
+            }
             ?>
         </td>
 
         <td style="white-space:nowrap;">
             <?php
             $info = "";
-            if ($familyDb->fam_marr_church_date)
+            if ($familyDb->fam_marr_church_date) {
                 $info = __('x') . ' ' . date_place($familyDb->fam_marr_church_date, '');
-            if ($familyDb->fam_marr_date)
+            }
+            if ($familyDb->fam_marr_date) {
                 $info = __('X') . ' ' . date_place($familyDb->fam_marr_date, '');
-            if ($privacy and $info) echo ' ' . __('PRIVACY FILTER');
-            else echo $info;
+            }
+            if ($privacy && $info) {
+                echo ' ' . __('PRIVACY FILTER');
+            } else {
+                echo $info;
+            }
             ?>
         </td>
 
         <td>
             <?php
             $info = "";
-            if ($familyDb->fam_marr_church_place)
+            if ($familyDb->fam_marr_church_place) {
                 $info = __('x') . ' ' . $familyDb->fam_marr_church_place;
-            if ($familyDb->fam_marr_place)
+            }
+            if ($familyDb->fam_marr_place) {
                 $info = __('X') . ' ' . $familyDb->fam_marr_place;
-            if ($privacy and $info) echo ' ' . __('PRIVACY FILTER');
-            else echo $info;
+            }
+            if ($privacy && $info) {
+                echo ' ' . __('PRIVACY FILTER');
+            } else {
+                echo $info;
+            }
             ?>
         </td>
     </tr>

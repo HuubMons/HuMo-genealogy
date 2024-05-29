@@ -11,7 +11,7 @@
 
 //TODO use seperate file for RTF?
 $screen_mode = '';
-if (isset($_POST["screen_mode"]) and $_POST["screen_mode"] == 'RTF') {
+if (isset($_POST["screen_mode"]) && $_POST["screen_mode"] == 'RTF') {
     $screen_mode = 'RTF';
 }
 
@@ -20,12 +20,12 @@ if (isset($_POST["screen_mode"]) and $_POST["screen_mode"] == 'RTF') {
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-if ($screen_mode != 'RTF') {
+if ($screen_mode !== 'RTF') {
     //echo '<h1 class="standard_header">'.__('Ancestor report').'</h1>';
     echo $data["ancestor_header"];
 }
 
-if ($screen_mode == 'RTF') {  // initialize rtf generation
+if ($screen_mode === 'RTF') {  // initialize rtf generation
     require_once __DIR__ . '/../include/phprtflite/lib/PHPRtfLite.php';
 
     // *** registers PHPRtfLite autoloader (spl) ***
@@ -84,9 +84,9 @@ if ($screen_mode == 'RTF') {  // initialize rtf generation
     // *** Automatically remove old RTF files ***
     $dh  = opendir('tmp_files');
     while (false !== ($filename = readdir($dh))) {
-        if (substr($filename, -3) == "rtf") {
-            // *** Remove files older then today ***
-            if (substr($filename, 0, 10) != date("Y_m_d")) unlink('tmp_files/' . $filename);
+        // *** Remove files older then today ***
+        if (substr($filename, -3) == "rtf" && substr($filename, 0, 10) !== date("Y_m_d")) {
+            unlink('tmp_files/' . $filename);
         }
     }
 }
@@ -150,7 +150,7 @@ $language["gen48"] = __('45th Great-Grandparents');
 $language["gen49"] = __('46th Great-Grandparents');
 $language["gen50"] = __('47th Great-Grandparents');
 
-if ($screen_mode != 'RTF') {
+if ($screen_mode !== 'RTF') {
     echo '<table style="border-style:none" align="center"><tr><td></td></tr>';
 }
 
@@ -170,18 +170,18 @@ while (isset($ancestor_array2[0])) {
     $marriage_gedcomnumber = $marriage_gedcomnumber2;
     unset($marriage_gedcomnumber2);
 
-    if ($screen_mode != 'RTF') {
+    if ($screen_mode !== 'RTF') {
         echo '</table>';
 
         if (isset($data["rom_nr"][$generation])) {
             echo '<h2 class="standard_header">' . __('generation ') . $data["rom_nr"][$generation];
         }
-        if (isset($language["gen" . $generation]) and $language["gen" . $generation]) {
+        if (isset($language["gen" . $generation]) && $language["gen" . $generation]) {
             echo ' (' . $language["gen" . $generation] . ')';
         }
 
         if ($generation == 1) {
-            if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
+            if ($user["group_pdf_button"] == 'y' && $language["dir"] != "rtl" && $language["name"] != "简体中文") {
                 // Show pdf button
 
                 //$vars['id'] = $data["main_person"];
@@ -205,7 +205,7 @@ while (isset($ancestor_array2[0])) {
             <?php
             }
 
-            if ($user["group_rtf_button"] == 'y' and $language["dir"] != "rtl") {
+            if ($user["group_rtf_button"] == 'y' && $language["dir"] != "rtl") {
                 // Show rtf button
                 $vars['id'] = $data["main_person"];
                 $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
@@ -226,13 +226,15 @@ while (isset($ancestor_array2[0])) {
         echo '</h2><br>';
 
         echo '<table class="humo standard" align="center">';
-    } elseif ($screen_mode == "RTF") {
+    } elseif ($screen_mode === "RTF") {
         $rtf_text = __('generation ') . $data["rom_nr"][$generation];
         $sect->writeText($rtf_text, $arial14, $parGen);
     }
+    // *** Loop per generation ***
+    $counter = count($ancestor_array);
 
     // *** Loop per generation ***
-    for ($i = 0; $i < count($ancestor_array); $i++) {
+    for ($i = 0; $i < $counter; $i++) {
 
         $listednr = '';
         // Check this code, can be improved?
@@ -253,7 +255,7 @@ while (isset($ancestor_array2[0])) {
             $man_cls = new person_cls($person_manDb);
             $privacy_man = $man_cls->privacy;
 
-            if (strtolower($person_manDb->pers_sexe) == 'm' and $ancestor_number[$i] > 1) {
+            if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
                 @$familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
                 // *** Use privacy filter of woman ***
@@ -265,7 +267,7 @@ while (isset($ancestor_array2[0])) {
                 $marriage_cls = new marriage_cls($familyDb, $privacy_man, $privacy_woman);
                 $family_privacy = $marriage_cls->privacy;
             }
-            if ($screen_mode != 'RTF') {
+            if ($screen_mode !== 'RTF') {
                 echo '<tr><td valign="top" width="80" nowrap><b>' . $ancestor_number[$i] .
                     '</b> (' . floor($ancestor_number[$i] / 2) . ')</td>';
 
@@ -281,7 +283,7 @@ while (isset($ancestor_array2[0])) {
                 }
                 echo '</div>';
                 echo '</td></tr>';
-            } elseif ($screen_mode == "RTF") {
+            } elseif ($screen_mode === "RTF") {
                 $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
                 $table = $sect->addTable();
                 $table->addRow(1);
@@ -294,12 +296,13 @@ while (isset($ancestor_array2[0])) {
                 $rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
                 $cell = $table->getCell(1, 2);
 
-                if ($person_manDb->pers_sexe == "M")
+                if ($person_manDb->pers_sexe == "M") {
                     $cell->addImage('images/man.jpg', null);
-                elseif ($person_manDb->pers_sexe == "F")
+                } elseif ($person_manDb->pers_sexe == "F") {
                     $cell->addImage('images/woman.jpg', null);
-                else
+                } else {
                     $cell->addImage('images/unknown.jpg', null);
+                }
 
                 $cell = $table->getCell(1, 3);
                 $cell->writeText($rtf_text, $arial12, $parNames);
@@ -312,14 +315,14 @@ while (isset($ancestor_array2[0])) {
                 $cell->writeText($rtf_text, $arial12, $parNames);
 
                 $result = show_media('person', $person_manDb->pers_gedcomnumber);
-                if (isset($result[1]) and count($result[1]) > 0) {
+                if (isset($result[1]) && count($result[1]) > 0) {
                     $break = 1;
                     $textarr = array();
                     $goodpics = FALSE;
                     foreach ($result[1] as $key => $value) {
                         if (strpos($key, "path") !== FALSE) {
                             $type = substr($result[1][$key], -3);
-                            if ($type == "jpg" or $type == "png") {
+                            if ($type === "jpg" || $type === "png") {
                                 if ($goodpics == FALSE) { //found 1st pic - make table
                                     $table2 = $sect->addTable();
                                     $table2->addRow(0.1);
@@ -338,7 +341,9 @@ while (isset($ancestor_array2[0])) {
                                 }
                             }
                         }
-                        if ($break == 3) break; // max 2 pics
+                        if ($break == 3) {
+                            break;
+                        } // max 2 pics
                     }
                     $break1 = 1;
                     if (count($textarr) > 0) {
@@ -353,24 +358,24 @@ while (isset($ancestor_array2[0])) {
             }
 
             // Show own marriage (new line, after man)
-            if (strtolower($person_manDb->pers_sexe) == 'm' and $ancestor_number[$i] > 1) {
-                if ($screen_mode != 'RTF') {
+            if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
+                if ($screen_mode !== 'RTF') {
                     echo '<tr><td>&nbsp;</td><td>';
                     echo '<span class="marriage">';
                 }
                 if ($family_privacy) {
-                    if ($screen_mode != 'RTF') {
+                    if ($screen_mode !== 'RTF') {
                         echo __(' to: ');
-                    } elseif ($screen_mode == "RTF") {
+                    } elseif ($screen_mode === "RTF") {
                         $rtf_text = __(' to: ');
                         $sect->writeText($rtf_text, $arial12, $parSimple);
                     }
 
                     // If privacy filter is activated, show divorce
-                    if ($familyDb->fam_div_date or $familyDb->fam_div_place) {
-                        if ($screen_mode != 'RTF') {
+                    if ($familyDb->fam_div_date || $familyDb->fam_div_place) {
+                        if ($screen_mode !== 'RTF') {
                             echo ' <span class="divorse">(' . trim(__('divorced ')) . ')</span>';
-                        } elseif ($screen_mode == "RTF") {
+                        } elseif ($screen_mode === "RTF") {
                             $rtf_text = trim(__('divorced '));
                             $sect->writeText($rtf_text, $arial12, $parSimple);
                         }
@@ -383,21 +388,21 @@ while (isset($ancestor_array2[0])) {
                     // To calculate age by marriage.
                     $parent1Db = $person_manDb;
                     $parent2Db = $person_womanDb;
-                    if ($screen_mode != 'RTF') {
+                    if ($screen_mode !== 'RTF') {
                         echo $marriage_cls->marriage_data();
-                    } elseif ($screen_mode == "RTF") {
+                    } elseif ($screen_mode === "RTF") {
                         $rtf_text = strip_tags($marriage_cls->marriage_data(), "<b><i>");
                         $sect->writeText($rtf_text, $arial12, $parSimple);
                     }
                 }
-                if ($screen_mode != 'RTF') {
+                if ($screen_mode !== 'RTF') {
                     echo '</span>';
                     echo '</td></tr>';
                 }
             }
 
             // ==	Check for parents
-            if ($person_manDb->pers_famc  and $listednr == '') {
+            if ($person_manDb->pers_famc && $listednr == '') {
                 @$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
                 if ($family_parentsDb->fam_man) {
                     $ancestor_array2[] = $family_parentsDb->fam_man;
@@ -423,7 +428,7 @@ while (isset($ancestor_array2[0])) {
             $man_cls = new person_cls($person_manDb);
             $privacy_man = $man_cls->privacy;
 
-            if ($screen_mode != 'RTF') {
+            if ($screen_mode !== 'RTF') {
                 echo '<tr><td valign="top" width="80" nowrap><b>' . $ancestor_number[$i] .
                     '</b> (' . floor($ancestor_number[$i] / 2) . ')</td>';
 
@@ -435,7 +440,7 @@ while (isset($ancestor_array2[0])) {
                 echo $man_cls->person_data("standard", $ancestor_array[$i]);
                 echo '</div>';
                 echo '</td></tr>';
-            } elseif ($screen_mode == "RTF") {
+            } elseif ($screen_mode === "RTF") {
                 $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
                 $table = $sect->addTable();
                 $table->addRow(1);
@@ -446,12 +451,13 @@ while (isset($ancestor_array2[0])) {
                 $cell->writeText($rtf_text, $arial10, $parNames);
                 $cell = $table->getCell(1, 2);
 
-                if ($person_manDb and $person_manDb->pers_sexe == "M")
+                if ($person_manDb && $person_manDb->pers_sexe == "M") {
                     $cell->addImage('images/man.jpg', null);
-                elseif ($person_manDb and $person_manDb->pers_sexe == "F")
+                } elseif ($person_manDb && $person_manDb->pers_sexe == "F") {
                     $cell->addImage('images/woman.jpg', null);
-                else
+                } else {
                     $cell->addImage('images/unknown.jpg', null);
+                }
 
                 $rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
                 $cell = $table->getCell(1, 3);
@@ -468,18 +474,18 @@ while (isset($ancestor_array2[0])) {
 }    // loop ancestor report
 
 // Finishing code for ancestor report
-if ($screen_mode == '') {
+if ($screen_mode === '') {
     echo '</table>';
     // *** If source footnotes are selected, show them here ***
-    if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_presentation'] == 'footnote') {
+    if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
         echo show_sources_footnotes();
     }
 }
 
 // Finishing code for ancestor chart and ancestor report
-if ($screen_mode != 'RTF') {
+if ($screen_mode !== 'RTF') {
     echo '<br><br>';
-} elseif ($screen_mode == 'RTF') { // initialize rtf generation
+} elseif ($screen_mode === 'RTF') { // initialize rtf generation
     // *** Save rtf document to file ***
     $rtf->save($file_name);
 

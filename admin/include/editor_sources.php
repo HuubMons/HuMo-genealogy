@@ -20,23 +20,31 @@ if (isset($_SESSION['admin_fam_gedcomnumber'])) {
 
 // *** Needed for event sources ***
 $connect_kind = '';
-if (isset($_GET['connect_kind'])) $connect_kind = $_GET['connect_kind'];
+if (isset($_GET['connect_kind'])) {
+    $connect_kind = $_GET['connect_kind'];
+}
 //if (isset($_POST['connect_kind'])) $connect_kind=$_POST['connect_kind'];
 
 $connect_sub_kind = '';
-if (isset($_GET['connect_sub_kind'])) $connect_sub_kind = $_GET['connect_sub_kind'];
+if (isset($_GET['connect_sub_kind'])) {
+    $connect_sub_kind = $_GET['connect_sub_kind'];
+}
 //if (isset($_POST['connect_sub_kind'])) $connect_sub_kind=$_POST['connect_sub_kind'];
 
 // *** Needed for event sources ***
 $connect_connect_id = '';
-if (isset($_GET['connect_connect_id']) and $_GET['connect_connect_id']) $connect_connect_id = $_GET['connect_connect_id'];
+if (isset($_GET['connect_connect_id']) && $_GET['connect_connect_id']) {
+    $connect_connect_id = $_GET['connect_connect_id'];
+}
 //if (isset($_POST['connect_connect_id']) AND $_POST['connect_connect_id']) $connect_connect_id=$_POST['connect_connect_id'];
 
 $event_link = '';
-if (isset($_POST['event_person']) or isset($_GET['event_person']))
+if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
     $event_link = '&event_person=1';
-if (isset($_POST['event_family']) or isset($_GET['event_family']))
+}
+if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
     $event_link = '&event_family=1';
+}
 
 $phpself2 = 'index.php?page=editor_sources&connect_kind=' . $connect_kind . '&connect_sub_kind=' . $connect_sub_kind . '&connect_connect_id=' . $connect_connect_id;
 $phpself2 .= $event_link;
@@ -227,10 +235,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
         <input type="submit" name="submit" title="submit" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
 
         <?php
-        if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+        if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
             echo '<input type="hidden" name="event_person" value="1">';
         }
-        if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+        if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
             echo '<input type="hidden" name="event_family" value="1">';
         }
 
@@ -263,10 +271,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                     echo '&amp;connect_kind=' . $connect_kind;
                     echo '&amp;connect_sub_kind=' . $connect_sub_kind;
                     echo '&amp;connect_connect_id=' . $connect_connect_id;
-                    if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+                    if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
                         echo '&amp;event_person=1';
                     }
-                    if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+                    if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
                         echo '&amp;event_family=1';
                     }
                     if (isset($marriage)) {
@@ -280,11 +288,16 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                         $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
 
                         $display = ' display:none;';
-                        if (!$sourceDb->source_title and !$sourceDb->source_text) $display = '';
+                        if (!$sourceDb->source_title && !$sourceDb->source_text) {
+                            $display = '';
+                        }
                         $hideshow = '8' . $connectDb->connect_id;
                         $text = '[' . $connectDb->connect_source_id . '] ';
-                        if ($sourceDb->source_title) $text .= htmlspecialchars($sourceDb->source_title);
-                        else $text .= ' [' . __('Source') . ']';
+                        if ($sourceDb->source_title) {
+                            $text .= htmlspecialchars($sourceDb->source_title);
+                        } else {
+                            $text .= ' [' . __('Source') . ']';
+                        }
                         echo ' <span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
                         //if ($check_text) $return_text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
                         echo '</span>';
@@ -296,9 +309,13 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                         //$field_text = 'style="height: 60px; width:550px"';
                         $field_text = 'style="height: 60px;"';
                         $connect_role = '';
-                        if ($connectDb->connect_role) $connect_role = $connectDb->connect_role;
+                        if ($connectDb->connect_role) {
+                            $connect_role = $connectDb->connect_role;
+                        }
                         $connect_place = '';
-                        if ($connectDb->connect_place) $connect_place = $connectDb->connect_place;
+                        if ($connectDb->connect_place) {
+                            $connect_place = $connectDb->connect_place;
+                        }
                         $field_extra_text = 'style="height: 20px; width:500px"';
                     ?>
                         <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
@@ -433,17 +450,17 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                             while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
                                 // TODO $selected not useful here?
                                 $selected = '';
-                                if ($connectDb->connect_source_id != '') {
-                                    if ($sourceDb->source_gedcomnr == $connectDb->connect_source_id) {
-                                        $selected = ' selected';
-                                    }
+                                if ($connectDb->connect_source_id != '' && $sourceDb->source_gedcomnr == $connectDb->connect_source_id) {
+                                    $selected = ' selected';
                                 }
                                 echo '<option value="' . @$sourceDb->source_gedcomnr . '"' . $selected . '>';
                                 if ($sourceDb->source_title) {
                                     echo $sourceDb->source_title;
                                 } else {
                                     echo substr($sourceDb->source_text, 0, 40);
-                                    if (strlen($sourceDb->source_text) > 40) echo '...';
+                                    if (strlen($sourceDb->source_text) > 40) {
+                                        echo '...';
+                                    }
                                 }
                                 echo ' [' . @$sourceDb->source_gedcomnr . ']</option>' . "\n";
                             }
@@ -459,10 +476,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                             &amp;connect_order=<?= $connectDb->connect_order; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>
                             &amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>
                     <?php
-                        if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+                        if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
                             echo '&amp;event_person=1';
                         }
-                        if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+                        if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
                             echo '&amp;event_family=1';
                         }
                     ?>
@@ -513,10 +530,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
         <form method="POST" action="<?= $phpself2; ?>">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <?php
-            if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+            if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
                 echo '<input type="hidden" name="event_person" value="1">';
             }
-            if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+            if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
                 echo '<input type="hidden" name="event_family" value="1">';
             }
             echo '<input type="hidden" name="connect_kind" value="' . $connect_kind . '">';

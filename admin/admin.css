@@ -222,13 +222,6 @@ div.rtlsddm #sub_2 ul {
     padding: 10px 0px 10px 10px;
 }
 
-/* Buttons */
-/* input { font-size: 10px; } */
-input.selected_item {
-    color: blue;
-    font-weight: bold;
-}
-
 /* Center buttons, etc. */
 .center {
     text-align: center;

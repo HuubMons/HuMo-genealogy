@@ -167,16 +167,17 @@ while (isset($ancestor_array2[0])) {
         $pdf->AddPage();
         $pdf->SetY(20);
     }
-    if (isset($language["gen" . $generation]) and $language["gen" . $generation]) {
+    if (isset($language["gen" . $generation]) && $language["gen" . $generation]) {
         $pdf->Cell(0, 8, pdf_convert(__('generation ') . $rom_nr[$generation] . ' (' . $language["gen" . $generation] . ')'), 0, 1, 'C', true);
-    } else {
-        if (isset($rom_nr[$generation]))
-            $pdf->Cell(0, 8, pdf_convert(__('generation ') . $rom_nr[$generation]), 0, 1, 'C', true);
+    } elseif (isset($rom_nr[$generation])) {
+        $pdf->Cell(0, 8, pdf_convert(__('generation ') . $rom_nr[$generation]), 0, 1, 'C', true);
     }
     $pdf->SetFont($pdf_font, '', 12);
+    // *** Loop per generation ***
+    $counter = count($ancestor_array);
 
     // *** Loop per generation ***
-    for ($i = 0; $i < count($ancestor_array); $i++) {
+    for ($i = 0; $i < $counter; $i++) {
 
         $listednr = '';
         // Check this code, can be improved?
@@ -197,7 +198,7 @@ while (isset($ancestor_array2[0])) {
             $man_cls = new person_cls($person_manDb);
             $privacy_man = $man_cls->privacy;
 
-            if (strtolower($person_manDb->pers_sexe) == 'm' and $ancestor_number[$i] > 1) {
+            if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
                 @$familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
                 // *** Use privacy filter of woman ***
@@ -256,9 +257,9 @@ while (isset($ancestor_array2[0])) {
                 $pdf->SetX($thisx);
             }
 
-            $temp = 0;
+            //$temp = 0;
             $temp = floor($ancestor_number[$i] % 2);
-            if ($ancestor_number[$i] > 1 and $temp == 1 and $i + 1 < count($ancestor_array)) {
+            if ($ancestor_number[$i] > 1 && $temp == 1 && $i + 1 < count($ancestor_array)) {
                 // if we're not in first generation (one person)
                 // and we are after writing the woman's details
                 // and there is at least one person of another family to come in this generation
@@ -276,13 +277,13 @@ while (isset($ancestor_array2[0])) {
             }
 
             // Show own marriage (new line, after man)
-            if (strtolower($person_manDb->pers_sexe) == 'm' and $ancestor_number[$i] > 1) {
+            if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
                 if ($family_privacy) {
                     $pdf->SetX(37);
                     $pdf->Write(6, __(' to: ') . "\n");
 
                     // If privacy filter is activated, show divorce
-                    if ($familyDb->fam_div_date or $familyDb->fam_div_place) {
+                    if ($familyDb->fam_div_date || $familyDb->fam_div_place) {
                         $pdf->Write(6, ' (' . trim(__('divorced ')) . ')');
                     }
                     // Show end of relation here?
@@ -302,7 +303,7 @@ while (isset($ancestor_array2[0])) {
             }
 
             // ==	Check for parents
-            if ($person_manDb->pers_famc  and $listednr == '') {
+            if ($person_manDb->pers_famc && $listednr == '') {
                 @$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
                 if ($family_parentsDb->fam_man) {
                     $ancestor_array2[] = $family_parentsDb->fam_man;
@@ -353,7 +354,7 @@ while (isset($ancestor_array2[0])) {
             }
             $temp = 0;
             $temp = floor($ancestor_number[$i] % 2);
-            if ($ancestor_number[$i] > 1 and $temp == 1 and $i + 1 < count($ancestor_array)) {
+            if ($ancestor_number[$i] > 1 && $temp == 1 && $i + 1 < count($ancestor_array)) {
                 // if we're not in first generation (one person)
                 // and we are after writing the woman's details
                 // and there is at least one person of another family to come in this generation
@@ -392,7 +393,7 @@ if ($screen_mode == "PDF" and !empty($pdf_source) and ($data["source_presentatio
                     $pdf->Write(6, __('Title:') . " ");
                     $pdf->SetFont($pdf_font, '', 10);
                     $txt = ' ' . trim($sourceDb->source_title);
-                    if ($sourceDb->source_date or $sourceDb->source_place) {
+                    if ($sourceDb->source_date || $sourceDb->source_place) {
                         $txt .= " " . date_place($sourceDb->source_date, $sourceDb->source_place);
                     }
                     $pdf->Write(6, $txt . "\n");

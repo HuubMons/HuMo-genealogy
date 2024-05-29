@@ -63,7 +63,7 @@ include(__DIR__ . '/../include/editor_event_cls.php');
 $event_cls = new editor_event_cls;
 
 // *** Editor icon for admin and editor: select family tree ***
-if (isset($tree_id) and $tree_id) {
+if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
 
@@ -144,7 +144,8 @@ $person_found = true;
                         <option value=""><?= __('Latest changes'); ?></option>
                         <?php
                         if (isset($pers_id)) {
-                            for ($i = 0; $i < count($pers_id); $i++) {
+                            $counter = count($pers_id);
+                            for ($i = 0; $i < $counter; $i++) {
                                 $person2_qry = "SELECT * FROM humo_persons WHERE pers_id='" . $pers_id[$i] . "'";
                                 $person2_result = $dbh->query($person2_qry);
                                 $person2 = $person2_result->fetch(PDO::FETCH_OBJ);
@@ -275,14 +276,16 @@ $person_found = true;
                 $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($editor['pers_gedcomnumber']) . "'";
                 $person_result = $dbh->query($person_qry);
                 $person = $person_result->fetch(PDO::FETCH_OBJ);
-                if ($person) $pers_gedcomnumber = $person->pers_gedcomnumber;
+                if ($person) {
+                    $pers_gedcomnumber = $person->pers_gedcomnumber;
+                }
             }
             ?>
             <!--            </div> -->
 
             <div class="col-md-auto">
                 <?php
-                if ($editor['search_name'] != '' and isset($person_result)) {
+                if ($editor['search_name'] != '' && isset($person_result)) {
                     $nr_persons = $person_result->rowCount();
                     // *** No person found ***
                     if ($nr_persons == 0) {
@@ -316,10 +319,8 @@ $person_found = true;
                                     // Probably not needed at this moment. Query contains all data.
                                     $person2 = $db_functions->get_person_with_id($person->pers_id);
                                     $selected = '';
-                                    if (!isset($_POST["search_quicksearch"]) and isset($pers_gedcomnumber)) {
-                                        if ($person2->pers_gedcomnumber == $pers_gedcomnumber) {
-                                            $selected = ' selected';
-                                        }
+                                    if ((!isset($_POST["search_quicksearch"]) and isset($pers_gedcomnumber)) && $person2->pers_gedcomnumber == $pers_gedcomnumber) {
+                                        $selected = ' selected';
                                     }
 
                                     echo '<option value="' . $person2->pers_gedcomnumber . '"' . $selected . '>' .
@@ -331,7 +332,7 @@ $person_found = true;
                 <?php
                     }
                     // *** Don't show a person if there are multiple results ***
-                    if ($nr_persons > 1 and isset($_POST["search_quicksearch"])) {
+                    if ($nr_persons > 1 && isset($_POST["search_quicksearch"])) {
                         $pers_gedcomnumber = '';
                     }
                 }
@@ -343,7 +344,7 @@ $person_found = true;
             if ($editor['pers_gedcomnumber'] == '') {
                 $person_found = false;
             }
-            if ($editor['pers_gedcomnumber'] != '' and isset($person_result)) {
+            if ($editor['pers_gedcomnumber'] != '' && isset($person_result)) {
                 $nr_persons = $person_result->rowCount();
                 // *** No person found ***
                 if ($nr_persons == 0) {
@@ -425,7 +426,9 @@ if ($confirm_note) {
 
 $check_person = false;
 if (isset($pers_gedcomnumber)) {
-    if ($editor['new_tree'] == false and $add_person == false and !$pers_gedcomnumber) $check_person = false;
+    if ($editor['new_tree'] == false && $add_person == false && !$pers_gedcomnumber) {
+        $check_person = false;
+    }
 
     // *** Get person data to show name and calculate nr. of items ***
     $person = $db_functions->get_person($pers_gedcomnumber);
@@ -433,19 +436,23 @@ if (isset($pers_gedcomnumber)) {
         $check_person = true;
 
         // *** Also set $marriage, this could be another family (needed to calculate ancestors used by colour event) ***
-        if (isset($person->pers_fams) and $person->pers_fams) {
+        if (isset($person->pers_fams) && $person->pers_fams) {
             $marriage_array = explode(";", $person->pers_fams);
             // *** Don't change if a second marriage is selected in the editor ***
             //if (!in_array($marriage, $marriage_array)){
-            if (!isset($marriage) or !in_array($marriage, $marriage_array)) {
+            if (!isset($marriage) || !in_array($marriage, $marriage_array)) {
                 $marriage = $marriage_array[0];
                 $_SESSION['admin_fam_gedcomnumber'] = $marriage;
             }
         }
     }
-    if (!$person and $editor['new_tree'] == false and $add_person == false) $check_person = false;
+    if (!$person && $editor['new_tree'] == false && $add_person == false) {
+        $check_person = false;
+    }
 }
-if ($editor['new_tree']) $check_person = true;
+if ($editor['new_tree']) {
+    $check_person = true;
+}
 if ($check_person) {
     // *** Exit if selection of person is needed ***
     //if ($editor['new_tree']==false AND $add_person==false AND !$pers_gedcomnumber) exit;
@@ -463,8 +470,12 @@ if ($check_person) {
         $menu_tab = $_GET['menu_tab'];
         $_SESSION['admin_menu_tab'] = $menu_tab;
     }
-    if (isset($_SESSION['admin_menu_tab'])) $menu_tab = $_SESSION['admin_menu_tab'];
-    if (isset($_GET['add_person'])) $menu_tab = 'person';
+    if (isset($_SESSION['admin_menu_tab'])) {
+        $menu_tab = $_SESSION['admin_menu_tab'];
+    }
+    if (isset($_GET['add_person'])) {
+        $menu_tab = 'person';
+    }
 ?>
 
     <ul class="nav nav-tabs mt-1">
@@ -657,13 +668,9 @@ if ($check_person) {
                                     $familyDb = $db_functions->get_family($fams1[$i]);
 
                                     $show_marr_status = ucfirst(__('marriage/ relation'));
-                                    if (
-                                        $familyDb->fam_marr_notice_date or $familyDb->fam_marr_notice_place
-                                        or $familyDb->fam_marr_date or $familyDb->fam_marr_place
-                                        or $familyDb->fam_marr_church_notice_date or $familyDb->fam_marr_church_notice_place
-                                        or $familyDb->fam_marr_church_date or $familyDb->fam_marr_church_place
-                                    )
+                                    if ($familyDb->fam_marr_notice_date || $familyDb->fam_marr_notice_place || $familyDb->fam_marr_date || $familyDb->fam_marr_place || $familyDb->fam_marr_church_notice_date || $familyDb->fam_marr_church_notice_place || $familyDb->fam_marr_church_date || $familyDb->fam_marr_church_place) {
                                         $show_marr_status = __('Married');
+                                    }
 
                             ?>
                                     <span style="display:block; margin-top:5px; padding:2px; border:solid 1px #0000FF; width:350px;">
@@ -671,10 +678,11 @@ if ($check_person) {
                                         <?php
                                         echo __(' to: ');
 
-                                        if ($person->pers_gedcomnumber == $familyDb->fam_man)
+                                        if ($person->pers_gedcomnumber == $familyDb->fam_man) {
                                             echo show_person($familyDb->fam_woman) . '<br>';
-                                        else
+                                        } else {
                                             echo show_person($familyDb->fam_man) . '<br>';
+                                        }
 
                                         if ($familyDb->fam_children) {
                                             echo '<b>' . __('Children') . '</b><br>';
@@ -700,14 +708,20 @@ if ($check_person) {
                                 $family_parentsDb = $db_functions->get_family($person->pers_famc, 'man-woman');
 
                                 //*** Father ***
-                                if ($family_parentsDb->fam_man) echo show_person($family_parentsDb->fam_man);
-                                else echo __('N.N.');
+                                if ($family_parentsDb->fam_man) {
+                                    echo show_person($family_parentsDb->fam_man);
+                                } else {
+                                    echo __('N.N.');
+                                }
 
                                 echo ' ' . __('and') . '<br>';
 
                                 //*** Mother ***
-                                if ($family_parentsDb->fam_woman) echo show_person($family_parentsDb->fam_woman);
-                                else echo __('N.N.');
+                                if ($family_parentsDb->fam_woman) {
+                                    echo show_person($family_parentsDb->fam_woman);
+                                } else {
+                                    echo __('N.N.');
+                                }
 
                                 echo '<br><br>';
 
@@ -797,15 +811,6 @@ if ($check_person) {
         // *****************
         // *** Show data ***
         // *****************
-
-        // *** Source iframe size ***
-        echo '
-        <style>
-        .source_iframe {
-            width:800px;
-            height:500px;
-        }
-        </style>';
 
         // *** Text area size ***
         $field_date = 10;
@@ -1045,15 +1050,19 @@ if ($check_person) {
             } else {
                 // *** Check if source is empty ***
                 $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-                if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
+                if (!$sourceDb->source_title && !$sourceDb->source_text && !$sourceDb->source_date && !$sourceDb->source_place && !$sourceDb->source_refn) {
                     $source_error = 2;
                 }
             }
         }
 
         $style = '';
-        if ($source_error == '1') $style = ' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
-        if ($source_error == '2') $style = ' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
+        if ($source_error == '1') {
+            $style = ' style="background-color:#FFAA80"';
+        } // *** No source connected, colour = orange ***
+        if ($source_error == '2') {
+            $style = ' style="background-color:#FFFF00"';
+        } // *** Source is empty, colour = yellow ***
 
         if ($source_count) {
             //return '<span ' . $style . '>[' . $source_count . ']</span>';
@@ -1074,6 +1083,7 @@ if ($check_person) {
             <?= __('Source'); ?>
         </button>
 
+        <!-- same code is used in edit_address.php -->
         <div class="modal fade" id="sourceModal<?= $unique_id; ?>" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -1084,13 +1094,17 @@ if ($check_person) {
                     <div class="modal-body">
                         <?php
                         $url = 'index.php?page=editor_sources';
-                        if ($connect_kind) $url .= '&connect_kind=' . $connect_kind;
+                        if ($connect_kind) {
+                            $url .= '&connect_kind=' . $connect_kind;
+                        }
                         $url .= '&connect_sub_kind=' . $connect_sub_kind;
-                        if ($connect_connect_id) $url .= '&connect_connect_id=' . $connect_connect_id;
+                        if ($connect_connect_id) {
+                            $url .= '&connect_connect_id=' . $connect_connect_id;
+                        }
                         ?>
                         <!-- TODO only load iframe if there are sources? Otherwise add link to add sources? -->
                         <!-- Mar. 2024: added lazy loading (only load iframe if iframe is opened) -->
-                        <iframe id="source_iframe" class="source_iframe" title="source_iframe" src="<?= $url; ?>" loading="lazy"></iframe>
+                        <iframe id="source_iframe" style="width:800px;height:800px;" title="source_iframe" src="<?= $url; ?>" loading="lazy"></iframe>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -1406,9 +1420,13 @@ if ($check_person) {
 
             $name = '';
             $name .= $personDb->pers_firstname . ' ';
-            if ($personDb->pers_patronym) $name .= $personDb->pers_patronym . ' ';
+            if ($personDb->pers_patronym) {
+                $name .= $personDb->pers_patronym . ' ';
+            }
             $name .= strtolower(str_replace("_", " ", $personDb->pers_prefix)) . $personDb->pers_lastname;
-            if (trim($name) == '') $name = '[' . __('NO NAME') . ']';
+            if (trim($name) === '') {
+                $name = '[' . __('NO NAME') . ']';
+            }
 
             if ($show_link == true) {
                 $text = '<a href="index.php?page=' . $page . '&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id .
@@ -1452,9 +1470,9 @@ if ($check_person) {
             <td colspan="2">
                 <?php
                 if ($connect_kind == 'person') {
-                    echo ' <input type="submit" name="person_add_address" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
+                    echo ' <input type="submit" name="person_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
                 } else {
-                    echo ' <input type="submit" name="relation_add_address" value="' . __('Add') . '" class="btn btn-sm btn-secondary">';
+                    echo ' <input type="submit" name="relation_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
                 }
 
                 // *** HELP POPUP for address ***
@@ -1551,7 +1569,9 @@ if ($check_person) {
                     $hideshow = '8000' . $address3Db->address_id;
                     // *** If address AND place are missing show all editor fields ***
                     $display = ' display:none;';
-                    if ($address3Db->address_address == '' and $address3Db->address_place == '') $display = '';
+                    if ($address3Db->address_address == '' && $address3Db->address_place == '') {
+                        $display = '';
+                    }
                 }
                 ?>
 
@@ -1560,16 +1580,20 @@ if ($check_person) {
                     //echo '<div style="border: 2px solid red">';
                     if ($address3Db) {
                         $address = $address3Db->address_address . ' ' . $address3Db->address_place;
-                        if ($address3Db->address_address == '' and $address3Db->address_place == '') $address = __('EMPTY LINE');
+                        if ($address3Db->address_address == '' && $address3Db->address_place == '') {
+                            $address = __('EMPTY LINE');
+                        }
 
                         // *** Also show date and place ***
                         //if ($addressDb->connect_date) $address.=', '.date_place($addressDb->connect_date,'');
-                        if ($addressDb->connect_date) $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
+                        if ($addressDb->connect_date) {
+                            $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
+                        }
                     ?>
 
                         <span class="hideshowlink" onclick="hideShow(<?= $hideshow; ?>);"><?= $address; ?>
                             <?php
-                            if ($address3Db->address_text or $addressDb->connect_text) {
+                            if ($address3Db->address_text || $addressDb->connect_text) {
                                 echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
                             }
 
@@ -1609,7 +1633,9 @@ if ($check_person) {
 
                         // *** Shared address, to connect address to multiple persons or relations ***
                         $checked = '';
-                        if ($address3Db->address_shared) $checked = ' checked';
+                        if ($address3Db->address_shared) {
+                            $checked = ' checked';
+                        }
                         echo '<input type="checkbox" name="address_shared_' . $address3Db->address_id . '" value="no_data"' . $checked . '> ' . __('Shared address') . '<br>';
 
                         // *** Don't use date here. Date of connection table will be used ***
@@ -1705,7 +1731,9 @@ if ($check_person) {
 
                         <?php
                         $connect_role = '';
-                        if (isset($addressDb->connect_role)) $connect_role = htmlspecialchars($addressDb->connect_role);
+                        if (isset($addressDb->connect_role)) {
+                            $connect_role = htmlspecialchars($addressDb->connect_role);
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "pers_buried_place" class="col-md-3 col-form-label"><?= __('Addressrole'); ?></label>
@@ -1745,7 +1773,9 @@ if ($check_person) {
                         }
 
                         // *** Use hideshow to show and hide the editor lines ***
-                        if (isset($hideshow) and substr($hideshow, 0, 4) == '8000') echo '</span>';
+                        if (isset($hideshow) && substr($hideshow, 0, 4) === '8000') {
+                            echo '</span>';
+                        }
                     } else {
                         // *** Add new address ***
                         $addressqry = $dbh->query("SELECT * FROM humo_addresses
@@ -1766,13 +1796,17 @@ if ($check_person) {
                             while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) {
                                 // *** Only shared addresses (at this moment) ***
                                 $selected = '';
-                                if ($addressDb->connect_item_id == $address2Db->address_gedcomnr) $selected = ' selected';
+                                if ($addressDb->connect_item_id == $address2Db->address_gedcomnr) {
+                                    $selected = ' selected';
+                                }
                                 echo '<option value="' . $address2Db->address_gedcomnr . '"' . $selected . '>' .
                                     $address2Db->address_place . ', ' . $address2Db->address_address;
 
                                 if ($address2Db->address_text) {
                                     echo ' ' . substr($address2Db->address_text, 0, 40);
-                                    if (strlen($address2Db->address_text) > 40) echo '...';
+                                    if (strlen($address2Db->address_text) > 40) {
+                                        echo '...';
+                                    }
                                 }
 
                                 echo ' [' . $address2Db->address_gedcomnr . ']</option>';
@@ -1804,10 +1838,12 @@ if ($check_person) {
         }
 
         // *** Show places or addresses if save or arrow links are used ***
-        if (isset($_GET['person_place_address']) or isset($_GET['family_place_address'])) {
+        if (isset($_GET['person_place_address']) || isset($_GET['family_place_address'])) {
             // *** Script voor expand and collapse of items ***
             //if (isset($_GET['pers_place'])) $link_id='54';
-            if (isset($_GET['person_place_address']) or isset($_GET['family_place_address'])) $link_id = '55';
+            if (isset($_GET['person_place_address']) || isset($_GET['family_place_address'])) {
+                $link_id = '55';
+            }
             echo '
             <script>
             function Show(el_id){
@@ -1843,15 +1879,21 @@ if ($check_person) {
             foreach ($cache_array as $cache_line) {
                 $cacheDb = json_decode(unserialize($cache_line));
 
-                if (!$force_update) $pers_id[] = $cacheDb->pers_id;
+                if (!$force_update) {
+                    $pers_id[] = $cacheDb->pers_id;
+                }
 
                 $cache_check = true;
                 $test_time = time() - 10800; // *** 86400 = 1 day, 7200 = 2 hours, 10800 = 3 hours ***
-                if ($cacheDb->time < $test_time) $cache_check = false;
+                if ($cacheDb->time < $test_time) {
+                    $cache_check = false;
+                }
             }
         }
 
-        if ($force_update) $cache_check = false;
+        if ($force_update) {
+            $cache_check = false;
+        }
 
         if ($cache_check == false) {
             // *** First get pers_id, will be quicker in very large family trees ***
@@ -1878,11 +1920,13 @@ if ($check_person) {
                 $cache .= serialize(json_encode($person));
                 $cache_count++;
                 //}
-                if (!$force_update) $pers_id[] = $person->pers_id;
+                if (!$force_update) {
+                    $pers_id[] = $person->pers_id;
+                }
             }
 
             // *** Add or renew cache in database (only if cache_count is valid) ***
-            if ($cache and ($cache_count == $count_latest_changes)) {
+            if ($cache && $cache_count == $count_latest_changes) {
                 if ($cache_exists) {
                     //$sql = "UPDATE humo_settings SET setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "' WHERE setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_variable='cache_latest_changes'";
 
@@ -1909,7 +1953,9 @@ if ($check_person) {
 
         // *** $note_connect_id = I123 or F123 ***
         $note_connect_id = $pers_gedcomnumber;
-        if ($note_connect_kind == 'family') $note_connect_id = $marriage;
+        if ($note_connect_kind == 'family') {
+            $note_connect_id = $marriage;
+        }
 
         $note_qry = "SELECT * FROM humo_user_notes
             WHERE note_tree_id='" . $tree_id . "'
@@ -1929,10 +1975,11 @@ if ($check_person) {
             <td colspan="2">
                 <a href="index.php?page=editor&amp;note_add=<?= $note_connect_kind . $anchor; ?>">[<?= __('Add'); ?>]</a>
                 <?php
-                if ($num_rows)
+                if ($num_rows) {
                     printf(__('There are %d editor notes.'), $num_rows);
-                else
+                } else {
                     printf(__('There are %d editor notes.'), 0);
+                }
                 ?>
             </td>
         </tr>
@@ -1979,8 +2026,10 @@ if ($check_person) {
                     <?= __('Priority'); ?>
                     <select size="1" name="note_priority[<?= $noteDb->note_id; ?>]">
                         <option value="Low"><?= __('Low'); ?></option>
-                        <option value="Normal" <?php if ($noteDb->note_priority == 'Normal') echo ' selected'; ?>><?= __('Normal'); ?></option>
-                        <option value="High" <?php if ($noteDb->note_priority == 'High') echo ' selected'; ?>><?= __('High'); ?></option>
+                        <option value="Normal" <?= $noteDb->note_priority == 'Normal' ? ' selected' : ''; ?>><?= __('Normal'); ?></option>
+                        <option value="High" <?php if ($noteDb->note_priority == 'High') {
+                                                    echo ' selected';
+                                                } ?>><?= __('High'); ?></option>
                     </select>
 
                     &nbsp;&nbsp;&nbsp;&nbsp;<?= __('Status'); ?>
@@ -2001,7 +2050,7 @@ if ($check_person) {
     {
         // *** If date ends with ! then date isn't valid. Show red line ***
         $check_date = false;
-        if (isset($hideshow_date) and substr($hideshow_date, -1) == '!') {
+        if (isset($hideshow_date) && substr($hideshow_date, -1) === '!') {
             $check_date = true;
             $hideshow_date = substr($hideshow_date, 0, -1);
         }
@@ -2014,7 +2063,9 @@ if ($check_person) {
 
     function hideshow_editor($hideshow, $text, $check_text)
     {
-        if (!$text) $text = '[' . __('Add') . ']';
+        if (!$text) {
+            $text = '[' . __('Add') . ']';
+        }
 
         $return_text = '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
         if ($check_text) $return_text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';

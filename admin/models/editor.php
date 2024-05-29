@@ -40,7 +40,7 @@ class EditorModel
         }
     }
 
-    public function set_hebrew_night()
+    public function set_hebrew_night(): void
     {
         // for jewish settings only for humo_persons table:
         if ($this->humo_option['admin_hebnight'] == "y") {
@@ -96,7 +96,7 @@ class EditorModel
         }
     }
 
-    public function set_pers_gedcomnumber()
+    public function set_pers_gedcomnumber(): void
     {
         // *** Used for new selected family tree or search person etc. ***
         if (isset($_POST["tree_id"])) {
@@ -119,7 +119,7 @@ class EditorModel
             $this->pers_gedcomnumber = $_SESSION['admin_pers_gedcomnumber'];
         }
 
-        if (isset($_POST["person"]) and $_POST["person"]) {
+        if (isset($_POST["person"]) && $_POST["person"]) {
             $this->pers_gedcomnumber = $_POST['person'];
         }
 
@@ -153,7 +153,7 @@ class EditorModel
                 WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($this->tree_id) . "'
                 AND pers_tree_id='" . safe_text_db($this->tree_id) . "' LIMIT 0,1";
             $new_nr_result = $this->dbh->query($new_nr_qry);
-            if ($new_nr_result and $new_nr_result->rowCount()) {
+            if ($new_nr_result && $new_nr_result->rowCount()) {
                 @$new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
                 $this->pers_gedcomnumber = $new_nr->setting_value;
             } else {
@@ -210,7 +210,7 @@ class EditorModel
         return $this->search_id;
     }
 
-    public function set_search_name()
+    public function set_search_name(): void
     {
         // *** Search person name ***
         $this->search_name = '';
@@ -232,7 +232,7 @@ class EditorModel
         return $this->search_name;
     }
 
-    public function set_add_person()
+    public function set_add_person(): void
     {
         $this->add_person = false;
         if (isset($_GET['add_person'])) {
@@ -252,7 +252,7 @@ class EditorModel
         return $this->new_tree;
     }
 
-    public function set_marriage()
+    public function set_marriage(): void
     {
         $this->marriage = '';
 
@@ -261,13 +261,13 @@ class EditorModel
             $this->marriage = $_POST['marriage_nr'];
         }
 
-        if (isset($this->person->pers_fams) and $this->person->pers_fams) {
+        if (isset($this->person->pers_fams) && $this->person->pers_fams) {
             if (isset($_SESSION['admin_fam_gedcomnumber'])) {
                 $this->marriage = $_SESSION['admin_fam_gedcomnumber'];
             }
 
             // *** Get marriage number, also used for 2nd, 3rd etc. relation ***
-            if (isset($_POST["marriage_nr"]) and $_POST["marriage_nr"]) {
+            if (isset($_POST["marriage_nr"]) && $_POST["marriage_nr"]) {
                 $this->marriage = $_POST['marriage_nr'];
             }
 
@@ -300,7 +300,7 @@ class EditorModel
         return $this->marriage;
     }
 
-    public function set_favorite()
+    public function set_favorite(): void
     {
         if (isset($_GET['pers_favorite'])) {
             if ($_GET['pers_favorite'] == "1") {
@@ -339,7 +339,7 @@ class EditorModel
 
                     if ($famDb->fam_man == $this->pers_gedcomnumber) {
                         // *** Completely remove marriage if man and woman are removed *** 
-                        if ($famDb->fam_woman == '' or $famDb->fam_woman == '0') {
+                        if ($famDb->fam_woman == '' || $famDb->fam_woman == '0') {
 
                             // *** Remove parents by children ***
                             $fam_children = explode(";", $famDb->fam_children);
@@ -362,7 +362,7 @@ class EditorModel
 
                     if ($famDb->fam_woman == $this->pers_gedcomnumber) {
                         // *** Completely remove marriage if man and woman are removed *** 
-                        if ($famDb->fam_man == '' or $famDb->fam_man == '0') {
+                        if ($famDb->fam_man == '' || $famDb->fam_man == '0') {
 
                             // *** Remove parents by children ***
                             $fam_children = explode(";", $famDb->fam_children);
@@ -454,28 +454,52 @@ class EditorModel
 
         //if (isset($_POST['person_change'])){
         $save_person_data = false;
-        if (isset($_POST['person_change'])) $save_person_data = true;
+        if (isset($_POST['person_change'])) {
+            $save_person_data = true;
+        }
         // *** Also save person data if name is added ***
-        if (isset($_POST['event_add_name'])) $save_person_data = true;
+        if (isset($_POST['event_add_name'])) {
+            $save_person_data = true;
+        }
         // *** Also save person data if profession is added ***
-        if (isset($_POST['event_add_profession'])) $save_person_data = true;
+        if (isset($_POST['event_add_profession'])) {
+            $save_person_data = true;
+        }
         // *** Also save person data if religion is added ***
-        if (isset($_POST['event_add_religion'])) $save_person_data = true;
+        if (isset($_POST['event_add_religion'])) {
+            $save_person_data = true;
+        }
         // *** Also save person data if person event is added ***
-        if (isset($_POST['person_event_add'])) $save_person_data = true;
+        if (isset($_POST['person_event_add'])) {
+            $save_person_data = true;
+        }
 
         // *** Also save person data if witnesses are added ***
-        if (isset($_POST['add_birth_declaration'])) $save_person_data = true;
-        if (isset($_POST['add_baptism_witness'])) $save_person_data = true;
-        if (isset($_POST['add_death_declaration'])) $save_person_data = true;
-        if (isset($_POST['add_burial_witness'])) $save_person_data = true;
+        if (isset($_POST['add_birth_declaration'])) {
+            $save_person_data = true;
+        }
+        if (isset($_POST['add_baptism_witness'])) {
+            $save_person_data = true;
+        }
+        if (isset($_POST['add_death_declaration'])) {
+            $save_person_data = true;
+        }
+        if (isset($_POST['add_burial_witness'])) {
+            $save_person_data = true;
+        }
 
         // *** Also save person data if addresses are added ***
-        if (isset($_POST['person_add_address'])) $save_person_data = true;
+        if (isset($_POST['person_add_address'])) {
+            $save_person_data = true;
+        }
 
         // *** Also save person data if media is added ***
-        if (isset($_POST['add_picture'])) $save_person_data = true;
-        if (isset($_POST['person_add_media'])) $save_person_data = true;
+        if (isset($_POST['add_picture'])) {
+            $save_person_data = true;
+        }
+        if (isset($_POST['person_add_media'])) {
+            $save_person_data = true;
+        }
 
         //DIT MOETEN KNOPPEN WORDEN. $_POST dus.
         //TODO sources, editor notes, wisselen van vrouw en man in relatie, toevoegen kind.
@@ -498,18 +522,18 @@ class EditorModel
             // *** Manual alive setting ***
             @$pers_alive = safe_text_db($_POST["pers_alive"]);
             // *** Only change alive setting if birth or bapise date is changed ***
-            if ($_POST["pers_birth_date_previous"] != $_POST["pers_birth_date"]) {
-                if (is_numeric(substr($_POST["pers_birth_date"], -4))) {
-                    if (date("Y") - substr($_POST["pers_birth_date"], -4) > 120) $pers_alive = 'deceased';
+            if ($_POST["pers_birth_date_previous"] != $_POST["pers_birth_date"] && is_numeric(substr($_POST["pers_birth_date"], -4))) {
+                if (date("Y") - substr($_POST["pers_birth_date"], -4) > 120) {
+                    $pers_alive = 'deceased';
                 }
             }
-            if ($_POST["pers_bapt_date_previous"] != $_POST["pers_bapt_date"]) {
-                if (is_numeric(substr($_POST["pers_bapt_date"], -4))) {
-                    if (date("Y") - substr($_POST["pers_bapt_date"], -4) > 120) $pers_alive = 'deceased';
+            if ($_POST["pers_bapt_date_previous"] != $_POST["pers_bapt_date"] && is_numeric(substr($_POST["pers_bapt_date"], -4))) {
+                if (date("Y") - substr($_POST["pers_bapt_date"], -4) > 120) {
+                    $pers_alive = 'deceased';
                 }
             }
             // *** If person is deceased, set alive setting ***
-            if ($_POST["pers_death_date"] or $_POST["pers_death_place"] or $_POST["pers_buried_date"] or $_POST["pers_buried_place"]) {
+            if ($_POST["pers_death_date"] || $_POST["pers_death_place"] || $_POST["pers_buried_date"] || $_POST["pers_buried_place"]) {
                 $pers_alive = 'deceased';
             }
 
@@ -533,20 +557,27 @@ class EditorModel
             $this->dbh->query($sql);
 
             $pers_stillborn = '';
-            if (isset($_POST["pers_stillborn"])) $pers_stillborn = 'y';
+            if (isset($_POST["pers_stillborn"])) {
+                $pers_stillborn = 'y';
+            }
 
             $pers_death_cause = $_POST["pers_death_cause"];
-            if (isset($_POST["pers_death_cause2"]) and $_POST["pers_death_cause2"]) $pers_death_cause = $_POST["pers_death_cause2"];
+            if (isset($_POST["pers_death_cause2"]) && $_POST["pers_death_cause2"]) {
+                $pers_death_cause = $_POST["pers_death_cause2"];
+            }
 
             // *** Automatically calculate birth date if death date and death age is used ***
-            if ($_POST["pers_death_age"] != '' and $_POST["pers_death_date"] != '' and $_POST["pers_birth_date"] == '' and $_POST["pers_bapt_date"] == '') {
+            if ($_POST["pers_death_age"] != '' && $_POST["pers_death_date"] != '' && $_POST["pers_birth_date"] == '' && $_POST["pers_bapt_date"] == '') {
                 $_POST["pers_birth_date"] = 'ABT ' . (substr($_POST["pers_death_date"], -4) - $_POST["pers_death_age"]);
             }
 
             // *** Process estimates/ calculated date for privacy filter ***
             $pers_cal_date = '';
-            if ($_POST["pers_birth_date"]) $pers_cal_date = $_POST["pers_birth_date"];
-            elseif ($_POST["pers_bapt_date"]) $pers_cal_date = $_POST["pers_bapt_date"];
+            if ($_POST["pers_birth_date"]) {
+                $pers_cal_date = $_POST["pers_birth_date"];
+            } elseif ($_POST["pers_bapt_date"]) {
+                $pers_cal_date = $_POST["pers_bapt_date"];
+            }
             $pers_cal_date = substr($pers_cal_date, -4);
 
             $sql = "UPDATE humo_persons SET
@@ -580,9 +611,15 @@ class EditorModel
                 $per_bir_heb = "";
                 $per_bur_heb = "";
                 $per_dea_heb = "";
-                if (isset($_POST["pers_birth_date_hebnight"]))  $per_bir_heb = $_POST["pers_birth_date_hebnight"];
-                if (isset($_POST["pers_buried_date_hebnight"]))  $per_bur_heb = $_POST["pers_buried_date_hebnight"];
-                if (isset($_POST["pers_death_date_hebnight"]))  $per_dea_heb = $_POST["pers_death_date_hebnight"];
+                if (isset($_POST["pers_birth_date_hebnight"])) {
+                    $per_bir_heb = $_POST["pers_birth_date_hebnight"];
+                }
+                if (isset($_POST["pers_buried_date_hebnight"])) {
+                    $per_bur_heb = $_POST["pers_buried_date_hebnight"];
+                }
+                if (isset($_POST["pers_death_date_hebnight"])) {
+                    $per_dea_heb = $_POST["pers_death_date_hebnight"];
+                }
                 $sql = "UPDATE humo_persons SET
                     pers_birth_date_hebnight='" . safe_text_db($per_bir_heb) . "',
                     pers_death_date_hebnight='" . safe_text_db($per_dea_heb) . "',
@@ -618,7 +655,7 @@ class EditorModel
                 $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom = '_BRTM' AND event_connect_id = '" . $this->pers_gedcomnumber . "' AND event_connect_kind='person'";
                 $result = $this->dbh->query($sql);
                 if ($result->rowCount() != 0) {     // a brit mila already exists for this person: UPDATE 
-                    if ($_POST["even_brit_date"] == '' and $_POST["even_brit_place"] == '' and $_POST["even_brit_text"] == '') {
+                    if ($_POST["even_brit_date"] == '' && $_POST["even_brit_place"] == '' && $_POST["even_brit_text"] == '') {
                         $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom='_BRTM'  AND event_connect_kind='person' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "' AND event_kind='event' ";
                         $this->dbh->query($sql);
                     } else {
@@ -630,9 +667,8 @@ class EditorModel
                             WHERE event_tree_id='" . $this->tree_id . "' AND  event_gedcom='_BRTM' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "'";
                         $this->dbh->query($sql);
                     }
-                } elseif ((isset($_POST["even_brit_date"]) and $_POST["even_brit_date"] != '')
-                    or (isset($_POST["even_brit_place"]) and $_POST["even_brit_place"] != '')
-                    or (isset($_POST["even_brit_text"]) and $_POST["even_brit_text"] != '')
+                } elseif (
+                    isset($_POST["even_brit_date"]) && $_POST["even_brit_date"] != '' || isset($_POST["even_brit_place"]) && $_POST["even_brit_place"] != '' || isset($_POST["even_brit_text"]) && $_POST["even_brit_text"] != ''
                 ) {  // new brit mila event: INSERT
 
                     // *** Add event. If event is new, use: $new_event=true. ***
@@ -643,16 +679,12 @@ class EditorModel
 
             // Extra UPDATE queries if Bar Mitsva is displayed 
             if ($this->humo_option['admin_barm'] == "y") {
-                if ($_POST["pers_sexe"] == "F") {
-                    $barmbasm = "BASM";
-                } else {
-                    $barmbasm = "BARM";
-                }
+                $barmbasm = $_POST["pers_sexe"] == "F" ? "BASM" : "BARM";
                 $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom = '" . $barmbasm . "' AND event_connect_id = '" . $this->pers_gedcomnumber . "' AND event_connect_kind='person'";
                 $result = $this->dbh->query($sql);
                 if ($result->rowCount() != 0) {     // a bar/bat mitsvah already exists for this person: UPDATE 
 
-                    if ($_POST["even_barm_date"] == '' and $_POST["even_barm_place"] == '' and $_POST["even_barm_text"] == '') {
+                    if ($_POST["even_barm_date"] == '' && $_POST["even_barm_place"] == '' && $_POST["even_barm_text"] == '') {
                         $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom='" . $barmbasm . "'  AND event_connect_kind='person' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "' AND event_kind='event' ";
                         $this->dbh->query($sql);
                     } else {
@@ -664,7 +696,7 @@ class EditorModel
                             WHERE event_tree_id='" . $this->tree_id . "' AND  event_gedcom='" . $barmbasm . "' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "'";
                         $this->dbh->query($sql);
                     }
-                } elseif ($_POST["even_barm_date"] != '' or $_POST["even_barm_place"] != '' or $_POST["even_barm_text"] != '') {  // new BAR/BAT MITSVA event: INSERT
+                } elseif ($_POST["even_barm_date"] != '' || $_POST["even_barm_place"] != '' || $_POST["even_barm_text"] != '') {  // new BAR/BAT MITSVA event: INSERT
 
                     // *** Add event. If event is new, use: $new_event=true. ***
                     // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
@@ -684,7 +716,7 @@ class EditorModel
             $new_gedcomnumber = 'I' . $this->db_functions->generate_gedcomnr($this->tree_id, 'person');
         }
 
-        if (isset($_POST['person_add']) or isset($_POST['relation_add'])) {
+        if (isset($_POST['person_add']) || isset($_POST['relation_add'])) {
             // *** Added new person in relation, store original person gedcomnumber ***
             if (isset($_POST['relation_add'])) {
                 $relation_gedcomnumber = $this->pers_gedcomnumber;
@@ -695,7 +727,7 @@ class EditorModel
 
             // *** If person is deceased, set alive setting ***
             @$pers_alive = safe_text_db($_POST["pers_alive"]);
-            if ($_POST["pers_death_date"] or $_POST["pers_death_place"] or $_POST["pers_buried_date"] or $_POST["pers_buried_place"]) {
+            if ($_POST["pers_death_date"] || $_POST["pers_death_place"] || $_POST["pers_buried_date"] || $_POST["pers_buried_place"]) {
                 $pers_alive = 'deceased';
             }
 
@@ -705,17 +737,22 @@ class EditorModel
             }
 
             $pers_death_cause = $_POST["pers_death_cause"];
-            if (isset($_POST["pers_death_cause2"]) and $_POST["pers_death_cause2"]) $pers_death_cause = $_POST["pers_death_cause2"];
+            if (isset($_POST["pers_death_cause2"]) && $_POST["pers_death_cause2"]) {
+                $pers_death_cause = $_POST["pers_death_cause2"];
+            }
 
             // *** Automatically calculate birth date if death date and death age is used ***
-            if ($_POST["pers_death_age"] != '' and $_POST["pers_death_date"] != '' and $_POST["pers_birth_date"] == '' and $_POST["pers_bapt_date"] == '') {
+            if ($_POST["pers_death_age"] != '' && $_POST["pers_death_date"] != '' && $_POST["pers_birth_date"] == '' && $_POST["pers_bapt_date"] == '') {
                 $_POST["pers_birth_date"] = 'ABT ' . (substr($_POST["pers_death_date"], -4) - $_POST["pers_death_age"]);
             }
 
             // *** Process estimates/ calculated date for privacy filter ***
             $pers_cal_date = '';
-            if ($_POST["pers_birth_date"]) $pers_cal_date = $_POST["pers_birth_date"];
-            elseif ($_POST["pers_bapt_date"]) $pers_cal_date = $_POST["pers_bapt_date"];
+            if ($_POST["pers_birth_date"]) {
+                $pers_cal_date = $_POST["pers_birth_date"];
+            } elseif ($_POST["pers_bapt_date"]) {
+                $pers_cal_date = $_POST["pers_bapt_date"];
+            }
             $pers_cal_date = substr($pers_cal_date, -4);
 
             $pers_prefix = $this->editor_cls->text_process($_POST["pers_prefix"]);
@@ -763,7 +800,7 @@ class EditorModel
             $this->dbh->query($sql);
 
             // only needed for jewish settings
-            if ($this->humo_option['admin_hebnight'] == "y" and isset($_POST["pers_birth_date_hebnight"])) {
+            if ($this->humo_option['admin_hebnight'] == "y" && isset($_POST["pers_birth_date_hebnight"])) {
                 $sql = "UPDATE humo_persons SET
                     pers_birth_date_hebnight='" . safe_text_db($_POST["pers_birth_date_hebnight"]) . "',
                     pers_death_date_hebnight='" . safe_text_db($_POST["pers_death_date_hebnight"]) . "',
@@ -774,13 +811,23 @@ class EditorModel
 
             // TODO: this code is used multiple times in this script.
             // *** New jul.2023: also use special names ***
-            if (isset($_POST["event_event_name_new"]) and $_POST["event_event_name_new"] != "") {
+            if (isset($_POST["event_event_name_new"]) && $_POST["event_event_name_new"] != "") {
                 $event_kind = 'name';
-                if ($_POST['event_gedcom_new'] == 'NPFX') $event_kind = 'NPFX';
-                if ($_POST['event_gedcom_new'] == 'NSFX') $event_kind = 'NSFX';
-                if ($_POST['event_gedcom_new'] == 'nobility') $event_kind = 'nobility';
-                if ($_POST['event_gedcom_new'] == 'title') $event_kind = 'title';
-                if ($_POST['event_gedcom_new'] == 'lordship') $event_kind = 'lordship';
+                if ($_POST['event_gedcom_new'] == 'NPFX') {
+                    $event_kind = 'NPFX';
+                }
+                if ($_POST['event_gedcom_new'] == 'NSFX') {
+                    $event_kind = 'NSFX';
+                }
+                if ($_POST['event_gedcom_new'] == 'nobility') {
+                    $event_kind = 'nobility';
+                }
+                if ($_POST['event_gedcom_new'] == 'title') {
+                    $event_kind = 'title';
+                }
+                if ($_POST['event_gedcom_new'] == 'lordship') {
+                    $event_kind = 'lordship';
+                }
 
                 $event_gedcom = $_POST['event_gedcom_new'];
                 $event_event = $_POST['event_event_name_new'];
@@ -797,12 +844,16 @@ class EditorModel
             }
 
             // *** New person: add profession ***
-            if (isset($_POST["event_profession"]) and $_POST["event_profession"] != "" and $_POST["event_profession"] != "Profession") {
+            if (isset($_POST["event_profession"]) && $_POST["event_profession"] != "" && $_POST["event_profession"] != "Profession") {
                 //$event_date = '';
                 $event_place = "";
-                if (isset($_POST["event_place_profession"])) $event_place = $_POST["event_place_profession"];
+                if (isset($_POST["event_place_profession"])) {
+                    $event_place = $_POST["event_place_profession"];
+                }
                 $event_text = "";
-                if (isset($_POST["event_text_profession"]))  $event_text = $_POST["event_text_profession"];
+                if (isset($_POST["event_text_profession"])) {
+                    $event_text = $_POST["event_text_profession"];
+                }
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
@@ -811,11 +862,15 @@ class EditorModel
             }
 
             // *** New person: add religion ***
-            if (isset($_POST["event_religion"]) and $_POST["event_religion"] != "" and $_POST["event_religion"] != "Religion") {
+            if (isset($_POST["event_religion"]) && $_POST["event_religion"] != "" && $_POST["event_religion"] != "Religion") {
                 $event_place = "";
-                if (isset($_POST["event_place_religion"])) $event_place = $_POST["event_place_religion"];
+                if (isset($_POST["event_place_religion"])) {
+                    $event_place = $_POST["event_place_religion"];
+                }
                 $event_text = "";
-                if (isset($_POST["event_text_religion"]))  $event_text = $_POST["event_text_religion"];
+                if (isset($_POST["event_text_religion"])) {
+                    $event_text = $_POST["event_text_religion"];
+                }
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
@@ -847,7 +902,8 @@ class EditorModel
             $child_array[$child_array_id] = $child_array_org[($child_array_id + 1)];
             $child_array[$child_array_id + 1] = $child_array_org[($child_array_id)];
             $fams = '';
-            for ($k = 0; $k < count($child_array); $k++) {
+            $counter = count($child_array);
+            for ($k = 0; $k < $counter; $k++) {
                 if ($k > 0) {
                     $fams .= ';';
                 }
@@ -868,7 +924,8 @@ class EditorModel
             $child_array[$child_array_id + 1] = $child_array_org[($child_array_id)];
             $child_array[$child_array_id] = $child_array_org[($child_array_id + 1)];
             $fams = '';
-            for ($k = 0; $k < count($child_array); $k++) {
+            $counter = count($child_array);
+            for ($k = 0; $k < $counter; $k++) {
                 if ($k > 0) {
                     $fams .= ';';
                 }
@@ -936,7 +993,7 @@ class EditorModel
 
             // *** If this relation is removed, show 1st relation of person, or link to new relation ***
             $marriage = '';
-            if (isset($this->person->pers_fams) and $this->person->pers_fams) {
+            if (isset($this->person->pers_fams) && $this->person->pers_fams) {
                 $fams1 = explode(";", $this->person->pers_fams);
                 $marriage = $fams1[0];
             }
@@ -982,9 +1039,13 @@ class EditorModel
             // *** Add father ***
             //pers_callname='',
             $pers_alive1 = '';
-            if (isset($_POST['pers_alive1'])) $pers_alive1 = safe_text_db($_POST['pers_alive1']);
+            if (isset($_POST['pers_alive1'])) {
+                $pers_alive1 = safe_text_db($_POST['pers_alive1']);
+            }
             $pers_sexe1 = '';
-            if (isset($_POST['pers_sexe1'])) $pers_sexe1 = safe_text_db($_POST['pers_sexe1']);
+            if (isset($_POST['pers_sexe1'])) {
+                $pers_sexe1 = safe_text_db($_POST['pers_sexe1']);
+            }
             $sql = "INSERT INTO humo_persons SET
                 pers_gedcomnumber='" . $man_gedcomnumber . "',
                 pers_tree_id='" . $this->tree_id . "',
@@ -1006,13 +1067,23 @@ class EditorModel
             $this->dbh->query($sql);
 
             // *** Add special name ***
-            if (isset($_POST["event_event_name1"]) and $_POST["event_event_name1"] != "") {
+            if (isset($_POST["event_event_name1"]) && $_POST["event_event_name1"] != "") {
                 $event_kind = 'name';
-                if ($_POST['event_gedcom_add1'] == 'NPFX') $event_kind = 'NPFX';
-                if ($_POST['event_gedcom_add1'] == 'NSFX') $event_kind = 'NSFX';
-                if ($_POST['event_gedcom_add1'] == 'nobility') $event_kind = 'nobility';
-                if ($_POST['event_gedcom_add1'] == 'title') $event_kind = 'title';
-                if ($_POST['event_gedcom_add1'] == 'lordship') $event_kind = 'lordship';
+                if ($_POST['event_gedcom_add1'] == 'NPFX') {
+                    $event_kind = 'NPFX';
+                }
+                if ($_POST['event_gedcom_add1'] == 'NSFX') {
+                    $event_kind = 'NSFX';
+                }
+                if ($_POST['event_gedcom_add1'] == 'nobility') {
+                    $event_kind = 'nobility';
+                }
+                if ($_POST['event_gedcom_add1'] == 'title') {
+                    $event_kind = 'title';
+                }
+                if ($_POST['event_gedcom_add1'] == 'lordship') {
+                    $event_kind = 'lordship';
+                }
 
                 $event_gedcom = $_POST['event_gedcom_add1'];
                 $event_event = $_POST['event_event_name1'];
@@ -1029,11 +1100,15 @@ class EditorModel
             }
 
             // *** Add profession ***
-            if (isset($_POST["event_profession1"]) and $_POST["event_profession1"] != "" and $_POST["event_profession1"] != "Profession") {
+            if (isset($_POST["event_profession1"]) && $_POST["event_profession1"] != "" && $_POST["event_profession1"] != "Profession") {
                 $event_place = "";
-                if (isset($_POST["event_place_profession1"])) $event_place = $_POST["event_place_profession1"];
+                if (isset($_POST["event_place_profession1"])) {
+                    $event_place = $_POST["event_place_profession1"];
+                }
                 $event_text = "";
-                if (isset($_POST["event_text_profession1"]))  $event_text = $_POST["event_text_profession1"];
+                if (isset($_POST["event_text_profession1"])) {
+                    $event_text = $_POST["event_text_profession1"];
+                }
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
@@ -1051,9 +1126,13 @@ class EditorModel
             // *** Add mother ***
             //pers_callname='',
             $pers_alive2 = '';
-            if (isset($_POST['pers_alive2'])) $pers_alive2 = safe_text_db($_POST['pers_alive2']);
+            if (isset($_POST['pers_alive2'])) {
+                $pers_alive2 = safe_text_db($_POST['pers_alive2']);
+            }
             $pers_sexe2 = '';
-            if (isset($_POST['pers_sexe2'])) $pers_sexe2 = safe_text_db($_POST['pers_sexe2']);
+            if (isset($_POST['pers_sexe2'])) {
+                $pers_sexe2 = safe_text_db($_POST['pers_sexe2']);
+            }
             $sql = "INSERT INTO humo_persons SET
                 pers_gedcomnumber='" . $woman_gedcomnumber . "',
                 pers_tree_id='" . $this->tree_id . "',
@@ -1075,13 +1154,23 @@ class EditorModel
             $this->dbh->query($sql);
 
             // *** Add special name ***
-            if (isset($_POST["event_event_name2"]) and $_POST["event_event_name2"] != "") {
+            if (isset($_POST["event_event_name2"]) && $_POST["event_event_name2"] != "") {
                 $event_kind = 'name';
-                if ($_POST['event_gedcom_add2'] == 'NPFX') $event_kind = 'NPFX';
-                if ($_POST['event_gedcom_add2'] == 'NSFX') $event_kind = 'NSFX';
-                if ($_POST['event_gedcom_add2'] == 'nobility') $event_kind = 'nobility';
-                if ($_POST['event_gedcom_add2'] == 'title') $event_kind = 'title';
-                if ($_POST['event_gedcom_add2'] == 'lordship') $event_kind = 'lordship';
+                if ($_POST['event_gedcom_add2'] == 'NPFX') {
+                    $event_kind = 'NPFX';
+                }
+                if ($_POST['event_gedcom_add2'] == 'NSFX') {
+                    $event_kind = 'NSFX';
+                }
+                if ($_POST['event_gedcom_add2'] == 'nobility') {
+                    $event_kind = 'nobility';
+                }
+                if ($_POST['event_gedcom_add2'] == 'title') {
+                    $event_kind = 'title';
+                }
+                if ($_POST['event_gedcom_add2'] == 'lordship') {
+                    $event_kind = 'lordship';
+                }
 
                 $event_gedcom = $_POST['event_gedcom_add2'];
                 $event_event = $_POST['event_event_name2'];
@@ -1098,11 +1187,15 @@ class EditorModel
             }
 
             // *** Add profession ***
-            if (isset($_POST["event_profession2"]) and $_POST["event_profession2"] != "" and $_POST["event_profession2"] != "Profession") {
+            if (isset($_POST["event_profession2"]) && $_POST["event_profession2"] != "" && $_POST["event_profession2"] != "Profession") {
                 $event_place = "";
-                if (isset($_POST["event_place_profession2"])) $event_place = $_POST["event_place_profession2"];
+                if (isset($_POST["event_place_profession2"])) {
+                    $event_place = $_POST["event_place_profession2"];
+                }
                 $event_text = "";
-                if (isset($_POST["event_text_profession2"]))  $event_text = $_POST["event_text_profession2"];
+                if (isset($_POST["event_text_profession2"])) {
+                    $event_text = $_POST["event_text_profession2"];
+                }
 
                 // *** Add event. If event is new, use: $new_event=true. ***
                 // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
@@ -1128,11 +1221,11 @@ class EditorModel
         }
 
         // *** Add EXISTING parents to a child ***
-        if (isset($_POST['add_parents']) and $_POST['add_parents'] != '') {
+        if (isset($_POST['add_parents']) && $_POST['add_parents'] != '') {
             $parentsDb = $this->db_functions->get_family(strtoupper($_POST['add_parents']));
 
             // *** Check if manual selected family is existing family in family tree ***
-            if (isset($parentsDb->fam_gedcomnumber) and strtoupper($_POST['add_parents']) == $parentsDb->fam_gedcomnumber) {
+            if (isset($parentsDb->fam_gedcomnumber) && strtoupper($_POST['add_parents']) == $parentsDb->fam_gedcomnumber) {
                 if ($parentsDb->fam_children) {
                     $fam_children = $parentsDb->fam_children . ';' . $this->pers_gedcomnumber;
                 } else {
@@ -1165,7 +1258,7 @@ class EditorModel
         }
 
         // *** Add child to family ***
-        if (isset($_POST['child_connect2']) and $_POST['child_connect2'] and !isset($_POST['submit'])) {
+        if (isset($_POST['child_connect2']) && $_POST['child_connect2'] && !isset($_POST['submit'])) {
 
             // *** Check valid gedcomnumber and check if child already has parents connected! ***
             $resultDb = $this->db_functions->get_person($_POST["child_connect2"]);
@@ -1173,7 +1266,7 @@ class EditorModel
             // *** Check if input is a valid gedcomnumber ***
             if (isset($resultDb->pers_gedcomnumber)) {
 
-                if ($resultDb->pers_famc  and !isset($_POST['child_connecting'])) {
+                if ($resultDb->pers_famc && !isset($_POST['child_connecting'])) {
                     $confirm .= '<div class="alert alert-danger">';
                     $confirm .= __('Child already has parents connected! Are you sure you want to connect this child?');
                     $confirm .= ' <form method="post" action="index.php" style="display : inline;">';
@@ -1209,11 +1302,11 @@ class EditorModel
                     // *** Change i10 into I10 ***
                     $_POST["child_connect2"] = ucfirst($_POST["child_connect2"]);
                     // *** Change entry "48" into "I48" ***
-                    if (substr($_POST["child_connect2"], 0, 1) != "I") {
+                    if (substr($_POST["child_connect2"], 0, 1) !== "I") {
                         $_POST["child_connect2"] = "I" . $_POST["child_connect2"];
                     }
 
-                    if (isset($_POST["children"]) and $_POST["children"]) {
+                    if (isset($_POST["children"]) && $_POST["children"]) {
                         $sql = "UPDATE humo_families SET
                             fam_children='" . safe_text_db($_POST["children"]) . ';' . safe_text_db($_POST["child_connect2"]) . "',
                             fam_changed_user_id='" . $this->userid . "'
@@ -1264,7 +1357,9 @@ class EditorModel
             $child_array[$child_array_id + 1] = $child_array_org[($child_array_id)];
             $fam_children = '';
             // use implode: $fam_children = implode(";", $child_array);
-            for ($k = 0; $k < count($child_array); $k++) {
+            $counter = count($child_array);
+            // use implode: $fam_children = implode(";", $child_array);
+            for ($k = 0; $k < $counter; $k++) {
                 if ($k > 0) {
                     $fam_children .= ';';
                 }
@@ -1286,7 +1381,9 @@ class EditorModel
             $child_array[$child_array_id] = $child_array_org[($child_array_id + 1)];
             $fam_children = '';
             // use implode: $fam_children = implode(";", $child_array);
-            for ($k = 0; $k < count($child_array); $k++) {
+            $counter = count($child_array);
+            // use implode: $fam_children = implode(";", $child_array);
+            for ($k = 0; $k < $counter; $k++) {
                 if ($k > 0) {
                     $fam_children .= ';';
                 }
@@ -1382,11 +1479,11 @@ class EditorModel
         }
 
         // *** Add new family with selected partner ***
-        if (isset($_POST['relation_add2']) and $_POST['relation_add2'] != '') {
+        if (isset($_POST['relation_add2']) && $_POST['relation_add2'] != '') {
             // *** Change i10 into I10 ***
             $_POST['relation_add2'] = ucfirst($_POST['relation_add2']);
             // *** Change entry "48" into "I48" ***
-            if (substr($_POST['relation_add2'], 0, 1) != "I") {
+            if (substr($_POST['relation_add2'], 0, 1) !== "I") {
                 $_POST['relation_add2'] = "I" . $_POST['relation_add2'];
             }
 
@@ -1457,16 +1554,28 @@ class EditorModel
 
         // *** Also save relation data if witnesses are added ***
         $save_relation_data = false;
-        if (isset($_POST['marriage_change'])) $save_relation_data = true;
-        if (isset($_POST['add_marriage_witness'])) $save_relation_data = true;
-        if (isset($_POST['add_marriage_witness_rel'])) $save_relation_data = true;
+        if (isset($_POST['marriage_change'])) {
+            $save_relation_data = true;
+        }
+        if (isset($_POST['add_marriage_witness'])) {
+            $save_relation_data = true;
+        }
+        if (isset($_POST['add_marriage_witness_rel'])) {
+            $save_relation_data = true;
+        }
 
         // *** Also save relation data if addresses are added ***
-        if (isset($_POST['relation_add_address'])) $save_relation_data = true;
+        if (isset($_POST['relation_add_address'])) {
+            $save_relation_data = true;
+        }
 
         // *** Also save relation data if addresses are added ***
-        if (isset($_POST['add_marriage_picture'])) $save_relation_data = true;
-        if (isset($_POST['relation_add_media'])) $save_relation_data = true;
+        if (isset($_POST['add_marriage_picture'])) {
+            $save_relation_data = true;
+        }
+        if (isset($_POST['relation_add_media'])) {
+            $save_relation_data = true;
+        }
 
         // ** Change relation ***
         //if (isset($_POST['marriage_change'])){
@@ -1487,8 +1596,12 @@ class EditorModel
             }
 
             $fam_div_text = '';
-            if (isset($_POST['fam_div_no_data'])) $fam_div_text = 'DIVORCE';
-            if ($_POST["fam_div_text"]) $fam_div_text = $_POST["fam_div_text"];
+            if (isset($_POST['fam_div_no_data'])) {
+                $fam_div_text = 'DIVORCE';
+            }
+            if ($_POST["fam_div_text"]) {
+                $fam_div_text = $_POST["fam_div_text"];
+            }
 
             $sql = "UPDATE humo_families SET
                 fam_kind='" . safe_text_db($_POST["fam_kind"]) . "',
@@ -1529,10 +1642,18 @@ class EditorModel
                 $f_m_d_h = "";
                 $f_m_c_d_h = "";
                 $f_m_c_n_d_h = "";
-                if (isset($_POST["fam_marr_notice_date_hebnight"]))  $f_m_n_d_h = $_POST["fam_marr_notice_date_hebnight"];
-                if (isset($_POST["fam_marr_date_hebnight"]))  $f_m_d_h = $_POST["fam_marr_date_hebnight"];
-                if (isset($_POST["fam_marr_church_date_hebnight"]))  $f_m_c_d_h = $_POST["fam_marr_church_date_hebnight"];
-                if (isset($_POST["fam_marr_church_notice_date_hebnight"]))  $f_m_c_n_d_h = $_POST["fam_marr_church_notice_date_hebnight"];
+                if (isset($_POST["fam_marr_notice_date_hebnight"])) {
+                    $f_m_n_d_h = $_POST["fam_marr_notice_date_hebnight"];
+                }
+                if (isset($_POST["fam_marr_date_hebnight"])) {
+                    $f_m_d_h = $_POST["fam_marr_date_hebnight"];
+                }
+                if (isset($_POST["fam_marr_church_date_hebnight"])) {
+                    $f_m_c_d_h = $_POST["fam_marr_church_date_hebnight"];
+                }
+                if (isset($_POST["fam_marr_church_notice_date_hebnight"])) {
+                    $f_m_c_n_d_h = $_POST["fam_marr_church_notice_date_hebnight"];
+                }
                 $sql = "UPDATE humo_families SET 
                     fam_marr_notice_date_hebnight='" . $this->editor_cls->text_process($f_m_n_d_h) . "', 
                     fam_marr_date_hebnight='" . $this->editor_cls->text_process($f_m_d_h) . "', 
@@ -1548,7 +1669,7 @@ class EditorModel
     }
 
     // *** Some functions to add and remove a fams number from a person (if marriage is changed) ***
-    function fams_add($personnr, $familynr)
+    function fams_add($personnr, $familynr): void
     {
         global $dbh, $db_functions;
         // *** Add marriage to person records ***
@@ -1568,7 +1689,7 @@ class EditorModel
         }
     }
 
-    function fams_remove($personnr, $familynr)
+    function fams_remove($personnr, $familynr): void
     {
         global $dbh, $db_functions;
         $person_db = $db_functions->get_person($personnr);
@@ -1593,7 +1714,7 @@ class EditorModel
     }
 
     // *** Calculate and update nr. of persons and nr. of families ***
-    private function family_tree_update()
+    private function family_tree_update(): void
     {
         $nr_persons = $this->db_functions->count_persons($this->tree_id);
         $nr_families = $this->db_functions->count_families($this->tree_id);
@@ -1606,7 +1727,7 @@ class EditorModel
     // *** Add event. $new_event=false/true ***
     // *** COPIED FROM editor_inc.php (double function at this moment) ***
     // $event_date='event_date'
-    function add_event($new_event, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text, $multiple_rows = '')
+    function add_event($new_event, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, $event_date, $event_place, $event_text, $multiple_rows = ''): void
     {
         // *** Generate new order number ***
         $event_order = 1;
@@ -1647,14 +1768,18 @@ class EditorModel
         $confirm = '';
 
         // *** Add editor note ***
-        if (isset($_GET['note_add']) and $_GET['note_add']) {
+        if (isset($_GET['note_add']) && $_GET['note_add']) {
             // *** $note_connect_kind = person or family ***
             $note_connect_kind = 'person';
-            if ($_GET['note_add'] == 'family') $note_connect_kind = 'family';
+            if ($_GET['note_add'] == 'family') {
+                $note_connect_kind = 'family';
+            }
 
             // *** $note_connect_id = I123 or F123 ***
             $note_connect_id = $this->pers_gedcomnumber;
-            if ($note_connect_kind == 'family') $note_connect_id = $this->marriage;
+            if ($note_connect_kind === 'family') {
+                $note_connect_id = $this->marriage;
+            }
 
             // *** Name of selected person in family tree ***
             @$persDb = $this->db_functions->get_person($this->pers_gedcomnumber);
@@ -1687,9 +1812,15 @@ class EditorModel
                     $note_result = $this->dbh->query($note_qry);
                     $noteDb = $note_result->fetch(PDO::FETCH_OBJ);
                     $note_changed = false;
-                    if ($noteDb->note_status != $_POST["note_status"][$key]) $note_changed = true;
-                    if ($noteDb->note_priority != $_POST["note_priority"][$key]) $note_changed = true;
-                    if ($noteDb->note_note != $_POST["note_note"][$key]) $note_changed = true;
+                    if ($noteDb->note_status != $_POST["note_status"][$key]) {
+                        $note_changed = true;
+                    }
+                    if ($noteDb->note_priority != $_POST["note_priority"][$key]) {
+                        $note_changed = true;
+                    }
+                    if ($noteDb->note_note != $_POST["note_note"][$key]) {
+                        $note_changed = true;
+                    }
 
                     if ($note_changed) {
                         $sql = "UPDATE humo_user_notes SET
@@ -1705,7 +1836,7 @@ class EditorModel
         }
 
         // *** Remove editor note ***
-        if (isset($_GET['note_drop']) and is_numeric($_GET['note_drop'])) {
+        if (isset($_GET['note_drop']) && is_numeric($_GET['note_drop'])) {
             $confirm .= '<div class="alert alert-danger">';
             $confirm .= __('Are you sure you want to remove this note?');
             $confirm .= ' <form method="post" action="index.php" style="display : inline;">';
@@ -1716,7 +1847,7 @@ class EditorModel
             $confirm .= '</form>';
             $confirm .= '</div>';
         }
-        if (isset($_POST['note_drop2']) and is_numeric($_POST['note_drop'])) {
+        if (isset($_POST['note_drop2']) && is_numeric($_POST['note_drop'])) {
             $sql = "DELETE FROM humo_user_notes WHERE note_id='" . safe_text_db($_POST['note_drop']) . "'";
             $this->dbh->query($sql);
         }

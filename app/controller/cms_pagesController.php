@@ -20,8 +20,7 @@ class CMS_pagesController
         $menu = $CMS_pagesModel->getMenu($this->dbh);
         $pages_menu = $CMS_pagesModel->getPages_menu($this->dbh);
         $page = $CMS_pagesModel->getPage($this->dbh);
-
-        $data = array(
+        return array(
             "authorised" => $authorised,
             "pages" => $pages,
             "menu" => $menu,
@@ -29,6 +28,5 @@ class CMS_pagesController
             "page" => $page,
             "title" => __('Address')
         );
-        return $data;
     }
 }

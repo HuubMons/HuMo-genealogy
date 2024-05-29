@@ -1,7 +1,7 @@
 <?php
 $folder = opendir('../styles/');
 while (false !== ($file = readdir($folder))) {
-    if (substr($file, -4, 4) == '.css') {
+    if (substr($file, -4, 4) === '.css') {
         $theme_folder[] = $file;
     }
 }

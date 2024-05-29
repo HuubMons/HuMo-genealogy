@@ -85,12 +85,12 @@ if (!defined('ADMIN_PAGE')) {
                     $loc = urlencode($value);
 
                     // *** OpenStreetMap, use GeoKeo to get geolocation data ***
-                    if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'OpenStreetMap') {
+                    if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
                         $url = "https://geokeo.com/geocode/v1/search.php?q=" . $loc . "&api=" . $humo_option['geokeo_api_key'];
                         $json = file_get_contents($url);
                         $json = json_decode($json);
                         //if(array_key_exists('status',$json)){
-                        if (isset($json->status) and $json->status == 'ok') {
+                        if (isset($json->status) && $json->status == 'ok') {
                             $map_count_found++;
                             //$address = $json->results[0]->formatted_address;
                             $latitude = $json->results[0]->geometry->location->lat;
@@ -104,17 +104,17 @@ if (!defined('ADMIN_PAGE')) {
                         $api_key = '?callback=Function.prototype';
                         // Key is meant for showing maps and should be set to restriction: "HTTP referrers". This key will only be used here if no second key is present.
                         // This key will only work here if admin temporarily set it to restriction "None" or to "IP addresses" with server IP.
-                        if (isset($humo_option['google_api_key']) and $humo_option['google_api_key'] != '') {
+                        if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
                             //$api_key = "&key=" . $humo_option['google_api_key'];
                             $api_key = "&key=" . $humo_option['google_api_key'] . '&callback=Function.prototype';
                         }
 
                         //$api_key2 = ''; // Key meant for geolocation. Is protected by "IP addresses" restriction.
                         $api_key2 = '?callback=Function.prototype'; // Key meant for geolocation. Is protected by "IP addresses" restriction.           
-                        if (isset($humo_option['google_api_key2']) and $humo_option['google_api_key2'] != '') {
+                        if (isset($humo_option['google_api_key2']) && $humo_option['google_api_key2'] != '') {
                             $api_key2 = "&key=" . $humo_option['google_api_key2'] . '&callback=Function.prototype';
                         }
-                        if ($api_key2 == "") {
+                        if ($api_key2 === "") {
                             $api_key2 = $api_key;
                         }  // if no second key is present, try to use first key.
 
@@ -276,18 +276,16 @@ if (!defined('ADMIN_PAGE')) {
                 if ($use_worldDb) {
                     $use_world_map = $use_worldDb->setting_value;
                     // *** Update value ***
-                    if (isset($_POST['use_world_map']) and ($_POST['use_world_map'] == 'OpenStreetMap' or $_POST['use_world_map'] == 'Google')) {
+                    if (isset($_POST['use_world_map']) && ($_POST['use_world_map'] == 'OpenStreetMap' || $_POST['use_world_map'] == 'Google')) {
                         $temp = $dbh->query("UPDATE humo_settings SET setting_value='" . $_POST['use_world_map'] . "' WHERE setting_variable='use_world_map'");
                         $use_world_map = $_POST['use_world_map'];
                         $humo_option["use_world_map"] = $_POST['use_world_map'];
                     }
-                } else {
+                } elseif (isset($_POST['use_world_map']) && $_POST['use_world_map'] == 'OpenStreetMap') {
                     // *** No value in database, add new value ***
-                    if (isset($_POST['use_world_map']) and $_POST['use_world_map'] == 'OpenStreetMap') {
-                        $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='use_world_map', setting_value='OpenStreetMap'");
-                        $use_world_map = $_POST['use_world_map'];
-                        $humo_option["use_world_map"] = $_POST['use_world_map'];
-                    }
+                    $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='use_world_map', setting_value='OpenStreetMap'");
+                    $use_world_map = $_POST['use_world_map'];
+                    $humo_option["use_world_map"] = $_POST['use_world_map'];
                 }
                 ?>
                 <form action="index.php?page=google_maps" method="post" style="display:inline">
@@ -296,7 +294,7 @@ if (!defined('ADMIN_PAGE')) {
                     <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save">
                 </form>
 
-                <?php if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'Google') {; ?>
+                <?php if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Google') {; ?>
                     <h3><?= __('Google Maps API Keys'); ?></h3>
                     <?= __('To use the Google maps options, you need a Google account.'); ?>
                     <?= __('If you don\'t have a Google account, first create one. Once logged into your Google account, go to:'); ?>
@@ -313,14 +311,12 @@ if (!defined('ADMIN_PAGE')) {
                         //Function to try every way to resolve domain IP. Is more accurate than good old: gethostbyname($_SERVER['SERVER_NAME']) or gethostbyname(gethostname()) ;
                         function get_host()
                         {
-                            if (isset($_SERVER['HTTP_X_FORWARDED_HOST']) and $host = $_SERVER['HTTP_X_FORWARDED_HOST']) {
+                            if (isset($_SERVER['HTTP_X_FORWARDED_HOST']) && ($host = $_SERVER['HTTP_X_FORWARDED_HOST'])) {
                                 $elements = explode(',', $host);
                                 $host = trim(end($elements));
-                            } else {
-                                if (!$host = $_SERVER['HTTP_HOST']) {
-                                    if (!$host = $_SERVER['SERVER_NAME']) {
-                                        $host = !empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
-                                    }
+                            } elseif (!$host = $_SERVER['HTTP_HOST']) {
+                                if (!$host = $_SERVER['SERVER_NAME']) {
+                                    $host = empty($_SERVER['SERVER_ADDR']) ? '' : $_SERVER['SERVER_ADDR'];
                                 }
                             }
                             // Remove port number from host
@@ -355,12 +351,10 @@ if (!defined('ADMIN_PAGE')) {
                         $temp = $dbh->query("UPDATE humo_settings SET setting_value='" . $_POST['api_1'] . "' WHERE setting_variable='google_api_key'");
                         $api_1 = $_POST['api_1'];
                     }
-                } else {
+                } elseif (isset($_POST['api_1'])) {
                     // *** No value in database, add new value ***
-                    if (isset($_POST['api_1'])) {
-                        $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='" . $_POST['api_1'] . "'");
-                        $api_1 = $_POST['api_1'];
-                    }
+                    $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='" . $_POST['api_1'] . "'");
+                    $api_1 = $_POST['api_1'];
                 }
 
                 $api_2 = '';
@@ -373,12 +367,10 @@ if (!defined('ADMIN_PAGE')) {
                         $temp = $dbh->query("UPDATE humo_settings SET setting_value='" . $_POST['api_2'] . "' WHERE setting_variable='google_api_key2'");
                         $api_2 = $_POST['api_2'];
                     }
-                } else {
+                } elseif (isset($_POST['api_2'])) {
                     // *** No value in database, add new value ***
-                    if (isset($_POST['api_2'])) {
-                        $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key2', setting_value='" . $_POST['api_2'] . "'");
-                        $api_2 = $_POST['api_2'];
-                    }
+                    $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key2', setting_value='" . $_POST['api_2'] . "'");
+                    $api_2 = $_POST['api_2'];
                 }
 
                 $api_geokeo = '';
@@ -391,16 +383,14 @@ if (!defined('ADMIN_PAGE')) {
                         $temp = $dbh->query("UPDATE humo_settings SET setting_value='" . $_POST['api_geokeo'] . "' WHERE setting_variable='geokeo_api_key'");
                         $api_geokeo = $_POST['api_geokeo'];
                     }
-                } else {
+                } elseif (isset($_POST['api_geokeo']) && $_POST['api_geokeo'] != '') {
                     // *** No value in database, add new value ***
-                    if (isset($_POST['api_geokeo']) and ($_POST['api_geokeo'] != '')) {
-                        $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='geokeo_api_key', setting_value='" . $_POST['api_geokeo'] . "'");
-                        $api_geokeo = $_POST['api_geokeo'];
-                    }
+                    $temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='geokeo_api_key', setting_value='" . $_POST['api_geokeo'] . "'");
+                    $api_geokeo = $_POST['api_geokeo'];
                 }
                 ?>
 
-                <?php if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'Google') {; ?>
+                <?php if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Google') {; ?>
                     <form action="index.php?page=google_maps" method="post" style="display:inline">
                         <?= __('API key'); ?> 1 (restriction: <strong>HTTP referrers</strong>):
                         <input type="text" id="api_1" name="api_1" value="<?= $api_1; ?>" size="40">
@@ -415,7 +405,7 @@ if (!defined('ADMIN_PAGE')) {
                 <?php } ?>
 
                 <!-- OpenStreetMap -->
-                <?php if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'OpenStreetMap') {; ?>
+                <?php if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {; ?>
                     <h3><?= __('OpenStreetMap API Keys'); ?></h3>
                     <?= __('To use OpenStreetMap we need geolocation data of all places. Go to <a href="https://geokeo.com" target="_blank">https://geokeo.com</a> and create an account to get the API key.'); ?><br>
 
@@ -439,7 +429,7 @@ if (!defined('ADMIN_PAGE')) {
                 if (isset($_POST['check_new'])) { // the "Check" button was pressed
                     $unionstring = '';
 
-                    if (isset($_SESSION['geo_tree']) and $_SESSION['geo_tree'] != "all_geo_trees") {
+                    if (isset($_SESSION['geo_tree']) && $_SESSION['geo_tree'] != "all_geo_trees") {
                         // (only take bapt place if no birth place and only take burial place if no death place)
                         $unionstring .= "SELECT pers_birth_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' UNION
                             SELECT pers_bapt_place FROM humo_persons WHERE pers_tree_id='" . $_SESSION['geo_tree'] . "' AND pers_birth_place = '' UNION
@@ -509,14 +499,14 @@ if (!defined('ADMIN_PAGE')) {
                         // 2. if in the past it couldn't be found by google api (if so, skip it)
                         // If neither of these two cases - add it to the array of locations to be queried through google api ($add_locations)
 
-                        if ($is_database === true) {
+                        if ($is_database) {
                             // there is a database - see if the location already exists and if so - continue with a next loop
                             foreach ($exist_locs as $value) {
                                 if ($value == $personDb->pers_birth_place) {  // this location has already been mapped
                                     continue 2;  //continue the outer while loop 
                                 }
                             }
-                            if ($is_noloc_database === true) { // stored list of non-indexable locations exists
+                            if ($is_noloc_database) { // stored list of non-indexable locations exists
                                 foreach ($non_exist_locs as $value) {
                                     if ($value == $personDb->pers_birth_place) {  // this location cannot be mapped (not found by google api)
                                         $thistree_non_exist[] = $value;
@@ -569,7 +559,7 @@ if (!defined('ADMIN_PAGE')) {
                         $map_secs = floor($map_totalsecs) % 60; // *** Use floor to prevent error message in PHP 8.x ***
 
                         $one_tree = "";
-                        if (isset($_SESSION['geo_tree']) and $_SESSION['geo_tree'] != "all_geo_trees") {
+                        if (isset($_SESSION['geo_tree']) && $_SESSION['geo_tree'] != "all_geo_trees") {
                             $tree_search_sql2 = "SELECT * FROM humo_trees WHERE tree_id='" . $_SESSION['geo_tree'] . "'";
                             $tree_search_result2 = $dbh->query($tree_search_sql2);
                             $tree_searchDb2 = $tree_search_result2->fetch(PDO::FETCH_OBJ);
@@ -616,7 +606,7 @@ if (!defined('ADMIN_PAGE')) {
                     $tree_search_result = $dbh->query($tree_search_sql);
                     $count = 0;
                     $selected = '';
-                    if (!isset($_SESSION['geo_tree']) or (isset($_POST['database']) and $_POST['database'] == "all_geo_trees")) {
+                    if (!isset($_SESSION['geo_tree']) || isset($_POST['database']) && $_POST['database'] == "all_geo_trees") {
                         $selected = ' selected';
                         $_SESSION['geo_tree'] = "all_geo_trees";
                     }
@@ -634,10 +624,8 @@ if (!defined('ADMIN_PAGE')) {
                                         $selected = ' selected';
                                         $_SESSION['geo_tree'] = $tree_searchDb->tree_id;
                                     }
-                                } else {
-                                    if (isset($_SESSION['geo_tree']) and $_SESSION['geo_tree'] == $tree_searchDb->tree_id) {
-                                        $selected = ' selected';
-                                    }
+                                } elseif (isset($_SESSION['geo_tree']) && $_SESSION['geo_tree'] == $tree_searchDb->tree_id) {
+                                    $selected = ' selected';
                                 }
                                 $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
                                 echo '<option value="' . $tree_searchDb->tree_prefix . '"' . $selected . '>' . @$treetext['name'] . '</option>';
@@ -689,7 +677,7 @@ if (!defined('ADMIN_PAGE')) {
             </tr>
             <?php
             echo '<tr><td>';
-            if (isset($_POST['loc_change']) or isset($_POST['loc_add']) or isset($_POST['yes_change']) or isset($_POST['cancel_change'])) {
+            if (isset($_POST['loc_change']) || isset($_POST['loc_add']) || isset($_POST['yes_change']) || isset($_POST['cancel_change'])) {
                 // the "change" or "add" buttons were used -- show the place that was added or changed
                 // the "YES" was pressed -- the lat/lng of bottom box are used so they have to be shown
                 // the "NO" button was pressed -- we leave the bottom box as it was so the user may consider again
@@ -717,7 +705,7 @@ if (!defined('ADMIN_PAGE')) {
             // *** Google maps ***
             if ($use_world_map == 'Google') {
                 $api_key = '';
-                if (isset($humo_option['google_api_key']) and $humo_option['google_api_key'] != '') {
+                if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
                     $api_key = '?key=' . $humo_option['google_api_key'] . '&callback=Function.prototype';
                 } else {
                     $api_key = '?callback=Function.prototype';
@@ -837,11 +825,11 @@ if (!defined('ADMIN_PAGE')) {
                                 // delete location
                                 echo '<span style="color:red;font-weight:bold;">' . __('Deleted location:') . str_replace("\'", "'", safe_text_db($_POST['loc_del_name'])) . '</span><br>';
                             }
-                            if (isset($_POST['loc_change']) or isset($_POST['yes_change']) or isset($_POST['cancel_change'])) {
+                            if (isset($_POST['loc_change']) || isset($_POST['yes_change']) || isset($_POST['cancel_change'])) {
                                 // "change" location or "yes" button pressed
                                 $pos = strpos($_POST['add_name'], $_POST['loc_del_name']);
 
-                                if (!isset($_POST['cancel_change']) and ($pos !== false or isset($_POST['yes_change']))) {  // the name in pulldown appears in the name in the search box
+                                if (!isset($_POST['cancel_change']) && ($pos !== false || isset($_POST['yes_change']))) {  // the name in pulldown appears in the name in the search box
                                     $dbh->query("UPDATE humo_location SET location_location ='" . safe_text_db($_POST['loc_del_name']) . "', location_lat =" . floatval($_POST['add_lat']) . ", location_lng = " . floatval($_POST['add_lng']) . " WHERE location_location = '" . safe_text_db($_POST['loc_del_name']) . "'");
                                     echo '<span style="color:red;font-weight:bold;">' . __('Changed location:') . ' ' . str_replace("\'", "'", safe_text_db($_POST['loc_del_name'])) . '</span><br>';
                                 } elseif (isset($_POST['cancel_change'])) {
@@ -889,7 +877,7 @@ if (!defined('ADMIN_PAGE')) {
                                         if ($loc_listDb->location_id == $_POST['loc_find']) {
                                             $selected = " selected";
                                         }
-                                    } elseif (isset($_POST['loc_change']) or isset($_POST['yes_change']) or isset($_POST['cancel_change'])) {
+                                    } elseif (isset($_POST['loc_change']) || isset($_POST['yes_change']) || isset($_POST['cancel_change'])) {
                                         if ($loc_listDb->location_location == $_POST['loc_del_name']) {
                                             $selected = " selected";
                                         }
@@ -897,11 +885,10 @@ if (!defined('ADMIN_PAGE')) {
                                         if ($loc_listDb->location_location == $_POST['add_name']) {
                                             $selected = " selected";
                                         }
-                                    } else {
-                                        if ($find_default === true) { // first location on the list
-                                            $_POST['loc_find'] = $loc_listDb->location_id;
-                                            $find_default = false;
-                                        }
+                                    } elseif ($find_default) {
+                                        // first location on the list
+                                        $_POST['loc_find'] = $loc_listDb->location_id;
+                                        $find_default = false;
                                     }
                                     echo '<option value="' . $loc_listDb->location_id . '"' . $selected . ' >' . $loc_listDb->location_location . ' </option>';
                                 }
@@ -920,31 +907,38 @@ if (!defined('ADMIN_PAGE')) {
                             if (isset($_POST['loc_add'])) {
                                 // we have added or changed a location - so show that location after page load
                                 $result = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . safe_text_db($_POST['add_name']) . "'");
-                            } elseif (isset($_POST['loc_change']) or isset($_POST['yes_change']) or isset($_POST['cancel_change'])) {
+                            } elseif (isset($_POST['loc_change']) || isset($_POST['yes_change']) || isset($_POST['cancel_change'])) {
                                 // we have changed a location by "Change" or by "YES" - so show that location after page load
                                 // or we pushed the "NO" button and want to leave the situation as it was
                                 $result = $dbh->query("SELECT * FROM humo_location WHERE location_id = " . $_POST['loc_del_id']);
-                            } else {
+                            } elseif (isset($_POST['loc_find'])) {
                                 // default: show the location that was selected with the pull down box
-                                if (isset($_POST['loc_find']))
-                                    $result = $dbh->query("SELECT * FROM humo_location WHERE location_id = " . $_POST['loc_find']);
+                                $result = $dbh->query("SELECT * FROM humo_location WHERE location_id = " . $_POST['loc_find']);
                             }
                             $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
                             $location_id = '';
-                            if ($resultDb) $location_id = $resultDb->location_id;
+                            if ($resultDb) {
+                                $location_id = $resultDb->location_id;
+                            }
                             $location_location = '';
-                            if ($resultDb) $location_location = $resultDb->location_location;
+                            if ($resultDb) {
+                                $location_location = $resultDb->location_location;
+                            }
                             $location_lat = '';
-                            if ($resultDb) $location_lat = $resultDb->location_lat;
+                            if ($resultDb) {
+                                $location_lat = $resultDb->location_lat;
+                            }
                             $location_lng = '';
-                            if ($resultDb) $location_lng = $resultDb->location_lng;
+                            if ($resultDb) {
+                                $location_lng = $resultDb->location_lng;
+                            }
 
                             $search_name = $location_location;
                             $search_lat = $location_lat;
                             $search_lng = $location_lng;
 
-                            if ($leave_bottom === true) {
+                            if ($leave_bottom) {
                                 $search_name = $_POST['add_name'];
                                 $search_lat =  $_POST['add_lat'];
                                 $search_lng =  $_POST['add_lng'];
@@ -1084,12 +1078,10 @@ if (!defined('ADMIN_PAGE')) {
                                     $result = $db_functions->update_settings('gslider_' . $tree_searchDb->tree_prefix, $_POST[$offset]);
                                     ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
                                 }
-                            } else {
-                                if (isset($_POST[$offset])) {
-                                    $sql = "INSERT INTO humo_settings SET setting_variable='gslider_" . $tree_searchDb->tree_prefix . "', setting_value='" . $_POST[$offset] . "'";
-                                    $dbh->query($sql);
-                                    ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
-                                }
+                            } elseif (isset($_POST[$offset])) {
+                                $sql = "INSERT INTO humo_settings SET setting_variable='gslider_" . $tree_searchDb->tree_prefix . "', setting_value='" . $_POST[$offset] . "'";
+                                $dbh->query($sql);
+                                ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
                             }
 
                             $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
@@ -1129,10 +1121,14 @@ if (!defined('ADMIN_PAGE')) {
                 <select size="1" name="slider_default" id="slider_default" onChange="window.location='index.php?page=google_maps&slider_default='+this.value;">
                     <?php
                     $selected = "";
-                    if ($sl_def == "off") $selected = " selected ";
+                    if ($sl_def == "off") {
+                        $selected = " selected ";
+                    }
                     echo '<option value="off" ' . $selected . '>' . __('OFF position (leftmost position)') . '</option>';
                     $selected = "";
-                    if ($sl_def == "all") $selected = " selected ";
+                    if ($sl_def == "all") {
+                        $selected = " selected ";
+                    }
                     echo '<option value="all" ' . $selected . '>' . __('Show all periods (rightmost position)') . '</option>';
                     ?>
                 </select>
@@ -1163,10 +1159,14 @@ if (!defined('ADMIN_PAGE')) {
                 <select size="1" name="maptype_default" id="maptype_default" onChange="window.location='index.php?page=google_maps&maptype_default='+this.value;">
                     <?php
                     $selected = "";
-                    if ($maptype_def == "ROADMAP") $selected = " selected ";
+                    if ($maptype_def == "ROADMAP") {
+                        $selected = " selected ";
+                    }
                     echo '<option value="ROADMAP" ' . $selected . '>' . __('Regular map (ROADMAP)') . '</option>';
                     $selected = "";
-                    if ($maptype_def == "HYBRID") $selected = " selected ";
+                    if ($maptype_def == "HYBRID") {
+                        $selected = " selected ";
+                    }
                     echo '<option value="HYBRID" ' . $selected . '>' . __('Satellite map with roads and places (HYBRID)') . '</option>';
                     ?>
                 </select>
@@ -1198,7 +1198,9 @@ if (!defined('ADMIN_PAGE')) {
                     <?php
                     for ($x = 1; $x < 15; $x++) {
                         $selected = "";
-                        if ($mapzoom_def == $x) $selected = " selected ";
+                        if ($mapzoom_def == $x) {
+                            $selected = " selected ";
+                        }
                         echo '<option value="' . $x . '" ' . $selected . '>' . $x . '</option>';
                     }
                     ?>
@@ -1245,22 +1247,22 @@ function refresh_status()
     $result = $dbh->query("SELECT pers_tree_id, pers_tree_prefix, pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place
         FROM humo_persons" . $tree_id_string);
     while ($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
-        if (isset($loca_array[$resultDb->pers_birth_place]) and strpos($loca_array[$resultDb->pers_birth_place], $resultDb->pers_tree_prefix . "birth ") === false) {
+        if (isset($loca_array[$resultDb->pers_birth_place]) && strpos($loca_array[$resultDb->pers_birth_place], $resultDb->pers_tree_prefix . "birth ") === false) {
             $loca_array[$resultDb->pers_birth_place] .= $resultDb->pers_tree_prefix . "birth ";
         }
-        if (isset($loca_array[$resultDb->pers_bapt_place]) and strpos($loca_array[$resultDb->pers_bapt_place], $resultDb->pers_tree_prefix . "bapt ") === false) {
+        if (isset($loca_array[$resultDb->pers_bapt_place]) && strpos($loca_array[$resultDb->pers_bapt_place], $resultDb->pers_tree_prefix . "bapt ") === false) {
             $loca_array[$resultDb->pers_bapt_place] .= $resultDb->pers_tree_prefix . "bapt ";
         }
-        if (isset($loca_array[$resultDb->pers_death_place]) and strpos($loca_array[$resultDb->pers_death_place], $resultDb->pers_tree_prefix . "death ") === false) {
+        if (isset($loca_array[$resultDb->pers_death_place]) && strpos($loca_array[$resultDb->pers_death_place], $resultDb->pers_tree_prefix . "death ") === false) {
             $loca_array[$resultDb->pers_death_place] .= $resultDb->pers_tree_prefix . "death ";
         }
-        if (isset($loca_array[$resultDb->pers_buried_place]) and strpos($loca_array[$resultDb->pers_buried_place], $resultDb->pers_tree_prefix . "buried ") === false) {
+        if (isset($loca_array[$resultDb->pers_buried_place]) && strpos($loca_array[$resultDb->pers_buried_place], $resultDb->pers_tree_prefix . "buried ") === false) {
             $loca_array[$resultDb->pers_buried_place] .= $resultDb->pers_tree_prefix . "buried ";
         }
     }
 
     foreach ($loca_array as $key => $value) {
-        if (isset($_POST['purge']) and ($value == "" or $value == NULL)) {
+        if (isset($_POST['purge']) && ($value === "" || $value == NULL)) {
             $dbh->query("DELETE FROM humo_location WHERE location_location = '" . addslashes($key) . "'");
         } else {
             $dbh->query("UPDATE humo_location SET location_status = '" . $value . "' WHERE location_location = '" . addslashes($key) . "'");

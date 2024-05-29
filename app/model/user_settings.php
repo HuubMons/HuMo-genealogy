@@ -13,7 +13,7 @@ class UserSettingsModel
     public function getUser($dbh)
     {
         $userDb = '';
-        if (isset($_SESSION['user_id']) and is_numeric($_SESSION['user_id'])) {
+        if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id'])) {
             $qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
                 ON humo_users.user_group_id=humo_groups.group_id
                 WHERE humo_users.user_id='" . $_SESSION['user_id'] . "'";
@@ -37,24 +37,27 @@ class UserSettingsModel
             if ($result_message == '') {
                 //$user_register_date = date("Y-m-d H:i");
                 $sql = "UPDATE humo_users SET user_mail='" . safe_text_db($_POST["register_mail"]) . "'";
-                if ($_POST["register_password"] != '')
+                if ($_POST["register_password"] != '') {
                     $hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
-                if (isset($hashToStoreInDb)) $sql .= ", user_password_salted='" . $hashToStoreInDb . "'";
+                }
+                if (isset($hashToStoreInDb)) {
+                    $sql .= ", user_password_salted='" . $hashToStoreInDb . "'";
+                }
                 $sql .= " WHERE user_id=" . $user->user_id;
                 $result = $dbh->query($sql);
 
                 $result_message = __('Your settings are updated!');
 
                 // *** Only update 2FA settings if database is updated and 2FA settings are changed ***
-                if (isset($user->user_2fa_enabled) and isset($_POST['user_2fa_check'])) {
+                if (isset($user->user_2fa_enabled) && isset($_POST['user_2fa_check'])) {
                     // *** 2FA Authenticator (2fa_code = code from 2FA authenticator) ***
-                    if (!isset($_POST['user_2fa_enabled']) and $user->user_2fa_enabled) {
+                    if (!isset($_POST['user_2fa_enabled']) && $user->user_2fa_enabled) {
                         // *** Disable 2FA ***
                         $sql = "UPDATE humo_users SET user_2fa_enabled='' WHERE user_id=" . $user->user_id;
                         $result = $dbh->query($sql);
                     }
-                    if (isset($_POST['user_2fa_enabled']) and !$user->user_2fa_enabled) {
-                        if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
+                    if (isset($_POST['user_2fa_enabled']) && !$user->user_2fa_enabled) {
+                        if ($_POST['2fa_code'] && is_numeric($_POST['2fa_code'])) {
                             $Authenticator = new Authenticator();
                             $checkResult = $Authenticator->verifyCode($user->user_2fa_auth_secret, $_POST['2fa_code'], 2);        // 2 = 2*30sec clock tolerance
                             if (!$checkResult) {
@@ -108,31 +111,34 @@ class UserSettingsModel
 
     public function showQRcode($dbh, $get_user, $user)
     {
-        if (isset($get_user->user_name) and $user['group_menu_change_password'] == 'y') {
-            if ($user['group_menu_change_password'] == 'y') {
-                if (isset($get_user->user_2fa_auth_secret)) {
-                    // *** 2FA Two factor authentification ***
-                    $Authenticator = new Authenticator();
-                    if ($get_user->user_2fa_auth_secret) {
-                        $user_2fa_auth_secret = $get_user->user_2fa_auth_secret;
-                    } else {
-                        $user_2fa_auth_secret = $Authenticator->generateRandomSecret();
+        if ((isset($get_user->user_name) and $user['group_menu_change_password'] == 'y') && $user['group_menu_change_password'] == 'y') {
+            if (isset($get_user->user_2fa_auth_secret)) {
+                // *** 2FA Two factor authentification ***
+                $Authenticator = new Authenticator();
+                if ($get_user->user_2fa_auth_secret) {
+                    $user_2fa_auth_secret = $get_user->user_2fa_auth_secret;
+                } else {
+                    $user_2fa_auth_secret = $Authenticator->generateRandomSecret();
 
-                        // *** Save auth_secret, so it's not changed anymore ***
-                        $sql = "UPDATE humo_users SET user_2fa_auth_secret='" . safe_text_db($user_2fa_auth_secret) . "' WHERE user_id=" . $get_user->user_id;
-                        $result = $dbh->query($sql);
-                    }
+                    // *** Save auth_secret, so it's not changed anymore ***
+                    $sql = "UPDATE humo_users SET user_2fa_auth_secret='" . safe_text_db($user_2fa_auth_secret) . "' WHERE user_id=" . $get_user->user_id;
+                    $result = $dbh->query($sql);
+                }
 
-                    if (isset($_GET['2fa']) and $_GET['2fa'] == '1') {
-                        //$siteusernamestr= "Your Sites Unique String";
-                        $siteusernamestr = 'HuMo-genealogy ' . $_SERVER['SERVER_NAME'];
-                        $twofa["qrCodeUrl"] = $Authenticator->getQR($siteusernamestr, $user_2fa_auth_secret);
-                        $twofa["checked"] = '';
-                        if ($get_user->user_2fa_enabled == 1) $twofa["checked"] = ' checked="true"';
+                if (isset($_GET['2fa']) && $_GET['2fa'] == '1') {
+                    //$siteusernamestr= "Your Sites Unique String";
+                    $siteusernamestr = 'HuMo-genealogy ' . $_SERVER['SERVER_NAME'];
+                    $twofa["qrCodeUrl"] = $Authenticator->getQR($siteusernamestr, $user_2fa_auth_secret);
+                    $twofa["checked"] = '';
+                    if ($get_user->user_2fa_enabled == 1) {
+                        $twofa["checked"] = ' checked="true"';
                     }
                 }
             }
         }
-        if (isset($twofa)) return $twofa;
+        if (isset($twofa)) {
+            return $twofa;
+        }
+        return null;
     }
 }

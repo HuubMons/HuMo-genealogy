@@ -31,7 +31,7 @@ if (isset($_GET['menu_admin'])) {
 <div style="float: left; background-color:white; height:500px; padding:10px;">
     <?php
     // *** User log ***
-    if (isset($menu_admin) and $menu_admin == 'log_users') {
+    if (isset($menu_admin) && $menu_admin == 'log_users') {
         $logbooksql = "SELECT * FROM humo_user_log ORDER BY log_date DESC";
         $logbook = $dbh->query($logbooksql);
     ?>
@@ -57,7 +57,7 @@ if (isset($_GET['menu_admin'])) {
     }
 
     // *** IP blacklist ***
-    if (isset($menu_admin) and $menu_admin == 'log_blacklist') {
+    if (isset($menu_admin) && $menu_admin == 'log_blacklist') {
 
         // *** Change Link ***
         if (isset($_POST['change_link'])) {
@@ -65,7 +65,7 @@ if (isset($_GET['menu_admin'])) {
             while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                 $setting_value = $_POST[$dataDb->setting_id . 'own_code'] . "|" . $_POST[$dataDb->setting_id . 'link_text'];
                 $sql = "UPDATE humo_settings SET setting_value='" . safe_text_db($setting_value) . "'
-                WHERE setting_id=" . safe_text_db($_POST[$dataDb->setting_id . 'id']);
+                    WHERE setting_id=" . safe_text_db($_POST[$dataDb->setting_id . 'id']);
                 $result = $dbh->query($sql);
             }
         }
@@ -80,10 +80,10 @@ if (isset($_GET['menu_admin'])) {
         }
 
         // *** Add link ***
-        if (isset($_POST['add_link']) and ($_POST['own_code'] != '') and is_numeric($_POST['link_order'])) {
+        if (isset($_POST['add_link']) && $_POST['own_code'] != '' && is_numeric($_POST['link_order'])) {
             $setting_value = $_POST['own_code'] . "|" . $_POST['link_text'];
             $sql = "INSERT INTO humo_settings SET setting_variable='ip_blacklist',
-            setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['link_order']) . "'";
+                setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['link_order']) . "'";
             $result = $dbh->query($sql);
         }
 
@@ -128,9 +128,13 @@ if (isset($_GET['menu_admin'])) {
                 $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' ORDER BY setting_order");
                 // *** Number for new link ***
                 $count_links = 0;
-                if ($datasql->rowCount()) $count_links = $datasql->rowCount();
+                if ($datasql->rowCount()) {
+                    $count_links = $datasql->rowCount();
+                }
                 $new_number = 1;
-                if ($count_links) $new_number = $count_links + 1;
+                if ($count_links) {
+                    $new_number = $count_links + 1;
+                }
                 if ($datasql) {
                     $teller = 1;
                     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {

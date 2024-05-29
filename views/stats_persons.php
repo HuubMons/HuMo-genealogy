@@ -50,7 +50,7 @@ function convert_date_number($date)
     }
 
     $year = $process_age->search_year($date);
-    if ($year == null or $year > date("Y")) {
+    if ($year == null || $year > date("Y")) {
         return null;
     }
 
@@ -71,9 +71,8 @@ function convert_date_number($date)
     } else {
         $day = "01";
     }
-    $date = $year . $month . $day;
 
-    return $date;
+    return $year . $month . $day;
 }
 
 // *** Men and women table ***
@@ -95,14 +94,18 @@ function show_person($row, $date = 'EMPTY')
     // <td align="center"><a href="[url]"><i><b>[name]</b></i></a></td>
     if (!$privacy) {
         $line = '';
-        if ($date != 'EMPTY') $line = "<td align='center'><i>" . date_place($date, '') . "</i></td>\n";
+        if ($date != 'EMPTY') {
+            $line = "<td align='center'><i>" . date_place($date, '') . "</i></td>\n";
+        }
 
         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
         $url = $person_cls->person_url2($row->pers_tree_id, $row->pers_famc, $row->pers_fams, $row->pers_gedcomnumber);
         $line .= '<td align="center"><a href="' . $url . '"><i><b>' . $name["standard_name"] . '</b></i> </a> </td>';
     } else {
         $line = '<td align="center">' . __('PRIVACY FILTER') . '</td>';
-        if ($date != 'EMPTY') $line .= '<td align="center">' . __('PRIVACY FILTER') . '</td>';
+        if ($date != 'EMPTY') {
+            $line .= '<td align="center">' . __('PRIVACY FILTER') . '</td>';
+        }
     }
     return $line;
 }
@@ -170,35 +173,35 @@ while ($persstatDb = $persqr->fetch(PDO::FETCH_OBJ)) {
         $countman++;
 
         $manbirdate = convert_date_number($persstatDb->pers_birth_date);
-        if ($manbirdate != null and $manbirdate < $oldest_man_bir_date) {
+        if ($manbirdate != null && $manbirdate < $oldest_man_bir_date) {
             $oldest_man_bir_date = $manbirdate;
             $oldest_man_bir_ged = $persstatDb->pers_gedcomnumber;
         }
-        if ($manbirdate != null and $manbirdate > $latest_man_bir_date) {
+        if ($manbirdate != null && $manbirdate > $latest_man_bir_date) {
             $latest_man_bir_date = $manbirdate;
             $latest_man_bir_ged = $persstatDb->pers_gedcomnumber;
         }
 
         $mandeadate = convert_date_number($persstatDb->pers_death_date);
-        if ($mandeadate != null and $mandeadate < $oldest_man_dea_date) {
+        if ($mandeadate != null && $mandeadate < $oldest_man_dea_date) {
             $oldest_man_dea_date = $mandeadate;
             $oldest_man_dea_ged = $persstatDb->pers_gedcomnumber;
         }
-        if ($mandeadate != null and $mandeadate > $latest_man_dea_date) {
+        if ($mandeadate != null && $mandeadate > $latest_man_dea_date) {
             $latest_man_dea_date = $mandeadate;
             $latest_man_dea_ged = $persstatDb->pers_gedcomnumber;
         }
 
         $manbapdate = convert_date_number($persstatDb->pers_bapt_date);
-        if ($manbapdate != null and $manbapdate < $oldest_man_bap_date) {
+        if ($manbapdate != null && $manbapdate < $oldest_man_bap_date) {
             $oldest_man_bap_date = $manbapdate;
             $oldest_man_bap_ged = $persstatDb->pers_gedcomnumber;
         }
-        if ($manbapdate != null and $manbapdate > $latest_man_bap_date) {
+        if ($manbapdate != null && $manbapdate > $latest_man_bap_date) {
             $latest_man_bap_date = $manbapdate;
             $latest_man_bap_ged = $persstatDb->pers_gedcomnumber;
         }
-        if ($persstatDb->pers_death_date != "" and ($persstatDb->pers_birth_date != "" or $persstatDb->pers_bapt_date != "")) {
+        if ($persstatDb->pers_death_date != "" && ($persstatDb->pers_birth_date != "" || $persstatDb->pers_bapt_date != "")) {
             $man_age = $livingcalc->calculate_age($persstatDb->pers_bapt_date, $persstatDb->pers_birth_date, $persstatDb->pers_death_date, true);
             //if($man_age >= 0 AND $man_age < 120) { // valid age
             if ($man_age && $man_age >= 0 && $man_age < 120) { // valid age
@@ -214,7 +217,7 @@ while ($persstatDb = $persqr->fetch(PDO::FETCH_OBJ)) {
                     if ($man_age > $longest_living_man_marr) {
                         $longest_living_man_marr = $man_age;
                     }
-                    if ($man_age < $shortest_living_man_marr and $man_age > 0) {
+                    if ($man_age < $shortest_living_man_marr && $man_age > 0) {
                         $shortest_living_man_marr = $man_age;
                     }
                 }
@@ -224,36 +227,36 @@ while ($persstatDb = $persqr->fetch(PDO::FETCH_OBJ)) {
         $countwoman++;
 
         $womanbirdate = convert_date_number($persstatDb->pers_birth_date);
-        if ($womanbirdate != null and $womanbirdate < $oldest_woman_bir_date) {
+        if ($womanbirdate != null && $womanbirdate < $oldest_woman_bir_date) {
             $oldest_woman_bir_date = $womanbirdate;
             $oldest_woman_bir_ged = $persstatDb->pers_gedcomnumber;
         }
-        if ($womanbirdate != null and $womanbirdate > $latest_woman_bir_date) {
+        if ($womanbirdate != null && $womanbirdate > $latest_woman_bir_date) {
             $latest_woman_bir_date = $womanbirdate;
             $latest_woman_bir_ged = $persstatDb->pers_gedcomnumber;
         }
 
         $womandeadate = convert_date_number($persstatDb->pers_death_date);
-        if ($womandeadate != null and $womandeadate < $oldest_woman_dea_date) {
+        if ($womandeadate != null && $womandeadate < $oldest_woman_dea_date) {
             $oldest_woman_dea_date = $womandeadate;
             $oldest_woman_dea_ged = $persstatDb->pers_gedcomnumber;
         }
-        if ($womandeadate != null and $womandeadate > $latest_woman_dea_date) {
+        if ($womandeadate != null && $womandeadate > $latest_woman_dea_date) {
             $latest_woman_dea_date = $womandeadate;
             $latest_woman_dea_ged = $persstatDb->pers_gedcomnumber;
         }
 
         $womanbapdate = convert_date_number($persstatDb->pers_bapt_date);
-        if ($womanbapdate != null and $womanbapdate < $oldest_woman_bap_date) {
+        if ($womanbapdate != null && $womanbapdate < $oldest_woman_bap_date) {
             $oldest_woman_bap_date = $womanbapdate;
             $oldest_woman_bap_ged = $persstatDb->pers_gedcomnumber;
         }
-        if ($womanbapdate != null and $womanbapdate > $latest_woman_bap_date) {
+        if ($womanbapdate != null && $womanbapdate > $latest_woman_bap_date) {
             $latest_woman_bap_date = $womanbapdate;
             $latest_woman_bap_ged = $persstatDb->pers_gedcomnumber;
         }
 
-        if ($persstatDb->pers_death_date != "" and ($persstatDb->pers_birth_date != "" or $persstatDb->pers_bapt_date != "")) {
+        if ($persstatDb->pers_death_date != "" && ($persstatDb->pers_birth_date != "" || $persstatDb->pers_bapt_date != "")) {
             $woman_age = $livingcalc->calculate_age($persstatDb->pers_bapt_date, $persstatDb->pers_birth_date, $persstatDb->pers_death_date, true);
             //if($woman_age >= 0 AND $woman_age < 120) {
             if ($woman_age && $woman_age >= 0 && $woman_age < 120) {
@@ -269,7 +272,7 @@ while ($persstatDb = $persqr->fetch(PDO::FETCH_OBJ)) {
                     if ($woman_age > $longest_living_woman_marr) {
                         $longest_living_woman_marr = $woman_age;
                     }
-                    if ($woman_age < $shortest_living_woman_marr and $woman_age > 0) {
+                    if ($woman_age < $shortest_living_woman_marr && $woman_age > 0) {
                         $shortest_living_woman_marr = $woman_age;
                     }
                 }
@@ -290,21 +293,45 @@ if ($longest_living_woman == 0) {
     $average_living_woman = $total_age_woman / $woman_age_count;
     $average_living_woman_marr = $total_age_woman_marr / $woman_age_count_marr;
 }
-if ($oldest_man_bir_date == '30003112') $oldest_man_bir_date = null;
-if ($oldest_man_dea_date == '30003112') $oldest_man_dea_date = null;
-if ($oldest_man_bap_date == '30003112') $oldest_man_bap_date = null;
+if ($oldest_man_bir_date == '30003112') {
+    $oldest_man_bir_date = null;
+}
+if ($oldest_man_dea_date == '30003112') {
+    $oldest_man_dea_date = null;
+}
+if ($oldest_man_bap_date == '30003112') {
+    $oldest_man_bap_date = null;
+}
 
-if ($oldest_woman_bir_date == '30003112') $oldest_woman_bir_date = null;
-if ($oldest_woman_dea_date == '30003112') $oldest_woman_dea_date = null;
-if ($oldest_woman_bap_date == '30003112') $oldest_woman_bap_date = null;
+if ($oldest_woman_bir_date == '30003112') {
+    $oldest_woman_bir_date = null;
+}
+if ($oldest_woman_dea_date == '30003112') {
+    $oldest_woman_dea_date = null;
+}
+if ($oldest_woman_bap_date == '30003112') {
+    $oldest_woman_bap_date = null;
+}
 
-if ($latest_man_bir_date == '0') $latest_man_bir_date = null;
-if ($latest_man_dea_date == '0') $latest_man_dea_date = null;
-if ($latest_man_bap_date == '0') $latest_man_bap_date = null;
+if ($latest_man_bir_date == '0') {
+    $latest_man_bir_date = null;
+}
+if ($latest_man_dea_date == '0') {
+    $latest_man_dea_date = null;
+}
+if ($latest_man_bap_date == '0') {
+    $latest_man_bap_date = null;
+}
 
-if ($latest_woman_bir_date == '0') $latest_woman_bir_date = null;
-if ($latest_woman_dea_date == '0') $latest_woman_dea_date = null;
-if ($latest_woman_bap_date == '0') $latest_woman_bap_date = null;
+if ($latest_woman_bir_date == '0') {
+    $latest_woman_bir_date = null;
+}
+if ($latest_woman_dea_date == '0') {
+    $latest_woman_dea_date = null;
+}
+if ($latest_woman_bap_date == '0') {
+    $latest_woman_bap_date = null;
+}
 
 $both = $countman + $countwoman;
 @$percent = ($countman / $both) * 100;
@@ -312,6 +339,7 @@ $man_percentage = round($percent, 1);
 @$percent = ($countwoman / $both) * 100;
 $woman_percentage = round($percent, 1);
 ?>
+
 <br>
 <table style="width:80%;" class="humo" align="center">
     <tr class=table_headline>
@@ -352,8 +380,8 @@ $woman_percentage = round($percent, 1);
         }
         ?>
     </tr>
-    <?php
 
+    <?php
     // *** Youngest pers_birth_date man.
     echo "<tr><td>" . __('Youngest birth date') . "</td>\n";
     if ($latest_man_bir_date != null) {
@@ -465,11 +493,15 @@ $woman_percentage = round($percent, 1);
     echo "<tr><td>" . __('Average age') . "</td>\n";
     // Man
     echo '<td align="center">';
-    if ($average_living_man != 0) echo round($average_living_man, 1);
+    if ($average_living_man != 0) {
+        echo round($average_living_man, 1);
+    }
     echo ' ' . __('years') . '</td><td></td>';
     // Woman
     echo '<td align="center">';
-    if ($average_living_woman != 0) echo round($average_living_woman, 1);
+    if ($average_living_woman != 0) {
+        echo round($average_living_woman, 1);
+    }
     echo ' ' . __('years') . '</td><td></td></tr>';
 
     // *** Average age married ***
@@ -477,14 +509,18 @@ $woman_percentage = round($percent, 1);
 
     // Man
     echo '<td align="center">';
-    if ($average_living_man_marr != 0) echo round($average_living_man_marr, 1);
+    if ($average_living_man_marr != 0) {
+        echo round($average_living_man_marr, 1);
+    }
     echo ' ' . __('years') . '</td><td></td>';
     // Woman
     echo '<td align="center">';
-    if ($average_living_woman_marr != 0) echo round($average_living_woman_marr, 1);
+    if ($average_living_woman_marr != 0) {
+        echo round($average_living_woman_marr, 1);
+    }
     echo ' ' . __('years') . '</td><td></td></tr>';
-
     ?>
+
     <tr>
         <td><?= __('Lifespan range of married individuals'); ?></td>
         <td align="center"><?= $shortest_living_man_marr . ' - ' . $longest_living_man_marr . ' ' . __('years'); ?></td>

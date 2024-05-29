@@ -23,14 +23,12 @@ class AddressController
         $address = $addressModel->getById($_GET["id"]);
         $address_sources = $addressModel->getAddressSources($_GET["id"]);
         $address_connected_persons = $addressModel->getAddressConnectedPersons($_GET["id"]);
-
-        $data = array(
+        return array(
             "authorised" => $authorised,
             "address" => $address,
             "address_sources" => $address_sources,
             "address_connected_persons" => $address_connected_persons,
             "title" => __('Address')
         );
-        return $data;
     }
 }

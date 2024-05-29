@@ -20,9 +20,9 @@ function select_tree($dbh, $page, $tree_id, $menu_tab = '')
             while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
                 $edit_tree_array = explode(";", $group_edit_trees);
                 // *** Administrator can always edit in all family trees ***
-                if ($group_administrator == 'j' or in_array($tree_searchDb->tree_id, $edit_tree_array)) {
+                if ($group_administrator == 'j' || in_array($tree_searchDb->tree_id, $edit_tree_array)) {
                     $selected = '';
-                    if (isset($tree_id) and $tree_searchDb->tree_id == $tree_id) {
+                    if (isset($tree_id) && $tree_searchDb->tree_id == $tree_id) {
                         $selected = ' selected';
                     }
                     $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);

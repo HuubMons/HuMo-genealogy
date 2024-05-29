@@ -60,7 +60,9 @@ class Link_cls
         global $humo_option;
 
         $path = $this->path;
-        if ($change_path != '') $path = $change_path;
+        if ($change_path != '') {
+            $path = $change_path;
+        }
 
         // *** Default link ***
         if ($humo_option["url_rewrite"] == "j") {
@@ -81,33 +83,37 @@ class Link_cls
                 if ($page == $links['page']) {
                     $link = $path . $links['file_rewrite'];
 
-                    if ($tree_id) $link .= '/' . $tree_id;
+                    if ($tree_id) {
+                        $link .= '/' . $tree_id;
+                    }
 
-                    if ($page == 'ancestor_report' AND $vars) {
+                    if ($page == 'ancestor_report' && $vars) {
                         $link .= '/' . $vars['id'];
                     }
 
-                    if ($page == 'family' AND $vars) {
+                    if ($page == 'family' && $vars) {
                         $link .= '/' . $vars['pers_family'];
                     }
 
-                    if ($page == 'hourglass' AND $vars) {
+                    if ($page == 'hourglass' && $vars) {
                         $link .= '/' . $vars['pers_family'];
                     }
 
-                    if ($page == 'list_names' AND $vars) {
+                    if ($page == 'list_names' && $vars) {
                         $link .= '/' . $vars['last_name'];
                     }
 
-                    if ($page == 'timeline' AND $vars) {
+                    if ($page == 'timeline' && $vars) {
                         $link .= '/' . $vars['pers_gedcomnumber'];
                     }
 
-                    if ($page == 'source' AND $vars) {
+                    if ($page == 'source' && $vars) {
                         $link .= '/' . $vars['source_gedcomnr'];
                     }
 
-                    if ($add_seperator) $link .= '?';
+                    if ($add_seperator) {
+                        $link .= '?';
+                    }
                     break;
                 }
             } else {
@@ -120,27 +126,27 @@ class Link_cls
                         $seperator = '&amp;';
                     }
 
-                    if ($page == 'ancestor_report' AND $vars) {
+                    if ($page == 'ancestor_report' and $vars) {
                         $link .= '&amp;id=' . $vars['id'];
                     }
 
-                    if ($page == 'family' AND $vars) {
+                    if ($page == 'family' and $vars) {
                         $link .= '&amp;id=' . $vars['pers_family'];
                     }
 
-                    if ($page == 'hourglass' AND $vars) {
+                    if ($page == 'hourglass' and $vars) {
                         $link .= '&amp;id=' . $vars['pers_family'];
                     }
 
-                    if ($page == 'list_names' AND $vars) {
+                    if ($page == 'list_names' and $vars) {
                         $link .= '&amp;last_name=' . $vars['last_name'];
                     }
 
-                    if ($page == 'timeline' AND $vars) {
+                    if ($page == 'timeline' and $vars) {
                         $link .= '&amp;id=' . $vars['pers_gedcomnumber'];
                     }
 
-                    if ($page == 'source' AND $vars) {
+                    if ($page == 'source' and $vars) {
                         $link .= '&amp;id=' . $vars['source_gedcomnr'];
                     }
 

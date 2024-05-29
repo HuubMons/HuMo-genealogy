@@ -31,20 +31,20 @@ class AddressModel
     public function getById($id)
     {
         $addressDb = $this->db_functions->get_address($id);
-        $result = $addressDb;
 
         //$this->Connection = null;
-        return $result;
+        return $addressDb;
     }
 
     public function getAddressSources($id)
     {
         // *** Show source by addresss ***
         $source_array = show_sources2("address", "address_source", $id);
-
         //$this->Connection = null;
-        if ($source_array)
+        if ($source_array) {
             return $source_array['text'];
+        }
+        return null;
     }
 
     public function getAddressConnectedPersons($id)

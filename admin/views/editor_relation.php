@@ -12,8 +12,7 @@
         $fam_count = count($fams1);
         if ($fam_count > 0) {
             for ($i = 0; $i < $fam_count; $i++) {
-                $family = $dbh->query("SELECT * FROM humo_families
-                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $fams1[$i] . "'");
+                $family = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $fams1[$i] . "'");
                 $familyDb = $family->fetch(PDO::FETCH_OBJ);
 
                 // *** Highlight selected relation if there are multiple relations ***
@@ -118,7 +117,7 @@ if ($menu_tab != 'children') {
 // ***********************
 
 // *** Select marriage ***
-if ($menu_tab == 'marriage' and $person->pers_fams) {
+if ($menu_tab == 'marriage' && $person->pers_fams) {
     $familyDb = $db_functions->get_family($marriage);
 
     $fam_kind = $familyDb->fam_kind;
@@ -129,32 +128,46 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
     $fam_relation_end_date = $familyDb->fam_relation_end_date;
     // *** Check if variabele exists, needed for PHP 8.1 ***
     $fam_relation_place = '';
-    if (isset($familyDb->fam_relation_place)) $fam_relation_place = $familyDb->fam_relation_place;
+    if (isset($familyDb->fam_relation_place)) {
+        $fam_relation_place = $familyDb->fam_relation_place;
+    }
     $fam_relation_text = $editor_cls->text_show($familyDb->fam_relation_text);
     $fam_marr_notice_date = $familyDb->fam_marr_notice_date;
     $fam_marr_notice_place = '';
-    if (isset($familyDb->fam_marr_notice_place)) $fam_marr_notice_place = $familyDb->fam_marr_notice_place;
+    if (isset($familyDb->fam_marr_notice_place)) {
+        $fam_marr_notice_place = $familyDb->fam_marr_notice_place;
+    }
     $fam_marr_notice_text = $editor_cls->text_show($familyDb->fam_marr_notice_text);
     $fam_marr_date = $familyDb->fam_marr_date;
     $fam_marr_place = '';
-    if (isset($familyDb->fam_marr_place)) $fam_marr_place = $familyDb->fam_marr_place;
+    if (isset($familyDb->fam_marr_place)) {
+        $fam_marr_place = $familyDb->fam_marr_place;
+    }
     $fam_marr_text = $editor_cls->text_show($familyDb->fam_marr_text);
     $fam_marr_authority = $editor_cls->text_show($familyDb->fam_marr_authority);
     $fam_man_age = $familyDb->fam_man_age;
     $fam_woman_age = $familyDb->fam_woman_age;
     $fam_marr_church_notice_date = $familyDb->fam_marr_church_notice_date;
     $fam_marr_church_notice_place = '';
-    if (isset($familyDb->fam_marr_church_notice_place)) $fam_marr_church_notice_place = $familyDb->fam_marr_church_notice_place;
+    if (isset($familyDb->fam_marr_church_notice_place)) {
+        $fam_marr_church_notice_place = $familyDb->fam_marr_church_notice_place;
+    }
     $fam_marr_church_notice_text = $editor_cls->text_show($familyDb->fam_marr_church_notice_text);
     $fam_marr_church_date = $familyDb->fam_marr_church_date;
     $fam_marr_church_place = '';
-    if (isset($familyDb->fam_marr_church_place)) $fam_marr_church_place = $familyDb->fam_marr_church_place;
+    if (isset($familyDb->fam_marr_church_place)) {
+        $fam_marr_church_place = $familyDb->fam_marr_church_place;
+    }
     $fam_marr_church_text = $editor_cls->text_show($familyDb->fam_marr_church_text);
     $fam_religion = '';
-    if (isset($familyDb->fam_religion)) $fam_religion = $familyDb->fam_religion;
+    if (isset($familyDb->fam_religion)) {
+        $fam_religion = $familyDb->fam_religion;
+    }
     $fam_div_date = $familyDb->fam_div_date;
     $fam_div_place = '';
-    if (isset($familyDb->fam_div_place)) $fam_div_place = $familyDb->fam_div_place;
+    if (isset($familyDb->fam_div_place)) {
+        $fam_div_place = $familyDb->fam_div_place;
+    }
     $fam_div_text = $editor_cls->text_show($familyDb->fam_div_text);
     $fam_div_authority = $editor_cls->text_show($familyDb->fam_div_authority);
 
@@ -179,7 +192,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
 
     // *** Checkbox for no data by divorce ***
     $fam_div_no_data = false;
-    if ($fam_div_date or $fam_div_place or $fam_div_text) $fam_div_no_data = true;
+    if ($fam_div_date || $fam_div_place || $fam_div_text) {
+        $fam_div_no_data = true;
+    }
     $fam_text = $editor_cls->text_show($familyDb->fam_text);
 ?>
 
@@ -187,7 +202,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
         <input type="hidden" name="page" value="<?= $page; ?>">
 
         <?php
-        if (isset($_GET['fam_remove']) or isset($_POST['fam_remove'])) {
+        if (isset($_GET['fam_remove']) || isset($_POST['fam_remove'])) {
             if (isset($_GET['fam_remove'])) {
                 $fam_remove = safe_text_db($_GET['fam_remove']);
             };
@@ -253,12 +268,11 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
 
                     // *** Automatically calculate birth date if marriage date and marriage age by man is used ***
                     if (
-                        isset($_POST["fam_man_age"]) and $_POST["fam_man_age"] != ''
-                        and $fam_marr_date != '' and $person->pers_birth_date == '' and $person->pers_bapt_date == ''
+                        isset($_POST["fam_man_age"]) && $_POST["fam_man_age"] != '' && $fam_marr_date != '' && $person->pers_birth_date == '' && $person->pers_bapt_date == ''
                     ) {
                         $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_man_age"]);
                         $sql = "UPDATE humo_persons SET pers_birth_date='" . safe_text_db($pers_birth_date) . "'
-                                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($man_gedcomnumber) . "'";
+                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($man_gedcomnumber) . "'";
                         $result = $dbh->query($sql);
                     }
 
@@ -282,8 +296,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
 
                     // *** Automatically calculate birth date if marriage date and marriage age by woman is used ***
                     if (
-                        isset($_POST["fam_woman_age"]) and $_POST["fam_woman_age"] != ''
-                        and $fam_marr_date != '' and $person->pers_birth_date == '' and $person->pers_bapt_date == ''
+                        isset($_POST["fam_woman_age"]) && $_POST["fam_woman_age"] != '' && $fam_marr_date != '' && $person->pers_birth_date == '' && $person->pers_bapt_date == ''
                     ) {
                         $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_woman_age"]);
                         $sql = "UPDATE humo_persons SET pers_birth_date='" . safe_text_db($pers_birth_date) . "'
@@ -322,7 +335,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                     <?php
                     $hideshow_text = hideshow_date_place($fam_relation_date, $fam_relation_place);
                     if ($fam_relation_end_date) {
-                        if ($hideshow_text) $hideshow_text .= '.';
+                        if ($hideshow_text) {
+                            $hideshow_text .= '.';
+                        }
                         $hideshow_text .= ' ' . __('End living together') . ' ' . $fam_relation_end_date;
                     }
                     if ($marriage) {
@@ -360,7 +375,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         <?php
                         // *** Check if there are multiple lines in text ***
                         $field_text_selected = $field_text;
-                        if ($fam_relation_text and preg_match('/\R/', $fam_relation_text)) $field_text_selected = $field_text_medium;
+                        if ($fam_relation_text && preg_match('/\R/', $fam_relation_text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "fam_relation_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -369,7 +386,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                             </div>
                         </div>
 
-                        <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                        <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                             <div class="row mb-2">
                                 <label for "fam_relation_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
@@ -427,7 +444,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         <?php
                         // *** Check if there are multiple lines in text ***
                         $field_text_selected = $field_text;
-                        if ($fam_marr_notice_text and preg_match('/\R/', $fam_marr_notice_text)) $field_text_selected = $field_text_medium;
+                        if ($fam_marr_notice_text && preg_match('/\R/', $fam_marr_notice_text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "fam_marr_notice_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -436,7 +455,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                             </div>
                         </div>
 
-                        <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                        <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                             <div class="row mb-2">
                                 <label for "fam_marr_notice_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
@@ -469,7 +488,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                 <td colspan="2">
                     <?php
                     $hideshow_text = '';
-                    if (!$fam_kind) $hideshow_text .= '<span style="background-color:#FFAA80">' . __('Marriage/ Related') . '</span>';
+                    if (!$fam_kind) {
+                        $hideshow_text .= '<span style="background-color:#FFAA80">' . __('Marriage/ Related') . '</span>';
+                    }
 
                     $date_place = date_place($fam_marr_date, $fam_marr_place);
                     if ($date_place) {
@@ -486,9 +507,11 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         $check_sources_text = check_sources('family', 'fam_marr_source', $marriage);
                         $hideshow_text .= $check_sources_text;
                     }
-
-                    echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_text);
                     ?>
+                    <?= hideshow_editor($hideshow, $hideshow_text, $fam_marr_text); ?>
+
+                    <input type="submit" name="add_marriage_witness" value="<?= __('marriage witness'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
                         <div class="row mb-2">
@@ -562,7 +585,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         </div>
 
                         <div class="row mb-2">
-                            <label for "fam_marr_authority" class="col-md-3 col-form-label"><?= __('Age person 2'); ?></label>
+                            <label for "fam_marr_authority" class="col-md-3 col-form-label"><?= __('Registrar'); ?></label>
                             <div class="col-md-7">
                                 <input type="text" name="fam_marr_authority" value="<?= $fam_marr_authority; ?>" size="60" class="form-control form-control-sm">
                             </div>
@@ -571,7 +594,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         <?php
                         // *** Check if there are multiple lines in text ***
                         $field_text_selected = $field_text;
-                        if ($fam_marr_text and preg_match('/\R/', $fam_marr_text)) $field_text_selected = $field_text_medium;
+                        if ($fam_marr_text && preg_match('/\R/', $fam_marr_text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "fam_marr_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -580,7 +605,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                             </div>
                         </div>
 
-                        <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                        <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                             <div class="row mb-2">
                                 <label for "fam_marr_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
@@ -647,7 +672,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         <?php
                         // *** Check if there are multiple lines in text ***
                         $field_text_selected = $field_text;
-                        if ($fam_marr_church_notice_text and preg_match('/\R/', $fam_marr_church_notice_text)) $field_text_selected = $field_text_medium;
+                        if ($fam_marr_church_notice_text && preg_match('/\R/', $fam_marr_church_notice_text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "fam_marr_church_notice_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -656,7 +683,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                             </div>
                         </div>
 
-                        <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                        <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                             <div class="row mb-2">
                                 <label for "fam_marr_church_notice_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
@@ -694,9 +721,11 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         $check_sources_text = check_sources('family', 'fam_marr_church_source', $marriage);
                         $hideshow_text .= $check_sources_text;
                     }
-
-                    echo hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_text);
                     ?>
+                    <?= hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_text); ?>
+
+                    <input type="submit" name="add_marriage_witness_rel" value="<?= __('marriage witness (religious)'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
                         <div class="row mb-2">
@@ -719,7 +748,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         <?php
                         // *** Check if there are multiple lines in text ***
                         $field_text_selected = $field_text;
-                        if ($fam_marr_church_text and preg_match('/\R/', $fam_marr_church_text)) $field_text_selected = $field_text_medium;
+                        if ($fam_marr_church_text && preg_match('/\R/', $fam_marr_church_text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "fam_marr_church_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -728,7 +759,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                             </div>
                         </div>
 
-                        <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                        <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                             <div class="row mb-2">
                                 <label for "fam_marr_church_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
@@ -752,10 +783,10 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
 
             <!-- Religion -->
             <tr class="humo_color">
-                <td rowspan="1"></td>
+                <td rowspan="1"><?= __('Religion'); ?></td>
                 <td colspan="2">
                     <div class="row mb-2">
-                        <label for "fam_marr_authority" class="col-md-3 col-form-label"><?= __('Religion'); ?></label>
+                        <!-- <label for "fam_marr_authority" class="col-md-3 col-form-label"><?= __('Religion'); ?></label> -->
                         <div class="col-md-7">
                             <input type="text" name="fam_religion" value="<?= htmlspecialchars($fam_religion); ?>" size="60" class="form-control form-control-sm">
                         </div>
@@ -771,7 +802,8 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
             $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
             ?>
             <tr>
-                <td><a name="divorce"></a>
+                <td>
+                    <a name="divorce"></a>
                     <!-- <a href="#marriage" onclick="hideShow(11);"><span id="hideshowlink11">[+]</span></a> -->
                     <?= __('Divorce'); ?>
                 </td>
@@ -813,7 +845,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
 
                         <?php
                         $text = '';
-                        if ($fam_div_authority) $text = htmlspecialchars($fam_div_authority);
+                        if ($fam_div_authority) {
+                            $text = htmlspecialchars($fam_div_authority);
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "fam_marr_church_text" class="col-md-3 col-form-label"><?= __('Registrar'); ?></label>
@@ -823,10 +857,14 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         </div>
 
                         <?php
-                        if ($fam_div_text == 'DIVORCE') $fam_div_text = ''; // *** Hide this text, it's a hidden value for a divorce without data ***
+                        if ($fam_div_text == 'DIVORCE') {
+                            $fam_div_text = '';
+                        } // *** Hide this text, it's a hidden value for a divorce without data ***
                         // *** Check if there are multiple lines in text ***
                         $field_text_selected = $field_text;
-                        if ($fam_div_text and preg_match('/\R/', $fam_div_text)) $field_text_selected = $field_text_medium;
+                        if ($fam_div_text && preg_match('/\R/', $fam_div_text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "fam_div_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -835,7 +873,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                             </div>
                         </div>
 
-                        <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                        <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                             <div class="row mb-2">
                                 <label for "fam_div_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
@@ -853,7 +891,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
             </tr>
 
             <?php
-            // TODO: move to diverse lines?
+            // TODO: move to divorse lines?
             // *** Use checkbox for divorse without further data ***
             ?>
             <tr>
@@ -864,9 +902,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                 </td>
             </tr>
 
-            <?php
-            // *** General text by relation ***
-            ?>
+            <!-- General text by relation -->
             <tr class="humo_color">
                 <td><a name="fam_text"></a><?= __('Text by relation'); ?></td>
                 <td style="border-right:0px;"></td>
@@ -878,7 +914,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                         </div>
                     </div>
 
-                    <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                    <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                         <div class="row mb-2">
                             <!-- <label for "fam_text_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
                             <div class="col-md-7">
@@ -897,11 +933,11 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
             </tr>
 
             <!-- Relation sources -->
-            <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+            <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                 <tr>
                     <td><a name="fam_source"></a><?= __('Source by relation'); ?></td>
                     <td colspan="2">
-                        <?php if (isset($marriage) and !isset($_GET['add_marriage'])) { ?>
+                        <?php if (isset($marriage) && !isset($_GET['add_marriage'])) { ?>
                             <div class="row mb-2">
                                 <!-- <label for "family_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
                                 <div class="col-md-7">
@@ -966,7 +1002,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
 
             // *** Relation added by user ***
             // TODO check for 1970-01-01 00:00:01
-            if ($familyDb->fam_new_user_id or $familyDb->fam_new_datetime) {
+            if ($familyDb->fam_new_user_id || $familyDb->fam_new_datetime) {
                 $user_name = '';
                 if ($familyDb->fam_new_user_id) {
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $familyDb->fam_new_user_id . "'";
@@ -984,7 +1020,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
             }
 
             // *** Relation changed by user ***
-            if ($familyDb->fam_changed_user_id or $familyDb->fam_changed_datetime) {
+            if ($familyDb->fam_changed_user_id || $familyDb->fam_changed_datetime) {
                 $user_name = '';
                 if ($familyDb->fam_changed_user_id) {
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $familyDb->fam_changed_user_id . "'";
@@ -1037,9 +1073,13 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
                 // *** Skip $day if there is only year ***
                 if (strlen($text) > 4) {
                     // Add 0 if day is single digit: 9 JUN 1954
-                    if (substr($text, 1, 1) == ' ') $day = '0' . substr($text, 0, 1);
-                    elseif (is_numeric(substr($text, 0, 2))) $day = substr($text, 0, 2);
-                    else $day = '00';
+                    if (substr($text, 1, 1) === ' ') {
+                        $day = '0' . substr($text, 0, 1);
+                    } elseif (is_numeric(substr($text, 0, 2))) {
+                        $day = substr($text, 0, 2);
+                    } else {
+                        $day = '00';
+                    }
                 } else {
                     $text = '00 ' . $text; // No month, use 00.
                     $day = '00'; // No day, use 00.
@@ -1111,7 +1151,9 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
             echo '<a name="children"></a>';
             echo __('Use this icon to order children (drag and drop)') . ': <img src="images/drag-icon.gif" border="0">';
             echo '<br>' . __('Or automatically order children:') . ' <a href="index.php?page=' . $page . '&amp;menu_tab=marriage&amp;marriage_nr=' . $marriage . '&amp;order_children=1#children">' . __('Automatic order children') . '</a>';
-            if (isset($_GET['order_children'])) echo ' <b>' . __('Children are re-ordered.') . '</b>';
+            if (isset($_GET['order_children'])) {
+                echo ' <b>' . __('Children are re-ordered.') . '</b>';
+            }
 
             //echo __('Children').':<br>';
             $fam_children_array = explode(";", $familyDb->fam_children);
@@ -1139,7 +1181,7 @@ if ($menu_tab == 'marriage' and $person->pers_fams) {
             </ul>
         <?php } ?>
 
-        
+
         <!-- Add child -->
         <?php $hideshow = 702; ?>
         <div id="add_child" class="p-1 m-2 genealogy_search">

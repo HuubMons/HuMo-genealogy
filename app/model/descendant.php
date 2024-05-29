@@ -28,7 +28,9 @@ class DescendantModel extends FamilyModel
     public function getChosengen($dna)
     {
         $chosengen = 4;
-        if ($dna != "none") $chosengen = "All"; // in DNA chart by default show all generations
+        if ($dna != "none") {
+            $chosengen = "All";
+        } // in DNA chart by default show all generations
         if (isset($_GET["chosengen"])) {
             $chosengen = $_GET["chosengen"];
         }
@@ -57,7 +59,9 @@ class DescendantModel extends FamilyModel
         } else {
             $size = 50;
             // in DNA chart by default zoom position 4
-            if ($dna != "none") $size = 25;
+            if ($dna != "none") {
+                $size = 25;
+            }
         }
         if (isset($_GET["chosensize"])) {
             $size = $_GET["chosensize"];
@@ -80,7 +84,9 @@ class DescendantModel extends FamilyModel
         }
 
         // *** Change direction for hourglass ***
-        if ($this->hourglass) $direction = 1;
+        if ($this->hourglass) {
+            $direction = 1;
+        }
 
         return $direction;
     }
@@ -105,7 +111,7 @@ class DescendantModel extends FamilyModel
         return $this->hdist;
     }
 
-    public function setHourglass($hourglass)
+    public function setHourglass($hourglass): void
     {
         $this->hourglass = $hourglass;
     }
@@ -122,6 +128,7 @@ class DescendantModel extends FamilyModel
             }
             return $base_person_famc;
         }
+        return null;
     }
 
     public function getBasepersonsexe($dna)
@@ -136,6 +143,7 @@ class DescendantModel extends FamilyModel
             }
             return $base_person_sexe;
         }
+        return null;
     }
 
     public function getBasepersonname($dna)
@@ -150,6 +158,7 @@ class DescendantModel extends FamilyModel
             }
             return $base_person_name;
         }
+        return null;
     }
 
     public function getBasepersongednr($dna)
@@ -164,6 +173,7 @@ class DescendantModel extends FamilyModel
             }
             return $base_person_gednr;
         }
+        return null;
     }
 
     public function getBasePerson($db_functions, $main_person)
@@ -217,22 +227,24 @@ class DescendantModel extends FamilyModel
         $base_person_gednr = $dnaDb->pers_gedcomnumber;
 */
 
-        if ($dna == "ydna" or $dna == "ydnamark") {
-            while (isset($dnaDb->pers_famc) and $dnaDb->pers_famc != "") {
+        if ($dna == "ydna" || $dna == "ydnamark") {
+            while (isset($dnaDb->pers_famc) && $dnaDb->pers_famc != "") {
                 $dnaparDb = $db_functions->get_family($dnaDb->pers_famc);
-                if ($dnaparDb->fam_man == "") break;
-                else {
+                if ($dnaparDb->fam_man == "") {
+                    break;
+                } else {
                     $data["main_person"] = $dnaparDb->fam_man;
                     $data["family_id"]  = $dnaDb->pers_famc;
                     $dnaDb = $db_functions->get_person($dnaparDb->fam_man);
                 }
             }
         }
-        if ($dna == "mtdna" or $dna == "mtdnamark") {
-            while (isset($dnaDb->pers_famc) and $dnaDb->pers_famc != "") {
+        if ($dna == "mtdna" || $dna == "mtdnamark") {
+            while (isset($dnaDb->pers_famc) && $dnaDb->pers_famc != "") {
                 $dnaparDb = $db_functions->get_family($dnaDb->pers_famc);
-                if ($dnaparDb->fam_woman == "") break;
-                else {
+                if ($dnaparDb->fam_woman == "") {
+                    break;
+                } else {
                     $data["main_person"] = $dnaparDb->fam_woman;
                     $data["family_id"]  = $dnaDb->pers_famc;
                     $dnaDb = $db_functions->get_person($dnaparDb->fam_woman);
@@ -250,11 +262,7 @@ class DescendantModel extends FamilyModel
             $arraynr = 0;
 
             // *** Nr. of generations ***
-            if ($chosengen != "All") {
-                $max_generation = $chosengen - 2;
-            } else {
-                $max_generation = 100;
-            } // any impossibly high number, will anyway stop at last generation
+            $max_generation = $chosengen != "All" ? $chosengen - 2 : 100; // any impossibly high number, will anyway stop at last generation
 
             for ($descendant_loop = 0; $descendant_loop <= $max_generation; $descendant_loop++) {
                 $descendant_family_id2[] = 0;
@@ -279,9 +287,11 @@ class DescendantModel extends FamilyModel
                     if (isset($genarray[$arraynr])) {
                         $temppar = $genarray[$arraynr]["par"];
                     }
-                    while (isset($genarray[$temppar]["gen"]) and $genarray[$temppar]["gen"] == $descendant_loop - 1) {
+                    while (isset($genarray[$temppar]["gen"]) && $genarray[$temppar]["gen"] === $descendant_loop - 1) {
                         //$lst_in_array += $genarray[$temppar]["nrc"];
-                        if (isset($lst_in_array)) $lst_in_array += $genarray[$temppar]["nrc"];
+                        if (isset($lst_in_array)) {
+                            $lst_in_array += $genarray[$temppar]["nrc"];
+                        }
                         $temppar++;
                     }
                 }
@@ -291,8 +301,7 @@ class DescendantModel extends FamilyModel
                 $nr_families = count($descendant_family_id);
                 for ($descendant_loop2 = 0; $descendant_loop2 < $nr_families; $descendant_loop2++) {
                     while (
-                        isset($genarray[$arraynr]["non"]) and $genarray[$arraynr]["non"] == 1
-                        and isset($genarray[$arraynr]["gen"]) and $genarray[$arraynr]["gen"] == $descendant_loop
+                        isset($genarray[$arraynr]["non"]) && $genarray[$arraynr]["non"] == 1 && isset($genarray[$arraynr]["gen"]) && $genarray[$arraynr]["gen"] === $descendant_loop
                     ) {
                         $genarray[$arraynr]["nrc"] = 0;
                         $arraynr++;
@@ -369,25 +378,23 @@ class DescendantModel extends FamilyModel
                                 if ($descendant_loop == 0) {
                                     $name = $parent1_cls->person_name($parent1Db);
                                     $genarray[$arraynr]["nam"] = $name["standard_name"];
-                                    if (isset($name["colour_mark"]))
+                                    if (isset($name["colour_mark"])) {
                                         $genarray[$arraynr]["nam"] .= $name["colour_mark"];
+                                    }
                                     $genarray[$arraynr]["init"] = $name["initials"];
                                     $genarray[$arraynr]["short"] = $name["short_firstname"];
                                     $genarray[$arraynr]["fams"] = $id;
-                                    if (isset($parent1Db->pers_gedcomnumber))
+                                    if (isset($parent1Db->pers_gedcomnumber)) {
                                         $genarray[$arraynr]["gednr"] = $parent1Db->pers_gedcomnumber;
+                                    }
                                     $genarray[$arraynr]["2nd"] = 0;
 
                                     if ($swap_parent1_parent2 == true) {
                                         $genarray[$arraynr]["sex"] = "v";
-                                        if ($dna == "mtdnamark" or $dna == "mtdna") {
-                                            $genarray[$arraynr]["dna"] = 1;
-                                        } else $genarray[$arraynr]["dna"] = "no";
+                                        $genarray[$arraynr]["dna"] = $dna == "mtdnamark" || $dna == "mtdna" ? 1 : "no";
                                     } else {
                                         $genarray[$arraynr]["sex"] = "m";
-                                        if ($dna == "ydnamark" or $dna == "ydna" or $dna == "mtdnamark" or $dna == "mtdna") {
-                                            $genarray[$arraynr]["dna"] = 1;
-                                        } else $genarray[$arraynr]["dna"] = "no";
+                                        $genarray[$arraynr]["dna"] = $dna == "ydnamark" || $dna == "ydna" || $dna == "mtdnamark" || $dna == "mtdna" ? 1 : "no";
                                     }
                                 }
                                 //$family_nr++;
@@ -411,14 +418,12 @@ class DescendantModel extends FamilyModel
                         if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
                             // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                             if (
-                                $user["group_pers_hide_totally_act"] == 'j' and isset($parent1Db->pers_own_code)
-                                and strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                                $user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
                             ) {
                                 $family_privacy = true;
                             }
                             if (
-                                $user["group_pers_hide_totally_act"] == 'j' and isset($parent2Db->pers_own_code)
-                                and strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                                $user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
                             ) {
                                 $family_privacy = true;
                             }
@@ -471,7 +476,7 @@ class DescendantModel extends FamilyModel
 
                             $genarray[$arraynr]["nrc"] = count($child_array);
                             // dna -> count only man or women
-                            if ($dna == "ydna" or $dna == "mtdna") {
+                            if ($dna == "ydna" || $dna == "mtdna") {
                                 $countdna = 0;
                                 foreach ($child_array as $i => $value) {
                                     @$childDb = $db_functions->get_person($child_array[$i]);
@@ -491,13 +496,12 @@ class DescendantModel extends FamilyModel
                                 $place = $lst_in_array + $chdn_in_gen;
 
                                 //if (isset($genarray[$arraynr]["sex"]) AND isset($genarray[$arraynr]["dna"] )){
-                                if (($dna == "ydnamark" or $dna == "ydna") and $childDb->pers_sexe == "M"
-                                    and $genarray[$arraynr]["sex"] == "m" and $genarray[$arraynr]["dna"] == 1
+                                if (($dna == "ydnamark" || $dna == "ydna") && $childDb->pers_sexe == "M" && $genarray[$arraynr]["sex"] == "m" && $genarray[$arraynr]["dna"] == 1
                                 ) {
                                     $genarray[$place]["dna"] = 1;
-                                } elseif (($dna == "mtdnamark" or $dna == "mtdna") and $genarray[$arraynr]["sex"] == "v" and $genarray[$arraynr]["dna"] == 1) {
+                                } elseif (($dna == "mtdnamark" || $dna == "mtdna") && $genarray[$arraynr]["sex"] == "v" && $genarray[$arraynr]["dna"] == 1) {
                                     $genarray[$place]["dna"] = 1;
-                                } elseif ($dna == "ydna" or $dna == "mtdna") {
+                                } elseif ($dna == "ydna" || $dna == "mtdna") {
                                     continue;
                                 } else {
                                     $genarray[$place]["dna"] = "no";
@@ -521,25 +525,23 @@ class DescendantModel extends FamilyModel
                                 } else {
                                     $genarray[$place]["fams"] = $childDb->pers_famc;
                                 }
-                                if ($childDb->pers_sexe == "F") {
-                                    $genarray[$place]["sex"] = "v";
-                                } else {
-                                    $genarray[$place]["sex"] = "m";
-                                }
+                                $genarray[$place]["sex"] = $childDb->pers_sexe == "F" ? "v" : "m";
 
                                 // *** Build descendant_report ***
-                                if ($descendant_report == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
+                                if ($descendant_report && $childDb->pers_fams && $descendant_loop < $max_generation) {
                                     // *** 1st family of child ***
                                     $child_family = explode(";", $childDb->pers_fams);
 
                                     // *** Check for double families in descendant report (if a person relates or marries another person in the same family) ***
-                                    if (isset($check_double) and in_array($child_family[0], $check_double)) {
+                                    if (isset($check_double) && in_array($child_family[0], $check_double)) {
                                         // *** Don't show this family, double... ***
-                                    } else
+                                    } else {
                                         $descendant_family_id2[] = $child_family[0];
+                                    }
 
                                     if (count($child_family) > 1) {
-                                        for ($k = 1; $k < count($child_family); $k++) {
+                                        $counter = count($child_family);
+                                        for ($k = 1; $k < $counter; $k++) {
                                             $childnr++;
                                             $thisplace = $place + $k;
                                             $genarray[$thisplace] = $genarray[$place];
@@ -570,7 +572,7 @@ class DescendantModel extends FamilyModel
         } // End of single person
 
         // *** If source footnotes are selected, show them here ***
-        if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_presentation'] == 'footnote') {
+        if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
             echo show_sources_footnotes();
         }
 
@@ -643,9 +645,11 @@ class DescendantModel extends FamilyModel
             $vbasesize = $this->vsize + $this->vdist;
             $inbetween = 10;   // horizontal distance between two persons in a family. Between fams is double $inbetween
 
-            $movepar = 0;  // flags the need to move parent box. 1 means: call move() function
+            $movepar = 0;
+            // flags the need to move parent box. 1 means: call move() function
+            $counter = count($genarray);  // flags the need to move parent box. 1 means: call move() function
 
-            for ($i = 0; $i < count($genarray); $i++) {
+            for ($i = 0; $i < $counter; $i++) {
                 if (!isset($genarray[$i])) {
                     break;
                 }
@@ -688,17 +692,17 @@ class DescendantModel extends FamilyModel
                 }
 
                 $z = $i;
-                if ($genarray[$z]["gen"] != 0 and $genarray[$z]["chd"] == $genarray[$par]["nrc"]) {
+                if ($genarray[$z]["gen"] != 0 && $genarray[$z]["chd"] == $genarray[$par]["nrc"]) {
 
                     while ($genarray[$z]["2nd"] == 1) {
                         $z--;
                     }
 
                     $genarray[$par]["lst"] = $genarray[$z]["posx"];
-                    if ($genarray[$z]["gen"] > $genarray[$z - 1]["gen"] and $genarray[$par]["lst"] == $genarray[$par]["fst"]) {
+                    if ($genarray[$z]["gen"] > $genarray[$z - 1]["gen"] && $genarray[$par]["lst"] == $genarray[$par]["fst"]) {
                         // this person is first in generation and is only child - move directly under parent
                         $genarray[$z]["posx"] = $genarray[$par]["posx"];
-                        while (isset($genarray[$z + 1]) and $genarray[$z + 1]["2nd"] == 1) {
+                        while (isset($genarray[$z + 1]) && $genarray[$z + 1]["2nd"] == 1) {
                             $genarray[$z + 1]["posx"] = $genarray[$z]["posx"] + $this->hsize + $inbetween;
                             $z++;
                         }
@@ -716,10 +720,14 @@ class DescendantModel extends FamilyModel
         else {  // horizontal
             if ($size == 50) {   // full size box with name and details
                 $this->hsize = 150;
-                if ($this->hourglass === true) $this->hsize = 170;
+                if ($this->hourglass === true) {
+                    $this->hsize = 170;
+                }
                 $this->vsize = 75;
                 $this->hdist = 60;
-                if ($this->hourglass === true) $this->hdist = 30;
+                if ($this->hourglass === true) {
+                    $this->hdist = 30;
+                }
             } elseif ($size == 45) { // smaller box with name + popup
                 $this->hsize = 100;
                 $this->vsize = 45;
@@ -728,15 +736,19 @@ class DescendantModel extends FamilyModel
                 $this->hsize = $size;
                 $this->vsize = $size;
                 $this->hdist = $size;
-                if ($size < 15) $this->hdist = 15; // shorter than this doesn't look good
+                if ($size < 15) {
+                    $this->hdist = 15;
+                } // shorter than this doesn't look good
             }
 
             $hbasesize = $this->hsize + $this->hdist;
             $vinbetween = 10;   // vertical distance between two persons in a family. Between fams is double $inbetween
 
-            $movepar = 0;  // flags the need to move parent box. 1 means: call move() function
+            $movepar = 0;
+            // flags the need to move parent box. 1 means: call move() function
+            $counter = count($genarray);  // flags the need to move parent box. 1 means: call move() function
 
-            for ($i = 0; $i < count($genarray); $i++) {
+            for ($i = 0; $i < $counter; $i++) {
                 if (!isset($genarray[$i])) {
                     break;
                 }
@@ -747,12 +759,16 @@ class DescendantModel extends FamilyModel
 
                 if ($this->hourglass === true) {
                     // *** Calculate left position for hourglass (depends on number of ancestor generations chosen) ***
-                    if ($size == 50) $thissize = 170;
-                    elseif ($size == 45) $thissize = 100;
-                    else $thissize = $size;
+                    if ($size == 50) {
+                        $thissize = 170;
+                    } elseif ($size == 45) {
+                        $thissize = 100;
+                    } else {
+                        $thissize = $size;
+                    }
 
                     $left = 30 + $thissize; // default when 2 generations only
-                    if ($chosengenanc == 3 and $size == 50 and $genarray[1]["2nd"] == 1) {
+                    if ($chosengenanc == 3 && $size == 50 && $genarray[1]["2nd"] == 1) {
                         // prevent parent overlap by 2nd marr of base person in 3 gen display
                         $left = 10 + (2 * (20 + $thissize)) + (($chosengenanc - 3) * (($thissize / 2) + 20));
                     } elseif ($chosengenanc > 2) {
@@ -777,16 +793,13 @@ class DescendantModel extends FamilyModel
                         $genarray[$i]["posy"] = $genarray[$par]["posy"] -  (($exponent * ($this->vsize + $vinbetween)) / 2);
 
                         if ($genarray[$i]["gen"] == $genarray[$i - 1]["gen"]) {
-
                             if ($genarray[$i]["posy"] < $genarray[$i - 1]["posy"] + ($this->vsize + $vinbetween * 2)) {
                                 $genarray[$i]["posy"] = $genarray[$i - 1]["posy"] + ($this->vsize + $vinbetween * 2);
                                 $movepar = 1;
                             }
-                        } else {
-                            if ($genarray[$i]["posy"] < 40) {
-                                $genarray[$i]["posy"] = 40;
-                                $movepar = 1;
-                            }
+                        } elseif ($genarray[$i]["posy"] < 40) {
+                            $genarray[$i]["posy"] = 40;
+                            $movepar = 1;
                         }
                         $genarray[$par]["fst"] = $genarray[$i]["posy"];       // y of first child in fam
                     }
@@ -795,17 +808,17 @@ class DescendantModel extends FamilyModel
                 }
 
                 $z = $i;
-                if ($genarray[$z]["gen"] != 0 and $genarray[$z]["chd"] == $genarray[$par]["nrc"]) {
+                if ($genarray[$z]["gen"] != 0 && $genarray[$z]["chd"] == $genarray[$par]["nrc"]) {
                     while ($genarray[$z]["2nd"] == 1) {
                         $z--;
                     }
 
                     $genarray[$par]["lst"] = $genarray[$z]["posy"];
-                    if ($genarray[$z]["gen"] > $genarray[$z - 1]["gen"] and $genarray[$par]["lst"] == $genarray[$par]["fst"]) {
+                    if ($genarray[$z]["gen"] > $genarray[$z - 1]["gen"] && $genarray[$par]["lst"] == $genarray[$par]["fst"]) {
                         // this person is first in generation and is only child - move directly under parent
                         $genarray[$z]["posy"] = $genarray[$par]["posy"];
                         // make this into while loop
-                        while (isset($genarray[$z + 1]) and $genarray[$z + 1]["2nd"] == 1) {
+                        while (isset($genarray[$z + 1]) && $genarray[$z + 1]["2nd"] == 1) {
                             $genarray[$z + 1]["posy"] = $genarray[$z]["posy"] + $this->vsize + $vinbetween;
                             $z++;
                         }
@@ -853,7 +866,7 @@ class DescendantModel extends FamilyModel
             $n = $i + 1;
             while ($genarray[$n]["gen"] == $genarray[$n - 1]["gen"]) {
                 //		while(isset($genarray[$n]["gen"]) AND $genarray[$n]["gen"] == $genarray[$n-1]["gen"]) {
-                if (isset($genarray[$n]["fst"]) and isset($genarray[$n]["lst"])) {
+                if (isset($genarray[$n]["fst"]) && isset($genarray[$n]["lst"])) {
                     $tempx = $genarray[$n]["posx"];
                     $genarray[$n]["posx"] = ($genarray[$n]["fst"] + $genarray[$n]["lst"]) / 2;
                     $distance = $genarray[$n]["posx"] - $tempx;
@@ -909,7 +922,7 @@ class DescendantModel extends FamilyModel
 
             $n = $i + 1;
             while ($genarray[$n]["gen"] == $genarray[$n - 1]["gen"]) {
-                if (isset($genarray[$n]["fst"]) and isset($genarray[$n]["lst"])) {
+                if (isset($genarray[$n]["fst"]) && isset($genarray[$n]["lst"])) {
                     $tempx = $genarray[$n]["posy"];
                     $genarray[$n]["posy"] = ($genarray[$n]["fst"] + $genarray[$n]["lst"]) / 2;
                     $distance = $genarray[$n]["posy"] - $tempx;

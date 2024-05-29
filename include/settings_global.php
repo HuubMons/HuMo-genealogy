@@ -3,7 +3,7 @@
 
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"] = '6.7.5';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"] = '6.7.6';  // Version line, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Beta (not stable enough for production, but it's functional ***
@@ -12,7 +12,7 @@ $humo_option["version"] = '6.7.5';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"] = '2024-04-30';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"] = '2024-05-29';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Test lines for update procedure ***
@@ -72,7 +72,7 @@ while (@$row = $result->fetch(PDO::FETCH_NUM)) {
 
 //if (!isset($humo_option["template_homepage"])){
 // THIS PART CAN BE MOVED TO DATABASE UPDATE IF NEEDED.
-if (!isset($humo_option["template_homepage"]) and $humo_option["update_status"] > 10) {
+if (!isset($humo_option["template_homepage"]) && $humo_option["update_status"] > 10) {
     $order = 1;
     $sql = "INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|left|select_family_tree', setting_order='" . $order . "'";
     @$result = $dbh->query($sql);
@@ -396,7 +396,7 @@ if (!isset($humo_option["geo_trees"])) {
                     $found = true; // this tree should be included in the geo_trees setting
                 }
             }
-            if ($found === true) {
+            if ($found) {
                 $geo_string .= "@" . $tree_searchDb->tree_id . ";";
             } // we create string: @4;@12;@13; which can also be searched by strpos
         }

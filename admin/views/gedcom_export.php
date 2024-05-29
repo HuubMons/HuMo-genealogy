@@ -193,7 +193,7 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
                     ?>
                     <select size="1" name="person" style="width: 300px">
                         <?php
-                        $counter = 0;
+                        //$counter = 0;
                         while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
                             $selected = '';
                             if (isset($pers_gedcomnumber)) {

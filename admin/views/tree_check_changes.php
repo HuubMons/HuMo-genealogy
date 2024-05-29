@@ -1,15 +1,25 @@
 <?php
 $editor = '';
-if (isset($_POST['editor'])) $editor = safe_text_db($_POST['editor']);
+if (isset($_POST['editor'])) {
+    $editor = safe_text_db($_POST['editor']);
+}
 $limit = 50;
-if (isset($_POST['limit']) and is_numeric($_POST['limit'])) $limit = safe_text_db($_POST['limit']);
+if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+    $limit = safe_text_db($_POST['limit']);
+}
 
 $show_persons = false;
 $show_families = false;
-if (isset($_POST['show_persons']) and $_POST['show_persons'] == '1') $show_persons = true;
-if (isset($_POST['show_families']) and $_POST['show_families'] == '1') $show_families = true;
+if (isset($_POST['show_persons']) && $_POST['show_persons'] == '1') {
+    $show_persons = true;
+}
+if (isset($_POST['show_families']) && $_POST['show_families'] == '1') {
+    $show_families = true;
+}
 // *** Select persons if no choice is made (first time opening this page) ***
-if (!$show_persons and !$show_families) $show_persons = true;
+if (!$show_persons && !$show_families) {
+    $show_persons = true;
+}
 
 $person_cls = new person_cls;
 $row = 0;
@@ -169,7 +179,9 @@ usort($result_array, "cmp");
 
 // *** Select editor ***
 $editor = '';
-if (isset($_POST['editor'])) $editor = safe_text_db($_POST['editor']);
+if (isset($_POST['editor'])) {
+    $editor = safe_text_db($_POST['editor']);
+}
 
 // *** List of editors, depending of selected items (persons and/ or families) ***
 $select_editor_qry = "(SELECT pers_new_user_id AS user FROM humo_persons WHERE pers_tree_id='" . $tree_id . "')
@@ -255,7 +267,10 @@ $select_editor_result = $dbh->query($select_editor_qry);
         </tr>
 
         <!-- Show results -->
-        <?php for ($row = 0; $row < count($result_array); $row++) { ?>
+        <?php
+        $counter = count($result_array);
+        for ($row = 0; $row < $counter; $row++) {
+        ?>
             <tr>
                 <td><?= $result_array[$row][0]; ?></td>
                 <td><?= $result_array[$row][1]; ?></td>

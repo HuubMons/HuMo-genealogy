@@ -19,7 +19,7 @@ class validate_date_cls
     {
         // *** Remove B.C. (before christ) addition, for further tests of date ***
         //if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.') return "finished";
-        if (substr($date, -3) == ' BC' or substr($date, -5) == ' B.C.') {
+        if (substr($date, -3) === ' BC' || substr($date, -5) === ' B.C.') {
             $date = str_replace(" BC", "", $date);
             $date = str_replace(" B.C.", "", $date);
         }
@@ -36,17 +36,21 @@ class validate_date_cls
                 $strlen = 2;
             } elseif ($year > 0) {
                 $strlen = 1;
-            } else return null;
+            } else {
+                return null;
+            }
         } else { // we've got a 1741/42 case
             $strlen = strlen($year);
         }
-        if (strlen($date) == $strlen) return "finished"; // date contains just the year, no sense checking a month
-        elseif ($this->check_month($date) === null) {
+        if (strlen($date) === $strlen) {
+            return "finished";
+        } elseif ($this->check_month($date) === null) {
             return null;
         }
 
-        if (strlen($date) == $strlen + 4) return "finished"; // date contains just the month and year, no sense checking a day
-        elseif ($this->check_day($date) === null) {
+        if (strlen($date) == $strlen + 4) {
+            return "finished";
+        } elseif ($this->check_day($date) === null) {
             return null;
         }
 
@@ -60,8 +64,7 @@ class validate_date_cls
         $month = substr($date, - ($strlen + 4), 3);
 
         if (
-            $month == "JAN" or $month == "FEB" or $month == "MAR" or $month == "APR" or $month == "MAY" or $month == "JUN"
-            or $month == "JUL" or $month == "AUG" or $month == "SEP" or $month == "OCT" or $month == "NOV" or $month == "DEC"
+            $month === "JAN" || $month === "FEB" || $month === "MAR" || $month === "APR" || $month === "MAY" || $month === "JUN" || $month === "JUL" || $month === "AUG" || $month === "SEP" || $month === "OCT" || $month === "NOV" || $month === "DEC"
         ) {
             return "month" . $month; // flags valid month
         } elseif ($month == "EST" or $month == "CAL") {
@@ -101,13 +104,13 @@ class validate_date_cls
 */
         $day_len = 1; // to be added to strlen later. if day is "8" (and not "12" or "08") $day_len will be set to 0
 
-        if (substr($month, 0, 5) == "month") {
+        if (substr($month, 0, 5) === "month") {
             $day = "";
             if (strlen($date) > $strlen) {    // 12 sep 2002 or 08 sep 2002 or ABT 8 sep 2002 or ABT sep 2002
                 $day = substr($date, - ($strlen + 1), 2); // gets "12" or "08" or " 8" or "BT" in above examples
-                if (substr($day, 0, 1) == "0") {   // 08 aug 2002
+                if (substr($day, 0, 1) === "0") {   // 08 aug 2002
                     $day = substr($day, 1, 1); // turns $day from "08" into "8"
-                } elseif (substr($day, 0, 1) == " ") {
+                } elseif (substr($day, 0, 1) === " ") {
                     $day_len = 0;
                 }
             } elseif (strlen($date) == $strlen) {    // 8 aug 2002
@@ -120,26 +123,32 @@ class validate_date_cls
                     $day = (int)$day;
                     // check if max day fits month
                     $max = 31;
-                    if (substr($month, 5, 3) == "FEB") {  // check for leap year
-                        if ($year % 400 == 0) $max = 29;
-                        elseif ($year % 100 == 0) $max = 28;
-                        elseif ($year % 4 == 0) $max = 29;
-                        else $max = 28;
+                    if (substr($month, 5, 3) === "FEB") {  // check for leap year
+                        if ($year % 400 == 0) {
+                            $max = 29;
+                        } elseif ($year % 100 == 0) {
+                            $max = 28;
+                        } elseif ($year % 4 == 0) {
+                            $max = 29;
+                        } else {
+                            $max = 28;
+                        }
                     } elseif (
-                        substr($month, 5, 3) == "APR" or substr($month, 5) == "JUN"
-                        or substr($month, 5) == "SEP" or substr($month, 5) == "NOV"
+                        substr($month, 5, 3) === "APR" || substr($month, 5) === "JUN" || substr($month, 5) === "SEP" || substr($month, 5) === "NOV"
                     ) {
                         $max = 30;
                     }
 
-                    if ($day > 0 and $day <= $max) {
-                        $strlen = $strlen + $day_len;
+                    if ($day > 0 && $day <= $max) {
+                        $strlen += $day_len;
                         if ($strlen == strlen($date)) { // nothing before the day digit(s)
                             return $day;
                         }
-                    } else return null;
+                    } else {
+                        return null;
+                    }
                 } else { // not numeric for ex. in "ABT FEB 1950", $day will be "BT". We have a case of a month with a prefix
-                    $strlen = $strlen - 2; // we have to search back from beginning of month name
+                    $strlen -= 2; // we have to search back from beginning of month name
                 }
             }
 
@@ -173,12 +182,20 @@ class validate_date_cls
             }
             return null;
         } elseif ($month == " TO") {
-            if (substr($date, 0, 5) == "FROM ") return $month;
-            else return null;
+            if (substr($date, 0, 5) === "FROM ") {
+                return $month;
+            } else {
+                return null;
+            }
         } elseif ($month == "AND") {
-            if (substr($date, 0, 4) == "BET ") return $month;
-            else return null;
-        } else return 1;
+            if (substr($date, 0, 4) === "BET ") {
+                return $month;
+            } else {
+                return null;
+            }
+        } else {
+            return 1;
+        }
     }
 
     function check_year($date)
@@ -188,7 +205,7 @@ class validate_date_cls
         // If year >= 100 and month is given this will also work.
         // HOWEVER, if year is <100 and month is given this will go wrong: "2 mar 24" will give substr "r 24" and "2 mar 6" will give: "ar 6".
         // Therefore:
-        if (substr($year, -2, 1) == " " or substr($year, -3, 1) == " ") {
+        if (substr($year, -2, 1) === " " || substr($year, -3, 1) === " ") {
             $temp = explode(" ", $year);
             $year = $temp[1];
         }
@@ -197,21 +214,21 @@ class validate_date_cls
         // This can only happen with dates after 1500 so we don't have to check for years <1000
         if (strpos($year, "/") !== false) {
             // date is "4 mar 1741/42", so substr became "1/42" or date is "4 mar 1741/2" so substr became "41/2"
-            $year_string = str_replace(" ", "", substr($date, -7)); // "1741/42" or if " 1741/2" becomes "1741/2"
+            $year_string = str_replace(" ", "", substr($date, -7));
+            // "1741/42" or if " 1741/2" becomes "1741/2"
             $year_arr = explode("/", $year_string);
-            $year_part = $year_arr[0]; // 1741
-            if (!is_numeric($year_part) or $year_part > date("Y")) {
+            $year_part = $year_arr[0];
+            // 1741
+            if (!is_numeric($year_part) || $year_part > date("Y")) {
                 return null;
             } else {
                 return $year_string;
             }
-        } else {
+        } elseif (!is_numeric($year) || $year > date("Y")) {
             //if (!is_numeric($year) OR $year > date("Y") OR $year<100) { return null; }
-            if (!is_numeric($year) or $year > date("Y")) {
-                return null;
-            } else {
-                return (int)$year;
-            }
+            return null;
+        } else {
+            return (int)$year;
         }
     }
 } // *** End of class ***

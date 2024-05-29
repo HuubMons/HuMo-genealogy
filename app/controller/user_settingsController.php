@@ -36,7 +36,9 @@ class User_settingsController
             "result_message" => $result_message
         );
 
-        if (isset($twofa)) $data = array_merge($data, $twofa);
+        if (isset($twofa)) {
+            $data = array_merge($data, $twofa);
+        }
 
         return $data;
     }

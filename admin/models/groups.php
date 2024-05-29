@@ -3,11 +3,11 @@ class GroupsModel
 {
     private $group_id;
 
-    public function set_group_id()
+    public function set_group_id(): void
     {
         $this->group_id = 3; // Default value
 
-        if (isset($_POST['group_id']) and is_numeric(($_POST['group_id']))) {
+        if (isset($_POST['group_id']) && is_numeric(($_POST['group_id']))) {
             $this->group_id = $_POST['group_id'];
         }
     }
@@ -16,7 +16,7 @@ class GroupsModel
         return $this->group_id;
     }
 
-    public function update_group($dbh)
+    public function update_group($dbh): void
     {
         if (isset($_POST['group_add'])) {
             $sql = "INSERT INTO humo_groups SET group_name='new groep', group_privacy='n', group_menu_places='n', group_admin='n',

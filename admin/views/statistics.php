@@ -81,7 +81,7 @@ function calender($month, $year, $thismonth)
             echo '<td colspan="' . ($First_Day_Of_Month - 1) . '"><br></td>';
         }
         // Sunday:
-        if ($First_Day_Of_Month == "0") {
+        if ($First_Day_Of_Month === "0") {
             echo '<td colspan="6"><br></td>';
         }
 
@@ -90,7 +90,7 @@ function calender($month, $year, $thismonth)
         $day = 1;
         $row = 1;
         $field = $First_Day_Of_Month;
-        if ($field == '0') {
+        if ($field === '0') {
             $field = 7;
         }  // First day is sunday.
 
@@ -120,7 +120,7 @@ function calender($month, $year, $thismonth)
 
             // *** Use another colour for present day ***
             $color = '';
-            if ($date == $present_day) {
+            if ($date === $present_day) {
                 $color = ' bgcolor="#00FFFF"';
             }
 
@@ -283,7 +283,7 @@ function country2()
                     <td>
                         <img src="<?= $flag; ?>" width="30" height="15">&nbsp;
                         <?php
-                        if ($country_code != __('Unknown') and $country_code) {
+                        if ($country_code != __('Unknown') && $country_code) {
                             echo $countries[$country_code][1] . '&nbsp;(' . $country_code . ')';
                         } else {
                             echo $country_code;
@@ -301,16 +301,16 @@ function country2()
 
 $tab = 'general_statistics';
 // TODO check these variables (partly from old tab menu)
-if (isset($_POST['tab']) and $_POST['tab'] == 'date_statistics') {
+if (isset($_POST['tab']) && $_POST['tab'] == 'date_statistics') {
     $tab = 'date_statistics';
 }
-if (isset($_POST['tab']) and $_POST['tab'] == 'visitors') {
+if (isset($_POST['tab']) && $_POST['tab'] == 'visitors') {
     $tab = 'visitors';
 }
-if (isset($_POST['tab']) and $_POST['tab'] == 'statistics_old') {
+if (isset($_POST['tab']) && $_POST['tab'] == 'statistics_old') {
     $tab = 'statistics_old';
 }
-if (isset($_POST['tab']) and $_POST['tab'] == 'remove') {
+if (isset($_POST['tab']) && $_POST['tab'] == 'remove') {
     $tab = 'remove';
 }
 if (isset($_GET['tree_id'])) {

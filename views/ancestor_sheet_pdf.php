@@ -88,7 +88,9 @@ function parse_line($str, $width, $trunc, $bold = "")
     //$result_array = $array();
     $count = 1; //counts lines;
     $pos = 0; // checks position of blank
-    if ($bold == "B") $width -= 5;
+    if ($bold == "B") {
+        $width -= 5;
+    }
     $w = $width;
     $nl = 0;
     for ($x = 0; $x < strlen($str); $x++) {
@@ -97,7 +99,7 @@ function parse_line($str, $width, $trunc, $bold = "")
         }
         if (ceil($pdf->GetStringWidth(substr($str, $nl, ($x - $nl) + 1))) >= $w) {
             $count++;
-            if ($trunc != 0 and $count > $trunc) {
+            if ($trunc != 0 && $count > $trunc) {
                 $result_array[0] = $trunc;
                 $result_array[1] = substr($str, 0, $x - 1);
                 return $result_array;
@@ -128,7 +130,7 @@ function data_array($id, $width, $height)
 {
     global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $gedcomnumber, $dsign;
 
-    if (isset($gedcomnumber[$id]) and $gedcomnumber[$id] != "") {
+    if (isset($gedcomnumber[$id]) && $gedcomnumber[$id] != "") {
         @$personDb = $db_functions->get_person($gedcomnumber[$id]);
         $person_cls = new person_cls($personDb);
         $pers_privacy = $person_cls->privacy;
@@ -148,7 +150,7 @@ function data_array($id, $width, $height)
         $birth = '';
         $space = '';
 
-        if ($personDb->pers_birth_date != '' or $personDb->pers_birth_place != '') {
+        if ($personDb->pers_birth_date != '' || $personDb->pers_birth_place != '') {
             if ($pers_privacy) {
                 $birth = __("PRIVACY FILTER");
                 $birth_len = 1;
@@ -167,7 +169,7 @@ function data_array($id, $width, $height)
         }
         $death = '';
         $space = '';
-        if ($personDb->pers_death_date != '' or $personDb->pers_death_place != '') {
+        if ($personDb->pers_death_date != '' || $personDb->pers_death_place != '') {
             if ($pers_privacy) {
                 if ($birth != __("PRIVACY FILTER")) {
                     $death = __("PRIVACY FILTER");
@@ -293,7 +295,7 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
                 $woman_privacy = false;
             }
 
-            if ($pers_privacy or $woman_privacy) {
+            if ($pers_privacy || $woman_privacy) {
                 $marr = __('PRIVACY FILTER');
             } else {
                 $marr = __('X') . ' ' . $marr_date_array[$m] . $space . $marr_place_array[$m];
@@ -308,10 +310,10 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
         }
         if ($type == "pers") {
             $breakln = '';
-            if ($data_array[$m][1] != '' and $data_array[$m][2] != '') {
+            if ($data_array[$m][1] != '' && $data_array[$m][2] != '') {
                 $breakln = "\n";
             }
-            if ($data_array[$m][4] == 0 and $data_array[$m][5] == 0) {
+            if ($data_array[$m][4] == 0 && $data_array[$m][5] == 0) {
                 $nstring = substr($nstring, 0, strlen($nstring) - 1);
             }
             $pdf->SetFont($pdf_font, '', 8);
@@ -367,7 +369,9 @@ $posx = $pdf->GetX();
 
 $exist = false;
 for ($x = 16; $x < 32; $x++) {
-    if ($gedcomnumber[$x] != '') $exist = true;
+    if ($gedcomnumber[$x] != '') {
+        $exist = true;
+    }
 }
 if ($exist == true) {
     place_cells("pers", 16, 30, 2, 32, 8, 33);
@@ -387,17 +391,21 @@ if ($exist == true) {
 }
 $exist1 = false;
 for ($x = 8; $x < 16; $x++) {
-    if ($gedcomnumber[$x] != '') $exist1 = true;
+    if ($gedcomnumber[$x] != '') {
+        $exist1 = true;
+    }
 }
-if ($exist == true or $exist1 == true) {
+if ($exist == true || $exist1 == true) {
     place_cells("pers", 8, 15, 1, 32, 8, 33);
     place_cells("marr", 8, 14, 2, 65, 2, 66);
 }
 $exist2 = false;
 for ($x = 4; $x < 8; $x++) {
-    if ($gedcomnumber[$x] != '') $exist2 = true;
+    if ($gedcomnumber[$x] != '') {
+        $exist2 = true;
+    }
 }
-if ($exist == true or $exist1 == true or $exist2 == true) {
+if ($exist == true || $exist1 == true || $exist2 == true) {
     place_cells("pers", 4, 7, 1, 65, 4, 66);
     place_cells("marr", 4, 6, 2, 131, 2, 132);
 }

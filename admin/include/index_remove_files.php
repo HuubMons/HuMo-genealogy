@@ -37,18 +37,18 @@ function listFolderFiles2($dir, $exclude, $file_array)
     global $update_dir, $update_files;
     $ffs = scandir($dir);
     foreach ($ffs as $ff) {
-        if (is_array($exclude) and !in_array($ff, $exclude)) {
-            if ($ff != '.' && $ff != '..') {
-                // *** Skip media files in ../media/, ../media/cms/ etc.
-                //if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
-                //	// skip media files
-                //}
-                //else{
-                $update_dir[] = $dir;
-                $update_files[] = $ff;
-                if (is_dir($dir . '/' . $ff)) listFolderFiles2($dir . '/' . $ff, $exclude, $file_array);
-                //}
+        if ((is_array($exclude) and !in_array($ff, $exclude)) && ($ff !== '.' && $ff !== '..')) {
+            // *** Skip media files in ../media/, ../media/cms/ etc.
+            //if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
+            //	// skip media files
+            //}
+            //else{
+            $update_dir[] = $dir;
+            $update_files[] = $ff;
+            if (is_dir($dir . '/' . $ff)) {
+                listFolderFiles2($dir . '/' . $ff, $exclude, $file_array);
             }
+            //}
         }
     }
 }
@@ -134,21 +134,21 @@ if (!isset($humo_option['cleanup_status'])) {
 }
 
 // *** Second cleanup of files ***
-$cleanup_status=2;
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+$cleanup_status = 2;
+if (isset($humo_option['cleanup_status']) && $humo_option['cleanup_status'] < $cleanup_status) {
     unset($remove_folders, $update_dir, $update_files);
 
     $remove_folders[] = '../include/securimage';
     remove_the_folders($remove_folders);
 
     // *** Update "update_status" ***
-    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='" . $cleanup_status . "' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
 // *** Third cleanup of files ***
-$cleanup_status=3;
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+$cleanup_status = 3;
+if (isset($humo_option['cleanup_status']) && $humo_option['cleanup_status'] < $cleanup_status) {
     // *** Remove old files ***
     $remove_file[] = '../info.php';
     $remove_file[] = '../credits.php';
@@ -178,13 +178,13 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     remove_the_folders($remove_folders);
 
     // *** Update "update_status" ***
-    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='" . $cleanup_status . "' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
 // *** Fourth cleanup of files (in version 6.3) ***
-$cleanup_status=4;
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+$cleanup_status = 4;
+if (isset($humo_option['cleanup_status']) && $humo_option['cleanup_status'] < $cleanup_status) {
     // *** Remove old files ***
     $remove_file[] = '../address.php';
     $remove_file[] = '../addresses.php';
@@ -221,13 +221,13 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     }
 
     // *** Update "update_status" ***
-    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='" . $cleanup_status . "' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
 // *** Cleanup 5 of files (in version 6.3.1) ***
-$cleanup_status=5;
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+$cleanup_status = 5;
+if (isset($humo_option['cleanup_status']) && $humo_option['cleanup_status'] < $cleanup_status) {
     // *** Remove old files ***
     $remove_file[] = '../admin/include/backup.php';
     $remove_file[] = '../admin/include/cal_date.php';
@@ -257,13 +257,13 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     }
 
     // *** Update "update_status" ***
-    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='" . $cleanup_status . "' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
 // *** Cleanup 6 of files (in version 6.5) ***
-$cleanup_status=6;
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+$cleanup_status = 6;
+if (isset($humo_option['cleanup_status']) && $humo_option['cleanup_status'] < $cleanup_status) {
     unset($remove_folders, $update_dir, $update_files);
     $remove_folders[] = '../Docker';
     remove_the_folders($remove_folders);
@@ -322,13 +322,13 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     }
 
     // *** Update "update_status" ***
-    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='" . $cleanup_status . "' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 
 // *** Cleanup 7 of files (in version 6.5.2) ***
-$cleanup_status=7;
-if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $cleanup_status) {
+$cleanup_status = 7;
+if (isset($humo_option['cleanup_status']) && $humo_option['cleanup_status'] < $cleanup_status) {
     // *** Remove old files ***
     $remove_file[] = '../header.php';
     $remove_file[] = '../source.php';
@@ -346,7 +346,7 @@ if (isset($humo_option['cleanup_status']) and $humo_option['cleanup_status'] < $
     }
 
     // *** Update "update_status" ***
-    $dbh->query("UPDATE humo_settings SET setting_value='".$cleanup_status."' WHERE setting_variable='cleanup_status'");
+    $dbh->query("UPDATE humo_settings SET setting_value='" . $cleanup_status . "' WHERE setting_variable='cleanup_status'");
     $humo_option['cleanup_status'] = $cleanup_status;
 }
 

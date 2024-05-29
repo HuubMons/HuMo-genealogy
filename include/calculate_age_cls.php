@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Script by Yossi Beck
  * Function calculate_marriage added by Huub Mons
@@ -98,20 +99,20 @@ public function search_day($search_date) {
 
         if (strlen(stristr($date1, "BEF")) > 0) {
             $date1_remark = "Bef";
-        } else if (strlen(stristr($date1, "AFT")) > 0) {
+        } elseif (strlen(stristr($date1, "AFT")) > 0) {
             $date1_remark = "Aft";
-        } else if (strlen(stristr($date1, "ABT")) > 0) {
+        } elseif (strlen(stristr($date1, "ABT")) > 0) {
             $date1_remark = "Abt";
-        } else if (strlen(stristr($date1, "EST")) > 0) {
+        } elseif (strlen(stristr($date1, "EST")) > 0) {
             $date1_remark = "Abt";
         }  // Calculate EST the same as ABT
-        else if (strlen(stristr($date1, "CAL")) > 0) {
+        elseif (strlen(stristr($date1, "CAL")) > 0) {
             $date1_remark = "Abt";
         }  // calculate CAL the same as ABT
-        else if (strlen(stristr($date1, "INT")) > 0) {
+        elseif (strlen(stristr($date1, "INT")) > 0) {
             $date1_remark = "Abt";
         }  // calculate INT the same as ABT
-        else if (strlen(stristr($date1, "BET")) > 0) {
+        elseif (strlen(stristr($date1, "BET")) > 0) {
             $date1_remark = "Bet";
         }  // Don't calculate BET text
         else {
@@ -120,57 +121,57 @@ public function search_day($search_date) {
 
         if (strlen(stristr($date2, "BEF")) > 0) {
             $date2_remark = "Bef";
-        } else if (strlen(stristr($date2, "AFT")) > 0) {
+        } elseif (strlen(stristr($date2, "AFT")) > 0) {
             $date2_remark = "Aft";
-        } else if (strlen(stristr($date2, "ABT")) > 0) {
+        } elseif (strlen(stristr($date2, "ABT")) > 0) {
             $date2_remark = "Abt";
-        } else if (strlen(stristr($date2, "EST")) > 0) {
+        } elseif (strlen(stristr($date2, "EST")) > 0) {
             $date2_remark = "Abt";
         }  // Calculate EST the same as ABT
-        else if (strlen(stristr($date2, "CAL")) > 0) {
+        elseif (strlen(stristr($date2, "CAL")) > 0) {
             $date2_remark = "Abt";
         }  // Calculate CAL the same as ABT
-        else if (strlen(stristr($date2, "INT")) > 0) {
+        elseif (strlen(stristr($date2, "INT")) > 0) {
             $date2_remark = "Abt";
         }  // calculate INT the same as ABT
-        else if (strlen(stristr($date2, "BET")) > 0) {
+        elseif (strlen(stristr($date2, "BET")) > 0) {
             $date2_remark = "Bet";
         }  // Don't calculate BET text
         else {
             $date2_remark = null;
         }
 
-        if ($date1_remark or $date2_remark) { // there is at least 1 remark
+        if ($date1_remark || $date2_remark) { // there is at least 1 remark
             if ($date1_remark === "Bef") {
-                if ($date2_remark === "Bef" or $date2_remark === "Abt") {
+                if ($date2_remark === "Bef" || $date2_remark === "Abt") {
                     $text = -1;
                 }  // Can't calculate age. flag -1
-                else if ($date2_remark === null or $date2_remark === "Aft") {
+                elseif ($date2_remark === null || $date2_remark === "Aft") {
                     $text = __('at least') . " ";
                 }
-            } else if ($date1_remark === "Aft") {
-                if ($date2_remark === "Aft" or $date2_remark === "Abt") {
+            } elseif ($date1_remark === "Aft") {
+                if ($date2_remark === "Aft" || $date2_remark === "Abt") {
                     $text = -1;
                 }  // Can't calculate age. flag -1
-                else if ($date2_remark === null or $date2_remark === "Bef") {
+                elseif ($date2_remark === null || $date2_remark === "Bef") {
                     $text = __('at most') . " ";
                 }
-            } else if ($date1_remark === "Abt") {
-                if ($date2_remark === "Bef" or $date2_remark === "Aft") {
+            } elseif ($date1_remark === "Abt") {
+                if ($date2_remark === "Bef" || $date2_remark === "Aft") {
                     $text = -1;
                 }  // Can't calculate age. flag -1
-                else if ($date2_remark === null or $date2_remark === "Abt") {
+                elseif ($date2_remark === null || $date2_remark === "Abt") {
                     $text = __('approximately') . " ";
                 }
-            } else if ($date1_remark === null) {
+            } elseif ($date1_remark === null) {
                 if ($date2_remark === "Bef") {
                     $text = __('at most') . " ";
-                } else if ($date2_remark === "Aft") {
+                } elseif ($date2_remark === "Aft") {
                     $text = __('at least') . " ";
-                } else if ($date2_remark === "Abt") {
+                } elseif ($date2_remark === "Abt") {
                     $text = __('approximately') . " ";
                 }
-            } else if ($date1_remark === "Bet" or $date2_remark === "Bet") {
+            } elseif ($date1_remark === "Bet" || $date2_remark === "Bet") {
                 $text = -1;
             }   // Don't calculate age if text = BET, sorry...
         } else {
@@ -179,7 +180,7 @@ public function search_day($search_date) {
         }
 
         // *** If calculated with baptism, always use about ***
-        if ($baptism == true and $text != -1) {
+        if ($baptism == true && $text != -1) {
             $text = __('approximately') . " ";
         }
 
@@ -192,26 +193,25 @@ public function search_day($search_date) {
         global $language, $user;
 
         // *** handle person born and died BC ***
-        if (substr($birth_date, -2, 2) == "BC" and substr($death_date, -2, 2) == "BC") {
+        if (substr($birth_date, -2, 2) === "BC" && substr($death_date, -2, 2) === "BC") {
             $temp = $birth_date;
             $birth_date = substr($death_date, 0, -3);
             $death_date = substr($temp, 0, -3);
         }
 
         // *** handle person born BC and died after year zero ***
-        elseif (substr($birth_date, -2, 2) == "BC" and $death_date != "" and substr($death_date, -2, 2) != "BC") {
+        elseif (substr($birth_date, -2, 2) === "BC" && $death_date != "" && substr($death_date, -2, 2) !== "BC") {
             $first = $this->search_year(substr($birth_date, 0, -3));
             $secnd = $this->search_year($death_date);
             $totl  = (int)$first + (int)$secnd;
-            $age = ", " . ($totl - 1) . " or " . $totl . " " . __('years');
-            return ($age);
+            return (", " . ($totl - 1) . " or " . $totl . " " . __('years'));
         }
 
         $birth_date = strtoupper($birth_date);
 
         // *** Also calculate age if only baptism and death date is known ***
         $baptism = false;
-        if ($birth_date == '') {
+        if ($birth_date === '') {
             $baptism = true;
             $birth_date = $baptism_date;
         }
@@ -247,14 +247,15 @@ public function search_day($search_date) {
         //if (($birth_year=$this->search_year($birth_date)) AND ($death_year=$this->search_year($death_date))) { // There must be 2 years....
         $birth_year = $this->search_year($birth_date);
         $death_year = $this->search_year($death_date);
-        if ($birth_year and $death_year) { // There must be 2 years....
+        if ($birth_year && $death_year) { // There must be 2 years....
 
             // Check for EST AFT ABT etc. If calculation is not possible: $special_text -1
             $special_text = $this->process_special_text($birth_date, $death_date, $baptism);
 
             // *** Calculate age in year/ month/ week/ days for children age of < 3 years ***
             //if($birth_year==$death_year) { // born 1850 - death 1850
-            if ($death_year - $birth_year < 3) { // born 1850 - death 1850 or born 1849 - death 1850.
+            if ($death_year - $birth_year < 3) {
+                // born 1850 - death 1850 or born 1849 - death 1850.
                 if (!$special_text) {
 
                     // *** December 2022: now more exact calculation is used ***
@@ -283,8 +284,7 @@ public function search_day($search_date) {
                         $death_day = '01';
                         $special_text = __('approximately') . " ";
                     }
-
-                    if ($birth_month and $birth_day and $death_month and $death_day) {
+                    if ($birth_month && $birth_day && $death_month && $death_day) {
                         $date1 = date_create($birth_year . '-' . $birth_month . '-' . $birth_day);
                         $date2 = date_create($death_year . '-' . $death_month . '-' . $death_day);
                         $interval = date_diff($date1, $date2);
@@ -293,17 +293,25 @@ public function search_day($search_date) {
                         $years = $interval->format("%y");
                         if ($years > 0) {
                             $age = $years . ' ';
-                            if ($years > 1) $age .= __('years');
-                            else $age .= __('year');
+                            if ($years > 1) {
+                                $age .= __('years');
+                            } else {
+                                $age .= __('year');
+                            }
                         }
 
                         $months = $interval->format("%m");
                         if ($months) {
                             //if ($years) $age.=';';
-                            if ($years) $age .= ' ' . __('and') . ' ';
+                            if ($years) {
+                                $age .= ' ' . __('and') . ' ';
+                            }
                             $age .= $months . ' ';
-                            if ($months > 1) $age .= __('months');
-                            else $age .= __('month');
+                            if ($months > 1) {
+                                $age .= __('months');
+                            } else {
+                                $age .= __('month');
+                            }
                         }
 
                         if (!$special_text) {
@@ -427,7 +435,7 @@ public function search_day($search_date) {
 
         // *** Also calculate marriage if only marriage date is known ***
         $baptism = false;
-        if ($marr_date == '') {
+        if ($marr_date === '') {
             $baptism = true;
             $marr_date = $church_marr_date;
         }
@@ -454,7 +462,7 @@ public function search_day($search_date) {
         $calculated_age = ''; // *** Calculated age ***
         $age = "";
 
-        if (($start_year = $this->search_year($marr_date)) and ($end_year = $this->search_year($end_date))) { // there must be 2 dates...
+        if (($start_year = $this->search_year($marr_date)) && ($end_year = $this->search_year($end_date))) { // there must be 2 dates...
 
             // Check for EST AFT ABT
             $special_text = $this->process_special_text($marr_date, $end_date, $baptism);

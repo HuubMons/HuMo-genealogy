@@ -20,7 +20,7 @@ require_once  __DIR__ . "/../app/model/family.php";
 $get_family = new FamilyModel($dbh);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
-$data["family_expanded"] = false;
+$data["family_expanded"] = 'compact';
 $data["source_presentation"] =  $get_family->getSourcePresentation();
 $data["picture_presentation"] =  $get_family->getPicturePresentation();
 $data["text_presentation"] =  $get_family->getTextPresentation();
@@ -51,7 +51,7 @@ if (isset($_POST['descendant_report'])) {
 }
 
 require_once __DIR__ . '/../include/phprtflite/lib/PHPRtfLite.php';
-$data["family_expanded"] = false;
+$data["family_expanded"] = 'compact';
 
 // *** registers PHPRtfLite autoloader (spl) ***
 PHPRtfLite::registerAutoloader();
@@ -116,9 +116,9 @@ if (file_exists(__DIR__ . '/../../gedcom-bestanden')) {
 // *** Automatically remove old RTF files ***
 $dh  = opendir(__DIR__ . '/../tmp_files');
 while (false !== ($filename = readdir($dh))) {
-    if (substr($filename, -3) == "rtf") {
-        // *** Remove files older then today ***
-        if (substr($filename, 0, 10) != date("Y_m_d")) unlink(__DIR__ . '/../tmp_files/' . $filename);
+    // *** Remove files older then today ***
+    if (substr($filename, -3) == "rtf" && substr($filename, 0, 10) !== date("Y_m_d")) {
+        unlink(__DIR__ . '/../tmp_files/' . $filename);
     }
 }
 
@@ -252,10 +252,11 @@ else {
 
                 $treetext = show_tree_text($dataDb->tree_id, $selected_language);
                 $rtf_text = $treetext['family_top'];
-                if ($rtf_text != '')
+                if ($rtf_text != '') {
                     $sect->writeText($rtf_text, $arial14, $parHead);
-                else
+                } else {
                     $sect->writeText(__('Family group sheet'), $arial14, $parHead);
+                }
 
                 // *************************************************************
                 // *** Parent1 (normally the father)                         ***
@@ -308,14 +309,12 @@ else {
 
                     // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                     if (
-                        $user["group_pers_hide_totally_act"] == 'j' and isset($parent1Db->pers_own_code)
-                        and strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                        $user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
                     ) {
                         $family_privacy = true;
                     }
                     if (
-                        $user["group_pers_hide_totally_act"] == 'j' and isset($parent2Db->pers_own_code)
-                        and strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                        $user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
                     ) {
                         $family_privacy = true;
                     }
@@ -360,19 +359,15 @@ else {
 
                 if ($family_privacy) {
                     // No marriage data
-                } else {
-                    if ($user["group_texts_fam"] == 'j' and process_text($familyDb->fam_text)) {
-                        $sect->addEmptyParagraph($fontSmall, $parBlack);
-
-                        $rtf_text = strip_tags(process_text($familyDb->fam_text), "<b><i>");
-                        $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-
-                        $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
-                        if ($source_array) {
-                            $rtf_text = strip_tags($source_array['text'], "<b><i>");
-                            //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-                            $sect->writeText($rtf_text, $arial12, null);
-                        }
+                } elseif ($user["group_texts_fam"] == 'j' && process_text($familyDb->fam_text)) {
+                    $sect->addEmptyParagraph($fontSmall, $parBlack);
+                    $rtf_text = strip_tags(process_text($familyDb->fam_text), "<b><i>");
+                    $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+                    $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
+                    if ($source_array) {
+                        $rtf_text = strip_tags($source_array['text'], "<b><i>");
+                        //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+                        $sect->writeText($rtf_text, $arial12, null);
                     }
                 }
 
@@ -419,7 +414,7 @@ else {
 
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
-                        if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                        if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
                             $show_privacy_text = true;
                             continue;
                         }
@@ -431,13 +426,12 @@ else {
                         $sect->writeText($rtf_text, $arial12);
 
                         // *** Build descendant_report ***
-                        if ($data["descendant_report"] == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
-
+                        if ($data["descendant_report"] == true && $childDb->pers_fams && $descendant_loop < $max_generation) {
                             // *** 1st family of child ***
                             $child_family = explode(";", $childDb->pers_fams);
 
                             // *** Check for double families in descendant report (if a person relates or marries another person in the same family) ***
-                            if (isset($check_double) and in_array($child_family[0], $check_double)) {
+                            if (isset($check_double) && in_array($child_family[0], $check_double)) {
                                 // *** Don't show this family, double... ***
                             } else
                                 $descendant_family_id2[] = $child_family[0];
@@ -454,15 +448,12 @@ else {
                             $search_nr = array_search($child_family[0], $check_double);
                             $rtf_text = '<b><i>, ' . __('follows') . ': </i></b>' . $follows_array[$search_nr];
                             $sect->writeText($rtf_text, $arial12);
-                        } else {
-                            if ($child_cls->person_data("child", $id)) {
-                                $rtf_text = strip_tags($child_cls->person_data("child", $id), '<b><i>');
-                                $sect->writeText($rtf_text, $arial12, $par_child_text);
-
-                                // *** Show RTF media ***
-                                if (!$child_cls->privacy) {
-                                    show_rtf_media('person', $childDb->pers_gedcomnumber);
-                                }
+                        } elseif ($child_cls->person_data("child", $id)) {
+                            $rtf_text = strip_tags($child_cls->person_data("child", $id), '<b><i>');
+                            $sect->writeText($rtf_text, $arial12, $par_child_text);
+                            // *** Show RTF media ***
+                            if (!$child_cls->privacy) {
+                                show_rtf_media('person', $childDb->pers_gedcomnumber);
                             }
                         }
 
@@ -477,7 +468,7 @@ else {
 } // End of single person
 
 // *** If source footnotes are selected, show them here ***
-if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_presentation'] == 'footnote') {
+if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
     //$rtf_text=strip_tags(show_sources_footnotes(),'<b>');
     //$sect->writeText($rtf_text, $arial12);
     $rtf_text = strip_tags(show_sources_footnotes());
@@ -513,14 +504,14 @@ function show_rtf_media($media_kind, $gedcomnumber)
     global $sect;
 
     $result = show_media($media_kind, $gedcomnumber);
-    if (isset($result[1]) and count($result[1]) > 0) {
+    if (isset($result[1]) && count($result[1]) > 0) {
         $break = 0;
         $textarr = array();
         $goodpics = FALSE;
         foreach ($result[1] as $key => $value) {
             if (strpos($key, "path") !== FALSE) {
                 $type = substr($result[1][$key], -3);
-                if ($type == "jpg" or $type == "png") {
+                if ($type === "jpg" || $type === "png") {
                     if ($goodpics == FALSE) { //found 1st pic - make table
                         $table = $sect->addTable();
                         $table->addRow(0.1);
@@ -532,11 +523,7 @@ function show_rtf_media($media_kind, $gedcomnumber)
                     $imageFile = $value;
                     $image = $cell->addImage($imageFile);
                     $txtkey = str_replace("pic_path", "pic_text", $key);
-                    if (isset($result[1][$txtkey])) {
-                        $textarr[] = $result[1][$txtkey];
-                    } else {
-                        $textarr[] = "&nbsp;";
-                    }
+                    $textarr[] = isset($result[1][$txtkey]) ? $result[1][$txtkey] : "&nbsp;";
                 }
             }
 
