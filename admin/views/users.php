@@ -13,10 +13,31 @@ $usersModel = new UsersModel($dbh);
 $users['alert'] = $usersModel->update_user($dbh);
 //$users['user_id'] = $usersModel->get_user_id();
 
+// *** Check for standard admin username and password ***
+$check_admin_user = false;
+$check_admin_pw = false;
+$sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
+$check_login = $dbh->query($sql);
+while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
+    if ($check_loginDb->user_name == 'admin') {
+        $check_admin_user = true;
+    }
+    if ($check_loginDb->user_password == MD5('humogen')) {
+        $check_admin_pw = true;
+    } // *** Check old password method ***
+    $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
+    if ($check_password) {
+        $check_admin_pw = true;
+    }
+}
 
-
+$usersql = "SELECT * FROM humo_users ORDER BY user_name";
+$user = $dbh->query($usersql);
 ?>
-<h1 class="center"><?= __('Users');?></h1>
+
+
+
+<h1 class="center"><?= __('Users'); ?></h1>
 
 <!-- Remove user -->
 <?php if (isset($_GET['remove_user'])) { ?>
@@ -37,32 +58,22 @@ $users['alert'] = $usersModel->update_user($dbh);
     </div>
 <?php }; ?>
 
-<?php
-// *** Check for standard admin username and password ***
-$check_admin_user = false;
-$check_admin_pw = false;
-$sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
-$check_login = $dbh->query($sql);
-while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
-    if ($check_loginDb->user_name == 'admin') $check_admin_user = true;
-    if ($check_loginDb->user_password == MD5('humogen')) $check_admin_pw = true; // *** Check old password method ***
-    $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
-    if ($check_password) $check_admin_pw = true;
-}
-if ($check_admin_user and $check_admin_pw) {
-    echo '<b><span style="color:red">' . __('Standard admin username and admin password is used.') . '</span></b>';
-} elseif ($check_admin_user) {
-    echo '<b><span style="color:red">' . __('Standard admin username is used.') . '</span></b>';
-} elseif ($check_admin_pw) {
-    echo '<b><span style="color:red">' . __('Standard admin password is used.') . '</span></b>';
-}
+<?php if ($check_admin_user && $check_admin_pw) { ?>
+    <div class="alert alert-danger">
+        <strong><?= __('Standard admin username and admin password is used.'); ?></strong>
+    </div>
+<?php } elseif ($check_admin_user) { ?>
+    <div class="alert alert-danger">
+        <strong><?= __('Standard admin username is used.'); ?></strong>
+    </div>
+<?php } elseif ($check_admin_pw) { ?>
+    <div class="alert alert-danger">
+        <strong><?= __('Standard admin password is used.'); ?></strong>
+    </div>
+<?php } ?>
 
-$usersql = "SELECT * FROM humo_users ORDER BY user_name";
-$user = $dbh->query($usersql);
-?>
 <form method="POST" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
-    <br>
     <table class="humo standard" border="1" style="width:95%;">
         <tr class="table_header_large">
             <th><?= __('User'); ?></th>
@@ -77,57 +88,65 @@ $user = $dbh->query($usersql);
         <?php while ($userDb = $user->fetch(PDO::FETCH_OBJ)) { ?>
             <tr align="center">
                 <td>
-                    <?php
-                    if ($userDb->user_name != 'gast' and $userDb->user_name != 'guest' and $userDb->user_id != '1') {
-                        echo '<a href="index.php?page=users&remove_user=' . $userDb->user_id . '">';
-                        echo '<img src="images/button_drop.png" border="0" alt="remove person"></a> ';
-                    } else
-                        echo '&nbsp;&nbsp;';
+                    <input type="hidden" name="<?= $userDb->user_id; ?>user_id" value="<?= $userDb->user_id; ?>">
 
-                    echo '<input type="hidden" name="' . $userDb->user_id . 'user_id" value="' . $userDb->user_id . '">';
+                    <?php if ($userDb->user_name != 'gast' && $userDb->user_name != 'guest' && $userDb->user_id != '1') { ?>
+                        <a href="index.php?page=users&remove_user=<?= $userDb->user_id; ?>">
+                            <img src="images/button_drop.png" border="0" alt="remove person">
+                        </a>
+                    <?php } else { ?>
+                        &nbsp;&nbsp;
+                    <?php
+                    }
 
                     // *** It's not allowed to change username "guest" (gast = backwards compatibility) ***
-                    if ($userDb->user_name == 'gast' or $userDb->user_name == 'guest') {
-                        echo '<input type="hidden" name="' . $userDb->user_id . 'username" value="' . $userDb->user_name . '">';
-                        echo '<b>' . $userDb->user_name . '</b></td>';
-
-                        echo '<input type="hidden" name="' . $userDb->user_id . 'usermail" value="">';
-                        echo '<td><br></td>';
-                        echo '<td><b>' . __('no need to log in') . '</b>';
-                    } else {
-                        echo '<input type="text" name="' . $userDb->user_id . 'username" value="' . $userDb->user_name . '" size="15"></td>';
-
-                        echo '<td><input type="text" name="' . $userDb->user_id . 'usermail" value="' . $userDb->user_mail . '" size="20"></td>';
-
-                        echo '<td><input type="password" name="' . $userDb->user_id . 'password" size="15">';
-                    }
+                    if ($userDb->user_name == 'gast' || $userDb->user_name == 'guest') {
                     ?>
+                        <input type="hidden" name="<?= $userDb->user_id; ?>username" value="<?= $userDb->user_name; ?>">
+                        <b><?= $userDb->user_name; ?></b>
+                    <?php } else { ?>
+                        <input type="text" name="<?= $userDb->user_id; ?>username" value="<?= $userDb->user_name; ?>" size="15">
+                    <?php } ?>
                 </td>
 
                 <?php
-                //*** User groups ***
-                if ($userDb->user_id == '1') { //1st user is always admin.
-                    print '<td><input type="hidden" name="' . $userDb->user_id . 'group_id" value="1"><b>admin</b></td>';
+                if ($userDb->user_name == 'gast' || $userDb->user_name == 'guest') { ?>
+                    <td><input type="hidden" name="<?= $userDb->user_id; ?>usermail" value=""><br></td>
+                    <td><b><?= __('no need to log in'); ?></b></td>
+                <?php } else { ?>
+                    <td><input type="text" name="<?= $userDb->user_id; ?>usermail" value="<?= $userDb->user_mail; ?>" size="20"></td>
+                    <td><input type="password" name="<?= $userDb->user_id; ?>password" size="15"></td>
+                <?php } ?>
+
+                <!-- User groups. 1st user is always admin. -->
+                <?php if ($userDb->user_id == '1') { ?>
+                    <td><input type="hidden" name="<?= $userDb->user_id; ?>group_id" value="1"><b>admin</b></td>
+                <?php
                 } else {
                     $groupsql = "SELECT * FROM humo_groups";
                     $groupresult = $dbh->query($groupsql);
-                    echo '<td><select size="1" name="' . $userDb->user_id . 'group_id">';
-                    while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) {
-                        $select = '';
-                        if ($userDb->user_group_id == $groupDb->group_id) $select = ' selected';
-                        echo '<option value="' . $groupDb->group_id . '"' . $select . '>' . $groupDb->group_name . '</option>';
-                    }
-                    echo '</select></td>';
+                ?>
+                    <td>
+                        <select size="1" name="<?= $userDb->user_id; ?>group_id">
+                            <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
+                                <option value="<?= $groupDb->group_id; ?>" <?= $userDb->user_group_id == $groupDb->group_id ? 'selected' : ''; ?>>
+                                    <?= $groupDb->group_name; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                <?php
                 }
 
-                //echo '<td>';
                 $extra_icon = "../images/search.png";
-                if ($userDb->user_hide_trees != '' or $userDb->user_edit_trees != '') {
+                if ($userDb->user_hide_trees != '' || $userDb->user_edit_trees != '') {
                     $extra_icon = "../images/searchicon_red.png";
                 }
                 ?>
                 <td>
-                    <a href="#" onClick='window.open("index.php?page=editor_user_settings&user=<?= $userDb->user_id; ?>","","scrollbars=1,width=900,height=500,top=100,left=100")' ;><img src=<?= $extra_icon; ?> alt="<?= __('Search'); ?>"></a>
+                    <a href="#" onClick='window.open("index.php?page=editor_user_settings&user=<?= $userDb->user_id; ?>","","scrollbars=1,width=900,height=500,top=100,left=100")' ;>
+                        <img src=<?= $extra_icon; ?> alt="<?= __('Search'); ?>">
+                    </a>
                 </td>
 
                 <?php
@@ -146,20 +165,24 @@ $user = $dbh->query($usersql);
                     echo '<td><br></td>';
                 }
 
-                //echo '<td><br></td>';
-
                 // *** Check if user is locked, using last IP address ***
                 // FUNCTION CAN BE IMPROVED? MUST BE CHECKED USING USER AND IP ADDRESS?
-                echo '<td>';
                 $log_ip_address = 0;
-                if (isset($logdateDb->log_ip_address)) $log_ip_address = $logdateDb->log_ip_address;
-                if (!$db_functions->check_visitor($log_ip_address)) {
-                    echo 'Access to website is blocked.<br>';
-                    echo 'IP address: ' . $logdateDb->log_ip_address . '<br>';
-                    echo '<a href="index.php?page=users&unblock_ip_address=' . $logdateDb->log_ip_address . '">' . __('Unblock IP address') . '</a>';
-                } else echo '<br>';
-                echo '</td>';
+                if (isset($logdateDb->log_ip_address)) {
+                    $log_ip_address = $logdateDb->log_ip_address;
+                }
                 ?>
+                <td>
+                    <?php
+                    if (!$db_functions->check_visitor($log_ip_address)) {
+                        echo 'Access to website is blocked.<br>';
+                        echo 'IP address: ' . $logdateDb->log_ip_address . '<br>';
+                        echo '<a href="index.php?page=users&unblock_ip_address=' . $logdateDb->log_ip_address . '">' . __('Unblock IP address') . '</a>';
+                    } else {
+                        echo '<br>';
+                    }
+                    ?>
+                </td>
             </tr>
         <?php
         }
@@ -178,7 +201,9 @@ $user = $dbh->query($usersql);
                     <?php
                     while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) {
                         $select = '';
-                        if ($groupDb->group_id == '2') $select = ' selected';
+                        if ($groupDb->group_id == '2') {
+                            $select = ' selected';
+                        }
                         echo '<option value="' . $groupDb->group_id . '"' . $select . '>' . $groupDb->group_name . '</option>';
                     }
                     ?>

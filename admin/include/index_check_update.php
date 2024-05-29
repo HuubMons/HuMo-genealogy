@@ -20,11 +20,11 @@ if (isset($_POST['enable_update_check_change'])) {
 
 // *** Check if installation is completed, before checking for an update ***
 $check_update = @$dbh->query("SELECT * FROM humo_settings");
-if ($check_update and $page != 'login' and $page != 'update' and $popup == false) {
+if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
     $debug_update = 'Start. ';
 
     // *** Manual check for update ***
-    if (isset($_GET['update_check']) and $humo_option['update_last_check'] != 'DISABLED') {
+    if (isset($_GET['update_check']) && $humo_option['update_last_check'] != 'DISABLED') {
         // *** Update settings ***
         $db_functions->update_settings('update_last_check', '2012-01-01');
         $humo_option['update_last_check'] = '2012-01-01';
@@ -37,7 +37,7 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
 
     // *** Update check, once a day ***
     // 86400 = 1 day. yyyy-mm-dd
-    if ($humo_option['update_last_check'] != 'DISABLED' and strtotime("now") - strtotime($humo_option['update_last_check']) > 86400) {
+    if ($humo_option['update_last_check'] != 'DISABLED' && strtotime("now") - strtotime($humo_option['update_last_check']) > 86400) {
         $link_name = str_replace(' ', '_', $_SERVER['SERVER_NAME']);
         $link_version = str_replace(' ', '_', $humo_option["version"]);
 
@@ -73,7 +73,9 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
                 // *** Check if there is valid information, there should be at least 4 version lines ***
                 $valid = 0;
                 foreach ($content_array as $content_line) {
-                    if (substr($content_line, 0, 7) == 'version') $valid++;
+                    if (substr($content_line, 0, 7) === 'version') {
+                        $valid++;
+                    }
                 }
 
                 if ($valid > 3) {
@@ -114,7 +116,9 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
                     // *** Check if there is valid information, there should be 4 version lines ***
                     $valid = 0;
                     foreach ($content_array as $content_line) {
-                        if (substr($content_line, 0, 7) == 'version') $valid++;
+                        if (substr($content_line, 0, 7) === 'version') {
+                            $valid++;
+                        }
                     }
 
                     if ($valid > 3) {
@@ -210,7 +214,7 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
 
         //if ($f = @fopen($update_file, 'r')){
         //if (is_file($update_file) AND $f = @fopen($update_file, 'r')){
-        if (isset($content_array) and $content_array) {
+        if (isset($content_array) && $content_array) {
             // *** Used for automatic update procedure ***
             $update['up_to_date'] = 'no';
 
@@ -232,33 +236,33 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
                 $update_array = explode("=", $content_line);
 
                 // *** HuMo-genealogy version ***
-                if ($update_array[0] == 'version') {
+                if ($update_array[0] === 'version') {
                     $update['version'] = trim($update_array[1]);
                 }
-                if ($update_array[0] == 'version_date') {
+                if ($update_array[0] === 'version_date') {
                     $update['version_date'] = trim($update_array[1]);
                 }
-                if ($update_array[0] == 'version_download') {
+                if ($update_array[0] === 'version_download') {
                     $update['version_download'] = trim($update_array[1]);
                 }
-                if ($update_array[0] == 'version_auto_download') {
+                if ($update_array[0] === 'version_auto_download') {
                     $update['version_auto_download'] = trim($update_array[1]);
                 }
-                if ($update_array[0] == 'version_auto_download_github') {
+                if ($update_array[0] === 'version_auto_download_github') {
                     $update['version_auto_download_github'] = trim($update_array[1]);
                 }
 
                 // *** HuMo-genealogy beta version ***
-                if ($update_array[0] == 'beta_version') {
+                if ($update_array[0] === 'beta_version') {
                     $update['beta_version'] = trim($update_array[1]);
                 }
-                if ($update_array[0] == 'beta_version_date') {
+                if ($update_array[0] === 'beta_version_date') {
                     $update['beta_version_date'] = trim($update_array[1]);
                 }
-                if ($update_array[0] == 'beta_version_download') {
+                if ($update_array[0] === 'beta_version_download') {
                     $update['beta_version_download'] = trim($update_array[1]);
                 }
-                if ($update_array[0] == 'beta_version_auto_download') {
+                if ($update_array[0] === 'beta_version_auto_download') {
                     $update['beta_version_auto_download'] = trim($update_array[1]);
                 }
             }
@@ -308,8 +312,11 @@ if ($check_update and $page != 'login' and $page != 'update' and $popup == false
             //$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
             $update_text = ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Online version check unavailable.') . '</a>';
 
-            if (!function_exists('curl_exec')) $update_text .= ' Extension php_curl.dll is disabled.';
-            elseif (!is_writable('update')) $update_text .= ' Folder admin/update/ is read only.';
+            if (!function_exists('curl_exec')) {
+                $update_text .= ' Extension php_curl.dll is disabled.';
+            } elseif (!is_writable('update')) {
+                $update_text .= ' Folder admin/update/ is read only.';
+            }
 
             //if( !ini_get('allow_url_fopen') ) $update_text.=' Setting allow_url_fopen is disabled.';
 

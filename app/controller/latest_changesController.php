@@ -15,10 +15,9 @@ class Latest_changesController
     {
         $latest_changesModel = new latest_changesModel($dbh);
         $listchanges = $latest_changesModel->listChanges($dbh, $tree_id);
-        $data = array(
+        return array(
             "listchanges" => $listchanges,
             "title" => __('Latest changes')
         );
-        return $data;
     }
 }

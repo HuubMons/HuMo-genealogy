@@ -5,7 +5,9 @@ include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settin
 
 // *** Language choice ***
 $language_tree2 = $language_tree;
-if ($language_tree == 'default') $language_tree2 = $selected_language;
+if ($language_tree == 'default') {
+    $language_tree2 = $selected_language;
+}
 include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
 include_once(__DIR__ . "/../../views/partial/select_language.php");
 $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
@@ -80,9 +82,9 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
                     <?php
                     // *** Show/ Change family tree name ***
                     $treetext = show_tree_text($dataDb->tree_id, $language_tree);
-                    if ($dataDb->tree_prefix == 'EMPTY')
+                    if ($dataDb->tree_prefix == 'EMPTY') {
                         echo '* ' . __('EMPTY LINE') . ' *';
-                    else {
+                    } else {
                         echo '<a href="index.php?page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $dataDb->tree_id . '"><img src="images/edit.jpg" title="edit" alt="edit"></a> ' . $treetext['name'];
                     }
                     ?>
@@ -102,40 +104,40 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
                         // *** Show tree data ***
                         $tree_date = $dataDb->tree_date;
                         $month = ''; // for empty tree_dates
-                        if (substr($tree_date, 5, 2) == '01') {
+                        if (substr($tree_date, 5, 2) === '01') {
                             $month = ' ' . strtolower(__('jan')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '02') {
+                        if (substr($tree_date, 5, 2) === '02') {
                             $month = ' ' . strtolower(__('feb')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '03') {
+                        if (substr($tree_date, 5, 2) === '03') {
                             $month = ' ' . strtolower(__('mar')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '04') {
+                        if (substr($tree_date, 5, 2) === '04') {
                             $month = ' ' . strtolower(__('apr')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '05') {
+                        if (substr($tree_date, 5, 2) === '05') {
                             $month = ' ' . strtolower(__('may')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '06') {
+                        if (substr($tree_date, 5, 2) === '06') {
                             $month = ' ' . strtolower(__('jun')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '07') {
+                        if (substr($tree_date, 5, 2) === '07') {
                             $month = ' ' . strtolower(__('jul')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '08') {
+                        if (substr($tree_date, 5, 2) === '08') {
                             $month = ' ' . strtolower(__('aug')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '09') {
+                        if (substr($tree_date, 5, 2) === '09') {
                             $month = ' ' . strtolower(__('sep')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '10') {
+                        if (substr($tree_date, 5, 2) === '10') {
                             $month = ' ' . strtolower(__('oct')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '11') {
+                        if (substr($tree_date, 5, 2) === '11') {
                             $month = ' ' . strtolower(__('nov')) . ' ';
                         }
-                        if (substr($tree_date, 5, 2) == '12') {
+                        if (substr($tree_date, 5, 2) === '12') {
                             $month = ' ' . strtolower(__('dec')) . ' ';
                         }
                         $tree_date = substr($tree_date, 8, 2) . $month . substr($tree_date, 0, 4);
@@ -151,7 +153,7 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
                 <td>
                     <?php
                     // *** If there is only one family tree, prevent it can be removed ***
-                    if ($count_trees > 1 or $dataDb->tree_prefix == 'EMPTY') {
+                    if ($count_trees > 1 || $dataDb->tree_prefix == 'EMPTY') {
                         echo ' <a href="index.php?page=' . $page . '&amp;remove_tree=' . $dataDb->tree_id . '&amp;treetext_name=' . $treetext['name'] . '">';
                         echo '<img src="images/button_drop.png" alt="' . __('Remove tree') . '" border="0"></a>';
                     }

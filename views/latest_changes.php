@@ -6,7 +6,9 @@ if (isset($_POST["search_name"])) {
 
 // TODO use function
 $path = 'index.php?page=latest_changes.php&amp;tree_id=' . $tree_id;
-if ($humo_option["url_rewrite"] == "j") $path = 'latest_changes/' . $tree_id;
+if ($humo_option["url_rewrite"] == "j") {
+    $path = 'latest_changes/' . $tree_id;
+}
 ?>
 
 <h1><?= __('Recently changed persons and new persons'); ?></h1>

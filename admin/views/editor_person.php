@@ -10,11 +10,9 @@
     <?php
     if ($add_person == false) {
         // *** Update settings ***
-        if (isset($_POST['admin_online_search'])) {
-            if ($_POST['admin_online_search'] == 'y' or $_POST['admin_online_search'] == 'n') {
-                $result = $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
-                $humo_option["admin_online_search"] = $_POST['admin_online_search'];
-            }
+        if (isset($_POST['admin_online_search']) && ($_POST['admin_online_search'] == 'y' || $_POST['admin_online_search'] == 'n')) {
+            $result = $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
+            $humo_option["admin_online_search"] = $_POST['admin_online_search'];
         }
     ?>
 
@@ -33,7 +31,7 @@
                     <!-- Ignore the Are You Sure script -->
                     <select size="1" name="admin_online_search" onChange="this.form.submit();" class="ays-ignore form-select form-select-sm">
                         <option value="y"><?= __('Online search enabled'); ?></option>
-                        <option value="n" <?php if ($humo_option["admin_online_search"] != 'y') echo ' selected'; ?>><?= __('Online search disabled'); ?></option>
+                        <option value="n" <?php if ($humo_option["admin_online_search"] != 'y')  echo ' selected'; ?>><?= __('Online search disabled'); ?></option>
                     </select>
                 </div>
 
@@ -75,7 +73,9 @@
                                     // bp: Geboorteplaats
                                     // http://www.stamboomzoeker.nl/?a=search&fn=andreas&sn=heijnen&np=1&bd1=1655&bd2=1655&bp=wouw+nederland
                                     $link = 'http://www.stamboomzoeker.nl/?a=search&amp;fn=' . urlencode($person->pers_firstname) . '&amp;sn=' . urlencode($person->pers_lastname);
-                                    if ($OAfromyear != '') $link .= '&amp;bd1=' . $OAfromyear . '&amp;bd2=' . $OAfromyear;
+                                    if ($OAfromyear !== '') {
+                                        $link .= '&amp;bd1=' . $OAfromyear . '&amp;bd2=' . $OAfromyear;
+                                    }
                                     echo '<a href="' . $link . '" target="_blank">Familytreeseeker.com/ StamboomZoeker.nl</a><br><br>';
 
                                     // *** GenealogieOnline ***
@@ -94,7 +94,9 @@
                                     // http://www.graftombe.nl/names/search?forename=Andreas&surname=Heijnen&birthdate_from=1655
                                     // &amp;birthdate_until=1655&amp;submit=Zoeken&amp;r=names-search
                                     $link = 'http://www.graftombe.nl/names/search?forename=' . urlencode($person->pers_firstname) . '&amp;surname=' . urlencode($person->pers_lastname);
-                                    if ($OAfromyear != '') $link .= '&amp;birthdate_from=' . $OAfromyear . '&amp;birthdate_until=' . $OAfromyear;
+                                    if ($OAfromyear !== '') {
+                                        $link .= '&amp;birthdate_from=' . $OAfromyear . '&amp;birthdate_until=' . $OAfromyear;
+                                    }
                                     echo '<a href="' . $link . '&amp;submit=Zoeken&amp;r=names-search" target="_blank">Graftombe.nl</a><br><br>';
 
                                     // *** WieWasWie ***
@@ -136,14 +138,17 @@
             ?>
                         <b><?= __('Search'); ?>: <a href="https://www.openarch.nl/search.php?name=<?= urlencode($name . $year_or_period); ?>" target="_blank">https://www.openarch.nl/search.php?name=<?= $name . $year_or_period; ?></a></b><br>
                         <?php
-                        if (isset($jsonData["response"]["docs"]) and count($jsonData["response"]["docs"]) > 0) {
+                        if (isset($jsonData["response"]["docs"]) && count($jsonData["response"]["docs"]) > 0) {
                             foreach ($jsonData["response"]["docs"] as $OAresult) {   # het voordeel van JSON/json_dcode is dat je er eenvoudig mee kunt werken (geen Iterator nodig)
                                 $OAday = '';
-                                if (isset($OAresult["eventdate"]["day"])) $OAday = $OAresult["eventdate"]["day"];
+                                if (isset($OAresult["eventdate"]["day"])) {
+                                    $OAday = $OAresult["eventdate"]["day"];
+                                }
                                 //$OAmonthName=date('M', mktime(0, 0, 0, $OAresult["eventdate"]["archive"], 10));   # laat PHP zelf de maandnaam maken
                                 $OAmonthName = '';
-                                if (isset($OAresult["eventdate"]["month"]))
-                                    $OAmonthName = date('M', mktime(0, 0, 0, $OAresult["eventdate"]["month"], 10));   # laat PHP zelf de maandnaam maken
+                                if (isset($OAresult["eventdate"]["month"])) {
+                                    $OAmonthName = date('M', mktime(0, 0, 0, $OAresult["eventdate"]["month"], 10));
+                                }   # laat PHP zelf de maandnaam maken
                                 $OAyear = '';
                                 if (isset($OAresult["eventdate"]["year"])) $OAyear = $OAresult["eventdate"]["year"];
                                 $OAeventdate = join(" ", array($OAday, $OAmonthName, $OAyear));
@@ -197,15 +202,15 @@
                     openarchives_new($OAsearchname, ' ' . $OAuntilyear);
                 }
 
-                if ($OAfromyear or $OAuntilyear) {
+                if ($OAfromyear || $OAuntilyear) {
                     $OAyear_or_period = '';
-                    if ($OAfromyear != '' && $OAuntilyear == '') {
+                    if ($OAfromyear !== '' && $OAuntilyear === '') {
                         $OAyear_or_period = ' ' . $OAfromyear . '-' . ($OAfromyear + 100);
                     }
-                    if ($OAfromyear == '' && $OAuntilyear != '') {
+                    if ($OAfromyear === '' && $OAuntilyear !== '') {
                         $OAyear_or_period = ' ' . ($OAuntilyear - 100) . '-' . $OAuntilyear;
                     }
-                    if ($OAfromyear != '' && $OAuntilyear != '') {
+                    if ($OAfromyear !== '' && $OAuntilyear !== '') {
                         $OAyear_or_period = ' ' . $OAfromyear . '-' . $OAuntilyear;
                     }
                     if (isset($_POST['search_period'])) {
@@ -266,7 +271,7 @@
                     <?= edit_prefix('pers_prefix1', ''); ?>
                     <?= edit_lastname('pers_lastname1', ''); ?>
                     <?= edit_patronymic('pers_patronym1', ''); ?>
-                    <?= edit_event_name('event_gedcom_add1','event_event_name1', ''); ?>
+                    <?= edit_event_name('event_gedcom_add1', 'event_event_name1', ''); ?>
                     <?= edit_privacyfilter('pers_alive1', ''); ?>
                     <?= edit_sexe('pers_sexe1', 'M'); ?>
                     <?= edit_profession('pers_profession1', ''); ?>
@@ -282,7 +287,7 @@
                     <?= edit_prefix('pers_prefix2', ''); ?>
                     <?= edit_lastname('pers_lastname2', ''); ?>
                     <?= edit_patronymic('pers_patronym2', ''); ?>
-                    <?= edit_event_name('event_gedcom_add2','event_event_name2', ''); ?>
+                    <?= edit_event_name('event_gedcom_add2', 'event_event_name2', ''); ?>
                     <?= edit_privacyfilter('pers_alive2', ''); ?>
                     <?= edit_sexe('pers_sexe2', 'F'); ?>
                     <?= edit_profession('pers_profession2', ''); ?>
@@ -320,11 +325,11 @@
             // *** Show message if age < 0 or > 120 ***
             $error_color = '';
             $show_message = '&nbsp;';
-            if (($person->pers_bapt_date or $person->pers_birth_date) and $person->pers_death_date) {
+            if (($person->pers_bapt_date || $person->pers_birth_date) && $person->pers_death_date) {
                 include_once(__DIR__ . "/../../include/calculate_age_cls.php");
                 $process_age = new calculate_year_cls;
                 $age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
-                if ($age and ($age < 0 or $age > 120)) {
+                if ($age && ($age < 0 || $age > 120)) {
                     $error_color = 'background-color:#FFAA80;';
                     $show_message = '&nbsp;' . __('age') . ' ' . $age . ' ' . __('year');
                 }
@@ -427,7 +432,9 @@
                     $text = $editor_cls->text_show($pers_name_text);
                     // *** Check if there are multiple lines in text ***
                     $field_text_selected = $field_text;
-                    if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                    if ($text && preg_match('/\R/', $text)) {
+                        $field_text_selected = $field_text_medium;
+                    }
                     ?>
                     <!-- Text -->
                     <div class="row mb-2">
@@ -538,7 +545,7 @@
 
         // *** Disable radio boxes if person is deceased ***
         $disabled = '';
-        if ($pers_death_date or $pers_death_place or $pers_buried_date or $pers_buried_place) {
+        if ($pers_death_date || $pers_death_place || $pers_buried_date || $pers_buried_place) {
             $disabled = ' disabled';
         }
 
@@ -557,7 +564,9 @@
                 <input type="radio" name="pers_alive" value="deceased" <?= $selected_deceased . $disabled; ?> class="form-check-input"> <?= __('deceased'); ?>
 
                 <!-- Estimated/ calculated (birth) date, can be used for privacy filter -->
-                <?php if (!$pers_cal_date) $pers_cal_date = 'dd mmm yyyy'; ?>
+                <?php if (!$pers_cal_date) {
+                    $pers_cal_date = 'dd mmm yyyy';
+                } ?>
                 <span style="color:#6D7B8D;">
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= language_date($pers_cal_date); ?>
                 </span>
@@ -576,15 +585,25 @@
         // *** Sexe ***
         $colour = '';
         // *** If sexe = unknown then show a red line (new person = other colour). ***
-        if ($pers_sexe == '') $colour = ' bgcolor="#FFAA80"';
-        if ($add_person == true and $pers_sexe == '') $colour = ' bgcolor="#FFAA80"';
+        if ($pers_sexe == '') {
+            $colour = ' bgcolor="#FFAA80"';
+        }
+        if ($add_person == true && $pers_sexe == '') {
+            $colour = ' bgcolor="#FFAA80"';
+        }
 
         $selected_m = '';
-        if ($pers_sexe == 'M') $selected_m = ' checked';
+        if ($pers_sexe == 'M') {
+            $selected_m = ' checked';
+        }
         $selected_f = '';
-        if ($pers_sexe == 'F') $selected_f = ' checked';
+        if ($pers_sexe == 'F') {
+            $selected_f = ' checked';
+        }
         $selected_u = '';
-        if ($pers_sexe == '') $selected_u = ' checked';
+        if ($pers_sexe == '') {
+            $selected_u = ' checked';
+        }
 
         $check_sources_text = '';
         if ($pers_gedcomnumber) {
@@ -639,9 +658,11 @@
                     $check_sources_text = check_sources('born', 'pers_birth_source', $pers_gedcomnumber);
                     $hideshow_text .= $check_sources_text;
                 }
-
-                echo hideshow_editor($hideshow, $hideshow_text, $pers_birth_text);
                 ?>
+                <?= hideshow_editor($hideshow, $hideshow_text, $pers_birth_text); ?>
+
+                <input type="submit" name="add_birth_declaration" value="<?= __('birth declaration'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
                         <label for "pers_birth_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
@@ -666,14 +687,16 @@
                             <input type="text" name="pers_birth_time" value="<?= $pers_birth_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-5">
-                            <input type="checkbox" name="pers_stillborn" <?= (isset($pers_stillborn) and $pers_stillborn == 'y') ? 'checked' : ''; ?> class="form-check-input"> <?= __('stillborn child'); ?>
+                            <input type="checkbox" name="pers_stillborn" <?= (isset($pers_stillborn) && $pers_stillborn == 'y') ? 'checked' : ''; ?> class="form-check-input"> <?= __('stillborn child'); ?>
                         </div>
                     </div>
 
                     <?php
                     // *** Check if there are multiple lines in text ***
                     $field_text_selected = $field_text;
-                    if ($pers_birth_text and preg_match('/\R/', $pers_birth_text)) $field_text_selected = $field_text_medium;
+                    if ($pers_birth_text && preg_match('/\R/', $pers_birth_text)) {
+                        $field_text_selected = $field_text_medium;
+                    }
                     ?>
                     <div class="row mb-2">
                         <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -699,10 +722,12 @@
 
         <?php
         // *** Birth declaration ***
-        if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'birth_declaration');
+        if ($add_person == false) {
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'birth_declaration');
+        }
 
         // **** BRIT MILA ***
-        if ($humo_option['admin_brit'] == "y" and $pers_sexe != "F") {
+        if ($humo_option['admin_brit'] == "y" && $pers_sexe != "F") {
 
             // *** Use hideshow to show and hide the editor lines ***
             $hideshow = '20';
@@ -734,8 +759,9 @@
                         $check_sources_text = check_sources('person', 'pers_event_source', $britid);
                         $hideshow_text .= $check_sources_text;
                     }
-                    echo hideshow_editor($hideshow, $hideshow_text, $brittext);
                     ?>
+                    <?= hideshow_editor($hideshow, $hideshow_text, $brittext); ?>
+
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
                         <div class="row mb-2">
@@ -756,7 +782,9 @@
                         // *** Check if there are multiple lines in text ***
                         $text = $editor_cls->text_show($brittext);
                         $field_text_selected = $field_text;
-                        if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                        if ($text && preg_match('/\R/', $text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -849,7 +877,9 @@
                         // *** Check if there are multiple lines in text ***
                         $text = $editor_cls->text_show($bartext);
                         $field_text_selected = $field_text;
-                        if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                        if ($text && preg_match('/\R/', $text)) {
+                            $field_text_selected = $field_text_medium;
+                        }
                         ?>
                         <div class="row mb-2">
                             <label for "even_barm_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -891,13 +921,18 @@
             <td colspan="2">
                 <?php
                 $hideshow_text = hideshow_date_place($pers_bapt_date, $pers_bapt_place);
-                if ($pers_religion) $hideshow_text .= ' (' . __('religion') . ': ' . $pers_religion . ')';
+                if ($pers_religion) {
+                    $hideshow_text .= ' (' . __('religion') . ': ' . $pers_religion . ')';
+                }
                 if ($pers_gedcomnumber) {
                     $check_sources_text = check_sources('person', 'pers_bapt_source', $pers_gedcomnumber);
                     $hideshow_text .= $check_sources_text;
                 }
-                echo hideshow_editor($hideshow, $hideshow_text, $pers_bapt_text);
                 ?>
+                <?= hideshow_editor($hideshow, $hideshow_text, $pers_bapt_text); ?>
+
+                <input type="submit" name="add_baptism_witness" value="<?= __('baptism witness'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
                     <div class="row mb-2">
@@ -928,7 +963,9 @@
                     $text = $editor_cls->text_show($pers_bapt_text);
                     // *** Check if there are multiple lines in text ***
                     $field_text_selected = $field_text;
-                    if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                    if ($text && preg_match('/\R/', $text)) {
+                        $field_text_selected = $field_text_medium;
+                    }
                     ?>
                     <div class="row mb-2">
                         <label for "pers_bapt_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -953,10 +990,12 @@
                 </span>
             </td>
         </tr>
-        <?php
 
+        <?php
         // *** Baptism Witness ***
-        if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'baptism_witness');
+        if ($add_person == false) {
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'baptism_witness');
+        }
 
 
         // *** Died ***
@@ -974,11 +1013,14 @@
                 <?php
                 $hideshow_text = hideshow_date_place($pers_death_date, $pers_death_place);
 
-                if ($pers_death_time)
+                if ($pers_death_time) {
                     $hideshow_text .= ' ' . __('at') . ' ' . $pers_death_time . ' ' . __('hour');
+                }
 
                 if ($pers_death_cause) {
-                    if ($hideshow_text) $hideshow_text .= ', ';
+                    if ($hideshow_text) {
+                        $hideshow_text .= ', ';
+                    }
                     $pers_death_cause2 = '';
                     if ($pers_death_cause == 'murdered') {
                         $pers_death_cause2 = __('cause of death') . ': ' . __('murdered');
@@ -1024,9 +1066,11 @@
                     $check_sources_text = check_sources('person', 'pers_death_source', $pers_gedcomnumber);
                     $hideshow_text .= $check_sources_text;
                 }
-
-                echo hideshow_editor($hideshow, $hideshow_text, $pers_death_text);
                 ?>
+                <?= hideshow_editor($hideshow, $hideshow_text, $pers_death_text); ?>
+
+                <input type="submit" name="add_death_declaration" value="<?= __('death declaration'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
                         <label for "pers_death_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
@@ -1108,7 +1152,9 @@
                     $text = $editor_cls->text_show($pers_death_text);
                     // *** Check if there are multiple lines in text ***
                     $field_text_selected = $field_text;
-                    if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                    if ($text && preg_match('/\R/', $text)) {
+                        $field_text_selected = $field_text_medium;
+                    }
                     ?>
                     <div class="row mb-2">
                         <label for "pers_death_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -1134,7 +1180,9 @@
         </tr>
         <?php
         // *** Death Declaration ***
-        if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'death_declaration');
+        if ($add_person == false) {
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'death_declaration');
+        }
 
 
         // *** Buried ***
@@ -1155,8 +1203,11 @@
                     $check_sources_text = check_sources('person', 'pers_buried_source', $pers_gedcomnumber);
                     $hideshow_text .= $check_sources_text;
                 }
-                echo hideshow_editor($hideshow, $hideshow_text, $pers_buried_text);
                 ?>
+                <?= hideshow_editor($hideshow, $hideshow_text, $pers_buried_text); ?>
+
+                <input type="submit" name="add_burial_witness" value="<?= __('burial witness'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
                         <label for "pers_buried_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
@@ -1192,7 +1243,9 @@
                     $text = $editor_cls->text_show($pers_buried_text);
                     // *** Check if there are multiple lines in text ***
                     $field_text_selected = $field_text;
-                    if ($text and preg_match('/\R/', $text)) $field_text_selected = $field_text_medium;
+                    if ($text && preg_match('/\R/', $text)) {
+                        $field_text_selected = $field_text_medium;
+                    }
                     ?>
                     <div class="row mb-2">
                         <label for "pers_buried_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
@@ -1219,7 +1272,9 @@
 
         <?php
         // *** Burial Witness ***
-        if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'burial_witness');
+        if ($add_person == false) {
+            echo $event_cls->show_event('person', $pers_gedcomnumber, 'burial_witness');
+        }
 
 
         // *** General text by person ***
@@ -1384,13 +1439,15 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             $num_rows = $note_result->rowCount();
 
             echo '<tr class="table_header_large"><td>';
-            if ($num_rows)
+            if ($num_rows) {
                 echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a> ';
+            }
             echo __('User notes') . '</td><td colspan="2">';
-            if ($num_rows)
+            if ($num_rows) {
                 printf(__('There are %d user added notes.'), $num_rows);
-            else
+            } else {
                 printf(__('There are %d user added notes.'), 0);
+            }
             echo '</td></tr>';
 
             while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
@@ -1414,7 +1471,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             }
 
             // *** Person added by user ***
-            if ($person->pers_new_user_id or $person->pers_new_datetime) {
+            if ($person->pers_new_user_id || $person->pers_new_datetime) {
                 $user_name = '';
                 if ($person->pers_new_user_id) {
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'";
@@ -1431,7 +1488,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             }
 
             // *** Person changed by user ***
-            if ($person->pers_changed_user_id or $person->pers_changed_datetime) {
+            if ($person->pers_changed_user_id || $person->pers_changed_datetime) {
                 $user_name = '';
                 if ($person->pers_changed_user_id) {
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'";

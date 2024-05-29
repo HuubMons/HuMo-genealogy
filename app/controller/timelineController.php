@@ -34,7 +34,9 @@ class TimelineController
         //$data = array_merge($data, $person_data);
         $data = $person_data;
 
-        if ($get_timeline_persons) $data = array_merge($data, $get_timeline_persons);
+        if ($get_timeline_persons) {
+            $data = array_merge($data, $get_timeline_persons);
+        }
 
         return $data;
     }

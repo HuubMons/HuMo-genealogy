@@ -53,7 +53,7 @@ if ($language["dir"] == "rtl") {
     $rtlmarker = "rtl";
     $alignmarker = "right";
 }
-if (isset($screen_mode) and $screen_mode == "PDF") {
+if (isset($screen_mode) && $screen_mode == "PDF") {
     $dirmark1 = '';
     $dirmark2 = '';
 }
@@ -71,7 +71,7 @@ $tmp_path = '';
 // REQUEST_URI: /url_test/index/1abcd2345/
 // REQUEST_URI: /url_test/index.php?variabele=1
 $base_href = '';
-if ($humo_option["url_rewrite"] == "j" and $tmp_path) {
+if ($humo_option["url_rewrite"] == "j" && $tmp_path) {
     // *** url_rewrite ***
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
         $uri_path = 'https://' . $_SERVER['SERVER_NAME'] . $tmp_path;
@@ -92,9 +92,8 @@ $link_cls = new Link_cls($uri_path);
 // *** For PDF reports: remove html tags en decode ' characters ***
 function pdf_convert($text)
 {
-    $text = html_entity_decode(strip_tags($text), ENT_QUOTES);
     //$text=@iconv("UTF-8","cp1252//IGNORE//TRANSLIT",$text);	// Only needed if FPDF is used. We now use TFPDF.
-    return $text;
+    return html_entity_decode(strip_tags($text), ENT_QUOTES);
 }
 
 // *** Set default PDF font ***
@@ -110,6 +109,6 @@ require(__DIR__ . '/../include/tfpdf/tfpdfextend.php');
 
 // *** Added in nov 2023 (used in outline_report_pdf.php) ***
 $tree_id = 0;
-if (isset($_POST['tree_id']) and is_numeric($_POST['tree_id'])) {
+if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
     $tree_id = $_POST['tree_id'];
 }

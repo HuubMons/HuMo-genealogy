@@ -25,7 +25,8 @@ if ($page != 'tree_index') {
 $left = false;
 $center = false;
 $right = false;
-for ($i = 0; $i < count($item_array); $i++) {
+$counter = count($item_array);
+for ($i = 0; $i < $counter; $i++) {
     if ($item_array[$i]['position'] == 'left') {
         $left = true;
     }
@@ -40,7 +41,9 @@ for ($i = 0; $i < count($item_array); $i++) {
 
 $middle = "col-sm-6";
 // TODO: if there is no left and right, then center column 100%?
-if (!$left or !$right) $middle = "col-sm-9";
+if (!$left || !$right) {
+    $middle = "col-sm-9";
+}
 ?>
 
 <div class="row m-lg-1 py-3 genealogy_row">

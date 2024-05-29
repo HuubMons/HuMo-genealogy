@@ -24,7 +24,8 @@ if (isset($_SESSION['admin_tree_id'])) {
     if ($drag_kind == "media") {
         $mediastring = safe_text_db($_GET['mediastring']);
         $media_arr = explode(";", $mediastring);
-        for ($x = 0; $x < count($media_arr); $x++) {
+        $counter = count($media_arr);
+        for ($x = 0; $x < $counter; $x++) {
             $sql = "UPDATE humo_events SET event_order='" . ($x + 1) . "' WHERE event_id='" . $media_arr[$x] . "'";
             $result = $dbh->query($sql);
         }
@@ -33,7 +34,8 @@ if (isset($_SESSION['admin_tree_id'])) {
     if ($drag_kind == "sources") {
         $mediastring = safe_text_db($_GET['sourcestring']);
         $media_arr = explode(";", $mediastring);
-        for ($x = 0; $x < count($media_arr); $x++) {
+        $counter = count($media_arr);
+        for ($x = 0; $x < $counter; $x++) {
             $sql = "UPDATE humo_connections SET connect_order='" . ($x + 1) . "' WHERE connect_id='" . $media_arr[$x] . "'";
             $result = $dbh->query($sql);
         }

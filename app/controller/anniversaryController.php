@@ -26,7 +26,9 @@ class AnniversaryController
 
         $get_civil = $anniversaryModel->getCivil();
         $get_relig = $anniversaryModel->getRelig();
-        if (!$get_civil and !$get_relig) $get_civil = true;
+        if (!$get_civil && !$get_relig) {
+            $get_civil = true;
+        }
 
         $url_end = $anniversaryModel->getUrlend($get_ann_choice, $get_civil, $get_relig);
 
@@ -38,8 +40,6 @@ class AnniversaryController
             "url_end" => $url_end
         );
 
-        $data = array_merge($data, $get_month);
-
-        return $data;
+        return array_merge($data, $get_month);
     }
 }

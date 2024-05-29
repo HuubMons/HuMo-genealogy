@@ -48,11 +48,17 @@ class SourcesModel
 
         $this->order_sources = 'title';
         if (isset($_GET['order_sources'])) {
-            if ($_GET['order_sources'] == 'title') $this->order_sources = 'title';
-            if ($_GET['order_sources'] == 'date') $this->order_sources = 'date';
-            if ($_GET['order_sources'] == 'place') $this->order_sources = 'place';
+            if ($_GET['order_sources'] == 'title') {
+                $this->order_sources = 'title';
+            }
+            if ($_GET['order_sources'] == 'date') {
+                $this->order_sources = 'date';
+            }
+            if ($_GET['order_sources'] == 'place') {
+                $this->order_sources = 'place';
+            }
         }
-        if ($this->order_sources == "title") {
+        if ($this->order_sources === "title") {
             // *** Default querie: order by title ***
             $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
             // *** Check user group is restricted sources can be shown ***
@@ -68,7 +74,7 @@ class SourcesModel
 
             $querie .= " ORDER BY IF (source_title!='',source_title,source_text)" . $desc_asc; // *** Order by title if exists, else use text ***
         }
-        if ($this->order_sources == "date") {
+        if ($this->order_sources === "date") {
             // *** Check user group is restricted sources can be shown ***
             $querie = "SELECT source_status, source_id, source_gedcomnr, source_title, source_text, source_date, source_place,
                 CONCAT(right(source_date,4),
@@ -86,7 +92,7 @@ class SourcesModel
 
             $querie .= " ORDER BY year" . $desc_asc;
         }
-        if ($this->order_sources == "place") {
+        if ($this->order_sources === "place") {
             $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
             // *** Check user group is restricted sources can be shown ***
             if ($user['group_show_restricted_source'] == 'n') {
@@ -102,16 +108,16 @@ class SourcesModel
 
         // *** Pages ***
         $this->item = 0;
-        if (isset($_GET['item']) and is_numeric($_GET['item'])) $this->item = $_GET['item'];
+        if (isset($_GET['item']) && is_numeric($_GET['item'])) {
+            $this->item = $_GET['item'];
+        }
         $this->count_sources = $humo_option['show_persons'];    // *** Number of lines to show ***
 
         // *** All sources query ***
         $this->all_sources = $dbh->query($querie);
         $source = $dbh->query($querie . " LIMIT " . safe_text_db($this->item) . "," . $this->count_sources);
 
-        $sources = $source->fetchAll(PDO::FETCH_OBJ);
-
-        return $sources;
+        return $source->fetchAll(PDO::FETCH_OBJ);
     }
 
     function line_pages($tree_id, $link_cls, $uri_path)
@@ -119,7 +125,9 @@ class SourcesModel
         $path = $link_cls->get_link($uri_path, 'sources', $tree_id, true);
 
         $start = 0;
-        if (isset($_GET["start"]) and is_numeric($_GET["start"])) $start = $_GET["start"];
+        if (isset($_GET["start"]) && is_numeric($_GET["start"])) {
+            $start = $_GET["start"];
+        }
 
         // "<="
         $data["previous_link"] = '';

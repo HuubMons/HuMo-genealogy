@@ -21,31 +21,28 @@ class CMS_pagesModel
     public function getPages($dbh)
     {
         $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='0' AND page_status!='' ORDER BY page_order");
-        $pages = $page_qry->fetchAll(PDO::FETCH_OBJ);
-        return $pages;
+        return $page_qry->fetchAll(PDO::FETCH_OBJ);
     }
 
     // *** Get menu ***
     public function getMenu($dbh)
     {
         $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
-        $menu = $qry->fetchAll(PDO::FETCH_OBJ);
-        return $menu;
+        return $qry->fetchAll(PDO::FETCH_OBJ);
     }
 
     // *** Get all pages for menu ***
     public function getPages_menu($dbh)
     {
         $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id!='0' AND page_status!='' ORDER BY page_order");
-        $pages = $page_qry->fetchAll(PDO::FETCH_OBJ);
-        return $pages;
+        return $page_qry->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function getPage($dbh)
     {
-        if (isset($_GET['select_page']) and (is_numeric($_GET['select_page']))) {
+        if (isset($_GET['select_page']) && is_numeric($_GET['select_page'])) {
             $select_page = $_GET['select_page'];
-        } elseif (isset($_GET['id']) and (is_numeric($_GET['id']))) {
+        } elseif (isset($_GET['id']) && is_numeric($_GET['id'])) {
             // *** If url_rewrite is used ***
             $select_page = $_GET['id'];
         } else {
@@ -54,12 +51,16 @@ class CMS_pagesModel
                 WHERE page_status!='' AND page_menu_id=menu_id
                 ORDER BY menu_order, page_order ASC LIMIT 0,1");
             $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
-            if (isset($cms_pagesDb->page_id)) $select_page = $cms_pagesDb->page_id;
+            if (isset($cms_pagesDb->page_id)) {
+                $select_page = $cms_pagesDb->page_id;
+            }
 
             // *** First pages without a menu (if present) ***
             $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id=0 ORDER BY page_order ASC LIMIT 0,1");
             $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
-            if (isset($cms_pagesDb->page_id)) $select_page = $cms_pagesDb->page_id;
+            if (isset($cms_pagesDb->page_id)) {
+                $select_page = $cms_pagesDb->page_id;
+            }
         }
         $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='" . safe_text_db($select_page) . "' AND page_status!=''");
         $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
@@ -68,7 +69,9 @@ class CMS_pagesModel
         // Only change counter of page once every session
         $session_counter[] = '';
         $visited = 0;
-        if (isset($_SESSION["opslag_sessieteller"])) $session_counter = $_SESSION["opslag_sessieteller"];
+        if (isset($_SESSION["opslag_sessieteller"])) {
+            $session_counter = $_SESSION["opslag_sessieteller"];
+        }
         // TODO improve code. Check if value is in array.
         for ($i = 0; $i <= count($session_counter) - 1; $i++) {
             if (@$cms_pagesDb->page_id == $session_counter[$i]) {

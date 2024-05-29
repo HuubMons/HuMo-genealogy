@@ -12,7 +12,9 @@ include_once(__DIR__ . "/../include/select_tree.php");
 
 // for rtl direction in tables
 $direction = "left";
-if ($rtlmarker == "rtl") $direction = "right";
+if ($rtlmarker == "rtl") {
+    $direction = "right";
+}
 
 $page = 'check'; // *** Otherwise the direct link to page "Latest changes" doesn't work properly ***
 

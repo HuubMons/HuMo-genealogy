@@ -13,11 +13,13 @@ class NotesModel
     public function get_limit()
     {
         $limit = 50;
-        if (isset($_POST['limit']) and is_numeric($_POST['limit'])) {
+        if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
             $limit = safe_text_db($_POST['limit']);
             $_SESSION['save_limit'] = $limit;
         }
-        if (isset($_SESSION['save_limit']) and is_numeric($_SESSION['save_limit'])) $limit = $_SESSION['save_limit'];
+        if (isset($_SESSION['save_limit']) && is_numeric($_SESSION['save_limit'])) {
+            $limit = $_SESSION['save_limit'];
+        }
         return $limit;
     }
 
@@ -31,7 +33,9 @@ class NotesModel
             }
             $_SESSION['save_user_notes'] = $user_notes;
         }
-        if (isset($_SESSION['save_user_notes'])) $user_notes = $_SESSION['save_user_notes'];
+        if (isset($_SESSION['save_user_notes'])) {
+            $user_notes = $_SESSION['save_user_notes'];
+        }
         return $user_notes;
     }
 
@@ -45,13 +49,15 @@ class NotesModel
             }
             $_SESSION['save_editor_notes'] = $editor_notes;
         }
-        if (isset($_SESSION['save_editor_notes'])) $editor_notes = $_SESSION['save_editor_notes'];
+        if (isset($_SESSION['save_editor_notes'])) {
+            $editor_notes = $_SESSION['save_editor_notes'];
+        }
         return $editor_notes;
     }
 
-    public function update_note($dbh)
+    public function update_note($dbh): void
     {
-        if (isset($_POST['note_status']) and is_numeric($_POST['note_id'])) {
+        if (isset($_POST['note_status']) && is_numeric($_POST['note_id'])) {
             $note_status = '';
             if ($_POST['note_status'] == 'new') {
                 $note_status = 'new';

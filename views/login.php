@@ -78,7 +78,7 @@ elseif (isset($_POST['got_email'])) {
     //	$status= "NOTOK";
     //}
 
-    if (isset($_POST['register_block_spam']) and strtolower($_POST['register_block_spam']) == strtolower($humo_option["block_spam_answer"])) {
+    if (isset($_POST['register_block_spam']) && strtolower($_POST['register_block_spam']) === strtolower($humo_option["block_spam_answer"])) {
         //$register_allowed=true;
     } else {
         $msg .= __('Wrong answer to the block-spam question! Try again...') . "<br>";
@@ -87,7 +87,7 @@ elseif (isset($_POST['got_email'])) {
 
     echo '<br><table class="humo" cellspacing="0" align="center">';
 
-    if ($status == "OK") {
+    if ($status === "OK") {
         $countmail = $dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail=:email");
         $countmail->bindValue(':email', $email, PDO::PARAM_STR);
         $countmail->execute();
@@ -135,8 +135,7 @@ elseif (isset($_POST['got_email'])) {
         function random_generator($digits)
         {
             $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            $random_generator = substr(str_shuffle($chars), 0, 10);
-            return $random_generator;
+            return substr(str_shuffle($chars), 0, 10);
         }
 
         $key = random_generator(10);
@@ -152,7 +151,7 @@ elseif (isset($_POST['got_email'])) {
 
         $mail_message = __('This is in response to your request for password reset at ') . $site_url;
 
-        $site_url = $site_url . "?ak=$key&userid=$row->user_id";
+        $site_url .= "?ak=$key&userid=$row->user_id";
 
         $mail_message .= '<br>' . __('Username') . ":" . $row->user_name . '<br>';
         $mail_message .= __('To reset your password, please visit this link or copy and paste this link in your browser window ') . ":";
@@ -193,7 +192,7 @@ elseif (isset($_POST['got_email'])) {
 }
 
 //form to enter new password 2x (after reset link was used)
-elseif (isset($_GET['ak']) and $_GET['ak'] != '') {
+elseif (isset($_GET['ak']) && $_GET['ak'] != '') {
     $tm = time() - 86400; // Duration within which the key is valid is 86400 sec (=24 hours) - can be adjusted here 
     $ak = safe_text_db($_GET['ak']);
     $userid = safe_text_db($_GET['userid']);
@@ -232,7 +231,7 @@ elseif (isset($_GET['ak']) and $_GET['ak'] != '') {
 }
 
 // store new password and display success or error message 
-elseif (isset($_POST['ak']) and $_POST['ak'] != '') {
+elseif (isset($_POST['ak']) && $_POST['ak'] != '') {
     $ak = safe_text_db($_POST['ak']);
     $userid = safe_text_db($_POST['userid']);
     $todo = safe_text_db($_POST['todo']);
@@ -256,12 +255,12 @@ elseif (isset($_POST['ak']) and $_POST['ak'] != '') {
         exit;
     }
 
-    if (isset($todo) and $todo == "new-password") {
+    if (isset($todo) && $todo == "new-password") {
         //Setting flags for checking
         $status = "OK";
         $msg = "";
 
-        if (strlen($password) < 4 or strlen($password) > 15) {
+        if (strlen($password) < 4 || strlen($password) > 15) {
             $msg = $msg . __('Password must be at least 4 char and maximum 15 char long') . "<br>";
             $status = "NOTOK";
         }
@@ -271,7 +270,7 @@ elseif (isset($_POST['ak']) and $_POST['ak'] != '') {
             $status = "NOTOK";
         }
 
-        if (isset($_POST['register_block_spam']) and strtolower($_POST['register_block_spam']) == strtolower($humo_option["block_spam_answer"])) {
+        if (isset($_POST['register_block_spam']) && strtolower($_POST['register_block_spam']) === strtolower($humo_option["block_spam_answer"])) {
             //$register_allowed=true;
         } else {
             $msg .= __('Wrong answer to the block-spam question! Try again...') . "<br>";

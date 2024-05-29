@@ -6,6 +6,11 @@ if ($user['group_sources'] != 'j') {
 }
 
 $path = $link_cls->get_link($uri_path, 'sources', $tree_id, true);
+$url_order = $path . 'start=1&amp;item=0';
+if ($data["source_search"] != '') {
+    $url_order .=  '&amp;source_search=' . $data["source_search"];
+}
+
 $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
 ?>
 
@@ -33,51 +38,55 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
 <table class="humo index_table" align="center">
     <tr class=table_headline>
         <?php
-        // TODO improve MVC
-        $url = $path . 'start=1&amp;item=0';
-        if ($data["source_search"] != '') {
-            $url .=  '&amp;source_search=' . $data["source_search"];
-        }
-
-        $style = '';
         $sort_reverse = $data["sort_desc"];
         $img = '';
         if ($data["order_sources"] == "title") {
-            $style = ' style="background-color:#ffffa0"';
             $sort_reverse = '1';
             if ($data["sort_desc"] == '1') {
                 $sort_reverse = '0';
                 $img = 'up';
             }
         }
-        echo '<th><a href="' . $url . '&amp;order_sources=title&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Title') . ' <img src="images/button3' . $img . '.png"></a></th>';
+        ?>
+        <th>
+            <a href="<?= $url_order; ?>&amp;order_sources=title&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "title" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Title'); ?>
+                <img src="images/button3<?= $img; ?>.png">
+            </a>
+        </th>
 
-        $style = '';
+        <?php
         $sort_reverse = $data["sort_desc"];
         $img = '';
         if ($data["order_sources"] == "date") {
-            $style = ' style="background-color:#ffffa0"';
             $sort_reverse = '1';
             if ($data["sort_desc"] == '1') {
                 $sort_reverse = '0';
                 $img = 'up';
             }
         }
-        echo '<th><a href="' . $url . '&amp;order_sources=date&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+        ?>
+        <th>
+            <a href="<?= $url_order; ?>&amp;order_sources=date&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "date" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Date'); ?>
+                <img src="images/button3<?= $img; ?>.png">
+            </a>
+        </th>
 
-        $style = '';
+        <?php
         $sort_reverse = $data["sort_desc"];
         $img = '';
         if ($data["order_sources"] == "place") {
-            $style = ' style="background-color:#ffffa0"';
             $sort_reverse = '1';
             if ($data["sort_desc"] == '1') {
                 $sort_reverse = '0';
                 $img = 'up';
             }
         }
-        echo '<th><a href="' . $url . '&amp;order_sources=place&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
         ?>
+        <th>
+            <a href="<?= $url_order; ?>&amp;order_sources=place&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "place" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Place'); ?>
+                <img src="images/button3<?= $img; ?>.png">
+            </a>
+        </th>
     </tr>
 
     <?php foreach ($data["listsources"] as $sourceDb) { ?>
@@ -103,9 +112,10 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
                         if ($sourceDb->source_text) {
                             echo substr($sourceDb->source_text, 0, 40);
                             if (strlen($sourceDb->source_text) > 40) echo '...';
-                        } else
+                        } else {
                             // *** No title, no text. Could be an empty source ***
                             echo '...';
+                        }
                     }
                     ?>
                 </a>

@@ -21,7 +21,9 @@ $language_editor['message'] = $language_model->saveFile($language_editor);
 
 
 // TODO move code to model script (including functions at end of this script)
-if (!isset($humo_option["hide_languages"])) $humo_option["hide_languages"] = '';
+if (!isset($humo_option["hide_languages"])) {
+    $humo_option["hide_languages"] = '';
+}
 $hide_languages_array = explode(";", $humo_option["hide_languages"]);
 
 // *** Get name of selected language, will return $language["name"] ***
@@ -37,19 +39,19 @@ if ($handle) {
     $note = 0;
     $line_array = array();
     while (($buffer = fgets($handle, 4096)) !== false) {
-        if (substr($buffer, 0, 5) == "msgid") {
+        if (substr($buffer, 0, 5) === "msgid") {
             $msgid = 1;
             $msgstr = 0;
             $note = 0;
             $line_array[$count]["msgid"] = substr($buffer, 6);
             $line_array[$count]["msgid_empty"] = 0;
-        } elseif (substr($buffer, 0, 6) == "msgstr") {
+        } elseif (substr($buffer, 0, 6) === "msgstr") {
             $msgstr = 1;
             $msgid = 0;
             $note = 0;
             $line_array[$count]["msgstr"] = substr($buffer, 7);
             $line_array[$count]["msgstr_empty"] = 0;
-        } elseif (substr($buffer, 0, 1) == "#") {
+        } elseif (substr($buffer, 0, 1) === "#") {
             if ($note == 0) {
                 $note = 1;
                 $msgstr = 0;
@@ -65,7 +67,7 @@ if ($handle) {
                     $line_array[$count]["fuzzy"] = 0;
                 }
             */
-        } elseif (substr($buffer, 0, 1) == '"') {
+        } elseif (substr($buffer, 0, 1) === '"') {
             if ($msgid == 1) {
                 $line_array[$count]["msgid"] .= $buffer;
                 $line_array[$count]["msgid_empty"] = 1;
@@ -108,11 +110,11 @@ if (!isset($_SESSION['present_page'])) {
     $_SESSION['present_page'] = 0;
 }
 // previous page button pressed
-if (isset($_GET['to_prev_page']) and is_numeric($_GET['to_prev_page'])) {
+if (isset($_GET['to_prev_page']) && is_numeric($_GET['to_prev_page'])) {
     $_SESSION['present_page'] = $_GET['to_prev_page'];
 }
 // next page button pressed
-if (isset($_GET['to_next_page']) and is_numeric($_GET['to_next_page'])) {
+if (isset($_GET['to_next_page']) && is_numeric($_GET['to_next_page'])) {
     $_SESSION['present_page'] = $_GET['to_next_page'];
 }
 // after search change start with first page
@@ -122,34 +124,33 @@ if (isset($_POST['langsearch'])) {
 
 // maxlines changed
 if (
-    isset($_POST['maxlines']) and !isset($_POST['prevpage']) and !isset($_POST['nextpage'])
-    and !isset($_POST['langsearch']) and (isset($_POST['save_button']) and $_POST['save_button'] != "pressed")
+    isset($_POST['maxlines']) && !isset($_POST['prevpage']) && !isset($_POST['nextpage']) && !isset($_POST['langsearch']) && (isset($_POST['save_button']) && $_POST['save_button'] != "pressed")
 ) {
     $_SESSION['present_page'] = 0;
 }
 
-if (isset($_POST['langsearchtext']) and isset($_POST['langsearch'])) {
+if (isset($_POST['langsearchtext']) && isset($_POST['langsearch'])) {
     $_SESSION['langsearchtext'] = $_POST['langsearchtext'];
 }
 
 $search_lines = 0;
 $firstkey = 0;
-if (isset($_SESSION['langsearchtext']) and $_SESSION['langsearchtext'] != "") {
+if (isset($_SESSION['langsearchtext']) && $_SESSION['langsearchtext'] != "") {
     //$search_lines=0;
     foreach ($_SESSION['line_array'] as $key => $value) {
         if ($key == 0) {
             $firstkey = 1;
             continue;
         } // description of po file
-        if ((isset($value["msgid"]) and stripos($value["msgid"], $_SESSION['langsearchtext']) !== FALSE) or
-            (isset($value["msgstr"]) and stripos($value["msgstr"], $_SESSION['langsearchtext']) !== FALSE)
+        if (
+            isset($value["msgid"]) && stripos($value["msgid"], $_SESSION['langsearchtext']) !== FALSE || isset($value["msgstr"]) && stripos($value["msgstr"], $_SESSION['langsearchtext']) !== FALSE
         ) {
             $search_lines++;
         }
     }
 }
 
-if (isset($_SESSION['langsearchtext']) and $_SESSION['langsearchtext'] != "") {
+if (isset($_SESSION['langsearchtext']) && $_SESSION['langsearchtext'] != "") {
     $count_lines = $search_lines;
 } else {
     $count_lines = count($_SESSION['line_array']);
@@ -193,7 +194,7 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
                     <?php
                     for ($i = 0; $i < count($language_file); $i++) {
                         // *** Get language name ***
-                        if ($language_file[$i] != $language_editor['language'] and !in_array($language_file[$i], $hide_languages_array)) {
+                        if ($language_file[$i] != $language_editor['language'] && !in_array($language_file[$i], $hide_languages_array)) {
                             include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
                     ?>
                             <li>
@@ -251,7 +252,7 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
                 <!-- Search box -->
                 <?php
                 $langsearchtext = "";
-                if (isset($_SESSION['langsearchtext']) and $_SESSION['langsearchtext'] != "") {
+                if (isset($_SESSION['langsearchtext']) && $_SESSION['langsearchtext'] != "") {
                     $langsearchtext = $_SESSION['langsearchtext'];
                 }
                 ?>
@@ -334,11 +335,9 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
             if ($key == 0) {
                 continue;
             }
-            if (isset($value["msgstr"]) and str_replace("\n", "", $value["msgstr"]) == '""') {
+            if (isset($value["msgstr"]) && str_replace("\n", "", $value["msgstr"]) == '""') {
                 if (
-                    isset($_SESSION['langsearchtext']) and $_SESSION['langsearchtext'] != ""
-                    and stripos($value["msgid"], $_SESSION['langsearchtext']) === FALSE
-                    and stripos($value["msgstr"], $_SESSION['langsearchtext']) === FALSE
+                    isset($_SESSION['langsearchtext']) && $_SESSION['langsearchtext'] != "" && stripos($value["msgid"], $_SESSION['langsearchtext']) === FALSE && stripos($value["msgstr"], $_SESSION['langsearchtext']) === FALSE
                 ) {
                     continue;
                 }
@@ -348,11 +347,11 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
                     continue;
                 }
                 $loop_count++;
-                if ($loop_count > $_SESSION['maxlines']) break;
+                if ($loop_count > $_SESSION['maxlines']) {
+                    break;
+                }
 
-                if (isset($value["note"])) {
-                    $mytext = notes($value["note"]);
-                } else $mytext = "";
+                $mytext = isset($value["note"]) ? notes($value["note"]) : "";
                 show_line($mytext, $value, $key, true);
                 $found = true;
             }
@@ -363,11 +362,9 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
             if ($key == 0) {
                 continue;
             }
-            if (isset($value["note"]) and strpos($value["note"], "fuzzy") !== false and isset($value["msgstr"]) and str_replace("\n", "", $value["msgstr"]) != '""' and isset($value["msgid"])) {
+            if (isset($value["note"]) && strpos($value["note"], "fuzzy") !== false && isset($value["msgstr"]) && str_replace("\n", "", $value["msgstr"]) != '""' && isset($value["msgid"])) {
                 if (
-                    isset($_SESSION['langsearchtext']) and $_SESSION['langsearchtext'] != ""
-                    and stripos($value["msgid"], $_SESSION['langsearchtext']) === FALSE
-                    and stripos($value["msgstr"], $_SESSION['langsearchtext']) === FALSE
+                    isset($_SESSION['langsearchtext']) && $_SESSION['langsearchtext'] != "" && stripos($value["msgid"], $_SESSION['langsearchtext']) === FALSE && stripos($value["msgstr"], $_SESSION['langsearchtext']) === FALSE
                 ) {
                     continue;
                 }
@@ -376,7 +373,9 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
                     continue;
                 }
                 $loop_count++;
-                if ($loop_count > $_SESSION['maxlines']) break;
+                if ($loop_count > $_SESSION['maxlines']) {
+                    break;
+                }
 
                 $mytext = notes($value["note"]);
                 show_line($mytext, $value, $key, true, true);
@@ -389,11 +388,9 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
             if ($key == 0) {
                 continue;
             }
-            if ((!isset($value["note"]) or strpos($value["note"], "fuzzy") === false) and isset($value["msgstr"]) and str_replace("\n", "", $value["msgstr"]) != '""' and isset($value["msgid"])) {
+            if ((!isset($value["note"]) || strpos($value["note"], "fuzzy") === false) && isset($value["msgstr"]) && str_replace("\n", "", $value["msgstr"]) != '""' && isset($value["msgid"])) {
                 if (
-                    isset($_SESSION['langsearchtext']) and $_SESSION['langsearchtext'] != ""
-                    and stripos($value["msgid"], $_SESSION['langsearchtext']) === FALSE
-                    and stripos($value["msgstr"], $_SESSION['langsearchtext']) === FALSE
+                    isset($_SESSION['langsearchtext']) && $_SESSION['langsearchtext'] != "" && stripos($value["msgid"], $_SESSION['langsearchtext']) === FALSE && stripos($value["msgstr"], $_SESSION['langsearchtext']) === FALSE
                 ) {
                     continue;
                 }
@@ -402,13 +399,11 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
                     continue;
                 }
                 $loop_count++;
-                if ($loop_count > $_SESSION['maxlines']) break;
-
-                if (isset($value["note"])) {
-                    $mytext = notes($value["note"]);
-                } else {
-                    $mytext = "";
+                if ($loop_count > $_SESSION['maxlines']) {
+                    break;
                 }
+
+                $mytext = isset($value["note"]) ? notes($value["note"]) : "";
                 show_line($mytext, $value, $key);
                 $found = true;
             }
@@ -444,8 +439,7 @@ function msgid_display($string)
     $string = str_replace('"', '', $string);
     $string = str_replace('^^', '\"', $string);
     $string = htmlspecialchars($string);
-    $string = str_replace('\n', '\n<br>', $string);
-    return $string;
+    return str_replace('\n', '\n<br>', $string);
 }
 
 function msgstr_display($string)
@@ -457,26 +451,27 @@ function msgstr_display($string)
     $string = str_replace("\'", "'", $string);
     $string = substr($string, 0, -1);
     $string = htmlspecialchars($string);
-    if (substr($string, 0, 1) == " ") {
+    if (substr($string, 0, 1) === " ") {
         $string = "&nbsp;" . ltrim($string, " ");
     }
-    if (substr($string, -1) == " ") {
+    if (substr($string, -1) === " ") {
         $string = rtrim($string, " ") . "&nbsp;";
     }
-    $string = str_replace('\n', '\n<br>', $string);
-    return $string;
+    return str_replace('\n', '\n<br>', $string);
 }
 
 function msgstr_save($string)
 {
     // formats the displayed msgstr text for saving in .po file (text that is displayed)
     $string = strip_tags($string);
-    if ($string and $string != "<br>") {
+    if ($string && $string !== "<br>") {
         $string = htmlspecialchars_decode($string);
         $string = str_replace('"', '\"', $string);  // we want the " with backslash since msgstr afterwards gets " around it!
         $find = array("\\n<br>", "\r\n", "&nbsp;", "&#32;", '\\\\"');
         $replace = array("\\n", "\"\r\"", " ", " ", '\\"');
-        if (substr($string, -4) == "<br>") $string = substr($string, 0, -4);
+        if (substr($string, -4) === "<br>") {
+            $string = substr($string, 0, -4);
+        }
         $string = "\"" . str_replace($find, $replace, $string) . "\"\n\n";
     } else {
         $string = "\"\"\n\n";
@@ -487,7 +482,7 @@ function msgstr_save($string)
 function msgstr_save2($string)
 {
     // formats the non displayed msgstr text for saving in .po file 
-    if ($string and $string != "<br>") {
+    if ($string && $string != "<br>") {
         $find = array("\\n<br>", "\r\n", "&nbsp;", "&#32;", '\\\\"');
         $replace = array("\\n", "\"\r\"", " ", " ", '\\"');
         $string = str_replace($find, $replace, $string) . "\n";

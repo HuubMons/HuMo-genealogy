@@ -1,6 +1,6 @@
 <?php
 // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
-if (substr($data2Db->tree_pict_path, 0, 1) == '|') {
+if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
     $checked1 = ' checked';
     $checked2 = '';
 } else {
@@ -8,7 +8,9 @@ if (substr($data2Db->tree_pict_path, 0, 1) == '|') {
     $checked2 = ' checked';
 }
 $tree_pict_path = $data2Db->tree_pict_path;
-if (substr($data2Db->tree_pict_path, 0, 1) == '|') $tree_pict_path = substr($tree_pict_path, 1);
+if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
+    $tree_pict_path = substr($tree_pict_path, 1);
+}
 
 // *** Family tree privacy ***
 $select_filter_persons = '';

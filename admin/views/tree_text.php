@@ -1,7 +1,9 @@
 <?php
 // *** Language choice ***
 $language_tree2 = $language_tree;
-if ($language_tree == 'default') $language_tree2 = $selected_language;
+if ($language_tree == 'default') {
+    $language_tree2 = $selected_language;
+}
 include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
 //$select_top = '';
 ?>

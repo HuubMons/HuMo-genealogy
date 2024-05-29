@@ -55,8 +55,12 @@ class ListPlacesFamiliesModel
         }
 
         // *** Search for places in birth-baptise-died places etc. ***
-        if (isset($_SESSION["save_place_name"])) $data["place_name"] = $_SESSION["save_place_name"];
-        if (isset($_SESSION["save_part_place_name"])) $data["part_place_name"] = $_SESSION["save_part_place_name"];
+        if (isset($_SESSION["save_place_name"])) {
+            $data["place_name"] = $_SESSION["save_place_name"];
+        }
+        if (isset($_SESSION["save_part_place_name"])) {
+            $data["part_place_name"] = $_SESSION["save_part_place_name"];
+        }
 
         // *** Enable select boxes ***
         if (isset($_GET['reset'])) {
@@ -118,10 +122,11 @@ class ListPlacesFamiliesModel
         // *** Search marriage place ***
         if ($data["select_marriage"] == '1') {
             $query = "(SELECT SQL_CALC_FOUND_ROWS *, fam_marr_place as place_order FROM humo_families";
-            if ($data["place_name"])
+            if ($data["place_name"]) {
                 $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
-            else
+            } else {
                 $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_place LIKE '_%'";
+            }
             $query .= ')';
             $start = true;
         }
@@ -135,10 +140,11 @@ class ListPlacesFamiliesModel
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_church_place as place_order FROM humo_families";
-            if ($data["place_name"])
+            if ($data["place_name"]) {
                 $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_church_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
-            else
+            } else {
                 $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_church_place LIKE '_%'";
+            }
             $query .= ')';
             $start = true;
         }
@@ -152,10 +158,11 @@ class ListPlacesFamiliesModel
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_notice_place as place_order FROM humo_families";
-            if ($data["place_name"])
+            if ($data["place_name"]) {
                 $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_notice_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
-            else
+            } else {
                 $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_notice_place LIKE '_%'";
+            }
             $query .= ')';
             $start = true;
         }
@@ -169,10 +176,11 @@ class ListPlacesFamiliesModel
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_church_notice_place as place_order FROM humo_families";
-            if ($data["place_name"])
+            if ($data["place_name"]) {
                 $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_church_notice_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
-            else
+            } else {
                 $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_church_notice_place LIKE '_%'";
+            }
             $query .= ')';
             $start = true;
         }

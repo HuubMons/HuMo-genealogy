@@ -116,11 +116,8 @@ function fillarray($nr, $famid)
 
         // *** Privacy filter ***
         if (!$man_privacy) {
-            if ($personmnDb->pers_birth_date) $treeid[$nr][1] = $personmnDb->pers_birth_date;
-            else $treeid[$nr][1] = $personmnDb->pers_bapt_date;
-
-            if ($personmnDb->pers_death_date) $treeid[$nr][4] = $personmnDb->pers_death_date;
-            else $treeid[$nr][4] = $personmnDb->pers_buried_date;
+            $treeid[$nr][1] = $personmnDb->pers_birth_date ? $personmnDb->pers_birth_date : $personmnDb->pers_bapt_date;
+            $treeid[$nr][4] = $personmnDb->pers_death_date ? $personmnDb->pers_death_date : $personmnDb->pers_buried_date;
         } else {
             $treeid[$nr][1] = '';
             $treeid[$nr][4] = '';
@@ -184,9 +181,9 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
     $text = "";
     $line = "";
 
-    if ($rtlflag == 1 and $nameflag == 1) {    // rtl name has to be re-positioned
+    if ($rtlflag == 1 && $nameflag == 1) {    // rtl name has to be re-positioned
         global $fan_style;
-        if ($fan_style == 2 and ($gennr == 1 or $gennr == 2)) {
+        if ($fan_style == 2 && ($gennr == 1 || $gennr == 2)) {
             $maxlen *= 1.5;
         } // half-circle has different position for 2nd 3rd generation
         else {
@@ -210,7 +207,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
                 if (!empty($line)) {
                     if ($rtlflag == 1 and $nameflag == 1) {   // trl name
                         $line = "$line" . str_repeat(" ", $p); //
-                    } elseif ($rtlflag == 1 and $nameflag == 0) {
+                    } elseif ($rtlflag == 1 && $nameflag == 0) {
                         $line = str_repeat(" ", $p * 1.5) . "$line"; // center alignment using spaces
                     } else {
                         $line = str_repeat(" ", $p) . "$line"; // center alignment using spaces
@@ -225,9 +222,9 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
         $len = strlen($line);
         //.. if (in_array(ord($line{0}),$RTLOrd)) $len/=2;
         $p = max(0, floor(($maxlen - $len) / 2));
-        if ($rtlflag == 1 and $nameflag == 1) {
+        if ($rtlflag == 1 && $nameflag == 1) {
             $line = "$line" . str_repeat(" ", $p);
-        } elseif ($rtlflag == 1 and $nameflag == 0) {
+        } elseif ($rtlflag == 1 && $nameflag == 0) {
             $line = str_repeat(" ", $p * 1.5) . "$line"; // center alignment using spaces
         } else {
             $line = str_repeat(" ", $p) . "$line"; // center alignment using spaces
@@ -262,17 +259,23 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
         return false;
     }
 
-    if (intval($fontsize) < 2) $fontsize = 7;
+    if (intval($fontsize) < 2) {
+        $fontsize = 7;
+    }
 
     $treesize = count($treeid);
-    if ($treesize < 1) return;
+    if ($treesize < 1) {
+        return;
+    }
 
     // generations count
     $gen = log($treesize) / log(2) - 1;
     $sosa = $treesize - 1;
 
     // fan size
-    if ($fandeg == 0) $fandeg = 360;
+    if ($fandeg == 0) {
+        $fandeg = 360;
+    }
     $fandeg = min($fandeg, 360);
     $fandeg = max($fandeg, 90);
     $cx = $fanw / 2 - 1; // center x
@@ -280,8 +283,12 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
     $rx = $fanw - 1;
     $rw = $fanw / ($gen + 1);
     $fanh = $fanw; // fan height
-    if ($fandeg == 180) $fanh = round($fanh * ($gen + 1) / ($gen * 2));
-    if ($fandeg == 270) $fanh = round($fanh * .86);
+    if ($fandeg == 180) {
+        $fanh = round($fanh * ($gen + 1) / ($gen * 2));
+    }
+    if ($fandeg == 270) {
+        $fanh = round($fanh * .86);
+    }
     $scale = $fanw / 840;
 
     // image init
@@ -347,10 +354,10 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
             $birthyr = $treeid[$sosa][1];
             $deathyr = $treeid[$sosa][4];
             $fontpx = $fontsize;
-            if ($sosa >= 16 and $fandeg == 180) {
+            if ($sosa >= 16 && $fandeg == 180) {
                 $fontpx = $fontsize - 1;
             }
-            if ($sosa >= 32 and $fandeg != 180) {
+            if ($sosa >= 32 && $fandeg != 180) {
                 $fontpx = $fontsize - 1;
             }
             if (!empty($pid)) {
@@ -359,7 +366,7 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
                 if ($sosa == 1) {
                     if ($treeid[$sosa][5] == "F") {
                         $bg = $bgcolorF;
-                    } else if ($treeid[$sosa][5] == "M") {
+                    } elseif ($treeid[$sosa][5] == "M") {
                         $bg = $bgcolorM;
                     } else {
                         $bg = $bgcolor; // sex unknown
@@ -381,7 +388,7 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
                 // check if string is RTL language- if it is, it has to be reversed later on by persian_log2vis()
                 $rtlstr = 0;
                 //if(preg_match('/(*UTF8)[א-ת]/',$name)!==0 OR preg_match('/(*UTF8)[أ-ى]/',$name)!==0) {
-                if (preg_match('/(*UTF8)[א-ת]/', $name) === 1 or preg_match('/(*UTF8)[أ-ى]/', $name) === 1) {
+                if (preg_match('/(*UTF8)[א-ת]/', $name) === 1 || preg_match('/(*UTF8)[أ-ى]/', $name) === 1) {
                     // this is either Hebrew, Arabic or Persian -> we have to reverse the text!
                     $rtlstr = 1;
                 }
@@ -393,12 +400,12 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
                         $dh = opendir("include/fanchart/chinese");
                         while (false !== ($filename = readdir($dh))) {
                             //if (strtolower(substr($filename, -3)) == "ttf"){
-                            if (strtolower(substr($filename, -3)) == "otf" or strtolower(substr($filename, -3)) == "ttf") {
+                            if (strtolower(substr($filename, -3)) === "otf" || strtolower(substr($filename, -3)) === "ttf") {
                                 $fontfile = "include/fanchart/chinese/" . $filename;
                             }
                         }
                     }
-                    if ($fontfile == "include/fanchart/dejavusans.ttf") { //no Chinese ttf file found
+                    if ($fontfile === "include/fanchart/dejavusans.ttf") { //no Chinese ttf file found
                         $china_message = 1;
                     }
                 }
@@ -428,7 +435,10 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
                 $wmax = floor($angle * 7 / $fontpx * $scale);
                 $wmax = min($wmax, 35 * $scale);  //35
                 //$wmax = floor((90*$wmax)/100);
-                if ($gen == 0) $wmax = min($wmax, 17 * $scale);  //17
+                if ($gen == 0) {
+                    $wmax = min($wmax, 17 * $scale);
+                }
+                //17
                 $text = split_align_text($text, $wmax, $rtlstr, 1, $gen);
                 $text2 = split_align_text($text2, $wmax, $rtlstr, 0, $gen);
 
@@ -440,29 +450,41 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
                 // text angle
                 $tangle = 270 - ($deg1 + $angle / 2);
-                if ($gen == 0) $tangle = 0;
-
+                if ($gen == 0) {
+                    $tangle = 0;
+                }
                 // calculate text position
                 $fontfile = realpath($fontfile); // *** Huub 04-01-2019: Necessary for PHP 7.2 ***
                 $bbox = ImageTtfBbox((float)$fontpx, 0, $fontfile, $text);
                 $textwidth = $bbox[4]; //4
 
                 $deg = $deg1 + .44;
-                if ($deg2 - $deg1 > 40) $deg = $deg1 + ($deg2 - $deg1) / 11;   // 11
-                if ($deg2 - $deg1 > 80) $deg = $deg1 + ($deg2 - $deg1) / 7;   //  7
-                if ($deg2 - $deg1 > 140) $deg = $deg1 + ($deg2 - $deg1) / 4;  //  4
-
-
-                if ($gen == 0) $deg = 180;
-
+                if ($deg2 - $deg1 > 40) {
+                    $deg = $deg1 + ($deg2 - $deg1) / 11;
+                }
+                // 11
+                if ($deg2 - $deg1 > 80) {
+                    $deg = $deg1 + ($deg2 - $deg1) / 7;
+                }
+                //  7
+                if ($deg2 - $deg1 > 140) {
+                    $deg = $deg1 + ($deg2 - $deg1) / 4;
+                }
+                //  4
+                if ($gen == 0) {
+                    $deg = 180;
+                }
                 $rad = deg2rad($deg);
                 $mr = ($rx - $rw / 4) / 2;
-                if ($gen > 0 and $deg2 - $deg1 > 80) $mr = $rx / 2;
+                if ($gen > 0 && $deg2 - $deg1 > 80) {
+                    $mr = $rx / 2;
+                }
                 $tx = $cx + ($mr) * cos($rad);
 
                 $ty = $cy - $mr * -sin($rad);
-                if ($sosa == 1) $ty -= $mr / 2;
-
+                if ($sosa == 1) {
+                    $ty -= $mr / 2;
+                }
                 //ImageTtfText($image, (double)$fontpx, $tangle, $tx, $ty, $color, $fontfile, $text);
                 ImageTtfText($image, (float)$fontpx, $tangle, round($tx), round($ty), round($color), $fontfile, $text);
 
@@ -503,13 +525,9 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
                 // *** Add first spouse to base person's tooltip ***
                 $spousename = "";
-                if ($gen == 0 and $treeid[1][2] != "") { // base person and has spouse
-                    if ($treeid[1][5] == "F") {
-                        $spouse = "fam_man";
-                    } else {
-                        $spouse = "fam_woman";
-                    }
-
+                if ($gen == 0 && $treeid[1][2] != "") {
+                    // base person and has spouse
+                    $spouse = $treeid[1][5] == "F" ? "fam_man" : "fam_woman";
                     $spouse_result = $dbh->query("SELECT " . $spouse . " FROM humo_families
                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $treeid[1][2] . "'");
                     $spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
@@ -517,8 +535,7 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
                     $spouse_cls = new person_cls($spouse2Db);
                     $spname = $spouse_cls->person_name($spouse2Db);
-                    if ($treeid[1][5] == "F") $spouse_lan = "SPOUSE_MALE";
-                    else $spouse_lan = "SPOUSE_FEMALE";
+                    $spouse_lan = $treeid[1][5] == "F" ? "SPOUSE_MALE" : "SPOUSE_FEMALE";
                     if ($spname != "") {
                         $spousename = "\n(" . __($spouse_lan) . ": " . $spname["standard_name"] . ")";
                     }
@@ -633,9 +650,9 @@ if ($fan_width == "auto" or $fan_width == "") {  // if someone cleared the field
     if ($chosengen == 7) {
         if ($fan_style == 2) {
             $fan_width = 220;
-        } else if ($fan_style == 3) {
+        } elseif ($fan_style == 3) {
             $fan_width = 160;
-        } else if ($fan_style == 4) {
+        } elseif ($fan_style == 4) {
             $fan_width = 130;
         } else { //YB: you can never get here, but just for paranoia's sake...
             $fan_width = 100;

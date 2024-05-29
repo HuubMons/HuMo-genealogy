@@ -29,8 +29,6 @@ class SourcesController
             "title" => __('Sources')
         );
 
-        $data = array_merge($data, $line_pages);
-
-        return $data;
+        return array_merge($data, $line_pages);
     }
 }

@@ -104,7 +104,7 @@ function ancestor_chart_person($id, $box_appearance)
 
         // >>>>> link to show rest of ancestor chart
         //if ($box_appearance=='small' AND isset($personDb->pers_gedcomnumber) AND $screen_mode!="ancestor_sheet"){
-        if ($box_appearance == 'small' and isset($personDb->pers_gedcomnumber) and $personDb->pers_famc and $screen_mode != "ancestor_sheet") {
+        if ($box_appearance == 'small' && isset($personDb->pers_gedcomnumber) && $personDb->pers_famc && $screen_mode != "ancestor_sheet") {
             $replacement_text .= ' &gt;&gt;&gt;' . $dirmark1;
         }
 
@@ -177,12 +177,12 @@ function ancestor_chart_person($id, $box_appearance)
             }
         }
 
-        if ($hour_value != '') { // called from hourglass
-            if ($hour_value == '45') {
+        if ($hour_value !== '') { // called from hourglass
+            if ($hour_value === '45') {
                 $replacement_text = $name['name'];
-            } elseif ($hour_value == '40') {
+            } elseif ($hour_value === '40') {
                 $replacement_text = '<span class="wordwrap" style="font-size:75%">' . $name['short_firstname'] . '</span>';
-            } elseif ($hour_value > 20 and $hour_value < 40) {
+            } elseif ($hour_value > 20 && $hour_value < 40) {
                 $replacement_text = $name['initials'];
             } elseif ($hour_value < 25) {
                 $replacement_text = "&nbsp;";
@@ -192,14 +192,14 @@ function ancestor_chart_person($id, $box_appearance)
 
         $extra_popup_text = '';
         $marr_date = '';
-        if (isset($marr_date_array[$id]) and ($marr_date_array[$id] != '')) {
+        if (isset($marr_date_array[$id]) && $marr_date_array[$id] != '') {
             $marr_date = $marr_date_array[$id];
         }
         $marr_place = '';
         if (isset($marr_place_array[$id]) and ($marr_place_array[$id] != '')) {
             $marr_place = $marr_place_array[$id];
         }
-        if ($marr_date or $marr_place) {
+        if ($marr_date || $marr_place) {
             $extra_popup_text .= '<br>' . __('X') . $dirmark1 . ' ' . date_place($marr_date, $marr_place);
         }
 
@@ -238,39 +238,44 @@ function ancestor_chart_person($id, $box_appearance)
 
 // Specific code for ancestor SHEET:
 // print names and details for each row in the table
+// TODO check $fontclass.
 function kwname($start, $end, $increment, $fontclass, $colspan, $type)
 {
     global $sexe;
+?>
 
-    echo '<tr>';
-    for ($x = $start; $x < $end; $x += $increment) {
-        // *** Added coloured boxes in november 2022 ***
-        $sexe_colour = '';
-        if ($type != 'ancestor_sheet_marr') {
-            if ($sexe[$x] == 'F') {
-                $sexe_colour = ' style=" background-image: linear-gradient(to bottom, #FFFFFF 0%, #F5BCA9 100%);"';
+    <tr>
+        <?php
+        for ($x = $start; $x < $end; $x += $increment) {
+            // *** Added coloured boxes in november 2022 ***
+            $sexe_colour = '';
+            if ($type != 'ancestor_sheet_marr') {
+                if ($sexe[$x] == 'F') {
+                    $sexe_colour = ' style="background-image: linear-gradient(to bottom, #FFFFFF 0%, #F5BCA9 100%);"';
+                }
+                if ($sexe[$x] == 'M') {
+                    $sexe_colour = ' style="background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%);"';
+                }
             }
-            if ($sexe[$x] == 'M') {
-                $sexe_colour = ' style="background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%);"';
-            }
-        }
 
-        if ($colspan > 1) {
-            //echo '<td class="'.$fontclass.'" colspan='.$colspan.'>';
-            echo '<td colspan=' . $colspan . $sexe_colour . '>';
-        } else {
-            //echo '<td class="'.$fontclass.'">';
-            echo '<td' . $sexe_colour . '>';
+            if ($colspan > 1) {
+                //echo '<td class="'.$fontclass.'" colspan='.$colspan.'>';
+                echo '<td colspan=' . $colspan . $sexe_colour . '>';
+            } else {
+                //echo '<td class="'.$fontclass.'">';
+                echo '<td' . $sexe_colour . '>';
+            }
+            $kwpers = ancestor_chart_person($x, $type);
+            if ($kwpers != '') {
+                echo $kwpers;
+            } else {   // if we don't do this IE7 wil not print borders of cells
+                echo '&nbsp;';
+            }
+            echo '</td>';
         }
-        $kwpers = ancestor_chart_person($x, $type);
-        if ($kwpers != '') {
-            echo $kwpers;
-        } else {   // if we don't do this IE7 wil not print borders of cells
-            echo '&nbsp;';
-        }
-        echo '</td>';
-    }
-    echo '</tr>';
+        ?>
+    </tr>
+<?php
 }
 
 // check if there is anyone in a generation so no empty and collapsed rows will be shown
@@ -279,7 +284,7 @@ function check_gen($start, $end)
     global $gedcomnumber;
     $is_gen = 0;
     for ($i = $start; $i < $end; $i++) {
-        if (isset($gedcomnumber[$i]) and $gedcomnumber[$i] != '') {
+        if (isset($gedcomnumber[$i]) && $gedcomnumber[$i] != '') {
             $is_gen = 1;
         }
     }

@@ -28,12 +28,16 @@ function source_display_pdf($sourcenum)
     $sourceDb = $db_functions->get_source($sourcenum);
 
     // *** Check if visitor tries to see restricted sources ***
-    if ($user['group_show_restricted_source'] == 'n' and $sourceDb->source_status == 'restricted') exit(__('No valid source number.'));
+    if ($user['group_show_restricted_source'] == 'n' && $sourceDb->source_status == 'restricted') {
+        exit(__('No valid source number.'));
+    }
 
     // *** If an unknown source ID is choosen, exit function ***
     //if (!isset($sourceDb->source_id)) exit(__('No valid source number.'));
     // *** July 2023: continue scripts without error message (otherwise PDF export stops) ***
-    if (!isset($sourceDb->source_id)) return;
+    if (!isset($sourceDb->source_id)) {
+        return;
+    }
 
     if ($sourceDb->source_title) {
         $pdf->SetFont('DejaVu', 'B', 10);
@@ -66,7 +70,7 @@ function source_display_pdf($sourcenum)
         $pdf->Write(6, __('Publication') . ": ");
         $pdf->SetFont('DejaVu', '', 10);
         //if($pdflink==1) {
-        if (substr($source_publ, 0, 7) == 'http://' or substr($source_publ, 0, 8) == 'https://') {
+        if (substr($source_publ, 0, 7) === 'http://' || substr($source_publ, 0, 8) === 'https://') {
             $pdf->SetFont('DejaVu', 'B', 10);
             $pdf->SetTextColor(28, 28, 255);
             $pdf->Write(6, strip_tags($source_publ) . "\n", strip_tags($source_publ));
@@ -143,5 +147,4 @@ function source_display_pdf($sourcenum)
     if ($repoDb) {
         // NO REPOSITORIES IN PDF YET...
     }
-
 } // end function source_display

@@ -276,7 +276,7 @@ if (isset($_POST['save_settings_database'])) {
             }
 
             if (isset($_POST['install_database'])) {
-                if (isset($database_check) and @$database_check) {
+                if (isset($database_check) && @$database_check) {
                     //
                 } else {
                     //if (!$database_check){
@@ -304,7 +304,7 @@ if (isset($_POST['save_settings_database'])) {
         // *** Only show table status if database is checked ***
         if ($install_status == true) {
             // *** Check database tables ***
-            if (isset($check_tables) and $check_tables) {
+            if (isset($check_tables) && $check_tables) {
         ?>
                 <tr>
                     <td class="line_item"><?= __('Database tables'); ?></td>
@@ -339,10 +339,10 @@ if (isset($_POST['save_settings_database'])) {
             if ($sizeDb) {
                 $size = $sizeDb->Data_length;
                 $bytes = array(' kB', ' MB', ' GB', ' TB');
-                $size = $size / 1024;
+                $size /= 1024;
                 foreach ($bytes as $val) {
                     if (1024 <= $size) {
-                        $size = $size / 1024;
+                        $size /= 1024;
                         continue;
                     }
                     break;
@@ -363,8 +363,12 @@ if (isset($_POST['save_settings_database'])) {
             $size = 0;
             $sizeqry = $dbh->query('SHOW TABLE STATUS');
             while ($sizeDb = $sizeqry->fetch(PDO::FETCH_OBJ)) {
-                if (is_numeric($sizeDb->Data_length)) $size += $sizeDb->Data_length;
-                if (is_numeric($sizeDb->Index_length)) $size += $sizeDb->Index_length;
+                if (is_numeric($sizeDb->Data_length)) {
+                    $size += $sizeDb->Data_length;
+                }
+                if (is_numeric($sizeDb->Index_length)) {
+                    $size += $sizeDb->Index_length;
+                }
             }
             $decimals = 2;
             $mbytes = number_format($size / (1024 * 1024), $decimals);
@@ -457,7 +461,7 @@ if (isset($_POST['save_settings_database'])) {
             if (is_dir('./backup_files')) {
                 $dh  = opendir('./backup_files');
                 while (false !== ($filename = readdir($dh))) {
-                    if (substr($filename, -4) == ".sql" or substr($filename, -8) == ".sql.zip") {
+                    if (substr($filename, -4) === ".sql" || substr($filename, -8) === ".sql.zip") {
                         $backup_files[] = $filename;
                     }
                 }
@@ -499,12 +503,18 @@ if (isset($_POST['save_settings_database'])) {
             $sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
             $check_login = $dbh->query($sql);
             while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
-                if ($check_loginDb->user_name == 'admin') $check_admin_user = true;
-                if ($check_loginDb->user_password == MD5('humogen')) $check_admin_pw = true; // *** Check old password method ***
+                if ($check_loginDb->user_name == 'admin') {
+                    $check_admin_user = true;
+                }
+                if ($check_loginDb->user_password == MD5('humogen')) {
+                    $check_admin_pw = true;
+                } // *** Check old password method ***
                 $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
-                if ($check_password) $check_admin_pw = true;
+                if ($check_password) {
+                    $check_admin_pw = true;
+                }
             }
-            if ($check_admin_user and $check_admin_pw) {
+            if ($check_admin_user && $check_admin_pw) {
                 $check_login = '<td class="line_nok">' . __('Standard admin username and admin password is used.');
                 $check_login .= '<br><a href="index.php?page=users">' . __('Change admin username and password.') . '</a>';
             } elseif ($check_admin_user) {
@@ -513,8 +523,9 @@ if (isset($_POST['save_settings_database'])) {
             } elseif ($check_admin_pw) {
                 $check_login = '<td class="line_nok">' . __('Standard admin password is used.');
                 $check_login .= '<br><a href="index.php?page=users">' . __('Change admin password.') . '</a>';
-            } else
+            } else {
                 $check_login = '<td class="line_ok">' . __('OK');
+            }
             echo '<tr><td class="line_item">' . __('Check admin account') . '</td>' . $check_login;
 
             // *** Show failed logins ***
@@ -618,7 +629,7 @@ The file .htpasswd will look something like this:<br>'); ?>
                 <td class="line_item">
                     <?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?>
                 </td>
-                <?php if ($humo_option["debug_front_pages"] == 'n' and $humo_option["debug_admin_pages"] == 'n') { ?>
+                <?php if ($humo_option["debug_front_pages"] == 'n' && $humo_option["debug_admin_pages"] == 'n') { ?>
                     <td class="line_ok"><?= __('OK (option is OFF)'); ?>
                         <a href="index.php?page=settings">
                             <?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?>

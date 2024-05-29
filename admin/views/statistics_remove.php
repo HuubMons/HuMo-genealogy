@@ -8,7 +8,7 @@ if ($month == 0) {
 }
 
 // *** Remove old statistics ***
-if (isset($_POST['remove2']) and is_numeric($_POST['stat_month']) and is_numeric($_POST['stat_day']) and is_numeric($_POST['stat_year'])) {
+if (isset($_POST['remove2']) && is_numeric($_POST['stat_month']) && is_numeric($_POST['stat_day']) && is_numeric($_POST['stat_year'])) {
     $timestamp = mktime(0, 0, 0, $_POST['stat_month'], $_POST['stat_day'], $_POST['stat_year']);
 
     $sql = 'DELETE FROM humo_stat_date WHERE stat_date_linux < "' . $timestamp . '"';

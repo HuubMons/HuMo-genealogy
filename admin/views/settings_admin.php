@@ -161,38 +161,52 @@ if (isset($_POST['save_option3'])) {
     // Jewish settings
 
     $setting_value = 'n';
-    if (isset($_POST["david_stars"])) $setting_value = 'y';
+    if (isset($_POST["david_stars"])) {
+        $setting_value = 'y';
+    }
     $db_functions->update_settings('david_stars', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["death_shoa"])) $setting_value = 'y';
+    if (isset($_POST["death_shoa"])) {
+        $setting_value = 'y';
+    }
     $db_functions->update_settings('death_shoa', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["admin_hebnight"])) $setting_value = 'y';
+    if (isset($_POST["admin_hebnight"])) {
+        $setting_value = 'y';
+    }
     $db_functions->update_settings('admin_hebnight', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["admin_hebdate"])) $setting_value = 'y';
+    if (isset($_POST["admin_hebdate"])) {
+        $setting_value = 'y';
+    }
     $db_functions->update_settings('admin_hebdate', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["admin_hebname"])) $setting_value = 'y';
+    if (isset($_POST["admin_hebname"])) {
+        $setting_value = 'y';
+    }
     $db_functions->update_settings('admin_hebname', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["admin_brit"])) $setting_value = 'y';
+    if (isset($_POST["admin_brit"])) {
+        $setting_value = 'y';
+    }
     $db_functions->update_settings('admin_brit', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["admin_barm"])) $setting_value = 'y';
+    if (isset($_POST["admin_barm"])) {
+        $setting_value = 'y';
+    }
     $db_functions->update_settings('admin_barm', $setting_value);
 
-    if (isset($_POST["death_char"]) and safe_text_db($_POST["death_char"]) == "y"  and $humo_option['death_char'] == "n") {
+    if (isset($_POST["death_char"]) && safe_text_db($_POST["death_char"]) == "y" && $humo_option['death_char'] == "n") {
         $humo_option['death_char'] = 'y';
         include(__DIR__ . "/../../languages/change_all.php");  // change cross to infinity
         $db_functions->update_settings('death_char', 'y');
-    } elseif ((!isset($_POST["death_char"]) or safe_text_db($_POST["death_char"]) == "n") and $humo_option['death_char'] == "y") {
+    } elseif ((!isset($_POST["death_char"]) || safe_text_db($_POST["death_char"]) == "n") && $humo_option['death_char'] == "y") {
         $humo_option['death_char'] = 'n';
         include(__DIR__ . "/../../languages/change_all.php");  // change infinity to cross
         $db_functions->update_settings('death_char', 'n');
@@ -208,7 +222,7 @@ $arr_count = 0;
 $arr_count_admin = 0;
 $folder = opendir('../languages/');
 while (false !== ($file = readdir($folder))) {
-    if (strlen($file) < 6 and $file != '.' and $file != '..') {
+    if (strlen($file) < 6 && $file !== '.' && $file !== '..') {
         // *** Get language name ***
         include(__DIR__ . "/../../languages/" . $file . "/language_data.php");
         $langs[$arr_count][0] = $language["name"];
@@ -226,8 +240,12 @@ closedir($folder);
 
 // *** Show tabs ***
 $menu_admin = 'settings';
-if (isset($_POST['menu_admin'])) $menu_admin = $_POST['menu_admin'];
-if (isset($_GET['menu_admin'])) $menu_admin = $_GET['menu_admin'];
+if (isset($_POST['menu_admin'])) {
+    $menu_admin = $_POST['menu_admin'];
+}
+if (isset($_GET['menu_admin'])) {
+    $menu_admin = $_GET['menu_admin'];
+}
 $select_item_settings = '';
 if ($menu_admin == 'settings') {
     $select_item_settings = ' pageTab-active';
@@ -258,17 +276,17 @@ if ($menu_admin == 'settings_special') {
 <div style="float: left; background-color:white; height:500px; padding:10px;">
     <?php
     // *** Show settings ***
-    if (isset($menu_admin) and $menu_admin == 'settings') {
+    if (isset($menu_admin) && $menu_admin == 'settings') {
         include(__DIR__ . '/settings.php');
     }
 
     // *** Show homepage settings ***
-    if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
+    if (isset($menu_admin) && $menu_admin == 'settings_homepage') {
         include(__DIR__ . '/settings_homepage.php');
     }
 
     // *** Show special settings ***
-    if (isset($menu_admin) and $menu_admin == 'settings_special') {
+    if (isset($menu_admin) && $menu_admin == 'settings_special') {
         include(__DIR__ . '/settings_special.php');
     }
     ?>

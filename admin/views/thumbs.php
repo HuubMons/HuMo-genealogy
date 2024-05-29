@@ -23,13 +23,13 @@ if (isset($_GET['menu_tab'])) {
 
 // *** Default settings ***
 $show_table = false;
-if (isset($menu_tab) and $menu_tab == 'picture_settings') {
+if (isset($menu_tab) && $menu_tab == 'picture_settings') {
     $show_table = true;
 }
-if (isset($menu_tab) and $menu_tab == 'picture_thumbnails') {
+if (isset($menu_tab) && $menu_tab == 'picture_thumbnails') {
     $show_table = true;
 }
-if (isset($menu_tab) and $menu_tab == 'picture_show') {
+if (isset($menu_tab) && $menu_tab == 'picture_show') {
     $show_table = true;
 }
 ?>
@@ -56,10 +56,12 @@ if (isset($menu_tab) and $menu_tab == 'picture_show') {
         // *** Save new/ changed picture path ***
         if (isset($_POST['change_tree_data'])) {
             $tree_pict_path = $_POST['tree_pict_path'];
-            if (substr($_POST['tree_pict_path'], 0, 1) == '|') {
-                if (isset($_POST['default_path']) and $_POST['default_path'] == 'no') $tree_pict_path = substr($tree_pict_path, 1);
-            } else {
-                if (isset($_POST['default_path']) and $_POST['default_path'] == 'yes') $tree_pict_path = '|' . $tree_pict_path;
+            if (substr($_POST['tree_pict_path'], 0, 1) === '|') {
+                if (isset($_POST['default_path']) && $_POST['default_path'] == 'no') {
+                    $tree_pict_path = substr($tree_pict_path, 1);
+                }
+            } elseif (isset($_POST['default_path']) && $_POST['default_path'] == 'yes') {
+                $tree_pict_path = '|' . $tree_pict_path;
             }
             $sql = "UPDATE humo_trees SET tree_pict_path='" . safe_text_db($tree_pict_path) . "' WHERE tree_id=" . safe_text_db($tree_id);
             $result = $dbh->query($sql);
@@ -69,7 +71,7 @@ if (isset($menu_tab) and $menu_tab == 'picture_show') {
         $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 
         // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
-        if (substr($data2Db->tree_pict_path, 0, 1) == '|') {
+        if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
             $checked1 = ' checked';
             $checked2 = '';
         } else {
@@ -77,7 +79,9 @@ if (isset($menu_tab) and $menu_tab == 'picture_show') {
             $checked2 = ' checked';
         }
         $tree_pict_path = $data2Db->tree_pict_path;
-        if (substr($data2Db->tree_pict_path, 0, 1) == '|') $tree_pict_path = substr($tree_pict_path, 1);
+        if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
+            $tree_pict_path = substr($tree_pict_path, 1);
+        }
     ?>
 
         <div class="p-3 m-2 genealogy_search">
@@ -135,15 +139,13 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 $ignore = array('cms', 'slideshow', 'thumbs', '.', '..');
                 $dh = opendir($prefx . $path);
                 while (false !== ($filename = readdir($dh))) {
-                    if (!in_array($filename, $ignore)) {
-                        if (is_dir($prefx . $path . $filename)) {
-                            if ($first == false) {
-                                echo ' ' . __('Subdirectories:');
-                                $first = true;
-                            }
-                            echo '<br>' . $path . $filename . '/';
-                            get_media_files($first, $prefx, $path . $filename . '/');
+                    if (!in_array($filename, $ignore) && is_dir($prefx . $path . $filename)) {
+                        if ($first == false) {
+                            echo ' ' . __('Subdirectories:');
+                            $first = true;
                         }
+                        echo '<br>' . $path . $filename . '/';
+                        get_media_files($first, $prefx, $path . $filename . '/');
                     }
                 }
                 closedir($dh);
@@ -151,7 +153,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
             // *** Status of picture path ***
             $tree_pict_path = $data2Db->tree_pict_path;
-            if (substr($tree_pict_path, 0, 1) == '|') {
+            if (substr($tree_pict_path, 0, 1) === '|') {
                 $tree_pict_path = 'media/';
             }
             ?>
@@ -159,7 +161,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 <div class="col-md-4"><?= __('Status of picture path'); ?></div>
 
                 <div class="col-md-7">
-                    <?php if ($tree_pict_path != '' and file_exists($prefx . $tree_pict_path)) { ?>
+                    <?php if ($tree_pict_path != '' && file_exists($prefx . $tree_pict_path)) { ?>
                         <span class="bg-success-subtle"><?= __('Picture path exists.'); ?></span>
 
                     <?php
@@ -175,7 +177,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
             <!-- Create thumbnails -->
             <?php
-            if (isset($menu_tab) and $menu_tab == 'picture_thumbnails') {
+            if (isset($menu_tab) && $menu_tab == 'picture_thumbnails') {
                 $thumb_height = 120; // *** Standard thumb height ***
             ?>
                 <div class="row mb-2">
@@ -193,7 +195,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             <?php } ?>
 
             <!-- Show thumbnails -->
-            <?php if (isset($menu_tab) and $menu_tab == 'picture_show') { ?>
+            <?php if (isset($menu_tab) && $menu_tab == 'picture_show') { ?>
                 <div class="row mb-2">
                     <div class="col-md-4"><?= __('Show thumbnails'); ?></div>
 
@@ -211,14 +213,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
         </div>
 
-        <?php if (isset($menu_tab) and $menu_tab == 'picture_settings') { ?>
+        <?php if (isset($menu_tab) && $menu_tab == 'picture_settings') { ?>
             - <?= __('To show pictures, also check the user-group settings: '); ?>
             <a href="index.php?page=groups"><?= __('User groups'); ?></a>
         <?php
         }
 
         // *** Create picture thumbnails ***
-        if (isset($menu_tab) and $menu_tab == 'picture_thumbnails') {
+        if (isset($menu_tab) && $menu_tab == 'picture_thumbnails') {
         ?>
             <?= __('- Creating thumbnails<br>
 - ATTENTION: it may be necessary to (temporarily) change access to the folder with the pictures (rwxrwxrwx)<br>
@@ -229,7 +231,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
 
     // *** Picture categories ***
-    if (isset($menu_tab) and $menu_tab == 'picture_categories') {
+    if (isset($menu_tab) && $menu_tab == 'picture_categories') {
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
         if (!$temp->rowCount()) {
             // no category database table exists - so create it
@@ -261,18 +263,18 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             $language_tree = $_POST['language_tree'];
         }
 
-        if (isset($_GET['cat_drop2']) and $_GET['cat_drop2'] == 1 and !isset($_POST['save_cat'])) {
+        if (isset($_GET['cat_drop2']) && $_GET['cat_drop2'] == 1 && !isset($_POST['save_cat'])) {
             // delete category and make sure that the order sequence is restored
             $dbh->query("UPDATE humo_photocat SET photocat_order = (photocat_order-1) WHERE photocat_order > '" . safe_text_db($_GET['cat_order']) . "'");
             $dbh->query("DELETE FROM humo_photocat WHERE photocat_prefix = '" . safe_text_db($_GET['cat_prefix']) . "'");
         }
-        if (isset($_GET['cat_up']) and !isset($_POST['save_cat'])) {
+        if (isset($_GET['cat_up']) && !isset($_POST['save_cat'])) {
             // move category up
             $dbh->query("UPDATE humo_photocat SET photocat_order = '999' WHERE photocat_order ='" . safe_text_db($_GET['cat_up']) . "'");  // set present one to temp
             $dbh->query("UPDATE humo_photocat SET photocat_order = '" . $_GET['cat_up'] . "' WHERE photocat_order ='" . (safe_text_db($_GET['cat_up']) - 1) . "'");  // move the one above down
             $dbh->query("UPDATE humo_photocat SET photocat_order = '" . (safe_text_db($_GET['cat_up']) - 1) . "' WHERE photocat_order = '999'");  // move this one up
         }
-        if (isset($_GET['cat_down']) and !isset($_POST['save_cat'])) {
+        if (isset($_GET['cat_down']) && !isset($_POST['save_cat'])) {
             // move category down
             $dbh->query("UPDATE humo_photocat SET photocat_order = '999' WHERE photocat_order ='" . safe_text_db($_GET['cat_down']) . "'");  // set present one to temp
             $dbh->query("UPDATE humo_photocat SET photocat_order = '" . safe_text_db($_GET['cat_down']) . "' WHERE photocat_order ='" . (safe_text_db($_GET['cat_down']) + 1) . "'");  // move the one under it up
@@ -380,7 +382,9 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                     // *** Language choice ***
                     $language_tree2 = $language_tree;
-                    if ($language_tree == 'default') $language_tree2 = $selected_language;
+                    if ($language_tree == 'default') {
+                        $language_tree2 = $selected_language;
+                    }
                     include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
                     $select_top = '';
                     ?>
@@ -436,7 +440,9 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         $minorder = $orderDb['minorder'];
 
                         $prefname = $catDb->photocat_prefix;
-                        if ($catDb->photocat_prefix == 'none') $prefname = __('default - without prefix');  // display default in the display language, so it is clear to everyone
+                        if ($catDb->photocat_prefix == 'none') {
+                            $prefname = __('default - without prefix');
+                        }  // display default in the display language, so it is clear to everyone
                     ?>
                         <tr>
                             <td>
@@ -481,15 +487,21 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         <td></td>
                         <td style="white-space:nowrap;"><input type="text" name="new_cat_prefix" value="<?= $content; ?>" size="6" class="form-control form-control-sm">
                             <?php
-                            if (isset($warning_invalid_prefix)) echo '<br><span style="color:red">' . $warning_invalid_prefix . '</span>';
-                            if (isset($warning_exist_prefix)) echo '<br><span style="color:red">' . $warning_exist_prefix . '</span>';
+                            if (isset($warning_invalid_prefix)) {
+                                echo '<br><span style="color:red">' . $warning_invalid_prefix . '</span>';
+                            }
+                            if (isset($warning_exist_prefix)) {
+                                echo '<br><span style="color:red">' . $warning_exist_prefix . '</span>';
+                            }
                             echo '</td><td><input type="text" name="new_cat_name" value="" size="30" class="form-control form-control-sm">';
-                            if (isset($warning_noname)) echo '<br><span style="color:red">' . $warning_noname . '</span>';
+                            if (isset($warning_noname)) {
+                                echo '<br><span style="color:red">' . $warning_noname . '</span>';
+                            }
                             ?>
                         </td>
                     </tr>
 
-                    <?php if (isset($_GET['cat_drop']) and $_GET['cat_drop'] == 1) { ?>
+                    <?php if (isset($_GET['cat_drop']) && $_GET['cat_drop'] == 1) { ?>
                         <tr>
                             <td colspan="3" style="color:red;font-weight:bold;font-size:120%">
                                 <?php
@@ -513,7 +525,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         $picture_path_old = $_POST['picture_path'];
         $picture_path_new = $_POST['picture_path'];
         // *** If filename has a category AND a sub category directory exists, use it ***
-        if (substr($_POST['filename'], 0, 2) != substr($_POST['filename_old'], 0, 2) and ($_POST['filename'][2] == '_' or $_POST['filename_old'][2] == '_')) { // we only have to do this if something changed in a prefix
+        if (substr($_POST['filename'], 0, 2) !== substr($_POST['filename_old'], 0, 2) && ($_POST['filename'][2] == '_' || $_POST['filename_old'][2] == '_')) { // we only have to do this if something changed in a prefix
             if ($_POST['filename'][2] == '_') {
                 if (preg_match('!.+/[a-z][a-z]/$!', $picture_path_new) == 1) {   // original path had subfolder
                     if (is_dir(substr($picture_path_new, 0, -3) . substr($_POST['filename'], 0, 2))) {   // subtract subfolder and add new subfolder
@@ -547,9 +559,11 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
     // *** Create thumbnails ***
     $counter = 0;
-    if (isset($_POST["thumbnail"]) or isset($_POST['change_filename'])) {
+    if (isset($_POST["thumbnail"]) || isset($_POST['change_filename'])) {
         $pict_path = $data2Db->tree_pict_path;
-        if (substr($pict_path, 0, 1) == '|') $pict_path = 'media/';
+        if (substr($pict_path, 0, 1) === '|') {
+            $pict_path = 'media/';
+        }
 
         //$selected_picture_folder=$prefx.$pict_path;
         $array_picture_folder[] = $prefx . $pict_path;
@@ -564,11 +578,9 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 $ignore = array('cms', 'slideshow', 'thumbs', '.', '..');
                 $dh = opendir($prefx . $path);
                 while (false !== ($filename = readdir($dh))) {
-                    if (!in_array($filename, $ignore)) {
-                        if (is_dir($prefx . $path . $filename)) {
-                            $array_picture_folder[] = $prefx . $path . $filename . '/';
-                            get_dirs($prefx, $path . $filename . '/');
-                        }
+                    if (!in_array($filename, $ignore) && is_dir($prefx . $path . $filename)) {
+                        $array_picture_folder[] = $prefx . $path . $filename . '/';
+                        get_dirs($prefx, $path . $filename . '/');
                     }
                 }
                 closedir($dh);
@@ -585,9 +597,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 while (false !== ($filename = readdir($dh))) {
                     $imgtype = strtolower(substr($filename, -3));
                     if (
-                        $imgtype == "jpg"
-                        or $imgtype == "png"
-                        or ($imgtype == "gif" and $gd["GIF Read Support"] == TRUE and $gd["GIF Create Support"] == TRUE)
+                        $imgtype === "jpg" || $imgtype === "png" || $imgtype === "gif" && $gd["GIF Read Support"] == TRUE && $gd["GIF Create Support"] == TRUE
                     ) {
                         //$pict_path_original=$prefx.$pict_path."/".$filename;    //ORIGINEEL
                         //$pict_path_thumb=$prefx.$pict_path."/thumb_".$filename; //THUMB
@@ -601,7 +611,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         //}
 
                         //*** Create a thumbnail ***
-                        if (substr($filename, 0, 5) != 'thumb' and !isset($_POST['change_filename'])) {
+                        if (substr($filename, 0, 5) !== 'thumb' && !isset($_POST['change_filename'])) {
                             // *** Get size of original picture ***
                             list($width, $height) = getimagesize($pict_path_original);
 
@@ -616,9 +626,9 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                             // $thumb = imagecreate($newwidth, $newheight);
                             $thumb = imagecreatetruecolor($newwidth, $newheight);
-                            if ($imgtype == "jpg") {
+                            if ($imgtype === "jpg") {
                                 $source = imagecreatefromjpeg($pict_path_original);
-                            } elseif ($imgtype == "png") {
+                            } elseif ($imgtype === "png") {
                                 $source = imagecreatefrompng($pict_path_original);
                             } else {
                                 $source = imagecreatefromgif($pict_path_original);
@@ -626,9 +636,9 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                             // *** Resize ***
                             imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-                            if ($imgtype == "jpg") {
+                            if ($imgtype === "jpg") {
                                 @imagejpeg($thumb, $pict_path_thumb);
-                            } elseif ($imgtype == "png") {
+                            } elseif ($imgtype === "png") {
                                 @imagepng($thumb, $pict_path_thumb);
                             } else {
                                 @imagegif($thumb, $pict_path_thumb);
@@ -636,7 +646,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         }
 
                         // *** Show thumbnails ***
-                        if (substr($filename, 0, 5) != 'thumb') {
+                        if (substr($filename, 0, 5) !== 'thumb') {
         ?>
                             <div class="photobook">
                                 <img src="<?= $pict_path_thumb; ?>" title="<?= $pict_path_thumb; ?>">

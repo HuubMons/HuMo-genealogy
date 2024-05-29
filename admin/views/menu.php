@@ -7,7 +7,7 @@
 $popup_style = '';
 //if ($popup == true) $popup_style = ' style="top:0px;"';
 
-if ($page != 'login' and $page != 'update') {
+if ($page != 'login' && $page != 'update') {
     if (isset($_GET['page'])) {
         $page = $_GET['page'];
     }

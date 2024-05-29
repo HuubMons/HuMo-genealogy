@@ -9,14 +9,16 @@ class editor_cls
     // BET 1986 AND 1987 = bet 1986 and 1987
 
     // *** $multiple_rows = addition for editing in multiple rows. Example: name = "event_date[]" ***
-    public function date_show($process_date, $process_name, $multiple_rows = '', $hebnight = 'n', $hebvar = '')
+    public function date_show($process_date, $process_name, $multiple_rows = '', $hebnight = 'n', $hebvar = ''): void
     {
         // *** Process BEF, ABT, AFT and BET in an easier pulldown menu ***
         global $field_date, $humo_option;
         $style = '';
 
         // *** Prevent error in PHP 8.1.1 ***
-        if (!isset($process_date)) $process_date = '';
+        if (!isset($process_date)) {
+            $process_date = '';
+        }
 
         // *** Show month in selected language ***
         $process_date = str_replace("JAN", __('jan'), $process_date);
@@ -36,35 +38,35 @@ class editor_cls
         // *** Strip tags BEF, ABT, AFT, etc. are allready shown in date_prefix. Variable $text_value must be case sensitive. ***
         $process_date2 = strtolower($process_date);
         $text_value = '';
-        if (substr($process_date2, 0, 4) == 'bef ') {
+        if (substr($process_date2, 0, 4) === 'bef ') {
             $text_value = substr($process_date, 4);
-        } elseif (substr($process_date2, 0, 4) == 'abt ') {
+        } elseif (substr($process_date2, 0, 4) === 'abt ') {
             $text_value = substr($process_date, 4);
-        } elseif (substr($process_date2, 0, 4) == 'aft ') {
+        } elseif (substr($process_date2, 0, 4) === 'aft ') {
             $text_value = substr($process_date, 4);
-        } elseif (substr($process_date2, 0, 4) == 'bet ') {
+        } elseif (substr($process_date2, 0, 4) === 'bet ') {
             $text_value = substr($process_date, 4);
-        } elseif (substr($process_date2, 0, 4) == 'int ') {
+        } elseif (substr($process_date2, 0, 4) === 'int ') {
             $text_value = substr($process_date, 4);
-        } elseif (substr($process_date2, 0, 4) == 'est ') {
+        } elseif (substr($process_date2, 0, 4) === 'est ') {
             $text_value = substr($process_date, 4);
-        } elseif (substr($process_date2, 0, 4) == 'cal ') {
+        } elseif (substr($process_date2, 0, 4) === 'cal ') {
             $text_value = substr($process_date, 4);
         } else {
             $text_value = $process_date;
         }
 
         // *** Show BC with uppercase, check case-insensitive ***
-        if (strtolower(substr($process_date, -3)) == ' bc') {
+        if (strtolower(substr($process_date, -3)) === ' bc') {
             $process_date = substr($process_date, 0, -3) . ' BC';
         }
-        if (strtolower(substr($process_date, -5)) == ' b.c.') {
+        if (strtolower(substr($process_date, -5)) === ' b.c.') {
             $process_date = substr($process_date, 0, -5) . ' B.C.';
         }
 
         // *** '!' is added after an invalid date, change background color if date is invalid ***
         $style = '';
-        if (substr($process_date, -1) == '!') {
+        if (substr($process_date, -1) === '!') {
             $process_date = substr($process_date, 0, -1);
             $style = '; background-color:red"';
         }
@@ -72,14 +74,14 @@ class editor_cls
         <div class="input-group">
             <select size="1" id="<?= $process_name . '_prefix' . $multiple_rows; ?>" name="<?= $process_name . '_prefix' . $multiple_rows; ?>" class="form-select form-select-sm">
                 <option value="">=</option>
-                <option value="BEF " <?= substr($process_date, 0, 4) == 'BEF ' ? 'selected' : ''; ?>><?= __('before'); ?></option>
-                <option value="ABT " <?= substr($process_date, 0, 4) == 'ABT ' ? 'selected' : ''; ?>><?= __('&#177;'); ?></option>
-                <option value="AFT " <?= substr($process_date, 0, 4) == 'AFT ' ? 'selected' : ''; ?>><?= __('after'); ?></option>
-                <option value="BET " <?= substr($process_date, 0, 4) == 'BET ' ? 'selected' : ''; ?>><?= __('between'); ?></option>
+                <option value="BEF " <?= substr($process_date, 0, 4) === 'BEF ' ? 'selected' : ''; ?>><?= __('before'); ?></option>
+                <option value="ABT " <?= substr($process_date, 0, 4) === 'ABT ' ? 'selected' : ''; ?>><?= __('&#177;'); ?></option>
+                <option value="AFT " <?= substr($process_date, 0, 4) === 'AFT ' ? 'selected' : ''; ?>><?= __('after'); ?></option>
+                <option value="BET " <?= substr($process_date, 0, 4) === 'BET ' ? 'selected' : ''; ?>><?= __('between'); ?></option>
                 <!-- New added april 2020 -->
-                <option value="INT " <?= substr($process_date, 0, 4) == 'INT ' ? 'selected' : ''; ?>><?= __('interpreted'); ?></option>
-                <option value="EST " <?= substr($process_date, 0, 4) == 'EST ' ? 'selected' : ''; ?>><?= __('estimated'); ?></option>
-                <option value="CAL " <?= substr($process_date, 0, 4) == 'CAL ' ? 'selected' : ''; ?>><?= __('calculated'); ?></option>
+                <option value="INT " <?= substr($process_date, 0, 4) === 'INT ' ? 'selected' : ''; ?>><?= __('interpreted'); ?></option>
+                <option value="EST " <?= substr($process_date, 0, 4) === 'EST ' ? 'selected' : ''; ?>><?= __('estimated'); ?></option>
+                <option value="CAL " <?= substr($process_date, 0, 4) === 'CAL ' ? 'selected' : ''; ?>><?= __('calculated'); ?></option>
             </select>
 
             <input type="text" name="<?= $process_name . $multiple_rows; ?>" style="direction:ltr<?= $style; ?>" value="<?= $text_value; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
@@ -87,12 +89,12 @@ class editor_cls
 
         <?php
         // user wants checkbox for jewish setting of events after nightfall for specific events AND it is to be placed with this event
-        if ($humo_option['admin_hebnight'] == "y" and $hebnight != 'n') {
+        if ($humo_option['admin_hebnight'] == "y" && $hebnight != 'n') {
         ?>
             <span style="white-space: nowrap">
                 <input type="checkbox" id="<?= $hebvar; ?>" value="y" name="<?= $hebvar; ?>" <?= $hebnight == 'y' ? 'checked' : ''; ?> class="form-check-input"> <label for="<?= $hebvar; ?>"><?= __('After nightfall'); ?></label>
             </span>
-        <?php
+<?php
         }
     }
 
@@ -133,7 +135,7 @@ class editor_cls
             if ($pref == "BET ") { // we've got "BET" and "AND"
                 $date1 = $this->valid_date(substr($post_date, 0, $pos - 1));
                 $date2 = $this->valid_date(substr($post_date, $pos + 4));
-                if ($date1 != null and $date2 != null) {
+                if ($date1 != null && $date2 != null) {
                     $this_date = $date1 . " AND " . $date2;
                 }
                 //else $this_date = __('Invalid date'); // one or both dates are invalid
@@ -161,12 +163,14 @@ class editor_cls
             $process_date = $pref . $this_date;
 
         // *** Invalid date, add a ! character after the date. Don't remove original date... ***
-        if (substr($post_date, -1) == '!') $process_date = $post_date;
-        elseif ($this_date == '!') $process_date = $post_date . '!';
+        if (substr($post_date, -1) === '!') {
+            $process_date = $post_date;
+        } elseif ($this_date == '!') {
+            $process_date = $post_date . '!';
+        }
 
         $process_date = strtoupper($process_date);
-        $process_date = safe_text_db($process_date);
-        return $process_date;
+        return safe_text_db($process_date);
     }
 
     public function valid_date($date)
@@ -176,8 +180,12 @@ class editor_cls
 
         // German date input: 01.02.2016 or Scandinavian input: 01,02,2016
         $date2 = str_replace(" B.C.", "", $date); // Don't check . in B.C.!
-        if (strpos($date2, ".") !== false) $date = str_replace(".", "-", $date);
-        if (strpos($date, ",") !== false) $date = str_replace(",", "-", $date);
+        if (strpos($date2, ".") !== false) {
+            $date = str_replace(".", "-", $date);
+        }
+        if (strpos($date, ",") !== false) {
+            $date = str_replace(",", "-", $date);
+        }
 
         // Use your own language for input, FULL MONTH NAMES
         $search  = array(__('January'), __('February'), __('March'), __('April'), __('May'), __('June'), __('July'), __('August'), __('September'), __('October'), __('November'), __('December'));
@@ -201,12 +209,9 @@ class editor_cls
         $date = str_ireplace(__('dec'), "DEC", $date);
 
         // date entered as 01-04-2013 or 01/04/2013
-        if ((strpos($date, "-") !== false or strpos($date, "/") !== false) and strpos($date, " ") === false) { // skips "2 mar 1741/42" and "mar 1741/42"
-            if (strpos($date, "-") !== false) {
-                $delimiter = "-";
-            } else {
-                $delimiter = "/";
-            }
+        if ((strpos($date, "-") !== false || strpos($date, "/") !== false) && strpos($date, " ") === false) {
+            // skips "2 mar 1741/42" and "mar 1741/42"
+            $delimiter = strpos($date, "-") !== false ? "-" : "/";
             $date_dash = explode($delimiter, $date);
             if (count($date_dash) == 2) { // date was entered as month and year: 4-2011 or 4/2011 or we have case of "1741/42" (just year no day/month)
                 if ($date_dash[0] > $date_dash[1]) {
@@ -219,29 +224,29 @@ class editor_cls
                 $member = 1; // second member of array is month
             }
             if ($member != "none") {
-                if ($date_dash[$member] == "1" or $date_dash[$member] == "01") {
+                if ($date_dash[$member] === "1" || $date_dash[$member] === "01") {
                     $date_dash[$member] = "JAN";
-                } else if ($date_dash[$member] == "2" or $date_dash[$member] == "02") {
+                } elseif ($date_dash[$member] === "2" || $date_dash[$member] === "02") {
                     $date_dash[$member] = "FEB";
-                } else if ($date_dash[$member] == "3" or $date_dash[$member] == "03") {
+                } elseif ($date_dash[$member] === "3" || $date_dash[$member] === "03") {
                     $date_dash[$member] = "MAR";
-                } else if ($date_dash[$member] == "4" or $date_dash[$member] == "04") {
+                } elseif ($date_dash[$member] === "4" || $date_dash[$member] === "04") {
                     $date_dash[$member] = "APR";
-                } else if ($date_dash[$member] == "5" or $date_dash[$member] == "05") {
+                } elseif ($date_dash[$member] === "5" || $date_dash[$member] === "05") {
                     $date_dash[$member] = "MAY";
-                } else if ($date_dash[$member] == "6" or $date_dash[$member] == "06") {
+                } elseif ($date_dash[$member] === "6" || $date_dash[$member] === "06") {
                     $date_dash[$member] = "JUN";
-                } else if ($date_dash[$member] == "7" or $date_dash[$member] == "07") {
+                } elseif ($date_dash[$member] === "7" || $date_dash[$member] === "07") {
                     $date_dash[$member] = "JUL";
-                } else if ($date_dash[$member] == "8" or $date_dash[$member] == "08") {
+                } elseif ($date_dash[$member] === "8" || $date_dash[$member] === "08") {
                     $date_dash[$member] = "AUG";
-                } else if ($date_dash[$member] == "9" or $date_dash[$member] == "09") {
+                } elseif ($date_dash[$member] === "9" || $date_dash[$member] === "09") {
                     $date_dash[$member] = "SEP";
-                } else if ($date_dash[$member] == "10") {
+                } elseif ($date_dash[$member] === "10") {
                     $date_dash[$member] = "OCT";
-                } else if ($date_dash[$member] == "11") {
+                } elseif ($date_dash[$member] === "11") {
                     $date_dash[$member] = "NOV";
-                } else if ($date_dash[$member] == "12") {
+                } elseif ($date_dash[$member] === "12") {
                     $date_dash[$member] = "DEC";
                 }
 
@@ -253,7 +258,9 @@ class editor_cls
         $result = $check->check_date(strtoupper($this_date));
         if ($result == null) {
             return null;
-        } else return $this_date;
+        } else {
+            return $this_date;
+        }
     }
 
     public function text_process($text, $long_text = false)
@@ -263,8 +270,7 @@ class editor_cls
             //$text = str_replace("\r\n", "<br>\n", $text);
             $text = str_replace("\r\n", "\n", $text);
         }
-        $text = safe_text_db($text);
-        return $text;
+        return safe_text_db($text);
     }
 
     // *** Show texts without <br> and process Aldfaer and other @xx@ texts ***
@@ -273,16 +279,16 @@ class editor_cls
         global $dbh, $tree_id;
         if ($find_text != '') {
             $text = $find_text;
-            if (substr($find_text, 0, 1) == '@') {
+            if (substr($find_text, 0, 1) === '@') {
                 $search_text = $dbh->query("SELECT * FROM humo_texts
                     WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($find_text, 1, -1) . "'");
                 @$search_textDb = $search_text->fetch(PDO::FETCH_OBJ);
                 @$text = $search_textDb->text_text;
                 $text = str_replace("<br>", "<br>\n", $text);
             }
-            $text = str_replace("<br>", "", $text);
-            return $text;
+            return str_replace("<br>", "", $text);
         }
+        return null;
     }
 
     public function show_selected_person($person)
@@ -303,7 +309,7 @@ class editor_cls
             if ($person->pers_birth_date) {
                 $text .= __('*') . ' ' . language_date($person->pers_birth_date);
             }
-            if (!$person->pers_birth_date and $person->pers_bapt_date) {
+            if (!$person->pers_birth_date && $person->pers_bapt_date) {
                 $text .= __('~') . ' ' . language_date($person->pers_bapt_date);
             }
             if ($person->pers_death_date) {

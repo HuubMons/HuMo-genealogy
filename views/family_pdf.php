@@ -21,7 +21,7 @@ $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
 // TODO expanded view is disabled for PDF. Will we using expand in future for PDF?
 // *** No expanded view in PDF export ***
-$data["family_expanded"] = false;
+$data["family_expanded"] = 'compact';
 $data["source_presentation"] =  $get_family->getSourcePresentation();
 $data["picture_presentation"] =  $get_family->getPicturePresentation();
 $data["text_presentation"] =  $get_family->getTextPresentation();
@@ -119,7 +119,9 @@ if (!$data["family_id"]) {
     //$pdf->Write(8,"\n");
     $id = '';
     $pdfdetails = $parent1_cls->person_data("parent1", $id);
-    if ($pdfdetails) $pdf->pdfdisplay($pdfdetails, "parent");
+    if ($pdfdetails) {
+        $pdf->pdfdisplay($pdfdetails, "parent");
+    }
 }
 
 // *******************
@@ -260,7 +262,7 @@ else {
                 // Show "Family Page", user's choice or default
                 $pdf->SetLeftMargin(10);
                 $pdf->Cell(0, 2, " ", 0, 1);
-                if ($pdf->GetY() > 260 and $descendant_loop2 != 0) {
+                if ($pdf->GetY() > 260 && $descendant_loop2 != 0) {
                     // move to next page so family sheet banner won't be last on page
                     // but if we are in first family in generation, the gen banner
                     // is already checked so no need here
@@ -346,14 +348,12 @@ else {
 
                     // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                     if (
-                        $user["group_pers_hide_totally_act"] == 'j' and isset($parent1Db->pers_own_code)
-                        and strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                        $user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
                     ) {
                         $family_privacy = true;
                     }
                     if (
-                        $user["group_pers_hide_totally_act"] == 'j' and isset($parent2Db->pers_own_code)
-                        and strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                        $user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
                     ) {
                         $family_privacy = true;
                     }
@@ -404,22 +404,18 @@ else {
 
                 if ($family_privacy) {
                     // No marriage data
-                } else {
-                    if ($user["group_texts_fam"] == 'j' and process_text($familyDb->fam_text)) {
-                        // PDF rendering of marriage notes
-                        //$pdf->SetFont($pdf_font,'I',11);
-                        //$pdf->Write(6,process_text($familyDb->fam_text)."\n");
-                        //$pdf->Write(6,show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
-                        //$pdf->SetFont($pdf_font,'',12);
-
-                        $templ_relation["fam_text"] = $familyDb->fam_text;
-                        $temp = "fam_text";
-
-                        $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
-                        if ($source_array) {
-                            $templ_relation["fam_text_source"] = $source_array['text'];
-                            $temp = "fam_text_source";
-                        }
+                } elseif ($user["group_texts_fam"] == 'j' && process_text($familyDb->fam_text)) {
+                    // PDF rendering of marriage notes
+                    //$pdf->SetFont($pdf_font,'I',11);
+                    //$pdf->Write(6,process_text($familyDb->fam_text)."\n");
+                    //$pdf->Write(6,show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
+                    //$pdf->SetFont($pdf_font,'',12);
+                    $templ_relation["fam_text"] = $familyDb->fam_text;
+                    $temp = "fam_text";
+                    $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
+                    if ($source_array) {
+                        $templ_relation["fam_text_source"] = $source_array['text'];
+                        $temp = "fam_text_source";
                     }
                 }
 
@@ -474,7 +470,7 @@ else {
 
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
-                        if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                        if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
                             $show_privacy_text = true;
                             continue;
                         }
@@ -497,13 +493,13 @@ else {
                         //$indent=$pdf->GetX();
 
                         // *** Build descendant_report ***
-                        if ($data["descendant_report"] == true and $childDb->pers_fams and $descendant_loop < $max_generation) {
+                        if ($data["descendant_report"] == true && $childDb->pers_fams && $descendant_loop < $max_generation) {
 
                             // *** 1st family of child ***
                             $child_family = explode(";", $childDb->pers_fams);
 
                             // *** Check for double families in descendant report (if a person relates or marries another person in the same family) ***
-                            if (isset($check_double) and in_array($child_family[0], $check_double)) {
+                            if (isset($check_double) && in_array($child_family[0], $check_double)) {
                                 // *** Don't show this family, double... ***
                             } else
                                 $descendant_family_id2[] = $child_family[0];
@@ -576,7 +572,7 @@ if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user
                 source_display_pdf($pdf_source[$key]);  // function source_display from source.php, called with source nr.
             } elseif ($user['group_sources'] == 't') {
                 $sourceDb = $db_functions->get_source($pdf_source[$key]);
-                if ($sourceDb->source_title or $sourceDb->source_text) {
+                if ($sourceDb->source_title || $sourceDb->source_text) {
                     //$pdf->SetFont($pdf_font,'B',10);
                     //$pdf->Write(6,__('Title').": ");
                     $pdf->SetFont($pdf_font, '', 10);
@@ -585,7 +581,7 @@ if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user
                         $txt = ' ' . trim($sourceDb->source_title);
                     else $txt = ' ' . trim($sourceDb->source_text);
 
-                    if ($sourceDb->source_date or $sourceDb->source_place) {
+                    if ($sourceDb->source_date || $sourceDb->source_place) {
                         $txt .= " " . date_place($sourceDb->source_date, $sourceDb->source_place);
                     }
                     $pdf->Write(6, $txt . "\n");

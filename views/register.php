@@ -1,10 +1,8 @@
 <?php
 // *** Check block_spam_answer ***
 $register_allowed = false;
-if (isset($_POST['send_mail'])) {
-    if (isset($_POST['register_block_spam']) and strtolower($_POST['register_block_spam']) == strtolower($humo_option["block_spam_answer"])) {
-        $register_allowed = true;
-    }
+if (isset($_POST['send_mail']) && (isset($_POST['register_block_spam']) && strtolower($_POST['register_block_spam']) === strtolower($humo_option["block_spam_answer"]))) {
+    $register_allowed = true;
 }
 if ($humo_option["registration_use_spam_question"] != 'y') {
     $register_allowed = true;
@@ -13,13 +11,13 @@ if ($humo_option["registration_use_spam_question"] != 'y') {
 $show_form = true;
 $error = false;
 
-if (isset($_POST['send_mail']) and $register_allowed == true) {
+if (isset($_POST['send_mail']) && $register_allowed == true) {
     $show_form = false;
 
     $usersql = 'SELECT * FROM humo_users WHERE user_name="' . safe_text_db($_POST["register_name"]) . '"';
     $user = $dbh->query($usersql);
     $userDb = $user->fetch(PDO::FETCH_OBJ);
-    if (isset($userDb->user_id) or strtolower(safe_text_db($_POST["register_name"])) == "admin") {
+    if (isset($userDb->user_id) || strtolower(safe_text_db($_POST["register_name"])) === "admin") {
         $error = __('ERROR: username already exists');
     }
 
@@ -47,8 +45,12 @@ if (isset($_POST['send_mail']) and $register_allowed == true) {
 
         // *** Mail new registered user to the administrator ***
         $register_address = '';
-        if (isset($dataDb->tree_email)) $register_address = $dataDb->tree_email; // Used in older HuMo-genealogy versions. Backwards compatible...
-        if ($humo_option["general_email"]) $register_address = $humo_option["general_email"];
+        if (isset($dataDb->tree_email)) {
+            $register_address = $dataDb->tree_email;
+        } // Used in older HuMo-genealogy versions. Backwards compatible...
+        if ($humo_option["general_email"]) {
+            $register_address = $humo_option["general_email"];
+        }
 
         $register_subject = "HuMo-genealogy. " . __('New registered user') . ": " . $_POST['register_name'] . "\n";
 
@@ -86,8 +88,12 @@ if (isset($_POST['send_mail']) and $register_allowed == true) {
 
 if ($show_form) {
     $email = '';
-    if (isset($dataDb->tree_email)) $email = $dataDb->tree_email; // Used in older HuMo-genealogy versions. Backwards compatible...
-    if ($humo_option["general_email"]) $email = $humo_option["general_email"];
+    if (isset($dataDb->tree_email)) {
+        $email = $dataDb->tree_email;
+    } // Used in older HuMo-genealogy versions. Backwards compatible...
+    if ($humo_option["general_email"]) {
+        $email = $humo_option["general_email"];
+    }
     if ($email != '') {
         $register_name = '';
         if (isset($_POST['register_name'])) {
@@ -180,7 +186,7 @@ if ($show_form) {
         </div>
 
 <?php
-        if (isset($_POST['send_mail']) and $error == false) {
+        if (isset($_POST['send_mail']) && $error == false) {
             echo '<h3 style="text-align:center;">' . __('Wrong answer to the block-spam question! Try again...') . '</h3>';
         }
     } else {

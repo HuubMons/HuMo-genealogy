@@ -49,7 +49,9 @@ foreach ($datasql as $dataDb) {
     // *** Check is family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     $hide_tree = false;
-    if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
+    if (in_array($dataDb->tree_id, $hide_tree_array)) {
+        $hide_tree = true;
+    }
     if ($hide_tree == false) {
 
         // *** Get all family pages ***
@@ -101,8 +103,7 @@ foreach ($datasql as $dataDb) {
 
             // *** Completely filter person ***
             if (
-                $user["group_pers_hide_totally_act"] == 'j'
-                and strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                $user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
             ) {
                 // *** Don't show person ***
             } else {

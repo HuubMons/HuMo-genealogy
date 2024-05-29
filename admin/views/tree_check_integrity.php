@@ -21,7 +21,9 @@ $wrong_indexnr = 0;
 $wrong_famc = 0;
 $wrong_fams = 0;
 $removed = '';
-if (isset($_POST['remove'])) $removed = ' <b>Link is removed.</b>';
+if (isset($_POST['remove'])) {
+    $removed = ' <b>Link is removed.</b>';
+}
 
 // Test line to show processing time
 //$processing_time=time();
@@ -60,8 +62,10 @@ while ($person_startDb = $person_start->fetch()) {
                 if (isset($_POST['remove'])) {
                     $new_fams = '';
                     for ($j = 0; $j <= count($fams) - 1; $j++) {
-                        if ($fams[$j] != $fams[$i]) {
-                            if ($new_fams != '') $new_fams .= ';';
+                        if ($fams[$j] !== $fams[$i]) {
+                            if ($new_fams !== '') {
+                                $new_fams .= ';';
+                            }
                             $new_fams .= $fams[$j];
                         }
                     }
@@ -86,14 +90,19 @@ while ($person_startDb = $person_start->fetch()) {
         $check_children = false;
         if (isset($famDb->fam_children)) {
             $children = explode(";", $famDb->fam_children);
-            if (in_array($person->pers_gedcomnumber, $children)) $check_children = true;
+            if (in_array($person->pers_gedcomnumber, $children)) {
+                $check_children = true;
+            }
         }
 
         if ($check_children == false) {
             if ($famDb) {
                 // *** Restore child number ***
-                if ($famDb->fam_children) $fam_children = $famDb->fam_children . ';' . $person->pers_gedcomnumber;
-                else $fam_children = $person->pers_gedcomnumber;
+                if ($famDb->fam_children) {
+                    $fam_children = $famDb->fam_children . ';' . $person->pers_gedcomnumber;
+                } else {
+                    $fam_children = $person->pers_gedcomnumber;
+                }
                 $sql = "UPDATE humo_families SET fam_children='" . $fam_children . "'
                                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $person->pers_famc . "'";
                 $dbh->query($sql);
@@ -135,17 +144,17 @@ while ($famDb_start = $fam_result_start->fetch(PDO::FETCH_OBJ)) {
         $person = $db_functions->get_person($famDb->fam_man);
         $check_item = false;
         //if ($person){
-        if (isset($person) and $person) {
+        if (isset($person) && $person) {
             $fams_array = explode(";", $person->pers_fams);
-            if (in_array($famDb->fam_gedcomnumber, $fams_array)) $check_item = true;
+            if (in_array($famDb->fam_gedcomnumber, $fams_array)) {
+                $check_item = true;
+            }
             if ($check_item == false) {
                 // *** Restore pers_fams ***
-                if ($person->pers_fams) $pers_fams = $person->pers_fams . ';' . $famDb->fam_gedcomnumber;
-                else $pers_fams = $famDb->fam_gedcomnumber;
+                $pers_fams = $person->pers_fams ? $person->pers_fams . ';' . $famDb->fam_gedcomnumber : $famDb->fam_gedcomnumber;
                 $sql = "UPDATE humo_persons SET pers_fams='" . $pers_fams . "'
                         WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
                 $dbh->query($sql);
-
                 echo '<tr><td><b>Missing marriage/ relation nr. in person record</b></td>';
                 echo '<td>Man gedcomnr: ' . $famDb->fam_man . '</td>';
                 echo '<td>Missing marriage/ relation gedcomnr: ' . $famDb->fam_gedcomnumber . '. <b>Is restored.</b></td></tr>';
@@ -168,17 +177,17 @@ while ($famDb_start = $fam_result_start->fetch(PDO::FETCH_OBJ)) {
         $person = $db_functions->get_person($famDb->fam_woman);
         $check_item = false;
         //if ($person){
-        if (isset($person) and $person) {
+        if (isset($person) && $person) {
             $fams_array = explode(";", $person->pers_fams);
-            if (in_array($famDb->fam_gedcomnumber, $fams_array)) $check_item = true;
+            if (in_array($famDb->fam_gedcomnumber, $fams_array)) {
+                $check_item = true;
+            }
             if ($check_item == false) {
                 // *** Restore pers_fams ***
-                if ($person->pers_fams) $pers_fams = $person->pers_fams . ';' . $famDb->fam_gedcomnumber;
-                else $pers_fams = $famDb->fam_gedcomnumber;
+                $pers_fams = $person->pers_fams ? $person->pers_fams . ';' . $famDb->fam_gedcomnumber : $famDb->fam_gedcomnumber;
                 $sql = "UPDATE humo_persons SET pers_fams='" . $pers_fams . "'
                         WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
                 $dbh->query($sql);
-
                 echo '<tr><td><b>Missing marriage/ relation nr. in person record</b></td>';
                 echo '<td>Woman gedcomnr: ' . $famDb->fam_woman . '</td>';
                 echo '<td>Missing marriage/ relation gedcomnr: ' . $famDb->fam_gedcomnumber . '. <b>Is restored.</b></td></tr>';
@@ -248,7 +257,7 @@ while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
 
     // *** Check person ***
     //if ($connect->connect_kind=='person' AND $connect->connect_sub_kind!='pers_event_source' AND $connect->connect_sub_kind!='pers_address_source'){
-    if ($connect->connect_kind == 'person' and $connect->connect_sub_kind != 'pers_event_source' and $connect->connect_sub_kind != 'pers_address_connect_source') {
+    if ($connect->connect_kind == 'person' && $connect->connect_sub_kind != 'pers_event_source' && $connect->connect_sub_kind != 'pers_address_connect_source') {
         $person = $db_functions->get_person($connect->connect_connect_id);
         if (!$person) {
             if (isset($_POST['remove'])) {
@@ -264,7 +273,7 @@ while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
 
     // *** Check family ***
     //if ($connect->connect_kind=='family' AND $connect->connect_sub_kind!='fam_event_source'){
-    if ($connect->connect_kind == 'family' and $connect->connect_sub_kind != 'fam_event_source' and $connect->connect_sub_kind != 'fam_address_connect_source') {
+    if ($connect->connect_kind == 'family' && $connect->connect_sub_kind != 'fam_event_source' && $connect->connect_sub_kind != 'fam_address_connect_source') {
         $fam_qry = "SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $connect->connect_connect_id . "'";
         $fam_result = $dbh->query($fam_qry);
         $fam = $fam_result->fetch(PDO::FETCH_OBJ);
@@ -295,7 +304,7 @@ while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
     $connect = $connect_result->fetch(PDO::FETCH_OBJ);
 
     // *** Check person ***
-    if ($connect->event_connect_kind == 'person' and $connect->event_connect_id) {
+    if ($connect->event_connect_kind == 'person' && $connect->event_connect_id) {
         // Use function check_person?
         $person = $db_functions->get_person($connect->event_connect_id);
         if (!$person) {
@@ -311,7 +320,7 @@ while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
     }
 
     // *** Check family ***
-    if ($connect->event_connect_kind == 'family' and $connect->event_connect_id) {
+    if ($connect->event_connect_kind == 'family' && $connect->event_connect_id) {
         // Create function check_family?
         $person_qry = "SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "'
                 AND fam_gedcomnumber='" . $connect->event_connect_id . "'";

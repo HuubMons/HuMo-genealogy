@@ -51,8 +51,10 @@
 
 class db_functions
 {
-    public int $tree_id = 0;
-    public string $tree_prefix = '';
+    //public int $tree_id = 0;
+    public $tree_id = 0;
+    //public string $tree_prefix = '';
+    public $tree_prefix = '';
     private $dbh;
 
     public function __construct($dbh)
@@ -63,7 +65,7 @@ class db_functions
     /**
      * Set family tree_id 
      */
-    public function set_tree_id(int $tree_id)
+    public function set_tree_id(int $tree_id): void
     {
         if (is_numeric($tree_id)) $this->tree_id = $tree_id;
         $sql = "SELECT tree_prefix FROM humo_trees WHERE tree_id=:tree_id";
@@ -72,7 +74,9 @@ class db_functions
             ':tree_id' => $tree_id
         ]);
         $tree = $stmt->fetch(PDO::FETCH_OBJ);
-        if (isset($tree->tree_prefix)) $this->tree_prefix = $tree->tree_prefix;
+        if (isset($tree->tree_prefix)) {
+            $this->tree_prefix = $tree->tree_prefix;
+        }
     }
 
     /**
@@ -96,12 +100,16 @@ class db_functions
                 ]);
                 $result_array = $stmt->fetchAll(PDO::FETCH_OBJ);
                 foreach ($result_array as $data2Db) {
-                    if (@$data2Db->log_status == 'failed') $check_fails++;
+                    if (@$data2Db->log_status == 'failed') {
+                        $check_fails++;
+                    }
                 }
             } catch (PDOException $e) {
                 //echo $e->getMessage() . "<br/>";
             }
-            if ($check_fails > 20) $allowed = false;
+            if ($check_fails > 20) {
+                $allowed = false;
+            }
         }
 
         // *** Check IP Blacklist ***
@@ -109,7 +117,9 @@ class db_functions
         while ($checkDb = $check->fetch(PDO::FETCH_OBJ)) {
             $list = explode("|", $checkDb->setting_value);
             //if ($ip_address==$list[0]) $allowed=false;
-            if (strcmp($ip_address, $list[0]) == 0) $allowed = false;
+            if (strcmp($ip_address, $list[0]) == 0) {
+                $allowed = false;
+            }
         }
 
         return $allowed;
@@ -174,7 +184,7 @@ class db_functions
     public function get_tree($tree_prefix)
     {
         // *** Detection of tree_prefix/ tree_id ***
-        if (substr($tree_prefix, 0, 4) == 'humo') {
+        if (substr($tree_prefix, 0, 4) === 'humo') {
             // *** Found tree_prefix humox_ ***
             try {
                 $sql = "SELECT * FROM humo_trees WHERE tree_prefix=:tree_prefix";
@@ -267,7 +277,7 @@ class db_functions
     public function get_person($pers_gedcomnumber, string $item = '')
     {
         try {
-            if ($item == 'famc-fams') {
+            if ($item === 'famc-fams') {
                 $sql = "SELECT pers_famc, pers_fams FROM humo_persons
                     WHERE pers_tree_id=:pers_tree_id 
                     AND pers_gedcomnumber=:pers_gedcomnumber";

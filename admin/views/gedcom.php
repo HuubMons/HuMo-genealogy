@@ -79,7 +79,7 @@ if (isset($step1)) {
         }
 
         // *** Only upload .ged or .zip files ***
-        if (strtolower(substr($_FILES['upload_file']['name'], -4)) == '.zip' or strtolower(substr($_FILES['upload_file']['name'], -4)) == '.ged') {
+        if (strtolower(substr($_FILES['upload_file']['name'], -4)) === '.zip' || strtolower(substr($_FILES['upload_file']['name'], -4)) === '.ged') {
             $new_upload = $gedcom_directory . '/' . basename($_FILES['upload_file']['name']);
             // *** Move and check for succesful upload ***
             //echo '<p><b>' . $new_upload . '<br>';
@@ -90,7 +90,7 @@ if (isset($step1)) {
             }
 
             // *** If file is zipped, unzip it ***
-            if (strtolower(substr($new_upload, -4)) == '.zip') {
+            if (strtolower(substr($new_upload, -4)) === '.zip') {
                 $zip = new ZipArchive;
                 $res = $zip->open($new_upload);
                 if ($res === TRUE) {
@@ -99,7 +99,9 @@ if (isset($step1)) {
                     $check_gedcom = true;
                     for ($i = 0; $i < $zip->numFiles; $i++) {
                         $filename = $zip->getNameIndex($i);
-                        if (strtolower(substr($filename, -4)) != '.ged') $check_gedcom = false;
+                        if (strtolower(substr($filename, -4)) !== '.ged') {
+                            $check_gedcom = false;
+                        }
                     }
                     if ($check_gedcom) {
                         $zip->extractTo($gedcom_directory);
@@ -170,11 +172,11 @@ if (isset($step1)) {
                         <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
                     </form>
                 <?php
-                } elseif (isset($_POST['remove_gedcom_files2']) and isset($_POST['remove_confirm'])) {
+                } elseif (isset($_POST['remove_gedcom_files2']) && isset($_POST['remove_confirm'])) {
                     // *** Remove old GEDCOM files ***
                     $dh  = opendir($gedcom_directory);
                     while (false !== ($filename = readdir($dh))) {
-                        if (strtolower(substr($filename, -3)) == "ged") {
+                        if (strtolower(substr($filename, -3)) === "ged") {
                             if ($_POST['remove_gedcom_files2'] == 'gedcom_files_all') {
                                 $filenames[] = $gedcom_directory . '/' . $filename;
                             } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_month') {
@@ -189,12 +191,15 @@ if (isset($step1)) {
                         }
                     }
                     // *** Order GEDCOM files by alfabet ***
-                    if (isset($filenames)) usort($filenames, 'strnatcasecmp');
+                    if (isset($filenames)) {
+                        usort($filenames, 'strnatcasecmp');
+                    }
                     echo '<br>';
-                    for ($i = 0; $i < count($filenames); $i++) {
-                        if (strpos($filenames[$i], 'HuMo-genealogy test gedcomfile.ged') > 1)
+                    $counter = count($filenames);
+                    for ($i = 0; $i < $counter; $i++) {
+                        if (strpos($filenames[$i], 'HuMo-genealogy test gedcomfile.ged') > 1) {
                             echo '<b>' . $filenames[$i] . '</b><br>';
-                        else {
+                        } else {
                             echo $filenames[$i] . ' ' . _('GEDCOM file is REMOVED.') . '<br>';
                             unlink($filenames[$i]);
                         }
@@ -234,10 +239,14 @@ if (isset($step1)) {
 
     $dh  = opendir($gedcom_directory);
     while (false !== ($filename = readdir($dh))) {
-        if (strtolower(substr($filename, -3)) == "ged") $filenames[] = $gedcom_directory . "/" . $filename;
+        if (strtolower(substr($filename, -3)) === "ged") {
+            $filenames[] = $gedcom_directory . "/" . $filename;
+        }
     }
     // *** Order GEDCOM files by alfabet ***
-    if (isset($filenames)) usort($filenames, 'strnatcasecmp');
+    if (isset($filenames)) {
+        usort($filenames, 'strnatcasecmp');
+    }
 
     $result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
     $treegedDb = $result->fetch();
@@ -272,8 +281,8 @@ if (isset($step1)) {
                             <?= __('GEDCOM settings'); ?>
                         </button>
                     </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
+                    <div id="collapseOne" class="accordion-collapse collapse">
+                        <div class="accordion-body genealogy_search">
 
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="add_source" value="" id="add_source" <?= $humo_option["gedcom_read_add_source"] == 'y' ? 'checked' : ''; ?>>
@@ -351,8 +360,8 @@ if (isset($step1)) {
                             <?= __('GEDCOM process settings'); ?>
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
+                    <div id="collapseTwo" class="accordion-collapse collapse">
+                        <div class="accordion-body genealogy_search">
 
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="check_processed" value="" id="check_processed">
@@ -394,9 +403,13 @@ if (isset($step1)) {
                             <?php
                             // *** Controlled time-out ***
                             $time_out = 0;
-                            if ($humo_option["gedcom_read_time_out"]) $time_out = $humo_option["gedcom_read_time_out"];
+                            if ($humo_option["gedcom_read_time_out"]) {
+                                $time_out = $humo_option["gedcom_read_time_out"];
+                            }
                             if (isset($_POST['timeout_restart'])) {
-                                if (isset($_SESSION['save_process_time']) and $_SESSION['save_process_time']) $time_out = ($_SESSION['save_process_time'] - 3);
+                                if (isset($_SESSION['save_process_time']) && $_SESSION['save_process_time']) {
+                                    $time_out = ($_SESSION['save_process_time'] - 3);
+                                }
                                 echo '<b>' . __('Time-out detected! Controlled time-out setting is adjusted. Retry reading of GEDCOM with new setting.') . '</b><br>';
                             }
                             $max_time = ini_get("max_execution_time");
@@ -425,7 +438,9 @@ if (isset($step1)) {
                 // *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
                 $treetext = show_tree_text($tree_id, $selected_language);
                 $treetext2 = '';
-                if ($treetext['name']) $treetext2 = $treetext['name'];
+                if ($treetext['name']) {
+                    $treetext2 = $treetext['name'];
+                }
             ?>
                 <div class="form-check">
                     <input type="radio" value="no" name="add_tree" onchange="document.getElementById('step2').disabled = !this.checked;" class="form-check-input">
@@ -452,23 +467,33 @@ if (isset($step1)) {
 if (isset($_POST['step2'])) {
 
     $setting_value = 'n';
-    if (isset($_POST["add_source"])) $setting_value = 'y';
+    if (isset($_POST["add_source"])) {
+        $setting_value = 'y';
+    }
     $result = $db_functions->update_settings('gedcom_read_add_source', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["reassign_gedcomnumbers"])) $setting_value = 'y';
+    if (isset($_POST["reassign_gedcomnumbers"])) {
+        $setting_value = 'y';
+    }
     $result = $db_functions->update_settings('gedcom_read_reassign_gedcomnumbers', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["order_by_date"])) $setting_value = 'y';
+    if (isset($_POST["order_by_date"])) {
+        $setting_value = 'y';
+    }
     $result = $db_functions->update_settings('gedcom_read_order_by_date', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["order_by_fams"])) $setting_value = 'y';
+    if (isset($_POST["order_by_fams"])) {
+        $setting_value = 'y';
+    }
     $result = $db_functions->update_settings('gedcom_read_order_by_fams', $setting_value);
 
     $setting_value = 'n';
-    if (isset($_POST["process_geo_location"])) $setting_value = 'y';
+    if (isset($_POST["process_geo_location"])) {
+        $setting_value = 'y';
+    }
     $result = $db_functions->update_settings('gedcom_read_process_geo_location', $setting_value);
 
     if (isset($_POST['gedcom_process_pict_path'])) {
@@ -491,7 +516,7 @@ if (isset($_POST['step2'])) {
         $result = $db_functions->update_settings('gedcom_read_time_out', $_POST['time_out']);
     }
 
-    if (!isset($_POST['add_tree']) or (isset($_POST['add_tree']) and $_POST['add_tree'] == 'no')) {
+    if (!isset($_POST['add_tree']) || isset($_POST['add_tree']) && $_POST['add_tree'] == 'no') {
         $_SESSION['add_tree'] = false;
         $limit = 2500;
         $rootpathinclude = '';
@@ -886,20 +911,22 @@ if (isset($_POST['step2'])) {
         if ($nr_records > 0) {
             $loop = $nr_records / $limit;
             for ($i = 0; $i <= $loop; $i++) {
-                if ($humo_option["gedcom_read_save_pictures"] == 'y')
+                if ($humo_option["gedcom_read_save_pictures"] === 'y') {
                     $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "' AND event_kind!='picture' LIMIT " . $limit;
-                else
+                } else {
                     $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "' LIMIT " . $limit;
+                }
 
                 @$result = $dbh->query($sql);
                 echo '*';
                 ob_flush();
                 flush();
             }
-            if ($humo_option["gedcom_read_save_pictures"] == 'y')
+            if ($humo_option["gedcom_read_save_pictures"] === 'y') {
                 $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "' AND event_kind!='picture'";
-            else
+            } else {
                 $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "'";
+            }
             @$result = $dbh->query($sql);
 
             echo ' ' . __('Optimize table...');
@@ -911,7 +938,9 @@ if (isset($_POST['step2'])) {
         echo '<br>';
 
 
-        if (isset($show_gedcom_status)) echo '<b>' . __('No error messages above? In that case the tables have been created!') . '</b><br>';
+        if (isset($show_gedcom_status)) {
+            echo '<b>' . __('No error messages above? In that case the tables have been created!') . '</b><br>';
+        }
     } else {
         $_SESSION['add_tree'] = true;
         echo __('The data in this GEDCOM will be appended to the existing data in this tree!') . '<br>';
@@ -926,7 +955,7 @@ if (isset($_POST['step2'])) {
         $buffer = fgets($handle, 4096);
         $buffer = trim($buffer); // *** Strip starting spaces for Pro-gen and ending spaces for Ancestry.
         // *** Save accent kind (ASCII, ANSI, ANSEL or UTF-8) ***
-        if (substr($buffer, 0, 6) == '1 CHAR') {
+        if (substr($buffer, 0, 6) === '1 CHAR') {
             $accent = substr($buffer, 7);
             break;
         }
@@ -956,14 +985,18 @@ if (isset($_POST['step2'])) {
         <input type="hidden" name="gedcom_accent" value="<?= $accent; ?>">
         <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
         <?php
-        if (isset($_POST['check_processed']))
+        if (isset($_POST['check_processed'])) {
             echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
-        if (isset($_POST['show_gedcomnumbers']))
+        }
+        if (isset($_POST['show_gedcomnumbers'])) {
             echo '<input type="hidden" name="show_gedcomnumbers" value="' . $_POST['show_gedcomnumbers'] . '">';
-        if (isset($_POST['debug_mode']))
+        }
+        if (isset($_POST['debug_mode'])) {
             echo '<input type="hidden" name="debug_mode" value="' . $_POST['debug_mode'] . '">';
-        if (isset($_POST['time_out']))
+        }
+        if (isset($_POST['time_out'])) {
             echo '<input type="hidden" name="time_out" value="' . $_POST['time_out'] . '">';
+        }
 
         if (!isset($_POST['add_tree'])) {
             // *** Reset nr of persons and families ***
@@ -979,7 +1012,7 @@ if (isset($_POST['step2'])) {
         <input type="submit" name="step3" value="<?= __('Step'); ?> 3" class="btn btn-sm btn-success">
     </form>
 
-    <?php if (isset($_POST['add_tree']) and $_POST['add_tree'] == 'yes') { ?>
+    <?php if (isset($_POST['add_tree']) && $_POST['add_tree'] == 'yes') { ?>
         <br><br>
         <form method="post" style="display:inline" action="<?= $phpself; ?>">
             <input type="hidden" name="page" value="<?= $page; ?>">
@@ -1162,20 +1195,26 @@ if (isset($_POST['step3'])) {
 
                 // *** Find highest address gedcomnumber ***
                 // 0 @R1@ RESI
-                if (substr($line, -6, 6) == '@ RESI') {
+                if (substr($line, -6, 6) === '@ RESI') {
                     $address_gedcomnr = substr($line, 4, -6);
-                    if ($address_gedcomnr > $address_high) $address_high = $address_gedcomnr;
+                    if ($address_gedcomnr > $address_high) {
+                        $address_high = $address_gedcomnr;
+                    }
                     $_SESSION['new_address_gedcomnr'] = (int)$address_high + 1;
                     //echo 'ADDRESS: '.$address_gedcomnr.'!'.$address_high.' '.$_SESSION['new_address_gedcomnr'].'<br>';
                 }
 
                 // *** Find highest source gedcomnumber ***
                 // 0 @S189@ SOUR
-                if (substr($line, -6, 6) == '@ SOUR') {
+                if (substr($line, -6, 6) === '@ SOUR') {
                     $source_gedcomnr = substr($line, 4, -6);
-                    if ($source_gedcomnr > $source_high) $source_high = $source_gedcomnr;
+                    if ($source_gedcomnr > $source_high) {
+                        $source_high = $source_gedcomnr;
+                    }
                     // *** Gedcom torture file uses: 0 @SOURCE1@ SOUR ***
-                    if (is_int($source_gedcomnr)) $_SESSION['new_source_gedcomnr'] = $source_high + 1;
+                    if (is_int($source_gedcomnr)) {
+                        $_SESSION['new_source_gedcomnr'] = $source_high + 1;
+                    }
                     //echo 'SOURCE: '.$source_gedcomnr.'!'.$source_high.' '.$_SESSION['new_source_gedcomnr'].'<br>';
                 }
 
@@ -1344,7 +1383,7 @@ if (isset($_POST['step3'])) {
         // *** Controlled timeout pointers, save last pointer before a "0 @" line ***
         $previous_pointer = $last_pointer;
         $last_pointer = ftell($handle);
-        if (substr($buffer, 0, 3) == '0 @') {
+        if (substr($buffer, 0, 3) === '0 @') {
             $save_pointer = $previous_pointer;
         }
 
@@ -1372,7 +1411,7 @@ if (isset($_POST['step3'])) {
         }
 
         // *** Strip all spaces for Ancestry GEDCOM ***
-        if (isset($gen_program) and $gen_program == 'Ancestry.com Family Trees') {
+        if (isset($gen_program) && $gen_program == 'Ancestry.com Family Trees') {
             $buffer = rtrim($buffer, " ");
         }
 
@@ -1384,13 +1423,13 @@ if (isset($_POST['step3'])) {
                 $buffer = substr($buffer, 3);
             }
         }
-        if (substr($buffer, 0, 3) == '0 @' or $buffer == "0 TRLR") {
+        if (substr($buffer, 0, 3) === '0 @' || $buffer === "0 TRLR") {
             $start_gedcom = 1;
         }
 
         // *** Start reading GEDCOM parts ***
         if ($start_gedcom) {
-            if ($process_gedcom == "person") {
+            if ($process_gedcom === "person") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_person($buffer2);
                 $process_gedcom = "";
@@ -1405,17 +1444,17 @@ if (isset($_POST['step3'])) {
                 //	echo ' '.$buffer;
                 //if ($calc_memory>100){ echo '!!</b>'; }
 
-            } elseif ($process_gedcom == "family") {
+            } elseif ($process_gedcom === "family") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_family($buffer2, 0, 0);
                 $process_gedcom = "";
                 $buffer2 = "";
-            } elseif ($process_gedcom == "text") {
+            } elseif ($process_gedcom === "text") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_text($buffer2);
                 $process_gedcom = "";
                 $buffer2 = "";
-            } elseif ($process_gedcom == "source") {
+            } elseif ($process_gedcom === "source") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_source($buffer2);
                 $process_gedcom = "";
@@ -1423,17 +1462,17 @@ if (isset($_POST['step3'])) {
             }
 
             // *** Repository ***
-            elseif ($process_gedcom == "repository") {
+            elseif ($process_gedcom === "repository") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_repository($buffer2);
                 $process_gedcom = "";
                 $buffer2 = "";
-            } elseif ($process_gedcom == "address") {
+            } elseif ($process_gedcom === "address") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_address($buffer2);
                 $process_gedcom = "";
                 $buffer2 = "";
-            } elseif ($process_gedcom == "object") {
+            } elseif ($process_gedcom === "object") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_object($buffer2);
                 $process_gedcom = "";
@@ -1442,29 +1481,29 @@ if (isset($_POST['step3'])) {
         }
 
         // *** CHECK ***
-        if (substr($buffer, -6, 6) == '@ INDI') {
+        if (substr($buffer, -6, 6) === '@ INDI') {
             $process_gedcom = "person";
             $buffer2 = "";
-        } elseif (substr($buffer, -5, 5) == '@ FAM') {
+        } elseif (substr($buffer, -5, 5) === '@ FAM') {
             $process_gedcom = "family";
             $buffer2 = "";
-        } elseif (substr($buffer, 0, 3) == '0 @') {
+        } elseif (substr($buffer, 0, 3) === '0 @') {
             // *** Aldfaer text: 0 @N954@ NOTE ***
             if (strpos($buffer, '@ NOTE') > 1) {
                 $process_gedcom = "text";
                 $buffer2 = "";
             }
 
-            if (substr($buffer, -6, 6) == '@ SOUR') {
+            if (substr($buffer, -6, 6) === '@ SOUR') {
                 $process_gedcom = "source";
                 $buffer2 = "";
-            } elseif (substr($buffer, -6, 6) == '@ REPO') {
+            } elseif (substr($buffer, -6, 6) === '@ REPO') {
                 $process_gedcom = "repository";
                 $buffer2 = "";
-            } elseif (substr($buffer, -6, 6) == '@ RESI') {
+            } elseif (substr($buffer, -6, 6) === '@ RESI') {
                 $process_gedcom = "address";
                 $buffer2 = "";
-            } elseif (substr($buffer, -6, 6) == '@ OBJE') {
+            } elseif (substr($buffer, -6, 6) === '@ OBJE') {
                 $process_gedcom = "object";
                 $buffer2 = "";
             }
@@ -1473,10 +1512,10 @@ if (isset($_POST['step3'])) {
         $buffer2 = $buffer2 . $buffer . "\n";
 
         // *** Save level0 ***
-        if (substr($buffer, 0, 1) == '0') {
+        if (substr($buffer, 0, 1) === '0') {
             $level0 = substr($buffer, 2, 6);
         }
-        if (substr($buffer, 0, 1) == '1') {
+        if (substr($buffer, 0, 1) === '1') {
             $level1 = substr($buffer, 2, 6);
         }
 
@@ -1488,9 +1527,9 @@ if (isset($_POST['step3'])) {
         //	0 HEAD
         //	1 SOUR Haza-Data
         //	2 VERS 7.2
-        if ($level0 == 'HEAD') {
+        if ($level0 === 'HEAD') {
             //if (substr($buffer,2,4)=='SOUR'){
-            if (substr($buffer, 0, 6) == '1 SOUR') {
+            if (substr($buffer, 0, 6) === '1 SOUR') {
                 $gen_program = substr($buffer, 7);
                 $_SESSION['save_gen_program'] = $gen_program;
                 echo '<br><br>' . __('GEDCOM file') . ': <b>' . $gen_program . '</b>, ';
@@ -1505,7 +1544,7 @@ if (isset($_POST['step3'])) {
             }
 
             // *** First "VERS" normally is program version ***
-            if ($gen_program_version == '' and substr($buffer, 2, 4) == 'VERS') {
+            if ($gen_program_version == '' && substr($buffer, 2, 4) === 'VERS') {
                 $gen_program_version = substr($buffer, 7);
                 $_SESSION['save_gen_program_version'] = $gen_program_version;
             }
@@ -1661,7 +1700,8 @@ if (isset($_POST['step3'])) {
         echo '<tr><th>nr.</th><th colspan=5>' . __('Non-processed items') . '</th></tr>';
         echo '<tr><th><br></th><th>' . __('Level') . ' 0</th><th>' . __('Level') . ' 1</th><th>' . __('Level') . ' 2</th><th>' . __('Level') . ' 3</th><th>' . __('text') . '</th></tr>';
         if (isset($not_processed)) {
-            for ($i = 0; $i < count($not_processed); $i++) {
+            $counter = count($not_processed);
+            for ($i = 0; $i < $counter; $i++) {
                 echo '<tr><td>' . ($i + 1) . '</td><td>' . $not_processed[$i] . '</td></tr>' . "\n";
             }
         } else {
@@ -1765,7 +1805,7 @@ if (isset($_POST['step4'])) {
 
         $count_fam = $dbh->query("SELECT COUNT(fam_id) FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
         $count_famDb = $count_fam->fetch();
-        $nr_records = $nr_records + $count_famDb[0];
+        $nr_records += $count_famDb[0];
 
         $perc = 0;
         if ($nr_records > 0) {
@@ -1822,7 +1862,7 @@ if (isset($_POST['step4'])) {
             $pers_text = '';
             //TODO use array to check for first character?
             //if (substr($personDb->pers_text, 0, 1) == '@') {
-            if ($personDb->pers_text and $personDb->pers_text[0] == '@') {
+            if ($personDb->pers_text && $personDb->pers_text[0] == '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_text, 1, -1));
                 if ($search_textDb) {
@@ -1857,42 +1897,52 @@ if (isset($_POST['step4'])) {
             }
 
             $pers_name_text = '';
-            if (substr($personDb->pers_name_text, 0, 1) == '@') {
+            if (substr($personDb->pers_name_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_name_text, 1, -1));
-                if ($search_textDb) $pers_name_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $pers_name_text = $search_textDb->text_text;
+                }
             }
 
             $pers_birth_text = '';
-            if (substr($personDb->pers_birth_text, 0, 1) == '@') {
+            if (substr($personDb->pers_birth_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_birth_text, 1, -1));
-                if ($search_textDb) $pers_birth_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $pers_birth_text = $search_textDb->text_text;
+                }
             }
 
             $pers_bapt_text = '';
-            if (substr($personDb->pers_bapt_text, 0, 1) == '@') {
+            if (substr($personDb->pers_bapt_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_bapt_text, 1, -1));
-                if ($search_textDb) $pers_bapt_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $pers_bapt_text = $search_textDb->text_text;
+                }
             }
 
             $pers_death_text = '';
-            if (substr($personDb->pers_death_text, 0, 1) == '@') {
+            if (substr($personDb->pers_death_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_death_text, 1, -1));
-                if ($search_textDb) $pers_death_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $pers_death_text = $search_textDb->text_text;
+                }
             }
 
             $pers_buried_text = '';
-            if (substr($personDb->pers_buried_text, 0, 1) == '@') {
+            if (substr($personDb->pers_buried_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_buried_text, 1, -1));
-                if ($search_textDb) $pers_buried_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $pers_buried_text = $search_textDb->text_text;
+                }
             }
 
             // *** Save all standard person texts ***
-            if ($pers_text or $pers_name_text or $pers_birth_text or $pers_bapt_text or $pers_death_text or $pers_buried_text) {
+            if ($pers_text || $pers_name_text || $pers_birth_text || $pers_bapt_text || $pers_death_text || $pers_buried_text) {
                 $first_item = true;
                 // *** Remark: no need to check for fam_tree_id because fam_id is used ***
                 $sql = "UPDATE humo_persons SET ";
@@ -1901,27 +1951,37 @@ if (isset($_POST['step4'])) {
                     $sql .= "pers_text='" . safe_text_db($pers_text) . "'";
                 }
                 if ($pers_name_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "pers_name_text='" . safe_text_db($pers_name_text) . "'";
                 }
                 if ($pers_birth_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "pers_birth_text='" . safe_text_db($pers_birth_text) . "'";
                 }
                 if ($pers_bapt_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "pers_bapt_text='" . safe_text_db($pers_bapt_text) . "'";
                 }
                 if ($pers_death_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "pers_death_text='" . safe_text_db($pers_death_text) . "'";
                 }
                 if ($pers_buried_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "pers_buried_text='" . safe_text_db($pers_buried_text) . "'";
                 }
@@ -2004,28 +2064,34 @@ if (isset($_POST['step4'])) {
             $famDb = $fam_qry->fetch(PDO::FETCH_OBJ);
 
             $fam_text = '';
-            if (substr($famDb->fam_text, 0, 1) == '@') {
+            if (substr($famDb->fam_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_text, 1, -1));
-                if ($search_textDb) $fam_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $fam_text = $search_textDb->text_text;
+                }
             }
 
             $fam_relation_text = '';
-            if (substr($famDb->fam_relation_text, 0, 1) == '@') {
+            if (substr($famDb->fam_relation_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_relation_text, 1, -1));
-                if ($search_textDb) $fam_relation_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $fam_relation_text = $search_textDb->text_text;
+                }
             }
 
             $fam_marr_notice_text = '';
-            if (substr($famDb->fam_marr_notice_text, 0, 1) == '@') {
+            if (substr($famDb->fam_marr_notice_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_notice_text, 1, -1));
-                if ($search_textDb) $fam_marr_notice_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $fam_marr_notice_text = $search_textDb->text_text;
+                }
             }
 
             $fam_marr_text = '';
-            if (substr($famDb->fam_marr_text, 0, 1) == '@') {
+            if (substr($famDb->fam_marr_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_text, 1, -1));
                 if ($search_textDb) {
@@ -2054,30 +2120,35 @@ if (isset($_POST['step4'])) {
             }
 
             $fam_marr_church_notice_text = '';
-            if (substr($famDb->fam_marr_church_notice_text, 0, 1) == '@') {
+            if (substr($famDb->fam_marr_church_notice_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_church_notice_text, 1, -1));
-                if ($search_textDb) $fam_marr_church_notice_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $fam_marr_church_notice_text = $search_textDb->text_text;
+                }
             }
 
             $fam_marr_church_text = '';
-            if (substr($famDb->fam_marr_church_text, 0, 1) == '@') {
+            if (substr($famDb->fam_marr_church_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_church_text, 1, -1));
-                if ($search_textDb) $fam_marr_church_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $fam_marr_church_text = $search_textDb->text_text;
+                }
             }
 
             $fam_div_text = '';
-            if (substr($famDb->fam_div_text, 0, 1) == '@') {
+            if (substr($famDb->fam_div_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_div_text, 1, -1));
-                if ($search_textDb) $fam_div_text = $search_textDb->text_text;
+                if ($search_textDb) {
+                    $fam_div_text = $search_textDb->text_text;
+                }
             }
 
             // *** Save all standard family texts ***
             if (
-                $fam_text or $fam_relation_text or $fam_marr_notice_text or $fam_marr_text or $fam_marr_church_notice_text
-                or $fam_marr_church_text or $fam_div_text
+                $fam_text || $fam_relation_text || $fam_marr_notice_text || $fam_marr_text || $fam_marr_church_notice_text || $fam_marr_church_text || $fam_div_text
             ) {
                 $first_item = true;
                 // *** Remark: no need to check for fam_tree_id because fam_id is used ***
@@ -2088,37 +2159,49 @@ if (isset($_POST['step4'])) {
                 }
 
                 if ($fam_relation_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "fam_relation_text='" . safe_text_db($fam_relation_text) . "'";
                 }
 
                 if ($fam_marr_notice_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "fam_marr_notice_text='" . safe_text_db($fam_marr_notice_text) . "'";
                 }
 
                 if ($fam_marr_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "fam_marr_text='" . safe_text_db($fam_marr_text) . "'";
                 }
 
                 if ($fam_marr_church_notice_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "fam_marr_church_notice_text='" . safe_text_db($fam_marr_church_notice_text) . "'";
                 }
 
                 if ($fam_marr_church_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "fam_marr_church_text='" . safe_text_db($fam_marr_church_text) . "'";
                 }
 
                 if ($fam_div_text) {
-                    if (!$first_item) $sql .= ", ";
+                    if (!$first_item) {
+                        $sql .= ", ";
+                    }
                     $first_item = false;
                     $sql .= "fam_div_text='" . safe_text_db($fam_div_text) . "'";
                 }
@@ -2254,7 +2337,7 @@ if (isset($_POST['step4'])) {
 
     // if a humo_location table exists, refresh the location_status column
     $res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-    if ($humo_option["gedcom_read_process_geo_location"] == 'y' and $res->rowCount()) {
+    if ($humo_option["gedcom_read_process_geo_location"] == 'y' && $res->rowCount()) {
 
         // after import, and ONLY for people with a humo_location table for googlemaps, refresh the location_status fields
         echo '<br>&gt;&gt;&gt; ' . __('Updating location database...');
@@ -2287,16 +2370,16 @@ if (isset($_POST['step4'])) {
             $result = $dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'");
 
             while ($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
-                if (isset($loca_array[$resultDb->pers_birth_place]) and strpos($loca_array[$resultDb->pers_birth_place], $tree_prefDb->tree_prefix . "birth ") === false) {
+                if (isset($loca_array[$resultDb->pers_birth_place]) && strpos($loca_array[$resultDb->pers_birth_place], $tree_prefDb->tree_prefix . "birth ") === false) {
                     $loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix . "birth ";
                 }
-                if (isset($loca_array[$resultDb->pers_bapt_place]) and strpos($loca_array[$resultDb->pers_bapt_place], $tree_prefDb->tree_prefix . "bapt ") === false) {
+                if (isset($loca_array[$resultDb->pers_bapt_place]) && strpos($loca_array[$resultDb->pers_bapt_place], $tree_prefDb->tree_prefix . "bapt ") === false) {
                     $loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix . "bapt ";
                 }
-                if (isset($loca_array[$resultDb->pers_death_place]) and strpos($loca_array[$resultDb->pers_death_place], $tree_prefDb->tree_prefix . "death ") === false) {
+                if (isset($loca_array[$resultDb->pers_death_place]) && strpos($loca_array[$resultDb->pers_death_place], $tree_prefDb->tree_prefix . "death ") === false) {
                     $loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix . "death ";
                 }
-                if (isset($loca_array[$resultDb->pers_buried_place]) and strpos($loca_array[$resultDb->pers_buried_place], $tree_prefDb->tree_prefix . "buried ") === false) {
+                if (isset($loca_array[$resultDb->pers_buried_place]) && strpos($loca_array[$resultDb->pers_buried_place], $tree_prefDb->tree_prefix . "buried ") === false) {
                     $loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix . "buried ";
                 }
             }
@@ -2328,8 +2411,7 @@ if (isset($_POST['step4'])) {
             $text = str_replace("OCT", "10", $text);
             $text = str_replace("NOV", "11", $text);
             $text = str_replace("DEC", "12", $text);
-            $returnstring = substr($text, -4) . substr(substr($text, -7), 0, 2) . substr($text, 0, 2);
-            return $returnstring;
+            return substr($text, -4) . substr(substr($text, -7), 0, 2) . substr($text, 0, 2);
             // Solve maybe later: date_string 2 mei is smaller then 10 may (2 birth in 1 month is rare...).
         }
 
@@ -2394,8 +2476,7 @@ if (isset($_POST['step4'])) {
             $text = str_replace("OCT", "10", $text);
             $text = str_replace("NOV", "11", $text);
             $text = str_replace("DEC", "12", $text);
-            $returnstring = substr($text, -4) . substr(substr($text, -7), 0, 2) . substr($text, 0, 2);
-            return $returnstring;
+            return substr($text, -4) . substr(substr($text, -7), 0, 2) . substr($text, 0, 2);
             // Solve maybe later: date_string 2 mei is smaller then 10 may (2 marriages in 1 month is rare...).
         }
 
@@ -2522,7 +2603,8 @@ if (isset($_POST['step4'])) {
                     $media_items = substr($media_items, 0, $second);
 
                     $media_items_array = explode(',', $media_items);
-                    for ($i = 0; $i < count($media_items_array); $i++) {
+                    $count_media = count($media_items_array);
+                    for ($i = 0; $i < $count_media; $i++) {
                         $event_sql = "UPDATE humo_events SET
                             event_connect_id='" . $connectDb->connect_connect_id . "'
                             WHERE event_id='" . substr($media_items_array[$i], 5) . "'";

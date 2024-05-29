@@ -37,7 +37,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                     <?php } else { ?>
                         <a href="<?= $path; ?>month=<?= $month . $data["url_end"]; ?>"><?= __($month); ?></a>
                     <?php } ?>
-                    <?php if ($month != 'dec') echo '&#124;'; ?>
+                    <?php if ($month !== 'dec') {
+                        echo '&#124;';
+                    } ?>
                 <?php } ?>
             </div>
 
@@ -69,9 +71,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
         $privcount = 0; // *** Count privacy persons ***
 
         // *** Build query ***
-        $sql = "SELECT *,
-            abs(substring( pers_birth_date,1,2 )) as birth_day,
-            substring( pers_birth_date,-4 ) as birth_year
+        $sql = "SELECT *, abs(substring( pers_birth_date,1,2 )) as birth_day, substring( pers_birth_date,-4 ) as birth_year
             FROM humo_persons
             WHERE pers_tree_id = :tree_id AND (substring( pers_birth_date, 4,3) = :month
             OR substring( pers_birth_date, 3,3) = :month)
@@ -113,7 +113,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 
                     if ($death_date != '') {
                         $died = language_date($death_date);
-                    } else if ($age > $max_age) {
+                    } elseif ($age > $max_age) {
                         $died = '? ';
                     } else {
                         $died = '  ';
@@ -134,8 +134,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                         </td>
                     </tr>
             <?php
-                } else
+                } else {
                     $privcount++;
+                }
             }
             ?>
         </table>
@@ -162,9 +163,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 
             // *** Build query ***
             if ($data["civil"]) {
-                $sql = "SELECT *,
-                    abs(substring( fam_marr_date,1,2 )) as marr_day,
-                    substring( fam_marr_date,-4 ) as marr_year
+                $sql = "SELECT *, abs(substring( fam_marr_date,1,2 )) as marr_day, substring( fam_marr_date,-4 ) as marr_year
                     FROM humo_families
                     WHERE fam_tree_id = :tree_id AND (substring( fam_marr_date, 4,3) = :month
                     OR substring( fam_marr_date, 3,3) = :month)
@@ -184,7 +183,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                     $wed[$cnt]['marday'] = $record->marr_day . ' ' . $data["month"];
                     $wed[$cnt]['maryr'] = $record->marr_year;
                     $day = $record->marr_day;
-                    if (strlen($record->marr_day) == 1) $day = "0" . $day;
+                    if (strlen($record->marr_day) == 1) {
+                        $day = "0" . $day;
+                    }
                     $wed[$cnt]['dayyear'] = $day . $record->marr_year;
                     $wed[$cnt]['man'] = $record->fam_man;
                     $wed[$cnt]['woman'] = $record->fam_woman;
@@ -195,9 +196,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 
 
             if ($data["relig"]) {
-                $sql = "SELECT *,
-                    abs(substring( fam_marr_church_date,1,2 )) as marr_day,
-                    substring( fam_marr_church_date,-4 ) as marr_year
+                $sql = "SELECT *, abs(substring( fam_marr_church_date,1,2 )) as marr_day, substring( fam_marr_church_date,-4 ) as marr_year
                     FROM humo_families
                     WHERE fam_tree_id = :tree_id AND (substring( fam_marr_church_date, 4,3) = :month
                     OR substring( fam_marr_church_date, 3,3) = :month)
@@ -215,7 +214,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                     $wed[$cnt]['marday'] = $record->marr_day . ' ' . $data["month"];
                     $wed[$cnt]['maryr'] = $record->marr_year;
                     $day = $record->marr_day;
-                    if (strlen($record->marr_day) == 1) $day = "0" . $day;  // for sorting array
+                    if (strlen($record->marr_day) == 1) {
+                        $day = "0" . $day;
+                    }  // for sorting array
                     $wed[$cnt]['dayyear'] = $day . $record->marr_year;
                     $wed[$cnt]['man'] = $record->fam_man;
                     $wed[$cnt]['woman'] = $record->fam_woman;
@@ -227,7 +228,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 
             if (isset($wed) and count($wed) > 0) {
                 // sort the array to mix civill and religious
-                if ($data["civil"] and $data["relig"]) {
+                if ($data["civil"] && $data["relig"]) {
                     function custom_sort($a, $b)
                     {
                         //return $a['dayyear']>$b['dayyear']; // DEPRECATED in PHP 8.
@@ -243,9 +244,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                     @$manDb = $db_functions->get_person($value['man']);
                     // *** Use class to process person ***
                     $man_cls = new person_cls($manDb);
-                    if (!$value['man'])
+                    if (!$value['man']) {
                         $man_name = 'N.N.';
-                    else {
+                    } else {
                         $name = $man_cls->person_name($manDb);
 
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -258,9 +259,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                     @$womanDb = $db_functions->get_person($value['woman']);
                     // *** Use class to process person ***
                     $woman_cls = new person_cls($womanDb);
-                    if (!$value['woman'])
+                    if (!$value['woman']) {
                         $woman_name = 'N.N.';
-                    else {
+                    } else {
                         $name = $woman_cls->person_name($womanDb);
 
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -272,7 +273,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                     $calendar_day = $value['calday'];
                     $marr_day = $value['marday'];
 
-                    if (!$man_cls->privacy and !$woman_cls->privacy) {
+                    if (!$man_cls->privacy && !$woman_cls->privacy) {
             ?>
                         <!-- Highlight present day -->
                         <tr <?php if ($marr_day == $data["today"]) echo 'bgcolor="#BFBFBF"'; ?>>
@@ -285,8 +286,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                             <td align="left"><?= $man_name . ' & ' . $woman_name; ?></td>
                         </tr>
             <?php
-                    } else
+                    } else {
                         $privcount++;
+                    }
                 }
                 unset($wed);
             } else {

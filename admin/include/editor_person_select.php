@@ -39,13 +39,13 @@ if ($_GET['person_item'] == 'marriage_witness') {
 if ($_GET['person_item'] == 'add_partner') {
     $form = 'form_entire';
 }
-if (substr($_GET['person_item'], 0, 10) == 'add_child_') {
+if (substr($_GET['person_item'], 0, 10) === 'add_child_') {
     $form = 'form_entire';
 }
 
 $man_gedcomnumber = safe_text_db($_GET['person']);
 
-if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10) != 'add_child_') {
+if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10) !== 'add_child_') {
     echo '
         <script>
         function select_item(item){
@@ -65,7 +65,7 @@ if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10
         $pers_status = "partner";
         $trname = "pmain";
         $searnr = "psearp";
-    } elseif (substr($_GET['person_item'], 0, 10) == 'add_child_') {
+    } elseif (substr($_GET['person_item'], 0, 10) === 'add_child_') {
         $pers_status = "child";
         $chnr = substr($_GET['person_item'], 10);
         $trname = "child" . $chnr;
@@ -100,7 +100,9 @@ if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10
 }
 
 echo '<form method="POST" action="index.php?page=editor_person_select&person_item=' . $_GET['person_item'] . '&person=' . $_GET['person'];
-if (isset($_GET['event_row'])) echo '&event_row=' . $_GET['event_row'];
+if (isset($_GET['event_row'])) {
+    echo '&event_row=' . $_GET['event_row'];
+}
 echo '&tree_id=' . $tree_id . '" style="display : inline;">';
 $search_quicksearch_man = '';
 if (isset($_POST['search_quicksearch_man'])) {
@@ -109,7 +111,9 @@ if (isset($_POST['search_quicksearch_man'])) {
 echo ' <input type="text" name="search_quicksearch_man" placeholder="' . __('Name') . '" value="' . $search_quicksearch_man . '" size="15">';
 
 $search_man_id = '';
-if (isset($_POST['search_man_id'])) $search_man_id = safe_text_db($_POST['search_man_id']);
+if (isset($_POST['search_man_id'])) {
+    $search_man_id = safe_text_db($_POST['search_man_id']);
+}
 echo __('or ID:') . ' <input type="text" name="search_man_id" value="' . $search_man_id . '" size="5">';
 
 echo ' <input type="submit" name="submit" value="' . __('Search') . '">';
@@ -131,7 +135,7 @@ if ($search_quicksearch_man != '') {
         ORDER BY pers_lastname, pers_firstname";
     $person_result = $dbh->query($person_qry);
 } elseif ($search_man_id != '') {
-    if (substr($search_man_id, 0, 1) != "i" and substr($search_man_id, 0, 1) != "I") {
+    if (substr($search_man_id, 0, 1) !== "i" && substr($search_man_id, 0, 1) !== "I") {
         $search_man_id = "I" . $search_man_id;
     } //make entry "48" into "I48"
     $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $search_man_id . "'";
@@ -146,10 +150,12 @@ if ($search_quicksearch_man != '') {
 include(__DIR__ . '/editor_cls.php');
 $editor_cls = new editor_cls;
 
-if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10) != 'add_child_') {
+if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10) !== 'add_child_') {
     while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
         echo '<a href="" onClick=\'return select_item("' . $person->pers_gedcomnumber . '")\'>' . $editor_cls->show_selected_person($person) . '</a>';
-        if ($person->pers_famc) echo ' (' . __('Parents') . ' ' . $person->pers_famc . ')';
+        if ($person->pers_famc) {
+            echo ' (' . __('Parents') . ' ' . $person->pers_famc . ')';
+        }
         echo '<br>';
     }
 } else {
@@ -158,7 +164,7 @@ if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10
     while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
         $bdate_arr = explode(" ", $person->pers_birth_date);
         //if(is_numeric(substr($bdate_arr[0],0,1))===false){ $dateprefix = $bdate_arr[0]." "; $dateself = substr($person->pers_birth_date,strpos($person->pers_birth_date," ")+1);}
-        if (substr($bdate_arr[0], 0, 3) == "BEF" or substr($bdate_arr[0], 0, 3) == "AFT" or substr($bdate_arr[0], 0, 3) == "ABT" or substr($bdate_arr[0], 0, 3) == "BET") {
+        if (substr($bdate_arr[0], 0, 3) === "BEF" || substr($bdate_arr[0], 0, 3) === "AFT" || substr($bdate_arr[0], 0, 3) === "ABT" || substr($bdate_arr[0], 0, 3) === "BET") {
             $dateprefix = $bdate_arr[0] . " ";
             $dateself = substr($person->pers_birth_date, strpos($person->pers_birth_date, " ") + 1);
         } else {
@@ -167,7 +173,7 @@ if ($_GET['person_item'] != 'add_partner' and substr($_GET['person_item'], 0, 10
         }
 
         $ddate_arr = explode(" ", $person->pers_death_date);
-        if (substr($ddate_arr[0], 0, 3) == "BEF" or substr($ddate_arr[0], 0, 3) == "AFT" or substr($ddate_arr[0], 0, 3) == "ABT" or substr($ddate_arr[0], 0, 3) == "BET") {
+        if (substr($ddate_arr[0], 0, 3) === "BEF" || substr($ddate_arr[0], 0, 3) === "AFT" || substr($ddate_arr[0], 0, 3) === "ABT" || substr($ddate_arr[0], 0, 3) === "BET") {
             $dateprefix2 = $ddate_arr[0] . " ";
             $dateself2 = substr($person->pers_death_date, strpos($person->pers_death_date, " ") + 1);
         } else {

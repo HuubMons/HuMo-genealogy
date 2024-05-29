@@ -21,7 +21,7 @@
 if (!isset($last_name)) {
     $last_name = 'a'; // *** Default first_character ***
 }
-if (isset($_GET['last_name']) and $_GET['last_name'] and is_string($_GET['last_name'])) {
+if (isset($_GET['last_name']) && $_GET['last_name'] && is_string($_GET['last_name'])) {
     $last_name = safe_text_db($_GET['last_name']);
 }
 
@@ -147,10 +147,14 @@ if ($user['group_kindindex'] == "j") {
 }
 
 // *** Add limit to query (results per page) ***
-if ($maxnames != '999') $personqry .= " LIMIT " . $item . "," . $maxnames;
+if ($maxnames != '999') {
+    $personqry .= " LIMIT " . $item . "," . $maxnames;
+}
 $person = $dbh->query($personqry);
 while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
-    if ($personDb->pers_lastname == '') $personDb->pers_lastname = '...';
+    if ($personDb->pers_lastname == '') {
+        $personDb->pers_lastname = '...';
+    }
     $freq_last_names[] = $personDb->pers_lastname;
     $freq_pers_prefix[] = $personDb->pers_prefix;
     $freq_count_last_names[] = $personDb->count_last_names;
@@ -158,7 +162,9 @@ while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
         $number_high = $personDb->count_last_names;
     }
 }
-if (isset($freq_last_names)) $row = ceil(count($freq_last_names) / $maxcols);
+if (isset($freq_last_names)) {
+    $row = ceil(count($freq_last_names) / $maxcols);
+}
 
 // *** Total number of persons for multiple pages ***
 //if ($count_qry){
@@ -169,14 +175,16 @@ $result = $dbh->query($count_qry);
 $count_persons = $result->rowCount();
 //}
 //else{
-//		// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-//		$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
-//		$rows = $result->fetch();
-//		$count_persons = $rows['found_rows'];
+//      // *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
+//      $result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
+//      $rows = $result->fetch();
+//      $count_persons = $rows['found_rows'];
 //}
 
 // *** If number of displayed surnames is "ALL" change value into number of surnames ***
-if ($nr_persons == 'ALL') $nr_persons = $count_persons;
+if ($nr_persons == 'ALL') {
+    $nr_persons = $count_persons;
+}
 
 if ($humo_option["url_rewrite"] == "j") {
     $url = $uri_path . 'list_names/' . $tree_id . '/' . $last_name;

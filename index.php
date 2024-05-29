@@ -106,12 +106,12 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         $valid_user = true;
 
         // *** 2FA is enabled, so check 2FA code ***
-        if (isset($resultDb->user_2fa_enabled) and $resultDb->user_2fa_enabled) {
+        if (isset($resultDb->user_2fa_enabled) && $resultDb->user_2fa_enabled) {
             $valid_user = false;
             $fault = true;
             include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
 
-            if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
+            if ($_POST['2fa_code'] && is_numeric($_POST['2fa_code'])) {
                 $Authenticator = new Authenticator();
                 $checkResult = $Authenticator->verifyCode($resultDb->user_2fa_auth_secret, $_POST['2fa_code'], 2);        // 2 = 2*30sec clock tolerance
                 if ($checkResult) {
@@ -135,11 +135,14 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                 $group_edit_trees = $groepDb->group_edit_trees;
             }
             // *** Edit family trees [USER SETTING] ***
-            if (isset($resultDb->user_edit_trees) and $resultDb->user_edit_trees) {
-                if ($group_edit_trees) $group_edit_trees .= ';' . $resultDb->user_edit_trees;
-                else $group_edit_trees = $resultDb->user_edit_trees;
+            if (isset($resultDb->user_edit_trees) && $resultDb->user_edit_trees) {
+                if ($group_edit_trees) {
+                    $group_edit_trees .= ';' . $resultDb->user_edit_trees;
+                } else {
+                    $group_edit_trees = $resultDb->user_edit_trees;
+                }
             }
-            if ($groepDb->group_admin != 'j' and $group_edit_trees == '') {
+            if ($groepDb->group_admin != 'j' && $group_edit_trees == '') {
                 // *** User is not an administrator or editor ***
                 //echo __('Access to admin pages is not allowed.');
                 //exit;
@@ -192,7 +195,7 @@ if ($language["dir"] == "rtl") {
     $rtlmarker = "rtl";
     $alignmarker = "right";
 }
-if (isset($screen_mode) and $screen_mode == "PDF") {
+if (isset($screen_mode) && $screen_mode == "PDF") {
     $dirmark1 = '';
     $dirmark2 = '';
 }
@@ -233,7 +236,7 @@ if (isset($matchedRoute['page'])) {
         $select_tree_id = $matchedRoute['select_tree_id'];
     }
     // *** Used for list_names ***
-    if (isset($matchedRoute['last_name']) and is_string($matchedRoute['last_name'])) {
+    if (isset($matchedRoute['last_name']) && is_string($matchedRoute['last_name'])) {
         $last_name = $matchedRoute['last_name'];
     }
     // *** Used for source ***
@@ -252,36 +255,40 @@ if (isset($matchedRoute['page'])) {
 // *** Family tree choice ***
 global $database;
 $database = '';
-if (isset($_GET["database"])) $database = $_GET["database"];
-if (isset($_POST["database"])) $database = $_POST["database"];
+if (isset($_GET["database"])) {
+    $database = $_GET["database"];
+}
+if (isset($_POST["database"])) {
+    $database = $_POST["database"];
+}
 
 // *** Use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
-if (isset($_GET["tree_id"])) $select_tree_id = $_GET["tree_id"];
-if (isset($_POST["tree_id"])) $select_tree_id = $_POST["tree_id"];
-if (isset($select_tree_id) and is_numeric($select_tree_id) and $select_tree_id) {
+if (isset($_GET["tree_id"])) {
+    $select_tree_id = $_GET["tree_id"];
+}
+if (isset($_POST["tree_id"])) {
+    $select_tree_id = $_POST["tree_id"];
+}
+if (isset($select_tree_id) && is_numeric($select_tree_id) && $select_tree_id) {
     // *** Check if family tree really exists ***
     $dataDb = $db_functions->get_tree($select_tree_id);
-    if ($dataDb) {
-        if ($select_tree_id == $dataDb->tree_id) {
-            $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
-            $database = $dataDb->tree_prefix;
-        }
+    if ($dataDb && $select_tree_id == $dataDb->tree_id) {
+        $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+        $database = $dataDb->tree_prefix;
     }
 }
 
 // *** For example: database=humo2_ ***
-if (isset($database) and is_string($database) and $database) {
+if (isset($database) && is_string($database) && $database) {
     // *** Check if family tree really exists ***
     $dataDb = $db_functions->get_tree($database);
-    if ($dataDb) {
-        if ($database == $dataDb->tree_prefix) {
-            $_SESSION['tree_prefix'] = $database;
-        }
+    if ($dataDb && $database == $dataDb->tree_prefix) {
+        $_SESSION['tree_prefix'] = $database;
     }
 }
 
 // *** No family tree selected yet ***
-if (!isset($_SESSION["tree_prefix"]) or $_SESSION['tree_prefix'] == '') {
+if (!isset($_SESSION["tree_prefix"]) || $_SESSION['tree_prefix'] == '') {
     $_SESSION['tree_prefix'] = ''; // *** If all trees are blocked then session is empty ***
 
     // *** Find first family tree that's not blocked for this usergroup ***
@@ -290,7 +297,9 @@ if (!isset($_SESSION["tree_prefix"]) or $_SESSION['tree_prefix'] == '') {
         // *** Check is family tree is showed or hidden for user group ***
         $hide_tree_array = explode(";", $user['group_hide_trees']);
         $hide_tree = false;
-        if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
+        if (in_array($dataDb->tree_id, $hide_tree_array)) {
+            $hide_tree = true;
+        }
         if ($hide_tree == false) {
             $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
             break;
@@ -302,7 +311,9 @@ if (!isset($_SESSION["tree_prefix"]) or $_SESSION['tree_prefix'] == '') {
 @$dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
 $hide_tree_array = explode(";", $user['group_hide_trees']);
 $hide_tree = false;
-if (in_array(@$dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
+if (in_array(@$dataDb->tree_id, $hide_tree_array)) {
+    $hide_tree = true;
+}
 if ($hide_tree) {
     // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
     $_SESSION['tree_prefix'] = '';
@@ -317,7 +328,9 @@ if ($hide_tree) {
         // *** Check is family tree is showed or hidden for user group ***
         $hide_tree_array = explode(";", $user['group_hide_trees']);
         $hide_tree = false;
-        if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree = true;
+        if (in_array($dataDb->tree_id, $hide_tree_array)) {
+            $hide_tree = true;
+        }
         if ($hide_tree == false) {
             $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
             $_SESSION['tree_id'] = $dataDb->tree_id;
@@ -346,7 +359,7 @@ $db_functions->set_tree_id($_SESSION['tree_id']);
 // *** If an HuMo-gen upgrade is done, automatically update language files ***
 if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
     $str = file_get_contents("languages/en/en.po");
-    if (strpos($str, 'msgstr "&#134;"') or strpos($str, 'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
+    if (strpos($str, 'msgstr "&#134;"') || strpos($str, 'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
         include(__DIR__ . "/languages/change_all.php");
     }
 }
@@ -400,7 +413,7 @@ if (isset($_POST["hoofdpersoon"])) {
 // REQUEST_URI: /url_test/index/1abcd2345/
 // REQUEST_URI: /url_test/index.php?variabele=1
 $base_href = '';
-if ($humo_option["url_rewrite"] == "j" and $tmp_path) {
+if ($humo_option["url_rewrite"] == "j" && $tmp_path) {
     // *** url_rewrite. 26 jan. 2024 Ron: Added proxy check ***
     //if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
     if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
@@ -478,7 +491,7 @@ if ($page == 'address') {
 } elseif ($page == 'list') {
     require __DIR__ . '/app/controller/listController.php';
     $controllerObj = new ListController();
-    $data = $controllerObj->list_names($dbh, $tree_id, $user, $humo_option);
+    $list = $controllerObj->list_names($dbh, $tree_id, $user, $humo_option);
 } elseif ($page == 'list_places_families') {
     require __DIR__ . '/app/controller/list_places_familiesController.php';
     $controllerObj = new ListPlacesFamiliesController();
@@ -500,7 +513,7 @@ if ($page == 'address') {
 } elseif ($page == 'relations') {
     require __DIR__ . '/app/controller/relationsController.php';
     $controllerObj = new RelationsController($dbh);
-    $data = $controllerObj->getRelations();
+    $relation = $controllerObj->getRelations($db_functions, $person_cls);
 } elseif ($page == 'outline_report') {
     require __DIR__ . '/app/controller/outline_reportController.php';
     $controllerObj = new Outline_reportController();
@@ -518,12 +531,16 @@ if ($page == 'address') {
 } elseif ($page == 'source') {
     require __DIR__ . '/app/controller/sourceController.php';
     $controllerObj = new SourceController($dbh, $db_functions, $tree_id); // Using Controller.
-    if (isset($_GET["id"])) $id = $_GET["id"]; // *** url_rewrite is disabled ***
+    if (isset($_GET["id"])) {
+        $id = $_GET["id"];
+    } // *** url_rewrite is disabled ***
     $data = $controllerObj->source($id);
 } elseif ($page == 'timeline') {
     require __DIR__ . '/app/controller/timelineController.php';
     $controllerObj = new TimelineController();
-    if (isset($_GET["id"])) $id = $_GET["id"]; // *** url_rewrite is disabled ***
+    if (isset($_GET["id"])) {
+        $id = $_GET["id"];
+    } // *** url_rewrite is disabled ***
     $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
 } elseif ($page == 'tree_index') {
     //

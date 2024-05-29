@@ -9,7 +9,7 @@ if (!defined('ADMIN_PAGE')) {
 
 <?php
 // *** Update tree settings ***
-if (isset($_POST['user_change']) and isset($_POST["id"]) and (is_numeric($_POST["id"]))) {
+if (isset($_POST['user_change']) && isset($_POST["id"]) && is_numeric($_POST["id"])) {
     $user_hide_trees = '';
     $user_edit_trees = '';
     $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY'");
@@ -17,14 +17,14 @@ if (isset($_POST['user_change']) and isset($_POST["id"]) and (is_numeric($_POST[
         // *** Show/ hide trees ***
         $check = 'show_tree_' . $data3Db->tree_id;
         //if (!isset($_POST["$check"])){
-        if (isset($_POST["$check"]) and ($_POST["$check"] == 'no')) {
-            if ($user_hide_trees != '') {
+        if (isset($_POST["$check"]) && $_POST["$check"] == 'no') {
+            if ($user_hide_trees !== '') {
                 $user_hide_trees .= ';';
             }
             $user_hide_trees .= $data3Db->tree_id;
         }
-        if (isset($_POST["$check"]) and ($_POST["$check"] == 'yes')) {
-            if ($user_hide_trees != '') {
+        if (isset($_POST["$check"]) && $_POST["$check"] == 'yes') {
+            if ($user_hide_trees !== '') {
                 $user_hide_trees .= ';';
             }
             $user_hide_trees .= 'y' . $data3Db->tree_id;
@@ -33,7 +33,7 @@ if (isset($_POST['user_change']) and isset($_POST["id"]) and (is_numeric($_POST[
         // *** Edit trees (NOT USED FOR ADMINISTRATOR) ***
         $check = 'edit_tree_' . $data3Db->tree_id;
         if (isset($_POST["$check"])) {
-            if ($user_edit_trees != '') {
+            if ($user_edit_trees !== '') {
                 $user_edit_trees .= ';';
             }
             $user_edit_trees .= $data3Db->tree_id;
@@ -51,8 +51,12 @@ echo '<h2 align="center">' . __('Hide or show family trees per user.') . '</h2>'
 
 echo __('These are settings PER USER, it\'s also possible to set these setting PER USER GROUP.');
 
-if (isset($_GET['user'])) $user = $_GET['user'];
-if (isset($_POST['id'])) $user = $_POST['id'];
+if (isset($_GET['user'])) {
+    $user = $_GET['user'];
+}
+if (isset($_POST['id'])) {
+    $user = $_POST['id'];
+}
 if (is_numeric($user)) {
     $usersql = "SELECT * FROM humo_users WHERE user_id='" . $user . "'";
     $user = $dbh->query($usersql);
@@ -81,18 +85,24 @@ if (is_numeric($user)) {
                 echo '<option value="user-group">' . __('Use user-group setting') . '</option>';
 
                 $select = '';
-                if (in_array('y' . $data3Db->tree_id, $hide_tree_array)) $select = ' selected';
+                if (in_array('y' . $data3Db->tree_id, $hide_tree_array)) {
+                    $select = ' selected';
+                }
                 echo '<option value="yes"' . $select . '>' . __('Yes') . '</option>';
-                
+
                 $select = '';
-                if (in_array($data3Db->tree_id, $hide_tree_array)) $select = ' selected';
+                if (in_array($data3Db->tree_id, $hide_tree_array)) {
+                    $select = ' selected';
+                }
                 echo '<option value="no"' . $select . '>' . __('No') . '</option>';
                 echo "</select></td>";
 
                 // *** Editor rights per family tree (NOT USED FOR ADMINISTRATOR) ***
                 echo '<td>';
                 $check = '';
-                if (in_array($data3Db->tree_id, $edit_tree_array)) $check = ' checked';
+                if (in_array($data3Db->tree_id, $edit_tree_array)) {
+                    $check = ' checked';
+                }
                 $disabled = '';
                 if ($userDb->user_id == '1') {
                     $check = ' checked';

@@ -32,7 +32,7 @@ include(__DIR__ . '/../include/editor_event_cls.php');
 $event_cls = new editor_event_cls;
 
 // *** Editor icon for admin and editor: select family tree ***
-if (isset($tree_id) and $tree_id) {
+if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
 
@@ -94,7 +94,9 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
                             <?php
                             if ($addressDb->address_text) {
                                 echo ' ' . substr($addressDb->address_text, 0, 40);
-                                if (strlen($addressDb->address_text) > 40) echo '...';
+                                if (strlen($addressDb->address_text) > 40) {
+                                    echo '...';
+                                }
                             }
                             ?>
                             [<?= $addressDb->address_gedcomnr; ?>]
@@ -123,7 +125,7 @@ if ($editAddress['address_id']) {
     }
 }
 
-if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
+if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
     if (isset($_POST['add_address'])) {
         $address_gedcomnr = '';
         $address_address = '';
@@ -210,9 +212,9 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
                             <?= __('Source'); ?>
                         </button>
 
-                        <!-- Modal -->
+                        <!-- Modal, same code as found in editor.php  -->
                         <div class="modal fade" id="sourceModal" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
+                            <div class="modal-dialog modal-xl">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="sourceModalLabel"><?= __('Source'); ?></h1>
@@ -221,8 +223,7 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
                                     <div class="modal-body">
                                         <!-- Show source by address -->
                                         <?php if (isset($addressDb->address_gedcomnr)) { ?>
-                                            <iframe id="source_iframe" class="source_iframe" title="source_iframe" src="index.php?page=editor_sources&connect_kind=address&connect_sub_kind=address_source&connect_connect_id=<?= $addressDb->address_gedcomnr; ?>" style="width:750px;height:400px;">
-                                            </iframe>
+                                            <iframe id="source_iframe" style="width:800px;height:800px;" title="source_iframe" src="index.php?page=editor_sources&connect_kind=address&connect_sub_kind=address_source&connect_connect_id=<?= $addressDb->address_gedcomnr; ?>" style="width:750px;height:400px;"></iframe>
                                         <?php }   ?>
                                     </div>
                                     <div class="modal-footer">
@@ -248,15 +249,19 @@ if (isset($addressDb->address_id) or isset($_POST['add_address'])) {
                             } else {
                                 // *** Check if source is empty ***
                                 $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-                                if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
+                                if (!$sourceDb->source_title && !$sourceDb->source_text && !$sourceDb->source_date && !$sourceDb->source_place && !$sourceDb->source_refn) {
                                     $source_error = 2;
                                     $style_source = '';
                                 }
                             }
                         }
                         $style = '';
-                        if ($source_error == '1') $style = ' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
-                        if ($source_error == '2') $style = ' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
+                        if ($source_error == '1') {
+                            $style = ' style="background-color:#FFAA80"';
+                        } // *** No source connected, colour = orange ***
+                        if ($source_error == '2') {
+                            $style = ' style="background-color:#FFFF00"';
+                        } // *** Source is empty, colour = yellow ***
                         ?>
                         <span <?= $style; ?>">[<?= $source_count; ?>]</span>
 

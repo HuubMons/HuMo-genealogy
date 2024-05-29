@@ -1,7 +1,7 @@
 <?php
 
 // *** Reset all modules ***
-if (isset($_GET['template_homepage_reset']) and $_GET['template_homepage_reset'] == '1') {
+if (isset($_GET['template_homepage_reset']) && $_GET['template_homepage_reset'] == '1') {
     $sql = "DELETE FROM humo_settings WHERE setting_variable='template_homepage'";
     $dbh->query($sql);
 
@@ -14,8 +14,12 @@ if (isset($_POST['change_module'])) {
     $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage'");
     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
         $setting_value = $_POST[$dataDb->setting_id . 'module_status'] . '|' . $_POST[$dataDb->setting_id . 'module_column'] . '|' . $_POST[$dataDb->setting_id . 'module_item'];
-        if (isset($_POST[$dataDb->setting_id . 'module_option_1'])) $setting_value .= '|' . $_POST[$dataDb->setting_id . 'module_option_1'];
-        if (isset($_POST[$dataDb->setting_id . 'module_option_2'])) $setting_value .= '|' . $_POST[$dataDb->setting_id . 'module_option_2'];
+        if (isset($_POST[$dataDb->setting_id . 'module_option_1'])) {
+            $setting_value .= '|' . $_POST[$dataDb->setting_id . 'module_option_1'];
+        }
+        if (isset($_POST[$dataDb->setting_id . 'module_option_2'])) {
+            $setting_value .= '|' . $_POST[$dataDb->setting_id . 'module_option_2'];
+        }
         $sql = "UPDATE humo_settings SET setting_value='" . safe_text_db($setting_value) . "' WHERE setting_id=" . safe_text_db($_POST[$dataDb->setting_id . 'id']);
         //echo $sql.'<br>';
         $dbh->query($sql);
@@ -23,7 +27,7 @@ if (isset($_POST['change_module'])) {
 }
 
 // *** Remove module  ***
-if (isset($_GET['remove_module']) and is_numeric($_GET['remove_module'])) {
+if (isset($_GET['remove_module']) && is_numeric($_GET['remove_module'])) {
     $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' AND setting_id='" . $_GET['remove_module'] . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
     $sql = "DELETE FROM humo_settings WHERE setting_id='" . $dataDb->setting_id . "'";
@@ -39,7 +43,7 @@ if (isset($_GET['remove_module']) and is_numeric($_GET['remove_module'])) {
 }
 
 // *** Add module ***
-if (isset($_POST['add_module']) and is_numeric($_POST['module_order'])) {
+if (isset($_POST['add_module']) && is_numeric($_POST['module_order'])) {
     $setting_value = $_POST['module_status'] . "|" . $_POST['module_column'] . "|" . $_POST['module_item'];
     $sql = "INSERT INTO humo_settings SET setting_variable='template_homepage',
         setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['module_order']) . "'";
@@ -85,13 +89,13 @@ if ($datasql) {
     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
         $dataDb->setting_value .= '|'; // In some cases the last | is missing. TODO: improve saving of settings.
         $lijst = explode("|", $dataDb->setting_value);
-        if ($lijst[1] == 'left') {
+        if ($lijst[1] === 'left') {
             $left++;
         }
-        if ($lijst[1] == 'center') {
+        if ($lijst[1] === 'center') {
             $center++;
         }
-        if ($lijst[1] == 'right') {
+        if ($lijst[1] === 'right') {
             $right++;
         }
         $item_array[$teller]['id'] = $dataDb->setting_id;
@@ -104,28 +108,30 @@ $count_left = 0;
 $count_center = $left;
 $count_right = $left + $center;
 // *** Reorder all items (if new items is added) ***
-for ($i = 0; $i < count($item_array); $i++) {
+$counter = count($item_array);
+// *** Reorder all items (if new items is added) ***
+for ($i = 0; $i < $counter; $i++) {
     if ($item_array[$i]['column'] == 'left') {
         $count_left++;
         if ($item_array[$i]['order'] != $count_left) {
-            $sql = "UPDATE humo_settings SET setting_order='" . $count_left . "' WHERE setting_id='" . $item_array[$i]['id']."'";
-            $dbh->query($sql);        
+            $sql = "UPDATE humo_settings SET setting_order='" . $count_left . "' WHERE setting_id='" . $item_array[$i]['id'] . "'";
+            $dbh->query($sql);
         }
     }
 
     if ($item_array[$i]['column'] == 'center') {
         $count_center++;
         if ($item_array[$i]['order'] != $count_center) {
-            $sql = "UPDATE humo_settings SET setting_order='" . $count_center . "' WHERE setting_id='" . $item_array[$i]['id']."'";
-            $dbh->query($sql);        
+            $sql = "UPDATE humo_settings SET setting_order='" . $count_center . "' WHERE setting_id='" . $item_array[$i]['id'] . "'";
+            $dbh->query($sql);
         }
     }
 
     if ($item_array[$i]['column'] == 'right') {
         $count_right++;
         if ($item_array[$i]['order'] != $count_right) {
-            $sql = "UPDATE humo_settings SET setting_order='" . $count_right . "' WHERE setting_id='" . $item_array[$i]['id']."'";
-            $dbh->query($sql);        
+            $sql = "UPDATE humo_settings SET setting_order='" . $count_right . "' WHERE setting_id='" . $item_array[$i]['id'] . "'";
+            $dbh->query($sql);
         }
     }
 }
@@ -154,17 +160,25 @@ for ($i = 0; $i < count($item_array); $i++) {
         $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
         // *** Number for new module ***
         $count_links = 0;
-        if ($datasql->rowCount()) $count_links = $datasql->rowCount();
+        if ($datasql->rowCount()) {
+            $count_links = $datasql->rowCount();
+        }
         $new_number = 1;
-        if ($count_links) $new_number = $count_links + 1;
+        if ($count_links) {
+            $new_number = $count_links + 1;
+        }
         if ($datasql) {
             $teller = 1;
             while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                 $dataDb->setting_value .= '|'; // In some cases the last | is missing. TODO: improve saving of settings.
                 $lijst = explode("|", $dataDb->setting_value);
                 // *** Just to prevent error messages, set a default value ***
-                if (!isset($lijst[3])) $lijst[3] = '';
-                if (!isset($lijst[4])) $lijst[3] = '';
+                if (!isset($lijst[3])) {
+                    $lijst[3] = '';
+                }
+                if (!isset($lijst[4])) {
+                    $lijst[3] = '';
+                }
         ?>
                 <tr>
                     <!-- Active/ inactive with background colour -->
@@ -220,18 +234,24 @@ for ($i = 0; $i < count($item_array); $i++) {
                         //	echo ' '.__('Only use for multiple family trees.');
                         //}
 
-                        if ($lijst[2] == 'names') {
+                        if ($lijst[2] === 'names') {
                             echo ' ' . __('Columns');
                             echo ' <select size="1" name="' . $dataDb->setting_id . 'module_option_1">';
                             echo '<option value="1">1</option>';
                             $selected = '';
-                            if ($lijst[3] == '2') $selected = ' selected';
+                            if ($lijst[3] === '2') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="2"' . $selected . '>2</option>';
                             $selected = '';
-                            if ($lijst[3] == '3') $selected = ' selected';
+                            if ($lijst[3] === '3') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="3"' . $selected . '>3</option>';
                             $selected = '';
-                            if ($lijst[3] == '4') $selected = ' selected';
+                            if ($lijst[3] === '4') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="4"' . $selected . '>4</option>';
                             echo '</select>';
 
@@ -239,66 +259,96 @@ for ($i = 0; $i < count($item_array); $i++) {
                             echo ' <select size="1" name="' . $dataDb->setting_id . 'module_option_2">';
                             echo '<option value="1">1</option>';
                             $selected = '';
-                            if ($lijst[4] == '2') $selected = ' selected';
+                            if ($lijst[4] === '2') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="2"' . $selected . '>2</option>';
                             $selected = '';
-                            if ($lijst[4] == '3') $selected = ' selected';
+                            if ($lijst[4] === '3') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="3"' . $selected . '>3</option>';
                             $selected = '';
-                            if ($lijst[4] == '4') $selected = ' selected';
+                            if ($lijst[4] === '4') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="4"' . $selected . '>4</option>';
                             $selected = '';
-                            if ($lijst[4] == '5') $selected = ' selected';
+                            if ($lijst[4] === '5') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="5"' . $selected . '>5</option>';
                             $selected = '';
-                            if ($lijst[4] == '6') $selected = ' selected';
+                            if ($lijst[4] === '6') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="6"' . $selected . '>6</option>';
                             $selected = '';
-                            if ($lijst[4] == '7') $selected = ' selected';
+                            if ($lijst[4] === '7') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="7"' . $selected . '>7</option>';
                             $selected = '';
-                            if ($lijst[4] == '8') $selected = ' selected';
+                            if ($lijst[4] === '8') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="8"' . $selected . '>8</option>';
                             $selected = '';
-                            if ($lijst[4] == '9') $selected = ' selected';
+                            if ($lijst[4] === '9') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="9"' . $selected . '>9</option>';
                             $selected = '';
-                            if ($lijst[4] == '10') $selected = ' selected';
+                            if ($lijst[4] === '10') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="10"' . $selected . '>10</option>';
                             $selected = '';
-                            if ($lijst[4] == '11') $selected = ' selected';
+                            if ($lijst[4] === '11') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="11"' . $selected . '>11</option>';
                             $selected = '';
-                            if ($lijst[4] == '12') $selected = ' selected';
+                            if ($lijst[4] === '12') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="12"' . $selected . '>12</option>';
                             echo '</select>';
                         }
 
-                        if ($lijst[2] == 'text') {
+                        if ($lijst[2] === 'text') {
                             // *** Header text ***
                             $header = '';
-                            if (isset($lijst[3])) $header = $lijst[3];
+                            if (isset($lijst[3])) {
+                                $header = $lijst[3];
+                            }
                             echo '<input type="text" placeholder="' . __('Header') . '" name="' . $dataDb->setting_id . 'module_option_1" value="' . $header . '" size="30"><br>';
 
                             $module_text = '';
-                            if (isset($lijst[4])) $module_text = $lijst[4];
+                            if (isset($lijst[4])) {
+                                $module_text = $lijst[4];
+                            }
                             echo '<textarea rows="4" cols="50" placeholder="' . __('Text') . '" name="' . $dataDb->setting_id . 'module_option_2">' . $module_text . '</textarea><br>';
 
                             echo __('Show text block, HTML codes can be used.');
                         }
 
-                        if ($lijst[2] == 'own_script') {
+                        if ($lijst[2] === 'own_script') {
                             // *** Header text ***
                             $header = '';
-                            if (isset($lijst[3])) $header = $lijst[3];
+                            if (isset($lijst[3])) {
+                                $header = $lijst[3];
+                            }
                             echo '<input type="text" placeholder="' . __('Header') . '" name="' . $dataDb->setting_id . 'module_option_1" value="' . $header . '" size="30"><br>';
                             $module_text = '';
-                            if (isset($lijst[4])) $module_text = $lijst[4];
+                            if (isset($lijst[4])) {
+                                $module_text = $lijst[4];
+                            }
                             echo '<input type="text" placeholder="' . __('File name') . '" name="' . $dataDb->setting_id . 'module_option_2" value="' . $module_text . '" size="30"><br>';
                             echo __('File name (full path) of the file with own script.');
                         }
 
-                        if ($lijst[2] == 'cms_page') {
+                        if ($lijst[2] === 'cms_page') {
                             echo ' <select size="1" name="' . $dataDb->setting_id . 'module_option_1">';
                             $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
                             while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
@@ -313,13 +363,15 @@ for ($i = 0; $i < count($item_array); $i++) {
                             echo ' ' . __('Show text from CMS system.');
                         }
 
-                        if ($lijst[2] == 'history') {
+                        if ($lijst[2] === 'history') {
                             echo ' ' . __('View');
                             echo ' <select size="1" name="' . $dataDb->setting_id . 'module_option_1">';
                             echo '<option value="with_table">' . __('with table') . '</option>';
 
                             $selected = '';
-                            if ($lijst[3] == 'without_table') $selected = ' selected';
+                            if ($lijst[3] === 'without_table') {
+                                $selected = ' selected';
+                            }
                             echo '<option value="without_table"' . $selected . '>' . __('without table') . '</option>';
                             echo '</select>';
                         }
@@ -395,7 +447,7 @@ if (isset($_POST['change_link'])) {
 }
 
 // *** Remove link  ***
-if (isset($_GET['remove_link']) and is_numeric($_GET['remove_link'])) {
+if (isset($_GET['remove_link']) && is_numeric($_GET['remove_link'])) {
     $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_id='" . $_GET['remove_link'] . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
     $sql = "DELETE FROM humo_settings WHERE setting_id='" . $dataDb->setting_id . "'";
@@ -411,7 +463,7 @@ if (isset($_GET['remove_link']) and is_numeric($_GET['remove_link'])) {
 }
 
 // *** Add link ***
-if (isset($_POST['add_link']) and is_numeric($_POST['link_order'])) {
+if (isset($_POST['add_link']) && is_numeric($_POST['link_order'])) {
     $setting_value = $_POST['own_code'] . "|" . $_POST['link_text'];
     $sql = "INSERT INTO humo_settings SET setting_variable='link',
         setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['link_order']) . "'";
@@ -470,9 +522,13 @@ if (isset($_GET['down'])) {
         $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' ORDER BY setting_order");
         // *** Number for new link ***
         $count_links = 0;
-        if ($datasql->rowCount()) $count_links = $datasql->rowCount();
+        if ($datasql->rowCount()) {
+            $count_links = $datasql->rowCount();
+        }
         $new_number = 1;
-        if ($count_links) $new_number = $count_links + 1;
+        if ($count_links) {
+            $new_number = $count_links + 1;
+        }
         if ($datasql) {
             $teller = 1;
             while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {

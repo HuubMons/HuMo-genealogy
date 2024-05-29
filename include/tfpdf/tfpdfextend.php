@@ -17,12 +17,16 @@ class PDF extends tFPDF
 
     // *** New function may 2021 ***
     // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
-    function show_text($text, $emphasis, $font_size)
+    function show_text($text, $emphasis, $font_size): void
     {
         global $pdf, $pdf_font;
         //$font_size=12; if ($person_kind=='child') $font_size=11;
-        if (isset($_POST['ancestor_report'])) $font_size = 12;
-        if ($font_size == '') $font_size = 12;
+        if (isset($_POST['ancestor_report'])) {
+            $font_size = 12;
+        }
+        if ($font_size == '') {
+            $font_size = 12;
+        }
 
         if ($text) {
             $pdf->SetFont($pdf_font, $emphasis, $font_size);
@@ -31,7 +35,7 @@ class PDF extends tFPDF
         }
     }
 
-    function pdfdisplay($templ_personing, $person_kind)
+    function pdfdisplay($templ_personing, $person_kind): void
     {
         global $pdf, $pdf_font, $language, $gen_lus;
         global $romnr, $romannr, $parentchild, $parlink;
@@ -73,7 +77,9 @@ class PDF extends tFPDF
         foreach ($templ_personing as $key => $value) {
             $pdf->SetFont($pdf_font, $type, $font_size);
 
-            if ($person_kind == 'ancestor') $pdf->SetLeftMargin(38);
+            if ($person_kind == 'ancestor') {
+                $pdf->SetLeftMargin(38);
+            }
 
             if (strpos($key, "pic_path") !== false) {
                 if (
@@ -107,7 +113,7 @@ class PDF extends tFPDF
             }
 
             if (strpos($key, "pic_text") !== false) {
-                if (isset($presentpic) and $presentpic == intval(substr($key, 8))) {
+                if (isset($presentpic) && $presentpic === intval(substr($key, 8))) {
                     $picarray[$numpics - 1][2] = $value;
                     if (isset($picarray[$numpics - 1][2])) {
                         $textlines = ceil(strlen($value) / 30);
@@ -120,8 +126,10 @@ class PDF extends tFPDF
                 continue;
             }
 
-            if (strpos($key, "own_code_start") !== false) continue;
-            if (!$own_code and strpos($key, "own_code") !== false) {
+            if (strpos($key, "own_code_start") !== false) {
+                continue;
+            }
+            if (!$own_code && strpos($key, "own_code") !== false) {
                 //if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
 
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
@@ -129,53 +137,67 @@ class PDF extends tFPDF
                 $own_code = 1;
             }
 
-            if (strpos($key, "born_start") !== false) continue;
-            if (!$born and strpos($key, "born") !== false) {
+            if (strpos($key, "born_start") !== false) {
+                continue;
+            }
+            if (!$born && strpos($key, "born") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_personing["born_start"], 'B', $font_size);
                 $born = 1;
             }
 
-            if (strpos($key, "bapt_start") !== false) continue;
-            if (!$bapt and strpos($key, "bapt") !== false) {
+            if (strpos($key, "bapt_start") !== false) {
+                continue;
+            }
+            if (!$bapt && strpos($key, "bapt") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_personing["bapt_start"], 'B', $font_size);
                 $bapt = 1;
             }
 
-            if (strpos($key, "dead_start") !== false) continue;
-            if (!$dead and strpos($key, "dead") !== false) {
+            if (strpos($key, "dead_start") !== false) {
+                continue;
+            }
+            if (!$dead && strpos($key, "dead") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_personing["dead_start"], 'B', $font_size);
                 $dead = 1;
             }
 
-            if (strpos($key, "buri_start") !== false) continue;
-            if (!$buri and strpos($key, "buri") !== false) {
+            if (strpos($key, "buri_start") !== false) {
+                continue;
+            }
+            if (!$buri && strpos($key, "buri") !== false) {
                 //if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_personing["buri_start"], 'B', $font_size);
                 $buri = 1;
             }
 
-            if (strpos($key, "prof_start") !== false) continue;
-            if (!$prof and strpos($key, "prof") !== false) {
+            if (strpos($key, "prof_start") !== false) {
+                continue;
+            }
+            if (!$prof && strpos($key, "prof") !== false) {
                 //if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_personing["prof_start"], 'B', $font_size);
                 $prof = 1;
             }
 
-            if (strpos($key, "religion_start") !== false) continue;
-            if (!$religion and strpos($key, "religion") !== false) {
+            if (strpos($key, "religion_start") !== false) {
+                continue;
+            }
+            if (!$religion && strpos($key, "religion") !== false) {
                 //if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_personing["religion_start"], 'B', $font_size);
                 $religion = 1;
             }
 
-            if (strpos($key, "address_start") !== false) continue;
-            if (!$address and strpos($key, "address") !== false) {
+            if (strpos($key, "address_start") !== false) {
+                continue;
+            }
+            if (!$address && strpos($key, "address") !== false) {
                 //if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_personing["address_start"], 'B', $font_size);
@@ -210,12 +232,12 @@ class PDF extends tFPDF
                 $pdf->SetFont($pdf_font, 'I', $font_size - 1);
             }
 
-            if (strpos($key, "source") !== false or strpos($key, "witn") !== false) {
+            if (strpos($key, "source") !== false || strpos($key, "witn") !== false) {
                 $pdf->SetFont($pdf_font, '', $font_size);  // was Times
             }
 
             if (strpos($key, "parent") !== false) {
-                if ($person_kind == "parent1" and $key == "parents" and $gen_lus != 0) {
+                if ($person_kind == "parent1" && $key == "parents" && $gen_lus != 0) {
                     $pdf->SetTextColor(28, 28, 255);
                     $pdf->SetFont($pdf_font, 'B', $font_size); // was 'U'
                     $temp = $parentchild[$romannr];
@@ -352,7 +374,7 @@ class PDF extends tFPDF
                         $maxw = 180 / 3.87;
                         for ($i = 0; $i < 15; $i++) {
                             if (isset($picarray[$i][0])) {
-                                if ($i > 0 and $i % 3 == 0) {
+                                if ($i > 0 && $i % 3 == 0) {
                                     $pic_indent = 28;
                                     $pictext_indent = 28;
                                     $keepY += ($tallestpic + 1);
@@ -395,7 +417,7 @@ class PDF extends tFPDF
     // ***********************************************************************************
     //  function displayrel()  to display wedding/relation details from marriage_cls.php
     // ***********************************************************************************
-    function displayrel($templ_relation, $ancestor_report)
+    function displayrel($templ_relation, $ancestor_report): void
     {
         global $pdf, $pdf_font, $language, $user, $pdf_footnotes, $pdf_count_notes;
         $font_size = 12;
@@ -435,31 +457,31 @@ class PDF extends tFPDF
                 $pdf->SetLeftMargin(38);
             }
 
-            if (!$samw and strpos($key, "cohabit") !== false) {            // Living together
+            if (!$samw && strpos($key, "cohabit") !== false) {            // Living together
                 // Example: $pdf->show_text($text,'B',$font_size);
                 if (isset($templ_relation["cohabit_exist"])) {
                     $this->show_text($templ_relation["cohabit_exist"], 'B', '');
                 }
                 $samw = 1;
             }
-            if (!$prew and strpos($key, "prew") !== false) {
+            if (!$prew && strpos($key, "prew") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);
                 if (isset($templ_relation["prew_exist"])) {
                     $this->show_text($templ_relation["prew_exist"], 'B', '');
                 }
                 $prew = 1;
             }
-            if (!$wedd and strpos($key, "wedd") !== false) {
+            if (!$wedd && strpos($key, "wedd") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);
                 $this->show_text($templ_relation["wedd_exist"], 'B', '');
                 $wedd = 1;
             }
-            if (!$prec and strpos($key, "prec") !== false) {
+            if (!$prec && strpos($key, "prec") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);
                 $this->show_text($templ_relation["prec_exist"], 'B', '');
                 $prec = 1;
             }
-            if (!$chur and strpos($key, "chur") !== false) {
+            if (!$chur && strpos($key, "chur") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);
                 $this->show_text($templ_relation["chur_exist"], 'B', '');
                 $chur = 1;
@@ -475,7 +497,7 @@ class PDF extends tFPDF
             // *** NEW 03-01-2021 added family address in PDF function ***
             // *** Show text: "Residences (family): " ***
             //if(strpos($key,"address_start")!==false) {
-            if (!$address and strpos($key, "address") !== false) {
+            if (!$address && strpos($key, "address") !== false) {
                 // For now: just add newline.
                 $pdf->Ln(4);
 
@@ -535,7 +557,7 @@ class PDF extends tFPDF
             }
 
             if (strpos($key, "pic_text") !== false) {
-                if (isset($presentpic) and $presentpic == intval(substr($key, 8))) {
+                if (isset($presentpic) && $presentpic === intval(substr($key, 8))) {
                     $picarray[$numpics - 1][2] = $value;
                     if (isset($picarray[$numpics - 1][2])) {
                         $textlines = ceil(strlen($value) / 30);
@@ -563,7 +585,7 @@ class PDF extends tFPDF
                     $maxw = 180 / 3.87;
                     for ($i = 0; $i < 15; $i++) {
                         if (isset($picarray[$i][0])) {
-                            if ($i > 0 and $i % 3 == 0) {
+                            if ($i > 0 && $i % 3 == 0) {
                                 $pic_indent = 28;
                                 $pictext_indent = 28;
                                 $keepY += ($tallestpic + 1);
@@ -600,7 +622,7 @@ class PDF extends tFPDF
     //*******************************************************************
     //   09-01-2021 RENEWED function write_name() to place the name of a person
     //*******************************************************************
-    function write_name($templ_name, $indentation, $length)
+    function write_name($templ_name, $indentation, $length): void
     {
         global $ident;
         global $pdf, $pdf_font, $language, $user, $pdf_footnotes, $pdf_count_notes;
@@ -612,7 +634,9 @@ class PDF extends tFPDF
         $name_wedd_age = 0;
 
         $font_size = 12;
-        if ($length == 'child') $font_size = 11;
+        if ($length == 'child') {
+            $font_size = 11;
+        }
 
         $data["source_presentation"] = 'title';
         if (isset($_SESSION['save_source_presentation'])) {
@@ -623,13 +647,17 @@ class PDF extends tFPDF
             $value = '';
             if (isset($value)) $value = html_entity_decode($value);
 
-            if ($sexe == 0 and strpos($key, "name_sexe") !== false) {
+            if ($sexe == 0 && strpos($key, "name_sexe") !== false) {
                 //if($templ_name["name_sexe"]=="M") $pic="images/man.gif";
                 //	elseif ($templ_name["name_sexe"]=='F') $pic="images/woman.gif";
                 //	else $pic="images/unknown.gif";
-                if ($templ_name["name_sexe"] == "M") $pic = __DIR__ . '/../../images/man.gif';
-                elseif ($templ_name["name_sexe"] == 'F') $pic = __DIR__ . '/../../images/woman.gif';
-                else $pic = __DIR__ . '/../../images/unknown.gif';
+                if ($templ_name["name_sexe"] == "M") {
+                    $pic = __DIR__ . '/../../images/man.gif';
+                } elseif ($templ_name["name_sexe"] == 'F') {
+                    $pic = __DIR__ . '/../../images/woman.gif';
+                } else {
+                    $pic = __DIR__ . '/../../images/unknown.gif';
+                }
 
                 if ($length != 'child') {
                     $pdf->Image($pic, $indentation - 4, $pdf->GetY() + 2, 3.5, 3.5);
@@ -654,7 +682,7 @@ class PDF extends tFPDF
             //$indent=$pdf->GetX();
             //$pdf->SetX($indentation);
 
-            if ($name == 0 and strpos($key, "name_name") !== false) {
+            if ($name == 0 && strpos($key, "name_name") !== false) {
                 //$indentation=$pdf->GetX();
                 //$pdf->SetX($indentation);
                 //$pdf->SetFont($pdf_font,'B',$font_size);
@@ -664,12 +692,14 @@ class PDF extends tFPDF
 
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $person_kind = '';
-                if ($length == 'child') $person_kind = 'child';
+                if ($length == 'child') {
+                    $person_kind = 'child';
+                }
                 $this->show_text($templ_name["name_name"], 'B', $font_size);
                 $name = 1;
             }
 
-            if ($name_text == 0 and strpos($key, "name_text") !== false) {
+            if ($name_text == 0 && strpos($key, "name_text") !== false) {
                 //$indentation=$pdf->GetX();
                 //$pdf->SetX($indentation);
                 //$pdf->SetFont($pdf_font,'I',$font_size);
@@ -682,13 +712,13 @@ class PDF extends tFPDF
                 $name_text = 1;
             }
 
-            if ($name_wedd_age == 0 and strpos($key, "name_wedd_age") !== false) {
+            if ($name_wedd_age == 0 && strpos($key, "name_wedd_age") !== false) {
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_name["name_wedd_age"], '', $font_size);
                 $name_wedd_age = 1;
             }
 
-            if ($name_parents == 0 and strpos($key, "name_parents") !== false) {
+            if ($name_parents == 0 && strpos($key, "name_parents") !== false) {
                 //$indentation=$pdf->GetX();
                 //$pdf->SetX($indentation);
                 //$pdf->SetFont($pdf_font,'',$font_size);
@@ -706,7 +736,7 @@ class PDF extends tFPDF
             $font_size = 11;
             $type = '';
 
-            if (strpos($key, "source") !== false and $value != '') {   // make source link to end of document
+            if (strpos($key, "source") !== false && $value !== '') {   // make source link to end of document
                 //$pdf->SetX($indentation);
                 //$pdf->SetFont('Times','',$font_size);
                 //$pdf->SetTextColor(28,28,255);
@@ -717,7 +747,7 @@ class PDF extends tFPDF
             }
 
             // *** Show partner by child ***
-            if ($name_partner == 0 and strpos($key, "name_partner") !== false) {
+            if ($name_partner == 0 && strpos($key, "name_partner") !== false) {
                 //$indentation=$pdf->GetX();
                 //$pdf->SetX($indentation);
                 //$pdf->SetFont($pdf_font,'',$font_size);
@@ -740,8 +770,9 @@ class PDF extends tFPDF
         //		$pdf->MultiCell(0,8,'',0,"L");
 
         // NEW may 2021
-        if (isset($_POST['ancestor_report']))
+        if (isset($_POST['ancestor_report'])) {
             $pdf->MultiCell(0, 8, '', 0, "L");
+        }
 
         //unset($pdf_footnotes);
     }
@@ -751,15 +782,16 @@ class PDF extends tFPDF
     //*******************************************************************
     // function pdf_ancestor_name()   writes names in ancestor report
     //*******************************************************************
-    function pdf_ancestor_name($ancestor_reportnr, $sexe, $name)
+    function pdf_ancestor_name($ancestor_reportnr, $sexe, $name): void
     {
         global $pdf, $pdf_font, $language;
 
         $pdf->SetFont($pdf_font, 'B', 12);
-        if ($ancestor_reportnr > 9999) { // (num) will be placed under num
-            if ($pdf->GetY() + 7 > 270) { //(num) would drop off bottom of page
-                $pdf->AddPage(); // move num already to new page so they stay together...
-            }
+        // (num) will be placed under num
+        if ($ancestor_reportnr > 9999 && $pdf->GetY() + 7 > 270) {
+            //(num) would drop off bottom of page
+            $pdf->AddPage();
+            // move num already to new page so they stay together...
         }
 
         $pdf->Write(8, $ancestor_reportnr);
@@ -796,7 +828,7 @@ class PDF extends tFPDF
 
     // *** 10 jan 2021 NEW FUNCTION ***
     // *** REMARK: footnotes are shown in family script ***
-    function PDFShowSources($value)
+    function PDFShowSources($value): void
     {
         global $data, $pdf, $pdf_font, $font_size, $user, $pdf_footnotes;
 
@@ -817,8 +849,10 @@ class PDF extends tFPDF
             //$pdf->Write(6,'SOURCE_1_TEST');
             foreach ($footnote_nr_array as $footnote_nr) {
                 $ofs = 0;
-                if (is_numeric($footnote_nr)) $ofs = $footnote_nr - 1; // offset starts with 0
-                if ($ofs >= 0 and isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
+                if (is_numeric($footnote_nr)) {
+                    $ofs = $footnote_nr - 1;
+                } // offset starts with 0
+                if ($ofs >= 0 && isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
                     $pdf->SetTextColor(28, 28, 255);
                     $pdf->subWrite(6, ' ' . $footnote_nr . ')', $pdf_footnotes[$ofs], 9, 4);
                 } else { // "manual" source list as regular non-clickable text
@@ -877,14 +911,17 @@ class PDF extends tFPDF
 
     var $angle = 0;
 
-    function Rotate($angle, $x = -1, $y = -1)
+    function Rotate($angle, $x = -1, $y = -1): void
     {
-        if ($x == -1)
+        if ($x == -1) {
             $x = $this->x;
-        if ($y == -1)
+        }
+        if ($y == -1) {
             $y = $this->y;
-        if ($this->angle != 0)
+        }
+        if ($this->angle != 0) {
             $this->_out('Q');
+        }
         $this->angle = $angle;
         if ($angle != 0) {
             $angle *= M_PI / 180;
@@ -896,7 +933,7 @@ class PDF extends tFPDF
         }
     }
 
-    function _endpage()
+    function _endpage(): void
     {
         if ($this->angle != 0) {
             $this->angle = 0;
@@ -905,7 +942,7 @@ class PDF extends tFPDF
         parent::_endpage();
     }
 
-    function Header()
+    function Header(): void
     {
         global $title, $humo_option, $pdf_font;
         if ($this->PageNo() != 1) {
@@ -931,7 +968,7 @@ class PDF extends tFPDF
         $this->RotatedText(30, 190, $watermark, 45);
     }
 
-    function RotatedText($x, $y, $txt, $angle)
+    function RotatedText($x, $y, $txt, $angle): void
     {
         //Text rotated around its origin
         $this->Rotate($angle, $x, $y);
@@ -962,7 +999,7 @@ function Header(){
 }
 */
 
-    function Footer()
+    function Footer(): void
     {
         global $pdf_font, $language_date;
         //Position at 1.5 cm from bottom
@@ -980,7 +1017,7 @@ function Header(){
     }
 
     // function to make super- or subscript
-    function subWrite($h, $txt, $link = '', $subFontSize = 12, $subOffset = 0)
+    function subWrite($h, $txt, $link = '', $subFontSize = 12, $subOffset = 0): void
     {
         // resize font
         $subFontSizeold = $this->FontSizePt;

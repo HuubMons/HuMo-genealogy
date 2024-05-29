@@ -19,14 +19,12 @@
  * calculate_uncles      - calculates the degree of relations (4th great-grand-uncle)
  * calculate_cousins     - calculates the degree of relations (2nd cousin twice removed)
  * search_marital        - if no direct blood relation found, searches for relation between spouses of person X and Y
- * search_bloodrel       - searches for blood relationship between X and Y
- * display               - displays the result of comparison checks
  * display_table         - displays simple chart showing the found relationship
  * unset_var             - unsets the vital variables before searching marital relations
  * get_person            - retrieves person from MySQL database by GEDCOM nr
  * dutch_ancestor        - special algorithm to process complicated dutch terminology for distant ancestors
  *
- * the meaning of the value of the $table variable (for displaying table with lineage if a match is found):
+ * the meaning of the value of the $relation_type variable (for displaying table with lineage if a match is found):
  * 1 = parent - child
  * 2 = child - parent
  * 3 = uncle - nephew
@@ -51,8 +49,8 @@
  * $doublespouse - flags situation where searched persons X and Y are both spouses of a third person
  * $special_spouseX (and Y) - flags situation where the regular text "spouse of" has to be changed:
  * ----- for example: "X is spouse of brother of Y" should become "X is sister-in-law of Y"
- * $sexe, $sexe2 - the sexe of persons X and Y
- * $data["person1"], $data["person2"] - GEDCOM nr of the searched persons X and Y
+ * $relation['sexe1'], $relation['sexe2'] - the sexe of persons 1 and 2
+ * $relation["person1"], $relation["person2"] - GEDCOM nr of the searched persons X and Y
  */
 
 // TODO create function to show person.
@@ -73,35 +71,29 @@ $spouse = '';
 $reltext = '';
 $special_spouseX = '';
 $special_spouseY = '';
-$table = '';
-$name1 = '';
-$name2 = '';
+$relation_type = '';
 
 $pers_cls = new person_cls;
 
-// No longer needed? Allready removed multiple $len variables.
-//$len = 230; // length of name pulldown box
-
 $limit = 500; // *** Limit results ***
-?>
 
-<!-- TODO not sure if this is still usefull in modern browsers. -->
-<?php if (isset($_POST["extended"]) or isset($_POST["next_path"])) { ?>
-    <div id="geargif"><br><img src="images/gear.gif">&nbsp;&nbsp;&nbsp;<?= __('Calculating relations'); ?></div>
-<?php } ?>
+// From old display function.
+//global $reltext, $bloodreltext, spouse, $rel_arrayspouseX;
+//global $special_spouseY, $special_spouseX, $spousenameX, $spousenameY, $relation_type;
+//global $rel_arrayX, $rel_arrayY, $searchDb, $searchDb2;
+//global $famspouseX, $famspouseY, $data_found;
+
+global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
+?>
 
 <form method="POST" action="<?= $relpath_form; ?>" style="display : inline;">
     <div class="p-2 me-sm-2 genealogy_search">
         <div class="row">
-            <div class="col-md-2"><b><?= __('Person') . ' 1'; ?></b></div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-1"></div>
+            <div class="col-md-1"><br><b><?= __('Person') . ' 1'; ?></b></div>
             <div class="col-md-auto">
                 <?= __('Name'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_name" value="<?= safe_text_show($data["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+                    <input type="text" name="search_name" value="<?= safe_text_show($relation["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
                     <input type="submit" name="button_search_name1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -109,7 +101,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('or: ID'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_gednr" value="<?= safe_text_show($data["search_gednr1"]); ?>" size="8" class="form-control form-control-sm">
+                    <input type="text" name="search_gednr" value="<?= safe_text_show($relation["search_gednr1"]); ?>" size="8" class="form-control form-control-sm">
                     <input type="submit" name="button_search_id1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -117,34 +109,34 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?= __('Pick a name from search results'); ?>
                 <?php
-                if (isset($_SESSION["button_search_name1"]) and $_SESSION["button_search_name1"] == 1) {
+                if (isset($_SESSION["button_search_name1"]) && $_SESSION["button_search_name1"] == 1) {
                     $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
 
-                    if ($data["search_name1"] != '') {
+                    if ($relation["search_name1"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-                        $data["search_name1"] = str_replace(' ', '%', $data["search_name1"]);
+                        $relation["search_name1"] = str_replace(' ', '%', $relation["search_name1"]);
                         // *** In case someone entered "Mons, Huub" using a comma ***
-                        $data["search_name1"] = str_replace(',', '', $data["search_name1"]);
+                        $relation["search_name1"] = str_replace(',', '', $relation["search_name1"]);
                         // *** August 2022: new query ***
                         $search_qry = "
                             SELECT * FROM humo_persons LEFT JOIN humo_events
                             ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
                             WHERE pers_tree_id='" . $tree_id . "' AND
                                 (
-                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
-                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($data["search_name1"]) . "%'
+                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($relation["search_name1"]) . "%'
+                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($relation["search_name1"]) . "%' 
+                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($relation["search_name1"]) . "%' 
+                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($relation["search_name1"]) . "%'
+                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($relation["search_name1"]) . "%'
+                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($relation["search_name1"]) . "%' 
+                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($relation["search_name1"]) . "%' 
+                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($relation["search_name1"]) . "%'
                                 )
                                 GROUP BY pers_id, event_event, event_kind, event_id
                                 ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0," . $limit;
-                    } elseif ($data["search_gednr1"] != '') {
+                    } elseif ($relation["search_gednr1"] != '') {
                         $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                            AND (pers_gedcomnumber = '" . $data["search_gednr1"] . "' OR pers_gedcomnumber = 'I" . $data["search_gednr1"] . "')";
+                            AND (pers_gedcomnumber = '" . $relation["search_gednr1"] . "' OR pers_gedcomnumber = 'I" . $relation["search_gednr1"] . "')";
                     }
 
                     // *** Link from person pop-up menu ***
@@ -174,13 +166,17 @@ $limit = 500; // *** Limit results ***
                                             $birth = '';
                                         }
 
-                                        echo '<option';
-                                        if (isset($data["person1"])) {
-                                            if ($searchDb->pers_gedcomnumber == $data["person1"] and !(isset($_POST["button_search_name1"]) and $data["search_name1"] == '' and $data["search_gednr1"] == '')) {
-                                                echo ' selected';
+                                        $selected = '';
+                                        if (isset($relation["person1"])) {
+                                            if ($searchDb->pers_gedcomnumber == $relation["person1"] && !(isset($_POST["button_search_name1"]) && $relation["search_name1"] == '' && $relation["search_gednr1"] == '')) {
+                                                $selected = 'selected';
                                             }
                                         }
-                                        echo ' value="' . $searchDb->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
+                                ?>
+                                        <option value="<?= $searchDb->pers_gedcomnumber; ?>" <?= $selected; ?>>
+                                            <?= $name["index_name"] . $birth; ?> [<?= $searchDb->pers_gedcomnumber; ?>]
+                                        </option>
+                                <?php
                                     }
                                 }
                                 // *** Simple test only, if number of results = limit then show message ***
@@ -191,8 +187,7 @@ $limit = 500; // *** Limit results ***
                             </select>
                         <?php } else { ?>
                             <select size="1" name="notfound" value="1" class="form-select form-select-sm">
-                                <option><?= __('Person not found'); ?>
-                                </option>
+                                <option><?= __('Person not found'); ?></option>
                             </select>
                     <?php
                         }
@@ -208,15 +203,11 @@ $limit = 500; // *** Limit results ***
 
         <!-- Second person -->
         <div class="row">
-            <div class="col-md-2"><b><?= __('Person') . ' 2'; ?></b></div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-1"></div>
+            <div class="col-md-1"><br><b><?= __('Person') . ' 2'; ?></b></div>
             <div class="col-md-auto">
                 <?= __('Search'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_name2" value="<?= safe_text_show($data["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+                    <input type="text" name="search_name2" value="<?= safe_text_show($relation["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
                     <input type="submit" name="button_search_name2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -224,7 +215,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('or: ID'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_gednr2" value="<?= safe_text_show($data["search_gednr2"]); ?>" size="8" class="form-control form-control-sm">
+                    <input type="text" name="search_gednr2" value="<?= safe_text_show($relation["search_gednr2"]); ?>" size="8" class="form-control form-control-sm">
                     <input type="submit" name="button_search_id2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -232,34 +223,34 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?= __('Pick a name from search results'); ?>
                 <?php
-                if (isset($_SESSION["button_search_name2"]) and $_SESSION["button_search_name2"] == 1) {
+                if (isset($_SESSION["button_search_name2"]) && $_SESSION["button_search_name2"] == 1) {
                     $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
 
-                    if ($data["search_name2"] != '') {
+                    if ($relation["search_name2"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-                        $data["search_name2"] = str_replace(' ', '%', $data["search_name2"]);
+                        $relation["search_name2"] = str_replace(' ', '%', $relation["search_name2"]);
                         // *** In case someone entered "Mons, Huub" using a comma ***
-                        $data["search_name2"] = str_replace(',', '', $data["search_name2"]);
+                        $relation["search_name2"] = str_replace(',', '', $relation["search_name2"]);
                         // *** August 2022: new query ***
                         $search_qry = "
                             SELECT * FROM humo_persons LEFT JOIN humo_events
                             ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
                             WHERE pers_tree_id='" . $tree_id . "' AND
                                 (
-                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
-                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($data["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($data["search_name2"]) . "%'
+                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($relation["search_name2"]) . "%'
+                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($relation["search_name2"]) . "%' 
+                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($relation["search_name2"]) . "%' 
+                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($relation["search_name2"]) . "%'
+                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($relation["search_name2"]) . "%'
+                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($relation["search_name2"]) . "%' 
+                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($relation["search_name2"]) . "%' 
+                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($relation["search_name2"]) . "%'
                                 )
                                 GROUP BY pers_id, event_event, event_kind, event_id
                                 ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0," . $limit;
-                    } elseif ($data["search_gednr2"] != '') {
+                    } elseif ($relation["search_gednr2"] != '') {
                         $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                            AND (pers_gedcomnumber = '" . $data["search_gednr2"] . "' OR pers_gedcomnumber = 'I" . $data["search_gednr2"] . "')";
+                            AND (pers_gedcomnumber = '" . $relation["search_gednr2"] . "' OR pers_gedcomnumber = 'I" . $relation["search_gednr2"] . "')";
                     }
 
                     // *** Link from person pop-up menu ***
@@ -289,13 +280,17 @@ $limit = 500; // *** Limit results ***
                                             $birth = '';
                                         }
 
-                                        echo '<option';
-                                        if (isset($data["person2"])) {
-                                            if ($searchDb2->pers_gedcomnumber == $data["person2"] and !(isset($_POST["button_search_name2"]) and $data["search_name2"] == '' and $data["search_gednr2"] == '')) {
-                                                echo ' selected';
+                                        $selected = '';
+                                        if (isset($relation["person2"])) {
+                                            if ($searchDb2->pers_gedcomnumber == $relation["person2"] && !(isset($_POST["button_search_name2"]) && $relation["search_name2"] == '' && $relation["search_gednr2"] == '')) {
+                                                $selected = 'selected';
                                             }
                                         }
-                                        echo ' value="' . $searchDb2->pers_gedcomnumber . '">' . $name["index_name"] . $birth . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
+                                ?>
+                                        <option value="<?= $searchDb2->pers_gedcomnumber; ?>" <?= $selected; ?>>
+                                            <?= $name["index_name"] . $birth; ?> [<?= $searchDb2->pers_gedcomnumber; ?>]
+                                        </option>
+                                <?php
                                     }
                                 }
                                 // *** Simple test only, if number of results = limit then show message ***
@@ -357,57 +352,52 @@ Directions for use:<br>
     </div>
 
     <?php
-    if (isset($_POST["extended"]) or isset($_POST["next_path"])) {
+    if (isset($_POST["extended"]) || isset($_POST["next_path"])) {
         if (!isset($_POST["next_path"])) {
             $_SESSION['next_path'] = "";
         }
-
-        echo '<script> var element = document.getElementById("geargif");  element.parentNode.removeChild(element);   </script>';
 
         $count = 0;
         $countfunc = 0;
 
         $globaltrack = "";
-        $firstcall = array();
-        $firstcall[0] = $data["person1"] . "@fst@fst@" . "fst" . $data["person1"];
-
         $globaltrack2 = "";
+
+        $firstcall1 = array();
+        $firstcall1[0] = $relation["person1"] . "@fst@fst@" . "fst" . $relation["person1"];
+
         $firstcall2 = array();
-        $firstcall2[0] = $data["person2"] . "@fst@fst@" . "fst" . $data["person2"];
+        $firstcall2[0] = $relation["person2"] . "@fst@fst@" . "fst" . $relation["person2"];
 
         $total_arr = array();
 
-        if (isset($_POST["extended"]) and !isset($_POST["next_path"])) {
+        if (isset($_POST["extended"]) && !isset($_POST["next_path"])) {
             $_SESSION["couple"] = "";
             // session[couple] flags that persons A & B are a couple. consequences: 
             // 1. don't display that (has already been done in regular calculator)
             // 2. in the map_tree function don't search thru the fam of the couple, since this gives errors.
-            $persDb = $db_functions->get_person($data["person1"]);
-            $pers2Db = $db_functions->get_person($data["person2"]);
-            if (isset($persDb->pers_fams) and isset($pers2Db->pers_fams)) {
-                $fam1 = explode(";", $persDb->pers_fams);
+            $pers1Db = $db_functions->get_person($relation["person1"]);
+            $pers2Db = $db_functions->get_person($relation["person2"]);
+            if (isset($pers1Db->pers_fams) && isset($pers2Db->pers_fams)) {
+                $fam1 = explode(";", $pers1Db->pers_fams);
                 $fam2 = explode(";", $pers2Db->pers_fams);
                 foreach ($fam1 as $value1) {
                     foreach ($fam2 as $value2) {
-                        if ($value1 == $value2) {
+                        if ($value1 === $value2) {
                             $_SESSION["couple"] = $value1;
                         }
                     }
                 }
             }
         }
-
+        $global_array = array();
     ?>
-        <br><br>
+
+        <br>
         <table class="ext">
             <tr>
                 <td>
-                    <?php
-                    $global_array = array();
-                    $global_array2 = array();
-
-                    map_tree($firstcall, $firstcall2);
-                    ?>
+                    <?php map_tree($firstcall1, $firstcall2); ?>
                 </td>
             </tr>
         </table>
@@ -415,55 +405,374 @@ Directions for use:<br>
     }
 
     // calculate or switch button is pressed
-    if (isset($_POST["calculator"]) or isset($_POST["switch"])) {
-        // 2 persons have been selected
-        if (isset($data["person1"]) and $data["person1"] != '' and isset($data["person2"]) and $data["person2"] != '') {
-            $searchDb = $db_functions->get_person($data["person1"]);
-            $searchDb2 = $db_functions->get_person($data["person2"]);
-            if (isset($searchDb)) {
-                $gednr = $searchDb->pers_gedcomnumber;
-                $name = $pers_cls->person_name($searchDb);
-                $name1 = $name["name"];
-                $sexe = '';
-                if ($searchDb->pers_sexe == 'M') {
-                    $sexe = 'm';
-                } else {
-                    $sexe = 'f';
-                }
-            }
-            if ($searchDb->pers_fams) {
-                $famsX = $searchDb->pers_fams;
-                $tempfam = explode(";", $famsX);
-                $famX = $tempfam[0];
-            } else {
-                $famX = $searchDb->pers_famc;
-            }
-
-            if (isset($searchDb2)) {
-                $gednr2 = $searchDb2->pers_gedcomnumber;
-                $name = $pers_cls->person_name($searchDb2);
-                $name2 = $name["name"];
-                $sexe2 = '';
-                if ($searchDb2->pers_sexe == 'M') {
-                    $sexe2 = 'm';
-                } else {
-                    $sexe2 = 'f';
-                }
-            }
-            if ($searchDb2->pers_fams) {
-                $famsY = $searchDb2->pers_fams;
-                $tempfam = explode(";", $famsY);
-                $famY = $tempfam[0];
-            } else {
-                $famY = $searchDb2->pers_famc;
-            }
-
-            // initiates all the comparison and calculation functions and writes result
-            display();
-        } else {
-            // "calculate" or "switch" button pressed with one or two names not selected: write warning to first choose two names
-            echo "<br><h3>&nbsp;&nbsp;&nbsp;" . __('You have to search and than choose Person 1 and Person 2 from the search result pulldown') . "</h3>";
+    if (isset($_POST["calculator"]) || isset($_POST["switch"])) {
+    ?>
+        <!-- "calculate" or "switch" button pressed with one or two names not selected: write warning to first choose two names -->
+        <?php if ($relation["person1"] == '' || $relation["person2"] == '') { ?>
+            <div class="alert alert-warning mt-3" role="alert">
+                <?= __('You have to search and than choose Person 1 and Person 2 from the search result pulldown'); ?>
+            </div>
+        <?php
         }
+        // 2 persons have been selected
+        elseif (isset($relation["person1"]) && isset($relation["person2"])) {
+            // TODO move to model (getSelectedPersons?)
+            $vars['pers_family'] = $relation['family_id1'];
+            $relation['link1'] = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+
+            $vars['pers_family'] = $relation['family_id2'];
+            $relation['link2'] = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+
+            $language_is = ' ' . __('is') . ' ';
+            if ($selected_language == "he") {
+                if ($relation['sexe1'] == "M") {
+                    $language_is = ' הוא ';
+                } else {
+                    $language_is = ' היא ';
+                }
+            } elseif ($selected_language == "cn") {
+                $language_is = '的';
+            }
+
+            $bloodrel = '';
+            $bloodreltext = '';
+
+            // *** Calculate bloodrelation ***
+            //global $rel_arrayX, $rel_arrayY, $person;
+            //global $db_functions;
+            //global $relation, $data_found;
+
+            unset_vars();
+            $rel_arrayX = create_rel_array($db_functions, $relation["person1"]); // === GEDCOM nr of person X ===
+            $rel_arrayY = create_rel_array($db_functions, $relation["person2"]); // === GEDCOM nr of person Y ===
+
+            if (isset($rel_arrayX) && isset($rel_arrayY)) {
+                compare_rel_array($rel_arrayX, $rel_arrayY, 0);
+            }
+
+            if ($data_found["foundX_match"] !== '') {
+                calculate_rel($data_found);
+            }
+        ?>
+
+            <br>
+            <table class="ext">
+                <tr>
+                    <?php
+                    // *** Bloodrelationship ***
+                    if ($reltext) {
+                        $bloodrel = 1;
+                        echo '<td style="padding-right:30px;vertical-align:text-top;">';
+                    ?>
+                        <?= __('BLOOD RELATIONSHIP: '); ?><br><br>
+                        <?php
+                        if ($selected_language == "cn" && strpos($reltext, "notext") !== false) {
+                            // don't display text if relation can't be phrased  
+                        } else {
+                            if ($selected_language == "fi") {
+                                echo 'Kuka: ';
+                            }   // who
+                        ?>
+                            &nbsp;&nbsp;<a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $relation['name1']; ?></a>
+                            <?php
+                            if ($selected_language == "fi") {
+                                echo '&nbsp;&nbsp;Kenelle: ';
+                            }  // to whom
+                            else {
+                                echo $language_is . $reltext;
+                            }
+                            ?>
+                            <a class="relsearch" href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
+                                <?= $relation['name2']; ?>
+                            </a><?= $reltext_nor; ?><br>
+                            <?= $dutchtext; ?>
+                            <?php
+                            if ($selected_language == "fi") {
+                                echo 'Sukulaisuus tai muu suhde: <b>' . $reltext . '</b>';
+                            }
+                            ?>
+                            <hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;">
+                        <?php
+                        }
+                        $bloodreltext = $reltext;
+                        display_table();
+                    }
+
+                    /*
+                    * Relation types
+                    * 3 = uncle - nephew
+                    * 4 = nephew - uncle
+                    * 5 = cousin
+                    * 6 = siblings
+                    */
+                    if ($relation_type != 1 && $relation_type != 2 && $relation_type != 7) {
+                        unset_vars();
+                        search_marital(); // Will return a new $reltext.
+                        if ($reltext) {  // notext is used in Chinese display if relation can't be worded.
+                            //check if this involves a marriage or a partnership of any kind
+                            $relmarriedX = 0;
+                            if (isset($famspouseX)) {
+                                $kindrel = $dbh->query("SELECT fam_kind FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famspouseX . "'");
+                                @$kindrelDb = $kindrel->fetch(PDO::FETCH_OBJ);
+                                if (
+                                    $kindrelDb->fam_kind != 'living together' and
+                                    $kindrelDb->fam_kind != 'engaged' and
+                                    $kindrelDb->fam_kind != 'homosexual' and
+                                    $kindrelDb->fam_kind != 'unknown' and
+                                    $kindrelDb->fam_kind != 'non-marital' and
+                                    $kindrelDb->fam_kind != 'partners' and
+                                    $kindrelDb->fam_kind != 'registered'
+                                ) {
+                                    $relmarriedX = 1;  // use: husband or wife
+                                } else {
+                                    $relmarriedX = 0;  // use: partner
+                                }
+                            }
+
+                            $relmarriedY = 0;
+                            if (isset($famspouseY)) {
+                                $kindrel2 = $dbh->query("SELECT fam_kind FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famspouseY . "'");
+                                @$kindrel2Db = $kindrel2->fetch(PDO::FETCH_OBJ);
+                                if (
+                                    $kindrel2Db->fam_kind != 'living together' and
+                                    $kindrel2Db->fam_kind != 'engaged' and
+                                    $kindrel2Db->fam_kind != 'homosexual' and
+                                    $kindrel2Db->fam_kind != 'unknown' and
+                                    $kindrel2Db->fam_kind != 'non-marital' and
+                                    $kindrel2Db->fam_kind != 'partners' and
+                                    $kindrel2Db->fam_kind != 'registered'
+                                ) {
+                                    $relmarriedY = 1;  // use: husband or wife
+                                } else {
+                                    $relmarriedY = 0;  // use: partner
+                                }
+                            }
+
+                            if ($bloodrel == 1) {
+                                echo '</td><td style="padding-left:30px;border-left:2px solid #bbbbbb;vertical-align:text-top;">';
+                            } else {
+                                echo '<td>';
+                            }
+                        ?>
+
+                            <?= __('MARITAL RELATIONSHIP: '); ?>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="print_version">
+                                <input type="submit" name="extended" value="<?= __('Use Extended Calculator'); ?>" class="btn btn-sm btn-success">
+                            </span><br><br>
+
+                            <?php
+                            if ($doublespouse == 1) { // X and Y are both spouses of Z
+                                $spouseidDb = $db_functions->get_person($rel_arrayspouseX[$data_found["foundX_match"]][0]);
+                                $name = $pers_cls->person_name($spouseidDb);
+                                $spousename = $name["name"];
+                            ?>
+
+                                <span>&nbsp;&nbsp;
+                                    <a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $relation['name1']; ?></a>
+                                    <?= __('and'); ?>:
+                                    <a class='relsearch' href='<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>'><?= $relation['name2']; ?></a>
+                                    <?php
+                                    if ($relation['sexe1'] == "M") {
+                                        echo ' ' . __('are both husbands of') . ' ';
+                                    } else {
+                                        echo ' ' . __('are both wifes of') . ' ';
+                                    }
+                                    ?>
+                                    <a href='<?= $relation['link2']; ?>main_person=<?= $rel_arrayspouseX[$data_found["foundX_match"]][0]; ?>'><?= $spousename; ?></a>
+                                </span><br>
+
+                                <?php
+                            } elseif ($reltext != "notext") {
+                                $spousetext1 = '';
+                                $spousetext2 = '';
+                                $finnish_spouse1 = '';
+                                $finnish_spouse2 = '';
+
+                                if (($spouse == 1 && $special_spouseX !== 1) || $spouse == 3) {
+                                    if ($relmarriedX == 0 && $selected_language != "cn") {
+                                        $spousetext1 = __('partner') . __(' of ');
+                                        $finnish_spouse1 = __('partner');
+                                    } else {
+                                        //if ($searchDb->pers_sexe == 'M') {
+                                        if ($relation['sexe1'] == 'M') {
+                                            $spousetext1 = ' ' . __('husband of') . ' ';
+                                            if ($selected_language == "fi") {
+                                                $finnish_spouse1 = 'mies';
+                                            }
+                                            if ($selected_language == "cn") {
+                                                $spousetext1 = '妻子';
+                                            } // "A's wife is B"
+                                        } else {
+                                            $spousetext1 = ' ' . __('wife of') . ' ';
+                                            if ($selected_language == "fi") {
+                                                $finnish_spouse1 = 'vaimo';
+                                            }
+                                            if ($selected_language == "cn") {
+                                                $spousetext1 = '丈夫';
+                                            } // "A's husband is B"
+                                        }
+                                    }
+                                }
+                                if (($spouse == 2 || $spouse == 3) && $special_spouseY !== 1) {
+                                    if ($relmarriedY == 0 && $selected_language != "cn") {
+                                        $spousetext2 = __('partner') . __(' of ');
+                                        $finnish_spouse2 = __('partner');
+                                    } else {
+                                        if ($relation['sexe2'] == 'M') {
+                                            $spousetext2 = ' ' . __('wife of') . ' ';
+                                            if ($selected_language == "fi") {
+                                                $finnish_spouse2 = 'mies';
+                                            }
+                                            // yes - it's really husband cause the sentence goes differently
+                                            if ($selected_language == "cn") {
+                                                $spousetext2 = '丈夫';
+                                            } // "A's uncle's husband is B"
+                                        } else {
+                                            $spousetext2 = ' ' . __('husband of') . ' ';
+                                            if ($selected_language == "fi") {
+                                                $finnish_spouse2 = 'vaimo';
+                                            }
+                                            // yes - it's really wife cause the sentence goes differently
+                                            if ($selected_language == "cn") {
+                                                $spousetext2 = '妻子';
+                                            } // "A's uncle's wife is B"
+                                        }
+                                    }
+                                }
+
+                                if ($selected_language == "fi") {  // very different phrasing for correct grammar
+                                ?>
+                                    <?= 'Kuka: '; ?>
+                                    <span>
+                                        &nbsp;&nbsp;
+                                        <a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>">
+                                            <?= $relation['name1']; ?>
+                                        </a>
+                                        &nbsp;&nbsp;Kenelle:
+                                        <a class='relsearch' href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
+                                            <?= $relation['name2']; ?>
+                                        </a>
+                                    </span><br>
+                                    Sukulaisuus tai muu suhde:
+                                    <?php
+                                    if (!$special_spouseX && !$special_spouseY && $relation_type != 7) {
+                                        if ($spousetext2 != '' && $spousetext1 == '') { // X is relative of spouse of Y
+                                    ?>
+                                            (<a href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>">
+                                                <?= $relation['name1']; ?>
+                                            </a>
+                                            - <?= $spousenameY; ?>):&nbsp;&nbsp;<?= $reltext; ?><br>
+                                            <?= $spousenameY; ?>, <?= $finnish_spouse2; ?>
+                                            <a href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
+                                                <?= $relation['name2']; ?>
+                                            </a>
+                                    <?php
+                                        } elseif ($spousetext1 !== '' && $spousetext2 === '') { // X is spouse of relative of Y
+                                            echo '(' . $spousenameX . ' - ';
+                                            echo "<a href='" . $relation['link2'] . "main_person=" . $rel_arrayY[0][0] . "'>" . $relation['name2'] . "</a>";
+                                            echo '):&nbsp;&nbsp;' . $reltext . '<br>';
+                                            echo $spousenameX . ', ' . $finnish_spouse1 . ' ';
+                                            echo "<a href='" . $relation['link1'] . "main_person=" . $rel_arrayX[0][0] . "'>" . $relation['name1'] . "</a>";
+                                        } else {   // X is spouse of relative of spouse of Y
+                                            echo '(' . $spousenameX . ' - ' . $spousenameY . '):&nbsp;&nbsp;' . $reltext . '<br>';
+                                            echo $spousenameX . ', ' . $finnish_spouse1 . ' ';
+                                            echo "<a href='" . $relation['link1'] . "main_person=" . $rel_arrayX[0][0] . "'>" . $relation['name1'] . "</a><br>";
+                                            echo $spousenameY . ', ' . $finnish_spouse2 . ' ';
+                                            echo "<a href='" . $relation['link2'] . "main_person=" . $rel_arrayY[0][0] . "'>" . $relation['name2'] . "</a>";
+                                        }
+                                    } elseif ($special_spouseX || $special_spouseY) { // brother-in-law/sister-in-law/father-in-law/mother-in-law
+                                        echo '<b>' . $reltext . '</b><br>';
+                                    } elseif ($relation_type == 7) {
+                                        if ($relmarriedX == 0 || $relmarriedY == 0) {
+                                            echo '<b>' . __('partner') . '</b><br>';
+                                        } else {
+                                            echo '<b>' . $finnish_spouse1 . '</b><br>';
+                                        }
+                                    }
+                                }  // end of finnish part
+
+                                else {
+                                    if ($spousetext2 === '') {
+                                        $reltext_nor2 = '';
+                                    }  // Norwegian grammar...
+                                    else {
+                                        $reltext_nor = '';
+                                    }
+                                    if ($selected_language == "cn") {
+                                        if ($reltext == " ") { // A's husband/wife is B
+                                            $reltext = "是";
+                                        } else {
+                                            mb_internal_encoding("UTF-8");
+                                            if ($spousetext1 !== "" && $spousetext2 === "") {
+                                                $spousetext1 .= '的';
+                                            } elseif ($spousetext2 !== "" && $spousetext1 === "") {
+                                                $reltext = mb_substr($reltext, 0, -1) . '的';
+                                                $spousetext2 .= '是';
+                                            } elseif ($spousetext1 !== "" && $spousetext2 !== "") {
+                                                $spousetext1 .= '的';
+                                                $reltext = mb_substr($reltext, 0, -1) . '的';
+                                                $spousetext2 .= '是';
+                                            }
+                                        }
+                                    }
+                                    if ($relation_type == 6 || $relation_type == 7) {
+                                        $reltext_nor = '';
+                                    }
+                                    ?>
+
+                                    <span>
+                                        &nbsp;&nbsp;
+                                        <a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>">
+                                            <?= $relation['name1']; ?>
+                                        </a>
+                                        <?= $language_is . $spousetext1 . $reltext . $reltext_nor2 . $spousetext2; ?>
+                                        <a class="relsearch" href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
+                                            <?= $relation['name2']; ?>
+                                        </a>
+                                        <?= $reltext_nor; ?>
+                                    </span><br>
+                            <?php
+                                }
+                            }
+                            ?>
+
+                            <hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;">
+
+                        <?php
+                            display_table();
+                        }
+                    }
+
+                    if ($reltext == '') {
+                        ?>
+                        <td <?= $bloodreltext ? 'style="width:60px"' : ''; ?>>&nbsp;</td>
+
+                        <?php if ($bloodreltext == '') { ?>
+                            <td style="text-align:left;border-left:0px;padding:10px;vertical-align:text-top;width:800px">
+                                <div style='font-weight:bold;'><?= __('No blood relation or direct marital relation found'); ?></div>
+                            <?php } else { ?>
+                            <td class="print_version" style="padding-left:50px;padding-right:10px;vertical-align:text-top;border-left:2px solid #bbbbbb;width:350px;">
+                                <?= __('MARITAL RELATIONSHIP: '); ?><br><br>
+                                <div style="font-weight:bold;margin-bottom:10px;"><?= __('No direct marital relation found'); ?></div>
+                            <?php } ?>
+
+                            <hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;">
+
+                            <?= __("You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>
+This will find connections that span over many marital relations and generations.<br>
+Computing time will vary depending on the size of the tree and the distance between the two persons.<br>
+For example, in a 10,000 person tree even the most distant persons will usually be found within 1-2 seconds.<br>
+In a 75,000 person tree the most distant persons may take up to 8 sec to find."); ?><br><br>
+                            <input type="submit" name="extended" value="<?= __('Perform extended marital calculation'); ?>" class="btn btn-sm btn-success">
+
+                            </td>
+                        <?php } else { ?>
+                            </td>
+                        <?php } ?>
+                </tr>
+            </table>
+    <?php }
     }
     ?>
 </form>
@@ -472,11 +781,11 @@ Directions for use:<br>
 
 
 <?php
-function create_rel_array($db_functions, $gednr)
+function create_rel_array($db_functions, $gedcomnumber)
 {
-    // creates array of ancestors of person with GEDCOM nr. $gednr
-    $family_id = $gednr;
-    $ancestor_id2[] = $family_id;
+    // creates array of ancestors of person with GEDCOM nr. $relation['gednr1']
+    $ancestor_id2[] = $gedcomnumber;
+
     $ancestor_number2[] = 1;
     $marriage_number2[] = 0;
     $generation = 1;
@@ -506,7 +815,7 @@ function create_rel_array($db_functions, $gednr)
                 /*
                 $man_cls = New person_cls($person_manDb);
                 $man_privacy=$man_cls->privacy;
-                if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
+                if (strtolower($person_manDb->pers_sexe)=='m' && $ancestor_number[$i]>1){
                     @$familyDb=$db_functions->get_family($marriage_number[$i]);
 
                     // *** Use privacy filter of woman ***
@@ -526,7 +835,7 @@ function create_rel_array($db_functions, $gednr)
                 $genarray_count++; // increase by one
 
                 // *** Check for parents ***
-                if ($person_manDb->pers_famc and !in_array($person_manDb->pers_famc, $trackfamc)) {
+                if ($person_manDb->pers_famc && !in_array($person_manDb->pers_famc, $trackfamc)) {
                     $trackfamc[] = $person_manDb->pers_famc;
 
                     @$familyDb = $db_functions->get_family($person_manDb->pers_famc);
@@ -551,7 +860,7 @@ function create_rel_array($db_functions, $gednr)
         $generation++;
     }    // loop ancestors
 
-    return @$genarray;
+    return $genarray;
 }
 
 function compare_rel_array($arrX, $arrY, $spouce_flag)
@@ -584,30 +893,31 @@ function compare_rel_array($arrX, $arrY, $spouce_flag)
 }
 
 
+// TODO check if it's better to return $reltext.
 function calculate_rel($data_found)
 {
     // calculates the relationship found: "X is 2nd cousin once removed of Y"
-    global $reltext, $sexe, $sexe2, $spouse, $special_spouseY, $special_spouseX, $doublespouse, $table;
+    global $relation, $reltext, $spouse, $special_spouseY, $special_spouseX, $doublespouse, $relation_type;
     global $selected_language;
 
     $doublespouse = 0;
-    if ($data_found["foundX_match"] == 0 and $data_found["foundY_match"] == 0) {  // self
+    if ($data_found["foundX_match"] == 0 && $data_found["foundY_match"] == 0) {  // self
         $reltext = __(' identical to ');
-        if ($spouse == 1 or $spouse == 2) {
+        if ($spouse == 1 || $spouse == 2) {
             $reltext = " ";
         }
         if ($spouse == 3) {
             $doublespouse = 1;
         }
         // it's the spouse itself so text should be "X is spouse of Y", not "X is spouse of is identical to Y" !!
-        $table = 7;
-    } elseif ($data_found["foundX_match"] == 0 and $data_found["foundY_match"] > 0) {  // x is ancestor of y
-        $table = 1;
+        $relation_type = 7;
+    } elseif ($data_found["foundX_match"] == 0 && $data_found["foundY_match"] > 0) {  // x is ancestor of y
+        $relation_type = 1;
         calculate_ancestor($data_found["foundY_gen"]);
-    } elseif ($data_found["foundY_match"] == 0 and $data_found["foundX_match"] > 0) {  // x is descendant of y
-        $table = 2;
+    } elseif ($data_found["foundY_match"] == 0 && $data_found["foundX_match"] > 0) {  // x is descendant of y
+        $relation_type = 2;
         calculate_descendant($data_found["foundX_gen"]);
-    } elseif ($data_found["foundX_gen"] == 1 and $data_found["foundY_gen"] == 1) {  // x is brother of y
+    } elseif ($data_found["foundX_gen"] == 1 && $data_found["foundY_gen"] == 1) {  // x is brother of y
 
         /*
         elder brother's wife 嫂
@@ -615,8 +925,8 @@ function calculate_rel($data_found)
         elder sister's husband 姊夫
         younger sister's husband 妹夫
         */
-        $table = 6;
-        if ($sexe == 'm') {
+        $relation_type = 6;
+        if ($relation['sexe1'] == 'M') {
             $reltext = __('brother of ');
             //***Greek ***
             /**In the Greek language, the gender of the second person plays a role in expressing the blood relationship that exists between two people.
@@ -635,8 +945,8 @@ function calculate_rel($data_found)
 
             // *** Ελληνικά αδελφός***
             if ($selected_language == "gr") {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = 'αδελφός του ';
                     } else {
                         $reltext = 'αδελφός της ';
@@ -644,9 +954,9 @@ function calculate_rel($data_found)
                 }
             }
             // *** Ελληνικά τέλος***
-            // *** Greek end***            
+            // *** Greek end***
             if ($selected_language == "cn") {
-                if ($sexe2 == "m") {
+                if ($relation['sexe2'] == "M") {
                     $reltext = '兄弟是';
                 } // "A's brother is B"
                 else {
@@ -659,8 +969,8 @@ function calculate_rel($data_found)
                 // *** Greek***
                 // *** Ελληνικά κουνιάδα***
                 if ($selected_language == "gr") {
-                    if ($sexe == "m") {
-                        if ($sexe2 == 'm') {
+                    if ($relation['sexe1'] == "M") {
+                        if ($relation['sexe2'] == 'M') {
                             $reltext = 'κουνιάδα του ';
                         } else {
                             $reltext = 'κουνιάδα της ';
@@ -670,15 +980,15 @@ function calculate_rel($data_found)
                     // *** Greek end*** 
                 }
                 if ($selected_language == "cn") {
-                    if ($sexe2 == "m") {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = '大爷(小叔)是';
-                    } // "A's brother-in-law is B"   (husband's brother)
+                    } // "A's brother-in-law is B" (husband's brother)
                     else {
                         $reltext = '大姑(小姑)是';
                     }  // "A's sister-in-law is B" (husband's sister)
                 }
             }
-            if ($spouse == 2 or $spouse == 3) {
+            if ($spouse == 2 || $spouse == 3) {
                 $reltext =  __('brother-in-law of ');
                 $special_spouseY = 1;
                 //comparing X with spouse of Y or comparing 2 spouses
@@ -686,27 +996,27 @@ function calculate_rel($data_found)
                 //$special_spouseY flags not to enter "spouse of" for Y in display function
                 // *** Greek***
                 // *** Ελληνικά κουνιάδος***
-                if ($selected_language == "gr" and $spouse == 2) {
-                    if ($sexe2 == "m") {
+                if ($selected_language == "gr" && $spouse == 2) {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = 'κουνιάδος του ';
                     } else {
                         $reltext = 'κουνιάδος της ';
                     }
                 }
                 // *** Ελληνικά τέλος***
-                // *** Greek end***                 
-                if ($selected_language == "cn" and $spouse == 2) {
-                    if ($sexe2 == "m") {
+                // *** Greek end***
+                if ($selected_language == "cn" && $spouse == 2) {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = '姊夫(妹夫)是';
                     } // "A's brother-in-law is B" (sister's husband) 
                     else {
                         $reltext = '嫂(弟妇)是';
                     }  // "A's sister-in-law is B" (brother's wife) 
                 }
-                //***Greek ***                
-                // *** Ελληνικά κουνιάδος***                
-                if ($selected_language == "gr" and $spouse == 3) {
-                    if ($sexe2 == "m") {
+                //***Greek ***
+                // *** Ελληνικά κουνιάδος***
+                if ($selected_language == "gr" && $spouse == 3) {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = 'κουνιάδος του ';
                     } else {
                         $reltext = 'κουνιάδος της ';
@@ -714,8 +1024,8 @@ function calculate_rel($data_found)
                 }
                 // *** Ελληνικά τέλος***
                 // *** Greek end*** 
-                if ($selected_language == "cn" and $spouse == 3) {
-                    if ($sexe2 == "m") {
+                if ($selected_language == "cn" && $spouse == 3) {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = '大姑丈(小姑丈)是';
                     } // "A's brother-in-law is B" (husband's sister's husband) 
                     else {
@@ -726,9 +1036,9 @@ function calculate_rel($data_found)
         } else {
             $reltext = __('sister of ');
             // *** Greek***
-            // *** Ελληνικά αδελφή***            
+            // *** Ελληνικά αδελφή***
             if ($selected_language == "gr") {
-                if ($sexe2 == "m") {
+                if ($relation['sexe2'] == "M") {
                     $reltext = 'αδελφή του ';
                 } else {
                     $reltext = 'αδελφή της ';
@@ -737,7 +1047,7 @@ function calculate_rel($data_found)
             // *** Ελληνικά τέλος***
             // *** Greek end***             
             if ($selected_language == "cn") {
-                if ($sexe2 == "m") {
+                if ($relation['sexe2'] == "M") {
                     $reltext = '兄弟是';
                 } // "A's brother is B"
                 else {
@@ -748,18 +1058,18 @@ function calculate_rel($data_found)
                 $reltext =  __('brother-in-law of ');
                 $special_spouseX = 1;  //comparing spouse of X with Y
                 // *** Greek***
-                // *** Ελληνικά κουνιάδος***                
+                // *** Ελληνικά κουνιάδος***
                 if ($selected_language == "gr") {
-                    if ($sexe2 == "m") {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = 'κουνιάδος του ';
                     } else {
                         $reltext = 'κουνιάδος της ';
                     }
                 }
                 // *** Ελληνικά τέλος***
-                // *** Greek end***           
+                // *** Greek end***
                 if ($selected_language == "cn") {
-                    if ($sexe2 == "m") {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = '大舅(小舅)是';
                     } // "A's brother-in-law is B" (wife's brother)
                     else {
@@ -767,15 +1077,15 @@ function calculate_rel($data_found)
                     }  // "A's sister-in-law is B" (wife's sister)
                 }
             }
-            if ($spouse == 2 or $spouse == 3) {
+            if ($spouse == 2 || $spouse == 3) {
                 $reltext =  __('sister-in-law of ');
                 $special_spouseY = 1; //comparing X with spouse of Y or comparing 2 spouses
                 //$special_spouseX flags not to enter "spouse of" for X in display function
                 //$special_spouseY flags not to enter "spouse of" for Y in display function
                 // *** Greek***
-                // *** Ελληνικά κουνιάδα***                  
-                if ($selected_language == "gr" and $spouse == 2) {
-                    if ($sexe2 == "m") {
+                // *** Ελληνικά κουνιάδα***
+                if ($selected_language == "gr" && $spouse == 2) {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = 'κουνιάδα του ';
                     } else {
                         $reltext = 'κουνιάδα της ';
@@ -783,16 +1093,16 @@ function calculate_rel($data_found)
                 }
                 // *** Ελληνικά τέλος***
                 // *** Greek end*** 
-                if ($selected_language == "cn" and $spouse == 2) {
-                    if ($sexe2 == "m") {
+                if ($selected_language == "cn" && $spouse == 2) {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = '姊夫(妹夫)是';
                     } // "A's brother-in-law is B"  (sister's husband) 
                     else {
                         $reltext = '嫂(弟妇)是';
                     }  // "A's sister-in-law is B" (brother's wife)
                 }
-                if ($selected_language == "cn" and $spouse == 3) {
-                    if ($sexe2 == "m") {
+                if ($selected_language == "cn" && $spouse == 3) {
+                    if ($relation['sexe2'] == "M") {
                         $reltext = '姐夫(妹夫)是';
                     } // "A's brother-in-law is B" (wife's sister's husband) 
                     else {
@@ -801,14 +1111,14 @@ function calculate_rel($data_found)
                 }
             }
         }
-    } elseif ($data_found["foundX_gen"] == 1 and $data_found["foundY_gen"] > 1) {  // x is uncle, great-uncle etc of y
-        $table = 3;
+    } elseif ($data_found["foundX_gen"] == 1 && $data_found["foundY_gen"] > 1) {  // x is uncle, great-uncle etc of y
+        $relation_type = 3;
         calculate_uncles($data_found["foundY_gen"]);
-    } elseif ($data_found["foundX_gen"] > 1 and $data_found["foundY_gen"] == 1) {  // x is nephew, great-nephew etc of y
-        $table = 4;
+    } elseif ($data_found["foundX_gen"] > 1 && $data_found["foundY_gen"] == 1) {  // x is nephew, great-nephew etc of y
+        $relation_type = 4;
         calculate_nephews($data_found["foundX_gen"]);
     } else {  // x and y are cousins of any number (2nd, 3rd etc) and any distance removed (once removed, twice removed etc)
-        $table = 5;
+        $relation_type = 5;
         calculate_cousins($data_found["foundX_gen"], $data_found["foundY_gen"]);
     }
 }
@@ -898,27 +1208,23 @@ function spanish_degrees($pers, $text)
 
 function calculate_ancestor($pers)
 {
-    global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseY, $dutchtext, $selected_language, $rel_arrayY;
+    global $db_functions, $relation, $reltext, $spouse, $special_spouseY, $dutchtext, $selected_language, $rel_arrayY;
     global $rel_arrayspouseY;
     global $data_found;
 
     $ancestortext = '';
-    if ($sexe == 'm') {
-        $parent = __('father');
-    } else {
-        $parent = __('mother');
-    }
+    $parent = $relation['sexe1'] == 'M' ? __('father') : __('mother');
     // *** Greek***
-    // *** Ελληνικά πατέρας μητέρα***  
+    // *** Ελληνικά πατέρας μητέρα***
     if ($selected_language == "gr") {
-        if ($sexe == 'm') {
-            if ($sexe2 == 'm') {
+        if ($relation['sexe1'] == 'M') {
+            if ($relation['sexe2'] == 'M') {
                 $parent = 'πατέρας του ';
             } else {
                 $parent = 'πατέρας της  ';
             }
         } else {
-            if ($sexe2 == 'm') {
+            if ($relation['sexe2'] == 'M') {
                 $parent = 'μητέρα του ';
             } else {
                 $parent = 'μητέρα της  ';
@@ -930,7 +1236,7 @@ function calculate_ancestor($pers)
     if ($selected_language == "cn") {
         // chinese instead of A is father of B we say: A's son is B
         // therefore we need sex of B instead of A and use son/daughter instead of father/mother
-        if ($sexe2 == 'm') {
+        if ($relation['sexe2'] == 'M') {
             $parent = '儿子';  // son
         } else {
             $parent = '女儿';  //daughter
@@ -938,25 +1244,21 @@ function calculate_ancestor($pers)
     }
 
     if ($pers == 1) {
-        if ($spouse == 2 or $spouse == 3) {
+        if ($spouse == 2 || $spouse == 3) {
             $special_spouseY = 1; // prevents "spouse of Y" in output
             // TODO improve code.
-            if ($parent == __('father')) {
-                $parent = __('father-in-law');
-            } else {
-                $parent = __('mother-in-law');
-            }
+            $parent = $parent == __('father') ? __('father-in-law') : __('mother-in-law');
             // *** Greek***
             // *** Ελληνικά πεθερός πεθερά***  
             if ($selected_language == "gr") {
-                if ($sexe == "m") {
-                    if ($sexe2 == "m") {
+                if ($relation['sexe1'] == "M") {
+                    if ($relation['sexe2'] == "M") {
                         $parent = 'πεθερός του ';
                     } else {
                         $parent = 'πεθερός της ';
                     }
                 } else {
-                    if ($sexe2 == "m") {
+                    if ($relation['sexe2'] == "M") {
                         $parent = 'πεθερά του ';
                     } else {
                         $parent = 'πεθερά της ';
@@ -966,7 +1268,7 @@ function calculate_ancestor($pers)
             // *** Ελληνικά τέλος***
             // *** Greek end*** 
             if ($selected_language == "cn") {
-                if ($sexe2 == "m") {
+                if ($relation['sexe2'] == "M") {
                     $parent = '女婿';
                 }   // son-in-law
                 else {
@@ -1010,56 +1312,56 @@ function calculate_ancestor($pers)
             $gennr = $pers - 1;
             $degree = $gennr . $gr_postfix;
             if ($pers == 2) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $grparent . ' του ';
                     } else {
                         $reltext = $grparent . ' της ';
                     }
                 } else {
-                    if ($sexe2 == 'm') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $grparent . ' του ';
                     } else {
                         $reltext = $grparent . ' της ';
                     }
                 }
             } elseif ($pers == 3) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
                         $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 } else {
-                    if ($sexe2 == 'm') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
                         $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 }
             } elseif ($pers == 4) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
                         $reltext = $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 } else {
-                    if ($sexe2 == 'm') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
                         $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 }
             } elseif ($pers == 5) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
                         $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') της ';
                     }
                 } else {
-                    if ($sexe2 == 'm') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') του ';
                     } else {
                         $reltext =  $grgrparent . " (" . $degree . " " . $grparent . ') της ';
@@ -1081,7 +1383,7 @@ function calculate_ancestor($pers)
             $degree = $gennr . $spanishnumber . " " . $grparent;
             if ($pers == 2) {
                 $reltext = $grparent . __(' of ');
-            } elseif ($pers > 2 and $pers < 27) {
+            } elseif ($pers > 2 && $pers < 27) {
                 $spantext = spanish_degrees($pers, $grparent); // sets spanish "bis", "tris" etc prefix
                 $reltext = $spantext . " (" . $degree . ")" . __(' of ');
             } else {
@@ -1134,7 +1436,7 @@ function calculate_ancestor($pers)
             }
         } elseif ($selected_language == "da") {
 
-            if ($spouse == "2" or $spouse == "3") { // right person is spouse of Y, not Y
+            if ($spouse == "2" || $spouse == "3") { // right person is spouse of Y, not Y
                 $relarr = $rel_arrayspouseY;
             } else {
                 $relarr = $rel_arrayY;
@@ -1179,7 +1481,7 @@ function calculate_ancestor($pers)
         // Swedish needs to know if grandparent is related through mother or father - different names there
         // also for great-grandparent and 2nd great-grandparent!!!
         elseif ($selected_language == "sv") {
-            if ($spouse == "2" or $spouse == "3") { // right person is spouse of Y, not Y
+            if ($spouse == "2" || $spouse == "3") { // right person is spouse of Y, not Y
                 $relarr = $rel_arrayspouseY;
             } else {
                 $relarr = $rel_arrayY;
@@ -1258,8 +1560,8 @@ function calculate_ancestor($pers)
                 $reltext = $gennr . ':e generations ana på ' . $direct_par . 's sida' . __(' of ');
             }
         } elseif ($selected_language == "cn") {
-            if (($sexe2 == 'm' and $spouse != 2 and $spouse != 3) or ($sexe2 == 'f' and ($spouse == 2 or $spouse == 3))) {
-                //if($sexe2=="m") { // kwan gives: grandson, great-grandson etc 曾內孫仔  孫子 ???
+            if (($relation['sexe2'] == 'M' && $spouse != 2 && $spouse != 3) || ($relation['sexe2'] == 'F' && ($spouse == 2 || $spouse == 3))) {
+                //if($relation['sexe2']=="m") { // kwan gives: grandson, great-grandson etc 曾內孫仔  孫子 ???
                 if ($pers == 2) {
                     $reltext = '孙子';
                 }
@@ -1379,32 +1681,28 @@ function dutch_ancestors($gennr)
             }
         }
     }
-    $ancestortext = $ancestortext . $rest;
-    return $ancestortext;
+    return $ancestortext . $rest;
 }
 
 
 function calculate_descendant($pers)
 {
-    global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $selected_language, $rel_arrayX, $rel_arrayspouseX;
+    global $db_functions, $relation, $reltext, $spouse, $special_spouseX, $selected_language, $rel_arrayX, $rel_arrayspouseX;
     global $data_found;
 
-    if ($sexe == 'm') {
-        $child = __('son');
-    } else {
-        $child = __('daughter');
-    }
+    $child = $relation['sexe1'] == 'M' ? __('son') : __('daughter');
+
     // *** Greek***
     // *** Ελληνικά γιος κόρη***  
     if ($selected_language == "gr") {
-        if ($sexe == 'm') {
-            if ($sexe2 == 'm') {
+        if ($relation['sexe1'] == 'M') {
+            if ($relation['sexe2'] == 'M') {
                 $child = 'γιος του ';
             } else {
                 $child = 'γιος της ';
             }
         } else {
-            if ($sexe2 == 'm') {
+            if ($relation['sexe2'] == 'M') {
                 $child = 'κόρη του ';
                 $child = 'κόρη της ';
             }
@@ -1416,31 +1714,29 @@ function calculate_descendant($pers)
     if ($selected_language == "cn") {
         // chinese instead of A is son of B we say: A's father is B
         // therefore we need sex of B instead of A and use father/ mother instead of son/ daughter
-        if ($sexe2 == 'm') {
+        if ($relation['sexe2'] == 'M') {
             $child = '父亲';  // father
         } else {
             $child = '母亲';  // mother
         }
     }
+
     if ($pers == 1) {
         if ($spouse == 1) {
-            if ($child == __('son')) {
-                $child = __('daughter-in-law');
-            } else {
-                $child = __('son-in-law');
-            }
+            $child = $child == __('son') ? __('daughter-in-law') : __('son-in-law');
             $special_spouseX = 1;
+
             // *** Greek***
             // *** Ελληνικά νύφη γαμπρός***
             if ($selected_language == "gr") {
-                if ($sexe == "m") {
-                    if ($sexe2 == "m") {
+                if ($relation['sexe1'] == "M") {
+                    if ($relation['sexe2'] == "M") {
                         $child = 'νύφη του ';
                     } else {
                         $child = 'νύφη της';
                     }
                 } else {
-                    if ($sexe2 == "m") {
+                    if ($relation['sexe2'] == "M") {
                         $child = 'γαμπρός του ';
                     } else {
                         $child = 'γαμπρός της ';
@@ -1449,16 +1745,17 @@ function calculate_descendant($pers)
             }
             // *** Ελληνικά τέλος***
             // *** Greek end*** 
+
             if ($selected_language == "cn") {  // A's father/mother-in-law is B (instead of A is son/daughter-in-law of B)
-                if ($sexe2 == "m") {
-                    if ($sexe == "f") {
+                if ($relation['sexe2'] == "M") {
+                    if ($relation['sexe1'] == "F") {
                         $child = '公公';
                     }   // father-in-law called by daughter-in-law  
                     else {
                         $child = '岳父';
                     } // father-in-law called by son-in-law
                 } else {
-                    if ($sexe == "f") {
+                    if ($relation['sexe1'] == "F") {
                         $child = '婆婆';
                     } // mother-in-law called by daughter-in-law
                     else {
@@ -1467,6 +1764,7 @@ function calculate_descendant($pers)
                 }
             }
         }
+
         if ($selected_language == "gr") {
             $reltext = $child . '  ';
         } else {
@@ -1490,28 +1788,28 @@ function calculate_descendant($pers)
         $gennr = $pers - 1;
         $degree = $gennr . $gr_postfix . " " . $grchild;
         if ($pers == 2) {
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $grchild . ' του ';
                 } else {
                     $reltext = $grchild . ' της ';
                 }
             } else {
-                if ($sexe2 == 'm') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $grchild . ' του ';
                 } else {
                     $reltext = $grchild . ' της ';
                 }
             }
         } elseif ($pers > 2) {
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $grgrchild . " (" . $degree . ' ) του ';
                 } else {
                     $reltext = $grgrchild . " (" . $degree . ' ) της ';
                 }
             } else {
-                if ($sexe2 == 'm') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $grgrchild . " (" . $degree . ' ) του ';
                 } else {
                     $reltext =  $grgrchild . " (" . $degree . ' ) της ';
@@ -1532,7 +1830,7 @@ function calculate_descendant($pers)
         $degree = $gennr . $spanishnumber . " " . $grchild;
         if ($pers == 2) {
             $reltext = $grchild . __(' of ');
-        } elseif ($pers > 2 and $pers < 27) {
+        } elseif ($pers > 2 && $pers < 27) {
             $spantext = spanish_degrees($pers, $grchild); // sets spanish "bis", "tris" etc prefix
             $reltext = $spantext . " (" . $degree . ")" . __(' of ');
         } else {
@@ -1584,7 +1882,7 @@ function calculate_descendant($pers)
         }
     } elseif ($selected_language == "da") {
 
-        if ($spouse == "1" or $spouse == "3") { // right person is spouse of Y, not Y
+        if ($spouse == "1" || $spouse == "3") { // right person is spouse of Y, not Y
             $relarr = $rel_arrayspouseX;
         } else {
             $relarr = $rel_arrayX;
@@ -1631,7 +1929,7 @@ function calculate_descendant($pers)
     // also for great-grandchild and 2nd great-grandchild!!!
     elseif ($selected_language == "sv") {
 
-        if ($spouse == "1" or $spouse == "3") { // right person is spouse of Y, not Y
+        if ($spouse == "1" || $spouse == "3") { // right person is spouse of Y, not Y
             $relarr = $rel_arrayspouseX;
         } else {
             $relarr = $rel_arrayX;
@@ -1710,9 +2008,9 @@ function calculate_descendant($pers)
         if ($pers >  4) {
             $reltext = $gennr . ':e generations barn' . __(' of ');
         }
-    } elseif ($selected_language == "cn") {    // instead of A is grandson of B we say: A's granfather is B
-        if (($sexe2 == 'm' and $spouse != 2 and $spouse != 3) or ($sexe2 == 'f' and ($spouse == 2 or $spouse == 3))) {
-            //if($sexe2=="m") { // grandfather, great-grandfather etc
+    } elseif ($selected_language == "cn") {    // instead of A is grandson of B we say: A's grandfather is B
+        if ($relation['sexe2'] == 'M' && $spouse != 2 && $spouse != 3 || $relation['sexe2'] == 'F' && ($spouse == 2 || $spouse == 3)) {
+            //if($relation['sexe2']=="m") { // grandfather, great-grandfather etc
             if ($pers == 2) {
                 $reltext = '祖父';
             }
@@ -1741,7 +2039,7 @@ function calculate_descendant($pers)
         }
         $reltext .= '是';
     } elseif ($selected_language == "fr") {
-        if ($sexe == 'm') {
+        if ($relation['sexe1'] == 'M') {
             $gend = "";
         } else {
             $gend = "e";
@@ -1785,14 +2083,14 @@ function calculate_descendant($pers)
 
 function calculate_nephews($generX)
 { // handed generations x is removed from common ancestor
-    global $db_functions, $reltext, $sexe, $sexe2, $selected_language, $rel_arrayX, $rel_arrayspouseX, $spouse;
+    global $db_functions, $relation, $reltext, $selected_language, $rel_arrayX, $rel_arrayspouseX, $spouse;
     global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
     global $data_found;
 
     // *** Greek***
     // *** Ελληνικά***
     if ($selected_language == "gr") {
-        if ($sexe == "m") {
+        if ($relation['sexe1'] == "M") {
             $neph = 'ανιψιος';
             $gr_postfix = "ος ";
             $grson = 'εγγονός';
@@ -1807,15 +2105,15 @@ function calculate_nephews($generX)
         $gennr = $gendiff - 1;
         $degree = $grson . " " . $gennr . $gr_postfix;
         if ($gendiff == 1) {
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $neph . ' του ';
                 } else {
                     $reltext = $neph . ' της ';
                 }
             } else {
-                if ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $neph . ' του ';
                     } else {
                         $reltext = $neph . ' της ';
@@ -1823,15 +2121,15 @@ function calculate_nephews($generX)
                 }
             }
         } elseif ($gendiff == 2) {
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $neph . " " . $grson . ' του ';
                 } else {
                     $reltext = $neph . " " . $grson . ' της ';
                 }
             } else {
-                if ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $neph . " " . $grson . ' του ';
                     } else {
                         $reltext = $neph . " " . $grson . ' της ';
@@ -1839,15 +2137,15 @@ function calculate_nephews($generX)
                 }
             }
         } else {
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $neph . " " . $grgrson . ' του ';
                 } else {
                     $reltext = $neph . " " . $grgrson . ' της ';
                 }
             } else {
-                if ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $neph . " " . $grgrson . ' του ';
                     } else {
                         $reltext = $neph . " " . $grgrson . ' της ';
@@ -1858,7 +2156,7 @@ function calculate_nephews($generX)
         // *** Ελληνικά τέλος***
         // *** Greek end*** 
     } elseif ($selected_language == "es") {
-        if ($sexe == "m") {
+        if ($relation['sexe1'] == "M") {
             $neph = __('nephew');
             $span_postfix = "o ";
             $grson = 'nieto';
@@ -1872,18 +2170,14 @@ function calculate_nephews($generX)
         $degree = $grson . " " . $gennr . $span_postfix;
         if ($gendiff == 1) {
             $reltext = $neph . __(' of ');
-        } elseif ($gendiff > 1 and $gendiff < 27) {
+        } elseif ($gendiff > 1 && $gendiff < 27) {
             $spantext = spanish_degrees($gendiff, $grson);
             $reltext = $neph . " " . $spantext . __(' of ');
         } else {
             $reltext = $neph . " " . $degree;
         }
     } elseif ($selected_language == "he") {
-        if ($sexe == 'm') {
-            $nephniece = __('nephew');
-        } else {
-            $nephniece = __('niece');
-        }
+        $nephniece = $relation['sexe1'] == 'M' ? __('nephew') : __('niece');
         $gendiff = $generX - 1;
         if ($gendiff == 1) {
             $reltext = $nephniece . __(' of ');
@@ -1892,11 +2186,7 @@ function calculate_nephews($generX)
             $reltext = $nephniece . $degree . __(' of ');
         }
     } elseif ($selected_language == "fi") {
-        if ($sexe == 'm') {
-            $nephniece = __('nephew');
-        } else {
-            $nephniece = __('niece');
-        }
+        $nephniece = $relation['sexe1'] == 'M' ? __('nephew') : __('niece');
         if ($generX == 2) {
             $reltext = $nephniece . __(' of ');
         }
@@ -1908,11 +2198,7 @@ function calculate_nephews($generX)
             $reltext = $gennr . '. ' . __('grand') . $nephniece . __(' of ');
         }
     } elseif ($selected_language == "no") {
-        if ($sexe == 'm') {
-            $nephniece = __('nephew');
-        } else {
-            $nephniece = __('niece');
-        }
+        $nephniece = $relation['sexe1'] == 'M' ? __('nephew') : __('niece');
         $reltext_nor = '';
         $reltext_nor2 = '';
         if ($generX > 3) {
@@ -1941,11 +2227,7 @@ function calculate_nephews($generX)
             $reltext = $gennr . 'x tippolde barnet' . __(' of ');
         }
     } elseif ($selected_language == "da") {
-        if ($sexe == 'm') {
-            $nephniece = __('nephew');
-        } else {
-            $nephniece = __('niece');
-        }
+        $nephniece = $relation['sexe1'] == 'M' ? __('nephew') : __('niece');
         $reltext_nor = '';
         $reltext_nor2 = '';
         if ($generX > 3) {
@@ -1977,11 +2259,7 @@ function calculate_nephews($generX)
             $reltext = $gennr . ' gange tip oldebarn' . __(' of ');
         }
     } elseif ($selected_language == "nl") {
-        if ($sexe == 'm') {
-            $nephniece = __('nephew');
-        } else {
-            $nephniece = __('niece');
-        }
+        $nephniece = $relation['sexe1'] == 'M' ? __('nephew') : __('niece');
         // in Dutch we use the __('3rd [COUSIN]') variables, that work for nephews as well
         if ($generX == 2) {
             $reltext = $nephniece . __(' of ');
@@ -2006,13 +2284,13 @@ function calculate_nephews($generX)
         // Swedish needs to know if nephew/niece is related through brother or sister - different names there
         // also for grandnephew!!!
 
-        if ($spouse == "1" or $spouse == "3") { // right person is spouse of Y, not Y
+        if ($spouse == "1" || $spouse == "3") { // right person is spouse of Y, not Y
             $relarr = $rel_arrayspouseX;
         } else {
             $relarr = $rel_arrayX;
         }
 
-        if ($sexe == 'm') {
+        if ($relation['sexe1'] == 'M') {
             $nephniece = "son";
         } else {
             $nephniece = "dotter";
@@ -2084,13 +2362,13 @@ function calculate_nephews($generX)
         $persidDbX = $db_functions->get_person($relarrX[$parnumberX][0]);
         $parsexeX = $persidDbX->pers_sexe;
         if ($parsexeX == 'M') { // uncle/aunt from father's side
-            if (($sexe2 == "m" and $spouse != 2 and $spouse != 3) or ($sexe2 == "f" and ($spouse == 2 or $spouse == 3))) {
+            if (($relation['sexe2'] == "M" && $spouse != 2 && $spouse != 3) || ($relation['sexe2'] == "F" && ($spouse == 2 || $spouse == 3))) {
                 $reltext = '伯父(叔父)是';  // uncle - brother of father
             } else {
                 $reltext = '姑母是';  // aunt - sister of father
             }
         } else { // uncle/aunt from mother's side
-            if (($sexe2 == "m" and $spouse != 2 and $spouse != 3) or ($sexe2 == "f" and ($spouse == 2 or $spouse == 3))) {
+            if (($relation['sexe2'] == "M" && $spouse != 2 && $spouse != 3) || ($relation['sexe2'] == "F" && ($spouse == 2 || $spouse == 3))) {
                 $reltext = '舅父是';  // uncle - brother of mother
             } else {
                 $reltext = '姨母(姨)是';  // aunt - sister of mother
@@ -2098,7 +2376,7 @@ function calculate_nephews($generX)
         }
 
         /*		
-        if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) {  
+        if(($relation['sexe2']=='m' && $spouse!=2 && $spouse!=3) || ($relation['sexe2'] == "F" && ($spouse==2 || $spouse==3))) {  
             $nephniece = '叔伯是';  // A's uncle is B
         }
         else {
@@ -2111,7 +2389,7 @@ function calculate_nephews($generX)
             $reltext = "notext";
         }  // suppress text - "granduncle" etc is not (yet) supported in Chinese
     } elseif ($selected_language == "fr") {
-        if ($sexe == 'm') {
+        if ($relation['sexe1'] == 'M') {
             $nephniece = __('nephew');
             $gend = "";
         } else {
@@ -2138,11 +2416,7 @@ function calculate_nephews($generX)
             $reltext = 'arrière (' . $gennr . ' fois) petit' . $gend . '-' . $nephniece . __(' of ');
         }
     } else {
-        if ($sexe == 'm') {
-            $nephniece = __('nephew');
-        } else {
-            $nephniece = __('niece');
-        }
+        $nephniece = $relation['sexe1'] == 'M' ? __('nephew') : __('niece');
         if ($generX == 2) {
             $reltext = $nephniece . __(' of ');
         }
@@ -2167,17 +2441,17 @@ function calculate_nephews($generX)
 
 function calculate_uncles($generY)
 { // handed generations y is removed from common ancestor
-    global $db_functions, $reltext,  $sexe, $sexe2, $dutchtext, $selected_language, $rel_arrayspouseY, $spouse;
+    global $db_functions, $relation, $reltext, $dutchtext, $selected_language, $rel_arrayspouseY, $spouse;
     global $rel_arrayY;  // only for Finnish paragraph
     global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
     global $data_found;
 
-    if ($sexe == 'm') {
+    if ($relation['sexe1'] == 'M') {
         $uncleaunt = __('uncle');
         if ($selected_language == "cn") {  // A's nephew/niece is B
             // Used: http://www.kwanfamily.info/culture/familytitles_table.php
             // Other translations (not used):  dongshan: nephew: 侄子是  niece 侄女是
-            if ($spouse == "2" or $spouse == "3") { // right person is spouse of Y, not Y
+            if ($spouse == "2" || $spouse == "3") { // right person is spouse of Y, not Y
                 $relarrY = $rel_arrayspouseY;
             } else {
                 $relarrY = $rel_arrayY;
@@ -2194,17 +2468,17 @@ function calculate_uncles($generY)
             $persidDbY = $db_functions->get_person($relarrY[$parnumberY][0]);
             $parsexeY = $persidDbY->pers_sexe;
             if ($parsexeY == "M") { // is child of brother
-                if (($sexe2 == 'm' and $spouse != 2 and $spouse != 3) or ($sexe2 == 'f' and ($spouse == 2 or $spouse == 3))) {
+                if (($relation['sexe2'] == 'M' && $spouse != 2 && $spouse != 3) || ($relation['sexe2'] == 'F' && ($spouse == 2 || $spouse == 3))) {
                     $uncleaunt = '姪子是';
                 } else {
                     $uncleaunt = '姪女是';
                 }
             } else { // is child of sister - term depends also on sex of A
-                if (($sexe2 == 'm' and $spouse != 2 and $spouse != 3) or ($sexe2 == 'f' and ($spouse == 2 or $spouse == 3))) {
-                    if ($sexe == "m") $uncleaunt = '外甥是'; // son of sister (A is male)
+                if (($relation['sexe2'] == 'M' && $spouse != 2 && $spouse != 3) || ($relation['sexe2'] == 'F' && ($spouse == 2 || $spouse == 3))) {
+                    if ($relation['sexe1'] == "M") $uncleaunt = '外甥是'; // son of sister (A is male)
                     else $uncleaunt = '姨甥是'; // son of sister (A is female)
                 } else {
-                    if ($sexe == "m") $uncleaunt = '外甥女是'; // daughter of sister (A is male)
+                    if ($relation['sexe1'] == "M") $uncleaunt = '外甥女是'; // daughter of sister (A is male)
                     else $uncleaunt = '姨甥女是';    // daughter of sister (A is female)
                 }
             }
@@ -2230,7 +2504,7 @@ function calculate_uncles($generY)
         // also for granduncle and great-granduncle!!!
         if ($selected_language == "sv") {
 
-            if ($spouse == "2" or $spouse == "3") { // right person is spouse of Y, not Y
+            if ($spouse == "2" || $spouse == "3") { // right person is spouse of Y, not Y
                 $relarr = $rel_arrayspouseY;
             } else {
                 $relarr = $rel_arrayY;
@@ -2294,7 +2568,7 @@ function calculate_uncles($generY)
     } else {
         $uncleaunt = __('aunt');
         if ($selected_language == "cn") {
-            if ($sexe2 == "m") {
+            if ($relation['sexe2'] == "M") {
                 $uncleaunt = '侄子是';
             } // "A's nephew is B"
             else {
@@ -2305,7 +2579,7 @@ function calculate_uncles($generY)
         // also for grandaunt and great-grandaunt!!!
         if ($selected_language == "sv") {
 
-            if ($spouse == "2" or $spouse == "3") { // right person is spouse of Y, not Y
+            if ($spouse == "2" || $spouse == "3") { // right person is spouse of Y, not Y
                 $relarr = $rel_arrayspouseY;
             } else {
                 $relarr = $rel_arrayY;
@@ -2379,7 +2653,7 @@ function calculate_uncles($generY)
         // *** Ελληνικά θείος***
     } elseif ($selected_language == "gr") {
         // TODO improve code
-        if ($sexe == "m") {
+        if ($relation['sexe1'] == "M") {
             $uncle = 'θείος';
             $gr_postfix = "ος ";
             $gran = 'παππούς';
@@ -2394,28 +2668,28 @@ function calculate_uncles($generY)
         $gennr = $gendiff - 1;
         $degree = $gran . " " . $gennr . $gr_postfix;
         if ($gendiff == 1) {
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $uncle . ' του ';
                 } else {
                     $reltext = $uncle . ' της ';
                 }
             } else {
-                if ($sexe2 == 'm') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $uncle . ' του ';
                 } else {
                     $reltext =  $uncle . ' της ';
                 }
             }
         } elseif ($gendiff == 2) {
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $uncle . " " . $gran . ' του ';
                 } else {
                     $reltext = $uncle . " " . $gran . ' της ';
                 }
             } else {
-                if ($sexe2 == 'm') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $uncle . " " . $gran . ' του ';
                 } else {
                     $reltext = $uncle . " " . $gran . ' της ';
@@ -2423,14 +2697,14 @@ function calculate_uncles($generY)
             }
         } elseif ($gendiff > 2) {
 
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $uncle . " " . $grgrparent . ' του ';
                 } else {
                     $reltext = $uncle . " " . $grgrparent . ' της ';
                 }
             } else {
-                if ($sexe2 == 'm') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $uncle . " " . $grgrparent . ' του ';
                 } else {
                     $reltext = $uncle . " " . $grgrparent . ' της ';
@@ -2440,7 +2714,7 @@ function calculate_uncles($generY)
         // *** Ελληνικά τέλος***
         // *** Greek end*** 
     } elseif ($selected_language == "es") {
-        if ($sexe == "m") {
+        if ($relation['sexe1'] == "M") {
             $uncle = __('uncle');
             $span_postfix = "o ";
             $gran = 'abuelo';
@@ -2454,7 +2728,7 @@ function calculate_uncles($generY)
         $degree = $gran . " " . $gennr . $span_postfix;
         if ($gendiff == 1) {
             $reltext = $uncle . __(' of ');
-        } elseif ($gendiff > 1 and $gendiff < 27) {
+        } elseif ($gendiff > 1 && $gendiff < 27) {
             $spantext = spanish_degrees($gendiff, $gran);
             $reltext = $uncle . " " . $spantext . __(' of ');
         } else {
@@ -2523,7 +2797,7 @@ function calculate_uncles($generY)
         if ($generY >  6) {
             $temptext = $gennr . 'x tippoldeforelderen';
         }
-        if ($temptext != '') {
+        if ($temptext !== '') {
             $reltext_nor = "s " . substr($temptext, 0, -2);
             $reltext_nor2 = $temptext . __(' of ');
         }
@@ -2560,7 +2834,7 @@ function calculate_uncles($generY)
         if ($generY >  7) {
             $temptext = $gennr . ' gange tip oldeforældre';
         }
-        if ($temptext != '') {
+        if ($temptext !== '') {
             $reltext_nor = "s " . $temptext;
             $reltext_nor2 = $temptext . ' til ';
         }
@@ -2620,19 +2894,15 @@ function calculate_uncles($generY)
 
 function calculate_cousins($generX, $generY)
 {
-    global $db_functions, $reltext, $sexe, $sexe2, $selected_language, $rel_arrayX, $rel_arrayspouseX, $rel_arrayY, $rel_arrayspouseY, $spouse;
+    global $db_functions, $relation, $reltext, $selected_language, $rel_arrayX, $rel_arrayspouseX, $rel_arrayY, $rel_arrayspouseY, $spouse;
     global $reltext_nor, $reltext_nor2; // for Norwegian
     global $data_found;
-
-
 
     if ($selected_language == "es") {
         $gendiff = abs($generX - $generY);
 
         if ($gendiff == 0) {
-            //if($sexe=="m") { $cousin=__('COUSIN_MALE'); $span_postfix="o "; $sibling=__('1st [COUSIN]'); }
-            //else { $cousin=__('COUSIN_FEMALE'); $span_postfix="a "; $sibling='hermana';}
-            if ($sexe == "m") {
+            if ($relation['sexe1'] == "M") {
                 $cousin = __('cousin.male');
                 $span_postfix = "o ";
                 $sibling = __('1st [COUSIN]');
@@ -2648,7 +2918,7 @@ function calculate_cousins($generX, $generY)
                 $reltext = $cousin . " " . $degree . $span_postfix . __(' of ');
             }
         } elseif ($generX < $generY) {
-            if ($sexe == "m") {
+            if ($relation['sexe1'] == "M") {
                 $uncle = __('uncle');
                 $span_postfix = "o ";
                 $gran = 'abuelo';
@@ -2660,14 +2930,14 @@ function calculate_cousins($generX, $generY)
 
             if ($gendiff == 1) {
                 $relname = $uncle;
-            } elseif ($gendiff > 1 and $gendiff < 27) {
+            } elseif ($gendiff > 1 && $gendiff < 27) {
                 $spantext = spanish_degrees($gendiff, $gran);
                 $relname = $uncle . " " . $spantext;
             } else {
             }
             $reltext = $relname . " " . $generX . $span_postfix . __(' of ');
         } else {
-            if ($sexe == "m") {
+            if ($relation['sexe1'] == "M") {
                 $nephew = __('nephew');
                 $span_postfix = "o ";
                 $grson = 'nieto';
@@ -2692,9 +2962,7 @@ function calculate_cousins($generX, $generY)
         $gendiff = abs($generX - $generY);
 
         if ($gendiff == 0) {
-            //if($sexe=="m") { $cousin=__('COUSIN_MALE'); $span_postfix="o "; $sibling=__('1st [COUSIN]'); }
-            //else { $cousin=__('COUSIN_FEMALE'); $span_postfix="a "; $sibling='hermana';}
-            if ($sexe == "m") {
+            if ($relation['sexe1'] == "M") {
                 $cousin = __('cousin.male');
                 $gr_postfix = "ος ";
                 $sibling = __('1st [COUSIN]');
@@ -2704,14 +2972,14 @@ function calculate_cousins($generX, $generY)
                 $sibling = __('1st [COUSIN]');
             }
             if ($generX == 2) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $sibling . $gr_postfix . $cousin . '  του ';
                     } else {
                         $reltext = $sibling . $gr_postfix . $cousin . ' της ';
                     }
-                } elseif ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                } elseif ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $sibling . $gr_postfix . $cousin . ' του ';
                     } else {
                         $reltext = $sibling . $gr_postfix . $cousin . ' της ';
@@ -2719,14 +2987,14 @@ function calculate_cousins($generX, $generY)
                 }
             } elseif ($generX > 2) {
                 $degree = $generX - 1;
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext =  $degree . $gr_postfix . $cousin . ' του ';
                     } else {
                         $reltext =  $degree . $gr_postfix . $cousin . ' της ';
                     }
-                } elseif ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                } elseif ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext =  $degree . $gr_postfix . $cousin . ' του ';
                     } else {
                         $reltext =  $degree . $gr_postfix . $cousin . ' της ';
@@ -2734,7 +3002,7 @@ function calculate_cousins($generX, $generY)
                 }
             }
         } elseif ($generX < $generY) {
-            if ($sexe == "m") {
+            if ($relation['sexe1'] == "M") {
                 $uncle = __('uncle');
                 $gr_postfix = "ος ";
                 $gran = 'παππούς';
@@ -2744,14 +3012,14 @@ function calculate_cousins($generX, $generY)
                 $gran = 'γιαγιά';
             }
             if ($gendiff == 1) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $relname = $uncle . ' του ';
                     } else {
                         $relname = $uncle . ' της ';
                     }
-                } elseif ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                } elseif ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $relname = $uncle . ' του ';
                     } else {
                         $relname = $uncle . ' της ';
@@ -2759,42 +3027,42 @@ function calculate_cousins($generX, $generY)
                 }
             } else {
 
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $relname = $uncle . ' του ';
                     } else {
                         $relname = $uncle . ' του ';
                     }
-                } elseif ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                } elseif ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $relname = $uncle . ' του ';
                     } else {
                         $relname = $uncle . ' του ';
                     }
                 }
             }
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $uncle . " " . $generX . $gr_postfix . ' του';
                 } else {
                     $reltext = $uncle . " " . $generX . $gr_postfix . ' της ';
                 }
-            } elseif ($sexe == 'f') {
-                if ($sexe2 == 'm') {
+            } elseif ($relation['sexe1'] == 'F') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $uncle . " " . $generX . $gr_postfix . ' του ';
                 } else {
                     $reltext = $uncle . " " . $generX . $gr_postfix . ' της ';
                 }
             }
             if ($gendiff == 2) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $uncle . " " . $gran . ' του';
                     } else {
                         $reltext = $uncle . " " . $gran . ' της ';
                     }
-                } elseif ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                } elseif ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $uncle . " " . $gran . ' του ';
                     } else {
                         $reltext = $uncle . " " . $gran . ' της ';
@@ -2802,7 +3070,7 @@ function calculate_cousins($generX, $generY)
                 }
             }
         } else {
-            if ($sexe == "m") {
+            if ($relation['sexe1'] == "M") {
                 $nephew = 'ανιψιος';
                 $gr_postfix = "ος ";
                 $grson = 'εγγονός';
@@ -2812,42 +3080,42 @@ function calculate_cousins($generX, $generY)
                 $grson = 'εγγονή';
             }
             if ($gendiff == 1) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $relname = $nephew . ' του ';
                     } else {
                         $relname = $nephew . ' του ';
                     }
-                } elseif ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                } elseif ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $relname = $nephew . ' του ';
                     } else {
                         $relname = $nephew . ' του ';
                     }
                 }
             }
-            if ($sexe == 'm') {
-                if ($sexe2 == 'm') {
+            if ($relation['sexe1'] == 'M') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $nephew . " " . $generY . $gr_postfix . ' του';
                 } else {
                     $reltext = $nephew . " " . $generY . $gr_postfix . ' της ';
                 }
-            } elseif ($sexe == 'f') {
-                if ($sexe2 == 'm') {
+            } elseif ($relation['sexe1'] == 'F') {
+                if ($relation['sexe2'] == 'M') {
                     $reltext = $nephew . " " . $generY . $gr_postfix . ' του ';
                 } else {
                     $reltext = $nephew . " " . $generY . $gr_postfix . ' της ';
                 }
             }
             if ($gendiff == 2) {
-                if ($sexe == 'm') {
-                    if ($sexe2 == 'm') {
+                if ($relation['sexe1'] == 'M') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $nephew . " " . $grson . ' του';
                     } else {
                         $reltext = $nephew . " " . $grson . ' της ';
                     }
-                } elseif ($sexe == 'f') {
-                    if ($sexe2 == 'm') {
+                } elseif ($relation['sexe1'] == 'F') {
+                    if ($relation['sexe2'] == 'M') {
                         $reltext = $nephew . " " . $grson . ' του ';
                     } else {
                         $reltext = $nephew . " " . $grson . ' της ';
@@ -2858,7 +3126,7 @@ function calculate_cousins($generX, $generY)
         // *** Ελληνικά τέλος***
         // *** Greek end***    
     } elseif ($selected_language == "he") {
-        if ($sexe == 'm') {
+        if ($relation['sexe1'] == 'M') {
             $cousin = __('COUSIN_MALE');
         } else {
             $cousin = __('COUSIN_FEMALE');
@@ -2898,7 +3166,7 @@ function calculate_cousins($generX, $generY)
         if ($gendiff == 0) { // A and B are cousins of same generation
             $reltext = $nor_cousin . __(' of ');
         } elseif ($generX > $generY) {  // A is the "younger" cousin  (A er barnebarnet av Bs tremenning)
-            if ($sexe == 'm') {
+            if ($relation['sexe1'] == 'M') {
                 $child = __('son');
             }  // only for 1st generation
             else {
@@ -3073,7 +3341,7 @@ function calculate_cousins($generX, $generY)
             }
         } elseif ($generX < $generY) {  // A is the "older" cousin (A är farfars tremanning för B)
 
-            if ($spouse == "2" or $spouse == "3") { // right person is spouse of Y, not Y
+            if ($spouse == "2" || $spouse == "3") { // right person is spouse of Y, not Y
                 $relarr = $rel_arrayspouseY;
             } else {
                 $relarr = $rel_arrayY;
@@ -3137,7 +3405,7 @@ function calculate_cousins($generX, $generY)
 
         $gendiff = abs($generX - $generY);
         $degreediff = min($generX, $generY);
-        if ($gendiff == 0 and $degreediff == 2) {
+        if ($gendiff == 0 && $degreediff == 2) {
             // deals with first cousins not removed only.
             // Unfortunately we miss the Chinese terminology for 2nd, 3rd cousins and "removed" sequence...
             if ($spouse == "1") { // left person is spouse of X, not X
@@ -3157,14 +3425,14 @@ function calculate_cousins($generX, $generY)
             $persidDbX = $db_functions->get_person($relarrX[$parnumberX][0]);
             $parsexeX = $persidDbX->pers_sexe;
             if ($parsexeX == 'F') { // the easier part: with siblings of mother doesn't matter from her brothers or sisters
-                if (($sexe2 == "m" and $spouse != 2 and $spouse != 3) or ($sexe2 == "f" and ($spouse == 2 or $spouse == 3))) {
+                if (($relation['sexe2'] == "M" && $spouse != 2 && $spouse != 3) || ($relation['sexe2'] == "F" && ($spouse == 2 || $spouse == 3))) {
                     $reltext = '表兄弟是';  // male cousin from mother's side
                 } else {
                     $reltext = '表姊妹是';  // female cousin from mother's side
                 }
             } else { // difficult part: it matters whether cousins thru father's brothers of father's sister!
 
-                if ($spouse == "2" or $spouse == "3") { // right person is spouse of Y, not Y
+                if ($spouse == "2" || $spouse == "3") { // right person is spouse of Y, not Y
                     $relarrY = $rel_arrayspouseY;
                 } else {
                     $relarrY = $rel_arrayY;
@@ -3181,13 +3449,13 @@ function calculate_cousins($generX, $generY)
                 $persidDbY = $db_functions->get_person($relarrY[$parnumberY][0]);
                 $parsexeY = $persidDbY->pers_sexe;
                 if ($parsexeY == "M") { // child of father's brother
-                    if (($sexe2 == "m" and $spouse != 2 and $spouse != 3) or ($sexe2 == "f" and ($spouse == 2 or $spouse == 3))) {
+                    if (($relation['sexe2'] == "M" && $spouse != 2 && $spouse != 3) || ($relation['sexe2'] == "F" && ($spouse == 2 || $spouse == 3))) {
                         $reltext = '堂兄弟是';
                     } else {
                         $reltext = '堂姊妹是';
                     }
                 } else { // child of father's sister
-                    if (($sexe2 == "m" and $spouse != 2 and $spouse != 3) or ($sexe2 == "f" and ($spouse == 2 or $spouse == 3))) {
+                    if (($relation['sexe2'] == "M" && $spouse != 2 && $spouse != 3) || ($relation['sexe2'] == "F" && ($spouse == 2 || $spouse == 3))) {
                         $reltext = '表兄弟是';
                     } else {
                         $reltext = '表姊妹是';
@@ -3210,27 +3478,27 @@ function calculate_cousins($generX, $generY)
             $nor_cousin = $gennr . ". kusine";  // 3. kusine
         }
 
-        if ($degreediff == 2 and $gendiff == 0) {
+        if ($degreediff == 2 && $gendiff == 0) {
             $reltext = __('COUSIN_MALE') . __(' of ');
         }  // first cousins
-        elseif ($degreediff == 2 and $gendiff == 1 and $generX < $generY) {   // first cousins once removed - X older
-            if ($sexe == "m") {
+        elseif ($degreediff == 2 && $gendiff == 1 && $generX < $generY) {   // first cousins once removed - X older
+            if ($relation['sexe1'] == "M") {
                 $reltext =  'halvonkel' . __(' of ');
             } else {
                 $reltext =  'halvtante' . __(' of ');
             }
-        } elseif ($degreediff == 2 and $gendiff == 1 and $generX > $generY) {   // first cousins once removed - Y older
-            if ($sexe == "m") {
+        } elseif ($degreediff == 2 && $gendiff == 1 && $generX > $generY) {   // first cousins once removed - Y older
+            if ($relation['sexe1'] == "M") {
                 $reltext =  'halvnevø' . __(' of ');
             } else {
                 $reltext =  'halvniece' . __(' of ');
             }
-        } elseif ($degreediff == 3 and $gendiff == 0) {
+        } elseif ($degreediff == 3 && $gendiff == 0) {
             $reltext = 'halvkusine' . __(' of ');
         }  // second cousins
 
         elseif ($generX > $generY) {  // A is the "younger" cousin  (A er barnebarn af Bs tremenning)
-            if ($sexe == 'm') {
+            if ($relation['sexe1'] == 'M') {
                 $child = __('son');
             }  // only for 1st generation
             else {
@@ -3288,7 +3556,7 @@ function calculate_cousins($generX, $generY)
             $reltext_nor2 = $temptext . ' til ';
         }
     } elseif ($selected_language == "fr") {  // french
-        if ($sexe == 'm') {
+        if ($relation['sexe1'] == 'M') {
             $cousin = __('cousin.male');
             $gend = '';
         } else {
@@ -3359,11 +3627,7 @@ function calculate_cousins($generX, $generY)
             $degree = __('3rd [COUSIN]');
         }
 
-        if ($sexe == 'm') {
-            $cousin = __('cousin.male');
-        } else {
-            $cousin = __('cousin.female');
-        }
+        $cousin = $relation['sexe1'] == 'M' ? __('cousin.male') : __('cousin.female');
 
         if ($degreediff > 4) {
             $degreediff -= 1;
@@ -3373,7 +3637,7 @@ function calculate_cousins($generX, $generY)
                 $degree = $degreediff . __('th') . ' ' . __('2nd [COUSIN]'); // in Dutch cousins are counted with 2nd cousin as base
             }
         }
-        if (($selected_language == "fi" and $degreediff == 3) or ($selected_language == "nl" and $degreediff >= 3)) {
+        if (($selected_language == "fi" && $degreediff == 3) || ($selected_language == "nl" && $degreediff >= 3)) {
             // no space here (FI): pikkuserkku
             // no space here (NL): achterneef, achter-achternicht, 3de achterneef
             $reltext = $degree . $cousin . ' ' . $removenr . __(' of ');
@@ -3384,28 +3648,19 @@ function calculate_cousins($generX, $generY)
 }
 
 
+// TODO function used once
 function search_marital()
 {
-    global $db_functions, $famsX, $famsY, $famspouseX, $famspouseY, $rel_arrayX, $rel_arrayY;
-    global $sexe, $sexe2, $spousenameX, $spousenameY;
-    global $rel_arrayspouseX, $rel_arrayspouseY;
-    global $data_found;
+    global $db_functions, $relation, $famspouseX, $famspouseY, $rel_arrayX, $rel_arrayY;
+    global $spousenameX, $spousenameY, $rel_arrayspouseX, $rel_arrayspouseY, $data_found;
 
     $pers_cls = new person_cls;
-    $marrX = '';
-    if (isset($famsX)) $marrX = explode(";", $famsX);
-    $marrY = '';
-    if (isset($famsY)) $marrY = explode(";", $famsY);
 
-    if ($famsX != '') {
-        $marrcount = count($marrX);
+    if ($relation['fams1'] != '') {
+        $marrcount = count($relation['fams1_array']);
         for ($x = 0; $x < $marrcount; $x++) {
-            @$familyDb = $db_functions->get_family($marrX[$x], 'man-woman');
-            if ($sexe == 'f') {
-                $thespouse = $familyDb->fam_man;
-            } else {
-                $thespouse = $familyDb->fam_woman;
-            }
+            @$familyDb = $db_functions->get_family($relation['fams1_array'][$x], 'man-woman');
+            $thespouse = $relation['sexe1'] == 'F' ? $familyDb->fam_man : $familyDb->fam_woman;
 
             $rel_arrayspouseX = create_rel_array($db_functions, $thespouse);
 
@@ -3414,13 +3669,9 @@ function search_marital()
             }
 
             if ($data_found["foundX_match"] !== '') {
-                $famspouseX = $marrX[$x];
+                $famspouseX = $relation['fams1_array'][$x];
 
-                if ($sexe == 'm') {
-                    $sexe = "f";
-                } else {
-                    $sexe = "m";
-                } // we have to switch sex since the spouse is the relative!
+                $relation['sexe1'] = $relation['sexe1'] == 'M' ? "f" : "m"; // we have to switch sex since the spouse is the relative!
                 calculate_rel($data_found);
 
                 $spouseidDb = $db_functions->get_person($thespouse);
@@ -3432,15 +3683,11 @@ function search_marital()
         }
     }
 
-    if ($data_found["foundX_match"] === '' and $famsY != '') {  // no match found between "spouse of X" and "Y", let's try "X" with "spouse of "Y"
-        $ymarrcount = count($marrY);
+    if ($data_found["foundX_match"] === '' && $relation['fams2'] != '') {  // no match found between "spouse of X" && "Y", let's try "X" with "spouse of "Y"
+        $ymarrcount = count($relation['fams2_array']);
         for ($x = 0; $x < $ymarrcount; $x++) {
-            @$familyDb = $db_functions->get_family($marrY[$x], 'man-woman');
-            if ($sexe2 == 'f') {
-                $thespouse2 = $familyDb->fam_man;
-            } else {
-                $thespouse2 = $familyDb->fam_woman;
-            }
+            @$familyDb = $db_functions->get_family($relation['fams2_array'][$x], 'man-woman');
+            $thespouse2 = $relation['sexe2'] == 'F' ? $familyDb->fam_man : $familyDb->fam_woman;
 
             $rel_arrayspouseY = create_rel_array($db_functions, $thespouse2);
 
@@ -3448,7 +3695,7 @@ function search_marital()
                 compare_rel_array($rel_arrayX, $rel_arrayspouseY, 2); // "2" flags comparison with "spouse of Y"
             }
             if ($data_found["foundX_match"] !== '') {
-                $famspouseY = $marrY[$x];
+                $famspouseY = $relation['fams2_array'][$x];
                 calculate_rel($data_found);
                 $spouseidDb = $db_functions->get_person($thespouse2);
                 $name = $pers_cls->person_name($spouseidDb);
@@ -3458,38 +3705,26 @@ function search_marital()
         }
     }
 
-    if ($data_found["foundX_match"] === '' and $famsX != '' and $famsY != '') { // still no matches, let's try comparison of "spouse of X" with "spouse of Y"
-        $xmarrcount = count($marrX);
-        $ymarrcount = count($marrY);
+    if ($data_found["foundX_match"] === '' && $relation['fams1'] != '' && $relation['fams2'] != '') { // still no matches, let's try comparison of "spouse of X" with "spouse of Y"
+        $xmarrcount = count($relation['fams1_array']);
+        $ymarrcount = count($relation['fams2_array']);
         for ($x = 0; $x < $xmarrcount; $x++) {
             for ($y = 0; $y < $ymarrcount; $y++) {
-                @$familyDb = $db_functions->get_family($marrX[$x], 'man-woman');
-                if ($sexe == 'f') {
-                    $thespouse = $familyDb->fam_man;
-                } else {
-                    $thespouse = $familyDb->fam_woman;
-                }
+                @$familyDb = $db_functions->get_family($relation['fams1_array'][$x], 'man-woman');
+                $thespouse = $relation['sexe1'] == 'F' ? $familyDb->fam_man : $familyDb->fam_woman;
 
                 $rel_arrayspouseX = create_rel_array($db_functions, $thespouse);
-                @$familyDb = $db_functions->get_family($marrY[$y], 'man-woman');
-                if ($sexe2 == 'f') {
-                    $thespouse2 = $familyDb->fam_man;
-                } else {
-                    $thespouse2 = $familyDb->fam_woman;
-                }
+                @$familyDb = $db_functions->get_family($relation['fams2_array'][$y], 'man-woman');
+                $thespouse2 = $relation['sexe2'] == 'F' ? $familyDb->fam_man : $familyDb->fam_woman;
 
                 $rel_arrayspouseY = create_rel_array($db_functions, $thespouse2);
 
-                if (isset($rel_arrayspouseX) and isset($rel_arrayspouseY)) {
+                if (isset($rel_arrayspouseX) && isset($rel_arrayspouseY)) {
                     compare_rel_array($rel_arrayspouseX, $rel_arrayspouseY, 3); //"3" flags comparison "spouse of X" with "spouse of Y"
                 }
                 if ($data_found["foundX_match"] !== '') {
-
-                    if ($sexe == 'm') {
-                        $sexe = "f";
-                    } else {
-                        $sexe = "m";
-                    } // we have to switch sex since the spouse is the relative!
+                    // we have to switch sex since the spouse is the relative!
+                    $relation['sexe1'] = $relation['sexe1'] == 'M' ? "f" : "m";
                     calculate_rel($data_found);
 
                     $spouseidDb = $db_functions->get_person($thespouse);
@@ -3500,8 +3735,8 @@ function search_marital()
                     $name = $pers_cls->person_name($spouseidDb);
                     $spousenameY = $name["name"];
 
-                    $famspouseX = $marrX[$x];
-                    $famspouseY = $marrY[$y];
+                    $famspouseX = $relation['fams1_array'][$x];
+                    $famspouseY = $relation['fams2_array'][$y];
 
                     break;
                 } //end if foundmatch !=''
@@ -3515,27 +3750,9 @@ function search_marital()
 } //end function
 
 
-function search_bloodrel()
-{
-    global $rel_arrayX, $rel_arrayY, $person;
-    global $db_functions;
-    global $data, $data_found;
-    unset_vars();
-    $rel_arrayX = create_rel_array($db_functions, $data["person1"]); // === GEDCOM nr of person X ===
-    $rel_arrayY = create_rel_array($db_functions, $data["person2"]); // === GEDCOM nr of person Y ===
-    if (isset($rel_arrayX) and isset($rel_arrayY)) {
-        compare_rel_array($rel_arrayX, $rel_arrayY, 0);
-    }
-
-    if ($data_found["foundX_match"] !== '') {
-        calculate_rel($data_found);
-    }
-}
-
-
 function unset_vars()
 {
-    global $reltext, $spouse, $table;
+    global $reltext, $spouse, $relation_type;
     global $data_found;
 
     $data_found["foundX_nr"] = '';
@@ -3544,732 +3761,13 @@ function unset_vars()
     $data_found["foundY_gen"] = '';
     $data_found["foundX_match"] = '';
     $data_found["foundY_match"] = '';
-    $table = '';
+    $relation_type = '';
     $reltext = '';
     $spouse = '';
 }
 
 
-
-
-function display()
-{
-    global $dbh, $db_functions, $reltext, $bloodreltext, $name1, $name2, $spouse, $rel_arrayspouseX;
-    global $special_spouseY, $special_spouseX, $spousenameX, $spousenameY, $table, $doublespouse;
-    global $rel_arrayX, $rel_arrayY, $famX, $famY, $dutchtext, $searchDb, $searchDb2;
-    global $sexe, $selected_language, $famspouseX, $famspouseY, $reltext_nor, $reltext_nor2;
-    global $tree_id, $link_cls, $uri_path;
-    global $data_found;
-
-    // *** Use person class ***
-    $pers_cls = new person_cls;
-
-    $vars['pers_family'] = $famX;
-    $linkX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-    $vars['pers_family'] = $famY;
-    $linkY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-    $language_is = ' ' . __('is') . ' ';
-    if ($selected_language == "he") {
-        if ($sexe == "m") {
-            $language_is = ' הוא ';
-        } else {
-            $language_is = ' היא ';
-        }
-    } elseif ($selected_language == "cn") {
-        $language_is = '的';
-    }
-    $bloodrel = '';
-    search_bloodrel();
-
-    if ($reltext) {
-        echo '<br><br><table class="ext"><tr><td style="padding-right:30px;vertical-align:text-top;">';
-        $bloodrel = 1;
-        echo __('BLOOD RELATIONSHIP: ');
-        echo "<br><br>";
-        if ($selected_language == "cn" and strpos($reltext, "notext") !== false) {
-            // don't display text if relation can't be phrased  
-        } else {
-            if ($selected_language == "fi") {
-                echo 'Kuka: ';
-            }   // who
-            echo "&nbsp;&nbsp;<a class='relsearch' href='" . $linkX . "main_person=" . $rel_arrayX[0][0] . "'>";
-            echo $name1 . "</a>";
-            if ($selected_language == "fi") {
-                echo '&nbsp;&nbsp;' . 'Kenelle: ';
-            }  // to whom
-            else {
-                echo $language_is . $reltext;
-            }
-            echo "<a class='relsearch' href='" . $linkY . "main_person=" . $rel_arrayY[0][0] . "'>" . $name2 . "</a>" . $reltext_nor . "<p>";
-            echo $dutchtext;
-            if ($selected_language == "fi") {
-                echo 'Sukulaisuus tai muu suhde: <b>' . $reltext . '</b>';
-            }
-            echo '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;"  >';
-        }
-        $bloodreltext = $reltext;
-        display_table();
-    }
-
-    if ($table != 1 and $table != 2 and $table != 7) {
-        unset_vars();
-        search_marital();
-
-        if ($reltext) {  // notext is used in Chinese display if relation can't be worded.
-
-            //check if this is involves a marriage or a partnership of any kind
-            $relmarriedX = 0;
-            if (isset($famspouseX)) {
-                $kindrel = $dbh->query("SELECT fam_kind FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famspouseX . "'");
-                @$kindrelDb = $kindrel->fetch(PDO::FETCH_OBJ);
-                if (
-                    $kindrelDb->fam_kind != 'living together' and
-                    $kindrelDb->fam_kind != 'engaged' and
-                    $kindrelDb->fam_kind != 'homosexual' and
-                    $kindrelDb->fam_kind != 'unknown' and
-                    $kindrelDb->fam_kind != 'non-marital' and
-                    $kindrelDb->fam_kind != 'partners' and
-                    $kindrelDb->fam_kind != 'registered'
-                ) {
-                    $relmarriedX = 1;  // use: husband or wife
-                } else {
-                    $relmarriedX = 0;  // use: partner
-                }
-            }
-
-            $relmarriedY = 0;
-            if (isset($famspouseY)) {
-                $kindrel2 = $dbh->query("SELECT fam_kind
-                    FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famspouseY . "'");
-                @$kindrel2Db = $kindrel2->fetch(PDO::FETCH_OBJ);
-                if (
-                    $kindrel2Db->fam_kind != 'living together' and
-                    $kindrel2Db->fam_kind != 'engaged' and
-                    $kindrel2Db->fam_kind != 'homosexual' and
-                    $kindrel2Db->fam_kind != 'unknown' and
-                    $kindrel2Db->fam_kind != 'non-marital' and
-                    $kindrel2Db->fam_kind != 'partners' and
-                    $kindrel2Db->fam_kind != 'registered'
-                ) {
-                    $relmarriedY = 1;  // use: husband or wife
-                } else {
-                    $relmarriedY = 0;  // use: partner
-                }
-            }
-
-            if ($bloodrel == 1) {
-                echo '</td><td style="padding-left:30px;border-left:2px solid #bbbbbb;vertical-align:text-top;">';
-            } else {
-                echo '<br><br><table class="ext"<tr><td>';
-            }
-
-            echo __('MARITAL RELATIONSHIP: ');
-
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="print_version"><input type="submit" name="extended" value="' . __('Use Extended Calculator') . '" class="btn btn-sm btn-success"></span>';
-
-            echo "<br><br>";
-            $spousetext1 = '';
-            $spousetext2 = '';
-            $finnish_spouse1 = '';
-            $finnish_spouse2 = '';
-
-            if ($doublespouse == 1) { // X and Y are both spouses of Z
-                $spouseidDb = $db_functions->get_person($rel_arrayspouseX[$data_found["foundX_match"]][0]);
-                $name = $pers_cls->person_name($spouseidDb);
-                $spousename = $name["name"];
-
-                echo "<span>&nbsp;&nbsp;<a class='relsearch' href='" . $linkX . "main_person=" . $rel_arrayX[0][0] . "'>";
-                echo $name1 . "</a> " . __('and') . ': ';
-                echo "<a class='relsearch' href='" . $linkY . "main_person=" . $rel_arrayY[0][0] . "'>" . $name2 . "</a>";
-                if ($searchDb->pers_sexe == "M") {
-                    echo ' ' . __('are both husbands of') . ' ';
-                } else {
-                    echo ' ' . __('are both wifes of') . ' ';
-                }
-                echo "<a href='" . $linkY . "main_person=" . $rel_arrayspouseX[$data_found["foundX_match"]][0] . "'>" . $spousename . "</a></span><br>";
-            } elseif ($reltext != "notext") {
-                if (($spouse == 1 and $special_spouseX !== 1) or $spouse == 3) {
-                    if ($relmarriedX == 0 and $selected_language != "cn") {
-                        $spousetext1 = __('partner') . __(' of ');
-                        $finnish_spouse1 = __('partner');
-                    } else {
-                        if ($searchDb->pers_sexe == 'M') {
-                            $spousetext1 = ' ' . __('husband of') . ' ';
-                            if ($selected_language == "fi") {
-                                $finnish_spouse1 = 'mies';
-                            }
-                            if ($selected_language == "cn") {
-                                $spousetext1 = '妻子';
-                            } // "A's wife is B"
-                        } else {
-                            $spousetext1 = ' ' . __('wife of') . ' ';
-                            if ($selected_language == "fi") {
-                                $finnish_spouse1 = 'vaimo';
-                            }
-                            if ($selected_language == "cn") {
-                                $spousetext1 = '丈夫';
-                            } // "A's husband is B"
-                        }
-                    }
-                }
-                if (($spouse == 2 or $spouse == 3) and $special_spouseY !== 1) {
-                    if ($relmarriedY == 0 and $selected_language != "cn") {
-                        $spousetext2 = __('partner') . __(' of ');
-                        $finnish_spouse2 = __('partner');
-                    } else {
-                        if ($searchDb2->pers_sexe == 'M') {
-                            $spousetext2 = ' ' . __('wife of') . ' ';
-                            if ($selected_language == "fi") {
-                                $finnish_spouse2 = 'mies';
-                            }
-                            // yes - it's really husband cause the sentence goes differently
-                            if ($selected_language == "cn") {
-                                $spousetext2 = '丈夫';
-                            } // "A's uncle's husband is B"
-                        } else {
-                            $spousetext2 = ' ' . __('husband of') . ' ';
-                            if ($selected_language == "fi") {
-                                $finnish_spouse2 = 'vaimo';
-                            }
-                            // yes - it's really wife cause the sentence goes differently
-                            if ($selected_language == "cn") {
-                                $spousetext2 = '妻子';
-                            } // "A's uncle's wife is B"
-                        }
-                    }
-                }
-
-                if ($selected_language == "fi") {  // very different phrasing for correct grammar
-                    echo 'Kuka: ';
-                    echo "<span>&nbsp;&nbsp;<a class='relsearch' href='" . $linkX . "main_person=" . $rel_arrayX[0][0] . "'>";
-                    echo $name1 . "</a>";
-                    echo '&nbsp;&nbsp;Kenelle: ';
-                    echo "<a class='relsearch' href='" . $linkY . "main_person=" . $rel_arrayY[0][0] . "'>" . $name2 . "</a></span><br>";
-                    echo 'Sukulaisuus tai muu suhde: ';
-                    if (!$special_spouseX and !$special_spouseY and $table != 7) {
-                        if ($spousetext2 != '' and $spousetext1 == '') { // X is relative of spouse of Y
-                            echo '(';
-                            echo "<a href='" . $linkX . "main_person=" . $rel_arrayX[0][0] . "'>" . $name1 . "</a>";
-                            echo ' - ' . $spousenameY . '):&nbsp;&nbsp;' . $reltext . '<br>';
-                            echo $spousenameY . ', ' . $finnish_spouse2 . ' ';
-                            echo "<a href='" . $linkY . "main_person=" . $rel_arrayY[0][0] . "'>" . $name2 . "</a>";
-                        } elseif ($spousetext1 != '' and $spousetext2 == '') { // X is spouse of relative of Y
-                            echo '(' . $spousenameX . ' - ';
-                            echo "<a href='" . $linkY . "main_person=" . $rel_arrayY[0][0] . "'>" . $name2 . "</a>";
-                            echo '):&nbsp;&nbsp;' . $reltext . '<br>';
-                            echo $spousenameX . ', ' . $finnish_spouse1 . ' ';
-                            echo "<a href='" . $linkX . "main_person=" . $rel_arrayX[0][0] . "'>" . $name1 . "</a>";
-                        } else {   // X is spouse of relative of spouse of Y
-                            echo '(' . $spousenameX . ' - ' . $spousenameY . '):&nbsp;&nbsp;' . $reltext . '<br>';
-                            echo $spousenameX . ', ' . $finnish_spouse1 . ' ';
-                            echo "<a href='" . $linkX . "main_person=" . $rel_arrayX[0][0] . "'>" . $name1 . "</a><br>";
-                            echo $spousenameY . ', ' . $finnish_spouse2 . ' ';
-                            echo "<a href='" . $linkY . "main_person=" . $rel_arrayY[0][0] . "'>" . $name2 . "</a>";
-                        }
-                    } elseif ($special_spouseX or $special_spouseY) { // brother-in-law/sister-in-law/father-in-law/mother-in-law
-                        echo '<b>' . $reltext . '</b><br>';
-                    } elseif ($table == 7) {
-                        if ($relmarriedX == 0 or $relmarriedY == 0) {
-                            echo '<b>' . __('partner') . '</b><br>';
-                        } else {
-                            echo '<b>' . $finnish_spouse1 . '</b><br>';
-                        }
-                    }
-                }  // end of finnish part
-
-                else {
-                    if ($spousetext2 == '') {
-                        $reltext_nor2 = '';
-                    }  // Norwegian grammar...
-                    else {
-                        $reltext_nor = '';
-                    }
-                    if ($selected_language == "cn") {
-                        $language_is = '的';
-                        if ($reltext == " ") { // A's husband/wife is B
-                            $reltext = "是";
-                        } else {
-                            mb_internal_encoding("UTF-8");
-                            if ($spousetext1 != "" and $spousetext2 == "") {
-                                $spousetext1 .= '的';
-                            } elseif ($spousetext2 != "" and $spousetext1 == "") {
-                                $reltext = mb_substr($reltext, 0, -1) . '的';
-                                $spousetext2 .= '是';
-                            } elseif ($spousetext1 != "" and $spousetext2 != "") {
-                                $spousetext1 .= '的';
-                                $reltext = mb_substr($reltext, 0, -1) . '的';
-                                $spousetext2 .= '是';
-                            }
-                        }
-                    }
-                    if ($table == 6 or $table == 7) {
-                        $reltext_nor = '';
-                    }
-
-                    echo "<span>&nbsp;&nbsp;<a class='relsearch' href='" . $linkX . "main_person=" . $rel_arrayX[0][0] . "'>";
-
-                    echo $name1 . "</a>" . $language_is . $spousetext1 . $reltext . $reltext_nor2 . $spousetext2;
-                    echo "<a class='relsearch' href='" . $linkY . "main_person=" . $rel_arrayY[0][0] . "'>" . $name2 . "</a>" . $reltext_nor . "</span><br>";
-                }
-            }
-
-            echo '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;" >';
-
-            display_table();
-        }
-    }
-
-    if ($reltext == '') {
-        if ($bloodreltext == '') {
-            echo '<br><br><table class="ext"><tr><td>';
-            echo '<td style="text-align:left;border-left:0px;padding10px;vertical-align:text-top;width:800px">';
-            echo "<div style='font-weight:bold'>" . __('No blood relation or direct marital relation found') . "</div>";
-        } else {
-            echo '<td style="width:60px">&nbsp;</td>';
-            echo '<td class="print_version" style="padding-left:50px;padding-right:10px;vertical-align:text-top;border-left:2px solid #bbbbbb;width:350px">';
-            echo __('MARITAL RELATIONSHIP: ');
-            echo "<br><br><div style='font-weight:bold;margin-bottom:10px'>" . __('No direct marital relation found') . "</div>";
-        }
-
-        echo '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;" >';
-        echo  __("You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>
-This will find connections that span over many marital relations and generations.<br>
-Computing time will vary depending on the size of the tree and the distance between the two persons.<br>
-For example, in a 10,000 person tree even the most distant persons will usually be found within 1-2 seconds.<br>
-In a 75,000 person tree the most distant persons may take up to 8 sec to find.");
-        echo '<br><br><input type="submit" name="extended" value="' . __('Perform extended marital calculation') . '" class="btn btn-sm btn-success">';
-        echo "</td></tr></table>";
-    } else {
-        echo '</td></tr></table>';
-    }
-
-    echo '<br><br>';
-}
-
-
-function display_table()
-{
-    global $db_functions;
-    global $table, $name1, $name2, $rel_arrayX, $rel_arrayY, $spouse, $rel_arrayspouseX, $rel_arrayspouseY, $famspouseX, $famspouseY;
-    global $famX, $famY, $gednr, $gednr2;
-    global $fampath, $tree_id, $link_cls, $uri_path;
-    global $data_found;
-
-    // *** Use person class to show names ***
-    $pers_cls = new person_cls;
-
-    $vars['pers_family'] = $famX;
-    $linkX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-    $vars['pers_family'] = $famspouseX;
-    $linkSpouseX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-    $vars['pers_family'] = $famY;
-    $linkY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-    $vars['pers_family'] = $famspouseY;
-    $linkSpouseY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-    //$border="border:1px solid #777777;";
-    $border = "";
-
-    if ($table == 1 or $table == 2) {
-        if ($table == 1 and $data_found["foundY_gen"] == 1 and $spouse == '') {
-            // father-son - no need for table
-        } else if ($table == 2 and $data_found["foundX_gen"] == 1 and $spouse == '') {
-            // son-father - no need for table
-        } else {
-            if ($spouse == 1) {
-                $rel_arrayX = $rel_arrayspouseX;
-            }
-            if ($spouse == 2) {
-                $rel_arrayY = $rel_arrayspouseY;
-            }
-            if ($spouse == 3) {
-                $rel_arrayX = $rel_arrayspouseX;
-                $rel_arrayY = $rel_arrayspouseY;
-            }
-
-            if ($table == 2) {
-                $tempfound = $data_found["foundY_nr"];
-                $data_found["foundY_nr"] = $data_found["foundX_nr"];
-                $data_found["foundX_nr"] = $tempfound;
-                $temprel = $rel_arrayY;
-                $rel_arrayY = $rel_arrayX;
-                $rel_arrayX = $temprel;
-                $tempname = $name1;
-                $name1 = $name2;
-                $name2 = $tempname;
-                $tempfam = $famspouseX;
-                $famspouseX = $famspouseY;
-                $famspouseY = $tempfam;
-                $tempfamily = $famX;
-                $famX = $famY;
-                $famY = $tempfamily;
-                $tempged = $gednr2;
-                $gednr2 = $gednr;
-                $gednr = $tempged;
-            }
-
-?>
-            <br>
-            <table class="newrel" style="border:0px;border-collapse:separate;border-spacing:3px 1px;">
-                <tr>
-                    <?php
-                    if (($spouse == 1 and $table == 1) or ($spouse == 2 and $table == 2) or $spouse == 3) {
-                        $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
-                        $name = $pers_cls->person_name($persidDb);
-                        $personname = $name["name"];
-
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td class="' . $ext_cls . '"  style="width:200px;text-align:center;' . $border . 'padding:2px"><a href="' . $linkSpouseX . 'main_person=' . $rel_arrayX[0][0] . '">' . $personname . '</a></td>';
-
-                        $persidDb = $db_functions->get_person($gednr);
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
-
-                        echo '<td class="' . $ext_cls . '"  style="width:200px;text-align:center;' . $border . 'padding:2px"><a class="search" href="' . $linkX . "main_person=" . $gednr . '">' . $name1 . "</a></td>";
-                        echo '</tr><tr>';
-                        echo '<td style="border:0px;">&#8593;</td>';
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    } else {
-                        $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
-                        $name = $pers_cls->person_name($persidDb);
-                        $personname = $name["name"];
-
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td class="' . $ext_cls . '"  style="width:200px;text-align:center;' . $border . 'padding:2px"><a class="search" href="' . $linkX . "main_person=" . $rel_arrayX[0][0] . '">' . $name1 . "</a></td>";
-                        if (($spouse == 1 and $table == 2) or ($spouse == 2 and $table == 1)) {
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                        }
-                        echo '</tr><tr>';
-                        echo '<td style="border:0px;">&#8595;</td>';
-                    }
-
-                    echo "</tr>";
-                    $count = $data_found["foundY_nr"];
-                    while ($count != 0) {
-                        $persidDb = $db_functions->get_person($rel_arrayY[$count][0]);
-                        $name = $pers_cls->person_name($persidDb);
-                        $personname = $name["name"];
-
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        if ($persidDb->pers_fams) {
-                            $fams = $persidDb->pers_fams;
-                            $tempfam = explode(";", $fams);
-                            $fam = $tempfam[0];
-                        } else {
-                            $fam = $persidDb->pers_famc;
-                        }
-                        echo "<tr>";
-                        $vars['pers_family'] = $fam;
-                        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px"><a href="' . $link . "main_person=" . $persidDb->pers_gedcomnumber . '">' . $personname . "</a></td>";
-
-                        if ($spouse == 1 or $spouse == 2 or $spouse == 3) {
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                        }
-                        echo '</tr><tr><td style="border:0px;">&#8593;</td>';
-                        $count = $rel_arrayY[$count][2];
-                    }
-                    ?>
-                </tr>
-                <tr>
-                    <?php
-                    if (($spouse == 1 and $table == 2) or ($spouse == 2 and $table == 1) or $spouse == 3) {
-                        $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
-                        $name = $pers_cls->person_name($persidDb);
-                        $personname = $name["name"];
-
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px"><a href="' . $linkSpouseY . "main_person=" . $rel_arrayY[0][0] . '">' . $personname . "</a></td>";
-
-                        $persidDb = $db_functions->get_person($gednr2);
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
-
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px"><a class="search" href="' . $linkY . "main_person=" . $gednr2 . '">' . $name2 . "</a></td>";
-                    } else {
-                        $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px"><a class="search" href="' . $linkY . "main_person=" . $rel_arrayY[0][0] . '">' . $name2 . "</a></td>";
-                        if (($spouse == 1 and $table == 1) or ($spouse == 2 and $table == 2)) {
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                        }
-                    }
-                    ?>
-                </tr>
-            </table>
-        <?php
-        }
-    }
-    if ($table == 3 or $table == 4 or $table == 5 or $table == 6) {
-        $rowcount = max($data_found["foundX_gen"], $data_found["foundY_gen"]);
-        $countX = $data_found["foundX_nr"];
-        $countY = $data_found["foundY_nr"];
-        $name1_done = 0;
-        $name2_done = 0;
-
-        $colspan = 3;
-        if ($spouse == 1) {
-            $rel_arrayX = $rel_arrayspouseX;
-        }
-        if ($spouse == 2) {
-            $rel_arrayY = $rel_arrayspouseY;
-        }
-        if ($spouse == 3) {
-            $rel_arrayX = $rel_arrayspouseX;
-            $rel_arrayY = $rel_arrayspouseY;
-        }
-
-        $persidDb = $db_functions->get_person($rel_arrayX[$data_found["foundX_match"]][0]);
-        $name = $pers_cls->person_name($persidDb);
-        $personname = $name["name"];
-
-        if ($persidDb->pers_sexe == "M") {
-            $ext_cls = "extended_man ";
-        } else {
-            $ext_cls = "extended_woman ";
-        }
-
-        if ($persidDb->pers_fams) {
-            $fams = $persidDb->pers_fams;
-            $tempfam = explode(";", $fams);
-            $fam = $tempfam[0];
-        } else {
-            $fam = $persidDb->pers_famc;
-        }
-        $vars['pers_family'] = $fam;
-        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-        ?>
-
-        <br>
-        <table class="newrel" style="border-collapse:separate;border-spacing:3px 1px;">
-            <tr>
-                <?php if ($spouse == 1 or $spouse == 3) { ?>
-                    <td style="border:0px;">&nbsp;</td>
-                    <td style="border:0px;">&nbsp;</td>
-                <?php } ?>
-                <td class="<?= $ext_cls; ?>" style="width:200px;text-align:center;<?= $border; ?>padding:2px" colspan="<?= $colspan; ?>">
-                    <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $personname; ?></a>
-                </td>
-
-                <?php if ($spouse == 2 or $spouse == 3) { ?>
-                    <td style="border:0px;">&nbsp;</td>
-                    <td style="border:0px;">&nbsp;</td>
-                <?php } ?>
-            </tr>
-
-            <tr>
-                <?php if ($spouse == 1 or $spouse == 3) { ?>
-                    <td style="border:0px;">&nbsp;</td>
-                    <td style="border:0px;">&nbsp;</td>
-                <?php } ?>
-                <td style="border:0px;">&#8593;</td>
-                <td style="border:0px;">&nbsp;</td>
-                <td style="border:0px;">&#8595;</td>
-                <?php if ($spouse == 2 or $spouse == 3) { ?>
-                    <td style="border:0px;">&nbsp;</td>
-                    <td style="border:0px;">&nbsp;</td>
-                <?php } ?>
-            </tr>
-            <?php
-
-            for ($e = 1; $e <= $rowcount; $e++) {
-                if ($countX != 0) {
-                    $persidDb = $db_functions->get_person($rel_arrayX[$countX][0]);
-                    $name = $pers_cls->person_name($persidDb);
-                    $personname = $name["name"];
-
-                    if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                    else $ext_cls = "extended_woman ";
-
-                    echo "<tr>";
-                    if ($spouse == 1 or $spouse == 3) {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
-                    if ($persidDb->pers_fams) {
-                        $fams = $persidDb->pers_fams;
-                        $tempfam = explode(";", $fams);
-                        $fam = $tempfam[0];
-                    } else {
-                        $fam = $persidDb->pers_famc;
-                    }
-                    $vars['pers_family'] = $fam;
-                    $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-                    echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px"><a href="' . $link . "main_person=" . $persidDb->pers_gedcomnumber . '">' . $personname . "</a></td>";
-
-                    $countX = $rel_arrayX[$countX][2];
-                } elseif ($name1_done == 0) {
-                    echo "<tr>";
-                    if ($spouse == 1 or $spouse == 3) {
-                        $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
-                        $name = $pers_cls->person_name($persidDb);
-                        $personname = $name["name"];
-
-                        if ($persidDb->pers_sexe == "M") $ext_cls2 = "extended_man ";
-                        else $ext_cls2 = "extended_woman ";
-
-                        if ($persidDb->pers_fams) {
-                            $fams = $persidDb->pers_fams;
-                            $tempfam = explode(";", $fams);
-                            $fam = $tempfam[0];
-                        } else {
-                            $fam = $persidDb->pers_famc;
-                        }
-
-                        $persidDb2 = $db_functions->get_person($gednr);
-                        if ($persidDb2->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;padding:2px"><a class="search" href="' . $linkX . "main_person=" . $gednr . '">' . $name1 . "</a>";
-
-                        echo '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
-
-                        echo '<td  class="' . $ext_cls2 . '" style="width:200px;text-align:center;padding:2px" class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px"><a href="' . $fampath . $fam . "&amp;main_person=" . $persidDb->pers_gedcomnumber . '">' . $personname . "</a></td>";
-                    } else {
-                        $persidDb2 = $db_functions->get_person($gednr);
-                        if ($persidDb2->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;padding:2px"><a class="search" href="' . $linkX . "main_person=" . $gednr . '">' . $name1 . "</a></td>";
-                    }
-                    $name1_done = 1;
-                } else {
-                    echo '<tr>';
-                    if ($spouse == 1 or $spouse == 3) {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
-                    echo '<td style="border:0px;">&nbsp;</td>';
-                }
-
-                if ($countY != 0) {
-                    $persidDb = $db_functions->get_person($rel_arrayY[$countY][0]);
-                    $name = $pers_cls->person_name($persidDb);
-                    $personname = $name["name"];
-
-                    if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                    else $ext_cls = "extended_woman ";
-
-                    echo '<td style="border:0px;width:70px">&nbsp;</td>';
-
-                    if ($persidDb->pers_fams) {
-                        $fams = $persidDb->pers_fams;
-                        $tempfam = explode(";", $fams);
-                        $fam = $tempfam[0];
-                    } else {
-                        $fam = $persidDb->pers_famc;
-                    }
-                    $vars['pers_family'] = $fam;
-                    $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-                    echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px"><a href="' . $link . "main_person=" . $persidDb->pers_gedcomnumber . '">' . $personname . "</a></td>";
-
-                    if ($spouse == 2 or $spouse == 3) {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
-                    echo "</tr>";
-                    $countY = $rel_arrayY[$countY][2];
-                } elseif ($name2_done == 0) {
-                    if ($spouse == 2 or $spouse == 3) {
-                        $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
-                        $name = $pers_cls->person_name($persidDb);
-                        $personname = $name["name"];
-
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td style="border:0px;width:70px">&nbsp;</td>';
-
-                        if ($persidDb->pers_fams) {
-                            $fams = $persidDb->pers_fams;
-                            $tempfam = explode(";", $fams);
-                            $fam = $tempfam[0];
-                        } else {
-                            $fam = $persidDb->pers_famc;
-                        }
-                        $vars['pers_family'] = $fam;
-                        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;padding:2px"><a href="' . $link . "main_person=" . $persidDb->pers_gedcomnumber . '">' . $personname . "</a></td>";
-
-                        echo '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
-
-                        $persidDb = $db_functions->get_person($gednr2);
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;padding:2px"><a class="search" href="' . $linkY . "main_person=" . $gednr2 . '">' . $name2 . "</a></td>";
-                    } else {
-                        echo '<td style="border:0px;width:70px">&nbsp;</td>';
-
-                        $persidDb = $db_functions->get_person($gednr2);
-                        if ($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
-                        else $ext_cls = "extended_woman ";
-
-                        echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;padding:2px"><a class="search" href="' . $linkY . "main_person=" . $gednr2 . '">' . $name2 . "</a></td>";
-                    }
-                    echo "</tr>";
-                    $name2_done = 1;
-                } else {
-                    echo '<td style="border:0px;width:70px>">&nbsp;</td>';
-                    echo '<td style="border:0px;">&nbsp;</td>';
-                    if ($spouse == 2 or $spouse == 3) {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
-                    echo "</tr>";
-                }
-
-            ?>
-                <tr>
-                    <?php
-                    if ($spouse == 1 or $spouse == 3) {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        echo '<td style="width=50px;border:0px;">&nbsp;</td>';
-                    }
-                    if ($name1_done == 0) {
-                        echo '<td style="border:0px;">&#8593;</td>';
-                    } else {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
-                    echo '<td style="border:0px;">&nbsp;</td>';
-                    if ($name2_done == 0) {
-                        echo '<td style="border:0px;">&#8595;</td>';
-                    } else {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
-                    if ($spouse == 2 or $spouse == 3) {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
-                    ?>
-                </tr>
-            <?php } ?>
-        </table>
-    <?php
-    }
-}
-
+// TODO move to model
 /* the extended marital calculator computation */
 function map_tree($pers_array, $pers_array2)
 {
@@ -4278,9 +3776,9 @@ function map_tree($pers_array, $pers_array2)
     // the algorithm starts simultaneously from person A and person B in expanding circles until a common person is found (= connection found)
     // or until either person A or B runs out of persons (= no connection exists)
 
-    global $db_functions, $globaltrack, $globaltrack2, $count;
+    global $db_functions, $relation, $globaltrack, $globaltrack2, $count;
     global $countfunc, $global_array;
-    global $data;
+
     $count++;
     if ($count > 400000) {
         echo "Database too large!!!!";
@@ -4300,7 +3798,7 @@ function map_tree($pers_array, $pers_array2)
         $callged = $params[2]; // the gedcomnumber of the referrer (in case referrer is child: gedcomnumber;famc gedcomnumber)
         $pathway = $params[3]; // the path from person A to this person (gedcomnumbers separated by semi-colon)
 
-        if ($refer == "chd") {
+        if ($refer === "chd") {
             $callarray = explode(";", $callged);    // [0] = gedcomnumber of referring child, [1] = famc gedcomnumber of referring child
         } else {
             $callarray[0] = $callged;
@@ -4312,18 +3810,18 @@ function map_tree($pers_array, $pers_array2)
             return (false);
         }
 
-        if ($refer == "fst") {
+        if ($refer === "fst") {
             $globaltrack .= $persDb->pers_gedcomnumber . "@";
         }
         // find parents
-        if (isset($persDb->pers_famc) and $persDb->pers_famc != "" and $refer != "par") {
+        if (isset($persDb->pers_famc) && $persDb->pers_famc != "" && $refer !== "par") {
             $famcDb = $db_functions->get_family($persDb->pers_famc);
             if ($famcDb == false) {
                 echo "NO SUCH FAMILY";
                 return;
             }
 
-            if (isset($famcDb->fam_man) and $famcDb->fam_man != "" and $famcDb->fam_man != "0" and strpos($globaltrack, $famcDb->fam_man . "@") === false) {
+            if (isset($famcDb->fam_man) && $famcDb->fam_man != "" && $famcDb->fam_man != "0" && strpos($globaltrack, $famcDb->fam_man . "@") === false) {
                 if (strpos($_SESSION['next_path'], $famcDb->fam_man . "@") === false) {
                     $work_array[] = $famcDb->fam_man . "@chd@" . $persged . ";" . $persDb->pers_famc . "@" . $pathway . ";" . "chd" . $famcDb->fam_man;
                     $global_array[] = $famcDb->fam_man . "@chd@" . $persged . ";" . $persDb->pers_famc . "@" . $pathway . ";" . "chd" . $famcDb->fam_man;
@@ -4331,7 +3829,7 @@ function map_tree($pers_array, $pers_array2)
                 $count++;
                 $globaltrack .= $famcDb->fam_man . "@";
             }
-            if (isset($famcDb->fam_woman) and $famcDb->fam_woman != "" and $famcDb->fam_woman != "0" and strpos($globaltrack, $famcDb->fam_woman . "@") === false) {
+            if (isset($famcDb->fam_woman) && $famcDb->fam_woman != "" && $famcDb->fam_woman != "0" && strpos($globaltrack, $famcDb->fam_woman . "@") === false) {
                 if (strpos($_SESSION['next_path'], $famcDb->fam_woman . "@") === false) {
                     $work_array[] = $famcDb->fam_woman . "@chd@" . $persged . ";" . $persDb->pers_famc . "@" . $pathway . ";" . "chd" . $famcDb->fam_woman;
                     $global_array[] = $famcDb->fam_woman . "@chd@" . $persged . ";" . $persDb->pers_famc . "@" . $pathway . ";" . "chd" . $famcDb->fam_woman;
@@ -4341,21 +3839,27 @@ function map_tree($pers_array, $pers_array2)
             }
         }
 
-        if (isset($persDb->pers_fams) and $persDb->pers_fams != "") {
+        if (isset($persDb->pers_fams) && $persDb->pers_fams != "") {
             $famsarray = explode(";", $persDb->pers_fams);
 
             foreach ($famsarray as $value) {
-                if ($refer == "spo" and $value == $callged) continue;
-                if ($refer == "fst" and $_SESSION['couple'] == $value) continue;
+                if ($refer === "spo" && $value === $callged) {
+                    continue;
+                }
+                if ($refer === "fst" && $_SESSION['couple'] == $value) {
+                    continue;
+                }
                 $famsDb = $db_functions->get_family($value);
-                if ($refer == "chd" and $famsDb->fam_woman == $persDb->pers_gedcomnumber and isset($famsDb->fam_man) and $famsDb->fam_man != "" and $famsDb->fam_gedcomnumber == $callarray[1]) {
+                if ($refer === "chd" && $famsDb->fam_woman == $persDb->pers_gedcomnumber && isset($famsDb->fam_man) && $famsDb->fam_man != "" && $famsDb->fam_gedcomnumber == $callarray[1]) {
                     continue;
                 }
                 // find children
-                if (isset($famsDb->fam_children) and $famsDb->fam_children != "") {
+                if (isset($famsDb->fam_children) && $famsDb->fam_children != "") {
                     $childarray = explode(";", $famsDb->fam_children);
                     foreach ($childarray as $value) {
-                        if ($refer == "chd" and $callarray[0] == $value) continue;
+                        if ($refer === "chd" && $callarray[0] === $value) {
+                            continue;
+                        }
                         if (strpos($globaltrack, $value . "@") === false) {
                             if (strpos($_SESSION['next_path'], $value . "@") === false) {
                                 $work_array[] = $value . "@par@" . $persged . "@" . $pathway . ";" . "par" . $value;
@@ -4369,12 +3873,18 @@ function map_tree($pers_array, $pers_array2)
             }
             // find spouses
             foreach ($famsarray as $value) {
-                if ($refer == "chd" and $value == $callarray[1]) continue;
-                if ($refer == "spo" and $value == $callged) continue;
-                if ($refer == "fst" and $_SESSION['couple'] == $value) continue;
+                if ($refer === "chd" && $value === $callarray[1]) {
+                    continue;
+                }
+                if ($refer === "spo" && $value === $callged) {
+                    continue;
+                }
+                if ($refer === "fst" && $_SESSION['couple'] == $value) {
+                    continue;
+                }
                 $famsDb = $db_functions->get_family($value);
                 if ($famsDb->fam_man == $persDb->pers_gedcomnumber) {
-                    if (isset($famsDb->fam_woman) and $famsDb->fam_woman != "" and $famsDb->fam_woman != "0" and strpos($globaltrack, $famsDb->fam_woman . "@") === false) {
+                    if (isset($famsDb->fam_woman) && $famsDb->fam_woman != "" && $famsDb->fam_woman != "0" && strpos($globaltrack, $famsDb->fam_woman . "@") === false) {
                         if (strpos($_SESSION['next_path'], $famsDb->fam_woman . "@") === false) {
                             $work_array[] = $famsDb->fam_woman . "@spo@" . $value . "@" . $pathway . ";" . "spo" . $famsDb->fam_woman;
                             $global_array[] = $famsDb->fam_woman . "@spo@" . $value . "@" . $pathway . ";" . "spo" . $famsDb->fam_woman;
@@ -4383,7 +3893,7 @@ function map_tree($pers_array, $pers_array2)
                         $globaltrack .= $famsDb->fam_woman . "@";
                     }
                 } else {
-                    if (isset($famsDb->fam_man) and $famsDb->fam_man != "" and $famsDb->fam_man != "0" and strpos($globaltrack, $famsDb->fam_man . "@") === false) {
+                    if (isset($famsDb->fam_man) && $famsDb->fam_man != "" && $famsDb->fam_man != "0" && strpos($globaltrack, $famsDb->fam_man . "@") === false) {
                         if (strpos($_SESSION['next_path'], $famsDb->fam_man . "@") === false) {
                             $work_array[] = $famsDb->fam_man . "@spo@" . $value . "@" . $pathway . ";" . "spo" . $famsDb->fam_man;
                             $global_array[] = $famsDb->fam_man . "@spo@" . $value . "@" . $pathway . ";" . "spo" . $famsDb->fam_man;
@@ -4395,6 +3905,7 @@ function map_tree($pers_array, $pers_array2)
             }
         }
     }
+
     // build closest circle around person B (parents, children, spouse(s))
     foreach ($pers_array2 as $value) {
         $params = explode("@", $value);
@@ -4403,7 +3914,7 @@ function map_tree($pers_array, $pers_array2)
         $callged = $params[2];
         $pathway = $params[3];
 
-        if ($refer == "chd") {
+        if ($refer === "chd") {
             $callarray = explode(";", $callged);
         } else {
             $callarray[0] = $callged;
@@ -4415,19 +3926,19 @@ function map_tree($pers_array, $pers_array2)
             return (false);
         }
 
-        if ($refer == "fst") {
+        if ($refer === "fst") {
             $globaltrack2 .= $persDb->pers_gedcomnumber . "@";
         }
 
-        if (isset($persDb->pers_famc) and $persDb->pers_famc != "" and $refer != "par") {
+        if (isset($persDb->pers_famc) && $persDb->pers_famc != "" && $refer !== "par") {
             $famcDb = $db_functions->get_family($persDb->pers_famc);
             if ($famcDb == false) {
                 echo "NO SUCH FAMILY";
                 return;
             }
-            if (isset($famcDb->fam_man) and $famcDb->fam_man != "" and $famcDb->fam_man != "0") {
+            if (isset($famcDb->fam_man) && $famcDb->fam_man != "" && $famcDb->fam_man != "0") {
                 $var1 = strpos($_SESSION['next_path'], $famcDb->fam_man . "@");
-                if (strpos($globaltrack, $famcDb->fam_man . "@") !== false  and $var1 === false) {
+                if (strpos($globaltrack, $famcDb->fam_man . "@") !== false && $var1 === false) {
                     $totalpath = join_path($global_array, $pathway, $famcDb->fam_man, "chd");
                     $_SESSION['next_path'] .= $famcDb->fam_man . "@";
                     display_result($totalpath);
@@ -4441,9 +3952,9 @@ function map_tree($pers_array, $pers_array2)
                     $globaltrack2 .= $famcDb->fam_man . "@";
                 }
             }
-            if (isset($famcDb->fam_woman) and $famcDb->fam_woman != "" and $famcDb->fam_woman != "0") {
+            if (isset($famcDb->fam_woman) && $famcDb->fam_woman != "" && $famcDb->fam_woman != "0") {
                 $var2 = strpos($_SESSION['next_path'], $famcDb->fam_woman . "@");
-                if (strpos($globaltrack, $famcDb->fam_woman . "@") !== false and $var2 === false) {
+                if (strpos($globaltrack, $famcDb->fam_woman . "@") !== false && $var2 === false) {
                     $totalpath = join_path($global_array, $pathway, $famcDb->fam_woman, "chd");
                     $_SESSION['next_path'] .= $famcDb->fam_woman . "@";
                     display_result($totalpath);
@@ -4459,21 +3970,27 @@ function map_tree($pers_array, $pers_array2)
             }
         }
 
-        if (isset($persDb->pers_fams) and $persDb->pers_fams != "") {
+        if (isset($persDb->pers_fams) && $persDb->pers_fams != "") {
             $famsarray = explode(";", $persDb->pers_fams);
             foreach ($famsarray as $value) {
-                if ($refer == "spo" and $value == $callged) continue;
-                if ($refer == "fst" and $_SESSION['couple'] == $value) continue;
-                $famsDb = $db_functions->get_family($value);
-                if ($refer == "chd" and $famsDb->fam_woman == $persDb->pers_gedcomnumber and isset($famsDb->fam_man) and $famsDb->fam_man != "" and $famsDb->fam_gedcomnumber == $callarray[1]) {
+                if ($refer === "spo" && $value === $callged) {
                     continue;
                 }
-                if (isset($famsDb->fam_children) and $famsDb->fam_children != "") {
+                if ($refer === "fst" && $_SESSION['couple'] == $value) {
+                    continue;
+                }
+                $famsDb = $db_functions->get_family($value);
+                if ($refer === "chd" && $famsDb->fam_woman == $persDb->pers_gedcomnumber && isset($famsDb->fam_man) && $famsDb->fam_man != "" && $famsDb->fam_gedcomnumber == $callarray[1]) {
+                    continue;
+                }
+                if (isset($famsDb->fam_children) && $famsDb->fam_children != "") {
                     $childarray = explode(";", $famsDb->fam_children);
                     foreach ($childarray as $value) {
-                        if ($refer == "chd" and $callarray[0] == $value) continue;
+                        if ($refer === "chd" && $callarray[0] === $value) {
+                            continue;
+                        }
                         $var3 = strpos($_SESSION['next_path'], $value . "@");
-                        if (strpos($globaltrack, $value . "@") !== false and $var3 === false) {
+                        if (strpos($globaltrack, $value . "@") !== false && $var3 === false) {
                             $totalpath = join_path($global_array, $pathway, $value, "par");
                             $_SESSION['next_path'] .= $value . "@";
                             display_result($totalpath);
@@ -4490,16 +4007,20 @@ function map_tree($pers_array, $pers_array2)
                 }
             }
             foreach ($famsarray as $value) {
-                if ($refer == "chd" and $value == $callarray[1]) continue;
-                if ($refer == "spo" and $value == $callged) continue;
-                if ($refer == "fst" and $_SESSION['couple'] == $value) {
+                if ($refer === "chd" && $value === $callarray[1]) {
+                    continue;
+                }
+                if ($refer === "spo" && $value === $callged) {
+                    continue;
+                }
+                if ($refer === "fst" && $_SESSION['couple'] == $value) {
                     continue;
                 }
                 $famsDb = $db_functions->get_family($value);
                 if ($famsDb->fam_man == $persDb->pers_gedcomnumber) {
-                    if (isset($famsDb->fam_woman) and $famsDb->fam_woman != "" and $famsDb->fam_woman != "0") {
+                    if (isset($famsDb->fam_woman) && $famsDb->fam_woman != "" && $famsDb->fam_woman != "0") {
                         $var4 = strpos($_SESSION['next_path'], $famsDb->fam_woman . "@");
-                        if (strpos($globaltrack, $famsDb->fam_woman . "@") !== false and $var4 === false) {
+                        if (strpos($globaltrack, $famsDb->fam_woman . "@") !== false && $var4 === false) {
                             $totalpath = join_path($global_array, $pathway, $famsDb->fam_woman, "spo");
                             $_SESSION['next_path'] .= $famsDb->fam_woman . "@";
                             display_result($totalpath);
@@ -4514,9 +4035,9 @@ function map_tree($pers_array, $pers_array2)
                         }
                     }
                 } elseif ($famsDb->fam_woman == $persDb->pers_gedcomnumber) {
-                    if (isset($famsDb->fam_man) and $famsDb->fam_man != "" and $famsDb->fam_man != "0") {
+                    if (isset($famsDb->fam_man) && $famsDb->fam_man != "" && $famsDb->fam_man != "0") {
                         $var5 = strpos($_SESSION['next_path'], $famsDb->fam_man . "@");
-                        if (strpos($globaltrack, $famsDb->fam_man . "@") !== false and $var5 === false) {
+                        if (strpos($globaltrack, $famsDb->fam_man . "@") !== false && $var5 === false) {
                             $totalpath = join_path($global_array, $pathway, $famsDb->fam_man, "spo");
                             $_SESSION['next_path'] .= $famsDb->fam_man . "@";
                             display_result($totalpath);
@@ -4534,7 +4055,7 @@ function map_tree($pers_array, $pers_array2)
             }
         }
     }
-    if (isset($work_array[0]) and isset($work_array2[0])) {
+    if (isset($work_array[0]) && isset($work_array2[0])) {
         // no common person was found but both A and B still have a wider circle to expand -> call this function again
         map_tree($work_array, $work_array2);
     } elseif (!isset($_SESSION['next_path'])) {
@@ -4565,49 +4086,48 @@ function join_path($workarr, $path2, $pers2, $ref)
     $new_path2 = "";
     $changepath = array();
     $commonpers = ";" . $fstcommon . $pers2;
-    if ($ref == "par" and $fstcommon == "par") {
+    if ($ref == "par" && $fstcommon == "par") {
         // the common person is a child of both sides - discard child and make right person spouse of left!
         $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
         $commonpers = "";
         $_SESSION['next_path'] .= substr($secpath[count($secpath) - 1], 3) . "@"; // add parent from side B to ignore string for next path
         $par1str = substr($path1, 0, strrpos($path1, ";"));  // first take off last (=common) person
         $_SESSION['next_path'] .= substr($par1str, strrpos($par1str, ";") + 4) . "@";     // add parent from side A to ignore string for next path
-    } elseif ($ref == "par") $changepath[count($secpath) - 1] = "chd" . substr($secpath[count($secpath) - 1], 3);
-    elseif ($ref == "chd") $changepath[count($secpath) - 1] = "par" . substr($secpath[count($secpath) - 1], 3);
-    else $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
+    } elseif ($ref == "par") {
+        $changepath[count($secpath) - 1] = "chd" . substr($secpath[count($secpath) - 1], 3);
+    } elseif ($ref == "chd") {
+        $changepath[count($secpath) - 1] = "par" . substr($secpath[count($secpath) - 1], 3);
+    } else {
+        $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
+    }
     for ($w = count($secpath) - 1; $w > 0; $w--) {
-        if (substr($secpath[$w], 0, 3) == "par") $changepath[$w - 1] = "chd" . substr($secpath[$w - 1], 3);
-        elseif (substr($secpath[$w], 0, 3) == "chd") $changepath[$w - 1] = "par" . substr($secpath[$w - 1], 3);
-        else $changepath[$w - 1] = "spo" . substr($secpath[$w - 1], 3);
+        if (substr($secpath[$w], 0, 3) === "par") {
+            $changepath[$w - 1] = "chd" . substr($secpath[$w - 1], 3);
+        } elseif (substr($secpath[$w], 0, 3) === "chd") {
+            $changepath[$w - 1] = "par" . substr($secpath[$w - 1], 3);
+        } else {
+            $changepath[$w - 1] = "spo" . substr($secpath[$w - 1], 3);
+        }
     }
     for ($w = count($changepath) - 1; $w >= 0; $w--) {
         $new_path2 .= ";" . $changepath[$w];
-    }
-    $result = substr($path1, 0, strpos($path1, $pers2) - 4) . $commonpers . $new_path2;  // the entire trail from person A to B
-    return ($result);
+    }  // the entire trail from person A to B
+    return (substr($path1, 0, strpos($path1, $pers2) - 4) . $commonpers . $new_path2);
 }
 
 
 /* displays result of extended marital calculator */
 function display_result($result)
 {
-    // $result holds the entire track of persons from person A to person B
+    // $result holds the entire track of persons from person 1 to person 2
     // this string is made up of items sperated by ";"
     // each items starts with "par" (parent), "chd" (child) or "spo" (spouse), followed by the gedcomnumber of the person
     // example: parI232;parI65;chdI2304;spoI212;parI304
     // the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
 
-    global $db_functions, $data;
-    ?>
-
-    <div class="print_version" style="padding:3px;width:auto;background-color:#eeeeee">
-        <input type="submit" name="next_path" value="<?= __('Try to find another path'); ?>" class="btn btn-sm btn-success">
-        &nbsp;&nbsp;<?= __('(With each consecutive search the path may get longer and computing time may increase!)'); ?>
-    </div>
-    <?php
+    global $db_functions, $relation;
 
     $map = array();    // array that will hold all data needed for the graphical display
-
     $tracks = explode(";", $result); // $tracks is array with each person in the trail
 
     /* initialize  */
@@ -4627,28 +4147,36 @@ function display_result($result)
 
     // fill map array
     for ($x = 0; $x < count($tracks); $x++) {
-        $ged = substr($tracks[$x], 3);    // gedcomnumber
+        //$ged = substr($tracks[$x], 3);    // gedcomnumber
         $cal = substr($tracks[$x], 0, 3);  // par, chd, spo
-        if ($cal == "fst") {
+        if ($cal === "fst") {
             continue;
         }
-        if ($cal == "spo") {
+        if ($cal === "spo") {
             $marrsign[$xval + 1] = $yval;
             $xval += 2;
             $map[$x][0] = $xval;
             $map[$x][1] = $yval;
         }
-        if ($cal == "chd") {
+        if ($cal === "chd") {
             $yval--;
-            if ($yval < $miny) $miny = $yval;
+            if ($yval < $miny) {
+                $miny = $yval;
+            }
             $map[$x][0] = $xval;
             $map[$x][1] = $yval;
-            if (isset($map[$x + 1]) and $map[$x + 1][3] == "par") $map[$x][2] = 2;
+            if (isset($map[$x + 1]) && $map[$x + 1][3] === "par") {
+                $map[$x][2] = 2;
+            }
         }
-        if ($cal == "par") {
+        if ($cal === "par") {
             $yval++;
-            if ($yval > $maxy) $maxy = $yval;
-            if ($map[$x - 1][3] == "chd") $xval++;
+            if ($yval > $maxy) {
+                $maxy = $yval;
+            }
+            if ($map[$x - 1][3] === "chd") {
+                $xval++;
+            }
             $map[$x][0] = $xval;
             $map[$x][1] = $yval;
         }
@@ -4664,7 +4192,12 @@ function display_result($result)
             }
         }
     }
-    ?>
+?>
+
+    <div class="print_version" style="padding:3px;width:auto;background-color:#eeeeee">
+        <input type="submit" name="next_path" value="<?= __('Try to find another path'); ?>" class="btn btn-sm btn-success">
+        &nbsp;&nbsp;<?= __('(With each consecutive search the path may get longer and computing time may increase!)'); ?>
+    </div>
 
     <!-- the following code displays the graphical view of the found trail -->
     <br>
@@ -4672,61 +4205,56 @@ function display_result($result)
         <?php for ($a = 1; $a <= $maxy; $a++) { ?>
             <tr>
                 <?php
-                $nextline = "";
+                $next_line = [];
                 for ($b = 1; $b <= $xval; $b++) {
                     $colsp = false;
-                    $marr = false;
                     for ($x = 0; $x < count($map); $x++) {
-                        if ($map[$x][0] == $b and $map[$x][1] == $a) {
-                            $color = "#8ceffd";
-                            $border = "border:1px solid #777777;";
-
+                        if ($map[$x][0] == $b && $map[$x][1] == $a) {
                             $ancDb = $db_functions->get_person($map[$x][4]);
-                            if ($ancDb->pers_sexe == "M") {
-                                $ext_cls = "extended_man ";
-                            } else {
-                                $ext_cls = "extended_woman ";
-                            }
 
+                            $border = "border:1px solid #777777;";
                             // person A and B (first and last) get thicker border
-                            if ($map[$x][4] == $data["person1"] or $map[$x][4] == $data["person2"]) {
-                                $color = "#72fe95";
+                            if ($map[$x][4] == $relation["person1"] || $map[$x][4] == $relation["person2"]) {
                                 $border = "border:2px solid #666666;";
-                            }
-                            if ($map[$x][2] == 2) {
-                                $b++;
-                                echo '<td class="' . $ext_cls . '" colspan=2 style="width:200px;text-align:center;' . $border . 'padding:2px">';
-                                $nextline .= "&#8593;@&#8595;@";   // up and down arrows under two column parent
-                            } elseif (isset($map[$x + 1][3]) and $map[$x + 1][3] == "par") {
-                                $nextline .= "&#8595;@";  // down arrow
-                                echo '<td class="' . $ext_cls . '"  style="width:200px;text-align:center;' . $border . 'padding:2px">';
-                            } elseif (isset($map[$x][3]) and $map[$x][3] == "chd") {
-                                $nextline .= "&#8593;@";  // up arrow
-                                echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px">';
-                            } else {
-                                $nextline .= "&nbsp;@";  // empty box
-                                echo '<td class="' . $ext_cls . '" style="width:200px;text-align:center;' . $border . 'padding:2px">';
                             }
 
                             $pers_cls = new person_cls;
                             $name = $pers_cls->person_name($ancDb);
-                            $personname = $name["name"];
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                             $url = $pers_cls->person_url2($ancDb->pers_tree_id, $ancDb->pers_famc, $ancDb->pers_fams, $ancDb->pers_gedcomnumber);
-                            echo "<a href='" . $url . "'>" . $personname . "</a>";
-
                             $colsp = true;
+
+                            if ($map[$x][2] == 2) {
+                                $b++;
+                                $next_line[] = "&#8593;";   // up arrows under two column parent
+                                $next_line[] = "&#8595;";   // down arrows under two column parent
+                            } elseif (isset($map[$x + 1][3]) && $map[$x + 1][3] === "par") {
+                                $next_line[] = "&#8595;";  // arrow down
+                            } elseif (isset($map[$x][3]) && $map[$x][3] === "chd") {
+                                $next_line[] = "&#8593;"; // arrow up
+                            } else {
+                                $next_line[] = "&nbsp;";  // empty box
+                            }
+                ?>
+
+                            <td class="<?= $ancDb->pers_sexe ==  'M' ? 'extended_man' : 'extended_woman'; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>" <?= $map[$x][2] == 2 ? 'colspan=2' : ''; ?>>
+                                <a href="<?= $url; ?>"><?= $name["name"]; ?></a>
+                            </td>
+                        <?php
                         }
                     }
+
+                    // display the X sign between two married people
                     if ($colsp == false) {
-                        if (isset($marrsign[$b]) and $marrsign[$b] == $a) {  // display the X sign between two married people
-                            echo '<td style="font-weight:bold;font-size:130%;width:10px;text-align:center;border:0px;padding:0px">X';
-                        } else {
-                            echo '<td style="width:10px;text-align:center;border:0px;padding:0px">';
-                        }
-                        $nextline .= "&nbsp;@";
+                        $next_line[] = "&nbsp;";
+                        ?>
+                        <td style="font-weight:bold;font-size:130%;width:10px;text-align:center;border:0px;padding:0px">
+                            <?php if (isset($marrsign[$b]) && $marrsign[$b] == $a) { ?>
+                                X
+                            <?php } ?>
+                        </td>
+                <?php
                     }
-                    echo "</td>";
                 }
                 ?>
             </tr>
@@ -4734,11 +4262,7 @@ function display_result($result)
             <!-- The following code places a row with arrows (or blanks) under a row with name boxes -->
             <?php if ($a != $maxy) { ?>
                 <tr>
-                    <?php
-                    $nextline = substr($nextline, 0, -1);
-                    $next = explode("@", $nextline);
-                    foreach ($next as $value) {
-                    ?>
+                    <?php foreach ($next_line as $value) { ?>
                         <td style='padding:2px;color:black;width:10px;font-weight:bold;font-size:140%;text-align:center;'>
                             <?= $value; ?>
                         </td>
@@ -4749,5 +4273,437 @@ function display_result($result)
         }
         ?>
     </table>
+    <?php
+}
+
+
+// Function is called twice. TODO: rebuild into MVC, but function is also needed in view to show results twice.
+function display_table()
+{
+    global $db_functions;
+    global $relation, $relation_type, $relation, $rel_arrayX, $rel_arrayY, $spouse, $rel_arrayspouseX, $rel_arrayspouseY, $famspouseX, $famspouseY;
+    global $fampath, $tree_id, $link_cls, $uri_path;
+    global $data_found;
+
+    // *** Use person class to show names ***
+    $pers_cls = new person_cls;
+
+    $vars['pers_family'] = $famspouseX;
+    $linkSpouseX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+
+    $vars['pers_family'] = $famspouseY;
+    $linkSpouseY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+
+    //$border="border:1px solid #777777;";
+    $border = "";
+
+    if ($relation_type == 1 || $relation_type == 2) {
+        if ($relation_type == 1 && $data_found["foundY_gen"] == 1 && $spouse == '') {
+            // father-son - no need for table
+        } elseif ($relation_type == 2 && $data_found["foundX_gen"] == 1 && $spouse == '') {
+            // son-father - no need for table
+        } else {
+            if ($spouse == 1) {
+                $rel_arrayX = $rel_arrayspouseX;
+            }
+            if ($spouse == 2) {
+                $rel_arrayY = $rel_arrayspouseY;
+            }
+            if ($spouse == 3) {
+                $rel_arrayX = $rel_arrayspouseX;
+                $rel_arrayY = $rel_arrayspouseY;
+            }
+
+            if ($relation_type == 2) {
+                $tempfound = $data_found["foundY_nr"];
+                $data_found["foundY_nr"] = $data_found["foundX_nr"];
+                $data_found["foundX_nr"] = $tempfound;
+                $temprel = $rel_arrayY;
+                $rel_arrayY = $rel_arrayX;
+                $rel_arrayX = $temprel;
+                $tempname = $relation['name1'];
+                $relation['name1'] = $relation['name2'];
+                $relation['name2'] = $tempname;
+                $tempfam = $famspouseX;
+                $famspouseX = $famspouseY;
+                $famspouseY = $tempfam;
+
+                $tempfamily = $relation['family_id1'];
+                $relation['family_id1'] = $relation['family_id2'];
+                $relation['family_id2'] = $tempfamily;
+
+                $tempged = $relation['gednr2'];
+                $relation['gednr2'] = $relation['gednr1'];
+                $relation['gednr1'] = $tempged;
+            }
+    ?>
+
+            <br>
+            <table class="newrel" style="border:0px;border-collapse:separate;border-spacing:3px 1px;">
+                <?php
+                $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
+                $name = $pers_cls->person_name($persidDb);
+                if (($spouse == 1 && $relation_type == 1) || ($spouse == 2 && $relation_type == 2) || $spouse == 3) {
+                ?>
+                    <tr>
+                        <td class="<?= $persidDb->pers_sexe == "M" ?  "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                            <a href="<?= $linkSpouseX; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $name["name"]; ?></a>
+                        </td>
+
+                        <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+
+                        <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                            <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>"><?= $relation['name1']; ?></a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:0px;">&#8593;</td> <!-- arrow up -->
+                        <td style="border:0px;">&nbsp;</td>
+                        <td style="border:0px;">&nbsp;</td>
+                    </tr>
+                <?php } else { ?>
+                    <tr>
+                        <td class="<?= $persidDb->pers_sexe == "M" ?  "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                            <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $name["name"]; ?></a>
+                        </td>
+                        <?php if (($spouse == 1 && $relation_type == 2) || ($spouse == 2 && $relation_type == 1)) { ?>
+                            <td style="border:0px;">&nbsp;</td>
+                            <td style="border:0px;">&nbsp;</td>
+                        <?php } ?>
+                    </tr>
+
+                    <tr>
+                        <td style="border:0px;">&#8595;</td> <!-- arrow down -->
+                    </tr>
+                <?php } ?>
+
+                <?php
+                $count = $data_found["foundY_nr"];
+                while ($count != 0) {
+                    $persidDb = $db_functions->get_person($rel_arrayY[$count][0]);
+                    $name = $pers_cls->person_name($persidDb);
+
+                    if ($persidDb->pers_fams) {
+                        $fams = $persidDb->pers_fams;
+                        $tempfam = explode(";", $fams);
+                        $fam = $tempfam[0];
+                    } else {
+                        $fam = $persidDb->pers_famc;
+                    }
+                    $vars['pers_family'] = $fam;
+                    $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+
+                    $count = $rel_arrayY[$count][2];
+                ?>
+                    <tr>
+                        <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                        </td>
+
+                        <?php if ($spouse == 1 || $spouse == 2 || $spouse == 3) { ?>
+                            <td style="border:0px;">&nbsp;</td>
+                        <?php } ?>
+                    </tr>
+
+                    <tr>
+                        <td style="border:0px;">&#8593;</td> <!-- arrow up -->
+                    <?php } ?>
+                    <!-- TODO check this code -->
+                    </tr>
+
+                    <tr>
+                        <?php
+                        $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
+                        $name = $pers_cls->person_name($persidDb);
+                        if ($spouse == 1 && $relation_type == 2 || $spouse == 2 && $relation_type == 1 || $spouse == 3) {
+                        ?>
+                            <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                <a href="<?= $linkSpouseY; ?>main_person=<?= $rel_arrayY[0][0]; ?>"><?= $name["name"]; ?></a>
+                            </td>
+
+                            <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+
+                            <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
+                                    <?= $relation['name2']; ?>
+                                </a>
+                            </td>
+                        <?php } else { ?>
+                            <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
+                                    <!-- TODO check this, should be $name["name"]? -->
+                                    <?= $relation['name2']; ?>
+                                </a>
+                            </td>
+                            <?php if ($spouse == 1 && $relation_type == 1 || $spouse == 2 && $relation_type == 2) { ?>
+                                <td style="border:0px;">&nbsp;</td>
+                                <td style="border:0px;">&nbsp;</td>
+                        <?php
+                            }
+                        }
+                        ?>
+                    </tr>
+            </table>
+        <?php
+        }
+    }
+
+    if ($relation_type == 3 || $relation_type == 4 || $relation_type == 5 || $relation_type == 6) {
+        $rowcount = max($data_found["foundX_gen"], $data_found["foundY_gen"]);
+        $countX = $data_found["foundX_nr"];
+        $countY = $data_found["foundY_nr"];
+        $name1_done = 0;
+        $name2_done = 0;
+
+        $colspan = 3;
+        if ($spouse == 1) {
+            $rel_arrayX = $rel_arrayspouseX;
+        }
+        if ($spouse == 2) {
+            $rel_arrayY = $rel_arrayspouseY;
+        }
+        if ($spouse == 3) {
+            $rel_arrayX = $rel_arrayspouseX;
+            $rel_arrayY = $rel_arrayspouseY;
+        }
+
+        $persidDb = $db_functions->get_person($rel_arrayX[$data_found["foundX_match"]][0]);
+        $name = $pers_cls->person_name($persidDb);
+
+        if ($persidDb->pers_fams) {
+            $fams = $persidDb->pers_fams;
+            $tempfam = explode(";", $fams);
+            $fam = $tempfam[0];
+        } else {
+            $fam = $persidDb->pers_famc;
+        }
+        $vars['pers_family'] = $fam;
+        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+        ?>
+
+        <br>
+        <table class="newrel" style="border-collapse:separate;border-spacing:3px 1px;">
+            <tr>
+                <?php if ($spouse == 1 || $spouse == 3) { ?>
+                    <td style="border:0px;">&nbsp;</td>
+                    <td style="border:0px;">&nbsp;</td>
+                <?php } ?>
+
+                <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>" colspan="<?= $colspan; ?>">
+                    <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                </td>
+
+                <?php if ($spouse == 2 || $spouse == 3) { ?>
+                    <td style="border:0px;">&nbsp;</td>
+                    <td style="border:0px;">&nbsp;</td>
+                <?php } ?>
+            </tr>
+
+            <tr>
+                <?php if ($spouse == 1 || $spouse == 3) { ?>
+                    <td style="border:0px;">&nbsp;</td>
+                    <td style="border:0px;">&nbsp;</td>
+                <?php } ?>
+                <td style="border:0px;">&#8593;</td> <!-- arrow up -->
+                <td style="border:0px;">&nbsp;</td>
+                <td style="border:0px;">&#8595;</td> <!-- arrow down -->
+                <?php if ($spouse == 2 || $spouse == 3) { ?>
+                    <td style="border:0px;">&nbsp;</td>
+                    <td style="border:0px;">&nbsp;</td>
+                <?php } ?>
+            </tr>
+
+            <?php for ($e = 1; $e <= $rowcount; $e++) { ?>
+                <tr>
+                    <?php
+                    if ($countX != 0) {
+                        $persidDb = $db_functions->get_person($rel_arrayX[$countX][0]);
+                        $name = $pers_cls->person_name($persidDb);
+
+                        if ($spouse == 1 || $spouse == 3) {
+                            echo '<td style="border:0px;">&nbsp;</td>';
+                            echo '<td style="border:0px;">&nbsp;</td>';
+                        }
+                        if ($persidDb->pers_fams) {
+                            $fams = $persidDb->pers_fams;
+                            $tempfam = explode(";", $fams);
+                            $fam = $tempfam[0];
+                        } else {
+                            $fam = $persidDb->pers_famc;
+                        }
+                        $vars['pers_family'] = $fam;
+                        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                    ?>
+                        <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
+                                <?= $name["name"]; ?>
+                            </a>
+                        </td>
+
+                        <?php
+                        $countX = $rel_arrayX[$countX][2];
+                    } elseif ($name1_done == 0) {
+                        if ($spouse == 1 || $spouse == 3) {
+                            $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
+                            $name = $pers_cls->person_name($persidDb);
+
+                            if ($persidDb->pers_fams) {
+                                $fams = $persidDb->pers_fams;
+                                $tempfam = explode(";", $fams);
+                                $fam = $tempfam[0];
+                            } else {
+                                $fam = $persidDb->pers_famc;
+                            }
+
+                        ?>
+                            <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
+                                <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>">
+                                    <?= $relation['name1']; ?>
+                                </a>
+                            </td>
+
+                            <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+
+                            <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
+                                <a href="<?= $fampath . $fam; ?>&amp;main_person=<?= $persidDb->pers_gedcomnumber; ?>">
+                                    <?= $name["name"]; ?>
+                                </a>
+                            </td>
+
+                        <?php } else { ?>
+
+                            <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
+                                <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>">
+                                    <?= $relation['name1']; ?>
+                                </a>
+                            </td>
+                        <?php
+                        }
+                        $name1_done = 1;
+                    } else {
+                        if ($spouse == 1 || $spouse == 3) {
+                            echo '<td style="border:0px;">&nbsp;</td>';
+                            echo '<td style="border:0px;">&nbsp;</td>';
+                        }
+                        echo '<td style="border:0px;">&nbsp;</td>';
+                    }
+
+                    if ($countY != 0) {
+                        $persidDb = $db_functions->get_person($rel_arrayY[$countY][0]);
+                        $name = $pers_cls->person_name($persidDb);
+
+                        if ($persidDb->pers_fams) {
+                            $fams = $persidDb->pers_fams;
+                            $tempfam = explode(";", $fams);
+                            $fam = $tempfam[0];
+                        } else {
+                            $fam = $persidDb->pers_famc;
+                        }
+                        $vars['pers_family'] = $fam;
+                        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                        ?>
+                        <td style="border:0px;width:70px">&nbsp;</td>
+
+                        <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
+                                <?= $name["name"]; ?>
+                            </a>
+                        </td>
+
+                        <?php
+                        if ($spouse == 2 || $spouse == 3) {
+                            echo '<td style="border:0px;">&nbsp;</td>';
+                            echo '<td style="border:0px;">&nbsp;</td>';
+                        }
+                        $countY = $rel_arrayY[$countY][2];
+                    } elseif ($name2_done == 0) {
+                        if ($spouse == 2 || $spouse == 3) {
+                            $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
+                            $name = $pers_cls->person_name($persidDb);
+
+                            if ($persidDb->pers_fams) {
+                                $fams = $persidDb->pers_fams;
+                                $tempfam = explode(";", $fams);
+                                $fam = $tempfam[0];
+                            } else {
+                                $fam = $persidDb->pers_famc;
+                            }
+                            $vars['pers_family'] = $fam;
+                            $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                        ?>
+                            <td style="border:0px;width:70px">&nbsp;</td>
+
+                            <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
+                                <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
+                                    <?= $name["name"]; ?>
+                                </a>
+                            </td>
+
+                            <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+
+                            <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
+                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
+                                    <?= $relation['name2']; ?>
+                                </a>
+                            </td>
+
+                        <?php } else { ?>
+
+                            <td style="border:0px;width:70px">&nbsp;</td>
+
+                            <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
+                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
+                                    <?= $relation['name2']; ?>
+                                </a>
+                            </td>
+                    <?php
+                        }
+                        $name2_done = 1;
+                    } else {
+                        echo '<td style="border:0px;width:70px;">&nbsp;</td>';
+                        echo '<td style="border:0px;">&nbsp;</td>';
+                        if ($spouse == 2 || $spouse == 3) {
+                            echo '<td style="border:0px;">&nbsp;</td>';
+                            echo '<td style="border:0px;">&nbsp;</td>';
+                        }
+                    }
+                    ?>
+                </tr>
+
+                <tr>
+                    <?php
+                    if ($spouse == 1 || $spouse == 3) {
+                        echo '<td style="border:0px;">&nbsp;</td>';
+                        echo '<td style="width=50px;border:0px;">&nbsp;</td>';
+                    }
+
+                    if ($name1_done == 0) {
+                    ?>
+                        <td style="border:0px;">&#8593;</td> <!-- arrow up -->
+                    <?php
+                    } else {
+                        echo '<td style="border:0px;">&nbsp;</td>';
+                    }
+
+                    echo '<td style="border:0px;">&nbsp;</td>';
+
+                    if ($name2_done == 0) {
+                    ?>
+                        <td style="border:0px;">&#8595;</td> <!-- arrow down -->
+                    <?php
+                    } else {
+                        echo '<td style="border:0px;">&nbsp;</td>';
+                    }
+
+                    if ($spouse == 2 || $spouse == 3) {
+                    ?>
+                        <td style="border:0px;">&nbsp;</td>
+                        <td style="border:0px;">&nbsp;</td>
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+        </table>
 <?php
+    }
 }

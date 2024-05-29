@@ -3,11 +3,11 @@ class TreesModel
 {
     private $tree_id;
 
-    public function set_tree_id($tree_id)
+    public function set_tree_id($tree_id): void
     {
         $this->tree_id = $tree_id;
 
-        if (isset($_POST['tree_id']) and is_numeric(($_POST['tree_id']))) {
+        if (isset($_POST['tree_id']) && is_numeric(($_POST['tree_id']))) {
             $this->tree_id = $_POST['tree_id'];
         }
     }
@@ -16,7 +16,7 @@ class TreesModel
         return $this->tree_id;
     }
 
-    public function update_tree($dbh, $db_functions)
+    public function update_tree($dbh, $db_functions): void
     {
         // *** Add family tree ***
         if (isset($_POST['add_tree_data'])) {
@@ -39,10 +39,12 @@ class TreesModel
 
         if (isset($_POST['change_tree_data'])) {
             $tree_pict_path = $_POST['tree_pict_path'];
-            if (substr($_POST['tree_pict_path'], 0, 1) == '|') {
-                if (isset($_POST['default_path']) and $_POST['default_path'] == 'no') $tree_pict_path = substr($tree_pict_path, 1);
-            } else {
-                if (isset($_POST['default_path']) and $_POST['default_path'] == 'yes') $tree_pict_path = '|' . $tree_pict_path;
+            if (substr($_POST['tree_pict_path'], 0, 1) === '|') {
+                if (isset($_POST['default_path']) && $_POST['default_path'] == 'no') {
+                    $tree_pict_path = substr($tree_pict_path, 1);
+                }
+            } elseif (isset($_POST['default_path']) && $_POST['default_path'] == 'yes') {
+                $tree_pict_path = '|' . $tree_pict_path;
             }
 
             $sql = "UPDATE humo_trees SET
@@ -54,7 +56,7 @@ class TreesModel
             $dbh->query($sql);
         }
 
-        if (isset($_POST['remove_tree2']) and is_numeric($_POST['tree_id'])) {
+        if (isset($_POST['remove_tree2']) && is_numeric($_POST['tree_id'])) {
             $removeqry = 'SELECT * FROM humo_trees WHERE tree_id="' . safe_text_db($_POST['tree_id']) . '"';
             @$removesql = $dbh->query($removeqry);
             @$removeDb = $removesql->fetch(PDO::FETCH_OBJ);
@@ -159,7 +161,7 @@ class TreesModel
 
             // *** Double check tree_id and save tree id in session ***
             $_SESSION['admin_tree_id'] = '';
-            if ($check_tree_id and $check_tree_id != '') {
+            if ($check_tree_id && $check_tree_id != '') {
                 $get_treeDb = $db_functions->get_tree($check_tree_id);
 
                 $this->tree_id = $get_treeDb->tree_id;
@@ -167,7 +169,7 @@ class TreesModel
             }
         }
 
-        if (isset($_GET['up']) and is_numeric($_GET['tree_order']) and is_numeric($_GET['id'])) {
+        if (isset($_GET['up']) && is_numeric($_GET['tree_order']) && is_numeric($_GET['id'])) {
             // *** Search previous family tree ***
             $item = $dbh->query("SELECT * FROM humo_trees WHERE tree_order=" . ($_GET['tree_order'] - 1));
             $itemDb = $item->fetch(PDO::FETCH_OBJ);
@@ -179,7 +181,7 @@ class TreesModel
             $dbh->query($sql);
         }
 
-        if (isset($_GET['down']) and is_numeric($_GET['tree_order']) and is_numeric($_GET['id'])) {
+        if (isset($_GET['down']) && is_numeric($_GET['tree_order']) && is_numeric($_GET['id'])) {
             // *** Search next family tree ***
             $item = $dbh->query("SELECT * FROM humo_trees WHERE tree_order=" . ($_GET['tree_order'] + 1));
             $itemDb = $item->fetch(PDO::FETCH_OBJ);

@@ -21,7 +21,7 @@ class Descendant_chartController
         $family_id = $descendantModel->getFamilyId();
         $main_person = $descendantModel->getMainPerson();
         //$family_expanded =  $descendantModel->getFamilyExpanded();
-        $family_expanded = false;
+        $family_expanded = 'compact';
         //$source_presentation =  $descendantModel->getSourcePresentation();
         $picture_presentation =  $descendantModel->getPicturePresentation();
         $text_presentation =  $descendantModel->getTextPresentation();

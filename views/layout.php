@@ -3,27 +3,25 @@
 // *** Set cookies before any output ***
 
 // *** Number of photo's in photobook ***
-if (isset($_POST['show_pictures']) and is_numeric($_POST['show_pictures'])) {
+if (isset($_POST['show_pictures']) && is_numeric($_POST['show_pictures'])) {
     $show_pictures = $_POST['show_pictures'];
     setcookie("humogenphotos", $show_pictures, time() + 60 * 60 * 24 * 365);
 }
-if (isset($_GET['show_pictures']) and is_numeric($_GET['show_pictures'])) {
+if (isset($_GET['show_pictures']) && is_numeric($_GET['show_pictures'])) {
     $show_pictures = $_GET['show_pictures'];
     setcookie("humogenphotos", $show_pictures, time() + 60 * 60 * 24 * 365);
 }
 
 // *** Use session if session is available ***
-if (isset($_SESSION["save_favorites"]) and $_SESSION["save_favorites"]) {
+if (isset($_SESSION["save_favorites"]) && $_SESSION["save_favorites"]) {
     $favorites_array = $_SESSION["save_favorites"];
-} else {
+} elseif (isset($_COOKIE['humo_favorite'])) {
     // *** Get favourites from cookie (only if session is empty) ***
-    if (isset($_COOKIE['humo_favorite'])) {
-        foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-            $favorites_array[] = $value;
-        }
-        // *** Save cookie array in session ***
-        $_SESSION["save_favorites"] = $favorites_array;
+    foreach ($_COOKIE['humo_favorite'] as $name => $value) {
+        $favorites_array[] = $value;
     }
+    // *** Save cookie array in session ***
+    $_SESSION["save_favorites"] = $favorites_array;
 }
 
 // *** Add new favorite to list of favourites ***
@@ -94,7 +92,7 @@ if ($language["dir"] == "rtl") {   // right to left language
     $html_text = ' dir="rtl"';
 }
 // TODO check this code
-if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
+if (isset($screen_mode) && ($screen_mode == "STAR" || $screen_mode == "STARSIZE")) {
     $html_text = '';
 }
 
@@ -162,10 +160,11 @@ $menu_top = getActiveTopMenu($page);
 
     <?php
     // *** Use your own favicon.ico in media folder ***
-    if (file_exists('media/favicon.ico'))
+    if (file_exists('media/favicon.ico')) {
         echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
-    else
+    } else {
         echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
+    }
 
     /*
     // *****************************************************************
@@ -180,9 +179,7 @@ $menu_top = getActiveTopMenu($page);
     // if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
     // *** Needed for zoomslider ***
     if (
-        strpos($_SERVER['REQUEST_URI'], "maps") !== false or
-        strpos($_SERVER['REQUEST_URI'], "descendant") !== false or
-        strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
+        strpos($_SERVER['REQUEST_URI'], "maps") !== false || strpos($_SERVER['REQUEST_URI'], "descendant") !== false || strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
     ) {
         echo '<script src="include/jquery/jquery.min.js"></script> ';
         echo '<link rel="stylesheet" href="include/jqueryui/jquery-ui.min.css"> ';
@@ -227,7 +224,9 @@ $menu_top = getActiveTopMenu($page);
     echo '<link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">';
 
     // *** Extra items in header added by admin ***
-    if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];
+    if ($humo_option["text_header"]) {
+        echo "\n" . $humo_option["text_header"];
+    }
     ?>
 </head>
 
@@ -236,7 +235,9 @@ $menu_top = getActiveTopMenu($page);
     // Show menu
     $menu = true;
     // *** Hide menu in descendant chart shown in iframe in fanchart ***
-    if (isset($_GET['menu']) and $_GET['menu'] == "1") $menu = false;
+    if (isset($_GET['menu']) && $_GET['menu'] == "1") {
+        $menu = false;
+    }
     if ($menu) {
         // *** LTR or RTL ***
         $rtlmark = 'ltr';
@@ -246,10 +247,11 @@ $menu_top = getActiveTopMenu($page);
 
         // *** Show logo or name of website ***
         $logo = $humo_option["database_name"];
-        if (is_file('media/logo.png'))
+        if (is_file('media/logo.png')) {
             $logo = '<img src="media/logo.png">';
-        elseif (is_file('media/logo.jpg'))
+        } elseif (is_file('media/logo.jpg')) {
             $logo = '<img src="media/logo.jpg">';
+        }
     ?>
 
         <div id="top_menu"> <!-- TODO At this moment only needed for print version?  -->
@@ -286,18 +288,18 @@ $menu_top = getActiveTopMenu($page);
                                             // *** Check if family tree is shown or hidden for user group ***
                                             $hide_tree_array2 = explode(";", $user['group_hide_trees']);
                                             $hide_tree2 = false;
-                                            if (in_array($tree_searchDb->tree_id, $hide_tree_array2)) $hide_tree2 = true;
+                                            if (in_array($tree_searchDb->tree_id, $hide_tree_array2)) {
+                                                $hide_tree2 = true;
+                                            }
                                             if ($hide_tree2 == false) {
                                                 $selected = '';
                                                 if (isset($_SESSION['tree_prefix'])) {
                                                     if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
                                                         $selected = ' selected';
                                                     }
-                                                } else {
-                                                    if ($count == 0) {
-                                                        $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
-                                                        $selected = ' selected';
-                                                    }
+                                                } elseif ($count == 0) {
+                                                    $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
+                                                    $selected = ' selected';
                                                 }
                                                 $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
                                                 echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
@@ -315,8 +317,9 @@ $menu_top = getActiveTopMenu($page);
 
                     <?php
                     // *** This code is used to restore $dataDb reading. Used for picture etc. ***
-                    if (is_string($_SESSION['tree_prefix']) and $_SESSION['tree_prefix'])
+                    if (is_string($_SESSION['tree_prefix']) && $_SESSION['tree_prefix']) {
                         $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+                    }
 
                     // *** Show quicksearch field ***
                     if (!$bot_visit) {
@@ -529,7 +532,7 @@ $menu_top = getActiveTopMenu($page);
                                 <?php } ?>
 
                                 <?php
-                                if ($user['group_sources'] == 'j' and $tree_prefix_quoted != '' and $tree_prefix_quoted != 'EMPTY') {
+                                if ($user['group_sources'] == 'j' && $tree_prefix_quoted != '' && $tree_prefix_quoted != 'EMPTY') {
                                     // *** Check if there are sources in the database ***
                                     //$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'AND source_shared='1'");
                                     $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
@@ -543,7 +546,7 @@ $menu_top = getActiveTopMenu($page);
                                 ?>
 
                                 <?php
-                                if ($user['group_addresses'] == 'j' and $tree_prefix_quoted != '' and $tree_prefix_quoted != 'EMPTY') {
+                                if ($user['group_addresses'] == 'j' && $tree_prefix_quoted != '' && $tree_prefix_quoted != 'EMPTY') {
                                     // *** Check for addresses in the database ***
                                     $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'");
                                     @$addressDb = $address_qry->rowCount();
@@ -560,17 +563,14 @@ $menu_top = getActiveTopMenu($page);
 
                     <!-- Menu: Tools menu -->
                     <?php
-                    if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
+                    if ($bot_visit && $humo_option["searchengine_cms_only"] == 'y') {
                         //
                     } else {
                         // make sure at least one of the submenus is activated, otherwise don't show TOOLS menu
                         //	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
                         //		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)
                         if (
-                            $user["group_birthday_list"] == 'j' or $user["group_showstatistics"] == 'j' or $user["group_relcalc"] == 'j'
-                            or ($user["group_googlemaps"] == 'j' and $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0)
-                            or ($user["group_contact"] == 'j' and $dataDb->tree_owner and $dataDb->tree_email)
-                            or $user["group_latestchanges"] == 'j'
+                            $user["group_birthday_list"] == 'j' || $user["group_showstatistics"] == 'j' || $user["group_relcalc"] == 'j' || $user["group_googlemaps"] == 'j' && $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0 || $user["group_contact"] == 'j' && $dataDb->tree_owner && $dataDb->tree_email || $user["group_latestchanges"] == 'j'
                         ) {
                     ?>
 
@@ -640,12 +640,12 @@ $menu_top = getActiveTopMenu($page);
                                 <li><a class="dropdown-item <?php if ($page == 'settings') echo 'active'; ?>" href="<?= $menu_path_user_settings; ?>"><?= __('User settings'); ?></a></li>
 
                                 <!-- Admin pages -->
-                                <?php if ($user['group_edit_trees'] or $user['group_admin'] == 'j') {; ?>
+                                <?php if ($user['group_edit_trees'] || $user['group_admin'] == 'j') {; ?>
                                     <li><a class="dropdown-item" href="<?= $menu_path_admin; ?>" target="_blank"><?= __('Admin'); ?></a></li>
                                 <?php } ?>
 
                                 <!-- Login - Logoff -->
-                                <?php if ($user['group_menu_login'] == 'j' and $user["user_name"]) {; ?>
+                                <?php if ($user['group_menu_login'] == 'j' && $user["user_name"]) {; ?>
                                     <li>
                                         <a class="dropdown-item" href="<?= $menu_path_logoff; ?>"><?= __('Logoff'); ?>
                                             <span style="color:#0101DF; font-weight:bold;">[<?= ucfirst($_SESSION["user_name"]); ?>]</span>
@@ -712,7 +712,7 @@ $menu_top = getActiveTopMenu($page);
 
         <?php
         // *** Override margin if slideshow is used ***
-        if ($page == 'index' and isset($humo_option["slideshow_show"]) and $humo_option["slideshow_show"] == 'y') {
+        if ($page == 'index' && isset($humo_option["slideshow_show"]) && $humo_option["slideshow_show"] == 'y') {
             echo '<style>
                 #rtlcontent {
                     padding-left:0px;
@@ -738,14 +738,14 @@ $menu_top = getActiveTopMenu($page);
 
             // *** Replace the main index by an own CMS page ***
             $text = '';
-            if (isset($humo_option["main_page_cms_id_" . $selected_language]) and $humo_option["main_page_cms_id_" . $selected_language]) {
+            if (isset($humo_option["main_page_cms_id_" . $selected_language]) && $humo_option["main_page_cms_id_" . $selected_language]) {
                 // *** Show CMS page ***
                 if (is_numeric($humo_option["main_page_cms_id_" . $selected_language])) {
                     $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='" . $humo_option["main_page_cms_id_" . $selected_language] . "' AND page_status!=''");
                     $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
                     $text = $cms_pagesDb->page_text;
                 }
-            } elseif (isset($humo_option["main_page_cms_id"]) and $humo_option["main_page_cms_id"]) {
+            } elseif (isset($humo_option["main_page_cms_id"]) && $humo_option["main_page_cms_id"]) {
                 // *** Show CMS page ***
                 if (is_numeric($humo_option["main_page_cms_id"])) {
                     $page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='" . $humo_option["main_page_cms_id"] . "' AND page_status!=''");
@@ -778,13 +778,7 @@ $menu_top = getActiveTopMenu($page);
 
         <!-- TODO improve code for tab menu in ascendants and descendants -->
         <!-- End of tab menu, if used -->
-        <?php if ((isset($_GET['descendant_report']) and $_GET['descendant_report'] == '1')
-            or $page == 'outline_report'
-            or $page == 'descendant_chart'
-            or $page == 'ancestor_report'
-            or $page == 'ancestor_sheet'
-            or $page == 'ancestor_chart'
-            or $page == 'fanchart'
+        <?php if (isset($_GET['descendant_report']) && $_GET['descendant_report'] == '1' || $page == 'outline_report' || $page == 'descendant_chart' || $page == 'ancestor_report' || $page == 'ancestor_sheet' || $page == 'ancestor_chart' || $page == 'fanchart'
         ) { ?>
         </div>
     <?php } ?>

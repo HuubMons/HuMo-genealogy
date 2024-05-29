@@ -23,8 +23,7 @@ class AddressesController
         $select_sort = $addressesModel->getSelectSort();
         $place_link = $addressesModel->getPlaceLink();
         $address_link = $addressesModel->getAddressLink();
-
-        $data = array(
+        return array(
             "authorised" => $authorised,
             "addresses" => $addresses,
             "address_image" => $address_image,
@@ -34,6 +33,5 @@ class AddressesController
             "select_sort" => $select_sort,
             "title" => __('Address')
         );
-        return $data;
     }
 }

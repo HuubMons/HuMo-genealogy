@@ -30,22 +30,26 @@ class list_namesModel
     public function getMaxCols()
     {
         $maxcols = 2; // number of name & nr colums in table. For example 3 means 3x name col + nr col
-        if (isset($_POST['maxcols']) and is_numeric($_POST['maxcols'])) {
+        if (isset($_POST['maxcols']) && is_numeric($_POST['maxcols'])) {
             $maxcols = $_POST['maxcols'];
             $_SESSION["save_maxcols"] = $maxcols;
         }
-        if (isset($_SESSION["save_maxcols"])) $maxcols = $_SESSION["save_maxcols"];
+        if (isset($_SESSION["save_maxcols"])) {
+            $maxcols = $_SESSION["save_maxcols"];
+        }
         return $maxcols;
     }
 
     public function getMaxNames()
     {
         $maxnames = 100;
-        if (isset($_POST['freqsurnames']) and is_numeric($_POST['freqsurnames'])) {
+        if (isset($_POST['freqsurnames']) && is_numeric($_POST['freqsurnames'])) {
             $maxnames = $_POST['freqsurnames'];
             $_SESSION["save_maxnames"] = $maxnames;
         }
-        if (isset($_SESSION["save_maxnames"])) $maxnames = $_SESSION["save_maxnames"];
+        if (isset($_SESSION["save_maxnames"])) {
+            $maxnames = $_SESSION["save_maxnames"];
+        }
         return $maxnames;
     }
 }

@@ -45,7 +45,7 @@ class AddressesModel
             }
         }
         $this->selectsort = '';
-        if (isset($_SESSION['sort']) and !isset($_GET['sort'])) {
+        if (isset($_SESSION['sort']) && !isset($_GET['sort'])) {
             $this->selectsort = $_SESSION['sort'];
         }
         if (isset($_GET['sort'])) {
@@ -70,23 +70,23 @@ class AddressesModel
 
         // *** Search data ***
         $this->adr_place = '';
-        if (isset($_POST['adr_place']) and $_POST['adr_place'] != '') {
+        if (isset($_POST['adr_place']) && $_POST['adr_place'] != '') {
             $this->adr_place = $_POST['adr_place'];
         }
-        if (isset($_GET['adr_place']) and $_GET['adr_place'] != '') {
+        if (isset($_GET['adr_place']) && $_GET['adr_place'] != '') {
             $this->adr_place = $_GET['adr_place'];
         }
 
         $this->adr_address = '';
-        if (isset($_POST['adr_address']) and $_POST['adr_address'] != '') {
+        if (isset($_POST['adr_address']) && $_POST['adr_address'] != '') {
             $this->adr_address = $_POST['adr_address'];
         }
-        if (isset($_GET['adr_address']) and $_GET['adr_address'] != '') {
+        if (isset($_GET['adr_address']) && $_GET['adr_address'] != '') {
             $this->adr_address = $_GET['adr_address'];
         }
 
         $where = '';
-        if ($this->adr_place or $this->adr_address) {
+        if ($this->adr_place || $this->adr_address) {
             if ($this->adr_place != '') {
                 $where .= " AND address_place LIKE '%" . safe_text_db($this->adr_place) . "%' ";
             }
@@ -101,9 +101,8 @@ class AddressesModel
         $address_qry = $dbh->prepare($sql);
         $address_qry->bindValue(':tree_id', $tree_id, PDO::PARAM_INT);
         $address_qry->execute();
-        $addresses = $address_qry->fetchAll(PDO::FETCH_OBJ);
 
-        return $addresses;
+        return $address_qry->fetchAll(PDO::FETCH_OBJ);
     }
 
     function getPlaceLink()
@@ -115,14 +114,13 @@ class AddressesModel
                 $place_sort_reverse = '0';
             }
         }
-        $link = 'adr_place=' . safe_text_show($this->adr_place) . '&adr_address=' . safe_text_show($this->adr_address) . '&sort=sort_place&sort_desc=' . $place_sort_reverse;
-        return $link;
+        return 'adr_place=' . safe_text_show($this->adr_place) . '&adr_address=' . safe_text_show($this->adr_address) . '&sort=sort_place&sort_desc=' . $place_sort_reverse;
     }
 
     function getPlaceImage()
     {
         $image = 'images/button3.png';
-        if ($this->selectsort == "sort_place" and  $this->sort_desc == '1') {
+        if ($this->selectsort == "sort_place" && $this->sort_desc == '1') {
             $image = 'images/button3up.png';
         }
         return $image;
@@ -137,14 +135,13 @@ class AddressesModel
                 $address_sort_reverse = '0';
             }
         }
-        $link = 'adr_place=' . safe_text_show($this->adr_place) . '&adr_address=' . safe_text_show($this->adr_address) . '&sort=sort_address&sort_desc=' . $address_sort_reverse;
-        return $link;
+        return 'adr_place=' . safe_text_show($this->adr_place) . '&adr_address=' . safe_text_show($this->adr_address) . '&sort=sort_address&sort_desc=' . $address_sort_reverse;
     }
 
     function getAddressImage()
     {
         $image = 'images/button3.png';
-        if ($this->selectsort == "sort_address" and $this->sort_desc == '1') {
+        if ($this->selectsort == "sort_address" && $this->sort_desc == '1') {
             $image = 'images/button3up.png';
         }
         return $image;

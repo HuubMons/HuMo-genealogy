@@ -17,7 +17,7 @@ class ListPlacesFamiliesController
         $get_data = $listPlacesFamiliesModel->getSelection();
         $query = $listPlacesFamiliesModel->build_query($tree_id);
 
-        $data = array(
+        return array(
             "place_name" => $get_data["place_name"],
             "select_marriage_notice" => $get_data["select_marriage_notice"],
             "select_marriage" => $get_data["select_marriage"],
@@ -31,7 +31,5 @@ class ListPlacesFamiliesController
         // TODO use array merge
         // *** Add array $person_data:
         //$data = array_merge($data, $person_data);  
-
-        return $data;
     }
 }

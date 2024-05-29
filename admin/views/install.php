@@ -104,16 +104,36 @@ if (!isset($_POST['install_tables2'])) {
         }
         //$check_tags=''; if (isset($_POST["table_tags"])){ $check_tags=' checked'; }
 
-        if (!$table['settings']) $check_settings = " checked disabled";
-        if (!$table['trees']) $check_trees = " checked disabled";
-        if (!$table['stat_date']) $check_stat = " checked disabled";
-        if (!$table['users']) $check_users = " checked disabled";
-        if (!$table['groups']) $check_groups = " checked disabled";
-        if (!$table['cms_menu']) $check_cms_menu = " checked disabled";
-        if (!$table['cms_pages']) $check_cms_pages = " checked disabled";
-        if (!$table['user_notes']) $check_user_notes = " checked disabled";
-        if (!$table['user_log']) $check_log = " checked disabled";
-        if (!$table['stat_country']) $check_stat_country = " checked disabled";
+        if (!$table['settings']) {
+            $check_settings = " checked disabled";
+        }
+        if (!$table['trees']) {
+            $check_trees = " checked disabled";
+        }
+        if (!$table['stat_date']) {
+            $check_stat = " checked disabled";
+        }
+        if (!$table['users']) {
+            $check_users = " checked disabled";
+        }
+        if (!$table['groups']) {
+            $check_groups = " checked disabled";
+        }
+        if (!$table['cms_menu']) {
+            $check_cms_menu = " checked disabled";
+        }
+        if (!$table['cms_pages']) {
+            $check_cms_pages = " checked disabled";
+        }
+        if (!$table['user_notes']) {
+            $check_user_notes = " checked disabled";
+        }
+        if (!$table['user_log']) {
+            $check_log = " checked disabled";
+        }
+        if (!$table['stat_country']) {
+            $check_stat_country = " checked disabled";
+        }
 
         $username_admin = 'admin';
         if (isset($_POST["username_admin"])) {
@@ -160,16 +180,36 @@ if (!isset($_POST['install_tables2'])) {
         }
         */
 
-        if ($table['settings']) $check_settings = "";
-        if ($table['trees']) $check_trees = "";
-        if ($table['stat_date']) $check_stat = "";
-        if ($table['users']) $check_users = "";
-        if ($table['groups']) $check_groups = "";
-        if ($table['cms_menu']) $check_cms_menu = "";
-        if ($table['cms_pages']) $check_cms_pages = "";
-        if ($table['user_notes']) $check_user_notes = "";
-        if ($table['user_log']) $check_log = "";
-        if ($table['stat_country']) $check_stat_country = "";
+        if ($table['settings']) {
+            $check_settings = "";
+        }
+        if ($table['trees']) {
+            $check_trees = "";
+        }
+        if ($table['stat_date']) {
+            $check_stat = "";
+        }
+        if ($table['users']) {
+            $check_users = "";
+        }
+        if ($table['groups']) {
+            $check_groups = "";
+        }
+        if ($table['cms_menu']) {
+            $check_cms_menu = "";
+        }
+        if ($table['cms_pages']) {
+            $check_cms_pages = "";
+        }
+        if ($table['user_notes']) {
+            $check_user_notes = "";
+        }
+        if ($table['user_log']) {
+            $check_log = "";
+        }
+        if ($table['stat_country']) {
+            $check_stat_country = "";
+        }
 
         $username_admin = 'admin';
         $password_admin = 'humogen';
@@ -284,27 +324,67 @@ if (isset($_POST['install_tables2'])) {
     $table_stat_country = "";
     //$table_tags="";
 
-    if ($table['settings']) $table_settings = "1";
-    if ($table['trees']) $table_trees = "1";
-    if ($table['stat_date']) $table_stat_date = "1";
-    if ($table['users']) $table_users = "1";
-    if ($table['groups']) $table_groups = "1";
-    if ($table['cms_menu']) $table_cms_menu = "1";
-    if ($table['cms_pages']) $table_cms_pages = "1";
-    if ($table['user_notes']) $table_user_notes = "1";
-    if ($table['user_log']) $table_user_log = "1";
-    if ($table['stat_country']) $table_stat_country = "1";
+    if ($table['settings']) {
+        $table_settings = "1";
+    }
+    if ($table['trees']) {
+        $table_trees = "1";
+    }
+    if ($table['stat_date']) {
+        $table_stat_date = "1";
+    }
+    if ($table['users']) {
+        $table_users = "1";
+    }
+    if ($table['groups']) {
+        $table_groups = "1";
+    }
+    if ($table['cms_menu']) {
+        $table_cms_menu = "1";
+    }
+    if ($table['cms_pages']) {
+        $table_cms_pages = "1";
+    }
+    if ($table['user_notes']) {
+        $table_user_notes = "1";
+    }
+    if ($table['user_log']) {
+        $table_user_log = "1";
+    }
+    if ($table['stat_country']) {
+        $table_stat_country = "1";
+    }
 
-    if (isset($_POST["table_settings"])) $table_settings = '';
-    if (isset($_POST["table_trees"])) $table_trees = '';
-    if (isset($_POST["table_stat_date"])) $table_stat_date = '';
-    if (isset($_POST["table_users"])) $table_users = '';
-    if (isset($_POST["table_groups"])) $table_groups = '';
-    if (isset($_POST["table_cms_menu"])) $table_cms_menu = '';
-    if (isset($_POST["table_cms_pages"])) $table_cms_pages = '';
-    if (isset($_POST["table_user_notes"])) $table_user_notes = '';
-    if (isset($_POST["table_user_log"])) $table_user_log = '';
-    if (isset($_POST["table_stat_country"])) $table_stat_country = '';
+    if (isset($_POST["table_settings"])) {
+        $table_settings = '';
+    }
+    if (isset($_POST["table_trees"])) {
+        $table_trees = '';
+    }
+    if (isset($_POST["table_stat_date"])) {
+        $table_stat_date = '';
+    }
+    if (isset($_POST["table_users"])) {
+        $table_users = '';
+    }
+    if (isset($_POST["table_groups"])) {
+        $table_groups = '';
+    }
+    if (isset($_POST["table_cms_menu"])) {
+        $table_cms_menu = '';
+    }
+    if (isset($_POST["table_cms_pages"])) {
+        $table_cms_pages = '';
+    }
+    if (isset($_POST["table_user_notes"])) {
+        $table_user_notes = '';
+    }
+    if (isset($_POST["table_user_log"])) {
+        $table_user_log = '';
+    }
+    if (isset($_POST["table_stat_country"])) {
+        $table_stat_country = '';
+    }
     //if (isset($_POST["table_tags"])) $table_tags='';
 
     //*********************************************************************

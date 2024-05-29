@@ -84,7 +84,7 @@ if (isset($_POST['duplicate_compare'])) {
         $comp_set = explode(';', $_SESSION['dupl_arr_' . $data2Db->tree_prefix][$nr]);
         $res = $db_functions->get_person_with_id($comp_set[0]);
         $res2 = $db_functions->get_person_with_id($comp_set[1]);
-        if (!$res or !$res2) { // one or 2 persons are missing - continue with next pair
+        if (!$res || !$res2) { // one or 2 persons are missing - continue with next pair
             $nr = ++$_SESSION['present_compare_' . $data2Db->tree_prefix];
             continue; // look for next pair in array
         } else { // we have got a valid pa
@@ -205,10 +205,8 @@ elseif (isset($_POST['manual_compare'])) {
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
             <input type="submit" name="manual" value="<?= __('Choose another pair'); ?>">
         </form>
-    <?php
-    } else {
-    ?>
-        <br><?= __('Carefully compare these two persons. Only if you are <b>absolutely sure</b> they are identical, press "Merge right into left"'); ?><br>
+    <?php } else { ?>
+        <br><?= __('Carefully compare these two persons. Only if you are <b>absolutely sure</b> they are identical, press "Merge right into left".'); ?><br>
         <?= __('The checked items will be the ones entered into the database for the merged person. You can change the default settings'); ?><br>
 
         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -397,10 +395,8 @@ this page will also show a "Continue duplicate merge" button so you can continue
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
             <input type="submit" style="min-width:150px" name="duplicate_compare" value="<?= __('Continue duplicate merge'); ?>">
         </form>
-    <?php
-    }
+    <?php } ?>
 
-    ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <form method="post" action="<?= $phpself; ?>" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
@@ -425,7 +421,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 elseif (isset($_POST['duplicate'])) {
     echo __('Please wait while duplicate list is generated');
     $famname_search = "";
-    if (isset($_POST['famname_search']) and $_POST['famname_search'] != "") {
+    if (isset($_POST['famname_search']) && $_POST['famname_search'] != "") {
         $famname_search = " AND pers_lastname = '" . $_POST['famname_search'] . "'";
     }
     $qry = "SELECT pers_id, pers_firstname, pers_lastname, pers_birth_date, pers_death_date
@@ -477,9 +473,7 @@ elseif (isset($_POST['duplicate'])) {
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
             <input type="submit" name="duplicate_compare" value="<?= __('Start comparing duplicates'); ?>">
         </form>
-    <?php
-    } else {
-    ?>
+    <?php } else { ?>
         <br><?= __('No duplicates found. Duplicate merge and Automatic merge won\'t result in merges!'); ?><br>
         <?= __('You can try one of the other merge options'); ?><br><br>
 
@@ -496,7 +490,7 @@ elseif (isset($_POST['duplicate'])) {
 
 // this is the page where one can choose two people from all persons in the tree for manual merging
 // the pairs will be presented by the show_pair function
-elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["search2"]) or isset($_POST["switch"])) {
+elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["search2"]) || isset($_POST["switch"])) {
 
     // TODO: improve search of persons. Example, see: relationship calculator.
     echo '<br>' . __('Pick the two persons you want to check for merging') . '.';
@@ -508,7 +502,7 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
     include_once(__DIR__ . "/../../include/person_cls.php");
     $pers_cls = new person_cls;
 
-    if (!isset($_POST["search1"]) and !isset($_POST["search2"]) and !isset($_POST["manual_compare"]) and !isset($_POST["switch"])) {
+    if (!isset($_POST["search1"]) && !isset($_POST["search2"]) && !isset($_POST["manual_compare"]) && !isset($_POST["switch"])) {
         // no button pressed: this is a fresh entry from frontpage link: start clean search form
         $_SESSION["search1"] = '';
         $_SESSION["search2"] = '';
@@ -554,7 +548,7 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
     }
 
     $search_firstname = '';
-    if (isset($_POST["search_firstname"]) and !isset($_POST["switch"])) {
+    if (isset($_POST["search_firstname"]) && !isset($_POST["switch"])) {
         $search_firstname = trim(safe_text_db($_POST['search_firstname']));
         $_SESSION['rel_search_firstname'] = $search_firstname;
     }
@@ -563,7 +557,7 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
     }
 
     $search_lastname = '';
-    if (isset($_POST["search_lastname"]) and !isset($_POST["switch"])) {
+    if (isset($_POST["search_lastname"]) && !isset($_POST["switch"])) {
         $search_lastname = trim(safe_text_db($_POST['search_lastname']));
         $_SESSION['rel_search_lastname'] = $search_lastname;
     }
@@ -572,7 +566,7 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
     }
 
     $search_indi = '';
-    if (isset($_POST["search_indi"]) and !isset($_POST["switch"])) {
+    if (isset($_POST["search_indi"]) && !isset($_POST["switch"])) {
         $search_indi = trim(safe_text_db($_POST['search_indi']));
         $_SESSION['search_indi'] = $search_indi;
     }
@@ -581,7 +575,7 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
     }
 
     $search_firstname2 = '';
-    if (isset($_POST["search_firstname2"]) and !isset($_POST["switch"])) {
+    if (isset($_POST["search_firstname2"]) && !isset($_POST["switch"])) {
         $search_firstname2 = trim(safe_text_db($_POST['search_firstname2']));
         $_SESSION['rel_search_firstname2'] = $search_firstname2;
     }
@@ -590,7 +584,7 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
     }
 
     $search_lastname2 = '';
-    if (isset($_POST["search_lastname2"]) and !isset($_POST["switch"])) {
+    if (isset($_POST["search_lastname2"]) && !isset($_POST["switch"])) {
         $search_lastname2 = trim(safe_text_db($_POST['search_lastname2']));
         $_SESSION['rel_search_lastname2'] = $search_lastname2;
     }
@@ -599,7 +593,7 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
     }
 
     $search_indi2 = '';
-    if (isset($_POST["search_indi2"]) and !isset($_POST["switch"])) {
+    if (isset($_POST["search_indi2"]) && !isset($_POST["switch"])) {
         $search_indi2 = trim(safe_text_db($_POST['search_indi2']));
         $_SESSION['search_indi2'] = $search_indi2;
     }
@@ -640,11 +634,11 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
                     <?php
                     $len = 230;  // length of name pulldown box
 
-                    if (isset($_SESSION["search1"]) and $_SESSION["search1"] == 1) {
+                    if (isset($_SESSION["search1"]) && $_SESSION["search1"] == 1) {
                         $indi_string = "";
-                        if (isset($_SESSION["search_indi"]) and $_SESSION["search_indi"] != "") {
+                        if (isset($_SESSION["search_indi"]) && $_SESSION["search_indi"] != "") {
                             // make sure it works with "I436", "i436" and "436"
-                            $indi = (substr($search_indi, 0, 1) == "I" or substr($search_indi, 0, 1) == "i") ? strtoupper($search_indi) : "I" . $search_indi;
+                            $indi = (substr($search_indi, 0, 1) === "I" || substr($search_indi, 0, 1) === "i") ? strtoupper($search_indi) : "I" . $search_indi;
                             $indi_string = " AND pers_gedcomnumber ='" . $indi . "' ";
                         }
                         $search_qry = "SELECT * FROM humo_persons
@@ -659,10 +653,8 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
                                     $name = $pers_cls->person_name($searchDb);
                                     if ($name["show_name"]) {
                                         echo '<option';
-                                        if (isset($left)) {
-                                            if ($searchDb->pers_id == $left and !(isset($_POST["search1"]) and $search_lastname == '' and $search_firstname == '')) {
-                                                echo ' selected';
-                                            }
+                                        if (isset($left) && ($searchDb->pers_id == $left && !(isset($_POST["search1"]) && $search_lastname == '' && $search_firstname == ''))) {
+                                            echo ' selected';
                                         }
                                         echo ' value="' . $searchDb->pers_id . '">' . $name["index_name"] . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
                                     }
@@ -703,11 +695,11 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
                 </td>
                 <td>
                     <?php
-                    if (isset($_SESSION["search2"]) and $_SESSION["search2"] == 1) {
+                    if (isset($_SESSION["search2"]) && $_SESSION["search2"] == 1) {
                         $indi_string2 = "";
-                        if (isset($_SESSION["search_indi2"]) and $_SESSION["search_indi2"] != "") {
+                        if (isset($_SESSION["search_indi2"]) && $_SESSION["search_indi2"] != "") {
                             // make sure it works with "I436", "i436" and "436"
-                            $indi2 = (substr($search_indi2, 0, 1) == "I" or substr($search_indi2, 0, 1) == "i") ? strtoupper($search_indi2) : "I" . $search_indi2;
+                            $indi2 = (substr($search_indi2, 0, 1) === "I" || substr($search_indi2, 0, 1) === "i") ? strtoupper($search_indi2) : "I" . $search_indi2;
                             $indi_string2 = " AND pers_gedcomnumber ='" . $indi2 . "' ";
                         }
                         $search_qry = "SELECT * FROM humo_persons
@@ -717,28 +709,34 @@ elseif (isset($_POST['manual']) or isset($_POST["search1"]) or isset($_POST["sea
                         $search_result2 = $dbh->query($search_qry);
                         if ($search_result2) {
                             if ($search_result2->rowCount() > 0) {
-                                echo '<select size="1" name="right" style="width:' . $len . 'px">';
-                                while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
-                                    $name = $pers_cls->person_name($searchDb2);
-                                    if ($name["show_name"]) {
-                                        echo '<option';
-                                        if (isset($right)) {
-                                            if ($searchDb2->pers_id == $right and !(isset($_POST["search2"]) and $search_lastname2 == '' and $search_firstname2 == '')) {
+                    ?>
+                                <select size="1" name="right" style="width:<?= $len; ?>px">
+                                    <?php
+                                    while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
+                                        $name = $pers_cls->person_name($searchDb2);
+                                        if ($name["show_name"]) {
+                                            echo '<option';
+                                            if (isset($right) && ($searchDb2->pers_id == $right && !(isset($_POST["search2"]) && $search_lastname2 == '' && $search_firstname2 == ''))) {
                                                 echo ' selected';
                                             }
+                                            echo ' value="' . $searchDb2->pers_id . '">' . $name["index_name"] . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
                                         }
-                                        echo ' value="' . $searchDb2->pers_id . '">' . $name["index_name"] . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
                                     }
-                                }
-                                echo '</select>';
-                            } else {
-                                echo '<select size="1" name="notfound" value="1" style="width:' . $len . 'px"><option>' . __('Person not found') . '</option></select>';
+                                    ?>
+                                </select>
+                            <?php } else { ?>
+                                <select size="1" name="notfound" value="1" style="width:<?= $len; ?>px">
+                                    <option><?= __('Person not found'); ?></option>
+                                </select>
+                        <?php
                             }
                         }
                     } else {
-                        echo '<select size="1" name="right" style="width:' . $len . 'px"><option></option></select>';
-                    }
-                    ?>
+                        ?>
+                        <select size="1" name="right" style="width:<?= $len; ?>px">
+                            <option></option>
+                        </select>
+                    <?php } ?>
                 </td>
             </tr>
         </table>
@@ -804,8 +802,7 @@ elseif (isset($_POST['auto_merge'])) {
         if ($pers2) {
             while ($pers2Db = $pers2->fetch(PDO::FETCH_OBJ)) {
                 // get the two families
-                $qry = "SELECT fam_man, fam_woman, fam_marr_date FROM humo_families
-                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $persDb->pers_famc . "'";
+                $qry = "SELECT fam_man, fam_woman, fam_marr_date FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $persDb->pers_famc . "'";
                 $fam1 = $dbh->query($qry);
                 $fam1Db = $fam1->fetch(PDO::FETCH_OBJ);
 
@@ -813,10 +810,10 @@ elseif (isset($_POST['auto_merge'])) {
                 $fam2 = $dbh->query($qry);
                 $fam2Db = $fam2->fetch(PDO::FETCH_OBJ);
 
-                if ($fam1->rowCount() > 0 and $fam2->rowCount() > 0) {
+                if ($fam1->rowCount() > 0 && $fam2->rowCount() > 0) {
                     $go = 1;
                     if ($merge_parentsdate == 'YES') { // we want to check for wedding date of parents
-                        if ($fam1Db->fam_marr_date != '' and $fam1Db->fam_marr_date == $fam2Db->fam_marr_date) {
+                        if ($fam1Db->fam_marr_date != '' && $fam1Db->fam_marr_date == $fam2Db->fam_marr_date) {
                             $go = 1;
                         } else {
                             $go = 0;  // no wedding date or no match --> no merge!
@@ -825,35 +822,24 @@ elseif (isset($_POST['auto_merge'])) {
 
                     if ($go) {
                         // no use doing all this if the marriage date doesn't match
-                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam1Db->fam_man . "'";
+                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam1Db->fam_man . "'";
                         $fath1 = $dbh->query($qry);
                         $fath1Db = $fath1->fetch(PDO::FETCH_OBJ);
-                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam1Db->fam_woman . "'";
+                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam1Db->fam_woman . "'";
                         $moth1 = $dbh->query($qry);
                         $moth1Db = $moth1->fetch(PDO::FETCH_OBJ);
 
-                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam2Db->fam_man . "'";
+                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam2Db->fam_man . "'";
                         $fath2 = $dbh->query($qry);
                         $fath2Db = $fath2->fetch(PDO::FETCH_OBJ);
-                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam2Db->fam_woman . "'";
+                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $fam2Db->fam_woman . "'";
                         $moth2 = $dbh->query($qry);
                         $moth2Db = $moth2->fetch(PDO::FETCH_OBJ);
-                        if ($fath1->rowCount() > 0 and $moth1->rowCount() > 0 and $fath2->rowCount() > 0 and $moth2->rowCount() > 0) {
-                            if (
-                                $fath1Db->pers_lastname != '' and $fath1Db->pers_lastname == $fath2Db->pers_lastname
-                                and $moth1Db->pers_lastname != '' and $moth1Db->pers_lastname == $moth2Db->pers_lastname
-                                and $fath1Db->pers_firstname != '' and $fath1Db->pers_firstname == $fath2Db->pers_firstname
-                                and $moth1Db->pers_firstname != '' and $moth1Db->pers_firstname == $moth2Db->pers_firstname
-                            ) {
-                                // MERGE THEM !!
-                                merge_them($persDb->pers_id, $pers2Db->pers_id, 'automatic');
-                                $mergedlist[] = $persDb->pers_id;
-                                $merges++;
-                            }
+                        if (($fath1->rowCount() > 0 && $moth1->rowCount() > 0 && $fath2->rowCount() > 0 and $moth2->rowCount() > 0) && ($fath1Db->pers_lastname != '' && $fath1Db->pers_lastname == $fath2Db->pers_lastname && $moth1Db->pers_lastname != '' && $moth1Db->pers_lastname == $moth2Db->pers_lastname && $fath1Db->pers_firstname != '' && $fath1Db->pers_firstname == $fath2Db->pers_firstname && $moth1Db->pers_firstname != '' && $moth1Db->pers_firstname == $moth2Db->pers_firstname)) {
+                            // MERGE THEM !!
+                            merge_them($persDb->pers_id, $pers2Db->pers_id, 'automatic');
+                            $mergedlist[] = $persDb->pers_id;
+                            $merges++;
                         }
                     }    // end "if($go)"
                 }
@@ -915,7 +901,7 @@ elseif (isset($_POST['auto_merge'])) {
 }
 
 // The settings screen with "Save" and "Reset" buttons and explanations
-elseif (isset($_POST['settings']) or isset($_POST['reset'])) {
+elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
     ?>
     <br>
     <form method="post" action="<?= $phpself; ?>" style="display : inline;">
@@ -998,6 +984,7 @@ elseif (isset($_POST['settings']) or isset($_POST['reset'])) {
                 <td>
                     <select size="1" name="merge_lastname">
                         <?php
+                        // TODO improve this code.
                         if ($lastnDb->setting_value == 'YES') {
                             echo '<option value="YES" selected>' . __('Yes') . '</option>';
                             echo '<option value="NO">' . __('No') . '</option>';
@@ -1200,11 +1187,7 @@ function show_pair($left_id, $right_id, $mode)
         foreach ($fams as $value) {
             $famDb = $db_functions->get_family($value);
 
-            if ($famDb->fam_man == $leftDb->pers_gedcomnumber) { // spouse is the woman
-                $spouse_ged = $famDb->fam_woman;
-            } else {
-                $spouse_ged = $famDb->fam_man;
-            }
+            $spouse_ged = $famDb->fam_man == $leftDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
             $name_cls = new person_cls;
             $name = $name_cls->person_name($spouseDb);
@@ -1251,11 +1234,7 @@ function show_pair($left_id, $right_id, $mode)
         $fams = explode(';', $rightDb->pers_fams);
         foreach ($fams as $value) {
             $famDb = $db_functions->get_family($value);
-            if ($famDb->fam_man == $rightDb->pers_gedcomnumber) { // spouse is the woman
-                $spouse_ged = $famDb->fam_woman;
-            } else {
-                $spouse_ged = $famDb->fam_man;
-            }
+            $spouse_ged = $famDb->fam_man == $rightDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
             $name_cls = new person_cls;
             $name = $name_cls->person_name($spouseDb);
@@ -1277,7 +1256,7 @@ function show_pair($left_id, $right_id, $mode)
 
     $father2 = '';
     $mother2 = '';
-    if ($rightDb->pers_famc and $rightDb->pers_famc != "") {
+    if ($rightDb->pers_famc && $rightDb->pers_famc != "") {
         $qry2 = "SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber ='" . $rightDb->pers_famc . "'";
         $parents = $dbh->query($qry2);
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
@@ -1292,133 +1271,145 @@ function show_pair($left_id, $right_id, $mode)
         $name = $name_cls->person_name($motherDb);
         $mother2 .= $name["standard_name"] . '<br>';
     }
+?>
 
-    echo '<table style="width:900px;border:2px solid #d8d8d8">';
-    echo '<tr class="table_header"><th style="vertical-align:top;font-size:130%" colspan=3>';
-    if ($mode == "duplicate") {
-        echo __('Duplicate merge');
-    } elseif ($mode == "relatives") {
-        echo __('Surrounding relatives check');
-    } else {
-        echo __('Manual merge');
-    }
-    echo '</th></tr>';
-    if ($mode == 'duplicate') {
-        $num = $_SESSION['present_compare_' . $data2Db->tree_prefix] + 1;
-        echo '<tr><th style="width:150px;border-bottom:2px solid #a4a4a4;text-align:left">' . __('Nr. ') . $num . __(' of ') . count($_SESSION['dupl_arr_' . $data2Db->tree_prefix]) . '</th>';
-    } elseif ($mode = 'relatives') {
-        $rl = explode(';', $relatives_merge);
-        $rls = count($rl) - 1;
-        echo '<tr><th style="width:150px;border-bottom:2px solid #a4a4a4;text-align:left">' . $rls . __(' relatives to check') . '</th>';
-    } else {
-        echo '<tr><th style="width:150px;border-bottom:2px solid #a4a4a4"></th>';
-    }
-    echo '<th style="width:375px;border-bottom:2px solid #a4a4a4"> ' . __('Person 1: ') . ' </th>';
-    echo '<th style="width:375px;border-bottom:2px solid #a4a4a4"> ' . __('Person 2: ') . ' </th></tr>';
-    $color = '#e6e6e6';
-    echo '<tr style="background-color:#e6e6e6"><td style="font-weight:bold">' . __('Gedcom number:') . '</td>';
-    echo '<td>' . $leftDb->pers_gedcomnumber . '</td>';
-    echo '<td>' . $rightDb->pers_gedcomnumber . '</td></tr>';
+    <table style="width:900px;border:2px solid #d8d8d8">
+        <?php
+        echo '<tr class="table_header"><th style="vertical-align:top;font-size:130%" colspan=3>';
+        if ($mode == "duplicate") {
+            echo __('Duplicate merge');
+        } elseif ($mode == "relatives") {
+            echo __('Surrounding relatives check');
+        } else {
+            echo __('Manual merge');
+        }
+        echo '</th></tr>';
 
-    show_regular($leftDb->pers_lastname, $rightDb->pers_lastname, __('last name'), 'l_name');
-    show_regular($leftDb->pers_firstname, $rightDb->pers_firstname, __('first name'), 'f_name');
-    //show_regular($leftDb->pers_callname,$rightDb->pers_callname,__('Nickname'),'c_name');
-    show_regular($leftDb->pers_patronym, $rightDb->pers_patronym, __('patronym'), 'patr');
-    show_regular($leftDb->pers_birth_date, $rightDb->pers_birth_date, __('birth date'), 'b_date');
-    show_regular($leftDb->pers_birth_place, $rightDb->pers_birth_place, __('birth place'), 'b_place');
-    show_regular($leftDb->pers_birth_time, $rightDb->pers_birth_time, __('birth time'), 'b_time');
-    show_regular($leftDb->pers_bapt_date, $rightDb->pers_bapt_date, __('baptism date'), 'bp_date');
-    show_regular($leftDb->pers_bapt_place, $rightDb->pers_bapt_place, __('baptism place'), 'bp_place');
-    show_regular($leftDb->pers_death_date, $rightDb->pers_death_date, __('death date'), 'd_date');
-    show_regular($leftDb->pers_death_place, $rightDb->pers_death_place, __('death place'), 'd_place');
-    show_regular($leftDb->pers_death_time, $rightDb->pers_death_time, __('death time'), 'd_time');
-    show_regular($leftDb->pers_death_cause, $rightDb->pers_death_cause, __('cause of death'), 'd_cause');
-    show_regular($leftDb->pers_cremation, $rightDb->pers_cremation, __('cremation'), 'crem');
-    show_regular($leftDb->pers_buried_date, $rightDb->pers_buried_date, __('burial date'), 'br_date');
-    show_regular($leftDb->pers_buried_place, $rightDb->pers_buried_place, __('burial place'), 'br_place');
-    show_regular($leftDb->pers_alive, $rightDb->pers_alive, __('alive'), 'alive');
-    show_regular($leftDb->pers_religion, $rightDb->pers_religion, __('religion'), 'reli');
-    show_regular($leftDb->pers_own_code, $rightDb->pers_own_code, __('own code'), 'code');
-    show_regular($leftDb->pers_stillborn, $rightDb->pers_stillborn, __('stillborn'), 'stborn');
-    show_regular_text($leftDb->pers_text, $rightDb->pers_text, __('general text'), 'text');
-    show_regular_text($leftDb->pers_name_text, $rightDb->pers_name_text, __('name text'), 'n_text');
-    show_regular_text($leftDb->pers_birth_text, $rightDb->pers_birth_text, __('birth text'), 'b_text');
-    show_regular_text($leftDb->pers_bapt_text, $rightDb->pers_bapt_text, __('baptism text'), 'bp_text');
-    show_regular_text($leftDb->pers_death_text, $rightDb->pers_death_text, __('death text'), 'd_text');
-    show_regular_text($leftDb->pers_buried_text, $rightDb->pers_buried_text, __('burial text'), 'br_text');
+        if ($mode == 'duplicate') {
+            $num = $_SESSION['present_compare_' . $data2Db->tree_prefix] + 1;
+            echo '<tr><th style="width:150px;border-bottom:2px solid #a4a4a4;text-align:left">' . __('Nr. ') . $num . __(' of ') . count($_SESSION['dupl_arr_' . $data2Db->tree_prefix]) . '</th>';
+        } elseif ($mode = 'relatives') {
+            $rl = explode(';', $relatives_merge);
+            $rls = count($rl) - 1;
+            echo '<tr><th style="width:150px;border-bottom:2px solid #a4a4a4;text-align:left">' . $rls . __(' relatives to check') . '</th>';
+        } else {
+            echo '<tr><th style="width:150px;border-bottom:2px solid #a4a4a4"></th>';
+        }
+        echo '<th style="width:375px;border-bottom:2px solid #a4a4a4"> ' . __('Person 1: ') . ' </th>';
+        echo '<th style="width:375px;border-bottom:2px solid #a4a4a4"> ' . __('Person 2: ') . ' </th></tr>';
+        $color = '#e6e6e6';
+        echo '<tr style="background-color:#e6e6e6"><td style="font-weight:bold">' . __('Gedcom number:') . '</td>';
+        echo '<td>' . $leftDb->pers_gedcomnumber . '</td>';
+        echo '<td>' . $rightDb->pers_gedcomnumber . '</td></tr>';
 
-    // *** functions to show events, sources and addresses ***
-    show_events($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
-    show_sources($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
-    show_addresses($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
+        show_regular($leftDb->pers_lastname, $rightDb->pers_lastname, __('last name'), 'l_name');
+        show_regular($leftDb->pers_firstname, $rightDb->pers_firstname, __('first name'), 'f_name');
+        //show_regular($leftDb->pers_callname,$rightDb->pers_callname,__('Nickname'),'c_name');
+        show_regular($leftDb->pers_patronym, $rightDb->pers_patronym, __('patronym'), 'patr');
+        show_regular($leftDb->pers_birth_date, $rightDb->pers_birth_date, __('birth date'), 'b_date');
+        show_regular($leftDb->pers_birth_place, $rightDb->pers_birth_place, __('birth place'), 'b_place');
+        show_regular($leftDb->pers_birth_time, $rightDb->pers_birth_time, __('birth time'), 'b_time');
+        show_regular($leftDb->pers_bapt_date, $rightDb->pers_bapt_date, __('baptism date'), 'bp_date');
+        show_regular($leftDb->pers_bapt_place, $rightDb->pers_bapt_place, __('baptism place'), 'bp_place');
+        show_regular($leftDb->pers_death_date, $rightDb->pers_death_date, __('death date'), 'd_date');
+        show_regular($leftDb->pers_death_place, $rightDb->pers_death_place, __('death place'), 'd_place');
+        show_regular($leftDb->pers_death_time, $rightDb->pers_death_time, __('death time'), 'd_time');
+        show_regular($leftDb->pers_death_cause, $rightDb->pers_death_cause, __('cause of death'), 'd_cause');
+        show_regular($leftDb->pers_cremation, $rightDb->pers_cremation, __('cremation'), 'crem');
+        show_regular($leftDb->pers_buried_date, $rightDb->pers_buried_date, __('burial date'), 'br_date');
+        show_regular($leftDb->pers_buried_place, $rightDb->pers_buried_place, __('burial place'), 'br_place');
+        show_regular($leftDb->pers_alive, $rightDb->pers_alive, __('alive'), 'alive');
+        show_regular($leftDb->pers_religion, $rightDb->pers_religion, __('religion'), 'reli');
+        show_regular($leftDb->pers_own_code, $rightDb->pers_own_code, __('own code'), 'code');
+        show_regular($leftDb->pers_stillborn, $rightDb->pers_stillborn, __('stillborn'), 'stborn');
+        show_regular_text($leftDb->pers_text, $rightDb->pers_text, __('general text'), 'text');
+        show_regular_text($leftDb->pers_name_text, $rightDb->pers_name_text, __('name text'), 'n_text');
+        show_regular_text($leftDb->pers_birth_text, $rightDb->pers_birth_text, __('birth text'), 'b_text');
+        show_regular_text($leftDb->pers_bapt_text, $rightDb->pers_bapt_text, __('baptism text'), 'bp_text');
+        show_regular_text($leftDb->pers_death_text, $rightDb->pers_death_text, __('death text'), 'd_text');
+        show_regular_text($leftDb->pers_buried_text, $rightDb->pers_buried_text, __('burial text'), 'br_text');
 
-
-    //TEST *** Address by relation ***
-    // A person can be married multiple times (left and right side). Probably needed to rebuild show_addresses scripts to show them seperately?
-    //$r_fams = explode(';',$rightDb->pers_fams);
-    //for($i=0;$i<count($r_fams);$i++) {
-    //	echo $r_fams[$i].'! ';
-    //	show_addresses('',$r_fams[$i]);
-    //}
+        // *** functions to show events, sources and addresses ***
+        show_events($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
+        show_sources($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
+        show_addresses($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
 
 
-    echo '<tr><td colspan=3 style="border-top:2px solid #a4a4a4;border-bottom:2px solid #a4a4a4;font-weight:bold">' . __('Relatives') . ':</td></tr>';
-    echo '<tr style="background-color:#f2f2f2"><td style="font-weight:bold">' . __('Spouse') . ':</td>';
-    echo '<td>' . $spouses1 . '</td>';
-    echo '<td>' . $spouses2 . '</td></tr>';
-    echo '<tr style="background-color:#e6e6e6"><td style="font-weight:bold">' . __('Father') . ':</td>';
-    echo '<td>' . $father1 . '</td>';
-    echo '<td>' . $father2 . '</td></tr>';
-    echo '<tr style="background-color:#f2f2f2"><td style="font-weight:bold">' . __('Mother') . ':</td>';
-    echo '<td>' . $mother1 . '</td>';
-    echo '<td>' . $mother2 . '</td></tr>';
-    echo '<tr style="background-color:#e6e6e6"><td style="font-weight:bold">' . __('Children') . ':</td>';
-    echo '<td>' . $children1 . '</td>';
-    echo '<td>' . $children2 . '</td></tr>';
-    echo '</table>';
+        //TEST *** Address by relation ***
+        // A person can be married multiple times (left and right side). Probably needed to rebuild show_addresses scripts to show them seperately?
+        //$r_fams = explode(';',$rightDb->pers_fams);
+        //for($i=0;$i<count($r_fams);$i++) {
+        //	echo $r_fams[$i].'! ';
+        //	show_addresses('',$r_fams[$i]);
+        //}
+
+
+        echo '<tr><td colspan=3 style="border-top:2px solid #a4a4a4;border-bottom:2px solid #a4a4a4;font-weight:bold">' . __('Relatives') . ':</td></tr>';
+        echo '<tr style="background-color:#f2f2f2"><td style="font-weight:bold">' . __('Spouse') . ':</td>';
+        echo '<td>' . $spouses1 . '</td>';
+        echo '<td>' . $spouses2 . '</td></tr>';
+        echo '<tr style="background-color:#e6e6e6"><td style="font-weight:bold">' . __('Father') . ':</td>';
+        echo '<td>' . $father1 . '</td>';
+        echo '<td>' . $father2 . '</td></tr>';
+        echo '<tr style="background-color:#f2f2f2"><td style="font-weight:bold">' . __('Mother') . ':</td>';
+        echo '<td>' . $mother1 . '</td>';
+        echo '<td>' . $mother2 . '</td></tr>';
+        echo '<tr style="background-color:#e6e6e6"><td style="font-weight:bold">' . __('Children') . ':</td>';
+        echo '<td>' . $children1 . '</td>';
+        echo '<td>' . $children2 . '</td></tr>';
+        ?>
+    </table>
+    <?php
 }
+
 //************************************************************************************************************
 //****** show_regular is a function that places the regular items from humo_persons in the comparison table **
 //************************************************************************************************************
 function show_regular($left_item, $right_item, $title, $name)
 {
     global $dbh, $language, $color;
-    if ($left_item or $right_item) {
-        if ($color == '#e6e6e6') {
-            $color = '#f2f2f2';
-        } else {
-            $color = '#e6e6e6';
-        }
-        echo '<tr style="background-color:' . $color . '"><td style="font-weight:bold">' . ucfirst($title) . ':</td>';
-        $checked = '';
-        if ($left_item) {
-            $checked = " checked";
-            if ($name == 'crem' and $left_item == '1') {
-                $left_item = 'Yes';
+    if ($left_item || $right_item) {
+        $color = $color == '#e6e6e6' ? '#f2f2f2' : '#e6e6e6';
+    ?>
+        <tr style="background-color:<?= $color; ?>">
+            <td style="font-weight:bold"><?= ucfirst($title); ?>:</td>
+            <?php
+            $checked = '';
+            if ($left_item) {
+                $checked = " checked";
+                if ($name == 'crem' && $left_item == '1') {
+                    $left_item = 'Yes';
+                }
+                if ($name == 'fav' && $left_item == '1') {
+                    $left_item = 'Yes';
+                }
+                if ($name == 'stborn' && $left_item == 'y') {
+                    $left_item = 'Yes';
+                }
             }
-            if ($name == 'fav' and $left_item == '1') {
-                $left_item = 'Yes';
+            ?>
+            <td><input type="radio" name="<?= $name; ?>" value="1" <?= $checked; ?>> <?= $left_item; ?></td>
+            <?php
+            $checked = '';
+            if (!$left_item) {
+                $checked = " checked";
             }
-            if ($name == 'stborn' and $left_item == 'y') {
-                $left_item = 'Yes';
+            if ($name == 'crem' && $right_item == '1') {
+                $right_item = 'Yes';
             }
-        }
-
-        echo '<td><input type="radio" name="' . $name . '" value="1"' . $checked . '>' . $left_item . '</td>';
-        $checked = '';
-        if (!$left_item) $checked = " checked";
-        if ($name == 'crem' and $right_item == '1') {
-            $right_item = 'Yes';
-        }
-        if ($name == 'fav' and $right_item == '1') {
-            $right_item = 'Yes';
-        }
-        if ($name == 'stborn' and $right_item == 'y') {
-            $right_item = 'Yes';
-        }
-        echo '<td><input type="radio" name="' . $name . '" value="2"' . $checked . '>' . $right_item . '</td></tr>';
+            if ($name == 'fav' && $right_item == '1') {
+                $right_item = 'Yes';
+            }
+            if ($name == 'stborn' && $right_item == 'y') {
+                $right_item = 'Yes';
+            }
+            ?>
+            <td><input type="radio" name="<?= $name; ?>" value="2" <?= $checked; ?>> <?= $right_item; ?></td>
+        </tr>
+    <?php
     }
 }
+
 //***********************************************************************************************************************
 //****** show_regular_text is a function that places the regular text items from humoX_person in the comparison table **
 //***********************************************************************************************************************
@@ -1426,11 +1417,7 @@ function show_regular_text($left_item, $right_item, $title, $name)
 {
     global $dbh, $tree_id, $language, $data2Db, $color;
     if ($right_item) {
-        if ($color == '#e6e6e6') {
-            $color = '#f2f2f2';
-        } else {
-            $color = '#e6e6e6';
-        }
+        $color = $color == '#e6e6e6' ? '#f2f2f2' : '#e6e6e6';
         echo '<tr style="background-color:' . $color . '"><td style="font-weight:bold">' . $title . ':</td><td>';
         $checked = '';
         $showtext = '';
@@ -1438,7 +1425,7 @@ function show_regular_text($left_item, $right_item, $title, $name)
             $checked = " checked";
             $showtext = "[" . __('Read text') . "]";
             echo '<input type="checkbox" name="' . $name . '_l" ' . $checked . '>';
-            if (substr($left_item, 0, 2) == "@N") {  // not plain text but @N23@ -> look it up in humo_texts
+            if (substr($left_item, 0, 2) === "@N") {  // not plain text but @N23@ -> look it up in humo_texts
                 $notes = $dbh->query("SELECT text_text FROM humo_texts
                     WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr ='" . substr($left_item, 1, -1) . "'");
                 $notesDb = $notes->fetch(PDO::FETCH_OBJ);
@@ -1457,7 +1444,7 @@ function show_regular_text($left_item, $right_item, $title, $name)
         }
         $showtext = "[" . __('Read text') . "]";
         echo '</td><td><input type="checkbox" name="' . $name . '_r" ' . $checked . '>';
-        if (substr($right_item, 0, 2) == "@N") {  // not plain text but @N23@ -> look it up in humo_texts
+        if (substr($right_item, 0, 2) === "@N") {  // not plain text but @N23@ -> look it up in humo_texts
             $notes = $dbh->query("SELECT text_text FROM humo_texts
                 WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr ='" . substr($right_item, 1, -1) . "'");
             $notesDb = $notes->fetch(PDO::FETCH_OBJ);
@@ -1468,6 +1455,7 @@ function show_regular_text($left_item, $right_item, $title, $name)
         echo '<a onmouseover="popup(\'' . popclean($notetext) . '\');" href="#">' . $showtext . '</a></td></tr>';
     }
 }
+
 //***********************************************************************************
 //****** show_events is a function that places the events in the comparison table **
 //***********************************************************************************
@@ -1476,16 +1464,10 @@ function show_events($left_ged, $right_ged)
     global $dbh, $tree_id, $language, $data2Db, $color;
     $l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_declaration = $l_baptism_witness = $l_death_declaration = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = array();
     $r_address = $r_picture = $r_profession = $r_source = $r_event = $r_birth_declaration = $r_baptism_witness = $r_death_declaration = $r_burial_witness = $r_name = $r_nobility = $r_title = $r_lordship = $r_URL = $r_else = array();
-    $left_events = $dbh->query("SELECT * FROM humo_events
-        WHERE event_tree_id='" . $tree_id . "'
-        AND event_connect_kind='person'
-        AND event_connect_id ='" . $left_ged . "'
-        ORDER BY event_kind ");
-    $right_events = $dbh->query("SELECT * FROM humo_events
-        WHERE event_tree_id='" . $tree_id . "'
-        AND event_connect_kind='person'
-        AND event_connect_id ='" . $right_ged . "'
-        ORDER BY event_kind ");
+    $left_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
+        AND event_connect_kind='person' AND event_connect_id ='" . $left_ged . "' ORDER BY event_kind ");
+    $right_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
+        AND event_connect_kind='person' AND event_connect_id ='" . $right_ged . "' ORDER BY event_kind ");
 
     if ($right_events->rowCount() > 0) {  // no use doing this if right has no events at all...
 
@@ -1521,7 +1503,6 @@ function show_events($left_ged, $right_ged)
             }
         }
 
-        //while($r_eventsDb = mysql_fetch_object($right_events)) {
         while ($r_eventsDb = $right_events->fetch(PDO::FETCH_OBJ)) {
             if ($r_eventsDb->event_kind == "address") {
                 $r_address[$r_eventsDb->event_id] = $r_eventsDb->event_event;
@@ -1533,12 +1514,28 @@ function show_events($left_ged, $right_ged)
                 $r_event[$r_eventsDb->event_id] = $r_eventsDb->event_event;
             } elseif ($r_eventsDb->event_kind == "birth_declaration") {
                 $r_birth_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event;
+
+                if ($r_eventsDb->event_connect_id2) {
+                    $r_birth_declaration[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
+                }
             } elseif ($r_eventsDb->event_kind == "baptism_witness") {
                 $r_baptism_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event;
+
+                if ($r_eventsDb->event_connect_id2) {
+                    $r_baptism_witness[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
+                }
             } elseif ($r_eventsDb->event_kind == "death_declaration") {
                 $r_death_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event;
+
+                if ($r_eventsDb->event_connect_id2) {
+                    $r_death_declaration[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
+                }
             } elseif ($r_eventsDb->event_kind == "burial_witness") {
                 $r_burial_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event;
+
+                if ($r_eventsDb->event_connect_id2) {
+                    $r_burial_witness[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
+                }
             } elseif ($r_eventsDb->event_kind == "name") {
                 $r_name[$r_eventsDb->event_id] = '(' . $r_eventsDb->event_gedcom . ') ' . $r_eventsDb->event_event;
             } elseif ($r_eventsDb->event_kind == "nobility") {
@@ -1603,62 +1600,68 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
 {
     global $color, $dbh, $data2Db, $language;
 
-    if ($r_ev != '') { // if right has no event all stays as it is
-        if ($color == '#e6e6e6') {
-            $color = '#f2f2f2';
-        } else {
-            $color = '#e6e6e6';
-        }
-        echo '<tr style="background-color:' . $color . '"><td style="font-weight:bold">' . $name_event . ':</td>';
-        echo '<td>';
-        if (is_array($l_ev) and $l_ev != '') {
-            foreach ($l_ev as $key => $value) {
-                if (substr($value, 0, 2) == '@I') {  // this is a person GEDCOM number, not plain text -> show the name
-                    $value = str_replace('@', '', $value);
-                    $result = $dbh->query("SELECT pers_lastname, pers_firstname
-                        FROM humo_persons WHERE pers_tree_id='" . $data2Db->tree_id . "' AND pers_gedcomnumber = '" . $value . "'");
-                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
-                    $value = $resultDb->pers_firstname . ' ' . $resultDb->pers_lastname;
+    if ($r_ev != '') {
+        // if right has no event all stays as it is
+        $color = $color == '#e6e6e6' ? '#f2f2f2' : '#e6e6e6';
+    ?>
+        <tr style="background-color:<?= $color; ?>">
+            <td style="font-weight:bold"><?= $name_event; ?>:</td>
+            <td>
+                <?php
+                if (is_array($l_ev) && $l_ev != '') {
+                    foreach ($l_ev as $key => $value) {
+                        if (substr($value, 0, 2) === '@I') {  // this is a person GEDCOM number, not plain text -> show the name
+                            $value = str_replace('@', '', $value);
+                            $result = $dbh->query("SELECT pers_lastname, pers_firstname
+                                FROM humo_persons WHERE pers_tree_id='" . $data2Db->tree_id . "' AND pers_gedcomnumber = '" . $value . "'");
+                            $resultDb = $result->fetch(PDO::FETCH_OBJ);
+                            $value = $resultDb->pers_firstname . ' ' . $resultDb->pers_lastname;
+                        }
+                        if ($this_event == 'picture') { // show link to pic
+                            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $data2Db->tree_prefix . "'");
+                            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+                            $tree_pict_path = $dataDb->tree_pict_path;
+                            $dir = '../' . $tree_pict_path;
+                            $value = $value . ' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;' . $dir . $value . '&quot;>\',\'150px\');" href="#">[' . __('Show') . ']</a>';
+                        }
+                        echo '<input type="checkbox" name="l_' . $this_event . '_' . $key . '" checked> ' . $value . '<br>';
+                    }
+                } else {
+                    echo __('(no data)');
                 }
-                if ($this_event == 'picture') { // show link to pic
-                    $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $data2Db->tree_prefix . "'");
-                    $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-                    $tree_pict_path = $dataDb->tree_pict_path;
-                    $dir = '../' . $tree_pict_path;
-                    $value = $value . ' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;' . $dir . $value . '&quot;>\',\'150px\');" href="#">[' . __('Show') . ']</a>';
+                ?>
+            </td>
+            <td>
+                <?php
+                if (is_array($r_ev) && $r_ev != '') {
+                    $checked = '';
+                    if ($l_ev == '') {
+                        $checked = " checked";
+                    }
+                    foreach ($r_ev as $key => $value) {
+                        if (substr($value, 0, 2) === '@I') {  // this is a person gedcom number, not plain text
+                            $value = str_replace('@', '', $value);
+                            $result = $dbh->query("SELECT pers_lastname, pers_firstname
+                                FROM humo_persons WHERE pers_tree_id='" . $data2Db->tree_id . "' AND pers_gedcomnumber = '" . $value . "'");
+                            $resultDb = $result->fetch(PDO::FETCH_OBJ);
+                            $value = $resultDb->pers_firstname . ' ' . $resultDb->pers_lastname;
+                        }
+                        if ($this_event == 'picture') {
+                            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $data2Db->tree_prefix . "'");
+                            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+                            $tree_pict_path = $dataDb->tree_pict_path;
+                            $dir = '../' . $tree_pict_path;
+                            $value = $value . ' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;' . $dir . $value . '&quot;>\',\'150px\');" href="#">[' . __('Show') . ']</a>';
+                        }
+                        echo '<input type="checkbox" name="r_' . $this_event . '_' . $key . '" ' . $checked . '> ' . $value . '<br>';
+                    }
+                } else {
+                    echo __('(no data)');
                 }
-                echo '<input type="checkbox" name="l_' . $this_event . '_' . $key . '" checked>' . $value . '<br>';
-            }
-        } else {
-            echo __('(no data)');
-        }
-        echo '</td><td>';
-        if (is_array($r_ev) and $r_ev != '') {
-            $checked = '';
-            if ($l_ev == '') {
-                $checked = " checked";
-            }
-            foreach ($r_ev as $key => $value) {
-                if (substr($value, 0, 2) == '@I') {  // this is a person gedcom number, not plain text
-                    $value = str_replace('@', '', $value);
-                    $result = $dbh->query("SELECT pers_lastname, pers_firstname
-                        FROM humo_persons WHERE pers_tree_id='" . $data2Db->tree_id . "' AND pers_gedcomnumber = '" . $value . "'");
-                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
-                    $value = $resultDb->pers_firstname . ' ' . $resultDb->pers_lastname;
-                }
-                if ($this_event == 'picture') {
-                    $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $data2Db->tree_prefix . "'");
-                    $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-                    $tree_pict_path = $dataDb->tree_pict_path;
-                    $dir = '../' . $tree_pict_path;
-                    $value = $value . ' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;' . $dir . $value . '&quot;>\',\'150px\');" href="#">[' . __('Show') . ']</a>';
-                }
-                echo '<input type="checkbox" name="r_' . $this_event . '_' . $key . '" ' . $checked . '>' . $value . '<br>';
-            }
-        } else {
-            echo __('(no data)');
-        }
-        echo '</td></tr>';
+                ?>
+            </td>
+        </tr>
+    <?php
     }
 }
 
@@ -1690,56 +1693,62 @@ function show_sources($left_ged, $right_ged)
         ORDER BY connect_order");
     */
 
-    if ($right_sources->rowCount() > 0) { // no use doing this if right has no sources
-        if ($color == '#e6e6e6') {
-            $color = '#f2f2f2';
-        } else {
-            $color = '#e6e6e6';
-        }
-        echo '<tr style="background-color:' . $color . '"><td style="font-weight:bold">' . __('Sources') . ':</td>';
-        echo '<td>';
-        if ($left_sources->rowCount() > 0) {
-            while ($left_sourcesDb = $left_sources->fetch(PDO::FETCH_OBJ)) {
-                $l_source = $dbh->query("SELECT source_title FROM humo_sources
+    if ($right_sources->rowCount() > 0) {
+        // no use doing this if right has no sources
+        $color = $color == '#e6e6e6' ? '#f2f2f2' : '#e6e6e6';
+    ?>
+        <tr style="background-color:<?= $color; ?>">
+            <td style="font-weight:bold"><?= __('Sources'); ?>:</td>
+            <td>
+                <?php
+                if ($left_sources->rowCount() > 0) {
+                    while ($left_sourcesDb = $left_sources->fetch(PDO::FETCH_OBJ)) {
+                        $l_source = $dbh->query("SELECT source_title FROM humo_sources
                     WHERE source_tree_id='" . $tree_id . "' AND source_gedcomnr='" . $left_sourcesDb->connect_source_id . "'");
-                $result = $l_source->fetch(PDO::FETCH_OBJ);
-                if (isset($result->source_title)) {
-                    if (strlen($result->source_title) > 30) {
-                        $title = '<a onmouseover="popup(\'' . popclean($result->source_title) . '\');" href="#"> [' . __('Show') . ']</a>';
-                    } else {
-                        $title = $result->source_title;
+                        $result = $l_source->fetch(PDO::FETCH_OBJ);
+                        if (isset($result->source_title)) {
+                            if (strlen($result->source_title) > 30) {
+                                $title = '<a onmouseover="popup(\'' . popclean($result->source_title) . '\');" href="#"> [' . __('Show') . ']</a>';
+                            } else {
+                                $title = $result->source_title;
+                            }
+                        } else {
+                            $title = "";
+                        }
+                        //echo '<input type="checkbox" name="l_source_'.$left_sourcesDb->connect_id.'" '.'checked'.'>('.str_replace('_source',' ',$left_sourcesDb->connect_sub_kind).') '.$title.'<br>';
+                        echo '<input type="checkbox" name="l_source_' . $left_sourcesDb->connect_id . '" ' . 'checked' . '>' . $title . '<br>';
                     }
                 } else {
-                    $title = "";
+                    echo __('(no data)');
                 }
-                //echo '<input type="checkbox" name="l_source_'.$left_sourcesDb->connect_id.'" '.'checked'.'>('.str_replace('_source',' ',$left_sourcesDb->connect_sub_kind).') '.$title.'<br>';
-                echo '<input type="checkbox" name="l_source_' . $left_sourcesDb->connect_id . '" ' . 'checked' . '>' . $title . '<br>';
-            }
-        } else {
-            echo __('(no data)');
-        }
-        echo '</td><td>';
-        while ($right_sourcesDb = $right_sources->fetch(PDO::FETCH_OBJ)) {
-            $checked = '';
-            if (!$left_sources->rowCount()) {
-                $checked = " checked";
-            }
-            $r_source = $dbh->query("SELECT source_title FROM humo_sources
+                ?>
+            </td>
+            <td>
+                <?php
+                while ($right_sourcesDb = $right_sources->fetch(PDO::FETCH_OBJ)) {
+                    $checked = '';
+                    if (!$left_sources->rowCount()) {
+                        $checked = " checked";
+                    }
+                    $r_source = $dbh->query("SELECT source_title FROM humo_sources
                 WHERE source_tree_id='" . $tree_id . "' AND source_gedcomnr='" . $right_sourcesDb->connect_source_id . "'");
-            $result = $r_source->fetch(PDO::FETCH_OBJ);
-            if (isset($result->source_title)) {
-                if (strlen($result->source_title) > 30) {
-                    $title = '<a onmouseover="popup(\'' . popclean($result->source_title) . '\');" href="#"> [' . __('Show') . ']</a>';
-                } else {
-                    $title = $result->source_title;
+                    $result = $r_source->fetch(PDO::FETCH_OBJ);
+                    if (isset($result->source_title)) {
+                        if (strlen($result->source_title) > 30) {
+                            $title = '<a onmouseover="popup(\'' . popclean($result->source_title) . '\');" href="#"> [' . __('Show') . ']</a>';
+                        } else {
+                            $title = $result->source_title;
+                        }
+                    } else {
+                        $title = "";
+                    }
+                    //echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>('.str_replace('_source',' ',$right_sourcesDb->connect_sub_kind).') '.$title.'<br>';
+                    echo '<input type="checkbox" name="r_source_' . $right_sourcesDb->connect_id . '" ' . $checked . '>' . $title . '<br>';
                 }
-            } else {
-                $title = "";
-            }
-            //echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>('.str_replace('_source',' ',$right_sourcesDb->connect_sub_kind).') '.$title.'<br>';
-            echo '<input type="checkbox" name="r_source_' . $right_sourcesDb->connect_id . '" ' . $checked . '>' . $title . '<br>';
-        }
-        echo '</td></tr>';
+                ?>
+            </td>
+        </tr>
+    <?php
     }
 }
 
@@ -1771,49 +1780,55 @@ function show_addresses($left_ged, $right_ged)
         ORDER BY connect_sub_kind ");
     */
 
-    if ($right_addresses->rowCount() > 0) {  // no use doing this if right has no sources
-        if ($color == '#e6e6e6') {
-            $color = '#f2f2f2';
-        } else {
-            $color = '#e6e6e6';
-        }
-        echo '<tr style="background-color:' . $color . '"><td style="font-weight:bold">' . __('Addresses') . ':</td>';
-        echo '<td>';
-        if ($left_addresses->rowCount() > 0) {
-            while ($left_addressesDb = $left_addresses->fetch(PDO::FETCH_OBJ)) {
-                $l_address = $dbh->query("SELECT address_address, address_place FROM humo_addresses
+    if ($right_addresses->rowCount() > 0) {
+        // no use doing this if right has no sources
+        $color = $color == '#e6e6e6' ? '#f2f2f2' : '#e6e6e6';
+    ?>
+        <tr style="background-color:<?= $color; ?>">
+            <td style="font-weight:bold"><?= __('Addresses'); ?>:</td>
+            <td>
+                <?php
+                if ($left_addresses->rowCount() > 0) {
+                    while ($left_addressesDb = $left_addresses->fetch(PDO::FETCH_OBJ)) {
+                        $l_address = $dbh->query("SELECT address_address, address_place FROM humo_addresses
                     WHERE address_tree_id='" . $tree_id . "' AND address_gedcomnr='" . $left_addressesDb->connect_item_id . "'");
-                $result = $l_address->fetch(PDO::FETCH_OBJ);
-                if (strlen($result->address_address . ' ' . $result->address_place) > 30) {
-                    $title = '<a onmouseover="popup(\'' . popclean($result->address_address . ' ' . $result->address_place) . '\');" href="#"> [' . __('Show') . ']</a>';
+                        $result = $l_address->fetch(PDO::FETCH_OBJ);
+                        if (strlen($result->address_address . ' ' . $result->address_place) > 30) {
+                            $title = '<a onmouseover="popup(\'' . popclean($result->address_address . ' ' . $result->address_place) . '\');" href="#"> [' . __('Show') . ']</a>';
+                        } else {
+                            $title = $result->address_address . ' ' . $result->address_place;
+                        }
+                        //echo '<input type="checkbox" name="l_address_'.$left_addressesDb->connect_id.'" checked>('.str_replace('_address',' ',$left_addressesDb->connect_sub_kind).') '.$title.'<br>';
+                        echo '<input type="checkbox" name="l_address_' . $left_addressesDb->connect_id . '" checked>' . $title . '<br>';
+                    }
                 } else {
-                    $title = $result->address_address . ' ' . $result->address_place;
+                    echo __('(no data)');
                 }
-                //echo '<input type="checkbox" name="l_address_'.$left_addressesDb->connect_id.'" checked>('.str_replace('_address',' ',$left_addressesDb->connect_sub_kind).') '.$title.'<br>';
-                echo '<input type="checkbox" name="l_address_' . $left_addressesDb->connect_id . '" checked>' . $title . '<br>';
-            }
-        } else {
-            echo __('(no data)');
-        }
-        echo '</td><td>';
-        while ($right_addressesDb = $right_addresses->fetch(PDO::FETCH_OBJ)) {
-            $checked = '';
-            if (!$left_addresses->rowCount()) {
-                $checked = " checked";
-            }
-            $r_address = $dbh->query("SELECT address_address, address_place FROM humo_addresses
+                ?>
+            </td>
+            <td>
+                <?php
+                while ($right_addressesDb = $right_addresses->fetch(PDO::FETCH_OBJ)) {
+                    $checked = '';
+                    if (!$left_addresses->rowCount()) {
+                        $checked = " checked";
+                    }
+                    $r_address = $dbh->query("SELECT address_address, address_place FROM humo_addresses
                 WHERE address_tree_id='" . $tree_id . "' AND address_gedcomnr='" . $right_addressesDb->connect_item_id . "'");
 
-            $result = $r_address->fetch(PDO::FETCH_OBJ);
-            if (strlen($result->address_address . ' ' . $result->address_place) > 30) {
-                $title = '<a onmouseover="popup(\'' . popclean($result->address_address . ' ' . $result->address_place) . '\');" href="#"> [' . __('Show') . ']</a>';
-            } else {
-                $title = $result->address_address . ' ' . $result->address_place;
-            }
-            //echo '<input type="checkbox" name="r_address_'.$right_addressesDb->connect_id.'" '.$checked.'>('.str_replace('_address',' ',$right_addressesDb->connect_sub_kind).') '.$title.'<br>';
-            echo '<input type="checkbox" name="r_address_' . $right_addressesDb->connect_id . '" ' . $checked . '>' . $title . '<br>';
-        }
-        echo '</td></tr>';
+                    $result = $r_address->fetch(PDO::FETCH_OBJ);
+                    if (strlen($result->address_address . ' ' . $result->address_place) > 30) {
+                        $title = '<a onmouseover="popup(\'' . popclean($result->address_address . ' ' . $result->address_place) . '\');" href="#"> [' . __('Show') . ']</a>';
+                    } else {
+                        $title = $result->address_address . ' ' . $result->address_place;
+                    }
+                    //echo '<input type="checkbox" name="r_address_'.$right_addressesDb->connect_id.'" '.$checked.'>('.str_replace('_address',' ',$right_addressesDb->connect_sub_kind).') '.$title.'<br>';
+                    echo '<input type="checkbox" name="r_address_' . $right_addressesDb->connect_id . '" ' . $checked . '>' . $title . '<br>';
+                }
+                ?>
+            </td>
+        </tr>
+<?php
     }
 }
 
@@ -1869,7 +1884,7 @@ function merge_them($left, $right, $mode)
                     if ($result2Db->pers_sexe == "M") {
                         $spouse2 = $famresult2Db->fam_woman;
                     }
-                    if (substr($spouse1, 0, 1) == "I" and $spouse1 == $spouse2) { // found identical spouse, these F's have to be merged
+                    if (substr($spouse1, 0, 1) === "I" && $spouse1 == $spouse2) { // found identical spouse, these F's have to be merged
                         // the substr makes sure that we find two identical real gednrs not 0==0 or ''==''
                         $same_spouse = true;
                         // make array of fam mysql objects with identical spouses
@@ -1914,11 +1929,7 @@ function merge_them($left, $right, $mode)
                                     }
                                 }
                             }
-                            if ($rightchld != '') {
-                                $childr = $f1[$i]->fam_children . ';' . $rightchld;
-                            } else {
-                                $childr = $f1[$i]->fam_children;
-                            }
+                            $childr = $rightchld != '' ? $f1[$i]->fam_children . ';' . $rightchld : $f1[$i]->fam_children;
 
                             // if children were moved to left, create warning about possible duplicate children that will be created
                             if ($rightchld != '') {
@@ -1926,24 +1937,21 @@ function merge_them($left, $right, $mode)
                                 $allch2 = explode(';', $rightchld);
                                 for ($z = 0; $z < count($allch1); $z++) {
                                     //TODO only need pers_firstname, pers_lastname?
-                                    $qry = "SELECT * FROM humo_persons
-                                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $allch1[$z] . "'";
+                                    $qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $allch1[$z] . "'";
                                     $chl1 = $dbh->query($qry);
                                     $chl1Db = $chl1->fetch(PDO::FETCH_OBJ);
                                     for ($y = 0; $y < count($allch2); $y++) {
                                         //TODO only need pers_firstname, pers_lastname?
-                                        $qry = "SELECT * FROM humo_persons
-                                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $allch2[$y] . "'";
+                                        $qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $allch2[$y] . "'";
                                         $chl2 = $dbh->query($qry);
                                         $chl2Db = $chl2->fetch(PDO::FETCH_OBJ);
                                         if (
-                                            isset($chl1Db->pers_lastname) and isset($chl2Db->pers_lastname) and $chl1Db->pers_lastname == $chl2Db->pers_lastname and
-                                            substr($chl1Db->pers_firstname, 0, $merge_chars) == substr($chl2Db->pers_firstname, 0, $merge_chars)
+                                            isset($chl1Db->pers_lastname) && isset($chl2Db->pers_lastname) && $chl1Db->pers_lastname == $chl2Db->pers_lastname && substr($chl1Db->pers_firstname, 0, $merge_chars) === substr($chl2Db->pers_firstname, 0, $merge_chars)
                                         ) {
                                             $string1 = $allch1[$z] . '@' . $allch2[$y] . ';';
                                             $string2 = $allch2[$y] . '@' . $allch1[$z] . ';';
                                             // make sure this pair doesn't exist already in the string
-                                            if (strstr($relatives_merge, $string1) === false and strstr($relatives_merge, $string2) === false) {
+                                            if (strstr($relatives_merge, $string1) === false && strstr($relatives_merge, $string2) === false) {
                                                 $relatives_merge .= $string1;
                                             }
                                             $result = $db_functions->update_settings('rel_merge_' . $data2Db->tree_prefix, $relatives_merge);
@@ -1954,15 +1962,13 @@ function merge_them($left, $right, $mode)
                         } else { // only right has children
                             $childr = $f2[$i]->fam_children;
                         }
-                        $qry = "UPDATE humo_families SET fam_children ='" . $childr . "'
-                            WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $f1[$i]->fam_gedcomnumber . "'";
+                        $qry = "UPDATE humo_families SET fam_children ='" . $childr . "' WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $f1[$i]->fam_gedcomnumber . "'";
                         $dbh->query($qry);
 
                         // change those childrens' famc to left F
                         $allchld = explode(";", $f2[$i]->fam_children);
                         foreach ($allchld as $value) {
-                            $qry = "UPDATE humo_persons SET pers_famc='" . $f1[$i]->fam_gedcomnumber . "'
-                                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $value . "'";
+                            $qry = "UPDATE humo_persons SET pers_famc='" . $f1[$i]->fam_gedcomnumber . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $value . "'";
                             $dbh->query($qry);
                         }
                     }
@@ -1975,14 +1981,10 @@ function merge_them($left, $right, $mode)
                         $famstring = str_replace($f2[$i]->fam_gedcomnumber . ';', '', $famstring);
                     }
                 }
-                if (substr($famstring, -1, 1) == ';') {
+                if (substr($famstring, -1, 1) === ';') {
                     $famstring = substr($famstring, 0, -1);
                 } // take off last ;
-                if ($famstring != '') {
-                    $newstring = $result1Db->pers_fams . ';' . $famstring;
-                } else {
-                    $newstring = $result1Db->pers_fams;
-                }
+                $newstring = $famstring != '' ? $result1Db->pers_fams . ';' . $famstring : $result1Db->pers_fams;
                 $qry = "UPDATE humo_persons SET pers_fams = '" . $newstring . "'
                     WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $result1Db->pers_gedcomnumber . "'";
                 $dbh->query($qry);
@@ -1992,12 +1994,12 @@ function merge_them($left, $right, $mode)
                     $qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $sp1[$i] . "'";
                     $sp_data = $dbh->query($qry);
                     $sp_dataDb = $sp_data->fetch(PDO::FETCH_OBJ);
-                    // only need 2 items?
+                    // TODO only need 2 items?
                     //$sp_dataDb=$db_functions->get_person($sp1[$i]);
                     if (isset($sp_dataDb)) {
                         $sp_string = $sp_dataDb->pers_fams . ';';
                         $sp_string = str_replace($f2[$i]->fam_gedcomnumber . ';', '', $sp_string);
-                        if (substr($sp_string, -1, 1) == ';') {
+                        if (substr($sp_string, -1, 1) === ';') {
                             $sp_string = substr($sp_string, 0, -1);
                         } // take off last ; again
                         $qry = "UPDATE humo_persons SET pers_fams = '" . $sp_string . "' WHERE pers_id ='" . $sp_dataDb->pers_id . "'";
@@ -2012,79 +2014,79 @@ function merge_them($left, $right, $mode)
                     if ($f1[$i]->fam_kind == '' and $f2[$i]->fam_kind != '') {
                         $fam_items[$i]["fam_kind"] = $f2[$i]->fam_kind;
                     }
-                    if ($f1[$i]->fam_relation_date == '' and $f2[$i]->fam_relation_date != '') {
+                    if ($f1[$i]->fam_relation_date == '' && $f2[$i]->fam_relation_date != '') {
                         $fam_items[$i]["fam_relation_date"] = $f2[$i]->fam_relation_date;
                     }
-                    if ($f1[$i]->fam_relation_place == '' and $f2[$i]->fam_relation_place != '') {
+                    if ($f1[$i]->fam_relation_place == '' && $f2[$i]->fam_relation_place != '') {
                         $fam_items[$i]["fam_relation_place"] = $f2[$i]->fam_relation_place;
                     }
-                    if ($f1[$i]->fam_relation_text == '' and $f2[$i]->fam_relation_text != '') {
+                    if ($f1[$i]->fam_relation_text == '' && $f2[$i]->fam_relation_text != '') {
                         $fam_items[$i]["fam_relation_text"] = $f2[$i]->fam_relation_text;
                     }
                     //if($f1[$i]->fam_relation_source=='' AND $f2[$i]->fam_relation_source!='') { $fam_items[$i]["fam_relation_source"] = $f2[$i]->fam_relation_source; }
-                    if ($f1[$i]->fam_relation_end_date == '' and $f2[$i]->fam_relation_end_date != '') {
+                    if ($f1[$i]->fam_relation_end_date == '' && $f2[$i]->fam_relation_end_date != '') {
                         $fam_items[$i]["fam_relation_end_date"] = $f2[$i]->fam_relation_end_date;
                     }
-                    if ($f1[$i]->fam_marr_notice_date == '' and $f2[$i]->fam_marr_notice_date != '') {
+                    if ($f1[$i]->fam_marr_notice_date == '' && $f2[$i]->fam_marr_notice_date != '') {
                         $fam_items[$i]["fam_marr_notice_date"] = $f2[$i]->fam_marr_notice_date;
                     }
-                    if ($f1[$i]->fam_marr_notice_place == '' and $f2[$i]->fam_marr_notice_place != '') {
+                    if ($f1[$i]->fam_marr_notice_place == '' && $f2[$i]->fam_marr_notice_place != '') {
                         $fam_items[$i]["fam_marr_notice_place"] = $f2[$i]->fam_marr_notice_place;
                     }
-                    if ($f1[$i]->fam_marr_notice_text == '' and $f2[$i]->fam_marr_notice_text != '') {
+                    if ($f1[$i]->fam_marr_notice_text == '' && $f2[$i]->fam_marr_notice_text != '') {
                         $fam_items[$i]["fam_marr_notice_text"] = $f2[$i]->fam_marr_notice_text;
                     }
                     //if($f1[$i]->fam_marr_notice_source=='' AND $f2[$i]->fam_marr_notice_source!='') { $fam_items[$i]["fam_marr_notice_source"] = $f2[$i]->fam_marr_notice_source; }
-                    if ($f1[$i]->fam_marr_date == '' and $f2[$i]->fam_marr_date != '') {
+                    if ($f1[$i]->fam_marr_date == '' && $f2[$i]->fam_marr_date != '') {
                         $fam_items[$i]["fam_marr_date"] = $f2[$i]->fam_marr_date;
                     }
-                    if ($f1[$i]->fam_marr_place == '' and $f2[$i]->fam_marr_place != '') {
+                    if ($f1[$i]->fam_marr_place == '' && $f2[$i]->fam_marr_place != '') {
                         $fam_items[$i]["fam_marr_place"] = $f2[$i]->fam_marr_place;
                     }
-                    if ($f1[$i]->fam_marr_text == '' and $f2[$i]->fam_marr_text != '') {
+                    if ($f1[$i]->fam_marr_text == '' && $f2[$i]->fam_marr_text != '') {
                         $fam_items[$i]["fam_marr_text"] = $f2[$i]->fam_marr_text;
                     }
                     //if($f1[$i]->fam_marr_source=='' AND $f2[$i]->fam_marr_source!='') { $fam_items[$i]["fam_marr_source"] = $f2[$i]->fam_marr_source; }
-                    if ($f1[$i]->fam_marr_authority == '' and $f2[$i]->fam_marr_authority != '') {
+                    if ($f1[$i]->fam_marr_authority == '' && $f2[$i]->fam_marr_authority != '') {
                         $fam_items[$i]["fam_marr_authority"] = $f2[$i]->fam_marr_authority;
                     }
-                    if ($f1[$i]->fam_marr_church_notice_date == '' and $f2[$i]->fam_marr_church_notice_date != '') {
+                    if ($f1[$i]->fam_marr_church_notice_date == '' && $f2[$i]->fam_marr_church_notice_date != '') {
                         $fam_items[$i]["fam_marr_church_notice_date"] = $f2[$i]->fam_marr_church_notice_date;
                     }
-                    if ($f1[$i]->fam_marr_church_notice_place == '' and $f2[$i]->fam_marr_church_notice_place != '') {
+                    if ($f1[$i]->fam_marr_church_notice_place == '' && $f2[$i]->fam_marr_church_notice_place != '') {
                         $fam_items[$i]["fam_marr_church_notice_place"] = $f2[$i]->fam_marr_church_notice_place;
                     }
-                    if ($f1[$i]->fam_marr_church_notice_text == '' and $f2[$i]->fam_marr_church_notice_text != '') {
+                    if ($f1[$i]->fam_marr_church_notice_text == '' && $f2[$i]->fam_marr_church_notice_text != '') {
                         $fam_items[$i]["fam_marr_church_notice_text"] = $f2[$i]->fam_marr_church_notice_text;
                     }
                     //if($f1[$i]->fam_marr_church_notice_source=='' AND $f2[$i]->fam_marr_church_notice_source!='') { $fam_items[$i]["fam_marr_church_notice_source"] = $f2[$i]->fam_marr_church_notice_source; }
-                    if ($f1[$i]->fam_marr_church_date == '' and $f2[$i]->fam_marr_church_date != '') {
+                    if ($f1[$i]->fam_marr_church_date == '' && $f2[$i]->fam_marr_church_date != '') {
                         $fam_items[$i]["fam_marr_church_date"] = $f2[$i]->fam_marr_church_date;
                     }
-                    if ($f1[$i]->fam_marr_church_place == '' and $f2[$i]->fam_marr_church_place != '') {
+                    if ($f1[$i]->fam_marr_church_place == '' && $f2[$i]->fam_marr_church_place != '') {
                         $fam_items[$i]["fam_marr_church_place"] = $f2[$i]->fam_marr_church_place;
                     }
-                    if ($f1[$i]->fam_marr_church_text == '' and $f2[$i]->fam_marr_church_text != '') {
+                    if ($f1[$i]->fam_marr_church_text == '' && $f2[$i]->fam_marr_church_text != '') {
                         $fam_items[$i]["fam_marr_church_text"] = $f2[$i]->fam_marr_church_text;
                     }
                     //if($f1[$i]->fam_marr_church_source=='' AND $f2[$i]->fam_marr_church_source!='') { $fam_items[$i]["fam_marr_church_source"] = $f2[$i]->fam_marr_church_source; }
-                    if ($f1[$i]->fam_religion == '' and $f2[$i]->fam_religion != '') {
+                    if ($f1[$i]->fam_religion == '' && $f2[$i]->fam_religion != '') {
                         $fam_items[$i]["fam_religion"] = $f2[$i]->fam_religion;
                     }
-                    if ($f1[$i]->fam_div_date == '' and $f2[$i]->fam_div_date != '') {
+                    if ($f1[$i]->fam_div_date == '' && $f2[$i]->fam_div_date != '') {
                         $fam_items[$i]["fam_div_date"] = $f2[$i]->fam_div_date;
                     }
-                    if ($f1[$i]->fam_div_place == '' and $f2[$i]->fam_div_place != '') {
+                    if ($f1[$i]->fam_div_place == '' && $f2[$i]->fam_div_place != '') {
                         $fam_items[$i]["fam_div_place"] = $f2[$i]->fam_div_place;
                     }
-                    if ($f1[$i]->fam_div_text == '' and $f2[$i]->fam_div_text != '') {
+                    if ($f1[$i]->fam_div_text == '' && $f2[$i]->fam_div_text != '') {
                         $fam_items[$i]["fam_div_text"] = $f2[$i]->fam_div_text;
                     }
                     //if($f1[$i]->fam_div_source=='' AND $f2[$i]->fam_div_source!='') { $fam_items[$i]["fam_div_source"] = $f2[$i]->fam_div_source; }
-                    if ($f1[$i]->fam_div_authority == '' and $f2[$i]->fam_div_authority != '') {
+                    if ($f1[$i]->fam_div_authority == '' && $f2[$i]->fam_div_authority != '') {
                         $fam_items[$i]["fam_div_authority"] = $f2[$i]->fam_div_authority;
                     }
-                    if ($f1[$i]->fam_text == '' and $f2[$i]->fam_text != '') {
+                    if ($f1[$i]->fam_text == '' && $f2[$i]->fam_text != '') {
                         $fam_items[$i]["fam_text"] = $f2[$i]->fam_text;
                     }
                     //if($f1[$i]->fam_text_source=='' AND $f2[$i]->fam_text_source!='') { $fam_items[$i]["fam_text_source"] = $f2[$i]->fam_text_source; }
@@ -2103,12 +2105,13 @@ function merge_them($left, $right, $mode)
                     }
                 }
 
+                // TODO check if these queries can be combined. Use something like: AND connect_sub_kind LIKE '%_source'
                 // - new piece for fam sources that were removed in the code above 2052 - 2078)
                 for ($i = 0; $i < count($f1); $i++) {
-                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
+                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
                     $sourDb = $dbh->query($qry);
                     if ($sourDb->rowCount() == 0) {  // no fam sources of the sub kind for this fam
-                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
+                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
                         $sourDb2 = $dbh->query($qry2);
                         if ($sourDb2->rowCount() > 0) {  // second fam has source of this sub kind - transfer these sources to left fam
                             $qry3 = "UPDATE humo_connections SET connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
@@ -2116,10 +2119,10 @@ function merge_them($left, $right, $mode)
                         }
                     }
 
-                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
+                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
                     $sourDb = $dbh->query($qry);
                     if ($sourDb->rowCount() == 0) {  // no fam sources of the sub kind for this fam
-                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
+                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
                         $sourDb2 = $dbh->query($qry2);
                         if ($sourDb2->rowCount() > 0) {  // second fam has source of this sub kind - transfer these sources to left fam
                             $qry3 = "UPDATE humo_connections SET connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
@@ -2127,10 +2130,10 @@ function merge_them($left, $right, $mode)
                         }
                     }
 
-                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
+                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
                     $sourDb = $dbh->query($qry);
                     if ($sourDb->rowCount() == 0) {  // no fam sources of the sub kind for this fam
-                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
+                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
                         $sourDb2 = $dbh->query($qry2);
                         if ($sourDb2->rowCount() > 0) {  // second fam has source of this sub kind - transfer these sources to left fam
                             $qry3 = "UPDATE humo_connections SET connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
@@ -2138,10 +2141,10 @@ function merge_them($left, $right, $mode)
                         }
                     }
 
-                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
+                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
                     $sourDb = $dbh->query($qry);
                     if ($sourDb->rowCount() == 0) {  // no fam sources of the sub kind for this fam
-                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
+                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
                         $sourDb2 = $dbh->query($qry2);
                         if ($sourDb2->rowCount() > 0) {  // second fam has source of this sub kind - transfer these sources to left fam
                             $qry3 = "UPDATE humo_connections SET connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
@@ -2149,20 +2152,20 @@ function merge_them($left, $right, $mode)
                         }
                     }
 
-                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
+                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
                     $sourDb = $dbh->query($qry);
                     if ($sourDb->rowCount() == 0) {  // no fam sources of the sub kind for this fam
-                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
+                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
                         $sourDb2 = $dbh->query($qry2);
                         if ($sourDb2->rowCount() > 0) {  // second fam has source of this sub kind - transfer these sources to left fam
                             $qry3 = "UPDATE humo_connections SET connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
                             $dbh->query($qry3);
                         }
                     }
-                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
+                    $qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
                     $sourDb = $dbh->query($qry);
                     if ($sourDb->rowCount() == 0) {  // no fam sources of the sub kind for this fam
-                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
+                        $qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='" . $tree_id . "' AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
                         $sourDb2 = $dbh->query($qry2);
                         if ($sourDb2->rowCount() > 0) {  // second fam has source of this sub kind - transfer these sources to left fam
                             $qry3 = "UPDATE humo_connections SET connect_connect_id = '" . $f1[$i]->fam_gedcomnumber . "' WHERE connect_tree_id ='" . $tree_id . "'  AND connect_connect_id = '" . $f2[$i]->fam_gedcomnumber . "' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
@@ -2187,9 +2190,11 @@ function merge_them($left, $right, $mode)
                         AND address_connect_sub_kind='family'
                         AND address_connect_id ='" . $f2[$i]->fam_gedcomnumber . "'";
                     $dbh->query($qry);
+
                     $qry = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "'
                         AND event_connect_kind='family' AND event_connect_id ='" . $f2[$i]->fam_gedcomnumber . "'";
                     $dbh->query($qry);
+
                     $qry = "DELETE FROM humo_connections
                         WHERE connect_tree_id='" . $tree_id . "' AND connect_connect_id ='" . $f2[$i]->fam_gedcomnumber . "'";
                     $dbh->query($qry);
@@ -2223,16 +2228,14 @@ function merge_them($left, $right, $mode)
                                 $qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $sp_ged . "'";
                                 $spo2 = $dbh->query($qry);
                                 $spo2Db = $spo2->fetch(PDO::FETCH_OBJ);
-                                if ($spo2->rowCount() > 0) {
-                                    if ($spo1Db->pers_lastname == $spo2Db->pers_lastname and substr($spo1Db->pers_firstname, 0, $merge_chars) == substr($spo2Db->pers_firstname, 0, $merge_chars)) {
-                                        $string1 = $spo1Db->pers_gedcomnumber . '@' . $spo2Db->pers_gedcomnumber . ';';
-                                        $string2 = $spo2Db->pers_gedcomnumber . '@' . $spo1Db->pers_gedcomnumber . ';';
-                                        // make sure this pair doesn't appear already in the string
-                                        if (strstr($relatives_merge, $string1) === false and strstr($relatives_merge, $string2) === false) {
-                                            $relatives_merge .= $string1;
-                                        }
-                                        $result = $db_functions->update_settings('rel_merge_' . $data2Db->tree_prefix, $relatives_merge);
+                                if ($spo2->rowCount() > 0 && ($spo1Db->pers_lastname == $spo2Db->pers_lastname && substr($spo1Db->pers_firstname, 0, $merge_chars) === substr($spo2Db->pers_firstname, 0, $merge_chars))) {
+                                    $string1 = $spo1Db->pers_gedcomnumber . '@' . $spo2Db->pers_gedcomnumber . ';';
+                                    $string2 = $spo2Db->pers_gedcomnumber . '@' . $spo1Db->pers_gedcomnumber . ';';
+                                    // make sure this pair doesn't appear already in the string
+                                    if (strstr($relatives_merge, $string1) === false && strstr($relatives_merge, $string2) === false) {
+                                        $relatives_merge .= $string1;
                                     }
+                                    $result = $db_functions->update_settings('rel_merge_' . $data2Db->tree_prefix, $relatives_merge);
                                 }
                             }
                         }
@@ -2241,15 +2244,11 @@ function merge_them($left, $right, $mode)
             }
         }
 
-        if (!$result1Db->pers_fams or $same_spouse == false) {
+        if (!$result1Db->pers_fams || $same_spouse == false) {
             // left has no fams or fams with different spouses than right -> add fams to left
 
             // add right's F to left's fams
-            if ($result1Db->pers_fams) {
-                $fam = $result1Db->pers_fams . ";" . $result2Db->pers_fams;
-            } else {
-                $fam = $result2Db->pers_fams;
-            }
+            $fam = $result1Db->pers_fams ? $result1Db->pers_fams . ";" . $result2Db->pers_fams : $result2Db->pers_fams;
             $qry = "UPDATE humo_persons SET pers_fams='" . $fam . "'
                 WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $result1Db->pers_gedcomnumber . "'";
             $dbh->query($qry);
@@ -2272,7 +2271,7 @@ function merge_them($left, $right, $mode)
             }
 
             // check for spouses to be added to relative merge string:
-            if ($result1Db->pers_fams and $same_spouse == false) {
+            if ($result1Db->pers_fams && $same_spouse == false) {
                 $leftfam = explode(';', $result1Db->pers_fams);
                 $rightfam = explode(';', $result2Db->pers_fams);
                 for ($e = 0; $e < count($leftfam); $e++) {
@@ -2300,16 +2299,14 @@ function merge_them($left, $right, $mode)
                             $qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $sp_ged . "'";
                             $spo2 = $dbh->query($qry);
                             $spo2Db = $spo2->fetch(PDO::FETCH_OBJ);
-                            if ($spo2->rowCount() > 0) {
-                                if ($spo1Db->pers_lastname == $spo2Db->pers_lastname and substr($spo1Db->pers_firstname, 0, $merge_chars) == substr($spo2Db->pers_firstname, 0, $merge_chars)) {
-                                    $string1 = $spo1Db->pers_gedcomnumber . '@' . $spo2Db->pers_gedcomnumber . ';';
-                                    $string2 = $spo2Db->pers_gedcomnumber . '@' . $spo1Db->pers_gedcomnumber . ';';
-                                    // make sure this pair doesn't already exist in the string
-                                    if (strstr($relatives_merge, $string1) === false and strstr($relatives_merge, $string2) === false) {
-                                        $relatives_merge .= $string1;
-                                    }
-                                    $result = $db_functions->update_settings('rel_merge_' . $data2Db->tree_prefix, $relatives_merge);
+                            if ($spo2->rowCount() > 0 && ($spo1Db->pers_lastname == $spo2Db->pers_lastname && substr($spo1Db->pers_firstname, 0, $merge_chars) === substr($spo2Db->pers_firstname, 0, $merge_chars))) {
+                                $string1 = $spo1Db->pers_gedcomnumber . '@' . $spo2Db->pers_gedcomnumber . ';';
+                                $string2 = $spo2Db->pers_gedcomnumber . '@' . $spo1Db->pers_gedcomnumber . ';';
+                                // make sure this pair doesn't already exist in the string
+                                if (strstr($relatives_merge, $string1) === false && strstr($relatives_merge, $string2) === false) {
+                                    $relatives_merge .= $string1;
                                 }
+                                $result = $db_functions->update_settings('rel_merge_' . $data2Db->tree_prefix, $relatives_merge);
                             }
                         }
                     }
@@ -2332,12 +2329,12 @@ function merge_them($left, $right, $mode)
         // we have to search for "I45;" if we searched for I34 without semi colon then also I346 would give true!
         // since the last entry doesn't have a ; we have to temporarily add it for the search.
 
-        if (!$result1Db->pers_famc or ($result1Db->pers_famc and $result1Db->pers_famc != $result2Db->pers_famc)) {
+        if (!$result1Db->pers_famc || $result1Db->pers_famc && $result1Db->pers_famc != $result2Db->pers_famc) {
             // left has no parents or a different parent set (at least one parent not merged yet)
             // --> change right I for left I in right's parents' F
             $children = str_replace($result2Db->pers_gedcomnumber . ";", $result1Db->pers_gedcomnumber . ";", $children);
             // check if to add to relatives merge string
-            if ($result1Db->pers_famc and $result1Db->pers_famc != $result2Db->pers_famc) {
+            if ($result1Db->pers_famc && $result1Db->pers_famc != $result2Db->pers_famc) {
                 // there is a double set of parents - these have to be merged by the user! Save in variables
                 $qry = "SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber ='" . $result1Db->pers_famc . "'";
                 $par1 = $dbh->query($qry);
@@ -2349,33 +2346,31 @@ function merge_them($left, $right, $mode)
                 // add the parents to string of surrounding relatives to be merged
                 // to help later with exploding, sets are separated by ";" and left and right are separated by "@"
                 if (
-                    isset($par1Db->fam_man) and $par1Db->fam_man != '0' and isset($par2Db->fam_man) and $par2Db->fam_man != '0'
-                    and $par1Db->fam_man != $par2Db->fam_man
+                    isset($par1Db->fam_man) && $par1Db->fam_man != '0' && isset($par2Db->fam_man) && $par2Db->fam_man != '0' && $par1Db->fam_man != $par2Db->fam_man
                 ) {
                     // make sure none of the two fathers is N.N. and that this father is not merged already!
                     $string1 = $par1Db->fam_man . '@' . $par2Db->fam_man . ";";
                     $string2 = $par2Db->fam_man . '@' . $par1Db->fam_man . ";";
                     // make sure this pair doesn't appear already in the string
-                    if (strstr($relatives_merge, $string1) === false and strstr($relatives_merge, $string2) === false) {
+                    if (strstr($relatives_merge, $string1) === false && strstr($relatives_merge, $string2) === false) {
                         $relatives_merge .= $string1;
                     }
-                } elseif ((!isset($par1Db->fam_man) or $par1Db->fam_man == '0')  and isset($par2Db->fam_man) and $par2Db->fam_man != '0') {
+                } elseif ((!isset($par1Db->fam_man) || $par1Db->fam_man == '0') && isset($par2Db->fam_man) && $par2Db->fam_man != '0') {
                     // left father is N.N. so move right father to left F
                     $dbh->query("UPDATE humo_families SET fam_man = '" . $par2Db->fam_man . "'
                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber ='" . $result1Db->pers_famc . "'");
                 }
                 if (
-                    isset($par1Db->fam_woman) and $par1Db->fam_woman != '0' and isset($par2Db->fam_woman) and $par2Db->fam_woman != '0'
-                    and $par1Db->fam_woman != $par2Db->fam_woman
+                    isset($par1Db->fam_woman) && $par1Db->fam_woman != '0' && isset($par2Db->fam_woman) && $par2Db->fam_woman != '0' && $par1Db->fam_woman != $par2Db->fam_woman
                 ) {
                     // make sure none of the two mothers is N.N. and that this mother is not merged already!
                     $string1 = $par1Db->fam_woman . '@' . $par2Db->fam_woman . ";";
                     $string2 = $par2Db->fam_woman . '@' . $par1Db->fam_woman . ";";
-                    if (strstr($relatives_merge, $string1) === false and strstr($relatives_merge, $string2) === false) {
+                    if (strstr($relatives_merge, $string1) === false && strstr($relatives_merge, $string2) === false) {
                         // make sure this pair doesn't appear already in the string
                         $relatives_merge .= $string1;
                     }
-                } elseif ((!isset($par1Db->fam_woman) or $par1Db->fam_woman == '0')  and isset($par2Db->fam_woman) and $par2Db->fam_woman != '0') {
+                } elseif ((!isset($par1Db->fam_woman) || $par1Db->fam_woman == '0') && isset($par2Db->fam_woman) && $par2Db->fam_woman != '0') {
                     // left mother is N.N. so move right mother to left F
                     $dbh->query("UPDATE humo_families SET fam_woman = '" . $par2Db->fam_woman . "'
                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber ='" . $result1Db->pers_famc . "'");
@@ -2388,12 +2383,12 @@ function merge_them($left, $right, $mode)
                     WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $result1Db->pers_gedcomnumber . "'";
                 $dbh->query($qry);
             }
-        } elseif ($result1Db->pers_famc and $result1Db->pers_famc == $result2Db->pers_famc) {
+        } elseif ($result1Db->pers_famc && $result1Db->pers_famc == $result2Db->pers_famc) {
             // same parent set (double children in one family) just remove right's I from F
             // we can use right's F since this is also left's F....
             $children = str_replace($result2Db->pers_gedcomnumber . ";", "", $children);
         }
-        if (substr($children, -1) == ";") { // if the added ';' is still there, remove it
+        if (substr($children, -1) === ";") { // if the added ';' is still there, remove it
             $children = substr($children, 0, -1); // take off last ;
         }
         $qry = "UPDATE humo_families SET fam_children='" . $children . "'
@@ -2440,74 +2435,74 @@ function merge_them($left, $right, $mode)
     if ($mode == 'automatic') {
         // the regular items for automatic mode
         // 2 = move text to left person.  3 = append right text to left text
-        if ($result1Db->pers_birth_date == '' and $result2Db->pers_birth_date != '') {
+        if ($result1Db->pers_birth_date == '' && $result2Db->pers_birth_date != '') {
             $b_date = '2';
         }
-        if ($result1Db->pers_birth_place == '' and $result2Db->pers_birth_place != '') {
+        if ($result1Db->pers_birth_place == '' && $result2Db->pers_birth_place != '') {
             $b_place = '2';
         }
-        if ($result1Db->pers_death_date == '' and $result2Db->pers_death_date != '') {
+        if ($result1Db->pers_death_date == '' && $result2Db->pers_death_date != '') {
             $d_date = '2';
         }
-        if ($result1Db->pers_death_place == '' and $result2Db->pers_death_place != '') {
+        if ($result1Db->pers_death_place == '' && $result2Db->pers_death_place != '') {
             $d_place = '2';
         }
-        if ($result1Db->pers_birth_time == '' and $result2Db->pers_birth_time != '') {
+        if ($result1Db->pers_birth_time == '' && $result2Db->pers_birth_time != '') {
             $b_time = '2';
         }
-        if ($result1Db->pers_birth_text == '' and $result2Db->pers_birth_text != '') {
+        if ($result1Db->pers_birth_text == '' && $result2Db->pers_birth_text != '') {
             $b_text = '2';
         }
-        if ($result1Db->pers_death_time == '' and $result2Db->pers_death_time != '') {
+        if ($result1Db->pers_death_time == '' && $result2Db->pers_death_time != '') {
             $d_time = '2';
         }
-        if ($result1Db->pers_death_text == '' and $result2Db->pers_death_text != '') {
+        if ($result1Db->pers_death_text == '' && $result2Db->pers_death_text != '') {
             $d_text = '2';
         }
-        if ($result1Db->pers_death_cause == '' and $result2Db->pers_death_cause != '') {
+        if ($result1Db->pers_death_cause == '' && $result2Db->pers_death_cause != '') {
             $d_cause = '2';
         }
-        if ($result1Db->pers_buried_date == '' and $result2Db->pers_buried_date != '') {
+        if ($result1Db->pers_buried_date == '' && $result2Db->pers_buried_date != '') {
             $br_date = '2';
         }
-        if ($result1Db->pers_buried_place == '' and $result2Db->pers_buried_place != '') {
+        if ($result1Db->pers_buried_place == '' && $result2Db->pers_buried_place != '') {
             $br_place = '2';
         }
-        if ($result1Db->pers_buried_text == '' and $result2Db->pers_buried_text != '') {
+        if ($result1Db->pers_buried_text == '' && $result2Db->pers_buried_text != '') {
             $br_text = '2';
         }
-        if ($result1Db->pers_bapt_date == '' and $result2Db->pers_bapt_date != '') {
+        if ($result1Db->pers_bapt_date == '' && $result2Db->pers_bapt_date != '') {
             $bp_date = '2';
         }
-        if ($result1Db->pers_bapt_place == '' and $result2Db->pers_bapt_place != '') {
+        if ($result1Db->pers_bapt_place == '' && $result2Db->pers_bapt_place != '') {
             $bp_place = '2';
         }
-        if ($result1Db->pers_bapt_text == '' and $result2Db->pers_bapt_text != '') {
+        if ($result1Db->pers_bapt_text == '' && $result2Db->pers_bapt_text != '') {
             $bp_text = '2';
         }
-        if ($result1Db->pers_religion == '' and $result2Db->pers_religion != '') {
+        if ($result1Db->pers_religion == '' && $result2Db->pers_religion != '') {
             $reli = '2';
         }
-        if ($result1Db->pers_own_code == '' and $result2Db->pers_own_code != '') {
+        if ($result1Db->pers_own_code == '' && $result2Db->pers_own_code != '') {
             $code = '2';
         }
-        if ($result1Db->pers_stillborn == '' and $result2Db->pers_stillborn != '') {
+        if ($result1Db->pers_stillborn == '' && $result2Db->pers_stillborn != '') {
             $stborn = '2';
         }
-        if ($result1Db->pers_alive == '' and $result2Db->pers_alive != '') {
+        if ($result1Db->pers_alive == '' && $result2Db->pers_alive != '') {
             $alive = '2';
         }
         //if($result1Db->pers_callname=='' AND $result2Db->pers_callname!='') { $c_name='2'; }
-        if ($result1Db->pers_patronym == '' and $result2Db->pers_patronym != '') {
+        if ($result1Db->pers_patronym == '' && $result2Db->pers_patronym != '') {
             $patr = '2';
         }
-        if ($result1Db->pers_name_text == '' and $result2Db->pers_name_text != '') {
+        if ($result1Db->pers_name_text == '' && $result2Db->pers_name_text != '') {
             $n_text = '2';
         }
-        if ($result1Db->pers_text == '' and $result2Db->pers_text != '') {
+        if ($result1Db->pers_text == '' && $result2Db->pers_text != '') {
             $text = '2';
         }
-        if ($result1Db->pers_cremation == '' and $result2Db->pers_cremation != '') {
+        if ($result1Db->pers_cremation == '' && $result2Db->pers_cremation != '') {
             $crem = '2';
         }
     }
@@ -2552,7 +2547,7 @@ function merge_them($left, $right, $mode)
                 AND event_connect_id ='" . $result1Db->pers_gedcomnumber . "'");
             $foundleft = false;
             while ($left_resultDb = $left_result->fetch(PDO::FETCH_OBJ)) {
-                if ($left_resultDb->event_kind == $right_resultDb->event_kind and $left_resultDb->event_gedcom == $right_resultDb->event_gedcom) {
+                if ($left_resultDb->event_kind == $right_resultDb->event_kind && $left_resultDb->event_gedcom == $right_resultDb->event_gedcom) {
                     // NOTE: if "event" or "name" we also check for sub-type (_AKAN, _HEBN, BARM etc) so as not to match different subtypes
                     // this event from right wil not be copied to left - left already has this type event
                     // so clear the database
@@ -2562,7 +2557,8 @@ function merge_them($left, $right, $mode)
             }
             if ($foundleft == false) { // left has no such type of event, so change right's I for left I at this event
                 $dbh->query("UPDATE humo_events
-                    SET event_connect_kind='person', event_connect_id ='" . $result1Db->pers_gedcomnumber . "'
+                    SET event_connect_kind='person',
+                    event_connect_id ='" . $result1Db->pers_gedcomnumber . "'
                     WHERE event_id ='" . $right_resultDb->event_id . "'");
             }
         }
@@ -2588,9 +2584,8 @@ function merge_them($left, $right, $mode)
             }
         }
     }
-    // Delete right I from humoX_person table
-    $qry = "DELETE FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-        AND pers_gedcomnumber ='" . $result2Db->pers_gedcomnumber . "'";
+    // Delete right I from humo_persons table
+    $qry = "DELETE FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $result2Db->pers_gedcomnumber . "'";
     $dbh->query($qry);
 
     // Substract 1 person from the number of persons counter in the family tree.
@@ -2598,23 +2593,25 @@ function merge_them($left, $right, $mode)
     $dbh->query($sql);
 
     // CLEANUP: delete this person's I from any other tables that refer to this person
-    // *** 2021: address_connect_xxxx is no longer in use. Will be removed later ***
+    // *** TODO 2021: address_connect_xxxx is no longer in use. Will be removed later ***
     $qry = "DELETE FROM humo_addresses
         WHERE address_tree_id='" . $tree_id . "'
         AND address_connect_sub_kind='person'
         AND address_connect_id ='" . $result2Db->pers_gedcomnumber . "'";
     $dbh->query($qry);
+
     $qry = "DELETE FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
         AND connect_connect_id ='" . $result2Db->pers_gedcomnumber . "'";
     $dbh->query($qry);
+
     $qry = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "'
         AND event_connect_kind='person' AND event_connect_id ='" . $result2Db->pers_gedcomnumber . "'";
     $dbh->query($qry);
+
     // CLEANUP: This person's I may still exist in the humo_events table under "event_event",
     // in case of birth/death declaration or bapt/burial witness. If so, change the GEDCOM to the left person's I:
-    $qry = "UPDATE humo_events
-        SET event_event = '@" . $result1Db->pers_gedcomnumber . "@'
-        WHERE event_tree_id='" . $tree_id . "' AND event_event ='@" . $result2Db->pers_gedcomnumber . "@'";
+    $qry = "UPDATE humo_events SET event_connect_id2 = '" . $result1Db->pers_gedcomnumber . "'
+        WHERE event_tree_id='" . $tree_id . "' AND event_connect_id2 ='" . $result2Db->pers_gedcomnumber . "'";
     $dbh->query($qry);
 
     // remove from the relatives-to-merge pairs in the database any pairs that contain the deleted right person
@@ -2625,8 +2622,7 @@ function merge_them($left, $right, $mode)
             // one array piece is I354@I54. We DONT want to match "I35" or "I5" 
             // so to make sure we find the complete number we look for I354@ or for I345;
             if (
-                strstr($temp_rel_arr[$x], $result2Db->pers_gedcomnumber . "@") === false and
-                strstr($temp_rel_arr[$x] . ";", $result2Db->pers_gedcomnumber . ";") === false
+                strstr($temp_rel_arr[$x], $result2Db->pers_gedcomnumber . "@") === false && strstr($temp_rel_arr[$x] . ";", $result2Db->pers_gedcomnumber . ";") === false
             ) {
                 $new_rel_string .= $temp_rel_arr[$x] . ";";
             }
@@ -2656,7 +2652,7 @@ function merge_them($left, $right, $mode)
         }
     }
 
-    if ($mode != 'automatic' and $mode != 'relatives') {
+    if ($mode != 'automatic' && $mode != 'relatives') {
         echo '<br>' . $name2 . __(' was successfully merged into ') . $name1 . '<br><br>';  // john was successfully merged into jack
         $rela = explode(';', $relatives_merge);
         $rela = count($rela) - 1;
@@ -2707,7 +2703,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
 function check_regular($post_var, $auto_var, $mysql_var)
 {
     global $dbh, $language, $data2Db, $result1Db, $result2Db;
-    if ((isset($_POST[$post_var]) and $_POST[$post_var] == '2') or $auto_var == '2') {
+    if (isset($_POST[$post_var]) && $_POST[$post_var] == '2' || $auto_var == '2') {
         $qry = "UPDATE humo_persons SET " . $mysql_var . " = '" . $result2Db->$mysql_var . "'
             WHERE pers_id ='" . $result1Db->pers_id . "'";
         $dbh->query($qry);
@@ -2720,11 +2716,11 @@ function check_regular($post_var, $auto_var, $mysql_var)
 function check_regular_text($post_var, $auto_var, $mysql_var)
 {
     global $dbh, $tree_id, $language, $data2Db, $result1Db, $result2Db;
-    if (isset($_POST[$post_var . '_r']) or $auto_var == '2') {
+    if (isset($_POST[$post_var . '_r']) || $auto_var == '2') {
         if (isset($_POST[$post_var . '_l'])) { // when not in automatic mode, this means we have to join the notes of left and right
             // If left or right has a @N34@ text entry we join the text as regular text.
             // We can't change the notes in humoX_texts because they could be used for other persons!
-            if (substr($result1Db->$mysql_var, 0, 2) == '@N') {
+            if (substr($result1Db->$mysql_var, 0, 2) === '@N') {
                 $noteqry = $dbh->query("SELECT text_text FROM humo_texts
                     WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr = '" . substr($result1Db->$mysql_var, 1, -1) . "'");
                 $noteqryDb = $noteqry->fetch(PDO::FETCH_OBJ);
@@ -2732,7 +2728,7 @@ function check_regular_text($post_var, $auto_var, $mysql_var)
             } else {
                 $leftnote = $result1Db->$mysql_var;
             }
-            if (substr($result2Db->$mysql_var, 0, 2) == '@N') {
+            if (substr($result2Db->$mysql_var, 0, 2) === '@N') {
                 $noteqry = $dbh->query("SELECT text_text FROM humo_texts
                     WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr = '" . substr($result2Db->$mysql_var, 1, -1) . "'");
                 $noteqryDb = $noteqry->fetch(PDO::FETCH_OBJ);
@@ -2768,11 +2764,13 @@ function check_events($left_ged, $right_ged)
                 $dbh->query("UPDATE humo_events SET event_connect_kind='person', event_connect_id ='" . $left_ged . "'
                     WHERE event_id ='" . $right_eventsDb->event_id . "'");
             } else { // clean up database -> remove this entry altogether (IF IT EXISTS...)
+                // TODO: no need to check for event_kind?
                 $dbh->query("DELETE FROM humo_events WHERE event_id ='" . $right_eventsDb->event_id . "' AND event_kind='" . $right_eventsDb->event_kind . "'");
             }
         }
         while ($left_eventsDb = $left_events->fetch(PDO::FETCH_OBJ)) {
-            if (isset($right_event_array[$left_eventsDb->event_kind]) and $right_event_array[$left_eventsDb->event_kind] == "1"  and !isset($_POST['l_' . $left_eventsDb->event_kind . '_' . $left_eventsDb->event_id])) {
+            if (isset($right_event_array[$left_eventsDb->event_kind]) && $right_event_array[$left_eventsDb->event_kind] === "1" && !isset($_POST['l_' . $left_eventsDb->event_kind . '_' . $left_eventsDb->event_id])) {
+                // TODO: no need to check for event_kind?
                 $dbh->query("DELETE FROM humo_events WHERE event_id ='" . $left_eventsDb->event_id . "' AND event_kind='" . $left_eventsDb->event_kind . "'");
             }
         }
@@ -2840,6 +2838,5 @@ function check_sources($left_ged, $right_ged)
 //********************************************************************************************************
 function popclean($input)
 {
-    $output = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br>", htmlentities(addslashes($input), ENT_QUOTES));
-    return $output;
+    return str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br>", htmlentities(addslashes($input), ENT_QUOTES));
 }

@@ -2,7 +2,7 @@
 // *** Check block_spam_answer ***
 $mail_allowed = false;
 if (isset($_POST['send_mail'])) {
-    if (isset($_POST['mail_block_spam']) and strtolower($_POST['mail_block_spam']) == strtolower($humo_option["block_spam_answer"])) {
+    if (isset($_POST['mail_block_spam']) && strtolower($_POST['mail_block_spam']) == strtolower($humo_option["block_spam_answer"])) {
         $mail_allowed = true;
     }
 }
@@ -10,7 +10,7 @@ if ($humo_option["use_spam_question"] != 'y') {
     $mail_allowed = true;
 }
 
-if (isset($_POST['send_mail']) and $mail_allowed == true) {
+if (isset($_POST['send_mail']) && $mail_allowed == true) {
     $mail_address = $dataDb->tree_email;
 
     $treetext = show_tree_text($_SESSION['tree_id'], $selected_language);
@@ -46,7 +46,9 @@ if (isset($_POST['send_mail']) and $mail_allowed == true) {
     // *** REMARK: because of security, the mail address and message entered by the visitor are not shown on screen anymore! ***
     //echo '<br>'.__('You have entered the following e-mail address: ').'<b> '.$_POST['mail_sender'].'</b><br>';
     $position = strpos($_POST['mail_sender'], "@");
-    if ($position < 1) echo '<font color="red">' . __('The e-mail address you entered doesn\'t seem to be a valid e-mail address!') . '</font><br>';
+    if ($position < 1) {
+        echo '<font color="red">' . __('The e-mail address you entered doesn\'t seem to be a valid e-mail address!') . '</font><br>';
+    }
     //echo __('Message: ').'<br>'.$_POST['mail_text'];
 
     // *** Use PhpMailer to send mail ***

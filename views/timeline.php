@@ -14,7 +14,7 @@ if ($privacy) {
     exit();
 }
 
-if ($data["isborn"] == 0 and $data["isdeath"] == 0 and $data["ismarr"] == 0 and $data["ischild"] == 0) {
+if ($data["isborn"] == 0 && $data["isdeath"] == 0 && $data["ismarr"] == 0 && $data["ischild"] == 0) {
 ?>
     <!-- No birth or death dates available -->
     <div class="alert alert-warning">
@@ -36,7 +36,7 @@ if (is_dir("languages/" . $selected_language . "/timelines")) {
 
 $counter = 0;
 while (false !== ($filename = readdir($dh))) {
-    if (strtolower(substr($filename, -3)) == "txt") {
+    if (strtolower(substr($filename, -3)) === "txt") {
         $counter++;
         if (is_file("languages/" . $selected_language . "/timelines/" . $filename)) {
             $filenames[$counter - 1][0] = "languages/" . $selected_language . "/timelines/" . $filename;
@@ -52,13 +52,15 @@ sort($filenames);
 
 // *** Selected step ***
 $step = 5; // default step - user can choose 1 or 10 instead
-if (isset($_POST['step'])) $step = $_POST['step'];
+if (isset($_POST['step'])) {
+    $step = $_POST['step'];
+}
 
 // *** Selected timeline ***
 $tml = $filenames[0][1]; // if default is not set the first file will be checked
 if (isset($_POST['tml'])) {
     $tml = $_POST['tml'];
-} elseif (isset($humo_option['default_timeline']) and $humo_option['default_timeline'] != "") {
+} elseif (isset($humo_option['default_timeline']) && $humo_option['default_timeline'] != "") {
     $str = explode("@", substr($humo_option['default_timeline'], 0, -1));  // humo_option is: nl!europa@de!Sweitz@en!british  etc.
     $val_arr = array();
     foreach ($str as $value) {
@@ -69,15 +71,15 @@ if (isset($_POST['tml'])) {
     $selected_language2 = 'default_timelines'; // *** Timelines default folder ***
 
     // *** 1st Use timeline from language folder ***
-    if (isset($val_arr[$selected_language]) and is_file("languages/" . $selected_language . "/timelines/" . $val_arr[$selected_language] . ".txt")) {
+    if (isset($val_arr[$selected_language]) && is_file("languages/" . $selected_language . "/timelines/" . $val_arr[$selected_language] . ".txt")) {
         $tml = $val_arr[$selected_language];
     }
     // *** 2nd Use timeline file from default folder ***
-    elseif (isset($val_arr[$selected_language]) and is_file("languages/default_timelines/" . $val_arr[$selected_language] . ".txt")) {
+    elseif (isset($val_arr[$selected_language]) && is_file("languages/default_timelines/" . $val_arr[$selected_language] . ".txt")) {
         $tml = $val_arr[$selected_language];
     }
     // *** Use timeline file from default folder ***
-    elseif (isset($val_arr[$selected_language2]) and is_file("languages/default_timelines/" . $val_arr[$selected_language2] . ".txt")) {
+    elseif (isset($val_arr[$selected_language2]) && is_file("languages/default_timelines/" . $val_arr[$selected_language2] . ".txt")) {
         $tml = $val_arr[$selected_language2];
     }
 }
@@ -128,18 +130,18 @@ The timeline menu:<br>
                     for ($i = 0; $i < count($filenames); $i++) {
                         $checked = '';
                         // *** A timeline is selected ***
-                        if (isset($_POST['tml']) and $_POST['tml'] == $filenames[$i][1]) {
+                        if (isset($_POST['tml']) && $_POST['tml'] == $filenames[$i][1]) {
                             $checked = " checked";
                         }
 
                         // *** If no selection is made, use default settings ***
                         if (!isset($_POST['tml'])) {
                             // *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
-                            if (isset($humo_option['default_timeline']) and strpos($humo_option['default_timeline'], $selected_language . "!" . $filenames[$i][1] . "@") !== false) {
+                            if (isset($humo_option['default_timeline']) && strpos($humo_option['default_timeline'], $selected_language . "!" . $filenames[$i][1] . "@") !== false) {
                                 $checked = " checked";
                             }
                             // *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
-                            elseif (isset($humo_option['default_timeline']) and strpos($humo_option['default_timeline'], $selected_language2 . "!" . $filenames[$i][1] . "@") !== false) {
+                            elseif (isset($humo_option['default_timeline']) && strpos($humo_option['default_timeline'], $selected_language2 . "!" . $filenames[$i][1] . "@") !== false) {
                                 $checked = " checked";
                             }
                             // *** There are no default settings, and no selection is made ***
@@ -169,23 +171,13 @@ if (file_exists($filenames[0][0])) {
         $handle = fopen("languages/default_timelines/" . $tml . '.txt', "r");
     }
 }
-/*
-// if only bapt date available use that
-($data["isborn"] == 1 and $data["bornyear"] == '') ? $byear = $data["baptyear"] : $byear = $data["bornyear"]; 
-// if beginyear=1923 and step is 5 this makes it 1915
-$beginyear = $byear - (($byear % $step) + $step);
-// if only burial date available use that
-($data["isdeath"] == 1 and $data["deathyear"] == '') ? $dyear = $data["burryear"] : $dyear = $data["deathyear"];
-// if endyear=1923 and step is 5 this makes it 1929
-$endyear = $dyear + (($step - ($dyear % $step))) + ($step);
-*/
 
 // if only bapt date available use that
-($data["isborn"] == 1 and $data["bornyear"] == '') ? $byear = $data["baptyear"] : $byear = $data["bornyear"];
+($data["isborn"] == 1 && $data["bornyear"] == '') ? $byear = $data["baptyear"] : $byear = $data["bornyear"];
 // if beginyear=1923 and step is 5 this makes it 1915
 $beginyear = intval($byear) - ((intval($byear) % intval($step)) + intval($step));
 // if only burial date available use that
-($data["isdeath"] == 1 and $data["deathyear"] == '') ? $dyear = $data["burryear"] : $dyear = $data["deathyear"];
+($data["isdeath"] == 1 && $data["deathyear"] == '') ? $dyear = $data["burryear"] : $dyear = $data["deathyear"];
 // if endyear=1923 and step is 5 this makes it 1929 
 $endyear = intval($dyear) + ((intval($step) - (intval($dyear) % intval($step)))) + intval($step);
 
@@ -233,13 +225,13 @@ if ($data["privacy_filtered"] == true) {
                 <?php
                 $br_flag = 0;
                 for ($tempyr = $yr; $tempyr < $yr + $step; $tempyr++) {
-                    if ($data["bornyear"] != '' and $data["bornyear"] == $tempyr) {
+                    if ($data["bornyear"] != '' && $data["bornyear"] == $tempyr) {
                         if ($br_flag == 1) {
                             echo "<br>";
                         }
                         echo $data["borntext"];
                         $br_flag = 1;
-                    } else if ($data["baptyear"] != '' and $data["baptyear"] == $tempyr) {
+                    } elseif ($data["baptyear"] != '' && $data["baptyear"] == $tempyr) {
                         if ($br_flag == 1) {
                             echo "<br>";
                         }
@@ -363,13 +355,13 @@ if ($data["privacy_filtered"] == true) {
                             }
                         }
                     }
-                    if ($data["deathyear"] != '' and $data["deathyear"] == $tempyr) {
+                    if ($data["deathyear"] != '' && $data["deathyear"] == $tempyr) {
                         if ($br_flag == 1) {
                             echo "<br>";
                         }
                         echo $data["deathtext"];
                         $br_flag = 1;
-                    } else if ($data["burryear"] != '' and $data["burryear"] == $tempyr) {
+                    } elseif ($data["burryear"] != '' && $data["burryear"] == $tempyr) {
                         if ($br_flag == 1) {
                             echo "<br>";
                         }
@@ -457,7 +449,7 @@ if ($data["privacy_filtered"] == true) {
         </tr>
     <?php } ?>
 </table>
-<br><br><br><br>
+<br><br>
 
 <?php
 if (file_exists($filenames[0][0])) {

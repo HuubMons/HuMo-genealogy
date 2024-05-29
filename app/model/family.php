@@ -92,17 +92,29 @@ class FamilyModel
     {
         // TODO remove global
         global $user;
-        if (isset($_GET['family_expanded'])) {
-            if ($_GET['family_expanded'] == '0') $_SESSION['save_family_expanded'] = '0';
-            else $_SESSION['save_family_expanded'] = '1';
-        }
+
+        $family_expanded = 'compact'; // *** Default value ***
+
         // *** Default setting is selected by administrator ***
-        if ($user['group_family_presentation'] == 'expanded') {
-            $family_expanded = true;
-        } else {
-            $family_expanded = false;
+        if ($user['group_family_presentation'] == 'compact') {
+            $family_expanded = 'compact';
+        } elseif ($user['group_family_presentation'] == 'expanded' || $user['group_family_presentation'] == 'expanded1') {
+            // expanded = backwards compatible only.
+            $family_expanded = 'expanded1';
+        } elseif ($user['group_family_presentation'] == 'expanded2') {
+            $family_expanded = 'expanded2';
         }
-        if (isset($_SESSION['save_family_expanded'])) $family_expanded = $_SESSION['save_family_expanded'];
+
+        $check_array = array("compact", "expanded1", "expanded2");
+        if (isset($_GET['family_expanded']) and in_array($_GET['family_expanded'], $check_array)) {
+            $family_expanded = $_GET['family_expanded'];
+            $_SESSION['save_family_expanded'] = $_GET['family_expanded'];
+        }
+
+        if (isset($_SESSION['save_family_expanded'])) {
+            $family_expanded = $_SESSION['save_family_expanded'];
+        }
+
         return $family_expanded;
     }
 
@@ -112,12 +124,12 @@ class FamilyModel
         // TODO remove global
         global $user;
         $source_presentation_array = array('title', 'footnote', 'hide');
-        if (isset($_GET['source_presentation']) and in_array($_GET['source_presentation'], $source_presentation_array)) {
+        if (isset($_GET['source_presentation']) && in_array($_GET['source_presentation'], $source_presentation_array)) {
             $_SESSION['save_source_presentation'] = $_GET["source_presentation"];
         }
         // *** Default setting is selected by administrator ***
         $source_presentation = $user['group_source_presentation'];
-        if (isset($_SESSION['save_source_presentation']) and in_array($_SESSION['save_source_presentation'], $source_presentation_array)) {
+        if (isset($_SESSION['save_source_presentation']) && in_array($_SESSION['save_source_presentation'], $source_presentation_array)) {
             $source_presentation = $_SESSION['save_source_presentation'];
         } else {
             // *** Extra saving of setting in session (if no choice is made, this is admin default setting, needed for show_sources.php!!!) ***
@@ -131,12 +143,12 @@ class FamilyModel
     {
         $picture_presentation = 'show';
         $picture_presentation_array = array('show', 'hide');
-        if (isset($_GET['picture_presentation']) and in_array($_GET['picture_presentation'], $picture_presentation_array)) {
+        if (isset($_GET['picture_presentation']) && in_array($_GET['picture_presentation'], $picture_presentation_array)) {
             $_SESSION['save_picture_presentation'] = $_GET["picture_presentation"];
         }
         // *** Default setting is selected by administrator ***
         //$picture_presentation=$user['group_picture_presentation'];
-        if (isset($_SESSION['save_picture_presentation']) and in_array($_SESSION['save_picture_presentation'], $picture_presentation_array)) {
+        if (isset($_SESSION['save_picture_presentation']) && in_array($_SESSION['save_picture_presentation'], $picture_presentation_array)) {
             $picture_presentation = $_SESSION['save_picture_presentation'];
         }
         return $picture_presentation;
@@ -148,12 +160,12 @@ class FamilyModel
         // TODO remove global
         global $user;
         $text_presentation_array = array('show', 'hide', 'popup');
-        if (isset($_GET['text_presentation']) and in_array($_GET['text_presentation'], $text_presentation_array)) {
+        if (isset($_GET['text_presentation']) && in_array($_GET['text_presentation'], $text_presentation_array)) {
             $_SESSION['save_text_presentation'] = $_GET["text_presentation"];
         }
         // *** Default setting is selected by administrator ***
         $text_presentation = $user['group_text_presentation'];
-        if (isset($_SESSION['save_text_presentation']) and in_array($_SESSION['save_text_presentation'], $text_presentation_array)) {
+        if (isset($_SESSION['save_text_presentation']) && in_array($_SESSION['save_text_presentation'], $text_presentation_array)) {
             $text_presentation = $_SESSION['save_text_presentation'];
         }
         return $text_presentation;
@@ -163,7 +175,7 @@ class FamilyModel
     //TODO this is also defined in ancestor script.
     public function getNumberRoman()
     {
-        $number_roman = array(
+        return array(
             1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI', 7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X',
             11 => 'XI', 12 => 'XII', 13 => 'XIII', 14 => 'XIV', 15 => 'XV', 16 => 'XVI', 17 => 'XVII', 18 => 'XVIII', 19 => 'XIX', 20 => 'XX',
             21 => 'XXI', 22 => 'XXII', 23 => 'XXIII', 24 => 'XXIV', 25 => 'XXV', 26 => 'XXVII', 27 => 'XXVII', 28 => 'XXVIII', 29 => 'XXIX', 30 => 'XXX',
@@ -171,7 +183,6 @@ class FamilyModel
             41 => 'XLI', 42 => 'XLII', 43 => 'XLIII', 44 => 'XLIV', 45 => 'XLV', 46 => 'XLVII', 47 => 'XLVII', 48 => 'XLVIII', 49 => 'XLIX', 50 => 'L',
             51 => 'LI',  52 => 'LII',  53 => 'LIII',  54 => 'LIV',  55 => 'LV',  56 => 'LVII',  57 => 'LVII',  58 => 'LVIII',  59 => 'LIX',  60 => 'LX',
         );
-        return $number_roman;
     }
 
     // *** Generate array: a, b, c .. z, aa, ab .. zz
@@ -217,11 +228,7 @@ class FamilyModel
         $path_tmp = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
         $path_tmp .= "main_person=" . $main_person . '&amp;descendant_report=1';
         $data['header_link'][] = $path_tmp;
-        if ($name == 'Descendant report') {
-            $data['header_active'][] = 'active';
-        } else {
-            $data['header_active'][] = '';
-        }
+        $data['header_active'][] = $name == 'Descendant report' ? 'active' : '';
         $data['header_text'][] = __('Descendant report');
 
         if ($humo_option["url_rewrite"] == 'j') {
@@ -230,21 +237,13 @@ class FamilyModel
             $link = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person;
         }
         $data['header_link'][] = $link;
-        if ($name == 'Descendant chart') {
-            $data['header_active'][] = 'active';
-        } else {
-            $data['header_active'][] = '';
-        }
+        $data['header_active'][] = $name == 'Descendant chart' ? 'active' : '';
         $data['header_text'][] = __('Descendant chart');
 
         $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
         $path_tmp .= 'id=' . $family_id . '&amp;main_person=' . $main_person;
         $data['header_link'][] = $path_tmp;
-        if ($name == 'Outline report') {
-            $data['header_active'][] = 'active';
-        } else {
-            $data['header_active'][] = '';
-        }
+        $data['header_active'][] = $name == 'Outline report' ? 'active' : '';
         $data['header_text'][] = __('Outline report');
 
         // TODO Move to view? Is used in multiple views.
@@ -279,13 +278,13 @@ class FamilyModel
         $maps_presentation = $user['group_maps_presentation'];
 
         $maps_presentation_array = array('show', 'hide');
-        if (isset($_GET['maps_presentation']) and in_array($_GET['maps_presentation'], $maps_presentation_array)) {
+        if (isset($_GET['maps_presentation']) && in_array($_GET['maps_presentation'], $maps_presentation_array)) {
             $_SESSION['save_maps_presentation'] = $_GET["maps_presentation"];
             $maps_presentation = $_GET["maps_presentation"];
         }
 
         // *** If session is used, read variable ***
-        if (isset($_SESSION['save_maps_presentation']) and in_array($_SESSION['save_maps_presentation'], $maps_presentation_array)) {
+        if (isset($_SESSION['save_maps_presentation']) && in_array($_SESSION['save_maps_presentation'], $maps_presentation_array)) {
             $maps_presentation = $_SESSION['save_maps_presentation'];
         }
 

@@ -16,7 +16,7 @@ if ($humo_option["url_rewrite"] == "j") {
 //$action2 = $link_cls->get_link($uri_path, 'user_settings',true);
 
 
-if (isset($data["user"]->user_name) and $user['group_menu_change_password'] == 'y') {
+if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y') {
 ?>
 
     <h1 class="my-4"><?= __('User settings'); ?></h1>
@@ -55,7 +55,7 @@ if (isset($data["user"]->user_name) and $user['group_menu_change_password'] == '
                     </div>
                 </div>
 
-                <?php if (isset($_GET['2fa']) and $_GET['2fa'] == '1') { ?>
+                <?php if (isset($_GET['2fa']) && $_GET['2fa'] == '1') { ?>
                     <div class="row">
                         <label for="2fa_code" class="col-sm-3 col-form-label"></label>
 
@@ -112,10 +112,9 @@ if ($show_theme_select == true) {
     $hide_themes_array = explode(";", $humo_option["hide_themes"]);
 
 ?>
-    <br>
     <h1 class="my-4"><?= __('Select a theme'); ?></h1>
 
-    <form action="<?= $action; ?>" class="center">
+    <form action="<?= $action; ?>" class="center mb-3">
         <div class="row">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
@@ -130,7 +129,8 @@ if ($show_theme_select == true) {
                     }
 
                     sort($theme_folder);
-                    for ($i = 0; $i < count($theme_folder); $i++) {
+                    $counter = count($theme_folder);
+                    for ($i = 0; $i < $counter; $i++) {
                         $theme = $theme_folder[$i];
                         $theme = str_replace(".css", "", $theme);
                         if (!in_array($theme, $hide_themes_array)) {
@@ -145,65 +145,26 @@ if ($show_theme_select == true) {
 
     <!--  Theme select using screen shots -->
     <!--  Screen shots about 725x500 (but resized to smaller pictures) -->
-
-    <br>
-
-    <div style="width:100%; clear:both;"></div>
-    <?php
-    $row_nr = 1;
-    $selected_column = 'left';
-    for ($i = 0; $i < count($theme_folder); $i++) {
-        $theme = $theme_folder[$i];
-        $theme = str_replace(".css", "", $theme);
-        if (!in_array($theme, $hide_themes_array)) {
-            if ($selected_column == 'left') {
-                $row_left[] = $theme;
-                $selected_column = 'center';
-            } elseif ($selected_column == 'center') {
-                $row_center[] = $theme;
-                $selected_column = 'right';
-            } elseif ($selected_column == 'right') {
-                $row_right[] = $theme;
-                $selected_column = 'left';
-                $row_nr++;
+    <div class="container">
+        <!-- <h1 class="fw-light text-center text-lg-start mt-4 mb-0">Thumbnail Gallery</h1> -->
+        <!-- <hr class="mt-2 mb-5"> -->
+        <div class="row text-center text-lg-start">
+            <?php
+            for ($i = 0; $i < count($theme_folder); $i++) {
+                $theme = $theme_folder[$i];
+                $theme = str_replace(".css", "", $theme);
+                if (!in_array($theme, $hide_themes_array)) {
+            ?>
+                    <div class="col-lg-4 col-md-6">
+                        <?php /* <input type="image" name="submit" value="submit" class="w-100 shadow-1-strong rounded mb-4 border border-dark" alt="theme" src="styles/<?= $theme; ?>.png" onclick="chooseStyle('<?= $theme; ?>', 365)"> */ ?>
+                        <input type="image" name="submit" value="submit" class="img-thumbnail" alt="theme" src="styles/<?= $theme; ?>.png" onclick="chooseStyle('<?= $theme; ?>', 365)">
+                    </div>
+            <?php
+                }
             }
-        }
-    }
-    ?>
-
-    <!-- Gallery -->
-    <form action="<?= $action; ?>">
-        <div class="row">
-            <?php for ($i = 0; $i < $row_nr; $i++) { ?>
-                <?php if (isset($row_left[$i])) {; ?>
-                    <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
-                        <b><?= $row_left[$i]; ?></b><br>
-                        <input type="image" name="submit" value="submit" class="w-100 shadow-1-strong rounded mb-4 border border-dark" alt="theme" src="styles/<?= $row_left[$i]; ?>.png" onclick="chooseStyle('<?= $row_left[$i]; ?>', 365)">
-                    </div>
-                <?php }; ?>
-
-                <?php if (isset($row_center[$i])) {; ?>
-                    <div class="col-lg-4 mb-4 mb-lg-0">
-                        <b><?= $row_center[$i]; ?></b><br>
-                        <input type="image" name="submit" value="submit" class="w-100 shadow-1-strong rounded mb-4 border border-dark" alt="theme" src="styles/<?= $row_center[$i]; ?>.png" onclick="chooseStyle('<?= $row_center[$i]; ?>', 365)">
-                    </div>
-                <?php }; ?>
-
-                <?php if (isset($row_right[$i])) {; ?>
-                    <div class="col-lg-4 mb-4 mb-lg-0">
-                        <b><?= $row_right[$i]; ?></b><br>
-                        <input type="image" name="submit" value="submit" class="w-100 shadow-1-strong rounded mb-4 border border-dark" alt="theme" src="styles/<?= $row_right[$i]; ?>.png" onclick="chooseStyle('<?= $row_right[$i]; ?>', 365)">
-                    </div>
-                <?php }; ?>
-            <?php }; ?>
+            ?>
         </div>
-        <!-- Gallery -->
-    </form>
+    </div>
 
-    <!-- Otherwise footer is at wrong place -->
-    <div style="width:100%; clear:both;"></div>
-
-    <br>
-    <br>
 <?php
 }

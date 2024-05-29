@@ -60,6 +60,6 @@ if ($data["authorised"] != '') {
 
 <?php
 // *** If source footnotes are selected, show them here ***
-if (isset($_SESSION['save_source_presentation']) and $_SESSION['save_source_presentation'] == 'footnote') {
+if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
     echo show_sources_footnotes();
 }

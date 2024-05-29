@@ -98,7 +98,7 @@ class Router
                 $result_array['tmp_path'] = substr($request_uri, 0, $url_position);
 
                 // *** Get url_rewrite variables ***
-                if ($humo_option["url_rewrite"] == "j" and isset($route_array['vars'])) {
+                if ($humo_option["url_rewrite"] == "j" && isset($route_array['vars'])) {
                     $vars = explode(',', $route_array['vars']);
                     //foreach ($vars as $check_var) {
                     //    //
@@ -108,20 +108,20 @@ class Router
 
                     // *** Only 1 variable in url_rewrite, $vars='select_tree_id' ***
                     // Example: http://127.0.0.1/humo-genealogy/index/3
-                    if ($nr_vars == 1 and $vars[0] == 'select_tree_id') {
+                    if ($nr_vars == 1 && $vars[0] === 'select_tree_id') {
                         // *** Get last item of array ***
                         $result_array['select_tree_id']  = end($url_array);
                     }
 
                     // Example, cms page: http://127.0.0.1/humo-genealogy/cms_pages/4
-                    if ($nr_vars == 1 and $vars[0] == 'id') {
+                    if ($nr_vars == 1 && $vars[0] === 'id') {
                         // *** Get last item of array ***
                         $result_array['id']  = end($url_array);
                     }
 
                     // *** 2 variables, 1st variable = family tree ***
                     // Example: http://127.0.0.1/humo-genealogy/list_names/3/D
-                    if ($nr_vars == 2 and $vars[0] == 'select_tree_id') {
+                    if ($nr_vars == 2 && $vars[0] === 'select_tree_id') {
                         // *** Get last item of array ***
                         $result_array[$vars[1]] = end($url_array);
                         // *** Get previous item of array ***

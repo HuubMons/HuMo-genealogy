@@ -14,43 +14,45 @@ if ($num_rows > 1) {
         if ($dataDb->tree_prefix != 'EMPTY') {
             // *** Update date ***
             $date = $dataDb->tree_date;
-            if (!isset($date)) $date='';
+            if (!isset($date)) {
+                $date = '';
+            }
             $month = ''; //voor lege datums
             // TODO translate months.
-            if (substr($date, 5, 2) == '01') {
+            if (substr($date, 5, 2) === '01') {
                 $month = ' jan ';
             }
-            if (substr($date, 5, 2) == '02') {
+            if (substr($date, 5, 2) === '02') {
                 $month = ' feb ';
             }
-            if (substr($date, 5, 2) == '03') {
+            if (substr($date, 5, 2) === '03') {
                 $month = ' mrt ';
             }
-            if (substr($date, 5, 2) == '04') {
+            if (substr($date, 5, 2) === '04') {
                 $month = ' apr ';
             }
-            if (substr($date, 5, 2) == '05') {
+            if (substr($date, 5, 2) === '05') {
                 $month = ' mei ';
             }
-            if (substr($date, 5, 2) == '06') {
+            if (substr($date, 5, 2) === '06') {
                 $month = ' jun ';
             }
-            if (substr($date, 5, 2) == '07') {
+            if (substr($date, 5, 2) === '07') {
                 $month = ' jul ';
             }
-            if (substr($date, 5, 2) == '08') {
+            if (substr($date, 5, 2) === '08') {
                 $month = ' aug ';
             }
-            if (substr($date, 5, 2) == '09') {
+            if (substr($date, 5, 2) === '09') {
                 $month = ' sep ';
             }
-            if (substr($date, 5, 2) == '10') {
+            if (substr($date, 5, 2) === '10') {
                 $month = ' okt ';
             }
-            if (substr($date, 5, 2) == '11') {
+            if (substr($date, 5, 2) === '11') {
                 $month = ' nov ';
             }
-            if (substr($date, 5, 2) == '12') {
+            if (substr($date, 5, 2) === '12') {
                 $month = ' dec ';
             }
             $date = substr($date, 8, 2) . $month . substr($date, 0, 4);
@@ -67,7 +69,9 @@ if ($num_rows > 1) {
 }
 
 //*** Statistics ***
-if (isset($tree_id) and $tree_id) $db_functions->set_tree_id($tree_id);
+if (isset($tree_id) && $tree_id) {
+    $db_functions->set_tree_id($tree_id);
+}
 echo '<br><b>' . __('Most visited families:') . '</b><br>';
 //MAXIMUM 50 LINES
 $family_qry = $dbh->query("SELECT fam_gedcomnumber, fam_tree_id, fam_counter, fam_man, fam_woman FROM humo_families

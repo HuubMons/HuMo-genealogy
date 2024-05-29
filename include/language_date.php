@@ -2,10 +2,12 @@
 function language_date($date_text)
 {
     global $language, $humo_option, $selected_language;
-    if (!isset($date_text)) $date_text = ''; // *** To prevent errors in PHP 8.1 ***
+    if (!isset($date_text)) {
+        $date_text = '';
+    } // *** To prevent errors in PHP 8.1 ***
     $date_text = strtoupper($date_text);
 
-    if ($humo_option["date_display"] == "ch" and $selected_language != "hu") {
+    if ($humo_option["date_display"] == "ch" && $selected_language != "hu") {
         $date_text = str_replace("JAN", "01", $date_text);
         $date_text = str_replace("FEB", "02", $date_text);
         $date_text = str_replace("MAR", "03", $date_text);
@@ -46,7 +48,7 @@ function language_date($date_text)
         $date_text = str_replace("DEC", __('December'), $date_text);
     }
 
-    if ($humo_option["date_display"] == "us" or $humo_option["date_display"] == "ch" or $selected_language == "hu") {
+    if ($humo_option["date_display"] == "us" || $humo_option["date_display"] == "ch" || $selected_language == "hu") {
         $prfx = ""; // prefix
         if (strpos($date_text, "EST ABT") !== false) {
             $prfx = __('estimated &#177;');
@@ -70,16 +72,16 @@ function language_date($date_text)
             $prfx = __('calculated');
             $date_text = str_replace("CAL ", "", $date_text);
         }
-        if (strpos($date_text, "BET") === false and strpos($date_text, "BETWEEN") === false) {
-            if ($humo_option["date_display"] == "us" and $selected_language != "hu") {
+        if (strpos($date_text, "BET") === false && strpos($date_text, "BETWEEN") === false) {
+            if ($humo_option["date_display"] == "us" && $selected_language != "hu") {
                 $date_text = american_date($date_text);
                 $date_text = $prfx . " " . $date_text;
-            } elseif ($humo_option["date_display"] == "ch" and $selected_language != "hu") {
+            } elseif ($humo_option["date_display"] == "ch" && $selected_language != "hu") {
                 $date_text = chinese_date($date_text);
                 $date_text = $prfx . " " . $date_text;
             } else { // Hungarian display
                 $date_text = hungarian_date($date_text);
-                if ($prfx == __('before') or $prfx == __('after')) {
+                if ($prfx == __('before') || $prfx == __('after')) {
                     $date_text = $date_text . " " . $prfx;
                 } else {
                     if ($prfx == __('estimated &#177;')) {
@@ -94,11 +96,11 @@ function language_date($date_text)
             $date_text = str_replace($find, $replace, $date_text);
             $date_text = str_replace(" AND ", "!", $date_text);
             $date_arr = explode("!", $date_text);
-            if ($humo_option["date_display"] == "us" and $selected_language != "hu") {
+            if ($humo_option["date_display"] == "us" && $selected_language != "hu") {
                 $date_arr[0] = american_date($date_arr[0]);
                 $date_arr[1] = american_date($date_arr[1]);
                 $date_text = __('between') . " " . $date_arr[0] . " " . __('and') . " " . $date_arr[1];
-            } elseif ($humo_option["date_display"] == "ch" and $selected_language != "hu") {
+            } elseif ($humo_option["date_display"] == "ch" && $selected_language != "hu") {
                 $date_arr[0] = chinese_date($date_arr[0]);
                 $date_arr[1] = chinese_date($date_arr[1]);
                 $date_text = __('between') . " " . $date_arr[0] . " " . __('and') . " " . $date_arr[1];
@@ -181,7 +183,7 @@ function hungarian_date($date_text)
 function show_datetime($datetime)
 {
     // *** Is used in new_datetime if date was missing: 1970-01-01 00:00:01 ***
-    if ($datetime and $datetime != '1970-01-01 00:00:01') {
+    if ($datetime && $datetime != '1970-01-01 00:00:01') {
         $datetime = language_date(date('d M Y - H:i:s', (strtotime($datetime))));
     } else {
         $datetime = '';

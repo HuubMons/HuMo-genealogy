@@ -107,7 +107,7 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
 <?php
 
 // *** Show selected repository ***
-if ($editRepository['repo_id'] or isset($_POST['add_repo'])) {
+if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
     if (isset($_POST['add_repo'])) {
         $repo_name = '';
         $repo_address = '';

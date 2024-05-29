@@ -3,9 +3,9 @@ class EditAddressModel
 {
     private $address_id;
 
-    public function set_address_id()
+    public function set_address_id(): void
     {
-        if (isset($_POST['address_id']) and is_numeric(($_POST['address_id']))) {
+        if (isset($_POST['address_id']) && is_numeric(($_POST['address_id']))) {
             $this->address_id = $_POST['address_id'];
         }
     }
@@ -14,10 +14,12 @@ class EditAddressModel
         return $this->address_id;
     }
 
-    public function update_address($dbh, $tree_id, $db_functions, $editor_cls)
+    public function update_address($dbh, $tree_id, $db_functions, $editor_cls): void
     {
         $userid = false;
-        if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
+        if (is_numeric($_SESSION['user_id_admin'])) {
+            $userid = $_SESSION['user_id_admin'];
+        }
 
         if (isset($_POST['address_add'])) {
             // *** Generate new GEDCOM number ***
