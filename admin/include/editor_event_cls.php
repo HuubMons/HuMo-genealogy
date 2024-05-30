@@ -495,9 +495,7 @@ class editor_event_cls
                                 <input type="submit" name="event_add_religion" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
                             </div>
                         </div>
-                    <?php
-                    }
-                    ?>
+                    <?php } ?>
                 </td>
             </tr>
         <?php
@@ -706,7 +704,7 @@ class editor_event_cls
 
                 </td>
             </tr>
-        <?php
+            <?php
         }
 
         if (!isset($_GET['add_person'])) {
@@ -1688,118 +1686,46 @@ function event_selection($event_gedcom)
         ?>
         <optgroup label="<?= __('Nickname'); ?>">
         <?php } ?>
-        <option value="NICK" <?php if ($event_gedcom == 'NICK') echo ' selected'; ?>>NICK <?= __('Nickname'); ?></option>
+        <option value="NICK" <?= $event_gedcom == 'NICK' ? 'selected' : ''; ?>>NICK <?= __('Nickname'); ?></option>
         <?php if (!$event_gedcom) { ?>
         </optgroup>
 
         <optgroup label="<?= __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>">
             <option value="NPFX"><?= __('Prefix') . ': ' . __('e.g. Lt. Cmndr.'); ?></option>
-            <option value="NSFX" <?php if ($event_gedcom == 'NSFX') echo ' selected'; ?>><?= __('Suffix'); ?>: <?= __('e.g. Jr.'); ?></option>
-            <option value="nobility" <?php if ($event_gedcom == 'nobility') echo ' selected'; ?>><?= __('Title of Nobility') . ': ' . __('e.g. Jhr., Jkvr.'); ?></option>
-            <option value="title" <?php if ($event_gedcom == 'title') echo ' selected'; ?>><?= __('Title') . ': ' . __('e.g. Prof., Dr.'); ?></option>
-            <option value="lordship" <?php if ($event_gedcom == 'lordship') echo ' selected'; ?>><?= __('Title of Lordship') . ': ' . __('e.g. Lord of Amsterdam'); ?></option>
+            <option value="NSFX" <?= $event_gedcom == 'NSFX' ? 'selected' : ''; ?>><?= __('Suffix'); ?>: <?= __('e.g. Jr.'); ?></option>
+            <option value="nobility" <?= $event_gedcom == 'nobility' ? 'selected' : ''; ?>><?= __('Title of Nobility') . ': ' . __('e.g. Jhr., Jkvr.'); ?></option>
+            <option value="title" <?= $event_gedcom == 'title' ? 'selected' : ''; ?>><?= __('Title') . ': ' . __('e.g. Prof., Dr.'); ?></option>
+            <option value="lordship" <?= $event_gedcom == 'lordship' ? 'selected' : ''; ?>><?= __('Title of Lordship') . ': ' . __('e.g. Lord of Amsterdam'); ?></option>
         </optgroup>
 
         <optgroup label="<?= __('Name'); ?>">
         <?php } ?>
 
-        <option value="_AKAN" <?php if ($event_gedcom == '_AKAN') echo ' selected'; ?>><?= '_AKAN ' . __('Also known as'); ?></option>
-        <option value="_ALIA" <?php if ($event_gedcom == '_ALIA') echo ' selected'; ?>><?= '_ALIA ' . __('alias name'); ?></option>
+        <option value="_AKAN" <?= $event_gedcom == '_AKAN' ? 'selected' : ''; ?>><?= '_AKAN ' . __('Also known as'); ?></option>
+        <option value="_ALIA" <?= $event_gedcom == '_ALIA' ? 'selected' : ''; ?>><?= '_ALIA ' . __('alias name'); ?></option>
+        <option value="_SHON" <?= $event_gedcom == '_SHON' ? 'selected' : ''; ?>>_SHON <?= __('Short name (for reports)'); ?></option>
+        <option value="_ADPN" <?= $event_gedcom == '_ADPN' ? 'selected' : ''; ?>>_ADPN <?= __('Adopted name'); ?></option>
 
-        <?php
-        $selected = '';
-        if ($event_gedcom == '_SHON') {
-            $selected = ' selected';
-        }
-        echo '<option value="_SHON"' . $selected . '>_SHON ' . __('Short name (for reports)') . '</option>';
+        <!--- display here if user didn't set to be displayed in main name section -->
+        <?php if ($humo_option['admin_hebname'] != "y") { ?>
+            <option value="_HEBN" <?= $event_gedcom == '_HEBN' ? 'selected' : ''; ?>>_HEBN <?= __('Hebrew name'); ?></option>
+        <?php } ?>
 
-        $selected = '';
-        if ($event_gedcom == '_ADPN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_ADPN"' . $selected . '>_ADPN ' . __('Adopted name') . '</option>';
+        <option value="_CENN" <?= $event_gedcom == '_CENN' ? 'selected' : ''; ?>>_CENN <?= __('Census name'); ?></option>
+        <option value="_MARN" <?= $event_gedcom == '_MARN' ? 'selected' : ''; ?>>_MARN <?= __('Married name'); ?></option>
+        <option value="_GERN" <?= $event_gedcom == '_GERN' ? 'selected' : ''; ?>>_GERN <?= __('Given name'); ?></option>
+        <option value="_FARN" <?= $event_gedcom == '_FARN' ? 'selected' : ''; ?>>_FARN <?= __('Farm name'); ?></option>
+        <option value="_BIRN" <?= $event_gedcom == '_BIRN' ? 'selected' : ''; ?>>_BIRN <?= __('Birth name'); ?></option>
+        <option value="_INDN" <?= $event_gedcom == '_INDN' ? 'selected' : ''; ?>>_INDN <?= __('Indian name'); ?></option>
+        <option value="_FKAN" <?= $event_gedcom == '_FKAN' ? 'selected' : ''; ?>>_FKAN <?= __('Formal name'); ?></option>
+        <option value="_CURN" <?= $event_gedcom == '_CURN' ? 'selected' : ''; ?>>_CURN <?= __('Current name'); ?></option>
+        <option value="_SLDN" <?= $event_gedcom == '_SLDN' ? 'selected' : ''; ?>>_SLDN <?= __('Soldier name'); ?></option>
+        <option value="_RELN" <?= $event_gedcom == '_RELN' ? 'selected' : ''; ?>>_RELN <?= __('Religious name'); ?></option>
+        <option value="_OTHN" <?= $event_gedcom == '_OTHN' ? 'selected' : ''; ?>>_OTHN <?= __('Other name'); ?></option>
+        <option value="_FRKA" <?= $event_gedcom == '_FRKA' ? 'selected' : ''; ?>>_FRKA <?= __('Formerly known as'); ?></option>
+        <option value="_RUFN" <?= $event_gedcom == '_RUFN' ? 'selected' : ''; ?>>_RUFN <?= __('German Rufname'); ?></option>
 
-        if ($humo_option['admin_hebname'] != "y") {  // display here if user didn't set to be displayed in main name section
-            $selected = '';
-            if ($event_gedcom == '_HEBN') {
-                $selected = ' selected';
-            }
-            echo '<option value="_HEBN"' . $selected . '>_HEBN ' . __('Hebrew name') . '</option>';
-        }
-        ?>
-
-        <option value="_CENN" <?php if ($event_gedcom == '_CENN') echo ' selected'; ?>>_CENN <?= __('Census name'); ?></option>
-        <option value="_MARN" <?php if ($event_gedcom == '_MARN') echo ' selected'; ?>>_MARN <?= __('Married name'); ?></option>
-
-        <?php
-        $selected = '';
-        if ($event_gedcom == '_GERN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_GERN"' . $selected . '>_GERN ' . __('Given name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_FARN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_FARN"' . $selected . '>_FARN ' . __('Farm name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_BIRN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_BIRN"' . $selected . '>_BIRN ' . __('Birth name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_INDN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_INDN"' . $selected . '>_INDN ' . __('Indian name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_FKAN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_FKAN"' . $selected . '>_FKAN ' . __('Formal name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_CURN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_CURN"' . $selected . '>_CURN ' . __('Current name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_SLDN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_SLDN"' . $selected . '>_SLDN ' . __('Soldier name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_RELN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_RELN"' . $selected . '>_RELN ' . __('Religious name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_OTHN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_OTHN"' . $selected . '>_OTHN ' . __('Other name') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_FRKA') {
-            $selected = ' selected';
-        }
-        echo '<option value="_FRKA"' . $selected . '>_FRKA ' . __('Formerly known as') . '</option>';
-
-        $selected = '';
-        if ($event_gedcom == '_RUFN') {
-            $selected = ' selected';
-        }
-        echo '<option value="_RUFN"' . $selected . '>_RUFN ' . __('German Rufname') . '</option>';
-
-        if (!$event_gedcom) {
-        ?>
+        <?php if (!$event_gedcom) { ?>
         </optgroup>
 <?php
         }
