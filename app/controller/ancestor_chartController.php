@@ -21,9 +21,9 @@ class Ancestor_chartController
 
         // Not needed for ancestor_chart.
         // TODO for now using extended class.
-        //$text_presentation =  $get_ancestorModel->getTextPresentation();
-        //$family_expanded =  $get_ancestorModel->getFamilyExpanded();
-        //$picture_presentation =  $get_ancestorModel->getPicturePresentation();
+        //$text_presentation = $get_ancestorModel->getTextPresentation();
+        //$family_expanded = $get_ancestorModel->getFamilyExpanded();
+        //$picture_presentation = $get_ancestorModel->getPicturePresentation();
 
         $data = array(
             "main_person" => $main_person,

@@ -9,87 +9,11 @@
  * July 2011: translated all variables to english by: Huub Mons.
  */
 
-//TODO use seperate file for RTF?
-$screen_mode = '';
-if (isset($_POST["screen_mode"]) && $_POST["screen_mode"] == 'RTF') {
-    $screen_mode = 'RTF';
-}
-
-//$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-if ($screen_mode !== 'RTF') {
-    //echo '<h1 class="standard_header">'.__('Ancestor report').'</h1>';
-    echo $data["ancestor_header"];
-}
-
-if ($screen_mode === 'RTF') {  // initialize rtf generation
-    require_once __DIR__ . '/../include/phprtflite/lib/PHPRtfLite.php';
-
-    // *** registers PHPRtfLite autoloader (spl) ***
-    PHPRtfLite::registerAutoloader();
-    // *** rtf document instance ***
-    $rtf = new PHPRtfLite();
-
-    // *** Add section ***
-    $sect = $rtf->addSection();
-
-    // *** RTF Settings ***
-    $arial10 = new PHPRtfLite_Font(10, 'Arial');
-    $arial12 = new PHPRtfLite_Font(12, 'Arial');
-    $arial14 = new PHPRtfLite_Font(14, 'Arial', '#000066');
-    //Fonts
-    $fontHead = new PHPRtfLite_Font(12, 'Arial');
-    $fontSmall = new PHPRtfLite_Font(3);
-    $fontAnimated = new PHPRtfLite_Font(10);
-    $fontLink = new PHPRtfLite_Font(10, 'Helvetica', '#0000cc');
-
-    $parNames = new PHPRtfLite_ParFormat();
-    $parNames->setBackgroundColor('#FFFFFF');
-    $parNames->setIndentLeft(0);
-    $parNames->setSpaceBefore(0);
-    $parNames->setSpaceAfter(0);
-
-    $parHead = new PHPRtfLite_ParFormat(PHPRtfLite_ParFormat::TEXT_ALIGN_CENTER);
-    $parHead->setSpaceBefore(3);
-    $parHead->setSpaceAfter(8);
-    $parHead->setBackgroundColor('#baf4c1');
-
-    $parGen = new PHPRtfLite_ParFormat(PHPRtfLite_ParFormat::TEXT_ALIGN_CENTER);
-    $parGen->setSpaceBefore(0);
-    $parGen->setSpaceAfter(8);
-    $parGen->setBackgroundColor('#baf4c1');
-
-    $parSimple = new PHPRtfLite_ParFormat();
-    $parSimple->setIndentLeft(2.5);
-    $parSimple->setIndentRight(0.5);
-
-    // *** Generate title of RTF file ***
-    @$persDb = $db_functions->get_person($data["main_person"]);
-    // *** Use person class ***
-    $pers_cls = new person_cls($persDb);
-    $name = $pers_cls->person_name($persDb);
-    $title = __('Ancestor report') . __(' of ') . $name["standard_name"];
-
-    //$sect->writeText($title, $arial14, new PHPRtfLite_ParFormat());
-    $sect->writeText($title, $arial14, $parHead);
-
-    $file_name = date("Y_m_d_H_i_s") . '.rtf';
-    // *** FOR TESTING PURPOSES ONLY ***
-    if (@file_exists("../gedcom-bestanden")) $file_name = '../gedcom-bestanden/' . $file_name;
-    else $file_name = 'tmp_files/' . $file_name;
-
-    // *** Automatically remove old RTF files ***
-    $dh  = opendir('tmp_files');
-    while (false !== ($filename = readdir($dh))) {
-        // *** Remove files older then today ***
-        if (substr($filename, -3) == "rtf" && substr($filename, 0, 10) !== date("Y_m_d")) {
-            unlink('tmp_files/' . $filename);
-        }
-    }
-}
+//echo '<h1 class="standard_header">'.__('Ancestor report').'</h1>';
+echo $data["ancestor_header"];
 
 $ancestor_array2[] = $data["main_person"];
 $ancestor_number2[] = 1;
@@ -150,9 +74,7 @@ $language["gen48"] = __('45th Great-Grandparents');
 $language["gen49"] = __('46th Great-Grandparents');
 $language["gen50"] = __('47th Great-Grandparents');
 
-if ($screen_mode !== 'RTF') {
-    echo '<table style="border-style:none" align="center"><tr><td></td></tr>';
-}
+echo '<table style="border-style:none" align="center"><tr><td></td></tr>';
 
 $listed_array = array();
 
@@ -170,66 +92,62 @@ while (isset($ancestor_array2[0])) {
     $marriage_gedcomnumber = $marriage_gedcomnumber2;
     unset($marriage_gedcomnumber2);
 
-    if ($screen_mode !== 'RTF') {
-        echo '</table>';
+    echo '</table>';
 
-        if (isset($data["rom_nr"][$generation])) {
-            echo '<h2 class="standard_header">' . __('generation ') . $data["rom_nr"][$generation];
-        }
-        if (isset($language["gen" . $generation]) && $language["gen" . $generation]) {
-            echo ' (' . $language["gen" . $generation] . ')';
-        }
-
-        if ($generation == 1) {
-            if ($user["group_pdf_button"] == 'y' && $language["dir"] != "rtl" && $language["name"] != "简体中文") {
-                // Show pdf button
-
-                //$vars['id'] = $data["main_person"];
-                //$link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
-                //$link .= 'screen_mode=ancestor_chart&amp;show_sources=1';
-
-                $link = $uri_path . 'views/ancestor_report_pdf.php';
-?>
-                <form method="POST" action="<?= $link; ?>" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                    <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
-                    <input type="hidden" name="database" value="<?= $_SESSION['tree_prefix']; ?>">
-                    <input type="hidden" name="screen_mode" value="PDF">
-
-                    <!-- needed to check PDF M/F/? icons -->
-                    <input type="hidden" name="ancestor_report" value="1">
-
-                    <input type="submit" class="btn btn-sm btn-info" value="<?= __('PDF'); ?>" name="submit">
-                </form>
-
-            <?php
-            }
-
-            if ($user["group_rtf_button"] == 'y' && $language["dir"] != "rtl") {
-                // Show rtf button
-                $vars['id'] = $data["main_person"];
-                $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
-                $link .= 'show_sources=1';
-            ?>
-                <form method="POST" action="<?= $link; ?>" style="display : inline;">
-                    <input type="hidden" name="screen_mode" value="RTF">
-
-                    <!-- needed to check RTF M/F/? icons -->
-                    <input type="hidden" name="ancestor_report" value="1">
-
-                    <input type="submit" class="btn btn-sm btn-info" value="<?= __('RTF'); ?>" name="submit">
-                </form>
-<?php
-            }
-        }
-
-        echo '</h2><br>';
-
-        echo '<table class="humo standard" align="center">';
-    } elseif ($screen_mode === "RTF") {
-        $rtf_text = __('generation ') . $data["rom_nr"][$generation];
-        $sect->writeText($rtf_text, $arial14, $parGen);
+    if (isset($data["rom_nr"][$generation])) {
+        echo '<h2 class="standard_header">' . __('generation ') . $data["rom_nr"][$generation];
     }
+    if (isset($language["gen" . $generation]) && $language["gen" . $generation]) {
+        echo ' (' . $language["gen" . $generation] . ')';
+    }
+
+    if ($generation == 1) {
+        if ($user["group_pdf_button"] == 'y' && $language["dir"] != "rtl" && $language["name"] != "简体中文") {
+            // Show pdf button
+
+            //$vars['id'] = $data["main_person"];
+            //$link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
+            //$link .= 'screen_mode=ancestor_chart&amp;show_sources=1';
+
+            $link = $uri_path . 'views/ancestor_report_pdf.php';
+?>
+            <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
+                <input type="hidden" name="database" value="<?= $_SESSION['tree_prefix']; ?>">
+                <input type="hidden" name="screen_mode" value="PDF">
+
+                <!-- needed to check PDF M/F/? icons -->
+                <input type="hidden" name="ancestor_report" value="1">
+
+                <input type="submit" class="btn btn-sm btn-info" value="<?= __('PDF'); ?>" name="submit">
+            </form>
+
+        <?php
+        }
+
+        if ($user["group_rtf_button"] == 'y' && $language["dir"] != "rtl") {
+            // Show rtf button
+            $vars['id'] = $data["main_person"];
+            $link = $link_cls->get_link($uri_path, 'ancestor_report_rtf', $tree_id, true, $vars);
+            $link .= 'show_sources=1';
+        ?>
+            <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                <input type="hidden" name="screen_mode" value="RTF">
+
+                <!-- needed to check RTF M/F/? icons -->
+                <input type="hidden" name="ancestor_report" value="1">
+
+                <input type="submit" class="btn btn-sm btn-info" value="<?= __('RTF'); ?>" name="submit">
+            </form>
+        <?php
+        }
+    }
+
+    echo '</h2><br>';
+
+    echo '<table class="humo standard" align="center">';
+
     // *** Loop per generation ***
     $counter = count($ancestor_array);
 
@@ -267,118 +185,37 @@ while (isset($ancestor_array2[0])) {
                 $marriage_cls = new marriage_cls($familyDb, $privacy_man, $privacy_woman);
                 $family_privacy = $marriage_cls->privacy;
             }
-            if ($screen_mode !== 'RTF') {
-                echo '<tr><td valign="top" width="80" nowrap><b>' . $ancestor_number[$i] .
-                    '</b> (' . floor($ancestor_number[$i] / 2) . ')</td>';
+        ?>
 
-                echo '<td>';
-                //*** Show data man ***
-                echo '<div class="parent1">';
-                // ***  Use "child", to show a link for own family. ***
-                echo $man_cls->name_extended("child");
-                if ($listednr == '') {
-                    echo $man_cls->person_data("standard", $ancestor_array[$i]);
-                } else { // person was already listed
-                    echo ' <strong> (' . __('Already listed above as number ') . $listednr . ') </strong>';
-                }
-                echo '</div>';
-                echo '</td></tr>';
-            } elseif ($screen_mode === "RTF") {
-                $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-                $table = $sect->addTable();
-                $table->addRow(1);
-                $table->addColumnsList(array(2, 0.5, 14));
-
-                $rtf_text = $ancestor_number[$i] . "(" . floor($ancestor_number[$i] / 2) . ")";
-                $cell = $table->getCell(1, 1);
-                $cell->writeText($rtf_text, $arial10, $parNames);
-
-                $rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
-                $cell = $table->getCell(1, 2);
-
-                if ($person_manDb->pers_sexe == "M") {
-                    $cell->addImage('images/man.jpg', null);
-                } elseif ($person_manDb->pers_sexe == "F") {
-                    $cell->addImage('images/woman.jpg', null);
-                } else {
-                    $cell->addImage('images/unknown.jpg', null);
-                }
-
-                $cell = $table->getCell(1, 3);
-                $cell->writeText($rtf_text, $arial12, $parNames);
-                if ($listednr == '') {
-                    $rtf_text = strip_tags($man_cls->person_data("standard", $ancestor_array[$i]), "<b><i>");
-                    $rtf_text = substr($rtf_text, 0, -1); // take off newline
-                } else { // person was already listed
-                    $rtf_text = strip_tags('(' . __('Already listed above as number ') . $listednr . ') ', "<b><i>");
-                }
-                $cell->writeText($rtf_text, $arial12, $parNames);
-
-                $result = show_media('person', $person_manDb->pers_gedcomnumber);
-                if (isset($result[1]) && count($result[1]) > 0) {
-                    $break = 1;
-                    $textarr = array();
-                    $goodpics = FALSE;
-                    foreach ($result[1] as $key => $value) {
-                        if (strpos($key, "path") !== FALSE) {
-                            $type = substr($result[1][$key], -3);
-                            if ($type === "jpg" || $type === "png") {
-                                if ($goodpics == FALSE) { //found 1st pic - make table
-                                    $table2 = $sect->addTable();
-                                    $table2->addRow(0.1);
-                                    $table2->addColumnsList(array(2.5, 5, 5));
-                                    $goodpics = TRUE;
-                                }
-                                $break++;
-                                $cell = $table2->getCell(1, $break);
-                                $imageFile = $value;
-                                $image = $cell->addImage($imageFile);
-                                $txtkey = str_replace("pic_path", "pic_text", $key);
-                                if (isset($result[1][$txtkey])) {
-                                    $textarr[] = $result[1][$txtkey];
-                                } else {
-                                    $textarr[] = "&nbsp;";
-                                }
-                            }
+            <tr>
+                <td valign="top" width="80" nowrap><b><?= $ancestor_number[$i]; ?></b> (<?= floor($ancestor_number[$i] / 2); ?>)</td>
+                <td>
+                    <!-- Show data man -->
+                    <div class="parent1">
+                        <?php
+                        // ***  Use "child", to show a link for own family. ***
+                        echo $man_cls->name_extended("child");
+                        if ($listednr == '') {
+                            echo $man_cls->person_data("standard", $ancestor_array[$i]);
+                        } else { // person was already listed
+                            echo ' <strong> (' . __('Already listed above as number ') . $listednr . ') </strong>';
                         }
-                        if ($break == 3) {
-                            break;
-                        } // max 2 pics
-                    }
-                    $break1 = 1;
-                    if (count($textarr) > 0) {
-                        $table2->addRow(0.1); //add row only if there is photo text
-                        foreach ($textarr as $value) {
-                            $break1++;
-                            $cell = $table2->getCell(2, $break1);
-                            $cell->writeText($value);
-                        }
-                    }
-                }
-            }
+                        ?>
+                    </div>
+                </td>
+            </tr>
 
+<?php
             // Show own marriage (new line, after man)
             if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
-                if ($screen_mode !== 'RTF') {
-                    echo '<tr><td>&nbsp;</td><td>';
-                    echo '<span class="marriage">';
-                }
+                echo '<tr><td>&nbsp;</td><td>';
+                echo '<span class="marriage">';
                 if ($family_privacy) {
-                    if ($screen_mode !== 'RTF') {
-                        echo __(' to: ');
-                    } elseif ($screen_mode === "RTF") {
-                        $rtf_text = __(' to: ');
-                        $sect->writeText($rtf_text, $arial12, $parSimple);
-                    }
+                    echo __(' to: ');
 
                     // If privacy filter is activated, show divorce
                     if ($familyDb->fam_div_date || $familyDb->fam_div_place) {
-                        if ($screen_mode !== 'RTF') {
-                            echo ' <span class="divorse">(' . trim(__('divorced ')) . ')</span>';
-                        } elseif ($screen_mode === "RTF") {
-                            $rtf_text = trim(__('divorced '));
-                            $sect->writeText($rtf_text, $arial12, $parSimple);
-                        }
+                        echo ' <span class="divorse">(' . trim(__('divorced ')) . ')</span>';
                     }
                     // Show end of relation here?
                     //if ($familyDb->fam_relation_end_date){
@@ -388,17 +225,10 @@ while (isset($ancestor_array2[0])) {
                     // To calculate age by marriage.
                     $parent1Db = $person_manDb;
                     $parent2Db = $person_womanDb;
-                    if ($screen_mode !== 'RTF') {
-                        echo $marriage_cls->marriage_data();
-                    } elseif ($screen_mode === "RTF") {
-                        $rtf_text = strip_tags($marriage_cls->marriage_data(), "<b><i>");
-                        $sect->writeText($rtf_text, $arial12, $parSimple);
-                    }
+                    echo $marriage_cls->marriage_data();
                 }
-                if ($screen_mode !== 'RTF') {
-                    echo '</span>';
-                    echo '</td></tr>';
-                }
+                echo '</span>';
+                echo '</td></tr>';
             }
 
             // ==	Check for parents
@@ -428,77 +258,26 @@ while (isset($ancestor_array2[0])) {
             $man_cls = new person_cls($person_manDb);
             $privacy_man = $man_cls->privacy;
 
-            if ($screen_mode !== 'RTF') {
-                echo '<tr><td valign="top" width="80" nowrap><b>' . $ancestor_number[$i] .
-                    '</b> (' . floor($ancestor_number[$i] / 2) . ')</td>';
-
-                echo '<td>';
-                //*** Show person_data of man ***
-                echo '<div class="parent1">';
-                // ***  Use "child", to show a link to own family. ***
-                echo $man_cls->name_extended("child");
-                echo $man_cls->person_data("standard", $ancestor_array[$i]);
-                echo '</div>';
-                echo '</td></tr>';
-            } elseif ($screen_mode === "RTF") {
-                $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-                $table = $sect->addTable();
-                $table->addRow(1);
-                $table->addColumnsList(array(2, 0.5, 14));
-
-                $rtf_text = $ancestor_number[$i] . "(" . floor($ancestor_number[$i] / 2) . ")";
-                $cell = $table->getCell(1, 1);
-                $cell->writeText($rtf_text, $arial10, $parNames);
-                $cell = $table->getCell(1, 2);
-
-                if ($person_manDb && $person_manDb->pers_sexe == "M") {
-                    $cell->addImage('images/man.jpg', null);
-                } elseif ($person_manDb && $person_manDb->pers_sexe == "F") {
-                    $cell->addImage('images/woman.jpg', null);
-                } else {
-                    $cell->addImage('images/unknown.jpg', null);
-                }
-
-                $rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
-                $cell = $table->getCell(1, 3);
-                $cell->writeText($rtf_text, $arial12, $parNames);
-                if ($man_cls->person_data("standard", $ancestor_array[$i])) {
-                    $rtf_text = strip_tags($man_cls->person_data("standard", $ancestor_array[$i]), "<b><i>");
-                    $rtf_text = substr($rtf_text, 0, -1); // take off newline
-                }
-                $cell->writeText($rtf_text, $arial12, $parNames);
-            }
+            echo '<tr><td valign="top" width="80" nowrap><b>' . $ancestor_number[$i] . '</b> (' . floor($ancestor_number[$i] / 2) . ')</td>';
+            echo '<td>';
+            //*** Show person_data of man ***
+            echo '<div class="parent1">';
+            // ***  Use "child", to show a link to own family. ***
+            echo $man_cls->name_extended("child");
+            echo $man_cls->person_data("standard", $ancestor_array[$i]);
+            echo '</div>';
+            echo '</td></tr>';
         }
     }    // loop per generation
     $generation++;
 }    // loop ancestor report
 
 // Finishing code for ancestor report
-if ($screen_mode === '') {
-    echo '</table>';
-    // *** If source footnotes are selected, show them here ***
-    if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
-        echo show_sources_footnotes();
-    }
+echo '</table>';
+// *** If source footnotes are selected, show them here ***
+if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
+    echo show_sources_footnotes();
 }
 
 // Finishing code for ancestor chart and ancestor report
-if ($screen_mode !== 'RTF') {
-    echo '<br><br>';
-} elseif ($screen_mode === 'RTF') { // initialize rtf generation
-    // *** Save rtf document to file ***
-    $rtf->save($file_name);
-
-    echo '<br><br><a href="' . $file_name . '">' . __('Download RTF report.') . '</a>';
-    echo '<br><br>' . __('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.');
-
-    $vars['id'] = $data["main_person"];
-    $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, false, $vars);
-
-    $text = '<br><br><form method="POST" action="' . $link . '" style="display : inline;">';
-    // TODO check code.
-    echo '<input type="hidden" name="screen_mode" value="">';
-    $text .= '<input type="Submit" name="submit" value="' . __('Back') . '">';
-    $text .= '</form> ';
-    echo $text;
-}
+echo '<br><br>';

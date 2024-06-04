@@ -448,6 +448,10 @@ if ($page == 'address') {
     require __DIR__ . '/app/controller/ancestor_reportController.php';
     $controllerObj = new Ancestor_reportController($dbh);
     $data = $controllerObj->list($tree_id);
+} elseif ($page == 'ancestor_report_rtf') {
+    require __DIR__ . '/app/controller/ancestor_reportController.php';
+    $controllerObj = new Ancestor_reportController($dbh);
+    $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_chart') {
     require __DIR__ . '/app/controller/ancestor_chartController.php';
     $controllerObj = new Ancestor_chartController($dbh, $user);

@@ -11,13 +11,13 @@
 
 if (!isset($hourglass)) {
     //TODO check if this is still needed
-    $data["main_person"] = 'I1'; // *** Default value, normally not used... ***
-    if (isset($_GET["id"])) {
-        $data["main_person"] = $_GET["id"];
-    }
-    if (isset($_POST["id"])) {
-        $data["main_person"] = $_POST["id"];
-    }
+    //$data["main_person"] = 'I1'; // *** Default value, normally not used... ***
+    //if (isset($_GET["id"])) {
+    //    $data["main_person"] = $_GET["id"];
+    //}
+    //if (isset($_POST["id"])) {
+    //    $data["main_person"] = $_POST["id"];
+    //}
 
     // *** Check if person gedcomnumber is valid ***
     $db_functions->check_person($data["main_person"]);
@@ -60,18 +60,18 @@ for ($counter = 2; $counter < $count_max; $counter++) {
         $sexe[$counter] = $personDb->pers_sexe;
     }
 
-    $Vcounter = $counter * 2;
-    $Mcounter = $Vcounter + 1;
-    $parent_array[$Vcounter] = '';
+    $Mcounter = $counter * 2;
+    $Fcounter = $Mcounter + 1;
     $parent_array[$Mcounter] = '';
-    $marr_date_array[$Vcounter] = '';
-    $marr_place_array[$Vcounter] = '';
+    $parent_array[$Fcounter] = '';
+    $marr_date_array[$Mcounter] = '';
+    $marr_place_array[$Mcounter] = '';
     if ($pers_famc[$counter]) {
         $parentDb = $db_functions->get_family($pers_famc[$counter]);
-        $parent_array[$Vcounter] = $parentDb->fam_man;
-        $parent_array[$Mcounter] = $parentDb->fam_woman;
-        $marr_date_array[$Vcounter] = $parentDb->fam_marr_date;
-        $marr_place_array[$Vcounter] = $parentDb->fam_marr_place;
+        $parent_array[$Mcounter] = $parentDb->fam_man;
+        $parent_array[$Fcounter] = $parentDb->fam_woman;
+        $marr_date_array[$Mcounter] = $parentDb->fam_marr_date;
+        $marr_place_array[$Mcounter] = $parentDb->fam_marr_place;
     }
 }
 
@@ -253,17 +253,20 @@ if (!isset($hourglass)) {
     <style type="text/css">
         #doublescroll {
             position: relative;
-            width: auto;
+            /* width: auto; */
+            width: 1000px;
             height: 1100px;
             overflow: auto;
             overflow-y: hidden;
         }
 
+        /*
         #doublescroll p {
             margin: 0;
             padding: 1em;
             white-space: nowrap;
         }
+        */
     </style>
 
     <div style="text-align:center;">
@@ -276,18 +279,15 @@ if (!isset($hourglass)) {
             // *** First column name ***
             $left = 10;
             $sexe_colour = '';
-            $backgr_col = "#FFFFFF";
             if ($sexe[1] == 'F') {
                 $sexe_colour = ' ancestor_woman';
-                $backgr_col = "#FBDEC0";
             }
             if ($sexe[1] == 'M') {
                 $sexe_colour = ' ancestor_man';
-                $backgr_col =  "#C0F9FC";
             }
             ?>
             <!-- No _ character allowed in name of CSS class because of javascript -->
-            <div class="ancestorName<?= $sexe_colour; ?>" align="left" style="background-color:<?= $backgr_col; ?>; top: 520px; left: <?= $left; ?>px; height: 80px; width:200px;">
+            <div class="ancestorName<?= $sexe_colour; ?>" align="left" style="top: 520px; left: <?= $left; ?>px; height: 80px; width:200px;">
                 <?= ancestor_chart_person('1', 'large'); ?>
             </div>
 
@@ -302,17 +302,14 @@ if (!isset($hourglass)) {
             // *** Second column names ***
             for ($i = 1; $i < 3; $i++) {
                 $sexe_colour = '';
-                $backgr_col = "#FFFFFF";
                 if ($sexe[$i + 1] == 'F') {
                     $sexe_colour = ' ancestor_woman';
-                    $backgr_col = "#FBDEC0";
                 }
                 if ($sexe[$i + 1] == 'M') {
                     $sexe_colour = ' ancestor_man';
-                    $backgr_col =  "#C0F9FC";
                 }
             ?>
-                <div class="ancestorName<?= $sexe_colour; ?>" style="background-color:<?= $backgr_col; ?>; top: <?= (($top - 520) + ($i * 480)); ?>px; left: <?= ($left + 8); ?>px; height: 80px; width:200px;">
+                <div class="ancestorName<?= $sexe_colour; ?>" style="top: <?= (($top - 520) + ($i * 480)); ?>px; left: <?= ($left + 8); ?>px; height: 80px; width:200px;">
                     <?= ancestor_chart_person($i + 1, 'large'); ?>
                 </div>
             <?php
@@ -321,23 +318,22 @@ if (!isset($hourglass)) {
             $left = 80;
             $top = 199;
             // *** Third column split ***
-            echo '<div class="ancestor_split" style="top: ' . $top . 'px; left: ' . ($left + 32) . 'px; height: 80px;"></div>';
+            ?>
+            <div class="ancestor_split" style="top: <?= $top; ?>px; left: <?= ($left + 32); ?>px; height: 80px;"></div>
+            <?php
             echo '<div class="ancestor_split" style="top: ' . ($top + 162) . 'px; left: ' . ($left + 32) . 'px; height: 80px;"></div>';
             echo '<div class="ancestor_split" style="top: ' . ($top + 480) . 'px; left: ' . ($left + 32) . 'px; height: 80px;"></div>';
             echo '<div class="ancestor_split" style="top: ' . ($top + 642) . 'px; left: ' . ($left + 32) . 'px; height: 80px;"></div>';
             // *** Third column names ***
             for ($i = 1; $i < 5; $i++) {
                 $sexe_colour = '';
-                $backgr_col = "#FFFFFF";
                 if ($sexe[$i + 3] == 'F') {
                     $sexe_colour = ' ancestor_woman';
-                    $backgr_col = "#FBDEC0";
                 }
                 if ($sexe[$i + 3] == 'M') {
                     $sexe_colour = ' ancestor_man';
-                    $backgr_col =  "#C0F9FC";
                 }
-                echo '<div class="ancestorName' . $sexe_colour . '" style="background-color:' . $backgr_col . '; top: ' . (($top - 279) + ($i * 240)) . 'px; left: ' . ($left + 40) . 'px; height: 80px; width:200px;">';
+                echo '<div class="ancestorName' . $sexe_colour . '" style="top: ' . (($top - 279) + ($i * 240)) . 'px; left: ' . ($left + 40) . 'px; height: 80px; width:200px;">';
                 echo ancestor_chart_person($i + 3, 'large');
                 echo '</div>';
             }
@@ -355,16 +351,13 @@ if (!isset($hourglass)) {
             // *** Fourth column names ***
             for ($i = 1; $i < 9; $i++) {
                 $sexe_colour = '';
-                $backgr_col = "#FFFFFF";
                 if ($sexe[$i + 7] == 'F') {
                     $sexe_colour = ' ancestor_woman';
-                    $backgr_col = "#FBDEC0";
                 }
                 if ($sexe[$i + 7] == 'M') {
                     $sexe_colour = ' ancestor_man';
-                    $backgr_col =  "#C0F9FC";
                 }
-                echo '<div class="ancestorName' . $sexe_colour . '" style="background-color:' . $backgr_col . '; top: ' . (($top + 265) + ($i * 120)) . 'px; left: ' . ($left + 40) . 'px; height: 80px; width:200px;">';
+                echo '<div class="ancestorName' . $sexe_colour . '" style="top: ' . (($top + 265) + ($i * 120)) . 'px; left: ' . ($left + 40) . 'px; height: 80px; width:200px;">';
                 echo ancestor_chart_person($i + 7, 'large');
                 echo '</div>';
             }
@@ -382,16 +375,13 @@ if (!isset($hourglass)) {
             // *** Fifth column names ***
             for ($i = 1; $i < 17; $i++) {
                 $sexe_colour = '';
-                $backgr_col = "#FFFFFF";
                 if ($sexe[$i + 15] == 'F') {
                     $sexe_colour = ' ancestor_woman';
-                    $backgr_col = "#FBDEC0";
                 }
                 if ($sexe[$i + 15] == 'M') {
                     $sexe_colour = ' ancestor_man';
-                    $backgr_col =  "#C0F9FC";
                 }
-                echo '<div class="ancestorName' . $sexe_colour . '" style="background-color:' . $backgr_col . '; top: ' . (($top + 125) + ($i * 60)) . 'px; left: ' . ($left + 40) . 'px; height: 50px; width:200px;">';
+                echo '<div class="ancestorName' . $sexe_colour . '" style="top: ' . (($top + 125) + ($i * 60)) . 'px; left: ' . ($left + 40) . 'px; height: 50px; width:200px;">';
                 echo ancestor_chart_person($i + 15, 'medium');
                 echo '</div>';
             }
@@ -409,16 +399,13 @@ if (!isset($hourglass)) {
             // *** Last column names ***
             for ($i = 1; $i < 33; $i++) {
                 $sexe_colour = '';
-                $backgr_col = "#FFFFFF";
                 if ($sexe[$i + 31] == 'F') {
                     $sexe_colour = ' ancestor_woman';
-                    $backgr_col = "#FBDEC0";
                 }
                 if ($sexe[$i + 31] == 'M') {
                     $sexe_colour = ' ancestor_man';
-                    $backgr_col =  "#C0F9FC";
                 }
-                echo '<div class="ancestorName' . $sexe_colour . '" style="background-color:' . $backgr_col . '; top: ' . (($top + 66) + ($i * 30)) . 'px; left: ' . ($left + 40) . 'px; height:16px; width:200px;">';
+                echo '<div class="ancestorName' . $sexe_colour . '" style="top: ' . (($top + 66) + ($i * 30)) . 'px; left: ' . ($left + 40) . 'px; height:16px; width:200px;">';
                 echo ancestor_chart_person($i + 31, 'small');
                 echo '</div>';
             }
@@ -471,6 +458,7 @@ if (!isset($hourglass)) {
     echo '</script>';
     ?>
 
+    <!-- Doublescroll doesn't work anymore. For now disabled.
     <script>
         function DoubleScroll(element) {
             var scrollbar = document.createElement('div');
@@ -492,5 +480,7 @@ if (!isset($hourglass)) {
 
         DoubleScroll(document.getElementById('doublescroll'));
     </script>
+    -->
+
 <?php
 }   // end of ancestor CHART code

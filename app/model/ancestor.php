@@ -20,12 +20,6 @@ include_once(__DIR__ . '/../../include/show_addresses.php');
 include_once(__DIR__ . '/../../include/show_picture.php');
 include_once(__DIR__ . '/../../include/show_quality.php');
 
-// TODO use traits? This is a temporary solution for now. Several functions needed from family.php.
-// Only needed for these variables:
-//$data["text_presentation"]
-//$data["family_expanded"]
-//$data["picture_presentation"]
-
 // TODO move to controller?
 include_once(__DIR__ . '/family.php');
 

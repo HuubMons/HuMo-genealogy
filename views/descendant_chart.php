@@ -128,7 +128,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                 } else {
                     $path = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;';
                     // Don't use &amp; for javascript.
-                    $path2 = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
+                    $path2 = 'index.php?page=descendant_chart&tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
                 }
                 ?>
 
