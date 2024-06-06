@@ -677,20 +677,26 @@ else {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
                         $child_cls = new person_cls($childDb);
-
-                        echo '<tr><td colspan="4"><div class="children">';
-                        if ($famc_adoptiveDb->event_gedcom == 'steph') {
-                            echo '<b>' . __('Stepchild') . ':</b>';
-                        } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
-                            echo '<b>' . __('Legal child') . ':</b>';
-                        } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
-                            echo '<b>' . __('Foster child') . ':</b>';
-                        } else {
-                            echo '<b>' . __('Adopted child:') . '</b>';
-                        }
-
-                        echo ' ' . $child_cls->name_extended("child");
-                        echo '</div></td></tr>' . "\n";
+                    ?>
+                        <tr>
+                            <td colspan="4">
+                                <div class="children">
+                                    <?php
+                                    if ($famc_adoptiveDb->event_gedcom == 'steph') {
+                                        echo '<b>' . __('Stepchild') . ':</b>';
+                                    } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
+                                        echo '<b>' . __('Legal child') . ':</b>';
+                                    } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
+                                        echo '<b>' . __('Foster child') . ':</b>';
+                                    } else {
+                                        echo '<b>' . __('Adopted child:') . '</b>';
+                                    }
+                                    ?>
+                                    <?= $child_cls->name_extended("child"); ?>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php
                     }
                     // *************************************************************
                     // *** Check for adoptive parent ESPECIALLY MADE FOR ALDFAER ***
@@ -700,22 +706,27 @@ else {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
                         $child_cls = new person_cls($childDb);
-
-                        echo '<tr><td colspan="4"><div class="children">';
-                        if ($famc_adoptiveDb->event_gedcom == 'steph') {
-                            echo '<b>' . __('Stepchild') . ':</b>';
-                        } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
-                            echo '<b>' . __('Legal child') . ':</b>';
-                        } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
-                            echo '<b>' . __('Foster child') . ':</b>';
-                        } else {
-                            echo '<b>' . __('Adopted child:') . '</b>';
-                        }
-
-                        echo ' ' . $child_cls->name_extended("child");
-                        echo '</div></td></tr>' . "\n";
-                    }
                     ?>
+                        <tr>
+                            <td colspan="4">
+                                <div class="children">
+                                    <?php
+                                    if ($famc_adoptiveDb->event_gedcom == 'steph') {
+                                        echo '<b>' . __('Stepchild') . ':</b>';
+                                    } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
+                                        echo '<b>' . __('Legal child') . ':</b>';
+                                    } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
+                                        echo '<b>' . __('Foster child') . ':</b>';
+                                    } else {
+                                        echo '<b>' . __('Adopted child:') . '</b>';
+                                    }
+
+                                    echo ' ' . $child_cls->name_extended("child");
+                                    ?>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 </table><br>
 
                 <?php
@@ -945,8 +956,10 @@ else {
                         $map = 'map' . $family_nr;
                         $markers = 'markers' . $family_nr;
                         $group = 'group' . $family_nr;
-                        echo '<div id="' . $map . '" style="width: 600px; height: 300px;"></div>';
+                ?>
+                        <div id="<?= $map; ?>" style="width: 600px; height: 300px;"></div>
 
+                        <?php
                         // *** Map using fitbound (all markers visible) ***
                         echo '<script>
                             var ' . $map . ' = L.map("' . $map . '").setView([48.85, 2.35], 10);
@@ -1045,7 +1058,7 @@ else {
                             </script>';
 
                         if ($show_google_map == true) {
-                ?>
+                        ?>
                             <?= __('Family events'); ?><br>
                             <div style="width: 600px; height: 300px; border: 0px; padding: 0px;" id="<?= $family_nr; ?>"></div>
                             <script>

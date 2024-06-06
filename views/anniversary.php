@@ -141,9 +141,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
             ?>
         </table>
 
+        <?php if ($privcount) { ?>
+            <br><?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
         <?php
-        if ($privcount) {
-            echo "<br>" . $privcount . __(' persons are not shown due to privacy settings') . ".<br>";
         }
     } else {
         // wedding anniversary
@@ -285,20 +285,22 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                             <td align="left"><?= $value['type']; ?></td>
                             <td align="left"><?= $man_name . ' & ' . $woman_name; ?></td>
                         </tr>
-            <?php
+                <?php
                     } else {
                         $privcount++;
                     }
                 }
                 unset($wed);
             } else {
-                echo '<tr><td colspan="4">' . __('No results found for this month') . '</td></tr>';
-            }
-            ?>
+                ?>
+                <tr>
+                    <td colspan="4"><?= __('No results found for this month'); ?></td>
+                </tr>
+            <?php } ?>
         </table>
+        <?php if ($privcount) { ?>
+            <br><?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
     <?php
-        if ($privcount) {
-            echo "<br>" . $privcount . __(' persons are not shown due to privacy settings') . ".<br>";
         }
     }
     ?>
