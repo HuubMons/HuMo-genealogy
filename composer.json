@@ -1,7 +1,5 @@
 {
     "require": {
-        "phpmailer/phpmailer": "^6.9",
-        "twig/twig": "^3.0",
-        "setasign/tfpdf": "1.33"
+        "phpmailer/phpmailer": "^6.9"
     }
 }
