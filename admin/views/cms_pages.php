@@ -393,7 +393,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
         </table>
 
         <!-- TinyMCE Editor -->
-        <script src="include/tinymce/tinymce.min.js"></script>
+        <script src="../vendor/tinymce/tinymce/tinymce.min.js"></script>
         <script src="include/tinymce/tinymce_settings.js"></script>
     <?php
     }

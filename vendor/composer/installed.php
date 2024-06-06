@@ -28,5 +28,14 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'tinymce/tinymce' => array(
+            'pretty_version' => '7.1.2',
+            'version' => '7.1.2.0',
+            'reference' => 'c587e0ce032898f6528ffc8374f1ebe3011b9158',
+            'type' => 'component',
+            'install_path' => __DIR__ . '/../tinymce/tinymce',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
     ),
 );
