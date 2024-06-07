@@ -17,58 +17,13 @@ $screen_mode = 'ancestor_sheet';
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-// The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
-// person 01
-$personDb = $db_functions->get_person($data["main_person"]);
-$gedcomnumber[1] = $personDb->pers_gedcomnumber;
-$pers_famc[1] = $personDb->pers_famc;
-$sexe[1] = $personDb->pers_sexe;
-$parent_array[2] = '';
-$parent_array[3] = '';
-if ($pers_famc[1]) {
-    $parentDb = $db_functions->get_family($pers_famc[1]);
-    $parent_array[2] = $parentDb->fam_man;
-    $parent_array[3] = $parentDb->fam_woman;
-    $marr_date_array[2] = $parentDb->fam_marr_date;
-    $marr_place_array[2] = $parentDb->fam_marr_place;
-}
-// end of person 1
-
-// Loop to find person data
-$count_max = 64;
-for ($counter = 2; $counter < $count_max; $counter++) {
-    $gedcomnumber[$counter] = '';
-    $pers_famc[$counter] = '';
-    $sexe[$counter] = '';
-    if ($parent_array[$counter]) {
-        $personDb = $db_functions->get_person($parent_array[$counter]);
-        $gedcomnumber[$counter] = $personDb->pers_gedcomnumber;
-        $pers_famc[$counter] = $personDb->pers_famc;
-        $sexe[$counter] = $personDb->pers_sexe;
-    }
-
-    $Vcounter = $counter * 2;
-    $Mcounter = $Vcounter + 1;
-    $parent_array[$Vcounter] = '';
-    $parent_array[$Mcounter] = '';
-    $marr_date_array[$Vcounter] = '';
-    $marr_place_array[$Vcounter] = '';
-    if ($pers_famc[$counter]) {
-        $parentDb = $db_functions->get_family($pers_famc[$counter]);
-        $parent_array[$Vcounter] = $parentDb->fam_man;
-        $parent_array[$Mcounter] = $parentDb->fam_woman;
-        $marr_date_array[$Vcounter] = $parentDb->fam_marr_date;
-        $marr_place_array[$Vcounter] = $parentDb->fam_marr_place;
-    }
-}
 
 // *** Function to show data ***
 // box_appearance (large, medium, small, and some other boxes...)
 function ancestor_chart_person($id, $box_appearance)
 {
     global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
-    global $marr_date_array, $marr_place_array;
-    global $gedcomnumber, $language, $screen_mode, $dirmark1, $dirmark2;
+    global $data, $language, $screen_mode, $dirmark1, $dirmark2;
 
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {
@@ -78,8 +33,8 @@ function ancestor_chart_person($id, $box_appearance)
     $text = '';
     $popup = '';
 
-    if ($gedcomnumber[$id]) {
-        @$personDb = $db_functions->get_person($gedcomnumber[$id]);
+    if ($data["gedcomnumber"][$id]) {
+        @$personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $person_cls = new person_cls($personDb);
         $pers_privacy = $person_cls->privacy;
         $name = $person_cls->person_name($personDb);
@@ -140,12 +95,12 @@ function ancestor_chart_person($id, $box_appearance)
 
                 if ($box_appearance != 'medium') {
                     $marr_date = '';
-                    if (isset($marr_date_array[$id]) and ($marr_date_array[$id] != '')) {
-                        $marr_date = $marr_date_array[$id];
+                    if (isset($data["marr_date"][$id]) and ($data["marr_date"][$id] != '')) {
+                        $marr_date = $data["marr_date"][$id];
                     }
                     $marr_place = '';
-                    if (isset($marr_place_array[$id]) and ($marr_place_array[$id] != '')) {
-                        $marr_place = $marr_place_array[$id];
+                    if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
+                        $marr_place = $data["marr_place"][$id];
                     }
                     //if ($marr_date OR $marr_place){
                     if ($marr_date) {
@@ -156,12 +111,12 @@ function ancestor_chart_person($id, $box_appearance)
                 if ($box_appearance == 'ancestor_sheet_marr') {
                     $replacement_text = '';
                     $marr_date = '';
-                    if (isset($marr_date_array[$id]) and ($marr_date_array[$id] != '')) {
-                        $marr_date = $marr_date_array[$id];
+                    if (isset($data["marr_date"][$id]) and ($data["marr_date"][$id] != '')) {
+                        $marr_date = $data["marr_date"][$id];
                     }
                     $marr_place = '';
-                    if (isset($marr_place_array[$id]) and ($marr_place_array[$id] != '')) {
-                        $marr_place = $marr_place_array[$id];
+                    if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
+                        $marr_place = $data["marr_place"][$id];
                     }
                     //if ($marr_date OR $marr_place){
                     if ($marr_date) {
@@ -192,12 +147,12 @@ function ancestor_chart_person($id, $box_appearance)
 
         $extra_popup_text = '';
         $marr_date = '';
-        if (isset($marr_date_array[$id]) && $marr_date_array[$id] != '') {
-            $marr_date = $marr_date_array[$id];
+        if (isset($data["marr_date"][$id]) && $data["marr_date"][$id] != '') {
+            $marr_date = $data["marr_date"][$id];
         }
         $marr_place = '';
-        if (isset($marr_place_array[$id]) and ($marr_place_array[$id] != '')) {
-            $marr_place = $marr_place_array[$id];
+        if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
+            $marr_place = $data["marr_place"][$id];
         }
         if ($marr_date || $marr_place) {
             $extra_popup_text .= '<br>' . __('X') . $dirmark1 . ' ' . date_place($marr_date, $marr_place);
@@ -241,7 +196,7 @@ function ancestor_chart_person($id, $box_appearance)
 // TODO check $fontclass.
 function kwname($start, $end, $increment, $fontclass, $colspan, $type)
 {
-    global $sexe;
+    global $data;
 ?>
 
     <tr>
@@ -250,10 +205,10 @@ function kwname($start, $end, $increment, $fontclass, $colspan, $type)
             // *** Added coloured boxes in november 2022 ***
             $sexe_colour = '';
             if ($type != 'ancestor_sheet_marr') {
-                if ($sexe[$x] == 'F') {
+                if ($data["sexe"][$x] == 'F') {
                     $sexe_colour = ' style="background-image: linear-gradient(to bottom, #FFFFFF 0%, #F5BCA9 100%);"';
                 }
-                if ($sexe[$x] == 'M') {
+                if ($data["sexe"][$x] == 'M') {
                     $sexe_colour = ' style="background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%);"';
                 }
             }
@@ -281,10 +236,10 @@ function kwname($start, $end, $increment, $fontclass, $colspan, $type)
 // check if there is anyone in a generation so no empty and collapsed rows will be shown
 function check_gen($start, $end)
 {
-    global $gedcomnumber;
+    global $data;
     $is_gen = 0;
     for ($i = $start; $i < $end; $i++) {
-        if (isset($gedcomnumber[$i]) && $gedcomnumber[$i] != '') {
+        if (isset($data["gedcomnumber"][$i]) && $data["gedcomnumber"][$i] != '') {
             $is_gen = 1;
         }
     }

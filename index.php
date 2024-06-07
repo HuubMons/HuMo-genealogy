@@ -454,11 +454,11 @@ if ($page == 'address') {
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_chart') {
     require __DIR__ . '/app/controller/ancestor_chartController.php';
-    $controllerObj = new Ancestor_chartController($dbh, $user);
+    $controllerObj = new Ancestor_chartController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_sheet') {
     require __DIR__ . '/app/controller/ancestor_sheetController.php';
-    $controllerObj = new Ancestor_sheetController($dbh, $user);
+    $controllerObj = new Ancestor_sheetController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'anniversary') {
     require __DIR__ . '/app/controller/anniversaryController.php';

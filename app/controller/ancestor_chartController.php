@@ -3,11 +3,12 @@ require_once  __DIR__ . "/../model/ancestor.php";
 
 class Ancestor_chartController
 {
-    private $dbh;
+    private $dbh, $db_functions;
 
-    public function __construct($dbh)
+    public function __construct($dbh, $db_functions)
     {
         $this->dbh = $dbh;
+        $this->db_functions = $db_functions;
     }
 
     public function list($tree_id)
@@ -18,6 +19,8 @@ class Ancestor_chartController
         // Not needed in ancestor chart:
         //$rom_nr = $get_ancestorModel->getNumberRoman();
         $ancestor_header = $get_ancestorModel->getAncestorHeader('Ancestor chart', $tree_id, $main_person);
+
+        $get_ancestors = $get_ancestorModel->get_ancestors($this->db_functions, $main_person);
 
         // Not needed for ancestor_chart.
         // TODO for now using extended class.
@@ -31,6 +34,6 @@ class Ancestor_chartController
             "title" => __('Ancestor sheet')
         );
 
-        return $data;
+        return array_merge($data, $get_ancestors);
     }
 }

@@ -60,6 +60,59 @@ class AncestorModel extends FamilyModel
         return $main_person;
     }
 
+    // The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
+    public function get_ancestors($db_functions, $pers_gedcomnumber)
+    {
+        // person 01
+        $personDb = $db_functions->get_person($pers_gedcomnumber);
+        $data["gedcomnumber"][1] = $personDb->pers_gedcomnumber;
+        $pers_famc[1] = $personDb->pers_famc;
+        $data["sexe"][1] = $personDb->pers_sexe;
+        $parent_array[2] = '';
+        $parent_array[3] = '';
+        if ($pers_famc[1]) {
+            $parentDb = $db_functions->get_family($pers_famc[1]);
+            $parent_array[2] = $parentDb->fam_man;
+            $parent_array[3] = $parentDb->fam_woman;
+            $data["marr_date"][2] = $parentDb->fam_marr_date;
+            $data["marr_place"][2] = $parentDb->fam_marr_place;
+        }
+
+        // Loop to find person data
+        $count_max = 64;
+        // *** hourglass report ***
+        if (isset($hourglass) && $hourglass === true) {
+            $count_max = pow(2, $data["chosengenanc"]);
+        }
+
+        for ($counter = 2; $counter < $count_max; $counter++) {
+            $data["gedcomnumber"][$counter] = '';
+            $pers_famc[$counter] = '';
+            $data["sexe"][$counter] = '';
+            if ($parent_array[$counter]) {
+                $personDb = $db_functions->get_person($parent_array[$counter]);
+                $data["gedcomnumber"][$counter] = $personDb->pers_gedcomnumber;
+                $pers_famc[$counter] = $personDb->pers_famc;
+                $data["sexe"][$counter] = $personDb->pers_sexe;
+            }
+
+            $Mcounter = $counter * 2;
+            $Fcounter = $Mcounter + 1;
+            $parent_array[$Mcounter] = '';
+            $parent_array[$Fcounter] = '';
+            $data["marr_date"][$Mcounter] = '';
+            $data["marr_place"][$Mcounter] = '';
+            if ($pers_famc[$counter]) {
+                $parentDb = $db_functions->get_family($pers_famc[$counter]);
+                $parent_array[$Mcounter] = $parentDb->fam_man;
+                $parent_array[$Fcounter] = $parentDb->fam_woman;
+                $data["marr_date"][$Mcounter] = $parentDb->fam_marr_date;
+                $data["marr_place"][$Mcounter] = $parentDb->fam_marr_place;
+            }
+        }
+        return $data;
+    }
+
     // *** Define numbers (max. 60 generations) ***
     //TODO this is also defined in family script.
     public function getNumberRoman()

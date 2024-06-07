@@ -11,19 +11,6 @@
 // *** PART 1: Settings to send standard PHP mail ***
 // Import PHPMailer classes into the global namespace
 // These must be at the top of your script, not inside a function
-/*
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/Exception.php';
-
-if ($humo_option["mail_auto"] == 'auto') {
-    require 'phpmailer/src/SMTP.php';
-}
-*/
-
-// *** Use Composer PHP Mailer ***
 require_once __DIR__.'/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;

@@ -10,69 +10,10 @@
  */
 
 if (!isset($hourglass)) {
-    //TODO check if this is still needed
-    //$data["main_person"] = 'I1'; // *** Default value, normally not used... ***
-    //if (isset($_GET["id"])) {
-    //    $data["main_person"] = $_GET["id"];
-    //}
-    //if (isset($_POST["id"])) {
-    //    $data["main_person"] = $_POST["id"];
-    //}
-
     // *** Check if person gedcomnumber is valid ***
     $db_functions->check_person($data["main_person"]);
 
     echo $data["ancestor_header"];
-}
-
-// The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
-// person 01
-$personDb = $db_functions->get_person($data["main_person"]);
-$gedcomnumber[1] = $personDb->pers_gedcomnumber;
-$pers_famc[1] = $personDb->pers_famc;
-$sexe[1] = $personDb->pers_sexe;
-$parent_array[2] = '';
-$parent_array[3] = '';
-if ($pers_famc[1]) {
-    $parentDb = $db_functions->get_family($pers_famc[1]);
-    $parent_array[2] = $parentDb->fam_man;
-    $parent_array[3] = $parentDb->fam_woman;
-    $marr_date_array[2] = $parentDb->fam_marr_date;
-    $marr_place_array[2] = $parentDb->fam_marr_place;
-}
-// end of person 1
-
-// Loop to find person data
-$count_max = 64;
-// *** hourglass report ***
-if (isset($hourglass) && $hourglass === true) {
-    $count_max = pow(2, $data["chosengenanc"]);
-}
-
-for ($counter = 2; $counter < $count_max; $counter++) {
-    $gedcomnumber[$counter] = '';
-    $pers_famc[$counter] = '';
-    $sexe[$counter] = '';
-    if ($parent_array[$counter]) {
-        $personDb = $db_functions->get_person($parent_array[$counter]);
-        $gedcomnumber[$counter] = $personDb->pers_gedcomnumber;
-        $pers_famc[$counter] = $personDb->pers_famc;
-        $sexe[$counter] = $personDb->pers_sexe;
-    }
-
-    $Mcounter = $counter * 2;
-    $Fcounter = $Mcounter + 1;
-    $parent_array[$Mcounter] = '';
-    $parent_array[$Fcounter] = '';
-    $marr_date_array[$Mcounter] = '';
-    $marr_place_array[$Mcounter] = '';
-    if ($pers_famc[$counter]) {
-        $parentDb = $db_functions->get_family($pers_famc[$counter]);
-        $parent_array[$Mcounter] = $parentDb->fam_man;
-        $parent_array[$Fcounter] = $parentDb->fam_woman;
-        $marr_date_array[$Mcounter] = $parentDb->fam_marr_date;
-        $marr_place_array[$Mcounter] = $parentDb->fam_marr_place;
-    }
 }
 
 // *** Function to show data ***
@@ -80,8 +21,7 @@ for ($counter = 2; $counter < $count_max; $counter++) {
 function ancestor_chart_person($id, $box_appearance)
 {
     global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
-    global $marr_date_array, $marr_place_array;
-    global $gedcomnumber, $language, $dirmark1, $dirmark2;
+    global $data, $language, $dirmark1, $dirmark2;
 
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {
@@ -91,8 +31,8 @@ function ancestor_chart_person($id, $box_appearance)
     $text = '';
     $popup = '';
 
-    if ($gedcomnumber[$id]) {
-        @$personDb = $db_functions->get_person($gedcomnumber[$id]);
+    if ($data["gedcomnumber"][$id]) {
+        @$personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $person_cls = new person_cls($personDb);
         $pers_privacy = $person_cls->privacy;
         $name = $person_cls->person_name($personDb);
@@ -141,12 +81,12 @@ function ancestor_chart_person($id, $box_appearance)
 
                 if ($box_appearance != 'medium') {
                     $marr_date = '';
-                    if (isset($marr_date_array[$id]) and ($marr_date_array[$id] != '')) {
-                        $marr_date = $marr_date_array[$id];
+                    if (isset($data["marr_date"][$id]) and ($data["marr_date"][$id] != '')) {
+                        $marr_date = $data["marr_date"][$id];
                     }
                     $marr_place = '';
-                    if (isset($marr_place_array[$id]) and ($marr_place_array[$id] != '')) {
-                        $marr_place = $marr_place_array[$id];
+                    if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
+                        $marr_place = $data["marr_place"][$id];
                     }
                     //if ($marr_date OR $marr_place){
                     if ($marr_date) {
@@ -157,12 +97,12 @@ function ancestor_chart_person($id, $box_appearance)
                 if ($box_appearance == 'ancestor_sheet_marr') {
                     $replacement_text = '';
                     $marr_date = '';
-                    if (isset($marr_date_array[$id]) and ($marr_date_array[$id] != '')) {
-                        $marr_date = $marr_date_array[$id];
+                    if (isset($data["marr_date"][$id]) and ($data["marr_date"][$id] != '')) {
+                        $marr_date = $data["marr_date"][$id];
                     }
                     $marr_place = '';
-                    if (isset($marr_place_array[$id]) and ($marr_place_array[$id] != '')) {
-                        $marr_place = $marr_place_array[$id];
+                    if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
+                        $marr_place = $data["marr_place"][$id];
                     }
                     //if ($marr_date OR $marr_place){
                     if ($marr_date) {
@@ -193,12 +133,12 @@ function ancestor_chart_person($id, $box_appearance)
 
         $extra_popup_text = '';
         $marr_date = '';
-        if (isset($marr_date_array[$id]) and ($marr_date_array[$id] != '')) {
-            $marr_date = $marr_date_array[$id];
+        if (isset($data["marr_date"][$id]) and ($data["marr_date"][$id] != '')) {
+            $marr_date = $data["marr_date"][$id];
         }
         $marr_place = '';
-        if (isset($marr_place_array[$id]) and ($marr_place_array[$id] != '')) {
-            $marr_place = $marr_place_array[$id];
+        if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
+            $marr_place = $data["marr_place"][$id];
         }
         if ($marr_date || $marr_place) {
             $extra_popup_text .= '<br>' . __('X') . $dirmark1 . ' ' . date_place($marr_date, $marr_place);
@@ -279,10 +219,10 @@ if (!isset($hourglass)) {
             // *** First column name ***
             $left = 10;
             $sexe_colour = '';
-            if ($sexe[1] == 'F') {
+            if ($data["sexe"][1] == 'F') {
                 $sexe_colour = ' ancestor_woman';
             }
-            if ($sexe[1] == 'M') {
+            if ($data["sexe"][1] == 'M') {
                 $sexe_colour = ' ancestor_man';
             }
             ?>
@@ -302,10 +242,10 @@ if (!isset($hourglass)) {
             // *** Second column names ***
             for ($i = 1; $i < 3; $i++) {
                 $sexe_colour = '';
-                if ($sexe[$i + 1] == 'F') {
+                if ($data["sexe"][$i + 1] == 'F') {
                     $sexe_colour = ' ancestor_woman';
                 }
-                if ($sexe[$i + 1] == 'M') {
+                if ($data["sexe"][$i + 1] == 'M') {
                     $sexe_colour = ' ancestor_man';
                 }
             ?>
@@ -327,10 +267,10 @@ if (!isset($hourglass)) {
             // *** Third column names ***
             for ($i = 1; $i < 5; $i++) {
                 $sexe_colour = '';
-                if ($sexe[$i + 3] == 'F') {
+                if ($data["sexe"][$i + 3] == 'F') {
                     $sexe_colour = ' ancestor_woman';
                 }
-                if ($sexe[$i + 3] == 'M') {
+                if ($data["sexe"][$i + 3] == 'M') {
                     $sexe_colour = ' ancestor_man';
                 }
                 echo '<div class="ancestorName' . $sexe_colour . '" style="top: ' . (($top - 279) + ($i * 240)) . 'px; left: ' . ($left + 40) . 'px; height: 80px; width:200px;">';
@@ -351,10 +291,10 @@ if (!isset($hourglass)) {
             // *** Fourth column names ***
             for ($i = 1; $i < 9; $i++) {
                 $sexe_colour = '';
-                if ($sexe[$i + 7] == 'F') {
+                if ($data["sexe"][$i + 7] == 'F') {
                     $sexe_colour = ' ancestor_woman';
                 }
-                if ($sexe[$i + 7] == 'M') {
+                if ($data["sexe"][$i + 7] == 'M') {
                     $sexe_colour = ' ancestor_man';
                 }
                 echo '<div class="ancestorName' . $sexe_colour . '" style="top: ' . (($top + 265) + ($i * 120)) . 'px; left: ' . ($left + 40) . 'px; height: 80px; width:200px;">';
@@ -375,10 +315,10 @@ if (!isset($hourglass)) {
             // *** Fifth column names ***
             for ($i = 1; $i < 17; $i++) {
                 $sexe_colour = '';
-                if ($sexe[$i + 15] == 'F') {
+                if ($data["sexe"][$i + 15] == 'F') {
                     $sexe_colour = ' ancestor_woman';
                 }
-                if ($sexe[$i + 15] == 'M') {
+                if ($data["sexe"][$i + 15] == 'M') {
                     $sexe_colour = ' ancestor_man';
                 }
                 echo '<div class="ancestorName' . $sexe_colour . '" style="top: ' . (($top + 125) + ($i * 60)) . 'px; left: ' . ($left + 40) . 'px; height: 50px; width:200px;">';
@@ -399,10 +339,10 @@ if (!isset($hourglass)) {
             // *** Last column names ***
             for ($i = 1; $i < 33; $i++) {
                 $sexe_colour = '';
-                if ($sexe[$i + 31] == 'F') {
+                if ($data["sexe"][$i + 31] == 'F') {
                     $sexe_colour = ' ancestor_woman';
                 }
-                if ($sexe[$i + 31] == 'M') {
+                if ($data["sexe"][$i + 31] == 'M') {
                     $sexe_colour = ' ancestor_man';
                 }
                 echo '<div class="ancestorName' . $sexe_colour . '" style="top: ' . (($top + 66) + ($i * 30)) . 'px; left: ' . ($left + 40) . 'px; height:16px; width:200px;">';
