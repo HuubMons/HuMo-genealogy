@@ -11,8 +11,7 @@
 
 // *** Check user authority ***
 if ($user["group_birthday_list"] != 'j') {
-    echo __('You are not authorised to see this page.');
-    exit();
+    exit(__('You are not authorised to see this page.'));
 }
 
 $path = $link_cls->get_link($uri_path, 'anniversary', $tree_id, true);
@@ -66,9 +65,9 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
     </div><br>
 
     <?php
+    $privcount = 0; // *** Privacy counter ***
     // *** Build page ***
     if ($data["ann_choice"] == 'birthdays') {
-        $privcount = 0; // *** Count privacy persons ***
 
         // *** Build query ***
         $sql = "SELECT *, abs(substring( pers_birth_date,1,2 )) as birth_day, substring( pers_birth_date,-4 ) as birth_year
@@ -146,9 +145,74 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
         <?php
         }
     } else {
-        // wedding anniversary
-        $privcount = 0; // *** Count privacy persons ***
+        // *** wedding anniversary ***
+        $wed = array();
+        $cnt = 0;
+
+        // *** Build query ***
+        if ($data["civil"]) {
+            $sql = "SELECT *, abs(substring( fam_marr_date,1,2 )) as marr_day, substring( fam_marr_date,-4 ) as marr_year
+                FROM humo_families
+                WHERE fam_tree_id = :tree_id AND (substring( fam_marr_date, 4,3) = :month
+                OR substring( fam_marr_date, 3,3) = :month)
+                order by marr_day, marr_year ";
+
+            try {
+                $qry = $dbh->prepare($sql);
+                $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                $qry->bindValue(':month', $data["month"], PDO::PARAM_STR);
+                $qry->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage() . "<br/>";
+            }
+
+            while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
+                $wed[$cnt]['calday'] = $record->marr_day;
+                $wed[$cnt]['marday'] = $record->marr_day . ' ' . $data["month"];
+                $wed[$cnt]['maryr'] = $record->marr_year;
+                $day = $record->marr_day;
+                if (strlen($record->marr_day) == 1) {
+                    $day = "0" . $day;
+                }
+                $wed[$cnt]['dayyear'] = $day . $record->marr_year;
+                $wed[$cnt]['man'] = $record->fam_man;
+                $wed[$cnt]['woman'] = $record->fam_woman;
+                $wed[$cnt]['type'] = __('Civil');
+                $cnt++;
+            }
+        }
+
+        if ($data["relig"]) {
+            $sql = "SELECT *, abs(substring( fam_marr_church_date,1,2 )) as marr_day, substring( fam_marr_church_date,-4 ) as marr_year
+                FROM humo_families
+                WHERE fam_tree_id = :tree_id AND (substring( fam_marr_church_date, 4,3) = :month
+                OR substring( fam_marr_church_date, 3,3) = :month)
+                order by marr_day, marr_year ";
+            try {
+                $qry = $dbh->prepare($sql);
+                $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                $qry->bindValue(':month', $data["month"], PDO::PARAM_STR);
+                $ccc = $qry->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage() . '<br>';
+            }
+            while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
+                $wed[$cnt]['calday'] = $record->marr_day;
+                $wed[$cnt]['marday'] = $record->marr_day . ' ' . $data["month"];
+                $wed[$cnt]['maryr'] = $record->marr_year;
+                $day = $record->marr_day;
+                if (strlen($record->marr_day) == 1) {
+                    $day = "0" . $day;
+                }  // for sorting array
+                $wed[$cnt]['dayyear'] = $day . $record->marr_year;
+                $wed[$cnt]['man'] = $record->fam_man;
+                $wed[$cnt]['woman'] = $record->fam_woman;
+                $wed[$cnt]['type'] = __('Religious');
+                $cnt++;
+            }
+        }
         ?>
+
         <table class="humo" align="center">
             <tr class="table_headline">
                 <th><?= __('Day'); ?></th>
@@ -158,74 +222,6 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
             </tr>
 
             <?php
-            $wed = array();
-            $cnt = 0;
-
-            // *** Build query ***
-            if ($data["civil"]) {
-                $sql = "SELECT *, abs(substring( fam_marr_date,1,2 )) as marr_day, substring( fam_marr_date,-4 ) as marr_year
-                    FROM humo_families
-                    WHERE fam_tree_id = :tree_id AND (substring( fam_marr_date, 4,3) = :month
-                    OR substring( fam_marr_date, 3,3) = :month)
-                    order by marr_day, marr_year ";
-
-                try {
-                    $qry = $dbh->prepare($sql);
-                    $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                    $qry->bindValue(':month', $data["month"], PDO::PARAM_STR);
-                    $qry->execute();
-                } catch (PDOException $e) {
-                    echo $e->getMessage() . "<br/>";
-                }
-
-                while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
-                    $wed[$cnt]['calday'] = $record->marr_day;
-                    $wed[$cnt]['marday'] = $record->marr_day . ' ' . $data["month"];
-                    $wed[$cnt]['maryr'] = $record->marr_year;
-                    $day = $record->marr_day;
-                    if (strlen($record->marr_day) == 1) {
-                        $day = "0" . $day;
-                    }
-                    $wed[$cnt]['dayyear'] = $day . $record->marr_year;
-                    $wed[$cnt]['man'] = $record->fam_man;
-                    $wed[$cnt]['woman'] = $record->fam_woman;
-                    $wed[$cnt]['type'] = __('Civil');
-                    $cnt++;
-                }
-            }
-
-
-            if ($data["relig"]) {
-                $sql = "SELECT *, abs(substring( fam_marr_church_date,1,2 )) as marr_day, substring( fam_marr_church_date,-4 ) as marr_year
-                    FROM humo_families
-                    WHERE fam_tree_id = :tree_id AND (substring( fam_marr_church_date, 4,3) = :month
-                    OR substring( fam_marr_church_date, 3,3) = :month)
-                    order by marr_day, marr_year ";
-                try {
-                    $qry = $dbh->prepare($sql);
-                    $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                    $qry->bindValue(':month', $data["month"], PDO::PARAM_STR);
-                    $ccc = $qry->execute();
-                } catch (PDOException $e) {
-                    echo $e->getMessage() . '<br>';
-                }
-                while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
-                    $wed[$cnt]['calday'] = $record->marr_day;
-                    $wed[$cnt]['marday'] = $record->marr_day . ' ' . $data["month"];
-                    $wed[$cnt]['maryr'] = $record->marr_year;
-                    $day = $record->marr_day;
-                    if (strlen($record->marr_day) == 1) {
-                        $day = "0" . $day;
-                    }  // for sorting array
-                    $wed[$cnt]['dayyear'] = $day . $record->marr_year;
-                    $wed[$cnt]['man'] = $record->fam_man;
-                    $wed[$cnt]['woman'] = $record->fam_woman;
-                    $wed[$cnt]['type'] = __('Religious');
-                    $cnt++;
-                }
-            }
-
-
             if (isset($wed) and count($wed) > 0) {
                 // sort the array to mix civill and religious
                 if ($data["civil"] && $data["relig"]) {

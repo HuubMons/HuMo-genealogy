@@ -22,12 +22,6 @@ class Ancestor_sheetController
 
         $get_ancestors = $get_ancestorModel->get_ancestors($this->db_functions, $main_person);
 
-        // Not needed for ancestor_sheet.
-        // TODO for now using extended class.
-        //$text_presentation = $get_ancestorModel->getTextPresentation();
-        //$family_expanded = $get_ancestorModel->getFamilyExpanded();
-        //$picture_presentation = $get_ancestorModel->getPicturePresentation();
-
         $data = array(
             "main_person" => $main_person,
             "ancestor_header" => $ancestor_header,
