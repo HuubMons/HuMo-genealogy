@@ -507,7 +507,10 @@ if ($page == 'address') {
 } elseif ($page == 'login') {
     //
 } elseif ($page == 'mailform') {
-    //
+    require __DIR__ . '/app/controller/mailformController.php';
+    $controllerObj = new MailformController($db_functions);
+    $mail_data = $controllerObj->get_mail_data($humo_option, $dataDb, $selected_language);
+
 } elseif ($page == 'maps') {
     //
 } elseif ($page == 'photoalbum') {
