@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-07 22:33+0200\n"
-"PO-Revision-Date: 2024-06-07 22:33+0200\n"
+"POT-Creation-Date: 2024-06-08 17:05+0200\n"
+"PO-Revision-Date: 2024-06-08 18:32+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -335,12 +335,12 @@ msgstr "begrafenisgetuige"
 #: admin/include/editor_relation_select.php:46 admin/views/editor.php:205
 #: admin/views/editor_person.php:389 admin/views/gedcom_export.php:151
 #: admin/views/gedcom_export.php:316 admin/views/gedcom_export.php:318
-#: app/model/tree_index.php:638 app/model/tree_index.php:992
-#: app/model/user_settings.php:88 views/anniversary.php:93
-#: views/family.php:1226 views/family.php:1294 views/layout.php:350
-#: views/list.php:147 views/list.php:648 views/list_names.php:295
-#: views/list_names.php:298 views/mailform.php:42 views/mailform.php:145
-#: views/mailform.php:147 views/register.php:63 views/register.php:135
+#: app/model/mailform.php:83 app/model/tree_index.php:638
+#: app/model/tree_index.php:992 app/model/user_settings.php:88
+#: views/anniversary.php:93 views/family.php:1226 views/family.php:1294
+#: views/layout.php:350 views/list.php:147 views/list.php:648
+#: views/list_names.php:295 views/list_names.php:298 views/mailform.php:48
+#: views/mailform.php:50 views/register.php:63 views/register.php:155
 #: views/relations.php:94 views/relations.php:96 views/relations.php:210
 msgid "Name"
 msgstr "Naam"
@@ -918,7 +918,7 @@ msgstr "Verwijder ook kleuren markering van"
 #: admin/views/settings_homepage.php:612 admin/views/thumbs.php:509
 #: admin/views/tree_merge.php:986 admin/views/tree_merge.php:999
 #: admin/views/tree_merge.php:1012 admin/views/tree_merge.php:1029
-#: admin/views/trees.php:82 admin/views/users.php:49 views/mailform.php:176
+#: admin/views/trees.php:82 admin/views/users.php:49 views/mailform.php:79
 msgid "Yes"
 msgstr "Ja"
 
@@ -941,7 +941,7 @@ msgstr "Ja"
 #: admin/views/settings_homepage.php:613 admin/views/thumbs.php:510
 #: admin/views/tree_merge.php:987 admin/views/tree_merge.php:1000
 #: admin/views/tree_merge.php:1013 admin/views/tree_merge.php:1030
-#: admin/views/trees.php:83 admin/views/users.php:50 views/mailform.php:177
+#: admin/views/trees.php:83 admin/views/users.php:50 views/mailform.php:80
 msgid "No"
 msgstr "Nee"
 
@@ -2328,8 +2328,8 @@ msgid "No valid repository number."
 msgstr "Geen geldig bewaarplaats nummer."
 
 #: admin/views/edit_repository.php:226 admin/views/gedcom_export.php:334
-#: admin/views/gedcom_export.php:337 app/model/user_settings.php:89
-#: views/mailform.php:43 views/register.php:64
+#: admin/views/gedcom_export.php:337 app/model/mailform.php:84
+#: app/model/user_settings.php:89 views/register.php:64
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -2377,7 +2377,7 @@ msgid "restricted = only visible for selected user groups"
 msgstr "restrictie = alleen zichtbaar voor ingestelde gebruikersgroepen"
 
 #: admin/views/edit_source.php:226 include/show_source_pdf.php:102
-#: views/mailform.php:159 views/mailform.php:161 views/source.php:59
+#: views/mailform.php:62 views/mailform.php:64 views/source.php:59
 msgid "Subject"
 msgstr "Onderwerp"
 
@@ -4485,7 +4485,7 @@ msgid "Username"
 msgstr "Gebruikersnaam"
 
 #: admin/views/install.php:243 admin/views/login.php:19 views/login.php:333
-#: views/register.php:149 views/user_settings.php:37
+#: views/register.php:169 views/user_settings.php:37
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -6807,7 +6807,7 @@ msgid "Repository editor"
 msgstr "Bewaarplaats editor"
 
 #: admin/views/tree_data.php:34 admin/views/users.php:80 views/family.php:1300
-#: views/mailform.php:152 views/mailform.php:154 views/register.php:142
+#: views/mailform.php:55 views/mailform.php:57 views/register.php:162
 #: views/user_settings.php:30 views/user_settings.php:32
 msgid "E-mail address"
 msgstr "E-mailadres"
@@ -7719,6 +7719,25 @@ msgstr "Outline rapport"
 msgid "..."
 msgstr "..."
 
+#: app/model/mailform.php:73
+#, php-format
+msgid "%s Mail form."
+msgstr "%s Mail formulier"
+
+#: app/model/mailform.php:79 app/model/user_settings.php:85
+#: views/family.php:1223 views/register.php:60
+#, php-format
+msgid "Message sent through %s from the website."
+msgstr "Bericht verstuurd via %s op de website."
+
+#: app/model/mailform.php:86
+msgid "Last visited family:"
+msgstr "Laatst bezochte gezin:"
+
+#: app/model/mailform.php:89 views/mailform.php:77
+msgid "Receive newsletter"
+msgstr "Nieuwsbrief ontvangen"
+
 #: app/model/timeline.php:80 app/model/timeline.php:296
 #: app/model/timeline.php:404
 msgid "birth"
@@ -7883,12 +7902,6 @@ msgstr "2FA-authenticatie ingeschakeld."
 #: app/model/user_settings.php:80
 msgid "Updated profile"
 msgstr "Profiel gewijzigd"
-
-#: app/model/user_settings.php:85 views/family.php:1223 views/mailform.php:38
-#: views/register.php:60
-#, php-format
-msgid "Message sent through %s from the website."
-msgstr "Bericht verstuurd via %s op de website."
 
 #: app/model/user_settings.php:87
 msgid "User updated his/ her profile"
@@ -9196,8 +9209,8 @@ msgstr "Voeg informatie of opmerkingen toe"
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Uw e-mailadres ontbreekt. Graag uw e-mailadres toevoegen in: "
 
-#: views/family.php:1318 views/login.php:41 views/mailform.php:196
-#: views/register.php:182
+#: views/family.php:1318 views/login.php:41 views/mailform.php:99
+#: views/register.php:202
 msgid "Send"
 msgstr "Versturen"
 
@@ -10014,8 +10027,8 @@ msgstr "Wachtwoord herstel"
 msgid "Email"
 msgstr "Email"
 
-#: views/login.php:32 views/login.php:224 views/mailform.php:184
-#: views/register.php:171
+#: views/login.php:32 views/login.php:224 views/mailform.php:87
+#: views/register.php:191
 msgid "Please answer the block-spam-question:"
 msgstr "Geef antwoord op de anti-spam vraag:"
 
@@ -10023,8 +10036,8 @@ msgstr "Geef antwoord op de anti-spam vraag:"
 msgid "Your email address is not correct"
 msgstr "Uw e-mailadres klopt niet"
 
-#: views/login.php:84 views/login.php:276 views/mailform.php:132
-#: views/register.php:190
+#: views/login.php:84 views/login.php:276 views/mailform.php:35
+#: views/register.php:148
 msgid "Wrong answer to the block-spam question! Try again..."
 msgstr "Verkeerd antwoord op de anti-spam vraag! Probeer opnieuw..."
 
@@ -10143,44 +10156,31 @@ msgstr "Geen geldige gebruikersnaam of wachtwoord opgegeven."
 msgid "Forgot password"
 msgstr "Wachtwoord vergeten"
 
-#: views/mailform.php:32
-#, php-format
-msgid "%s Mail form."
-msgstr "%s Mail formulier"
-
-#: views/mailform.php:45
-msgid "Last visited family:"
-msgstr "Laatst bezochte gezin:"
-
-#: views/mailform.php:48 views/mailform.php:174
-msgid "Receive newsletter"
-msgstr "Nieuwsbrief ontvangen"
-
-#: views/mailform.php:94
+#: views/mailform.php:11
 msgid "Sending e-mail failed!"
 msgstr "Versturen van e-mail is mislukt!"
 
-#: views/mailform.php:98
+#: views/mailform.php:15
 msgid "E-mail sent!"
 msgstr "E-mail is verzonden!"
 
-#: views/mailform.php:128
+#: views/mailform.php:23
+msgid "The e-mail function has been switched off!"
+msgstr "De e-mail functie is uitgeschakeld!"
+
+#: views/mailform.php:31
 msgid "Mail form"
 msgstr "Mail formulier"
 
-#: views/mailform.php:138
+#: views/mailform.php:41
 msgid ""
 "The e-mail address you entered doesn't seem to be a valid e-mail address!"
 msgstr ""
 "Het e-mailadres dat u hebt ingevoerd lijkt niet een geldig e-mailadres!"
 
-#: views/mailform.php:166 views/mailform.php:168 views/register.php:163
+#: views/mailform.php:69 views/mailform.php:71 views/register.php:183
 msgid "Message"
 msgstr "Bericht"
-
-#: views/mailform.php:204
-msgid "The e-mail function has been switched off!"
-msgstr "De e-mail functie is uitgeschakeld!"
 
 #: views/maps.php:37
 msgid "Display birth or death locations across different time periods"
@@ -10443,17 +10443,21 @@ msgstr ""
 msgid "New registered user"
 msgstr "Nieuw geregistreerde gebruiker"
 
-#: views/register.php:130
+#: views/register.php:106
+msgid "The register function has been switched off!"
+msgstr "De registratie functie is uitgeschakeld!"
+
+#: views/register.php:144
 msgid "User registration form"
 msgstr "Gebruikersregistratie formulier"
 
-#: views/register.php:156 views/user_settings.php:44
+#: views/register.php:171 views/register.php:178
+msgid "6 characters minimum"
+msgstr "minimaal 6 tekens"
+
+#: views/register.php:176 views/user_settings.php:44
 msgid "Repeat password"
 msgstr "Herhaal wachtwoord"
-
-#: views/register.php:193
-msgid "The register function has been switched off!"
-msgstr "De registratie functie is uitgeschakeld!"
 
 #: views/relations.php:102 views/relations.php:216
 msgid "or: ID"

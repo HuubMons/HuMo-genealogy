@@ -510,13 +510,14 @@ if ($page == 'address') {
     require __DIR__ . '/app/controller/mailformController.php';
     $controllerObj = new MailformController($db_functions);
     $mail_data = $controllerObj->get_mail_data($humo_option, $dataDb, $selected_language);
-
 } elseif ($page == 'maps') {
     //
 } elseif ($page == 'photoalbum') {
     //
 } elseif ($page == 'register') {
-    //
+    require __DIR__ . '/app/controller/registerController.php';
+    $controllerObj = new RegisterController($db_functions);
+    $register = $controllerObj->get_register_data($dbh, $dataDb, $humo_option);
 } elseif ($page == 'relations') {
     require __DIR__ . '/app/controller/relationsController.php';
     $controllerObj = new RelationsController($dbh);
@@ -538,9 +539,10 @@ if ($page == 'address') {
 } elseif ($page == 'source') {
     require __DIR__ . '/app/controller/sourceController.php';
     $controllerObj = new SourceController($dbh, $db_functions, $tree_id); // Using Controller.
+    // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
         $id = $_GET["id"];
-    } // *** url_rewrite is disabled ***
+    }
     $data = $controllerObj->source($id);
 } elseif ($page == 'timeline') {
     require __DIR__ . '/app/controller/timelineController.php';
