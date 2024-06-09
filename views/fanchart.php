@@ -17,24 +17,9 @@
  * GNU General Public License for more details.                              *
  ****************************************************************************/
 
-
-
-// TODO TEMP Controller here
-// *** Needed for tab menu: ancestors ***
-require_once  __DIR__ . "/../app/model/ancestor.php";
-$get_ancestorModel = new AncestorModel($dbh);
-$main_person = $get_ancestorModel->getMainPerson();
-$data['ancestor_header'] = $get_ancestorModel->getAncestorHeader('Fanchart', $tree_id, $main_person);
-
+// *** Tab menu: ancestors ***
 echo $data['ancestor_header'];
 
-
-
-include_once(__DIR__ . "/../include/language_date.php");
-include_once(__DIR__ . "/../include/language_event.php");
-include_once(__DIR__ . "/../include/calculate_age_cls.php");
-include_once(__DIR__ . "/../include/person_cls.php");
-require_once(__DIR__ . "/../include/fanchart/persian_log2vis.php");
 
 $person_id = 'I1'; // *** Show 1st person if file is called directly. ***
 if (isset($_GET["id"])) {

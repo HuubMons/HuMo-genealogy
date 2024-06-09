@@ -1,15 +1,16 @@
 <?php
-
 include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/date_place.php');
 
 class Mainindex_cls
 {
 
+    /*
     public function __construct()
     {
-        //$this->var = $var;
+        $this->var = $var;
     }
+    */
 
     public function show_tree_index()
     {

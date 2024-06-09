@@ -481,7 +481,9 @@ if ($page == 'address') {
     $controllerObj = new FamilyController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
 } elseif ($page == 'fanchart') {
-    //
+    require __DIR__ . '/app/controller/fanchartController.php';
+    $controllerObj = new FanchartController();
+    $data = $controllerObj->detail($dbh, $tree_id);
 } elseif ($page == 'help') {
     //
 } elseif ($page == 'hourglass') {
@@ -513,7 +515,9 @@ if ($page == 'address') {
 } elseif ($page == 'maps') {
     //
 } elseif ($page == 'photoalbum') {
-    //
+    require __DIR__ . '/app/controller/photoalbumController.php';
+    $controllerObj = new PhotoalbumController();
+    $photoalbum = $controllerObj->detail($dbh);
 } elseif ($page == 'register') {
     require __DIR__ . '/app/controller/registerController.php';
     $controllerObj = new RegisterController($db_functions);
@@ -547,12 +551,16 @@ if ($page == 'address') {
 } elseif ($page == 'timeline') {
     require __DIR__ . '/app/controller/timelineController.php';
     $controllerObj = new TimelineController();
+    // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
         $id = $_GET["id"];
-    } // *** url_rewrite is disabled ***
+    }
     $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
 } elseif ($page == 'tree_index') {
-    //
+    //  *** TODO: first improve difference between tree_index and mainindex ***
+    //require __DIR__ . '/app/controller/tree_indexController.php';
+    //$controllerObj = new Tree_indexController();
+    //$tree_index["items"] = $controllerObj->get_items($dbh);
 }
 
 include_once(__DIR__ . "/views/layout.php");

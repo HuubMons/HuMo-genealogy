@@ -661,7 +661,7 @@ $menu_top = getActiveTopMenu($page);
                     <?php if (!$bot_visit) { ?>
                         <li class="nav-item dropdown">
                             <?php include_once(__DIR__ . "/partial/select_language.php"); ?>
-                            <?php $language_path = $link_cls->get_link($uri_path, 'language', '', true);?>
+                            <?php $language_path = $link_cls->get_link($uri_path, 'language', '', true); ?>
                             <?= show_country_flags($selected_language, '', 'language', $language_path); ?>
                         </li>
                     <?php } ?>
@@ -762,7 +762,7 @@ $menu_top = getActiveTopMenu($page);
                         <?= $text; ?>
                     </div>
                 </div>
-        <?php
+            <?php
             } else {
                 // *** Show default HuMo-genealogy homepage ***
                 //$mainindex->show_tree_index();
@@ -778,7 +778,8 @@ $menu_top = getActiveTopMenu($page);
 
         <!-- TODO improve code for tab menu in ascendants and descendants -->
         <!-- End of tab menu, if used -->
-        <?php if (isset($_GET['descendant_report']) && $_GET['descendant_report'] == '1' || $page == 'outline_report' || $page == 'descendant_chart' || $page == 'ancestor_report' || $page == 'ancestor_sheet' || $page == 'ancestor_chart' || $page == 'fanchart'
+        <?php if (
+            isset($_GET['descendant_report']) && $_GET['descendant_report'] == '1' || $page == 'outline_report' || $page == 'descendant_chart' || $page == 'ancestor_report' || $page == 'ancestor_sheet' || $page == 'ancestor_chart' || $page == 'fanchart'
         ) { ?>
         </div>
     <?php } ?>
