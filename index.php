@@ -317,9 +317,7 @@ if (in_array(@$dataDb->tree_id, $hide_tree_array)) {
 if ($hide_tree) {
     // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
     $_SESSION['tree_prefix'] = '';
-    //$_SESSION['tree_id'] = '';
     $_SESSION['tree_id'] = 0;
-    //$tree_id = '';
     $tree_id = 0;
 
     // *** Find first family tree that's not blocked for this usergroup ***
@@ -535,7 +533,9 @@ if ($page == 'address') {
     $controllerObj = new User_settingsController();
     $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
 } elseif ($page == 'statistics') {
-    //
+    require __DIR__ . '/app/controller/statisticsController.php';
+    $controllerObj = new StatisticsController();
+    $statistics = $controllerObj->detail($dbh, $tree_id);
 } elseif ($page == 'sources') {
     require __DIR__ . '/app/controller/sourcesController.php';
     $controllerObj = new SourcesController($dbh);

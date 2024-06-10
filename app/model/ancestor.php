@@ -25,12 +25,14 @@ include_once(__DIR__ . '/family.php');
 
 class AncestorModel extends FamilyModel
 {
+    /*
     private $Connection;
 
     public function __construct($Connection)
     {
         $this->Connection = $Connection;
     }
+    */
 
     //TODO check the $_GET. Normally main_person is used. ID is used for family number.
     public function getMainPerson()

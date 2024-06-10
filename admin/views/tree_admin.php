@@ -2,6 +2,7 @@
 
 // *** Read settings here to be sure radio buttons show proper values. ***
 include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settings ***
+include_once(__DIR__ . "/../../include/show_tree_date.php");
 
 // *** Language choice ***
 $language_tree2 = $language_tree;
@@ -102,46 +103,7 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
                         echo ' <font color="#00FF00"><b>' . __('OK') . '</b></font>';
 
                         // *** Show tree data ***
-                        $tree_date = $dataDb->tree_date;
-                        $month = ''; // for empty tree_dates
-                        if (substr($tree_date, 5, 2) === '01') {
-                            $month = ' ' . strtolower(__('jan')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '02') {
-                            $month = ' ' . strtolower(__('feb')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '03') {
-                            $month = ' ' . strtolower(__('mar')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '04') {
-                            $month = ' ' . strtolower(__('apr')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '05') {
-                            $month = ' ' . strtolower(__('may')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '06') {
-                            $month = ' ' . strtolower(__('jun')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '07') {
-                            $month = ' ' . strtolower(__('jul')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '08') {
-                            $month = ' ' . strtolower(__('aug')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '09') {
-                            $month = ' ' . strtolower(__('sep')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '10') {
-                            $month = ' ' . strtolower(__('oct')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '11') {
-                            $month = ' ' . strtolower(__('nov')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '12') {
-                            $month = ' ' . strtolower(__('dec')) . ' ';
-                        }
-                        $tree_date = substr($tree_date, 8, 2) . $month . substr($tree_date, 0, 4);
-                        echo ' <font size=-1>' . $tree_date . ': ' . $dataDb->tree_persons . ' ' .
+                        echo ' <font size=-1>' . show_tree_date($dataDb->tree_date) . ': ' . $dataDb->tree_persons . ' ' .
                             __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families') . '</font>';
                     } else {
                         //echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';

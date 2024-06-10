@@ -43,7 +43,6 @@ class FamilyModel
     // TEST
     //use Hello, World;
 
-
     public function __construct($dbh)
     {
         $this->dbh = $dbh;

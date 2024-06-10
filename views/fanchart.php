@@ -146,11 +146,12 @@ function fillarray($nr, $famid)
 
 fillarray(1, $person_id);
 
-/* split and center text by lines
-* @param string $data input string
-* @param int $maxlen max length of each line
-* @return string $text output string
-*/
+/**
+ * split and center text by lines
+ * @param string $data input string
+ * @param int $maxlen max length of each line
+ * @return string $text output string
+ */
 function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
 {
     $lines = explode("\n", $data);
@@ -560,7 +561,7 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
 // *** Huub test: TEXT in image using CSS... ***
 //echo '
-//<STYLE>
+//<style>
 //#rotate {
 //	position: absolute; z-index:2;
 //	top: 420px; left: 420px;
@@ -568,7 +569,7 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 //	-webkit-transform: rotate(-65deg); /* Chrome, Safari, Opera */
 //	transform: rotate(-65deg);
 //}
-//</STYLE>
+//</style>
 //<div id="rotate">Rotate<br>漢字<br>טבלאות בסיס</div>
 //';
 
@@ -599,10 +600,9 @@ if ($fan_width > 50 and $fan_width < 301) {
 $realwidth = (840 * $tmp_width) / 100; // realwidth needed for next line (top text)
 
 // *** Text on Top: Name of base person and print-help link ***
-$top_for_name = 20;
 ?>
 <!-- TODO replace with bootstrap popup -->
-<!-- <div style="border:1px;z-index:80; position:absolute; top:<?= $top_for_name; ?>px; left:135px; width:<?= $realwidth; ?>px; height:30px; text-align:center; color:#000000"> -->
+<!-- <div style="border:1px;z-index:80; position:absolute; top:20px; left:135px; width:<?= $realwidth; ?>px; height:30px; text-align:center; color:#000000"> -->
 <div style="border:1px;z-index:80; width:<?= $realwidth; ?>px;">
     <?php /* <strong><?= __('Fanchart') . ' - ' . $treeid[1][0]; ?></strong> */ ?>
     <!-- HELP POP-UP -->
@@ -722,32 +722,34 @@ $path_tmp .= 'id=' . $person_id;
     </div>
     */ ?>
     <div class="col">
-        <input type="submit" value="<?= __('View'); ?>"><br>
+        <input type="submit" value="<?= __('View'); ?>" class="btn btn-sm btn-success"><br>
     </div>
     </form>
 </div>
 
 <?php
+$china_message = 0;
 // *** Container for fanchart ***
 //echo '<div style="position:absolute; top:60px; left:135px; width:' . (840 * $fan_width / 100) . 'px">';
-echo '<div style="top:60px; left:135px; width:' . (840 * $fan_width / 100) . 'px">';
-echo '<div style="padding:5px">';
-$china_message = 0;
-print_fan_chart($treeid, 840 * $fan_width / 100, $fan_style * 90);
-echo '</div>';
-echo '</div>';
-// ** End container for fanchart ***
+?>
+<div style="top:60px; left:135px; width:<?= (840 * $fan_width / 100); ?>px">
+    <div style="padding:5px">
+        <?php print_fan_chart($treeid, 840 * $fan_width / 100, $fan_style * 90); ?>
+    </div>
+</div>
 
+<?php
+// TODO check download link. Use sourceforge?
 if ($china_message == 1) {
-    // TODO check download link. Use sourceforge?
-    echo '<div style="border:2px solid red;background-color:white;padding:5px;position:relative;
-    length:300px;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;
-    font-size:120%;text-align:center;">';
-    echo __('No Chinese ttf font file found') . '<br>' . __('Download link');
-    echo ': <a href="http://humogen.com/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>' . __('or');
-    echo ' <a href="http://humogen.com/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>';
-    echo __('Unzip and place in "include/fanchart/chinese/" folder');
-    echo '</div>';
+?>
+    <!-- <div style="border:2px solid red;background-color:white;padding:5px;position:relative;length:300px;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;font-size:120%;text-align:center;"> -->
+    <div style="border:2px solid red;background-color:white;padding:5px;position:relative;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;font-size:120%;text-align:center;">
+        <?= __('No Chinese ttf font file found'); ?><br>
+        <?= __('Download link'); ?>: <a href="http://humogen.com/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>
+        <?= __('or'); ?> <a href="http://humogen.com/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>
+        <?= __('Unzip and place in "include/fanchart/chinese/" folder'); ?>
+    </div>
+<?php
 }
 
 // *** Show descendants ***
@@ -761,7 +763,6 @@ if ($showdesc == "1") {
     echo '</iframe>';
 }
 */
+?>
 
-echo '<br><br><br>';
-
-//echo '<div style="left:135px; height:650px; width:10px"></div>';
+<br><br><br>
