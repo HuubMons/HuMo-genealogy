@@ -24,6 +24,7 @@ $hourglass = true;
 // *** Ancestor part of report ***
 $_GET['id'] = $_GET['main_person'];
 include_once(__DIR__ . "/ancestor_chart.php");
+$sexe=$data["sexe"];
 
 // THE HORIZONTALLY ALIGN POSITION OF THE BASE PERSON IN DONE DESC CHART AND ANCESTOR CHART
 

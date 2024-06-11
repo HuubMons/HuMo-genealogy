@@ -2,6 +2,11 @@
 require_once  __DIR__ . "/../model/family.php";
 require_once  __DIR__ . "/../model/descendant.php";
 
+
+//TEST
+require_once  __DIR__ . "/../model/ancestor.php";
+
+
 class HourglassController
 {
     //private $db_functions, $user;
@@ -76,6 +81,12 @@ class HourglassController
 
             "title" => __('Family')
         );
+
+        // *** Ancestors ***
+        $get_ancestorModel = new AncestorModel($dbh);
+        $get_ancestors = $get_ancestorModel->get_ancestors($db_functions, $main_person);
+        $data = array_merge($data, $get_ancestors);
+
         return $data;
     }
 }
