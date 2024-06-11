@@ -15,7 +15,7 @@ $db_functions->check_family($data["family_id"]);
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-// Just change variables for now, because function "outline" will me moved to model too...
+// Just change variables for now, because function "outline" will be moved to model too...
 $show_details = $data["show_details"];
 $show_date = $data["show_date"];
 $dates_behind_names = $data["dates_behind_names"];
