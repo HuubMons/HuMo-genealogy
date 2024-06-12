@@ -1,20 +1,15 @@
 <?php
 require_once  __DIR__ . "/../model/family.php";
 require_once  __DIR__ . "/../model/descendant.php";
-
-
-//TEST
 require_once  __DIR__ . "/../model/ancestor.php";
-
 
 class HourglassController
 {
     //private $db_functions, $user;
 
-    //public function __construct($db_functions, $user)
+    //public function __construct($db_functions)
     //{
     //    $this->db_functions = $db_functions;
-    //    $this->user = $user;
     //}
 
     public function getHourglass($dbh, $tree_id)

@@ -4,7 +4,7 @@
  * July 2023: refactor ancestor.php to MVC
  */
 
-// At this moment this model is used by multiple ancestor reports (report/ chart/ sheet)...
+// *** This model is used by multiple ancestor reports (report/ chart/ sheet) ***
 
 include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/language_event.php');

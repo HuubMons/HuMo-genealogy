@@ -20,25 +20,12 @@
 // *** Tab menu: ancestors ***
 echo $data['ancestor_header'];
 
-
-$person_id = 'I1'; // *** Show 1st person if file is called directly. ***
-if (isset($_GET["id"])) {
-    $person_id = $_GET["id"];
-}
-if (isset($_POST["id"])) {
-    $person_id = $_POST["id"];
-}
+$person_id = $data["main_person"];
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($person_id);
 
-$chosengen = 5;
-if (isset($_GET["chosengen"])) {
-    $chosengen = $_GET["chosengen"];
-}
-if (isset($_POST["chosengen"])) {
-    $chosengen = $_POST["chosengen"];
-}
 
+// TODO move these items to fanchart model.
 $fontsize = 8;
 if (isset($_GET["fontsize"])) {
     $fontsize = $_GET["fontsize"];
@@ -74,7 +61,7 @@ if (!isset($_POST['show_desc'])) {  // first entry into page - check cookie or s
 
 $treeid = array();
 
-$maxperson = pow(2, $chosengen);
+$maxperson = pow(2, $data["chosengen"]);
 // initialize array
 for ($i = 0; $i < $maxperson; $i++) {
     for ($n = 0; $n < 6; $n++) {
@@ -632,7 +619,7 @@ and adjust printing size to fit the page<br>
 
 if ($fan_width == "auto" or $fan_width == "") {  // if someone cleared the field alltogether we'll handle it as "auto"
     $menu_fan = "auto"; // $menu_fan is what will be displayed in menu. If size is changed automatically still "auto" will be displayed
-    if ($chosengen == 7) {
+    if ($data["chosengen"] == 7) {
         if ($fan_style == 2) {
             $fan_width = 220;
         } elseif ($fan_style == 3) {
@@ -644,7 +631,7 @@ if ($fan_width == "auto" or $fan_width == "") {  // if someone cleared the field
         }
     }
     // or 6 generations with half circle...
-    else if ($chosengen == 6 and $fan_style == 2) {
+    else if ($data["chosengen"] == 6 and $fan_style == 2) {
         $fan_width = 130;
     } else {
         $fan_width = 100;
@@ -677,7 +664,7 @@ $path_tmp .= 'id=' . $person_id;
         <?= __('Generations'); ?>:<br>
         <select name="chosengen">
             <?php for ($i = 2; $i <= min(9, $maxgens); $i++) {; ?>
-                <option value="<?= $i; ?>" <?php if ($i == $chosengen) echo ' selected'; ?>><?= $i; ?></option>
+                <option value="<?= $i; ?>" <?php if ($i == $data["chosengen"]) echo ' selected'; ?>><?= $i; ?></option>
             <?php } ?>
         </select><br>
     </div>

@@ -388,10 +388,4 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
 // ******* Start function here - recursive if started ******
 ?>
-<table class="humo outlinetable">
-    <tr>
-        <td>
-            <?php outline($data["family_id"], $data["main_person"], $generation_number, $nr_generations); ?>
-        </td>
-    </tr>
-</table><br><br>
+<?php outline($data["family_id"], $data["main_person"], $generation_number, $nr_generations); ?>

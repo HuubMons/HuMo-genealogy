@@ -193,7 +193,6 @@ function ancestor_chart_person($id, $box_appearance)
 
 // Specific code for ancestor SHEET:
 // print names and details for each row in the table
-// TODO check $fontclass.
 function kwname($start, $end, $increment, $fontclass, $colspan, $type)
 {
     global $data;
@@ -214,11 +213,9 @@ function kwname($start, $end, $increment, $fontclass, $colspan, $type)
             }
 
             if ($colspan > 1) {
-                //echo '<td class="'.$fontclass.'" colspan='.$colspan.'>';
-                echo '<td colspan=' . $colspan . $sexe_colour . '>';
+                echo '<td colspan=' . $colspan . $sexe_colour . ' class="' . $fontclass . '">';
             } else {
-                //echo '<td class="'.$fontclass.'">';
-                echo '<td' . $sexe_colour . '>';
+                echo '<td' . $sexe_colour . ' class="' . $fontclass . '">';
             }
             $kwpers = ancestor_chart_person($x, $type);
             if ($kwpers != '') {
@@ -249,7 +246,7 @@ function check_gen($start, $end)
 
 <?= $data["ancestor_header"]; ?>
 
-<table class="humo ancestor_sheet">
+<table class="ancestor_sheet">
     <tr>
         <th class="ancestor_head" colspan="8"> <!-- adjusted for IE7 -->
             <?= __('Ancestor sheet') . __(' of ') . ancestor_chart_person(1, "ancestor_header"); ?>
