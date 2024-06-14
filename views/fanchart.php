@@ -20,36 +20,10 @@
 // *** Tab menu: ancestors ***
 echo $data['ancestor_header'];
 
-$person_id = $data["main_person"];
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($person_id);
+$db_functions->check_person($data["main_person"]);
 
-
-// TODO move these items to fanchart model.
-$fontsize = 8;
-if (isset($_GET["fontsize"])) {
-    $fontsize = $_GET["fontsize"];
-}
-if (isset($_POST["fontsize"])) {
-    $fontsize = $_POST["fontsize"];
-}
-
-$date_display = 2;
-if (isset($_GET["date_display"])) {
-    $date_display = $_GET["date_display"];
-}
-if (isset($_POST["date_display"])) {
-    $date_display = $_POST["date_display"];
-}
-
-$printing = 1;
-if (isset($_GET["printing"])) {
-    $printing = $_GET["printing"];
-}
-if (isset($_POST["printing"])) {
-    $printing = $_POST["printing"];
-}
-
+/*
 if (!isset($_POST['show_desc'])) {  // first entry into page - check cookie or session
     if (isset($_COOKIE["humogen_showdesc"])) {
         $showdesc = $_COOKIE["humogen_showdesc"];
@@ -58,21 +32,21 @@ if (!isset($_POST['show_desc'])) {  // first entry into page - check cookie or s
     }
 }
 // The $_POST['show_desc'] and cookie setting is handled in header script before the headers are sent
+*/
 
-$treeid = array();
 
+$data["fanchart_item"] = array();
 $maxperson = pow(2, $data["chosengen"]);
 // initialize array
 for ($i = 0; $i < $maxperson; $i++) {
     for ($n = 0; $n < 6; $n++) {
-        $treeid[$i][$n] = "";
+        $data["fanchart_item"][$i][$n] = "";
     }
 }
 
 function fillarray($nr, $famid)
 {
-    global $dbh, $db_functions, $maxperson;
-    global $treeid, $pers_var, $fam_var, $indexnr;
+    global $dbh, $db_functions, $maxperson, $data, $indexnr;
     if ($nr >= $maxperson) {
         return;
     }
@@ -83,16 +57,16 @@ function fillarray($nr, $famid)
         $man_privacy = $man_cls->privacy;
 
         $name = $man_cls->person_name($personmnDb);
-        //$treeid[$nr][0]=$name["standard_name"];
-        $treeid[$nr][0] = html_entity_decode($name["standard_name"]);
+        //$data["fanchart_item"][$nr][0]=$name["standard_name"];
+        $data["fanchart_item"][$nr][0] = html_entity_decode($name["standard_name"]);
 
         // *** Privacy filter ***
         if (!$man_privacy) {
-            $treeid[$nr][1] = $personmnDb->pers_birth_date ? $personmnDb->pers_birth_date : $personmnDb->pers_bapt_date;
-            $treeid[$nr][4] = $personmnDb->pers_death_date ? $personmnDb->pers_death_date : $personmnDb->pers_buried_date;
+            $data["fanchart_item"][$nr][1] = $personmnDb->pers_birth_date ? $personmnDb->pers_birth_date : $personmnDb->pers_bapt_date;
+            $data["fanchart_item"][$nr][4] = $personmnDb->pers_death_date ? $personmnDb->pers_death_date : $personmnDb->pers_buried_date;
         } else {
-            $treeid[$nr][1] = '';
-            $treeid[$nr][4] = '';
+            $data["fanchart_item"][$nr][1] = '';
+            $data["fanchart_item"][$nr][4] = '';
         }
 
         if ($nr == 1) {
@@ -107,14 +81,9 @@ function fillarray($nr, $famid)
             }
         }
 
-        //$pos=strpos($personmnDb->pers_fams,";");
-        //if($pos===false) { $treeid[$nr][2]=$personmnDb->pers_fams; }
-        //	else {$treeid[$nr][2]=substr($personmnDb->pers_fams,0,$pos);}
-        $treeid[$nr][2] = $personmnDb->pers_fams;
-
-        $treeid[$nr][3] = $famid;
-
-        $treeid[$nr][5] = $personmnDb->pers_sexe;
+        $data["fanchart_item"][$nr][2] = $personmnDb->pers_fams;
+        $data["fanchart_item"][$nr][3] = $famid;
+        $data["fanchart_item"][$nr][5] = $personmnDb->pers_sexe;
 
         if ($personmnDb->pers_famc) {
             @$record_family = $db_functions->get_family($personmnDb->pers_famc);
@@ -127,11 +96,11 @@ function fillarray($nr, $famid)
         }
 
         // *** famc ***
-        $treeid[$nr][6] = $personmnDb->pers_famc;
+        $data["fanchart_item"][$nr][6] = $personmnDb->pers_famc;
     }
-} //END FUNCTION FILLARRAY
+}
 
-fillarray(1, $person_id);
+fillarray(1, $data["main_person"]);
 
 /**
  * split and center text by lines
@@ -155,6 +124,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
     $line = "";
 
     if ($rtlflag == 1 && $nameflag == 1) {    // rtl name has to be re-positioned
+        // TODO check global
         global $fan_style;
         if ($fan_style == 2 && ($gennr == 1 || $gennr == 2)) {
             $maxlen *= 1.5;
@@ -210,18 +180,16 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
 
 /**
  * echo ancestors on a fan chart
- * @param array $treeid ancestry pid
+ * @param array ancestry pid
  * @param int $fanw fan width in px (default=840)
  * @param int $fandeg fan size in deg (default=270)
  */
-function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
+function print_fan_chart($data, $fanw = 840, $fandeg = 270)
 {
-    global $dbh, $tree_id, $db_functions, $fontsize, $date_display;
-    global $fan_style, $person_id;
-    global $printing, $language, $selected_language;
-    global $pers_var, $tree_prefix_quoted;
-    global $china_message;
+    global $dbh, $tree_id, $db_functions, $fan_style, $language, $selected_language, $tree_prefix_quoted, $china_message;
     // check for GD 2.x library
+
+    //$data["fanchart_item"] = $fanchart_item;
 
     if (!defined("IMG_ARC_PIE")) {
         echo "ERROR: NO GD LIBRARY";
@@ -232,11 +200,11 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
         return false;
     }
 
-    if (intval($fontsize) < 2) {
-        $fontsize = 7;
+    if (intval($data["fontsize"]) < 2) {
+        $data["fontsize"] = 7;
     }
 
-    $treesize = count($treeid);
+    $treesize = count($data["fanchart_item"]);
     if ($treesize < 1) {
         return;
     }
@@ -269,7 +237,7 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
     $black = ImageColorAllocate($image, 0, 0, 0);
     $white = ImageColorAllocate($image, 0xFF, 0xFF, 0xFF);
     ImageFilledRectangle($image, 0, 0, $fanw, $fanh, $white);
-    if ($printing == 1) {
+    if ($data["printing"] == 1) {
         ImageColorTransparent($image, $white);
     }
 
@@ -323,23 +291,23 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
         // draw each cell
         while ($sosa >= $p2) {
-            $pid = $treeid[$sosa][0];
-            $birthyr = $treeid[$sosa][1];
-            $deathyr = $treeid[$sosa][4];
-            $fontpx = $fontsize;
+            $pid = $data["fanchart_item"][$sosa][0];
+            $birthyr = $data["fanchart_item"][$sosa][1];
+            $deathyr = $data["fanchart_item"][$sosa][4];
+            $fontpx = $data["fontsize"];
             if ($sosa >= 16 && $fandeg == 180) {
-                $fontpx = $fontsize - 1;
+                $fontpx = $data["fontsize"] - 1;
             }
             if ($sosa >= 32 && $fandeg != 180) {
-                $fontpx = $fontsize - 1;
+                $fontpx = $data["fontsize"] - 1;
             }
             if (!empty($pid)) {
                 if ($sosa % 2) $bg = $bgcolorF;
                 else $bg = $bgcolorM;
                 if ($sosa == 1) {
-                    if ($treeid[$sosa][5] == "F") {
+                    if ($data["fanchart_item"][$sosa][5] == "F") {
                         $bg = $bgcolorF;
-                    } elseif ($treeid[$sosa][5] == "M") {
+                    } elseif ($data["fanchart_item"][$sosa][5] == "M") {
                         $bg = $bgcolorM;
                     } else {
                         $bg = $bgcolor; // sex unknown
@@ -385,11 +353,11 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
                 $text = $name; // names
                 $text2 = ""; // dates
-                if ($date_display == 1) {  // don't show dates
-                } else if ($date_display == 2) { //show years only
+                if ($data["date_display"] == 1) {  // don't show dates
+                } else if ($data["date_display"] == 2) { //show years only
                     // years only chosen but we also do this if no place in outer circles
                     $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
-                } else if ($date_display == 3) {  //show full dates (but not in narrow outer circles!)
+                } else if ($data["date_display"] == 3) {  //show full dates (but not in narrow outer circles!)
                     if ($gen > 5) {
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
                     } else if ($gen > 4 and $fan_style != 4) {
@@ -492,23 +460,23 @@ function print_fan_chart($treeid, $fanw = 840, $fandeg = 270)
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                 $person_cls = new person_cls;
-                $url = $person_cls->person_url2($tree_id, $treeid[$sosa][6], $treeid[$sosa][2], $treeid[$sosa][3]);
+                $url = $person_cls->person_url2($tree_id, $data["fanchart_item"][$sosa][6], $data["fanchart_item"][$sosa][2], $data["fanchart_item"][$sosa][3]);
                 $imagemap .= "\" href=\"" . $url . "\"";
                 //}
 
                 // *** Add first spouse to base person's tooltip ***
                 $spousename = "";
-                if ($gen == 0 && $treeid[1][2] != "") {
+                if ($gen == 0 && $data["fanchart_item"][1][2] != "") {
                     // base person and has spouse
-                    $spouse = $treeid[1][5] == "F" ? "fam_man" : "fam_woman";
+                    $spouse = $data["fanchart_item"][1][5] == "F" ? "fam_man" : "fam_woman";
                     $spouse_result = $dbh->query("SELECT " . $spouse . " FROM humo_families
-                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $treeid[1][2] . "'");
+                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $data["fanchart_item"][1][2] . "'");
                     $spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
                     $spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
 
                     $spouse_cls = new person_cls($spouse2Db);
                     $spname = $spouse_cls->person_name($spouse2Db);
-                    $spouse_lan = $treeid[1][5] == "F" ? "SPOUSE_MALE" : "SPOUSE_FEMALE";
+                    $spouse_lan = $data["fanchart_item"][1][5] == "F" ? "SPOUSE_MALE" : "SPOUSE_FEMALE";
                     if ($spname != "") {
                         $spousename = "\n(" . __($spouse_lan) . ": " . $spname["standard_name"] . ")";
                     }
@@ -591,7 +559,7 @@ $realwidth = (840 * $tmp_width) / 100; // realwidth needed for next line (top te
 <!-- TODO replace with bootstrap popup -->
 <!-- <div style="border:1px;z-index:80; position:absolute; top:20px; left:135px; width:<?= $realwidth; ?>px; height:30px; text-align:center; color:#000000"> -->
 <div style="border:1px;z-index:80; width:<?= $realwidth; ?>px;">
-    <?php /* <strong><?= __('Fanchart') . ' - ' . $treeid[1][0]; ?></strong> */ ?>
+    <?php /* <strong><?= __('Fanchart') . ' - ' . $data["fanchart_item"][1][0]; ?></strong> */ ?>
     <!-- HELP POP-UP -->
     <div class=<?= $rtlmarker; ?>sddm>
         <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',0,0)" onmouseout="mclosetime()">
@@ -644,7 +612,7 @@ if ($fan_width == "auto" or $fan_width == "") {  // if someone cleared the field
 }
 
 $path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
-$path_tmp .= 'id=' . $person_id;
+$path_tmp .= 'id=' . $data["main_person"];
 ?>
 
 <!-- Menu -->
@@ -673,7 +641,7 @@ $path_tmp .= 'id=' . $person_id;
         <?= __('Font size'); ?>:<br>
         <select name="fontsize">
             <?php for ($i = 5; $i <= 12; $i++) {; ?>
-                <option value="<?= $i; ?>" <?php if ($i == $fontsize) echo ' selected'; ?>><?= $i; ?></option>
+                <option value="<?= $i; ?>" <?php if ($i == $data["fontsize"]) echo ' selected'; ?>><?= $i; ?></option>
             <?php }; ?>
         </select><br>
     </div>
@@ -681,9 +649,9 @@ $path_tmp .= 'id=' . $person_id;
         <!-- Date display -->
         <?= __('Date display'); ?>:<br>
         <div>
-            <input type="radio" name="date_display" value="1" <?php if ($date_display == "1") echo ' checked'; ?>><?= __('No dates'); ?><br>
-            <input type="radio" name="date_display" value="2" <?php if ($date_display == "2") echo ' checked'; ?>><?= __('Years only'); ?><br>
-            <input type="radio" name="date_display" value="3" <?php if ($date_display == "3") echo ' checked'; ?>><?= __('Full dates'); ?>
+            <input type="radio" name="date_display" value="1" <?php if ($data["date_display"] == "1") echo ' checked'; ?>><?= __('No dates'); ?><br>
+            <input type="radio" name="date_display" value="2" <?php if ($data["date_display"] == "2") echo ' checked'; ?>><?= __('Years only'); ?><br>
+            <input type="radio" name="date_display" value="3" <?php if ($data["date_display"] == "3") echo ' checked'; ?>><?= __('Full dates'); ?>
         </div>
     </div>
     <div class="col">
@@ -696,18 +664,20 @@ $path_tmp .= 'id=' . $person_id;
         <!-- Background (for printing with IE) -->
         <?= __('Background'); ?>:<br>
         <div>
-            <input type="radio" name="printing" value="1" <?php if ($printing == 1) echo " checked"; ?>> <?= __('transparent'); ?><br>
-            <input type="radio" name="printing" value="2" <?php if ($printing == 2) echo " checked"; ?>> <?= __('white'); ?>
+            <input type="radio" name="printing" value="1" <?php if ($data["printing"] == 1) echo " checked"; ?>> <?= __('transparent'); ?><br>
+            <input type="radio" name="printing" value="2" <?php if ($data["printing"] == 2) echo " checked"; ?>> <?= __('white'); ?>
         </div>
     </div>
-    <?php /*
+    <?php
+    /*
     <div class="col">
         <div>
             <input type="hidden" name="show_desc" value="0">
             <input type="checkbox" name="show_desc" value="1" <?php if ($showdesc == "1") echo ' checked'; ?>> <span style="font-size:10px;"><?= __('descendants'); ?><br>&nbsp;&nbsp;&nbsp;&nbsp;<?= __('under fanchart'); ?></span>
         </div>
     </div>
-    */ ?>
+    */
+    ?>
     <div class="col">
         <input type="submit" value="<?= __('View'); ?>" class="btn btn-sm btn-success"><br>
     </div>
@@ -717,11 +687,10 @@ $path_tmp .= 'id=' . $person_id;
 <?php
 $china_message = 0;
 // *** Container for fanchart ***
-//echo '<div style="position:absolute; top:60px; left:135px; width:' . (840 * $fan_width / 100) . 'px">';
 ?>
 <div style="top:60px; left:135px; width:<?= (840 * $fan_width / 100); ?>px">
     <div style="padding:5px">
-        <?php print_fan_chart($treeid, 840 * $fan_width / 100, $fan_style * 90); ?>
+        <?php print_fan_chart($data, 840 * $fan_width / 100, $fan_style * 90); ?>
     </div>
 </div>
 
@@ -746,8 +715,7 @@ if ($showdesc == "1") {
     if ($fan_style == 2) $top_pos = $fan_w / 2 + 165;
     elseif ($fan_style == 3) $top_pos = 0.856 * $fan_w;
     elseif ($fan_style == 4) $top_pos = $fan_w;
-    echo '<iframe src="descendant/' . safe_text_db($_SESSION['tree_prefix']) . '/' . $indexnr . '?main_person=' . $person_id . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" >';
-    echo '</iframe>';
+    echo '<iframe src="descendant/' . safe_text_db($_SESSION['tree_prefix']) . '/' . $indexnr . '?main_person=' . $data["main_person"] . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" ></iframe';
 }
 */
 ?>

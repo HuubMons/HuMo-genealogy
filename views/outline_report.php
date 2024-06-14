@@ -78,7 +78,7 @@ echo $data["descendant_header"];
         <?= __('Choose number of generations to display'); ?>:
 
         <select size=1 name="selectnr_generations" class="form-select form-select-sm" onChange="window.location=this.value;" style="display:inline; width: 60px;">
-<?php
+            <?php
             $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
             for ($i = 2; $i < 20; $i++) {
                 $nr_gen = $i - 1;

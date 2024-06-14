@@ -22,12 +22,25 @@ class FanchartController
         $ancestor_header = $get_fanchartModel->getAncestorHeader('Fanchart', $tree_id, $main_person);
 
         $chosengen = $get_fanchartModel->get_chosengen();
+        $fontsize = $get_fanchartModel->get_fontsize();
+        $date_display = $get_fanchartModel->get_date_display();
+        $printing = $get_fanchartModel->get_printing();
 
+        // Doesn't work yet.
+        //$fanchart_item = $get_fanchartModel->generate_fanchart_item_array($chosengen);
+
+        //"fanchart_item" => $fanchart_item
         $data = array(
             "main_person" => $main_person,
             "ancestor_header" => $ancestor_header,
-            "chosengen" => $chosengen
+            "chosengen" => $chosengen,
+            "fontsize" => $fontsize,
+            "date_display" => $date_display,
+            "printing" => $printing
         );
+
+        //$data = array_merge($data, $fanchart_item);
+
         return $data;
     }
 }

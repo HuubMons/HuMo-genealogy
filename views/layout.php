@@ -72,6 +72,7 @@ if (isset($_POST['favorite_remove'])) {
 // TODO this is probably disabled allready.
 // *** Cookie for "show descendant chart below fanchart"
 // Set default ("0" is OFF, "1" is ON):
+/*
 $showdesc = "0";
 if (isset($_POST['show_desc'])) {
     if ($_POST['show_desc'] == "1") {
@@ -85,6 +86,7 @@ if (isset($_POST['show_desc'])) {
         // we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
     }
 }
+*/
 
 // ----------- RTL by Dr Maleki ------------------
 $html_text = '';
@@ -762,7 +764,7 @@ $menu_top = getActiveTopMenu($page);
                         <?= $text; ?>
                     </div>
                 </div>
-            <?php
+        <?php
             } else {
                 // *** Show default HuMo-genealogy homepage ***
                 //$mainindex->show_tree_index();
