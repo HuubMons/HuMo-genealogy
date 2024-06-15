@@ -17,7 +17,11 @@ class Outline_reportController
         $OutlineReportModel = new OutlineReportModel($dbh);
         $family_id = $OutlineReportModel->getFamilyId();
         $main_person = $OutlineReportModel->getMainPerson();
-        $family_expanded =  $OutlineReportModel->getFamilyExpanded();
+
+        //$family_expanded =  $OutlineReportModel->getFamilyExpanded();
+        // *** Use compact view in outline report ***
+        $family_expanded = 'compact';
+
         $source_presentation =  $OutlineReportModel->getSourcePresentation();
         $picture_presentation =  $OutlineReportModel->getPicturePresentation();
         $text_presentation =  $OutlineReportModel->getTextPresentation();

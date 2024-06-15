@@ -1,15 +1,17 @@
 <?php
-
 include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/date_place.php');
+include_once(__DIR__ . "/../../include/show_tree_date.php");
 
 class Mainindex_cls
 {
 
+    /*
     public function __construct()
     {
-        //$this->var = $var;
+        $this->var = $var;
     }
+    */
 
     public function show_tree_index()
     {
@@ -291,50 +293,8 @@ class Mainindex_cls
     // *** Family tree data ***
     public function tree_data()
     {
-        global $dataDb, $language;
-        $tree_date = $dataDb->tree_date;
-
-        $month = ''; // *** empty date ***
-        if (substr($tree_date, 5, 2) === '01') {
-            $month = ' ' . __('jan') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '02') {
-            $month = ' ' . __('feb') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '03') {
-            $month = ' ' . __('mar') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '04') {
-            $month = ' ' . __('apr') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '05') {
-            $month = ' ' . __('may') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '06') {
-            $month = ' ' . __('jun') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '07') {
-            $month = ' ' . __('jul') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '08') {
-            $month = ' ' . __('aug') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '09') {
-            $month = ' ' . __('sep') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '10') {
-            $month = ' ' . __('oct') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '11') {
-            $month = ' ' . __('nov') . ' ';
-        }
-        if (substr($tree_date, 5, 2) === '12') {
-            $month = ' ' . __('dec') . ' ';
-        }
-
-        $tree_date = substr($tree_date, 8, 2) . $month . substr($tree_date, 0, 4) . " " . substr($tree_date, 11, 5);
-
-        return __('Latest update:') . ' ' . $tree_date . ', ' . $dataDb->tree_persons . ' ' . __('persons') . ", " . $dataDb->tree_families . ' ' . __('families');
+        global $dataDb;
+        return __('Latest update:') . ' ' . show_tree_date($dataDb->tree_date, true) . ', ' . $dataDb->tree_persons . ' ' . __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families');
     }
 
     // *** Owner family tree ***

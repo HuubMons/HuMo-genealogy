@@ -972,7 +972,11 @@ class person_cls
 
             $text_start .= '<a href="' . $start_url . '"';
             if ($extended) {
-                $text_start .= ' class="nam" style="z-index:100;font-size:10px; display:block; width:100%; height:100%" ';
+                if ($page == 'ancestor_sheet') {
+                    $text_start .= ' class="nam" style="z-index:100;display:block; width:100%; height:100%" ';
+                } else {
+                    $text_start .= ' class="nam" style="z-index:100;font-size:10px; display:block; width:100%; height:100%" ';
+                }
             }
 
             $random_nr = rand(); // *** Generate a random number to avoid double numbers ***

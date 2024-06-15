@@ -8,10 +8,10 @@
 
 
 // TODO create seperate controller script.
+// Allready prepared controller. But can't use it yet because of tree_index and mainindex.
 require_once  __DIR__ . "/../app/model/tree_index.php";
 $mainindex = new Mainindex_cls($dbh);
-$item_array = $mainindex->show_tree_index();
-
+$tree_index["items"] = $mainindex->show_tree_index();
 
 
 // *** Show slideshow ***
@@ -25,15 +25,15 @@ if ($page != 'tree_index') {
 $left = false;
 $center = false;
 $right = false;
-$counter = count($item_array);
+$counter = count($tree_index["items"]);
 for ($i = 0; $i < $counter; $i++) {
-    if ($item_array[$i]['position'] == 'left') {
+    if ($tree_index["items"][$i]['position'] == 'left') {
         $left = true;
     }
-    if ($item_array[$i]['position'] == 'center') {
+    if ($tree_index["items"][$i]['position'] == 'center') {
         $center = true;
     }
-    if ($item_array[$i]['position'] == 'right') {
+    if ($tree_index["items"][$i]['position'] == 'right') {
         $right = true;
     }
 }
@@ -51,13 +51,13 @@ if (!$left || !$right) {
     <?php if ($left) { ?>
         <div class="col-sm-3">
             <div class="row">
-                <?php for ($i = 0; $i < count($item_array); $i++) { ?>
-                    <?php if ($item_array[$i]['position'] == 'left') { ?>
+                <?php for ($i = 0; $i < count($tree_index["items"]); $i++) { ?>
+                    <?php if ($tree_index["items"][$i]['position'] == 'left') { ?>
                         <div class="col-12">
                             <!-- <div class="mb-3 bg-light p-2 border"> -->
                             <div class="mb-3 p-2 border genealogy_box">
-                                <?php if ($item_array[$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $item_array[$i]['header'] . '</strong></h5>'; ?>
-                                <?= $item_array[$i]['item']; ?>
+                                <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $tree_index["items"][$i]['header'] . '</strong></h5>'; ?>
+                                <?= $tree_index["items"][$i]['item']; ?>
                             </div>
                         </div>
                     <?php } ?>
@@ -70,13 +70,13 @@ if (!$left || !$right) {
     <!-- Remark: text in this column is centered (class text-center) -->
     <div class="<?= $middle; ?>">
         <div class="row">
-            <?php for ($i = 0; $i < count($item_array); $i++) { ?>
-                <?php if ($item_array[$i]['position'] == 'center') { ?>
+            <?php for ($i = 0; $i < count($tree_index["items"]); $i++) { ?>
+                <?php if ($tree_index["items"][$i]['position'] == 'center') { ?>
                     <div class="col-12">
                         <!-- <div class="mb-3 bg-light p-2 border  text-center"> -->
                         <div class="mb-3 p-2 border text-center genealogy_box">
-                            <?php if ($item_array[$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $item_array[$i]['header'] . '</strong></h5>'; ?>
-                            <?= $item_array[$i]['item']; ?>
+                            <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $tree_index["items"][$i]['header'] . '</strong></h5>'; ?>
+                            <?= $tree_index["items"][$i]['item']; ?>
                         </div>
                     </div>
                 <?php } ?>
@@ -88,13 +88,13 @@ if (!$left || !$right) {
     <?php if ($right) { ?>
         <div class="col-sm-3">
             <div class="row">
-                <?php for ($i = 0; $i < count($item_array); $i++) { ?>
-                    <?php if ($item_array[$i]['position'] == 'right') { ?>
+                <?php for ($i = 0; $i < count($tree_index["items"]); $i++) { ?>
+                    <?php if ($tree_index["items"][$i]['position'] == 'right') { ?>
                         <div class="col-12">
                             <!-- <div class="mb-3 bg-light p-2 border"> -->
                             <div class="mb-3 p-2 border genealogy_box">
-                                <?php if ($item_array[$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $item_array[$i]['header'] . '</strong></h5>'; ?>
-                                <?= $item_array[$i]['item']; ?>
+                                <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $tree_index["items"][$i]['header'] . '</strong></h5>'; ?>
+                                <?= $tree_index["items"][$i]['item']; ?>
                             </div>
                         </div>
                     <?php } ?>

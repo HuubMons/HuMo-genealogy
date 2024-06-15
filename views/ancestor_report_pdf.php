@@ -1,7 +1,7 @@
 <?php
 
 /**
- * First test scipt made by: Klaas de Winkel
+ * First test script made by: Klaas de Winkel
  * Graphical script made by: Theo Huitema
  * Graphical part: better lay-out (colours) and pictures made by: Rene Janssen
  * Graphical part: improved lay-out by: Huub Mons.

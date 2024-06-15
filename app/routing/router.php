@@ -7,6 +7,7 @@ class Router
         // *** Must be before address ***
         ['path' => 'addresses', 'title' => 'Addresses', 'page' => 'addresses', 'vars' => 'select_tree_id'],
         ['path' => 'address', 'title' => 'Address', 'page' => 'address', 'vars' => 'select_tree_id,id'],
+        ['path' => 'ancestor_report_rtf', 'title' => 'Ancestor report', 'page' => 'ancestor_report_rtf', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_report', 'title' => 'Ancestor report', 'page' => 'ancestor_report', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_chart', 'title' => 'Ancestor chart', 'page' => 'ancestor_chart'],
         ['path' => 'ancestor_sheet', 'title' => 'Ancestor sheet', 'page' => 'ancestor_sheet'],

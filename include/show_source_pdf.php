@@ -21,8 +21,7 @@ function source_display_pdf($sourcenum)
 
     // *** Check user authority ***
     if ($user['group_sources'] != 'j') {
-        echo __('You are not authorised to see this page.');
-        exit();
+        exit(__('You are not authorised to see this page.'));
     }
 
     $sourceDb = $db_functions->get_source($sourcenum);

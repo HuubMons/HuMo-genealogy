@@ -19,6 +19,7 @@ class Link_cls
     // *** Seperator can be used if rewrite is disabled ***
     public $link_array = [
         ['page' => 'addresses', 'file_rewrite' => 'addresses', 'file' => 'index.php?page=addresses', 'seperator' => '&amp;'],
+        ['page' => 'ancestor_report_rtf', 'file_rewrite' => 'ancestor_report_rtf', 'file' => 'index.php?page=ancestor_report_rtf', 'seperator' => '&amp;'],
         ['page' => 'ancestor_report', 'file_rewrite' => 'ancestor_report', 'file' => 'index.php?page=ancestor_report', 'seperator' => '&amp;'],
         ['page' => 'anniversary', 'file_rewrite' => 'anniversary', 'file' => 'index.php?page=anniversary', 'seperator' => '&amp;'],
         ['page' => 'cms_pages', 'file_rewrite' => 'cms_pages', 'file' => 'index.php?page=cms_pages', 'seperator' => '&amp;'],

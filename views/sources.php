@@ -1,8 +1,7 @@
 <?php
 // *** Check user authority ***
 if ($user['group_sources'] != 'j') {
-    echo __('You are not authorised to see this page.');
-    exit();
+    exit(__('You are not authorised to see this page.'));
 }
 
 $path = $link_cls->get_link($uri_path, 'sources', $tree_id, true);

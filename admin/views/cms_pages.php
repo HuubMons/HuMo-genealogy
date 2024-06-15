@@ -393,8 +393,8 @@ Please disconnect the pages from this menu first.'); ?></strong>
         </table>
 
         <!-- TinyMCE Editor -->
-        <script src="include/tinymce/tinymce.min.js"></script>
-        <script src="include/tinymce/tinymce_settings.js"></script>
+        <script src="../assets/tinymce/tinymce.min.js"></script>
+        <script src="include/tinymce_settings/tinymce_settings.js"></script>
     <?php
     }
 

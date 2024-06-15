@@ -3,21 +3,8 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-
-$phpself = 'index.php';
-
-
-
-// TODO create seperate controller script.
-require_once  __DIR__ . "/../models/groups.php";
-$groupsModel = new GroupsModel($dbh);
-$groupsModel->set_group_id();
-$groupsModel->update_group($dbh);
-$groups['group_id'] = $groupsModel->get_group_id();
-
-
-
 ?>
+
 <h1 class="center"><?= __('User groups'); ?></h1>
 
 <?php
@@ -32,7 +19,7 @@ if (isset($_POST['group_remove'])) {
             <strong><?= __('It\'s not possible to delete this group: there is/ are'); ?> <?= $nr_users; ?> <?= __('user(s) connected to this group!'); ?></strong>
         <?php } else { ?>
             <strong><?= __('Are you sure you want to remove the group:'); ?> "<?= $_POST['group_name']; ?>"?</strong>
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
                 <input type="submit" name="group_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
@@ -59,7 +46,7 @@ $groupresult = $dbh->query($groupsql);
         <td>
             <b><?= __('Choose a user group: '); ?></b>
             <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
-                <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+                <form method="POST" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="group_id" value="<?= $groupDb->group_id; ?>">
                     <input type="submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
@@ -67,7 +54,7 @@ $groupresult = $dbh->query($groupsql);
             <?php } ?>
 
             <!-- Add group -->
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="POST" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="submit" name="group_add" value="<?= __('ADD GROUP'); ?>" class="btn btn-sm btn-secondary">
             </form>
@@ -105,9 +92,9 @@ if (!isset($field['group_show_age_living_person'])) {
 $groupsql = "SELECT * FROM humo_groups WHERE group_id='" . $groups['group_id'] . "'";
 $groupresult = $dbh->query($groupsql);
 $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
-
 ?>
-<form method="POST" action="<?= $phpself; ?>">
+
+<form method="POST" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
     <table class="humo standard" border="1">
@@ -282,10 +269,12 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <tr>
             <td><?= __('Show name in indexes'); ?></td>
-            <td><select size="1" name="group_kindindex">
+            <td>
+                <select size="1" name="group_kindindex">
                     <option value='j'>van Mons, Henk</option>
                     <option value="n" <?= $groupDb->group_kindindex == 'n' ? 'selected' : ''; ?>>Mons, Henk van</option>
-                </select></td>
+                </select>
+            </td>
         </tr>
 
         <tr>

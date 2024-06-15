@@ -10,52 +10,57 @@ if ($data["authorised"] != '') {
     <tr>
         <td>
             <h2><?php echo __('Address'); ?></h2>
-            <?php //echo $data["title"]; 
-            ?>
 
+            <?php if ($data["address"]->address_address) { ?>
+                <b><?= __('Street'); ?>:</b> <?= $data["address"]->address_address; ?><br>
             <?php
-            if ($data["address"]->address_address) {
-                echo '<b>' . __('Street') . ':</b> ' . $data["address"]->address_address . '<br>';
             }
             if ($data["address"]->address_zip) {
-                echo '<b>' . __('Zip code') . ':</b> ' . $data["address"]->address_zip . '<br>';
+            ?>
+                <b><?= __('Zip code'); ?>:</b> <?= $data["address"]->address_zip; ?><br>
+            <?php
             }
             if ($data["address"]->address_place) {
-                echo '<b>' . __('Place') . ':</b> ' . $data["address"]->address_place . '<br>';
+            ?>
+                <b><?= __('Place'); ?>:</b> <?= $data["address"]->address_place; ?><br>
+            <?php
             }
             if ($data["address"]->address_phone) {
-                echo '<b>' . __('Phone') . ':</b>' . $data["address"]->address_phone . '<br>';
-            }
-            if ($data["address"]->address_text) { ?>
+            ?>
+                <b><?= __('Phone'); ?>:</b><?= $data["address"]->address_phone; ?><br>
+            <?php
+            } ?>
         </td>
     </tr>
-    <tr>
-        <td>
-        <?= nl2br($data["address"]->address_text);
-            }
 
-            // *** show pictures by address here ? ***
+    <?php if ($data["address"]->address_text) { ?>
+        <tr>
+            <td>
+                <?= nl2br($data["address"]->address_text); ?>
+            </td>
+        </tr>
+    <?php } ?>
 
-            // *** Show source by addresss ***
-            if ($data["address_sources"]) { ?>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <?= '<b>' . __('Source') . ' ' . $data["address_sources"]; ?>
-        <?php
-            }
+    <!-- show pictures by address here ? -->
 
-            if ($data["address_connected_persons"]) { ?>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <!-- *** Show persons connected to address *** -->
-            <?= $data["address_connected_persons"]; ?>
-        <?php } ?>
-        </td>
-    </tr>
+    <?php if ($data["address_sources"]) { ?>
+        <tr>
+            <td>
+                <?= '<b>' . __('Source') . ' ' . $data["address_sources"]; ?>
+            </td>
+        </tr>
+    <?php
+    } ?>
+
+    <?php if ($data["address_connected_persons"]) { ?>
+        <tr>
+            <td>
+                <!-- *** Show persons connected to address *** -->
+                <?= $data["address_connected_persons"]; ?>
+            </td>
+        </tr>
+    <?php } ?>
+
 </table>
 
 <?php

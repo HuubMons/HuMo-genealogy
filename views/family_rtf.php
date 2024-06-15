@@ -15,7 +15,6 @@ $screen_mode = 'RTF';
 
 
 // TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../app/model/family.php";
 $get_family = new FamilyModel($dbh);
 $data["family_id"] = $get_family->getFamilyId();
