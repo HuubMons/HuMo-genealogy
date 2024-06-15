@@ -745,6 +745,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'editor_user_settings') {
         include_once(__DIR__ . "/include/editor_user_settings.php");
     } elseif ($page === 'groups') {
+        require __DIR__ . '/controller/groupsController.php';
+        $controllerObj = new GroupsController();
+        $groups = $controllerObj->detail($dbh);
         include_once(__DIR__ . "/views/groups.php");
     } elseif ($page === 'cms_pages') {
         include_once(__DIR__ . "/views/cms_pages.php");

@@ -212,20 +212,18 @@ function kwname($start, $end, $increment, $fontclass, $colspan, $type)
                 }
             }
 
-            if ($colspan > 1) {
-                echo '<td colspan=' . $colspan . $sexe_colour . ' class="' . $fontclass . '">';
-            } else {
-                echo '<td' . $sexe_colour . ' class="' . $fontclass . '">';
-            }
-            $kwpers = ancestor_chart_person($x, $type);
-            if ($kwpers != '') {
-                echo $kwpers;
-            } else {   // if we don't do this IE7 wil not print borders of cells
-                echo '&nbsp;';
-            }
-            echo '</td>';
-        }
         ?>
+            <td <?= $colspan > 1 ? 'colspan=' . $colspan : ''; ?><?= $sexe_colour; ?> class="<?= $fontclass; ?>">
+                <?php
+                $kwpers = ancestor_chart_person($x, $type);
+                if ($kwpers != '') {
+                    echo $kwpers;
+                } else {   // if we don't do this IE7 wil not print borders of cells
+                    echo '&nbsp;';
+                }
+                ?>
+            </td>
+        <?php } ?>
     </tr>
 <?php
 }

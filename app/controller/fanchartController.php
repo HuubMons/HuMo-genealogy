@@ -25,6 +25,9 @@ class FanchartController
         $fontsize = $get_fanchartModel->get_fontsize();
         $date_display = $get_fanchartModel->get_date_display();
         $printing = $get_fanchartModel->get_printing();
+        $fan_style = $get_fanchartModel->get_fan_style();
+        $fan_width = $get_fanchartModel->get_fan_width();
+        $real_width = $get_fanchartModel->get_real_width($fan_width);
 
         // Doesn't work yet.
         //$fanchart_item = $get_fanchartModel->generate_fanchart_item_array($chosengen);
@@ -36,7 +39,10 @@ class FanchartController
             "chosengen" => $chosengen,
             "fontsize" => $fontsize,
             "date_display" => $date_display,
-            "printing" => $printing
+            "printing" => $printing,
+            "fan_style" => $fan_style,
+            "fan_width" => $fan_width,
+            "real_width" => $real_width
         );
 
         //$data = array_merge($data, $fanchart_item);

@@ -20,6 +20,8 @@
 // *** Tab menu: ancestors ***
 echo $data['ancestor_header'];
 
+$maxgens = 7;
+
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
@@ -33,7 +35,6 @@ if (!isset($_POST['show_desc'])) {  // first entry into page - check cookie or s
 }
 // The $_POST['show_desc'] and cookie setting is handled in header script before the headers are sent
 */
-
 
 $data["fanchart_item"] = array();
 $maxperson = pow(2, $data["chosengen"]);
@@ -124,9 +125,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
     $line = "";
 
     if ($rtlflag == 1 && $nameflag == 1) {    // rtl name has to be re-positioned
-        // TODO check global
-        global $fan_style;
-        if ($fan_style == 2 && ($gennr == 1 || $gennr == 2)) {
+        if ($data["fan_style"] == 2 && ($gennr == 1 || $gennr == 2)) {
             $maxlen *= 1.5;
         } // half-circle has different position for 2nd 3rd generation
         else {
@@ -186,7 +185,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
  */
 function print_fan_chart($data, $fanw = 840, $fandeg = 270)
 {
-    global $dbh, $tree_id, $db_functions, $fan_style, $language, $selected_language, $tree_prefix_quoted, $china_message;
+    global $dbh, $tree_id, $db_functions, $language, $selected_language, $tree_prefix_quoted, $china_message;
     // check for GD 2.x library
 
     //$data["fanchart_item"] = $fanchart_item;
@@ -360,7 +359,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                 } else if ($data["date_display"] == 3) {  //show full dates (but not in narrow outer circles!)
                     if ($gen > 5) {
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
-                    } else if ($gen > 4 and $fan_style != 4) {
+                    } else if ($gen > 4 and $data["fan_style"] != 4) {
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
                     } else {  // full dates
                         if ($birthyr) {
@@ -527,39 +526,16 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
 //</style>
 //<div id="rotate">Rotate<br>漢字<br>טבלאות בסיס</div>
 //';
-
-
-$maxgens = 7;
-
-$fan_style = 3;
-if (isset($_GET["fan_style"])) {
-    $fan_style = $_GET["fan_style"];
-}
-if (isset($_POST["fan_style"])) {
-    $fan_style = $_POST["fan_style"];
-}
-
-$fan_width = "auto";
-if (isset($_GET["fan_width"])) {
-    $fan_width = $_GET["fan_width"];
-}
-if (isset($_POST["fan_width"])) {
-    $fan_width = $_POST["fan_width"];
-}
-
-if ($fan_width > 50 and $fan_width < 301) {
-    $tmp_width = $fan_width;
-} else { // "auto" or invalid entry - reset to 100%
-    $tmp_width = 100;
-}
-$realwidth = (840 * $tmp_width) / 100; // realwidth needed for next line (top text)
-
-// *** Text on Top: Name of base person and print-help link ***
 ?>
+
 <!-- TODO replace with bootstrap popup -->
-<!-- <div style="border:1px;z-index:80; position:absolute; top:20px; left:135px; width:<?= $realwidth; ?>px; height:30px; text-align:center; color:#000000"> -->
-<div style="border:1px;z-index:80; width:<?= $realwidth; ?>px;">
-    <?php /* <strong><?= __('Fanchart') . ' - ' . $data["fanchart_item"][1][0]; ?></strong> */ ?>
+<!-- <div style="border:1px;z-index:80; position:absolute; top:20px; left:135px; width:<?= $data["real_width"]; ?>px; height:30px; text-align:center; color:#000000"> -->
+<div style="border:1px;z-index:80; width:<?= $data["real_width"]; ?>px;">
+    <?php
+    /* 
+    <strong><?= __('Fanchart') . ' - ' . $data["fanchart_item"][1][0]; ?></strong>
+    */
+    ?>
     <!-- HELP POP-UP -->
     <div class=<?= $rtlmarker; ?>sddm>
         <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',0,0)" onmouseout="mclosetime()">
@@ -585,29 +561,29 @@ and adjust printing size to fit the page<br>
 //    and the boxes for generations in outer circle(s) become too small
 //    Same for 6 generations in half circle chart
 
-if ($fan_width == "auto" or $fan_width == "") {  // if someone cleared the field alltogether we'll handle it as "auto"
+if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {  // if someone cleared the field alltogether we'll handle it as "auto"
     $menu_fan = "auto"; // $menu_fan is what will be displayed in menu. If size is changed automatically still "auto" will be displayed
     if ($data["chosengen"] == 7) {
-        if ($fan_style == 2) {
-            $fan_width = 220;
-        } elseif ($fan_style == 3) {
-            $fan_width = 160;
-        } elseif ($fan_style == 4) {
-            $fan_width = 130;
+        if ($data["fan_style"] == 2) {
+            $data["fan_width"] = 220;
+        } elseif ($data["fan_style"] == 3) {
+            $data["fan_width"] = 160;
+        } elseif ($data["fan_style"] == 4) {
+            $data["fan_width"] = 130;
         } else { //YB: you can never get here, but just for paranoia's sake...
-            $fan_width = 100;
+            $data["fan_width"] = 100;
         }
     }
     // or 6 generations with half circle...
-    else if ($data["chosengen"] == 6 and $fan_style == 2) {
-        $fan_width = 130;
+    else if ($data["chosengen"] == 6 and $data["fan_style"] == 2) {
+        $data["fan_width"] = 130;
     } else {
-        $fan_width = 100;
+        $data["fan_width"] = 100;
     }
-} else if ($fan_width > 49 and $fan_width < 301) {  // valid entry by user
-    $menu_fan = $fan_width;
+} else if ($data["fan_width"] > 49 and $data["fan_width"] < 301) {  // valid entry by user
+    $menu_fan = $data["fan_width"];
 } else { // invalid entry! reset it.
-    $fan_width = 100;
+    $data["fan_width"] = 100;
     $menu_fan = "auto";
 }
 
@@ -622,9 +598,9 @@ $path_tmp .= 'id=' . $data["main_person"];
             <!-- Fan style -->
             <?= __('Fan style'); ?><br>
             <div>
-                <input type="radio" name="fan_style" value="2" <?php if ($fan_style == 2) echo ' checked'; ?>><?= __('half'); ?><br>
-                <input type="radio" name="fan_style" value="3" <?php if ($fan_style == 3) echo ' checked'; ?>> 3/4<br>
-                <input type="radio" name="fan_style" value="4" <?php if ($fan_style == 4) echo ' checked'; ?>><?= __('full'); ?>
+                <input type="radio" name="fan_style" value="2" <?php if ($data["fan_style"] == 2) echo ' checked'; ?>><?= __('half'); ?><br>
+                <input type="radio" name="fan_style" value="3" <?php if ($data["fan_style"] == 3) echo ' checked'; ?>> 3/4<br>
+                <input type="radio" name="fan_style" value="4" <?php if ($data["fan_style"] == 4) echo ' checked'; ?>><?= __('full'); ?>
             </div>
     </div>
     <div class="col">
@@ -688,9 +664,9 @@ $path_tmp .= 'id=' . $data["main_person"];
 $china_message = 0;
 // *** Container for fanchart ***
 ?>
-<div style="top:60px; left:135px; width:<?= (840 * $fan_width / 100); ?>px">
+<div style="top:60px; left:135px; width:<?= (840 * $data["fan_width"] / 100); ?>px">
     <div style="padding:5px">
-        <?php print_fan_chart($data, 840 * $fan_width / 100, $fan_style * 90); ?>
+        <?php print_fan_chart($data, 840 * $data["fan_width"] / 100, $data["fan_style"] * 90); ?>
     </div>
 </div>
 
@@ -711,10 +687,10 @@ if ($china_message == 1) {
 // *** Show descendants ***
 /*
 if ($showdesc == "1") {
-    $fan_w =  9.3 * $fan_width;
-    if ($fan_style == 2) $top_pos = $fan_w / 2 + 165;
-    elseif ($fan_style == 3) $top_pos = 0.856 * $fan_w;
-    elseif ($fan_style == 4) $top_pos = $fan_w;
+    $fan_w =  9.3 * $data["fan_width"];
+    if ($data["fan_style"] == 2) $top_pos = $fan_w / 2 + 165;
+    elseif ($data["fan_style"] == 3) $top_pos = 0.856 * $fan_w;
+    elseif ($data["fan_style"] == 4) $top_pos = $fan_w;
     echo '<iframe src="descendant/' . safe_text_db($_SESSION['tree_prefix']) . '/' . $indexnr . '?main_person=' . $data["main_person"] . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" ></iframe';
 }
 */
