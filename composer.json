@@ -5,6 +5,7 @@
         "humo-genealogy",
         "genealogy"
     ],
+    "license": "GPL-3.0-or-later",
     "require": {
         "phpmailer/phpmailer": "^6.9"
     }
