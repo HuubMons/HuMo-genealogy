@@ -183,9 +183,9 @@ $menu_top = getActiveTopMenu($page);
     if (
         strpos($_SERVER['REQUEST_URI'], "maps") !== false || strpos($_SERVER['REQUEST_URI'], "descendant") !== false || strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
     ) {
-        echo '<script src="include/jquery/jquery.min.js"></script> ';
-        echo '<link rel="stylesheet" href="include/jqueryui/jquery-ui.min.css"> ';
-        echo '<script src="include/jqueryui/jquery-ui.min.js"></script>';
+        echo '<script src="assets/jquery/jquery.min.js"></script> ';
+        echo '<link rel="stylesheet" href="assets/jqueryui/jquery-ui.min.css"> ';
+        echo '<script src="assets/jqueryui/jquery-ui.min.js"></script>';
     }
 
     // *** Cookie for theme selection ***
