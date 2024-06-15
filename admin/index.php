@@ -410,34 +410,31 @@ if (file_exists('../media/favicon.ico')) {
     <?= $favicon; ?>
 
     <!-- Bootstrap added in dec. 2023 -->
-    <link href="../css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="../css/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <link href="admin.css" rel="stylesheet" type="text/css">
 
     <!-- CSS changes for mobile devices -->
     <link rel="stylesheet" media="(max-width: 640px)" href="admin_mobile.css">
 
-    <script src="../include/jquery/jquery.min.js"></script>
-    <script src="../include/jqueryui/jquery-ui.min.js"></script>
+    <script src="../assets/jquery/jquery.min.js"></script>
+    <script src="../assets/jqueryui/jquery-ui.min.js"></script>
 
-    <!-- Don't load all scripts for source editor (improves speed of page) --?
-        <?php if ($popup == false) { ?>
-            <!-- Statistics style sheet -->
-    <link href="statistics/style.css" rel="stylesheet" type="text/css">
+    <!-- Don't load all scripts for source editor (improves speed of page) -->
+    <?php if ($popup == false) { ?>
+        <!-- Statistics style sheet -->
+        <link href="statistics/style.css" rel="stylesheet" type="text/css">
+        <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
+        <script src="include/popup_merge.js"></script>
+    <?php } ?>
 
-    <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
-
-    <script src="include/popup_merge.js"></script>
-<?php } ?>
-
-<!-- Pop-up menu -->
-<link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
-<script src="../include/popup_menu/popup_menu.js"></script>
+    <!-- Pop-up menu -->
+    <link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
+    <script src="../include/popup_menu/popup_menu.js"></script>
 </head>
 
 <?php
-
 // *** Close pop-up screen and update main screen ***
 if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
     $page_link = 'editor';
@@ -682,18 +679,16 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
             <?php }; ?>
         </div>
     </div>
-    <?php
 
+    <?php
     // *** Show menu ***
     include_once(__DIR__ . '/views/menu.php');
 
     if ($popup == false) {
     ?>
     </div> <!-- End of humo_top -->
-<?php
-    }
+<?php } ?>
 
-?>
 <div id="content_admin">
     <?php
     define('ADMIN_PAGE', true); // *** Safety line ***
@@ -717,6 +712,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'edit_repositories') {
         include_once(__DIR__ . "/views/edit_repository.php");
     } elseif ($page === 'edit_addresses') {
+        //require __DIR__ . '/controller/addressController.php';
+        //$controllerObj = new AddressController();
+        //$editAddress = $controllerObj->detail($dbh);
         include_once(__DIR__ . "/views/edit_address.php");
     } elseif ($page === 'edit_places') {
         include_once(__DIR__ . "/views/edit_rename_place.php");
@@ -745,6 +743,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'editor_user_settings') {
         include_once(__DIR__ . "/include/editor_user_settings.php");
     } elseif ($page === 'groups') {
+        require __DIR__ . '/controller/groupsController.php';
+        $controllerObj = new GroupsController();
+        $groups = $controllerObj->detail($dbh);
         include_once(__DIR__ . "/views/groups.php");
     } elseif ($page === 'cms_pages') {
         include_once(__DIR__ . "/views/cms_pages.php");

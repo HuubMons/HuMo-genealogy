@@ -128,7 +128,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                 } else {
                     $path = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;';
                     // Don't use &amp; for javascript.
-                    $path2 = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
+                    $path2 = 'index.php?page=descendant_chart&tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
                 }
                 ?>
 
@@ -153,14 +153,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                     <?php } ?>
                 </form>
 
-                <?php
-                // TODO check code. This query isn't used?
-                //$result = $dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $data["main_person"] . "'");
-                //$resultDb = $result->fetch(PDO::FETCH_OBJ);
-                // TODO cleanup code
-                if ($data["dna"] != "none") {
-                    echo "&nbsp;&nbsp;" . __('DNA: ');
-                ?>
+                <?php if ($data["dna"] != "none") { ?>
+                    &nbsp;&nbsp;<?= __('DNA: '); ?>
                     <select name="dnachart" style="width:150px" onChange="window.location=this.value">
                         <?php
                         if ($data["base_person_sexe"] == "M") {        // only show Y-DNA option if base person is male
@@ -263,8 +257,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
                     endPos = ui.value;
                     if (startPos != endPos) {
                         window.location.href = "' . $path2 . 'main_person=' . $data["main_person"] .
-                    '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
-                    '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
+                '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
+                '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
                         }
                     startPos = endPos;
                 });

@@ -1,15 +1,15 @@
 <?php
 require_once  __DIR__ . "/../model/family.php";
 require_once  __DIR__ . "/../model/descendant.php";
+require_once  __DIR__ . "/../model/ancestor.php";
 
 class HourglassController
 {
     //private $db_functions, $user;
 
-    //public function __construct($db_functions, $user)
+    //public function __construct($db_functions)
     //{
     //    $this->db_functions = $db_functions;
-    //    $this->user = $user;
     //}
 
     public function getHourglass($dbh, $tree_id)
@@ -76,6 +76,12 @@ class HourglassController
 
             "title" => __('Family')
         );
+
+        // *** Ancestors ***
+        $get_ancestorModel = new AncestorModel($dbh);
+        $get_ancestors = $get_ancestorModel->get_ancestors($db_functions, $main_person);
+        $data = array_merge($data, $get_ancestors);
+
         return $data;
     }
 }

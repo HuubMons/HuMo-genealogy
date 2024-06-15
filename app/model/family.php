@@ -43,7 +43,6 @@ class FamilyModel
     // TEST
     //use Hello, World;
 
-
     public function __construct($dbh)
     {
         $this->dbh = $dbh;
@@ -147,7 +146,6 @@ class FamilyModel
             $_SESSION['save_picture_presentation'] = $_GET["picture_presentation"];
         }
         // *** Default setting is selected by administrator ***
-        //$picture_presentation=$user['group_picture_presentation'];
         if (isset($_SESSION['save_picture_presentation']) && in_array($_SESSION['save_picture_presentation'], $picture_presentation_array)) {
             $picture_presentation = $_SESSION['save_picture_presentation'];
         }

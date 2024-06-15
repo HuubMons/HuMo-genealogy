@@ -72,6 +72,7 @@ if (isset($_POST['favorite_remove'])) {
 // TODO this is probably disabled allready.
 // *** Cookie for "show descendant chart below fanchart"
 // Set default ("0" is OFF, "1" is ON):
+/*
 $showdesc = "0";
 if (isset($_POST['show_desc'])) {
     if ($_POST['show_desc'] == "1") {
@@ -85,6 +86,7 @@ if (isset($_POST['show_desc'])) {
         // we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
     }
 }
+*/
 
 // ----------- RTL by Dr Maleki ------------------
 $html_text = '';
@@ -147,8 +149,8 @@ $menu_top = getActiveTopMenu($page);
     <?php } ?>
 
     <!-- Bootstrap added in dec. 2023 -->
-    <link href="css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="css/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Default CSS settings -->
     <link href="css/gedcom.css" rel="stylesheet" type="text/css">
@@ -181,9 +183,9 @@ $menu_top = getActiveTopMenu($page);
     if (
         strpos($_SERVER['REQUEST_URI'], "maps") !== false || strpos($_SERVER['REQUEST_URI'], "descendant") !== false || strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
     ) {
-        echo '<script src="include/jquery/jquery.min.js"></script> ';
-        echo '<link rel="stylesheet" href="include/jqueryui/jquery-ui.min.css"> ';
-        echo '<script src="include/jqueryui/jquery-ui.min.js"></script>';
+        echo '<script src="assets/jquery/jquery.min.js"></script> ';
+        echo '<link rel="stylesheet" href="assets/jqueryui/jquery-ui.min.css"> ';
+        echo '<script src="assets/jqueryui/jquery-ui.min.js"></script>';
     }
 
     // *** Cookie for theme selection ***
@@ -661,7 +663,7 @@ $menu_top = getActiveTopMenu($page);
                     <?php if (!$bot_visit) { ?>
                         <li class="nav-item dropdown">
                             <?php include_once(__DIR__ . "/partial/select_language.php"); ?>
-                            <?php $language_path = $link_cls->get_link($uri_path, 'language', '', true);?>
+                            <?php $language_path = $link_cls->get_link($uri_path, 'language', '', true); ?>
                             <?= show_country_flags($selected_language, '', 'language', $language_path); ?>
                         </li>
                     <?php } ?>
@@ -778,7 +780,8 @@ $menu_top = getActiveTopMenu($page);
 
         <!-- TODO improve code for tab menu in ascendants and descendants -->
         <!-- End of tab menu, if used -->
-        <?php if (isset($_GET['descendant_report']) && $_GET['descendant_report'] == '1' || $page == 'outline_report' || $page == 'descendant_chart' || $page == 'ancestor_report' || $page == 'ancestor_sheet' || $page == 'ancestor_chart' || $page == 'fanchart'
+        <?php if (
+            isset($_GET['descendant_report']) && $_GET['descendant_report'] == '1' || $page == 'outline_report' || $page == 'descendant_chart' || $page == 'ancestor_report' || $page == 'ancestor_sheet' || $page == 'ancestor_chart' || $page == 'fanchart'
         ) { ?>
         </div>
     <?php } ?>

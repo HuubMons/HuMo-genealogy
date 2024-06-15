@@ -983,16 +983,8 @@ elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
                 <td><?= __('include blank lastnames'); ?></td>
                 <td>
                     <select size="1" name="merge_lastname">
-                        <?php
-                        // TODO improve this code.
-                        if ($lastnDb->setting_value == 'YES') {
-                            echo '<option value="YES" selected>' . __('Yes') . '</option>';
-                            echo '<option value="NO">' . __('No') . '</option>';
-                        } else {
-                            echo '<option value="NO" selected>' . __('No') . '</option>';
-                            echo '<option value="YES">' . __('Yes') . '</option>';
-                        }
-                        ?>
+                        <option value="YES"><?= __('Yes'); ?></option>
+                        <option value="NO" <?= $lastnDb->setting_value == 'NO' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                     </select>
                 </td>
                 <td>
@@ -1004,15 +996,8 @@ elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
                 <td><?= __('include blank firstnames'); ?></td>
                 <td>
                     <select size="1" name="merge_firstname">
-                        <?php
-                        if ($firstnDb->setting_value == 'YES') {
-                            echo '<option value="YES" selected>' . __('Yes') . '</option>';
-                            echo '<option value="NO">' . __('No') . '</option>';
-                        } else {
-                            echo '<option value="NO" selected>' . __('No') . '</option>';
-                            echo '<option value="YES">' . __('Yes') . '</option>';
-                        }
-                        ?>
+                        <option value="YES"><?= __('Yes'); ?></option>
+                        <option value="NO" <?= $firstnDb->setting_value == 'NO' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                     </select>
                 </td>
                 <td>
@@ -1024,15 +1009,8 @@ elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
                 <td><?= __('include blank dates'); ?></td>
                 <td>
                     <select size="1" name="merge_dates">
-                        <?php
-                        if ($datesDb->setting_value == 'YES') {
-                            echo '<option value="YES" selected>' . __('Yes') . '</option>';
-                            echo '<option value="NO">' . __('No') . '</option>';
-                        } else {
-                            echo '<option value="NO" selected>' . __('No') . '</option>';
-                            echo '<option value="YES">' . __('Yes') . '</option>';
-                        }
-                        ?>
+                        <option value="YES"><?= __('Yes'); ?></option>
+                        <option value="NO" <?= $datesDb->setting_value == 'NO' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                     </select>
                 </td>
                 <td>
@@ -1048,15 +1026,8 @@ elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
                 <td><?= __('include parents marriage date:'); ?></td>
                 <td>
                     <select size="1" name="merge_parentsdate">
-                        <?php
-                        if ($pardDb->setting_value == 'YES') {
-                            echo '<option value="YES" selected>' . __('Yes') . '</option>';
-                            echo '<option value="NO">' . __('No') . '</option>';
-                        } else {
-                            echo '<option value="NO" selected>' . __('No') . '</option>';
-                            echo '<option value="YES">' . __('Yes') . '</option>';
-                        }
-                        ?>
+                        <option value="YES"><?= __('Yes'); ?></option>
+                        <option value="NO" <?= $pardDb->setting_value == 'NO' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                     </select>
                 </td>
                 <td>
@@ -1068,8 +1039,8 @@ elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
                 <td></td>
                 <td></td>
                 <td style="text-align:center">
-                    <input type="submit" name="settings" value="<?= __('Save'); ?>">
-                    &nbsp;&nbsp;&nbsp;<input type="submit" name="reset" value="<?= __('Reset'); ?>">
+                    <input type="submit" name="settings" value="<?= __('Save'); ?>" class="btn btn-success">
+                    &nbsp;&nbsp;&nbsp;<input type="submit" name="reset" value="<?= __('Reset'); ?>" class="btn btn-secondary">
                 </td>
             </tr>
 

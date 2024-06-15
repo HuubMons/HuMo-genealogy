@@ -16,7 +16,7 @@ $_SESSION['save_last_visitid'] = $last_visited;
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favourite ***
 function topline($data)
 {
-    global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker;
+    global $dataDb, $dbh, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker;
     global $alignmarker, $language, $uri_path;
     global $user, $tree_id, $humo_option, $link_cls;
     global $database, $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
@@ -70,25 +70,9 @@ function topline($data)
                             <li>&nbsp;</li>
                             <li>
                                 <b><?= __('Sources'); ?></b><br>
-                                <?php
-                                $selected = '';
-                                if ($data["source_presentation"] == 'title') {
-                                    $selected = ' checked';
-                                }
-                                echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=title' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show source') . "<br>\n";
-
-                                $selected = '';
-                                if ($data["source_presentation"] == 'footnote') {
-                                    $selected = ' checked';
-                                }
-                                echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=footnote' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show source as footnote') . "<br>\n";
-
-                                $selected = '';
-                                if ($data["source_presentation"] == 'hide') {
-                                    $selected = ' checked';
-                                }
-                                echo '<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'source_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Hide sources') . "<br>\n";
-                                ?>
+                                <input type="radio" name="keuze1" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=title<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'title' ? 'checked' : ''; ?>> <?= __('Show source'); ?><br>
+                                <input type="radio" name="keuze1" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=footnote<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'footnote' ? 'checked' : ''; ?>> <?= __('Show source as footnote'); ?><br>
+                                <input type="radio" name="keuze1" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide sources'); ?><br>
                             </li>
                         <?php
                         }
@@ -100,83 +84,39 @@ function topline($data)
                             <li>
                                 <?php
                                 // *** Only show selection if there is a location database ***
-                                global $dbh;
                                 $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
                                 if ($temp->rowCount()) {
-                                    echo '<b>' . __('Family map') . '</b><br>';
-                                    $selected = '';
-                                    $selected2 = '';
-                                    if ($data["maps_presentation"] == 'hide') {
-                                        $selected2 = ' checked';
-                                    } else {
-                                        $selected = ' checked';
-                                    }
-
-                                    echo '<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'maps_presentation=show&xx=\'+this.value"' . $selected . '> ' . __('Show family map') . "<br>\n";
-
-                                    echo '<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'maps_presentation=hide&xx=\'+this.value"' . $selected2 . '> ' . __('Hide family map') . "<br>\n";
-                                }
                                 ?>
+                                    <b><?= __('Family map'); ?></b><br>
+                                    <input type="radio" name="keuze2" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=show&xx='+this.value" <?= $data["maps_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show family map'); ?><br>
+                                    <input type="radio" name="keuze2" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=hide&xx='+this.value" <?= $data["maps_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide family map'); ?><br>
+                                <?php } ?>
                             </li>
                         <?php } ?>
 
                         <?php if ($user['group_pictures'] == 'j') { ?>
                             <li>&nbsp;</li>
                             <li>
-                                <?php
-                                echo '<b>' . __('Pictures') . '</b><br>';
-                                $selected = '';
-                                $selected2 = '';
-                                if ($data["picture_presentation"] == 'hide') {
-                                    $selected2 = ' checked';
-                                } else {
-                                    $selected = ' checked';
-                                }
-
-                                echo '<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'picture_presentation=show' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show pictures') . "<br>\n";
-
-                                echo '<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'picture_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected2 . '> ' . __('Hide pictures') . "<br>\n";
-                                ?>
+                                <b><?= __('Pictures'); ?></b><br>
+                                <input type="radio" name="keuze3" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>picture_presentation=show<?= $desc_rep; ?>&xx='+this.value" <?= $data["picture_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show pictures'); ?><br>
+                                <input type="radio" name="keuze3" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>picture_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["picture_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide pictures'); ?><br>
                             </li>
                         <?php } ?>
 
                         <li>&nbsp;</li>
                         <li>
                             <b><?= __('Texts'); ?></b><br>
-                            <?php
-                            $selected = '';
-                            if ($data["text_presentation"] == 'show') {
-                                $selected = ' checked';
-                            }
-                            echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=show' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show texts') . "<br>\n";
-                            ?>
-
-                            <?php
-                            $selected = '';
-                            if ($data["text_presentation"] == 'popup') {
-                                $selected = ' checked';
-                            }
-                            echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=popup' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Show texts in popup screen') . "<br>\n";
-                            ?>
-
-                            <?php
-                            $selected = '';
-                            if ($data["text_presentation"] == 'hide') {
-                                $selected = ' checked';
-                            }
-                            echo '<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'' . $settings_url . $url_add . 'text_presentation=hide' . $desc_rep . '&xx=\'+this.value"' . $selected . '> ' . __('Hide texts') . "<br>\n";
-                            ?>
+                            <input type="radio" name="keuze4" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=show<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show texts'); ?><br>
+                            <input type="radio" name="keuze4" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=popup<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'popup' ? 'checked' : ''; ?>> <?= __('Show texts in popup screen'); ?><br>
+                            <input type="radio" name="keuze4" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide texts'); ?><br>
                         </li>
                     </ul>
                 </div>
 
-                <?php
-                //TODO check variables in forms (database -> tree_id).
-
-                // *** PDF button ***
-                if ($user["group_pdf_button"] == 'y' && $language["dir"] != "rtl" && $language["name"] != "简体中文") {
-                ?>
+                <!-- PDF button -->
+                <?php if ($user["group_pdf_button"] == 'y' && $language["dir"] != "rtl" && $language["name"] != "简体中文") { ?>
                     &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $uri_path; ?>views/family_pdf.php" style="display:inline-block; vertical-align:middle;">
+                        <!-- TODO check variables in forms (database -> tree_id). -->
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                         <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
@@ -737,20 +677,26 @@ else {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
                         $child_cls = new person_cls($childDb);
-
-                        echo '<tr><td colspan="4"><div class="children">';
-                        if ($famc_adoptiveDb->event_gedcom == 'steph') {
-                            echo '<b>' . __('Stepchild') . ':</b>';
-                        } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
-                            echo '<b>' . __('Legal child') . ':</b>';
-                        } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
-                            echo '<b>' . __('Foster child') . ':</b>';
-                        } else {
-                            echo '<b>' . __('Adopted child:') . '</b>';
-                        }
-
-                        echo ' ' . $child_cls->name_extended("child");
-                        echo '</div></td></tr>' . "\n";
+                    ?>
+                        <tr>
+                            <td colspan="4">
+                                <div class="children">
+                                    <?php
+                                    if ($famc_adoptiveDb->event_gedcom == 'steph') {
+                                        echo '<b>' . __('Stepchild') . ':</b>';
+                                    } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
+                                        echo '<b>' . __('Legal child') . ':</b>';
+                                    } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
+                                        echo '<b>' . __('Foster child') . ':</b>';
+                                    } else {
+                                        echo '<b>' . __('Adopted child:') . '</b>';
+                                    }
+                                    ?>
+                                    <?= $child_cls->name_extended("child"); ?>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php
                     }
                     // *************************************************************
                     // *** Check for adoptive parent ESPECIALLY MADE FOR ALDFAER ***
@@ -760,22 +706,27 @@ else {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
                         $child_cls = new person_cls($childDb);
-
-                        echo '<tr><td colspan="4"><div class="children">';
-                        if ($famc_adoptiveDb->event_gedcom == 'steph') {
-                            echo '<b>' . __('Stepchild') . ':</b>';
-                        } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
-                            echo '<b>' . __('Legal child') . ':</b>';
-                        } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
-                            echo '<b>' . __('Foster child') . ':</b>';
-                        } else {
-                            echo '<b>' . __('Adopted child:') . '</b>';
-                        }
-
-                        echo ' ' . $child_cls->name_extended("child");
-                        echo '</div></td></tr>' . "\n";
-                    }
                     ?>
+                        <tr>
+                            <td colspan="4">
+                                <div class="children">
+                                    <?php
+                                    if ($famc_adoptiveDb->event_gedcom == 'steph') {
+                                        echo '<b>' . __('Stepchild') . ':</b>';
+                                    } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
+                                        echo '<b>' . __('Legal child') . ':</b>';
+                                    } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
+                                        echo '<b>' . __('Foster child') . ':</b>';
+                                    } else {
+                                        echo '<b>' . __('Adopted child:') . '</b>';
+                                    }
+
+                                    echo ' ' . $child_cls->name_extended("child");
+                                    ?>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 </table><br>
 
                 <?php
@@ -1005,8 +956,10 @@ else {
                         $map = 'map' . $family_nr;
                         $markers = 'markers' . $family_nr;
                         $group = 'group' . $family_nr;
-                        echo '<div id="' . $map . '" style="width: 600px; height: 300px;"></div>';
+                ?>
+                        <div id="<?= $map; ?>" style="width: 600px; height: 300px;"></div>
 
+                        <?php
                         // *** Map using fitbound (all markers visible) ***
                         echo '<script>
                             var ' . $map . ' = L.map("' . $map . '").setView([48.85, 2.35], 10);
@@ -1105,7 +1058,7 @@ else {
                             </script>';
 
                         if ($show_google_map == true) {
-                ?>
+                        ?>
                             <?= __('Family events'); ?><br>
                             <div style="width: 600px; height: 300px; border: 0px; padding: 0px;" id="<?= $family_nr; ?>"></div>
                             <script>
