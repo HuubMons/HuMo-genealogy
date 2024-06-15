@@ -410,8 +410,8 @@ if (file_exists('../media/favicon.ico')) {
     <?= $favicon; ?>
 
     <!-- Bootstrap added in dec. 2023 -->
-    <link href="../css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="../css/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <link href="admin.css" rel="stylesheet" type="text/css">
 
