@@ -1,4 +1,10 @@
 {
+    "name": "HuubMons/HuMo-genealogy",
+    "description": "Online genealogy program",
+    "keywords": [
+        "humo-genealogy",
+        "genealogy"
+    ],
     "require": {
         "phpmailer/phpmailer": "^6.9"
     }
