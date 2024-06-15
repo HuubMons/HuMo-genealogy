@@ -421,23 +421,20 @@ if (file_exists('../media/favicon.ico')) {
     <script src="../assets/jquery/jquery.min.js"></script>
     <script src="../assets/jqueryui/jquery-ui.min.js"></script>
 
-    <!-- Don't load all scripts for source editor (improves speed of page) --?
-        <?php if ($popup == false) { ?>
-            <!-- Statistics style sheet -->
-    <link href="statistics/style.css" rel="stylesheet" type="text/css">
+    <!-- Don't load all scripts for source editor (improves speed of page) -->
+    <?php if ($popup == false) { ?>
+        <!-- Statistics style sheet -->
+        <link href="statistics/style.css" rel="stylesheet" type="text/css">
+        <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
+        <script src="include/popup_merge.js"></script>
+    <?php } ?>
 
-    <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
-
-    <script src="include/popup_merge.js"></script>
-<?php } ?>
-
-<!-- Pop-up menu -->
-<link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
-<script src="../include/popup_menu/popup_menu.js"></script>
+    <!-- Pop-up menu -->
+    <link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
+    <script src="../include/popup_menu/popup_menu.js"></script>
 </head>
 
 <?php
-
 // *** Close pop-up screen and update main screen ***
 if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
     $page_link = 'editor';
@@ -682,18 +679,16 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
             <?php }; ?>
         </div>
     </div>
-    <?php
 
+    <?php
     // *** Show menu ***
     include_once(__DIR__ . '/views/menu.php');
 
     if ($popup == false) {
     ?>
     </div> <!-- End of humo_top -->
-<?php
-    }
+<?php } ?>
 
-?>
 <div id="content_admin">
     <?php
     define('ADMIN_PAGE', true); // *** Safety line ***
@@ -717,6 +712,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'edit_repositories') {
         include_once(__DIR__ . "/views/edit_repository.php");
     } elseif ($page === 'edit_addresses') {
+        require __DIR__ . '/controller/edit_addressController.php';
+        $controllerObj = new AddressController();
+        $editAddress = $controllerObj->detail($dbh,$tree_id, $db_functions);
         include_once(__DIR__ . "/views/edit_address.php");
     } elseif ($page === 'edit_places') {
         include_once(__DIR__ . "/views/edit_rename_place.php");
