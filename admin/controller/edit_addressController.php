@@ -6,7 +6,6 @@ include_once(__DIR__ . "/../include/select_tree.php");
 
 class AddressController
 {
-
     private $editor_cls;
 
     public function __construct()

@@ -11,26 +11,16 @@ if (!defined('ADMIN_PAGE')) {
 
 
 
-// TODO create seperate controller script.
-include_once(__DIR__ . "/../include/editor_cls.php");
-$editor_cls = new editor_cls;
-
-include_once(__DIR__ . "/../include/select_tree.php");
-
-// *** Process queries (needed for picture ordering and delete) ***
+// *** These items are needed for adding and changing picture ***
 $phpself = 'index.php';
+$editor_cls = $editSource['editor_cls'];
+// *** Process queries (needed for picture ordering and delete) ***
 include_once(__DIR__ . "/../include/editor_inc.php");
+// TODO this picture remove confirm box is shown above the header.
 echo $confirm; // Confirm message to remove picture from source.
 
-require_once  __DIR__ . "/../models/edit_source.php";
-$editSourceModel = new EditSourceModel($dbh);
-$editSourceModel->set_source_id($dbh, $tree_id);
-$editSourceModel->update_source($dbh, $tree_id, $db_functions, $editor_cls);
-$editSource['source_id'] = $editSourceModel->get_source_id();
 
 
-
-$phpself = 'index.php';
 $field_text_large = 'style="height: 100px; width:550px"';
 
 // TODO check if code could be improved. Also in editor_inc.php line 233.
@@ -68,7 +58,7 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
 <?php if (isset($_POST['source_remove'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to remove this source and ALL source references?'); ?></strong>
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
             <input type="hidden" name="source_gedcomnr" value="<?= $_POST['source_gedcomnr']; ?>">
@@ -98,7 +88,7 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
         </div>
 
         <div class="col-md-4">
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="POST" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
 
                 <select size="1" name="source_id" class="form-select form-select-sm" onChange="this.form.submit();">
@@ -137,7 +127,7 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
 
         <div class="col-auto">
             <?= __('or'); ?>:
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="POST" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="submit" name="add_source" value="<?= __('Add source'); ?>" class="btn btn-sm btn-secondary">
             </form>
@@ -194,7 +184,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
 
     $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
 ?>
-    <form method="POST" action="<?= $phpself; ?>" name="form3" id="form3">
+    <form method="POST" action="index.php" name="form3" id="form3">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
         <input type="hidden" name="source_gedcomnr" value="<?= $source_gedcomnr; ?>">
@@ -233,7 +223,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Date'); ?></div>
                 <div class="col-md-4">
-                    <?php $editor_cls->date_show($source_date, "source_date"); ?>
+                    <?php $editSource['editor_cls']->date_show($source_date, "source_date"); ?>
                 </div>
             </div>
 
@@ -322,7 +312,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Text'); ?></div>
                 <div class="col-md-4">
-                    <textarea rows="6" cols="80" name="source_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($source_text); ?></textarea>
+                    <textarea rows="6" cols="80" name="source_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editSource['editor_cls']->text_show($source_text); ?></textarea>
                 </div>
             </div>
 

@@ -706,10 +706,15 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'editor_sources') {
         include_once(__DIR__ . "/include/editor_sources.php");
     }
-    // edit_sources for all source links...
     elseif ($page === 'edit_sources') {
+        require __DIR__ . '/controller/edit_sourceController.php';
+        $controllerObj = new SourceController();
+        $editSource = $controllerObj->detail($dbh,$tree_id, $db_functions);
         include_once(__DIR__ . "/views/edit_source.php");
     } elseif ($page === 'edit_repositories') {
+        require __DIR__ . '/controller/edit_repositoryController.php';
+        $controllerObj = new RepositoryController();
+        $editRepository = $controllerObj->detail($dbh,$tree_id, $db_functions);
         include_once(__DIR__ . "/views/edit_repository.php");
     } elseif ($page === 'edit_addresses') {
         require __DIR__ . '/controller/edit_addressController.php';
