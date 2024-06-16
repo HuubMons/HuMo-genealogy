@@ -9,17 +9,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
-
-// TODO create seperate controller script.
-require_once  __DIR__ . "/../models/language_editor.php";
-$language_model = new LanguageEditorModel($dbh);
-$language_editor['language'] = $language_model->getLanguage();
-$language_editor['file'] = '../languages/' . $language_editor['language'] . '/' . $language_editor['language'] . '.po';
-$language_editor['message'] = $language_model->saveFile($language_editor);
-
-
-
 // TODO move code to model script (including functions at end of this script)
 if (!isset($humo_option["hide_languages"])) {
     $humo_option["hide_languages"] = '';
@@ -164,7 +153,6 @@ $previous = '';
 if ($_SESSION['present_page'] > 0) { // only show prev page button if not first page
     $previous = '&amp;to_prev_page=' . ($_SESSION['present_page'] - 1);
 }
-
 ?>
 
 <script src="include/popup_merge.js"></script>
@@ -291,29 +279,19 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
         if ($count_lines > 0) {
             $rows = ($count_lines * 3);
         }
-        $checked = '';
-        if ($fuzz) {
-            $checked = ' checked';
-        }
-        $bgcolor = '';
-        if ($color) {
-            $bgcolor = ' bg-warning';
-        }
     ?>
         <tr>
             <td style="width:2%">
                 <a onmouseover="popup('<?= popclean($mytext); ?> ',300);" href="#"><img style="border:0px;background:none" src="../images/reports.gif" alt="references"></a>
             </td>
             <td style="padding:2px;"><?= msgid_display($value["msgid"]); ?></td>
-            <td style="text-align:center;"><input type="checkbox" value="fuzzie" name="fuz<?= $value["nr"]; ?>" <?= $checked; ?>></td>
+            <td style="text-align:center;"><input type="checkbox" value="fuzzie" name="fuz<?= $value["nr"]; ?>" <?= $fuzz ? 'checked' : ''; ?>></td>
             <td style="vertical-align:top">
                 <!-- <label for="txt_id<?= $key; ?>" class="form-label">Label</label> -->
-                <textarea name="txt_name<?= $key; ?>" rows="<?= $rows; ?>" class="form-control<?= $bgcolor; ?>" id="txt_id<?= $key; ?>"><?= msgstr_display($value["msgstr"]) ?></textarea>
+                <textarea name="txt_name<?= $key; ?>" rows="<?= $rows; ?>" class="form-control <?= $color ? 'bg-warning' : ''; ?>" id="txt_id<?= $key; ?>"><?= msgstr_display($value["msgstr"]) ?></textarea>
             </td>
         </tr>
-    <?php
-    }
-    ?>
+    <?php } ?>
 
     <!-- Show translation table -->
     <table class="humo" border="1" cellspacing="0" width="98%" style="margin-left:auto;margin-right:auto">
@@ -382,6 +360,7 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
                 $found = true;
             }
         }
+
         // translated items
         foreach ($_SESSION['line_array'] as $key => $value) {
             // description of po file
@@ -408,10 +387,13 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
                 $found = true;
             }
         }
+
         if ($found === false) {
-            echo '<tr><td colspan="3"><span style="color:red">' . __('No results found') . '</span></td></tr>';
-        }
         ?>
+            <tr>
+                <td colspan="3"><span style="color:red"><?= __('No results found'); ?></span></td>
+            </tr>
+        <?php } ?>
     </table>
     <br><br><br>
 </form>
@@ -458,36 +440,4 @@ function msgstr_display($string)
         $string = rtrim($string, " ") . "&nbsp;";
     }
     return str_replace('\n', '\n<br>', $string);
-}
-
-function msgstr_save($string)
-{
-    // formats the displayed msgstr text for saving in .po file (text that is displayed)
-    $string = strip_tags($string);
-    if ($string && $string !== "<br>") {
-        $string = htmlspecialchars_decode($string);
-        $string = str_replace('"', '\"', $string);  // we want the " with backslash since msgstr afterwards gets " around it!
-        $find = array("\\n<br>", "\r\n", "&nbsp;", "&#32;", '\\\\"');
-        $replace = array("\\n", "\"\r\"", " ", " ", '\\"');
-        if (substr($string, -4) === "<br>") {
-            $string = substr($string, 0, -4);
-        }
-        $string = "\"" . str_replace($find, $replace, $string) . "\"\n\n";
-    } else {
-        $string = "\"\"\n\n";
-    }
-    return $string;
-}
-
-function msgstr_save2($string)
-{
-    // formats the non displayed msgstr text for saving in .po file 
-    if ($string && $string != "<br>") {
-        $find = array("\\n<br>", "\r\n", "&nbsp;", "&#32;", '\\\\"');
-        $replace = array("\\n", "\"\r\"", " ", " ", '\\"');
-        $string = str_replace($find, $replace, $string) . "\n";
-    } else {
-        $string = "\"\"\n\n";
-    }
-    return $string;
 }

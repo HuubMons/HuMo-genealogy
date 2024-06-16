@@ -9,15 +9,8 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
-
 // TODO rename script to maps?
-// TODO create seperate controller script.
-//require_once  __DIR__ . "/../models/maps.php";
-//$maps_model = new MapModel($dbh);
-
-
-
+// TODO create controller/ model.
 ?>
 
 <h1 align=center><?= __('World map administration'); ?></h1>

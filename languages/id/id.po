@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-07 22:33+0200\n"
-"PO-Revision-Date: 2024-06-07 22:33+0200\n"
+"POT-Creation-Date: 2024-06-16 11:21+0200\n"
+"PO-Revision-Date: 2024-06-16 11:21+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/humo-gen/"
 "humo-gen/language/id_ID/)\n"
@@ -24,94 +24,82 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: include/jqueryui\n"
+"X-Poedit-SearchPathExcluded-0: assets\n"
 
 #: admin/include/editor_cls.php:24 admin/include/editor_cls.php:198
-#: admin/views/statistics.php:202 admin/views/tree_admin.php:108
-#: app/model/tree_index.php:299 include/language_date.php:24
-#: views/statistics.php:30
+#: admin/views/statistics.php:202 include/language_date.php:24
+#: include/show_tree_date.php:7
 msgid "jan"
 msgstr "jan"
 
 #: admin/include/editor_cls.php:25 admin/include/editor_cls.php:199
-#: admin/views/statistics.php:205 admin/views/tree_admin.php:111
-#: app/model/tree_index.php:302 include/language_date.php:25
-#: views/statistics.php:33
+#: admin/views/statistics.php:205 include/language_date.php:25
+#: include/show_tree_date.php:10
 msgid "feb"
 msgstr "feb"
 
 #: admin/include/editor_cls.php:26 admin/include/editor_cls.php:200
-#: admin/views/statistics.php:208 admin/views/tree_admin.php:114
-#: app/model/tree_index.php:305 include/language_date.php:26
-#: views/statistics.php:36
+#: admin/views/statistics.php:208 include/language_date.php:26
+#: include/show_tree_date.php:13
 msgid "mar"
 msgstr "merusak"
 
 #: admin/include/editor_cls.php:27 admin/include/editor_cls.php:201
-#: admin/views/statistics.php:211 admin/views/tree_admin.php:117
-#: app/model/tree_index.php:308 include/language_date.php:27
-#: views/statistics.php:39
+#: admin/views/statistics.php:211 include/language_date.php:27
+#: include/show_tree_date.php:16
 msgid "apr"
 msgstr "April"
 
 #: admin/include/editor_cls.php:28 admin/include/editor_cls.php:202
-#: admin/views/statistics.php:214 admin/views/tree_admin.php:120
-#: app/model/tree_index.php:311 include/language_date.php:28
-#: views/statistics.php:42
+#: admin/views/statistics.php:214 include/language_date.php:28
+#: include/show_tree_date.php:19
 msgid "may"
 msgstr "mungkin"
 
 #: admin/include/editor_cls.php:29 admin/include/editor_cls.php:203
-#: admin/views/statistics.php:217 admin/views/tree_admin.php:123
-#: app/model/tree_index.php:314 include/language_date.php:29
-#: views/statistics.php:45
+#: admin/views/statistics.php:217 include/language_date.php:29
+#: include/show_tree_date.php:22
 msgid "jun"
 msgstr "Juni"
 
 #: admin/include/editor_cls.php:30 admin/include/editor_cls.php:204
-#: admin/views/statistics.php:220 admin/views/tree_admin.php:126
-#: app/model/tree_index.php:317 include/language_date.php:30
-#: views/statistics.php:48
+#: admin/views/statistics.php:220 include/language_date.php:30
+#: include/show_tree_date.php:25
 msgid "jul"
 msgstr "jul"
 
 #: admin/include/editor_cls.php:31 admin/include/editor_cls.php:205
-#: admin/views/statistics.php:223 admin/views/tree_admin.php:129
-#: app/model/tree_index.php:320 include/language_date.php:31
-#: views/statistics.php:51
+#: admin/views/statistics.php:223 include/language_date.php:31
+#: include/show_tree_date.php:28
 msgid "aug"
 msgstr "agustus"
 
 #: admin/include/editor_cls.php:32 admin/include/editor_cls.php:206
-#: admin/views/statistics.php:226 admin/views/tree_admin.php:132
-#: app/model/tree_index.php:323 include/language_date.php:32
-#: views/statistics.php:54
+#: admin/views/statistics.php:226 include/language_date.php:32
+#: include/show_tree_date.php:31
 msgid "sep"
 msgstr ""
 
 #: admin/include/editor_cls.php:33 admin/include/editor_cls.php:207
-#: admin/views/statistics.php:229 admin/views/tree_admin.php:135
-#: app/model/tree_index.php:326 include/language_date.php:33
-#: views/statistics.php:57
+#: admin/views/statistics.php:229 include/language_date.php:33
+#: include/show_tree_date.php:34
 msgid "oct"
 msgstr "Oktober"
 
 #: admin/include/editor_cls.php:34 admin/include/editor_cls.php:208
-#: admin/views/statistics.php:232 admin/views/tree_admin.php:138
-#: app/model/tree_index.php:329 include/language_date.php:34
-#: views/statistics.php:60
+#: admin/views/statistics.php:232 include/language_date.php:34
+#: include/show_tree_date.php:37
 msgid "nov"
 msgstr "November"
 
 #: admin/include/editor_cls.php:35 admin/include/editor_cls.php:209
-#: admin/views/statistics.php:235 admin/views/tree_admin.php:141
-#: app/model/tree_index.php:332 include/language_date.php:35
-#: views/statistics.php:63
+#: admin/views/statistics.php:235 include/language_date.php:35
+#: include/show_tree_date.php:40
 msgid "dec"
 msgstr "Desember"
 
 #: admin/include/editor_cls.php:36 admin/include/editor_cls.php:132
-#: views/stats_tree.php:65
+#: views/stats_tree.php:68
 msgid " and "
 msgstr " dan "
 
@@ -238,33 +226,33 @@ msgstr "Desember"
 #: admin/views/statistics_old.php:89 admin/views/statistics_old.php:100
 #: include/person_cls.php:915 include/person_cls.php:917
 #: include/person_cls.php:918 include/person_cls.php:919
-#: include/person_cls.php:920 include/person_cls.php:1246
-#: include/person_cls.php:1303 include/person_cls.php:1304
-#: include/person_cls.php:1488 include/person_cls.php:1489
-#: include/person_cls.php:1519 include/person_cls.php:1520
-#: include/person_cls.php:1558 include/person_cls.php:1560
-#: include/person_cls.php:1579 include/person_cls.php:1580
-#: include/person_cls.php:1647 include/person_cls.php:1666
-#: include/person_cls.php:2738 include/person_cls.php:2757
-#: include/person_cls.php:2773 include/witness.php:174 include/witness.php:180
-#: views/ancestor_sheet_pdf.php:103 views/ancestor_sheet_pdf.php:206
+#: include/person_cls.php:920 include/person_cls.php:1250
+#: include/person_cls.php:1307 include/person_cls.php:1308
+#: include/person_cls.php:1492 include/person_cls.php:1493
+#: include/person_cls.php:1523 include/person_cls.php:1524
+#: include/person_cls.php:1562 include/person_cls.php:1564
+#: include/person_cls.php:1583 include/person_cls.php:1584
+#: include/person_cls.php:1651 include/person_cls.php:1670
+#: include/person_cls.php:2742 include/person_cls.php:2761
+#: include/person_cls.php:2777 include/witness.php:174 include/witness.php:180
+#: views/ancestor_sheet_pdf.php:102 views/ancestor_sheet_pdf.php:205
 #: views/descendant_chart.php:466 views/list.php:1113
 #: views/list_places_families.php:395
 msgid "N.N."
 msgstr "NN"
 
 # Birth
-#: admin/include/editor_cls.php:310 include/person_cls.php:1117
+#: admin/include/editor_cls.php:310 include/person_cls.php:1121
 #: views/ancestor_chart.php:63 views/ancestor_sheet.php:77
-#: views/ancestor_sheet.php:300 views/ancestor_sheet_pdf.php:119
-#: views/ancestor_sheet_pdf.php:374 views/descendant_chart.php:356
+#: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:118
+#: views/ancestor_sheet_pdf.php:373 views/descendant_chart.php:356
 #: views/list.php:34 views/list.php:958 views/list.php:1144 views/list.php:1159
 #: views/relations.php:162 views/relations.php:276
 msgid "*"
 msgstr "*"
 
 # Baptise
-#: admin/include/editor_cls.php:313 include/person_cls.php:1120
+#: admin/include/editor_cls.php:313 include/person_cls.php:1124
 #: views/ancestor_chart.php:68 views/ancestor_sheet.php:82
 #: views/descendant_chart.php:361 views/list.php:44 views/list.php:966
 #: views/list.php:1141 views/list.php:1156 views/relations.php:159
@@ -273,16 +261,16 @@ msgid "~"
 msgstr "~"
 
 # Death sign
-#: admin/include/editor_cls.php:319 include/person_cls.php:1125
+#: admin/include/editor_cls.php:319 include/person_cls.php:1129
 #: views/ancestor_chart.php:74 views/ancestor_sheet.php:88
-#: views/ancestor_sheet.php:300 views/ancestor_sheet_pdf.php:82
+#: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:81
 #: views/descendant_chart.php:367 views/list.php:60 views/list.php:992
 #: views/list.php:1174 views/list.php:1189
 msgid "&#134;"
 msgstr "& # 134;"
 
 # Buried
-#: admin/include/editor_cls.php:325 include/person_cls.php:1128
+#: admin/include/editor_cls.php:325 include/person_cls.php:1132
 #: views/ancestor_chart.php:79 views/ancestor_sheet.php:93
 #: views/descendant_chart.php:372 views/list.php:68 views/list.php:1000
 #: views/list.php:1171 views/list.php:1186
@@ -312,30 +300,30 @@ msgstr "Profesi"
 #: admin/include/editor_event_cls.php:362
 #: admin/include/editor_event_cls.php:1314 admin/include/editor_sources.php:193
 #: admin/include/editor_sources.php:201 admin/views/tree_merge.php:1535
-#: app/model/tree_index.php:992
+#: app/model/tree_index.php:952
 msgid "Event"
 msgstr "Peristiwa"
 
 #: admin/include/editor_event_cls.php:24 admin/views/editor_person.php:664
-#: admin/views/tree_merge.php:1538 include/person_cls.php:1997
+#: admin/views/tree_merge.php:1538 include/person_cls.php:2001
 #: include/witness.php:134
 msgid "birth declaration"
 msgstr "deklarasi kelahiran"
 
 #: admin/include/editor_event_cls.php:26 admin/views/editor_person.php:934
-#: admin/views/tree_merge.php:1541 include/person_cls.php:2100
+#: admin/views/tree_merge.php:1541 include/person_cls.php:2104
 #: include/witness.php:140
 msgid "baptism witness"
 msgstr "saksi baptisan"
 
 #: admin/include/editor_event_cls.php:28 admin/views/editor_person.php:1072
-#: admin/views/tree_merge.php:1544 include/person_cls.php:2320
+#: admin/views/tree_merge.php:1544 include/person_cls.php:2324
 #: include/witness.php:146
 msgid "death declaration"
 msgstr "deklarasi kematian"
 
 #: admin/include/editor_event_cls.php:30 admin/views/editor_person.php:1209
-#: admin/views/tree_merge.php:1547 include/person_cls.php:2419
+#: admin/views/tree_merge.php:1547 include/person_cls.php:2423
 #: include/witness.php:152
 msgid "burial witness"
 msgstr "saksi pemakaman"
@@ -348,13 +336,14 @@ msgstr "saksi pemakaman"
 #: admin/include/editor_relation_select.php:46 admin/views/editor.php:205
 #: admin/views/editor_person.php:389 admin/views/gedcom_export.php:151
 #: admin/views/gedcom_export.php:316 admin/views/gedcom_export.php:318
-#: app/model/tree_index.php:638 app/model/tree_index.php:992
+#: app/model/mailform.php:83 app/model/register.php:95
+#: app/model/tree_index.php:598 app/model/tree_index.php:952
 #: app/model/user_settings.php:88 views/anniversary.php:93
-#: views/family.php:1226 views/family.php:1294 views/layout.php:350
+#: views/family.php:1226 views/family.php:1294 views/layout.php:352
 #: views/list.php:147 views/list.php:648 views/list_names.php:295
-#: views/list_names.php:298 views/mailform.php:42 views/mailform.php:145
-#: views/mailform.php:147 views/register.php:63 views/register.php:135
-#: views/relations.php:94 views/relations.php:96 views/relations.php:210
+#: views/list_names.php:298 views/mailform.php:48 views/mailform.php:50
+#: views/register.php:58 views/relations.php:94 views/relations.php:96
+#: views/relations.php:210
 msgid "Name"
 msgstr "Nama"
 
@@ -378,7 +367,7 @@ msgstr "Judul Bangsawan"
 #: admin/include/editor_event_cls.php:40 admin/include/editor_event_cls.php:390
 #: admin/include/editor_event_cls.php:1693
 #: admin/include/editor_event_cls.php:1697 admin/include/editor_sources.php:327
-#: admin/views/edit_repository.php:156 admin/views/edit_source.php:218
+#: admin/views/edit_repository.php:133 admin/views/edit_source.php:208
 #: admin/views/editor.php:1178 admin/views/tree_merge.php:1556
 #: include/show_source_pdf.php:43 views/source.php:33 views/source.php:109
 #: views/sources.php:51
@@ -397,7 +386,7 @@ msgid "Title of Lordship"
 msgstr "Gelar Ketuhanan"
 
 #: admin/include/editor_event_cls.php:46 admin/include/editor_event_cls.php:306
-#: admin/views/edit_repository.php:236 include/person_cls.php:2802
+#: admin/views/edit_repository.php:213 include/person_cls.php:2806
 msgid "URL/ Internet link"
 msgstr "URL / tautan Internet"
 
@@ -405,12 +394,12 @@ msgstr "URL / tautan Internet"
 msgid "Colour mark by person"
 msgstr "Tanda warna oleh orang"
 
-#: admin/include/editor_event_cls.php:50 admin/views/editor_relation.php:513
+#: admin/include/editor_event_cls.php:50 admin/views/editor_relation.php:520
 #: include/marriage_cls.php:331 include/witness.php:158
 msgid "marriage witness"
 msgstr "saksi pernikahan"
 
-#: admin/include/editor_event_cls.php:52 admin/views/editor_relation.php:727
+#: admin/include/editor_event_cls.php:52 admin/views/editor_relation.php:734
 #: include/marriage_cls.php:505 include/witness.php:164
 msgid "marriage witness (religious)"
 msgstr "saksi pernikahan (religius)"
@@ -419,8 +408,8 @@ msgstr "saksi pernikahan (religius)"
 #: admin/include/editor_event_cls.php:492
 #: admin/include/editor_event_cls.php:1277
 #: admin/include/editor_event_cls.php:1559
-#: admin/include/editor_event_cls.php:1562 admin/views/editor_relation.php:786
-#: admin/views/editor_relation.php:789
+#: admin/include/editor_event_cls.php:1562 admin/views/editor_relation.php:793
+#: admin/views/editor_relation.php:796
 msgid "Religion"
 msgstr "Agama"
 
@@ -480,7 +469,7 @@ msgstr "Izin menikah"
 #: admin/include/editor_event_cls.php:1289
 #: admin/include/editor_event_cls.php:1687
 #: admin/include/editor_event_cls.php:1689 admin/views/editor.php:1178
-#: include/person_cls.php:1837
+#: include/person_cls.php:1841
 msgid "Nickname"
 msgstr "Nama panggilan"
 
@@ -491,9 +480,9 @@ msgstr "Nama panggilan"
 #: admin/include/editor_event_cls.php:517
 #: admin/include/editor_event_cls.php:519 admin/include/editor_sources.php:529
 #: admin/views/cms_pages.php:383 admin/views/cms_pages.php:444
-#: admin/views/edit_address.php:286 admin/views/edit_address.php:289
-#: admin/views/edit_repository.php:247 admin/views/edit_repository.php:250
-#: admin/views/edit_source.php:342 admin/views/edit_source.php:344
+#: admin/views/edit_address.php:269 admin/views/edit_address.php:272
+#: admin/views/edit_repository.php:224 admin/views/edit_repository.php:227
+#: admin/views/edit_source.php:332 admin/views/edit_source.php:334
 #: admin/views/editor.php:1469 admin/views/editor.php:1471
 #: admin/views/editor.php:1812 admin/views/editor.php:1958
 #: admin/views/editor.php:2047 admin/views/editor_person.php:369
@@ -505,8 +494,8 @@ msgstr "Menambahkan"
 
 #: admin/include/editor_event_cls.php:956
 #: admin/include/editor_event_cls.php:1144 admin/views/editor.php:363
-#: admin/views/editor_person.php:307 admin/views/editor_relation.php:103
-#: admin/views/editor_relation.php:1220
+#: admin/views/editor_person.php:307 admin/views/editor_relation.php:110
+#: admin/views/editor_relation.php:1227
 #, fuzzy
 #| msgid "gedcomnumber (ID)"
 msgid "GEDCOM number (ID)"
@@ -528,48 +517,48 @@ msgstr "gedcomnumber (ID)"
 #: admin/views/editor_person.php:220 admin/views/editor_person.php:308
 #: admin/views/editor_person.php:679 admin/views/editor_person.php:950
 #: admin/views/editor_person.php:1087 admin/views/editor_person.php:1224
-#: admin/views/editor_relation.php:104 admin/views/editor_relation.php:265
-#: admin/views/editor_relation.php:293 admin/views/editor_relation.php:362
-#: admin/views/editor_relation.php:439 admin/views/editor_relation.php:529
-#: admin/views/editor_relation.php:667 admin/views/editor_relation.php:743
-#: admin/views/editor_relation.php:841 admin/views/editor_relation.php:1221
-#: admin/views/gedcom_export.php:153 admin/views/language_editor.php:260
-#: admin/views/make_db_maps.php:994 admin/views/settings_homepage.php:217
+#: admin/views/editor_relation.php:111 admin/views/editor_relation.php:272
+#: admin/views/editor_relation.php:300 admin/views/editor_relation.php:369
+#: admin/views/editor_relation.php:446 admin/views/editor_relation.php:536
+#: admin/views/editor_relation.php:674 admin/views/editor_relation.php:750
+#: admin/views/editor_relation.php:848 admin/views/editor_relation.php:1228
+#: admin/views/gedcom_export.php:153 admin/views/language_editor.php:248
+#: admin/views/make_db_maps.php:987 admin/views/settings_homepage.php:217
 #: admin/views/settings_homepage.php:412 admin/views/tree_merge.php:615
 #: admin/views/tree_merge.php:631 admin/views/tree_merge.php:694
-#: admin/views/users.php:148 app/model/tree_index.php:54
-#: app/model/tree_index.php:161 app/model/tree_index.php:684
-#: views/addresses.php:31 views/latest_changes.php:24 views/layout.php:351
+#: admin/views/users.php:148 app/model/tree_index.php:56
+#: app/model/tree_index.php:163 app/model/tree_index.php:644
+#: views/addresses.php:31 views/latest_changes.php:24 views/layout.php:353
 #: views/list.php:100 views/list.php:163 views/list.php:454
-#: views/list_places_families.php:95 views/photoalbum.php:368
+#: views/list_places_families.php:95 views/photoalbum.php:353
 #: views/relations.php:97 views/relations.php:105 views/relations.php:208
 #: views/relations.php:211 views/relations.php:219 views/sources.php:26
 msgid "Search"
 msgstr "Pencarian"
 
 #: admin/include/editor_event_cls.php:962 admin/views/cms_pages.php:355
-#: admin/views/edit_address.php:109 admin/views/edit_address.php:300
-#: admin/views/edit_repository.php:99 admin/views/edit_repository.php:258
-#: admin/views/edit_source.php:139 admin/views/edit_source.php:350
+#: admin/views/edit_address.php:92 admin/views/edit_address.php:283
+#: admin/views/edit_repository.php:76 admin/views/edit_repository.php:235
+#: admin/views/edit_source.php:129 admin/views/edit_source.php:340
 #: admin/views/editor_person.php:1145 admin/views/editor_person.php:1519
-#: admin/views/editor_relation.php:1046 admin/views/index_admin.php:687
+#: admin/views/editor_relation.php:1053 admin/views/index_admin.php:687
 #: admin/views/thumbs.php:408 include/calculate_age_cls.php:371
 #: include/calculate_age_cls.php:393 include/calculate_age_cls.php:497
-#: include/calculate_age_cls.php:519 views/fanchart.php:762
+#: include/calculate_age_cls.php:519 views/fanchart.php:681
 msgid "or"
 msgstr "atau"
 
 #: admin/include/editor_event_cls.php:1121
 #: admin/include/editor_relation_select.php:110 admin/views/editor.php:717
 #: admin/views/editor_person.php:249 admin/views/editor_relation.php:58
-#: admin/views/editor_relation.php:249 admin/views/editor_relation.php:284
+#: admin/views/editor_relation.php:256 admin/views/editor_relation.php:291
 #: admin/views/tree_check_invalid.php:200 include/calculate_age_cls.php:307
 #: include/calculate_age_cls.php:324 include/calculate_age_cls.php:332
 #: include/language_date.php:102 include/language_date.php:106
 #: include/language_date.php:110 include/language_date.php:125
-#: include/person_cls.php:1496 include/person_cls.php:1497
-#: include/person_cls.php:1565 include/person_cls.php:1566
-#: include/person_cls.php:1650 include/person_cls.php:1651
+#: include/person_cls.php:1500 include/person_cls.php:1501
+#: include/person_cls.php:1569 include/person_cls.php:1570
+#: include/person_cls.php:1654 include/person_cls.php:1655
 #: views/relations.php:573
 msgid "and"
 msgstr "dan"
@@ -644,16 +633,16 @@ msgid "Also change"
 msgstr "Juga berubah"
 
 #: admin/include/editor_event_cls.php:1240 admin/include/editor_inc.php:620
-#: admin/views/gedcom_export.php:238 app/model/family.php:251
-#: include/person_cls.php:1021 include/person_cls.php:1022
-#: views/hourglass.php:88
+#: admin/views/gedcom_export.php:238 app/model/family.php:250
+#: include/person_cls.php:1025 include/person_cls.php:1026
+#: views/hourglass.php:89
 msgid "Descendants"
 msgstr "Keturunan"
 
 #: admin/include/editor_event_cls.php:1241 admin/include/editor_inc.php:621
-#: admin/views/gedcom_export.php:250 app/model/ancestor.php:174
-#: include/person_cls.php:1030 include/person_cls.php:1031
-#: views/hourglass.php:86
+#: admin/views/gedcom_export.php:250 app/model/ancestor.php:176
+#: include/person_cls.php:1034 include/person_cls.php:1035
+#: views/hourglass.php:87
 msgid "Ancestors"
 msgstr "Leluhur"
 
@@ -737,17 +726,17 @@ msgstr "misalnya Lord of Amsterdam"
 #: admin/include/editor_event_cls.php:1451
 #: admin/include/editor_event_cls.php:1536
 #: admin/include/editor_event_cls.php:1569 admin/include/editor_sources.php:334
-#: admin/include/editor_sources.php:396 admin/views/edit_repository.php:186
-#: admin/views/edit_source.php:234 admin/views/editor.php:1301
+#: admin/include/editor_sources.php:396 admin/views/edit_repository.php:163
+#: admin/views/edit_source.php:224 admin/views/editor.php:1301
 #: admin/views/editor.php:1335 admin/views/editor.php:1355
 #: admin/views/editor.php:1375 admin/views/editor.php:1714
 #: admin/views/editor_person.php:668 admin/views/editor_person.php:768
 #: admin/views/editor_person.php:863 admin/views/editor_person.php:939
 #: admin/views/editor_person.php:1076 admin/views/editor_person.php:1213
-#: admin/views/editor_relation.php:351 admin/views/editor_relation.php:428
-#: admin/views/editor_relation.php:518 admin/views/editor_relation.php:656
-#: admin/views/editor_relation.php:732 admin/views/editor_relation.php:830
-#: app/model/tree_index.php:992 include/show_source_pdf.php:49
+#: admin/views/editor_relation.php:358 admin/views/editor_relation.php:435
+#: admin/views/editor_relation.php:525 admin/views/editor_relation.php:663
+#: admin/views/editor_relation.php:739 admin/views/editor_relation.php:837
+#: app/model/tree_index.php:952 include/show_source_pdf.php:49
 #: views/list.php:237 views/list.php:257 views/list.php:710 views/list.php:736
 #: views/source.php:37 views/source.php:115 views/sources.php:68
 msgid "Date"
@@ -756,17 +745,17 @@ msgstr "Tanggal"
 #: admin/include/editor_event_cls.php:1468
 #: admin/include/editor_event_cls.php:1543
 #: admin/include/editor_event_cls.php:1576 admin/include/editor_sources.php:341
-#: admin/include/editor_sources.php:403 admin/views/edit_address.php:163
-#: admin/views/edit_repository.php:196 admin/views/edit_source.php:242
+#: admin/include/editor_sources.php:403 admin/views/edit_address.php:146
+#: admin/views/edit_repository.php:173 admin/views/edit_source.php:232
 #: admin/views/editor.php:1307 admin/views/editor.php:1341
 #: admin/views/editor.php:1361 admin/views/editor.php:1381
 #: admin/views/editor.php:1653 admin/views/editor_person.php:675
 #: admin/views/editor_person.php:775 admin/views/editor_person.php:870
 #: admin/views/editor_person.php:946 admin/views/editor_person.php:1083
-#: admin/views/editor_person.php:1220 admin/views/editor_relation.php:358
-#: admin/views/editor_relation.php:435 admin/views/editor_relation.php:525
-#: admin/views/editor_relation.php:663 admin/views/editor_relation.php:739
-#: admin/views/editor_relation.php:837 include/show_source_pdf.php:84
+#: admin/views/editor_person.php:1220 admin/views/editor_relation.php:365
+#: admin/views/editor_relation.php:442 admin/views/editor_relation.php:532
+#: admin/views/editor_relation.php:670 admin/views/editor_relation.php:746
+#: admin/views/editor_relation.php:844 include/show_source_pdf.php:84
 #: views/address.php:25 views/list.php:250 views/list.php:270
 #: views/list.php:361 views/list.php:368 views/list.php:723 views/list.php:749
 #: views/source.php:50 views/source.php:119 views/sources.php:85
@@ -776,17 +765,17 @@ msgstr "Tempat"
 #: admin/include/editor_event_cls.php:1485
 #: admin/include/editor_event_cls.php:1550
 #: admin/include/editor_event_cls.php:1583 admin/include/editor_sources.php:355
-#: admin/views/edit_address.php:275 admin/views/edit_repository.php:216
-#: admin/views/edit_source.php:323 admin/views/editor.php:1707
+#: admin/views/edit_address.php:258 admin/views/edit_repository.php:193
+#: admin/views/edit_source.php:313 admin/views/editor.php:1707
 #: admin/views/editor_person.php:441 admin/views/editor_person.php:702
 #: admin/views/editor_person.php:790 admin/views/editor_person.php:885
 #: admin/views/editor_person.php:971 admin/views/editor_person.php:1160
-#: admin/views/editor_person.php:1251 admin/views/editor_relation.php:383
-#: admin/views/editor_relation.php:452 admin/views/editor_relation.php:602
-#: admin/views/editor_relation.php:680 admin/views/editor_relation.php:756
-#: admin/views/editor_relation.php:870 admin/views/editor_relation.php:911
-#: admin/views/groups.php:512 admin/views/groups.php:520
-#: admin/views/groups.php:528 admin/views/settings_homepage.php:223
+#: admin/views/editor_person.php:1251 admin/views/editor_relation.php:390
+#: admin/views/editor_relation.php:459 admin/views/editor_relation.php:609
+#: admin/views/editor_relation.php:687 admin/views/editor_relation.php:763
+#: admin/views/editor_relation.php:877 admin/views/editor_relation.php:918
+#: admin/views/groups.php:501 admin/views/groups.php:509
+#: admin/views/groups.php:517 admin/views/settings_homepage.php:223
 #: admin/views/settings_homepage.php:331 admin/views/settings_homepage.php:418
 #: include/process_text.php:120 include/process_text.php:122
 #: views/addresses.php:43 views/family.php:1312 views/list.php:307
@@ -804,18 +793,18 @@ msgstr "Teks"
 #: admin/include/editor_sources.php:155 admin/include/editor_sources.php:161
 #: admin/include/editor_sources.php:167 admin/include/editor_sources.php:173
 #: admin/include/editor_sources.php:266 admin/include/editor_sources.php:299
-#: admin/views/edit_address.php:207 admin/views/edit_address.php:212
-#: admin/views/edit_address.php:220 admin/views/editor.php:1083
+#: admin/views/edit_address.php:190 admin/views/edit_address.php:195
+#: admin/views/edit_address.php:203 admin/views/editor.php:1083
 #: admin/views/editor.php:1091 admin/views/editor.php:1752
 #: admin/views/editor_person.php:505 admin/views/editor_person.php:710
 #: admin/views/editor_person.php:798 admin/views/editor_person.php:893
 #: admin/views/editor_person.php:979 admin/views/editor_person.php:1168
 #: admin/views/editor_person.php:1259 admin/views/editor_person.php:1289
-#: admin/views/editor_person.php:1314 admin/views/editor_relation.php:391
-#: admin/views/editor_relation.php:460 admin/views/editor_relation.php:610
-#: admin/views/editor_relation.php:688 admin/views/editor_relation.php:764
-#: admin/views/editor_relation.php:878 admin/views/editor_relation.php:919
-#: admin/views/editor_relation.php:942 app/controller/sourceController.php:22
+#: admin/views/editor_person.php:1314 admin/views/editor_relation.php:398
+#: admin/views/editor_relation.php:467 admin/views/editor_relation.php:617
+#: admin/views/editor_relation.php:695 admin/views/editor_relation.php:771
+#: admin/views/editor_relation.php:885 admin/views/editor_relation.php:926
+#: admin/views/editor_relation.php:949 app/controller/sourceController.php:22
 #: views/address.php:49 views/source.php:15
 msgid "Source"
 msgstr "Sumber"
@@ -830,8 +819,8 @@ msgstr ""
 msgid "Upload"
 msgstr "Unggah"
 
-#: admin/include/editor_event_cls.php:1704 include/person_cls.php:1823
-#: include/person_cls.php:1828
+#: admin/include/editor_event_cls.php:1704 include/person_cls.php:1827
+#: include/person_cls.php:1832
 msgid "Also known as"
 msgstr "Juga dikenal sebagai"
 
@@ -924,13 +913,13 @@ msgstr "Juga menghilangkan tanda warna"
 #: admin/include/editor_inc.php:624 admin/include/editor_inc.php:1109
 #: admin/include/editor_user_settings.php:91 admin/models/editor.php:1277
 #: admin/models/editor.php:1845 admin/views/cms_pages.php:195
-#: admin/views/cms_pages.php:218 admin/views/edit_address.php:52
-#: admin/views/edit_repository.php:49 admin/views/edit_source.php:75
+#: admin/views/cms_pages.php:218 admin/views/edit_address.php:35
+#: admin/views/edit_repository.php:31 admin/views/edit_source.php:65
 #: admin/views/editor.php:396 admin/views/editor.php:413
-#: admin/views/editor_relation.php:223 admin/views/gedcom.php:171
+#: admin/views/editor_relation.php:230 admin/views/gedcom.php:171
 #: admin/views/gedcom_export.php:433 admin/views/gedcom_export.php:450
 #: admin/views/gedcom_export.php:470 admin/views/gedcom_export.php:518
-#: admin/views/groups.php:38 admin/views/groups.php:547
+#: admin/views/groups.php:25 admin/views/groups.php:536
 #: admin/views/install.php:302 admin/views/notes.php:106
 #: admin/views/settings.php:121 admin/views/settings.php:132
 #: admin/views/settings.php:148 admin/views/settings.php:159
@@ -940,20 +929,20 @@ msgstr "Juga menghilangkan tanda warna"
 #: admin/views/settings_homepage.php:612 admin/views/thumbs.php:509
 #: admin/views/tree_merge.php:986 admin/views/tree_merge.php:999
 #: admin/views/tree_merge.php:1012 admin/views/tree_merge.php:1029
-#: admin/views/trees.php:82 admin/views/users.php:49 views/mailform.php:176
+#: admin/views/trees.php:82 admin/views/users.php:49 views/mailform.php:79
 msgid "Yes"
 msgstr "iya nih"
 
 #: admin/include/editor_inc.php:625 admin/include/editor_inc.php:1110
 #: admin/include/editor_user_settings.php:97 admin/models/editor.php:1278
 #: admin/models/editor.php:1846 admin/views/cms_pages.php:196
-#: admin/views/cms_pages.php:219 admin/views/edit_address.php:53
-#: admin/views/edit_repository.php:50 admin/views/edit_source.php:76
+#: admin/views/cms_pages.php:219 admin/views/edit_address.php:36
+#: admin/views/edit_repository.php:32 admin/views/edit_source.php:66
 #: admin/views/editor.php:397 admin/views/editor.php:414
-#: admin/views/editor_relation.php:224 admin/views/gedcom.php:172
+#: admin/views/editor_relation.php:231 admin/views/gedcom.php:172
 #: admin/views/gedcom_export.php:434 admin/views/gedcom_export.php:451
 #: admin/views/gedcom_export.php:471 admin/views/gedcom_export.php:517
-#: admin/views/groups.php:39 admin/views/groups.php:548
+#: admin/views/groups.php:26 admin/views/groups.php:537
 #: admin/views/install.php:303 admin/views/notes.php:107
 #: admin/views/settings.php:122 admin/views/settings.php:133
 #: admin/views/settings.php:149 admin/views/settings.php:160
@@ -963,7 +952,7 @@ msgstr "iya nih"
 #: admin/views/settings_homepage.php:613 admin/views/thumbs.php:510
 #: admin/views/tree_merge.php:987 admin/views/tree_merge.php:1000
 #: admin/views/tree_merge.php:1013 admin/views/tree_merge.php:1030
-#: admin/views/trees.php:83 admin/views/users.php:50 views/mailform.php:177
+#: admin/views/trees.php:83 admin/views/users.php:50 views/mailform.php:80
 msgid "No"
 msgstr "Tidak"
 
@@ -984,7 +973,7 @@ msgid "or ID:"
 msgstr "atau ID:"
 
 #: admin/include/editor_person_select.php:157 admin/views/editor.php:704
-#: views/ancestor_report.php:27 views/ancestor_report_pdf.php:96
+#: views/ancestor_report.php:27 views/ancestor_report_pdf.php:95
 #: views/ancestor_report_rtf.php:90
 msgid "Parents"
 msgstr "Orangtua"
@@ -1018,42 +1007,42 @@ msgid "Sex"
 msgstr "Seks"
 
 #: admin/include/editor_sources.php:77 admin/views/editor.php:1298
-#: admin/views/editor_person.php:646 app/model/tree_index.php:945
-#: app/model/tree_index.php:947 googlemaps/namesearch.php:193
-#: include/person_cls.php:2019 include/person_cls.php:2021
-#: include/person_cls.php:2028 include/person_cls.php:2030
-#: views/ancestor_sheet.php:300 views/ancestor_sheet_pdf.php:374
+#: admin/views/editor_person.php:646 app/model/tree_index.php:905
+#: app/model/tree_index.php:907 googlemaps/namesearch.php:193
+#: include/person_cls.php:2023 include/person_cls.php:2025
+#: include/person_cls.php:2032 include/person_cls.php:2034
+#: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:373
 #: views/anniversary.php:92 views/descendant_chart.php:458
 #: views/family.php:1125 views/list.php:235 views/list.php:243
-#: views/list.php:649 views/maps.php:729 views/maps.php:852
+#: views/list.php:649 views/maps.php:722 views/maps.php:845
 msgid "born"
 msgstr "terlahir"
 
 #: admin/include/editor_sources.php:83 admin/views/editor.php:1332
 #: admin/views/editor_person.php:920 app/model/timeline.php:102
-#: app/model/tree_index.php:954 app/model/tree_index.php:956
-#: googlemaps/namesearch.php:196 include/person_cls.php:2157
-#: include/person_cls.php:2159 include/person_cls.php:2166
-#: include/person_cls.php:2168 views/family.php:1127 views/list.php:235
-#: views/list.php:243 views/list.php:649 views/maps.php:732 views/maps.php:855
+#: app/model/tree_index.php:914 app/model/tree_index.php:916
+#: googlemaps/namesearch.php:196 include/person_cls.php:2161
+#: include/person_cls.php:2163 include/person_cls.php:2170
+#: include/person_cls.php:2172 views/family.php:1127 views/list.php:235
+#: views/list.php:243 views/list.php:649 views/maps.php:725 views/maps.php:848
 msgid "baptised"
 msgstr "dibaptis"
 
 #: admin/include/editor_sources.php:89 admin/views/editor.php:1352
-#: admin/views/editor_person.php:1010 app/model/tree_index.php:963
-#: app/model/tree_index.php:965 googlemaps/namesearch.php:202
-#: include/person_cls.php:2342 include/person_cls.php:2344
-#: include/person_cls.php:2351 include/person_cls.php:2353
-#: views/ancestor_sheet.php:300 views/ancestor_sheet_pdf.php:374
+#: admin/views/editor_person.php:1010 app/model/tree_index.php:923
+#: app/model/tree_index.php:925 googlemaps/namesearch.php:202
+#: include/person_cls.php:2346 include/person_cls.php:2348
+#: include/person_cls.php:2355 include/person_cls.php:2357
+#: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:373
 #: views/anniversary.php:94 views/list.php:255 views/list.php:263
-#: views/list.php:650 views/maps.php:735 views/maps.php:858
+#: views/list.php:650 views/maps.php:728 views/maps.php:851
 msgid "died"
 msgstr "meninggal"
 
 #: admin/include/editor_sources.php:95 admin/views/editor.php:1372
 #: admin/views/editor_person.php:1233 app/model/timeline.php:128
-#: googlemaps/namesearch.php:205 include/person_cls.php:2450 views/list.php:255
-#: views/list.php:263 views/list.php:650 views/maps.php:738 views/maps.php:861
+#: googlemaps/namesearch.php:205 include/person_cls.php:2454 views/list.php:255
+#: views/list.php:263 views/list.php:650 views/maps.php:731 views/maps.php:854
 msgid "buried"
 msgstr "terkubur"
 
@@ -1068,7 +1057,7 @@ msgid "person"
 msgstr "orang"
 
 #: admin/include/editor_sources.php:113 admin/include/editor_sources.php:167
-#: admin/include/editor_sources.php:173 admin/views/edit_repository.php:166
+#: admin/include/editor_sources.php:173 admin/views/edit_repository.php:143
 #: admin/views/editor.php:1780 admin/views/gedcom_export.php:322
 #: admin/views/gedcom_export.php:324 admin/views/tree_merge.php:1526
 #: app/controller/addressController.php:31
@@ -1078,31 +1067,31 @@ msgstr "orang"
 msgid "Address"
 msgstr "Alamat"
 
-#: admin/include/editor_sources.php:119 admin/views/editor_relation.php:331
-#: admin/views/editor_relation.php:574 include/marriage_cls.php:66
+#: admin/include/editor_sources.php:119 admin/views/editor_relation.php:338
+#: admin/views/editor_relation.php:581 include/marriage_cls.php:66
 #: include/marriage_cls.php:167 include/marriage_cls.php:169
-#: include/marriage_cls.php:171 include/person_cls.php:1200
+#: include/marriage_cls.php:171 include/person_cls.php:1204
 msgid "Living together"
 msgstr "Hidup bersama"
 
-#: admin/include/editor_sources.php:125 admin/views/editor_relation.php:414
+#: admin/include/editor_sources.php:125 admin/views/editor_relation.php:421
 msgid "Notice of Marriage"
 msgstr "Pemberitahuan tentang Pernikahan"
 
-#: admin/include/editor_sources.php:131 admin/views/editor_relation.php:484
+#: admin/include/editor_sources.php:131 admin/views/editor_relation.php:491
 #: views/list_places_families.php:55
 msgid "Marriage"
 msgstr "Pernikahan"
 
-#: admin/include/editor_sources.php:137 admin/views/editor_relation.php:639
+#: admin/include/editor_sources.php:137 admin/views/editor_relation.php:646
 msgid "Religious Notice of Marriage"
 msgstr "Pemberitahuan Agama tentang Pernikahan"
 
-#: admin/include/editor_sources.php:143 admin/views/editor_relation.php:713
+#: admin/include/editor_sources.php:143 admin/views/editor_relation.php:720
 msgid "Religious Marriage"
 msgstr "Perkawinan Agama"
 
-#: admin/include/editor_sources.php:149 admin/views/editor_relation.php:808
+#: admin/include/editor_sources.php:149 admin/views/editor_relation.php:815
 msgid "Divorce"
 msgstr "Perceraian"
 
@@ -1114,31 +1103,31 @@ msgstr "kremasi"
 
 #: admin/include/editor_sources.php:235 admin/views/cms_pages.php:385
 #: admin/views/cms_pages.php:412 admin/views/cms_pages.php:433
-#: admin/views/edit_address.php:296 admin/views/edit_address.php:299
-#: admin/views/edit_rename_place.php:104 admin/views/edit_repository.php:254
-#: admin/views/edit_repository.php:257 admin/views/edit_source.php:347
-#: admin/views/edit_source.php:349 admin/views/editor_person.php:354
-#: admin/views/editor_person.php:1518 admin/views/editor_relation.php:248
-#: admin/views/editor_relation.php:1044 admin/views/index_admin.php:265
-#: admin/views/language_editor.php:274 admin/views/make_db_maps.php:294
-#: admin/views/make_db_maps.php:397 admin/views/make_db_maps.php:403
-#: admin/views/make_db_maps.php:415 admin/views/prefix_editor.php:30
+#: admin/views/edit_address.php:279 admin/views/edit_address.php:282
+#: admin/views/edit_rename_place.php:104 admin/views/edit_repository.php:231
+#: admin/views/edit_repository.php:234 admin/views/edit_source.php:337
+#: admin/views/edit_source.php:339 admin/views/editor_person.php:354
+#: admin/views/editor_person.php:1518 admin/views/editor_relation.php:255
+#: admin/views/editor_relation.php:1051 admin/views/index_admin.php:265
+#: admin/views/language_editor.php:262 admin/views/make_db_maps.php:287
+#: admin/views/make_db_maps.php:390 admin/views/make_db_maps.php:396
+#: admin/views/make_db_maps.php:408 admin/views/prefix_editor.php:30
 #: admin/views/tree_merge.php:1042
 msgid "Save"
 msgstr "Menyimpan"
 
-#: admin/include/editor_sources.php:253 admin/views/editor_relation.php:1173
+#: admin/include/editor_sources.php:253 admin/views/editor_relation.php:1180
 msgid "Drag to change order (saves automatically)"
 msgstr "Seret untuk mengubah urutan (menyimpan secara otomatis)"
 
-#: admin/include/editor_sources.php:253 admin/views/editor_relation.php:1173
+#: admin/include/editor_sources.php:253 admin/views/editor_relation.php:1180
 msgid "Drag to change order"
 msgstr "Seret untuk mengubah urutan"
 
-#: admin/include/editor_sources.php:348 admin/views/edit_source.php:275
-#: admin/views/settings_homepage.php:517 include/person_cls.php:1907
-#: include/person_cls.php:1909 include/person_cls.php:1912
-#: include/person_cls.php:1914 include/show_source_pdf.php:90
+#: admin/include/editor_sources.php:348 admin/views/edit_source.php:265
+#: admin/views/settings_homepage.php:517 include/person_cls.php:1911
+#: include/person_cls.php:1913 include/person_cls.php:1916
+#: include/person_cls.php:1918 include/show_source_pdf.php:90
 #: views/list.php:333 views/list.php:340 views/source.php:53
 msgid "Own code"
 msgstr "Kode sendiri"
@@ -1153,7 +1142,7 @@ msgstr "Sourcerole"
 msgid "e.g. Writer, Brother, Sister, Father."
 msgstr "mis. Penulis, Kakak, Kakak, Ayah"
 
-#: admin/include/editor_sources.php:374 admin/views/edit_source.php:315
+#: admin/include/editor_sources.php:374 admin/views/edit_source.php:305
 #: include/show_source_pdf.php:126 include/tfpdf/tfpdfextend.php:1016
 #: views/source.php:71
 msgid "Page"
@@ -1242,7 +1231,7 @@ msgstr "Atau tambahkan anak baru:"
 msgid "Add another source"
 msgstr "Atau tambahkan anak baru:"
 
-#: admin/include/editor_sources.php:549 admin/views/edit_source.php:142
+#: admin/include/editor_sources.php:549 admin/views/edit_source.php:132
 msgid "Add source"
 msgstr "Tambahkan sumber"
 
@@ -1262,33 +1251,33 @@ msgstr ""
 "Ini adalah pengaturan PER USER, Anda juga dapat mengatur pengaturan ini PER "
 "USER GROUP."
 
-#: admin/include/editor_user_settings.php:75 admin/views/edit_address.php:70
-#: admin/views/edit_rename_place.php:38 admin/views/edit_repository.php:65
-#: admin/views/edit_source.php:86 admin/views/editor.php:190
-#: admin/views/groups.php:631 admin/views/make_db_maps.php:567
+#: admin/include/editor_user_settings.php:75 admin/views/edit_address.php:53
+#: admin/views/edit_rename_place.php:38 admin/views/edit_repository.php:47
+#: admin/views/edit_source.php:76 admin/views/editor.php:190
+#: admin/views/groups.php:620 admin/views/make_db_maps.php:560
 #: admin/views/notes.php:35 admin/views/trees.php:91 views/help.php:67
-#: views/help.php:71 views/help.php:75 views/help.php:80 views/layout.php:283
-#: views/layout.php:508 views/list.php:152 views/list.php:443
-#: views/list.php:652 views/statistics.php:85
+#: views/help.php:71 views/help.php:75 views/help.php:80 views/layout.php:285
+#: views/layout.php:510 views/list.php:152 views/list.php:443
+#: views/list.php:652 views/statistics.php:21
 msgid "Family tree"
 msgstr "Pohon keluarga"
 
-#: admin/include/editor_user_settings.php:75 admin/views/groups.php:632
+#: admin/include/editor_user_settings.php:75 admin/views/groups.php:621
 msgid "Show tree?"
 msgstr "Tunjukkan pohon?"
 
-#: admin/include/editor_user_settings.php:75 admin/views/groups.php:633
+#: admin/include/editor_user_settings.php:75 admin/views/groups.php:622
 msgid "Edit tree?"
 msgstr "Edit pohon?"
 
 #: admin/include/editor_user_settings.php:75 admin/views/cms_pages.php:525
 #: admin/views/extensions.php:95 admin/views/extensions.php:117
-#: admin/views/groups.php:122 admin/views/groups.php:154
-#: admin/views/groups.php:242 admin/views/groups.php:371
-#: admin/views/groups.php:406 admin/views/groups.php:453
-#: admin/views/groups.php:583 admin/views/groups.php:633
-#: admin/views/groups.php:724 admin/views/log.php:160
-#: admin/views/make_db_maps.php:1063 admin/views/settings.php:30
+#: admin/views/groups.php:109 admin/views/groups.php:141
+#: admin/views/groups.php:229 admin/views/groups.php:360
+#: admin/views/groups.php:395 admin/views/groups.php:442
+#: admin/views/groups.php:572 admin/views/groups.php:622
+#: admin/views/groups.php:713 admin/views/log.php:160
+#: admin/views/make_db_maps.php:1056 admin/views/settings.php:30
 #: admin/views/settings.php:141 admin/views/settings.php:176
 #: admin/views/settings.php:255 admin/views/settings.php:340
 #: admin/views/settings.php:444 admin/views/settings.php:481
@@ -1351,7 +1340,7 @@ msgstr "Pemeriksaan versi online tidak tersedia."
 msgid "Debug information:"
 msgstr "Informasi cookie"
 
-#: admin/include/select_tree.php:18 views/layout.php:285 views/maps.php:55
+#: admin/include/select_tree.php:18 views/layout.php:287 views/maps.php:48
 msgid "Select a family tree:"
 msgstr "Pilih silsilah keluarga:"
 
@@ -1453,205 +1442,205 @@ msgstr ""
 msgid "Administration"
 msgstr "Administrasi"
 
-#: admin/index.php:583
+#: admin/index.php:580
 msgid "Sidebar"
 msgstr ""
 
-#: admin/index.php:595 admin/views/install.php:8 admin/views/install.php:301
+#: admin/index.php:592 admin/views/install.php:8 admin/views/install.php:301
 #: admin/views/install.php:305 admin/views/menu.php:64
 msgid "Install"
 msgstr "Memasang"
 
-#: admin/index.php:597 admin/views/extensions.php:57 admin/views/menu.php:65
+#: admin/index.php:594 admin/views/extensions.php:57 admin/views/menu.php:65
 msgid "Extensions"
 msgstr "Ekstensi"
 
-#: admin/index.php:599 admin/views/extensions.php:62
+#: admin/index.php:596 admin/views/extensions.php:62
 msgid "Show/ hide languages"
 msgstr "Tampilkan/ Sembunyikan bahasa"
 
-#: admin/index.php:600 admin/views/extensions.php:98
+#: admin/index.php:597 admin/views/extensions.php:98
 msgid "Show/ hide theme's"
 msgstr "Tampilkan/ Sembunyikan Tema"
 
-#: admin/index.php:603 admin/views/gedcom_export.php:342
-#: admin/views/make_db_maps.php:1039 admin/views/menu.php:66
+#: admin/index.php:600 admin/views/gedcom_export.php:342
+#: admin/views/make_db_maps.php:1032 admin/views/menu.php:66
 #: admin/views/settings_admin.php:8 admin/views/settings_admin.php:265
 #: admin/views/tree_merge.php:1133 views/family.php:53 views/family.php:1301
 msgid "Settings"
 msgstr "Pengaturan"
 
-#: admin/index.php:605 admin/index.php:607 admin/views/menu.php:67
+#: admin/index.php:602 admin/index.php:604 admin/views/menu.php:67
 #: admin/views/settings_admin.php:268
 msgid "Homepage"
 msgstr ""
 
-#: admin/index.php:608 admin/views/settings_homepage.php:504
+#: admin/index.php:605 admin/views/settings_homepage.php:504
 msgid "Homepage favourites"
 msgstr "Favorit beranda"
 
-#: admin/index.php:609 admin/views/settings_homepage.php:599
+#: admin/index.php:606 admin/views/settings_homepage.php:599
 msgid "Slideshow on the homepage"
 msgstr "Rangkai salindia di beranda"
 
-#: admin/index.php:613 admin/views/menu.php:68
+#: admin/index.php:610 admin/views/menu.php:68
 #: admin/views/settings_admin.php:271
 msgid "Special settings"
 msgstr "Pengaturan khusus"
 
-#: admin/index.php:615 admin/views/settings_special.php:1
+#: admin/index.php:612 admin/views/settings_special.php:1
 msgid "Jewish settings"
 msgstr "Pengaturan Yahudi"
 
-#: admin/index.php:616 admin/views/settings_special.php:55
+#: admin/index.php:613 admin/views/settings_special.php:55
 #: admin/views/settings_special.php:58
 msgid "Sitemap"
 msgstr "Peta Situs"
 
-#: admin/index.php:619 admin/views/cms_pages.php:166 admin/views/menu.php:69
+#: admin/index.php:616 admin/views/cms_pages.php:166 admin/views/menu.php:69
 #: admin/views/settings_homepage.php:225 admin/views/settings_homepage.php:420
 msgid "CMS Own pages"
 msgstr "Halaman CMS Own"
 
-#: admin/index.php:620 admin/views/language_editor.php:174
+#: admin/index.php:617 admin/views/language_editor.php:162
 #: admin/views/menu.php:70
 msgid "Language editor"
 msgstr "Editor bahasa"
 
-#: admin/index.php:621 admin/views/menu.php:71 admin/views/prefix_editor.php:20
+#: admin/index.php:618 admin/views/menu.php:71 admin/views/prefix_editor.php:20
 msgid "Prefix editor"
 msgstr "Editor awalan"
 
-#: admin/index.php:622 admin/views/menu.php:72 views/help.php:104
-#: views/layout.php:597
+#: admin/index.php:619 admin/views/menu.php:72 views/help.php:104
+#: views/layout.php:599
 #, fuzzy
 #| msgid "Google maps"
 msgid "World map"
 msgstr "Google maps"
 
-#: admin/index.php:627 admin/views/index_admin.php:654 admin/views/menu.php:78
+#: admin/index.php:624 admin/views/index_admin.php:654 admin/views/menu.php:78
 #: admin/views/menu.php:81
 msgid "Family trees"
 msgstr "Pohon keluarga"
 
-#: admin/index.php:629 admin/views/groups.php:248 admin/views/menu.php:82
+#: admin/index.php:626 admin/views/groups.php:235 admin/views/menu.php:82
 #: admin/views/tree_data.php:66
 msgid "Pictures/ create thumbnails"
 msgstr "Gambar / buat thumbnail"
 
-#: admin/index.php:631 admin/views/gedcom.php:338 admin/views/thumbs.php:39
+#: admin/index.php:628 admin/views/gedcom.php:338 admin/views/thumbs.php:39
 msgid "Picture settings"
 msgstr "Pengaturan gambar"
 
-#: admin/index.php:632 admin/views/thumbs.php:42 admin/views/thumbs.php:184
+#: admin/index.php:629 admin/views/thumbs.php:42 admin/views/thumbs.php:184
 #: admin/views/thumbs.php:191
 msgid "Create thumbnails"
 msgstr "Buat thumbnail"
 
-#: admin/index.php:633 admin/views/thumbs.php:48
+#: admin/index.php:630 admin/views/thumbs.php:48
 msgid "Photo album categories"
 msgstr "Kategori album foto"
 
-#: admin/index.php:636 admin/views/menu.php:83 admin/views/notes.php:26
+#: admin/index.php:633 admin/views/menu.php:83 admin/views/notes.php:26
 #: admin/views/notes.php:96
 msgid "Notes"
 msgstr ""
 
-#: admin/index.php:638 admin/views/menu.php:84 admin/views/tree_check.php:33
+#: admin/index.php:635 admin/views/menu.php:84 admin/views/tree_check.php:33
 #: admin/views/tree_check.php:48
 msgid "Family tree data check"
 msgstr "Pemeriksaan data silsilah keluarga"
 
-#: admin/index.php:640 admin/views/tree_check.php:51
+#: admin/index.php:637 admin/views/tree_check.php:51
 #: admin/views/tree_check.php:69 admin/views/tree_check_consistency.php:33
 msgid "Check consistency of dates"
 msgstr "Periksa konsistensi tanggal"
 
-#: admin/index.php:641 admin/views/tree_check.php:54
+#: admin/index.php:638 admin/views/tree_check.php:54
 msgid "Find invalid dates"
 msgstr "Temukan tanggal yang tidak valid"
 
-#: admin/index.php:642 admin/views/tree_check.php:57
+#: admin/index.php:639 admin/views/tree_check.php:57
 #: admin/views/tree_check.php:83
 msgid "Check database integrity"
 msgstr "Periksa integritas basis data"
 
-#: admin/index.php:645 admin/views/menu.php:85 admin/views/tree_check.php:60
+#: admin/index.php:642 admin/views/menu.php:85 admin/views/tree_check.php:60
 msgid "View latest changes"
 msgstr "Lihat perubahan terbaru"
 
-#: admin/index.php:647 admin/views/cal_date.php:10
+#: admin/index.php:644 admin/views/cal_date.php:10
 #: admin/views/editor_person.php:571 admin/views/menu.php:86
 msgid "Calculated birth date"
 msgstr "Tanggal lahir terhitung"
 
-#: admin/index.php:649 admin/views/editor.php:1188
-#: admin/views/editor_person.php:561 admin/views/groups.php:452
+#: admin/index.php:646 admin/views/editor.php:1188
+#: admin/views/editor_person.php:561 admin/views/groups.php:441
 msgid "Privacy filter"
 msgstr "Filter privasi"
 
-#: admin/index.php:652 admin/views/menu.php:87
+#: admin/index.php:649 admin/views/menu.php:87
 msgid "Gedcom export"
 msgstr "Ekspor Gedcom"
 
-#: admin/index.php:653 admin/views/index_admin.php:487 admin/views/menu.php:88
+#: admin/index.php:650 admin/views/index_admin.php:487 admin/views/menu.php:88
 msgid "Database backup"
 msgstr "Cadangan basis data"
 
-#: admin/index.php:654 admin/views/menu.php:89 admin/views/statistics.php:328
-#: admin/views/users.php:84 views/help.php:94 views/layout.php:588
+#: admin/index.php:651 admin/views/menu.php:89 admin/views/statistics.php:328
+#: admin/views/users.php:84 views/help.php:94 views/layout.php:590
 msgid "Statistics"
 msgstr "Statistik"
 
-#: admin/index.php:660 admin/views/menu.php:99
+#: admin/index.php:657 admin/views/menu.php:99
 #, fuzzy
 #| msgid "Places (by families)"
 msgid "Persons and families"
 msgstr "Tempat (oleh keluarga)"
 
-#: admin/index.php:661 admin/views/edit_source.php:59
-#: admin/views/groups.php:370 admin/views/menu.php:100
+#: admin/index.php:658 admin/views/edit_source.php:49
+#: admin/views/groups.php:359 admin/views/menu.php:100
 #: admin/views/tree_merge.php:1672 app/controller/sourcesController.php:29
-#: include/show_sources.php:346 views/ancestor_report_pdf.php:376
-#: views/family.php:72 views/family_pdf.php:560 views/help.php:85
-#: views/layout.php:542 views/sources.php:16
+#: include/show_sources.php:346 views/ancestor_report_pdf.php:375
+#: views/family.php:72 views/family_pdf.php:559 views/help.php:85
+#: views/layout.php:544 views/sources.php:16
 msgid "Sources"
 msgstr "Sumber"
 
-#: admin/index.php:662 admin/views/edit_repository.php:40
+#: admin/index.php:659 admin/views/edit_repository.php:22
 #: admin/views/menu.php:101
 msgid "Repositories"
 msgstr "Repositori"
 
-#: admin/index.php:663 admin/views/edit_address.php:42
+#: admin/index.php:660 admin/views/edit_address.php:25
 #: admin/views/gedcom_export.php:482 admin/views/menu.php:102
 msgid "Shared addresses"
 msgstr "Alamat bersama"
 
-#: admin/index.php:664 admin/views/edit_rename_place.php:32
+#: admin/index.php:661 admin/views/edit_rename_place.php:32
 #: admin/views/menu.php:103
 msgid "Rename places"
 msgstr "Ganti nama tempat"
 
-#: admin/index.php:670 admin/views/menu.php:110 admin/views/menu.php:113
+#: admin/index.php:667 admin/views/menu.php:110 admin/views/menu.php:113
 #: admin/views/users.php:40
 msgid "Users"
 msgstr "Pengguna"
 
-#: admin/index.php:671 admin/views/groups.php:21 admin/views/menu.php:114
+#: admin/index.php:668 admin/views/groups.php:8 admin/views/menu.php:114
 #: admin/views/thumbs.php:218
 msgid "User groups"
 msgstr "Grup Pengguna"
 
-#: admin/index.php:673 admin/views/log.php:19 admin/views/menu.php:115
+#: admin/index.php:670 admin/views/log.php:19 admin/views/menu.php:115
 msgid "Log"
 msgstr "Log"
 
-#: admin/index.php:676 admin/views/index_admin.php:544 admin/views/log.php:23
+#: admin/index.php:673 admin/views/index_admin.php:544 admin/views/log.php:23
 msgid "Logfile users"
 msgstr "Pengguna logfile"
 
-#: admin/index.php:677 admin/views/log.php:26
+#: admin/index.php:674 admin/views/log.php:26
 msgid "IP Blacklist"
 msgstr "Daftar Hitam IP"
 
@@ -2168,7 +2157,7 @@ msgstr ""
 msgid "Choose family tree"
 msgstr "Pilih keluarga"
 
-#: admin/views/cal_date.php:163 views/fanchart.php:712
+#: admin/views/cal_date.php:163 views/fanchart.php:628
 msgid "No dates"
 msgstr "Tidak ada tanggal"
 
@@ -2197,7 +2186,7 @@ msgstr ""
 msgid "Pages"
 msgstr "Halaman"
 
-#: admin/views/cms_pages.php:174 admin/views/groups.php:153
+#: admin/views/cms_pages.php:174 admin/views/groups.php:140
 msgid "Menu"
 msgstr "Menu"
 
@@ -2275,7 +2264,7 @@ msgstr "Konter pengunjung"
 msgid "Add and edit menu/ category items:"
 msgstr "Tambahkan dan edit item menu / kategori:"
 
-#: admin/views/cms_pages.php:410 admin/views/tree_admin.php:21
+#: admin/views/cms_pages.php:410 admin/views/tree_admin.php:22
 msgid "Order"
 msgstr "Memesan"
 
@@ -2339,7 +2328,7 @@ msgstr "Indeks utama standar"
 msgid "Set per language"
 msgstr "Setel per bahasa"
 
-#: admin/views/edit_address.php:43
+#: admin/views/edit_address.php:26
 msgid ""
 "These addresses can be connected to multiple persons, families and other "
 "items."
@@ -2347,50 +2336,50 @@ msgstr ""
 "Alamat-alamat ini dapat dihubungkan ke beberapa orang, keluarga dan barang-"
 "barang lainnya."
 
-#: admin/views/edit_address.php:47
+#: admin/views/edit_address.php:30
 msgid ""
 "Are you sure you want to remove this address and ALL address references?"
 msgstr "Anda yakin ingin menghapus alamat ini dan SEMUA referensi alamat?"
 
-#: admin/views/edit_address.php:60
+#: admin/views/edit_address.php:43
 msgid "Address has been removed!"
 msgstr "Alamat telah dihapus!"
 
-#: admin/views/edit_address.php:79 admin/views/edit_address.php:84
+#: admin/views/edit_address.php:62 admin/views/edit_address.php:67
 #: admin/views/editor.php:1782
 msgid "Select address"
 msgstr "Pilih alamat"
 
-#: admin/views/edit_address.php:110
+#: admin/views/edit_address.php:93
 msgid "Add address"
 msgstr "Tambahkan alamat"
 
-#: admin/views/edit_address.php:120
+#: admin/views/edit_address.php:103
 msgid "No valid address number."
 msgstr "Tidak ada nomor alamat yang valid."
 
-#: admin/views/edit_address.php:173 admin/views/editor.php:1683
+#: admin/views/edit_address.php:156 admin/views/editor.php:1683
 #: views/address.php:15 views/addresses.php:28 views/addresses.php:42
 msgid "Street"
 msgstr "Jalan"
 
-#: admin/views/edit_address.php:183 admin/views/edit_repository.php:176
+#: admin/views/edit_address.php:166 admin/views/edit_repository.php:153
 #: admin/views/editor.php:1691 views/address.php:20 views/list.php:374
 #: views/list.php:381 views/source.php:110
 msgid "Zip code"
 msgstr "Kode Pos"
 
-#: admin/views/edit_address.php:193 admin/views/edit_repository.php:206
+#: admin/views/edit_address.php:176 admin/views/edit_repository.php:183
 #: admin/views/editor.php:1699 views/address.php:30
 msgid "Phone"
 msgstr "No. Telepon"
 
-#: admin/views/edit_address.php:301 admin/views/edit_repository.php:259
-#: admin/views/edit_source.php:350
+#: admin/views/edit_address.php:284 admin/views/edit_repository.php:236
+#: admin/views/edit_source.php:340
 msgid "Delete"
 msgstr "Menghapus"
 
-#: admin/views/edit_address.php:318 admin/views/edit_source.php:365
+#: admin/views/edit_address.php:301 admin/views/edit_source.php:355
 #: admin/views/editor.php:782
 msgid "Preview"
 msgstr "Pratinjau"
@@ -2408,7 +2397,7 @@ msgstr "Pilih lokasi"
 msgid "Change location"
 msgstr "Ganti lokasi"
 
-#: admin/views/edit_repository.php:41
+#: admin/views/edit_repository.php:23
 #, fuzzy
 #| msgid ""
 #| "A repository can be connected to a shared source. Edit a shared source to "
@@ -2420,33 +2409,33 @@ msgstr ""
 "Repositori dapat dihubungkan ke sumber bersama. Edit sumber bersama untuk "
 "menghubungkan repositori."
 
-#: admin/views/edit_repository.php:45
+#: admin/views/edit_repository.php:27
 msgid "Really remove repository with all repository links?"
 msgstr "Benarkah menghapus repositori dengan semua tautan repositori?"
 
-#: admin/views/edit_repository.php:57
+#: admin/views/edit_repository.php:39
 msgid "Repository is removed!"
 msgstr "Repositori dihapus!"
 
-#: admin/views/edit_repository.php:75 admin/views/edit_repository.php:83
+#: admin/views/edit_repository.php:57 admin/views/edit_repository.php:65
 msgid "Select repository"
 msgstr "Pilih repositori"
 
-#: admin/views/edit_repository.php:102
+#: admin/views/edit_repository.php:79
 msgid "Add repository"
 msgstr "Tambahkan repositori"
 
-#: admin/views/edit_repository.php:127
+#: admin/views/edit_repository.php:104
 msgid "No valid repository number."
 msgstr "Tidak ada nomor repositori yang valid."
 
-#: admin/views/edit_repository.php:226 admin/views/gedcom_export.php:334
-#: admin/views/gedcom_export.php:337 app/model/user_settings.php:89
-#: views/mailform.php:43 views/register.php:64
+#: admin/views/edit_repository.php:203 admin/views/gedcom_export.php:334
+#: admin/views/gedcom_export.php:337 app/model/mailform.php:84
+#: app/model/register.php:96 app/model/user_settings.php:89
 msgid "E-mail"
 msgstr "E-mail"
 
-#: admin/views/edit_source.php:60
+#: admin/views/edit_source.php:50
 msgid ""
 "These sources can be connected to multiple persons, families, events and "
 "other items."
@@ -2454,80 +2443,80 @@ msgstr ""
 "Sumber-sumber ini dapat dihubungkan ke banyak orang, keluarga, acara dan "
 "barang-barang lainnya."
 
-#: admin/views/edit_source.php:64
+#: admin/views/edit_source.php:54
 msgid "Source is removed!"
 msgstr "Sumber dihapus!"
 
-#: admin/views/edit_source.php:70
+#: admin/views/edit_source.php:60
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr ""
 "Apakah Anda yakin ingin menghapus sumber ini dan SEMUA sumber referensi?"
 
-#: admin/views/edit_source.php:96 admin/views/edit_source.php:106
+#: admin/views/edit_source.php:86 admin/views/edit_source.php:96
 msgid "Select source"
 msgstr "Pilih sumber"
 
-#: admin/views/edit_source.php:129 admin/views/edit_source.php:210
+#: admin/views/edit_source.php:119 admin/views/edit_source.php:200
 msgid "restricted"
 msgstr "terbatas"
 
-#: admin/views/edit_source.php:171 include/show_source_pdf.php:31
+#: admin/views/edit_source.php:161 include/show_source_pdf.php:31
 #: views/source.php:20 views/source.php:25
 msgid "No valid source number."
 msgstr "Tidak ada nomor sumber yang valid."
 
-#: admin/views/edit_source.php:206 admin/views/editor.php:2015
+#: admin/views/edit_source.php:196 admin/views/editor.php:2015
 #: admin/views/log.php:44 admin/views/notes.php:194
 #: admin/views/settings_homepage.php:152
 msgid "Status"
 msgstr "Status"
 
-#: admin/views/edit_source.php:209
+#: admin/views/edit_source.php:199
 msgid "publish"
 msgstr "menerbitkan"
 
-#: admin/views/edit_source.php:212
+#: admin/views/edit_source.php:202
 msgid "restricted = only visible for selected user groups"
 msgstr "dibatasi = hanya terlihat untuk grup pengguna yang dipilih"
 
-#: admin/views/edit_source.php:226 include/show_source_pdf.php:102
-#: views/mailform.php:159 views/mailform.php:161 views/source.php:59
+#: admin/views/edit_source.php:216 include/show_source_pdf.php:102
+#: views/mailform.php:62 views/mailform.php:64 views/source.php:59
 msgid "Subject"
 msgstr "Subyek"
 
-#: admin/views/edit_source.php:250 views/source.php:108
+#: admin/views/edit_source.php:240 views/source.php:108
 msgid "Repository"
 msgstr "Gudang"
 
-#: admin/views/edit_source.php:260
+#: admin/views/edit_source.php:250
 msgid "Add repositories"
 msgstr ""
 
-#: admin/views/edit_source.php:266 include/show_source_pdf.php:69
+#: admin/views/edit_source.php:256 include/show_source_pdf.php:69
 #: views/source.php:47
 msgid "Publication"
 msgstr "Publikasi"
 
-#: admin/views/edit_source.php:269
+#: admin/views/edit_source.php:259
 msgid "will be shown as a link."
 msgstr "akan ditampilkan sebagai tautan."
 
-#: admin/views/edit_source.php:283 include/show_source_pdf.php:96
+#: admin/views/edit_source.php:273 include/show_source_pdf.php:96
 #: views/source.php:56
 msgid "Author"
 msgstr "Penulis"
 
-#: admin/views/edit_source.php:291 admin/views/statistics.php:63
+#: admin/views/edit_source.php:281 admin/views/statistics.php:63
 #: include/show_source_pdf.php:108 views/source.php:62
 msgid "Nr."
 msgstr "No."
 
-#: admin/views/edit_source.php:299 include/show_source_pdf.php:114
+#: admin/views/edit_source.php:289 include/show_source_pdf.php:114
 #: views/source.php:65
 msgid "Kind"
 msgstr "Jenis"
 
-#: admin/views/edit_source.php:307 include/show_source_pdf.php:120
+#: admin/views/edit_source.php:297 include/show_source_pdf.php:120
 #: views/source.php:68
 msgid "Archive"
 msgstr "Arsipkan"
@@ -2541,18 +2530,18 @@ msgstr "Daftar favorit:"
 #: admin/views/editor.php:144 admin/views/tree_check.php:86
 #: admin/views/tree_check_changes.php:197
 #: app/controller/latest_changesController.php:20 views/help.php:113
-#: views/layout.php:609
+#: views/layout.php:611
 msgid "Latest changes"
 msgstr "Perubahan terbaru"
 
 #: admin/views/editor.php:161 admin/views/editor.php:1988
 #: admin/views/editor_person.php:1465 admin/views/editor_person.php:1484
-#: admin/views/editor_relation.php:1016 admin/views/notes.php:198
+#: admin/views/editor_relation.php:1023 admin/views/notes.php:198
 msgid "Added by"
 msgstr "Ditambahkan oleh"
 
 #: admin/views/editor.php:169 admin/views/editor.php:2000
-#: admin/views/editor_person.php:1501 admin/views/editor_relation.php:1033
+#: admin/views/editor_person.php:1501 admin/views/editor_relation.php:1040
 msgid "Changed by"
 msgstr "Diubah oleh"
 
@@ -2599,7 +2588,7 @@ msgstr "Apakah Anda yakin ingin memutuskan sambungan anak ini?"
 #: app/controller/descendant_chartController.php:96
 #: app/controller/familyController.php:44
 #: app/controller/hourglassController.php:77
-#: app/controller/outline_reportController.php:53
+#: app/controller/outline_reportController.php:57
 #: views/list_places_families.php:211
 msgid "Family"
 msgstr "Keluarga"
@@ -2608,12 +2597,12 @@ msgstr "Keluarga"
 msgid "Browse"
 msgstr "Jelajah"
 
-#: admin/views/editor.php:670 admin/views/editor_relation.php:260
-#: admin/views/editor_relation.php:485 include/marriage_cls.php:812
+#: admin/views/editor.php:670 admin/views/editor_relation.php:267
+#: admin/views/editor_relation.php:492 include/marriage_cls.php:812
 msgid "marriage/ relation"
 msgstr "pernikahan / relasi"
 
-#: admin/views/editor.php:672 admin/views/editor_relation.php:573
+#: admin/views/editor.php:672 admin/views/editor_relation.php:580
 #: include/marriage_cls.php:382 include/marriage_cls.php:388
 #: include/marriage_cls.php:397 include/marriage_cls.php:398
 msgid "Married"
@@ -2626,7 +2615,7 @@ msgstr "Menikah"
 #: include/marriage_cls.php:788 include/marriage_cls.php:792
 #: include/marriage_cls.php:800 include/marriage_cls.php:804
 #: include/marriage_cls.php:817 include/marriage_cls.php:821
-#: views/ancestor_report.php:221 views/ancestor_report_pdf.php:283
+#: views/ancestor_report.php:221 views/ancestor_report_pdf.php:282
 #: views/ancestor_report_rtf.php:271 views/descendant_chart.php:397
 msgid " to: "
 msgstr " untuk: "
@@ -2657,8 +2646,8 @@ msgid "Add person"
 msgstr "Tambahkan orang"
 
 #: admin/views/editor.php:794 views/descendant_chart.php:49
-#: views/hourglass.php:93 views/layout.php:802 views/list.php:465
-#: views/maps.php:297 views/timeline.php:99
+#: views/hourglass.php:94 views/layout.php:805 views/list.php:465
+#: views/maps.php:290 views/timeline.php:99
 msgid "Help"
 msgstr "Membantu"
 
@@ -2724,22 +2713,22 @@ msgid "deceased"
 msgstr "meninggal"
 
 #: admin/views/editor.php:1207 admin/views/editor_person.php:616
-#: views/ancestor_sheet_pdf.php:383
+#: views/ancestor_sheet_pdf.php:382
 msgid "male"
 msgstr "pria"
 
 #: admin/views/editor.php:1210 admin/views/editor_person.php:617
-#: views/ancestor_sheet_pdf.php:379
+#: views/ancestor_sheet_pdf.php:378
 msgid "female"
 msgstr "wanita"
 
 #: admin/views/editor.php:1283 admin/views/editor.php:1399
-#: admin/views/editor_relation.php:80 admin/views/editor_relation.php:108
+#: admin/views/editor_relation.php:87 admin/views/editor_relation.php:115
 msgid "Add relation"
 msgstr "Tambahkan relasi"
 
 #: admin/views/editor.php:1283 admin/views/editor.php:1401
-#: admin/views/editor_relation.php:1189 admin/views/editor_relation.php:1191
+#: admin/views/editor_relation.php:1196 admin/views/editor_relation.php:1198
 msgid "Add child"
 msgstr "Tambahkan anak"
 
@@ -2754,12 +2743,12 @@ msgid "stillborn child"
 msgstr "anak lahir mati"
 
 #: admin/views/editor.php:1424 admin/views/trees.php:52
-#: include/show_tree_text.php:7 views/photoalbum.php:208
+#: include/show_tree_text.php:7 views/photoalbum.php:193
 msgid "NO NAME"
 msgstr "TANPA NAMA"
 
 #: admin/views/editor.php:1465 admin/views/tree_merge.php:1759
-#: views/addresses.php:12 views/layout.php:555
+#: views/addresses.php:12 views/layout.php:557
 msgid "Addresses"
 msgstr "Alamat"
 
@@ -2780,7 +2769,7 @@ msgid ""
 msgstr ""
 
 #: admin/views/editor.php:1578 admin/views/settings_homepage.php:226
-#: admin/views/settings_homepage.php:421 admin/views/tree_admin.php:86
+#: admin/views/settings_homepage.php:421 admin/views/tree_admin.php:87
 msgid "EMPTY LINE"
 msgstr "LINE KOSONG"
 
@@ -2882,7 +2871,7 @@ msgstr ""
 msgid "Archives"
 msgstr ""
 
-#: admin/views/editor_person.php:174 admin/views/language_editor.php:412
+#: admin/views/editor_person.php:174 admin/views/language_editor.php:394
 msgid "No results found"
 msgstr "Tidak ada hasil yang ditemukan"
 
@@ -2921,7 +2910,7 @@ msgstr "Halaman"
 msgid "year"
 msgstr "tahun"
 
-#: admin/views/editor_person.php:349 admin/views/editor_relation.php:243
+#: admin/views/editor_person.php:349 admin/views/editor_relation.php:250
 #: admin/views/gedcom_export.php:217 views/list.php:301 views/list.php:352
 #: views/list_names.php:211 views/stats_firstnames.php:94
 #: views/stats_surnames.php:114
@@ -2933,14 +2922,14 @@ msgid "For example: Joseph ben Hirsch Zvi"
 msgstr "Misalnya: Joseph ben Hirsch Zvi"
 
 #: admin/views/editor_person.php:652 admin/views/editor_person.php:1017
-#: include/person_cls.php:1947 include/person_cls.php:1949
-#: include/person_cls.php:1953 include/person_cls.php:2207
+#: include/person_cls.php:1951 include/person_cls.php:1953
+#: include/person_cls.php:1957 include/person_cls.php:2211
 msgid "at"
 msgstr "di"
 
 #: admin/views/editor_person.php:652 admin/views/editor_person.php:1017
-#: include/person_cls.php:1947 include/person_cls.php:1949
-#: include/person_cls.php:1953 include/person_cls.php:2207
+#: include/person_cls.php:1951 include/person_cls.php:1953
+#: include/person_cls.php:1957 include/person_cls.php:2211
 msgid "hour"
 msgstr "jam"
 
@@ -2965,74 +2954,74 @@ msgid "Bar Mitzvah"
 msgstr "Bar mitzvah"
 
 #: admin/views/editor_person.php:925 admin/views/editor_person.php:956
-#: admin/views/tree_merge.php:1293 include/person_cls.php:2065
-#: include/person_cls.php:2067 include/person_cls.php:2587
+#: admin/views/tree_merge.php:1293 include/person_cls.php:2069
+#: include/person_cls.php:2071 include/person_cls.php:2591
 msgid "religion"
 msgstr "agama"
 
 #: admin/views/editor_person.php:1026 admin/views/editor_person.php:1029
 #: admin/views/editor_person.php:1032 admin/views/editor_person.php:1041
 #: admin/views/editor_person.php:1044 admin/views/editor_person.php:1061
-#: admin/views/tree_merge.php:1288 include/person_cls.php:2234
-#: include/person_cls.php:2237 include/person_cls.php:2240
-#: include/person_cls.php:2249 include/person_cls.php:2252
-#: include/person_cls.php:2275 include/person_cls.php:2277
-#: include/person_cls.php:2285
+#: admin/views/tree_merge.php:1288 include/person_cls.php:2238
+#: include/person_cls.php:2241 include/person_cls.php:2244
+#: include/person_cls.php:2253 include/person_cls.php:2256
+#: include/person_cls.php:2279 include/person_cls.php:2281
+#: include/person_cls.php:2289
 msgid "cause of death"
 msgstr "Sebab kematian"
 
 #: admin/views/editor_person.php:1026 admin/views/editor_person.php:1133
-#: include/person_cls.php:2234 include/person_cls.php:2285
+#: include/person_cls.php:2238 include/person_cls.php:2289
 msgid "murdered"
 msgstr "terbunuh"
 
 #: admin/views/editor_person.php:1029 admin/views/editor_person.php:1134
-#: include/person_cls.php:2237
+#: include/person_cls.php:2241
 msgid "drowned"
 msgstr "tenggelam"
 
 #: admin/views/editor_person.php:1032 admin/views/editor_person.php:1135
-#: include/person_cls.php:2240
+#: include/person_cls.php:2244
 msgid "perished"
 msgstr "binasa"
 
 #: admin/views/editor_person.php:1035 admin/views/editor_person.php:1136
-#: include/person_cls.php:2243
+#: include/person_cls.php:2247
 msgid "killed in action"
 msgstr "terbunuh dalam aksi"
 
 #: admin/views/editor_person.php:1038 admin/views/editor_person.php:1137
-#: include/person_cls.php:2246
+#: include/person_cls.php:2250
 msgid "being missed"
 msgstr "terjawab"
 
 #: admin/views/editor_person.php:1041 admin/views/editor_person.php:1138
-#: include/person_cls.php:2249
+#: include/person_cls.php:2253
 msgid "committed suicide"
 msgstr "bunuh diri"
 
 #: admin/views/editor_person.php:1044 admin/views/editor_person.php:1139
-#: include/person_cls.php:2252
+#: include/person_cls.php:2256
 msgid "executed"
 msgstr "dieksekusi"
 
 #: admin/views/editor_person.php:1047 admin/views/editor_person.php:1140
-#: include/person_cls.php:2255
+#: include/person_cls.php:2259
 msgid "died young"
 msgstr "mati muda"
 
 #: admin/views/editor_person.php:1050 admin/views/editor_person.php:1141
-#: include/person_cls.php:2258
+#: include/person_cls.php:2262
 msgid "died unmarried"
 msgstr "meninggal tanpa menikah"
 
 #: admin/views/editor_person.php:1053 admin/views/editor_person.php:1142
-#: include/person_cls.php:2261
+#: include/person_cls.php:2265
 msgid "registration"
 msgstr "pendaftaran"
 
 #: admin/views/editor_person.php:1056 admin/views/editor_person.php:1143
-#: include/person_cls.php:2264
+#: include/person_cls.php:2268
 msgid "declared death"
 msgstr "menyatakan kematian"
 
@@ -3061,21 +3050,21 @@ msgid "method of burial"
 msgstr ""
 
 #: admin/views/editor_person.php:1234 admin/views/tree_merge.php:1289
-#: include/person_cls.php:2442
+#: include/person_cls.php:2446
 msgid "cremation"
 msgstr "kremasi"
 
-#: admin/views/editor_person.php:1235 include/person_cls.php:2444
+#: admin/views/editor_person.php:1235 include/person_cls.php:2448
 #, fuzzy
 #| msgid "estimated"
 msgid "resomated"
 msgstr "diperkirakan"
 
-#: admin/views/editor_person.php:1236 include/person_cls.php:2446
+#: admin/views/editor_person.php:1236 include/person_cls.php:2450
 msgid "sailor's grave"
 msgstr ""
 
-#: admin/views/editor_person.php:1237 include/person_cls.php:2448
+#: admin/views/editor_person.php:1237 include/person_cls.php:2452
 msgid "donated to science"
 msgstr ""
 
@@ -3108,12 +3097,12 @@ msgstr ""
 "sendiri oleh seseorang! Tambahkan ikon di folder gambar misalnya 'person."
 "gif', dan tambahkan 'person' di bidang kode sendiri."
 
-#: admin/views/editor_person.php:1411 admin/views/editor_relation.php:981
+#: admin/views/editor_person.php:1411 admin/views/editor_relation.php:988
 msgid "GEDCOM tags"
 msgstr ""
 
 #: admin/views/editor_person.php:1416 admin/views/editor_person.php:1418
-#: admin/views/editor_relation.php:986 admin/views/editor_relation.php:988
+#: admin/views/editor_relation.php:993 admin/views/editor_relation.php:995
 #, php-format
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr ""
@@ -3133,59 +3122,59 @@ msgstr "Ada %d pengguna menambahkan catatan."
 msgid "Delete person"
 msgstr "Hapus orang"
 
-#: admin/views/editor_relation.php:82
+#: admin/views/editor_relation.php:89
 #, fuzzy
 #| msgid "Add new family to this person"
 msgid "Add new relation to this person"
 msgstr "Tambahkan keluarga baru ke orang ini"
 
-#: admin/views/editor_relation.php:96
+#: admin/views/editor_relation.php:103
 #, fuzzy
 #| msgid "Or add relation with existing partner:"
 msgid "Or add relation with existing person:"
 msgstr "Atau tambakan hubungan dengan kawan yg telah ada:"
 
-#: admin/views/editor_relation.php:217
+#: admin/views/editor_relation.php:224
 msgid "If you continue, ALL children will be disconnected automatically!"
 msgstr "Jika Anda melanjutkan, SEMUA anak akan terputus secara otomatis!"
 
-#: admin/views/editor_relation.php:219
+#: admin/views/editor_relation.php:226
 msgid "Are you sure to remove this mariage?"
 msgstr "Apakah Anda yakin akan menghapus mariage ini?"
 
-#: admin/views/editor_relation.php:262
+#: admin/views/editor_relation.php:269
 #, fuzzy
 #| msgid "Select person"
 msgid "Select person 1"
 msgstr "Pilih orang"
 
-#: admin/views/editor_relation.php:291
+#: admin/views/editor_relation.php:298
 #, fuzzy
 #| msgid "Select person"
 msgid "Select person 2"
 msgstr "Pilih orang"
 
-#: admin/views/editor_relation.php:341 include/marriage_cls.php:187
+#: admin/views/editor_relation.php:348 include/marriage_cls.php:187
 #: include/marriage_cls.php:206
 msgid "End living together"
 msgstr "Akhiri hidup bersama"
 
-#: admin/views/editor_relation.php:369
+#: admin/views/editor_relation.php:376
 msgid "End date"
 msgstr "Tanggal akhir"
 
-#: admin/views/editor_relation.php:492 admin/views/editor_relation.php:565
-#: admin/views/editor_relation.php:567 admin/views/editor_relation.php:572
+#: admin/views/editor_relation.php:499 admin/views/editor_relation.php:572
+#: admin/views/editor_relation.php:574 admin/views/editor_relation.php:579
 msgid "Marriage/ Related"
 msgstr "Perkawinan / Terkait"
 
-#: admin/views/editor_relation.php:536
+#: admin/views/editor_relation.php:543
 #, fuzzy
 #| msgid "Add person"
 msgid "Age person 1"
 msgstr "Tambahkan orang"
 
-#: admin/views/editor_relation.php:547
+#: admin/views/editor_relation.php:554
 msgid ""
 "If birth year of man or woman is empty it will be calculated automatically "
 "using age by marriage."
@@ -3193,106 +3182,106 @@ msgstr ""
 "Jika tahun kelahiran pria atau wanita kosong, itu akan dihitung secara "
 "otomatis menggunakan usia berdasarkan perkawinan."
 
-#: admin/views/editor_relation.php:556
+#: admin/views/editor_relation.php:563
 #, fuzzy
 #| msgid "Add person"
 msgid "Age person 2"
 msgstr "Tambahkan orang"
 
-#: admin/views/editor_relation.php:575 include/marriage_cls.php:69
-#: include/person_cls.php:1203
+#: admin/views/editor_relation.php:582 include/marriage_cls.php:69
+#: include/person_cls.php:1207
 msgid "Living apart together"
 msgstr "Hidup terpisah bersama"
 
-#: admin/views/editor_relation.php:576 include/marriage_cls.php:73
-#: include/person_cls.php:1206
+#: admin/views/editor_relation.php:583 include/marriage_cls.php:73
+#: include/person_cls.php:1210
 msgid "Intentionally unmarried mother"
 msgstr "Sengaja ibu yang belum menikah"
 
-#: admin/views/editor_relation.php:577 include/marriage_cls.php:79
-#: include/person_cls.php:1209
+#: admin/views/editor_relation.php:584 include/marriage_cls.php:79
+#: include/person_cls.php:1213
 msgid "Homosexual"
 msgstr "Homoseksual"
 
-#: admin/views/editor_relation.php:578
+#: admin/views/editor_relation.php:585
 msgid "Non_marital"
 msgstr "Non_marital"
 
-#: admin/views/editor_relation.php:579 include/marriage_cls.php:88
-#: include/marriage_cls.php:95 include/person_cls.php:1215
-#: include/person_cls.php:1218
+#: admin/views/editor_relation.php:586 include/marriage_cls.php:88
+#: include/marriage_cls.php:95 include/person_cls.php:1219
+#: include/person_cls.php:1222
 msgid "Extramarital"
 msgstr "Di luar nikah"
 
-#: admin/views/editor_relation.php:580 include/marriage_cls.php:102
-#: include/person_cls.php:1221
+#: admin/views/editor_relation.php:587 include/marriage_cls.php:102
+#: include/person_cls.php:1225
 msgid "Partner"
 msgstr "Pasangan"
 
-#: admin/views/editor_relation.php:581 include/marriage_cls.php:106
+#: admin/views/editor_relation.php:588 include/marriage_cls.php:106
 #, fuzzy
 #| msgid "partnership"
 msgid "Registered partnership"
 msgstr "kemitraan"
 
-#: admin/views/editor_relation.php:582 include/marriage_cls.php:110
-#: include/person_cls.php:1227
+#: admin/views/editor_relation.php:589 include/marriage_cls.php:110
+#: include/person_cls.php:1231
 msgid "Unknown relation"
 msgstr "Hubungan tidak dikenal"
 
-#: admin/views/editor_relation.php:588 admin/views/editor_relation.php:853
+#: admin/views/editor_relation.php:595 admin/views/editor_relation.php:860
 msgid "Registrar"
 msgstr "Pendaftar"
 
-#: admin/views/editor_relation.php:901
+#: admin/views/editor_relation.php:908
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr ""
 "Perceraian (gunakan kotak centang ini untuk perceraian tanpa data lebih "
 "lanjut)."
 
-#: admin/views/editor_relation.php:907
+#: admin/views/editor_relation.php:914
 #, fuzzy
 #| msgid "marriage/ relation"
 msgid "Text by relation"
 msgstr "pernikahan / relasi"
 
-#: admin/views/editor_relation.php:938
+#: admin/views/editor_relation.php:945
 #, fuzzy
 #| msgid "marriage/ relation"
 msgid "Source by relation"
 msgstr "pernikahan / relasi"
 
-#: admin/views/editor_relation.php:1050
+#: admin/views/editor_relation.php:1057
 msgid "Delete relation"
 msgstr "Hapus relasi"
 
-#: admin/views/editor_relation.php:1152
+#: admin/views/editor_relation.php:1159
 msgid "Use this icon to order children (drag and drop)"
 msgstr "Gunakan ikon ini untuk memesan anak-anak (seret dan lepas)"
 
-#: admin/views/editor_relation.php:1153
+#: admin/views/editor_relation.php:1160
 msgid "Or automatically order children:"
 msgstr "Atau secara otomatis memesan anak-anak:"
 
-#: admin/views/editor_relation.php:1153
+#: admin/views/editor_relation.php:1160
 msgid "Automatic order children"
 msgstr "Otomatis memesan anak"
 
-#: admin/views/editor_relation.php:1155
+#: admin/views/editor_relation.php:1162
 msgid "Children are re-ordered."
 msgstr "Anak-anak dipesan ulang."
 
-#: admin/views/editor_relation.php:1177
+#: admin/views/editor_relation.php:1184
 msgid "Disconnect child"
 msgstr "Putuskan sambungan anak"
 
-#: admin/views/editor_relation.php:1213
+#: admin/views/editor_relation.php:1220
 #, fuzzy
 #| msgid "Or add relation with existing partner:"
 msgid "Or add existing person as a child:"
 msgstr "Atau tambakan hubungan dengan kawan yg telah ada:"
 
-#: admin/views/editor_relation.php:1225
+#: admin/views/editor_relation.php:1232
 msgid "Select child"
 msgstr "Pilih anak"
 
@@ -3355,7 +3344,7 @@ msgid "Remove GEDCOM files older than %d year(s)"
 msgstr ""
 
 #: admin/views/gedcom.php:226 admin/views/log.php:127 admin/views/log.php:161
-#: admin/views/notes.php:187 admin/views/tree_admin.php:24
+#: admin/views/notes.php:187 admin/views/tree_admin.php:25
 msgid "Remove"
 msgstr "Menghapus"
 
@@ -3528,8 +3517,8 @@ msgid ""
 "The data in this GEDCOM will be appended to the existing data in this tree!"
 msgstr ""
 
-#: admin/views/gedcom.php:1021 admin/views/make_db_maps.php:849
-#: views/maps.php:667 views/maps.php:794 views/maps.php:920
+#: admin/views/gedcom.php:1021 admin/views/make_db_maps.php:842
+#: views/maps.php:660 views/maps.php:787 views/maps.php:913
 msgid "Cancel"
 msgstr "Membatalkan"
 
@@ -3607,14 +3596,14 @@ msgid "Processing of referenced texts into standard texts..."
 msgstr "Memproses teks yang dirujuk ke dalam teks standar ..."
 
 #: admin/views/gedcom.php:2014 admin/views/index_admin.php:674
-#: admin/views/statistics_old.php:66 admin/views/tree_admin.php:145
-#: app/model/tree_index.php:337
+#: admin/views/statistics_old.php:66 admin/views/tree_admin.php:107
+#: app/model/tree_index.php:297
 msgid "persons"
 msgstr "orang"
 
 #: admin/views/gedcom.php:2245 admin/views/index_admin.php:674
-#: admin/views/statistics_old.php:66 admin/views/tree_admin.php:145
-#: app/model/tree_index.php:337
+#: admin/views/statistics_old.php:66 admin/views/tree_admin.php:107
+#: app/model/tree_index.php:297
 msgid "families"
 msgstr "keluarga"
 
@@ -3838,19 +3827,19 @@ msgstr ""
 msgid "No valid family number."
 msgstr "Tidak ada nomor keluarga yang valid."
 
-#: admin/views/groups.php:32
+#: admin/views/groups.php:19
 msgid "It's not possible to delete this group: there is/ are"
 msgstr "Tidak dapat menghapus grup ini: ada / ada"
 
-#: admin/views/groups.php:32
+#: admin/views/groups.php:19
 msgid "user(s) connected to this group!"
 msgstr "pengguna terhubung ke grup ini!"
 
-#: admin/views/groups.php:34
+#: admin/views/groups.php:21
 msgid "Are you sure you want to remove the group:"
 msgstr "Apakah Anda yakin ingin menghapus grup:"
 
-#: admin/views/groups.php:47
+#: admin/views/groups.php:34
 #, fuzzy, php-format
 #| msgid ""
 #| "You can have multiple users in HuMo-gen. Every user can be connected to 1 "
@@ -3874,55 +3863,55 @@ msgstr ""
 "= administrator situs web. <br> \\ nGroup \\ \"family \" = anggota keluarga "
 "atau ahli silsilah."
 
-#: admin/views/groups.php:60
+#: admin/views/groups.php:47
 msgid "Choose a user group: "
 msgstr "Pilih grup pengguna: "
 
-#: admin/views/groups.php:72
+#: admin/views/groups.php:59
 msgid "ADD GROUP"
 msgstr "TAMBAHKAN KELOMPOK"
 
-#: admin/views/groups.php:115
+#: admin/views/groups.php:102
 msgid "Group"
 msgstr "Kelompok"
 
-#: admin/views/groups.php:118
+#: admin/views/groups.php:105
 msgid "REMOVE GROUP"
 msgstr "HAPUS GROUP"
 
-#: admin/views/groups.php:126
+#: admin/views/groups.php:113
 msgid "Group name"
 msgstr "Nama grup"
 
-#: admin/views/groups.php:131 admin/views/install.php:247
+#: admin/views/groups.php:118 admin/views/install.php:247
 msgid "Administrator"
 msgstr "Administrator"
 
-#: admin/views/groups.php:148
+#: admin/views/groups.php:135
 msgid "Save statistics data"
 msgstr "Simpan data statistik"
 
-#: admin/views/groups.php:158
+#: admin/views/groups.php:145
 msgid "Birthday RSS in main menu"
 msgstr "Ulang tahun RSS di menu utama"
 
-#: admin/views/groups.php:163
+#: admin/views/groups.php:150
 msgid "INFORMATION menu: show \"CMS\" pages"
 msgstr "Menu INFORMASI: tampilkan halaman \\ \"CMS \""
 
-#: admin/views/groups.php:168
+#: admin/views/groups.php:155
 msgid "FAMILY TREE menu: show \"Persons\" submenu"
 msgstr "Menu FAMILY TREE: tampilkan submenu \\ \"Orang \""
 
-#: admin/views/groups.php:173
+#: admin/views/groups.php:160
 msgid "FAMILY TREE menu: show \"Names\" submenu"
 msgstr "Menu FAMILY TREE: tampilkan submenu \\ \"Names \""
 
-#: admin/views/groups.php:178
+#: admin/views/groups.php:165
 msgid "FAMILY TREE menu: show \"Places\" submenu"
 msgstr "Menu FAMILY TREE: tampilkan submenu \\ \"Places \""
 
-#: admin/views/groups.php:183
+#: admin/views/groups.php:170
 msgid ""
 "FAMILY TREE menu: show \"Addresses\" submenu (only shown if there really are "
 "addresses)"
@@ -3930,23 +3919,23 @@ msgstr ""
 "Menu FAMILY TREE: tampilkan submenu \\ \"Addresses \" (hanya ditampilkan "
 "jika benar-benar ada alamat)"
 
-#: admin/views/groups.php:188
+#: admin/views/groups.php:175
 msgid "FAMILY TREE menu: show \"Photobook\" submenu"
 msgstr "Menu FAMILY TREE: tampilkan submenu \\ \"Photobook \""
 
-#: admin/views/groups.php:193
+#: admin/views/groups.php:180
 msgid "TOOLS menu: show \"Anniversary\" (birthday list) submenu"
 msgstr "Menu ALAT: tampilkan submenu \\ \"Anniversary \" (daftar ulang tahun)"
 
-#: admin/views/groups.php:198
+#: admin/views/groups.php:185
 msgid "TOOLS menu: show \"Statistics\" submenu"
 msgstr "Menu ALAT: tampilkan submenu \\ \"Statistik \""
 
-#: admin/views/groups.php:203
+#: admin/views/groups.php:190
 msgid "TOOLS menu: show \"Relationship Calculator\" submenu"
 msgstr "Menu ALAT: tampilkan submenu \\ \"Kalkulator Hubungan \""
 
-#: admin/views/groups.php:208
+#: admin/views/groups.php:195
 msgid ""
 "TOOLS menu: show \"Google maps\" submenu (only shown if geolocation database "
 "was created)"
@@ -3954,7 +3943,7 @@ msgstr ""
 "Menu ALAT: tampilkan submenu \\ \"Google maps \" (hanya ditampilkan jika "
 "database geolokasi dibuat)"
 
-#: admin/views/groups.php:213
+#: admin/views/groups.php:200
 msgid ""
 "TOOLS menu: show \"Contact\" submenu (only shown if tree owner and email "
 "were entered)"
@@ -3962,186 +3951,186 @@ msgstr ""
 "Menu ALAT: tampilkan submenu \\ \"Kontak \" (hanya ditampilkan jika pemilik "
 "pohon dan email dimasukkan)"
 
-#: admin/views/groups.php:218
+#: admin/views/groups.php:205
 msgid "TOOLS menu: show \"Latest changes\" submenu"
 msgstr "Menu ALAT: tampilkan submenu \\ \"Perubahan terbaru \""
 
-#: admin/views/groups.php:223
+#: admin/views/groups.php:210
 msgid "Show \"Login\" link (can be changed in group \"guest\" only)"
 msgstr ""
 "Tampilkan tautan \\ \"Login \" (hanya dapat diubah dalam grup \\ \"tamu \")"
 
-#: admin/views/groups.php:236
+#: admin/views/groups.php:223
 msgid "Is allowed to change password"
 msgstr "Diizinkan mengubah kata sandi"
 
-#: admin/views/groups.php:241 admin/views/tree_merge.php:965
+#: admin/views/groups.php:228 admin/views/tree_merge.php:965
 msgid "General"
 msgstr "Umum"
 
-#: admin/views/groups.php:246 views/family.php:101
+#: admin/views/groups.php:233 views/family.php:101
 msgid "Show pictures"
 msgstr "Perlihatkan gambar"
 
-#: admin/views/groups.php:247
+#: admin/views/groups.php:234
 msgid ""
 "(option can only be disabled if option \"Show photobook in submenu\" is "
 "disabled)"
 msgstr ""
 
-#: admin/views/groups.php:254
+#: admin/views/groups.php:241
 msgid "Show Gedcom number (from gedcom file)"
 msgstr "Tampilkan nomor Gedcom (dari file gedcom)"
 
-#: admin/views/groups.php:259
+#: admin/views/groups.php:246
 #, fuzzy
 #| msgid "Show residence"
 msgid "Show residence and address"
 msgstr "Tampilkan tempat tinggal"
 
-#: admin/views/groups.php:264
+#: admin/views/groups.php:251
 msgid "Show places with bapt., birth, death and cemetery."
 msgstr ""
 "Tunjukkan tempat-tempat dengan baptisan, kelahiran, kematian, dan kuburan."
 
-#: admin/views/groups.php:269
+#: admin/views/groups.php:256
 msgid "Show religion (with bapt. and wedding)"
 msgstr "Perlihatkan agama (dengan baptisan dan pernikahan)"
 
-#: admin/views/groups.php:274
+#: admin/views/groups.php:261
 msgid "Show date and place (i.e. with birth, bapt., death, cemetery.)"
 msgstr ""
 "Tunjukkan tanggal dan tempat (yaitu dengan kelahiran, pembaptisan, kematian, "
 "pemakaman.)"
 
-#: admin/views/groups.php:284
+#: admin/views/groups.php:271
 msgid "Show name in indexes"
 msgstr "Tampilkan nama dalam indeks"
 
-#: admin/views/groups.php:292
+#: admin/views/groups.php:281
 msgid "Show events"
 msgstr "Tampilkan acara"
 
-#: admin/views/groups.php:297
+#: admin/views/groups.php:286
 msgid "Show own code"
 msgstr "Tampilkan kode sendiri"
 
-#: admin/views/groups.php:303
+#: admin/views/groups.php:292
 msgid "Default presentation of family page"
 msgstr "Presentasi default halaman keluarga"
 
-#: admin/views/groups.php:306 views/family.php:63
+#: admin/views/groups.php:295 views/family.php:63
 msgid "Compact view"
 msgstr "Tampilan ringkas"
 
-#: admin/views/groups.php:307 admin/views/groups.php:308 views/family.php:64
+#: admin/views/groups.php:296 admin/views/groups.php:297 views/family.php:64
 #: views/family.php:65 views/list.php:580 views/list_places_families.php:180
 msgid "Expanded view"
 msgstr "Tampilan yang diperluas"
 
-#: admin/views/groups.php:315
+#: admin/views/groups.php:304
 msgid "Default presentation of Google maps in family page"
 msgstr "Presentasi default peta Google di halaman keluarga"
 
-#: admin/views/groups.php:318
+#: admin/views/groups.php:307
 msgid "Show Google maps"
 msgstr "Tampilkan peta Google"
 
-#: admin/views/groups.php:319
+#: admin/views/groups.php:308
 msgid "Hide Google maps"
 msgstr "Sembunyikan peta Google"
 
-#: admin/views/groups.php:326
+#: admin/views/groups.php:315
 #, fuzzy
 #| msgid "Longest living person"
 msgid "Show age of living person"
 msgstr "Orang yang hidup paling lama"
 
-#: admin/views/groups.php:332
+#: admin/views/groups.php:321
 msgid "Show \"PDF Report\" button in family screen and reports"
 msgstr "Tampilkan tombol \\ \"Laporan PDF \" di layar keluarga dan laporan"
 
-#: admin/views/groups.php:338
+#: admin/views/groups.php:327
 msgid "Show \"RTF Report\" button in family screen and reports"
 msgstr "Tampilkan tombol \\ \"Laporan RTF \" di layar keluarga dan laporan"
 
-#: admin/views/groups.php:344
+#: admin/views/groups.php:333
 msgid "Generate citations (can be used as source)."
 msgstr "Hasilkan kutipan (dapat digunakan sebagai sumber)."
 
-#: admin/views/groups.php:349
+#: admin/views/groups.php:338
 msgid "User is allowed to add notes/ remarks by a person in the family tree"
 msgstr ""
 "Pengguna diizinkan untuk menambahkan catatan / komentar oleh seseorang di "
 "silsilah keluarga"
 
-#: admin/views/groups.php:349
+#: admin/views/groups.php:338
 msgid "Disabled in group \"Guest\""
 msgstr "Dinonaktifkan dalam grup \\ \"Tamu \""
 
-#: admin/views/groups.php:361
+#: admin/views/groups.php:350
 msgid "User can see notes/ remarks added by other users in the family tree"
 msgstr ""
 "Pengguna dapat melihat catatan / komentar yang ditambahkan oleh pengguna "
 "lain di silsilah keluarga"
 
-#: admin/views/groups.php:376
+#: admin/views/groups.php:365
 msgid "Don't show sources"
 msgstr "Jangan perlihatkan sumber"
 
-#: admin/views/groups.php:377
+#: admin/views/groups.php:366
 msgid "Only show source titles"
 msgstr "Hanya tampilkan judul sumber"
 
-#: admin/views/groups.php:378
+#: admin/views/groups.php:367
 msgid "Show sources and menu sources"
 msgstr "Tampilkan sumber dan sumber menu"
 
-#: admin/views/groups.php:389
+#: admin/views/groups.php:378
 msgid "Default presentation of source"
 msgstr "Presentasi sumber standar"
 
-#: admin/views/groups.php:392 views/family.php:73
+#: admin/views/groups.php:381 views/family.php:73
 #, fuzzy
 #| msgid "Show source title"
 msgid "Show source"
 msgstr "Tampilkan judul sumber"
 
-#: admin/views/groups.php:393 views/family.php:74
+#: admin/views/groups.php:382 views/family.php:74
 #, fuzzy
 #| msgid "Show source title as footnote"
 msgid "Show source as footnote"
 msgstr "Tampilkan judul sumber sebagai catatan kaki"
 
-#: admin/views/groups.php:394 views/family.php:75
+#: admin/views/groups.php:383 views/family.php:75
 msgid "Hide sources"
 msgstr "Sembunyikan sumber"
 
-#: admin/views/groups.php:400
+#: admin/views/groups.php:389
 msgid "Show restricted source"
 msgstr "Tampilkan sumber terbatas"
 
-#: admin/views/groups.php:405 views/family.php:108
+#: admin/views/groups.php:394 views/family.php:108
 msgid "Texts"
 msgstr "Teks"
 
-#: admin/views/groups.php:411
+#: admin/views/groups.php:400
 msgid "Default presentation of text"
 msgstr "Presentasi teks standar"
 
-#: admin/views/groups.php:414 views/family.php:109
+#: admin/views/groups.php:403 views/family.php:109
 msgid "Show texts"
 msgstr "Perlihatkan teks"
 
-#: admin/views/groups.php:415 views/family.php:110
+#: admin/views/groups.php:404 views/family.php:110
 msgid "Show texts in popup screen"
 msgstr "Tampilkan teks di layar sembulan"
 
-#: admin/views/groups.php:416 views/family.php:111
+#: admin/views/groups.php:405 views/family.php:111
 msgid "Hide texts"
 msgstr "Sembunyikan teks"
 
-#: admin/views/groups.php:422
+#: admin/views/groups.php:411
 msgid ""
 "Show hidden text/ own remarks (text between # characters in text fields, "
 "example: #check birthday#)"
@@ -4149,23 +4138,23 @@ msgstr ""
 "Tampilkan teks tersembunyi / komentar sendiri (teks antara # karakter di "
 "bidang teks, contoh: #check birthday #)"
 
-#: admin/views/groups.php:436
+#: admin/views/groups.php:425
 msgid "Show text with person"
 msgstr "Tampilkan teks dengan orang"
 
-#: admin/views/groups.php:442
+#: admin/views/groups.php:431
 msgid "Show text with bapt., birth, death, cemetery"
 msgstr "Tampilkan teks dengan baptisan, kelahiran, kematian, pemakaman"
 
-#: admin/views/groups.php:447
+#: admin/views/groups.php:436
 msgid "Show text with pre-nuptial etc."
 msgstr "Tampilkan teks dengan pra-pernikahan dll."
 
-#: admin/views/groups.php:457 admin/views/groups.php:462
+#: admin/views/groups.php:446 admin/views/groups.php:451
 msgid "Activate privacy filter"
 msgstr "Aktifkan filter privasi"
 
-#: admin/views/groups.php:463
+#: admin/views/groups.php:452
 msgid ""
 "TIP: the best privacy filter is your genealogy program<br>\n"
 "If possible, try to filter with that"
@@ -4173,11 +4162,11 @@ msgstr ""
 "TIP: filter privasi terbaik adalah program silsilah Anda <br> \\ nJika "
 "mungkin, coba filter dengan itu"
 
-#: admin/views/groups.php:471
+#: admin/views/groups.php:460
 msgid "Privacy filter settings"
 msgstr "Pengaturan filter privasi"
 
-#: admin/views/groups.php:477
+#: admin/views/groups.php:466
 #, fuzzy, php-format
 #| msgid ""
 #| "HuMo-gen (alive or deceased), Aldfaer (death sign), Haza-data (filter "
@@ -4189,46 +4178,46 @@ msgstr ""
 "HuMo-gen (hidup atau mati), Aldfaer (tanda kematian), Haza-data (menyaring "
 "orang yang hidup)"
 
-#: admin/views/groups.php:483
+#: admin/views/groups.php:472
 msgid "Privacy filter, filter persons born in or after this year"
 msgstr "Filter privasi, filter orang yang lahir pada atau setelah tahun ini"
 
-#: admin/views/groups.php:486 admin/views/groups.php:494 views/timeline.php:206
+#: admin/views/groups.php:475 admin/views/groups.php:483 views/timeline.php:206
 msgid "Year"
 msgstr "Tahun"
 
-#: admin/views/groups.php:491
+#: admin/views/groups.php:480
 msgid "Privacy filter, filter persons deceased in or after this year"
 msgstr ""
 "Filter privasi, filter orang yang meninggal pada atau setelah tahun ini"
 
-#: admin/views/groups.php:499
+#: admin/views/groups.php:488
 msgid "Also filter data of deceased persons (for filter 2)"
 msgstr "Saring juga data orang yang meninggal (untuk filter 2)"
 
-#: admin/views/groups.php:504
+#: admin/views/groups.php:493
 msgid "Privacy filter exceptions"
 msgstr "Pengecualian filter privasi"
 
-#: admin/views/groups.php:509
+#: admin/views/groups.php:498
 msgid "DO show privacy data of persons (with the following text in own code)"
 msgstr ""
 "LAKUKAN tunjukkan data privasi orang (dengan teks berikut dalam kode sendiri)"
 
-#: admin/views/groups.php:517
+#: admin/views/groups.php:506
 msgid "HIDE privacy data of persons (with the following text in own code)"
 msgstr ""
 "SEMBUNYIKAN data privasi orang (dengan teks berikut dalam kode sendiri)"
 
-#: admin/views/groups.php:525
+#: admin/views/groups.php:514
 msgid "TOTALLY filter persons (with the following text in own code)"
 msgstr "BENAR-BENAR memfilter orang (dengan teks berikut dalam kode sendiri)"
 
-#: admin/views/groups.php:533
+#: admin/views/groups.php:522
 msgid "Extra privacy filter option"
 msgstr "Opsi filter privasi ekstra"
 
-#: admin/views/groups.php:538
+#: admin/views/groups.php:527
 msgid ""
 "Show persons with no date information<br>\n"
 "<i>with these persons the privacy filter cannot calculate if they are alive</"
@@ -4237,15 +4226,15 @@ msgstr ""
 "Tampilkan orang tanpa informasi tanggal <br> \\ n <i> dengan orang-orang ini "
 "filter privasi tidak dapat menghitung jika mereka masih hidup </i>"
 
-#: admin/views/groups.php:544
+#: admin/views/groups.php:533
 msgid "With privacy show names"
 msgstr "Dengan nama acara privasi"
 
-#: admin/views/groups.php:549
+#: admin/views/groups.php:538
 msgid "Show initials: D. E. Duck"
 msgstr "Tampilkan inisial: DE Duck"
 
-#: admin/views/groups.php:555
+#: admin/views/groups.php:544
 msgid ""
 "Genealogical copy protection<br>\n"
 "<i>family browsing disabled, no family trees</i>"
@@ -4253,42 +4242,42 @@ msgstr ""
 "Perlindungan salinan silsilah <br> <br> n <i> penjelajahan keluarga "
 "dinonaktifkan, tidak ada pohon keluarga </i>"
 
-#: admin/views/groups.php:582
+#: admin/views/groups.php:571
 msgid "Save all changes"
 msgstr "Simpan semua perubahan"
 
-#: admin/views/groups.php:625
+#: admin/views/groups.php:614
 msgid "Hide or show family trees per user group."
 msgstr "Sembunyikan atau tampilkan pohon keluarga per grup pengguna."
 
-#: admin/views/groups.php:626 admin/views/index_admin.php:689
-#: admin/views/menu.php:96 include/person_cls.php:1087
-#: include/person_cls.php:1088
+#: admin/views/groups.php:615 admin/views/index_admin.php:689
+#: admin/views/menu.php:96 include/person_cls.php:1091
+#: include/person_cls.php:1092
 msgid "Editor"
 msgstr "Editor"
 
-#: admin/views/groups.php:626
+#: admin/views/groups.php:615
 msgid "If an .htpasswd file is used: add username in .htpasswd file."
 msgstr ""
 "Jika file .htpasswd digunakan: tambahkan nama pengguna dalam file .htpasswd."
 
-#: admin/views/groups.php:627
+#: admin/views/groups.php:616
 msgid "These settings can also be set per user!"
 msgstr "Pengaturan ini juga dapat diatur per pengguna!"
 
-#: admin/views/groups.php:720
+#: admin/views/groups.php:709
 msgid "Hide or show photo categories per user group."
 msgstr "Sembunyikan atau tampilkan kategori foto per grup pengguna."
 
-#: admin/views/groups.php:723 admin/views/thumbs.php:373
+#: admin/views/groups.php:712 admin/views/thumbs.php:373
 msgid "Category prefix"
 msgstr "Awalan kategori"
 
-#: admin/views/groups.php:724
+#: admin/views/groups.php:713
 msgid "Show category?"
 msgstr "Tampilkan kategori?"
 
-#: admin/views/groups.php:757
+#: admin/views/groups.php:746
 msgid "No photo categories available."
 msgstr "Tidak ada kategori foto yang tersedia."
 
@@ -4340,7 +4329,7 @@ msgid "Database"
 msgstr "Basis data"
 
 #: admin/views/index_admin.php:177 admin/views/index_admin.php:311
-#: admin/views/index_admin.php:527 admin/views/tree_admin.php:102
+#: admin/views/index_admin.php:527 admin/views/tree_admin.php:103
 msgid "OK"
 msgstr "baik"
 
@@ -4400,8 +4389,8 @@ msgstr "YA, juga instal database"
 msgid "NO"
 msgstr "TIDAK"
 
-#: admin/views/index_admin.php:260 admin/views/make_db_maps.php:583
-#: admin/views/make_db_maps.php:847
+#: admin/views/index_admin.php:260 admin/views/make_db_maps.php:576
+#: admin/views/make_db_maps.php:840
 msgid "YES"
 msgstr "IYA NIH"
 
@@ -4614,7 +4603,7 @@ msgstr ""
 msgid "Status tree"
 msgstr "Pohon status"
 
-#: admin/views/index_admin.php:677 admin/views/tree_admin.php:148
+#: admin/views/index_admin.php:677 admin/views/tree_admin.php:110
 msgid ""
 "This tree does not yet contain any data or has not been imported properly!"
 msgstr ""
@@ -4663,7 +4652,7 @@ msgid "Username"
 msgstr "Nama pengguna"
 
 #: admin/views/install.php:243 admin/views/login.php:19 views/login.php:333
-#: views/register.php:149 views/user_settings.php:37
+#: views/register.php:72 views/user_settings.php:37
 msgid "Password"
 msgstr "Kata sandi"
 
@@ -4756,7 +4745,7 @@ msgid "No errors above? This means that the database has been processed!"
 msgstr ""
 "Tidak ada kesalahan di atas? Ini berarti bahwa database telah diproses!"
 
-#: admin/views/language_editor.php:177
+#: admin/views/language_editor.php:165
 #, fuzzy, php-format
 #| msgid ""
 #| "This is the language editor of HuMo-gen. It's possible to change or edit "
@@ -4772,33 +4761,33 @@ msgstr ""
 "bahasa, silakan hubungi programmer. Mereka akan mengubahnya di versi "
 "berikutnya!"
 
-#: admin/views/language_editor.php:178
+#: admin/views/language_editor.php:166
 msgid "Translate into the right column. The untranslated items appear first."
 msgstr ""
 "Terjemahkan ke kolom kanan. Item yang tidak diterjemahkan muncul terlebih "
 "dahulu."
 
-#: admin/views/language_editor.php:236
+#: admin/views/language_editor.php:224
 msgid "Max items per page: "
 msgstr "Maks item per halaman: "
 
-#: admin/views/language_editor.php:266
+#: admin/views/language_editor.php:254
 msgid "Total items found: "
 msgstr "Total barang yang ditemukan: "
 
-#: admin/views/language_editor.php:276 admin/views/prefix_editor.php:32
+#: admin/views/language_editor.php:264 admin/views/prefix_editor.php:32
 msgid "FILE IS NOT WRITABLE!"
 msgstr "FILE TIDAK MENULIS!"
 
-#: admin/views/language_editor.php:322
+#: admin/views/language_editor.php:300
 msgid "Template"
 msgstr "Templat"
 
-#: admin/views/language_editor.php:323
+#: admin/views/language_editor.php:301
 msgid "Fuzzy"
 msgstr "Kabur"
 
-#: admin/views/language_editor.php:325
+#: admin/views/language_editor.php:303
 msgid "Translation into"
 msgstr "Terjemahan ke dalam"
 
@@ -4859,34 +4848,34 @@ msgstr "Nama pengguna atau alamat email"
 msgid "Two factor authentication (2FA) code if needed"
 msgstr ""
 
-#: admin/views/login.php:35 views/help.php:118 views/layout.php:620
-#: views/layout.php:623 views/login.php:312 views/login.php:349
+#: admin/views/login.php:35 views/help.php:118 views/layout.php:622
+#: views/layout.php:625 views/login.php:312 views/login.php:349
 msgid "Login"
 msgstr "Masuk"
 
-#: admin/views/make_db_maps.php:23
+#: admin/views/make_db_maps.php:16
 #, fuzzy
 #| msgid "Google maps administration"
 msgid "World map administration"
 msgstr "Administrasi Google maps"
 
-#: admin/views/make_db_maps.php:27
+#: admin/views/make_db_maps.php:20
 msgid "Creating/ updating database"
 msgstr "Membuat / memperbarui basis data"
 
-#: admin/views/make_db_maps.php:43
+#: admin/views/make_db_maps.php:36
 msgid "Creating location database"
 msgstr "Membuat basis data lokasi"
 
-#: admin/views/make_db_maps.php:60
+#: admin/views/make_db_maps.php:53
 msgid "Started adding to data base."
 msgstr "Mulai menambahkan ke basis data."
 
-#: admin/views/make_db_maps.php:61
+#: admin/views/make_db_maps.php:54
 msgid "Starting time"
 msgstr "Waktu mulai"
 
-#: admin/views/make_db_maps.php:140
+#: admin/views/make_db_maps.php:133
 msgid ""
 "<b>A location database could not be created.</b>\n"
 "<p>This could mean that the PHP function \"allow_url_fopen\" was disabled by "
@@ -4903,19 +4892,19 @@ msgstr ""
 "dapat menghubungi hosting Anda dan meminta \\ \"allow_url_fopen \" "
 "diaktifkan atau \\ \"curl \" dimuat."
 
-#: admin/views/make_db_maps.php:181
+#: admin/views/make_db_maps.php:174
 msgid "Finished updating geo-location database"
 msgstr "Selesai memperbarui basis data lokasi geografis"
 
-#: admin/views/make_db_maps.php:182
+#: admin/views/make_db_maps.php:175
 msgid "Finish time"
 msgstr "Selesai waktu"
 
-#: admin/views/make_db_maps.php:183
+#: admin/views/make_db_maps.php:176
 msgid "locations were successfully mapped."
 msgstr "lokasi berhasil dipetakan."
 
-#: admin/views/make_db_maps.php:186 admin/views/make_db_maps.php:202
+#: admin/views/make_db_maps.php:179 admin/views/make_db_maps.php:195
 #, php-format
 msgid ""
 "The following %d new locations were passed for query, but were not found. "
@@ -4924,7 +4913,7 @@ msgstr ""
 "%d lokasi baru berikut dilewatkan untuk kueri, tetapi tidak ditemukan. "
 "Silakan periksa validitasnya."
 
-#: admin/views/make_db_maps.php:195
+#: admin/views/make_db_maps.php:188
 msgid ""
 "The process was interrupted because Google limits to maximum 2500 queries "
 "within one day (counting is reset at midnight PST, which is 08:00 AM GMT)"
@@ -4933,14 +4922,14 @@ msgstr ""
 "satu hari (penghitungan diatur ulang pada tengah malam PST, yaitu jam 08:00 "
 "pagi GMT)"
 
-#: admin/views/make_db_maps.php:196
+#: admin/views/make_db_maps.php:189
 #, php-format
 msgid ""
 "In total %1$d out of %2$d new locations were passed for query to Google."
 msgstr ""
 "Total %1$d dari %2$d lokasi baru dilewatkan untuk permintaan ke Google."
 
-#: admin/views/make_db_maps.php:197
+#: admin/views/make_db_maps.php:190
 msgid ""
 "Tomorrow you can run this process again to add the locations that were not "
 "passed for geocoding today."
@@ -4948,43 +4937,43 @@ msgstr ""
 "Besok Anda dapat menjalankan proses ini lagi untuk menambahkan lokasi yang "
 "tidak diloloskan untuk geocoding hari ini."
 
-#: admin/views/make_db_maps.php:198
+#: admin/views/make_db_maps.php:191
 msgid ""
 "locations were recognized by geocoding and have been saved in the database."
 msgstr "lokasi dikenali oleh geocoding dan telah disimpan dalam database."
 
-#: admin/views/make_db_maps.php:222 views/ancestor_report_rtf.php:363
+#: admin/views/make_db_maps.php:215 views/ancestor_report_rtf.php:363
 #: views/family_rtf.php:496
 msgid "Back"
 msgstr "Kembali"
 
-#: admin/views/make_db_maps.php:268
+#: admin/views/make_db_maps.php:261
 #, fuzzy
 #| msgid "Google maps API Key"
 msgid "World map API Keys"
 msgstr "Google maps API Key"
 
-#: admin/views/make_db_maps.php:292
+#: admin/views/make_db_maps.php:285
 #, fuzzy
 #| msgid "Hide Google maps"
 msgid "Use Google Maps"
 msgstr "Sembunyikan peta Google"
 
-#: admin/views/make_db_maps.php:293
+#: admin/views/make_db_maps.php:286
 msgid "Use OpenStreetMap"
 msgstr ""
 
-#: admin/views/make_db_maps.php:298
+#: admin/views/make_db_maps.php:291
 #, fuzzy
 #| msgid "Google maps API Key"
 msgid "Google Maps API Keys"
 msgstr "Google maps API Key"
 
-#: admin/views/make_db_maps.php:299
+#: admin/views/make_db_maps.php:292
 msgid "To use the Google maps options, you need a Google account."
 msgstr ""
 
-#: admin/views/make_db_maps.php:300
+#: admin/views/make_db_maps.php:293
 msgid ""
 "If you don't have a Google account, first create one. Once logged into your "
 "Google account, go to:"
@@ -4992,19 +4981,19 @@ msgstr ""
 "Jika Anda tidak memiliki akun Google, buat dulu akun itu. Setelah masuk ke "
 "akun Google Anda, buka:"
 
-#: admin/views/make_db_maps.php:301
+#: admin/views/make_db_maps.php:294
 msgid "Get API key"
 msgstr "Dapatkan kunci API"
 
-#: admin/views/make_db_maps.php:302
+#: admin/views/make_db_maps.php:295
 msgid "and follow the instructions."
 msgstr "dan ikuti instruksi."
 
-#: admin/views/make_db_maps.php:303
+#: admin/views/make_db_maps.php:296
 msgid "Create two keys"
 msgstr "Buat dua kunci"
 
-#: admin/views/make_db_maps.php:306
+#: admin/views/make_db_maps.php:299
 msgid ""
 "For the first key, set restriction to <strong>\"HTTP referrers\"</strong> "
 "and enter your website domain name."
@@ -5012,15 +5001,15 @@ msgstr ""
 "Untuk kunci pertama, tetapkan batasan untuk <strong> \\ \"rujukan HTTP \" </"
 "strong> dan masukkan nama domain situs web Anda."
 
-#: admin/views/make_db_maps.php:307
+#: admin/views/make_db_maps.php:300
 msgid "If your domain looks like 'www.mydomain.com', enter:"
 msgstr "Jika domain Anda terlihat seperti 'www.mydomain.com', masukkan:"
 
-#: admin/views/make_db_maps.php:307
+#: admin/views/make_db_maps.php:300
 msgid "If your domain looks like 'mydomain.com', enter:"
 msgstr "Jika domain Anda seperti 'mydomain.com', masukkan:"
 
-#: admin/views/make_db_maps.php:331
+#: admin/views/make_db_maps.php:324
 msgid ""
 "For the second key, set restriction to <strong>\"IP addresses\"</strong> and "
 "enter your server IP."
@@ -5028,15 +5017,15 @@ msgstr ""
 "Untuk kunci kedua, tetapkan batasan untuk <strong> \\ \"alamat IP \" </"
 "strong> dan masukkan IP server Anda."
 
-#: admin/views/make_db_maps.php:331
+#: admin/views/make_db_maps.php:324
 msgid "Not your computer's IP!"
 msgstr "Bukan IP komputer Anda!"
 
-#: admin/views/make_db_maps.php:332
+#: admin/views/make_db_maps.php:325
 msgid "Your server IP would seem to be:"
 msgstr "IP server Anda tampaknya:"
 
-#: admin/views/make_db_maps.php:334
+#: admin/views/make_db_maps.php:327
 msgid ""
 "Your server also has an IPv6 address. If the above IP doesn't work, try the "
 "IPv6 which would seem to be:"
@@ -5044,7 +5033,7 @@ msgstr ""
 "Server Anda juga memiliki alamat IPv6. Jika IP di atas tidak berfungsi, coba "
 "IPv6 yang tampaknya:"
 
-#: admin/views/make_db_maps.php:336
+#: admin/views/make_db_maps.php:329
 msgid ""
 "If this doesn't work, contact your provider and try to obtain the proper IP "
 "address from them."
@@ -5052,36 +5041,36 @@ msgstr ""
 "Jika ini tidak berhasil, hubungi penyedia Anda dan cobalah untuk mendapatkan "
 "alamat IP yang tepat dari mereka."
 
-#: admin/views/make_db_maps.php:338
+#: admin/views/make_db_maps.php:331
 msgid "Once you receive the keys enter them in the two fields below and save."
 msgstr ""
 "Setelah Anda menerima kunci, masukkan di dua bidang di bawah dan simpan."
 
-#: admin/views/make_db_maps.php:395 admin/views/make_db_maps.php:401
-#: admin/views/make_db_maps.php:413
+#: admin/views/make_db_maps.php:388 admin/views/make_db_maps.php:394
+#: admin/views/make_db_maps.php:406
 msgid "API key"
 msgstr "Kunci API"
 
-#: admin/views/make_db_maps.php:409
+#: admin/views/make_db_maps.php:402
 msgid "OpenStreetMap API Keys"
 msgstr ""
 
-#: admin/views/make_db_maps.php:410
+#: admin/views/make_db_maps.php:403
 msgid ""
 "To use OpenStreetMap we need geolocation data of all places. Go to <a "
 "href=\"https://geokeo.com\" target=\"_blank\">https://geokeo.com</a> and "
 "create an account to get the API key."
 msgstr ""
 
-#: admin/views/make_db_maps.php:423
+#: admin/views/make_db_maps.php:416
 msgid "Create or update geolocation database"
 msgstr "Buat atau perbarui basis data geolokasi"
 
-#: admin/views/make_db_maps.php:542
+#: admin/views/make_db_maps.php:535
 msgid "No new locations were found to add to the database"
 msgstr "Tidak ada lokasi baru yang ditemukan untuk ditambahkan ke database"
 
-#: admin/views/make_db_maps.php:545 admin/views/make_db_maps.php:588
+#: admin/views/make_db_maps.php:538 admin/views/make_db_maps.php:581
 #, php-format
 msgid ""
 "The following %d locations are already known as non-indexable by Google. "
@@ -5090,31 +5079,31 @@ msgstr ""
 "%d lokasi berikut sudah dikenal sebagai tidak dapat diindeks oleh Google. "
 "Silakan periksa validitasnya."
 
-#: admin/views/make_db_maps.php:570
+#: admin/views/make_db_maps.php:563
 #, php-format
 msgid "There are %s new unique birth/ death locations to add to the database."
 msgstr ""
 "Ada %s lokasi kelahiran / kematian unik baru untuk ditambahkan ke database."
 
-#: admin/views/make_db_maps.php:579
+#: admin/views/make_db_maps.php:572
 #, php-format
 msgid "This will take approximately <b>%1$d minutes and %2$d seconds.</b>"
 msgstr "Ini akan memakan waktu sekitar <b> %1$d menit dan %2$d detik. </b>"
 
-#: admin/views/make_db_maps.php:581
+#: admin/views/make_db_maps.php:574
 msgid "Do you wish to add these locations to the database database now?"
 msgstr ""
 "Apakah Anda ingin menambahkan lokasi ini ke basis data basis data sekarang?"
 
-#: admin/views/make_db_maps.php:598
+#: admin/views/make_db_maps.php:591
 msgid "A geolocation database exists."
 msgstr "Ada database geolokasi."
 
-#: admin/views/make_db_maps.php:600
+#: admin/views/make_db_maps.php:593
 msgid "No geolocation database found."
 msgstr "Tidak ada basis data geolokasi ditemukan."
 
-#: admin/views/make_db_maps.php:602
+#: admin/views/make_db_maps.php:595
 msgid ""
 "Check how many new locations have to be indexed and how long the indexing "
 "may take (approximately)."
@@ -5122,25 +5111,25 @@ msgstr ""
 "Periksa berapa banyak lokasi baru yang harus diindeks dan berapa lama "
 "pengindeksan berlangsung (kurang-lebih)."
 
-#: admin/views/make_db_maps.php:618 app/model/tree_index.php:672
+#: admin/views/make_db_maps.php:611 app/model/tree_index.php:632
 #: views/list.php:155 views/list.php:446
 msgid "All family trees"
 msgstr "Semua pohon keluarga"
 
-#: admin/views/make_db_maps.php:639 admin/views/tree_check_consistency.php:35
+#: admin/views/make_db_maps.php:632 admin/views/tree_check_consistency.php:35
 msgid "Check"
 msgstr "Memeriksa"
 
-#: admin/views/make_db_maps.php:651
+#: admin/views/make_db_maps.php:644
 msgid "Refresh birth/ death status and tree affiliation of all locations"
 msgstr ""
 "Segarkan status kelahiran / kematian dan afiliasi pohon di semua lokasi"
 
-#: admin/views/make_db_maps.php:659
+#: admin/views/make_db_maps.php:652
 msgid "The birth/ death status and tree affiliation has been refreshed."
 msgstr "Status kelahiran / kematian dan afiliasi pohon telah disegarkan."
 
-#: admin/views/make_db_maps.php:664
+#: admin/views/make_db_maps.php:657
 #, fuzzy, php-format
 #| msgid ""
 #| "The \"Find a location on the map\" pull-down displays a list according to "
@@ -5181,7 +5170,7 @@ msgstr ""
 "editor HuMo-gen </li> <li> jika Anda ingin menghapus semua lokasi yang sudah "
 "usang (tandai kotak di bawah ini) </li> </ ul > </p>"
 
-#: admin/views/make_db_maps.php:666
+#: admin/views/make_db_maps.php:659
 msgid ""
 "Also delete all locations that have become obsolete (not connected to any "
 "persons anymore)"
@@ -5189,71 +5178,71 @@ msgstr ""
 "Hapus juga semua lokasi yang sudah usang (tidak terhubung dengan orang lain "
 "lagi)"
 
-#: admin/views/make_db_maps.php:667
+#: admin/views/make_db_maps.php:660
 msgid "Refresh"
 msgstr "Menyegarkan"
 
-#: admin/views/make_db_maps.php:676
+#: admin/views/make_db_maps.php:669
 msgid "Edit geolocation database"
 msgstr "Edit basis data geolokasi"
 
-#: admin/views/make_db_maps.php:826
+#: admin/views/make_db_maps.php:819
 msgid "Deleted location:"
 msgstr "Lokasi yang dihapus:"
 
-#: admin/views/make_db_maps.php:834
+#: admin/views/make_db_maps.php:827
 msgid "Changed location:"
 msgstr "Lokasi yang diubah:"
 
-#: admin/views/make_db_maps.php:860
+#: admin/views/make_db_maps.php:853
 msgid "Added location:"
 msgstr "Lokasi yang ditambahkan:"
 
-#: admin/views/make_db_maps.php:982
+#: admin/views/make_db_maps.php:975
 msgid "Details from the database"
 msgstr "Detail dari database"
 
-#: admin/views/make_db_maps.php:983
+#: admin/views/make_db_maps.php:976
 msgid "Location"
 msgstr "Lokasi"
 
-#: admin/views/make_db_maps.php:984 admin/views/make_db_maps.php:995
+#: admin/views/make_db_maps.php:977 admin/views/make_db_maps.php:988
 msgid "Latitude"
 msgstr "Lintang"
 
-#: admin/views/make_db_maps.php:985 admin/views/make_db_maps.php:996
+#: admin/views/make_db_maps.php:978 admin/views/make_db_maps.php:989
 msgid "Longitude"
 msgstr "Garis bujur"
 
-#: admin/views/make_db_maps.php:989
+#: admin/views/make_db_maps.php:982
 msgid "Delete this location"
 msgstr "Hapus lokasi ini"
 
-#: admin/views/make_db_maps.php:992
+#: admin/views/make_db_maps.php:985
 msgid "Change or add locations"
 msgstr "Ubah atau tambahkan lokasi"
 
-#: admin/views/make_db_maps.php:992
+#: admin/views/make_db_maps.php:985
 msgid "(You can also drag the marker!)"
 msgstr "(Anda juga dapat menarik penanda!)"
 
-#: admin/views/make_db_maps.php:998
+#: admin/views/make_db_maps.php:991
 msgid "Change this location"
 msgstr "Ubah lokasi ini"
 
-#: admin/views/make_db_maps.php:999
+#: admin/views/make_db_maps.php:992
 msgid "Add this location"
 msgstr "Tambahkan lokasi ini"
 
-#: admin/views/make_db_maps.php:1009
+#: admin/views/make_db_maps.php:1002
 msgid "Delete geolocation database"
 msgstr "Hapus basis data geolokasi"
 
-#: admin/views/make_db_maps.php:1013
+#: admin/views/make_db_maps.php:1006
 msgid "Database was deleted!"
 msgstr "Basis data telah dihapus!"
 
-#: admin/views/make_db_maps.php:1016
+#: admin/views/make_db_maps.php:1009
 #, fuzzy, php-format
 #| msgid ""
 #| "Here you can delete your entire geolocation database (%d entries).<br>\n"
@@ -5265,15 +5254,15 @@ msgstr ""
 "Di sini Anda dapat menghapus seluruh basis data geolokasi ( %d entri). <br> "
 "\\ nJika Anda benar-benar yakin, tekan tombol di bawah ini."
 
-#: admin/views/make_db_maps.php:1018
+#: admin/views/make_db_maps.php:1011
 msgid "DELETE ENTIRE GEOLOCATION DATABASE"
 msgstr "HAPUS SELURUH DATABASE GEOLOKASI"
 
-#: admin/views/make_db_maps.php:1022
+#: admin/views/make_db_maps.php:1015
 msgid "List of non-indexable locations was refreshed!"
 msgstr "Daftar lokasi yang tidak dapat diindeks telah disegarkan!"
 
-#: admin/views/make_db_maps.php:1029
+#: admin/views/make_db_maps.php:1022
 #, fuzzy, php-format
 #| msgid ""
 #| "Here you can refresh the list of %d non-indexable locations that was "
@@ -5293,11 +5282,11 @@ msgstr ""
 "tidak dapat diindeksasi dalam data Anda atau telah mengimpor gedcom yang "
 "diperbarui dan beberapa lokasi ini mungkin tidak lagi muncul di data Anda."
 
-#: admin/views/make_db_maps.php:1031
+#: admin/views/make_db_maps.php:1024
 msgid "REFRESH LIST OF NON-INDEXABLE LOCATIONS"
 msgstr "DAFTAR REFRESH DARI LOKASI YANG TIDAK INDEKS"
 
-#: admin/views/make_db_maps.php:1044
+#: admin/views/make_db_maps.php:1037
 #, fuzzy
 #| msgid ""
 #| "The slider has 10 steps. By default the starting year is 1560 with 9 "
@@ -5324,47 +5313,47 @@ msgstr ""
 "(intv. 50), 1695 (intv. 35), 1740 (intv. 30), 1785 (intv. 25), 1830 (intv. "
 "20)"
 
-#: admin/views/make_db_maps.php:1060
+#: admin/views/make_db_maps.php:1053
 msgid "Name of tree"
 msgstr "Nama pohon"
 
-#: admin/views/make_db_maps.php:1061
+#: admin/views/make_db_maps.php:1054
 msgid "Starting year"
 msgstr "Mulai tahun"
 
-#: admin/views/make_db_maps.php:1062
+#: admin/views/make_db_maps.php:1055
 msgid "Interval"
 msgstr "Selang"
 
-#: admin/views/make_db_maps.php:1120
+#: admin/views/make_db_maps.php:1113
 msgid "Default slider position"
 msgstr "Posisi slider standar"
 
-#: admin/views/make_db_maps.php:1127
+#: admin/views/make_db_maps.php:1120
 msgid "OFF position (leftmost position)"
 msgstr "Posisi OFF (posisi paling kiri)"
 
-#: admin/views/make_db_maps.php:1132
+#: admin/views/make_db_maps.php:1125
 msgid "Show all periods (rightmost position)"
 msgstr "Tampilkan semua periode (posisi paling kanan)"
 
-#: admin/views/make_db_maps.php:1158
+#: admin/views/make_db_maps.php:1151
 msgid "Default map type"
 msgstr "Jenis peta default"
 
-#: admin/views/make_db_maps.php:1165
+#: admin/views/make_db_maps.php:1158
 msgid "Regular map (ROADMAP)"
 msgstr "Peta biasa (ROADMAP)"
 
-#: admin/views/make_db_maps.php:1170
+#: admin/views/make_db_maps.php:1163
 msgid "Satellite map with roads and places (HYBRID)"
 msgstr "Peta satelit dengan jalan dan tempat (HYBRID)"
 
-#: admin/views/make_db_maps.php:1196
+#: admin/views/make_db_maps.php:1189
 msgid "Default zoom"
 msgstr "Zoom bawaan"
 
-#: admin/views/menu.php:44 views/help.php:63 views/layout.php:483
+#: admin/views/menu.php:44 views/help.php:63 views/layout.php:485
 msgid "Home"
 msgstr "Rumah"
 
@@ -5372,11 +5361,11 @@ msgstr "Rumah"
 msgid "Website"
 msgstr "Situs web"
 
-#: admin/views/menu.php:52 views/layout.php:650
+#: admin/views/menu.php:52 views/layout.php:652
 msgid "Logoff"
 msgstr "Keluar"
 
-#: admin/views/menu.php:61 views/layout.php:637
+#: admin/views/menu.php:61 views/layout.php:639
 msgid "Control"
 msgstr "Kontrol"
 
@@ -5696,7 +5685,7 @@ msgstr ""
 "Karakter minimum dalam kotak pencarian (nilai standar = 3. Untuk bahasa "
 "Mandarin disetel ke 1)."
 
-#: admin/views/settings.php:366 views/fanchart.php:710
+#: admin/views/settings.php:366 views/fanchart.php:626
 msgid "Date display"
 msgstr "Tampilan tanggal"
 
@@ -5745,7 +5734,7 @@ msgid "Default timeline file (per language)"
 msgstr "File garis waktu default (per bahasa)"
 
 #: admin/views/settings.php:397 admin/views/thumbs.php:409
-#: admin/views/tree_admin.php:32 admin/views/tree_text.php:27
+#: admin/views/tree_admin.php:33 admin/views/tree_text.php:27
 msgid "Default"
 msgstr "Default"
 
@@ -5880,7 +5869,7 @@ msgstr ""
 #: admin/views/settings_homepage.php:154 admin/views/statistics_general.php:60
 #: admin/views/tree_check_changes.php:263
 #: admin/views/tree_check_integrity.php:18 views/stats_persons.php:346
-#: views/stats_tree.php:36
+#: views/stats_tree.php:39
 msgid "Item"
 msgstr ""
 
@@ -5910,33 +5899,33 @@ msgid "Select family tree"
 msgstr "Pilih silsilah keluarga"
 
 #: admin/views/settings_homepage.php:216 admin/views/settings_homepage.php:411
-#: app/model/tree_index.php:238 app/model/tree_index.php:666 views/list.php:154
+#: app/model/tree_index.php:240 app/model/tree_index.php:626 views/list.php:154
 #: views/list.php:445
 msgid "Selected family tree"
 msgstr "Pohon keluarga yang dipilih"
 
 #: admin/views/settings_homepage.php:218 admin/views/settings_homepage.php:413
-#: app/model/tree_index.php:125 views/help.php:71 views/layout.php:521
+#: app/model/tree_index.php:127 views/help.php:71 views/layout.php:523
 msgid "Names"
 msgstr "Nama"
 
 #: admin/views/settings_homepage.php:219 admin/views/settings_homepage.php:414
-#: app/model/tree_index.php:112
+#: app/model/tree_index.php:114
 msgid "Today in history"
 msgstr "Hari ini dalam sejarah"
 
 #: admin/views/settings_homepage.php:220 admin/views/settings_homepage.php:415
-#: app/model/tree_index.php:104 views/layout.php:384
+#: app/model/tree_index.php:106 views/layout.php:386
 msgid "Favourites"
 msgstr "Favorit"
 
 #: admin/views/settings_homepage.php:221 admin/views/settings_homepage.php:416
-#: app/model/tree_index.php:119
+#: app/model/tree_index.php:121
 msgid "Surnames Index"
 msgstr ""
 
 #: admin/views/settings_homepage.php:222 admin/views/settings_homepage.php:417
-#: app/model/tree_index.php:169
+#: app/model/tree_index.php:171
 msgid "Random photo"
 msgstr ""
 
@@ -5976,7 +5965,7 @@ msgstr ""
 msgid "Show text from CMS system."
 msgstr ""
 
-#: admin/views/settings_homepage.php:367 views/fanchart.php:740
+#: admin/views/settings_homepage.php:367 views/fanchart.php:658
 msgid "View"
 msgstr "Melihat"
 
@@ -6457,7 +6446,7 @@ msgstr "Ubah nama file"
 msgid "This folder does not exists!"
 msgstr "Folder ini tidak ada!"
 
-#: admin/views/tree_admin.php:17
+#: admin/views/tree_admin.php:18
 msgid ""
 "Administration of the family tree(s), i.e. the name can be changed here, and "
 "trees can be added or removed."
@@ -6465,31 +6454,31 @@ msgstr ""
 "Administrasi pohon keluarga, yaitu nama dapat diubah di sini, dan pohon "
 "dapat ditambahkan atau dihapus."
 
-#: admin/views/tree_admin.php:22 admin/views/tree_text.php:38
+#: admin/views/tree_admin.php:23 admin/views/tree_text.php:38
 msgid "Name of family tree"
 msgstr "Nama pohon keluarga"
 
-#: admin/views/tree_admin.php:23 admin/views/trees.php:126
+#: admin/views/tree_admin.php:24 admin/views/trees.php:126
 msgid "Family tree data"
 msgstr "Data pohon keluarga"
 
-#: admin/views/tree_admin.php:158
+#: admin/views/tree_admin.php:120
 msgid "Remove tree"
 msgstr "Hapus pohon"
 
-#: admin/views/tree_admin.php:195
+#: admin/views/tree_admin.php:157
 msgid "Add family tree"
 msgstr "Tambahkan silsilah keluarga"
 
-#: admin/views/tree_admin.php:210
+#: admin/views/tree_admin.php:172
 msgid "Add empty line"
 msgstr "Tambahkan baris kosong"
 
-#: admin/views/tree_admin.php:211
+#: admin/views/tree_admin.php:173
 msgid "Add empty line in list of family trees"
 msgstr "Tambahkan baris kosong dalam daftar pohon keluarga"
 
-#: admin/views/tree_admin.php:242
+#: admin/views/tree_admin.php:204
 msgid "Collation"
 msgstr "Pemeriksaan"
 
@@ -6606,7 +6595,7 @@ msgid "All editors"
 msgstr "Editor alamat"
 
 #: admin/views/tree_check_changes.php:243 views/help.php:67
-#: views/layout.php:516 views/statistics.php:88
+#: views/layout.php:518 views/statistics.php:24
 msgid "Persons"
 msgstr "Orang"
 
@@ -6857,7 +6846,7 @@ msgstr "tanggal penguburan"
 #: admin/views/tree_check_consistency.php:445
 #: admin/views/tree_check_consistency.php:489 app/model/timeline.php:221
 #: app/model/timeline.php:338 include/marriage_cls.php:786
-#: views/ancestor_sheet_pdf.php:374
+#: views/ancestor_sheet_pdf.php:373
 msgid "marriage"
 msgstr "pernikahan"
 
@@ -7100,7 +7089,7 @@ msgid "Repository editor"
 msgstr "Editor repositori"
 
 #: admin/views/tree_data.php:34 admin/views/users.php:80 views/family.php:1300
-#: views/mailform.php:152 views/mailform.php:154 views/register.php:142
+#: views/mailform.php:55 views/mailform.php:57 views/register.php:65
 #: views/user_settings.php:30 views/user_settings.php:32
 msgid "E-mail address"
 msgstr "Alamat email"
@@ -7165,7 +7154,7 @@ msgstr "Lewati ke yang berikutnya"
 msgid "Skip to nr: "
 msgstr "Lewati ke nr: "
 
-#: admin/views/tree_merge.php:147 views/maps.php:793 views/maps.php:919
+#: admin/views/tree_merge.php:147 views/maps.php:786 views/maps.php:912
 msgid "Go!"
 msgstr "Pergi!"
 
@@ -7622,14 +7611,14 @@ msgstr "Kerabat sekitarnya memeriksa"
 msgid "Nr. "
 msgstr "No. "
 
-#: admin/views/tree_merge.php:1261 views/ancestor_report_pdf.php:68
-#: views/ancestor_report_pdf.php:83 views/ancestor_report_rtf.php:62
-#: views/ancestor_sheet.php:255 views/ancestor_sheet_pdf.php:296
-#: views/ancestor_sheet_pdf.php:317 views/family_pdf.php:64
-#: views/family_pdf.php:66 views/family_pdf.php:135 views/family_pdf.php:137
-#: views/family_pdf.php:323 views/family_rtf.php:98 views/family_rtf.php:100
-#: views/hourglass.php:80 views/outline_report_pdf.php:77
-#: views/outline_report_pdf.php:95 views/relations.php:594
+#: admin/views/tree_merge.php:1261 views/ancestor_report_pdf.php:67
+#: views/ancestor_report_pdf.php:82 views/ancestor_report_rtf.php:62
+#: views/ancestor_sheet.php:250 views/ancestor_sheet_pdf.php:295
+#: views/ancestor_sheet_pdf.php:316 views/family_pdf.php:63
+#: views/family_pdf.php:65 views/family_pdf.php:134 views/family_pdf.php:136
+#: views/family_pdf.php:322 views/family_rtf.php:98 views/family_rtf.php:100
+#: views/hourglass.php:81 views/outline_report_pdf.php:76
+#: views/outline_report_pdf.php:94 views/relations.php:594
 #: views/relations.php:619 views/relations.php:1282 views/relations.php:1293
 #: views/relations.php:1385 views/relations.php:1388 views/relations.php:1390
 #: views/relations.php:1403 views/relations.php:1410 views/relations.php:1414
@@ -7926,15 +7915,15 @@ msgid "Unblock IP address"
 msgstr "Buka blokir alamat IP"
 
 #: app/controller/ancestor_chartController.php:25
-#: app/controller/ancestor_sheetController.php:28 app/model/ancestor.php:162
-#: views/ancestor_sheet.php:255 views/ancestor_sheet_pdf.php:296
-#: views/ancestor_sheet_pdf.php:317 views/help.php:33
+#: app/controller/ancestor_sheetController.php:28 app/model/ancestor.php:164
+#: views/ancestor_sheet.php:250 views/ancestor_sheet_pdf.php:295
+#: views/ancestor_sheet_pdf.php:316 views/help.php:33
 msgid "Ancestor sheet"
 msgstr "Lembar leluhur"
 
-#: app/controller/ancestor_reportController.php:35 app/model/ancestor.php:143
-#: include/person_cls.php:1030 include/person_cls.php:1031
-#: views/ancestor_report_pdf.php:68 views/ancestor_report_pdf.php:83
+#: app/controller/ancestor_reportController.php:35 app/model/ancestor.php:145
+#: include/person_cls.php:1034 include/person_cls.php:1035
+#: views/ancestor_report_pdf.php:67 views/ancestor_report_pdf.php:82
 #: views/ancestor_report_rtf.php:62 views/help.php:21
 msgid "Ancestor report"
 msgstr "Laporan leluhur"
@@ -7950,31 +7939,68 @@ msgstr "Anda tak berwenang melihat halaman ini"
 msgid "Address by person"
 msgstr "Alamat oleh orang"
 
-#: app/model/ancestor.php:153
+#: app/model/ancestor.php:155
 msgid "Ancestor chart"
 msgstr "Bagan leluhur"
 
-#: app/model/ancestor.php:169 views/help.php:37
+#: app/model/ancestor.php:171 views/help.php:37
 msgid "Fanchart"
 msgstr "Fanchart"
 
-#: app/model/family.php:231 views/family_pdf.php:64 views/family_pdf.php:135
+#: app/model/family.php:230 views/family_pdf.php:63 views/family_pdf.php:134
 #: views/family_rtf.php:98 views/help.php:25
 msgid "Descendant report"
 msgstr "Laporan turunan"
 
-#: app/model/family.php:240
+#: app/model/family.php:239
 msgid "Descendant chart"
 msgstr "Bagan keturunan"
 
-#: app/model/family.php:246 views/help.php:29 views/outline_report_pdf.php:77
-#: views/outline_report_pdf.php:95
+#: app/model/family.php:245 views/help.php:29 views/outline_report_pdf.php:76
+#: views/outline_report_pdf.php:94
 msgid "Outline report"
 msgstr "Laporan garis besar"
 
 #: app/model/list.php:776 views/list.php:797
 msgid "..."
 msgstr "..."
+
+#: app/model/mailform.php:73
+#, fuzzy, php-format
+#| msgid "Mail form"
+msgid "%s Mail form."
+msgstr "Formulir surat"
+
+#: app/model/mailform.php:79 app/model/register.php:92
+#: app/model/user_settings.php:85 views/family.php:1223
+#, fuzzy, php-format
+#| msgid "Message sent through HuMo-gen from the website."
+msgid "Message sent through %s from the website."
+msgstr "Pesan dikirim melalui HuMo-gen dari situs web."
+
+#: app/model/mailform.php:86
+msgid "Last visited family:"
+msgstr "Keluarga yang terakhir dikunjungi:"
+
+#: app/model/mailform.php:89 views/mailform.php:77
+msgid "Receive newsletter"
+msgstr "Terima nawala"
+
+#: app/model/register.php:55
+msgid "ERROR: username already exists"
+msgstr "GALAT: nama pengguna sudah ada"
+
+#: app/model/register.php:59 app/model/user_settings.php:34
+msgid "ERROR: No identical passwords"
+msgstr "GALAT: Tidak ada kata sandi yang identik"
+
+#: app/model/register.php:63
+msgid "ERROR: Password has to contain at least 6 characters"
+msgstr "GALAT: Kata sandi harus mengandung setidaknya 6 karakter"
+
+#: app/model/register.php:87 app/model/register.php:94
+msgid "New registered user"
+msgstr "Pengguna terdaftar baru"
 
 #: app/model/timeline.php:80 app/model/timeline.php:296
 #: app/model/timeline.php:404
@@ -8043,34 +8069,34 @@ msgstr "cucu perempuan"
 msgid "grandchild"
 msgstr "cucu"
 
-#: app/model/tree_index.php:36
+#: app/model/tree_index.php:38
 msgid "Select another family tree, or login for the selected family tree."
 msgstr ""
 "Pilih silsilah keluarga lain, atau login untuk silsilah keluarga yang "
 "dipilih."
 
-#: app/model/tree_index.php:49
+#: app/model/tree_index.php:51
 msgid "One Name Study of the name"
 msgstr "Satu Nama Mempelajari nama"
 
-#: app/model/tree_index.php:93
+#: app/model/tree_index.php:95
 msgid "Select a family tree"
 msgstr "Pilih silsilah keluarga"
 
-#: app/model/tree_index.php:337
+#: app/model/tree_index.php:297
 msgid "Latest update:"
 msgstr "Pembaruan terbaru:"
 
-#: app/model/tree_index.php:347
+#: app/model/tree_index.php:307
 msgid "Owner family tree:"
 msgstr "Pohon keluarga pemilik:"
 
-#: app/model/tree_index.php:542 app/model/tree_index.php:544
+#: app/model/tree_index.php:502 app/model/tree_index.php:504
 #: views/stats_surnames.php:138 views/stats_surnames.php:141
 msgid "Surname"
 msgstr "Nama keluarga"
 
-#: app/model/tree_index.php:542 app/model/tree_index.php:544
+#: app/model/tree_index.php:502 app/model/tree_index.php:504
 #: views/list_names.php:296 views/list_names.php:299
 #: views/stats_firstnames.php:109 views/stats_firstnames.php:111
 #: views/stats_firstnames.php:113 views/stats_firstnames.php:115
@@ -8078,55 +8104,51 @@ msgstr "Nama keluarga"
 msgid "Total"
 msgstr "Total"
 
-#: app/model/tree_index.php:550
+#: app/model/tree_index.php:510
 msgid "More statistics"
 msgstr "Lebih banyak statistik"
 
-#: app/model/tree_index.php:622 views/list.php:125
+#: app/model/tree_index.php:582 views/list.php:125
 msgid "Enter name or part of name"
 msgstr "Masukkan nama atau bagian dari nama"
 
-#: app/model/tree_index.php:624 views/list.php:128
+#: app/model/tree_index.php:584 views/list.php:128
 msgid "Enter private name"
 msgstr "Masukkan nama pribadi"
 
-#: app/model/tree_index.php:638
+#: app/model/tree_index.php:598
 msgid "Minimum: 3 characters."
 msgstr "Minimal 3 karakter."
 
-#: app/model/tree_index.php:678 views/list.php:156 views/list.php:447
+#: app/model/tree_index.php:638 views/list.php:156 views/list.php:447
 msgid "All but selected tree"
 msgstr "Semua kecuali pohon yang dipilih"
 
-#: app/model/tree_index.php:687 views/layout.php:365 views/layout.php:369
+#: app/model/tree_index.php:647 views/layout.php:367 views/layout.php:371
 #: views/list.php:166 views/list.php:283
 msgid "Advanced search"
 msgstr "Pencarian lanjutan"
 
-#: app/model/tree_index.php:895
+#: app/model/tree_index.php:855
 msgid "Patronyms"
 msgstr "Patronim"
 
-#: app/model/tree_index.php:1007 app/model/tree_index.php:1034
+#: app/model/tree_index.php:967 app/model/tree_index.php:994
 #: views/anniversary.php:144 views/anniversary.php:298 views/list.php:866
 #: views/list_places_families.php:243
 msgid " persons are not shown due to privacy settings"
 msgstr " orang tidak ditampilkan karena pengaturan privasi"
 
-#: app/model/tree_index.php:1049
+#: app/model/tree_index.php:1009
 #, php-format
 msgid "This database is made by %s, a freeware genealogical  program"
 msgstr "Basis data ini dibuat oleh %s , program silsilah freeware"
 
-#: app/model/tree_index.php:1055
+#: app/model/tree_index.php:1015
 #, fuzzy, php-format
 #| msgid "European law: %s HuMo-gen cookie information"
 msgid "European law: %s cookie information"
 msgstr "Hukum Eropa: %s informasi cookie HuMo-gen"
-
-#: app/model/user_settings.php:34 views/register.php:25
-msgid "ERROR: No identical passwords"
-msgstr "GALAT: Tidak ada kata sandi yang identik"
 
 #: app/model/user_settings.php:49
 msgid "Your settings are updated!"
@@ -8144,13 +8166,6 @@ msgstr ""
 #: app/model/user_settings.php:80
 msgid "Updated profile"
 msgstr "Profil yang diperbarui"
-
-#: app/model/user_settings.php:85 views/family.php:1223 views/mailform.php:38
-#: views/register.php:60
-#, fuzzy, php-format
-#| msgid "Message sent through HuMo-gen from the website."
-msgid "Message sent through %s from the website."
-msgstr "Pesan dikirim melalui HuMo-gen dari situs web."
 
 #: app/model/user_settings.php:87
 msgid "User updated his/ her profile"
@@ -8537,7 +8552,7 @@ msgstr "Akan ditandatangani"
 msgid "Yartzeit"
 msgstr "Yartzeit"
 
-#: include/marriage_cls.php:83 include/person_cls.php:1212
+#: include/marriage_cls.php:83 include/person_cls.php:1216
 msgid "Non marital"
 msgstr "Tidak menikah"
 
@@ -8577,26 +8592,26 @@ msgstr "bercerai"
 msgid "Married/ Related"
 msgstr "Menikah / Terkait"
 
-#: include/marriage_cls.php:772 include/person_cls.php:1257 views/list.php:1122
+#: include/marriage_cls.php:772 include/person_cls.php:1261 views/list.php:1122
 #: views/list_places_families.php:409
 msgid "1st"
 msgstr "1"
 
-#: include/marriage_cls.php:775 include/person_cls.php:1259 views/list.php:1124
+#: include/marriage_cls.php:775 include/person_cls.php:1263 views/list.php:1124
 #: views/list_places_families.php:411 views/relations.php:1620
 #: views/relations.php:2071 views/relations.php:2274 views/relations.php:2430
 #: views/relations.php:2882
 msgid "2nd"
 msgstr "Ke-2"
 
-#: include/marriage_cls.php:778 include/person_cls.php:1261 views/list.php:1126
+#: include/marriage_cls.php:778 include/person_cls.php:1265 views/list.php:1126
 #: views/list_places_families.php:413 views/relations.php:1623
 #: views/relations.php:2074 views/relations.php:2277 views/relations.php:2433
 #: views/relations.php:2885
 msgid "3rd"
 msgstr "Ke-3"
 
-#: include/marriage_cls.php:781 include/person_cls.php:1263 views/list.php:1128
+#: include/marriage_cls.php:781 include/person_cls.php:1267 views/list.php:1128
 #: views/list_places_families.php:415 views/relations.php:1296
 #: views/relations.php:1627 views/relations.php:2078 views/relations.php:2650
 #: views/relations.php:2754 views/relations.php:2889 views/relations.php:3634
@@ -8629,39 +8644,39 @@ msgstr "gadis lahir mati"
 msgid "Name filtered"
 msgstr "Nama difilter"
 
-#: include/person_cls.php:1004 include/person_cls.php:1005
-#: views/family_pdf.php:66 views/family_pdf.php:101 views/family_pdf.php:137
-#: views/family_pdf.php:282 views/family_rtf.php:100 views/family_rtf.php:257
+#: include/person_cls.php:1008 include/person_cls.php:1009
+#: views/family_pdf.php:65 views/family_pdf.php:100 views/family_pdf.php:136
+#: views/family_pdf.php:281 views/family_rtf.php:100 views/family_rtf.php:257
 msgid "Family group sheet"
 msgstr "Lembar kelompok keluarga"
 
-#: include/person_cls.php:1045 include/person_cls.php:1046
-#: include/person_cls.php:1087 include/person_cls.php:1088 views/help.php:41
+#: include/person_cls.php:1049 include/person_cls.php:1050
+#: include/person_cls.php:1091 include/person_cls.php:1092 views/help.php:41
 msgid "Timeline"
 msgstr "Garis waktu"
 
-#: include/person_cls.php:1052 include/person_cls.php:1053 views/help.php:99
-#: views/layout.php:592
+#: include/person_cls.php:1056 include/person_cls.php:1057 views/help.php:99
+#: views/layout.php:594
 msgid "Relationship calculator"
 msgstr "Kalkulator hubungan"
 
-#: include/person_cls.php:1065 include/person_cls.php:1066
+#: include/person_cls.php:1069 include/person_cls.php:1070
 msgid "DNA Charts"
 msgstr "Bagan DNA"
 
-#: include/person_cls.php:1074 include/person_cls.php:1075
-#: views/hourglass.php:80
+#: include/person_cls.php:1078 include/person_cls.php:1079
+#: views/hourglass.php:81
 msgid "Hourglass chart"
 msgstr "Grafik jam pasir"
 
-#: include/person_cls.php:1084 include/person_cls.php:1085 views/layout.php:644
+#: include/person_cls.php:1088 include/person_cls.php:1089 views/layout.php:646
 msgid "Admin"
 msgstr "Admin"
 
-#: include/person_cls.php:1137 include/person_cls.php:1799
-#: include/person_cls.php:1801 views/ancestor_sheet_pdf.php:112
-#: views/ancestor_sheet_pdf.php:131 views/ancestor_sheet_pdf.php:132
-#: views/ancestor_sheet_pdf.php:256 views/list.php:1147 views/list.php:1162
+#: include/person_cls.php:1141 include/person_cls.php:1803
+#: include/person_cls.php:1805 views/ancestor_sheet_pdf.php:111
+#: views/ancestor_sheet_pdf.php:130 views/ancestor_sheet_pdf.php:131
+#: views/ancestor_sheet_pdf.php:255 views/list.php:1147 views/list.php:1162
 #: views/list.php:1177 views/list.php:1192 views/list_places_families.php:439
 #: views/list_places_families.php:456 views/list_places_families.php:473
 #: views/list_places_families.php:490 views/stats_persons.php:105
@@ -8669,87 +8684,87 @@ msgstr "Admin"
 msgid "PRIVACY FILTER"
 msgstr "FILTER PRIVASI"
 
-#: include/person_cls.php:1189
+#: include/person_cls.php:1193
 msgid "relationship with"
 msgstr "hubungan dengan"
 
-#: include/person_cls.php:1192
+#: include/person_cls.php:1196
 msgid "married to"
 msgstr "menikah dengan"
 
-#: include/person_cls.php:1194
+#: include/person_cls.php:1198
 msgid "marriage with"
 msgstr "menikah dengan"
 
-#: include/person_cls.php:1224
+#: include/person_cls.php:1228
 msgid "Registered"
 msgstr "Terdaftar"
 
-#: include/person_cls.php:1232
+#: include/person_cls.php:1236
 msgid "divorced from"
 msgstr "bercerai dari"
 
-#: include/person_cls.php:1234
+#: include/person_cls.php:1238
 msgid "marriage (divorced) with"
 msgstr "menikah (bercerai) dengan"
 
-#: include/person_cls.php:1444
+#: include/person_cls.php:1448
 msgid "son of"
 msgstr "putra dari"
 
-#: include/person_cls.php:1447
+#: include/person_cls.php:1451
 msgid "daughter of"
 msgstr "putri dari"
 
-#: include/person_cls.php:1450
+#: include/person_cls.php:1454
 msgid "child of"
 msgstr "anak dari"
 
-#: include/person_cls.php:1540 include/person_cls.php:1541
+#: include/person_cls.php:1544 include/person_cls.php:1545
 msgid "adoption parents"
 msgstr "orang tua adopsi"
 
-#: include/person_cls.php:1613 include/person_cls.php:1614
+#: include/person_cls.php:1617 include/person_cls.php:1618
 msgid "stepparent"
 msgstr "orang tua tiri"
 
-#: include/person_cls.php:1616 include/person_cls.php:1617
+#: include/person_cls.php:1620 include/person_cls.php:1621
 msgid "legal parent"
 msgstr "orang tua yang sah"
 
-#: include/person_cls.php:1619 include/person_cls.php:1620
+#: include/person_cls.php:1623 include/person_cls.php:1624
 msgid "foster parent"
 msgstr "orang tua asuh"
 
-#: include/person_cls.php:1623 include/person_cls.php:1624
+#: include/person_cls.php:1627 include/person_cls.php:1628
 #, fuzzy
 #| msgid "adoptive parent"
 msgid "adoptive parents"
 msgstr "orang tua angkat"
 
-#: include/person_cls.php:1626 include/person_cls.php:1627
+#: include/person_cls.php:1630 include/person_cls.php:1631
 msgid "adoptive parent"
 msgstr "orang tua angkat"
 
-#: include/person_cls.php:2134
+#: include/person_cls.php:2138
 #, fuzzy
 #| msgid "father"
 msgid "godfather"
 msgstr "ayah"
 
-#: include/person_cls.php:2476
+#: include/person_cls.php:2480
 msgid "ash dispersion"
 msgstr "dispersi abu"
 
-#: include/person_cls.php:2498
+#: include/person_cls.php:2502
 msgid "occupation"
 msgstr "pendudukan"
 
-#: include/person_cls.php:2500
+#: include/person_cls.php:2504
 msgid "occupations"
 msgstr "pekerjaan"
 
-#: include/person_cls.php:2587
+#: include/person_cls.php:2591
 #, fuzzy
 #| msgid "religion"
 msgid "religions"
@@ -8854,8 +8869,8 @@ msgstr " FILTER PRIVASI"
 #: views/ancestor_chart.php:111 views/ancestor_chart.php:144
 #: views/ancestor_sheet.php:108 views/ancestor_sheet.php:124
 #: views/ancestor_sheet.php:125 views/ancestor_sheet.php:158
-#: views/ancestor_sheet.php:300 views/ancestor_sheet_pdf.php:258
-#: views/ancestor_sheet_pdf.php:374 views/descendant_chart.php:383
+#: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:257
+#: views/ancestor_sheet_pdf.php:373 views/descendant_chart.php:383
 #: views/list.php:1102 views/list_places_families.php:54
 #: views/list_places_families.php:324 views/list_places_families.php:382
 #: views/list_places_families.php:470 views/list_places_families.php:487
@@ -8888,258 +8903,258 @@ msgstr ""
 
 # Probant, empty in english version.
 #: views/ancestor_report.php:24 views/ancestor_report.php:25
-#: views/ancestor_report_pdf.php:93 views/ancestor_report_pdf.php:94
+#: views/ancestor_report_pdf.php:92 views/ancestor_report_pdf.php:93
 #: views/ancestor_report_rtf.php:87 views/ancestor_report_rtf.php:88
 msgid "PROBANT"
 msgstr "MUNGKIN"
 
-#: views/ancestor_report.php:28 views/ancestor_report_pdf.php:97
+#: views/ancestor_report.php:28 views/ancestor_report_pdf.php:96
 #: views/ancestor_report_rtf.php:91
 msgid "Grandparents"
 msgstr "Kakek dan nenek"
 
-#: views/ancestor_report.php:29 views/ancestor_report_pdf.php:98
+#: views/ancestor_report.php:29 views/ancestor_report_pdf.php:97
 #: views/ancestor_report_rtf.php:92
 msgid "Great-Grandparents"
 msgstr "Buyut"
 
-#: views/ancestor_report.php:30 views/ancestor_report_pdf.php:99
+#: views/ancestor_report.php:30 views/ancestor_report_pdf.php:98
 #: views/ancestor_report_rtf.php:93
 msgid "Great Great-Grandparents"
 msgstr "Kakek buyut"
 
-#: views/ancestor_report.php:31 views/ancestor_report_pdf.php:100
+#: views/ancestor_report.php:31 views/ancestor_report_pdf.php:99
 #: views/ancestor_report_rtf.php:94
 msgid "3rd Great-Grandparents"
 msgstr "Kakek buyut ke-3"
 
-#: views/ancestor_report.php:32 views/ancestor_report_pdf.php:101
+#: views/ancestor_report.php:32 views/ancestor_report_pdf.php:100
 #: views/ancestor_report_rtf.php:95
 msgid "4th Great-Grandparents"
 msgstr "Kakek buyut ke-4"
 
-#: views/ancestor_report.php:33 views/ancestor_report_pdf.php:102
+#: views/ancestor_report.php:33 views/ancestor_report_pdf.php:101
 #: views/ancestor_report_rtf.php:96
 msgid "5th Great-Grandparents"
 msgstr "Kakek buyut ke-5"
 
-#: views/ancestor_report.php:34 views/ancestor_report_pdf.php:103
+#: views/ancestor_report.php:34 views/ancestor_report_pdf.php:102
 #: views/ancestor_report_rtf.php:97
 msgid "6th Great-Grandparents"
 msgstr "Kakek buyut ke-6"
 
-#: views/ancestor_report.php:35 views/ancestor_report_pdf.php:104
+#: views/ancestor_report.php:35 views/ancestor_report_pdf.php:103
 #: views/ancestor_report_rtf.php:98
 msgid "7th Great-Grandparents"
 msgstr "Kakek buyut ke-7"
 
-#: views/ancestor_report.php:36 views/ancestor_report_pdf.php:105
+#: views/ancestor_report.php:36 views/ancestor_report_pdf.php:104
 #: views/ancestor_report_rtf.php:99
 msgid "8th Great-Grandparents"
 msgstr "Kakek buyut ke-8"
 
-#: views/ancestor_report.php:37 views/ancestor_report_pdf.php:106
+#: views/ancestor_report.php:37 views/ancestor_report_pdf.php:105
 #: views/ancestor_report_rtf.php:100
 msgid "9th Great-Grandparents"
 msgstr "Kakek buyut ke-9"
 
-#: views/ancestor_report.php:38 views/ancestor_report_pdf.php:107
+#: views/ancestor_report.php:38 views/ancestor_report_pdf.php:106
 #: views/ancestor_report_rtf.php:101
 msgid "10th Great-Grandparents"
 msgstr "Kakek buyut ke-10"
 
-#: views/ancestor_report.php:39 views/ancestor_report_pdf.php:108
+#: views/ancestor_report.php:39 views/ancestor_report_pdf.php:107
 #: views/ancestor_report_rtf.php:102
 msgid "11th Great-Grandparents"
 msgstr "Kakek buyut ke-11"
 
-#: views/ancestor_report.php:40 views/ancestor_report_pdf.php:109
+#: views/ancestor_report.php:40 views/ancestor_report_pdf.php:108
 #: views/ancestor_report_rtf.php:103
 msgid "12th Great-Grandparents"
 msgstr "Kakek buyut ke-12"
 
-#: views/ancestor_report.php:41 views/ancestor_report_pdf.php:110
+#: views/ancestor_report.php:41 views/ancestor_report_pdf.php:109
 #: views/ancestor_report_rtf.php:104
 msgid "13th Great-Grandparents"
 msgstr "Kakek buyut ke-13"
 
-#: views/ancestor_report.php:42 views/ancestor_report_pdf.php:111
+#: views/ancestor_report.php:42 views/ancestor_report_pdf.php:110
 #: views/ancestor_report_rtf.php:105
 msgid "14th Great-Grandparents"
 msgstr "Kakek buyut ke-14"
 
-#: views/ancestor_report.php:43 views/ancestor_report_pdf.php:112
+#: views/ancestor_report.php:43 views/ancestor_report_pdf.php:111
 #: views/ancestor_report_rtf.php:106
 msgid "15th Great-Grandparents"
 msgstr "Kakek buyut ke-15"
 
-#: views/ancestor_report.php:44 views/ancestor_report_pdf.php:113
+#: views/ancestor_report.php:44 views/ancestor_report_pdf.php:112
 #: views/ancestor_report_rtf.php:107
 msgid "16th Great-Grandparents"
 msgstr "Kakek buyut ke-16"
 
-#: views/ancestor_report.php:45 views/ancestor_report_pdf.php:114
+#: views/ancestor_report.php:45 views/ancestor_report_pdf.php:113
 #: views/ancestor_report_rtf.php:108
 msgid "17th Great-Grandparents"
 msgstr "Kakek buyut ke-17"
 
-#: views/ancestor_report.php:46 views/ancestor_report_pdf.php:115
+#: views/ancestor_report.php:46 views/ancestor_report_pdf.php:114
 #: views/ancestor_report_rtf.php:109
 msgid "18th Great-Grandparents"
 msgstr "Kakek buyut ke-18"
 
-#: views/ancestor_report.php:47 views/ancestor_report_pdf.php:116
+#: views/ancestor_report.php:47 views/ancestor_report_pdf.php:115
 #: views/ancestor_report_rtf.php:110
 msgid "19th Great-Grandparents"
 msgstr "Kakek buyut ke-19"
 
-#: views/ancestor_report.php:48 views/ancestor_report_pdf.php:117
+#: views/ancestor_report.php:48 views/ancestor_report_pdf.php:116
 #: views/ancestor_report_rtf.php:111
 msgid "20th Great-Grandparents"
 msgstr "Kakek buyut ke-20"
 
-#: views/ancestor_report.php:49 views/ancestor_report_pdf.php:118
+#: views/ancestor_report.php:49 views/ancestor_report_pdf.php:117
 #: views/ancestor_report_rtf.php:112
 msgid "21th Great-Grandparents"
 msgstr "Kakek buyut ke-21"
 
-#: views/ancestor_report.php:50 views/ancestor_report_pdf.php:119
+#: views/ancestor_report.php:50 views/ancestor_report_pdf.php:118
 #: views/ancestor_report_rtf.php:113
 msgid "22th Great-Grandparents"
 msgstr "Kakek buyut ke-22"
 
-#: views/ancestor_report.php:51 views/ancestor_report_pdf.php:120
+#: views/ancestor_report.php:51 views/ancestor_report_pdf.php:119
 #: views/ancestor_report_rtf.php:114
 msgid "23th Great-Grandparents"
 msgstr "Kakek buyut ke-23"
 
-#: views/ancestor_report.php:52 views/ancestor_report_pdf.php:121
+#: views/ancestor_report.php:52 views/ancestor_report_pdf.php:120
 #: views/ancestor_report_rtf.php:115
 msgid "24th Great-Grandparents"
 msgstr "Kakek buyut ke-24"
 
-#: views/ancestor_report.php:53 views/ancestor_report_pdf.php:122
+#: views/ancestor_report.php:53 views/ancestor_report_pdf.php:121
 #: views/ancestor_report_rtf.php:116
 msgid "25th Great-Grandparents"
 msgstr "Kakek buyut ke-25"
 
-#: views/ancestor_report.php:54 views/ancestor_report_pdf.php:123
+#: views/ancestor_report.php:54 views/ancestor_report_pdf.php:122
 #: views/ancestor_report_rtf.php:117
 msgid "26th Great-Grandparents"
 msgstr "Kakek buyut ke-26"
 
-#: views/ancestor_report.php:55 views/ancestor_report_pdf.php:124
+#: views/ancestor_report.php:55 views/ancestor_report_pdf.php:123
 #: views/ancestor_report_rtf.php:118
 msgid "27th Great-Grandparents"
 msgstr "Kakek buyut ke-27"
 
-#: views/ancestor_report.php:56 views/ancestor_report_pdf.php:125
+#: views/ancestor_report.php:56 views/ancestor_report_pdf.php:124
 #: views/ancestor_report_rtf.php:119
 msgid "28th Great-Grandparents"
 msgstr "Kakek buyut ke-28"
 
-#: views/ancestor_report.php:57 views/ancestor_report_pdf.php:126
+#: views/ancestor_report.php:57 views/ancestor_report_pdf.php:125
 #: views/ancestor_report_rtf.php:120
 msgid "29th Great-Grandparents"
 msgstr "Kakek buyut ke-29"
 
-#: views/ancestor_report.php:58 views/ancestor_report_pdf.php:127
+#: views/ancestor_report.php:58 views/ancestor_report_pdf.php:126
 #: views/ancestor_report_rtf.php:121
 msgid "30th Great-Grandparents"
 msgstr "Kakek buyut ke-30"
 
-#: views/ancestor_report.php:59 views/ancestor_report_pdf.php:128
+#: views/ancestor_report.php:59 views/ancestor_report_pdf.php:127
 #: views/ancestor_report_rtf.php:122
 msgid "31th Great-Grandparents"
 msgstr "Kakek buyut ke-31"
 
-#: views/ancestor_report.php:60 views/ancestor_report_pdf.php:129
+#: views/ancestor_report.php:60 views/ancestor_report_pdf.php:128
 #: views/ancestor_report_rtf.php:123
 msgid "32th Great-Grandparents"
 msgstr "Kakek buyut ke-32"
 
-#: views/ancestor_report.php:61 views/ancestor_report_pdf.php:130
+#: views/ancestor_report.php:61 views/ancestor_report_pdf.php:129
 #: views/ancestor_report_rtf.php:124
 msgid "33th Great-Grandparents"
 msgstr "Kakek buyut ke-33"
 
-#: views/ancestor_report.php:62 views/ancestor_report_pdf.php:131
+#: views/ancestor_report.php:62 views/ancestor_report_pdf.php:130
 #: views/ancestor_report_rtf.php:125
 msgid "34th Great-Grandparents"
 msgstr "Kakek buyut ke-34"
 
-#: views/ancestor_report.php:63 views/ancestor_report_pdf.php:132
+#: views/ancestor_report.php:63 views/ancestor_report_pdf.php:131
 #: views/ancestor_report_rtf.php:126
 msgid "35th Great-Grandparents"
 msgstr "Kakek buyut ke-35"
 
-#: views/ancestor_report.php:64 views/ancestor_report_pdf.php:133
+#: views/ancestor_report.php:64 views/ancestor_report_pdf.php:132
 #: views/ancestor_report_rtf.php:127
 msgid "36th Great-Grandparents"
 msgstr "Kakek buyut ke-36"
 
-#: views/ancestor_report.php:65 views/ancestor_report_pdf.php:134
+#: views/ancestor_report.php:65 views/ancestor_report_pdf.php:133
 #: views/ancestor_report_rtf.php:128
 msgid "37th Great-Grandparents"
 msgstr "Kakek buyut ke-37"
 
-#: views/ancestor_report.php:66 views/ancestor_report_pdf.php:135
+#: views/ancestor_report.php:66 views/ancestor_report_pdf.php:134
 #: views/ancestor_report_rtf.php:129
 msgid "38th Great-Grandparents"
 msgstr "Kakek buyut ke-38"
 
-#: views/ancestor_report.php:67 views/ancestor_report_pdf.php:136
+#: views/ancestor_report.php:67 views/ancestor_report_pdf.php:135
 #: views/ancestor_report_rtf.php:130
 msgid "39th Great-Grandparents"
 msgstr "Kakek buyut ke-39"
 
-#: views/ancestor_report.php:68 views/ancestor_report_pdf.php:137
+#: views/ancestor_report.php:68 views/ancestor_report_pdf.php:136
 #: views/ancestor_report_rtf.php:131
 msgid "40th Great-Grandparents"
 msgstr "Kakek buyut ke-40"
 
-#: views/ancestor_report.php:69 views/ancestor_report_pdf.php:138
+#: views/ancestor_report.php:69 views/ancestor_report_pdf.php:137
 #: views/ancestor_report_rtf.php:132
 msgid "41th Great-Grandparents"
 msgstr "Kakek buyut ke-41"
 
-#: views/ancestor_report.php:70 views/ancestor_report_pdf.php:139
+#: views/ancestor_report.php:70 views/ancestor_report_pdf.php:138
 #: views/ancestor_report_rtf.php:133
 msgid "42th Great-Grandparents"
 msgstr "Kakek buyut ke-42"
 
-#: views/ancestor_report.php:71 views/ancestor_report_pdf.php:140
+#: views/ancestor_report.php:71 views/ancestor_report_pdf.php:139
 #: views/ancestor_report_rtf.php:134
 msgid "43th Great-Grandparents"
 msgstr "Kakek buyut ke-43"
 
-#: views/ancestor_report.php:72 views/ancestor_report_pdf.php:141
+#: views/ancestor_report.php:72 views/ancestor_report_pdf.php:140
 #: views/ancestor_report_rtf.php:135
 msgid "44th Great-Grandparents"
 msgstr "Kakek buyut ke-44"
 
-#: views/ancestor_report.php:73 views/ancestor_report_pdf.php:142
+#: views/ancestor_report.php:73 views/ancestor_report_pdf.php:141
 #: views/ancestor_report_rtf.php:136
 msgid "45th Great-Grandparents"
 msgstr "Kakek buyut ke-45"
 
-#: views/ancestor_report.php:74 views/ancestor_report_pdf.php:143
+#: views/ancestor_report.php:74 views/ancestor_report_pdf.php:142
 #: views/ancestor_report_rtf.php:137
 msgid "46th Great-Grandparents"
 msgstr "Kakek buyut ke-46"
 
-#: views/ancestor_report.php:75 views/ancestor_report_pdf.php:144
+#: views/ancestor_report.php:75 views/ancestor_report_pdf.php:143
 #: views/ancestor_report_rtf.php:138
 msgid "47th Great-Grandparents"
 msgstr "Kakek buyut ke-47"
 
-#: views/ancestor_report.php:103 views/ancestor_report_pdf.php:171
-#: views/ancestor_report_pdf.php:173 views/ancestor_report_rtf.php:156
-#: views/family.php:305 views/family_pdf.php:174 views/family_rtf.php:171
+#: views/ancestor_report.php:103 views/ancestor_report_pdf.php:170
+#: views/ancestor_report_pdf.php:172 views/ancestor_report_rtf.php:156
+#: views/family.php:305 views/family_pdf.php:173 views/family_rtf.php:171
 msgid "generation "
 msgstr "generasi "
 
-#: views/ancestor_report.php:128 views/ancestor_sheet.php:264
+#: views/ancestor_report.php:128 views/ancestor_sheet.php:259
 #: views/family.php:129
 msgid "PDF"
 msgstr "PDF"
@@ -9148,19 +9163,19 @@ msgstr "PDF"
 msgid "RTF"
 msgstr "RTF"
 
-#: views/ancestor_report.php:206 views/ancestor_report_pdf.php:256
+#: views/ancestor_report.php:206 views/ancestor_report_pdf.php:255
 #: views/ancestor_report_rtf.php:222
 #, fuzzy
 #| msgid "Allready listed above as number "
 msgid "Already listed above as number "
 msgstr "Sudah tercantum di atas sebagai nomor "
 
-#: views/ancestor_report.php:225 views/ancestor_report_pdf.php:287
+#: views/ancestor_report.php:225 views/ancestor_report_pdf.php:286
 #: views/ancestor_report_rtf.php:276
 msgid "divorced "
 msgstr "bercerai "
 
-#: views/ancestor_report_pdf.php:393
+#: views/ancestor_report_pdf.php:392
 msgid "Title:"
 msgstr "Judul:"
 
@@ -9176,15 +9191,15 @@ msgstr ""
 "TIP: Jangan gunakan Wordpad untuk membuka file ini (lay-out akan salah!). "
 "Lebih baik menggunakan prosesor teks seperti Word atau OpenOffice Writer."
 
-#: views/ancestor_sheet.php:299 views/ancestor_sheet_pdf.php:374
+#: views/ancestor_sheet.php:294 views/ancestor_sheet_pdf.php:373
 msgid "Legend"
 msgstr "Legenda"
 
-#: views/ancestor_sheet.php:300 views/family.php:880 views/family.php:885
+#: views/ancestor_sheet.php:295 views/family.php:880 views/family.php:885
 msgid "married"
 msgstr "menikah"
 
-#: views/ancestor_sheet.php:301
+#: views/ancestor_sheet.php:296
 #, fuzzy, php-format
 #| msgid "Generated with HuMo-gen on "
 msgid "Generated with %s on %s"
@@ -9222,7 +9237,7 @@ msgstr ""
 msgid "No results found for this month"
 msgstr ""
 
-#: views/cookies.php:1 views/layout.php:805
+#: views/cookies.php:1 views/layout.php:808
 #, fuzzy, php-format
 #| msgid "Cookie information"
 msgid "%s cookie information"
@@ -9296,12 +9311,12 @@ msgstr ""
 "di menu sembulan: </b> Pergi ke halaman keluarga pasangan <br> <br> <br> \\ "
 "n <b> LEGENDA: </ b>"
 
-#: views/descendant_chart.php:61 views/hourglass.php:103 views/list.php:353
+#: views/descendant_chart.php:61 views/hourglass.php:104 views/list.php:353
 #: views/stats_firstnames.php:103 views/stats_persons.php:347
 msgid "Male"
 msgstr "Pria"
 
-#: views/descendant_chart.php:62 views/hourglass.php:104 views/list.php:354
+#: views/descendant_chart.php:62 views/hourglass.php:105 views/list.php:354
 #: views/stats_firstnames.php:104 views/stats_persons.php:348
 msgid "Female"
 msgstr "Wanita"
@@ -9314,7 +9329,7 @@ msgstr "Laki-laki Y-DNA atau pembawa mtDNA (Orang dasar memiliki batas merah)"
 msgid "Female MtDNA carrier (Base person has red border)"
 msgstr "Female MtDNA carrier (Base person memiliki batas merah)"
 
-#: views/descendant_chart.php:67 views/hourglass.php:105
+#: views/descendant_chart.php:67 views/hourglass.php:106
 msgid "Additional marriage of same person"
 msgstr "Pernikahan tambahan dari orang yang sama"
 
@@ -9379,11 +9394,11 @@ msgstr "mtDNA Carriers saja"
 msgid "mtDNA Mark carriers"
 msgstr "pembawa mtDNA Mark"
 
-#: views/descendant_chart.php:207 views/hourglass.php:128
+#: views/descendant_chart.php:207 views/hourglass.php:129
 msgid "Nr. generations"
 msgstr "No. generasi"
 
-#: views/descendant_chart.php:268 views/hourglass.php:199
+#: views/descendant_chart.php:268 views/hourglass.php:200
 msgid "Zoom level:"
 msgstr "Tingkat pembesaran:"
 
@@ -9441,7 +9456,7 @@ msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr "TIP: gunakan %s untuk laporan (leluhur dan keturunan) lainnya."
 
 #: views/family.php:537 views/family.php:605 views/outline_report.php:328
-#: views/outline_report.php:344 views/photoalbum.php:241 views/timeline.php:195
+#: views/outline_report.php:344 views/photoalbum.php:226 views/timeline.php:195
 msgid ""
 "*** Privacy filter is active, one or more items are filtered. Please login "
 "to see all items ***"
@@ -9453,7 +9468,7 @@ msgstr ""
 msgid "Child"
 msgstr "Anak"
 
-#: views/family.php:641 views/family_pdf.php:518 views/family_rtf.php:448
+#: views/family.php:641 views/family_pdf.php:517 views/family_rtf.php:448
 msgid "follows"
 msgstr "mengikuti"
 
@@ -9506,20 +9521,20 @@ msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr ""
 "Alamat surel Anda tidak ada. Silakan tambahkan alamat email Anda di sini: "
 
-#: views/family.php:1318 views/login.php:41 views/mailform.php:196
-#: views/register.php:182
+#: views/family.php:1318 views/login.php:41 views/mailform.php:99
+#: views/register.php:105
 msgid "Send"
 msgstr "Kirim"
 
-#: views/fanchart.php:558
+#: views/fanchart.php:498
 msgid "RELOAD FANCHART WITH 'VIEW' BUTTON ON THE LEFT"
 msgstr "BANTU FANCHART DENGAN TOMBOL 'LIHAT' DI KIRI"
 
-#: views/fanchart.php:626
+#: views/fanchart.php:542
 msgid "How to print the chart"
 msgstr "Cara mencetak grafik"
 
-#: views/fanchart.php:629
+#: views/fanchart.php:545
 msgid ""
 "<u>Internet Explorer:</u><br>\n"
 "1. Set background to \"white\" on the menu and press \"View\"<br>\n"
@@ -9532,7 +9547,7 @@ msgstr ""
 "bagan <br> \\ n3. Simpan ke disk dengan \\ \"Simpan gambar sebagai \" <br> "
 "\\ n4. Cetak gambar yang disimpan"
 
-#: views/fanchart.php:634
+#: views/fanchart.php:550
 msgid ""
 "<p><u>All other browsers:</u><br>\n"
 "Just print the page .... ;-)<br>\n"
@@ -9545,66 +9560,66 @@ msgstr ""
 "\\ \"<br> \\ ndan sesuaikan ukuran pencetakan agar sesuai dengan halaman "
 "<br> \\ n (untuk grafik reguler 85% -90% dari ukuran layar)"
 
-#: views/fanchart.php:683
+#: views/fanchart.php:599
 msgid "Fan style"
 msgstr "Gaya kipas"
 
-#: views/fanchart.php:685
+#: views/fanchart.php:601
 msgid "half"
 msgstr "setengah"
 
-#: views/fanchart.php:687
+#: views/fanchart.php:603
 msgid "full"
 msgstr "penuh"
 
-#: views/fanchart.php:692
+#: views/fanchart.php:608
 msgid "Generations"
 msgstr "Generasi"
 
-#: views/fanchart.php:701
+#: views/fanchart.php:617
 msgid "Font size"
 msgstr "Ukuran huruf"
 
-#: views/fanchart.php:713
+#: views/fanchart.php:629
 msgid "Years only"
 msgstr "Hanya bertahun-tahun"
 
-#: views/fanchart.php:714
+#: views/fanchart.php:630
 msgid "Full dates"
 msgstr "Tanggal penuh"
 
-#: views/fanchart.php:719
+#: views/fanchart.php:635
 msgid "Fan width:"
 msgstr "Lebar kipas:"
 
-#: views/fanchart.php:721
+#: views/fanchart.php:637
 msgid ""
 "\"auto\" for automatic resizing for best display, or value between 50-300"
 msgstr ""
 "\\ \"auto \" untuk mengubah ukuran otomatis untuk tampilan terbaik, atau "
 "nilai antara 50-300"
 
-#: views/fanchart.php:725
+#: views/fanchart.php:641
 msgid "Background"
 msgstr "Latar Belakang"
 
-#: views/fanchart.php:727
+#: views/fanchart.php:643
 msgid "transparent"
 msgstr "transparan"
 
-#: views/fanchart.php:728
+#: views/fanchart.php:644
 msgid "white"
 msgstr "putih"
 
-#: views/fanchart.php:761
+#: views/fanchart.php:679
 msgid "No Chinese ttf font file found"
 msgstr "Tidak ada file font ttf berbahasa Mandarin yang ditemukan"
 
-#: views/fanchart.php:761
+#: views/fanchart.php:680
 msgid "Download link"
 msgstr "Tautan unduhan"
 
-#: views/fanchart.php:764
+#: views/fanchart.php:682
 msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
 msgstr "Unzip dan letakkan di folder \\ \"include / fanchart / chinese / \""
 
@@ -9726,7 +9741,7 @@ msgstr ""
 msgid "Menu items"
 msgstr ""
 
-#: views/help.php:63 views/help.php:145 views/layout.php:512
+#: views/help.php:63 views/help.php:145 views/layout.php:514
 msgid "Family tree index"
 msgstr "Indeks pohon keluarga"
 
@@ -9764,7 +9779,7 @@ msgid ""
 "The results will be sorted alphabetically by place name."
 msgstr ""
 
-#: views/help.php:80 views/layout.php:531
+#: views/help.php:80 views/layout.php:533
 msgid "Photobook"
 msgstr "Buku foto"
 
@@ -9777,7 +9792,7 @@ msgstr ""
 
 #: views/help.php:85 views/help.php:89 views/help.php:94 views/help.php:99
 #: views/help.php:104 views/help.php:108 views/help.php:113
-#: views/layout.php:579
+#: views/layout.php:581
 msgid "Tools"
 msgstr "Alat"
 
@@ -9786,7 +9801,7 @@ msgid ""
 "Here you will find a list of all sources used in the genealogical research."
 msgstr ""
 
-#: views/help.php:89 views/layout.php:584
+#: views/help.php:89 views/layout.php:586
 msgid "Anniversary list"
 msgstr "Daftar ulang tahun"
 
@@ -9821,7 +9836,7 @@ msgid ""
 "database, with ability to map by births or deaths."
 msgstr ""
 
-#: views/help.php:108 views/layout.php:604
+#: views/help.php:108 views/layout.php:606
 msgid "Contact"
 msgstr "Kontak"
 
@@ -9858,7 +9873,7 @@ msgid ""
 "national flags, that allow you to change the display language."
 msgstr ""
 
-#: views/help.php:128 views/help.php:135 views/layout.php:640
+#: views/help.php:128 views/help.php:135 views/layout.php:642
 #: views/user_settings.php:22
 msgid "User settings"
 msgstr "Pengaturan pengguna"
@@ -9910,11 +9925,11 @@ msgid ""
 "Note: next to the search button there is an option for \"Advanced Search!\""
 msgstr ""
 
-#: views/hourglass.php:87
+#: views/hourglass.php:88
 msgid "Get image of chart for printing (allow pop-up!)"
 msgstr ""
 
-#: views/hourglass.php:95
+#: views/hourglass.php:96
 msgid ""
 "<b>USE:</b>\n"
 "<p>The main person is displayed in the center of the chart.<br>\n"
@@ -9926,7 +9941,7 @@ msgid ""
 "<b>LEGEND:</b>"
 msgstr ""
 
-#: views/hourglass.php:107
+#: views/hourglass.php:108
 msgid ""
 "<b>SETTINGS:</b>\n"
 "\n"
@@ -9943,11 +9958,11 @@ msgid ""
 "with further details"
 msgstr ""
 
-#: views/hourglass.php:128
+#: views/hourglass.php:129
 msgid "Anc."
 msgstr "Anc."
 
-#: views/hourglass.php:143
+#: views/hourglass.php:144
 msgid "Desc."
 msgstr "Desc."
 
@@ -9955,31 +9970,31 @@ msgstr "Desc."
 msgid "Recently changed persons and new persons"
 msgstr ""
 
-#: views/layout.php:350 views/list.php:147
+#: views/layout.php:352 views/list.php:147
 msgid "Minimum:"
 msgstr "Minimum:"
 
-#: views/layout.php:350 views/list.php:147
+#: views/layout.php:352 views/list.php:147
 msgid "characters"
 msgstr "karakter"
 
-#: views/layout.php:386
+#: views/layout.php:388
 msgid "Favourites list:"
 msgstr "Daftar favorit:"
 
-#: views/layout.php:494
+#: views/layout.php:496
 msgid "Information"
 msgstr "Informasi"
 
-#: views/layout.php:526
+#: views/layout.php:528
 msgid "Places (by persons)"
 msgstr "Tempat (oleh orang)"
 
-#: views/layout.php:527
+#: views/layout.php:529
 msgid "Places (by families)"
 msgstr "Tempat (oleh keluarga)"
 
-#: views/layout.php:627
+#: views/layout.php:629
 msgid "Register"
 msgstr "Daftar"
 
@@ -10145,7 +10160,7 @@ msgstr ") ("
 msgid "All names"
 msgstr "Semua nama"
 
-#: views/list_names.php:196 views/statistics.php:91
+#: views/list_names.php:196 views/statistics.php:27
 msgid "Frequency of Surnames"
 msgstr "Frekuensi Nama Keluarga"
 
@@ -10184,8 +10199,8 @@ msgstr "Pemulihan kata sandi"
 msgid "Email"
 msgstr "E-mail"
 
-#: views/login.php:32 views/login.php:224 views/mailform.php:184
-#: views/register.php:171
+#: views/login.php:32 views/login.php:224 views/mailform.php:87
+#: views/register.php:94
 msgid "Please answer the block-spam-question:"
 msgstr "Jawab pertanyaan blok-spam:"
 
@@ -10193,8 +10208,8 @@ msgstr "Jawab pertanyaan blok-spam:"
 msgid "Your email address is not correct"
 msgstr "Alamat email Anda salah"
 
-#: views/login.php:84 views/login.php:276 views/mailform.php:132
-#: views/register.php:190
+#: views/login.php:84 views/login.php:276 views/mailform.php:35
+#: views/register.php:51
 msgid "Wrong answer to the block-spam question! Try again..."
 msgstr "Jawaban salah untuk pertanyaan blok-spam! Coba lagi..."
 
@@ -10314,94 +10329,80 @@ msgstr "Tidak ada nama pengguna atau kata sandi yang valid."
 msgid "Forgot password"
 msgstr "lupa kata sandi"
 
-#: views/mailform.php:32
-#, fuzzy, php-format
-#| msgid "Mail form"
-msgid "%s Mail form."
-msgstr "Formulir surat"
-
-#: views/mailform.php:45
-msgid "Last visited family:"
-msgstr "Keluarga yang terakhir dikunjungi:"
-
-#: views/mailform.php:48 views/mailform.php:174
-msgid "Receive newsletter"
-msgstr "Terima nawala"
-
-#: views/mailform.php:94
+#: views/mailform.php:11
 msgid "Sending e-mail failed!"
 msgstr "Gagal mengirim email!"
 
-#: views/mailform.php:98
+#: views/mailform.php:15
 msgid "E-mail sent!"
 msgstr "Email terkirim!"
 
-#: views/mailform.php:128
+#: views/mailform.php:23
+msgid "The e-mail function has been switched off!"
+msgstr "Fungsi email telah dimatikan!"
+
+#: views/mailform.php:31
 msgid "Mail form"
 msgstr "Formulir surat"
 
-#: views/mailform.php:138
+#: views/mailform.php:41
 msgid ""
 "The e-mail address you entered doesn't seem to be a valid e-mail address!"
 msgstr ""
 "Alamat surel yang Anda masukkan tampaknya bukan alamat surel yang valid!"
 
-#: views/mailform.php:166 views/mailform.php:168 views/register.php:163
+#: views/mailform.php:69 views/mailform.php:71 views/register.php:86
 #, fuzzy
 #| msgid "Message: "
 msgid "Message"
 msgstr "Pesan: "
 
-#: views/mailform.php:204
-msgid "The e-mail function has been switched off!"
-msgstr "Fungsi email telah dimatikan!"
-
-#: views/maps.php:37
+#: views/maps.php:30
 msgid "Display birth or death locations across different time periods"
 msgstr ""
 "Menampilkan lokasi kelahiran atau kematian dalam periode waktu yang berbeda"
 
-#: views/maps.php:106
+#: views/maps.php:99
 msgid "Display:"
 msgstr "Tampilan:"
 
-#: views/maps.php:114
+#: views/maps.php:107
 msgid "Birth locations"
 msgstr "Lokasi kelahiran"
 
-#: views/maps.php:120
+#: views/maps.php:113
 msgid "Death locations"
 msgstr "Lokasi kematian"
 
-#: views/maps.php:144
+#: views/maps.php:137
 msgid "Filters:"
 msgstr "Filter:"
 
-#: views/maps.php:235
+#: views/maps.php:228
 msgid "Display births until: "
 msgstr "Tampilkan kelahiran sampai: "
 
-#: views/maps.php:237
+#: views/maps.php:230
 msgid "Display deaths until: "
 msgstr "Tampilkan kematian sampai: "
 
-#: views/maps.php:250
+#: views/maps.php:243
 msgid "Filter by specific family name(s)"
 msgstr "Saring berdasarkan nama keluarga tertentu"
 
-#: views/maps.php:256
+#: views/maps.php:249
 msgid "Filter by descendants"
 msgstr "Saring berdasarkan keturunan"
 
-#: views/maps.php:262
+#: views/maps.php:255
 msgid "Filter by ancestors"
 msgstr "Saring berdasarkan leluhur"
 
-#: views/maps.php:276
+#: views/maps.php:269
 msgid "Other tools:"
 msgstr "Alat lainnya:"
 
-#: views/maps.php:301
+#: views/maps.php:294
 msgid ""
 "<b>Top menu line:</b>\n"
 "<ul><li>Choose family tree. On sites with multiple family trees here you can "
@@ -10477,71 +10478,71 @@ msgstr ""
 "lokasi ini. </li> \\ n <li> Nama-nama dalam daftar ini dapat diklik dan akan "
 "membuka tab browser baru dengan halaman keluarga orang ini. </li>"
 
-#: views/maps.php:344
+#: views/maps.php:337
 msgid "Find location on the map"
 msgstr "Temukan lokasi di peta"
 
-#: views/maps.php:367
+#: views/maps.php:360
 msgid "Mapping with specific name(s): "
 msgstr "Pemetaan dengan nama spesifik: "
 
-#: views/maps.php:382
+#: views/maps.php:375
 msgid "Switch name filter off"
 msgstr "Nonaktifkan filter nama"
 
-#: views/maps.php:498
+#: views/maps.php:491
 msgid "Filter by descendants of: "
 msgstr "Saring berdasarkan keturunan: "
 
-#: views/maps.php:498
+#: views/maps.php:491
 msgid "Switch descendant filter off"
 msgstr "Nonaktifkan filter keturunan"
 
-#: views/maps.php:500
+#: views/maps.php:493
 msgid "No known birth places amongst descendants"
 msgstr "Tidak ada tempat kelahiran yang dikenal di antara keturunan"
 
-#: views/maps.php:500 views/maps.php:619
+#: views/maps.php:493 views/maps.php:612
 msgid "Close"
 msgstr "Dekat"
 
-#: views/maps.php:617
+#: views/maps.php:610
 msgid "Filter by ancestors of: "
 msgstr "Filter menurut leluhur: "
 
-#: views/maps.php:617
+#: views/maps.php:610
 msgid "Switch ancestor filter off"
 msgstr "Nonaktifkan filter leluhur"
 
-#: views/maps.php:619
+#: views/maps.php:612
 msgid "No known birth places amongst ancestors"
 msgstr "Tidak ada tempat kelahiran yang diketahui di antara leluhur"
 
-#: views/maps.php:641
+#: views/maps.php:634
 msgid "Mark checkbox next to name(s)"
 msgstr "Tandai kotak centang di sebelah nama"
 
-#: views/maps.php:664
+#: views/maps.php:657
 msgid "Choose"
 msgstr "Memilih"
 
-#: views/maps.php:697
+#: views/maps.php:690
 msgid "Filter by descendants of a person"
 msgstr "Saring berdasarkan keturunan seseorang"
 
-#: views/maps.php:698 views/maps.php:822
+#: views/maps.php:691 views/maps.php:815
 msgid "Pick a name or enter ID:"
 msgstr "Pilih nama atau masukkan ID:"
 
-#: views/maps.php:702 views/maps.php:826
+#: views/maps.php:695 views/maps.php:819
 msgid "Pick a name from the pulldown list"
 msgstr "Pilih nama dari daftar pull-down"
 
-#: views/maps.php:821
+#: views/maps.php:814
 msgid "Filter by ancestors of a person"
 msgstr "Saring berdasarkan leluhur seseorang"
 
-#: views/maps.php:1025
+#: views/maps.php:1018
 msgid "Results are limited."
 msgstr ""
 
@@ -10581,23 +10582,15 @@ msgstr "PDF (Potret)"
 msgid "PDF (Landscape)"
 msgstr "PDF (Lansekap)"
 
-#: views/photoalbum.php:346
+#: views/photoalbum.php:331
 msgid "Photo's per page"
 msgstr "Foto per halaman"
 
-#: views/register.php:21
-msgid "ERROR: username already exists"
-msgstr "GALAT: nama pengguna sudah ada"
-
-#: views/register.php:29
-msgid "ERROR: Password has to contain at least 6 characters"
-msgstr "GALAT: Kata sandi harus mengandung setidaknya 6 karakter"
-
-#: views/register.php:43
+#: views/register.php:10
 msgid "Registration completed"
 msgstr "Pendaftaran selesai"
 
-#: views/register.php:44
+#: views/register.php:11
 msgid ""
 "At this moment you are registered in the user-group \"guest\". The "
 "administrator will check your registration, and select a user-group for you."
@@ -10605,21 +10598,23 @@ msgstr ""
 "Saat ini Anda terdaftar di grup-pengguna \\ \"tamu \". Administrator akan "
 "memeriksa pendaftaran Anda, dan memilih grup pengguna untuk Anda."
 
-#: views/register.php:55 views/register.php:62
-msgid "New registered user"
-msgstr "Pengguna terdaftar baru"
+#: views/register.php:36
+msgid "The register function has been switched off!"
+msgstr "Fungsi register telah dimatikan!"
 
-#: views/register.php:130
+#: views/register.php:47
 msgid "User registration form"
 msgstr "Formulir pendaftaran pengguna"
 
-#: views/register.php:156 views/user_settings.php:44
+#: views/register.php:74 views/register.php:81
+#, fuzzy
+#| msgid "characters"
+msgid "6 characters minimum"
+msgstr "karakter"
+
+#: views/register.php:79 views/user_settings.php:44
 msgid "Repeat password"
 msgstr "Masukkan kata kunci kembali"
-
-#: views/register.php:193
-msgid "The register function has been switched off!"
-msgstr "Fungsi register telah dimatikan!"
 
 #: views/relations.php:102 views/relations.php:216
 msgid "or: ID"
@@ -10994,7 +10989,7 @@ msgstr "Sumber untuk keluarga:"
 msgid "Source for address:"
 msgstr "Sumber untuk alamat:"
 
-#: views/statistics.php:94
+#: views/statistics.php:30
 msgid "Frequency of First Names"
 msgstr "Frekuensi Nama Depan"
 
@@ -11002,7 +10997,7 @@ msgstr "Frekuensi Nama Depan"
 msgid "Number of displayed first names"
 msgstr "Jumlah nama depan yang ditampilkan"
 
-#: views/stats_persons.php:352 views/stats_tree.php:73
+#: views/stats_persons.php:352 views/stats_tree.php:76
 msgid "No. of persons"
 msgstr "Jumlah orang"
 
@@ -11046,15 +11041,15 @@ msgstr "Rata-rata usia menikah orang"
 msgid "Lifespan range of married individuals"
 msgstr "Rentang hidup individu yang menikah"
 
-#: views/stats_tree.php:43
+#: views/stats_tree.php:46
 msgid "Latest update"
 msgstr "Pembaruan terbaru"
 
-#: views/stats_tree.php:54
+#: views/stats_tree.php:57
 msgid "No. of families"
 msgstr "Jumlah keluarga"
 
-#: views/stats_tree.php:60
+#: views/stats_tree.php:63
 msgid "Most children in family"
 msgstr "Sebagian besar anak dalam keluarga"
 

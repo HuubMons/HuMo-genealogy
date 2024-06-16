@@ -3,14 +3,7 @@ include_once(__DIR__ . "/../include/person_cls.php");
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
 
-
-
-// TODO create seperate controller script.
-//require_once  __DIR__ . "/../app/model/maps.php";
-//$mapsModel = new MapsModel($dbh);
-//$maps['show_pictures'] = $mapsModel->get_show_pictures();
-
-
+// TODO create controller and model.
 
 echo '<script src="googlemaps/namesearch.js"></script>';
 

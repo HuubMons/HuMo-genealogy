@@ -18,7 +18,6 @@ include_once(__DIR__ . "/layout_pdf.php");
 
 
 // TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../app/model/ancestor.php";
 $get_ancestor = new AncestorModel($dbh);
 $data["main_person"] = $get_ancestor->getMainPerson();
