@@ -757,6 +757,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'backup') {
         include_once(__DIR__ . "/views/backup.php");
     } elseif ($page === 'notes') {
+        require __DIR__ . '/controller/notesController.php';
+        $controllerObj = new NotesController();
+        $notes = $controllerObj->detail($dbh);
         include_once(__DIR__ . "/views/notes.php");
     } elseif ($page === 'cal_date') {
         include_once(__DIR__ . "/views/cal_date.php");

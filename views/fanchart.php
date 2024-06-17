@@ -191,11 +191,11 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
     //$data["fanchart_item"] = $fanchart_item;
 
     if (!defined("IMG_ARC_PIE")) {
-        echo "ERROR: NO GD LIBRARY";
+        echo "ERROR: NO GD LIBRARY [IMG_ARC_PIE]";
         return false;
     }
     if (!function_exists("ImageTtfBbox")) {
-        echo "ERROR: NO GD LIBRARY";
+        echo "ERROR: NO GD LIBRARY [ImageTtfBbox]";
         return false;
     }
 
