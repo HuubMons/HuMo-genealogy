@@ -23,7 +23,7 @@ if ($data2Db->tree_privacy == 'show_persons') {
 }
 
 ?>
-<form method="post" action="<?= $phpself; ?>">
+<form method="post" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="tree_id" value="<?= $data2Db->tree_id; ?>">
     <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">

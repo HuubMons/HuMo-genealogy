@@ -700,6 +700,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'login') {
         include_once(__DIR__ . "/views/login.php");
     } elseif ($group_administrator == 'j' && $page === 'tree') {
+        //require __DIR__ . '/controller/trees.php';
+        //$controllerObj = new TreesController();
+        //$trees = $controllerObj->detail($dbh);
         include_once(__DIR__ . "/views/trees.php");
     } elseif ($page === 'editor') {
         include_once(__DIR__ . "/views/editor.php");

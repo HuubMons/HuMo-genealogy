@@ -102,7 +102,7 @@ if (isset($_POST['duplicate_compare'])) {
             ?>
 
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -110,7 +110,7 @@ if (isset($_POST['duplicate_compare'])) {
             </form>
 
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -121,7 +121,7 @@ if (isset($_POST['duplicate_compare'])) {
             </form>
 
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -129,7 +129,7 @@ if (isset($_POST['duplicate_compare'])) {
             </form>
 
             &nbsp;&nbsp;&nbsp;&nbsp;<?= __('Skip to nr: '); ?>
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -148,7 +148,7 @@ if (isset($_POST['duplicate_compare'])) {
             </form>
 
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -168,7 +168,7 @@ if (isset($_POST['duplicate_compare'])) {
         unset($_SESSION['present_compare_' . $data2Db->tree_prefix]);
         ?>
         <br><br><?= __('No more duplicates found'); ?><br><br>
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -188,7 +188,7 @@ elseif (isset($_POST['manual_compare'])) {
     ?>
         <br><?= __('You cannot merge persons of opposite sex. Please try again'); ?><br><br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -199,7 +199,7 @@ elseif (isset($_POST['manual_compare'])) {
     ?>
         <br><?= __('This is one person already - you can\'t merge! Please try again'); ?><br><br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -210,7 +210,7 @@ elseif (isset($_POST['manual_compare'])) {
         <?= __('The checked items will be the ones entered into the database for the merged person. You can change the default settings'); ?><br>
 
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -218,7 +218,7 @@ elseif (isset($_POST['manual_compare'])) {
         </form>
 
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -228,7 +228,7 @@ elseif (isset($_POST['manual_compare'])) {
         </form>
 
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -236,7 +236,7 @@ elseif (isset($_POST['manual_compare'])) {
         </form>
 
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -295,7 +295,7 @@ elseif (isset($_POST['relatives'])) {
     ?>
         <br>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -304,7 +304,7 @@ elseif (isset($_POST['relatives'])) {
 
         <!-- button skip -->
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -313,7 +313,7 @@ elseif (isset($_POST['relatives'])) {
         </form>
 
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -325,7 +325,7 @@ elseif (isset($_POST['relatives'])) {
 
         <!-- button merge -->
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -339,7 +339,7 @@ elseif (isset($_POST['relatives'])) {
     <?php } else { ?>
         <br><br><?= __('No more surrounding relatives to check'); ?><br><br>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -389,7 +389,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
     if (isset($_SESSION['dupl_arr_' . $data2Db->tree_prefix])) {
     ?>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -398,7 +398,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
     <?php } ?>
 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+    <form method="post" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -407,7 +407,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
     </form>
 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+    <form method="post" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -467,7 +467,7 @@ elseif (isset($_POST['duplicate'])) {
     ?>
         <!-- possible duplicates found -->
         <br><?= __('Possible duplicates found: ') . count($dupl_arr); ?><br><br>
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -478,7 +478,7 @@ elseif (isset($_POST['duplicate'])) {
         <?= __('You can try one of the other merge options'); ?><br><br>
 
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -602,7 +602,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
     }
     ?>
 
-    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+    <form method="post" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -759,14 +759,14 @@ You will be notified of results as the action is completed');
 ?>
 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+    <form method="post" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
         <input type="submit" name="auto_merge" value="<?= __('Start automatic merge'); ?>">
     </form>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+    <form method="post" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -857,7 +857,7 @@ elseif (isset($_POST['auto_merge'])) {
     ?>
         <?= __('It is recommended to continue with <b>"Relatives merge"</b> to consider merging persons affected by previous merges that were performed.'); ?><br><br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -867,14 +867,14 @@ elseif (isset($_POST['auto_merge'])) {
         <?= __('You may wish to proceed with duplicate merge or manual merge.'); ?><br><br>
 
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
             <input type="submit" name="duplicate_choices" value="<?= __('Duplicate merge'); ?>">
         </form>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
             <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -883,7 +883,7 @@ elseif (isset($_POST['auto_merge'])) {
     <?php } ?>
 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+    <form method="post" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -904,7 +904,7 @@ elseif (isset($_POST['auto_merge'])) {
 elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
     ?>
     <br>
-    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+    <form method="post" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -1068,7 +1068,7 @@ As a last resort you can perform manual merges.'); ?>
         </tr>
         <tr>
             <td style="vertical-align:center;text-align:center;width:200px">
-                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -1083,7 +1083,7 @@ As a last resort you can perform manual merges.'); ?>
         <tr>
             <td style="vertical-align:center;text-align:center;width:200px">
                 <?php if ($relatives_merge != '') { ?>
-                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                    <form method="post" action="index.php" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -1101,7 +1101,7 @@ Surrounding relatives are saved to the database and you can also return to it at
         </tr>
         <tr>
             <td style="vertical-align:center;text-align:center;width:200px">
-                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -1115,7 +1115,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
         </tr>
         <tr>
             <td style="min-height:50px;vertical-align:center;text-align:center;width:200px">
-                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
@@ -1126,7 +1126,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
         </tr>
         <tr>
             <td style="vertical-align:center;text-align:center;width:200px">
-                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">

@@ -69,11 +69,11 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
                     // *** Number for new family tree ***
                     $new_number = $dataDb->tree_order + 1;
                     if ($dataDb->tree_order != '1') {
-                        echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;up=1&amp;tree_order=' . $dataDb->tree_order .
+                        echo ' <a href="index.php?page=' . $page . '&amp;up=1&amp;tree_order=' . $dataDb->tree_order .
                             '&amp;id=' . $dataDb->tree_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
                     }
                     if ($dataDb->tree_order != $count_lines) {
-                        echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;down=1&amp;tree_order=' . $dataDb->tree_order .
+                        echo ' <a href="index.php?page=' . $page . '&amp;down=1&amp;tree_order=' . $dataDb->tree_order .
                             '&amp;id=' . $dataDb->tree_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
                     }
                     ?>
@@ -150,7 +150,7 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
     <tr>
         <td><?= $new_number; ?></td>
         <td colspan="3">
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
                 <input type="hidden" name="tree_prefix" value="<?= $new_tree_prefix; ?>">
@@ -166,7 +166,7 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
     <tr>
         <td><?= $new_number; ?></td>
         <td colspan="3">
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
                 <input type="submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>" class="btn btn-sm btn-success">
@@ -195,7 +195,7 @@ if ($collation == 'utf8_danish_ci') {
 }
 ?>
 
-<form method="post" action="<?= $phpself; ?>" style="display : inline;">
+<form method="post" action="index.php" style="display : inline;">
     <input type="hidden" name="page" value="<?= $page; ?>">
 
     <br>

@@ -186,10 +186,11 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
 function print_fan_chart($data, $fanw = 840, $fandeg = 270)
 {
     global $dbh, $tree_id, $db_functions, $language, $selected_language, $tree_prefix_quoted, $china_message;
-    // check for GD 2.x library
 
     //$data["fanchart_item"] = $fanchart_item;
 
+    // check for GD 2.x library
+    /*
     if (!defined("IMG_ARC_PIE")) {
         echo "ERROR: NO GD LIBRARY [IMG_ARC_PIE]";
         return false;
@@ -198,6 +199,9 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
         echo "ERROR: NO GD LIBRARY [ImageTtfBbox]";
         return false;
     }
+    */
+    // Use this line (is there a difference using gd2?)
+    // if(extension_loaded('gd'))
 
     if (intval($data["fontsize"]) < 2) {
         $data["fontsize"] = 7;
