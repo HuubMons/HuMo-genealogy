@@ -15,16 +15,6 @@ if (!defined('ADMIN_PAGE')) {
 //$phpself = 'index.php';
 //$phpself2 = 'index.php?';
 
-
-
-// TODO create seperate controller script.
-require_once  __DIR__ . "/../models/trees.php";
-$treesModel = new TreesModel($dbh);
-$treesModel->set_tree_id($tree_id); // $tree_id from index.php.
-$treesModel->update_tree($dbh, $db_functions);
-$trees['tree_id'] = $treesModel->get_tree_id();
-
-
 $tree_id = $trees['tree_id']; // TODO for now use old variable (used in tab scripts: tree_admin.php, tree_data.php, etc.)
 
 

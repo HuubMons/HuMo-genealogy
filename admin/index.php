@@ -700,29 +700,28 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'login') {
         include_once(__DIR__ . "/views/login.php");
     } elseif ($group_administrator == 'j' && $page === 'tree') {
-        //require __DIR__ . '/controller/trees.php';
-        //$controllerObj = new TreesController();
-        //$trees = $controllerObj->detail($dbh);
+        require __DIR__ . '/controller/treesController.php';
+        $controllerObj = new TreesController();
+        $trees = $controllerObj->detail($dbh, $tree_id, $db_functions);
         include_once(__DIR__ . "/views/trees.php");
     } elseif ($page === 'editor') {
         include_once(__DIR__ . "/views/editor.php");
     } elseif ($page === 'editor_sources') {
         include_once(__DIR__ . "/include/editor_sources.php");
-    }
-    elseif ($page === 'edit_sources') {
+    } elseif ($page === 'edit_sources') {
         require __DIR__ . '/controller/edit_sourceController.php';
         $controllerObj = new SourceController();
-        $editSource = $controllerObj->detail($dbh,$tree_id, $db_functions);
+        $editSource = $controllerObj->detail($dbh, $tree_id, $db_functions);
         include_once(__DIR__ . "/views/edit_source.php");
     } elseif ($page === 'edit_repositories') {
         require __DIR__ . '/controller/edit_repositoryController.php';
         $controllerObj = new RepositoryController();
-        $editRepository = $controllerObj->detail($dbh,$tree_id, $db_functions);
+        $editRepository = $controllerObj->detail($dbh, $tree_id, $db_functions);
         include_once(__DIR__ . "/views/edit_repository.php");
     } elseif ($page === 'edit_addresses') {
         require __DIR__ . '/controller/edit_addressController.php';
         $controllerObj = new AddressController();
-        $editAddress = $controllerObj->detail($dbh,$tree_id, $db_functions);
+        $editAddress = $controllerObj->detail($dbh, $tree_id, $db_functions);
         include_once(__DIR__ . "/views/edit_address.php");
     } elseif ($page === 'edit_places') {
         include_once(__DIR__ . "/views/edit_rename_place.php");
@@ -747,6 +746,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
         //} elseif ($page == 'favorites') {
         //    include_once(__DIR__ . "/include/favorites.php");
     } elseif ($page === 'users') {
+        require __DIR__ . '/controller/usersController.php';
+        $controllerObj = new UsersController();
+        $edit_users = $controllerObj->detail($dbh);
         include_once(__DIR__ . "/views/users.php");
     } elseif ($page === 'editor_user_settings') {
         include_once(__DIR__ . "/include/editor_user_settings.php");
