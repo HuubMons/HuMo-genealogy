@@ -9,7 +9,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-// TODO rename script to maps?
+// TODO rename script to maps or edit_maps?
 // TODO create controller/ model.
 ?>
 

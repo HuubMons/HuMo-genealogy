@@ -761,9 +761,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
         $groups = $controllerObj->detail($dbh);
         include_once(__DIR__ . "/views/groups.php");
     } elseif ($page === 'cms_pages') {
-        //require __DIR__ . '/controller/cms_pagesController.php';
-        //$controllerObj = new CMS_pagesController();
-        //$groups = $controllerObj->detail($dbh);
+        require __DIR__ . '/controller/edit_cms_pagesController.php';
+        $controllerObj = new edit_cms_pagesController();
+        $cms_pages = $controllerObj->detail($dbh);
         include_once(__DIR__ . "/views/cms_pages.php");
     } elseif ($page === 'backup') {
         include_once(__DIR__ . "/views/backup.php");
