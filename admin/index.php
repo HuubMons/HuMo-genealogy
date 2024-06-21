@@ -724,6 +724,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
         $editAddress = $controllerObj->detail($dbh, $tree_id, $db_functions);
         include_once(__DIR__ . "/views/edit_address.php");
     } elseif ($page === 'edit_places') {
+        require __DIR__ . '/controller/edit_rename_placeController.php';
+        $controllerObj = new PlaceController();
+        $place = $controllerObj->detail($dbh, $tree_id);
         include_once(__DIR__ . "/views/edit_rename_place.php");
     } elseif ($page === 'editor_place_select') {
         include_once(__DIR__ . "/include/editor_place_select.php");

@@ -1033,8 +1033,8 @@ if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Op
     }
 ?>
 
-    <link rel="stylesheet" href="include/leaflet/leaflet.css">
-    <script src="include/leaflet/leaflet.js"></script>
+    <link rel="stylesheet" href="assets/leaflet/leaflet.css">
+    <script src="assets/leaflet/leaflet.js"></script>
 
     <!-- Show map -->
     <div id="map" style="width:1000px; height:520px"></div>

@@ -948,15 +948,16 @@ else {
 
                     // *** OpenStreetMap ***
                     if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
-                        if ($family_nr == 2) { // *** Only include once ***
-                            echo '<link rel="stylesheet" href="include/leaflet/leaflet.css">';
-                            echo '<script src="include/leaflet/leaflet.js"></script>';
-                        }
-                        // *** Show openstreetmap by every family ***
                         $map = 'map' . $family_nr;
                         $markers = 'markers' . $family_nr;
                         $group = 'group' . $family_nr;
+
+                        if ($family_nr == 2) { // *** Only include once ***
                 ?>
+                            <link rel="stylesheet" href="assets/leaflet/leaflet.css">
+                            <script src="assets/leaflet/leaflet.js"></script>
+                        <?php } ?>
+                        <!-- Show openstreetmap by every family -->
                         <div id="<?= $map; ?>" style="width: 600px; height: 300px;"></div>
 
                         <?php

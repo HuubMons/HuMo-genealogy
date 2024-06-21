@@ -941,10 +941,13 @@ if (!defined('ADMIN_PAGE')) {
                             <?php
                             // *** OpenStreetMap ***
                             if ($use_world_map == 'OpenStreetMap') {
-                                echo '<link rel="stylesheet" href="../include/leaflet/leaflet.css">';
-                                echo '<script src="../include/leaflet/leaflet.js"></script>';
-                                echo '<div id="map" style="width: 600px; height: 300px;"></div>';
+                            ?>
+                                <link rel="stylesheet" href="../assets/leaflet/leaflet.css">
+                                <script src="../assets/leaflet/leaflet.js"></script>
 
+                                <div id="map" style="width: 600px; height: 300px;"></div>
+
+                            <?php
                                 // *** Map using fitbound (all markers visible) ***
                                 //echo '<script>
                                 //    var map = L.map("map").setView([48.85, 2.35], 10);

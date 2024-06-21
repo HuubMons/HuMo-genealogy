@@ -8,25 +8,6 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-
-
-
-// TEMPORARY CONTROLLER HERE:
-include_once(__DIR__ . "/../include/editor_cls.php");
-$editor_cls = new editor_cls;
-
-include_once(__DIR__ . "/../include/select_tree.php");
-
-require_once  __DIR__ . "/../models/edit_rename_place.php";
-$renamePlaceModel = new RenamePlaceModel($dbh);
-$renamePlaceModel->update_place($dbh, $tree_id, $editor_cls);
-$place['result'] = $renamePlaceModel->get_query($dbh, $tree_id);
-$place['select'] = $renamePlaceModel->get_place_select();
-
-
-
-$phpself = 'index.php';
-$field_text_large = 'style="height: 100px; width:550px"';
 ?>
 
 <h1 class="center"><?= __('Rename places'); ?></h1>
@@ -54,14 +35,16 @@ $field_text_large = 'style="height: 100px; width:550px"';
             </label>
         </div>
         <div class="col-3">
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="POST" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <select size="1" name="place_select" class="form-select form-select-sm" onChange="this.form.submit();">
                     <?php
                     while ($person = $place['result']->fetch(PDO::FETCH_OBJ)) {
                         if ($person->place_edit != '') {
                     ?>
-                            <option value="<?= $person->place_edit; ?>" <?= $place['select'] == $person->place_edit ? ' selected' : ''; ?>><?= $person->place_edit; ?></option>
+                            <option value="<?= $person->place_edit; ?>" <?= $place['select'] == $person->place_edit ? ' selected' : ''; ?>>
+                                <?= $person->place_edit; ?>
+                            </option>
                     <?php
                         }
                     }
@@ -80,7 +63,7 @@ $field_text_large = 'style="height: 100px; width:550px"';
 
 <!-- Change selected place -->
 <?php if ($place['select']) { ?>
-    <form method="POST" action="<?= $phpself; ?>" class="mt-4">
+    <form method="POST" action="index.php" class="mt-4">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="place_old" value="<?= $place['select']; ?>">
 

@@ -418,11 +418,14 @@ Please disconnect the pages from this menu first.'); ?></strong>
                     <input type="hidden" name="menu_id" value="<?= $cms_pagesDb->menu_id; ?>">
                     <tr>
                         <td>
+                            <a href="index.php?page=<?= $page; ?>&amp;select_menu=<?= $cms_pagesDb->menu_id; ?>&amp;menu_remove=<?= $cms_pagesDb->menu_id; ?>">
+                                <img src="images/button_drop.png" alt="<?= __('Remove menu'); ?>" border="0">
+                            </a>
+                            <?php if ($cms_pagesDb->menu_order != '1') { ?>
+                                <a href="index.php?page=<?= $page; ?>&amp;select_menu=<?= $cms_pagesDb->menu_id; ?>&amp;menu_up=<?= $cms_pagesDb->menu_order; ?>">
+                                    <img src="images/arrow_up.gif" border="0" alt="up">
+                                </a>
                             <?php
-                            echo '<a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_remove=' . $cms_pagesDb->menu_id . '"><img src="images/button_drop.png" alt="' . __('Remove menu') . '" border="0"></a>';
-
-                            if ($cms_pagesDb->menu_order != '1') {
-                                echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_up=' . $cms_pagesDb->menu_order . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
                             }
                             if ($cms_pagesDb->menu_order != $count_menu) {
                                 echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_down=' . $cms_pagesDb->menu_order . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
@@ -545,7 +548,6 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                         if (substr($cms_images_path, 0, 1) === '|') {
                             $cms_images_path = substr($cms_images_path, 1);
                         }
-
                         ?>
                         <input type="radio" value="yes" name="default_path" <?= $checked1; ?>><?= __('Use default picture path:'); ?><b>media/cms</b><br>
                         <input type="radio" value="no" name="default_path" <?= $checked2; ?>>
@@ -577,19 +579,15 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                             <?php
                             $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
                             while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                                $select = '';
-                                if ($pageDb->page_id == $main_page_cms_id) {
-                                    $select = ' selected';
-                                }
                             ?>
-                                <option value="<?= $pageDb->page_id; ?>" <?= $select; ?>><?= $pageDb->page_title; ?></option>
+                                <option value="<?= $pageDb->page_id; ?>" <?= $pageDb->page_id == $main_page_cms_id ? 'selected' : ''; ?>>
+                                    <?= $pageDb->page_title; ?>
+                                </option>
                             <?php } ?>
                         </select><br><br>
                         <input type="radio" onChange="document.cms_setting_form.submit()" value="specific" name="languages_choice" <?= $checked2; ?>> <?= __('Set per language'); ?>
 
-                        <?php
-                        if ($checked1 === '') {
-                        ?>
+                        <?php if ($checked1 === '') { ?>
                             <br>
                             <table style="border:none">
                                 <?php
@@ -603,11 +601,12 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                                     }
                                     $sel = '';
                                     if ($select_page != 'dummy' && $select_page != '') {
+                                        // no entry was found - use default
                                         $sel = $select_page;
                                     } elseif ($select_page == 'dummy') {
+                                        //else the value was '' which means language was set individually to "main index", so don't set "select" so "main index" will show
                                         $sel = $main_page_cms_id;
-                                    }  // no entry was found - use default
-                                    //else the value was '' which means language was set individually to "main index", so don't set "select" so "main index" will show
+                                    }
                                 ?>
 
                                     <tr>
@@ -620,19 +619,14 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                                                 <?php
                                                 $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
                                                 while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                                                    $select = '';
-                                                    if ($pageDb->page_id == $sel) {
-                                                        $select = ' selected';
-                                                        $special_found = 1;
-                                                    }
                                                 ?>
-                                                    <option value="<?= $pageDb->page_id; ?>" <?= $select; ?>><?= $pageDb->page_title; ?></option>
+                                                    <option value="<?= $pageDb->page_id; ?>" <?= $pageDb->page_id == $sel ? 'selected' : ''; ?>><?= $pageDb->page_title; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
                                     </tr>
                                 <?php } ?>
-                            </table> <!-- end table with language flags and pages -->
+                            </table>
                         <?php } ?>
                     </td>
                 </tr>
