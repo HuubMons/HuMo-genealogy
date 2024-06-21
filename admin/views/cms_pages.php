@@ -4,38 +4,28 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-global $selected_language;
-$phpself = 'index.php';
 
+// TODO: add model and controller.
 
-// TODO: tab menu was added later. Improve code for menu tab.
 
 // *** Show editor if page is choosen for first time ***
 $cms_tab = 'pages';
 
-// *** Show and edit pages ***
-if (isset($_POST['cms_pages']) || isset($_GET["select_page"])) {
-    $cms_tab = 'pages';
-}
-
 // *** Show and edit menu's ***
-if (isset($_GET['select_menu'])) {
-    $cms_tab = 'menu';
-}
-
-// *** CMS Settings ***
-if (isset($_POST['cms_settings'])) {
-    $cms_tab = 'settings';
-}
-
 if (isset($_GET['cms_tab']) && $_GET['cms_tab'] == 'menu') {
     $cms_tab = 'menu';
 }
 if (isset($_POST['cms_tab']) && $_POST['cms_tab'] == 'menu') {
     $cms_tab = 'menu';
 }
+if (isset($_GET['select_menu'])) {
+    $cms_tab = 'menu';
+}
 
 if (isset($_GET['cms_tab']) && $_GET['cms_tab'] == 'settings') {
+    $cms_tab = 'settings';
+}
+if (isset($_POST['cms_settings'])) {
     $cms_tab = 'settings';
 }
 
@@ -97,7 +87,6 @@ if (isset($_GET['page_up']) && is_numeric($_GET['page_up']) && is_numeric($_GET[
     $sql = "UPDATE humo_cms_pages as table1, humo_cms_pages as table2
         SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
         WHERE table1.page_id='" . $_GET['page_up'] . "' AND table2.page_id='" . $_GET['select_page'] . "'";
-    //echo $sql;
     $dbh->query($sql);
 }
 // *** Page up, only allow numeric values ***
@@ -106,7 +95,6 @@ if (isset($_GET['page_down']) && is_numeric($_GET['page_down']) && is_numeric($_
         SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
         WHERE table1.page_order='" . safe_text_db($_GET['page_down']) . "' AND table1.page_menu_id='" . $_GET['menu_id'] . "'
         AND table2.page_order='" . safe_text_db($_GET['page_down'] + 1) . "'  AND table2.page_menu_id='" . $_GET['menu_id'] . "'";
-    //echo $sql;
     $dbh->query($sql);
 }
 
@@ -188,7 +176,7 @@ if (isset($_POST['menu_remove2'])) {
                 <strong><?= __('This page is selected as homepage!'); ?></strong>
             <?php } else { ?>
                 <strong><?= __('Are you sure you want to remove this page?'); ?></strong>
-                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="cms_pages" value="cms_page">
                     <input type="hidden" name="page_id" value="<?= $_GET['page_remove']; ?>">
@@ -211,7 +199,7 @@ if (isset($_POST['menu_remove2'])) {
 Please disconnect the pages from this menu first.'); ?></strong>
             <?php } else { ?>
                 <strong><?= __('Are you sure you want to remove this menu?'); ?></strong>
-                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="cms_tab" value="menu">
                     <input type="hidden" name="menu_id" value="<?= $_GET['menu_remove']; ?>">
@@ -357,7 +345,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                     }
 
                     ?>
-                    <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                    <form method="post" action="index.php" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="hidden" name="cms_pages" value="cms_page">
                         <input type="hidden" name="page_id" value="<?= $page_id; ?>">
@@ -412,7 +400,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                 <th><?= __('Save'); ?></th>
             </tr>
             <?php while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) { ?>
-                <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+                <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="cms_tab" value="menu">
                     <input type="hidden" name="menu_id" value="<?= $cms_pagesDb->menu_id; ?>">
@@ -428,9 +416,11 @@ Please disconnect the pages from this menu first.'); ?></strong>
                             <?php
                             }
                             if ($cms_pagesDb->menu_order != $count_menu) {
-                                echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_down=' . $cms_pagesDb->menu_order . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
-                            }
                             ?>
+                                <a href="index.php?page=<?= $page; ?>&amp;select_menu=<?= $cms_pagesDb->menu_id; ?>&amp;menu_down=<?= $cms_pagesDb->menu_order; ?>">
+                                    <img src="images/arrow_down.gif" border="0" alt="down">
+                                </a>
+                            <?php } ?>
                         </td>
                         <td><input type="text" name="menu_name" value="<?= $cms_pagesDb->menu_name; ?>" size=50></td>
                         <td><input type="submit" name="change_menu" value="<?= __('Save'); ?>" class="btn btn-sm btn-success"></td>
@@ -438,7 +428,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
                 </form>
             <?php } ?>
 
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="cms_tab" value="menu">
                 <tr bgcolor="green">
@@ -519,7 +509,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
     ?>
 
         <p>
-        <form method="post" name="cms_setting_form" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" name="cms_setting_form" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="cms_settings" value="1"> <!-- if Save button is not pressed but checkboxes changed! -->
             <table class="humo" border="1" cellspacing="0" width="95%">
@@ -550,8 +540,8 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                         }
                         ?>
                         <input type="radio" value="yes" name="default_path" <?= $checked1; ?>><?= __('Use default picture path:'); ?><b>media/cms</b><br>
-                        <input type="radio" value="no" name="default_path" <?= $checked2; ?>>
 
+                        <input type="radio" value="no" name="default_path" <?= $checked2; ?>>
                         <input type="text" name="cms_images_path" value="<?= $cms_images_path; ?>" size=25>
                     </td>
                 </tr>

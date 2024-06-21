@@ -347,7 +347,7 @@ function show_media_files($pref)
 
                 <!-- Search by photo name -->
                 <div class="col-auto">
-                    <input type="text" name="search_media" value="<?= $photoalbum['search_media']; ?>" size="20" class="form-control form-control-sm">
+                    <input type="text" name="search_media" value="<?= safe_text_show($photoalbum['search_media']); ?>" size="20" class="form-control form-control-sm">
                 </div>
                 <div class="col-auto">
                     <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-success">
