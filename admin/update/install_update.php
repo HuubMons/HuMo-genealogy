@@ -5,9 +5,6 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 @set_time_limit(300);
-//global $selected_language;
-
-//$phpself = 'index.php';
 ?>
 
 <h1 class="center">

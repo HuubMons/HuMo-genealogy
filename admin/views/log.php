@@ -47,67 +47,7 @@ if (!defined('ADMIN_PAGE')) {
 
     // *** IP blacklist ***
     if ($log['menu_tab'] == 'log_blacklist') {
-
-        // *** Change Link ***
-        if (isset($_POST['change_link'])) {
-            $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                $setting_value = $_POST[$dataDb->setting_id . 'own_code'] . "|" . $_POST[$dataDb->setting_id . 'link_text'];
-                $sql = "UPDATE humo_settings SET setting_value='" . safe_text_db($setting_value) . "'
-                    WHERE setting_id=" . safe_text_db($_POST[$dataDb->setting_id . 'id']);
-                $result = $dbh->query($sql);
-            }
-        }
-
-        // *** Remove link  ***
-        $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
-        while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-            if (isset($_POST[$dataDb->setting_id . 'remove_link'])) {
-                $sql = "DELETE FROM humo_settings WHERE setting_id='" . $dataDb->setting_id . "'";
-                $result = $dbh->query($sql);
-            }
-        }
-
-        // *** Add link ***
-        if (isset($_POST['add_link']) && $_POST['own_code'] != '' && is_numeric($_POST['link_order'])) {
-            $setting_value = $_POST['own_code'] . "|" . $_POST['link_text'];
-            $sql = "INSERT INTO humo_settings SET setting_variable='ip_blacklist',
-                setting_value='" . safe_text_db($setting_value) . "', setting_order='" . safe_text_db($_POST['link_order']) . "'";
-            $result = $dbh->query($sql);
-        }
-
-        if (isset($_GET['up'])) {
-            // *** Search previous link ***
-            $sql = "SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' AND setting_order=" . (safe_text_db($_GET['link_order']) - 1);
-            $item = $dbh->query($sql);
-            $itemDb = $item->fetch(PDO::FETCH_OBJ);
-
-            // *** Raise previous link ***
-            $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['link_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
-            $result = $dbh->query($sql);
-
-            // *** Lower link order ***
-            $sql = "UPDATE humo_settings SET setting_order='" . (safe_text_db($_GET['link_order']) - 1) . "' WHERE setting_id=" . safe_text_db($_GET['id']);
-            $result = $dbh->query($sql);
-        }
-        if (isset($_GET['down'])) {
-            // *** Search next link ***
-            $item = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' AND setting_order=" . (safe_text_db($_GET['link_order']) + 1));
-            $itemDb = $item->fetch(PDO::FETCH_OBJ);
-
-            // *** Lower previous link ***
-            $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['link_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
-
-            $result = $dbh->query($sql);
-            // *** Raise link order ***
-            $sql = "UPDATE humo_settings SET setting_order='" . (safe_text_db($_GET['link_order']) + 1) . "' WHERE setting_id=" . safe_text_db($_GET['id']);
-
-            $result = $dbh->query($sql);
-        }
-
         printf(__('IP Blacklist: access to %s will be totally blocked for these IP addresses.'), 'HuMo-genealogy');
-
-        // *** Show all links ***
     ?>
         <form method='post' action='index.php?page=log&amp;menu_admin=log_blacklist'>
             <input type="hidden" name="page" value="<?= $page; ?>">
