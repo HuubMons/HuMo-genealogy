@@ -777,6 +777,9 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'export') {
         include_once(__DIR__ . "/views/gedcom_export.php");
     } elseif ($page === 'log') {
+        require __DIR__ . '/controller/logController.php';
+        $controllerObj = new LogController();
+        $log = $controllerObj->detail();
         include_once(__DIR__ . "/views/log.php");
     } elseif ($page === 'language_editor') {
         require __DIR__ . '/controller/language_editorController.php';

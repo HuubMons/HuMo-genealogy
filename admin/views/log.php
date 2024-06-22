@@ -3,27 +3,16 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-
-// *** Tab menu ***
-$prefx = '../'; // to get out of the admin map
-
-$menu_admin = 'log_users';
-if (isset($_POST['menu_admin'])) {
-    $menu_admin = $_POST['menu_admin'];
-}
-if (isset($_GET['menu_admin'])) {
-    $menu_admin = $_GET['menu_admin'];
-}
 ?>
 
 <h1 class="center"><?= __('Log'); ?></h1>
 
 <ul class="nav nav-tabs">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'log_users') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('Logfile users'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $log['menu_tab'] == 'log_users' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>"><?= __('Logfile users'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu_admin == 'log_blacklist') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=log_blacklist"><?= __('IP Blacklist'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $log['menu_tab'] == 'log_blacklist' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=log_blacklist"><?= __('IP Blacklist'); ?></a>
     </li>
 </ul>
 
@@ -31,7 +20,7 @@ if (isset($_GET['menu_admin'])) {
 <div style="float: left; background-color:white; height:500px; padding:10px;">
     <?php
     // *** User log ***
-    if (isset($menu_admin) && $menu_admin == 'log_users') {
+    if ($log['menu_tab'] == 'log_users') {
         $logbooksql = "SELECT * FROM humo_user_log ORDER BY log_date DESC";
         $logbook = $dbh->query($logbooksql);
     ?>
@@ -57,7 +46,7 @@ if (isset($_GET['menu_admin'])) {
     }
 
     // *** IP blacklist ***
-    if (isset($menu_admin) && $menu_admin == 'log_blacklist') {
+    if ($log['menu_tab'] == 'log_blacklist') {
 
         // *** Change Link ***
         if (isset($_POST['change_link'])) {
@@ -123,8 +112,14 @@ if (isset($_GET['menu_admin'])) {
         <form method='post' action='index.php?page=log&amp;menu_admin=log_blacklist'>
             <input type="hidden" name="page" value="<?= $page; ?>">
             <table class="humo" border="1">
+                <tr class="table_header">
+                    <th>Nr.</th>
+                    <th><?= __('IP address'); ?></th>
+                    <th><?= __('Description'); ?></th>
+                    <th><?= __('Change / Add'); ?></th>
+                    <th><?= __('Remove'); ?></th>
+                </tr>
                 <?php
-                print '<tr class="table_header"><th>Nr.</th><th>' . __('IP address') . '</th><th>' . __('Description') . '</th><th>' . __('Change / Add') . '</th><th>' . __('Remove') . '</th></tr>';
                 $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' ORDER BY setting_order");
                 // *** Number for new link ***
                 $count_links = 0;
@@ -142,9 +137,8 @@ if (isset($_GET['menu_admin'])) {
                 ?>
                         <tr>
                             <td>
+                                <input type="hidden" name="<?= $dataDb->setting_id; ?>id" value="<?= $dataDb->setting_id; ?>"><?= $teller; ?>
                                 <?php
-                                echo '<input type="hidden" name="' . $dataDb->setting_id . 'id" value="' . $dataDb->setting_id . '">' . $teller;
-
                                 if ($dataDb->setting_order != '1') {
                                     echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;up=1&amp;link_order=' . $dataDb->setting_order .
                                         '&amp;id=' . $dataDb->setting_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
@@ -174,11 +168,11 @@ if (isset($_GET['menu_admin'])) {
                         <td><input type="submit" name="add_link" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>
                         <td><br></td>
                     </tr>
-                <?php
-                } else {
-                    echo '<tr><td colspan="4">' . __('Database is not yet available.') . '</td></tr>';
-                }
-                ?>
+                <?php } else { ?>
+                    <tr>
+                        <td colspan="4"><?= __('Database is not yet available.'); ?></td>
+                    </tr>
+                <?php } ?>
             </table>
         </form>
     <?php } ?>
