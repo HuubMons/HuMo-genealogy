@@ -784,7 +784,7 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'language_editor') {
         require __DIR__ . '/controller/language_editorController.php';
         $controllerObj = new Language_editorController();
-        $language_editor = $controllerObj->detail($dbh);
+        $language_editor = $controllerObj->detail($dbh, $humo_option);
         include_once(__DIR__ . "/views/language_editor.php");
     } elseif ($page === 'prefix_editor') {
         include_once(__DIR__ . "/views/prefix_editor.php");

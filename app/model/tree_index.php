@@ -675,7 +675,7 @@ class Mainindex_cls
                     $date_place = '';
 
                     if ($picqryDb->event_date || $picqryDb->event_place) {
-                        $date_place = date_place($picqryDb->event_date, $picqryDb->event_place) . ' ';
+                        $date_place = date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
                     }
 
                     $text .= '<div style="text-align: center;">';

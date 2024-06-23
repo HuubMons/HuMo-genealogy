@@ -14,6 +14,8 @@ if (!isset($humo_option["hide_languages"])) {
     $humo_option["hide_languages"] = '';
 }
 $hide_languages_array = explode(";", $humo_option["hide_languages"]);
+// Doesn't work:
+//$hide_languages_array = $language_editor['hide_languages_array'];
 
 // *** Get name of selected language, will return $language["name"] ***
 include(__DIR__ . '/../../languages/' . $language_editor['language'] . '/language_data.php');

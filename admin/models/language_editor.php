@@ -17,6 +17,17 @@ class LanguageEditorModel
         return $language;
     }
 
+    /*
+    public function get_languages_array($humo_option)
+    {
+        if (!isset($humo_option["hide_languages"])) {
+            $humo_option["hide_languages"] = '';
+        }
+        $language_editor['hide_languages_array'] = explode(";", $humo_option["hide_languages"]);
+        return $language_editor['hide_languages_array'];
+    }
+    */
+
     public function saveFile($language_editor)
     {
         $message = '';
