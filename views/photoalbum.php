@@ -100,6 +100,7 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
     if ($process_picture) {
         if ($picqryDb->event_connect_id) {
             // *** Check privacy filter ***
+            // TODO: use the person_cls constructor (adding personDb).
             $person_cls = new person_cls;
             $personDb = $db_functions->get_person($picqryDb->event_connect_id);
             $privacy = $person_cls->set_privacy($personDb);
