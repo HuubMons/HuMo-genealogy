@@ -36,26 +36,11 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-global $selected_language;
-global $persids, $famsids;
 $noteids;
 $persids = array();
 $famsids = array();
 $noteids = array();
 @set_time_limit(3000);
-
-// *** Name of GEDCOM file: 2023_02_10_12_55_tree_x.ged ***
-$gedcom_file_name = date('Y_m_d_H_i') . '_tree_' . $tree_id . '.ged';
-$myFile = 'gedcom_files/' . $gedcom_file_name;
-
-// *** FOR TESTING PURPOSES ONLY ***
-if (@file_exists("../../gedcom-bestanden")) $myFile = '../../gedcom-bestanden/' . $gedcom_file_name;
-if (@file_exists("../../../gedcom-bestanden")) $myFile = '../../../gedcom-bestanden/' . $gedcom_file_name;
-
-$export["part_tree"] = '';
-if (isset($_POST['part_tree']) and $_POST['part_tree']) {
-    $export["part_tree"] = $_POST['part_tree'];
-}
 ?>
 
 <h1 class="center"><?= __('GEDCOM file export'); ?></h1>
@@ -86,16 +71,14 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
                     <?php
                     while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
                         $treetext = show_tree_text($treeDb->tree_id, $selected_language);
-                        $selected = '';
                         if ($treeDb->tree_id == $tree_id) {
-                            $selected = ' selected';
                             // *** Needed for submitter ***
                             $tree_owner = $treeDb->tree_owner;
                             $db_functions->set_tree_id($tree_id);
                         }
-                        echo '<option value="' . $treeDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-                    }
                     ?>
+                        <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= @$treetext['name']; ?></option>
+                    <?php } ?>
                 </select>
             </td>
         </tr>
@@ -103,17 +86,8 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
         <tr>
             <td><?= __('Whole tree or part:'); ?></td>
             <td>
-                <?php
-                $checked = ' checked ';
-                if ($export["part_tree"] == "part") $checked = '';
-                ?>
-                <input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" <?= $checked; ?>><?= __('Whole tree:'); ?>
-
-                <?php
-                $checked = '';
-                if ($export["part_tree"] == "part") $checked = ' checked ';
-                ?>
-                <br><input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" <?= $checked; ?>><?= __('Partial tree:'); ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" <?= $export["part_tree"] == "part" ? '' : 'checked'; ?>><?= __('Whole tree:'); ?><br>
+                <input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" <?= $export["part_tree"] == "part" ? 'checked' : ''; ?>><?= __('Partial tree:'); ?>
             </td>
         </tr>
 
@@ -131,8 +105,9 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
                         $_SESSION['admin_search_id'] = '';
                         $search_id = '';
                     }
-                    if (isset($_SESSION['admin_search_quicksearch']))
+                    if (isset($_SESSION['admin_search_quicksearch'])) {
                         $search_quicksearch = $_SESSION['admin_search_quicksearch'];
+                    }
 
                     if (isset($_POST["search_id"]) and (!isset($_POST["search_quicksearch"]) or $_POST["search_quicksearch"] == '')) {
                         // if both name and ID given go by name
@@ -193,7 +168,6 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
                     ?>
                     <select size="1" name="person" style="width: 300px">
                         <?php
-                        //$counter = 0;
                         while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
                             $selected = '';
                             if (isset($pers_gedcomnumber)) {
@@ -202,8 +176,11 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
                                 }
                             }
                             $prefix2 = " " . strtolower(str_replace("_", " ", $person->pers_prefix));
-                            echo '<option value="' . $person->pers_gedcomnumber . '"' . $selected . '>' .
-                                $person->pers_lastname . ', ' . $person->pers_firstname . $prefix2 . ' [' . $person->pers_gedcomnumber . ']</option>';
+                        ?>
+                            <option value="<?= $person->pers_gedcomnumber; ?>" <?= $selected; ?>>
+                                <?= $person->pers_lastname; ?>, <?= $person->pers_firstname . $prefix2; ?> [<?= $person->pers_gedcomnumber; ?>]
+                            </option>
+                        <?php
                         }
                         ?>
                     </select>
@@ -235,28 +212,38 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
                     <?php
                     $checked = ' checked ';
                     if (isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") $checked = '';
-                    echo '<input type="radio" value="descendant" name="kind_tree" ' . $checked . '>' . __('Descendants');
+                    ?>
+                    <input type="radio" value="descendant" name="kind_tree" <?= $checked; ?>><?= __('Descendants'); ?><br>
 
+                    <?php
                     $checked = ' checked ';
                     if (isset($_POST['kind_tree']) and !isset($_POST['desc_spouses'])) $checked = '';
-                    echo '<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_spouses" value="1" ' . $checked . '>' . __('Include spouses of descendants');
+                    ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_spouses" value="1" <?= $checked; ?>><?= __('Include spouses of descendants'); ?><br>
 
+                    <?php
                     $checked = '';
                     if (isset($_POST['desc_sp_parents'])) $checked = ' checked ';
-                    echo '<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_sp_parents" value="1" ' . $checked . '>' . __('Include parents of spouses');
+                    ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_sp_parents" value="1" <?= $checked; ?>><?= __('Include parents of spouses'); ?><br>
 
+                    <?php
                     $checked = '';
                     if (isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") $checked = ' checked ';
-                    echo '<br><input type="radio" value="ancestor" name="kind_tree" ' . $checked . '>' . __('Ancestors');
+                    ?>
+                    <input type="radio" value="ancestor" name="kind_tree" <?= $checked; ?>><?= __('Ancestors'); ?><br>
 
+                    <?php
                     $checked = ' checked ';
                     if (isset($_POST['kind_tree']) and !isset($_POST['ances_spouses'])) $checked = '';
-                    echo '<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_spouses" value="1" ' . $checked . '>' . __('Include spouse(s) of base person');
+                    ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_spouses" value="1" <?= $checked; ?>><?= __('Include spouse(s) of base person'); ?><br>
 
+                    <?php
                     $checked = '';
                     if (isset($_POST['ances_sibbl'])) $checked = ' checked ';
-                    echo '<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_sibbl" value="1" ' . $checked . '>' . __('Include sibblings of ancestors and base person');
                     ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_sibbl" value="1" <?= $checked; ?>><?= __('Include sibblings of ancestors and base person'); ?>
                 </td>
             </tr>
         <?php
@@ -371,20 +358,24 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
                     if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'UTF-8') {
                         $selected = ' selected';
                     }
-                    echo '<option value="UTF-8"' . $selected . '>' . __('UTF-8 (recommended character set)') . '</option>';
+                    ?>
+                    <option value="UTF-8" <?= $selected; ?>><?= __('UTF-8 (recommended character set)'); ?></option>
 
+                    <?php
                     $selected = '';
                     if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ANSI') {
                         $selected = ' selected';
                     }
-                    echo '<option value="ANSI"' . $selected . '>ANSI</option>';
+                    ?>
+                    <option value="ANSI" <?= $selected; ?>>ANSI</option>
 
+                    <?php
                     $selected = '';
                     if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ASCII') {
                         $selected = ' selected';
                     }
-                    echo '<option value="ASCII"' . $selected . '>ASCII</option>';
                     ?>
+                    <option value="ASCII" <?= $selected; ?>>ASCII</option>
                 </select>
                 <?= __('GEDCOM 7.0 always uses the UTF-8 character set.'); ?>
             </td>
@@ -400,11 +391,14 @@ if (isset($_POST['part_tree']) and $_POST['part_tree']) {
                 // 'minimal' will be used in the export to 'turn off' extra info being included
                 $checked = ' checked ';
                 if (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") $checked = '';
-                echo '<input type="radio" onClick="javascript:this.form.submit();" value="normal" name="export_type" ' . $checked . '> ' . __('Normal');
+                ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="normal" name="export_type" <?= $checked; ?>> <?= __('Normal'); ?><br>
+
+                <?php
                 $checked = '';
                 if (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") $checked = ' checked ';
-                echo '<br><input type="radio" onClick="javascript:this.form.submit();" value="minimal" name="export_type" ' . $checked . '> ' . __('Minimal');
                 ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="minimal" name="export_type" <?= $checked; ?>> <?= __('Minimal'); ?>
             </td>
         </tr>
 
@@ -581,7 +575,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
     if (isset($_POST['gedcom_texts'])) $gedcom_texts = $_POST['gedcom_texts'];
     $gedcom_sources = '';
     if (isset($_POST['gedcom_sources'])) $gedcom_sources = $_POST['gedcom_sources'];
-    $fh = fopen($myFile, 'w') or die("<b>ERROR: no permission to open a new file! Please check permissions of admin/gedcom_files folder!</b>");
+    $fh = fopen($export['path'] . $export['file_name'], 'w') or die("<b>ERROR: no permission to open a new file! Please check permissions of admin/gedcom_files folder!</b>");
 
     // *** GEDCOM header ***
     $buffer = '';
@@ -1925,7 +1919,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // This is for the buffer achieve the minimum size in order to flush data
                 //echo str_repeat(' ',1024*64);
                 // Send output to browser immediately
-                ob_flush();
+                //ob_flush();
                 flush();
             }
         }
@@ -2038,8 +2032,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
     <form method="POST" action="include/gedcom_download.php" target="_blank">
         <input type="hidden" name="page" value="<?= $page; ?>">
-        <input type="hidden" name="file_name" value="<?= $myFile; ?>">
-        <input type="hidden" name="file_name_short" value="<?= $gedcom_file_name; ?>">
+        <input type="hidden" name="file_name" value="<?= $export['path']; ?>">
+        <input type="hidden" name="file_name_short" value="<?= $export['file_name']; ?>">
         <input type="submit" name="something" value="<?= __('Download GEDCOM file'); ?>">
     </form><br>
 
