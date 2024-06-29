@@ -35,12 +35,45 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+@set_time_limit(3000);
 
-$noteids;
+//$noteids;
 $persids = array();
 $famsids = array();
 $noteids = array();
-@set_time_limit(3000);
+
+// *** Update submitter data ***
+if (isset($_POST['gedcom_submit_name'])) {
+    $result = $db_functions->update_settings('gedcom_submit_name', $_POST["gedcom_submit_name"]);
+    $result = $db_functions->update_settings('gedcom_submit_address', $_POST["gedcom_submit_address"]);
+    $result = $db_functions->update_settings('gedcom_submit_country', $_POST["gedcom_submit_country"]);
+    $result = $db_functions->update_settings('gedcom_submit_mail', $_POST["gedcom_submit_mail"]);
+
+    // *** Re-read variables after changing them ***
+    // *** Don't use include_once! Otherwise the old value will be shown ***
+    include(__DIR__ . "/../../include/settings_global.php"); //variables
+}
+
+
+$tree_sql = "SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'";
+$tree_result = $dbh->query($tree_sql);
+$treeDb = $tree_result->fetch(PDO::FETCH_OBJ);
+//$treetext = show_tree_text($treeDb->tree_id, $selected_language);
+//if ($treeDb->tree_id == $tree_id) {
+// *** Needed for submitter ***
+$tree_owner = $treeDb->tree_owner;
+
+
+$gedcom_submit_name = '';
+if ($tree_owner) {
+    $gedcom_submit_name = $tree_owner;
+}
+if ($humo_option["gedcom_submit_name"] != '') {
+    $gedcom_submit_name = $humo_option["gedcom_submit_name"];
+}
+$gedcom_submit_address = $humo_option["gedcom_submit_address"];
+$gedcom_submit_country = $humo_option["gedcom_submit_country"];
+$gedcom_submit_mail = $humo_option["gedcom_submit_mail"];
 ?>
 
 <h1 class="center"><?= __('GEDCOM file export'); ?></h1>
@@ -49,487 +82,18 @@ $noteids = array();
 <?= __('A GEDCOM file is only usefull to exchange genealogical data with other genealogical programs.'); ?><br>
 <?= __('Use "Database backup" for a proper backup.'); ?><br><br>
 
-<form method="POST" id="aform" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-    <table class="humo">
-        <tr class="table_header">
-            <th colspan="2"><?= __('Select family tree to export and click "Start export"'); ?></th>
-        <tr>
-            <td><?= __('Choose family tree to export'); ?></td>
-            <td>
-                <?php
-                $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-                $tree_result = $dbh->query($tree_sql);
-                $onchange = '';
-                if ($export["part_tree"] == 'part') {
-                    // we have to refresh so that the persons to choose from will belong to this tree!
-                    echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
-                    $onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
-                }
-                ?>
-                <select <?= $onchange; ?> size="1" name="tree_id">
-                    <?php
-                    while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-                        $treetext = show_tree_text($treeDb->tree_id, $selected_language);
-                        if ($treeDb->tree_id == $tree_id) {
-                            // *** Needed for submitter ***
-                            $tree_owner = $treeDb->tree_owner;
-                            $db_functions->set_tree_id($tree_id);
-                        }
-                    ?>
-                        <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= @$treetext['name']; ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-        </tr>
+<?php
+// *** Show processed lines ***
+if (isset($_POST['submit_button'])) {
+    $line_nr = 0;
+    $line_counter = 500;  // Count down
+?>
+    <div class="alert alert-success">
+        <!--<strong>Success!</strong> Indicates a successful or positive action. -->
+        <div id="information" style="display: inline;"></div>
+    </div>
+<?php } ?>
 
-        <tr>
-            <td><?= __('Whole tree or part:'); ?></td>
-            <td>
-                <input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" <?= $export["part_tree"] == "part" ? '' : 'checked'; ?>><?= __('Whole tree:'); ?><br>
-                <input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" <?= $export["part_tree"] == "part" ? 'checked' : ''; ?>><?= __('Partial tree:'); ?>
-            </td>
-        </tr>
-
-        <?php if ($export["part_tree"] == "part") { ?>
-            <tr>
-                <td><?= __('Choose person:'); ?></td>
-                <td>
-                    <?php
-                    // *** Select person ***
-                    $search_quicksearch = '';
-                    $search_id = '';
-                    if (isset($_POST["search_quicksearch"])) {
-                        $search_quicksearch = safe_text_db($_POST['search_quicksearch']);
-                        $_SESSION['admin_search_quicksearch'] = $search_quicksearch;
-                        $_SESSION['admin_search_id'] = '';
-                        $search_id = '';
-                    }
-                    if (isset($_SESSION['admin_search_quicksearch'])) {
-                        $search_quicksearch = $_SESSION['admin_search_quicksearch'];
-                    }
-
-                    if (isset($_POST["search_id"]) and (!isset($_POST["search_quicksearch"]) or $_POST["search_quicksearch"] == '')) {
-                        // if both name and ID given go by name
-                        $search_id = safe_text_db($_POST['search_id']);
-                        $_SESSION['admin_search_id'] = $search_id;
-                        $_SESSION['admin_search_quicksearch'] = '';
-                        $search_quicksearch = '';
-                    }
-                    if (isset($_SESSION['admin_search_id'])) {
-                        $search_id = $_SESSION['admin_search_id'];
-                    }
-                    ?>
-
-                    <!-- Search persons firstname/ lastname -->
-                    <?= __('Person'); ?>:
-                    <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15">
-                    <?= __('or ID:'); ?> <input type="text" name="search_id" value="<?= $search_id; ?>" size="8">
-                    <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary"><br>
-
-                    <?php
-                    unset($person_result);
-
-                    $idsearch = false; // flag for search with ID;
-                    if ($search_quicksearch != '') {
-                        // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-                        $search_quicksearch = str_replace(' ', '%', $search_quicksearch);
-
-                        // *** In case someone entered "Mons, Huub" using a comma ***
-                        $search_quicksearch = str_replace(',', '', $search_quicksearch);
-
-                        $person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "'
-                            AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch%'
-                            OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch%' 
-                            OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch%' 
-                            OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch%')
-                            ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
-                        $person_result = $dbh->query($person_qry);
-                    } elseif ($search_id != '') {
-                        if (substr($search_id, 0, 1) != "i" and substr($search_id, 0, 1) != "I") {
-                            $search_id = "I" . $search_id;
-                        } //make entry "48" into "I48"
-                        $person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $search_id . "'";
-                        $person_result = $dbh->query($person_qry);
-                        $idsearch = true;
-                    } else {
-                        $person_qry = "SELECT pers_tree_id, pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' LIMIT 0,1";
-                        $person_result = $dbh->query($person_qry);
-                    }
-
-                    $pers_gedcomnumber = '';
-                    if (isset($_POST['person']) and $_POST['flag_newtree'] != '1') {
-                        $pers_gedcomnumber = $_POST['person'];
-                    }
-
-                    ?>
-                    <select size="1" name="person" style="width: 300px">
-                        <?php
-                        while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                            $selected = '';
-                            if (isset($pers_gedcomnumber)) {
-                                if ($person->pers_gedcomnumber == $pers_gedcomnumber) {
-                                    $selected = ' selected';
-                                }
-                            }
-                            $prefix2 = " " . strtolower(str_replace("_", " ", $person->pers_prefix));
-                        ?>
-                            <option value="<?= $person->pers_gedcomnumber; ?>" <?= $selected; ?>>
-                                <?= $person->pers_lastname; ?>, <?= $person->pers_firstname . $prefix2; ?> [<?= $person->pers_gedcomnumber; ?>]
-                            </option>
-                        <?php
-                        }
-                        ?>
-                    </select>
-                </td>
-            <tr>
-
-            <tr>
-                <td><?= __('Number of generations to export:'); ?></td>
-                <td>
-                    <select size="1" name="generations" style="width:80px">
-                        <option value="50"><?= __('All'); ?></option>
-                        <?php
-                        for ($i = 1; $i < 20; $i++) {
-                            $selected = '';
-                            if (isset($_POST['generations']) and $_POST['generations'] == $i) {
-                                $selected = " selected ";
-                            }
-                        ?>
-                            <option value="<?= $i; ?>" <?= $selected; ?>><?= ($i + 1); ?></option>
-                        <?php } ?>
-                    </select>
-                </td>
-            </tr>
-
-            <!-- PMB - start of check buttons for options -->
-            <tr>
-                <td><?= __('Choose type of export:'); ?></td>
-                <td>
-                    <?php
-                    $checked = ' checked ';
-                    if (isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") $checked = '';
-                    ?>
-                    <input type="radio" value="descendant" name="kind_tree" <?= $checked; ?>><?= __('Descendants'); ?><br>
-
-                    <?php
-                    $checked = ' checked ';
-                    if (isset($_POST['kind_tree']) and !isset($_POST['desc_spouses'])) $checked = '';
-                    ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_spouses" value="1" <?= $checked; ?>><?= __('Include spouses of descendants'); ?><br>
-
-                    <?php
-                    $checked = '';
-                    if (isset($_POST['desc_sp_parents'])) $checked = ' checked ';
-                    ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_sp_parents" value="1" <?= $checked; ?>><?= __('Include parents of spouses'); ?><br>
-
-                    <?php
-                    $checked = '';
-                    if (isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") $checked = ' checked ';
-                    ?>
-                    <input type="radio" value="ancestor" name="kind_tree" <?= $checked; ?>><?= __('Ancestors'); ?><br>
-
-                    <?php
-                    $checked = ' checked ';
-                    if (isset($_POST['kind_tree']) and !isset($_POST['ances_spouses'])) $checked = '';
-                    ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_spouses" value="1" <?= $checked; ?>><?= __('Include spouse(s) of base person'); ?><br>
-
-                    <?php
-                    $checked = '';
-                    if (isset($_POST['ances_sibbl'])) $checked = ' checked ';
-                    ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_sibbl" value="1" <?= $checked; ?>><?= __('Include sibblings of ancestors and base person'); ?>
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** GEDCOM submitter/ GEDCOM inzender ***
-        /* Full example, if all items were used:
-        0 @SUBMITTER@ SUBM
-        1 NAME Firstname Lastname
-        1 ADDR Submitter address line 1
-        2 CONT Submitter address line 2
-        2 ADR1 Submitter address line 1
-        2 ADR2 Submitter address line 2
-        2 CITY Submitter address city
-        2 STAE Submitter address state
-        2 POST Submitter address ZIP code
-        2 CTRY Submitter address country
-        1 PHON Submitter phone number 1
-        1 PHON Submitter phone number 2
-        1 PHON Submitter phone number 3 (last one!)
-        1 LANG English
-        1 OBJE
-        2 FORM jpeg
-        2 TITL Submitter Multimedia File
-        2 FILE ImgFile.JPG
-        2 NOTE @N1@
-        1 RFN Submitter Registered RFN
-        1 RIN 1
-        1 CHAN
-        2 DATE 7 Sep 2000
-        3 TIME 8:35:36
-        */
-
-        // *** Update submitter data ***
-        if (isset($_POST['gedcom_submit_name'])) {
-            $result = $db_functions->update_settings('gedcom_submit_name', $_POST["gedcom_submit_name"]);
-            $result = $db_functions->update_settings('gedcom_submit_address', $_POST["gedcom_submit_address"]);
-            $result = $db_functions->update_settings('gedcom_submit_country', $_POST["gedcom_submit_country"]);
-            $result = $db_functions->update_settings('gedcom_submit_mail', $_POST["gedcom_submit_mail"]);
-
-            // *** Re-read variables after changing them ***
-            // *** Don't use include_once! Otherwise the old value will be shown ***
-            include(__DIR__ . "/../../include/settings_global.php"); //variables
-        }
-
-        $gedcom_submit_name = '';
-        if ($tree_owner) $gedcom_submit_name = $tree_owner;
-        if ($humo_option["gedcom_submit_name"] != '') $gedcom_submit_name = $humo_option["gedcom_submit_name"];
-        $gedcom_submit_address = $humo_option["gedcom_submit_address"];
-        $gedcom_submit_country = $humo_option["gedcom_submit_country"];
-        $gedcom_submit_mail = $humo_option["gedcom_submit_mail"];
-        ?>
-        <tr class="table_header">
-            <th colspan="2"><?= __('GEDCOM submitter'); ?></th>
-        </tr>
-        <tr>
-            <td><?= __('Name'); ?></td>
-            <td>
-                <input type="text" name="gedcom_submit_name" value="<?= $gedcom_submit_name; ?>" size="35" placeholder="<?= __('Name'); ?>">
-            </td>
-        </tr>
-        <tr>
-            <td><?= __('Address'); ?></td>
-            <td>
-                <input type="text" name="gedcom_submit_address" value="<?= $gedcom_submit_address; ?>" size="35" placeholder="<?= __('Address'); ?>">
-            </td>
-        </tr>
-        <tr>
-            <td><?= __('Country'); ?></td>
-            <td>
-                <input type="text" name="gedcom_submit_country" value="<?= $gedcom_submit_country; ?>" size="35" placeholder="<?= __('Country'); ?>">
-            </td>
-        </tr>
-        <tr>
-            <td><?= __('E-mail'); ?></td>
-            <td>
-                <!-- Using HTML5 mail validation -->
-                <input type="email" name="gedcom_submit_mail" value="<?= $gedcom_submit_mail; ?>" size="35" placeholder="<?= __('E-mail'); ?>">
-            </td>
-        </tr>
-
-        <tr class="table_header">
-            <th colspan="2"><?= __('Settings'); ?></th>
-        </tr>
-
-        <?php
-        $selected = '';
-        if (isset($_POST['gedcom_version']) and $_POST['gedcom_version'] == '70') {
-            $selected = ' selected';
-
-            // *** GEDCOM 7.0 is selected, always use UTF-8 character set ***
-            $_POST['gedcom_char_set'] = 'UTF-8';
-        }
-        ?>
-        <tr>
-            <td><?= __('GEDCOM version'); ?></td>
-            <td>
-                <select size="1" name="gedcom_version">
-                    <option value="551"><?= __('GEDCOM 5.5.1'); ?></option>
-                    <option value="70" <?= $selected; ?> disabled><?= __('GEDCOM 7.0'); ?></option>
-                </select>
-                GEDCOM 7.0 export: under construction!
-            </td>
-        </tr>
-
-        <tr>
-            <td><?= __('Character set'); ?></td>
-            <td>
-                <select size="1" name="gedcom_char_set">
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'UTF-8') {
-                        $selected = ' selected';
-                    }
-                    ?>
-                    <option value="UTF-8" <?= $selected; ?>><?= __('UTF-8 (recommended character set)'); ?></option>
-
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ANSI') {
-                        $selected = ' selected';
-                    }
-                    ?>
-                    <option value="ANSI" <?= $selected; ?>>ANSI</option>
-
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ASCII') {
-                        $selected = ' selected';
-                    }
-                    ?>
-                    <option value="ASCII" <?= $selected; ?>>ASCII</option>
-                </select>
-                <?= __('GEDCOM 7.0 always uses the UTF-8 character set.'); ?>
-            </td>
-        </tr>
-
-        <tr>
-            <td><?= __('Export type'); ?></td>
-            <td>
-                <?php
-                // PMB - select whether 'normal' or 'minimal' export
-                // this uses the same style as the 'All' or 'Individual' selector
-                // 'normal' will show the dropdowns for 'text' and 'sources'
-                // 'minimal' will be used in the export to 'turn off' extra info being included
-                $checked = ' checked ';
-                if (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") $checked = '';
-                ?>
-                <input type="radio" onClick="javascript:this.form.submit();" value="normal" name="export_type" <?= $checked; ?>> <?= __('Normal'); ?><br>
-
-                <?php
-                $checked = '';
-                if (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") $checked = ' checked ';
-                ?>
-                <input type="radio" onClick="javascript:this.form.submit();" value="minimal" name="export_type" <?= $checked; ?>> <?= __('Minimal'); ?>
-            </td>
-        </tr>
-
-        <?php
-        // PMB - Start of dropdowns for 'Normal' export options
-        // We need to set the default though for the opening form or the dropdowns don't appear...
-        if (isset($_POST['export_type'])) {
-            $export_type = $_POST['export_type'];
-        } else {
-            $export_type = 'normal';
-        }
-
-        if ($export_type == 'normal') {
-        ?>
-            <!-- GEDCOM Texts -->
-            <tr>
-                <td><?= __('Export texts'); ?></td>
-                <td>
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_texts']) and $_POST['gedcom_texts'] == 'no') {
-                        $selected = ' selected';
-                    }
-                    ?>
-                    <select size="1" name="gedcom_texts">
-                        <option value="yes"><?= __('Yes'); ?></option>
-                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
-                    </select>
-                </td>
-            </tr>
-
-            <!-- GEDCOM Sources -->
-            <tr>
-                <td><?= __('Export sources'); ?></td>
-                <td>
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_sources']) and $_POST['gedcom_sources'] == 'no') {
-                        $selected = ' selected';
-                    }
-                    ?>
-                    <select size="1" name="gedcom_sources">
-                        <option value="yes"><?= __('Yes'); ?></option>
-                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
-                    </select>
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** Check if geo_location table exists ***
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-        if ($temp->rowCount() > 0) {
-            $selected = '';
-            if (isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'no') {
-                $selected = ' selected';
-            }
-        ?>
-            <tr>
-                <td><?= __('Export longitude & latitude by places'); ?></td>
-                <td>
-                    <select size="1" name="gedcom_geocode">
-                        <option value="yes"><?= __('Yes'); ?></option>
-                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
-                    </select>
-                </td>
-            </tr>
-        <?php
-        }
-
-        // Can _LOC tag be used in GEDCOM 7.x?
-        // *** Shared addresses are not GEDCOM compatible. Add an option for export ***
-        ?>
-        <tr>
-            <td><?= __('Shared addresses'); ?></td>
-            <td>
-                <?php
-                $sql = "SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1' LIMIT 0,1";
-                $address = $dbh->query($sql);
-                if ($address->rowCount() > 0) {
-                    $selected = '';
-                    if (isset($_POST['gedcom_shared_addresses']) and $_POST['gedcom_shared_addresses'] == 'standard') {
-                        $selected = ' selected';
-                    }
-                ?>
-                    <select size="1" name="gedcom_shared_addresses">
-                        <option value="non_standard"><?= __('Export shared addresses'); ?></option>
-                        <option value="standard" <?= $selected; ?>><?= __('Convert all shared addresses as single addresses'); ?></option>
-                    </select><br>
-                <?php
-                    echo __('"Shared addresses" is <b>only compatible</b> with HuMo-genealogy and Haza-21 programs.<br>
-Other programs: convert shared addresses. The "shared address" option will be lost.');
-                } else {
-                    echo __('There are no shared addresses, standard GEDCOM export is used.');
-                }
-                ?>
-            </td>
-        </tr>
-
-        <tr>
-            <td><?= __('Show export status'); ?></td>
-            <td>
-                <?php
-                $selected = '';
-                if (isset($_POST['gedcom_status']) and $_POST['gedcom_status'] == 'yes') {
-                    $selected = ' selected';
-                }
-                ?>
-                <select size="1" name="gedcom_status">
-                    <option value="no"><?= __('No'); ?></option>
-                    <option value="yes" <?= $selected; ?>><?= __('Yes'); ?></option>
-                </select>
-            </td>
-        </tr>
-
-        <tr>
-            <td><?= __('GEDCOM export'); ?></td>
-            <td>
-                <input type="submit" name="submit_button" value="<?= __('Start export'); ?>" class="btn btn-sm btn-success">
-                <?php
-                // *** Show processed lines ***
-                if (isset($_POST['submit_button'])) {
-                    $line_nr = 0;
-                    $line_counter = 500;  // Count down
-                }
-                ?>
-                <div id="information" style="display: inline;"></div> <?= __('Processed lines...'); ?>
-            </td>
-        </tr>
-    </table>
-</form>
 
 <?php
 if (isset($tree_id) and isset($_POST['submit_button'])) {
@@ -538,7 +102,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         // map descendants
         $desc_fams = '';
         $desc_pers = $_POST['person'];
-        $max_gens = $_POST['generations'];
+        $max_gens = $_POST['nr_generations'];
 
         $fam_search = $dbh->query("SELECT pers_fams, pers_famc
             FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $desc_pers . "'");
@@ -557,24 +121,36 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
     if ($export["part_tree"] == 'part' and isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") {
         // map ancestors
         $anc_pers = $_POST['person'];
-        $max_gens = $_POST['generations'] + 2;
+        $max_gens = $_POST['nr_generations'] + 2;
         ancestors($anc_pers, $max_gens);
     }
 
     echo '<p>' . __('GEDCOM file will be exported to gedcom_files/ folder') . '<br>';
     $gedcom_version = '551';
-    if (isset($_POST['gedcom_version'])) $gedcom_version = $_POST['gedcom_version'];
+    if (isset($_POST['gedcom_version'])) {
+        $gedcom_version = $_POST['gedcom_version'];
+    }
+
     $gedcom_char_set = '';
-    if (isset($_POST['gedcom_char_set'])) $gedcom_char_set = $_POST['gedcom_char_set'];
+    if (isset($_POST['gedcom_char_set'])) {
+        $gedcom_char_set = $_POST['gedcom_char_set'];
+    }
 
     // PMB our minimal option
     $gedcom_minimal = '';
-    if (isset($_POST['gedcom_minimal'])) $gedcom_minimal = $_POST['gedcom_minimal'];
+    if (isset($_POST['gedcom_minimal'])) {
+        $gedcom_minimal = $_POST['gedcom_minimal'];
+    }
 
     $gedcom_texts = '';
-    if (isset($_POST['gedcom_texts'])) $gedcom_texts = $_POST['gedcom_texts'];
+    if (isset($_POST['gedcom_texts'])) {
+        $gedcom_texts = $_POST['gedcom_texts'];
+    }
+
     $gedcom_sources = '';
-    if (isset($_POST['gedcom_sources'])) $gedcom_sources = $_POST['gedcom_sources'];
+    if (isset($_POST['gedcom_sources'])) {
+        $gedcom_sources = $_POST['gedcom_sources'];
+    }
     $fh = fopen($export['path'] . $export['file_name'], 'w') or die("<b>ERROR: no permission to open a new file! Please check permissions of admin/gedcom_files folder!</b>");
 
     // *** GEDCOM header ***
@@ -594,9 +170,13 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         $buffer .= "2 VERS 5.5.1\r\n";
         $buffer .= "2 FORM Lineage-Linked\r\n";
 
-        if ($gedcom_char_set == 'UTF-8') $buffer .= "1 CHAR UTF-8\r\n";
-        elseif ($gedcom_char_set == 'ANSI') $buffer .= "1 CHAR ANSI\r\n";
-        else $buffer .= "1 CHAR ASCII\r\n";
+        if ($gedcom_char_set == 'UTF-8') {
+            $buffer .= "1 CHAR UTF-8\r\n";
+        } elseif ($gedcom_char_set == 'ANSI') {
+            $buffer .= "1 CHAR ANSI\r\n";
+        } else {
+            $buffer .= "1 CHAR ASCII\r\n";
+        }
     } else {
         // *** GEDCOM 7.0 ***
         /*
@@ -624,18 +204,20 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
     // 1 NAME Huub Mons
     // 1 ADDR address
     $buffer .= "0 @S1@ SUBM\r\n";
-    if ($tree_owner)
+    if ($tree_owner) {
         $buffer .= "1 NAME " . $gedcom_submit_name . "\r\n";
-    else
+    } else {
         $buffer .= "1 NAME Unknown\r\n";
+    }
 
     if ($gedcom_submit_address != '') {
         $buffer .= "1 ADDR " . $gedcom_submit_address . "\r\n";
         if ($gedcom_submit_country != '') $buffer .= "2 CTRY " . $gedcom_submit_country . "\r\n";
     }
 
-    if ($gedcom_submit_mail != '')
+    if ($gedcom_submit_mail != '') {
         $buffer .= "1 EMAIL " . $gedcom_submit_mail . "\r\n";
+    }
 
     fwrite($fh, $buffer);
     //$buffer = str_replace("\n", "<br>", $buffer);
@@ -697,7 +279,10 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         // *** Name, add a space after first name if first name is present ***
         // 1 NAME Firstname /Lastname/
         $buffer .= '1 NAME ' . $person->pers_firstname;
-        if ($person->pers_firstname) $buffer .= ' '; // add a space after first name if first name is present
+        if ($person->pers_firstname) {
+            // add a space after first name if first name is present
+            $buffer .= ' ';
+        }
         $buffer .= '/' . str_replace("_", " ", $person->pers_prefix);
         $buffer .= $person->pers_lastname . "/\r\n";
 
@@ -738,7 +323,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         }
         // PMB end of if 'minimal' option selected don't export this
 
-        if ($person->pers_patronym) $buffer .= '1 _PATR ' . $person->pers_patronym . "\r\n";
+        if ($person->pers_patronym) {
+            $buffer .= '1 _PATR ' . $person->pers_patronym . "\r\n";
+        }
 
         // *** Sex ***
         $buffer .= '1 SEX ' . $person->pers_sexe . "\r\n";
@@ -829,12 +416,18 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             // PMB if 'minimal' option selected don't export this
             if ($_POST['export_type'] == 'normal') {
 
-                if ($gedcom_sources == 'yes')
+                if ($gedcom_sources == 'yes') {
                     sources_export('person', 'pers_death_source', $person->pers_gedcomnumber, 2);
-                if ($gedcom_texts == 'yes' and $person->pers_death_text)
+                }
+                if ($gedcom_texts == 'yes' and $person->pers_death_text) {
                     $buffer .= '2 NOTE ' . process_text(3, $person->pers_death_text);
-                if ($person->pers_death_cause) $buffer .= '2 CAUS ' . $person->pers_death_cause . "\r\n";
-                if ($person->pers_death_age) $buffer .= '2 AGE ' . $person->pers_death_age . "\r\n";
+                }
+                if ($person->pers_death_cause) {
+                    $buffer .= '2 CAUS ' . $person->pers_death_cause . "\r\n";
+                }
+                if ($person->pers_death_age) {
+                    $buffer .= '2 AGE ' . $person->pers_death_age . "\r\n";
+                }
 
                 // *** Remark: only exported if there is another baptism item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
@@ -857,14 +450,24 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             // PMB if 'minimal' option selected don't export this
             if ($_POST['export_type'] == 'normal') {
 
-                if ($gedcom_sources == 'yes')
+                if ($gedcom_sources == 'yes') {
                     sources_export('person', 'pers_buried_source', $person->pers_gedcomnumber, 2);
-                if ($gedcom_texts == 'yes' and $person->pers_buried_text)
+                }
+                if ($gedcom_texts == 'yes' and $person->pers_buried_text) {
                     $buffer .= '2 NOTE ' . process_text(3, $person->pers_buried_text);
-                if ($person->pers_cremation == '1') $buffer .= '2 TYPE cremation' . "\r\n";
-                if ($person->pers_cremation == 'R') $buffer .= '2 TYPE resomated' . "\r\n";
-                if ($person->pers_cremation == 'S') $buffer .= '2 TYPE sailor\'s grave' . "\r\n";
-                if ($person->pers_cremation == 'D') $buffer .= '2 TYPE donated to science' . "\r\n";
+                }
+                if ($person->pers_cremation == '1') {
+                    $buffer .= '2 TYPE cremation' . "\r\n";
+                }
+                if ($person->pers_cremation == 'R') {
+                    $buffer .= '2 TYPE resomated' . "\r\n";
+                }
+                if ($person->pers_cremation == 'S') {
+                    $buffer .= '2 TYPE sailor\'s grave' . "\r\n";
+                }
+                if ($person->pers_cremation == 'D') {
+                    $buffer .= '2 TYPE donated to science' . "\r\n";
+                }
 
                 // *** Remark: only exported if there is another baptism item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
@@ -892,8 +495,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             while ($professionDb = $professionqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= '1 OCCU ' . $professionDb->event_event . "\r\n";
 
-                if ($professionDb->event_date) $buffer .= '2 DATE ' . process_date($professionDb->event_date) . "\r\n";
-                if ($professionDb->event_place) $buffer .= '2 PLAC ' . $professionDb->event_place . "\r\n";
+                if ($professionDb->event_date) {
+                    $buffer .= '2 DATE ' . process_date($professionDb->event_date) . "\r\n";
+                }
+                if ($professionDb->event_place) {
+                    $buffer .= '2 PLAC ' . $professionDb->event_place . "\r\n";
+                }
                 if ($gedcom_texts == 'yes' and $professionDb->event_text) {
                     $buffer .= '2 NOTE ' . process_text(3, $professionDb->event_text);
                 }
@@ -911,8 +518,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             while ($professionDb = $professionqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= '1 RELI ' . $professionDb->event_event . "\r\n";
 
-                if ($professionDb->event_date) $buffer .= '2 DATE ' . process_date($professionDb->event_date) . "\r\n";
-                if ($professionDb->event_place) $buffer .= '2 PLAC ' . $professionDb->event_place . "\r\n";
+                if ($professionDb->event_date) {
+                    $buffer .= '2 DATE ' . process_date($professionDb->event_date) . "\r\n";
+                }
+                if ($professionDb->event_place) {
+                    $buffer .= '2 PLAC ' . $professionDb->event_place . "\r\n";
+                }
                 if ($gedcom_texts == 'yes' and $professionDb->event_text) {
                     $buffer .= '2 NOTE ' . process_text(3, $professionDb->event_text);
                 }
@@ -1178,11 +789,19 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 if ($process_event2) {
                     $buffer .= $event_gedcom;
                     // *** Add text behind GEDCOM tag ***
-                    if ($eventDb->event_event) $buffer .= ' ' . $eventDb->event_event;
+                    if ($eventDb->event_event) {
+                        $buffer .= ' ' . $eventDb->event_event;
+                    }
                     $buffer .= "\r\n";
-                    if ($eventDb->event_text) $buffer .= '2 NOTE ' . process_text(3, $eventDb->event_text);
-                    if ($eventDb->event_date) $buffer .= '2 DATE ' . process_date($eventDb->event_date) . "\r\n";
-                    if ($eventDb->event_place) $buffer .= '2 PLAC ' . $eventDb->event_place . "\r\n";
+                    if ($eventDb->event_text) {
+                        $buffer .= '2 NOTE ' . process_text(3, $eventDb->event_text);
+                    }
+                    if ($eventDb->event_date) {
+                        $buffer .= '2 DATE ' . process_date($eventDb->event_date) . "\r\n";
+                    }
+                    if ($eventDb->event_place) {
+                        $buffer .= '2 PLAC ' . $eventDb->event_place . "\r\n";
+                    }
                 }
 
                 // *** Source ***
@@ -1264,7 +883,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         // *** Update processed lines ***
         //if ($line_counter==0){
         echo '<script>';
-        echo 'document.getElementById("information").innerHTML="' . $line_nr . '";';
+        echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
         $line_nr++;
         echo '</script>';
         // This is for the buffer achieve the minimum size in order to flush data
@@ -1339,7 +958,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             $buffer .= "1 _LIV\r\n";
 
             // *** Relation start date ***
-            if ($family->fam_relation_date) $buffer .= '2 DATE ' . process_date($family->fam_relation_date) . "\r\n";
+            if ($family->fam_relation_date) {
+                $buffer .= '2 DATE ' . process_date($family->fam_relation_date) . "\r\n";
+            }
 
             // *** Relation end date ***
             // How to export this date?
@@ -1441,8 +1062,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 if ($gedcom_sources == 'yes') {
                     sources_export('family', 'fam_marr_source', $family->fam_gedcomnumber, 2);
                 }
-                if ($family->fam_man_age) $buffer .= "2 HUSB\r\n3 AGE " . $family->fam_man_age . "\r\n";
-                if ($family->fam_woman_age) $buffer .= "2 WIFE\r\n3 AGE " . $family->fam_woman_age . "\r\n";
+                if ($family->fam_man_age) {
+                    $buffer .= "2 HUSB\r\n3 AGE " . $family->fam_man_age . "\r\n";
+                }
+                if ($family->fam_woman_age) {
+                    $buffer .= "2 WIFE\r\n3 AGE " . $family->fam_woman_age . "\r\n";
+                }
                 if ($gedcom_texts == 'yes' and $family->fam_marr_text) {
                     $buffer .= '2 NOTE ' . process_text(3, $family->fam_marr_text);
                 }
@@ -1543,7 +1168,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 $buffer .= "1 OBJE\r\n";
                 $buffer .= "2 FORM jpg\r\n";
                 $buffer .= '2 FILE ' . $sourceDb->event_event . "\r\n";
-                if ($sourceDb->event_date) $buffer .= '2 DATE ' . process_date($sourceDb->event_date) . "\r\n";
+                if ($sourceDb->event_date) {
+                    $buffer .= '2 DATE ' . process_date($sourceDb->event_date) . "\r\n";
+                }
 
                 if ($gedcom_texts == 'yes' and $sourceDb->event_text) {
                     $buffer .= '2 NOTE ' . process_text(3, $sourceDb->event_text);
@@ -1642,7 +1269,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
         // *** Update processed lines ***
         echo '<script>';
-        echo 'document.getElementById("information").innerHTML="' . $line_nr . '";';
+        echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
         $line_nr++;
         echo '</script>';
         // This is for the buffer achieve the minimum size in order to flush data
@@ -1819,7 +1446,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     $buffer .= "1 OBJE\r\n";
                     $buffer .= "2 FORM jpg\r\n";
                     $buffer .= '2 FILE ' . $sourceDb->event_event . "\r\n";
-                    if ($sourceDb->event_date) $buffer .= '2 DATE ' . process_date($sourceDb->event_date) . "\r\n";
+                    if ($sourceDb->event_date) {
+                        $buffer .= '2 DATE ' . process_date($sourceDb->event_date) . "\r\n";
+                    }
 
                     if ($gedcom_texts == 'yes' and $sourceDb->event_text) {
                         $buffer .= '2 NOTE ' . process_text(3, $sourceDb->event_text);
@@ -1850,7 +1479,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // *** Update processed lines ***
                 echo '<script>';
-                echo 'document.getElementById("information").innerHTML="' . $line_nr . '";';
+                echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
                 $line_nr++;
                 echo '</script>';
                 // This is for the buffer achieve the minimum size in order to flush data
@@ -1913,7 +1542,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // *** Update processed lines ***
                 echo '<script>';
-                echo 'document.getElementById("information").innerHTML="' . $line_nr . '";';
+                echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
                 $line_nr++;
                 echo '</script>';
                 // This is for the buffer achieve the minimum size in order to flush data
@@ -1935,9 +1564,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         $export_addresses = true;
         if (isset($_POST['gedcom_shared_addresses']) and $_POST['gedcom_shared_addresses'] == 'standard') $export_addresses = false;
         if ($export_addresses) {
-            $family_qry = $dbh->query("SELECT * FROM humo_addresses
-                WHERE address_tree_id='" . $tree_id . "'
-                AND address_shared='1'");
+            $family_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'");
             while ($family = $family_qry->fetch(PDO::FETCH_OBJ)) {
                 // 0 @R1@ RESI *** Gedcomnumber ***
                 $buffer = '0 @' . $family->address_gedcomnr . "@ RESI\r\n";
@@ -1986,8 +1613,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             $buffer = '';
             natsort($noteids);
             foreach ($noteids as $s) {
-                $text_query = "SELECT * FROM humo_texts
-                    WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($s, 1, -1) . "'";
+                $text_query = "SELECT * FROM humo_texts WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($s, 1, -1) . "'";
                 $text_sql = $dbh->query($text_query);
                 while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
                     $buffer .= "0 " . $s . " NOTE\r\n";
@@ -2012,7 +1638,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Update processed lines ***
             echo '<script>';
-            echo 'document.getElementById("information").innerHTML="' . $line_nr . '";';
+            echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
             $line_nr++;
             echo '</script>';
             // This is for the buffer achieve the minimum size in order to flush data
@@ -2032,14 +1658,491 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
     <form method="POST" action="include/gedcom_download.php" target="_blank">
         <input type="hidden" name="page" value="<?= $page; ?>">
-        <input type="hidden" name="file_name" value="<?= $export['path']; ?>">
+        <input type="hidden" name="file_name" value="<?= $export['path'] . $export['file_name']; ?>">
         <input type="hidden" name="file_name_short" value="<?= $export['file_name']; ?>">
-        <input type="submit" name="something" value="<?= __('Download GEDCOM file'); ?>">
+        <input type="submit" name="something" value="<?= __('Download GEDCOM file'); ?>" class="btn btn-sm btn-success">
     </form><br>
 
-<?php
-} // end of tree
+<?php } ?>
 
+
+
+<!-- <form method="POST" id="aform" action="index.php" style="display : inline;"> -->
+<form method="POST" id="gedcom_export" action="index.php">
+    <input type="hidden" name="page" value="<?= $page; ?>">
+
+    <div class="p-3 my-md-2 genealogy_search container-md">
+        <div class="row mb-2 p-2 bg-primary-subtle">
+            <div class="col-md-7"><?= __('Select family tree to export and click "Start export"'); ?></div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Choose family tree to export'); ?></div>
+
+            <div class="col-md-4">
+                <?php
+                $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+                $tree_result = $dbh->query($tree_sql);
+                if ($export["part_tree"] == 'part') {
+                    // we have to refresh so that the persons to choose from will belong to this tree!
+                    echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
+                }
+                ?>
+                <select <?= $export["part_tree"] == 'part' ? ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ' : ''; ?> size="1" name="tree_id" class="form-select form-select-sm">
+                    <?php
+                    while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
+                        $treetext = show_tree_text($treeDb->tree_id, $selected_language);
+                    ?>
+                        <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= @$treetext['name']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Whole tree or part:'); ?></div>
+            <div class="col-md-4">
+                <input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" <?= $export["part_tree"] == "part" ? '' : 'checked'; ?> class="form-check-input"> <?= __('Whole tree:'); ?><br>
+                <input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" <?= $export["part_tree"] == "part" ? 'checked' : ''; ?> class="form-check-input"> <?= __('Partial tree:'); ?>
+            </div>
+        </div>
+
+        <?php if ($export["part_tree"] == "part") { ?>
+            <?php
+            // *** Select person ***
+            $search_quicksearch = '';
+            $search_id = '';
+            if (isset($_POST["search_quicksearch"])) {
+                $search_quicksearch = safe_text_db($_POST['search_quicksearch']);
+                $_SESSION['admin_search_quicksearch'] = $search_quicksearch;
+                $_SESSION['admin_search_id'] = '';
+                $search_id = '';
+            }
+            if (isset($_SESSION['admin_search_quicksearch'])) {
+                $search_quicksearch = $_SESSION['admin_search_quicksearch'];
+            }
+
+            if (isset($_POST["search_id"]) and (!isset($_POST["search_quicksearch"]) or $_POST["search_quicksearch"] == '')) {
+                // if both name and ID given go by name
+                $search_id = safe_text_db($_POST['search_id']);
+                $_SESSION['admin_search_id'] = $search_id;
+                $_SESSION['admin_search_quicksearch'] = '';
+                $search_quicksearch = '';
+            }
+            if (isset($_SESSION['admin_search_id'])) {
+                $search_id = $_SESSION['admin_search_id'];
+            }
+            ?>
+
+            <div class="row mb-2">
+                <div class="col-md-4"><?= __('Choose person:'); ?></div>
+                <div class="col-md-4">
+                    <!-- Search persons firstname/ lastname -->
+                    <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15" class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <?= __('or ID:'); ?><br>
+                    <input type="text" name="search_id" value="<?= $search_id; ?>" size="8" class="form-control form-control-sm">
+                    <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <?php
+                    unset($person_result);
+
+                    $idsearch = false; // flag for search with ID;
+                    if ($search_quicksearch != '') {
+                        // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
+                        $search_quicksearch = str_replace(' ', '%', $search_quicksearch);
+
+                        // *** In case someone entered "Mons, Huub" using a comma ***
+                        $search_quicksearch = str_replace(',', '', $search_quicksearch);
+
+                        $person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
+                            WHERE pers_tree_id='" . $tree_id . "'
+                            AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch%'
+                            OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch%' 
+                            OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch%' 
+                            OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch%')
+                            ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
+                        $person_result = $dbh->query($person_qry);
+                    } elseif ($search_id != '') {
+                        if (substr($search_id, 0, 1) != "i" and substr($search_id, 0, 1) != "I") {
+                            $search_id = "I" . $search_id;
+                        } //make entry "48" into "I48"
+                        $person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
+                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $search_id . "'";
+                        $person_result = $dbh->query($person_qry);
+                        $idsearch = true;
+                    } else {
+                        $person_qry = "SELECT pers_tree_id, pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
+                            WHERE pers_tree_id='" . $tree_id . "' LIMIT 0,1";
+                        $person_result = $dbh->query($person_qry);
+                    }
+
+                    $pers_gedcomnumber = '';
+                    if (isset($_POST['person']) and $_POST['flag_newtree'] != '1') {
+                        $pers_gedcomnumber = $_POST['person'];
+                    }
+                    ?>
+
+                    <select size="1" name="person" class="form-select form-select-sm">
+                        <?php
+                        while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
+                            $selected = '';
+                            if (isset($pers_gedcomnumber)) {
+                                if ($person->pers_gedcomnumber == $pers_gedcomnumber) {
+                                    $selected = ' selected';
+                                }
+                            }
+                            $prefix2 = " " . strtolower(str_replace("_", " ", $person->pers_prefix));
+                        ?>
+                            <option value="<?= $person->pers_gedcomnumber; ?>" <?= $selected; ?>>
+                                <?= $person->pers_lastname; ?>, <?= $person->pers_firstname . $prefix2; ?> [<?= $person->pers_gedcomnumber; ?>]
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="row mb-2">
+                <div class="col-md-4"><?= __('Number of generations to export:'); ?></div>
+                <div class="col-md-4">
+                    <select size="1" name="nr_generations" class="form-select form-select-sm">
+                        <option value="50"><?= __('All'); ?></option>
+                        <?php
+                        for ($i = 1; $i < 20; $i++) {
+                            $selected = '';
+                            if (isset($_POST['nr_generations']) and $_POST['nr_generations'] == $i) {
+                                $selected = " selected ";
+                            }
+                        ?>
+                            <option value="<?= $i; ?>" <?= $selected; ?>><?= ($i + 1); ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <!-- PMB - start of check buttons for options -->
+                <div class="col-md-4"><?= __('Choose type of export:'); ?></div>
+                <div class="col-md-8">
+                    <?php
+                    $checked = ' checked ';
+                    if (isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") $checked = '';
+                    ?>
+                    <input type="radio" value="descendant" name="kind_tree" <?= $checked; ?> class="form-check-input"> <?= __('Descendants'); ?><br>
+
+                    <?php
+                    $checked = ' checked ';
+                    if (isset($_POST['kind_tree']) and !isset($_POST['desc_spouses'])) $checked = '';
+                    ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_spouses" value="1" <?= $checked; ?> class="form-check-input"> <?= __('Include spouses of descendants'); ?><br>
+
+                    <?php
+                    $checked = '';
+                    if (isset($_POST['desc_sp_parents'])) $checked = ' checked ';
+                    ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_sp_parents" value="1" <?= $checked; ?> class="form-check-input"> <?= __('Include parents of spouses'); ?><br>
+
+                    <?php
+                    $checked = '';
+                    if (isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") $checked = ' checked ';
+                    ?>
+                    <input type="radio" value="ancestor" name="kind_tree" <?= $checked; ?> class="form-check-input"> <?= __('Ancestors'); ?><br>
+
+                    <?php
+                    $checked = ' checked ';
+                    if (isset($_POST['kind_tree']) and !isset($_POST['ances_spouses'])) $checked = '';
+                    ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_spouses" value="1" <?= $checked; ?> class="form-check-input"> <?= __('Include spouse(s) of base person'); ?><br>
+
+                    <?php
+                    $checked = '';
+                    if (isset($_POST['ances_sibbl'])) $checked = ' checked ';
+                    ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_sibbl" value="1" <?= $checked; ?> class="form-check-input"> <?= __('Include sibblings of ancestors and base person'); ?>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+
+
+    <?php
+    // *** GEDCOM submitter/ GEDCOM inzender ***
+    /* Full example, if all items were used:
+        0 @SUBMITTER@ SUBM
+        1 NAME Firstname Lastname
+        1 ADDR Submitter address line 1
+        2 CONT Submitter address line 2
+        2 ADR1 Submitter address line 1
+        2 ADR2 Submitter address line 2
+        2 CITY Submitter address city
+        2 STAE Submitter address state
+        2 POST Submitter address ZIP code
+        2 CTRY Submitter address country
+        1 PHON Submitter phone number 1
+        1 PHON Submitter phone number 2
+        1 PHON Submitter phone number 3 (last one!)
+        1 LANG English
+        1 OBJE
+        2 FORM jpeg
+        2 TITL Submitter Multimedia File
+        2 FILE ImgFile.JPG
+        2 NOTE @N1@
+        1 RFN Submitter Registered RFN
+        1 RIN 1
+        1 CHAN
+        2 DATE 7 Sep 2000
+        3 TIME 8:35:36
+        */
+    ?>
+
+
+    <div class="p-3 my-md-2 genealogy_search container-md">
+        <div class="row mb-2 p-2 bg-primary-subtle">
+            <div class="col-md-7"><?= __('GEDCOM submitter'); ?></div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Name'); ?></div>
+            <div class="col-md-4">
+                <input type="text" name="gedcom_submit_name" value="<?= $gedcom_submit_name; ?>" size="35" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Address'); ?></div>
+            <div class="col-md-4">
+                <input type="text" name="gedcom_submit_address" value="<?= $gedcom_submit_address; ?>" size="35" placeholder="<?= __('Address'); ?>" class="form-control form-control-sm">
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Country'); ?></div>
+            <div class="col-md-4">
+                <input type="text" name="gedcom_submit_country" value="<?= $gedcom_submit_country; ?>" size="35" placeholder="<?= __('Country'); ?>" class="form-control form-control-sm">
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('E-mail'); ?></div>
+            <div class="col-md-4">
+                <!-- Using HTML5 mail validation -->
+                <input type="email" name="gedcom_submit_mail" value="<?= $gedcom_submit_mail; ?>" size="35" placeholder="<?= __('E-mail'); ?>" class="form-control form-control-sm">
+            </div>
+        </div>
+    </div>
+
+    <div class="p-3 my-md-2 genealogy_search container-md">
+        <div class="row mb-2 p-2 bg-primary-subtle">
+            <div class="col-md-7"><?= __('Settings'); ?></div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('GEDCOM version'); ?></div>
+
+            <div class="col-md-4">
+                <?php
+                $selected = '';
+                if (isset($_POST['gedcom_version']) and $_POST['gedcom_version'] == '70') {
+                    $selected = ' selected';
+
+                    // *** GEDCOM 7.0 is selected, always use UTF-8 character set ***
+                    $_POST['gedcom_char_set'] = 'UTF-8';
+                }
+                ?>
+                <select size="1" name="gedcom_version" class="form-select form-select-sm">
+                    <option value="551"><?= __('GEDCOM 5.5.1'); ?></option>
+                    <option value="70" <?= $selected; ?> disabled><?= __('GEDCOM 7.0'); ?></option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                GEDCOM 7.0 export: under construction!
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Character set'); ?></div>
+            <div class="col-md-4">
+                <select size="1" name="gedcom_char_set" class="form-select form-select-sm">
+                    <?php
+                    $selected = '';
+                    if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'UTF-8') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <option value="UTF-8" <?= $selected; ?>><?= __('UTF-8 (recommended character set)'); ?></option>
+
+                    <?php
+                    $selected = '';
+                    if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ANSI') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <option value="ANSI" <?= $selected; ?>>ANSI</option>
+
+                    <?php
+                    $selected = '';
+                    if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ASCII') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <option value="ASCII" <?= $selected; ?>>ASCII</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <?= __('GEDCOM 7.0 always uses the UTF-8 character set.'); ?>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Export type'); ?></div>
+            <div class="col-md-8">
+                <?php
+                // PMB - select whether 'normal' or 'minimal' export
+                // this uses the same style as the 'All' or 'Individual' selector
+                // 'normal' will show the dropdowns for 'text' and 'sources'
+                // 'minimal' will be used in the export to 'turn off' extra info being included
+                $checked = ' checked ';
+                if (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") $checked = '';
+                ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="normal" name="export_type" <?= $checked; ?> class="form-check-input"> <?= __('Normal'); ?><br>
+
+                <?php
+                $checked = '';
+                if (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") $checked = ' checked ';
+                ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="minimal" name="export_type" <?= $checked; ?> class="form-check-input"> <?= __('Minimal'); ?>
+            </div>
+        </div>
+
+        <?php
+        // PMB - Start of dropdowns for 'Normal' export options
+        // We need to set the default though for the opening form or the dropdowns don't appear...
+        if (isset($_POST['export_type'])) {
+            $export_type = $_POST['export_type'];
+        } else {
+            $export_type = 'normal';
+        }
+
+        if ($export_type == 'normal') {
+        ?>
+            <div class="row mb-2">
+                <div class="col-md-4"><?= __('Export texts'); ?></div>
+                <div class="col-md-4">
+                    <?php
+                    $selected = '';
+                    if (isset($_POST['gedcom_texts']) and $_POST['gedcom_texts'] == 'no') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <select size="1" name="gedcom_texts" class="form-select form-select-sm">
+                        <option value="yes"><?= __('Yes'); ?></option>
+                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-4"><?= __('Export sources'); ?></div>
+                <div class="col-md-4">
+                    <?php
+                    $selected = '';
+                    if (isset($_POST['gedcom_sources']) and $_POST['gedcom_sources'] == 'no') {
+                        $selected = ' selected';
+                    }
+                    ?>
+                    <select size="1" name="gedcom_sources" class="form-select form-select-sm">
+                        <option value="yes"><?= __('Yes'); ?></option>
+                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
+                    </select>
+                </div>
+            </div>
+        <?php } ?>
+
+        <?php
+        // *** Check if geo_location table exists ***
+        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+        if ($temp->rowCount() > 0) {
+            $selected = '';
+            if (isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'no') {
+                $selected = ' selected';
+            }
+        ?>
+            <div class="row mb-2">
+                <div class="col-md-4"><?= __('Export longitude & latitude by places'); ?></div>
+                <div class="col-md-4">
+                    <select size="1" name="gedcom_geocode" class="form-select form-select-sm">
+                        <option value="yes"><?= __('Yes'); ?></option>
+                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
+                    </select>
+                </div>
+            </div>
+        <?php } ?>
+
+        <!-- Can _LOC tag be used in GEDCOM 7.x? -->
+        <!-- Shared addresses are not GEDCOM compatible. Add an option for export -->
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Shared addresses'); ?></div>
+            <div class="col-md-8">
+                <?php
+                $sql = "SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1' LIMIT 0,1";
+                $address = $dbh->query($sql);
+                if ($address->rowCount() > 0) {
+                    $selected = '';
+                    if (isset($_POST['gedcom_shared_addresses']) and $_POST['gedcom_shared_addresses'] == 'standard') {
+                        $selected = ' selected';
+                    }
+                ?>
+                    <select size="1" name="gedcom_shared_addresses" class="form-select form-select-sm">
+                        <option value="non_standard"><?= __('Export shared addresses'); ?></option>
+                        <option value="standard" <?= $selected; ?>><?= __('Convert all shared addresses as single addresses'); ?></option>
+                    </select><br>
+                <?php
+                    echo __('"Shared addresses" is <b>only compatible</b> with HuMo-genealogy and Haza-21 programs.<br>
+Other programs: convert shared addresses. The "shared address" option will be lost.');
+                } else {
+                    echo __('There are no shared addresses, standard GEDCOM export is used.');
+                }
+                ?>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Show export status'); ?></div>
+            <div class="col-md-4">
+                <?php
+                $selected = '';
+                if (isset($_POST['gedcom_status']) and $_POST['gedcom_status'] == 'yes') {
+                    $selected = ' selected';
+                }
+                ?>
+                <select size="1" name="gedcom_status" class="form-select form-select-sm">
+                    <option value="no"><?= __('No'); ?></option>
+                    <option value="yes" <?= $selected; ?>><?= __('Yes'); ?></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('GEDCOM export'); ?></div>
+            <div class="col-md-8">
+                <input type="submit" name="submit_button" value="<?= __('Start export'); ?>" class="btn btn-sm btn-success">
+            </div>
+        </div>
+    </div>
+</form>
+
+<?php
 function decode($buffer)
 {
     //$buffer = html_entity_decode($buffer, ENT_NOQUOTES, 'ISO-8859-15');
