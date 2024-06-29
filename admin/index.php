@@ -777,7 +777,7 @@ if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh
     } elseif ($page === 'export') {
         require __DIR__ . '/controller/gedcom_exportController.php';
         $controllerObj = new Gedcom_exportController();
-        $export = $controllerObj->detail($tree_id);
+        $export = $controllerObj->detail($dbh, $tree_id, $humo_option, $db_functions);
         include_once(__DIR__ . "/views/gedcom_export.php");
     } elseif ($page === 'log') {
         require __DIR__ . '/controller/logController.php';
