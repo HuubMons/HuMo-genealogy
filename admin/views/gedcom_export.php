@@ -107,10 +107,10 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         </div>
 
         <div class="row mb-2">
-            <div class="col-md-4"><?= __('Whole tree or part:'); ?></div>
+            <div class="col-md-4"><?= __('Whole tree or part'); ?></div>
             <div class="col-md-4">
-                <input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" <?= $export["part_tree"] == "part" ? '' : 'checked'; ?> class="form-check-input"> <?= __('Whole tree:'); ?><br>
-                <input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" <?= $export["part_tree"] == "part" ? 'checked' : ''; ?> class="form-check-input"> <?= __('Partial tree:'); ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="whole" name="part_tree" <?= $export["part_tree"] == "part" ? '' : 'checked'; ?> class="form-check-input"> <?= __('Whole tree'); ?><br>
+                <input type="radio" onClick="javascript:this.form.submit();" value="part" name="part_tree" <?= $export["part_tree"] == "part" ? 'checked' : ''; ?> class="form-check-input"> <?= __('Partial tree'); ?>
             </div>
         </div>
 
@@ -142,7 +142,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             ?>
 
             <div class="row mb-2">
-                <div class="col-md-4"><?= __('Choose person:'); ?></div>
+                <div class="col-md-4"><?= __('Choose person'); ?></div>
                 <div class="col-md-4">
                     <!-- Search persons firstname/ lastname -->
                     <input type="text" name="search_quicksearch" value="<?= $search_quicksearch; ?>" size="15" class="form-control form-control-sm">
@@ -221,7 +221,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
 
             <div class="row mb-2">
-                <div class="col-md-4"><?= __('Number of generations to export:'); ?></div>
+                <div class="col-md-4"><?= __('Number of generations to export'); ?></div>
                 <div class="col-md-4">
                     <select size="1" name="nr_generations" class="form-select form-select-sm">
                         <option value="50"><?= __('All'); ?></option>
@@ -240,7 +240,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             <div class="row mb-2">
                 <!-- PMB - start of check buttons for options -->
-                <div class="col-md-4"><?= __('Choose type of export:'); ?></div>
+                <div class="col-md-4"><?= __('Choose type of export'); ?></div>
                 <div class="col-md-8">
                     <?php
                     $checked = ' checked ';

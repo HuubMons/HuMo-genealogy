@@ -1006,7 +1006,8 @@ class Mainindex_cls
         echo $this->owner();
 
         // *** Show HuMo-genealogy link ***
-        printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="https://humo-gen.com">HuMo-genealogy</a>');
+        //printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="https://humo-gen.com">HuMo-genealogy</a>');
+        printf(__('This website is created using %s, a freeware genealogical  program'), '<a href="https://humo-gen.com">HuMo-genealogy</a>');
         echo '.<br>';
 
         // *** Show European cookie information ***
