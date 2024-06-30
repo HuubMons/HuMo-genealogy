@@ -1827,16 +1827,19 @@ $own_code=0;
                     $name_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'name');
                     // *** Can be used to hide $event_gedcom text ***
                     $previous_event_gedcom = '';
+                    $known_as = false; // *** Only show start text once ***
                     foreach ($name_qry as $nameDb) {
                         $eventnr++;
                         $text = '';
-                        if ($nameDb->event_gedcom == '_AKAN') {
+                        if ($nameDb->event_gedcom == '_AKAN' && !$known_as) {
                             $text .= __('Also known as') . ': ';
+                            $known_as = true;
                         }
 
                         // *** MyHeritage Family Tree Builder. Only show first "Also known as" text ***
-                        if ($nameDb->event_gedcom == '_AKA' && $previous_event_gedcom != '_AKA') {
+                        if ($nameDb->event_gedcom == '_AKA' && $previous_event_gedcom != '_AKA' && !$known_as) {
                             $text .= __('Also known as') . ': ';
+                            $known_as = true;
                         }
 
                         // *** December 2021: Nickname is allready shown as "Nickname".
@@ -2689,7 +2692,7 @@ $own_code=0;
                         $templ_person["pers_source"] = $source_array['text'];
                         $temp = "pers_source";
                     } else {
-                        if ($temp) $process_text .= '. ';
+                        //if ($temp) $process_text .= '. '; // disabled for now, otherwise a double period after professions.
                         $process_text .= $source_array['text'];
                     }
                 }
