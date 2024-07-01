@@ -25,8 +25,8 @@ $rom_nr = $get_ancestor->getNumberRoman();
 
 // TODO for now using extended class.
 $data["text_presentation"] =  $get_ancestor->getTextPresentation();
-$data["family_expanded"] =  $get_ancestor->getTextPresentation();
-$data["picture_presentation"] =  $get_ancestor->getTextPresentation();
+$data["family_expanded"] =  $get_ancestor->getFamilyExpanded();
+$data["picture_presentation"] =  $get_ancestor->getPicturePresentation();
 // source_presentation is saved in session.
 
 

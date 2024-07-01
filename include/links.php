@@ -91,6 +91,9 @@ class Link_cls
                     if ($page == 'ancestor_report' && $vars) {
                         $link .= '/' . $vars['id'];
                     }
+                    if ($page == 'ancestor_report_rtf' && $vars) {
+                        $link .= '/' . $vars['id'];
+                    }
 
                     if ($page == 'family' && $vars) {
                         $link .= '/' . $vars['pers_family'];

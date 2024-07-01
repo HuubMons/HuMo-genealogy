@@ -1911,6 +1911,7 @@ $own_code=0;
 
                 // *** Own code ***
                 if ($user['group_own_code'] == 'j' and $personDb->pers_own_code) {
+                    $text = '';
                     if ($temp) {
                         if ($data["family_expanded"] != 'compact') {
                             $templ_person[$temp] .= '.';
