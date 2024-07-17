@@ -2,6 +2,7 @@
 
 // *** Read settings here to be sure radio buttons show proper values. ***
 include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settings ***
+include_once(__DIR__ . "/../../include/show_tree_date.php");
 
 // *** Language choice ***
 $language_tree2 = $language_tree;
@@ -68,11 +69,11 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
                     // *** Number for new family tree ***
                     $new_number = $dataDb->tree_order + 1;
                     if ($dataDb->tree_order != '1') {
-                        echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;up=1&amp;tree_order=' . $dataDb->tree_order .
+                        echo ' <a href="index.php?page=' . $page . '&amp;up=1&amp;tree_order=' . $dataDb->tree_order .
                             '&amp;id=' . $dataDb->tree_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
                     }
                     if ($dataDb->tree_order != $count_lines) {
-                        echo ' <a href="' . $phpself2 . 'page=' . $page . '&amp;down=1&amp;tree_order=' . $dataDb->tree_order .
+                        echo ' <a href="index.php?page=' . $page . '&amp;down=1&amp;tree_order=' . $dataDb->tree_order .
                             '&amp;id=' . $dataDb->tree_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
                     }
                     ?>
@@ -102,46 +103,7 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
                         echo ' <font color="#00FF00"><b>' . __('OK') . '</b></font>';
 
                         // *** Show tree data ***
-                        $tree_date = $dataDb->tree_date;
-                        $month = ''; // for empty tree_dates
-                        if (substr($tree_date, 5, 2) === '01') {
-                            $month = ' ' . strtolower(__('jan')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '02') {
-                            $month = ' ' . strtolower(__('feb')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '03') {
-                            $month = ' ' . strtolower(__('mar')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '04') {
-                            $month = ' ' . strtolower(__('apr')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '05') {
-                            $month = ' ' . strtolower(__('may')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '06') {
-                            $month = ' ' . strtolower(__('jun')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '07') {
-                            $month = ' ' . strtolower(__('jul')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '08') {
-                            $month = ' ' . strtolower(__('aug')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '09') {
-                            $month = ' ' . strtolower(__('sep')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '10') {
-                            $month = ' ' . strtolower(__('oct')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '11') {
-                            $month = ' ' . strtolower(__('nov')) . ' ';
-                        }
-                        if (substr($tree_date, 5, 2) === '12') {
-                            $month = ' ' . strtolower(__('dec')) . ' ';
-                        }
-                        $tree_date = substr($tree_date, 8, 2) . $month . substr($tree_date, 0, 4);
-                        echo ' <font size=-1>' . $tree_date . ': ' . $dataDb->tree_persons . ' ' .
+                        echo ' <font size=-1>' . show_tree_date($dataDb->tree_date) . ': ' . $dataDb->tree_persons . ' ' .
                             __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families') . '</font>';
                     } else {
                         //echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';
@@ -188,7 +150,7 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
     <tr>
         <td><?= $new_number; ?></td>
         <td colspan="3">
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
                 <input type="hidden" name="tree_prefix" value="<?= $new_tree_prefix; ?>">
@@ -204,7 +166,7 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
     <tr>
         <td><?= $new_number; ?></td>
         <td colspan="3">
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
                 <input type="submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>" class="btn btn-sm btn-success">
@@ -233,7 +195,7 @@ if ($collation == 'utf8_danish_ci') {
 }
 ?>
 
-<form method="post" action="<?= $phpself; ?>" style="display : inline;">
+<form method="post" action="index.php" style="display : inline;">
     <input type="hidden" name="page" value="<?= $page; ?>">
 
     <br>

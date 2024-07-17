@@ -86,20 +86,79 @@ if (isset($_POST['tml'])) {
 
 $vars['pers_gedcomnumber'] = $personDb->pers_gedcomnumber;
 $path = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
-
-// **** SHOW MENU ****
 ?>
-<table align="center" class="humo index_table">
-    <tr>
-        <td>
-            <form name="tmlstep" method="post" action="<?= $path; ?>" style="display:inline;">
-                <!-- Help popup -->
-                <div class="<?= $rtlmarker; ?>sddm" style="display:inline">
-                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',10,150)" onmouseout="mclosetime()">
-                        <strong><?= __('Help'); ?></strong>
-                    </a>
-                    <div class="sddm_fixed" style="z-index:40; text-align:<?= $alignmarker; ?>; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                        <?= __('Explanation of the timeline chart:<br>
+
+<!-- SHOW MENU -->
+<form name="tmlstep" method="post" action="<?= $path; ?>">
+    <div class="p-2 me-sm-2 genealogy_search">
+        <div class="row">
+
+            <div class="col-md-auto">
+                <!-- Steps of years in display: 1, 5 or 10 -->
+                <?= __('Steps:'); ?>
+            </div>
+            <div class="col-md-2">
+                <select size="1" name="step" class="form-select form-select-sm">
+                    <option value="1" <?php if ($step == 1) echo 'selected'; ?>>1 <?= __('year'); ?></option>
+                    <option value="5" <?php if ($step == 5) echo 'selected'; ?>>5 <?= __('year'); ?></option>
+                    <option value="10" <?php if ($step == 10) echo 'selected'; ?>>10 <?= __('year'); ?></option>
+                </select>
+            </div>
+
+            <!-- Only show timelines menu if there are more than 1 timeline files -->
+            <?php if (count($filenames) > 1) { ?>
+                <div class="col-md-auto">
+                    <?= __('Choose timeline'); ?>:
+                </div>
+                <div class="col-md-3">
+                    <select size="1" name="tml" class="form-select form-select-sm">
+                        <?php
+                        $selected_language2 = 'default_timelines';
+                        for ($i = 0; $i < count($filenames); $i++) {
+                            $selected = '';
+                            // *** A timeline is selected ***
+                            if (isset($_POST['tml']) && $_POST['tml'] == $filenames[$i][1]) {
+                                $selected = "selected";
+                            }
+
+                            // *** If no selection is made, use default settings ***
+                            if (!isset($_POST['tml'])) {
+                                // *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
+                                if (isset($humo_option['default_timeline']) && strpos($humo_option['default_timeline'], $selected_language . "!" . $filenames[$i][1] . "@") !== false) {
+                                    $selected = "selected";
+                                }
+                                // *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
+                                elseif (isset($humo_option['default_timeline']) && strpos($humo_option['default_timeline'], $selected_language2 . "!" . $filenames[$i][1] . "@") !== false) {
+                                    $selected = "selected";
+                                }
+                                // *** There are no default settings, and no selection is made ***
+                                elseif ($tml == $filenames[$i][1]) {
+                                    $selected = "selected";
+                                }
+                            }
+                        ?>
+                            <option value="<?= $filenames[$i][1]; ?>" <?= $selected; ?>><?= ucfirst($filenames[$i][1]); ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+
+            <div class="col-md-auto">
+                <input type="submit" value="<?= __('Change Display'); ?>" class="btn btn-sm btn-success">
+            </div>
+
+            <div class="col-md-auto">
+                <!-- Help popup. Remark: Bootstrap popover javascript in layout script. -->
+                <style>
+                    .popover {
+                        max-width: 500px;
+                    }
+                    .popover-body {
+                        height: 500px;
+                        overflow-y: auto;
+                    }
+                </style>
+                <?php $popup_text =  __('Explanation of the timeline chart:<br>
 <ul><li>The middle column displays the years of the timeline. The starting point will be just before birth and the end year will be just after death.</li>
 <li>The left column displays the events in the person\'s life.<br>
 Events listed are: birth, death and marriage(s) of main person, death of spouse, birth, marriage and death of children and birth and death of grandchildren.<br>
@@ -112,56 +171,17 @@ The timeline menu:<br>
 10 - displays the chart in periods of one decade for even more concise display.</li>
 <li>If the webmaster enabled more than one timeline, the bottom part of the menu will let you choose from amongst several possible timelines. For example "American History", "Dutch History" etc.</li>
 <li><strong>After choosing the desired step and/or timeline, click the "Change Display" button on the bottom of the menu.</strong></li></ul>'); ?>
-                    </div>
-                </div><br>
+                <?php $popup_text = str_replace('"', "'", $popup_text); ?>
 
-                <!-- Steps of years in display: 1, 5 or 10 -->
-                <br><?= __('Steps:'); ?><br>
-                <span class="select_box"><input type="radio" name="step" value="1" <?php if ($step == 1) echo ' checked="checked"'; ?>>1 <?= __('year'); ?></span>
-                <span class="select_box"><input type="radio" name="step" value="5" <?php if ($step == 5) echo ' checked="checked"'; ?>>5 <?= __('years'); ?></span>
-                <span class="select_box"><input type="radio" name="step" value="10" <?php if ($step == 10) echo ' checked="checked"'; ?>>10 <?= __('years'); ?></span>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
+                    <?= __('Help'); ?>
+                </button>
+            </div>
 
-                <?php
-                // *** Choice of timeline files available ***
-                if (count($filenames) > 1) { // only show timelines menu if there are more than 1 timeline files
-                    echo '<br><br>' . __('Choose timeline') . ':<br>';
+        </div>
+    </div>
+</form><br>
 
-                    $selected_language2 = 'default_timelines';
-                    for ($i = 0; $i < count($filenames); $i++) {
-                        $checked = '';
-                        // *** A timeline is selected ***
-                        if (isset($_POST['tml']) && $_POST['tml'] == $filenames[$i][1]) {
-                            $checked = " checked";
-                        }
-
-                        // *** If no selection is made, use default settings ***
-                        if (!isset($_POST['tml'])) {
-                            // *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
-                            if (isset($humo_option['default_timeline']) && strpos($humo_option['default_timeline'], $selected_language . "!" . $filenames[$i][1] . "@") !== false) {
-                                $checked = " checked";
-                            }
-                            // *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
-                            elseif (isset($humo_option['default_timeline']) && strpos($humo_option['default_timeline'], $selected_language2 . "!" . $filenames[$i][1] . "@") !== false) {
-                                $checked = " checked";
-                            }
-                            // *** There are no default settings, and no selection is made ***
-                            elseif ($tml == $filenames[$i][1]) {
-                                $checked = " checked";
-                            }
-                        }
-                ?>
-                        <span class="select_box">
-                            <input type="radio" name="tml" value="<?= $filenames[$i][1]; ?>" <?= $checked; ?>><?= $filenames[$i][1]; ?>
-                        </span>
-                <?php
-                    }
-                }
-                ?>
-                <br clear="all"><br><input type="submit" value="<?= __('Change Display'); ?>">
-            </form>
-        </td>
-    </tr>
-</table><br>
 
 <?php
 if (file_exists($filenames[0][0])) {

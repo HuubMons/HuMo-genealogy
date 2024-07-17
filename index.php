@@ -317,9 +317,7 @@ if (in_array(@$dataDb->tree_id, $hide_tree_array)) {
 if ($hide_tree) {
     // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
     $_SESSION['tree_prefix'] = '';
-    //$_SESSION['tree_id'] = '';
     $_SESSION['tree_id'] = 0;
-    //$tree_id = '';
     $tree_id = 0;
 
     // *** Find first family tree that's not blocked for this usergroup ***
@@ -448,13 +446,17 @@ if ($page == 'address') {
     require __DIR__ . '/app/controller/ancestor_reportController.php';
     $controllerObj = new Ancestor_reportController($dbh);
     $data = $controllerObj->list($tree_id);
+} elseif ($page == 'ancestor_report_rtf') {
+    require __DIR__ . '/app/controller/ancestor_reportController.php';
+    $controllerObj = new Ancestor_reportController($dbh);
+    $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_chart') {
     require __DIR__ . '/app/controller/ancestor_chartController.php';
-    $controllerObj = new Ancestor_chartController($dbh, $user);
+    $controllerObj = new Ancestor_chartController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_sheet') {
     require __DIR__ . '/app/controller/ancestor_sheetController.php';
-    $controllerObj = new Ancestor_sheetController($dbh, $user);
+    $controllerObj = new Ancestor_sheetController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'anniversary') {
     require __DIR__ . '/app/controller/anniversaryController.php';
@@ -477,7 +479,9 @@ if ($page == 'address') {
     $controllerObj = new FamilyController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
 } elseif ($page == 'fanchart') {
-    //
+    require __DIR__ . '/app/controller/fanchartController.php';
+    $controllerObj = new FanchartController();
+    $data = $controllerObj->detail($dbh, $tree_id);
 } elseif ($page == 'help') {
     //
 } elseif ($page == 'hourglass') {
@@ -503,13 +507,21 @@ if ($page == 'address') {
 } elseif ($page == 'login') {
     //
 } elseif ($page == 'mailform') {
-    //
+    require __DIR__ . '/app/controller/mailformController.php';
+    $controllerObj = new MailformController($db_functions);
+    $mail_data = $controllerObj->get_mail_data($humo_option, $dataDb, $selected_language);
 } elseif ($page == 'maps') {
-    //
+    require __DIR__ . '/app/controller/mapsController.php';
+    $controllerObj = new MapsController($db_functions);
+    $maps = $controllerObj->detail($humo_option);
 } elseif ($page == 'photoalbum') {
-    //
+    require __DIR__ . '/app/controller/photoalbumController.php';
+    $controllerObj = new PhotoalbumController();
+    $photoalbum = $controllerObj->detail($dbh);
 } elseif ($page == 'register') {
-    //
+    require __DIR__ . '/app/controller/registerController.php';
+    $controllerObj = new RegisterController($db_functions);
+    $register = $controllerObj->get_register_data($dbh, $dataDb, $humo_option);
 } elseif ($page == 'relations') {
     require __DIR__ . '/app/controller/relationsController.php';
     $controllerObj = new RelationsController($dbh);
@@ -523,7 +535,9 @@ if ($page == 'address') {
     $controllerObj = new User_settingsController();
     $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
 } elseif ($page == 'statistics') {
-    //
+    require __DIR__ . '/app/controller/statisticsController.php';
+    $controllerObj = new StatisticsController();
+    $statistics = $controllerObj->detail($dbh, $tree_id);
 } elseif ($page == 'sources') {
     require __DIR__ . '/app/controller/sourcesController.php';
     $controllerObj = new SourcesController($dbh);
@@ -531,19 +545,24 @@ if ($page == 'address') {
 } elseif ($page == 'source') {
     require __DIR__ . '/app/controller/sourceController.php';
     $controllerObj = new SourceController($dbh, $db_functions, $tree_id); // Using Controller.
+    // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
         $id = $_GET["id"];
-    } // *** url_rewrite is disabled ***
+    }
     $data = $controllerObj->source($id);
 } elseif ($page == 'timeline') {
     require __DIR__ . '/app/controller/timelineController.php';
     $controllerObj = new TimelineController();
+    // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
         $id = $_GET["id"];
-    } // *** url_rewrite is disabled ***
+    }
     $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
 } elseif ($page == 'tree_index') {
-    //
+    //  *** TODO: first improve difference between tree_index and mainindex ***
+    //require __DIR__ . '/app/controller/tree_indexController.php';
+    //$controllerObj = new Tree_indexController();
+    //$tree_index["items"] = $controllerObj->get_items($dbh);
 }
 
 include_once(__DIR__ . "/views/layout.php");

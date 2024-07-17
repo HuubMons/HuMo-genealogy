@@ -8,7 +8,7 @@ include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
 //$select_top = '';
 ?>
 
-<form method="post" action="<?= $phpself; ?>" style="display : inline;">
+<form method="post" action="index.php" style="display : inline;">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
     <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">

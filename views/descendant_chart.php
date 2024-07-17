@@ -11,9 +11,8 @@ if (!isset($hourglass)) {
 }
 if ($hourglass === false) {
     // for png image generating
-    echo '<script src="include/html2canvas/html2canvas.min.js"></script>';
+    echo '<script src="assets/html2canvas/html2canvas.min.js"></script>';
 }
-
 
 $genarray = $data["genarray"];
 
@@ -36,61 +35,61 @@ if ($hourglass === false) {
     $divlen += 200;
     $divhi += 300;
 
+    if ($humo_option["url_rewrite"] == 'j') {
+        $path = 'descendant_chart/' . $tree_id . '/' . $data["family_id"] . '?';
+        $path2 = 'descendant_chart/' . $tree_id . '/' . $data["family_id"] . '?';
+    } else {
+        $path = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;';
+        // Don't use &amp; for javascript.
+        $path2 = 'index.php?page=descendant_chart&tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
+    }
+
+    $dna_params = "";
+    if ($data["dna"] != "none") {
+        //$dna_params = '
+        //	bn: "'.$data["base_person_name"].'",
+        //	bs: "'.$data["base_person_sexe"].'",
+        //	bf: "'.$data["base_person_famc"].'",
+        //	bg: "'.$data["base_person_gednr"].'",';
+        $dna_params = '&bn=' . $data["base_person_name"] . '&bs=' . $data["base_person_sexe"] . '&bf=' . $data["base_person_famc"] . '&bg=' . $data["base_person_gednr"];
+    }
+
+    // *** 20-08-2022: renewed jQuery and jQueryUI scripts ***
+    echo '
+    <script>
+    $(function() {
+        $( "#slider" ).slider({
+            value: ' . (($data["size"] / 5) - 1) . ',
+            min: 0,
+            max: 9,
+            step: 1,
+            slide: function( event, ui ) {
+                $( "#amount" ).val(ui.value+1);
+            }
+        });
+        $( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
+
+        // *** Only reload page if value is changed ***
+        startPos = $("#slider").slider("value");
+        $("#slider").on("slidestop", function(event, ui) {
+            endPos = ui.value;
+            if (startPos != endPos) {
+                window.location.href = "' . $path2 . 'main_person=' . $data["main_person"] .
+        '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
+        '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
+                }
+            startPos = endPos;
+        });
+    });
+    </script>';
+
+
     // the width and length of following div are set with $divlen en $divhi in java function "showimg" 
-    // (at bottom of this file) otherwise double scrollbars won't work.
+    // (at bottom of this file) used to print chart.
 ?>
     <div id="png">
 
-        <!--  HELP POPUP -->
-        <div id="helppopup" class="<?= $rtlmarker; ?>sddm" style="position:absolute;left:10px;top:10px;display:inline;">
-            <?php
-            echo '<a href="#" style="display:inline" ';
-            echo 'onmouseover="mopen(event,\'help_menu\',0,0)" onmouseout="mclosetime()">';
-            echo '<b>' . __('Help') . '</b></a>&nbsp;';
-
-            //echo '<div style="z-index:40; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-            ?>
-            <div class="sddm_fixed" style="z-index:10; padding:4px; text-align:<?= $alignmarker; ?>;  direction:<?= $rtlmarker; ?>;" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                <?php
-                echo __('<b>USE:</b>
-<p><b>Hover over square:</b> Display popup menu with details and report & chart options<br>
-<b>Click on square:</b> Move this person to the center of the chart<br>
-<b>Click on spouse\'s name in popup menu:</b> Go to spouse\'s family page<br><br>
-<b>LEGEND:</b>');
-
-                echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Male') . '</br>';
-                echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Female') . '</br>';
-                if ($data["dna"] == "ydna" || $data["dna"] == "ydnamark" || $data["dna"] == "mtdna" || $data["dna"] == "mtdnamark") {
-                    echo '<p style="line-height:3px"><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:3px solid #999999;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Male Y-DNA or mtDNA carrier (Base person has red border)') . '</p>';
-                    echo '<p style="line-height:10px"><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:3px solid #999999;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;' . __('Female MtDNA carrier (Base person has red border)') . '</p>';
-                }
-                echo '<p><span style="color:blue">=====</span>&nbsp;' . __('Additional marriage of same person') . '<br><br>';
-                echo __('<b>SETTINGS:</b>
-<p>Horizontal/Vertical button: toggle direction of the chart from top-down to left-right<br>
-<b>Nr. Generations:</b> choose between 2 - 15 generations<br>
-(large number of generations will take longer to generate)<br>
-<b>Box size:</b> Use the slider to choose display size (9 steps): <br>
-step 1-3: small boxes with popup for details<br>
-step 4-7: larger boxes with initials of name + popup for details<br>
-step 8:   rectangles with name inside + popup with further details<br>
-step 9:   large rectangles with name, birth and death details + popup with further details');
-
-                ?>
-            </div>
-        </div>
-
-        <?php
-        //=================================
-        if ($data["dna"] == "none") {
-            //echo '<h1 class="standard_header" style="align:center; text-align: center;"><b>' . __('Descendant chart') . __(' of ') . $genarray[0]["nam"] . '</b>';
-            echo $data["descendant_header"];
-        } elseif ($data["dna"] == "ydna" || $data["dna"] == "ydnamark") {
-            echo '<h1 class="standard_header" style="align:center; text-align: center;"><b>' . __('Same Y-DNA as ') . $data["base_person_name"] . '</b></h1>';
-        } elseif ($data["dna"] == "mtdna" || $data["dna"] == "mtdnamark") {
-            echo '<h1 class="standard_header" style="align:center; text-align: center;"><b>' . __('Same mtDNA as ') . $data["base_person_name"] . '</b></h1>';
-        }
-        ?>
-        <br><input type="button" id="imgbutton" value="<?= __('Get image of chart for printing (allow popup!)'); ?>" onClick="showimg();" class="btn btn-sm btn-secondary">
+        <?= $data["descendant_header"]; ?>
 
         <?php
         if ($data["direction"] == 0) {  //vertical
@@ -110,181 +109,162 @@ step 9:   large rectangles with name, birth and death details + popup with furth
         //echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; overflow: auto; overflow-y: hidden;z-index:10; }';
         //echo '</style>';
         //echo '<div id="doublescroll" class="wrapper" style="direction:' . $rtlmarker . ';">';
-
-        // generation and size choice box:
-        if ($data["dna"] == "none") {
-            $boxwidth = "640";
-        } // regular descendant chart
-        else {
-            $boxwidth = "850";
-        } // DNA charts
         ?>
-        <div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:<?= $boxwidth; ?>px; text-align:left;">
-            <div style="display:inline;">
-                <?php
-                if ($humo_option["url_rewrite"] == 'j') {
-                    $path = 'descendant_chart/' . $tree_id . '/' . $data["family_id"] . '?';
-                    $path2 = 'descendant_chart/' . $tree_id . '/' . $data["family_id"] . '?';
-                } else {
-                    $path = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;';
-                    // Don't use &amp; for javascript.
-                    $path2 = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
-                }
-                ?>
 
-                <form method="POST" name="desc_form" action="<?= $path . 'chosensize=' . $data["size"]; ?>" style="display : inline;">
-                    <?php
-                    echo '<input type="hidden" name="chosengen" value="' . $data["chosengen"] . '">';
-                    echo '<input type="hidden" name="main_person" value="' . $data["main_person"] . '">';
-                    echo '<input type="hidden" name="database" value="' . $database . '">';
-                    if ($data["dna"] != "none") {
-                        echo '<input type="hidden" name="dnachart" value="' . $data["dna"] . '">';
-                        echo '<input type="hidden" name="bf" value="' . $data["base_person_famc"] . '">';
-                        echo '<input type="hidden" name="bs" value="' . $data["base_person_sexe"] . '">';
-                        echo '<input type="hidden" name="bn" value="' . $data["base_person_name"] . '">';
-                        echo '<input type="hidden" name="bg" value="' . $data["base_person_gednr"] . '">';
-                    }
-                    ?>
-                    <input id="dirval" type="hidden" name="direction" value=""> <!-- will be filled in next lines -->
-                    <?php if ($data["direction"] == "1") { ?>
-                        <input type="button" name="dummy" value="<?= __('vertical'); ?>" onClick='document.desc_form.direction.value="0";document.desc_form.submit();' class="btn btn-sm btn-secondary">
-                    <?php } else { ?>
-                        <input type="button" name="dummy" value="<?= __('horizontal'); ?>" onClick='document.desc_form.direction.value="1";document.desc_form.submit();' class="btn btn-sm btn-secondary">
-                    <?php } ?>
-                </form>
+        <div class="p-2 me-sm-2 genealogy_search" id="menubox">
+            <!-- <div class="p-2 me-sm-2 genealogy_search d-print-none"> -->
 
-                <?php
-                // TODO check code. This query isn't used?
-                //$result = $dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $data["main_person"] . "'");
-                //$resultDb = $result->fetch(PDO::FETCH_OBJ);
-                // TODO cleanup code
-                if ($data["dna"] != "none") {
-                    echo "&nbsp;&nbsp;" . __('DNA: ');
-                ?>
-                    <select name="dnachart" style="width:150px" onChange="window.location=this.value">
+            <div class="row">
+                <div class="col-md-auto">
+                    <h4>
                         <?php
-                        if ($data["base_person_sexe"] == "M") {        // only show Y-DNA option if base person is male
-                            $selected = "selected";
-                            if ($data["dna"] != "ydna") {
-                                $selected = "";
-                            }
-                            echo '<option value="' . $path . 'main_person=' .
-                                $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "ydna" . '&amp;chosensize=' .
-                                $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('Y-DNA Carriers only') . '</option>';
-
-                            $selected = "";
-                            if ($data["dna"] == "ydnamark") {
-                                $selected = "selected";
-                            }
-                            echo '<option value="' . $path . 'main_person=' .
-                                $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "ydnamark" . '&amp;chosensize=' .
-                                $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('Y-DNA Mark carriers') . '</option>';
-                        }
-
-                        if ($data["base_person_sexe"] == "F" or ($data["base_person_sexe"] == "M" and isset($data["base_person_famc"]) and $data["base_person_famc"] != "")) {
-                            // if base person is male, only show mtDNA if there are ancestors since he can't have mtDNA descendants...
-                            $selected = "";
-                            if ($data["dna"] == "mtdna") {
-                                $selected = "selected";
-                            }
-                            echo '<option value="' . $path . 'main_person=' .
-                                $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdna" . '&amp;chosensize=' .
-                                $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Carriers only') . '</option>';
-                            if ($data["base_person_sexe"]  == "F") {
-                                $selected = "selected";
-                                if ($data["dna"] != "mtdnamark") {
-                                    $selected = "";
-                                }
-                            } else {
-                                $selected = "";
-                                if ($data["dna"] == "mtdnamark") {
-                                    $selected = "selected";
-                                }
-                            }
-                            echo '<option value="' . $path . 'main_person=' .
-                                $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdnamark" . '&amp;chosensize=' .
-                                $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Mark carriers') . '</option>';
+                        if ($data["dna"] == "none") {
+                            echo __('Descendant chart') . __(' of ') . $genarray[0]["nam"];
+                        } elseif ($data["dna"] == "ydna" || $data["dna"] == "ydnamark") {
+                            echo __('Same Y-DNA as ') . $data["base_person_name"];
+                        } elseif ($data["dna"] == "mtdna" || $data["dna"] == "mtdnamark") {
+                            echo __('Same mtDNA as ') . $data["base_person_name"];
                         }
                         ?>
-                    </select>
-                <?php } ?>
+                    </h4>
+                </div>
             </div>
 
-            &nbsp;&nbsp;&nbsp;<?= __('Nr. generations'); ?>:
-            <select name="chosengen" onChange="window.location=this.value">
-                <?php
-                for ($i = 2; $i <= 15; $i++) {
-                    echo '<option value="' . $path . 'main_person=' . $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . $data["dna"] .
-                        '&amp;chosensize=' . $data["size"] . '&amp;chosengen=' . $i . '" ';
-                    if ($i == $data["chosengen"]) {
-                        echo "selected=\"selected\" ";
-                    }
-                    echo ">" . $i . '</option>' . "\n";
-                }
+            <div class="row">
 
-                // *** Option "All" for all generations ***
-                echo '<option value="' . $path . 'main_person=' . $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;database=' . $database .
-                    '&amp;dnachart=' . $data["dna"] . '&amp;chosensize=' .  $data["size"] . '&amp;chosengen=All" ';
-                if ($data["chosengen"] == "All") echo "selected=\"selected\" ";
-                echo ">" . "All" . "</option>";
-                ?>
-            </select>
+                <div class="col-md-auto">
+                    <form method="POST" name="desc_form" action="<?= $path . 'chosensize=' . $data["size"]; ?>" style="display : inline;">
+                        <input type="hidden" name="chosengen" value="<?= $data["chosengen"]; ?>">
+                        <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
+                        <input type="hidden" name="database" value="<?= $database; ?>">
+                        <?php if ($data["dna"] != "none") { ?>
+                            <input type="hidden" name="dnachart" value="<?= $data["dna"]; ?>">
+                            <input type="hidden" name="bf" value="<?= $data["base_person_famc"]; ?>">
+                            <input type="hidden" name="bs" value="<?= $data["base_person_sexe"]; ?>">
+                            <input type="hidden" name="bn" value="<?= $data["base_person_name"]; ?>">
+                            <input type="hidden" name="bg" value="<?= $data["base_person_gednr"]; ?>">
+                        <?php } ?>
+                        <input id="dirval" type="hidden" name="direction" value=""> <!-- will be filled in next lines -->
+                        <?php if ($data["direction"] == "1") { ?>
+                            <input type="button" name="dummy" value="<?= __('vertical'); ?>" onClick='document.desc_form.direction.value="0";document.desc_form.submit();' class="btn btn-sm btn-secondary">
+                        <?php } else { ?>
+                            <input type="button" name="dummy" value="<?= __('horizontal'); ?>" onClick='document.desc_form.direction.value="1";document.desc_form.submit();' class="btn btn-sm btn-secondary">
+                        <?php } ?>
+                    </form>
+                </div>
 
-            &nbsp;&nbsp;
-            <?php
-            $dna_params = "";
-            if ($data["dna"] != "none") {
-                //$dna_params = '
-                //	bn: "'.$data["base_person_name"].'",
-                //	bs: "'.$data["base_person_sexe"].'",
-                //	bf: "'.$data["base_person_famc"].'",
-                //	bg: "'.$data["base_person_gednr"].'",';
-                $dna_params = '&bn=' . $data["base_person_name"] . '&bs=' . $data["base_person_sexe"] . '&bf=' . $data["base_person_famc"] . '&bg=' . $data["base_person_gednr"];
-            }
+                <div class="col-md-auto">
+                    <input type="button" id="imgbutton" value="<?= __('Print'); ?>" onClick="showimg();" class="btn btn-sm btn-secondary">
+                </div>
 
-            // *** 20-08-2022: renewed jQuery and jQueryUI scripts ***
-            echo '
-            <script>
-            $(function() {
-                $( "#slider" ).slider({
-                    value: ' . (($data["size"] / 5) - 1) . ',
-                    min: 0,
-                    max: 9,
-                    step: 1,
-                    slide: function( event, ui ) {
-                        $( "#amount" ).val(ui.value+1);
-                    }
-                });
-                $( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
+                <?php if ($data["dna"] != "none") { ?>
+                    <div class="col-md-auto">
+                        <?= __('DNA:'); ?>
+                    </div>
 
-                // *** Only reload page if value is changed ***
-                startPos = $("#slider").slider("value");
-                $("#slider").on("slidestop", function(event, ui) {
-                    endPos = ui.value;
-                    if (startPos != endPos) {
-                        window.location.href = "' . $path2 . 'main_person=' . $data["main_person"] .
-                    '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
-                    '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
+                    <div class="col-md-auto">
+                        <select name="dnachart" onChange="window.location=this.value" class="form-select form-select-sm">
+                            <?php
+                            if ($data["base_person_sexe"] == "M") {        // only show Y-DNA option if base person is male
+                                $selected = "selected";
+                                if ($data["dna"] != "ydna") {
+                                    $selected = "";
+                                }
+                                echo '<option value="' . $path . 'main_person=' .
+                                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "ydna" . '&amp;chosensize=' .
+                                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('Y-DNA Carriers only') . '</option>';
+
+                                $selected = "";
+                                if ($data["dna"] == "ydnamark") {
+                                    $selected = "selected";
+                                }
+                                echo '<option value="' . $path . 'main_person=' .
+                                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "ydnamark" . '&amp;chosensize=' .
+                                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('Y-DNA Mark carriers') . '</option>';
+                            }
+
+                            if ($data["base_person_sexe"] == "F" or ($data["base_person_sexe"] == "M" and isset($data["base_person_famc"]) and $data["base_person_famc"] != "")) {
+                                // if base person is male, only show mtDNA if there are ancestors since he can't have mtDNA descendants...
+                                $selected = "";
+                                if ($data["dna"] == "mtdna") {
+                                    $selected = "selected";
+                                }
+                                echo '<option value="' . $path . 'main_person=' .
+                                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdna" . '&amp;chosensize=' .
+                                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Carriers only') . '</option>';
+                                if ($data["base_person_sexe"]  == "F") {
+                                    $selected = "selected";
+                                    if ($data["dna"] != "mtdnamark") {
+                                        $selected = "";
+                                    }
+                                } else {
+                                    $selected = "";
+                                    if ($data["dna"] == "mtdnamark") {
+                                        $selected = "selected";
+                                    }
+                                }
+                                echo '<option value="' . $path . 'main_person=' .
+                                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdnamark" . '&amp;chosensize=' .
+                                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Mark carriers') . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } ?>
+
+                <div class="col-md-auto">
+                    <?= __('Nr. generations'); ?>:
+                </div>
+
+                <div class="col-md-auto">
+                    <select name="chosengen" onChange="window.location=this.value" class="form-select form-select-sm">
+                        <?php
+                        for ($i = 2; $i <= 15; $i++) {
+                            echo '<option value="' . $path . 'main_person=' . $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . $data["dna"] .
+                                '&amp;chosensize=' . $data["size"] . '&amp;chosengen=' . $i . '" ';
+                            if ($i == $data["chosengen"]) {
+                                echo "selected=\"selected\" ";
+                            }
+                            echo ">" . $i . '</option>' . "\n";
                         }
-                    startPos = endPos;
-                });
-            });
-            </script>';
-            ?>
-            <label for="amount"><?= __('Zoom level:'); ?></label>
-            <input type="text" id="amount" disabled="disabled" style="width:25px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">
-            <div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>
-        </div>
-    <?php
-} // end if not hourglass
 
-if ($hourglass === false) {
+                        // *** Option "All" for all generations ***
+                        echo '<option value="' . $path . 'main_person=' . $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;database=' . $database .
+                            '&amp;dnachart=' . $data["dna"] . '&amp;chosensize=' .  $data["size"] . '&amp;chosengen=All" ';
+                        if ($data["chosengen"] == "All") echo "selected=\"selected\" ";
+                        echo ">" . "All" . "</option>";
+                        ?>
+                    </select>
+                </div>
+
+                <div class="col-md-auto">
+                    <label for="amount"><?= __('Zoom level:'); ?></label>
+                    <input type="text" id="amount" disabled="disabled" style="width:25px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">
+                </div>
+
+                <div class="col-md-auto">
+                    <div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>
+                </div>
+
+            </div>
+        </div>
+
+    <?php
+    // TODO check div. It's too wide (is set in doublescroll script). Doublescroll doesn't work.
     echo '<style type="text/css">';
-    echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; overflow: auto; overflow-y: hidden;z-index:10; }';
+    //echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; overflow: auto; overflow-y: hidden;z-index:10; }';
+    echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; z-index:10; }';
     echo '</style>';
     echo '<div id="doublescroll" class="wrapper" style="direction:' . $rtlmarker . ';">';
+
+    // Test bootstrap container
+    //echo '<div class="container-xxl overflow-auto">';
+    //echo '<div style="height:200px;"></div>';
+    //echo '<div class="container-md overflow-auto" style="z-index:10; top:300px;">';
+    //echo '<div class="container-xxl overflow-auto">';
 }
 
+// *** Also used for hourglass script.
 for ($w = 0; $w < count($genarray); $w++) {
     $xvalue = $genarray[$w]["posx"];
     $yvalue = $genarray[$w]["posy"];
@@ -565,22 +545,21 @@ for ($w = 0; $w < count($genarray); $w++) {
     ?>
 
     </div> <!-- png -->
-    <br><br>
     <!-- </div> --> <!-- doublescroll -->
 
     <?php
     // YB:
-    // before creating the image we want to hide unnecessary items such as the help link, the menu box etc
+    // before creating the image (for printing the chart) we want to hide unnecessary items such as the help link, the menu box etc
     // we also have to set the width and height of the "png" div (this can't be set before because then the double scrollbars won't work
     // after generating the image, all those items are returned to their previous state....
     // *** 19-08-2022: script updated by Huub ***
-    echo '<script>';
     if ($hourglass === false) {
-        echo "
+        echo "<script>
         function showimg() {
-            document.getElementById('helppopup').style.visibility = 'hidden';
+            //document.getElementById('helppopup').style.visibility = 'hidden';
             document.getElementById('menubox').style.visibility = 'hidden';
             document.getElementById('imgbutton').style.visibility = 'hidden';
+            document.getElementById('nav-tab').style.visibility = 'hidden';
             document.getElementById('png').style.width = '" . $divlen . "px';
             document.getElementById('png').style.height= '" . $divhi . "px';
 
@@ -591,64 +570,15 @@ for ($w = 0; $w < count($genarray); $w++) {
                 elItem.style.setProperty('box-shadow', 'none', 'important');
             });
 
-            // *** Previous version of html2canvas ***
-            //html2canvas( [ document.getElementById('png') ], {
-            //	onrendered: function( canvas ) {
-
-                html2canvas(document.querySelector('#png')).then(canvas => {
-                    var img = canvas.toDataURL();
-
-                    // *** Show image at the same page ***
-                    //document.body.appendChild(canvas);
-
-                    document.getElementById('helppopup').style.visibility = 'visible';
-                    document.getElementById('menubox').style.visibility = 'visible';
-                    document.getElementById('imgbutton').style.visibility = 'visible';
-                    document.getElementById('png').style.width = 'auto';
-                    document.getElementById('png').style.height= 'auto';
-
-                    var newWin = window.open();
-                    newWin.document.open();
-                    newWin.document.write('<!DOCTYPE html><head></head><body>" . __('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ') . "<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>" . __('If you have a plotter you can use its software to print the image on one large sheet.') . "<br><br><img src=\"' + img + '\"></body></html>');
-                    newWin.document.close();
-                }
-
-            //}
-            );
-        }
-        ";
-    } else {
-        // *** Printscreen of hourglass page ***
-
-        // TODO check code.
-        $divhi = 0;
-        for ($i = 0; $i < count($genarray); $i++) {
-            if ($genarray[$i]["posx"] > $divlen) {
-                //$divlen = $genarray[$i]["posx"];
-            }
-            if ($genarray[$i]["posy"] > $divhi) {
-                $divhi = $genarray[$i]["posy"];
-            }
-        }
-        //$divlen += 200;
-        $divhi += 300;
-
-        echo "
-        function showimg() {
-            document.getElementById('png').style.width = '" . $divlen . "px';
-            document.getElementById('png').style.height= '" . $divhi . "px';
-
-            // *** Change ancestorName class, DO NOT USE A _ CHARACTER IN CLASS NAME ***
-            const el = document.querySelectorAll('.ancestorName');
-            el.forEach((elItem) => {
-                //elItem.style.setProperty('border-radius', 'none', 'important');
-                elItem.style.setProperty('box-shadow', 'none', 'important');
-            });
-
-            //html2canvas( [ document.getElementById('png') ], {
-            //	onrendered: function( canvas ) {
             html2canvas(document.querySelector('#png')).then(canvas => {
                 var img = canvas.toDataURL();
+
+                // *** Show image at the same page ***
+                //document.body.appendChild(canvas);
+
+                //document.getElementById('helppopup').style.visibility = 'visible';
+                document.getElementById('menubox').style.visibility = 'visible';
+                document.getElementById('imgbutton').style.visibility = 'visible';
                 document.getElementById('png').style.width = 'auto';
                 document.getElementById('png').style.height= 'auto';
 
@@ -656,15 +586,13 @@ for ($w = 0; $w < count($genarray); $w++) {
                 newWin.document.open();
                 newWin.document.write('<!DOCTYPE html><head></head><body>" . __('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ') . "<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>" . __('If you have a plotter you can use its software to print the image on one large sheet.') . "<br><br><img src=\"' + img + '\"></body></html>');
                 newWin.document.close();
-                }
-            //}
-            );
+            });
         }
-        ";
+        </script>";
     }
-    echo "</script>";
     ?>
 
+    <!--
     <script>
         function DoubleScroll(element) {
             var scrollbar = document.createElement('div');
@@ -685,10 +613,4 @@ for ($w = 0; $w < count($genarray); $w++) {
         }
         DoubleScroll(document.getElementById('doublescroll'));
     </script>
-
-    <?php
-    // here place div at bottom so there is some space under last boxes
-    $last = count($genarray) - 1;
-    $putit = $genarray[$last]["posy"] + 130;
-    ?>
-    <div style="position:absolute;left:1px;top:<?= $putit; ?>px;">&nbsp;</div>
+-->

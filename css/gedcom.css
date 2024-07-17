@@ -34,10 +34,6 @@ body {
     height: 0px;
 }
 
-/*
-.print_version {}
-*/
-
 #top_menu {
     width: 100%;
     margin: 0;
@@ -78,6 +74,8 @@ div.rtlsddm div {
     border: 1px solid #EED4D4;
 }
 
+/* TODO Check these items */
+/*
 div.rtlsddm #m1x ul {
     padding-right: 0px;
 }
@@ -93,7 +91,7 @@ div.rtlsddm #m4x ul {
 div.rtlsddm #mft ul {
     padding-right: 0px;
 }
-
+*/
 
 /* More space around person pop-up menu */
 /* TODO: remove old popup system */
@@ -686,13 +684,12 @@ a.nam:hover {
 
 /* center and auto-adjust width of outline table */
 table.outlinetable {
-    margin-left: auto;
-    margin-right: auto;
+    /* margin-left: auto; */
+    /* margin-right: auto; */
     width: auto;
 }
 
 .humo_version {
-    /* font-size:9px; */
     font-size: 10px;
     text-align: center;
     line-height: 15px;
@@ -790,26 +787,19 @@ div.photobooktext {
 }
 
 .help_explanation {
-    /* font-size: 95%; */
     font-weight: normal;
     font-style: normal;
 }
 
 table.ancestor_sheet {
-    width: 96%;
     text-align: center;
-    border-collapse: separate;
     border-spacing: 1px;
-    border-style: double;
-    border-color: #777777;
 }
 
 table.ancestor_sheet td {
     width: 12%;
     vertical-align: top;
     border-width: 1px;
-    border-style: double;
-    border-color: #777777;
     padding-top: 5px;
     padding-bottom: 5px;
 }

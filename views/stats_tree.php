@@ -28,6 +28,9 @@ if ($test_number != "0") {
     //$url=$person_cls->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
     $url = $person_cls->person_url2($tree_id, $fam_gedcomnumber, '', '');
 }
+
+include_once(__DIR__ . "/../include/show_tree_date.php");
+$tree_date = show_tree_date($dataDb->tree_date);
 ?>
 
 <br>

@@ -1558,6 +1558,7 @@ if (isset($_POST['step3'])) {
         }
 
         // *** progress bar ***
+        // TODO: use a function, see GEDCOM export example.
         //if (!isset($_POST['show_gedcomnumbers']) AND $progress>($progress_counter/500)){
         if (!isset($_POST['show_gedcomnumbers'])) {
             $i++;
@@ -1588,12 +1589,13 @@ if (isset($_POST['step3'])) {
                     bar.innerText = ' . $perc . ' + "%";
                 </script>';
 
+                // TODO These items doesn't work properly. Probably because of the for loops.
                 // This is for the buffer achieve the minimum size in order to flush data
                 echo str_repeat(' ', 1024 * 64);
-
                 // Send output to browser immediately
                 ob_flush();
                 flush();
+
             }
         }
 

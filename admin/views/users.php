@@ -4,38 +4,9 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
-
-// TODO create seperate controller script.
-require_once  __DIR__ . "/../models/users.php";
-$usersModel = new UsersModel($dbh);
-//$usersModel->set_user_id();
-$users['alert'] = $usersModel->update_user($dbh);
-//$users['user_id'] = $usersModel->get_user_id();
-
-// *** Check for standard admin username and password ***
-$check_admin_user = false;
-$check_admin_pw = false;
-$sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
-$check_login = $dbh->query($sql);
-while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
-    if ($check_loginDb->user_name == 'admin') {
-        $check_admin_user = true;
-    }
-    if ($check_loginDb->user_password == MD5('humogen')) {
-        $check_admin_pw = true;
-    } // *** Check old password method ***
-    $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
-    if ($check_password) {
-        $check_admin_pw = true;
-    }
-}
-
 $usersql = "SELECT * FROM humo_users ORDER BY user_name";
 $user = $dbh->query($usersql);
 ?>
-
-
 
 <h1 class="center"><?= __('Users'); ?></h1>
 
@@ -52,21 +23,21 @@ $user = $dbh->query($usersql);
     </div>
 <?php } ?>
 
-<?php if ($users['alert']) { ?>
+<?php if ($edit_users['alert']) { ?>
     <div class="alert alert-warning">
-        <strong><?= $users['alert']; ?></strong>
+        <strong><?= $edit_users['alert']; ?></strong>
     </div>
 <?php }; ?>
 
-<?php if ($check_admin_user && $check_admin_pw) { ?>
+<?php if ($edit_users['check_admin_user'] && $edit_users['check_admin_pw']) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Standard admin username and admin password is used.'); ?></strong>
     </div>
-<?php } elseif ($check_admin_user) { ?>
+<?php } elseif ($edit_users['check_admin_user']) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Standard admin username is used.'); ?></strong>
     </div>
-<?php } elseif ($check_admin_pw) { ?>
+<?php } elseif ($edit_users['check_admin_pw']) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Standard admin password is used.'); ?></strong>
     </div>
@@ -198,15 +169,9 @@ $user = $dbh->query($usersql);
             <td>
                 <!-- Select group for new user, default=family group. -->
                 <select size='1' name='add_group_id'>
-                    <?php
-                    while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) {
-                        $select = '';
-                        if ($groupDb->group_id == '2') {
-                            $select = ' selected';
-                        }
-                        echo '<option value="' . $groupDb->group_id . '"' . $select . '>' . $groupDb->group_name . '</option>';
-                    }
-                    ?>
+                    <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
+                        <option value="<?= $groupDb->group_id; ?>" <?= $groupDb->group_id == '2' ? 'selected' : ''; ?>><?= $groupDb->group_name; ?></option>
+                    <?php } ?>
                 </select>
             </td>
             <td></td>

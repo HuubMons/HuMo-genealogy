@@ -59,8 +59,8 @@ if (isset($_POST['submit_button']) && isset($tree_id)) {
         }
         return $pers_cal_date;
     }
-
 ?>
+
     <!-- TODO use div instead of table -->
     <table class="humo standard" style="width:800px;" border="1">
         <tr>

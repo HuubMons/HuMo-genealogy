@@ -4,10 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-//global $language, $language_tree, $selected_language, $dbh, $warning_exist_prefix, $warning_prefix, $warning_invalid_prefix, $warning_noname;
-//global $page, $language_file, $data2Db;
-global $phpself;
-
 include_once(__DIR__ . "/../include/select_tree.php");
 
 $prefx = '../'; // to get out of the admin map
@@ -347,7 +343,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         }
         ?>
 
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="menu_tab" value="picture_categorie">
             <input type="hidden" name="language_tree" value="<?= $language_tree; ?>">

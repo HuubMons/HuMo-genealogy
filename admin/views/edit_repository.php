@@ -9,24 +9,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
-
-// TODO create seperate controller script.
-include_once(__DIR__ . "/../include/editor_cls.php");
-$editor_cls = new editor_cls;
-
-include_once(__DIR__ . "/../include/select_tree.php");
-
-require_once  __DIR__ . "/../models/edit_repository.php";
-$editRepositoryModel = new EditorRepositoryModel($dbh);
-$editRepositoryModel->set_repo_id();
-$editRepositoryModel->update_repository($dbh, $tree_id, $db_functions, $editor_cls);
-$editRepository['repo_id'] = $editRepositoryModel->get_repo_id();
-
-
-
-$phpself = 'index.php';
-//$field_text_large = 'style="height: 100px; width:550px"';
 $field_text_large = 'style="height: 100px;"';
 
 // *** Editor icon for admin and editor: select family tree ***
@@ -43,7 +25,7 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
 <?php if (isset($_POST['repo_remove'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Really remove repository with all repository links?'); ?></strong>
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
             <input type="submit" name="repo_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
@@ -77,35 +59,30 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
         </div>
 
         <div class="col-md-auto">
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="POST" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <select size="1" name="repo_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select repository'); ?></option>
-                    <?php
-                    while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) {
-                        $selected = '';
-                        if ($editRepository['repo_id'] == $repoDb->repo_id) {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="' . $repoDb->repo_id . '"' . $selected . '>' .
-                            @$repoDb->repo_gedcomnr . ', ' . $repoDb->repo_name . ' ' . $repoDb->repo_place . '</option>' . "\n";
-                    }
-                    ?>
+                    <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
+                        <option value="<?= $repoDb->repo_id; ?>" <?= $editRepository['repo_id'] == $repoDb->repo_id ? 'selected' : ''; ?>>
+                            <?= @$repoDb->repo_gedcomnr; ?>, <?= $repoDb->repo_name; ?> <?= $repoDb->repo_place; ?>
+                        </option>
+                    <?php } ?>
                 </select>
             </form>
         </div>
 
         <div class="col-auto">
             <?= __('or'); ?>:
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="POST" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <input type="submit" name="add_repo" value="<?= __('Add repository'); ?>" class="btn btn-sm btn-secondary">
             </form>
         </div>
     </div>
 </div>
-<?php
 
+<?php
 // *** Show selected repository ***
 if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
     if (isset($_POST['add_repo'])) {
@@ -146,7 +123,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
     }
 ?>
 
-    <form method="POST" action="<?= $phpself; ?>">
+    <form method="POST" action="index.php">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
         <div class="p-2 my-md-2 genealogy_search container-md">
@@ -186,7 +163,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Date'); ?>
                 </div>
                 <div class="col-md-4">
-                    <?= $editor_cls->date_show($repo_date, "repo_date"); ?>
+                    <?= $editRepository['editor_cls']->date_show($repo_date, "repo_date"); ?>
                 </div>
             </div>
 
@@ -216,7 +193,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Text'); ?>
                 </div>
                 <div class="col-md-4">
-                    <textarea rows="1" name="repo_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($repo_text); ?></textarea>
+                    <textarea rows="1" name="repo_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editRepository['editor_cls']->text_show($repo_text); ?></textarea>
                 </div>
             </div>
 

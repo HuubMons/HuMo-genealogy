@@ -18,64 +18,20 @@ include_once(__DIR__ . '/layout_pdf.php');
 
 
 // TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../app/model/ancestor.php";
 $get_ancestor = new AncestorModel($dbh);
 $data["main_person"] = $get_ancestor->getMainPerson();
 $rom_nr = $get_ancestor->getNumberRoman();
 
-
-
 $db_functions->set_tree_id($tree_id);
+
+$get_ancestors = $get_ancestor->get_ancestors($db_functions, $data["main_person"]);
+$data = array_merge($data, $get_ancestors);
+
+
 
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
-
-// The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
-// person 01
-$personDb = $db_functions->get_person($data["main_person"]);
-$gedcomnumber[1] = $personDb->pers_gedcomnumber;
-$pers_famc[1] = $personDb->pers_famc;
-$sexe[1] = $personDb->pers_sexe;
-$parent_array[2] = '';
-$parent_array[3] = '';
-if ($pers_famc[1]) {
-    $parentDb = $db_functions->get_family($pers_famc[1]);
-    $parent_array[2] = $parentDb->fam_man;
-    $parent_array[3] = $parentDb->fam_woman;
-    $marr_date_array[2] = $parentDb->fam_marr_date;
-    $marr_place_array[2] = $parentDb->fam_marr_place;
-}
-// end of person 1
-
-// Loop to find person data
-$count_max = 64;
-
-for ($counter = 2; $counter < $count_max; $counter++) {
-    $gedcomnumber[$counter] = '';
-    $pers_famc[$counter] = '';
-    $sexe[$counter] = '';
-    if ($parent_array[$counter]) {
-        $personDb = $db_functions->get_person($parent_array[$counter]);
-        $gedcomnumber[$counter] = $personDb->pers_gedcomnumber;
-        $pers_famc[$counter] = $personDb->pers_famc;
-        $sexe[$counter] = $personDb->pers_sexe;
-    }
-
-    $Vcounter = $counter * 2;
-    $Mcounter = $Vcounter + 1;
-    $parent_array[$Vcounter] = '';
-    $parent_array[$Mcounter] = '';
-    $marr_date_array[$Vcounter] = '';
-    $marr_place_array[$Vcounter] = '';
-    if ($pers_famc[$counter]) {
-        $parentDb = $db_functions->get_family($pers_famc[$counter]);
-        $parent_array[$Vcounter] = $parentDb->fam_man;
-        $parent_array[$Mcounter] = $parentDb->fam_woman;
-        $marr_date_array[$Vcounter] = $parentDb->fam_marr_date;
-        $marr_place_array[$Vcounter] = $parentDb->fam_marr_place;
-    }
-}
 
 // this function parses the input string to see how many lines it would take in the ancestor sheet box
 // it forces linebreaks when max nr of chars is encountered
@@ -128,10 +84,10 @@ if (__('&#134;') == '&#134;' or __('&#134;') == "†") {
 
 function data_array($id, $width, $height)
 {
-    global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $gedcomnumber, $dsign;
+    global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $data, $dsign;
 
-    if (isset($gedcomnumber[$id]) && $gedcomnumber[$id] != "") {
-        @$personDb = $db_functions->get_person($gedcomnumber[$id]);
+    if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
+        @$personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $person_cls = new person_cls($personDb);
         $pers_privacy = $person_cls->privacy;
         // get length of original name, birth, death strings
@@ -257,7 +213,7 @@ function data_array($id, $width, $height)
 
 function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellwidth)
 {
-    global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $data_array, $posy, $posx, $marr_date_array, $marr_place_array, $sexe, $gedcomnumber;
+    global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $data_array, $posy, $posx, $data;
 
     $pdf->SetLeftMargin(16);
     $marg = 16;
@@ -265,7 +221,7 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
         if ($type == "pers") { // person's name & details
             data_array($m, $maxchar, $numrows);
             $pdf->SetFont($pdf_font, 'B', 8);
-            if ($m % 2 == 0 or ($m == 1 and $sexe[$m] == "M")) { // male
+            if ($m % 2 == 0 or ($m == 1 and $data["sexe"][$m] == "M")) { // male
                 $pdf->SetFillColor(191, 239, 255);
             } else { // female
                 $pdf->SetFillColor(255, 228, 225);
@@ -277,18 +233,18 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             $used = $data_array[$m][3] + $data_array[$m][4] + $data_array[$m][5];
         } else {  // marr date & place
             $space = '';
-            if ($marr_date_array[$m] != '') {
+            if ($data["marr_date"][$m] != '') {
                 $space = ' ';
             }
-            if ($gedcomnumber[$m] != '') {
-                @$personDb = $db_functions->get_person($gedcomnumber[$m]);
+            if ($data["gedcomnumber"][$m] != '') {
+                @$personDb = $db_functions->get_person($data["gedcomnumber"][$m]);
                 $person_cls = new person_cls($personDb);
                 $pers_privacy = $person_cls->privacy;
             } else {
                 $pers_privacy = false;
             }
-            if ($gedcomnumber[$m + 1] != '') {
-                @$womanDb = $db_functions->get_person($gedcomnumber[$m + 1]);
+            if ($data["gedcomnumber"][$m + 1] != '') {
+                @$womanDb = $db_functions->get_person($data["gedcomnumber"][$m + 1]);
                 $woman_cls = new person_cls($womanDb);
                 $woman_privacy = $person_cls->privacy;
             } else {
@@ -298,7 +254,7 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             if ($pers_privacy || $woman_privacy) {
                 $marr = __('PRIVACY FILTER');
             } else {
-                $marr = __('X') . ' ' . $marr_date_array[$m] . $space . $marr_place_array[$m];
+                $marr = __('X') . ' ' . $data["marr_date"][$m] . $space . $data["marr_place"][$m];
             }
             $result = parse_line($marr, $maxchar, $numrows);
             $marg += $cellwidth;
@@ -369,7 +325,7 @@ $posx = $pdf->GetX();
 
 $exist = false;
 for ($x = 16; $x < 32; $x++) {
-    if ($gedcomnumber[$x] != '') {
+    if ($data["gedcomnumber"][$x] != '') {
         $exist = true;
     }
 }
@@ -391,7 +347,7 @@ if ($exist == true) {
 }
 $exist1 = false;
 for ($x = 8; $x < 16; $x++) {
-    if ($gedcomnumber[$x] != '') {
+    if ($data["gedcomnumber"][$x] != '') {
         $exist1 = true;
     }
 }
@@ -401,7 +357,7 @@ if ($exist == true || $exist1 == true) {
 }
 $exist2 = false;
 for ($x = 4; $x < 8; $x++) {
-    if ($gedcomnumber[$x] != '') {
+    if ($data["gedcomnumber"][$x] != '') {
         $exist2 = true;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * First test scipt made by: Klaas de Winkel
+ * First test script made by: Klaas de Winkel
  * Graphical script made by: Theo Huitema
  * Graphical part: better lay-out (colours) and pictures made by: Rene Janssen
  * Graphical part: improved lay-out by: Huub Mons.
@@ -18,7 +18,6 @@ include_once(__DIR__ . "/layout_pdf.php");
 
 
 // TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
 require_once  __DIR__ . "/../app/model/ancestor.php";
 $get_ancestor = new AncestorModel($dbh);
 $data["main_person"] = $get_ancestor->getMainPerson();
@@ -26,8 +25,8 @@ $rom_nr = $get_ancestor->getNumberRoman();
 
 // TODO for now using extended class.
 $data["text_presentation"] =  $get_ancestor->getTextPresentation();
-$data["family_expanded"] =  $get_ancestor->getTextPresentation();
-$data["picture_presentation"] =  $get_ancestor->getTextPresentation();
+$data["family_expanded"] =  $get_ancestor->getFamilyExpanded();
+$data["picture_presentation"] =  $get_ancestor->getPicturePresentation();
 // source_presentation is saved in session.
 
 

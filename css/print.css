@@ -19,18 +19,6 @@ body {
     float: none;
 }
 
-.print_version {
-    display: none;
-}
-
-div#top_menu {
-    display: none;
-}
-
-#top_menu {
-    display: none;
-}
-
 #content {
     display: block;
     height: auto;

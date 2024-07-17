@@ -17,6 +17,17 @@ class LanguageEditorModel
         return $language;
     }
 
+    /*
+    public function get_languages_array($humo_option)
+    {
+        if (!isset($humo_option["hide_languages"])) {
+            $humo_option["hide_languages"] = '';
+        }
+        $language_editor['hide_languages_array'] = explode(";", $humo_option["hide_languages"]);
+        return $language_editor['hide_languages_array'];
+    }
+    */
+
     public function saveFile($language_editor)
     {
         $message = '';
@@ -31,10 +42,10 @@ class LanguageEditorModel
                     $_SESSION['line_array'][$i]['msgstr'] = $content;
                     // store posted lines - these will be written to the file with the msgstr_save function.
                     // the other ones will just get copied straight from the array
-                    $save_array[$i] = msgstr_save($content);
+                    $save_array[$i] = $this->msgstr_save($content);
                 } elseif (isset($_SESSION['line_array'][$i]['msgstr'])) {
                     // non displayed items - these will be written to the file with the msgstr_save2 function.
-                    $save_array[$i] = msgstr_save2($_SESSION['line_array'][$i]['msgstr']);
+                    $save_array[$i] = $this->msgstr_save2($_SESSION['line_array'][$i]['msgstr']);
                 }
             }
 
@@ -91,5 +102,37 @@ class LanguageEditorModel
             }
         }
         return $message;
+    }
+
+    private function msgstr_save($string)
+    {
+        // formats the displayed msgstr text for saving in .po file (text that is displayed)
+        $string = strip_tags($string);
+        if ($string && $string !== "<br>") {
+            $string = htmlspecialchars_decode($string);
+            $string = str_replace('"', '\"', $string);  // we want the " with backslash since msgstr afterwards gets " around it!
+            $find = array("\\n<br>", "\r\n", "&nbsp;", "&#32;", '\\\\"');
+            $replace = array("\\n", "\"\r\"", " ", " ", '\\"');
+            if (substr($string, -4) === "<br>") {
+                $string = substr($string, 0, -4);
+            }
+            $string = "\"" . str_replace($find, $replace, $string) . "\"\n\n";
+        } else {
+            $string = "\"\"\n\n";
+        }
+        return $string;
+    }
+
+    private function msgstr_save2($string)
+    {
+        // formats the non displayed msgstr text for saving in .po file 
+        if ($string && $string != "<br>") {
+            $find = array("\\n<br>", "\r\n", "&nbsp;", "&#32;", '\\\\"');
+            $replace = array("\\n", "\"\r\"", " ", " ", '\\"');
+            $string = str_replace($find, $replace, $string) . "\n";
+        } else {
+            $string = "\"\"\n\n";
+        }
+        return $string;
     }
 }

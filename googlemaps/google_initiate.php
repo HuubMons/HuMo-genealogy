@@ -326,15 +326,12 @@
         unset($_SESSION['desc_array']);
     }
 
-    // NEW ~~~~~~~~~~~~~~~~~~
     $_SESSION['anc_array'] = '';
     if ($flag_anc_search == 1 and $anc_array != '') {
         $_SESSION['anc_array'] = $anc_array; // for use in namesearch.php
     } else {
         unset($_SESSION['anc_array']);
     }
-    // END NEW ~~~~~~~~~~~~~~
-
     ?>
 
     function setcolor(total) {

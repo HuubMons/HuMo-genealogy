@@ -972,7 +972,11 @@ class person_cls
 
             $text_start .= '<a href="' . $start_url . '"';
             if ($extended) {
-                $text_start .= ' class="nam" style="z-index:100;font-size:10px; display:block; width:100%; height:100%" ';
+                if ($page == 'ancestor_sheet') {
+                    $text_start .= ' class="nam" style="z-index:100;display:block; width:100%; height:100%" ';
+                } else {
+                    $text_start .= ' class="nam" style="z-index:100;font-size:10px; display:block; width:100%; height:100%" ';
+                }
             }
 
             $random_nr = rand(); // *** Generate a random number to avoid double numbers ***
@@ -1316,12 +1320,13 @@ class person_cls
                 // *** Ancestor reports uses cells, not sections. Ancestor M/F/? icons are generated in ancestor script ***
                 if ($screen_mode == "RTF" and !isset($_POST['ancestor_report'])) {
                     // *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
-                    if ($personDb->pers_sexe == "M")
+                    if ($personDb->pers_sexe == "M") {
                         $sect->addImage('images/man.jpg', null);
-                    elseif ($personDb->pers_sexe == "F")
+                    } elseif ($personDb->pers_sexe == "F") {
                         $sect->addImage('images/woman.jpg', null);
-                    else
+                    } else {
                         $sect->addImage('images/unknown.jpg', null);
+                    }
                     // SOURCE IS MISSING
                 } else {
                     $text_name .= $dirmark1;
@@ -1338,8 +1343,9 @@ class person_cls
 
                     // *** Source by sexe ***
                     $source_array = '';
-                    if ($person_kind != 'outline' and $person_kind != 'outline_pdf')
+                    if ($person_kind != 'outline' and $person_kind != 'outline_pdf') {
                         $source_array = show_sources2("person", "pers_sexe_source", $personDb->pers_gedcomnumber);
+                    }
                     if ($source_array) {
                         $start_name .= $source_array['text'] . ' ';
                         $templ_name["name_sexe_source"] = $source_array['text'];
@@ -1424,6 +1430,7 @@ class person_cls
             $text_colour = $name["colour_mark"];
 
             // *** Show age of parent2 when married (don't show age if it's an relation) ***
+            // TODO check global
             global $relation_check;
             if (!$privacy && $person_kind == 'parent2' && $familyDb->fam_marr_date != '') {
                 $process_age = new calculate_year_cls;
@@ -1594,8 +1601,10 @@ class person_cls
                         $text = '<a href="' . $url . '">' . $text . '</a>';
                     }
 
+                    $templ_name["name_parents"] .= '.';
+
                     //$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
-                    $text_parents .= '<span class="parents">' . $text . ' </span>';
+                    $text_parents .= '<span class="parents">' . $text . '.</span>';
                 }
             }
 
@@ -1683,8 +1692,10 @@ class person_cls
                             $text = '<a href="' . $url . '">' . $text . '</a>';
                     }
 
+                    $templ_name["name_parents"] .= '.';
+
                     //$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
-                    $text_parents .= '<span class="parents">' . $text . ' </span>';
+                    $text_parents .= '<span class="parents">' . $text . '.</span>';
                 }
             }
 
@@ -1816,16 +1827,19 @@ $own_code=0;
                     $name_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'name');
                     // *** Can be used to hide $event_gedcom text ***
                     $previous_event_gedcom = '';
+                    $known_as = false; // *** Only show start text once ***
                     foreach ($name_qry as $nameDb) {
                         $eventnr++;
                         $text = '';
-                        if ($nameDb->event_gedcom == '_AKAN') {
+                        if ($nameDb->event_gedcom == '_AKAN' && !$known_as) {
                             $text .= __('Also known as') . ': ';
+                            $known_as = true;
                         }
 
                         // *** MyHeritage Family Tree Builder. Only show first "Also known as" text ***
-                        if ($nameDb->event_gedcom == '_AKA' && $previous_event_gedcom != '_AKA') {
+                        if ($nameDb->event_gedcom == '_AKA' && $previous_event_gedcom != '_AKA' && !$known_as) {
                             $text .= __('Also known as') . ': ';
+                            $known_as = true;
                         }
 
                         // *** December 2021: Nickname is allready shown as "Nickname".
@@ -1897,27 +1911,28 @@ $own_code=0;
 
                 // *** Own code ***
                 if ($user['group_own_code'] == 'j' and $personDb->pers_own_code) {
+                    $text = '';
                     if ($temp) {
-                        $templ_person[$temp] .= ", ";
+                        if ($data["family_expanded"] != 'compact') {
+                            $templ_person[$temp] .= '.';
+                            // *** Because of <span> the <br> is added in text ***
+                            $text = '.<br>';
+                        } else {
+                            $templ_person[$temp] .= ', ';
+                            $text = ', ';
+                        }
                     }
-                    //$templ_person["own_code"]=ucfirst($personDb->pers_own_code);
+
+                    if (!$temp || $data["family_expanded"] != 'compact') {
+                        $templ_person["own_code_start"] = __('Own code') . ': ';
+                        $text .= '<b>' . __('Own code') . ':</b> ';
+                    } else {
+                        $templ_person["own_code_start"] = lcfirst(__('Own code')) . ': ';
+                        $text .= '<b>' . lcfirst(__('Own code')) . ':</b> ';
+                    }
+
                     $templ_person["own_code"] = $personDb->pers_own_code;
 
-                    if (!$temp)
-                        $templ_person["own_code_start"] = __('Own code') . ': ';
-                    else
-                        $templ_person["own_code_start"] = lcfirst(__('Own code')) . ': ';
-
-                    if (!$process_text || $data["family_expanded"] != 'compact') {
-                        $text = '<b>' . __('Own code') . ':</b> ';
-                    } else {
-                        $text = ', <b>' . lcfirst(__('Own code')) . ':</b> ';
-                    }
-                    if ($process_text && $data["family_expanded"] != 'compact') {
-                        $text = '<br>' . $text;
-                    }
-                    //PDF expanded view
-                    //$process_text.='<span class="pers_own_code">'.$text.$templ_person["own_code"].'</span>';
                     $process_text .= '<span class="pers_own_code">' . $text . $personDb->pers_own_code . '</span>';
 
                     $temp = "own_code";
@@ -2015,23 +2030,24 @@ $own_code=0;
 
                 // *** Check for birth items, if needed use a new line ***
                 if ($text) {
-                    if (!$temp_previous)
+                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
                         $templ_person["born_start"] = ucfirst(__('born')) . ' ';
-                    else {
+                        $text = '<b>' . ucfirst(__('born')) . '</b> ' . $text;
+                    } else {
                         $templ_person["born_start"] = __('born') . ' ';
-                        if ($temp_previous) {
+                        $text = '<b>' . __('born') . '</b> ' . $text;
+                    }
+
+                    if ($temp_previous) {
+                        if ($data["family_expanded"] != 'compact') {
+                            $templ_person[$temp_previous] .= '.';
+                            $text = '.<br>' . $text;
+                        } else {
                             $templ_person[$temp_previous] .= ', ';
+                            $text = ', ' . $text;
                         }
                     }
 
-                    if (!$process_text or $data["family_expanded"] != 'compact') {
-                        $text = '<b>' . ucfirst(__('born')) . '</b> ' . $text;
-                    } else {
-                        $text = ', <b>' . __('born') . '</b> ' . $text;
-                    }
-                    if ($process_text && $data["family_expanded"] != 'compact') {
-                        $text = '<br>' . $text;
-                    }
                     $process_text .= $text;
                 }
 
@@ -2153,23 +2169,24 @@ $own_code=0;
 
                 // *** check for baptise items, if needed use a new line ***
                 if ($text) {
-                    if (!$temp_previous)
+                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
                         $templ_person["bapt_start"] = ucfirst(__('baptised')) . ' ';
-                    else {
+                        $text = '<b>' . ucfirst(__('baptised')) . '</b> ' . $text;
+                    } else {
                         $templ_person["bapt_start"] = __('baptised') . ' ';
-                        if ($temp_previous) {
+                        $text = '<b>' . __('baptised') . '</b> ' . $text;
+                    }
+
+                    if ($temp_previous) {
+                        if ($data["family_expanded"] != 'compact') {
+                            $templ_person[$temp_previous] .= '.';
+                            $text = '.<br>' . $text;
+                        } else {
                             $templ_person[$temp_previous] .= ', ';
+                            $text = ', ' . $text;
                         }
                     }
 
-                    if (!$process_text || $data["family_expanded"] != 'compact') {
-                        $text = '<b>' . ucfirst(__('baptised')) . '</b> ' . $text;
-                    } else {
-                        $text = ', <b>' . __('baptised') . '</b> ' . $text;
-                    }
-                    if ($process_text && $data["family_expanded"] != 'compact') {
-                        $text = '<br>' . $text;
-                    }
                     $process_text .= $text;
                 }
 
@@ -2338,23 +2355,24 @@ $own_code=0;
 
                 // *** Check for death items, if needed use a new line ***
                 if ($text) {
-                    if (!$temp_previous)
+                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
                         $templ_person["dead_start"] = ucfirst(__('died')) . ' ';
-                    else {
+                        $text = '<b>' . ucfirst(__('died')) . '</b> ' . $text;
+                    } else {
                         $templ_person["dead_start"] = __('died') . ' ';
-                        if ($temp_previous) {
+                        $text = '<b>' . __('died') . '</b> ' . $text;
+                    }
+
+                    if ($temp_previous) {
+                        if ($data["family_expanded"] != 'compact') {
+                            $templ_person[$temp_previous] .= '.';
+                            $text = '.<br>' . $text;
+                        } else {
                             $templ_person[$temp_previous] .= ', ';
+                            $text = ', ' . $text;
                         }
                     }
 
-                    if (!$process_text || $data["family_expanded"] != 'compact') {
-                        $text = '<b>' . ucfirst(__('died')) . '</b> ' . $text;
-                    } else {
-                        $text = ', <b>' . __('died') . '</b> ' . $text;
-                    }
-                    if ($process_text && $data["family_expanded"] != 'compact') {
-                        $text = '<br>' . $text;
-                    }
                     $process_text .= $text;
                 }
 
@@ -2450,23 +2468,24 @@ $own_code=0;
                         $method_of_burial = __('buried');
                     }
 
-                    if (!$temp_previous)
+                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
                         $templ_person["buri_start"] = ucfirst($method_of_burial) . ' ';
-                    else {
+                        $text = '<b>' . ucfirst($method_of_burial) . '</b> ' . $text;
+                    } else {
                         $templ_person["buri_start"] = $method_of_burial . ' ';
-                        if ($temp_previous) {
+                        $text = '<b>' . $method_of_burial . '</b> ' . $text;
+                    }
+
+                    if ($temp_previous) {
+                        if ($data["family_expanded"] != 'compact') {
+                            $templ_person[$temp_previous] .= '.';
+                            $text = '.<br>' . $text;
+                        } else {
                             $templ_person[$temp_previous] .= ', ';
+                            $text = ', ' . $text;
                         }
                     }
 
-                    if (!$process_text || $data["family_expanded"] != 'compact') {
-                        $text = '<b>' . ucfirst($method_of_burial) . '</b> ' . $text;
-                    } else {
-                        $text = ', <b>' . $method_of_burial . '</b> ' . $text;
-                    }
-                    if ($process_text && $data["family_expanded"] != 'compact') {
-                        $text = '<br>' . $text;
-                    }
                     $process_text .= $text;
                 }
 
@@ -2499,19 +2518,18 @@ $own_code=0;
                             } else {
                                 $occupation = __('occupations');
                             }
-                            if ($data["family_expanded"] != 'compact') {
-                                $process_text .= '<br><span class="profession"><b>' . ucfirst($occupation) . ':</b> ';
-                            } else {
-                                // punt hoort bij vorige item.
-                                if ($process_text) {
-                                    $process_text .= '. <span class="profession">';
-                                }
-                                $process_text .= '<b>' . ucfirst($occupation) . ':</b> ';
-                            }
 
+                            // *** Period belongs to previous item ***
                             if ($temp) {
+                                $process_text .= '. ';
                                 $templ_person[$temp] .= ". ";
                             }
+
+                            if ($data["family_expanded"] != 'compact') {
+                                $process_text .= '<br>';
+                            }
+                            $process_text .= '<span class="profession"><b>' . ucfirst($occupation) . ':</b> ';
+
                             $templ_person["prof_start"] = ucfirst($occupation) . ': ';
                         }
                         if ($eventnr > 1) {
@@ -2540,14 +2558,12 @@ $own_code=0;
                         if ($eventDb->event_text) {
                             $work_text = process_text($eventDb->event_text);
                             if ($work_text) {
-                                //if($temp) { $templ_person[$temp].=", "; }
                                 if ($temp) {
                                     $templ_person[$temp] .= " ";
                                 }
                                 $templ_person["prof_text" . $eventnr] = strip_tags($work_text);
                                 $temp = "prof_text" . $eventnr;
 
-                                //$process_text.=", ".$work_text;
                                 $process_text .= " " . $work_text;
                             }
                         }
@@ -2555,11 +2571,9 @@ $own_code=0;
                         // *** Profession source ***
                         $source_array = show_sources2("person", "pers_event_source", $eventDb->event_id);
                         if ($source_array) {
-                            //if($screen_mode=='PDF') {
                             $templ_person["prof_source"] = $source_array['text'];
                             $temp = "prof_source";
-                            //}
-                            //else
+
                             $process_text .= $source_array['text'];
 
                             // *** Extra item, so it's possible to add a comma or space ***
@@ -2585,18 +2599,17 @@ $own_code=0;
                         $eventnr++;
                         if ($eventnr == '1') {
                             $religion = $nr_occupations == '1' ? __('religion') : __('religions');
-                            if ($data["family_expanded"] != 'compact') {
-                                $process_text .= '<br><span class="religion"><b>' . ucfirst($religion) . ':</b> ';
-                            } else {
-                                if ($process_text) {
-                                    $process_text .= '. <span class="religion">';
-                                }
-                                $process_text .= '<b>' . ucfirst($religion) . ':</b> ';
-                            }
 
                             if ($temp) {
+                                $process_text .= '. ';
                                 $templ_person[$temp] .= ". ";
                             }
+
+                            if ($data["family_expanded"] != 'compact') {
+                                $process_text .= '<br>';
+                            }
+                            $process_text .= '<span class="religion"><b>' . ucfirst($religion) . ':</b> ';
+
                             $templ_person["religion_start"] = ucfirst($religion) . ': ';
                         }
                         if ($eventnr > 1) {
@@ -2661,7 +2674,7 @@ $own_code=0;
 
                     if ($process_text and $text) {
                         if ($data["family_expanded"] != 'compact') {
-                            $text = '<br>' . $text;
+                            $text = '.<br>' . $text;
                         } else {
                             $text = '. ' . $text;
                         }
@@ -2680,6 +2693,7 @@ $own_code=0;
                         $templ_person["pers_source"] = $source_array['text'];
                         $temp = "pers_source";
                     } else {
+                        //if ($temp) $process_text .= '. '; // disabled for now, otherwise a double period after professions.
                         $process_text .= $source_array['text'];
                     }
                 }

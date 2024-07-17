@@ -456,35 +456,33 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     <input type="hidden" name="adv_search" value="1">
                     &nbsp;<input type="submit" name="reset_all" class="col-sm-1 btn btn-sm btn-info" value="<?= __('Clear fields'); ?>">
 
+                    <!-- Help popup. Remark: Bootstrap popover javascript in layout script. -->
+                    <style>
+                        .popover {
+                            max-width: 500px;
+                        }
+                        .popover-body {
+                            height: 300px;
+                            overflow-y: auto;
+                        }
+                    </style>
+                    <?php $popup_text = '<b>' . __('Wildcards:') . '</b><br>' .
+                        __('_ = 1 character') . '<br>' .
+                        __('% = >1 character') . '<br><br>' .
+
+                        '<b>' . __('Tip') . ':</b><br>' .
+                        __('With Advanced Search you can easily create lists like: all persons with surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in <b>Amsterdam</b><br>You can also search without a name: all persons who <b>died in 1901</b> in <b>Amstelveen.</b>') . '<br><br>'; ?>
+                    <?php $popup_text = str_replace('"', "'", $popup_text); ?>
+                    <div class="col-sm-auto">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
+                            <?= __('Help'); ?>
+                        </button>
+                    </div>
+
                     <div class="col-sm-2">
                         <a href="<?= $list_var2; ?>adv_search=0&reset=1"><?= __('Standard search'); ?></a>
                     </div>
 
-                    <!--======== HELP POPUP ======================== -->
-                    <div class="col-2 <?= $rtlmarker; ?>sddm" style="display: inline;">
-                        &nbsp;&nbsp;&nbsp;<a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',10,150)" onmouseout="mclosetime()"><strong><?= __('Help'); ?></strong></a>
-                        <div class="sddm_fixed" style="z-index:40; text-align:<?= $alignmarker; ?>; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                            <table style="width:98%;" class="humo">
-                                <tr>
-                                    <td><?= __('Wildcards:'); ?></td>
-                                    <td><?= __('_ = 1 character'); ?><br><?= __('% = >1 character'); ?></td>
-                                </tr>
-
-                                <tr>
-                                    <td style="width:50;"><?= __('Tip'); ?>:</td>
-                                    <td>
-                                        <?= __('With Advanced Search you can easily create lists like: all persons with surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in <b>Amsterdam</b><br>You can also search without a name: all persons who <b>died in 1901</b> in <b>Amstelveen.</b>'); ?>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <?= __('Note:</td><td>When you use the birth and/ or death search boxes please note this:<br>1. Persons for whom no birth/ death data exist in the database, will not be found.<br>2. Persons with privacy settings will not be shown, unless you are logged in with the proper permissions.<br>These persons can be found by searching by name and/ or surname only.'); ?>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             <?php } ?>
         </div>

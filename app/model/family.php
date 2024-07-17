@@ -43,7 +43,6 @@ class FamilyModel
     // TEST
     //use Hello, World;
 
-
     public function __construct($dbh)
     {
         $this->dbh = $dbh;
@@ -147,7 +146,6 @@ class FamilyModel
             $_SESSION['save_picture_presentation'] = $_GET["picture_presentation"];
         }
         // *** Default setting is selected by administrator ***
-        //$picture_presentation=$user['group_picture_presentation'];
         if (isset($_SESSION['save_picture_presentation']) && in_array($_SESSION['save_picture_presentation'], $picture_presentation_array)) {
             $picture_presentation = $_SESSION['save_picture_presentation'];
         }
@@ -231,6 +229,9 @@ class FamilyModel
         $data['header_active'][] = $name == 'Descendant report' ? 'active' : '';
         $data['header_text'][] = __('Descendant report');
 
+
+        if (isset($_GET['dnachart'])) $name='DNA charts';
+
         if ($humo_option["url_rewrite"] == 'j') {
             $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person;
         } else {
@@ -239,6 +240,16 @@ class FamilyModel
         $data['header_link'][] = $link;
         $data['header_active'][] = $name == 'Descendant chart' ? 'active' : '';
         $data['header_text'][] = __('Descendant chart');
+
+        // *** Added in july 2024 ***
+        if ($humo_option["url_rewrite"] == 'j') {
+            $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person.'&amp;dnachart=mtdna';
+        } else {
+            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person.'&amp;dnachart=mtdna';
+        }
+        $data['header_link'][] = $link;
+        $data['header_active'][] = $name == 'DNA charts' ? 'active' : '';
+        $data['header_text'][] = __('DNA Charts');
 
         $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
         $path_tmp .= 'id=' . $family_id . '&amp;main_person=' . $main_person;
@@ -250,7 +261,7 @@ class FamilyModel
         // *** Tab menu ***
         $text = '
         <h1>' . __('Descendants') . '</h1>
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs d-print-none" id="nav-tab">
             <li class="nav-item me-1">
                 <a class="nav-link genealogy_nav-link ' . $data['header_active'][0] . '" href="' . $data['header_link'][0] . '">' . $data['header_text'][0] . '</a>
             </li>
@@ -259,6 +270,9 @@ class FamilyModel
             </li>
             <li class="nav-item me-1">
                 <a class="nav-link genealogy_nav-link ' . $data['header_active'][2] . '" href="' . $data['header_link'][2] . '">' . $data['header_text'][2] . '</a>
+            </li>
+            <li class="nav-item me-1">
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][3] . '" href="' . $data['header_link'][3] . '">' . $data['header_text'][3] . '</a>
             </li>
         </ul>
         <!-- Align content to the left -->

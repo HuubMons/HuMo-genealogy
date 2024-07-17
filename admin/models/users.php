@@ -62,4 +62,28 @@ class UsersModel
 
         return $alert;
     }
+
+    public function check_username_password($dbh)
+    {
+        // *** Check for standard admin username and password ***
+        $user['check_admin_user'] = false;
+        $user['check_admin_pw'] = false;
+        $sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
+        $check_login = $dbh->query($sql);
+        while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
+            if ($check_loginDb->user_name == 'admin') {
+                $user['check_admin_user'] = true;
+            }
+            // *** Check old password method ***
+            if ($check_loginDb->user_password == MD5('humogen')) {
+                $user['check_admin_pw'] = true;
+            }
+            $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
+            if ($check_password) {
+                $user['check_admin_pw'] = true;
+            }
+        }
+
+        return $user;
+    }
 }

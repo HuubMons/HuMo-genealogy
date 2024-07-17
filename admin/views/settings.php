@@ -274,7 +274,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         <tr>
             <td><?= __('Mail: username'); ?></td>
             <td><input type="text" name="email_user" value="<?= $humo_option["email_user"]; ?>" size="32">
-                <?= __('Gmail: [email_address]@gmail.com'); ?>
+                <?= __('Gmail: [email_address]@gmail.com'); ?>. <b><?= __('If filled in: will be used as mail sender.');?></b>
             </td>
         </tr>
 

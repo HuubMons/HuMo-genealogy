@@ -9,15 +9,8 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
-
-// TODO rename script to maps?
-// TODO create seperate controller script.
-//require_once  __DIR__ . "/../models/maps.php";
-//$maps_model = new MapModel($dbh);
-
-
-
+// TODO rename script to maps or edit_maps?
+// TODO create controller/ model.
 ?>
 
 <h1 align=center><?= __('World map administration'); ?></h1>
@@ -217,10 +210,12 @@ if (!defined('ADMIN_PAGE')) {
                 ?>
             </td>
         </tr>
+        <br>
+        <form action="index.php?page=google_maps" method="post">
+            <input type="submit" style="font-size:14px" value="<?= __('Back'); ?>" class="btn btn-sm btn-secondary">
+            <br>
+        </form><br>
     <?php
-        echo '<br><form action="index.php?page=google_maps" method="post">';
-        echo '<input type="submit" style="font-size:14px" value="' . __('Back') . '">';
-        echo '<br></form><br>';
     }  // end - if add to database
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MAIN SCREEN on entry into the google maps option in the admin menu
@@ -291,7 +286,7 @@ if (!defined('ADMIN_PAGE')) {
                 <form action="index.php?page=google_maps" method="post" style="display:inline">
                     <input type="radio" name="use_world_map" value="Google" <?= $use_world_map == 'Google' ? ' checked' : '' ?>> <?= __('Use Google Maps'); ?><br>
                     <input type="radio" name="use_world_map" value="OpenStreetMap" <?= $use_world_map == 'OpenStreetMap' ? ' checked' : '' ?>> <?= __('Use OpenStreetMap'); ?><br>
-                    <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save">
+                    <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save" class="btn btn-sm btn-secondary">
                 </form>
 
                 <?php if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Google') {; ?>
@@ -394,13 +389,13 @@ if (!defined('ADMIN_PAGE')) {
                     <form action="index.php?page=google_maps" method="post" style="display:inline">
                         <?= __('API key'); ?> 1 (restriction: <strong>HTTP referrers</strong>):
                         <input type="text" id="api_1" name="api_1" value="<?= $api_1; ?>" size="40">
-                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save">
+                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save" class="btn btn-sm btn-secondary">
                     </form><br>
 
                     <form action="index.php?page=google_maps" method="post" style="display:inline">
                         <?= __('API key') . " 2 (restriction: <strong>IP addresses</strong>): "; ?>
                         &nbsp;&nbsp;&nbsp;<input type="text" id="api_2" name="api_2" value="<?= $api_2; ?>" size="40">
-                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api2_save">
+                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api2_save" class="btn btn-sm btn-secondary">
                     </form><br>
                 <?php } ?>
 
@@ -412,7 +407,7 @@ if (!defined('ADMIN_PAGE')) {
                     <form action="index.php?page=google_maps" method="post" style="display:inline">
                         <?= __('API key') . ' Geokeo: '; ?>
                         <input type="text" id="api_geokeo" name="api_geokeo" value="<?= $api_geokeo; ?>" size="40">
-                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save">
+                        <input type="submit" style="font-size:14px" value="<?= __('Save'); ?>" name="api_save" class="btn btn-sm btn-secondary">
                     </form><br><br>
                 <?php } ?>
             </td>
@@ -574,15 +569,15 @@ if (!defined('ADMIN_PAGE')) {
                         foreach ($add_locations as $val) {
                             echo $val . "<br>";
                         }
+                ?>
+                        <br>
+                        <?php printf(__('This will take approximately <b>%1$d minutes and %2$d seconds.</b>'), $map_mins, $map_secs); ?><br>
+                        <?= __('Do you wish to add these locations to the database database now?'); ?><br>
+                        <form action="index.php?page=google_maps" method="post">
+                            <input type="submit" style="font-size:14px" value="<?= __('YES'); ?>" name="makedatabase" class="btn btn-sm btn-secondary">
+                        </form><br>
 
-                        echo '<br>';
-                        printf(__('This will take approximately <b>%1$d minutes and %2$d seconds.</b>'), $map_mins, $map_secs);
-                        echo '<br>';
-                        echo __('Do you wish to add these locations to the database database now?') . '<br>';
-                        echo '<form action="index.php?page=google_maps" method="post">';
-                        echo '<input type="submit" style="font-size:14px" value="' . __('YES') . '" name="makedatabase">';
-                        echo '</form><br>';
-
+                    <?php
                         if ($thistree_non_exist) {
                             echo "<br><b>";
                             printf(__('The following %d locations are already known as non-indexable by Google. Please check their validity.'), count($thistree_non_exist));
@@ -610,7 +605,7 @@ if (!defined('ADMIN_PAGE')) {
                         $selected = ' selected';
                         $_SESSION['geo_tree'] = "all_geo_trees";
                     }
-                ?>
+                    ?>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <br>
                     <form method="POST" action="index.php?page=google_maps" style="display : inline;">
@@ -636,7 +631,7 @@ if (!defined('ADMIN_PAGE')) {
                     </form><br>
 
                     <form method="POST" name="checkform" action="index.php?page=google_maps" style="display : inline;">
-                        <br><input type="submit" name="check_new" value="<?= __('Check'); ?>"><br><br>
+                        <br><input type="submit" name="check_new" value="<?= __('Check'); ?>" class="btn btn-sm btn-secondary"><br><br>
                     </form>
                 <?php } ?>
             </td>
@@ -660,12 +655,9 @@ if (!defined('ADMIN_PAGE')) {
                     } else {
                     ?>
                         <form action="index.php?page=google_maps" method="post">
-                            <?php
-                            printf(__('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>TIP:</b> When you import a gedcom, you can mark the option "Add new locations to geo-location database" and the location status of existing locations will also be updated automatically! (If you didn\'t mark this option on import, use the "Update geolocation database" above. This will also refresh the existing location status).<p><b>When to use this button:</b><ul><li> if you edited location data directly with the %s editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>'), 'HuMo-genealogy');
-
-                            echo '<input type="checkbox" name="purge"> ' . __('Also delete all locations that have become obsolete (not connected to any persons anymore)') . '<br>';
-                            echo '<input type="submit" style="font-size:14px" value="' . __('Refresh') . '" name="refresh">';
-                            ?>
+                            <?php printf(__('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>TIP:</b> When you import a gedcom, you can mark the option "Add new locations to geo-location database" and the location status of existing locations will also be updated automatically! (If you didn\'t mark this option on import, use the "Update geolocation database" above. This will also refresh the existing location status).<p><b>When to use this button:</b><ul><li> if you edited location data directly with the %s editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>'), 'HuMo-genealogy'); ?>
+                            <input type="checkbox" name="purge"> <?= __('Also delete all locations that have become obsolete (not connected to any persons anymore)'); ?><br>
+                            <input type="submit" style="font-size:14px" value="<?= __('Refresh'); ?>" name="refresh" class="btn btn-sm btn-secondary">
                         </form>
                     <?php } ?>
                 </td>
@@ -838,16 +830,18 @@ if (!defined('ADMIN_PAGE')) {
                                     $leave_bottom = true;
                                     echo '<span style="color:red;font-weight:bold;">Are you sure you want to change the lat/lng of </span><b>' . $_POST['loc_del_name'] . '</b>';
                                     echo '<span style="color:red;font-weight:bold;"> and set them to those that belong to </span><b>' . $_POST['add_name'] . '?</b></span><br>';
-                                    echo '<form method="POST" name="check_change" action="index.php?page=google_maps" style="display : inline;">';
-                                    echo '<input type="hidden" name="add_lat" value="' . $_POST['add_lat'] . '">';
-                                    echo '<input type="hidden" name="add_lng" value="' . $_POST['add_lng'] . '">';
-                                    echo '<input type="hidden" name="add_name" value="' . $_POST['add_name'] . '">';
-                                    echo '<input type="hidden" name="loc_del_name" value="' . $_POST['loc_del_name'] . '">';
-                                    echo '<input type="hidden" name="loc_del_id" value="' . $_POST['loc_del_id'] . '">';
-                                    echo '<input type="submit" name="yes_change" value="' . __('YES') . '">';
-                                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                    echo '<input type="submit" name="cancel_change" value="' . __('Cancel') . '">';
-                                    echo '</form><br><br>';
+                            ?>
+                                    <form method="POST" name="check_change" action="index.php?page=google_maps" style="display : inline;">
+                                        <input type="hidden" name="add_lat" value="<?= $_POST['add_lat']; ?>">
+                                        <input type="hidden" name="add_lng" value="<?= $_POST['add_lng']; ?>">
+                                        <input type="hidden" name="add_name" value="<?= $_POST['add_name']; ?>">
+                                        <input type="hidden" name="loc_del_name" value="<?= $_POST['loc_del_name']; ?>">
+                                        <input type="hidden" name="loc_del_id" value="<?= $_POST['loc_del_id']; ?>">
+                                        <input type="submit" name="yes_change" value="<?= __('YES'); ?>" class="btn btn-sm btn-secondary">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="submit" name="cancel_change" value="<?= __('Cancel'); ?>" class="btn btn-sm btn-secondary">
+                                    </form><br><br>
+                            <?php
                                 }
                             }
                             if (isset($_POST['loc_add'])) {
@@ -948,10 +942,13 @@ if (!defined('ADMIN_PAGE')) {
                             <?php
                             // *** OpenStreetMap ***
                             if ($use_world_map == 'OpenStreetMap') {
-                                echo '<link rel="stylesheet" href="../include/leaflet/leaflet.css">';
-                                echo '<script src="../include/leaflet/leaflet.js"></script>';
-                                echo '<div id="map" style="width: 600px; height: 300px;"></div>';
+                            ?>
+                                <link rel="stylesheet" href="../assets/leaflet/leaflet.css">
+                                <script src="../assets/leaflet/leaflet.js"></script>
 
+                                <div id="map" style="width: 600px; height: 300px;"></div>
+
+                            <?php
                                 // *** Map using fitbound (all markers visible) ***
                                 //echo '<script>
                                 //    var map = L.map("map").setView([48.85, 2.35], 10);
@@ -978,26 +975,53 @@ if (!defined('ADMIN_PAGE')) {
                     </tr>
 
                     <form method="POST" name="delform" action="index.php?page=google_maps" style="display : inline;">
-                        <?php
-                        echo '<tr><th colspan="2">' . __('Details from the database') . '</th></tr>';
-                        echo '<tr><td>' . __('Location') . ':</td><td><input type="text" id="loc_name" name="loc_name" value="' . $location_location . '" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
-                        echo '<tr><td>' . __('Latitude') . ':</td><td><input type="text" id="loc_lat" name="loc_lat" value="' . $location_lat . '" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
-                        echo '<tr><td>' . __('Longitude') . ':</td><td><input type="text" id="loc_lng" name="loc_lng" value="' . $location_lng . '" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
-                        echo '<tr><td align="center" colspan="2">';
-                        echo '<input type="hidden" name="loc_del_id" value="' . $location_id . '">';
-                        echo '<input type="hidden" name="loc_del_name" value="' . $location_location . '">';
-                        echo '<input type="submit" style="color:red;font-weight:bold" name="loc_delete" value="' . __('Delete this location') . '"></td></tr>';
-
-                        echo '<tr><td style="border:none;height:20px"></td></tr>';
-                        echo '<tr><th colspan="2">' . __('Change or add locations') . '<br>' . __('(You can also drag the marker!)') . '</th></tr>';
-                        echo '<tr><td colspan="2"><input id="address" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" type="textbox" value="' . $search_name . '" size="36" name="add_name">';
-                        echo '<input type="button" name="loc_search" value="' . __('Search') . '" onclick="codeAddress();"></td></tr>';
-                        echo '<tr><td>' . __('Latitude') . ':</td><td><input size="20" type="text" id="latbox" name="add_lat" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" value="' . $search_lat . '"></td></tr>';
-                        echo '<tr><td>' . __('Longitude') . ':</td><td><input size="20" type="text" id="lngbox" name="add_lng" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" value="' . $search_lng . '"></td></tr>';
-                        echo '<tr><td colspan="2">';
-                        echo '<input type="submit" name="loc_change" value="' . __('Change this location') . '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                        echo '<input type="submit" name="loc_add" value="' . __('Add this location') . '"></td></tr>';
-                        ?>
+                        <tr>
+                            <th colspan="2"><?= __('Details from the database'); ?></th>
+                        </tr>
+                        <tr>
+                            <td><?= __('Location'); ?>:</td>
+                            <td><input type="text" id="loc_name" name="loc_name" value="<?= $location_location; ?>" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td>
+                        </tr>
+                        <tr>
+                            <td><?= __('Latitude'); ?>:</td>
+                            <td><input type="text" id="loc_lat" name="loc_lat" value="<?= $location_lat; ?>" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td>
+                        </tr>
+                        <tr>
+                            <td><?= __('Longitude'); ?>:</td>
+                            <td><input type="text" id="loc_lng" name="loc_lng" value="<?= $location_lng; ?>" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td>
+                        </tr>
+                        <tr>
+                            <td align="center" colspan="2">
+                                <input type="hidden" name="loc_del_id" value="<?= $location_id; ?>">
+                                <input type="hidden" name="loc_del_name" value="<?= $location_location; ?>">
+                                <input type="submit" name="loc_delete" value="<?= __('Delete this location'); ?>" class="btn btn-sm btn-danger">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:none;height:20px"></td>
+                        </tr>
+                        <tr>
+                            <th colspan="2"><?= __('Change or add locations'); ?><br><?= __('(You can also drag the marker!)'); ?></th>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><input id="address" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" type="textbox" value="<?= $search_name; ?>" size="36" name="add_name">
+                                <input type="button" name="loc_search" value="<?= __('Search'); ?>" onclick="codeAddress();" class="btn btn-sm btn-secondary">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><?= __('Latitude'); ?>:</td>
+                            <td><input size="20" type="text" id="latbox" name="add_lat" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" value="<?= $search_lat; ?>"></td>
+                        </tr>
+                        <tr>
+                            <td><?= __('Longitude'); ?>:</td>
+                            <td><input size="20" type="text" id="lngbox" name="add_lng" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" value="<?= $search_lng; ?>"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" name="loc_change" value="<?= __('Change this location'); ?>" class="btn btn-sm btn-secondary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="submit" name="loc_add" value="<?= __('Add this location'); ?>" class="btn btn-sm btn-secondary">
+                            </td>
+                        </tr>
                     </form>
                 </table>
 
@@ -1015,7 +1039,7 @@ if (!defined('ADMIN_PAGE')) {
                     $num_rows = $loc_list->rowCount();
                     printf(__('Here you can delete your entire geolocation database (%d entries).<br>If you are absolutely sure, press the button below.'), $num_rows);
                     echo '<br><form action="index.php?page=google_maps" method="post">';
-                    echo '<input type="submit" style="font-size:14px;color:red;font-weight:bold" value="' . __('DELETE ENTIRE GEOLOCATION DATABASE') . '" name="deletedatabase">';
+                    echo '<input type="submit" value="' . __('DELETE ENTIRE GEOLOCATION DATABASE') . '" name="deletedatabase" class="btn btn-sm btn-danger">';
                     echo '<br></form><br>';
                 }
                 if (isset($_POST['refresh_no_locs'])) {
@@ -1028,7 +1052,7 @@ if (!defined('ADMIN_PAGE')) {
                         if ($num_rows1 > 0) {
                             printf(__('Here you can refresh the list of %d non-indexable locations that was stored in your database after previous geolocation processes.<br>Do this if you have corrected non-indexable locations in your data or have imported updated gedcoms and some of these locations may no longer appear in your data.'), $num_rows1);
                             echo '<br><form action="index.php?page=google_maps" method="post">';
-                            echo '<input type="submit" style="font-size:14px;color:red;font-weight:bold" value="' . __('REFRESH LIST OF NON-INDEXABLE LOCATIONS') . '" name="refresh_no_locs">';
+                            echo '<input type="submit" value="' . __('REFRESH LIST OF NON-INDEXABLE LOCATIONS') . '" name="refresh_no_locs" class="btn btn-sm btn-danger">';
                             echo '<br></form><br>';
                         }
                     }
@@ -1060,7 +1084,7 @@ if (!defined('ADMIN_PAGE')) {
                             <th><?= __('Name of tree'); ?></th>
                             <th style="text-align:center"><?= __('Starting year'); ?></th>
                             <th style="text-align:center"><?= __('Interval'); ?></th>
-                            <th rowspan=<?= $rowspan; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="submit" value="<?= __('Change'); ?>"></th>
+                            <th rowspan=<?= $rowspan; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="submit" value="<?= __('Change'); ?>" class="btn btn-sm btn-secondary"></th>
                         </tr>
                         <?php
                         // TODO Form inside form??
