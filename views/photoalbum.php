@@ -5,21 +5,6 @@ if ($user['group_pictures'] != 'j' || $user['group_photobook'] != 'j') {
     exit();
 }
 
-
-
-// TODO create seperate controller script.
-include_once(__DIR__ . "/../include/language_date.php");
-include_once(__DIR__ . "/../include/date_place.php");
-include_once(__DIR__ . "/../include/person_cls.php");
-include_once(__DIR__ . "/../include/show_picture.php");
-
-require_once  __DIR__ . "/../app/model/photoalbum.php";
-$photoalbumModel = new PhotoalbumModel($dbh);
-$photoalbum['show_pictures'] = $photoalbumModel->get_show_pictures();
-$photoalbum['search_media'] = $photoalbumModel->get_search_media();
-
-
-
 // *** Get array of categories ***
 $show_categories = false; // is set true by following code if necessary
 
@@ -115,6 +100,7 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
     if ($process_picture) {
         if ($picqryDb->event_connect_id) {
             // *** Check privacy filter ***
+            // TODO: use the person_cls constructor (adding personDb).
             $person_cls = new person_cls;
             $personDb = $db_functions->get_person($picqryDb->event_connect_id);
             $privacy = $person_cls->set_privacy($personDb);
@@ -362,7 +348,7 @@ function show_media_files($pref)
 
                 <!-- Search by photo name -->
                 <div class="col-auto">
-                    <input type="text" name="search_media" value="<?= $photoalbum['search_media']; ?>" size="20" class="form-control form-control-sm">
+                    <input type="text" name="search_media" value="<?= safe_text_show($photoalbum['search_media']); ?>" size="20" class="form-control form-control-sm">
                 </div>
                 <div class="col-auto">
                     <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-success">

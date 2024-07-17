@@ -1,156 +1,142 @@
+<script src="googlemaps/namesearch.js"></script>
+
 <?php
-include_once(__DIR__ . "/../include/person_cls.php");
-include_once(__DIR__ . "/../include/language_date.php");
-include_once(__DIR__ . "/../include/date_place.php");
-
-
-
-// TODO create seperate controller script.
-//require_once  __DIR__ . "/../app/model/maps.php";
-//$mapsModel = new MapsModel($dbh);
-//$maps['show_pictures'] = $mapsModel->get_show_pictures();
-
-
-
-echo '<script src="googlemaps/namesearch.js"></script>';
-
-/*
-// *** OpenStreetMap ***
-if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'OpenStreetMap') {
-    //dummy
-} else {
-    //cover map with loading animation + half opaque background till page is fully loaded
-    //using the slider/button before complete page load goes wrong
-    //echo '<div id="wait" style="background:url(images/loader.gif) no-repeat center center; opacity:0.6; filter:alpha(opacity=60); position:fixed; top:70px; margin-left:auto; margin-right:auto; height:610px; width:1000px; background-color:#000000; z-index:100"></div>';
-}
-*/
-
 $link = $link_cls->get_link($uri_path, 'maps', $tree_id);
 $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
+
+// *** Select family tree ***
+$tree_id_string = " AND ( ";
+$id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ";"
+foreach ($id_arr as $value) {
+    $tree_id_string .= "tree_id='" . substr($value, 1) . "' OR ";  // substr removes leading "@" in geo_trees setting string
+}
+$tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " and add ")"
+$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
+$tree_search_result = $dbh->query($tree_search_sql);
+$count = 0;
+
+// *** Set birth or death display. Default values ***
+// *** BE AWARE: session values are used in google_initiate script. If these are disabled, the slider doesn't work ***
+$maps['display_birth'] = true;
+$maps['display_death'] = false;
+if (!isset($_SESSION['type_death']) && !isset($_SESSION['type_death'])) {
+    $_SESSION['type_birth'] = 1;
+    $_SESSION['type_death'] = 0;
+}
+if (isset($_SESSION['type_death']) && $_SESSION['type_death'] == 1) {
+    $maps['display_death'] = true;
+    $maps['display_birth'] = false;
+}
+if (isset($_POST['map_type']) && $_POST['map_type'] == "type_birth") {
+    $_SESSION['type_birth'] = 1;
+    $_SESSION['type_death'] = 0;
+    $maps['display_birth'] = true;
+    $maps['display_death'] = false;
+}
+if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
+    $_SESSION['type_death'] = 1;
+    $_SESSION['type_birth'] = 0;
+    $maps['display_death'] = true;
+    $maps['display_birth'] = false;
+}
 ?>
 
-<div style="position:relative"> <!-- div with table for all menu bars (2 + optional third) -->
-    <table>
-        <!-- 1st MENU BAR -->
-        <tr>
-            <td style="font-size:110%;border:1px solid #d8d8d8;width:995px;background-color:#f2f2f2">
-                <?= __('Display birth or death locations across different time periods'); ?><br>
 
-                <?php
-                // SELECT FAMILY TREE
-                $tree_id_string = " AND ( ";
-                $id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ";"
-                foreach ($id_arr as $value) {
-                    $tree_id_string .= "tree_id='" . substr($value, 1) . "' OR ";  // substr removes leading "@" in geo_trees setting string
-                }
-                $tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " and add ")"
+<div class="p-3 m-2 genealogy_search">
+    <div class="row mb-2">
+        <div class="col-auto">
+            <?= __('Display birth or death locations across different time periods'); ?>
+        </div>
+    </div>
 
-                $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
-                $tree_search_result = $dbh->query($tree_search_sql);
-                $count = 0;
-                ?>
-
-                <form method="POST" action="<?= $link; ?>" style="display : inline;">
-                    <select size="1" name="database" onChange="this.form.submit();">
-                        <option value=""><?= __('Select a family tree:'); ?></option>
-                        <?php
-                        while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
-                            // *** Check if family tree is shown or hidden for user group ***
-                            $hide_tree_array = explode(";", $user['group_hide_trees']);
-                            $hide_tree = false;
-                            if (in_array($tree_searchDb->tree_id, $hide_tree_array)) {
-                                $hide_tree = true;
-                            }
-                            if ($hide_tree == false) {
-                                $selected = '';
-                                if (isset($_SESSION['tree_prefix'])) {
-                                    if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
-                                        $selected = ' selected';
-                                        $tree_id = $tree_searchDb->tree_id;
-                                        $_SESSION['tree_id'] = $tree_id;
-                                        $db_functions->set_tree_id($tree_id);
-                                    }
-                                } elseif ($count == 0) {
-                                    $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
-                                    $selected = ' selected';
+    <div class="row mb-2">
+        <div class="col-auto">
+            <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                <select size="1" name="tree_id" onChange="this.form.submit();" class="form-select form-select-sm">
+                    <option value=""><?= __('Select a family tree:'); ?></option>
+                    <?php
+                    while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
+                        // *** Check if family tree is shown or hidden for user group ***
+                        $hide_tree_array = explode(";", $user['group_hide_trees']);
+                        $hide_tree = false;
+                        if (in_array($tree_searchDb->tree_id, $hide_tree_array)) {
+                            $hide_tree = true;
+                        }
+                        if ($hide_tree == false) {
+                            $selected = '';
+                            // TODO check tree_prefix. Replace with tree_id.
+                            if (isset($_SESSION['tree_prefix'])) {
+                                if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
+                                    $selected = 'selected';
                                     $tree_id = $tree_searchDb->tree_id;
                                     $_SESSION['tree_id'] = $tree_id;
                                     $db_functions->set_tree_id($tree_id);
                                 }
-                                $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
-                                echo '<option value="' . $tree_searchDb->tree_prefix . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-                                $count++;
+                            } elseif ($count == 0) {
+                                $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
+                                $selected = 'selected';
+                                $tree_id = $tree_searchDb->tree_id;
+                                $_SESSION['tree_id'] = $tree_id;
+                                $db_functions->set_tree_id($tree_id);
                             }
+                            $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                            $count++;
+                    ?>
+                            <option value="<?= $tree_searchDb->tree_id; ?>" <?= $selected; ?>><?= @$treetext['name']; ?></option>
+                    <?php
                         }
-                        ?>
-                    </select>
-                </form>
+                    }
+                    ?>
+                </select>
+            </form>
+        </div>
 
+        <div class="col-auto">
+            <?= __('Display:'); ?>
+        </div>
+        <div class="col-auto">
+            <form name="type_form" method="POST" action="" style="display : inline;">
+                <select style="max-width:200px" size="1" onChange="document.type_form.submit()" id="map_type" name="map_type" class="form-select form-select-sm">
+                    <?php
+                    $selected = '';
+                    if ($maps['display_birth']) {
+                        $selected = ' selected ';
+                    }
+                    echo '<option value="type_birth" ' . $selected . '>' . __('Birth locations') . '</option>';
+
+                    $selected = '';
+                    if ($maps['display_death']) {
+                        $selected = ' selected ';
+                    }
+                    echo '<option value="type_death" ' . $selected . '>' . __('Death locations') . '</option>';
+                    ?>
+                </select>
+            </form>
+        </div>
+
+
+        <?php if ($maps['select_world_map'] == 'Google') { ?>
+            <div class="col-auto">
                 <?php
-                // SET BIRTH OR DEATH MAP
-                if (!isset($_SESSION['type_birth']) && !isset($_SESSION['type_death'])) {
-                    $_SESSION['type_birth'] = 1;
-                    $_SESSION['type_death'] = 0;
-                }
-                if (isset($_POST['map_type']) && $_POST['map_type'] == "type_birth") {
-                    $_SESSION['type_birth'] = 1;
-                    $_SESSION['type_death'] = 0;
-                }
-                if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
-                    $_SESSION['type_death'] = 1;
-                    $_SESSION['type_birth'] = 0;
+                // div tree choice
+                //if ($language['dir'] != "rtl") {
+                //    echo '<div style="margin-top:4px;font-size:110%;float:left"></div>';
+                //} else {
+                //    echo '<div style="font-size:110%;float:right"></div>';
+                //}
+
+                //echo __('Filters:') . '&nbsp;&nbsp;';
+                //echo '</div>';
+
+                // div slider text + year box
+                if ($language['dir'] != "rtl") {
+                    $left_right = 'float:left';
+                } else {
+                    $left_right = 'float:right';
                 }
                 ?>
-
-                <!-- PULL-DOWN: births/bapt OR death/burial -->
-                &nbsp;&nbsp;<?= __('Display:'); ?>&nbsp;
-                <form name="type_form" method="POST" action="" style="display : inline;">
-                    <select style="max-width:200px" size="1" onChange="document.type_form.submit()" id="map_type" name="map_type">
-                        <?php
-                        $selected = '';
-                        if (isset($_SESSION['type_birth']) && $_SESSION['type_birth'] == 1) {
-                            $selected = ' selected ';
-                        }
-                        echo '<option value="type_birth" ' . $selected . '>' . __('Birth locations') . '</option>';
-
-                        $selected = '';
-                        if (isset($_SESSION['type_death']) && $_SESSION['type_death'] == 1) {
-                            $selected = ' selected ';
-                        }
-                        echo '<option value="type_death" ' . $selected . '>' . __('Death locations') . '</option>';
-                        ?>
-                    </select>
-                </form>
-            </td>
-        </tr>
-
-        <?php
-        // *** OpenStreetMap ***
-        if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
-            //dummy
-        } else {
-            // 2nd MENU BAR
-            // Not used for OpenStreetMap yet
-        ?>
-            <tr>
-                <td style="border:1px solid #bdbdbd; width:995px; background-color:#d8d8d8">
+                <div style="<?= $left_right; ?>">
                     <?php
-                    // div tree choice
-                    if ($language['dir'] != "rtl") {
-                        echo '<div style="margin-top:4px;font-size:110%;float:left">';
-                    } else {
-                        echo '<div style="font-size:110%;float:right">';
-                    }
-                    echo __('Filters:') . '&nbsp;&nbsp;';
-                    echo '</div>';
-
-                    // div slider text + year box
-                    if ($language['dir'] != "rtl") {
-                        echo '<div style="float:left">';
-                    } else {
-                        echo '<div style="float:right">';
-                    }
-
                     // slider defaults
                     $realmin = 1560;  // first year shown on slider
                     $step = "50";     // interval
@@ -191,114 +177,103 @@ $link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
                     }
 
                     echo '
-                        <script>
-                        var minval = ' . $minval . ';
-                        $(function() {
-                            // Set default slider setting
-                            ' . $makesel . '
-                            $( "#slider" ).slider({
-                                value: ' . $defaultyr . ',
-                                min: ' . $minval . ',
-                                max: ' . $yr . ',
-                                step: ' . $step . ',
-                                slide: function( event, ui ) {
-                                    if(ui.value == minval) { $( "#amount" ).val("----->"); }
-                                    else if(ui.value > 2000) { $( "#amount" ).val(' . $yr . '); }
-                                    else {	$( "#amount" ).val(ui.value ); }
-                                }
-                            });
-                            $( "#amount" ).val("' . $default_display . '");
-
-                            // Only change map if value is changed.
-                            startPos = $("#slider").slider("value");
-                            $("#slider").on("slidestop", function(event, ui) {
-                                endPos = ui.value;
-                                if (startPos != endPos) {
-                                    // Change map. This script can be found in: google_initiate.php.
-                                    makeSelection(endPos);
-                                }
-                                startPos = endPos;
-                            });
-
+                    <script>
+                    var minval = ' . $minval . ';
+                    $(function() {
+                        // Set default slider setting
+                        ' . $makesel . '
+                        $( "#slider" ).slider({
+                            value: ' . $defaultyr . ',
+                            min: ' . $minval . ',
+                            max: ' . $yr . ',
+                            step: ' . $step . ',
+                            slide: function( event, ui ) {
+                                if(ui.value == minval) { $( "#amount" ).val("----->"); }
+                                else if(ui.value > 2000) { $( "#amount" ).val(' . $yr . '); }
+                                else {	$( "#amount" ).val(ui.value ); }
+                            }
                         });
-                        </script>
-                    ';
+                        $( "#amount" ).val("' . $default_display . '");
 
-                    // SLIDER
-                    if ($language['dir'] != "rtl") {
-                        echo '<div style="float:left">';
-                    } // div slider text + year box
-                    else {
-                        echo '<div style="float:right">';
+                        // Only change map if value is changed.
+                        startPos = $("#slider").slider("value");
+                        $("#slider").on("slidestop", function(event, ui) {
+                            endPos = ui.value;
+                            if (startPos != endPos) {
+                                // Change map. This script can be found in: google_initiate.php.
+                                makeSelection(endPos);
+                            }
+                            startPos = endPos;
+                        });
+
+                    });
+                    </script>'; ?>
+                </div>
+
+                <?php
+                // *** Slider ***
+                if ($language['dir'] != "rtl") {
+                    $left_right = 'float:left';
+                } else {
+                    $left_right = 'float:right';
+                }
+                ?>
+                <div style="<?= $left_right; ?>">
+                    <?php if ($maps['display_birth']) { ?>
+                        <?= __('Display births until: '); ?>
+                    <?php } elseif ($maps['display_death']) { ?>
+                        <?= __('Display deaths until: '); ?>
+                    <?php } ?>
+
+                    &nbsp;<input type="text" id="amount" disabled="disabled" size="4" style="border:0;color:#0000CC;font-weight:normal;font-size:115%;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+
+                <?php if ($language['dir'] != "rtl") { ?>
+                    <div id="slider" style="float:left;width:170px;margin-top:7px;margin-right:15px;"></div>
+                <?php } else { ?>
+                    <div id="slider" style="float:right;direction:ltr;width:150px;margin-top:7px;margin-right:15px;"></div>
+                <?php } ?>
+
+            </div>
+        <?php } ?>
+
+    </div>
+
+
+    <?php if ($maps['select_world_map'] == 'Google') { ?>
+        <div class="row mb-2">
+            <div class="col-auto">
+                <input type="submit" name="anything" onclick="document.getElementById('namemapping').style.display='block' ;" value="<?= __('Filter by specific family name(s)'); ?>" class="btn btn-sm btn-secondary">
+            </div>
+
+            <div class="col-auto">
+                <form method="POST" style="display:inline" name="descform" action="<?= $link; ?>">
+                    <input type="hidden" name="descmap" value="1">
+                    <input type="submit" name="anything" value="<?= __('Filter by descendants'); ?>" class="btn btn-sm btn-secondary">
+                </form>
+            </div>
+
+            <div class="col-auto">
+                <form method="POST" style="display:inline" name="ancform" action="<?= $link; ?>">
+                    <input type="hidden" name="ancmap" value="1">
+                    <input type="submit" name="anythingelse" value="<?= __('Filter by ancestors'); ?>" class="btn btn-sm btn-secondary">
+                </form>
+            </div>
+
+            <div class="col-auto">
+                <!-- Help popup. Remark: Bootstrap popover javascript in layout script. -->
+                <style>
+                    .popover {
+                        max-width: 500px;
                     }
-                    if ($_SESSION['type_birth'] == 1) {
-                        echo __('Display births until: ') . '&nbsp;';
-                    } elseif ($_SESSION['type_death'] == 1) {
-                        echo __('Display deaths until: ') . '&nbsp;';
+
+                    .popover-body {
+                        height: 500px;
+                        overflow-y: auto;
                     }
-
-                    echo '<input type="text" id="amount" disabled="disabled" size="4" style="border:0; color:#0000CC; font-weight:normal;font-size:115%;">';
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;</div>';
-                    if ($language['dir'] != "rtl") {
-                        echo '<div id="slider" style="float:left;width:170px;margin-top:7px;margin-right:15px;">';
-                    } else {
-                        echo '<div id="slider" style="float:right;direction:ltr;width:150px;margin-top:7px;margin-right:15px;">';
-                    }
-                    echo '</div>';
-
-                    // BUTTON: SEARCH BY SPECIFIC NAME
-                    echo ' <input type="submit" style="font-size:110%;" name="anything" onclick="document.getElementById(\'namemapping\').style.display=\'block\' ;" value="' . __('Filter by specific family name(s)') . '">';
-                    ?>
-
-                    <!-- BUTTON: SEARCH BY DESCENDANTS -->
-                    <form method="POST" style="display:inline" name="descform" action="<?= $link; ?>">
-                        <input type="hidden" name="descmap" value="1">
-                        &nbsp;<input type="submit" style="font-size:110%;" name="anything" value="<?= __('Filter by descendants'); ?>">
-                    </form>
-
-                    <!-- BUTTON: SEARCH BY ANCESTORS -->
-                    <form method="POST" style="display:inline" name="ancform" action="<?= $link; ?>">
-                        <input type="hidden" name="ancmap" value="1">
-                        &nbsp;<input type="submit" style="font-size:110%;" name="anythingelse" value="<?= __('Filter by ancestors'); ?>">
-                    </form>
-                </td>
-            </tr>
-
-            <!-- 3rd MENU BAR -->
-            <tr>
-                <td style="border:1px solid #d8d8d8;width:995px;background-color:#f2f2f2">
-                    <?php
-                    if ($language['dir'] != "rtl") {
-                        echo '<div style="margin-top:4px;font-size:110%;float:left">';
-                    } else {
-                        echo '<div style="font-size:120%;float:right">';
-                    }
-                    echo '&nbsp;&nbsp;' . __('Other tools:') . '&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo '</div>';
-                    /*
-                    // BIRTH LOCATION BUTTON
-                    echo  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    if($_SESSION['type_birth']==1) {
-                        echo  ' <input style="font-size:14px" type="button" value="'.__('Mark all birth locations').'" onclick="makeSelection(3)">  ';
-                    }
-                    elseif($_SESSION['type_death']==1) {
-                        echo  ' <input style="font-size:14px" type="button" value="'.__('Mark all death locations').'" onclick="makeSelection(3)">  ';
-                    }
-                    echo '</div>';
-                    */
-
-                    // HELP POPUP
-                    echo '<div class="' . $rtlmarker . 'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline; float:left;">';
-                    $popwidth = "";
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"';
-                    echo ' style="display:inline" ';
-                    echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
-                    echo 'onmouseout="mclosetime()">';
-                    echo '<strong>' . __('Help') . '</strong>';
-                    echo '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo '<div class="sddm_fixed" style="' . $popwidth . ' z-index:400; text-align:' . $alignmarker . '; padding:4px; direction:' . $rtlmarker . '" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-
-                    echo __('<b>Top menu line:</b>
+                </style>
+                <?php $popup_text = __('<b>Top menu line:</b>
 <ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>
 <li>Choose whether to display birth location or death locations.</li></ul>
 <b>Second menu line:</b>
@@ -316,316 +291,341 @@ A yellow banner will appear near the top of the map, informing which persons\' d
 <li>When you click on the marker you will see two links.</li>
 <li>The first link will open a new browser tab with the Wikipedia entry about this location (if such an entry exists).</li>
 <li>The second link will present (in the Info Window itself) a list of all persons born in this location.</li>
-<li>The names in this list are clickable and will open a new browser tab with the family page of this person.</li>');
+<li>The names in this list are clickable and will open a new browser tab with the family page of this person.</li>'); ?>
+                <?php $popup_text = str_replace('"', "'", $popup_text); ?>
 
-                    echo '</ul>';
-                    echo '</div>';
-                    echo '</div>';
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
+                    <?= __('Help'); ?>
+                </button>
+            </div>
 
-                    // PULL-DOWN: FIND LOCATION
-                    echo  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-                    if ($result->rowCount() > 0) {
-                        if ($_SESSION['type_birth'] == 1) {
-                            $loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%" . $tree_prefix_quoted . "birth%' OR location_status LIKE '%" . $tree_prefix_quoted . "bapt%' OR location_status = '' ORDER BY location_location";
-                        }
-                        if ($_SESSION['type_death'] == 1) {
-                            $loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%" . $tree_prefix_quoted . "death%' OR location_status LIKE '%" . $tree_prefix_quoted . "buried%' OR location_status = '' ORDER BY location_location";
-                        }
-                    } else {
-                        // this is for backward compatibility - if someone doesn't yet have a location_status column: show all locations as until now
-                        $loc_search = "SELECT * FROM humo_location ORDER BY location_location";
+            <div class="col-auto">
+                <?php
+                //echo __('Other tools:') . '&nbsp;&nbsp;&nbsp;&nbsp;';
+                /*
+                // BIRTH LOCATION BUTTON
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                if($maps['display_birth']) {
+                echo ' <input style="font-size:14px" type="button" value="'.__('Mark all birth locations').'" onclick="makeSelection(3)"> ';
+                }
+                elseif($maps['display_death']) {
+                echo ' <input style="font-size:14px" type="button" value="'.__('Mark all death locations').'" onclick="makeSelection(3)"> ';
+                }
+                echo '</div>';
+                */
+
+                // PULL-DOWN: FIND LOCATION
+                $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
+                if ($result->rowCount() > 0) {
+                    if ($maps['display_birth']) {
+                        $loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%" . $tree_prefix_quoted . "birth%' OR location_status LIKE '%" . $tree_prefix_quoted . "bapt%' OR location_status = '' ORDER BY location_location";
                     }
-                    $loc_search_result = $dbh->query($loc_search);
-                    //if ($loc_search_result !== false) {
-                    ?>
-                    <form method="POST" action="" style="display : inline;">
-                        <select style="max-width:250px" onChange="findPlace()" size="1" id="loc_search" name="loc_search">
-                            <option value="toptext"><?= __('Find location on the map'); ?></option>
-                            <?php
-                            while ($loc_searchDb = $loc_search_result->fetch(PDO::FETCH_OBJ)) {
-                                echo '<option value="' . $loc_searchDb->location_id . ',' . $loc_searchDb->location_lat . ',' . $loc_searchDb->location_lng . '">' . $loc_searchDb->location_location . '</option>';
-                                $count++;
-                            }
-                            ?>
-                        </select>
-                    </form>
-                </td>
-            </tr>
-
-            <!-- OPTIONAL 4th (YELLOW) NOTIFICATION MENU BAR -->
-            <tr>
-                <td style="border:1px solid #bdbdbd; width:995px; background-color:#d8d8d8">
-                    <?php
-                    // NOTIFICATION: SEARCHING BY SPECIFIC NAMES
-                    $flag_namesearch = '';
-                    if (isset($_POST['items'])) {
-                        // for use in google_initiate.php
-                        echo '<div id="name_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">';
-                        $flag_namesearch = $_POST['items'];
-                        $names = '';
-                        echo '&nbsp;' . __('Mapping with specific name(s): ');
-                        foreach ($flag_namesearch as $value) {
-                            $pos = strpos($value, '_');
-                            $pref = '';
-                            $last = '';
-                            $last = substr($value, 0, $pos);
-                            $pref = substr($value, $pos + 1);
-                            if ($pref !== '') {
-                                $pref .= ' ';
-                            }
-                            //$names .= $value.", ";
-                            $names .= $pref . $last . ", ";
-                        }
-                        $names = substr($names, 0, -2); // take off last ", "
-                        echo $names;
-                        echo '&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="' . $link . '">' . __('Switch name filter off') . '</a>';
-                        echo '</div>';
+                    if ($maps['display_death']) {
+                        $loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%" . $tree_prefix_quoted . "death%' OR location_status LIKE '%" . $tree_prefix_quoted . "buried%' OR location_status = '' ORDER BY location_location";
                     }
+                } else {
+                    // this is for backward compatibility - if someone doesn't yet have a location_status column: show all locations as until now
+                    $loc_search = "SELECT * FROM humo_location ORDER BY location_location";
+                }
+                $loc_search_result = $dbh->query($loc_search);
+                //if ($loc_search_result !== false) {
+                ?>
+                <form method="POST" action="" style="display : inline;">
+                    <select onChange="findPlace()" size="1" id="loc_search" name="loc_search" class="form-select form-select-sm">
+                        <option value="toptext"><?= __('Find location on the map'); ?></option>
+                        <?php
+                        while ($loc_searchDb = $loc_search_result->fetch(PDO::FETCH_OBJ)) {
+                            $count++;
+                        ?>
+                            <option value="<?= $loc_searchDb->location_id; ?>,<?= $loc_searchDb->location_lat; ?>,<?= $loc_searchDb->location_lng; ?>">
+                                <?= $loc_searchDb->location_location; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </form>
+            </div>
+        </div>
 
-                    // FUNCTION TO FIND DESCENDANTS OF CHOSEN PERSON AND SHOW NOTIFICATION
-                    $flag_desc_search = 0;
-                    $chosenperson = '';
-                    $persfams = '';
-                    if (isset($_GET['persged']) && isset($_GET['persfams'])) {
-                        $flag_desc_search = 1;
-                        $chosenperson = $_GET['persged'];
-                        $persfams = $_GET['persfams'];
-                        $persfams_arr = explode(';', $persfams);
-                        $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
-                        $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
-                        $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
+        <!-- optional row -->
+        <?php
+        // *** Searching by specific names ***
+        $flag_namesearch = '';
+        if (isset($_POST['items'])) {
+            $flag_namesearch = $_POST['items'];
+            $names = '';
+            foreach ($flag_namesearch as $value) {
+                $pos = strpos($value, '_');
+                $pref = substr($value, $pos + 1);
+                if ($pref !== '') {
+                    $pref .= ' ';
+                }
+                $last = substr($value, 0, $pos);
+                $names .= $pref . $last . ", ";
+            }
+            $names = substr($names, 0, -2); // take off last ", "
+        }
 
-                        $generation_number = 0; // generation number
+        // *** Find descendants of chosen person ***
+        $flag_desc_search = 0;
+        $chosenperson = '';
+        $persfams = '';
+        if (isset($_GET['persged']) && isset($_GET['persfams'])) {
+            $flag_desc_search = 1;
+            $chosenperson = $_GET['persged'];
+            $persfams = $_GET['persfams'];
+            $persfams_arr = explode(';', $persfams);
+            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
+                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
+            $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
+            $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
 
-                        // TODO use general descendant function
-                        function outline($outline_family_id, $outline_person, $generation_number)
-                        {
-                            global $dbh, $db_functions, $desc_array;
-                            global $language, $dirmark1, $dirmark1;
-                            $family_nr = 1; //*** Process multiple families ***
+            $generation_number = 0; // generation number
 
-                            $familyDb = $db_functions->get_family($outline_family_id, 'man-woman');
-                            $parent1 = '';
-                            $parent2 = '';
-                            $swap_parent1_parent2 = false;
+            // TODO use general descendant function
+            function outline($outline_family_id, $outline_person, $generation_number)
+            {
+                global $dbh, $db_functions, $desc_array;
+                global $language, $dirmark1, $dirmark1;
+                $family_nr = 1; //*** Process multiple families ***
 
-                            // *** Standard main_person is the father ***
-                            if ($familyDb->fam_man) {
-                                $parent1 = $familyDb->fam_man;
-                            }
-                            // *** If mother is selected, mother will be main_person ***
-                            if ($familyDb->fam_woman == $outline_person) {
-                                $parent1 = $familyDb->fam_woman;
-                                $swap_parent1_parent2 = true;
-                            }
+                $familyDb = $db_functions->get_family($outline_family_id, 'man-woman');
+                $parent1 = '';
+                $parent2 = '';
+                $swap_parent1_parent2 = false;
 
-                            // *** Check family with parent1: N.N. ***
-                            if ($parent1) {
-                                // *** Save man's families in array ***
-                                @$personDb = $db_functions->get_person($parent1, 'famc-fams');
-                                $marriage_array = explode(";", $personDb->pers_fams);
-                                $nr_families = substr_count($personDb->pers_fams, ";");
-                            } else {
-                                $marriage_array[0] = $outline_family_id;
-                                $nr_families = "0";
-                            }
+                // *** Standard main_person is the father ***
+                if ($familyDb->fam_man) {
+                    $parent1 = $familyDb->fam_man;
+                }
+                // *** If mother is selected, mother will be main_person ***
+                if ($familyDb->fam_woman == $outline_person) {
+                    $parent1 = $familyDb->fam_woman;
+                    $swap_parent1_parent2 = true;
+                }
 
-                            // *** Loop multiple marriages of main_person ***
-                            for ($parent1_marr = 0; $parent1_marr <= $nr_families; $parent1_marr++) {
-                                @$familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
+                // *** Check family with parent1: N.N. ***
+                if ($parent1) {
+                    // *** Save man's families in array ***
+                    @$personDb = $db_functions->get_person($parent1, 'famc-fams');
+                    $marriage_array = explode(";", $personDb->pers_fams);
+                    $nr_families = substr_count($personDb->pers_fams, ";");
+                } else {
+                    $marriage_array[0] = $outline_family_id;
+                    $nr_families = "0";
+                }
 
-                                // *** Privacy filter man and woman ***
-                                @$person_manDb = $db_functions->get_person($familyDb->fam_man);
-                                @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
+                // *** Loop multiple marriages of main_person ***
+                for ($parent1_marr = 0; $parent1_marr <= $nr_families; $parent1_marr++) {
+                    @$familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
 
-                                // *************************************************************
-                                // *** Parent1 (normally the father)                         ***
-                                // *************************************************************
-                                if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, vrouw zonder man
-                                    if ($family_nr == 1) {
-                                        // *** Show data of man ***
+                    // *** Privacy filter man and woman ***
+                    @$person_manDb = $db_functions->get_person($familyDb->fam_man);
+                    @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
 
-                                        if ($swap_parent1_parent2 == true) {
-                                            if ($person_womanDb->pers_birth_place || $person_womanDb->pers_bapt_place) {
-                                                $desc_array[] = $person_womanDb->pers_gedcomnumber;
-                                            }
-                                        } elseif ($person_manDb->pers_birth_place || $person_manDb->pers_bapt_place) {
-                                            $desc_array[] = $person_manDb->pers_gedcomnumber;
-                                        }
-                                    } else {
-                                    }   // don't take person twice!
-                                    $family_nr++;
-                                } // *** end check of PRO-GEN ***
+                    // *************************************************************
+                    // *** Parent1 (normally the father)                         ***
+                    // *************************************************************
+                    if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, vrouw zonder man
+                        if ($family_nr == 1) {
+                            // *** Show data of man ***
 
-                                // *************************************************************
-                                // *** Children                                              ***
-                                // *************************************************************
-                                if ($familyDb->fam_children) {
-                                    //$childnr=1;
-                                    $child_array = explode(";", $familyDb->fam_children);
-                                    foreach ($child_array as $i => $value) {
-                                        @$childDb = $db_functions->get_person($child_array[$i]);
-
-                                        // *** Build descendant_report ***
-                                        if ($childDb->pers_fams) {
-                                            // *** 1e family of child ***
-                                            $child_family = explode(";", $childDb->pers_fams);
-                                            $child1stfam = $child_family[0];
-                                            outline($child1stfam, $childDb->pers_gedcomnumber, $generation_number);  // recursive
-                                        } else {    // Child without own family
-                                            if ($childDb->pers_birth_place || $childDb->pers_bapt_place) {
-                                                $desc_array[] = $childDb->pers_gedcomnumber;
-                                            }
-                                        }
-                                    }
-                                    //$childnr++;
+                            if ($swap_parent1_parent2 == true) {
+                                if ($person_womanDb->pers_birth_place || $person_womanDb->pers_bapt_place) {
+                                    $desc_array[] = $person_womanDb->pers_gedcomnumber;
                                 }
-                            } // Show  multiple marriages
-                        } // End of outline function
-
-                        // ******* Start function here - recursive if started ******
-                        $desc_array = [];
-                        outline($persfams_arr[0], $chosenperson, $generation_number);
-                        if ($desc_array != '') {
-                            $desc_array = array_unique($desc_array); // removes duplicate persons (because of related ancestors)
-                        }
-                    ?>
-                        <div id="desc_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">
-                            <?php
-                            if ($desc_array != '') {
-                                echo '&nbsp;' . __('Filter by descendants of: ') . $chosenname . '&nbsp;&nbsp;<a href="' . $link . '">' . '&nbsp;|&nbsp;' . __('Switch descendant filter off') . '</a>';
-                            } else {
-                                echo '&nbsp;' . __('No known birth places amongst descendants') . '&nbsp;&nbsp;|&nbsp;&nbsp;<a href="' . $link . '">' . __('Close') . '</a>';
+                            } elseif ($person_manDb->pers_birth_place || $person_manDb->pers_bapt_place) {
+                                $desc_array[] = $person_manDb->pers_gedcomnumber;
                             }
-                            ?>
-                        </div>
-                    <?php
-                    } // end descendant notifications
+                        } else {
+                        }   // don't take person twice!
+                        $family_nr++;
+                    } // *** end check of PRO-GEN ***
 
-                    // =============================
-                    // TODO use general ancestor function
-                    // FUNCTION TO FIND ANCESTORS OF CHOSEN PERSON AND SHOW NOTIFICATION
-                    include_once(__DIR__ . "/../include/person_cls.php");
-                    include_once(__DIR__ . "/../include/marriage_cls.php");
-                    $flag_anc_search = 0;
-                    $chosenperson = '';
-                    $persfams = '';
-                    if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
-                        $flag_anc_search = 1;
-                        $chosenperson = $_GET['anc_persged'];
-                        $persfams = $_GET['anc_persfams'];
-                        $persfams_arr = explode(';', $persfams);
-                        $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
-                        $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
-                        //also check privacy
-                        $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
+                    // *************************************************************
+                    // *** Children                                              ***
+                    // *************************************************************
+                    if ($familyDb->fam_children) {
+                        //$childnr=1;
+                        $child_array = explode(";", $familyDb->fam_children);
+                        foreach ($child_array as $i => $value) {
+                            @$childDb = $db_functions->get_person($child_array[$i]);
 
-                        function find_anc($family_id)
-                        { // function to find all ancestors - family_id = person GEDCOM number
-                            global $dbh, $db_functions, $anc_array;
-                            global $language, $dirmark1, $dirmark1;
-                            global $listed_array;
-                            $ancestor_array2[] = $family_id;
-                            $ancestor_number2[] = 1;
-                            $marriage_gedcomnumber2[] = 0;
-                            $generation = 1;
-
-                            //$listed_array=array();
-
-                            // *** Loop for ancestor report ***
-                            while (isset($ancestor_array2[0])) {
-                                unset($ancestor_array);
-                                $ancestor_array = $ancestor_array2;
-                                unset($ancestor_array2);
-
-                                unset($ancestor_number);
-                                $ancestor_number = $ancestor_number2;
-                                unset($ancestor_number2);
-
-                                unset($marriage_gedcomnumber);
-                                $marriage_gedcomnumber = $marriage_gedcomnumber2;
-                                unset($marriage_gedcomnumber2);
-                                // *** Loop per generation ***
-                                $counter = count($ancestor_array);
-
-                                // *** Loop per generation ***
-                                for ($i = 0; $i < $counter; $i++) {
-                                    $listednr = '';
-
-                                    foreach ($listed_array as $key => $value) {
-                                        if ($value == $ancestor_array[$i]) {
-                                            $listednr = $key;
-                                        }
-                                        // if person was already listed, $listednr gets kwartier number for reference in report:
-                                        // instead of person's details it will say: "already listed above under number 4234"
-                                        // and no additional ancestors will be looked for, to prevent duplicated branches
-                                    }
-                                    if ($listednr == '') {  //if not listed yet, add person to array
-                                        $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
-                                        //$listed_array[]=$ancestor_array[$i];  
-                                    }
-
-                                    if ($ancestor_array[$i] != '0') {
-                                        @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
-
-                                        // ==	Check for parents
-                                        if ($person_manDb->pers_famc && $listednr == '') {
-                                            @$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
-                                            if ($family_parentsDb->fam_man) {
-                                                $ancestor_array2[] = $family_parentsDb->fam_man;
-                                                $ancestor_number2[] = (2 * $ancestor_number[$i]);
-                                                $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
-                                            }
-
-                                            if ($family_parentsDb->fam_woman) {
-                                                $ancestor_array2[] = $family_parentsDb->fam_woman;
-                                                $ancestor_number2[] = (2 * $ancestor_number[$i] + 1);
-                                                $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
-                                            } else {
-                                                // *** N.N. name ***
-                                                $ancestor_array2[] = '0';
-                                                $ancestor_number2[] = (2 * $ancestor_number[$i] + 1);
-                                                $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
-                                            }
-                                        }
-                                    } else {
-                                        // *** Show N.N. person ***
-                                        @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
-                                        $listed_array[0] = $person_manDb->pers_gedcomnumber;
-                                    }
-                                }    // loop per generation
-                                $generation++;
-                            }    // loop ancestor report
-
-                        }
-
-                        // ******* Start function here ******
-                        $anc_array = array();
-                        $listed_array = array();
-                        find_anc($chosenperson);
-                        foreach ($listed_array as $value) {
-                            $anc_array[] = $value;
-                        }
-                        //$anc_array = $listed_array;
-                    ?>
-                        <div id="anc_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">
-                            <?php
-                            if ($anc_array != '') {
-                                echo '&nbsp;' . __('Filter by ancestors of: ') . $chosenname . '&nbsp;&nbsp;<a href="' . $link . '">' . '&nbsp;|&nbsp;' . __('Switch ancestor filter off') . '</a>';
-                            } else {
-                                echo '&nbsp;' . __('No known birth places amongst ancestors') . '&nbsp;&nbsp;|&nbsp;&nbsp;<a href="' . $link . '">' . __('Close') . '</a>';
+                            // *** Build descendant_report ***
+                            if ($childDb->pers_fams) {
+                                // *** 1e family of child ***
+                                $child_family = explode(";", $childDb->pers_fams);
+                                $child1stfam = $child_family[0];
+                                outline($child1stfam, $childDb->pers_gedcomnumber, $generation_number);  // recursive
+                            } else {    // Child without own family
+                                if ($childDb->pers_birth_place || $childDb->pers_bapt_place) {
+                                    $desc_array[] = $childDb->pers_gedcomnumber;
+                                }
                             }
-                            ?>
+                        }
+                        //$childnr++;
+                    }
+                } // Show  multiple marriages
+            } // End of outline function
+
+            // ******* Start function here - recursive if started ******
+            $desc_array = [];
+            outline($persfams_arr[0], $chosenperson, $generation_number);
+            if ($desc_array != '') {
+                $desc_array = array_unique($desc_array); // removes duplicate persons (because of related ancestors)
+            }
+        }
+
+        // =============================
+        // TODO use general ancestor function
+        // *** Find ancestors ***
+        $flag_anc_search = 0;
+        $chosenperson = '';
+        $persfams = '';
+        if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
+            $flag_anc_search = 1;
+            $chosenperson = $_GET['anc_persged'];
+            $persfams = $_GET['anc_persfams'];
+            $persfams_arr = explode(';', $persfams);
+            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
+                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
+            $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
+            //also check privacy
+            $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
+
+            // function to find all ancestors - family_id = person GEDCOM number
+            function find_anc($family_id)
+            {
+                global $dbh, $db_functions, $anc_array;
+                global $language, $dirmark1, $dirmark1;
+                global $listed_array;
+                $ancestor_array2[] = $family_id;
+                $ancestor_number2[] = 1;
+                $marriage_gedcomnumber2[] = 0;
+                $generation = 1;
+
+                //$listed_array=array();
+
+                // *** Loop for ancestor report ***
+                while (isset($ancestor_array2[0])) {
+                    unset($ancestor_array);
+                    $ancestor_array = $ancestor_array2;
+                    unset($ancestor_array2);
+
+                    unset($ancestor_number);
+                    $ancestor_number = $ancestor_number2;
+                    unset($ancestor_number2);
+
+                    unset($marriage_gedcomnumber);
+                    $marriage_gedcomnumber = $marriage_gedcomnumber2;
+                    unset($marriage_gedcomnumber2);
+                    // *** Loop per generation ***
+                    $counter = count($ancestor_array);
+
+                    // *** Loop per generation ***
+                    for ($i = 0; $i < $counter; $i++) {
+                        $listednr = '';
+
+                        foreach ($listed_array as $key => $value) {
+                            if ($value == $ancestor_array[$i]) {
+                                $listednr = $key;
+                            }
+                            // if person was already listed, $listednr gets kwartier number for reference in report:
+                            // instead of person's details it will say: "already listed above under number 4234"
+                            // and no additional ancestors will be looked for, to prevent duplicated branches
+                        }
+                        if ($listednr == '') {  //if not listed yet, add person to array
+                            $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
+                            //$listed_array[]=$ancestor_array[$i];  
+                        }
+
+                        if ($ancestor_array[$i] != '0') {
+                            @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
+
+                            // ==	Check for parents
+                            if ($person_manDb->pers_famc && $listednr == '') {
+                                @$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
+                                if ($family_parentsDb->fam_man) {
+                                    $ancestor_array2[] = $family_parentsDb->fam_man;
+                                    $ancestor_number2[] = (2 * $ancestor_number[$i]);
+                                    $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
+                                }
+
+                                if ($family_parentsDb->fam_woman) {
+                                    $ancestor_array2[] = $family_parentsDb->fam_woman;
+                                    $ancestor_number2[] = (2 * $ancestor_number[$i] + 1);
+                                    $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
+                                } else {
+                                    // *** N.N. name ***
+                                    $ancestor_array2[] = '0';
+                                    $ancestor_number2[] = (2 * $ancestor_number[$i] + 1);
+                                    $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
+                                }
+                            }
+                        } else {
+                            // *** Show N.N. person ***
+                            @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
+                            $listed_array[0] = $person_manDb->pers_gedcomnumber;
+                        }
+                    }    // loop per generation
+                    $generation++;
+                }    // loop ancestor report
+
+            }
+
+            // ******* Start function here ******
+            $anc_array = array();
+            $listed_array = array();
+            find_anc($chosenperson);
+            foreach ($listed_array as $value) {
+                $anc_array[] = $value;
+            }
+            //$anc_array = $listed_array;
+        }
+
+        if (isset($_POST['items']) || isset($_GET['persged']) && isset($_GET['persfams']) || isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
+        ?>
+            <div class="row mb-2 p-2 bg-info">
+                <div class="col-auto">
+
+                    <!-- Searching by specific names -->
+                    <?php if (isset($_POST['items'])) { ?>
+                        <div id="name_search">
+                            <?= __('Mapping with specific name(s): '); ?>
+                            <?= $names; ?>. <a href="<?= $link; ?>"><?= __('Switch name filter off'); ?></a>
                         </div>
                     <?php } ?>
-                </td>
-            </tr>
+
+                    <!-- Find descendants of chosen person -->
+                    <?php if (isset($_GET['persged']) && isset($_GET['persfams'])) { ?>
+                        <div id="desc_search">
+                            <?php if ($desc_array != '') { ?>
+                                <?= __('Filter by descendants of: ') . trim($chosenname); ?>. <a href="<?= $link; ?>"><?= __('Switch descendant filter off'); ?></a>
+                            <?php } else { ?>
+                                <?= __('No known birth places amongst descendants'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
+
+                    <!-- Find ancestors -->
+                    <?php if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) { ?>
+                        <div id="anc_search">
+                            <?php if ($anc_array != '') { ?>
+                                <?= __('Filter by ancestors of: ') . trim($chosenname); ?>. <a href="<?= $link; ?>"><?= __('Switch ancestor filter off'); ?></a>
+                            <?php } else { ?>
+                                <?= __('No known birth places amongst ancestors'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
+
+                </div>
+            </div>
         <?php } ?>
-    </table>
+
+    <?php } ?>
+
 </div>
+
+
 
 <?php
 // FIXED WINDOW WITH LIST OF SPECIFIC FAMILY NAMES TO MAP BY
@@ -634,8 +634,8 @@ $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix
     AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
 $fam_search_result = $dbh->query($fam_search);
 ?>
-<div id="namemapping" style="display:none; z-index:100; position:absolute; top:90px; margin-left:10px; height:460px; width:250px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;">
-    <form method="POST" action="'.$link.'" name="yossi" style="display : inline;">
+<div id="namemapping" style="display:none; z-index:100; position:absolute; top:150px; margin-left:10px; height:460px; width:250px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;">
+    <form method="POST" action="<?= $link; ?>" name="yossi" style="display : inline;">
         <table style="z-index:200;">
             <tr>
                 <td style="text-align:center"><?= __('Mark checkbox next to name(s)'); ?></td>
@@ -646,13 +646,11 @@ $fam_search_result = $dbh->query($fam_search);
                         <?php
                         while ($fam_searchDb = $fam_search_result->fetch(PDO::FETCH_OBJ)) {
                             $pos = strpos($fam_searchDb->totalname, '_');
-                            $pref = '';
-                            $last = '';
-                            $last = substr($fam_searchDb->totalname, 0, $pos);
                             $pref = substr($fam_searchDb->totalname, $pos + 1);
                             if ($pref !== '') {
                                 $pref = ', ' . $pref;
                             }
+                            $last = substr($fam_searchDb->totalname, 0, $pos);
                             echo '<input type="checkbox" name="items[]" value="' . $fam_searchDb->totalname . '">' . $last . $pref . '<br>';
                         }
                         ?>
@@ -689,7 +687,7 @@ if (isset($_POST['descmap'])) {
     }
 
 ?>
-    <div id="descmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
+    <div id="descmapping" style="display:block; z-index:100; position:absolute; top:150px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
         <?php
         $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
         $desc_search = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
@@ -813,7 +811,7 @@ if (isset($_POST['ancmap'])) {
     }
 
 ?>
-    <div id="ancmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
+    <div id="ancmapping" style="display:block; z-index:100; position:absolute; top:150px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
         <?php
         $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
         $anc_search = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
@@ -926,7 +924,7 @@ if (isset($_POST['ancmap'])) {
 
 
 // *** OpenStreetMap ***
-if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
+if ($maps['select_world_map'] == 'OpenStreetMap') {
     $location_array[] = '';
     $lat_array[] = '';
     $lon_array[] = '';
@@ -958,13 +956,13 @@ if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Op
         //$text_array[]='test';
     }
     $namesearch_string = '';
-    if ($_SESSION['type_birth'] == 1) {
+    if ($maps['display_birth']) {
         //$persoon=$dbh->query("SELECT pers_tree_id, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
         //	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
         //	AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
         $persoon = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
             AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) " . $namesearch_string);
-    } elseif ($_SESSION['type_death'] == 1) {
+    } elseif ($maps['display_death']) {
         //$persoon=$dbh->query("SELECT pers_tree_id, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
         //	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
         //	AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
@@ -972,7 +970,7 @@ if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Op
             AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) " . $namesearch_string);
     }
     while (@$personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
-        if ($_SESSION['type_birth'] == 1) {
+        if ($maps['display_birth']) {
             $place = $personDb->pers_birth_place;
             $date = $personDb->pers_birth_date;
             if (!$personDb->pers_birth_place && $personDb->pers_bapt_place) {
@@ -981,7 +979,7 @@ if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Op
             if (!$personDb->pers_birth_date && $personDb->pers_bapt_date) {
                 $date = $personDb->pers_bapt_date;
             }
-        } elseif ($_SESSION['type_death'] == 1) {
+        } elseif ($maps['display_death']) {
             $place = $personDb->pers_death_place;
             $date = $personDb->pers_death_date;
             if (!$personDb->pers_death_place && $personDb->pers_buried_place) {
@@ -1040,8 +1038,8 @@ if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Op
     }
 ?>
 
-    <link rel="stylesheet" href="include/leaflet/leaflet.css">
-    <script src="include/leaflet/leaflet.js"></script>
+    <link rel="stylesheet" href="assets/leaflet/leaflet.css">
+    <script src="assets/leaflet/leaflet.js"></script>
 
     <!-- Show map -->
     <div id="map" style="width:1000px; height:520px"></div>
@@ -1080,7 +1078,7 @@ if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Op
     echo '
     <script>
     function findPlace () {
-        infoWindow.close();
+        // infoWindow.close();
         var e = document.getElementById("loc_search");
         var locSearch = e.options[e.selectedIndex].value;
         if(locSearch != "toptext") {   // if not default text "find location on map"
@@ -1125,20 +1123,12 @@ if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'Op
         initialize();
     </script>';
 
-    /* Old script to hide waiting screen.
-    echo '<script>
-        function hide() {
-            document.getElementById(\'wait\').style.display = "none";
-        }
-    </script>';
-    */
-
     include_once(__DIR__ . "/../googlemaps/google_initiate.php");
 
+    /*
     echo '<script>
         window.onload = hide;
     </script>';
+    */
 }
 ?>
-
-<br><br>

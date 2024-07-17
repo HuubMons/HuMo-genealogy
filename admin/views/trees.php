@@ -12,17 +12,9 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$phpself = 'index.php';
-$phpself2 = 'index.php?';
+//$phpself = 'index.php';
+//$phpself2 = 'index.php?';
 
-
-
-// TODO create seperate controller script.
-require_once  __DIR__ . "/../models/trees.php";
-$treesModel = new TreesModel($dbh);
-$treesModel->set_tree_id($tree_id); // $tree_id from index.php.
-$treesModel->update_tree($dbh, $db_functions);
-$trees['tree_id'] = $treesModel->get_tree_id();
 $tree_id = $trees['tree_id']; // TODO for now use old variable (used in tab scripts: tree_admin.php, tree_data.php, etc.)
 
 
@@ -76,7 +68,7 @@ $tree_search_result = $dbh->query($tree_search_sql);
     <div class="alert alert-danger">
         <b><?= __('Selected:'); ?> <?= $_GET['treetext_name']; ?></b>
         <?= __('Are you sure you want to remove this tree <b>AND all its statistics</b>?'); ?>
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="tree_id" value="<?= $_GET['remove_tree']; ?>">
             <input type="submit" name="remove_tree2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
@@ -93,7 +85,7 @@ $tree_search_result = $dbh->query($tree_search_sql);
     </div>
 
     <div class="col-2">
-        <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="POST" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <select size="1" name="tree_id" class="form-select form-select-sm" onChange="this.form.submit();">
                 <?php
@@ -103,9 +95,11 @@ $tree_search_result = $dbh->query($tree_search_sql);
                         $selected = ' selected';
                     }
                     $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
-                    echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
-                }
                 ?>
+                    <option value="<?= $tree_searchDb->tree_id; ?>" <?= $selected; ?>>
+                        <?= @$treetext['name']; ?>
+                    </option>
+                <?php } ?>
             </select>
         </form>
     </div>

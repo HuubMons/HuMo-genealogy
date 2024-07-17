@@ -317,14 +317,27 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
 
         <div class="row">
             <div class="col-md-1"></div>
+
             <div class="col-md-auto">
-                <!-- HELP POPUP -->
-                <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_address',100,200)" onmouseout="mclosetime()">
-                        <img src="images/help.png">
-                    </a>
-                    <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_address" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                        <?= __('This calculator will find the following relationships:<br>
+                <?php
+                /* <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('images/turn_around.gif') top no-repeat;width:25px;height:25px"> */
+                ?>
+                <input type="submit" name="switch" value="<?= __('Switch persons'); ?>" class="btn btn-sm btn-secondary">
+            </div>
+
+            <div class="col-md-auto">
+                <!-- Help popup. Remark: Bootstrap popover javascript in layout script. -->
+                <style>
+                    .popover {
+                        max-width: 500px;
+                    }
+
+                    .popover-body {
+                        height: 500px;
+                        overflow-y: auto;
+                    }
+                </style>
+                <?php $popup_text =  __('This calculator will find the following relationships:<br>
 <ul><li>Any blood relationship between X and Y ("X is great-grandfather of Y", "X is 3rd cousin once removed of Y" etc.)</li>
 <li>Blood relationship between the spouse of X and person Y ("X is spouse of 2nd cousin of Y", "X is son-in-law of Y")</li>
 <li>Blood relationship between person X and the spouse of Y ("X is 2nd cousin of spouse of Y", "X is father-in-law of Y")</li>
@@ -335,19 +348,17 @@ Directions for use:<br>
 <li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
 <li>Now press the "Calculate relationships" button on the right.</li>
 <li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>'); ?>
-                    </div>
-                </div>
+                <?php $popup_text = str_replace('"', "'", $popup_text); ?>
+
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
+                    <?= __('Help'); ?>
+                </button>
             </div>
 
             <div class="col-md-auto">
-                <?php
-                /* <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('images/turn_around.gif') top no-repeat;width:25px;height:25px"> */
-                ?>
-                <input type="submit" name="switch" value="<?= __('Switch persons'); ?>" class="btn btn-sm btn-secondary">
-            </div>
-            <div class="col-md-auto">
                 <input type="submit" name="calculator" value="<?= __('Calculate relationships'); ?>" class="btn btn-sm btn-success">
             </div>
+
         </div>
     </div>
 
@@ -557,7 +568,7 @@ Directions for use:<br>
 
                             <?= __('MARITAL RELATIONSHIP: '); ?>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span class="print_version">
+                            <span class="d-print-none">
                                 <input type="submit" name="extended" value="<?= __('Use Extended Calculator'); ?>" class="btn btn-sm btn-success">
                             </span><br><br>
 
@@ -752,7 +763,7 @@ Directions for use:<br>
                             <td style="text-align:left;border-left:0px;padding:10px;vertical-align:text-top;width:800px">
                                 <div style='font-weight:bold;'><?= __('No blood relation or direct marital relation found'); ?></div>
                             <?php } else { ?>
-                            <td class="print_version" style="padding-left:50px;padding-right:10px;vertical-align:text-top;border-left:2px solid #bbbbbb;width:350px;">
+                            <td class="d-print-none" style="padding-left:50px;padding-right:10px;vertical-align:text-top;border-left:2px solid #bbbbbb;width:350px;">
                                 <?= __('MARITAL RELATIONSHIP: '); ?><br><br>
                                 <div style="font-weight:bold;margin-bottom:10px;"><?= __('No direct marital relation found'); ?></div>
                             <?php } ?>
@@ -4194,7 +4205,7 @@ function display_result($result)
     }
 ?>
 
-    <div class="print_version" style="padding:3px;width:auto;background-color:#eeeeee">
+    <div class="d-print-none" style="padding:3px;width:auto;background-color:#eeeeee">
         <input type="submit" name="next_path" value="<?= __('Try to find another path'); ?>" class="btn btn-sm btn-success">
         &nbsp;&nbsp;<?= __('(With each consecutive search the path may get longer and computing time may increase!)'); ?>
     </div>

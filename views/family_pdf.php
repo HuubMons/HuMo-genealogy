@@ -14,14 +14,16 @@ include_once(__DIR__ . '/layout_pdf.php');
 
 
 // TODO create seperate controller script.
-// TEMPORARY CONTROLLER HERE:
 require_once __DIR__ . "/../app/model/family.php";
 $get_family = new FamilyModel($dbh);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
+
 // TODO expanded view is disabled for PDF. Will we using expand in future for PDF?
 // *** No expanded view in PDF export ***
-$data["family_expanded"] = 'compact';
+//$data["family_expanded"] = 'compact';
+$data["family_expanded"] =  $get_family->getFamilyExpanded();
+
 $data["source_presentation"] =  $get_family->getSourcePresentation();
 $data["picture_presentation"] =  $get_family->getPicturePresentation();
 $data["text_presentation"] =  $get_family->getTextPresentation();

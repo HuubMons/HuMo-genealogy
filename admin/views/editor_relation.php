@@ -74,6 +74,13 @@
 <?php
 if ($menu_tab != 'children') {
     $hideshow = '700';
+
+    // *** Set pers_sexe for new partner ***
+    if ($person->pers_sexe == 'M') {
+        $new_partner_sexe = 'F';
+    } else {
+        $new_partner_sexe = 'M';
+    }
 ?>
     <div class="p-1 m-2 genealogy_search">
         <div class="row mb-2">
@@ -87,7 +94,7 @@ if ($menu_tab != 'children') {
 <?php } ?>
 
 <div style="display:none;" class="row<?= $hideshow; ?> p-3 m-2 genealogy_search">
-    <?= add_person('partner', $person->pers_sexe); ?><br><br>
+    <?= add_person('partner', $new_partner_sexe); ?><br><br>
     <form method="POST" style="display: inline;" action="<?= $phpself; ?>#marriage" name="form4" id="form4">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <div class="row mb-2">
@@ -905,7 +912,6 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             <!-- General text by relation -->
             <tr class="humo_color">
                 <td><a name="fam_text"></a><?= __('Text by relation'); ?></td>
-                <td style="border-right:0px;"></td>
                 <td style="border-left:0px;">
                     <div class="row mb-2">
                         <!-- <label for "fam_relation_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label> -->

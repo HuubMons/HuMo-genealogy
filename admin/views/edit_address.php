@@ -9,23 +9,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
-
-// TODO create seperate controller script.
-include_once(__DIR__ . "/../include/editor_cls.php");
-$editor_cls = new editor_cls;
-
-include_once(__DIR__ . "/../include/select_tree.php");
-
-require_once  __DIR__ . "/../models/edit_address.php";
-$editAddressModel = new EditAddressModel($dbh);
-$editAddressModel->set_address_id();
-$editAddressModel->update_address($dbh, $tree_id, $db_functions, $editor_cls);
-$editAddress['address_id'] = $editAddressModel->get_address_id();
-
-
-
-$phpself = 'index.php';
 $field_text_large = 'style="height: 100px; width:550px"';
 
 include(__DIR__ . '/../include/editor_event_cls.php');
@@ -45,7 +28,7 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
 <?php if (isset($_POST['address_remove'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to remove this address and ALL address references?'); ?></strong>
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
             <input type="hidden" name="address_gedcomnr" value="<?= $_POST['address_gedcomnr']; ?>">
@@ -61,7 +44,7 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
     </div>
 <?php }; ?>
 
-<form method="POST" action="<?= $phpself; ?>" style="display : inline;">
+<form method="POST" action="index.php" style="display : inline;">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <div class="p-3 my-md-2 genealogy_search container-md">
         <div class="row">
@@ -149,7 +132,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
     }
 ?>
 
-    <form method="POST" action="<?= $phpself; ?>">
+    <form method="POST" action="index.php">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
         <input type="hidden" name="address_gedcomnr" value="<?= $address_gedcomnr; ?>">
@@ -275,7 +258,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                     <?= __('Text'); ?>
                 </div>
                 <div class="col-md-4">
-                    <textarea rows="1" name="address_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address_text); ?></textarea>
+                    <textarea rows="1" name="address_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editAddress['editor_cls']->text_show($address_text); ?></textarea>
                 </div>
             </div>
 

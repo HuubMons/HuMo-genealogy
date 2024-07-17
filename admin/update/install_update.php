@@ -5,14 +5,13 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 @set_time_limit(300);
-global $selected_language;
+?>
 
-$phpself = 'index.php';
+<h1 class="center">
+    <?php printf(__('%s Update'), 'HuMo-genealogy'); ?>
+</h1>
 
-echo '<h1 class="center">';
-printf(__('%s Update'), 'HuMo-genealogy');
-echo '</h1>';
-
+<?php
 // *** Installation of beta version ***
 if (isset($_GET['install_beta'])) {
     $update['up_to_date'] = 'no';
@@ -70,7 +69,7 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
         <input type="hidden" name="enable_update_check_change" value="1">
     </form>
 
-<?php
+    <?php
     // *** Debug update check ***
     $check = ' checked';
     if ($humo_option['update_last_check'] == 'DISABLED') {
@@ -80,7 +79,7 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
     printf(__('Debug %s update'), 'HuMo-genealogy');
     echo '</h2>';
     echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
-    echo '<input type="submit" name="debug_update" value="' . __('Debug') . '">';
+    echo '<input type="submit" name="debug_update" value="' . __('Debug') . '" class="btn btn-secondary btn-sm">';
     echo '</form>';
     echo '<br><br>';
 } elseif (isset($update['up_to_date']) && $update['up_to_date'] == 'no') {
@@ -372,90 +371,102 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
             }
             echo '" style="display : inline;">';
             echo '<input type="hidden" name="page" value="' . $page . '">';
+    ?>
+            <div style="border:1px solid black;height:200px;width:700px;overflow:scroll">
+                <?php
+                // *** Compare new files with old files, show list of renewed files ***
+                for ($i = 0; $i <= count($update_files) - 1; $i++) {
+                    if (!is_dir($update_dir[$i] . '/' . $update_files[$i])) {
+                        $key = array_search($update_dir_files[$i], $existing_dir_files);
 
-            echo '<div style="border:1px solid black;height:200px;width:700px;overflow:scroll">';
+                        $exist_sha1 = sha1_file($existing_dir[$key] . '/' . $existing_files[$key]);
+                        $update_sha1 = sha1_file($update_dir[$i] . '/' . $update_files[$i]);
+                        if ($exist_sha1 !== $update_sha1) {
+                            $create_file = '../' . substr($update_dir[$i] . '/' . $update_files[$i], 25);
 
-            // *** Compare new files with old files, show list of renewed files ***
-            for ($i = 0; $i <= count($update_files) - 1; $i++) {
-                if (!is_dir($update_dir[$i] . '/' . $update_files[$i])) {
-                    $key = array_search($update_dir_files[$i], $existing_dir_files);
-
-                    $exist_sha1 = sha1_file($existing_dir[$key] . '/' . $existing_files[$key]);
-                    $update_sha1 = sha1_file($update_dir[$i] . '/' . $update_files[$i]);
-                    if ($exist_sha1 !== $update_sha1) {
-                        $create_file = '../' . substr($update_dir[$i] . '/' . $update_files[$i], 25);
-
-                        // *** Optional installation of file ***
-                        $check = ' checked';
-                        if ($_GET['step'] == '3') {
-                            $check = '';
-                            if (isset($_POST['install_file' . $i])) {
-                                $check = ' checked';
+                            // *** Optional installation of file ***
+                            $check = ' checked';
+                            if ($_GET['step'] == '3') {
+                                $check = '';
+                                if (isset($_POST['install_file' . $i])) {
+                                    $check = ' checked';
+                                }
                             }
-                        }
-                        echo '<input type="Checkbox" name="install_file' . $i . '" value="yes"' . $check . '>';
-                        echo $create_file;
+                            echo '<input type="Checkbox" name="install_file' . $i . '" value="yes"' . $check . '> ';
+                            echo $create_file;
 
-                        // *** Copy update file to existing file ***
-                        if ($_GET['step'] == '3' && isset($_POST['install_file' . $i])) {
-                            if (!copy($update_dir[$i] . '/' . $update_files[$i], $create_file)) {
-                                echo ' <b>' . __('Installation of file failed') . '</b>';
-                            } else {
-                                echo ' ' . __('File installed!');
+                            // *** Copy update file to existing file ***
+                            if ($_GET['step'] == '3' && isset($_POST['install_file' . $i])) {
+                                if (!copy($update_dir[$i] . '/' . $update_files[$i], $create_file)) {
+                                    echo ' <b>' . __('Installation of file failed') . '</b>';
+                                } else {
+                                    echo ' ' . __('File installed!');
+                                }
                             }
+                            echo '<br>';
                         }
-                        echo '<br>';
-                    }
-                } else {
-                    // *** Compare directory ***
-                    $key = array_search($update_dir_files[$i], $existing_dir_files);
-                    if ($key) {
-                        //echo $update_dir[$i].'/'.$update_files[$i];
-                        //echo 'OK';
                     } else {
-                        $create_dir = '../' . substr($update_dir[$i] . '/' . $update_files[$i], 25);
-                        echo $create_dir;
-                        if ($_GET['step'] == '3' && mkdir($create_dir)) {
-                            echo ' ' . __('Directory created.');
+                        // *** Compare directory ***
+                        $key = array_search($update_dir_files[$i], $existing_dir_files);
+                        if ($key) {
+                            //echo $update_dir[$i].'/'.$update_files[$i];
+                            //echo 'OK';
+                        } else {
+                            $create_dir = '../' . substr($update_dir[$i] . '/' . $update_files[$i], 25);
+                            echo $create_dir;
+                            if ($_GET['step'] == '3' && mkdir($create_dir)) {
+                                echo ' ' . __('Directory created.');
+                            }
+                            echo '<br>';
                         }
-                        echo '<br>';
                     }
                 }
-            }
+                ?>
+            </div><br>
 
-            // *** Compare new files with old files, show list of old system files ***
-            echo '<br>';
+            <?php
             printf(__('The following files are not part of the %s system files (anymore). If you want, they can be removed.'), 'HuMo-genealogy');
-            echo '<br>';
-            //for ($i=0; $i<=count($existing_files)-1; $i++){
-            // *** Skip first file (.htaccess) because of comparison problems ***
-            for ($i = 1; $i <= count($existing_files) - 1; $i++) {
-                if (!is_dir($existing_dir[$i] . '/' . $existing_files[$i])) {
-                    $key = array_search($existing_dir_files[$i], $update_dir_files);
-                    if (!$key) {
-                        $create_file = $existing_dir[$i] . '/' . $existing_files[$i];
-                        // *** Optional removal of file ***
-                        $check = '';
-                        if ($_GET['step'] == '3') {
+
+            echo '<br><a href="' . $path_tmp . 'page=install_update&auto=1&step=2&update_check=1';
+            if (isset($_GET['install_beta'])) {
+                echo '&install_beta=1';
+            }
+            if (isset($_GET['re_install'])) {
+                echo '&re_install=1';
+            }
+            echo '&amp;select_all=1">' . __('Select all files (recommended option)') . '</a><br>';
+            ?>
+            <div style="border:1px solid black;height:200px;width:700px;overflow:scroll">
+                <?php
+                // *** Compare new files with old files, show list of old system files ***
+                //for ($i=0; $i<=count($existing_files)-1; $i++){
+                // *** Skip first file (.htaccess) because of comparison problems ***
+                for ($i = 1; $i <= count($existing_files) - 1; $i++) {
+                    if (!is_dir($existing_dir[$i] . '/' . $existing_files[$i])) {
+                        $key = array_search($existing_dir_files[$i], $update_dir_files);
+                        if (!$key) {
+                            $create_file = $existing_dir[$i] . '/' . $existing_files[$i];
+                            // *** Optional removal of file ***
                             $check = '';
-                            if (isset($_POST['remove_file' . $i])) {
+                            if (isset($_GET['select_all'])) {
                                 $check = ' checked';
                             }
-                        }
-                        echo '<input type="Checkbox" name="remove_file' . $i . '" value="yes"' . $check . '>';
-                        echo $create_file;
+                            if ($_GET['step'] == '3' && isset($_POST['remove_file' . $i])) {
+                                $check = ' checked';
+                            }
+                            echo '<input type="Checkbox" name="remove_file' . $i . '" value="yes"' . $check . '> ';
+                            echo $create_file;
 
-                        // *** Copy update file to existing file ***
-                        if ($_GET['step'] == '3' && isset($_POST['remove_file' . $i])) {
-                            unlink($create_file);
+                            if ($_GET['step'] == '3' && isset($_POST['remove_file' . $i])) {
+                                unlink($create_file);
+                            }
+                            echo '<br>';
                         }
-                        echo '<br>';
                     }
                 }
-            }
-
-            echo '</div>';
-
+                ?>
+            </div>
+<?php
             if ($_GET['step'] == '3' && DATABASE_HOST) {
                 echo '<br>' . __('Update new db_login.php file...') . '<br>';
 
@@ -515,12 +526,10 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
                 //echo '<br><br>'.__('Step 3)').' <a href="'.$path_tmp.'page=install_update&auto=1&step=3';
                 //if (isset($_GET['install_beta'])){ echo '&install_beta=1'; }
                 //echo '">'.__('Install files!').'</a><br>';
-                echo '<br><input type="submit" name="submit" value="' . __('Install files!') . '">';
+                echo '<br><input type="submit" name="submit" value="' . __('Install files!') . '" class="btn btn-success btn-sm"><br><br>';
             } else {
                 // *** Update settings ***
-                $result = $dbh->query("UPDATE humo_settings
-                    SET setting_value='2012-01-01'
-                    WHERE setting_variable='update_last_check'");
+                $result = $dbh->query("UPDATE humo_settings SET setting_value='2012-01-01' WHERE setting_variable='update_last_check'");
                 $humo_option['update_last_check'] = '2012-01-01';
 
                 // *** Remove installation files ***

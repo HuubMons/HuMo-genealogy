@@ -15,7 +15,7 @@ $db_functions->check_family($data["family_id"]);
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-// Just change variables for now, because function "outline" will me moved to model too...
+// Just change variables for now, because function "outline" will be moved to model too...
 $show_details = $data["show_details"];
 $show_date = $data["show_date"];
 $dates_behind_names = $data["dates_behind_names"];
@@ -27,7 +27,7 @@ $path_form = $link_cls->get_link($uri_path, 'outline_report', $tree_id);
 echo $data["descendant_header"];
 
 ?>
-<div class="pers_name center print_version">
+<div class="pers_name center d-print-none">
     <!-- Button: show full detais -->
     <form method="POST" action="<?= $path_form; ?>" style="display : inline;">
         <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
@@ -78,7 +78,7 @@ echo $data["descendant_header"];
         <?= __('Choose number of generations to display'); ?>:
 
         <select size=1 name="selectnr_generations" class="form-select form-select-sm" onChange="window.location=this.value;" style="display:inline; width: 60px;">
-<?php
+            <?php
             $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
             for ($i = 2; $i < 20; $i++) {
                 $nr_gen = $i - 1;
@@ -388,10 +388,4 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
 // ******* Start function here - recursive if started ******
 ?>
-<table class="humo outlinetable">
-    <tr>
-        <td>
-            <?php outline($data["family_id"], $data["main_person"], $generation_number, $nr_generations); ?>
-        </td>
-    </tr>
-</table><br><br>
+<?php outline($data["family_id"], $data["main_person"], $generation_number, $nr_generations); ?>

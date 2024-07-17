@@ -184,7 +184,6 @@ function show_media($event_connect_kind, $event_connect_id)
             } else {
                 // *** Show photo using the lightbox effect ***
                 $picture_array = show_picture($tree_pict_path, $event_event, '', 120);
-                //$picture_array=show_picture($tree_pict_path,$event_event,120,'');
                 // *** lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
                 // *** But: reverse change of / character (if sub folders are used) ***
                 //$picture_array['picture'] = rawurlencode($picture_array['picture']);
@@ -194,16 +193,10 @@ function show_media($event_connect_kind, $event_connect_id)
                 if ($media_event_text[$i]) {
                     $line_pos = strpos($media_event_text[$i], "|");
                 }
-                //$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
                 $title_txt = $media_event_text[$i];
-                //if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
-                //if(isset($line_pos)) $title_txt = substr($media_event_text[$i],0,$line_pos);
                 if ($line_pos > 0) {
                     $title_txt = substr($media_event_text[$i], 0, $line_pos);
                 }
-
-                // *** Old Slimbox lightbox ***
-                //$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $title_txt).'">';
 
                 // *** April 2021: using GLightbox ***
                 //$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" data-glightbox="title: Title; description: '.str_replace("&", "&amp;", $title_txt).'" class="glightbox3" data-gallery="gallery'.$event_connect_id.'">';
@@ -211,8 +204,11 @@ function show_media($event_connect_kind, $event_connect_id)
 
                 $picture = '<a href="' . $picture_array['path'] . $picture_array['picture'] . '" class="glightbox3" data-gallery="gallery' . $event_connect_id . '" data-glightbox="description: .custom-desc' . $media_event_id[$i] . '">';
                 // *** Need a class for multiple lines and HTML code in a text ***
-                //$picture.='<div class="glightbox-desc custom-desc'.$media_event_id[$i].'">'.$title_txt.'</div>';
-                $picture .= '<div class="glightbox-desc custom-desc' . $media_event_id[$i] . '">' . $date_place . ' ' . $title_txt . '</div>';
+                $picture .= '<div class="glightbox-desc custom-desc' . $media_event_id[$i] . '">';
+                if ($date_place) {
+                    $picture .= $date_place . '<br>';
+                }
+                $picture .= $title_txt . '</div>';
 
                 $picture .= '<img src="' . $picture_array['path'] . $picture_array['thumb'] . $picture_array['picture'] . '" height="' . $picture_array['height'] . '" alt="' . $event_event . '"></a>';
                 //$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" width="'.$picture_array['width'].'" alt="'.$event_event.'"></a>';
