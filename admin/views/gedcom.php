@@ -312,18 +312,12 @@ if (isset($step1)) {
                                 </label>
                             </div>
 
-                            <?php
-                            // *** if a humo_location table exists, refresh the location_status column ***
-                            $res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-                            if ($res->rowCount()) {
-                            ?>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="process_geo_location" value="" id="process_geo_location" <?= $humo_option["gedcom_read_process_geo_location"] == 'y' ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="process_geo_location">
-                                        <?= __('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of GEDCOM file!'); ?>
-                                    </label>
-                                </div>
-                            <?php } ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="process_geo_location" value="" id="process_geo_location" <?= $humo_option["gedcom_read_process_geo_location"] == 'y' ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="process_geo_location">
+                                    <?= __('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of GEDCOM file!'); ?>
+                                </label>
+                            </div>
 
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="save_pictures" value="" id="save_pictures" <?= $humo_option["gedcom_read_save_pictures"] == 'y' ? 'checked' : ''; ?>>
@@ -1595,7 +1589,6 @@ if (isset($_POST['step3'])) {
                 // Send output to browser immediately
                 ob_flush();
                 flush();
-
             }
         }
 
@@ -2337,20 +2330,11 @@ if (isset($_POST['step4'])) {
         }
     }
 
-    // if a humo_location table exists, refresh the location_status column
-    $res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-    if ($humo_option["gedcom_read_process_geo_location"] == 'y' && $res->rowCount()) {
+    // Refresh the location_status column
+    if ($humo_option["gedcom_read_process_geo_location"] == 'y') {
 
         // after import, and ONLY for people with a humo_location table for googlemaps, refresh the location_status fields
         echo '<br>&gt;&gt;&gt; ' . __('Updating location database...');
-
-        // *** THIS PART IS MOVED TO THE GENERAL DATABASE UPDATE ***
-        // first, make sure the location_status column exists. If not create it
-        //$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-        //$exists = $result->rowCount();
-        //if(!$exists) {
-        //	$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
-        //}
 
         $all_loc = $dbh->query("SELECT location_location FROM humo_location");
         while ($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {

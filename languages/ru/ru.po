@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-14 10:26+0200\n"
-"PO-Revision-Date: 2024-07-14 10:26+0200\n"
+"POT-Creation-Date: 2024-07-29 22:01+0200\n"
+"PO-Revision-Date: 2024-07-29 22:01+0200\n"
 "Last-Translator: Yossi Beck <yosbeck@gmail.com>, 2015\n"
 "Language-Team: Russian (http://www.transifex.com/humo-gen/humo-gen/language/"
 "ru/)\n"
@@ -237,7 +237,7 @@ msgstr "Декабрь"
 #: include/person_cls.php:2752 include/person_cls.php:2771
 #: include/person_cls.php:2787 include/witness.php:174 include/witness.php:180
 #: views/ancestor_sheet_pdf.php:102 views/ancestor_sheet_pdf.php:205
-#: views/descendant_chart.php:446 views/list.php:1111
+#: views/descendant_chart.php:452 views/list.php:1111
 #: views/list_places_families.php:395
 msgid "N.N."
 msgstr "N.N."
@@ -246,7 +246,7 @@ msgstr "N.N."
 #: admin/include/editor_cls.php:310 include/person_cls.php:1121
 #: views/ancestor_chart.php:174 views/ancestor_sheet.php:77
 #: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:118
-#: views/ancestor_sheet_pdf.php:373 views/descendant_chart.php:336
+#: views/ancestor_sheet_pdf.php:373 views/descendant_chart.php:342
 #: views/list.php:34 views/list.php:956 views/list.php:1142 views/list.php:1157
 #: views/relations.php:162 views/relations.php:276
 msgid "*"
@@ -255,7 +255,7 @@ msgstr "*"
 # Baptise
 #: admin/include/editor_cls.php:313 include/person_cls.php:1124
 #: views/ancestor_chart.php:179 views/ancestor_sheet.php:82
-#: views/descendant_chart.php:341 views/list.php:44 views/list.php:964
+#: views/descendant_chart.php:347 views/list.php:44 views/list.php:964
 #: views/list.php:1139 views/list.php:1154 views/relations.php:159
 #: views/relations.php:273
 msgid "~"
@@ -265,7 +265,7 @@ msgstr "~"
 #: admin/include/editor_cls.php:319 include/person_cls.php:1129
 #: views/ancestor_chart.php:185 views/ancestor_sheet.php:88
 #: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:81
-#: views/descendant_chart.php:347 views/list.php:60 views/list.php:990
+#: views/descendant_chart.php:353 views/list.php:60 views/list.php:990
 #: views/list.php:1172 views/list.php:1187
 msgid "&#134;"
 msgstr "&#134;"
@@ -273,7 +273,7 @@ msgstr "&#134;"
 # Buried
 #: admin/include/editor_cls.php:325 include/person_cls.php:1132
 #: views/ancestor_chart.php:190 views/ancestor_sheet.php:93
-#: views/descendant_chart.php:352 views/list.php:68 views/list.php:998
+#: views/descendant_chart.php:358 views/list.php:68 views/list.php:998
 #: views/list.php:1169 views/list.php:1184
 msgid "[]"
 msgstr "[]"
@@ -286,7 +286,6 @@ msgid "Picture/ Media"
 msgstr "Фото/Видео"
 
 #: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:456
-#: admin/include/editor_event_cls.php:466
 #: admin/include/editor_event_cls.php:1257
 #: admin/include/editor_event_cls.php:1526
 #: admin/include/editor_event_cls.php:1529 admin/views/editor.php:1223
@@ -339,7 +338,7 @@ msgstr "свидетель похорон"
 #: app/model/mailform.php:83 app/model/register.php:95
 #: app/model/tree_index.php:598 app/model/tree_index.php:952
 #: app/model/user_settings.php:88 views/anniversary.php:93
-#: views/family.php:1227 views/family.php:1295 views/layout.php:353
+#: views/family.php:1242 views/family.php:1310 views/layout.php:353
 #: views/list.php:147 views/list.php:646 views/list_names.php:295
 #: views/list_names.php:298 views/mailform.php:48 views/mailform.php:50
 #: views/register.php:58 views/relations.php:94 views/relations.php:96
@@ -405,7 +404,6 @@ msgid "marriage witness (religious)"
 msgstr "свидетель на венчании"
 
 #: admin/include/editor_event_cls.php:56 admin/include/editor_event_cls.php:483
-#: admin/include/editor_event_cls.php:492
 #: admin/include/editor_event_cls.php:1277
 #: admin/include/editor_event_cls.php:1559
 #: admin/include/editor_event_cls.php:1562 admin/views/editor_relation.php:793
@@ -416,7 +414,7 @@ msgstr "Религия"
 #: admin/include/editor_event_cls.php:89 admin/include/editor_sources.php:101
 #: admin/include/editor_sources.php:155 admin/include/editor_sources.php:445
 #: admin/views/editor.php:1591 admin/views/editor.php:2051
-#: admin/views/gedcom.php:1703 admin/views/notes.php:243
+#: admin/views/gedcom.php:1696 admin/views/notes.php:243
 msgid "text"
 msgstr "текст"
 
@@ -521,7 +519,7 @@ msgstr "Номер GEDCOM (ID)"
 #: admin/views/editor_relation.php:674 admin/views/editor_relation.php:750
 #: admin/views/editor_relation.php:848 admin/views/editor_relation.php:1227
 #: admin/views/gedcom_export.php:164 admin/views/language_editor.php:250
-#: admin/views/make_db_maps.php:990 admin/views/settings_homepage.php:217
+#: admin/views/maps_locations.php:737 admin/views/settings_homepage.php:217
 #: admin/views/settings_homepage.php:412 admin/views/tree_merge.php:615
 #: admin/views/tree_merge.php:631 admin/views/tree_merge.php:694
 #: admin/views/users.php:119 app/model/tree_index.php:56
@@ -776,7 +774,7 @@ msgstr "Место"
 #: admin/views/groups.php:517 admin/views/settings_homepage.php:223
 #: admin/views/settings_homepage.php:331 admin/views/settings_homepage.php:418
 #: include/process_text.php:120 include/process_text.php:122
-#: views/addresses.php:43 views/family.php:1313 views/list.php:307
+#: views/addresses.php:43 views/family.php:1328 views/list.php:307
 #: views/list.php:314
 msgid "Text"
 msgstr "Текст"
@@ -813,7 +811,7 @@ msgstr ""
 
 #: admin/include/editor_event_cls.php:1602 admin/update/install_update.php:605
 #: admin/views/backup.php:114 admin/views/gedcom.php:149
-#: admin/views/settings.php:96 admin/views/settings.php:458
+#: admin/views/settings.php:96 admin/views/settings.php:465
 msgid "Upload"
 msgstr "Загрузить"
 
@@ -887,8 +885,8 @@ msgstr "Другое имя"
 msgid "Formerly known as"
 msgstr "Ранее известен/известна как"
 
-#: admin/include/editor_inc.php:278 admin/views/settings_admin.php:120
-#: admin/views/settings_admin.php:139
+#: admin/include/editor_inc.php:278 admin/views/settings_admin.php:121
+#: admin/views/settings_admin.php:140
 msgid "Photo upload failed, check folder rights"
 msgstr "Загрузка фотографии не удалась, проверьте права на папку."
 
@@ -916,18 +914,20 @@ msgstr "Также удалить цветовые метки "
 #: admin/views/editor.php:396 admin/views/editor.php:413
 #: admin/views/editor_relation.php:230 admin/views/gedcom.php:171
 #: admin/views/gedcom_export.php:463 admin/views/gedcom_export.php:479
-#: admin/views/gedcom_export.php:499 admin/views/gedcom_export.php:545
+#: admin/views/gedcom_export.php:496 admin/views/gedcom_export.php:541
 #: admin/views/groups.php:25 admin/views/groups.php:536
-#: admin/views/install.php:302 admin/views/notes.php:91
-#: admin/views/settings.php:121 admin/views/settings.php:132
-#: admin/views/settings.php:148 admin/views/settings.php:159
-#: admin/views/settings.php:169 admin/views/settings.php:191
-#: admin/views/settings.php:201 admin/views/settings.php:212
-#: admin/views/settings.php:241 admin/views/settings.php:521
-#: admin/views/settings_homepage.php:612 admin/views/thumbs.php:505
-#: admin/views/tree_merge.php:986 admin/views/tree_merge.php:999
-#: admin/views/tree_merge.php:1012 admin/views/tree_merge.php:1029
-#: admin/views/trees.php:74 admin/views/users.php:20 views/mailform.php:79
+#: admin/views/install.php:302 admin/views/maps_locations.php:99
+#: admin/views/maps_locations.php:118 admin/views/maps_locations.php:204
+#: admin/views/notes.php:91 admin/views/settings.php:121
+#: admin/views/settings.php:132 admin/views/settings.php:148
+#: admin/views/settings.php:159 admin/views/settings.php:169
+#: admin/views/settings.php:191 admin/views/settings.php:201
+#: admin/views/settings.php:212 admin/views/settings.php:241
+#: admin/views/settings.php:528 admin/views/settings_homepage.php:612
+#: admin/views/thumbs.php:505 admin/views/tree_merge.php:986
+#: admin/views/tree_merge.php:999 admin/views/tree_merge.php:1012
+#: admin/views/tree_merge.php:1029 admin/views/trees.php:74
+#: admin/views/users.php:20 views/mailform.php:79
 msgid "Yes"
 msgstr "Да"
 
@@ -939,18 +939,20 @@ msgstr "Да"
 #: admin/views/editor.php:397 admin/views/editor.php:414
 #: admin/views/editor_relation.php:231 admin/views/gedcom.php:172
 #: admin/views/gedcom_export.php:464 admin/views/gedcom_export.php:480
-#: admin/views/gedcom_export.php:500 admin/views/gedcom_export.php:544
+#: admin/views/gedcom_export.php:497 admin/views/gedcom_export.php:540
 #: admin/views/groups.php:26 admin/views/groups.php:537
-#: admin/views/install.php:303 admin/views/notes.php:92
-#: admin/views/settings.php:122 admin/views/settings.php:133
-#: admin/views/settings.php:149 admin/views/settings.php:160
-#: admin/views/settings.php:170 admin/views/settings.php:192
-#: admin/views/settings.php:202 admin/views/settings.php:213
-#: admin/views/settings.php:242 admin/views/settings.php:522
-#: admin/views/settings_homepage.php:613 admin/views/thumbs.php:506
-#: admin/views/tree_merge.php:987 admin/views/tree_merge.php:1000
-#: admin/views/tree_merge.php:1013 admin/views/tree_merge.php:1030
-#: admin/views/trees.php:75 admin/views/users.php:21 views/mailform.php:80
+#: admin/views/install.php:303 admin/views/maps_locations.php:100
+#: admin/views/maps_locations.php:119 admin/views/maps_locations.php:205
+#: admin/views/notes.php:92 admin/views/settings.php:122
+#: admin/views/settings.php:133 admin/views/settings.php:149
+#: admin/views/settings.php:160 admin/views/settings.php:170
+#: admin/views/settings.php:192 admin/views/settings.php:202
+#: admin/views/settings.php:213 admin/views/settings.php:242
+#: admin/views/settings.php:529 admin/views/settings_homepage.php:613
+#: admin/views/thumbs.php:506 admin/views/tree_merge.php:987
+#: admin/views/tree_merge.php:1000 admin/views/tree_merge.php:1013
+#: admin/views/tree_merge.php:1030 admin/views/trees.php:75
+#: admin/views/users.php:21 views/mailform.php:80
 msgid "No"
 msgstr "Нет"
 
@@ -1007,41 +1009,41 @@ msgstr "Пол"
 
 #: admin/include/editor_sources.php:77 admin/views/editor.php:1298
 #: admin/views/editor_person.php:646 app/model/tree_index.php:905
-#: app/model/tree_index.php:907 googlemaps/namesearch.php:193
+#: app/model/tree_index.php:907 googlemaps/namesearch.php:183
 #: include/person_cls.php:2034 include/person_cls.php:2035
 #: include/person_cls.php:2037 include/person_cls.php:2038
 #: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:373
-#: views/anniversary.php:92 views/descendant_chart.php:438
-#: views/family.php:1126 views/list.php:235 views/list.php:243
-#: views/list.php:647 views/maps.php:727 views/maps.php:850
+#: views/anniversary.php:92 views/descendant_chart.php:444
+#: views/family.php:1141 views/list.php:235 views/list.php:243
+#: views/list.php:647 views/maps.php:684 views/maps.php:814
 msgid "born"
 msgstr "рождение"
 
 #: admin/include/editor_sources.php:83 admin/views/editor.php:1332
 #: admin/views/editor_person.php:920 app/model/timeline.php:102
 #: app/model/tree_index.php:914 app/model/tree_index.php:916
-#: googlemaps/namesearch.php:196 include/person_cls.php:2173
+#: googlemaps/namesearch.php:186 include/person_cls.php:2173
 #: include/person_cls.php:2174 include/person_cls.php:2176
-#: include/person_cls.php:2177 views/family.php:1128 views/list.php:235
-#: views/list.php:243 views/list.php:647 views/maps.php:730 views/maps.php:853
+#: include/person_cls.php:2177 views/family.php:1143 views/list.php:235
+#: views/list.php:243 views/list.php:647 views/maps.php:687 views/maps.php:817
 msgid "baptised"
 msgstr "крещение"
 
 #: admin/include/editor_sources.php:89 admin/views/editor.php:1352
 #: admin/views/editor_person.php:1010 app/model/tree_index.php:923
-#: app/model/tree_index.php:925 googlemaps/namesearch.php:202
+#: app/model/tree_index.php:925 googlemaps/namesearch.php:192
 #: include/person_cls.php:2359 include/person_cls.php:2360
 #: include/person_cls.php:2362 include/person_cls.php:2363
 #: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:373
 #: views/anniversary.php:94 views/list.php:255 views/list.php:263
-#: views/list.php:648 views/maps.php:733 views/maps.php:856
+#: views/list.php:648 views/maps.php:690 views/maps.php:820
 msgid "died"
 msgstr "умер"
 
 #: admin/include/editor_sources.php:95 admin/views/editor.php:1372
 #: admin/views/editor_person.php:1233 app/model/timeline.php:128
-#: googlemaps/namesearch.php:205 include/person_cls.php:2468 views/list.php:255
-#: views/list.php:263 views/list.php:648 views/maps.php:736 views/maps.php:859
+#: googlemaps/namesearch.php:195 include/person_cls.php:2468 views/list.php:255
+#: views/list.php:263 views/list.php:648 views/maps.php:693 views/maps.php:823
 msgid "buried"
 msgstr "захоронен"
 
@@ -1107,9 +1109,8 @@ msgstr "кремация"
 #: admin/views/edit_source.php:339 admin/views/editor_person.php:354
 #: admin/views/editor_person.php:1518 admin/views/editor_relation.php:255
 #: admin/views/editor_relation.php:1050 admin/views/index_admin.php:265
-#: admin/views/language_editor.php:264 admin/views/make_db_maps.php:287
-#: admin/views/make_db_maps.php:390 admin/views/make_db_maps.php:396
-#: admin/views/make_db_maps.php:408 admin/views/prefix_editor.php:30
+#: admin/views/language_editor.php:264 admin/views/maps_worldmap.php:103
+#: admin/views/maps_worldmap.php:138 admin/views/prefix_editor.php:30
 #: admin/views/tree_merge.php:1042
 msgid "Save"
 msgstr "Сохранить"
@@ -1240,7 +1241,7 @@ msgstr ""
 #: admin/include/editor_user_settings.php:75 admin/views/edit_address.php:53
 #: admin/views/edit_rename_place.php:19 admin/views/edit_repository.php:47
 #: admin/views/edit_source.php:76 admin/views/editor.php:190
-#: admin/views/groups.php:620 admin/views/make_db_maps.php:560
+#: admin/views/groups.php:620 admin/views/maps_locations.php:186
 #: admin/views/notes.php:22 admin/views/trees.php:83 views/help.php:67
 #: views/help.php:71 views/help.php:75 views/help.php:80 views/layout.php:286
 #: views/layout.php:510 views/list.php:152 views/list.php:443
@@ -1263,12 +1264,12 @@ msgstr "Редактировать древо?"
 #: admin/views/groups.php:395 admin/views/groups.php:442
 #: admin/views/groups.php:572 admin/views/groups.php:622
 #: admin/views/groups.php:713 admin/views/log.php:94
-#: admin/views/make_db_maps.php:1059 admin/views/settings.php:30
+#: admin/views/maps_settings.php:41 admin/views/settings.php:30
 #: admin/views/settings.php:141 admin/views/settings.php:176
-#: admin/views/settings.php:255 admin/views/settings.php:340
-#: admin/views/settings.php:444 admin/views/settings.php:481
-#: admin/views/settings.php:497 admin/views/settings.php:516
-#: admin/views/settings.php:536 admin/views/settings_homepage.php:156
+#: admin/views/settings.php:255 admin/views/settings.php:347
+#: admin/views/settings.php:451 admin/views/settings.php:488
+#: admin/views/settings.php:504 admin/views/settings.php:523
+#: admin/views/settings.php:543 admin/views/settings_homepage.php:156
 #: admin/views/settings_homepage.php:519 admin/views/settings_homepage.php:599
 #: admin/views/settings_special.php:51 admin/views/thumbs.php:125
 #: admin/views/tree_data.php:85 admin/views/tree_text.php:81
@@ -1281,7 +1282,7 @@ msgstr "Изменить"
 msgid "Use user-group setting"
 msgstr "Использовать настройку группы пользователей"
 
-#: admin/include/gedcom_export.php:1982
+#: admin/include/gedcom_export.php:1979
 msgid "No valid family number."
 msgstr "Некорректный идентификатор семьи."
 
@@ -1326,7 +1327,7 @@ msgstr "Онлайн проверка версии недоступна."
 msgid "Debug information:"
 msgstr "Информация о cookie"
 
-#: admin/include/select_tree.php:18 views/layout.php:288 views/maps.php:56
+#: admin/include/select_tree.php:18 views/layout.php:288 views/maps.php:97
 msgid "Select a family tree:"
 msgstr "Выбор генеалогического дерева:"
 
@@ -1418,171 +1419,172 @@ msgstr "Дерево обновлений:"
 msgid "Update table unprocessed_tags..."
 msgstr "Обновите таблицу unprocessed_tags..."
 
-#: admin/index.php:243
+#: admin/index.php:272
 msgid "Access to admin pages is not allowed."
 msgstr ""
 
-#: admin/index.php:408 admin/views/index_admin.php:10 admin/views/menu.php:43
+#: admin/index.php:437 admin/views/index_admin.php:10 admin/views/menu.php:43
 #: admin/views/menu.php:48
 msgid "Administration"
 msgstr "Администрирование"
 
-#: admin/index.php:580
+#: admin/index.php:618
 msgid "Sidebar"
 msgstr ""
 
-#: admin/index.php:592 admin/views/install.php:8 admin/views/install.php:301
+#: admin/index.php:630 admin/views/install.php:8 admin/views/install.php:301
 #: admin/views/install.php:305 admin/views/menu.php:64
 msgid "Install"
 msgstr "(Пере)установка"
 
-#: admin/index.php:594 admin/views/extensions.php:57 admin/views/menu.php:65
+#: admin/index.php:632 admin/views/extensions.php:57 admin/views/menu.php:65
 msgid "Extensions"
 msgstr "Расширения"
 
-#: admin/index.php:596 admin/views/extensions.php:62
+#: admin/index.php:634 admin/views/extensions.php:62
 msgid "Show/ hide languages"
 msgstr "Показать/скрыть языки"
 
-#: admin/index.php:597 admin/views/extensions.php:98
+#: admin/index.php:635 admin/views/extensions.php:98
 msgid "Show/ hide theme's"
 msgstr "Показать/скрыть темы"
 
-#: admin/index.php:600 admin/views/gedcom_export.php:361
-#: admin/views/make_db_maps.php:1035 admin/views/menu.php:66
-#: admin/views/settings_admin.php:8 admin/views/settings_admin.php:265
-#: admin/views/tree_merge.php:1133 views/family.php:53 views/family.php:1302
+#: admin/index.php:638 admin/views/gedcom_export.php:361
+#: admin/views/maps.php:48 admin/views/maps_settings.php:24
+#: admin/views/menu.php:66 admin/views/settings_admin.php:8
+#: admin/views/settings_admin.php:266 admin/views/tree_merge.php:1133
+#: views/family.php:53 views/family.php:1317
 msgid "Settings"
 msgstr "Настройки"
 
-#: admin/index.php:602 admin/index.php:604 admin/views/menu.php:67
-#: admin/views/settings_admin.php:268
+#: admin/index.php:640 admin/index.php:642 admin/views/menu.php:67
+#: admin/views/settings_admin.php:269
 msgid "Homepage"
 msgstr "Домашняя страница"
 
-#: admin/index.php:605 admin/views/settings_homepage.php:504
+#: admin/index.php:643 admin/views/settings_homepage.php:504
 msgid "Homepage favourites"
 msgstr "Избранное на главной странице"
 
-#: admin/index.php:606 admin/views/settings_homepage.php:599
+#: admin/index.php:644 admin/views/settings_homepage.php:599
 msgid "Slideshow on the homepage"
 msgstr "Слайд-шоу на главной странице"
 
-#: admin/index.php:610 admin/views/menu.php:68
-#: admin/views/settings_admin.php:271
+#: admin/index.php:648 admin/views/menu.php:68
+#: admin/views/settings_admin.php:272
 msgid "Special settings"
 msgstr "Специальные настройки"
 
-#: admin/index.php:612 admin/views/settings_special.php:1
+#: admin/index.php:650 admin/views/settings_special.php:1
 msgid "Jewish settings"
 msgstr "Еврейская обстановка"
 
-#: admin/index.php:613 admin/views/settings_special.php:55
+#: admin/index.php:651 admin/views/settings_special.php:55
 #: admin/views/settings_special.php:58
 msgid "Sitemap"
 msgstr "Карта сайта"
 
-#: admin/index.php:616 admin/views/cms_pages.php:8 admin/views/menu.php:69
+#: admin/index.php:654 admin/views/cms_pages.php:8 admin/views/menu.php:69
 #: admin/views/settings_homepage.php:225 admin/views/settings_homepage.php:420
 msgid "CMS Own pages"
 msgstr "Персональные страницы"
 
-#: admin/index.php:617 admin/views/language_editor.php:164
+#: admin/index.php:655 admin/views/language_editor.php:164
 #: admin/views/menu.php:70
 msgid "Language editor"
 msgstr "Редактор языковых файлов"
 
-#: admin/index.php:618 admin/views/menu.php:71 admin/views/prefix_editor.php:20
+#: admin/index.php:656 admin/views/menu.php:71 admin/views/prefix_editor.php:20
 msgid "Prefix editor"
 msgstr "Редактор префиксов"
 
-#: admin/index.php:619 admin/views/menu.php:72 views/help.php:104
-#: views/layout.php:599
+#: admin/index.php:657 admin/views/maps.php:42 admin/views/menu.php:72
+#: views/help.php:104 views/layout.php:599
 #, fuzzy
 #| msgid "Google maps"
 msgid "World map"
 msgstr "Карты Google"
 
-#: admin/index.php:624 admin/views/index_admin.php:654 admin/views/menu.php:78
+#: admin/index.php:662 admin/views/index_admin.php:654 admin/views/menu.php:78
 #: admin/views/menu.php:81
 msgid "Family trees"
 msgstr "Генеалогические деревья"
 
-#: admin/index.php:626 admin/views/groups.php:235 admin/views/menu.php:82
+#: admin/index.php:664 admin/views/groups.php:235 admin/views/menu.php:82
 #: admin/views/tree_data.php:66
 msgid "Pictures/ create thumbnails"
 msgstr "Фотограции/создать миниатюры"
 
-#: admin/index.php:628 admin/views/gedcom.php:338 admin/views/thumbs.php:35
+#: admin/index.php:666 admin/views/gedcom.php:332 admin/views/thumbs.php:35
 msgid "Picture settings"
 msgstr "Параметры изображения"
 
-#: admin/index.php:629 admin/views/thumbs.php:38 admin/views/thumbs.php:180
+#: admin/index.php:667 admin/views/thumbs.php:38 admin/views/thumbs.php:180
 #: admin/views/thumbs.php:187
 msgid "Create thumbnails"
 msgstr "Создать миниатюры"
 
-#: admin/index.php:630 admin/views/thumbs.php:44
+#: admin/index.php:668 admin/views/thumbs.php:44
 msgid "Photo album categories"
 msgstr "Категории фотоальбома"
 
-#: admin/index.php:633 admin/views/menu.php:83 admin/views/notes.php:13
+#: admin/index.php:671 admin/views/menu.php:83 admin/views/notes.php:13
 msgid "Notes"
 msgstr ""
 
-#: admin/index.php:635 admin/views/menu.php:84 admin/views/tree_check.php:33
+#: admin/index.php:673 admin/views/menu.php:84 admin/views/tree_check.php:33
 #: admin/views/tree_check.php:48
 msgid "Family tree data check"
 msgstr "Проверка данных генеалогического дерева"
 
-#: admin/index.php:637 admin/views/tree_check.php:51
+#: admin/index.php:675 admin/views/tree_check.php:51
 #: admin/views/tree_check.php:69 admin/views/tree_check_consistency.php:33
 msgid "Check consistency of dates"
 msgstr "Проверка корректности дат"
 
-#: admin/index.php:638 admin/views/tree_check.php:54
+#: admin/index.php:676 admin/views/tree_check.php:54
 msgid "Find invalid dates"
 msgstr "Найдены некорректные даты"
 
-#: admin/index.php:639 admin/views/tree_check.php:57
+#: admin/index.php:677 admin/views/tree_check.php:57
 #: admin/views/tree_check.php:83
 msgid "Check database integrity"
 msgstr "Проверка целостности базы данных"
 
-#: admin/index.php:642 admin/views/menu.php:85 admin/views/tree_check.php:60
+#: admin/index.php:680 admin/views/menu.php:85 admin/views/tree_check.php:60
 msgid "View latest changes"
 msgstr "Просмотр последних изменений"
 
-#: admin/index.php:644 admin/views/cal_date.php:10
+#: admin/index.php:682 admin/views/cal_date.php:10
 #: admin/views/editor_person.php:571 admin/views/menu.php:86
 msgid "Calculated birth date"
 msgstr "Рассчитанная дата рождения"
 
-#: admin/index.php:646 admin/views/editor.php:1188
+#: admin/index.php:684 admin/views/editor.php:1188
 #: admin/views/editor_person.php:561 admin/views/groups.php:441
 msgid "Privacy filter"
 msgstr "Фильтр приватности"
 
-#: admin/index.php:649 admin/views/menu.php:87
+#: admin/index.php:687 admin/views/menu.php:87
 msgid "Gedcom export"
 msgstr "Экспорт в Gedcom файл"
 
-#: admin/index.php:650 admin/views/index_admin.php:487 admin/views/menu.php:88
+#: admin/index.php:688 admin/views/index_admin.php:487 admin/views/menu.php:88
 msgid "Database backup"
 msgstr "Резервное копирование БД"
 
-#: admin/index.php:651 admin/views/menu.php:89 admin/views/statistics.php:328
+#: admin/index.php:689 admin/views/menu.php:89 admin/views/statistics.php:328
 #: admin/views/users.php:55 views/help.php:94 views/layout.php:590
 msgid "Statistics"
 msgstr "Статистика"
 
-#: admin/index.php:657 admin/views/menu.php:99
+#: admin/index.php:695 admin/views/menu.php:99
 #, fuzzy
 #| msgid "Places (by families)"
 msgid "Persons and families"
 msgstr "Места (по семьям)"
 
-#: admin/index.php:658 admin/views/edit_source.php:49
+#: admin/index.php:696 admin/views/edit_source.php:49
 #: admin/views/groups.php:359 admin/views/menu.php:100
 #: admin/views/tree_merge.php:1672 app/controller/sourcesController.php:29
 #: include/show_sources.php:346 views/ancestor_report_pdf.php:375
@@ -1591,40 +1593,40 @@ msgstr "Места (по семьям)"
 msgid "Sources"
 msgstr "Источники"
 
-#: admin/index.php:659 admin/views/edit_repository.php:22
+#: admin/index.php:697 admin/views/edit_repository.php:22
 #: admin/views/menu.php:101
 msgid "Repositories"
 msgstr "Репозитории"
 
-#: admin/index.php:660 admin/views/edit_address.php:25
-#: admin/views/gedcom_export.php:509 admin/views/menu.php:102
+#: admin/index.php:698 admin/views/edit_address.php:25
+#: admin/views/gedcom_export.php:505 admin/views/menu.php:102
 msgid "Shared addresses"
 msgstr "Общие адреса"
 
-#: admin/index.php:661 admin/views/edit_rename_place.php:13
+#: admin/index.php:699 admin/views/edit_rename_place.php:13
 #: admin/views/menu.php:103
 msgid "Rename places"
 msgstr "Переименовать места"
 
-#: admin/index.php:667 admin/views/menu.php:110 admin/views/menu.php:113
+#: admin/index.php:705 admin/views/menu.php:110 admin/views/menu.php:113
 #: admin/views/users.php:11
 msgid "Users"
 msgstr "Пользователи"
 
-#: admin/index.php:668 admin/views/groups.php:8 admin/views/menu.php:114
+#: admin/index.php:706 admin/views/groups.php:8 admin/views/menu.php:114
 #: admin/views/thumbs.php:214
 msgid "User groups"
 msgstr "Группы пользователя"
 
-#: admin/index.php:670 admin/views/log.php:8 admin/views/menu.php:115
+#: admin/index.php:708 admin/views/log.php:8 admin/views/menu.php:115
 msgid "Log"
 msgstr "Журнал"
 
-#: admin/index.php:673 admin/views/index_admin.php:544 admin/views/log.php:12
+#: admin/index.php:711 admin/views/index_admin.php:544 admin/views/log.php:12
 msgid "Logfile users"
 msgstr "Журнал авторизации"
 
-#: admin/index.php:674 admin/views/log.php:15
+#: admin/index.php:712 admin/views/log.php:15
 msgid "IP Blacklist"
 msgstr "Чёрный список IP"
 
@@ -2493,7 +2495,7 @@ msgstr "Изменено"
 #: admin/views/editor.php:204 admin/views/editor.php:483
 #: admin/views/tree_check_changes.php:51
 #: admin/views/tree_check_consistency.php:118 admin/views/tree_merge.php:620
-#: admin/views/tree_merge.php:682 views/family.php:1290 views/relations.php:92
+#: admin/views/tree_merge.php:682 views/family.php:1305 views/relations.php:92
 #: views/relations.php:206
 msgid "Person"
 msgstr "Персона"
@@ -2560,12 +2562,12 @@ msgstr "В браке"
 #: include/marriage_cls.php:800 include/marriage_cls.php:804
 #: include/marriage_cls.php:817 include/marriage_cls.php:821
 #: views/ancestor_report.php:221 views/ancestor_report_pdf.php:282
-#: views/ancestor_report_rtf.php:271 views/descendant_chart.php:377
+#: views/ancestor_report_rtf.php:271 views/descendant_chart.php:383
 msgid " to: "
 msgstr " Кому: "
 
 #: admin/views/editor.php:688 admin/views/tree_merge.php:1328
-#: views/family.php:591 views/family_rtf.php:404
+#: views/family.php:586 views/family_rtf.php:404
 msgid "Children"
 msgstr "Дети"
 
@@ -2590,7 +2592,7 @@ msgid "Add person"
 msgstr "Добавить персону"
 
 #: admin/views/editor.php:794 views/layout.php:811 views/list.php:478
-#: views/maps.php:298 views/relations.php:354 views/timeline.php:177
+#: views/maps.php:265 views/relations.php:354 views/timeline.php:177
 msgid "Help"
 msgstr "Справка"
 
@@ -3033,12 +3035,12 @@ msgid "There are %d unprocessed GEDCOM tags."
 msgstr "Имеется %d необработанных тегов GEDCOM."
 
 #: admin/views/editor_person.php:1445 admin/views/notes.php:69
-#: views/family.php:1154
+#: views/family.php:1169
 msgid "User notes"
 msgstr "Заметки"
 
 #: admin/views/editor_person.php:1447 admin/views/editor_person.php:1449
-#: views/family.php:1159 views/family.php:1161
+#: views/family.php:1174 views/family.php:1176
 #, php-format
 msgid "There are %d user added notes."
 msgstr "%d пользовательских заметок."
@@ -3299,7 +3301,7 @@ msgstr ""
 "Упорядочить семьи по дате (необходимо только в том случае, если семьи "
 "находятся в неправильном порядке)"
 
-#: admin/views/gedcom.php:323
+#: admin/views/gedcom.php:318
 msgid ""
 "Add new locations to geo-location database (for Google Maps locations). This "
 "will slow down reading of GEDCOM file!"
@@ -3307,7 +3309,7 @@ msgstr ""
 "Добавить новые местоположения в базу данных геолокации (для местоположений "
 "Google Maps). Это замедлит чтение файла GEDCOM!"
 
-#: admin/views/gedcom.php:331
+#: admin/views/gedcom.php:325
 msgid ""
 "Don't remove picture links from database (only needed for Geneanet GEDCOM "
 "file)."
@@ -3315,63 +3317,63 @@ msgstr ""
 "Не удаляйте ссылки на изображения из базы данных (требуется только для файла "
 "Geneanet GEDCOM)."
 
-#: admin/views/gedcom.php:332
+#: admin/views/gedcom.php:326
 msgid ""
 "In Geneanet add HuMo-genealogy picture id in the source by a person. Using "
 "this example: #media1254,media13454#"
 msgstr ""
 
-#: admin/views/gedcom.php:342
+#: admin/views/gedcom.php:336
 msgid "Only process picture file name. For example: picture.jpg [DEFAULT]"
 msgstr ""
 "Обрабатывает только имя файла изображения. Например: картинка.jpg [ПО "
 "УМОЛЧАНИЮ]"
 
-#: admin/views/gedcom.php:345
+#: admin/views/gedcom.php:339
 msgid "Process full picture path. For example: picture_path&#92;picture.jpg"
 msgstr ""
 "Обработка полного контура изображения. Например: picture_path\\картинка.jpg"
 
-#: admin/views/gedcom.php:360
+#: admin/views/gedcom.php:354
 msgid "GEDCOM process settings"
 msgstr "Настройки процесса GEDCOM"
 
-#: admin/views/gedcom.php:369
+#: admin/views/gedcom.php:363
 msgid "Show non-processed items when processing GEDCOM (can be a long list!"
 msgstr ""
 "Показывать необработанные элементы при обработке GEDCOM (список может быть "
 "длинным!"
 
-#: admin/views/gedcom.php:376
+#: admin/views/gedcom.php:370
 msgid ""
 "Show all numbers when processing GEDCOM (useful when a time-out occurs!)"
 msgstr ""
 "Показать все числа при обработке GEDCOM (полезно, когда происходит тайм-аут!)"
 
-#: admin/views/gedcom.php:383
+#: admin/views/gedcom.php:377
 msgid "Debug mode"
 msgstr "Режим отладки"
 
-#: admin/views/gedcom.php:388
+#: admin/views/gedcom.php:382
 msgid "Batch processing"
 msgstr "Пакетная обработка"
 
-#: admin/views/gedcom.php:391
+#: admin/views/gedcom.php:385
 msgid "1 record (slow processing, but needs less server-memory)"
 msgstr ""
 "по 1 записи (медленная обработка, но требуется меньше памяти на сервере)"
 
-#: admin/views/gedcom.php:392 admin/views/gedcom.php:393
-#: admin/views/gedcom.php:394 admin/views/gedcom.php:395
-#: admin/views/gedcom.php:396 admin/views/gedcom.php:397
+#: admin/views/gedcom.php:386 admin/views/gedcom.php:387
+#: admin/views/gedcom.php:388 admin/views/gedcom.php:389
+#: admin/views/gedcom.php:390 admin/views/gedcom.php:391
 msgid "records per batch"
 msgstr "записей за раз"
 
-#: admin/views/gedcom.php:398
+#: admin/views/gedcom.php:392
 msgid "ALL records (fast processing, but needs server-memory)"
 msgstr "ВСЕ записи (быстрая обработка, но требуется больше памяти на сервере)"
 
-#: admin/views/gedcom.php:413
+#: admin/views/gedcom.php:407
 msgid ""
 "Time-out detected! Controlled time-out setting is adjusted. Retry reading of "
 "GEDCOM with new setting."
@@ -3379,7 +3381,7 @@ msgstr ""
 "Обнаружен тайм-аут! Регулируется настройка контролируемого тайм-аута. "
 "Повторите попытку чтения GEDCOM с новыми настройками."
 
-#: admin/views/gedcom.php:422
+#: admin/views/gedcom.php:416
 msgid ""
 "seconds. Controlled time-out, the GEDCOM script will restart and continue."
 "<br>Use this if the server has a time-out setting (set less seconds then "
@@ -3390,52 +3392,52 @@ msgstr ""
 "(установите меньше секунд, чем тайм-аут сервера).<br>0 = отключить "
 "контролируемый тайм-аут."
 
-#: admin/views/gedcom.php:423
+#: admin/views/gedcom.php:417
 #, php-format
 msgid "Your server time-out setting is: %s seconds."
 msgstr "Время ожидания сервера: %s секунд."
 
-#: admin/views/gedcom.php:448
+#: admin/views/gedcom.php:442
 #, php-format
 msgid "Yes, replace existing family tree: <b>\"%1$s\"</b> with %2$s persons!"
 msgstr ""
 "Да, замените существующее генеалогическое древо: <b>\"%1$s\"</b> %2$s на "
 "людей!"
 
-#: admin/views/gedcom.php:454
+#: admin/views/gedcom.php:448
 msgid "Add this GEDCOM file to the existing tree"
 msgstr "Добавьте этот файл GEDCOM в существующее дерево"
 
-#: admin/views/gedcom.php:457 admin/views/gedcom.php:459
-#: admin/views/gedcom.php:553 admin/views/gedcom.php:1012
-#: admin/views/gedcom.php:1640 admin/views/gedcom.php:1739
-#: admin/views/gedcom.php:1760
+#: admin/views/gedcom.php:451 admin/views/gedcom.php:453
+#: admin/views/gedcom.php:547 admin/views/gedcom.php:1006
+#: admin/views/gedcom.php:1633 admin/views/gedcom.php:1732
+#: admin/views/gedcom.php:1753
 msgid "Step"
 msgstr "Шаг"
 
-#: admin/views/gedcom.php:525
+#: admin/views/gedcom.php:519
 msgid "STEP 2) Remove old family tree:"
 msgstr "Шаг 2) Удаление старого генеалогического дерева:"
 
-#: admin/views/gedcom.php:552 admin/views/gedcom.php:1158
-#: admin/views/gedcom.php:1760
+#: admin/views/gedcom.php:546 admin/views/gedcom.php:1152
+#: admin/views/gedcom.php:1753
 msgid "ONLY use in case of a time-out, to continue click:"
 msgstr "ТОЛЬКО в случае тайм-аута для продолжения нажмите:"
 
-#: admin/views/gedcom.php:572 admin/views/gedcom.php:613
-#: admin/views/gedcom.php:657 admin/views/gedcom.php:686
-#: admin/views/gedcom.php:700 admin/views/gedcom.php:731
-#: admin/views/gedcom.php:773 admin/views/gedcom.php:817
-#: admin/views/gedcom.php:859 admin/views/gedcom.php:904
+#: admin/views/gedcom.php:566 admin/views/gedcom.php:607
+#: admin/views/gedcom.php:651 admin/views/gedcom.php:680
+#: admin/views/gedcom.php:694 admin/views/gedcom.php:725
+#: admin/views/gedcom.php:767 admin/views/gedcom.php:811
+#: admin/views/gedcom.php:853 admin/views/gedcom.php:898
 #, php-format
 msgid "Remove old family tree items from %s table..."
 msgstr "Удаление объектов старых генеалогических деревьев из таблицы %s ..."
 
-#: admin/views/gedcom.php:591 admin/views/gedcom.php:630
-#: admin/views/gedcom.php:676 admin/views/gedcom.php:692
-#: admin/views/gedcom.php:706 admin/views/gedcom.php:750
-#: admin/views/gedcom.php:792 admin/views/gedcom.php:836
-#: admin/views/gedcom.php:878 admin/views/gedcom.php:932
+#: admin/views/gedcom.php:585 admin/views/gedcom.php:624
+#: admin/views/gedcom.php:670 admin/views/gedcom.php:686
+#: admin/views/gedcom.php:700 admin/views/gedcom.php:744
+#: admin/views/gedcom.php:786 admin/views/gedcom.php:830
+#: admin/views/gedcom.php:872 admin/views/gedcom.php:926
 #: admin/views/index_admin.php:384 admin/views/index_admin.php:391
 #: admin/views/index_admin.php:398 admin/views/index_admin.php:405
 #: admin/views/index_admin.php:412 admin/views/index_admin.php:419
@@ -3444,22 +3446,22 @@ msgstr "Удаление объектов старых генеалогичес�
 msgid "Optimize table..."
 msgstr "Оптимизация таблицы..."
 
-#: admin/views/gedcom.php:942
+#: admin/views/gedcom.php:936
 msgid "No error messages above? In that case the tables have been created!"
 msgstr "Выше нет сообщений об ошибках? Значит таблицы были успешно созданы!"
 
-#: admin/views/gedcom.php:946
+#: admin/views/gedcom.php:940
 msgid ""
 "The data in this GEDCOM will be appended to the existing data in this tree!"
 msgstr ""
 "Данные в этом GEDCOM будут добавлены к существующим данным в этом дереве!"
 
-#: admin/views/gedcom.php:1021 admin/views/make_db_maps.php:842
-#: views/maps.php:665 views/maps.php:792 views/maps.php:918
+#: admin/views/gedcom.php:1015 admin/views/maps_locations.php:598
+#: views/maps.php:622 views/maps.php:756 views/maps.php:889
 msgid "Cancel"
 msgstr "Отмена"
 
-#: admin/views/gedcom.php:1132
+#: admin/views/gedcom.php:1126
 msgid ""
 "<b>STEP 3) Processing GEDCOM file:</b>\n"
 "<p>The following lines have to be processed without error messages...<br>\n"
@@ -3469,37 +3471,37 @@ msgstr ""
 "<p>Следующие строки должны быть обработаны без сообщений об ошибках...<br>\n"
 "<b>Обработка может занять некоторое время!!</b>"
 
-#: admin/views/gedcom.php:1158
+#: admin/views/gedcom.php:1152
 msgid "Restart"
 msgstr "Перезапуск"
 
-#: admin/views/gedcom.php:1159
+#: admin/views/gedcom.php:1153
 msgid "Restarts reading of GEDCOM using a controlled time-out."
 msgstr ""
 "Перезапускает чтение GEDCOM с использованием контролируемого тайм-аута."
 
-#: admin/views/gedcom.php:1235 admin/views/gedcom.php:1582
-#: admin/views/gedcom.php:1718 admin/views/gedcom.php:1822
-#: admin/views/gedcom.php:2016 admin/views/gedcom.php:2247
-#: admin/views/gedcom.php:2282
+#: admin/views/gedcom.php:1229 admin/views/gedcom.php:1576
+#: admin/views/gedcom.php:1711 admin/views/gedcom.php:1815
+#: admin/views/gedcom.php:2009 admin/views/gedcom.php:2240
+#: admin/views/gedcom.php:2275
 msgid "lines processed"
 msgstr "строк обработано"
 
-#: admin/views/gedcom.php:1535
+#: admin/views/gedcom.php:1529
 msgid "GEDCOM file"
 msgstr "GEDCOM-файл"
 
-#: admin/views/gedcom.php:1537
+#: admin/views/gedcom.php:1531
 #, php-format
 msgid "this is an <b>%s</b> file"
 msgstr "это файл <b>%s</b>"
 
-#: admin/views/gedcom.php:1640
+#: admin/views/gedcom.php:1633
 msgid "Controlled time-out to continue reading of GEDCOM file, click:"
 msgstr ""
 "Контролируемое время ожидания для продолжения чтения файла GEDCOM, нажмите:"
 
-#: admin/views/gedcom.php:1641
+#: admin/views/gedcom.php:1634
 #, php-format
 msgid ""
 "Or wait %s seconds for automatic continuation. Some browsers will give a "
@@ -3508,82 +3510,82 @@ msgstr ""
 "Или ожидайте %s секунд для автоматического продолжения. Некоторые браузеры "
 "выдают предупреждение о перезагрузке страницы..."
 
-#: admin/views/gedcom.php:1664 admin/views/gedcom.php:1676
+#: admin/views/gedcom.php:1657 admin/views/gedcom.php:1669
 msgid "Persons added by GEDCOM import."
 msgstr "Лица, добавленные импортом GEDCOM."
 
-#: admin/views/gedcom.php:1696
+#: admin/views/gedcom.php:1689
 #, php-format
 msgid "Reading in the file took: %d seconds"
 msgstr "Обработка файла заняла %d секунд"
 
-#: admin/views/gedcom.php:1702
+#: admin/views/gedcom.php:1695
 msgid "Non-processed items"
 msgstr "Не обработанные объекты"
 
-#: admin/views/gedcom.php:1703
+#: admin/views/gedcom.php:1696
 msgid "Level"
 msgstr "Уровень"
 
-#: admin/views/gedcom.php:1710
+#: admin/views/gedcom.php:1703
 msgid "All items have been processed!"
 msgstr "Все объекты обработаны!"
 
-#: admin/views/gedcom.php:1751
+#: admin/views/gedcom.php:1744
 msgid "STEP 4) Final database processing:"
 msgstr "ШАГ 4) Окончательная обработка базы данных:"
 
-#: admin/views/gedcom.php:1791
+#: admin/views/gedcom.php:1784
 msgid "Processing of referenced texts into standard texts..."
 msgstr "Обработка ссылочных текстов в стандартные тексты..."
 
-#: admin/views/gedcom.php:2016 admin/views/index_admin.php:674
+#: admin/views/gedcom.php:2009 admin/views/index_admin.php:674
 #: admin/views/statistics_old.php:66 admin/views/tree_admin.php:107
 #: app/model/tree_index.php:297
 msgid "persons"
 msgstr "персоны"
 
-#: admin/views/gedcom.php:2247 admin/views/index_admin.php:674
+#: admin/views/gedcom.php:2240 admin/views/index_admin.php:674
 #: admin/views/statistics_old.php:66 admin/views/tree_admin.php:107
 #: app/model/tree_index.php:297
 msgid "families"
 msgstr "семьи"
 
-#: admin/views/gedcom.php:2306
+#: admin/views/gedcom.php:2299
 msgid "Processing texts IN names..."
 msgstr "Обработка текстов В именах..."
 
-#: admin/views/gedcom.php:2345
+#: admin/views/gedcom.php:2337
 msgid "Updating location database..."
 msgstr "Обновление геолокационной базы..."
 
-#: admin/views/gedcom.php:2420
+#: admin/views/gedcom.php:2404
 msgid "Order children..."
 msgstr "Сортировка детей..."
 
-#: admin/views/gedcom.php:2485
+#: admin/views/gedcom.php:2469
 msgid "Order families..."
 msgstr "Заказывайте семьи..."
 
-#: admin/views/gedcom.php:2621
+#: admin/views/gedcom.php:2605
 msgid "Counting persons and families and enter into database..."
 msgstr "Подсчёт персон и семей, добавление в БД..."
 
-#: admin/views/gedcom.php:2643
+#: admin/views/gedcom.php:2627
 #, php-format
 msgid "Processing took: %d seconds"
 msgstr "Обработка заняла: %d секунд"
 
-#: admin/views/gedcom.php:2644
+#: admin/views/gedcom.php:2628
 msgid "No error messages? In this case the database is ready for use!"
 msgstr "Нет сообщений об ошибках? Значит БД готова к использованию!"
 
-#: admin/views/gedcom.php:2646
+#: admin/views/gedcom.php:2630
 #, php-format
 msgid "Ready! Now click %s to watch the family tree"
 msgstr "Готово! Тепешь нажмите %s для просмотра генеалогического древа"
 
-#: admin/views/gedcom.php:2647
+#: admin/views/gedcom.php:2631
 msgid ""
 "TIP: Use <a href=\"index.php?page=cal_date\">\"Calculated birth dates\"</a> "
 "for a better privacy filter."
@@ -3748,21 +3750,21 @@ msgstr "Экспорт текстов"
 msgid "Export sources"
 msgstr "Экспорт источников"
 
-#: admin/views/gedcom_export.php:496
+#: admin/views/gedcom_export.php:493
 msgid "Export longitude & latitude by places"
 msgstr "Экспортировать широту и долготу мест"
 
-#: admin/views/gedcom_export.php:521
+#: admin/views/gedcom_export.php:517
 #, fuzzy
 #| msgid "Shared addresses"
 msgid "Export shared addresses"
 msgstr "Общие адреса"
 
-#: admin/views/gedcom_export.php:522
+#: admin/views/gedcom_export.php:518
 msgid "Convert all shared addresses as single addresses"
 msgstr ""
 
-#: admin/views/gedcom_export.php:525
+#: admin/views/gedcom_export.php:521
 msgid ""
 "\"Shared addresses\" is <b>only compatible</b> with HuMo-genealogy and "
 "Haza-21 programs.<br>\n"
@@ -3770,19 +3772,19 @@ msgid ""
 "be lost."
 msgstr ""
 
-#: admin/views/gedcom_export.php:528
+#: admin/views/gedcom_export.php:524
 msgid "There are no shared addresses, standard GEDCOM export is used."
 msgstr ""
 
-#: admin/views/gedcom_export.php:535
+#: admin/views/gedcom_export.php:531
 msgid "Show export status"
 msgstr "Отображать статус экспорта"
 
-#: admin/views/gedcom_export.php:551
+#: admin/views/gedcom_export.php:547
 msgid "GEDCOM export"
 msgstr "Экспорт GEDCOM"
 
-#: admin/views/gedcom_export.php:553
+#: admin/views/gedcom_export.php:549
 msgid "Start export"
 msgstr "Запустить экспорт"
 
@@ -3920,7 +3922,7 @@ msgstr "Разрешено ли менять пароль"
 msgid "General"
 msgstr "Основное"
 
-#: admin/views/groups.php:233 views/family.php:101
+#: admin/views/groups.php:233 views/family.php:104
 msgid "Show pictures"
 msgstr "Отображать фото"
 
@@ -4051,7 +4053,7 @@ msgstr "Скрыть источники"
 msgid "Show restricted source"
 msgstr "Отображать ограниченные источники"
 
-#: admin/views/groups.php:394 views/family.php:108
+#: admin/views/groups.php:394 views/family.php:111
 msgid "Texts"
 msgstr "Тексты"
 
@@ -4059,15 +4061,15 @@ msgstr "Тексты"
 msgid "Default presentation of text"
 msgstr "Представление текста по умолчанию"
 
-#: admin/views/groups.php:403 views/family.php:109
+#: admin/views/groups.php:403 views/family.php:112
 msgid "Show texts"
 msgstr "Показать тексты"
 
-#: admin/views/groups.php:404 views/family.php:110
+#: admin/views/groups.php:404 views/family.php:113
 msgid "Show texts in popup screen"
 msgstr "Отображение текстов во всплывающем окне"
 
-#: admin/views/groups.php:405 views/family.php:111
+#: admin/views/groups.php:405 views/family.php:114
 msgid "Hide texts"
 msgstr "Скрыть тексты"
 
@@ -4324,8 +4326,7 @@ msgstr "ДА, установить БД"
 msgid "NO"
 msgstr "НЕТ"
 
-#: admin/views/index_admin.php:260 admin/views/make_db_maps.php:576
-#: admin/views/make_db_maps.php:840
+#: admin/views/index_admin.php:260 admin/views/maps_locations.php:596
 msgid "YES"
 msgstr "ДА"
 
@@ -4763,29 +4764,106 @@ msgstr ""
 msgid "Login"
 msgstr "Вход"
 
-#: admin/views/make_db_maps.php:16
+#: admin/views/maps.php:38 admin/views/maps_worldmap.php:33
 #, fuzzy
 #| msgid "Google maps administration"
 msgid "World map administration"
 msgstr "Управление картами Google"
 
-#: admin/views/make_db_maps.php:20
-msgid "Creating/ updating database"
-msgstr "Создание/обновление БД"
+#: admin/views/maps.php:45 admin/views/maps_locations.php:426
+msgid "Edit geolocation database"
+msgstr "Редактирование геолокационной базы"
 
-#: admin/views/make_db_maps.php:36
-msgid "Creating location database"
-msgstr "Создание геолокационной базы"
+#: admin/views/maps_locations.php:98
+#, fuzzy
+#| msgid "Are you sure you want to delete this user?"
+msgid ""
+"Are your sure you want to delete the <b>entire geolocation database</b>?"
+msgstr "Вы уверены, что хотите удалить этого пользователя?"
 
-#: admin/views/make_db_maps.php:53
+#: admin/views/maps_locations.php:104
+#, fuzzy
+#| msgid "A geolocation database exists."
+msgid "Geolocation database is deleted!"
+msgstr "Геолокационная база создана."
+
+#: admin/views/maps_locations.php:111
+#, fuzzy
+#| msgid "The e-mail function has been switched off!"
+msgid "The locationlist has been refreshed."
+msgstr "Функция отправки e-mail отключена!"
+
+#: admin/views/maps_locations.php:117
+#, fuzzy, php-format
+#| msgid "Are you sure you want to delete this user?"
+msgid "Are your sure you want to delete location \"%s\"?"
+msgstr "Вы уверены, что хотите удалить этого пользователя?"
+
+#: admin/views/maps_locations.php:123
+#, fuzzy
+#| msgid "Location: "
+msgid "Location is deleted."
+msgstr "Место: "
+
+#: admin/views/maps_locations.php:130
+msgid "Create or update geolocation database"
+msgstr "Создать или обновить геолокадионную базу"
+
+#: admin/views/maps_locations.php:141
+msgid ""
+"Check how many new locations have to be indexed and how long the indexing "
+"may take (approximately)."
+msgstr ""
+"Проверить сколько новых мест не добавлено в геолокационную базу и сколько "
+"примерно времени займёт их добавление."
+
+#: admin/views/maps_locations.php:146 app/model/tree_index.php:632
+#: views/list.php:155 views/list.php:446
+msgid "All family trees"
+msgstr "Все генеалогические деревья"
+
+#: admin/views/maps_locations.php:159 admin/views/tree_check_consistency.php:35
+msgid "Check"
+msgstr "Проверка"
+
+#: admin/views/maps_locations.php:169
+msgid "No new locations were found to add to the database"
+msgstr "Не найдены новые места для добавления в базу"
+
+#: admin/views/maps_locations.php:191
+#, php-format
+msgid "There are %s new unique birth/ death locations to add to the database."
+msgstr ""
+"Найдено %s новых уникальных мест рождения/смерти для добавления в базу."
+
+#: admin/views/maps_locations.php:201
+#, php-format
+msgid "This will take approximately <b>%1$d minutes and %2$d seconds.</b>"
+msgstr "Это займёт примерно <b>%1$d минут и  %2$d секунд.</b>"
+
+#: admin/views/maps_locations.php:202
+#, fuzzy
+#| msgid "Do you wish to add these locations to the database database now?"
+msgid "Do you wish to add these locations to the database now?"
+msgstr "Желаете добавить эти места в базу?"
+
+#: admin/views/maps_locations.php:216
+#, fuzzy, php-format
+#| msgid ""
+#| "The following %d locations are already known as non-indexable by Google. "
+#| "Please check their validity."
+msgid ""
+"The following %d locations are already known as non-indexable. Please check "
+"their validity."
+msgstr ""
+"Следующие %d местоположения уже известны google как неиндексируемые. "
+"Пожалуйста, проверьте их действительность."
+
+#: admin/views/maps_locations.php:231
 msgid "Started adding to data base."
 msgstr "Начато добавление в базу"
 
-#: admin/views/make_db_maps.php:54
-msgid "Starting time"
-msgstr "Время начала"
-
-#: admin/views/make_db_maps.php:133
+#: admin/views/maps_locations.php:312
 msgid ""
 "<b>A location database could not be created.</b>\n"
 "<p>This could mean that the PHP function \"allow_url_fopen\" was disabled by "
@@ -4803,26 +4881,18 @@ msgstr ""
 "<p>Вы мождете связаться с администратором хостинга и либо рапзрешить "
 "\"allow_url_fopen\", либо установить расширение \"curl\"."
 
-#: admin/views/make_db_maps.php:174
-msgid "Finished updating geo-location database"
-msgstr "Завершено обновление геолокационной базы данных"
-
-#: admin/views/make_db_maps.php:175
-msgid "Finish time"
-msgstr "Время завершения"
-
-#: admin/views/make_db_maps.php:176
+#: admin/views/maps_locations.php:359
 msgid "locations were successfully mapped."
 msgstr "места успешно сопоставлены."
 
-#: admin/views/make_db_maps.php:179 admin/views/make_db_maps.php:195
+#: admin/views/maps_locations.php:363 admin/views/maps_locations.php:379
 #, php-format
 msgid ""
 "The following %d new locations were passed for query, but were not found. "
 "Please check their validity."
 msgstr "Следующие %d новых мест не были найдены. Проверьте их корректность."
 
-#: admin/views/make_db_maps.php:188
+#: admin/views/maps_locations.php:372
 msgid ""
 "The process was interrupted because Google limits to maximum 2500 queries "
 "within one day (counting is reset at midnight PST, which is 08:00 AM GMT)"
@@ -4831,13 +4901,13 @@ msgstr ""
 "течение одного дня (счетчик сбрасывается в полночь по тихоокеанскому "
 "стандартному времени, то есть в 08:00 по Гринвичу)."
 
-#: admin/views/make_db_maps.php:189
+#: admin/views/maps_locations.php:373
 #, php-format
 msgid ""
 "In total %1$d out of %2$d new locations were passed for query to Google."
 msgstr "Всего %1$d из of %2$d новых мест были запрошены в  Google."
 
-#: admin/views/make_db_maps.php:190
+#: admin/views/maps_locations.php:374
 msgid ""
 "Tomorrow you can run this process again to add the locations that were not "
 "passed for geocoding today."
@@ -4845,330 +4915,81 @@ msgstr ""
 "Завтра вы можете снова запустить этот процесс, чтобы добавить "
 "местоположения, которые сегодня не прошли геокодирование."
 
-#: admin/views/make_db_maps.php:191
+#: admin/views/maps_locations.php:375
 msgid ""
 "locations were recognized by geocoding and have been saved in the database."
 msgstr ""
 "местоположения были распознаны геокодированием и сохранены в базе данных."
 
-#: admin/views/make_db_maps.php:215 views/ancestor_report_rtf.php:376
-#: views/family_rtf.php:496
-msgid "Back"
-msgstr "Назад"
+#: admin/views/maps_locations.php:397
+msgid ""
+"Refresh the location list to display a proper functional \"Find a location "
+"on the map\" list."
+msgstr ""
 
-#: admin/views/make_db_maps.php:261
+#: admin/views/maps_locations.php:398
 #, fuzzy
-#| msgid "Google maps API Key"
-msgid "World map API Keys"
-msgstr "Google maps API Key"
-
-#: admin/views/make_db_maps.php:285
-#, fuzzy
-#| msgid "Hide Google maps"
-msgid "Use Google Maps"
-msgstr "Скрыть карты Google"
-
-#: admin/views/make_db_maps.php:286
-msgid "Use OpenStreetMap"
-msgstr ""
-
-#: admin/views/make_db_maps.php:291
-#, fuzzy
-#| msgid "Google maps API Key"
-msgid "Google Maps API Keys"
-msgstr "Google maps API Key"
-
-#: admin/views/make_db_maps.php:292
-msgid "To use the Google maps options, you need a Google account."
-msgstr ""
-
-#: admin/views/make_db_maps.php:293
-msgid ""
-"If you don't have a Google account, first create one. Once logged into your "
-"Google account, go to:"
-msgstr ""
-"Если у вас нет аккаунта Google, сначала создайте его. После входа в аккаунт "
-"Google, перейдите:"
-
-#: admin/views/make_db_maps.php:294
-msgid "Get API key"
-msgstr "Получить API key"
-
-#: admin/views/make_db_maps.php:295
-msgid "and follow the instructions."
-msgstr "и следуйте инструкциям."
-
-#: admin/views/make_db_maps.php:296
-msgid "Create two keys"
-msgstr "Создать два ключа"
-
-#: admin/views/make_db_maps.php:299
-msgid ""
-"For the first key, set restriction to <strong>\"HTTP referrers\"</strong> "
-"and enter your website domain name."
-msgstr ""
-"Для первого ключа установите ограничение на <strong>«HTTP-рефереры»</strong> "
-"и введите доменное имя вашего сайта."
-
-#: admin/views/make_db_maps.php:300
-msgid "If your domain looks like 'www.mydomain.com', enter:"
-msgstr "Если ваш домен выглядит как 'www.mydomain.com', введите:"
-
-#: admin/views/make_db_maps.php:300
-msgid "If your domain looks like 'mydomain.com', enter:"
-msgstr "Если ваш домен выглядит как 'mydomain.com', введите:"
-
-#: admin/views/make_db_maps.php:324
-msgid ""
-"For the second key, set restriction to <strong>\"IP addresses\"</strong> and "
-"enter your server IP."
-msgstr ""
-"Для второго ключа установите ограничение на <strong>«IP-адреса»</strong> и "
-"введите IP-адрес вашего сервера."
-
-#: admin/views/make_db_maps.php:324
-msgid "Not your computer's IP!"
-msgstr "Не IP-адрес вашего компьютера!"
-
-#: admin/views/make_db_maps.php:325
-msgid "Your server IP would seem to be:"
-msgstr "Ip-адрес вашего сервера выглядит следующим образом:"
-
-#: admin/views/make_db_maps.php:327
-msgid ""
-"Your server also has an IPv6 address. If the above IP doesn't work, try the "
-"IPv6 which would seem to be:"
-msgstr ""
-"Ваш сервер также имеет IPv6-адрес. Если вышеуказанный IP-адрес не работает, "
-"попробуйте IPv6, который, по-видимому, выглядит следующим образом:"
-
-#: admin/views/make_db_maps.php:329
-msgid ""
-"If this doesn't work, contact your provider and try to obtain the proper IP "
-"address from them."
-msgstr ""
-"Если это не сработает, обратитесь к своему провайдеру и попытайтесь получить "
-"от него правильный IP-адрес."
-
-#: admin/views/make_db_maps.php:331
-msgid "Once you receive the keys enter them in the two fields below and save."
-msgstr "Как только вы получите ключи, введите их в два поля ниже и сохраните."
-
-#: admin/views/make_db_maps.php:388 admin/views/make_db_maps.php:394
-#: admin/views/make_db_maps.php:406
-msgid "API key"
-msgstr "API key"
-
-#: admin/views/make_db_maps.php:402
-msgid "OpenStreetMap API Keys"
-msgstr ""
-
-#: admin/views/make_db_maps.php:403
-msgid ""
-"To use OpenStreetMap we need geolocation data of all places. Go to <a "
-"href=\"https://geokeo.com\" target=\"_blank\">https://geokeo.com</a> and "
-"create an account to get the API key."
-msgstr ""
-
-#: admin/views/make_db_maps.php:416
-msgid "Create or update geolocation database"
-msgstr "Создать или обновить геолокадионную базу"
-
-#: admin/views/make_db_maps.php:535
-msgid "No new locations were found to add to the database"
-msgstr "Не найдены новые места для добавления в базу"
-
-#: admin/views/make_db_maps.php:538 admin/views/make_db_maps.php:581
-#, php-format
-msgid ""
-"The following %d locations are already known as non-indexable by Google. "
-"Please check their validity."
-msgstr ""
-"Следующие %d местоположения уже известны google как неиндексируемые. "
-"Пожалуйста, проверьте их действительность."
-
-#: admin/views/make_db_maps.php:563
-#, php-format
-msgid "There are %s new unique birth/ death locations to add to the database."
-msgstr ""
-"Найдено %s новых уникальных мест рождения/смерти для добавления в базу."
-
-#: admin/views/make_db_maps.php:572
-#, php-format
-msgid "This will take approximately <b>%1$d minutes and %2$d seconds.</b>"
-msgstr "Это займёт примерно <b>%1$d минут и  %2$d секунд.</b>"
-
-#: admin/views/make_db_maps.php:574
-msgid "Do you wish to add these locations to the database database now?"
-msgstr "Желаете добавить эти места в базу?"
-
-#: admin/views/make_db_maps.php:591
-msgid "A geolocation database exists."
-msgstr "Геолокационная база создана."
-
-#: admin/views/make_db_maps.php:593
-msgid "No geolocation database found."
-msgstr "Геолокационная база отсутствует."
-
-#: admin/views/make_db_maps.php:595
-msgid ""
-"Check how many new locations have to be indexed and how long the indexing "
-"may take (approximately)."
-msgstr ""
-"Проверить сколько новых мест не добавлено в геолокационную базу и сколько "
-"примерно времени займёт их добавление."
-
-#: admin/views/make_db_maps.php:611 app/model/tree_index.php:632
-#: views/list.php:155 views/list.php:446
-msgid "All family trees"
-msgstr "Все генеалогические деревья"
-
-#: admin/views/make_db_maps.php:632 admin/views/tree_check_consistency.php:35
-msgid "Check"
-msgstr "Проверка"
-
-#: admin/views/make_db_maps.php:644
-msgid "Refresh birth/ death status and tree affiliation of all locations"
-msgstr "Обновить сведения о местах рождения/смерти в геолокационной базе."
-
-#: admin/views/make_db_maps.php:652
-msgid "The birth/ death status and tree affiliation has been refreshed."
-msgstr "Обновлен статус рождения/смерти и принадлежность к дереву."
-
-#: admin/views/make_db_maps.php:657
-#, php-format
-msgid ""
-"The \"Find a location on the map\" pull-down displays a list according to "
-"the chosen tree and the birth/ death mapping choice. For this to work "
-"properly, the birth/death status and tree affiliation of all locations has "
-"to be up to date.<br><br><b>TIP:</b> When you import a gedcom, you can mark "
-"the option \"Add new locations to geo-location database\" and the location "
-"status of existing locations will also be updated automatically! (If you "
-"didn't mark this option on import, use the \"Update geolocation database\" "
-"above. This will also refresh the existing location status).<p><b>When to "
-"use this button:</b><ul><li> if you edited location data directly with the "
-"%s editor</li><li>if you wish to delete all locations that have become "
-"obsolete (mark the box below)</li></ul></p>"
-msgstr ""
-"В раскрывающемся списке \"Найти местоположение на карте\" отображается "
-"список в соответствии с выбранным деревом и выбором сопоставления рождения/"
-"смерти. Чтобы это работало должным образом, статус рождения / смерти и "
-"принадлежность к дереву всех мест должны быть актуальными.<br><br><b>КОНЧИК:"
-"</b> Когда вы импортируете gedcom, вы можете отметить опцию «Добавить новые "
-"местоположения в базу геолокации», и статус местоположения существующих "
-"местоположений также будет обновляться автоматически! (Если вы не отметили "
-"эту опцию при импорте, используйте «Обновить базу геолокации» выше. Это "
-"также обновит существующий статус расположения).<p><b>Когда использовать эту "
-"кнопку:</b><ul><li>Если данные о местоположении были изменены "
-"непосредственно в редакторе %s</li><li>Если вы хотите удалить все места, "
-"которые устарели (отметьте поле ниже)</li></ul></p>"
-
-#: admin/views/make_db_maps.php:659
+#| msgid ""
+#| "Also delete all locations that have become obsolete (not connected to any "
+#| "persons anymore)"
 msgid ""
 "Also delete all locations that have become obsolete (not connected to any "
-"persons anymore)"
+"persons anymore)."
 msgstr "Также удалить все места, не связанные с персонами."
 
-#: admin/views/make_db_maps.php:660
+#: admin/views/maps_locations.php:399
 msgid "Refresh"
 msgstr "Обновить"
 
-#: admin/views/make_db_maps.php:669
-msgid "Edit geolocation database"
-msgstr "Редактирование геолокационной базы"
+#: admin/views/maps_locations.php:415
+#, fuzzy
+#| msgid "Delete geolocation database"
+msgid "Delete entire geolocation database"
+msgstr "Очистка геолокационной базы"
 
-#: admin/views/make_db_maps.php:819
-msgid "Deleted location:"
-msgstr "Удалённое место:"
-
-#: admin/views/make_db_maps.php:827
-msgid "Changed location:"
-msgstr "Изменённое место:"
-
-#: admin/views/make_db_maps.php:853
-msgid "Added location:"
+#: admin/views/maps_locations.php:416
+#, fuzzy, php-format
+#| msgid "Added location:"
+msgid "%d locations."
 msgstr "Добавленное место:"
 
-#: admin/views/make_db_maps.php:978
-msgid "Details from the database"
-msgstr "Данные из базы"
+#: admin/views/maps_locations.php:417
+#, fuzzy, php-format
+#| msgid "List of non-indexable locations was refreshed!"
+msgid "%d non-indexable locations."
+msgstr "Список неиндексируемых локаций обновлен!"
 
-#: admin/views/make_db_maps.php:979
-msgid "Location"
-msgstr "Место"
+#: admin/views/maps_locations.php:619
+msgid "Location already exists. Updated latitude/longitude"
+msgstr ""
 
-#: admin/views/make_db_maps.php:980 admin/views/make_db_maps.php:991
+#: admin/views/maps_locations.php:741
 msgid "Latitude"
 msgstr "Широта"
 
-#: admin/views/make_db_maps.php:981 admin/views/make_db_maps.php:992
+#: admin/views/maps_locations.php:745
 msgid "Longitude"
 msgstr "Долгота"
 
-#: admin/views/make_db_maps.php:985
-msgid "Delete this location"
-msgstr "Удалить место"
-
-#: admin/views/make_db_maps.php:988
-msgid "Change or add locations"
-msgstr "Изменение или добавление места"
-
-#: admin/views/make_db_maps.php:988
-msgid "(You can also drag the marker!)"
+#: admin/views/maps_locations.php:749
+#, fuzzy
+#| msgid "(You can also drag the marker!)"
+msgid "You can also drag the marker."
 msgstr "(Чтобы изменить координаты можно перетащить маркер на карте!)"
 
-#: admin/views/make_db_maps.php:994
+#: admin/views/maps_locations.php:753
 msgid "Change this location"
 msgstr "Изменить это место"
 
-#: admin/views/make_db_maps.php:995
+#: admin/views/maps_locations.php:754
 msgid "Add this location"
 msgstr "Добавить это место"
 
-#: admin/views/make_db_maps.php:1005
-msgid "Delete geolocation database"
-msgstr "Очистка геолокационной базы"
+#: admin/views/maps_locations.php:755
+msgid "Delete this location"
+msgstr "Удалить место"
 
-#: admin/views/make_db_maps.php:1009
-msgid "Database was deleted!"
-msgstr "Геолокационная база очищена!"
-
-#: admin/views/make_db_maps.php:1012
-#, php-format
-msgid ""
-"Here you can delete your entire geolocation database (%d entries).<br>If you "
-"are absolutely sure, press the button below."
-msgstr ""
-"Здесь вы можете удалить всю базу геолокации (%d записи).<br>Если вы "
-"абсолютно уверены, нажмите кнопку ниже."
-
-#: admin/views/make_db_maps.php:1014
-msgid "DELETE ENTIRE GEOLOCATION DATABASE"
-msgstr "ОЧИСТИТЬ ВСЮ ГЕОЛОКАЦИОННУЮ БАЗУ"
-
-#: admin/views/make_db_maps.php:1018
-msgid "List of non-indexable locations was refreshed!"
-msgstr "Список неиндексируемых локаций обновлен!"
-
-#: admin/views/make_db_maps.php:1025
-#, php-format
-msgid ""
-"Here you can refresh the list of %d non-indexable locations that was stored "
-"in your database after previous geolocation processes.<br>Do this if you "
-"have corrected non-indexable locations in your data or have imported updated "
-"gedcoms and some of these locations may no longer appear in your data."
-msgstr ""
-"Здесь вы можете обновить список %d неиндексируемых расположений, которые "
-"хранились в вашей базе данных после предыдущих процессов геолокации."
-"<br>Сделайте это, если вы исправили неиндексируемые местоположения в своих "
-"данных или импортировали обновленные gedcoms, и некоторые из этих "
-"местоположений могут больше не отображаться в ваших данных."
-
-#: admin/views/make_db_maps.php:1027
-msgid "REFRESH LIST OF NON-INDEXABLE LOCATIONS"
-msgstr "ОБНОВИТЬ СПИСОК НЕИНДЕКСИРУЕМЫХ РАСПОЛОЖЕНИЙ"
-
-#: admin/views/make_db_maps.php:1040
+#: admin/views/maps_settings.php:29
 msgid ""
 "The slider has 10 steps. By default the starting year is 1560 with 9 "
 "intervals of 50 years up till 2010 and beyond.<br>You can set the starting "
@@ -5185,45 +5006,129 @@ msgstr ""
 "<br>1110 (интв. 100), 1560 (интв. 50), 1695 (интв. 35), 1740 (интв. 30), "
 "1785 (интв. 25), 1830 (интв. 20)"
 
-#: admin/views/make_db_maps.php:1056
+#: admin/views/maps_settings.php:38
 msgid "Name of tree"
 msgstr "Название дерева"
 
-#: admin/views/make_db_maps.php:1057
+#: admin/views/maps_settings.php:39
 msgid "Starting year"
 msgstr "Начальный год"
 
-#: admin/views/make_db_maps.php:1058
+#: admin/views/maps_settings.php:40
 msgid "Interval"
 msgstr "Интервал"
 
-#: admin/views/make_db_maps.php:1116
+#: admin/views/maps_settings.php:82
 msgid "Default slider position"
 msgstr "Положение ползунка по умолчанию"
 
-#: admin/views/make_db_maps.php:1123
+#: admin/views/maps_settings.php:85
 msgid "OFF position (leftmost position)"
 msgstr "Положение OFF (крайнее левое положение)"
 
-#: admin/views/make_db_maps.php:1128
+#: admin/views/maps_settings.php:86
 msgid "Show all periods (rightmost position)"
 msgstr "Показать все периоды (крайняя правая позиция)"
 
-#: admin/views/make_db_maps.php:1154
-msgid "Default map type"
-msgstr "Тип карты по-умолчанию"
+#: admin/views/maps_worldmap.php:38
+#, fuzzy
+#| msgid "Hide Google maps"
+msgid "Use Google Maps"
+msgstr "Скрыть карты Google"
 
-#: admin/views/make_db_maps.php:1161
-msgid "Regular map (ROADMAP)"
-msgstr "Карта (схема)"
+#: admin/views/maps_worldmap.php:45
+msgid "Use OpenStreetMap"
+msgstr ""
 
-#: admin/views/make_db_maps.php:1166
-msgid "Satellite map with roads and places (HYBRID)"
-msgstr "Спутниковый снимок (гибрид)"
+#: admin/views/maps_worldmap.php:54
+#, fuzzy
+#| msgid "Google maps API Key"
+msgid "Google Maps API Key"
+msgstr "Google maps API Key"
 
-#: admin/views/make_db_maps.php:1192
-msgid "Default zoom"
-msgstr "Уровень приближения по-умолчанию"
+#: admin/views/maps_worldmap.php:56
+msgid "OpenStreetMap API Key"
+msgstr ""
+
+#: admin/views/maps_worldmap.php:64
+#, php-format
+msgid ""
+"To use the Google maps options, you need a Google account. Go to: %1$s "
+"create API key %2$s and follow the instructions."
+msgstr ""
+
+#: admin/views/maps_worldmap.php:65
+msgid ""
+"The API key will work without restrictions but for security reasons set "
+"restrictions when API key is generated."
+msgstr ""
+
+#: admin/views/maps_worldmap.php:69
+#, fuzzy
+#| msgid ""
+#| "For the first key, set restriction to <strong>\"HTTP referrers\"</strong> "
+#| "and enter your website domain name."
+msgid ""
+"Set restriction to <strong>\"HTTP referrers\"</strong> and enter your "
+"website domain name."
+msgstr ""
+"Для первого ключа установите ограничение на <strong>«HTTP-рефереры»</strong> "
+"и введите доменное имя вашего сайта."
+
+#: admin/views/maps_worldmap.php:70
+msgid "If your domain looks like 'www.mydomain.com', enter:"
+msgstr "Если ваш домен выглядит как 'www.mydomain.com', введите:"
+
+#: admin/views/maps_worldmap.php:70
+msgid "If your domain looks like 'mydomain.com', enter:"
+msgstr "Если ваш домен выглядит как 'mydomain.com', введите:"
+
+#: admin/views/maps_worldmap.php:73
+#, fuzzy
+#| msgid ""
+#| "For the second key, set restriction to <strong>\"IP addresses\"</strong> "
+#| "and enter your server IP."
+msgid ""
+"Or: set restriction to <strong>\"IP addresses\"</strong> and enter your "
+"server IP."
+msgstr ""
+"Для второго ключа установите ограничение на <strong>«IP-адреса»</strong> и "
+"введите IP-адрес вашего сервера."
+
+#: admin/views/maps_worldmap.php:73
+msgid "Not your computer's IP!"
+msgstr "Не IP-адрес вашего компьютера!"
+
+#: admin/views/maps_worldmap.php:74
+msgid "Your server IP would seem to be:"
+msgstr "Ip-адрес вашего сервера выглядит следующим образом:"
+
+#: admin/views/maps_worldmap.php:77
+msgid ""
+"Your server also has an IPv6 address. If the above IP doesn't work, try the "
+"IPv6 which would seem to be:"
+msgstr ""
+"Ваш сервер также имеет IPv6-адрес. Если вышеуказанный IP-адрес не работает, "
+"попробуйте IPv6, который, по-видимому, выглядит следующим образом:"
+
+#: admin/views/maps_worldmap.php:80
+msgid ""
+"If this doesn't work, contact your provider and try to obtain the proper IP "
+"address from them."
+msgstr ""
+"Если это не сработает, обратитесь к своему провайдеру и попытайтесь получить "
+"от него правильный IP-адрес."
+
+#: admin/views/maps_worldmap.php:88
+msgid ""
+"To use OpenStreetMap we need geolocation data of all places. Go to <a "
+"href=\"https://geokeo.com\" target=\"_blank\">https://geokeo.com</a> and "
+"create an account to get the API key."
+msgstr ""
+
+#: admin/views/maps_worldmap.php:97 admin/views/maps_worldmap.php:132
+msgid "API key"
+msgstr "API key"
 
 #: admin/views/menu.php:44 views/help.php:63 views/layout.php:485
 msgid "Home"
@@ -5449,18 +5354,32 @@ msgstr ""
 "хостинг-провайдеров."
 
 #: admin/views/settings.php:264
+#, fuzzy
+#| msgid "Mail: username"
+msgid "Mail: sender"
+msgstr "Почта: имя пользователя"
+
+#: admin/views/settings.php:266 admin/views/settings.php:284
+msgid "Gmail: [email_address]@gmail.com"
+msgstr ""
+
+#: admin/views/settings.php:266
+msgid "If filled in: will be used as mail sender."
+msgstr ""
+
+#: admin/views/settings.php:271
 msgid "Mail: configuration"
 msgstr "Почта: конфигурация"
 
-#: admin/views/settings.php:267
+#: admin/views/settings.php:274
 msgid "auto"
 msgstr "авто"
 
-#: admin/views/settings.php:268
+#: admin/views/settings.php:275
 msgid "manual"
 msgstr "ручной"
 
-#: admin/views/settings.php:270
+#: admin/views/settings.php:277
 msgid ""
 "Setting: \"auto\" = use settings below.<br>Setting: \"manual\" = change "
 "settings in /include/mail.php"
@@ -5468,130 +5387,122 @@ msgstr ""
 "Настройка: \"auto\" = использовать настройки ниже.<br>Настройка: \"manual\" "
 "= изменить настройки в /include/mail.php"
 
-#: admin/views/settings.php:275
+#: admin/views/settings.php:282
 msgid "Mail: username"
 msgstr "Почта: имя пользователя"
 
-#: admin/views/settings.php:277
-msgid "Gmail: [email_address]@gmail.com"
-msgstr ""
-
-#: admin/views/settings.php:277
-msgid "If filled in: will be used as mail sender."
-msgstr ""
-
-#: admin/views/settings.php:282
+#: admin/views/settings.php:289
 msgid "Mail: password"
 msgstr "Почта: пароль"
 
-#: admin/views/settings.php:287
+#: admin/views/settings.php:294
 msgid "SMTP: mail server"
 msgstr ""
 
-#: admin/views/settings.php:289
+#: admin/views/settings.php:296
 msgid "Gmail: smtp.gmail.com"
 msgstr ""
 
-#: admin/views/settings.php:294
+#: admin/views/settings.php:301
 msgid "SMTP: port"
 msgstr "SMTP: port"
 
-#: admin/views/settings.php:301
+#: admin/views/settings.php:308
 msgid "Gmail: 587"
 msgstr "Gmail: 587"
 
-#: admin/views/settings.php:306
+#: admin/views/settings.php:313
 msgid "SMTP: authentication"
 msgstr "SMTP: аутентификация"
 
-#: admin/views/settings.php:309
+#: admin/views/settings.php:316
 msgid "true"
 msgstr "истинный"
 
-#: admin/views/settings.php:310
+#: admin/views/settings.php:317
 msgid "false"
 msgstr "ложный"
 
-#: admin/views/settings.php:312
+#: admin/views/settings.php:319
 msgid "Gmail: true"
 msgstr "Gmail: правда"
 
-#: admin/views/settings.php:317
+#: admin/views/settings.php:324
 msgid "SMTP: encryption type"
 msgstr ""
 
-#: admin/views/settings.php:323
+#: admin/views/settings.php:330
 msgid "Gmail: TLS"
 msgstr "Gmail: TLS"
 
-#: admin/views/settings.php:328
+#: admin/views/settings.php:335
 msgid "SMTP: debugging"
 msgstr "SMTP: отладка"
 
-#: admin/views/settings.php:331
+#: admin/views/settings.php:338
 msgid "Off"
 msgstr "Выключенный"
 
-#: admin/views/settings.php:332
+#: admin/views/settings.php:339
 msgid "Client"
 msgstr "Клиент"
 
-#: admin/views/settings.php:333
+#: admin/views/settings.php:340
 msgid "Client and Server"
 msgstr "Клиент и сервер"
 
-#: admin/views/settings.php:339
+#: admin/views/settings.php:346
 msgid "International settings"
 msgstr "Региональные настройки"
 
-#: admin/views/settings.php:344
+#: admin/views/settings.php:351
 msgid "Timezone"
 msgstr "Часовая зона"
 
-#: admin/views/settings.php:361
+#: admin/views/settings.php:368
 msgid "Minimum characters in search box"
 msgstr "Минимальное количество символов в строке поиска"
 
-#: admin/views/settings.php:362
+#: admin/views/settings.php:369
 msgid ""
 "Minimum characters in search boxes (standard value=3. For Chinese set to 1)."
 msgstr ""
 "Минимальное количество символов для поиска (стандартное значение=3. Для "
 "Китайского языка установите 1)."
 
-#: admin/views/settings.php:366 views/fanchart.php:602
+#: admin/views/settings.php:373 views/fanchart.php:602
 msgid "Date display"
 msgstr "Отображение даты"
 
-#: admin/views/settings.php:369
+#: admin/views/settings.php:376
 msgid "Europe/Global - 5 Jan 1787"
 msgstr "Europe/Global - 5 Jan 1787"
 
-#: admin/views/settings.php:370
+#: admin/views/settings.php:377
 msgid "USA - Jan 5, 1787"
 msgstr "USA - Jan 5, 1787"
 
-#: admin/views/settings.php:371
+#: admin/views/settings.php:378
 msgid "China - 1787-01-05"
 msgstr "China - 1787-01-05"
 
-#: admin/views/settings.php:377
+#: admin/views/settings.php:384
 msgid "Order of names in reports"
 msgstr "Порядок отображения имён"
 
-#: admin/views/settings.php:380
+#: admin/views/settings.php:387
 msgid "Western"
 msgstr "Западный"
 
-#: admin/views/settings.php:381
+#: admin/views/settings.php:388
 msgid "Chinese"
 msgstr "Китайский"
 
-#: admin/views/settings.php:381
+#: admin/views/settings.php:388
 msgid "Hungarian"
 msgstr "Венгерский"
 
-#: admin/views/settings.php:383
+#: admin/views/settings.php:390
 msgid ""
 "Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports "
 "and lists: 刘 理想"
@@ -5599,134 +5510,134 @@ msgstr ""
 "Западные - в отчётах: Имя Фамилия, в списках: Фамилия, Имя. Китайский 中文 - "
 "отображается: 刘 理想"
 
-#: admin/views/settings.php:383
+#: admin/views/settings.php:390
 msgid "Hungarian - reports and lists: Smith John"
 msgstr "Венгерский - в отчётах и в списках: Фамилия Имя"
 
-#: admin/views/settings.php:389
+#: admin/views/settings.php:396
 msgid "Default timeline file (per language)"
 msgstr "Файл временной шкалы по умолчанию (для каждого языка)"
 
-#: admin/views/settings.php:397 admin/views/thumbs.php:405
+#: admin/views/settings.php:404 admin/views/thumbs.php:405
 #: admin/views/tree_admin.php:33 admin/views/tree_text.php:27
 msgid "Default"
 msgstr "По-умолчанию"
 
-#: admin/views/settings.php:434
+#: admin/views/settings.php:441
 msgid ""
 "First select language, then select the default timeline for that language."
 msgstr ""
 "Сначала выберите язык, затем выберите временную шкалу по умолчанию для этого "
 "языка."
 
-#: admin/views/settings.php:443
+#: admin/views/settings.php:450
 msgid "Settings Main Menu"
 msgstr "Главное меню настроек"
 
-#: admin/views/settings.php:448
+#: admin/views/settings.php:455
 msgid "Website name"
 msgstr "Название сайта"
 
-#: admin/views/settings.php:454
+#: admin/views/settings.php:461
 msgid "Use logo image instead of text"
 msgstr ""
 
-#: admin/views/settings.php:456
+#: admin/views/settings.php:463
 #, php-format
 msgid "Upload logo image. Recommended size: 165 x 25 px. Picture max: %1$d MB."
 msgstr ""
 
-#: admin/views/settings.php:463
+#: admin/views/settings.php:470
 msgid "Link homepage"
 msgstr "Ссылка на главную"
 
-#: admin/views/settings.php:463 admin/views/settings_homepage.php:620
+#: admin/views/settings.php:470 admin/views/settings_homepage.php:620
 #: admin/views/settings_homepage.php:627 admin/views/settings_homepage.php:634
 #: admin/views/settings_homepage.php:641
 msgid "Link description"
 msgstr "Описание ссылки на главную"
 
-#: admin/views/settings.php:464 admin/views/settings.php:473
+#: admin/views/settings.php:471 admin/views/settings.php:480
 msgid "(link to this site including http://)"
 msgstr "(ссылка на этот сайт включая http://)"
 
-#: admin/views/settings.php:471
+#: admin/views/settings.php:478
 msgid "Link for birthdays RSS"
 msgstr "Ссылка на RSS ленту дней рождения"
 
-#: admin/views/settings.php:474
+#: admin/views/settings.php:481
 msgid "This option can be turned on or off in the user groups."
 msgstr "Эту опцию можно включить или отключить в группах пользователей."
 
-#: admin/views/settings.php:480
+#: admin/views/settings.php:487
 msgid "Settings family page"
 msgstr "Семейная страница настроек"
 
-#: admin/views/settings.php:485
+#: admin/views/settings.php:492
 msgid "Number of generations in descendant report"
 msgstr "Количество поколений в отчете о потомках"
 
-#: admin/views/settings.php:486
+#: admin/views/settings.php:493
 msgid "Show number of generation in descendant report (standard value=4)."
 msgstr ""
 "Показать количество поколений в отчете о потомках (стандартное значение = 4)."
 
-#: admin/views/settings.php:490
+#: admin/views/settings.php:497
 msgid "Number of persons in search results"
 msgstr "Количество людей в результатах поиска"
 
-#: admin/views/settings.php:491
+#: admin/views/settings.php:498
 msgid "Show number of persons in search results (standard value=30)."
 msgstr ""
 "Показать количество людей в результатах поиска (стандартное значение=30)."
 
-#: admin/views/settings.php:496 admin/views/settings.php:500
+#: admin/views/settings.php:503 admin/views/settings.php:507
 msgid "Watermark text in PDF file"
 msgstr "Текст водяного знака в PDF-файле"
 
-#: admin/views/settings.php:501
+#: admin/views/settings.php:508
 msgid "Watermark text (clear to remove watermark)"
 msgstr "Текст водяного знака (очистить, чтобы удалить водяной знак)"
 
-#: admin/views/settings.php:504
+#: admin/views/settings.php:511
 msgid "Watermark RGB text color"
 msgstr "Водяной знак RGB цвет текста"
 
-#: admin/views/settings.php:509
+#: admin/views/settings.php:516
 msgid "Default values: R = 224, G = 224, B = 224."
 msgstr "Значения по умолчанию: R = 224, G = 224, B = 224."
 
-#: admin/views/settings.php:515
+#: admin/views/settings.php:522
 msgid "Display for One Name Study web sites"
 msgstr "Отображение для одного названия Изучаемых веб-сайтов"
 
-#: admin/views/settings.php:519
+#: admin/views/settings.php:526
 msgid "One Name Study display"
 msgstr "Экран исследования одного имени"
 
-#: admin/views/settings.php:524
+#: admin/views/settings.php:531
 msgid "Only use this option if you're doing a \"One Name Study\" project."
 msgstr ""
 
-#: admin/views/settings.php:528
+#: admin/views/settings.php:535
 msgid "Enter the One Name of this site"
 msgstr "Введите одно имя этого сайта"
 
-#: admin/views/settings.php:535
+#: admin/views/settings.php:542
 msgid "Save settings"
 msgstr "Сохранить настройки"
 
-#: admin/views/settings_admin.php:113 admin/views/settings_admin.php:132
+#: admin/views/settings_admin.php:114 admin/views/settings_admin.php:133
 msgid "Photo too large"
 msgstr "Фотография слишком большая"
 
-#: admin/views/settings_admin.php:118
+#: admin/views/settings_admin.php:119
 #, fuzzy
 #| msgid "Changed location:"
 msgid "Changed favicon icon."
 msgstr "Изменённое место:"
 
-#: admin/views/settings_admin.php:137
+#: admin/views/settings_admin.php:138
 #, fuzzy
 #| msgid "Changed location:"
 msgid "Changed logo."
@@ -6782,29 +6693,29 @@ msgstr "Супруга"
 #: admin/views/tree_check_consistency.php:818
 #: admin/views/tree_check_consistency.php:823
 #: admin/views/tree_check_consistency.php:830
-#: admin/views/tree_check_consistency.php:839 views/family.php:755
-#: views/family.php:779 views/family.php:913 views/family.php:918
+#: admin/views/tree_check_consistency.php:839 views/family.php:750
+#: views/family.php:774 views/family.php:908 views/family.php:913
 msgid "BORN_SHORT"
 msgstr "рожд."
 
 # Enter a short text for baptise, like: bapt.
 #: admin/views/tree_check_consistency.php:788
-#: admin/views/tree_check_consistency.php:800 views/family.php:758
-#: views/family.php:782
+#: admin/views/tree_check_consistency.php:800 views/family.php:753
+#: views/family.php:777
 msgid "BAPTISED_SHORT"
 msgstr "крещ."
 
 # Enter a short text for died here. There is no short text for died in
 # english.
 #: admin/views/tree_check_consistency.php:791
-#: admin/views/tree_check_consistency.php:803 views/family.php:806
-#: views/family.php:836 views/family.php:935 views/family.php:940
+#: admin/views/tree_check_consistency.php:803 views/family.php:801
+#: views/family.php:831 views/family.php:930 views/family.php:935
 msgid "DIED_SHORT"
 msgstr "умер."
 
 #: admin/views/tree_check_consistency.php:794
-#: admin/views/tree_check_consistency.php:806 views/family.php:809
-#: views/family.php:839
+#: admin/views/tree_check_consistency.php:806 views/family.php:804
+#: views/family.php:834
 msgid "BURIED_SHORT"
 msgstr "погр."
 
@@ -6960,7 +6871,7 @@ msgstr "Редактор источников"
 msgid "Repository editor"
 msgstr "Редактор репозиториев"
 
-#: admin/views/tree_data.php:34 admin/views/users.php:51 views/family.php:1301
+#: admin/views/tree_data.php:34 admin/views/users.php:51 views/family.php:1316
 #: views/mailform.php:55 views/mailform.php:57 views/register.php:65
 #: views/user_settings.php:30 views/user_settings.php:32
 msgid "E-mail address"
@@ -7025,7 +6936,7 @@ msgstr "Перейти в следующему"
 msgid "Skip to nr: "
 msgstr "Перейти к номеру:"
 
-#: admin/views/tree_merge.php:147 views/maps.php:791 views/maps.php:917
+#: admin/views/tree_merge.php:147 views/maps.php:754 views/maps.php:887
 msgid "Go!"
 msgstr "Вперёд!"
 
@@ -7492,70 +7403,70 @@ msgstr "Количество "
 #: admin/views/tree_merge.php:1261 views/ancestor_report_pdf.php:67
 #: views/ancestor_report_pdf.php:82 views/ancestor_report_rtf.php:62
 #: views/ancestor_sheet.php:250 views/ancestor_sheet_pdf.php:295
-#: views/ancestor_sheet_pdf.php:316 views/family_pdf.php:66
-#: views/family_pdf.php:68 views/family_pdf.php:137 views/family_pdf.php:139
-#: views/family_pdf.php:325 views/family_rtf.php:98 views/family_rtf.php:100
-#: views/hourglass.php:134 views/outline_report_pdf.php:76
-#: views/outline_report_pdf.php:94 views/relations.php:605
-#: views/relations.php:630 views/relations.php:1293 views/relations.php:1304
-#: views/relations.php:1396 views/relations.php:1399 views/relations.php:1401
-#: views/relations.php:1414 views/relations.php:1421 views/relations.php:1425
-#: views/relations.php:1429 views/relations.php:1433 views/relations.php:1436
-#: views/relations.php:1439 views/relations.php:1442 views/relations.php:1446
-#: views/relations.php:1561 views/relations.php:1564 views/relations.php:1567
-#: views/relations.php:1571 views/relations.php:1605 views/relations.php:1608
-#: views/relations.php:1611 views/relations.php:1614 views/relations.php:1617
-#: views/relations.php:1621 views/relations.php:1625 views/relations.php:1628
-#: views/relations.php:1631 views/relations.php:1634 views/relations.php:1638
-#: views/relations.php:1782 views/relations.php:1843 views/relations.php:1846
-#: views/relations.php:1848 views/relations.php:1860 views/relations.php:1866
-#: views/relations.php:1870 views/relations.php:1874 views/relations.php:1879
-#: views/relations.php:1882 views/relations.php:1885 views/relations.php:1888
-#: views/relations.php:1892 views/relations.php:1916 views/relations.php:1918
-#: views/relations.php:1923 views/relations.php:1926 views/relations.php:1929
-#: views/relations.php:1932 views/relations.php:1936 views/relations.php:2010
-#: views/relations.php:2013 views/relations.php:2016 views/relations.php:2020
-#: views/relations.php:2059 views/relations.php:2062 views/relations.php:2065
-#: views/relations.php:2068 views/relations.php:2072 views/relations.php:2076
-#: views/relations.php:2079 views/relations.php:2082 views/relations.php:2085
-#: views/relations.php:2089 views/relations.php:2183 views/relations.php:2186
-#: views/relations.php:2194 views/relations.php:2197 views/relations.php:2202
-#: views/relations.php:2205 views/relations.php:2209 views/relations.php:2219
-#: views/relations.php:2222 views/relations.php:2225 views/relations.php:2228
-#: views/relations.php:2231 views/relations.php:2234 views/relations.php:2238
-#: views/relations.php:2248 views/relations.php:2251 views/relations.php:2254
-#: views/relations.php:2257 views/relations.php:2260 views/relations.php:2263
-#: views/relations.php:2266 views/relations.php:2270 views/relations.php:2276
-#: views/relations.php:2279 views/relations.php:2282 views/relations.php:2285
-#: views/relations.php:2288 views/relations.php:2292 views/relations.php:2341
-#: views/relations.php:2344 views/relations.php:2355 views/relations.php:2411
-#: views/relations.php:2414 views/relations.php:2417 views/relations.php:2420
-#: views/relations.php:2423 views/relations.php:2427 views/relations.php:2432
-#: views/relations.php:2435 views/relations.php:2438 views/relations.php:2441
-#: views/relations.php:2444 views/relations.php:2448 views/relations.php:2658
-#: views/relations.php:2741 views/relations.php:2744 views/relations.php:2751
-#: views/relations.php:2754 views/relations.php:2758 views/relations.php:2761
-#: views/relations.php:2765 views/relations.php:2769 views/relations.php:2772
-#: views/relations.php:2775 views/relations.php:2779 views/relations.php:2786
-#: views/relations.php:2789 views/relations.php:2813 views/relations.php:2861
-#: views/relations.php:2864 views/relations.php:2867 views/relations.php:2870
-#: views/relations.php:2873 views/relations.php:2876 views/relations.php:2880
-#: views/relations.php:2884 views/relations.php:2887 views/relations.php:2890
-#: views/relations.php:2893 views/relations.php:2896 views/relations.php:2900
-#: views/relations.php:2926 views/relations.php:2929 views/relations.php:2949
-#: views/relations.php:2967 views/relations.php:3158 views/relations.php:3178
-#: views/relations.php:3187 views/relations.php:3191 views/relations.php:3194
-#: views/relations.php:3197 views/relations.php:3200 views/relations.php:3204
-#: views/relations.php:3207 views/relations.php:3228 views/relations.php:3230
-#: views/relations.php:3338 views/relations.php:3342 views/relations.php:3344
-#: views/relations.php:3347 views/relations.php:3351 views/relations.php:3391
-#: views/relations.php:3394 views/relations.php:3398 views/relations.php:3493
-#: views/relations.php:3497 views/relations.php:3499 views/relations.php:3503
-#: views/relations.php:3505 views/relations.php:3508 views/relations.php:3519
-#: views/relations.php:3522 views/relations.php:3525 views/relations.php:3528
-#: views/relations.php:3531 views/relations.php:3534 views/relations.php:3538
-#: views/relations.php:3541 views/relations.php:3617 views/relations.php:3654
-#: views/relations.php:3656
+#: views/ancestor_sheet_pdf.php:316 views/descendant_chart.php:122
+#: views/family_pdf.php:66 views/family_pdf.php:68 views/family_pdf.php:137
+#: views/family_pdf.php:139 views/family_pdf.php:325 views/family_rtf.php:98
+#: views/family_rtf.php:100 views/hourglass.php:134
+#: views/outline_report_pdf.php:76 views/outline_report_pdf.php:94
+#: views/relations.php:605 views/relations.php:630 views/relations.php:1293
+#: views/relations.php:1304 views/relations.php:1396 views/relations.php:1399
+#: views/relations.php:1401 views/relations.php:1414 views/relations.php:1421
+#: views/relations.php:1425 views/relations.php:1429 views/relations.php:1433
+#: views/relations.php:1436 views/relations.php:1439 views/relations.php:1442
+#: views/relations.php:1446 views/relations.php:1561 views/relations.php:1564
+#: views/relations.php:1567 views/relations.php:1571 views/relations.php:1605
+#: views/relations.php:1608 views/relations.php:1611 views/relations.php:1614
+#: views/relations.php:1617 views/relations.php:1621 views/relations.php:1625
+#: views/relations.php:1628 views/relations.php:1631 views/relations.php:1634
+#: views/relations.php:1638 views/relations.php:1782 views/relations.php:1843
+#: views/relations.php:1846 views/relations.php:1848 views/relations.php:1860
+#: views/relations.php:1866 views/relations.php:1870 views/relations.php:1874
+#: views/relations.php:1879 views/relations.php:1882 views/relations.php:1885
+#: views/relations.php:1888 views/relations.php:1892 views/relations.php:1916
+#: views/relations.php:1918 views/relations.php:1923 views/relations.php:1926
+#: views/relations.php:1929 views/relations.php:1932 views/relations.php:1936
+#: views/relations.php:2010 views/relations.php:2013 views/relations.php:2016
+#: views/relations.php:2020 views/relations.php:2059 views/relations.php:2062
+#: views/relations.php:2065 views/relations.php:2068 views/relations.php:2072
+#: views/relations.php:2076 views/relations.php:2079 views/relations.php:2082
+#: views/relations.php:2085 views/relations.php:2089 views/relations.php:2183
+#: views/relations.php:2186 views/relations.php:2194 views/relations.php:2197
+#: views/relations.php:2202 views/relations.php:2205 views/relations.php:2209
+#: views/relations.php:2219 views/relations.php:2222 views/relations.php:2225
+#: views/relations.php:2228 views/relations.php:2231 views/relations.php:2234
+#: views/relations.php:2238 views/relations.php:2248 views/relations.php:2251
+#: views/relations.php:2254 views/relations.php:2257 views/relations.php:2260
+#: views/relations.php:2263 views/relations.php:2266 views/relations.php:2270
+#: views/relations.php:2276 views/relations.php:2279 views/relations.php:2282
+#: views/relations.php:2285 views/relations.php:2288 views/relations.php:2292
+#: views/relations.php:2341 views/relations.php:2344 views/relations.php:2355
+#: views/relations.php:2411 views/relations.php:2414 views/relations.php:2417
+#: views/relations.php:2420 views/relations.php:2423 views/relations.php:2427
+#: views/relations.php:2432 views/relations.php:2435 views/relations.php:2438
+#: views/relations.php:2441 views/relations.php:2444 views/relations.php:2448
+#: views/relations.php:2658 views/relations.php:2741 views/relations.php:2744
+#: views/relations.php:2751 views/relations.php:2754 views/relations.php:2758
+#: views/relations.php:2761 views/relations.php:2765 views/relations.php:2769
+#: views/relations.php:2772 views/relations.php:2775 views/relations.php:2779
+#: views/relations.php:2786 views/relations.php:2789 views/relations.php:2813
+#: views/relations.php:2861 views/relations.php:2864 views/relations.php:2867
+#: views/relations.php:2870 views/relations.php:2873 views/relations.php:2876
+#: views/relations.php:2880 views/relations.php:2884 views/relations.php:2887
+#: views/relations.php:2890 views/relations.php:2893 views/relations.php:2896
+#: views/relations.php:2900 views/relations.php:2926 views/relations.php:2929
+#: views/relations.php:2949 views/relations.php:2967 views/relations.php:3158
+#: views/relations.php:3178 views/relations.php:3187 views/relations.php:3191
+#: views/relations.php:3194 views/relations.php:3197 views/relations.php:3200
+#: views/relations.php:3204 views/relations.php:3207 views/relations.php:3228
+#: views/relations.php:3230 views/relations.php:3338 views/relations.php:3342
+#: views/relations.php:3344 views/relations.php:3347 views/relations.php:3351
+#: views/relations.php:3391 views/relations.php:3394 views/relations.php:3398
+#: views/relations.php:3493 views/relations.php:3497 views/relations.php:3499
+#: views/relations.php:3503 views/relations.php:3505 views/relations.php:3508
+#: views/relations.php:3519 views/relations.php:3522 views/relations.php:3525
+#: views/relations.php:3528 views/relations.php:3531 views/relations.php:3534
+#: views/relations.php:3538 views/relations.php:3541 views/relations.php:3617
+#: views/relations.php:3654 views/relations.php:3656
 msgid " of "
 msgstr "от"
 
@@ -7830,7 +7741,7 @@ msgstr "Круговой график"
 msgid "Descendant report"
 msgstr "Отчёт о потомках"
 
-#: app/model/family.php:242
+#: app/model/family.php:242 views/descendant_chart.php:122
 msgid "Descendant chart"
 msgstr "График потомков"
 
@@ -7854,7 +7765,7 @@ msgid "%s Mail form."
 msgstr "%s  Почтовая форма"
 
 #: app/model/mailform.php:79 app/model/register.php:92
-#: app/model/user_settings.php:85 views/family.php:1224
+#: app/model/user_settings.php:85 views/family.php:1239
 #, php-format
 msgid "Message sent through %s from the website."
 msgstr "Сообщение, отправленное через %s с веб-сайта."
@@ -8054,43 +7965,43 @@ msgstr "Обновлённый профиль"
 msgid "User updated his/ her profile"
 msgstr "Пользователь обновил профиль"
 
-#: googlemaps/google_initiate.php:396
+#: googlemaps/google_initiate.php:400
 msgid "today "
 msgstr "сегодня "
 
-#: googlemaps/google_initiate.php:455
+#: googlemaps/google_initiate.php:486
 msgid "Location: "
 msgstr "Место: "
 
-#: googlemaps/google_initiate.php:457
+#: googlemaps/google_initiate.php:488
 msgid "For a list of persons born here until "
 msgstr "Список родившихся здесь на "
 
-#: googlemaps/google_initiate.php:459
+#: googlemaps/google_initiate.php:490
 msgid "For a list of all people that died here until "
 msgstr "Список умерших здесь на "
 
-#: googlemaps/google_initiate.php:461
+#: googlemaps/google_initiate.php:492
 msgid " click here"
 msgstr "щёлкните здесь"
 
-#: googlemaps/google_initiate.php:462
+#: googlemaps/google_initiate.php:493
 msgid "Read about this location in "
 msgstr "Прочитать про это место в  "
 
-#: googlemaps/namesearch.php:131
+#: googlemaps/namesearch.php:121
 msgid "All persons born here: "
 msgstr "Все родившиеся здесь:"
 
-#: googlemaps/namesearch.php:137
+#: googlemaps/namesearch.php:127
 msgid "Persons born here until "
 msgstr "Персоны, рождённые здесь до"
 
-#: googlemaps/namesearch.php:150
+#: googlemaps/namesearch.php:140
 msgid "All persons that died here: "
 msgstr "Все умершие здесь: "
 
-#: googlemaps/namesearch.php:159
+#: googlemaps/namesearch.php:149
 msgid "Persons that died here until "
 msgstr "Персоны, умершие здесь до"
 
@@ -8731,8 +8642,8 @@ msgstr "Город"
 #: views/ancestor_chart.php:165 views/ancestor_chart.php:167
 #: views/ancestor_sheet.php:68 views/ancestor_sheet.php:70
 #: views/anniversary.php:127 views/anniversary.php:132
-#: views/anniversary.php:279 views/descendant_chart.php:331
-#: views/descendant_chart.php:435
+#: views/anniversary.php:279 views/descendant_chart.php:337
+#: views/descendant_chart.php:441
 msgid " PRIVACY FILTER"
 msgstr " СКРЫТО"
 
@@ -8742,7 +8653,7 @@ msgstr " СКРЫТО"
 #: views/ancestor_sheet.php:108 views/ancestor_sheet.php:124
 #: views/ancestor_sheet.php:125 views/ancestor_sheet.php:158
 #: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:257
-#: views/ancestor_sheet_pdf.php:373 views/descendant_chart.php:363
+#: views/ancestor_sheet_pdf.php:373 views/descendant_chart.php:369
 #: views/list.php:1100 views/list_places_families.php:54
 #: views/list_places_families.php:324 views/list_places_families.php:382
 #: views/list_places_families.php:470 views/list_places_families.php:487
@@ -8998,16 +8909,16 @@ msgstr "47-е поколение предков"
 
 #: views/ancestor_report.php:103 views/ancestor_report_pdf.php:170
 #: views/ancestor_report_pdf.php:172 views/ancestor_report_rtf.php:156
-#: views/family.php:305 views/family_pdf.php:176 views/family_rtf.php:171
+#: views/family.php:300 views/family_pdf.php:176 views/family_rtf.php:171
 msgid "generation "
 msgstr "поколение "
 
 #: views/ancestor_report.php:128 views/ancestor_sheet.php:259
-#: views/family.php:129
+#: views/family.php:132
 msgid "PDF"
 msgstr "PDF"
 
-#: views/ancestor_report.php:146 views/family.php:150
+#: views/ancestor_report.php:146 views/family.php:153
 msgid "RTF"
 msgstr "RTF"
 
@@ -9038,11 +8949,15 @@ msgstr ""
 "будет нарушено!). Лучше использовать текстовый процессор вроде LibreOffice "
 "или OpenOffice Writer."
 
+#: views/ancestor_report_rtf.php:376 views/family_rtf.php:496
+msgid "Back"
+msgstr "Назад"
+
 #: views/ancestor_sheet.php:294 views/ancestor_sheet_pdf.php:373
 msgid "Legend"
 msgstr "Обозначения"
 
-#: views/ancestor_sheet.php:295 views/family.php:880 views/family.php:885
+#: views/ancestor_sheet.php:295 views/family.php:875 views/family.php:880
 msgid "married"
 msgstr "в браке"
 
@@ -9125,67 +9040,67 @@ msgstr ""
 "чтобы %s создавал эти файлы cookie, вы можете просто воздержаться от "
 "изменения значений по умолчанию для вышеуказанных функций.</p>"
 
-#: views/descendant_chart.php:99
+#: views/descendant_chart.php:124
 msgid "Same Y-DNA as "
 msgstr "Та же Y-ДНК, что и "
 
-#: views/descendant_chart.php:101
+#: views/descendant_chart.php:126
 msgid "Same mtDNA as "
 msgstr "Та же мтДНК, что и "
 
-#: views/descendant_chart.php:143
+#: views/descendant_chart.php:149
 msgid "vertical"
 msgstr "вертикально"
 
-#: views/descendant_chart.php:145
+#: views/descendant_chart.php:151
 msgid "horizontal"
 msgstr "горизонтально"
 
-#: views/descendant_chart.php:151 views/hourglass.php:93
+#: views/descendant_chart.php:157 views/hourglass.php:93
 msgid "Print"
 msgstr ""
 
-#: views/descendant_chart.php:156
+#: views/descendant_chart.php:162
 #, fuzzy
 #| msgid "DNA: "
 msgid "DNA:"
 msgstr "ДНК: "
 
-#: views/descendant_chart.php:169
+#: views/descendant_chart.php:175
 msgid "Y-DNA Carriers only"
 msgstr "Только носители Y-ДНК"
 
-#: views/descendant_chart.php:177
+#: views/descendant_chart.php:183
 msgid "Y-DNA Mark carriers"
 msgstr "Носители знака Y-ДНК"
 
-#: views/descendant_chart.php:188
+#: views/descendant_chart.php:194
 msgid "mtDNA Carriers only"
 msgstr "только носители мтДНК"
 
-#: views/descendant_chart.php:202
+#: views/descendant_chart.php:208
 msgid "mtDNA Mark carriers"
 msgstr "Носители марки мтДНК"
 
-#: views/descendant_chart.php:210 views/hourglass.php:140
+#: views/descendant_chart.php:216 views/hourglass.php:140
 #: views/hourglass.php:160
 msgid "Nr. generations"
 msgstr "Число поколений"
 
-#: views/descendant_chart.php:235 views/hourglass.php:128
+#: views/descendant_chart.php:241 views/hourglass.php:128
 msgid "Zoom level:"
 msgstr "Масштаб:"
 
-#: views/descendant_chart.php:366 views/list.php:1098
+#: views/descendant_chart.php:372 views/list.php:1098
 #: views/list_places_families.php:380
 msgid "&amp;"
 msgstr "&amp;"
 
-#: views/descendant_chart.php:442
+#: views/descendant_chart.php:448
 msgid "died "
 msgstr "умер "
 
-#: views/descendant_chart.php:581 views/hourglass.php:352
+#: views/descendant_chart.php:587 views/hourglass.php:352
 msgid ""
 "Right click on the image below and save it as a .png file to your computer."
 "<br>You can then print it over multiple pages with dedicated third-party "
@@ -9195,7 +9110,7 @@ msgstr ""
 "на свой компьютер.<br>Затем вы сможете распечатать его на нескольких "
 "страницах с помощью специальных сторонних программ, таких как бесплатные:"
 
-#: views/descendant_chart.php:581 views/hourglass.php:352
+#: views/descendant_chart.php:587 views/hourglass.php:352
 msgid ""
 "If you have a plotter you can use its software to print the image on one "
 "large sheet."
@@ -9207,47 +9122,47 @@ msgstr ""
 msgid "Settings family screen"
 msgstr "Настройки страницы семьи"
 
-#: views/family.php:62 views/family.php:478 views/family.php:1094
-#: views/family.php:1099
+#: views/family.php:62 views/family.php:473 views/family.php:1109
+#: views/family.php:1114
 msgid "Family Page"
 msgstr "Страница семьи"
 
-#: views/family.php:90
+#: views/family.php:91
 #, fuzzy
 #| msgid "Family Page"
 msgid "Family map"
 msgstr "Страница семьи"
 
-#: views/family.php:91
+#: views/family.php:92
 #, fuzzy
 #| msgid "Show Google maps"
 msgid "Show family map"
 msgstr "Отображать карты Google"
 
-#: views/family.php:92
+#: views/family.php:93
 #, fuzzy
 #| msgid "Hide Google maps"
 msgid "Hide family map"
 msgstr "Скрыть карты Google"
 
-#: views/family.php:100
+#: views/family.php:103
 msgid "Pictures"
 msgstr "Изображения"
 
-#: views/family.php:102
+#: views/family.php:105
 msgid "Hide pictures"
 msgstr "Скрыть изображения"
 
-#: views/family.php:190 views/family.php:193
+#: views/family.php:193 views/family.php:196
 msgid "Add to favourite list"
 msgstr "Добавить в избранное"
 
-#: views/family.php:233 views/family.php:444
+#: views/family.php:236 views/family.php:439
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr "ПОДСКАЗКА: наведите курсор на %s для меню дополнительных возможностей."
 
-#: views/family.php:537 views/family.php:605 views/outline_report.php:328
+#: views/family.php:532 views/family.php:600 views/outline_report.php:328
 #: views/outline_report.php:344 views/photoalbum.php:227 views/timeline.php:215
 msgid ""
 "*** Privacy filter is active, one or more items are filtered. Please login "
@@ -9256,63 +9171,63 @@ msgstr ""
 "*** Активен фильтр приватности. Одно или более полей скрыто. Авторизуйтесь "
 "для просмотра всех полей. ***"
 
-#: views/family.php:591 views/family_rtf.php:401
+#: views/family.php:586 views/family_rtf.php:401
 msgid "Child"
 msgstr "Ребёнок"
 
-#: views/family.php:641 views/family_pdf.php:520 views/family_rtf.php:448
+#: views/family.php:636 views/family_pdf.php:520 views/family_rtf.php:448
 msgid "follows"
 msgstr "следует"
 
-#: views/family.php:665 views/family.php:692 views/family.php:721
+#: views/family.php:660 views/family.php:687 views/family.php:716
 msgid "Adopted child:"
 msgstr "Усыновлённый ребёнок:"
 
-#: views/family.php:686 views/family.php:715
+#: views/family.php:681 views/family.php:710
 msgid "Stepchild"
 msgstr "Пасынок/падчерица"
 
-#: views/family.php:688 views/family.php:717
+#: views/family.php:683 views/family.php:712
 msgid "Legal child"
 msgstr "Законный ребёнок"
 
-#: views/family.php:690 views/family.php:719
+#: views/family.php:685 views/family.php:714
 msgid "Foster child"
 msgstr "Приёмный ребёнок"
 
-#: views/family.php:1063
+#: views/family.php:1078
 msgid "Family events"
 msgstr "Семейные события"
 
-#: views/family.php:1094
+#: views/family.php:1109
 msgid "Citation for:"
 msgstr "Цитата для:"
 
-#: views/family.php:1116
+#: views/family.php:1131
 msgid "accessed"
 msgstr "доступный"
 
-#: views/family.php:1219 views/family.php:1226
+#: views/family.php:1234 views/family.php:1241
 msgid "New user note"
 msgstr "Новая пользовательская заметка"
 
-#: views/family.php:1234
+#: views/family.php:1249
 msgid "User note by family"
 msgstr "Заметка о семье"
 
-#: views/family.php:1254
+#: views/family.php:1269
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "Ваша информация будет сохранена и рассмотрена веб-мастером."
 
-#: views/family.php:1285
+#: views/family.php:1300
 msgid "Add information or remarks"
 msgstr "Добавить информацию или заметку"
 
-#: views/family.php:1302
+#: views/family.php:1317
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Не указан ваш email. Пожалуйста укажите ваш email адрес:"
 
-#: views/family.php:1319 views/login.php:41 views/mailform.php:99
+#: views/family.php:1334 views/login.php:41 views/mailform.php:99
 #: views/register.php:105
 msgid "Send"
 msgstr "Отправить"
@@ -10221,43 +10136,43 @@ msgstr "Введённый email адрес некорректен!"
 msgid "Message"
 msgstr "Сообщение"
 
-#: views/maps.php:48
+#: views/maps.php:89
 msgid "Display birth or death locations across different time periods"
 msgstr "Отобразить места рождения и сметрей за различных период"
 
-#: views/maps.php:95
+#: views/maps.php:136
 msgid "Display:"
 msgstr "Отобразить:"
 
-#: views/maps.php:105
+#: views/maps.php:141
 msgid "Birth locations"
 msgstr "Места рождения"
 
-#: views/maps.php:111
+#: views/maps.php:142
 msgid "Death locations"
 msgstr "Места смерти"
 
-#: views/maps.php:223
+#: views/maps.php:189
 msgid "Display births until: "
 msgstr "Отображать рождённых до:"
 
-#: views/maps.php:225
+#: views/maps.php:191
 msgid "Display deaths until: "
 msgstr "Отображать смерти до:"
 
-#: views/maps.php:247
+#: views/maps.php:214
 msgid "Filter by specific family name(s)"
 msgstr "Отфильтровать по фамилии"
 
-#: views/maps.php:253
+#: views/maps.php:220
 msgid "Filter by descendants"
 msgstr "Отфильтровать по потомкам"
 
-#: views/maps.php:260
+#: views/maps.php:227
 msgid "Filter by ancestors"
 msgstr "Отфильтровать по предкам"
 
-#: views/maps.php:276
+#: views/maps.php:243
 msgid ""
 "<b>Top menu line:</b>\n"
 "<ul><li>Choose family tree. On sites with multiple family trees here you can "
@@ -10340,71 +10255,71 @@ msgstr ""
 "<li>Имена в этом списке кликабельны и откроют новую вкладку браузера с "
 "семейной страницей этого человека.</li>"
 
-#: views/maps.php:335
+#: views/maps.php:292
 msgid "Find location on the map"
 msgstr "Найти место на карте"
 
-#: views/maps.php:593
+#: views/maps.php:550
 msgid "Mapping with specific name(s): "
 msgstr "Сопоставление с конкретными именами:"
 
-#: views/maps.php:594
+#: views/maps.php:551
 msgid "Switch name filter off"
 msgstr "Отключить фильтр имён"
 
-#: views/maps.php:602
+#: views/maps.php:559
 msgid "Filter by descendants of: "
 msgstr "Фильтр по потомкам:"
 
-#: views/maps.php:602
+#: views/maps.php:559
 msgid "Switch descendant filter off"
 msgstr "Отключить фильтр по потомкам"
 
-#: views/maps.php:604
+#: views/maps.php:561
 msgid "No known birth places amongst descendants"
 msgstr "Нет известных мест рождения потомков"
 
-#: views/maps.php:604 views/maps.php:615
+#: views/maps.php:561 views/maps.php:572
 msgid "Close"
 msgstr "Закрыть"
 
-#: views/maps.php:613
+#: views/maps.php:570
 msgid "Filter by ancestors of: "
 msgstr "Отфильтровать по предкам:"
 
-#: views/maps.php:613
+#: views/maps.php:570
 msgid "Switch ancestor filter off"
 msgstr "Отключение фильтра предков"
 
-#: views/maps.php:615
+#: views/maps.php:572
 msgid "No known birth places amongst ancestors"
 msgstr "Нет известных мест рождения среди предков"
 
-#: views/maps.php:641
+#: views/maps.php:598
 msgid "Mark checkbox next to name(s)"
 msgstr "Установите флаг перед фамилией"
 
-#: views/maps.php:662
+#: views/maps.php:619
 msgid "Choose"
 msgstr "Выбрать"
 
-#: views/maps.php:695
+#: views/maps.php:653
 msgid "Filter by descendants of a person"
 msgstr "Отфильтровать потомков персоны"
 
-#: views/maps.php:696 views/maps.php:820
+#: views/maps.php:654 views/maps.php:785
 msgid "Pick a name or enter ID:"
 msgstr "Выберите имя или введите ID:"
 
-#: views/maps.php:700 views/maps.php:824
+#: views/maps.php:657 views/maps.php:788
 msgid "Pick a name from the pulldown list"
 msgstr "Выберите имя из выпадающено списка"
 
-#: views/maps.php:819
+#: views/maps.php:784
 msgid "Filter by ancestors of a person"
 msgstr "Отфильтровать по предкам персоны"
 
-#: views/maps.php:1023
+#: views/maps.php:991
 msgid "Results are limited."
 msgstr ""
 
@@ -11045,6 +10960,152 @@ msgstr "Выбор темы"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Стандартные цвета"
+
+#~ msgid "List of non-indexable locations was refreshed!"
+#~ msgstr "Список неиндексируемых локаций обновлен!"
+
+#, fuzzy, php-format
+#~| msgid ""
+#~| "Here you can refresh the list of %d non-indexable locations that was "
+#~| "stored in your database after previous geolocation processes.<br>Do this "
+#~| "if you have corrected non-indexable locations in your data or have "
+#~| "imported updated gedcoms and some of these locations may no longer "
+#~| "appear in your data."
+#~ msgid ""
+#~ "Here you can refresh the list of %d non-indexable locations that was "
+#~ "stored in your database after previous geolocation processes."
+#~ msgstr ""
+#~ "Здесь вы можете обновить список %d неиндексируемых расположений, которые "
+#~ "хранились в вашей базе данных после предыдущих процессов геолокации."
+#~ "<br>Сделайте это, если вы исправили неиндексируемые местоположения в "
+#~ "своих данных или импортировали обновленные gedcoms, и некоторые из этих "
+#~ "местоположений могут больше не отображаться в ваших данных."
+
+#~ msgid "Default map type"
+#~ msgstr "Тип карты по-умолчанию"
+
+#~ msgid "Regular map (ROADMAP)"
+#~ msgstr "Карта (схема)"
+
+#~ msgid "Satellite map with roads and places (HYBRID)"
+#~ msgstr "Спутниковый снимок (гибрид)"
+
+#~ msgid "Default zoom"
+#~ msgstr "Уровень приближения по-умолчанию"
+
+#~ msgid ""
+#~ "If you don't have a Google account, first create one. Once logged into "
+#~ "your Google account, go to:"
+#~ msgstr ""
+#~ "Если у вас нет аккаунта Google, сначала создайте его. После входа в "
+#~ "аккаунт Google, перейдите:"
+
+#~ msgid "Get API key"
+#~ msgstr "Получить API key"
+
+#~ msgid "and follow the instructions."
+#~ msgstr "и следуйте инструкциям."
+
+#~ msgid "Create two keys"
+#~ msgstr "Создать два ключа"
+
+#~ msgid "Creating/ updating database"
+#~ msgstr "Создание/обновление БД"
+
+#~ msgid "Delete geolocation database"
+#~ msgstr "Очистка геолокационной базы"
+
+#~ msgid "Database was deleted!"
+#~ msgstr "Геолокационная база очищена!"
+
+#, php-format
+#~ msgid ""
+#~ "Here you can delete your entire geolocation database (%d entries).<br>If "
+#~ "you are absolutely sure, press the button below."
+#~ msgstr ""
+#~ "Здесь вы можете удалить всю базу геолокации (%d записи).<br>Если вы "
+#~ "абсолютно уверены, нажмите кнопку ниже."
+
+#~ msgid "Refresh birth/ death status and tree affiliation of all locations"
+#~ msgstr "Обновить сведения о местах рождения/смерти в геолокационной базе."
+
+#~ msgid "The birth/ death status and tree affiliation has been refreshed."
+#~ msgstr "Обновлен статус рождения/смерти и принадлежность к дереву."
+
+#, php-format
+#~ msgid ""
+#~ "The \"Find a location on the map\" pull-down displays a list according to "
+#~ "the chosen tree and the birth/ death mapping choice. For this to work "
+#~ "properly, the birth/death status and tree affiliation of all locations "
+#~ "has to be up to date.<br><br><b>TIP:</b> When you import a gedcom, you "
+#~ "can mark the option \"Add new locations to geo-location database\" and "
+#~ "the location status of existing locations will also be updated "
+#~ "automatically! (If you didn't mark this option on import, use the "
+#~ "\"Update geolocation database\" above. This will also refresh the "
+#~ "existing location status).<p><b>When to use this button:</b><ul><li> if "
+#~ "you edited location data directly with the %s editor</li><li>if you wish "
+#~ "to delete all locations that have become obsolete (mark the box below)</"
+#~ "li></ul></p>"
+#~ msgstr ""
+#~ "В раскрывающемся списке \"Найти местоположение на карте\" отображается "
+#~ "список в соответствии с выбранным деревом и выбором сопоставления "
+#~ "рождения/смерти. Чтобы это работало должным образом, статус рождения / "
+#~ "смерти и принадлежность к дереву всех мест должны быть актуальными."
+#~ "<br><br><b>КОНЧИК:</b> Когда вы импортируете gedcom, вы можете отметить "
+#~ "опцию «Добавить новые местоположения в базу геолокации», и статус "
+#~ "местоположения существующих местоположений также будет обновляться "
+#~ "автоматически! (Если вы не отметили эту опцию при импорте, используйте "
+#~ "«Обновить базу геолокации» выше. Это также обновит существующий статус "
+#~ "расположения).<p><b>Когда использовать эту кнопку:</b><ul><li>Если данные "
+#~ "о местоположении были изменены непосредственно в редакторе %s</"
+#~ "li><li>Если вы хотите удалить все места, которые устарели (отметьте поле "
+#~ "ниже)</li></ul></p>"
+
+#~ msgid "Deleted location:"
+#~ msgstr "Удалённое место:"
+
+#~ msgid "Changed location:"
+#~ msgstr "Изменённое место:"
+
+#~ msgid "Change or add locations"
+#~ msgstr "Изменение или добавление места"
+
+#~ msgid "Creating location database"
+#~ msgstr "Создание геолокационной базы"
+
+#~ msgid "Starting time"
+#~ msgstr "Время начала"
+
+#~ msgid "Finished updating geo-location database"
+#~ msgstr "Завершено обновление геолокационной базы данных"
+
+#~ msgid "Finish time"
+#~ msgstr "Время завершения"
+
+#, fuzzy
+#~| msgid "Google maps API Key"
+#~ msgid "World map API Keys"
+#~ msgstr "Google maps API Key"
+
+#~ msgid "Details from the database"
+#~ msgstr "Данные из базы"
+
+#~ msgid "Location"
+#~ msgstr "Место"
+
+#~ msgid "DELETE ENTIRE GEOLOCATION DATABASE"
+#~ msgstr "ОЧИСТИТЬ ВСЮ ГЕОЛОКАЦИОННУЮ БАЗУ"
+
+#~ msgid "REFRESH LIST OF NON-INDEXABLE LOCATIONS"
+#~ msgstr "ОБНОВИТЬ СПИСОК НЕИНДЕКСИРУЕМЫХ РАСПОЛОЖЕНИЙ"
+
+#~ msgid ""
+#~ "Once you receive the keys enter them in the two fields below and save."
+#~ msgstr ""
+#~ "Как только вы получите ключи, введите их в два поля ниже и сохраните."
+
+#~ msgid "No geolocation database found."
+#~ msgstr "Геолокационная база отсутствует."
 
 #~ msgid ""
 #~ "<b>USE:</b>\n"

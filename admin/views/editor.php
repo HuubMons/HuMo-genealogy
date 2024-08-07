@@ -1107,7 +1107,7 @@ if ($check_person) {
                         <iframe id="source_iframe" style="width:800px;height:800px;" title="source_iframe" src="<?= $url; ?>" loading="lazy"></iframe>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button>
                         <!-- <button type="button" class="btn btn-sm btn-primary">Save changes</button> -->
                     </div>
                 </div>

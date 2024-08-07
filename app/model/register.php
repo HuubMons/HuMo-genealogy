@@ -101,9 +101,9 @@ class RegisterModel
                 // *** Set who the message is to be sent from ***
                 //$mail->setFrom($_POST['register_mail'], $_POST['register_name']);
                 // *** Changed july 2024: Set who the message is to be sent from ***
-                if ($humo_option["email_user"] && filter_var($humo_option["email_user"], FILTER_VALIDATE_EMAIL)) {
+                if ($humo_option["email_sender"] && filter_var($humo_option["email_sender"], FILTER_VALIDATE_EMAIL)) {
                     // *** Some providers don't accept other e-mail addresses because of safety reasons! ***
-                    $mail->setFrom($humo_option["email_user"], $humo_option["email_user"]);
+                    $mail->setFrom($humo_option["email_sender"], $humo_option["email_sender"]);
                 } else {
                     $mail->setFrom($_POST['register_mail'], $_POST['register_name']);
                 }

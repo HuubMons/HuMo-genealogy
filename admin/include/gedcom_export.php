@@ -1769,30 +1769,27 @@ function process_place($place, $number)
     // 4 LONG W81.66687
     $text = $number . ' PLAC ' . $place . "\r\n";
     if (isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'yes') {
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-        if ($temp->rowCount() > 0) {
-            $geo_location_sql = "SELECT * FROM humo_location WHERE location_location='" . addslashes($place) . "'";
-            $geo_location_qry = $dbh->query($geo_location_sql);
-            $geo_locationDb = $geo_location_qry->fetch(PDO::FETCH_OBJ);
-            if ($geo_locationDb) {
-                $text .= ($number + 1) . ' MAP' . "\r\n";
+        $geo_location_sql = "SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_location='" . addslashes($place) . "'";
+        $geo_location_qry = $dbh->query($geo_location_sql);
+        $geo_locationDb = $geo_location_qry->fetch(PDO::FETCH_OBJ);
+        if ($geo_locationDb) {
+            $text .= ($number + 1) . ' MAP' . "\r\n";
 
-                $geocode = $geo_locationDb->location_lat;
-                if (substr($geocode, 0, 1) == '-') {
-                    $geocode = 'S' . substr($geocode, 1);
-                } else {
-                    $geocode = 'N' . $geocode;
-                }
-                $text .= ($number + 2) . ' LATI ' . $geocode . "\r\n";
-
-                $geocode = $geo_locationDb->location_lng;
-                if (substr($geocode, 0, 1) == '-') {
-                    $geocode = 'W' . substr($geocode, 1);
-                } else {
-                    $geocode = 'E' . $geocode;
-                }
-                $text .= ($number + 2) . ' LONG ' . $geocode . "\r\n";
+            $geocode = $geo_locationDb->location_lat;
+            if (substr($geocode, 0, 1) == '-') {
+                $geocode = 'S' . substr($geocode, 1);
+            } else {
+                $geocode = 'N' . $geocode;
             }
+            $text .= ($number + 2) . ' LATI ' . $geocode . "\r\n";
+
+            $geocode = $geo_locationDb->location_lng;
+            if (substr($geocode, 0, 1) == '-') {
+                $geocode = 'W' . substr($geocode, 1);
+            } else {
+                $geocode = 'E' . $geocode;
+            }
+            $text .= ($number + 2) . ' LONG ' . $geocode . "\r\n";
         }
     }
     return $text;

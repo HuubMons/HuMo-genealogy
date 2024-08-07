@@ -58,6 +58,7 @@ if (isset($_POST['save_option'])) {
     Save email configuration settings 
     ****************************
     */
+    $db_functions->update_settings('email_sender', $_POST["email_sender"]);
     $db_functions->update_settings('mail_auto', $_POST["mail_auto"]);
     $db_functions->update_settings('email_user', $_POST["email_user"]);
     $db_functions->update_settings('email_password', $_POST["email_password"]);

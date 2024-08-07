@@ -1,7 +1,12 @@
 <?php
-// ***********************************
-// *** Marriages and children list ***
-// ***********************************
+
+/**
+ * Marriages/ relations and children list
+ * 
+ * TODO: when marriage is added, man is first and woman is second (this is done automatically if sexe is known!).
+ * This is needed to show proper colours in graphical reports.
+ * Just for sure: check if man is first and woman is second. Maybe show warning, or just switch persons.
+ */
 ?>
 
 <div class="p-1 m-2 genealogy_search">
@@ -203,10 +208,23 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
         $fam_div_no_data = true;
     }
     $fam_text = $editor_cls->text_show($familyDb->fam_text);
+
+    $person1 = $db_functions->get_person($man_gedcomnumber); // TODO: there allready is $person for person data.
+    $person2 = $db_functions->get_person($woman_gedcomnumber);
 ?>
 
     <form method="POST" action="<?= $phpself; ?>" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
         <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="connect_man_old" value="<?= $man_gedcomnumber; ?>">
+        <input type="hidden" name="connect_woman_old" value="<?= $woman_gedcomnumber; ?>">
+
+        <?php if (isset($marriage)) { ?>
+            <input type="hidden" name="marriage_nr" value="<?= $marriage; ?>">
+
+            <!-- $marriage is empty by single persons -->
+            <input type="hidden" name="marriage" value="<?= $marriage; ?>">
+        <?php } ?>
+
 
         <?php
         if (isset($_GET['fam_remove']) || isset($_POST['fam_remove'])) {
@@ -224,12 +242,9 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     <strong><?= __('If you continue, ALL children will be disconnected automatically!'); ?></strong><br>
                 <?php } ?>
                 <?= __('Are you sure to remove this mariage?'); ?>
-                <!-- <form method="post" action="' . $phpself . '#marriage" style="display : inline;"> -->
-                <!-- <input type="hidden" name="page" value="<?= $page; ?>"> -->
                 <input type="hidden" name="fam_remove3" value="<?= $fam_remove; ?>">
                 <input type="submit" name="fam_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
                 <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
-                <!-- </form> -->
             </div>
         <?php
         }
@@ -257,25 +272,24 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                 </th>
             </tr>
 
-            <?php
-            if (isset($marriage)) {
-                echo '<input type="hidden" name="marriage_nr" value="' . $marriage . '">';
-            }
-            ?>
-
             <tr>
                 <td><?= ucfirst(__('marriage/ relation')); ?></td>
                 <td colspan="2">
+
+                    <?php if ($person1->pers_sexe == 'F' && $person2->pers_sexe == 'M') { ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?= __('Person 1 should be the man. Switch person 1 and person 2.');?>
+                            <button type="submit" name="parents_switch" title="Switch Persons" class="button"><img src="images/turn_around.gif" width="17"></button></div>
+                    <?php } ?>
+
                     <?= __('Select person 1'); ?> <input type="text" name="connect_man" value="<?= $man_gedcomnumber; ?>" size="5">
 
                     <?php
                     echo '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person_item=man&person=' . $man_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
 
-                    $person = $db_functions->get_person($man_gedcomnumber);
-
                     // *** Automatically calculate birth date if marriage date and marriage age by man is used ***
                     if (
-                        isset($_POST["fam_man_age"]) && $_POST["fam_man_age"] != '' && $fam_marr_date != '' && $person->pers_birth_date == '' && $person->pers_bapt_date == ''
+                        isset($_POST["fam_man_age"]) && $_POST["fam_man_age"] != '' && $fam_marr_date != '' && $person1->pers_birth_date == '' && $person1->pers_bapt_date == ''
                     ) {
                         $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_man_age"]);
                         $sql = "UPDATE humo_persons SET pers_birth_date='" . safe_text_db($pers_birth_date) . "'
@@ -283,48 +297,30 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         $result = $dbh->query($sql);
                     }
 
-                    echo ' <b>' . $editor_cls->show_selected_person($person) . '</b>';
+                    ?>
+                    <b><?= $editor_cls->show_selected_person($person1); ?></b><br>
+                    <?= __('and'); ?><br>
 
-                    // *** Use old value to detect change of man in marriage ***
-                    echo '<input type="hidden" name="connect_man_old" value="' . $man_gedcomnumber . '">';
+                    <?= __('Select person 2'); ?> <input type="text" name="connect_woman" value="<?= $woman_gedcomnumber; ?>" size="5">
 
-                    echo '<br>' . __('and');
-
-                    if (!isset($_GET['add_marriage'])) {
-                        echo ' <button type="submit" name="parents_switch" title="Switch Persons" class="button"><img src="images/turn_around.gif" width="17"></button>';
-                    }
-                    echo '<br>';
-
-                    echo __('Select person 2') . ' <input type="text" name="connect_woman" value="' . $woman_gedcomnumber . '" size="5">';
-
+                    <?php
                     echo '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person_item=woman&person=' . $woman_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
-
-                    $person = $db_functions->get_person($woman_gedcomnumber);
 
                     // *** Automatically calculate birth date if marriage date and marriage age by woman is used ***
                     if (
-                        isset($_POST["fam_woman_age"]) && $_POST["fam_woman_age"] != '' && $fam_marr_date != '' && $person->pers_birth_date == '' && $person->pers_bapt_date == ''
+                        isset($_POST["fam_woman_age"]) && $_POST["fam_woman_age"] != '' && $fam_marr_date != '' && $person2->pers_birth_date == '' && $person2->pers_bapt_date == ''
                     ) {
                         $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_woman_age"]);
                         $sql = "UPDATE humo_persons SET pers_birth_date='" . safe_text_db($pers_birth_date) . "'
-                                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($woman_gedcomnumber) . "'";
+                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($woman_gedcomnumber) . "'";
                         $result = $dbh->query($sql);
                     }
-
-                    echo ' <b>' . $editor_cls->show_selected_person($person) . '</b>';
-
                     ?>
-                    <!-- Use old value to detect change of woman in marriage -->
-                    <input type="hidden" name="connect_woman_old" value="<?= $woman_gedcomnumber; ?>">
+                    <b><?= $editor_cls->show_selected_person($person2); ?></b>
                 </td>
             </tr>
 
             <?php
-            // *** $marriage is empty by single persons ***
-            if (isset($marriage)) {
-                echo '<input type="hidden" name="marriage" value="' . $marriage . '">';
-            }
-
             // *** Living together ***
             // *** Use hideshow to show and hide the editor lines ***
             $hideshow = '6';

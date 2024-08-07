@@ -1,21 +1,13 @@
 <?php
-//ini_set('url_rewriter.tags','');
-
-//session_cache_limiter ('private, must-revalidate'); //tb edit
 session_start();
 
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
-
-// *** Use UTF-8 database connection ***
-//$dbh->query("SET NAMES 'utf8'");
-
 include_once(__DIR__ . "/../include/safe.php");
 include_once(__DIR__ . "/../include/settings_global.php"); //Variables
 include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
 include_once(__DIR__ . "/../include/person_cls.php"); // for privacy
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
-
 include_once(__DIR__ . '/../include/links.php');
 $link_cls = new Link_cls();
 
@@ -107,7 +99,6 @@ function mapbirthplace($place)
         $idstring = substr($idstring, 0, -3) . ') AND ';
     }
 
-    //NEW ~~~~~~~~~~~~~~~~
     $anc_arr = '';
     $anc_idstring = '';
     if (isset($_SESSION['anc_array'])) {
@@ -122,7 +113,6 @@ function mapbirthplace($place)
     if ($anc_idstring != '') {
         $idstring = $anc_idstring;
     }
-    // END NEW ~~~~~~~~~~~~~~~~
 
     $min = 1;
     if ($place != "NONFOUND") {

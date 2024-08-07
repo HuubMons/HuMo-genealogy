@@ -2491,18 +2491,6 @@ class gedcom_cls
 
         // *** Store geolocations in humo_locations table ***
         if ($geocode_nr > 0) {
-            // *** Check if table exists already if not create it ***
-            $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-            if (!$temp->rowCount()) {
-                $locationtbl = "CREATE TABLE humo_location (
-            location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            location_location VARCHAR(100) CHARACTER SET utf8,
-            location_lat DECIMAL(10,6),
-            location_lng DECIMAL(10,6),
-            location_status TEXT
-            ) DEFAULT CHARSET=utf8";
-                $dbh->query($locationtbl);
-            }
             for ($i = 1; $i <= $geocode_nr; $i++) {
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
                 if (!$loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
@@ -2510,8 +2498,7 @@ class gedcom_cls
                         location_location='" . $this->text_process($geocode_plac[$i]) . "',
                         location_lat='" . $geocode_lati[$i] . "',
                         location_lng='" . $geocode_long[$i] . "',
-                        location_status='" . $tree_prefix . $geocode_type[$i] . "'
-                        ";
+                        location_status='" . $tree_prefix . $geocode_type[$i] . "'";
                     $dbh->query($geosql);
                 } elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {   // location already exists, check if we need to add something in location_status
                     $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
@@ -4025,28 +4012,16 @@ class gedcom_cls
 
         // store geolocations in humo_locations table
         if ($geocode_nr > 0) {
-            // Check if table exists already if not create it
-            $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-            if (!$temp->rowCount()) {
-                $locationtbl = "CREATE TABLE humo_location (
-                location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                location_location VARCHAR(120) CHARACTER SET utf8,
-                location_lat DECIMAL(10,6),
-                location_lng DECIMAL(10,6),
-                location_status TEXT
-            ) DEFAULT CHARSET=utf8";
-                $dbh->query($locationtbl);
-            }
             for ($i = 1; $i <= $geocode_nr; $i++) {
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
 
                 if (!$loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
                     $geosql = "INSERT IGNORE INTO humo_location SET
-                    location_location='" . $this->text_process($geocode_plac[$i]) . "',
-                    location_lat='" . $geocode_lati[$i] . "',
-                    location_lng='" . $geocode_long[$i] . "',
-                    location_status='" . $tree_prefix . $geocode_type[$i] . "'
-                    ";
+                        location_location='" . $this->text_process($geocode_plac[$i]) . "',
+                        location_lat='" . $geocode_lati[$i] . "',
+                        location_lng='" . $geocode_long[$i] . "',
+                        location_status='" . $tree_prefix . $geocode_type[$i] . "'
+                        ";
                     $dbh->query($geosql);
                 } elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // location already exists, check if we need to add something in location_status
                     $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);

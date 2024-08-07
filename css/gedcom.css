@@ -125,7 +125,7 @@ div.rtlsddm #mft ul {
 #content {
     display: block;
     position: relative;
-    z-index: 3;
+    /* z-index: 3; Disabled august 2024 */
     /* height: 100%; */
     /* max-height: 90%; */
 

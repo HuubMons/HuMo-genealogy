@@ -130,15 +130,12 @@ class TreesModel
             $dbh->query($sql);
 
             // *** Remove tree_prefix of this tree from location table (humo2_birth, humo2_death, humo2_bapt, humo2_buried)  ***
-            $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-            if ($temp->rowCount()) {
-                $loc_qry = "SELECT * FROM humo_location";
-                $loc_result = $dbh->query($loc_qry);
-                while ($loc_resultDb = $loc_result->fetch(PDO::FETCH_OBJ)) {
-                    if (strpos($loc_resultDb->location_status, $remove) !== false) {   // only do this if the prefix appears
-                        $stat_qry = "UPDATE humo_location SET location_status = REPLACE(REPLACE(REPLACE(REPLACE(location_status, CONCAT('" . $remove . "','birth'),''),CONCAT('" . $remove . "','death'),''),CONCAT('" . $remove . "','bapt'),''),CONCAT('" . $remove . "','buried'),'')  WHERE location_id = '" . $loc_resultDb->location_id . "'";
-                        $dbh->query($stat_qry);
-                    }
+            $loc_qry = "SELECT * FROM humo_location";
+            $loc_result = $dbh->query($loc_qry);
+            while ($loc_resultDb = $loc_result->fetch(PDO::FETCH_OBJ)) {
+                if (strpos($loc_resultDb->location_status, $remove) !== false) {   // only do this if the prefix appears
+                    $stat_qry = "UPDATE humo_location SET location_status = REPLACE(REPLACE(REPLACE(REPLACE(location_status, CONCAT('" . $remove . "','birth'),''),CONCAT('" . $remove . "','death'),''),CONCAT('" . $remove . "','bapt'),''),CONCAT('" . $remove . "','buried'),'')  WHERE location_id = '" . $loc_resultDb->location_id . "'";
+                    $dbh->query($stat_qry);
                 }
             }
 

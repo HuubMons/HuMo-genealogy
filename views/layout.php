@@ -572,7 +572,7 @@ $menu_top = getActiveTopMenu($page);
                         //	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
                         //		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)
                         if (
-                            $user["group_birthday_list"] == 'j' || $user["group_showstatistics"] == 'j' || $user["group_relcalc"] == 'j' || $user["group_googlemaps"] == 'j' && $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0 || $user["group_contact"] == 'j' && $dataDb->tree_owner && $dataDb->tree_email || $user["group_latestchanges"] == 'j'
+                            $user["group_birthday_list"] == 'j' || $user["group_showstatistics"] == 'j' || $user["group_relcalc"] == 'j' || $user["group_googlemaps"] == 'j' || $user["group_contact"] == 'j' && $dataDb->tree_owner && $dataDb->tree_email || $user["group_latestchanges"] == 'j'
                         ) {
                     ?>
 
@@ -595,7 +595,7 @@ $menu_top = getActiveTopMenu($page);
                                     <?php } ?>
 
                                     <?php if ($user["group_googlemaps"] == 'j') {; ?>
-                                        <?php if (!$bot_visit and $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) { ?>
+                                        <?php if (!$bot_visit) { ?>
                                             <li><a class="dropdown-item <?php if ($page == 'maps') echo 'active'; ?>" href="<?= $menu_path_map; ?>"><?= __('World map'); ?></a></li>
                                         <?php } ?>
                                     <?php } ?>

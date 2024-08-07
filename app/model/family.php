@@ -303,10 +303,11 @@ class FamilyModel
         }
 
         // *** Only show selection if there is a Google maps database ***
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-        if (!$temp->rowCount()) {
-            $maps_presentation = 'hide';
-        }
+        // TODO maybe count valid locations in table.
+        //$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+        //if (!$temp->rowCount()) {
+        //    $maps_presentation = 'hide';
+        //}
         return $maps_presentation;
     }
 }

@@ -1,230 +1,50 @@
-<script src="googlemaps/StyledMarker.js"></script>
+<?php
+global $selected_language;
 
-<script>
-    var markersArray = [];
-    var markerContent = "This is a test window";
-
-    infoWindow = new google.maps.InfoWindow({
-        maxWidth: 500
-    });
-
-    google.maps.event.addListener(map, 'click', function() {
-        infoWindow.close();
-    });
-
-    function handleMarkerClick(marker, index) {
-        return function() {
-            infoWindow.setContent(index);
-            infoWindow.setZIndex(1000000);
-            infoWindow.open(map, marker);
-        };
+$location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL");
+while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
+    $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
+    $locarray[$locationDb->location_location][1] = $locationDb->location_lat;
+    $locarray[$locationDb->location_location][2] = $locationDb->location_lng;
+    $locarray[$locationDb->location_location][3] = 0;    // till starting year  (depending on settings)
+    $locarray[$locationDb->location_location][4] = 0;    // + 1 interval
+    $locarray[$locationDb->location_location][5] = 0;    // + 2 intervals
+    $locarray[$locationDb->location_location][6] = 0;    // + 3 intervals
+    $locarray[$locationDb->location_location][7] = 0;    // + 4 intervals
+    $locarray[$locationDb->location_location][8] = 0;    // + 5 intervals
+    $locarray[$locationDb->location_location][9] = 0;    // + 6 intervals
+    $locarray[$locationDb->location_location][10] = 0;   // + 7 intervals
+    $locarray[$locationDb->location_location][11] = 0;   // + 8 intervals
+    $locarray[$locationDb->location_location][12] = 0;   // till today (=2010 and beyond)
+    $locarray[$locationDb->location_location][13] = 0;   // all
+}
+$namesearch_string = '';
+if ($flag_namesearch != '') {
+    $namesearch_string = ' AND (';
+    foreach ($flag_namesearch as $value) {
+        //$namesearch_string .= " pers_lastname = '".$value."' OR ";
+        //$namesearch_string .= " totalname = '".$value."' OR ";
+        $namesearch_string .= "CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) = '" . $value . "' OR ";
     }
+    $namesearch_string = substr($namesearch_string, 0, -3) . ")"; // take off last "OR "
+}
 
-    function clearOverlays() {
-        if (markersArray) {
-            for (i in markersArray) {
-                markersArray[i].setMap(null);
-            }
-            markersArray = new Array();
-        }
-    }
-
-    <?php
-    global $selected_language;
-    $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location");
-    while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
-        //$locarray[$locationDb->location_location][0] = $locationDb->location_location;
-        $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
-        $locarray[$locationDb->location_location][1] = $locationDb->location_lat;
-        $locarray[$locationDb->location_location][2] = $locationDb->location_lng;
-        $locarray[$locationDb->location_location][3] = 0;    // till starting year  (depending on settings)
-        $locarray[$locationDb->location_location][4] = 0;    // + 1 interval
-        $locarray[$locationDb->location_location][5] = 0;    // + 2 intervals
-        $locarray[$locationDb->location_location][6] = 0;    // + 3 intervals
-        $locarray[$locationDb->location_location][7] = 0;    // + 4 intervals
-        $locarray[$locationDb->location_location][8] = 0;    // + 5 intervals
-        $locarray[$locationDb->location_location][9] = 0;    // + 6 intervals
-        $locarray[$locationDb->location_location][10] = 0;   // + 7 intervals
-        $locarray[$locationDb->location_location][11] = 0;   // + 8 intervals
-        $locarray[$locationDb->location_location][12] = 0;   // till today (=2010 and beyond)
-        $locarray[$locationDb->location_location][13] = 0;   // all
-    }
-    $namesearch_string = '';
-    if ($flag_namesearch != '') {
-        $namesearch_string = ' AND (';
-        foreach ($flag_namesearch as $value) {
-            //$namesearch_string .= " pers_lastname = '".$value."' OR ";
-            //$namesearch_string .= " totalname = '".$value."' OR ";
-            $namesearch_string .= "CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) = '" . $value . "' OR ";
-        }
-        $namesearch_string = substr($namesearch_string, 0, -3) . ")"; // take off last "OR "
-    }
-
-    if ($flag_desc_search == 1 and $desc_array != '') {
-        foreach ($desc_array as $value) {
-            if ($_SESSION['type_birth'] == 1) {
-                $persoon = $dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                AND pers_gedcomnumber ='" . $value . "'
-                AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
-                @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
-            } elseif ($_SESSION['type_death'] == 1) {
-                $persoon = $dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                AND pers_gedcomnumber ='" . $value . "'
-                AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
-                @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
-            }
-            if ($personDb) {
-                if ($_SESSION['type_birth'] == 1) {
-                    $place = $personDb->pers_birth_place;
-                    $date = $personDb->pers_birth_date;
-                    if (!$personDb->pers_birth_place and $personDb->pers_bapt_place) {
-                        $place = $personDb->pers_bapt_place;
-                    }
-                    if (!$personDb->pers_birth_date and $personDb->pers_bapt_date) {
-                        $date = $personDb->pers_bapt_date;
-                    }
-                } elseif ($_SESSION['type_death'] == 1) {
-                    $place = $personDb->pers_death_place;
-                    $date = $personDb->pers_death_date;
-                    if (!$personDb->pers_death_place and $personDb->pers_buried_place) {
-                        $place = $personDb->pers_buried_place;
-                    }
-                    if (!$personDb->pers_death_date and $personDb->pers_buried_date) {
-                        $date = $personDb->pers_buried_date;
-                    }
-                }
-                if (isset($locarray[$place])) { // birthplace exists in location database
-                    if ($date) {
-                        $year = substr($date, -4);
-
-                        if ($year > 1 and $year < $realmin) {
-                            $locarray[$place][3]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + $step)) {
-                            $locarray[$place][4]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (2 * $step))) {
-                            $locarray[$place][5]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (3 * $step))) {
-                            $locarray[$place][6]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (4 * $step))) {
-                            $locarray[$place][7]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (5 * $step))) {
-                            $locarray[$place][8]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (6 * $step))) {
-                            $locarray[$place][9]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (7 * $step))) {
-                            $locarray[$place][10]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (8 * $step))) {
-                            $locarray[$place][11]++;
-                        }
-                        if ($year > 1 and $year < 2050) {
-                            $locarray[$place][12]++;
-                        }
-                        $locarray[$place][13]++;  // array of all people incl without birth date
-                    } else {
-                        $locarray[$place][13]++; // array of all people incl without birth date
-                    }
-                }
-            }        // end if($personDb)
-        }        // end for
-    } elseif ($flag_anc_search == 1 and $anc_array != '') {
-        //elseif(1==3) {
-        foreach ($anc_array as $value) {
-            if ($_SESSION['type_birth'] == 1) {
-                $persoon = $dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                AND pers_gedcomnumber ='" . $value . "'
-                AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
-                @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
-            } elseif ($_SESSION['type_death'] == 1) {
-                $persoon = $dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                AND pers_gedcomnumber ='" . $value . "'
-                AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
-                @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
-            }
-            if ($personDb) {
-                if ($_SESSION['type_birth'] == 1) {
-                    $place = $personDb->pers_birth_place;
-                    $date = $personDb->pers_birth_date;
-                    if (!$personDb->pers_birth_place and $personDb->pers_bapt_place) {
-                        $place = $personDb->pers_bapt_place;
-                    }
-                    if (!$personDb->pers_birth_date and $personDb->pers_bapt_date) {
-                        $date = $personDb->pers_bapt_date;
-                    }
-                } elseif ($_SESSION['type_death'] == 1) {
-                    $place = $personDb->pers_death_place;
-                    $date = $personDb->pers_death_date;
-                    if (!$personDb->pers_death_place and $personDb->pers_buried_place) {
-                        $place = $personDb->pers_buried_place;
-                    }
-                    if (!$personDb->pers_death_date and $personDb->pers_buried_date) {
-                        $date = $personDb->pers_buried_date;
-                    }
-                }
-                if (isset($locarray[$place])) { // birthplace exists in location database
-                    if ($date) {
-                        $year = substr($date, -4);
-
-                        if ($year > 1 and $year < $realmin) {
-                            $locarray[$place][3]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + $step)) {
-                            $locarray[$place][4]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (2 * $step))) {
-                            $locarray[$place][5]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (3 * $step))) {
-                            $locarray[$place][6]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (4 * $step))) {
-                            $locarray[$place][7]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (5 * $step))) {
-                            $locarray[$place][8]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (6 * $step))) {
-                            $locarray[$place][9]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (7 * $step))) {
-                            $locarray[$place][10]++;
-                        }
-                        if ($year > 1 and $year < ($realmin + (8 * $step))) {
-                            $locarray[$place][11]++;
-                        }
-                        if ($year > 1 and $year < 2050) {
-                            $locarray[$place][12]++;
-                        }
-                        $locarray[$place][13]++;  // array of all people incl without birth date
-                    } else {
-                        $locarray[$place][13]++; // array of all people incl without birth date
-                    }
-                }
-            }    // end if($personDb)
-        }        // end for
-    } else {
+if ($flag_desc_search == 1 and $desc_array != '') {
+    foreach ($desc_array as $value) {
         if ($_SESSION['type_birth'] == 1) {
-            $persoon = $dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-            AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) " . $namesearch_string);
+            $persoon = $dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                AND pers_gedcomnumber ='" . $value . "'
+                AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
+            @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
         } elseif ($_SESSION['type_death'] == 1) {
-            $persoon = $dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-            AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) " . $namesearch_string);
+            $persoon = $dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                AND pers_gedcomnumber ='" . $value . "'
+                AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
+            @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
         }
-        while (@$personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
-
+        if ($personDb) {
             if ($_SESSION['type_birth'] == 1) {
                 $place = $personDb->pers_birth_place;
                 $date = $personDb->pers_birth_date;
@@ -244,7 +64,6 @@
                     $date = $personDb->pers_buried_date;
                 }
             }
-
             if (isset($locarray[$place])) { // birthplace exists in location database
                 if ($date) {
                     $year = substr($date, -4);
@@ -284,11 +103,196 @@
                     $locarray[$place][13]++; // array of all people incl without birth date
                 }
             }
+        }        // end if($personDb)
+    }        // end for
+} elseif ($flag_anc_search == 1 and $anc_array != '') {
+    //elseif(1==3) {
+    foreach ($anc_array as $value) {
+        if ($_SESSION['type_birth'] == 1) {
+            $persoon = $dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                AND pers_gedcomnumber ='" . $value . "'
+                AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
+            @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
+        } elseif ($_SESSION['type_death'] == 1) {
+            $persoon = $dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                AND pers_gedcomnumber ='" . $value . "'
+                AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
+            @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
+        }
+        if ($personDb) {
+            if ($_SESSION['type_birth'] == 1) {
+                $place = $personDb->pers_birth_place;
+                $date = $personDb->pers_birth_date;
+                if (!$personDb->pers_birth_place and $personDb->pers_bapt_place) {
+                    $place = $personDb->pers_bapt_place;
+                }
+                if (!$personDb->pers_birth_date and $personDb->pers_bapt_date) {
+                    $date = $personDb->pers_bapt_date;
+                }
+            } elseif ($_SESSION['type_death'] == 1) {
+                $place = $personDb->pers_death_place;
+                $date = $personDb->pers_death_date;
+                if (!$personDb->pers_death_place and $personDb->pers_buried_place) {
+                    $place = $personDb->pers_buried_place;
+                }
+                if (!$personDb->pers_death_date and $personDb->pers_buried_date) {
+                    $date = $personDb->pers_buried_date;
+                }
+            }
+            if (isset($locarray[$place])) { // birthplace exists in location database
+                if ($date) {
+                    $year = substr($date, -4);
+
+                    if ($year > 1 and $year < $realmin) {
+                        $locarray[$place][3]++;
+                    }
+                    if ($year > 1 and $year < ($realmin + $step)) {
+                        $locarray[$place][4]++;
+                    }
+                    if ($year > 1 and $year < ($realmin + (2 * $step))) {
+                        $locarray[$place][5]++;
+                    }
+                    if ($year > 1 and $year < ($realmin + (3 * $step))) {
+                        $locarray[$place][6]++;
+                    }
+                    if ($year > 1 and $year < ($realmin + (4 * $step))) {
+                        $locarray[$place][7]++;
+                    }
+                    if ($year > 1 and $year < ($realmin + (5 * $step))) {
+                        $locarray[$place][8]++;
+                    }
+                    if ($year > 1 and $year < ($realmin + (6 * $step))) {
+                        $locarray[$place][9]++;
+                    }
+                    if ($year > 1 and $year < ($realmin + (7 * $step))) {
+                        $locarray[$place][10]++;
+                    }
+                    if ($year > 1 and $year < ($realmin + (8 * $step))) {
+                        $locarray[$place][11]++;
+                    }
+                    if ($year > 1 and $year < 2050) {
+                        $locarray[$place][12]++;
+                    }
+                    $locarray[$place][13]++;  // array of all people incl without birth date
+                } else {
+                    $locarray[$place][13]++; // array of all people incl without birth date
+                }
+            }
+        }    // end if($personDb)
+    }        // end for
+} else {
+    if ($_SESSION['type_birth'] == 1) {
+        $persoon = $dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+            AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) " . $namesearch_string);
+    } elseif ($_SESSION['type_death'] == 1) {
+        $persoon = $dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+            AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) " . $namesearch_string);
+    }
+    while (@$personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
+
+        if ($_SESSION['type_birth'] == 1) {
+            $place = $personDb->pers_birth_place;
+            $date = $personDb->pers_birth_date;
+            if (!$personDb->pers_birth_place and $personDb->pers_bapt_place) {
+                $place = $personDb->pers_bapt_place;
+            }
+            if (!$personDb->pers_birth_date and $personDb->pers_bapt_date) {
+                $date = $personDb->pers_bapt_date;
+            }
+        } elseif ($_SESSION['type_death'] == 1) {
+            $place = $personDb->pers_death_place;
+            $date = $personDb->pers_death_date;
+            if (!$personDb->pers_death_place and $personDb->pers_buried_place) {
+                $place = $personDb->pers_buried_place;
+            }
+            if (!$personDb->pers_death_date and $personDb->pers_buried_date) {
+                $date = $personDb->pers_buried_date;
+            }
+        }
+
+        if (isset($locarray[$place])) { // birthplace exists in location database
+            if ($date) {
+                $year = substr($date, -4);
+
+                if ($year > 1 and $year < $realmin) {
+                    $locarray[$place][3]++;
+                }
+                if ($year > 1 and $year < ($realmin + $step)) {
+                    $locarray[$place][4]++;
+                }
+                if ($year > 1 and $year < ($realmin + (2 * $step))) {
+                    $locarray[$place][5]++;
+                }
+                if ($year > 1 and $year < ($realmin + (3 * $step))) {
+                    $locarray[$place][6]++;
+                }
+                if ($year > 1 and $year < ($realmin + (4 * $step))) {
+                    $locarray[$place][7]++;
+                }
+                if ($year > 1 and $year < ($realmin + (5 * $step))) {
+                    $locarray[$place][8]++;
+                }
+                if ($year > 1 and $year < ($realmin + (6 * $step))) {
+                    $locarray[$place][9]++;
+                }
+                if ($year > 1 and $year < ($realmin + (7 * $step))) {
+                    $locarray[$place][10]++;
+                }
+                if ($year > 1 and $year < ($realmin + (8 * $step))) {
+                    $locarray[$place][11]++;
+                }
+                if ($year > 1 and $year < 2050) {
+                    $locarray[$place][12]++;
+                }
+                $locarray[$place][13]++;  // array of all people incl without birth date
+            } else {
+                $locarray[$place][13]++; // array of all people incl without birth date
+            }
+        }
+    }
+}
+?>
+
+<script src="googlemaps/StyledMarker.js"></script>
+
+<script>
+    var markersArray = [];
+    var markerContent = "This is a test window";
+
+    // Show marker text in infowindow.
+    infoWindow = new google.maps.InfoWindow({
+        maxWidth: 500
+    });
+
+    google.maps.event.addListener(map, 'click', function() {
+        infoWindow.close();
+    });
+
+    function handleMarkerClick(marker, index) {
+        return function() {
+            infoWindow.setContent(index);
+            infoWindow.setZIndex(1000000);
+            infoWindow.open(map, marker);
+        };
+    }
+
+    function clearOverlays() {
+        if (markersArray) {
+            for (i in markersArray) {
+                markersArray[i].setMap(null);
+            }
+            markersArray = new Array();
         }
     }
 
+    <?php
     $nr = 0;
-    echo 'var j = new Array();'; // 1 letter array name to keep download as short as possible!
+    // 1 letter array name to keep download as short as possible.
+    echo 'var j = new Array();';
     foreach ($locarray as $key => $value) {
         echo 'j[' . $nr . '] = new Array();';
         echo 'j[' . $nr . '][0] = "' . $locarray[$key][0] . '";';
@@ -393,7 +397,7 @@
         var until;
         if (sel == 3) { // 3 flags the "all locations" button (j[i][3])
             what = "all=1"; // for url query string
-            <?= 'until = "' . __('today ') . '";';  ?>
+            until = "<?= __('today '); ?>";
         } else { // years 1550, 1600 .... till today for slider
             what = "max=" + max; // for url querystring
             until = max; // "until 1850"
@@ -414,6 +418,9 @@
 
         var i;
 
+        // Automatic map zoom.
+        var latlngbounds = new google.maps.LatLngBounds();
+
         for (i = 0; i < j.length; i++) {
             var thislat = parseFloat(j[i][1]);
             var thislng = parseFloat(j[i][2]);
@@ -421,8 +428,9 @@
             //a single quote in the name breaks the query string, so we escape it (+ double \\ to escape the \)
             thisplace = thisplace.replace(/'/g, "\\'"); // l'Ile d'Orleans becomes l\'Ile d\'Orleans
 
-            if (j[i][sel] > 0) { // if 0: this location is not relevant for this period
-
+            // if 0: this location is not relevant for this period
+            if (j[i][sel] > 0) {
+                /* Old script. Doesn't work anymore in 2024.
                 var latlng = new google.maps.LatLng(thislat, thislng);
                 // convert html entities in tooltip of marker:
                 var html_loc = convert_html(j[i][0]);
@@ -437,8 +445,31 @@
                     position: latlng,
                     map: map
                 });
-
                 markersArray.push(styleMaker1);
+                */
+
+
+                // July 2024: new script
+                // convert html entities in tooltip of marker:
+                //var html_loc = convert_html(j[i][0]);
+                //var styleMaker1 = new google.maps.Marker({
+                //var styleMaker1 = new google.maps.marker.AdvancedMarkerElement({
+                var styleMaker1 = new google.maps.marker.AdvancedMarkerElement({
+                    position: {
+                        lat: thislat,
+                        lng: thislng
+                    },
+                    map,
+                    //shape: shape,
+                    //title: html_loc,
+                    //content: pinBackground.element,
+                });
+
+
+                // July 2024: Added automatic zoom
+                latlng = new google.maps.LatLng(thislat, thislng);
+                latlngbounds.extend(latlng);
+
 
                 // wikipedia doesn't search well with "Newcastle, NSW, Australia", so we just take the place name Newcastle
                 // Of course there are multiple places with this name but they will appear at the start of the wikipedia page, one click away...
@@ -486,9 +517,28 @@
                 }
                 ?>
 
-                google.maps.event.addListener(styleMaker1, 'click', handleMarkerClick(styleMaker1, "<div>" + location + j[i][0] + "<br>" + readabout + "<a href=\"http://" + wikilang + ".wikipedia.org/wiki/" + place + "\" target=\"blank\"> Wikipedia </a><br><div style=\"display:inline;\" id=\"ajaxlink\" onclick=\"loadurl('googlemaps/namesearch.php?thisplace=" + thisplace + "&amp;" + what + "&amp;" + namestring + "')\">" + list + until + ", <span style=\"color:blue;font-weight:bold\"><a href=\"javascript:void(0)\">" + click + "</a></span><br><br><br><br><div style=\"min-width:370px\"></div></div></div>"));
+                google.maps.event.addListener(
+                    styleMaker1, 'click', handleMarkerClick(
+                        styleMaker1,
+                        "<div>" + location + j[i][0] + "<br>" +
+                        readabout +
+                        "<a href=\"http://" + wikilang + ".wikipedia.org/wiki/" + place + "\" target=\"blank\"> Wikipedia </a><br> <div style = \"display:inline;\" id=\"ajaxlink\" onclick=\"loadurl('googlemaps/namesearch.php?thisplace=" +
+                        thisplace + "&amp;" +
+                        what +
+                        "&amp;" +
+                        namestring +
+                        "')\">" +
+                        list +
+                        until +
+                        ", <span style=\"color:blue;font-weight:bold\"><a href=\"javascript:void(0)\">" +
+                        click + "</a></span><br><br><br><br><div style=\"min-width:370px\"></div></div></div>"
+                    )
+                );
 
             }
+
+            // Automatic zoom.
+            map.fitBounds(latlngbounds);
         }
     }
 </script>

@@ -99,26 +99,37 @@ if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10)
     ';
 }
 
-echo '<form method="POST" action="index.php?page=editor_person_select&person_item=' . $_GET['person_item'] . '&person=' . $_GET['person'];
-if (isset($_GET['event_row'])) {
-    echo '&event_row=' . $_GET['event_row'];
-}
-echo '&tree_id=' . $tree_id . '" style="display : inline;">';
 $search_quicksearch_man = '';
 if (isset($_POST['search_quicksearch_man'])) {
     $search_quicksearch_man = safe_text_db($_POST['search_quicksearch_man']);
 }
-echo ' <input type="text" name="search_quicksearch_man" placeholder="' . __('Name') . '" value="' . $search_quicksearch_man . '" size="15">';
 
 $search_man_id = '';
 if (isset($_POST['search_man_id'])) {
     $search_man_id = safe_text_db($_POST['search_man_id']);
 }
-echo __('or ID:') . ' <input type="text" name="search_man_id" value="' . $search_man_id . '" size="5">';
+?>
+<form method="POST" action="index.php?page=editor_person_select&amp;person_item=<?= $_GET['person_item']; ?>&amp;person=<?= $_GET['person']; ?><?= isset($_GET['event_row']) ? '&amp;event_row=' . $_GET['event_row'] : ''; ?>&amp;tree_id=<?= $tree_id; ?>" style="display : inline;">
+    <div class="row mb-2">
+        <div class="col-4">
+            <input type="text" name="search_quicksearch_man" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch_man; ?>" size="15" class="form-control form-control-sm">
+        </div>
 
-echo ' <input type="submit" name="submit" value="' . __('Search') . '">';
-echo '</form><br><br>';
+        <div class="col-auto">
+            <?= __('or ID:'); ?>
+        </div>
 
+        <div class="col-auto">
+            <input type="text" name="search_man_id" value="<?= $search_man_id; ?>" size="5" class="form-control form-control-sm">
+        </div>
+
+        <div class="col-auto">
+            <input type="submit" name="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+        </div>
+    </div>
+</form><br><br>
+
+<?php
 if ($search_quicksearch_man != '') {
     // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
     $search_quicksearch_man = str_replace(' ', '%', $search_quicksearch_man);
