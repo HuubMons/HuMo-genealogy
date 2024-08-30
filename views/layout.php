@@ -125,7 +125,6 @@ function getActiveTopMenu(string $page = 'home')
 }
 $menu_top = getActiveTopMenu($page);
 //if ($menu_top === 'tool_menu') echo 'active';
-
 ?>
 
 <!DOCTYPE html>
@@ -135,7 +134,7 @@ $menu_top = getActiveTopMenu($page);
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-    <!-- Rescale standard HuMo-genealogy pages for mobile devices -->
+    <!-- Bootstrap: rescale standard HuMo-genealogy pages for mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title><?= $head_text; ?></title>
@@ -258,10 +257,10 @@ $menu_top = getActiveTopMenu($page);
     ?>
 
         <div id="top_menu" class="d-print-none">
-            <div id="top" style="direction:<?= $rtlmark; ?>">
+            <div id="top" class="pt-3 pe-2" style="direction:<?= $rtlmark; ?>">
 
-                <div class="row g-3">
-                    <div class="col-sm-5">
+                <div class="row g-2">
+                    <div class="col-md-4">
                         <span id="top_website_name">
                             <!-- *** Show logo or name of website *** -->
                             &nbsp;<a href="<?= $humo_option["homepage"]; ?>"><?= $logo; ?></a>
@@ -281,7 +280,7 @@ $menu_top = getActiveTopMenu($page);
                         if ($num_rows > 0) {
                             $link = $link_cls->get_link($uri_path, 'tree_index');
                     ?>
-                            <div class="col-sm-2">
+                            <div class="col-md-3">
                                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
                                     <!-- <?= __('Family tree') . ': '; ?> -->
                                     <select size="1" name="tree_id" onChange="this.form.submit();" class="form-select form-select-sm">
@@ -345,7 +344,7 @@ $menu_top = getActiveTopMenu($page);
                         }
                     ?>
 
-                        <div class="col-sm-2">
+                        <div class="col-md-2">
                             <form method="post" action="<?= $menu_path; ?>">
                                 <input type="hidden" name="index_list" value="quicksearch">
                                 <input type="hidden" name="search_database" value="tree_selected">
@@ -357,7 +356,7 @@ $menu_top = getActiveTopMenu($page);
                         </div>
 
                         <!-- hidden in mobile version -->
-                        <div class="col-sm-1 d-none d-md-block">
+                        <div class="col-md-1 d-none d-md-block">
                             <?php
                             // *** Link for extended search form ***
                             $menu_path = $link_cls->get_link($uri_path, 'list', $tree_id, true);
@@ -381,7 +380,7 @@ $menu_top = getActiveTopMenu($page);
                         // *** Show favorites in selection list ***
                         $link = $link_cls->get_link($uri_path, 'family', $tree_id);
                     ?>
-                        <div class="col-sm-2">
+                        <div class="col-md-2">
 
                             <form method="POST" action="<?= $link; ?>" style="display : inline;">
                                 <!-- <img src="images/favorite_blue.png" alt="<?= __('Favourites'); ?>"> -->
@@ -506,7 +505,6 @@ $menu_top = getActiveTopMenu($page);
                             ?>
 
                             <a class="nav-link dropdown-toggle <?php if ($menu_top == 'tree_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
-                                <!-- <img src="images/family_tree.png" class="mobile_hidden" alt="' . __('Family tree') . '"> -->
                                 <?= __('Family tree'); ?>
                             </a>
 
@@ -572,7 +570,7 @@ $menu_top = getActiveTopMenu($page);
                         //	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
                         //		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)
                         if (
-                            $user["group_birthday_list"] == 'j' || $user["group_showstatistics"] == 'j' || $user["group_relcalc"] == 'j' || $user["group_googlemaps"] == 'j' && $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0 || $user["group_contact"] == 'j' && $dataDb->tree_owner && $dataDb->tree_email || $user["group_latestchanges"] == 'j'
+                            $user["group_birthday_list"] == 'j' || $user["group_showstatistics"] == 'j' || $user["group_relcalc"] == 'j' || $user["group_googlemaps"] == 'j' || $user["group_contact"] == 'j' && $dataDb->tree_owner && $dataDb->tree_email || $user["group_latestchanges"] == 'j'
                         ) {
                     ?>
 
@@ -595,7 +593,7 @@ $menu_top = getActiveTopMenu($page);
                                     <?php } ?>
 
                                     <?php if ($user["group_googlemaps"] == 'j') {; ?>
-                                        <?php if (!$bot_visit and $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) { ?>
+                                        <?php if (!$bot_visit) { ?>
                                             <li><a class="dropdown-item <?php if ($page == 'maps') echo 'active'; ?>" href="<?= $menu_path_map; ?>"><?= __('World map'); ?></a></li>
                                         <?php } ?>
                                     <?php } ?>
@@ -730,7 +728,6 @@ $menu_top = getActiveTopMenu($page);
         <div id="<?= $language["dir"] == "rtl" ? 'rtlcontent' : 'content'; ?>">
             <?php
         }
-
 
         // *** Include content ***
         if ($page == 'index') {

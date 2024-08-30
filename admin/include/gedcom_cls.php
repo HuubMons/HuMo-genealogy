@@ -82,6 +82,8 @@ class gedcom_cls
 
         $event_status = "";
 
+        $surname_processed = false;
+
         // *** For event table ***
         $event_nr = 0;
         $event2_nr = 0;
@@ -386,42 +388,47 @@ class gedcom_cls
 
                     // *** Second line "1 NAME" is a callname ***
                     if ($pers_firstname !== '' && $pers_firstname !== '0') {
-                        //$pers_callname_org=$pers_callname; // *** If "2 TYPE aka" is used, $pers_callname can be restored ***
-                        //$pers_aka=substr($name,7); // *** If "2 TYPE aka" is used
+                        // *** Don't process second/ third etc. "NAME" for Rootsmagic ***
+                        if ($gen_program == "RootsMagic") {
+                            $processed = 1;
+                        } else {
+                            //$pers_callname_org=$pers_callname; // *** If "2 TYPE aka" is used, $pers_callname can be restored ***
+                            //$pers_aka=substr($name,7); // *** If "2 TYPE aka" is used
 
-                        //if ($pers_callname){
-                        //	$pers_callname=$pers_callname.", ".substr($name,7);
-                        //} else {
-                        //	$pers_callname=substr($name,7);
-                        //}
-                        //$pers_callname=str_replace("/", " ", $pers_callname);
-                        //$pers_callname=str_replace("  ", " ", $pers_callname);
-                        //$pers_callname=rtrim($pers_callname);
+                            //if ($pers_callname){
+                            //	$pers_callname=$pers_callname.", ".substr($name,7);
+                            //} else {
+                            //	$pers_callname=substr($name,7);
+                            //}
+                            //$pers_callname=str_replace("/", " ", $pers_callname);
+                            //$pers_callname=str_replace("  ", " ", $pers_callname);
+                            //$pers_callname=rtrim($pers_callname);
 
-                        $processed = 1;
-                        $pers_aka = substr($name, 7);
-                        // *** Remove / if nickname starts with / ***
-                        if (substr($pers_aka, 0, 1) === '/') {
-                            $pers_aka = substr($pers_aka, 1);
+                            $processed = 1;
+                            $pers_aka = substr($name, 7);
+                            // *** Remove / if nickname starts with / ***
+                            if (substr($pers_aka, 0, 1) === '/') {
+                                $pers_aka = substr($pers_aka, 1);
+                            }
+                            $pers_aka = str_replace("/", " ", $pers_aka);
+                            $pers_aka = str_replace("  ", " ", $pers_aka);
+                            $pers_aka = rtrim($pers_aka);
+
+                            $processed = 1;
+                            $event_nr++;
+                            $calculated_event_id++;
+                            $event['connect_kind'][$event_nr] = 'person';
+                            $event['connect_id'][$event_nr] = $pers_gedcomnumber;
+                            $event['connect_kind2'][$event_nr] = '';
+                            $event['connect_id2'][$event_nr] = '';
+                            $event['kind'][$event_nr] = 'name';
+                            $event['event'][$event_nr] = $pers_aka;
+                            $event['event_extra'][$event_nr] = '';
+                            $event['gedcom'][$event_nr] = 'NICK';
+                            $event['date'][$event_nr] = '';
+                            $event['text'][$event_nr] = '';
+                            $event['place'][$event_nr] = '';
                         }
-                        $pers_aka = str_replace("/", " ", $pers_aka);
-                        $pers_aka = str_replace("  ", " ", $pers_aka);
-                        $pers_aka = rtrim($pers_aka);
-
-                        $processed = 1;
-                        $event_nr++;
-                        $calculated_event_id++;
-                        $event['connect_kind'][$event_nr] = 'person';
-                        $event['connect_id'][$event_nr] = $pers_gedcomnumber;
-                        $event['connect_kind2'][$event_nr] = '';
-                        $event['connect_id2'][$event_nr] = '';
-                        $event['kind'][$event_nr] = 'name';
-                        $event['event'][$event_nr] = $pers_aka;
-                        $event['event_extra'][$event_nr] = '';
-                        $event['gedcom'][$event_nr] = 'NICK';
-                        $event['date'][$event_nr] = '';
-                        $event['text'][$event_nr] = '';
-                        $event['place'][$event_nr] = '';
                     } else {
                         $position = strpos($name, "/");
                         if ($position !== false) { // there are slashes
@@ -448,13 +455,28 @@ class gedcom_cls
                 // 1 NAME Willem I/III/van Holland/
                 // 2 GIVN Willem I/III
                 // 2 SURN van Holland
+                //
+                // Rootsmagic could have multiple surnames (used as alternative surnames):
+                // 1 NAME Rebecca /Langton/
+                // 2 GIVN Rebecca
+                // 2 SURN Langton
+                // 1 NAME /Hanzl/
+                // 2 SURN Hanzl
+                // 1 NAME /Hanzly/
+                // 2 SURN Hanzly
                 if ($buffer6 === '2 GIVN') {
                     $processed = 1;
                     $pers_firstname = substr($buffer, 7);
                 }
                 if ($buffer6 === '2 SURN') {
-                    $processed = 1;
-                    $pers_lastname = substr($buffer, 7);
+                    if (!$surname_processed) {
+                        $processed = 1;
+                        $pers_lastname = substr($buffer, 7);
+                        $surname_processed = true;
+                    } else {
+                        $processed = 1;
+                        $pers_lastname .= ', ' . substr($buffer, 7);
+                    }
 
                     // *** REMARK: processing of prefixes is done later in script (around line 1800) ***
                 }
@@ -2491,18 +2513,6 @@ class gedcom_cls
 
         // *** Store geolocations in humo_locations table ***
         if ($geocode_nr > 0) {
-            // *** Check if table exists already if not create it ***
-            $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-            if (!$temp->rowCount()) {
-                $locationtbl = "CREATE TABLE humo_location (
-            location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            location_location VARCHAR(100) CHARACTER SET utf8,
-            location_lat DECIMAL(10,6),
-            location_lng DECIMAL(10,6),
-            location_status TEXT
-            ) DEFAULT CHARSET=utf8";
-                $dbh->query($locationtbl);
-            }
             for ($i = 1; $i <= $geocode_nr; $i++) {
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
                 if (!$loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
@@ -2510,8 +2520,7 @@ class gedcom_cls
                         location_location='" . $this->text_process($geocode_plac[$i]) . "',
                         location_lat='" . $geocode_lati[$i] . "',
                         location_lng='" . $geocode_long[$i] . "',
-                        location_status='" . $tree_prefix . $geocode_type[$i] . "'
-                        ";
+                        location_status='" . $tree_prefix . $geocode_type[$i] . "'";
                     $dbh->query($geosql);
                 } elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {   // location already exists, check if we need to add something in location_status
                     $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
@@ -4025,28 +4034,16 @@ class gedcom_cls
 
         // store geolocations in humo_locations table
         if ($geocode_nr > 0) {
-            // Check if table exists already if not create it
-            $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-            if (!$temp->rowCount()) {
-                $locationtbl = "CREATE TABLE humo_location (
-                location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                location_location VARCHAR(120) CHARACTER SET utf8,
-                location_lat DECIMAL(10,6),
-                location_lng DECIMAL(10,6),
-                location_status TEXT
-            ) DEFAULT CHARSET=utf8";
-                $dbh->query($locationtbl);
-            }
             for ($i = 1; $i <= $geocode_nr; $i++) {
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
 
                 if (!$loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
                     $geosql = "INSERT IGNORE INTO humo_location SET
-                    location_location='" . $this->text_process($geocode_plac[$i]) . "',
-                    location_lat='" . $geocode_lati[$i] . "',
-                    location_lng='" . $geocode_long[$i] . "',
-                    location_status='" . $tree_prefix . $geocode_type[$i] . "'
-                    ";
+                        location_location='" . $this->text_process($geocode_plac[$i]) . "',
+                        location_lat='" . $geocode_lati[$i] . "',
+                        location_lng='" . $geocode_long[$i] . "',
+                        location_status='" . $tree_prefix . $geocode_type[$i] . "'
+                        ";
                     $dbh->query($geosql);
                 } elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // location already exists, check if we need to add something in location_status
                     $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);

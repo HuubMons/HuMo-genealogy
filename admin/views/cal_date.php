@@ -16,25 +16,25 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
 <form method="POST" action="index.php">
     <input type="hidden" name="page" value="cal_date">
 
-    <div class="row justify-content-center align-items-center"">
+    <div class="row justify-content-center align-items-center me-1">
         <div class=" col-auto">
-        <?= __('Choose family tree'); ?>
-    </div>
+            <?= __('Choose family tree'); ?>
+        </div>
 
-    <div class="col-auto">
-        <select size="1" name="tree_id" class="form-select form-select-sm">
-            <?php
-            foreach ($tree_result as $treeDb) {
-                $treetext = show_tree_text($treeDb->tree_id, $selected_language);
-            ?>
-                <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= $treetext['name']; ?></option>
-            <?php } ?>
-        </select>
-    </div>
+        <div class="col-auto">
+            <select size="1" name="tree_id" class="form-select form-select-sm">
+                <?php
+                foreach ($tree_result as $treeDb) {
+                    $treetext = show_tree_text($treeDb->tree_id, $selected_language);
+                ?>
+                    <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= $treetext['name']; ?></option>
+                <?php } ?>
+            </select>
+        </div>
 
-    <div class="col-auto">
-        <input type="submit" name="submit_button" class="btn btn-sm btn-success" value="<?= __('Select'); ?>">
-    </div>
+        <div class="col-auto">
+            <input type="submit" name="submit_button" class="btn btn-sm btn-success" value="<?= __('Select'); ?>">
+        </div>
     </div>
 </form><br>
 

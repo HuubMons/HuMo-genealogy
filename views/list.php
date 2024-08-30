@@ -111,8 +111,8 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 ?>
     <!-- Standard and advanced search box -->
     <br>
-    <form method="post" action="<?= $list_var; ?>" style="display : inline;">
-        <div class="py-2 me-sm-2 genealogy_search">
+    <form method="post" action="<?= $list_var; ?>">
+        <div class="py-2 me-sm-3 genealogy_search">
 
             <!-- Standard search box -->
             <?php if ($list["adv_search"] == false) { ?>
@@ -461,6 +461,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         .popover {
                             max-width: 500px;
                         }
+
                         .popover-body {
                             height: 300px;
                             overflow-y: auto;
@@ -614,15 +615,6 @@ $privcount = 0; // *** Count privacy persons ***
 
 $selected_place = "";
 
-// *** Table to hold left sort date column (when necessary) and right person list column ***
-//echo '<table style="cellpadding:0px; border-collapse:collapse;">';
-//$index_table = '';
-$index_table = 'index_table';
-if ($select_trees == 'all_trees' || $select_trees == 'all_but_this') {
-    $index_table = 'index_table';
-}
-
-
 // TODO Allready added in model. But needed for spouse in this script for now...
 // *** Search for (part of) first or lastname ***
 function name_qry($search_name, $search_part)
@@ -638,48 +630,32 @@ function name_qry($search_name, $search_part)
 }
 ?>
 
-<table class="humo <?= $index_table; ?>" align="center">
-    <tr class=table_headline>
-        <?php if ($list["index_list"] == 'places') { ?>
-            <th><?= __('Places'); ?></th>
-        <?php } ?>
-        <th colspan="2"><?= __('Name'); ?></th>
-        <th colspan="2" width="250px"><?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?></th>
-        <th colspan="2" width="250px"><?= ucfirst(__('died')) . '/ ' . ucfirst(__('buried')); ?></th>
-        <?php if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
-            echo '<th>' . __('Family tree') . '</th>';
-        } ?>
-    </tr>
+<table class="table table-sm">
+    <thead class="table-primary">
+        <tr>
+            <?php if ($list["index_list"] == 'places') { ?>
+                <th><?= __('Places'); ?></th>
+            <?php } ?>
+            <th colspan="2"><?= __('Name'); ?></th>
+            <th colspan="2" width="250px"><?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?></th>
+            <th colspan="2" width="250px"><?= ucfirst(__('died')) . '/ ' . ucfirst(__('buried')); ?></th>
+            <?php if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
+                echo '<th>' . __('Family tree') . '</th>';
+            } ?>
+        </tr>
+    </thead>
 
     <?php
     if ($list["index_list"] != 'places') {
         $link = $link_cls->get_link($uri_path, 'list', $tree_id, true);
     ?>
-
-        <tr class=table_headline>
-            <?php
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($list["order_select"] == "sort_firstname") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
-                }
-            }
-            ?>
-            <th colspan="2">
-                <?= __('Sort by:'); ?> <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_firstname&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
-                    <?= ucfirst(__('firstname')); ?> <img src="images/button3<?= $img; ?>.png">
-                </a>
-
+        <thead class="table-primary">
+            <tr>
                 <?php
                 $style = '';
                 $sort_reverse = $order;
                 $img = '';
-                if ($list["order_select"] == "sort_lastname") {
+                if ($list["order_select"] == "sort_firstname") {
                     $style = ' style="background-color:#ffffa0"';
                     $sort_reverse = '1';
                     if ($order == '1') {
@@ -688,69 +664,88 @@ function name_qry($search_name, $search_part)
                     }
                 }
                 ?>
-                <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_lastname&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
-                    <?= ucfirst(__('lastname')); ?> <img src="images/button3<?= $img; ?>.png">
-                </a>
-            </th>
+                <th colspan="2">
+                    <?= __('Sort by:'); ?> <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_firstname&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
+                        <?= ucfirst(__('firstname')); ?> <img src="images/button3<?= $img; ?>.png">
+                    </a>
 
-            <?php
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($list["order_select"] == "sort_birthdate") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
+                    <?php
+                    $style = '';
+                    $sort_reverse = $order;
+                    $img = '';
+                    if ($list["order_select"] == "sort_lastname") {
+                        $style = ' style="background-color:#ffffa0"';
+                        $sort_reverse = '1';
+                        if ($order == '1') {
+                            $sort_reverse = '0';
+                            $img = 'up';
+                        }
+                    }
+                    ?>
+                    <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_lastname&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
+                        <?= ucfirst(__('lastname')); ?> <img src="images/button3<?= $img; ?>.png">
+                    </a>
+                </th>
+
+                <?php
+                $style = '';
+                $sort_reverse = $order;
+                $img = '';
+                if ($list["order_select"] == "sort_birthdate") {
+                    $style = ' style="background-color:#ffffa0"';
+                    $sort_reverse = '1';
+                    if ($order == '1') {
+                        $sort_reverse = '0';
+                        $img = 'up';
+                    }
                 }
-            }
-            echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_birthdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+                echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_birthdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
 
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($list["order_select"] == "sort_birthplace") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
+                $style = '';
+                $sort_reverse = $order;
+                $img = '';
+                if ($list["order_select"] == "sort_birthplace") {
+                    $style = ' style="background-color:#ffffa0"';
+                    $sort_reverse = '1';
+                    if ($order == '1') {
+                        $sort_reverse = '0';
+                        $img = 'up';
+                    }
                 }
-            }
-            echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_birthplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+                echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_birthplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
 
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($list["order_select"] == "sort_deathdate") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
+                $style = '';
+                $sort_reverse = $order;
+                $img = '';
+                if ($list["order_select"] == "sort_deathdate") {
+                    $style = ' style="background-color:#ffffa0"';
+                    $sort_reverse = '1';
+                    if ($order == '1') {
+                        $sort_reverse = '0';
+                        $img = 'up';
+                    }
                 }
-            }
-            echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_deathdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+                echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_deathdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
 
-            $style = '';
-            $sort_reverse = $order;
-            $img = '';
-            if ($list["order_select"] == "sort_deathplace") {
-                $style = ' style="background-color:#ffffa0"';
-                $sort_reverse = '1';
-                if ($order == '1') {
-                    $sort_reverse = '0';
-                    $img = 'up';
+                $style = '';
+                $sort_reverse = $order;
+                $img = '';
+                if ($list["order_select"] == "sort_deathplace") {
+                    $style = ' style="background-color:#ffffa0"';
+                    $sort_reverse = '1';
+                    if ($order == '1') {
+                        $sort_reverse = '0';
+                        $img = 'up';
+                    }
                 }
-            }
-            echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_deathplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+                echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_deathplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
 
-            if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
-                echo '<th><br></th>';
-            }
-            ?>
-        </tr>
+                if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
+                    echo '<th><br></th>';
+                }
+                ?>
+            </tr>
+        </thead>
     <?php
     }
     $pers_counter = 0;
@@ -875,24 +870,6 @@ if (isset($data["page_nr"]) && !$selection['spouse_firstname'] && !$selection['s
 }
 
 //echo '</div>';
-
-// For use with inline site?
-/*
-echo '<script> 
-    if(window.self != window.top) {
-        var framew = window.frameElement.offsetWidth; 
-        document.getElementById("content").style.width = framew-40+"px";
-        var indexes = document.getElementsByClassName("index_table");
-        for (var i = 0; i < indexes.length; i++) {
-            indexes[i].style.width = framew-40+"px";
-        }
-        var lists = document.getElementsByClassName("index_list1");
-        for (var i = 0; i < lists.length; i++) {
-            lists[i].style.width = framew-40+"px";
-        }
-    }
-</script>';
-*/
 
 //TODO check this code. In some cases found_div isn't used.
 /*

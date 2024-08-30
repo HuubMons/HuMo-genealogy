@@ -119,7 +119,7 @@ $person_found = true;
 <div class="p-3 m-2 genealogy_search">
     <?php if ($editor['new_tree'] == false) { ?>
         <div class="row mb-2">
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
@@ -136,7 +136,7 @@ $person_found = true;
                 </form>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
@@ -185,13 +185,7 @@ $person_found = true;
     <?php if ($editor['new_tree'] == false) { ?>
         <div class="row">
 
-            <div class="col-md-auto">
-                <label for="tree" class="col-form-label">
-                    <?= __('Family tree'); ?>:
-                </label>
-            </div>
-
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <?= select_tree($dbh, $page, $tree_id); ?>
             </div>
 
@@ -201,14 +195,14 @@ $person_found = true;
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group">
                         <!-- Search persons firstname/ lastname -->
-                        <label for="search_name" class="col-auto col-form-label"><?= __('Person'); ?>:&nbsp;</label>
-                        <input type="text" name="search_quicksearch" id="search_name" class="form-control" placeholder="<?= __('Name'); ?>" value="<?= $editor['search_name']; ?>" size="15">
+                        <label for="search_name" class="col-auto col-form-label col-form-label-sm"><?= __('Person'); ?>:&nbsp;</label>
+                        <input type="text" name="search_quicksearch" id="search_name" class="form-control form-control-sm" placeholder="<?= __('Name'); ?>" value="<?= $editor['search_name']; ?>" size="15">
                         <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
                     </div>
                 </form>
             </div>
 
-            <!--            <div class="col-auto"> -->
+            <!-- <div class="col-auto"> -->
             <?php
             unset($person_result);
             if ($editor['search_name'] != '') {
@@ -281,9 +275,9 @@ $person_found = true;
                 }
             }
             ?>
-            <!--            </div> -->
+            <!-- </div> -->
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <?php
                 if ($editor['search_name'] != '' && isset($person_result)) {
                     $nr_persons = $person_result->rowCount();
@@ -311,7 +305,7 @@ $person_found = true;
                         <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
                             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                            <select size="1" name="person" class="form-select" style="background-color: #ffaa80;" onChange="this.form.submit();">
+                            <select size="1" name="person" class="form-select form-select-sm bg-primary-subtle" onChange="this.form.submit();">
                                 <option value=""><?= __('Results'); ?></option>
                                 <?php
                                 while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
@@ -358,8 +352,8 @@ $person_found = true;
                 <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                    <div class="input-group">
-                        <label for="search_id" class="col-md-auto col-form-label"><?= __('or ID:'); ?>&nbsp;</label>
+                    <div class="input-group input-group-sm">
+                        <label for="search_id" class="col-md-auto col-form-label col-form-label-sm"><?= __('or ID:'); ?>&nbsp;</label>
                         <input type="text" id="search_id" name="search_id" class="form-select form-select-sm" value="<?= $editor['search_id']; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
                         <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
                     </div>
@@ -1107,7 +1101,7 @@ if ($check_person) {
                         <iframe id="source_iframe" style="width:800px;height:800px;" title="source_iframe" src="<?= $url; ?>" loading="lazy"></iframe>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button>
                         <!-- <button type="button" class="btn btn-sm btn-primary">Save changes</button> -->
                     </div>
                 </div>
@@ -1298,13 +1292,13 @@ if ($check_person) {
             <div class="col-md-3"><?= ucfirst(__('born')); ?></div>
         </div>
         <div class="row mb-2">
-            <label for "pers_birth_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <label for="pers_birth_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
             <div class="col-md-7">
                 <?php $editor_cls->date_show('', 'pers_birth_date', '', '', 'pers_birth_date_hebnight'); ?>
             </div>
         </div>
         <div class="row mb-2">
-            <label for "pers_birth_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <label for="pers_birth_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
             <div class="col-md-7">
                 <div class="input-group">
                     <input type="text" name="pers_birth_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -1315,7 +1309,7 @@ if ($check_person) {
         <!-- Birth time and stillborn option -->
         <?php if ($person_kind == 'child') { ?>
             <div class="row mb-2">
-                <label for "pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
+                <label for="pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
                 <div class="col-md-2">
                     <input type="text" name="pers_birth_time" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
                 </div>
@@ -1332,13 +1326,13 @@ if ($check_person) {
             <div class="col-md-3"><?= ucfirst(__('baptised')); ?></div>
         </div>
         <div class="row mb-2">
-            <label for "pers_bapt_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <label for="pers_bapt_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
             <div class="col-md-7">
                 <?php $editor_cls->date_show('', 'pers_bapt_date', '', '', 'pers_bapt_date_hebnight'); ?>
             </div>
         </div>
         <div class="row mb-2">
-            <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <label for="pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
             <div class="col-md-7">
                 <div class="input-group">
                     <input type="text" name="pers_bapt_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -1352,13 +1346,13 @@ if ($check_person) {
             <div class="col-md-3"><?= ucfirst(__('died')); ?></div>
         </div>
         <div class="row mb-2">
-            <label for "pers_death_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <label for="pers_death_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
             <div class="col-md-7">
                 <?php $editor_cls->date_show('', 'pers_death_date', '', '', 'pers_death_date_hebnight'); ?>
             </div>
         </div>
         <div class="row mb-2">
-            <label for "pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <label for="pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
             <div class="col-md-7">
                 <div class="input-group">
                     <input type="text" name="pers_death_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -1372,13 +1366,13 @@ if ($check_person) {
             <div class="col-md-3"><?= ucfirst(__('buried')); ?></div>
         </div>
         <div class="row mb-2">
-            <label for "pers_buried_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <label for="pers_buried_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
             <div class="col-md-7">
                 <?php $editor_cls->date_show('', 'pers_buried_date', '', '', 'pers_buried_date_hebnight'); ?>
             </div>
         </div>
         <div class="row mb-2">
-            <label for "pers_buried_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <label for="pers_buried_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
             <div class="col-md-7">
                 <div class="input-group">
                     <input type="text" name="pers_buried_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -1650,7 +1644,7 @@ if ($check_person) {
                             ?>
 
                             <div class="row mb-2">
-                                <label for "address_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                                <label for="address_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                                 <div class="col-md-7">
                                     <div class="input-group">
                                         <input type="text" name="address_place_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -1666,7 +1660,7 @@ if ($check_person) {
                             // *** New code, not tested yet ***
                             <?php if ($address3Db) { ?>
                             <div class="row mb-2">
-                            <label for "address_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <label for="address_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'address_source', $address3Db->address_gedcomnr);
@@ -1680,7 +1674,7 @@ if ($check_person) {
 
                             <!-- Edit address -->
                             <div class="row mb-2">
-                                <label for "address_address" class="col-md-3 col-form-label"><?= __('Street'); ?></label>
+                                <label for="address_address" class="col-md-3 col-form-label"><?= __('Street'); ?></label>
                                 <div class="col-md-7">
                                     <input type="text" name="address_address_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_address; ?>" class="form-control form-control-sm">
                                 </div>
@@ -1688,7 +1682,7 @@ if ($check_person) {
 
                             <!-- Edit Zip code -->
                             <div class="row mb-2">
-                                <label for "address_zip" class="col-md-3 col-form-label"><?= __('Zip code'); ?></label>
+                                <label for="address_zip" class="col-md-3 col-form-label"><?= __('Zip code'); ?></label>
                                 <div class="col-md-3">
                                     <input type="text" name="address_zip_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_zip; ?>" class="form-control form-control-sm">
                                 </div>
@@ -1696,7 +1690,7 @@ if ($check_person) {
 
                             <!-- Edit phone -->
                             <div class="row mb-2">
-                                <label for "address_phone" class="col-md-3 col-form-label"><?= __('Phone'); ?></label>
+                                <label for="address_phone" class="col-md-3 col-form-label"><?= __('Phone'); ?></label>
                                 <div class="col-md-3">
                                     <input type="text" name="address_phone_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_phone; ?>" class="form-control form-control-sm">
                                 </div>
@@ -1704,14 +1698,14 @@ if ($check_person) {
 
                             <!-- Edit text -->
                             <div class="row mb-2">
-                                <label for "address_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                                <label for="address_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                                 <div class="col-md-7">
                                     <textarea rows="1" name="address_text_<?= $address3Db->address_id; ?>" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address3Db->address_text); ?></textarea>
                                 </div>
                             </div>
 
                             <div class="row mb-2">
-                                <label for "pers_buried_place" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                                 <div class="col-md-7">
                                     <?= $editor_cls->date_show($addressDb->connect_date, 'connect_date', "[$addressDb->connect_id]"); ?>
                                 </div>
@@ -1724,7 +1718,7 @@ if ($check_person) {
                             }
                             ?>
                             <div class="row mb-2">
-                                <label for "pers_buried_place" class="col-md-3 col-form-label"><?= __('Addressrole'); ?></label>
+                                <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Addressrole'); ?></label>
                                 <div class="col-md-3">
                                     <input type="text" name="connect_role[<?= $key; ?>]" value="<?= $connect_role; ?>" size="6" class="form-control form-control-sm">
                                 </div>
@@ -1732,7 +1726,7 @@ if ($check_person) {
 
                             <!-- Extra text by address -->
                             <div class="row mb-2">
-                                <label for "pers_buried_place" class="col-md-3 col-form-label"><?= __('Extra text by address'); ?></label>
+                                <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Extra text by address'); ?></label>
                                 <div class="col-md-7">
                                     <textarea name="connect_text[<?= $addressDb->connect_id; ?>]" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($addressDb->connect_text); ?></textarea>
                                 </div>
@@ -1749,7 +1743,7 @@ if ($check_person) {
                                 }
                                 ?>
                                 <div class="row mb-2">
-                                    <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                    <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                     <div class="col-md-7">
                                         <?php
                                         source_link3($connect_kind, $connect_sub_kind_source, $addressDb->connect_id);

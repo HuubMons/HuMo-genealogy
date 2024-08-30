@@ -55,16 +55,13 @@ if (isset($_POST['month'])) {
             }
             ?>
         </select>
-        <input type="submit" name="submit" value=<?= __('Select'); ?>>
-    </form>
+        <input type="submit" name="submit" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
+    </form><br><br>
 
-    <?php
-    // *** Visited families in this month ***
-    echo '<br><br><b>' . __('Total number of visited families:') . '</b><br>';
-    ?>
+    <b><?= __('Total number of visited families:'); ?></b><br>
 </div><br>
-<?php
 
+<?php
 // Graphic present month
 if ($month == $present_month && $year == $present_year) {
     calender($month, $year, true);

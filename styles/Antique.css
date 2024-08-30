@@ -1,156 +1,156 @@
 body {
-	color: #000000;
-	background-color: #fae4b3;
-	background-image: none;
+    color: #000000;
+    background-color: #fae4b3;
+    background-image: none;
 }
 
 #top {
-	/* background: url(images_antique/sepiatop1.jpg) repeat left top; */
-	background: #ffffff url('images_antique/sepiathin.jpg') repeat;
+    /* background: url(images_antique/sepiatop1.jpg) repeat left top; */
+    background: #ffffff url('images_antique/sepiathin.jpg') repeat;
 }
 
 #top_website_name a {
-	color: #7e3517;
-	font-weight: normal;
-	font-family: "Monotype Corsiva", "URW Chancery L", cursive, "Comic Sans MS", Tahoma, Verdana;
-	/* font-size:150%; */
+    color: #7e3517;
+    font-weight: normal;
+    font-family: "Monotype Corsiva", "URW Chancery L", cursive, "Comic Sans MS", Tahoma, Verdana;
+    /* font-size:150%; */
 }
 
 #top_website_name a:visited {
-	color: #7e3517;
-	font-weight: normal;
-	font-family: "Monotype Corsiva", "URW Chancery L", cursive, "Comic Sans MS", Tahoma, Verdana;
+    color: #7e3517;
+    font-weight: normal;
+    font-family: "Monotype Corsiva", "URW Chancery L", cursive, "Comic Sans MS", Tahoma, Verdana;
 }
 
 #content {
-	background: #ffffff url('images_antique/sepiathin.jpg') repeat;
+    background: #ffffff url('images_antique/sepiathin.jpg') repeat;
 }
 
 #rtlcontent {
-	background: #ffffff url('images_antique/sepiathin.jpg') repeat;
+    background: #ffffff url('images_antique/sepiathin.jpg') repeat;
 }
 
 /* Links */
 a {
-	color: #505050;
-	text-decoration: none;
+    color: #505050;
+    text-decoration: none;
 }
 
 a:hover {
-	color: #808080;
-	text-decoration: underline;
+    color: #808080;
+    text-decoration: underline;
 }
 
 p {
-	line-height: 150%;
-	margin: 15px 0 15px;
+    line-height: 150%;
+    margin: 15px 0 15px;
 }
 
 
 .genealogy_search {
-	background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top;
+    background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top;
 }
 
 /* Used in homepage */
 .genealogy_box {
-	background-color: transparent;
-	background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top;
+    background-color: transparent;
+    background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top;
 }
 
 /* Bootstrap menu */
 .genealogy_menu {
-	background-image: linear-gradient(to top, #fae4b3 0%, #ffffff 90%);
+    background-image: linear-gradient(to top, #fae4b3 0%, #ffffff 90%);
 
-	font-family: "Monotype Corsiva", "URW Chancery L", "Comic Sans MS", Tahoma, Verdana;
-	font-size: 20px;
+    font-family: "Monotype Corsiva", "URW Chancery L", "Comic Sans MS", Tahoma, Verdana;
+    font-size: 20px;
 }
 
 /* Button for smartphones */
 .genealogy_toggler {
-	background-color: #778bc63a;
+    background-color: #778bc63a;
 }
 
 /* Tables */
 table.humo {
-	background: url(images_antique/tree_background_450lcbr.jpg) repeat left top;
-	margin-top: 10px;
+    background: url(images_antique/tree_background_450lcbr.jpg) repeat left top;
+    margin-top: 10px;
 }
 
 table.standard {
-	margin-left: auto;
-	margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* 1st table A-Z */
 table.humo td {
-	border-color: #3355cc;
-	/* background: url(images_antique/tree_background_450lcbr.jpg) repeat left top; */
+    border-color: #3355cc;
+    /* background: url(images_antique/tree_background_450lcbr.jpg) repeat left top; */
 }
 
 table.humo tr:first-of-type td {
-	border-color: #3355cc;
+    border-color: #3355cc;
 }
 
 /* 2nd table A-Z */
 .family_page_toptext {
-	color: #000066;
-	background-color: #ccccff;
-	background: url("images_antique/header2.jpg") repeat left top;
+    color: #000066;
+    background-color: #ccccff;
+    background: url("images_antique/header2.jpg") repeat left top;
 }
 
 table.humo td.style_tree_text {
-	background-color: #eeeeff;
+    background-color: #eeeeff;
 }
 
 /* Headline in table */
 tr.table_headline {
-	background-image: url('images_antique/header2.jpg');
+    background-image: url('images_antique/header2.jpg');
 }
 
 /* table header  */
 table.humo td.table_header {
-	background: url("images_antique/header2.jpg") repeat left top;
+    background: url("images_antique/header2.jpg") repeat left top;
 }
 
 /* familypage */
 .pers_name {
-	color: #000000;
+    color: #000000;
 }
 
 /* A-Z title and header text reports (Generation I, II, etc.) */
 .standard_header {
-	color: #7E3517;
-	/* margin-top: 10px; */
+    color: #7E3517;
+    /* margin-top: 10px; */
 }
 
 /* Ancestor graphical */
 div.ancestorName {
-	border-color: #000066;
-	color: #000000;
-	font-family: "arial narrow";
-	font-size: 75%;
+    border-color: #000066;
+    color: #000000;
+    font-family: "arial narrow";
+    font-size: 75%;
 }
 
 div.ancestorName a {
-	color: #222222;
-	font-weight: bold;
+    color: #222222;
+    font-weight: bold;
 }
 
 div.ancestor_line {
-	border-bottom-color: #000066;
-	border-top-color: #000066;
+    border-bottom-color: #000066;
+    border-top-color: #000066;
 }
 
 div.ancestor_split {
-	border-left-color: #000066;
-	border-bottom-color: #000066;
-	border-top-color: #000066;
+    border-left-color: #000066;
+    border-bottom-color: #000066;
+    border-top-color: #000066;
 }
 
 .ancestorName {
-	line-height: 100%;
+    line-height: 100%;
 }
 
 table.reltable td {
-	border: 0px;
+    border: 0px;
 }

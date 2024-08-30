@@ -85,60 +85,67 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
             echo $e->getMessage() . '<br>';
         }
     ?>
-        <table class="humo" align="center">
-            <tr class="table_headline">
-                <!-- *** Show headers *** -->
-                <th><?= __('Day'); ?></th>
-                <th><?= ucfirst(__('born')); ?></th>
-                <th><?= __('Name'); ?></th>
-                <th><?= ucfirst(__('died')); ?></th>
-            </tr>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <table class="table">
+                    <thead class="table-primary">
+                        <tr>
+                            <th><?= __('Day'); ?></th>
+                            <th><?= ucfirst(__('born')); ?></th>
+                            <th><?= __('Name'); ?></th>
+                            <th><?= ucfirst(__('died')); ?></th>
+                        </tr>
+                    </thead>
 
-            <?php
-            while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
-                $calendar_day = $record->birth_day;
-                $birth_day = $record->birth_day . ' ' . $data["month"];
-                $person_cls = new person_cls($record);
-                $name = $person_cls->person_name($record);
+                    <?php
+                    while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
+                        $calendar_day = $record->birth_day;
+                        $birth_day = $record->birth_day . ' ' . $data["month"];
+                        $person_cls = new person_cls($record);
+                        $name = $person_cls->person_name($record);
 
-                if (!$person_cls->privacy) {
-                    // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $url = $person_cls->person_url2($record->pers_tree_id, $record->pers_famc, $record->pers_fams, $record->pers_gedcomnumber);
+                        if (!$person_cls->privacy) {
+                            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                            $url = $person_cls->person_url2($record->pers_tree_id, $record->pers_famc, $record->pers_fams, $record->pers_gedcomnumber);
 
-                    $person_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            $person_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
 
-                    $death_date = $record->pers_death_date;
-                    $age = (date("Y") - $record->birth_year);
+                            $death_date = $record->pers_death_date;
+                            $age = (date("Y") - $record->birth_year);
 
-                    if ($death_date != '') {
-                        $died = language_date($death_date);
-                    } elseif ($age > $max_age) {
-                        $died = '? ';
-                    } else {
-                        $died = '  ';
+                            if ($death_date != '') {
+                                $died = language_date($death_date);
+                            } elseif ($age > $max_age) {
+                                $died = '? ';
+                            } else {
+                                $died = '  ';
+                            }
+
+                    ?>
+                            <!-- Highlight present day -->
+                            <tr <?php if ($birth_day == $data["today"]) echo 'bgcolor="#BFBFBF"'; ?>>
+                                <td><?php echo ($calendar_day == $last_cal_day) ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
+                                <?php $last_cal_day = $calendar_day; ?>
+
+                                <td><?php echo ($person_cls->privacy) ?  __(' PRIVACY FILTER') : $record->birth_year; ?></td>
+
+                                <td align="left"><?= $person_name; ?></td>
+
+                                <td>
+                                    <div class="pale"><?php echo ($person_cls->privacy) ? __(' PRIVACY FILTER') : $died; ?>
+                                </td>
+                            </tr>
+                    <?php
+                        } else {
+                            $privcount++;
+                        }
                     }
+                    ?>
+                </table>
+            </div>
+        </div>
 
-            ?>
-                    <!-- Highlight present day -->
-                    <tr <?php if ($birth_day == $data["today"]) echo 'bgcolor="#BFBFBF"'; ?>>
-                        <td><?php echo ($calendar_day == $last_cal_day) ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
-                        <?php $last_cal_day = $calendar_day; ?>
-
-                        <td><?php echo ($person_cls->privacy) ?  __(' PRIVACY FILTER') : $record->birth_year; ?></td>
-
-                        <td align="left"><?= $person_name; ?></td>
-
-                        <td>
-                            <div class="pale"><?php echo ($person_cls->privacy) ? __(' PRIVACY FILTER') : $died; ?>
-                        </td>
-                    </tr>
-            <?php
-                } else {
-                    $privcount++;
-                }
-            }
-            ?>
-        </table>
 
         <?php if ($privcount) { ?>
             <br><?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
@@ -213,87 +220,94 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
         }
         ?>
 
-        <table class="humo" align="center">
-            <tr class="table_headline">
-                <th><?= __('Day'); ?></th>
-                <th><?= ucfirst(__('Wedding year')); ?></th>
-                <th><?= __('Civil/ Religious'); ?></th>
-                <th><?= __('Spouses'); ?></th>
-            </tr>
-
-            <?php
-            if (isset($wed) and count($wed) > 0) {
-                // sort the array to mix civill and religious
-                if ($data["civil"] && $data["relig"]) {
-                    function custom_sort($a, $b)
-                    {
-                        //return $a['dayyear']>$b['dayyear']; // DEPRECATED in PHP 8.
-                        return $a['dayyear'] <=> $b['dayyear'];
-                    }
-                    // Sort the multidimensional array
-                    usort($wed, "custom_sort");
-                    // Define the custom sort function
-                }
-
-                foreach ($wed as $key => $value) {
-                    // get husband
-                    @$manDb = $db_functions->get_person($value['man']);
-                    // *** Use class to process person ***
-                    $man_cls = new person_cls($manDb);
-                    if (!$value['man']) {
-                        $man_name = 'N.N.';
-                    } else {
-                        $name = $man_cls->person_name($manDb);
-
-                        // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $man_cls->person_url2($manDb->pers_tree_id, $manDb->pers_famc, $manDb->pers_fams, $manDb->pers_gedcomnumber);
-
-                        $man_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
-                    }
-
-                    // get wife
-                    @$womanDb = $db_functions->get_person($value['woman']);
-                    // *** Use class to process person ***
-                    $woman_cls = new person_cls($womanDb);
-                    if (!$value['woman']) {
-                        $woman_name = 'N.N.';
-                    } else {
-                        $name = $woman_cls->person_name($womanDb);
-
-                        // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $woman_cls->person_url2($womanDb->pers_tree_id, $womanDb->pers_famc, $womanDb->pers_fams, $womanDb->pers_gedcomnumber);
-
-                        $woman_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
-                    }
-
-                    $calendar_day = $value['calday'];
-                    $marr_day = $value['marday'];
-
-                    if (!$man_cls->privacy && !$woman_cls->privacy) {
-            ?>
-                        <!-- Highlight present day -->
-                        <tr <?php if ($marr_day == $data["today"]) echo 'bgcolor="#BFBFBF"'; ?>>
-                            <td><?php echo ($calendar_day == $last_cal_day) ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
-                            <?php $last_cal_day = $calendar_day;; ?>
-
-                            <td><?php echo ($man_cls->privacy and !$woman_cls->privacy) ? __(' PRIVACY FILTER') : $value['maryr']; ?></td>
-
-                            <td align="left"><?= $value['type']; ?></td>
-                            <td align="left"><?= $man_name . ' & ' . $woman_name; ?></td>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <table class="table">
+                    <thead class="table-primary">
+                        <tr>
+                            <th><?= __('Day'); ?></th>
+                            <th><?= ucfirst(__('Wedding year')); ?></th>
+                            <th><?= __('Civil/ Religious'); ?></th>
+                            <th><?= __('Spouses'); ?></th>
                         </tr>
-                <?php
+                    </thead>
+
+                    <?php
+                    if (isset($wed) and count($wed) > 0) {
+                        // sort the array to mix civill and religious
+                        if ($data["civil"] && $data["relig"]) {
+                            function custom_sort($a, $b)
+                            {
+                                //return $a['dayyear']>$b['dayyear']; // DEPRECATED in PHP 8.
+                                return $a['dayyear'] <=> $b['dayyear'];
+                            }
+                            // Sort the multidimensional array
+                            usort($wed, "custom_sort");
+                            // Define the custom sort function
+                        }
+
+                        foreach ($wed as $key => $value) {
+                            // get husband
+                            @$manDb = $db_functions->get_person($value['man']);
+                            // *** Use class to process person ***
+                            $man_cls = new person_cls($manDb);
+                            if (!$value['man']) {
+                                $man_name = 'N.N.';
+                            } else {
+                                $name = $man_cls->person_name($manDb);
+
+                                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                                $url = $man_cls->person_url2($manDb->pers_tree_id, $manDb->pers_famc, $manDb->pers_fams, $manDb->pers_gedcomnumber);
+
+                                $man_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            }
+
+                            // get wife
+                            @$womanDb = $db_functions->get_person($value['woman']);
+                            // *** Use class to process person ***
+                            $woman_cls = new person_cls($womanDb);
+                            if (!$value['woman']) {
+                                $woman_name = 'N.N.';
+                            } else {
+                                $name = $woman_cls->person_name($womanDb);
+
+                                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                                $url = $woman_cls->person_url2($womanDb->pers_tree_id, $womanDb->pers_famc, $womanDb->pers_fams, $womanDb->pers_gedcomnumber);
+
+                                $woman_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            }
+
+                            $calendar_day = $value['calday'];
+                            $marr_day = $value['marday'];
+
+                            if (!$man_cls->privacy && !$woman_cls->privacy) {
+                    ?>
+                                <!-- Highlight present day -->
+                                <tr <?php if ($marr_day == $data["today"]) echo 'bgcolor="#BFBFBF"'; ?>>
+                                    <td><?php echo ($calendar_day == $last_cal_day) ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
+                                    <?php $last_cal_day = $calendar_day;; ?>
+
+                                    <td><?php echo ($man_cls->privacy and !$woman_cls->privacy) ? __(' PRIVACY FILTER') : $value['maryr']; ?></td>
+
+                                    <td align="left"><?= $value['type']; ?></td>
+                                    <td align="left"><?= $man_name . ' & ' . $woman_name; ?></td>
+                                </tr>
+                        <?php
+                            } else {
+                                $privcount++;
+                            }
+                        }
+                        unset($wed);
                     } else {
-                        $privcount++;
-                    }
-                }
-                unset($wed);
-            } else {
-                ?>
-                <tr>
-                    <td colspan="4"><?= __('No results found for this month'); ?></td>
-                </tr>
-            <?php } ?>
-        </table>
+                        ?>
+                        <tr>
+                            <td colspan="4"><?= __('No results found for this month'); ?></td>
+                        </tr>
+                    <?php } ?>
+                </table>
+            </div>
+        </div>
         <?php if ($privcount) { ?>
             <br><?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
     <?php

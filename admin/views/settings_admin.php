@@ -58,6 +58,7 @@ if (isset($_POST['save_option'])) {
     Save email configuration settings 
     ****************************
     */
+    $db_functions->update_settings('email_sender', $_POST["email_sender"]);
     $db_functions->update_settings('mail_auto', $_POST["mail_auto"]);
     $db_functions->update_settings('email_user', $_POST["email_user"]);
     $db_functions->update_settings('email_password', $_POST["email_password"]);
@@ -245,18 +246,6 @@ if (isset($_POST['menu_admin'])) {
 }
 if (isset($_GET['menu_admin'])) {
     $menu_admin = $_GET['menu_admin'];
-}
-$select_item_settings = '';
-if ($menu_admin == 'settings') {
-    $select_item_settings = ' pageTab-active';
-}
-$select_item_homepage = '';
-if ($menu_admin == 'settings_homepage') {
-    $select_item_homepage = ' pageTab-active';
-}
-$select_item_special = '';
-if ($menu_admin == 'settings_special') {
-    $select_item_special = ' pageTab-active';
 }
 ?>
 

@@ -324,35 +324,35 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                                 <input type="hidden" name="source_id[<?= $connectDb->connect_id; ?>]" value="<?= $sourceDb->source_id; ?>">
 
                                 <div class="row mb-2">
-                                    <label for "source_title" class="col-sm-3 col-form-label"><?= __('Title'); ?></label>
+                                    <label for="source_title" class="col-sm-3 col-form-label"><?= __('Title'); ?></label>
                                     <div class="col-md-7">
                                         <input type="text" name="source_title[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_title); ?>" size="60" class="form-control form-control-sm">
                                     </div>
                                 </div>
 
                                 <div class="row mb-2">
-                                    <label for "source_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                                    <label for="source_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
                                     <div class="col-md-7">
                                         <?php $editor_cls->date_show($sourceDb->source_date, 'source_date', "[$connectDb->connect_id]"); ?>
                                     </div>
                                 </div>
 
                                 <div class="row mb-2">
-                                    <label for "source_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+                                    <label for="source_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
                                     <div class="col-md-7">
                                         <input type="text" name="source_place[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_place); ?>" size="15" class="form-control form-control-sm">
                                     </div>
                                 </div>
 
                                 <div class="row mb-2">
-                                    <label for "source_own_code" class="col-sm-3 col-form-label"><?= __('Own code'); ?></label>
+                                    <label for="source_own_code" class="col-sm-3 col-form-label"><?= __('Own code'); ?></label>
                                     <div class="col-md-7">
                                         <input type="text" name="source_refn[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_refn); ?>" size="15" class="form-control form-control-sm">
                                     </div>
                                 </div>
 
                                 <div class="row mb-2">
-                                    <label for "source_text" class="col-sm-3 col-form-label"><?= __('Text'); ?></label>
+                                    <label for="source_text" class="col-sm-3 col-form-label"><?= __('Text'); ?></label>
                                     <div class="col-md-7">
                                         <textarea rows="2" name="source_text[<?= $connectDb->connect_id; ?>]" <?= $field_text; ?> class=" form-control form-control-sm"><?= $editor_cls->text_show($sourceDb->source_text); ?></textarea>
                                     </div>
@@ -363,7 +363,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 
                             <!-- Source connection items -->
                             <div class="row mb-2">
-                                <label for "source_role" class="col-sm-3 col-form-label"><?= __('Sourcerole'); ?></label>
+                                <label for="source_role" class="col-sm-3 col-form-label"><?= __('Sourcerole'); ?></label>
                                 <div class="col-md-7">
                                     <input type="text" name="connect_role[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($connect_role); ?>" size="6" class="form-control form-control-sm">
                                     <span style="font-size:13px;"><?= __('e.g. Writer, Brother, Sister, Father.'); ?></span>
@@ -371,7 +371,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                             </div>
 
                             <div class="row mb-2">
-                                <label for "source_page" class="col-sm-3 col-form-label"><?= __('Page'); ?></label>
+                                <label for="source_page" class="col-sm-3 col-form-label"><?= __('Page'); ?></label>
                                 <div class="col-md-7">
                                     <input type="text" name="connect_page[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_page; ?>" size="6" class="form-control form-control-sm">
                                     <span style="font-size:13px;"><?= __('Page in source.'); ?></span>
@@ -380,7 +380,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 
                             <!-- Quality -->
                             <div class="row mb-2">
-                                <label for "source_quality" class="col-sm-3 col-form-label"><?= __('Quality'); ?></label>
+                                <label for="source_quality" class="col-sm-3 col-form-label"><?= __('Quality'); ?></label>
                                 <div class="col-md-7">
                                     <select size="1" name="connect_quality[<?= $connectDb->connect_id; ?>]" class="form-select form-select-sm">
                                         <option value=""><?= ucfirst(__('quality: default')); ?></option>
@@ -393,14 +393,14 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                             </div>
 
                             <div class="row mb-2">
-                                <label for "connect_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+                                <label for="connect_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
                                 <div class="col-md-7">
                                     <?php $editor_cls->date_show($connectDb->connect_date, 'connect_date', "[$connectDb->connect_id]"); ?>
                                 </div>
                             </div>
 
                             <div class="row mb-2">
-                                <label for "connect_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+                                <label for="connect_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
                                 <div class="col-md-7">
                                     <input type="text" name="connect_place[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($connect_place); ?>" size="15" class="form-control form-control-sm">
                                 </div>
@@ -408,7 +408,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 
                             <!-- Extra text by shared source -->
                             <div class="row mb-2">
-                                <label for "connect_text" class="col-sm-3 col-form-label"><?= __('Extra text'); ?></label>
+                                <label for="connect_text" class="col-sm-3 col-form-label"><?= __('Extra text'); ?></label>
                                 <div class="col-md-7">
                                     <textarea rows="2" name="connect_text[<?= $connectDb->connect_id; ?>]" <?= $field_extra_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($connectDb->connect_text); ?></textarea>
                                 </div>

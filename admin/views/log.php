@@ -17,31 +17,35 @@ if (!defined('ADMIN_PAGE')) {
 </ul>
 
 <!-- Align content to the left -->
-<div style="float: left; background-color:white; height:500px; padding:10px;">
+<div style="float:left; background-color:white; height:500px; padding:10px;">
     <?php
     // *** User log ***
     if ($log['menu_tab'] == 'log_users') {
         $logbooksql = "SELECT * FROM humo_user_log ORDER BY log_date DESC";
         $logbook = $dbh->query($logbooksql);
     ?>
-        <table class="humo" border="1" cellspacing="0" width="auto">
-            <tr class="table_header">
-                <th><?= __('Date - time'); ?></th>
-                <th><?= __('User'); ?></th>
-                <th><?= __('User/ Admin'); ?></th>
-                <th><?= __('IP address'); ?></th>
-                <th><?= __('Status'); ?></th>
-            </tr>
-            <?php while ($logbookDb = $logbook->fetch(PDO::FETCH_OBJ)) { ?>
-                <tr>
-                    <td><?= $logbookDb->log_date; ?></td>
-                    <td><?= $logbookDb->log_username; ?></td>
-                    <td><?= $logbookDb->log_user_admin; ?></td>
-                    <td><?= $logbookDb->log_ip_address; ?></td>
-                    <td><?= $logbookDb->log_status; ?></td>
-                </tr>
-            <?php } ?>
-        </table>
+        <!-- <div class="table-responsive"> -->
+            <table class="table">
+                <thead class="table-primary">
+                    <tr>
+                        <th><?= __('Date - time'); ?></th>
+                        <th><?= __('User'); ?></th>
+                        <th><?= __('User/ Admin'); ?></th>
+                        <th><?= __('IP address'); ?></th>
+                        <th><?= __('Status'); ?></th>
+                    </tr>
+                </thead>
+                <?php while ($logbookDb = $logbook->fetch(PDO::FETCH_OBJ)) { ?>
+                    <tr>
+                        <td class="text-nowrap"><?= $logbookDb->log_date; ?></td>
+                        <td><?= $logbookDb->log_username; ?></td>
+                        <td><?= $logbookDb->log_user_admin; ?></td>
+                        <td><?= $logbookDb->log_ip_address; ?></td>
+                        <td><?= $logbookDb->log_status; ?></td>
+                    </tr>
+                <?php } ?>
+            </table>
+        <!-- </div> -->
     <?php
     }
 

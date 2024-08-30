@@ -484,24 +484,20 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         <?php } ?>
 
         <?php
-        // *** Check if geo_location table exists ***
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-        if ($temp->rowCount() > 0) {
-            $selected = '';
-            if (isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'no') {
-                $selected = ' selected';
-            }
+        $selected = '';
+        if (isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'no') {
+            $selected = ' selected';
+        }
         ?>
-            <div class="row mb-2">
-                <div class="col-md-4"><?= __('Export longitude & latitude by places'); ?></div>
-                <div class="col-md-4">
-                    <select size="1" name="gedcom_geocode" class="form-select form-select-sm">
-                        <option value="yes"><?= __('Yes'); ?></option>
-                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
-                    </select>
-                </div>
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Export longitude & latitude by places'); ?></div>
+            <div class="col-md-4">
+                <select size="1" name="gedcom_geocode" class="form-select form-select-sm">
+                    <option value="yes"><?= __('Yes'); ?></option>
+                    <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
+                </select>
             </div>
-        <?php } ?>
+        </div>
 
         <!-- Can _LOC tag be used in GEDCOM 7.x? -->
         <!-- Shared addresses are not GEDCOM compatible. Add an option for export -->

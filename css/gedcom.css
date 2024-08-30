@@ -1,6 +1,7 @@
 /* Central Style file - Centraal stijl bestand */
 
 /* Basic page styles */
+/*
 html {
     height: 100%;
     max-height: 100%;
@@ -8,30 +9,26 @@ html {
     margin: 0;
     border: 0;
 }
+*/
 
 body {
     background-color: white;
     color: black;
     background-image: url('../images/background.gif');
     background-repeat: no-repeat;
+    /*
     height: 100%;
     max-height: 100%;
     padding: 0;
     margin: 0;
     border: 0;
-    /* font: 12px Verdana, tahoma, arial, sans-serif; */
+    */
     font: 15px Verdana, tahoma, arial, sans-serif;
 
     /* Get footer at bottom, also if page is short */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-}
-
-.mobile_visible {
-    visibility: hidden;
-    width: 0px;
-    height: 0px;
 }
 
 #top_menu {
@@ -45,23 +42,15 @@ body {
 #top {
     text-align: left;
     color: #7F7F7F;
-    /* background-color:#E8E8E8; */
     background: linear-gradient(rgb(244, 244, 255) 0%, rgb(219, 219, 219) 100%);
 
-    /* height: 35px; */
-    /*
-    height: 40px;
-    padding: 5px 10px 0;
-    */
-
-    height: 60px;
+    /* height: 60px; */
     /* up, right, bottom */
-    padding: 15px 10px 0;
+    /* padding: 15px 10px 0; */
 }
 
 #top_website_name {
     font-weight: bold;
-    /* font-size:18px; */
     font-size: 22px;
 }
 
@@ -125,11 +114,6 @@ div.rtlsddm #mft ul {
 #content {
     display: block;
     position: relative;
-    z-index: 3;
-    /* height: 100%; */
-    /* max-height: 90%; */
-
-    /* top: 30px; Disabled for bootstrap menu */
     /* up, right, down */
     padding: 10px 0px 10px 10px;
 }
@@ -138,8 +122,6 @@ div.rtlsddm #mft ul {
     display: block;
     position: relative;
     z-index: 3;
-    /* height: 100%; */
-    /* max-height: 95%; */
     top: 30px;
     /* up, right, down */
     padding: 10px 10px 10px 0px;
@@ -239,10 +221,6 @@ table.ext {
     border-spacing: 0;
     border-width: 1px;
 
-    /*
-	box-shadow: 6px 6px 6px #999;
-	border-radius: 6px 6px 6px 6px;
-	*/
     box-shadow: 2px 2px 2px #c0c0c0;
     border-radius: 3px;
 }
@@ -274,13 +252,7 @@ table.standard {
 table.humo td,
 table.relmenu td {
     border-top: none;
-    /*
-	padding-left: 5px;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	*/
     padding: 4px;
-    /* line-height: 120%; */
 }
 
 table.humo th,
@@ -512,11 +484,6 @@ a:visited {
     height: 20px;
     width: 23px;
     padding: 0px;
-}
-
-table.index_table {
-    /* width: 1050px; */
-    width: 90%;
 }
 
 /* TODO: check if this is still needed */
@@ -751,19 +718,6 @@ div.photobook a:hover img {
 div.photobooktext {
     font-style: italic;
     margin: 2px;
-}
-
-/* Hulppagina */
-.help_div {
-    width: 80%;
-    position: relative;
-    left: 10%;
-}
-
-.rtlhelp_div {
-    width: 80%;
-    position: relative;
-    right: 10%;
 }
 
 .help_box {
@@ -1050,7 +1004,8 @@ td.extended_woman {
 
 footer {
     width: 100%;
-    min-height: 20%;
+    /* min-height: 20%; */
+    min-height: 150px;
     bottom: 0;
     left: 0;
     background-color: #f1f1f1;

@@ -12,9 +12,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-//$phpself = 'index.php';
-//$phpself2 = 'index.php?';
-
 $tree_id = $trees['tree_id']; // TODO for now use old variable (used in tab scripts: tree_admin.php, tree_data.php, etc.)
 
 
@@ -77,14 +74,14 @@ $tree_search_result = $dbh->query($tree_search_sql);
     </div>
 <?php }; ?>
 
-<div class="row">
+<div class="row me-1">
     <div class="col-auto">
         <label for="tree" class="col-form-label">
             <?= __('Family tree'); ?>:
         </label>
     </div>
 
-    <div class="col-2">
+    <div class="col-3">
         <form method="POST" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <select size="1" name="tree_id" class="form-select form-select-sm" onChange="this.form.submit();">

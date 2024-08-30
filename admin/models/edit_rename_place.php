@@ -61,12 +61,9 @@ class RenamePlaceModel
             WHERE connect_tree_id='" . $tree_id . "' AND connect_place='" . safe_text_db($_POST["place_old"]) . "'";
             $dbh->query($sql);
 
-            // *** Check if Google Maps table already exist ***
-            $tempqry = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-            if ($tempqry->rowCount()) {
-                $sql = "UPDATE humo_location SET location_location ='" . safe_text_db($_POST['place_new']) . "' WHERE location_location = '" . safe_text_db($_POST['place_old']) . "'";
-                $dbh->query($sql);
-            }
+            $sql = "UPDATE humo_location SET location_location ='" . safe_text_db($_POST['place_new']) . "'
+            WHERE location_location = '" . safe_text_db($_POST['place_old']) . "'";
+            $dbh->query($sql);
 
             // *** Show changed place again ***
             $_POST["place_select"] = $_POST['place_new'];

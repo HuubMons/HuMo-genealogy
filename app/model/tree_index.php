@@ -493,21 +493,22 @@ class Mainindex_cls
         }
 
         // *** nametbl = used for javascript to show graphical lightgray bar to show number of persons ***
-        //$text.='<table width=500 class="humo nametbl" align="center">';
-        $text .= '<table style="width:100%;" class="humo nametbl" align="center">';
+        $text .= '<table class="table table-sm nametbl">';
 
-        $text .= '<tr class="table_headline">';
+        $text .= '<thead class="table-primary">';
+        $text .= '<tr>';
         $col_width = ((round(100 / $maxcols)) - 6) . "%";
         for ($x = 1; $x < $maxcols; $x++) {
-            $text .= '<td style="width:' . $col_width . ';"><b>' . __('Surname') . '</b></td><td style="border-right-width:3px;width:6%;"><b>' . __('Total') . '</b></td>';
+            $text .= '<th style="width:' . $col_width . ';">' . __('Surname') . '</th><th>' . __('Total') . '</th>';
         }
-        $text .= '<td style="width:' . $col_width . ';"><b>' . __('Surname') . '</b></td><td style="width:6%"><b>' . __('Total') . '</b></td>';
+        $text .= '<th style="width:' . $col_width . ';">' . __('Surname') . '</th><th>' . __('Total') . '</th>';
         $text .= '</tr>';
+        $text .= '</thead>';
 
         $baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
 
         $path = $humo_option["url_rewrite"] == "j" ? 'statistics' : 'index.php?page=statistics';
-        $text .= '<tr><td colspan="' . ($maxcols * 2) . '" class=table_headline><a href="' . $path . '">' . __('More statistics') . '</a></td></tr>';
+        $text .= '<tr><td colspan="' . ($maxcols * 2) . '" class="table-active"><a href="' . $path . '">' . __('More statistics') . '</a></td></tr>';
         $text .= '</table>';
 
         // *** Show light gray background bar, that graphical shows number of persons ***
@@ -940,17 +941,16 @@ class Mainindex_cls
         $text .= '<div style="max-height:200px; overflow-x: auto;">';
         if ($view == 'with_table') {
 
-            // test Bootstrap
+            // test Bootstrap responsive
             //$text.='<div class="table-responsive">';
 
-            $text .= '<table style="width:100%;" class="humo nametbl" align="center">';
+            $text .= '<table class="table table-sm nametbl">';
 
-            //Test Bootstrap table.
-            //            $text .= '<table style="width:100%;" class="table" align="center">';
-
-            $text .= '<tr class="table_headline">';
-            $text .= '<td><b>' . __('Date') . '</b></td><td><b>' . __('Event') . '</b></td><td><b>' . __('Name') . '</b></td>';
+            $text .= '<thead class="table-primary">';
+            $text .= '<tr>';
+            $text .= '<th>' . __('Date') . '</th><th>' . __('Event') . '</th><th>' . __('Name') . '</th>';
             $text .= '</tr>';
+            $text .= '</thead>';
 
             if (isset($history['date'])) {
                 array_multisort($history['order'], SORT_DESC, $history['date'], $history['name']);
@@ -1069,67 +1069,78 @@ class Mainindex_cls
             }
             /* end of CSS3 slider */
         </style>';
+?>
 
-        echo '<div id="captioned-gallery">';
+        <div id="captioned-gallery">
+            <figure class="slider">
+                <figure>
+                    <?php
+                    $slideshow_01 = explode('|', $humo_option["slideshow_01"]);
+                    if ($slideshow_01[0] && file_exists($slideshow_01[0])) {
+                        echo '<img src="' . $slideshow_01[0] . '" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">' . $slideshow_01[1] . '</figcaption>';
+                    } else {
+                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">Missing image 01</figcaption>';
+                    }
+                    ?>
+                </figure>
 
-        echo '<figure class="slider">';
-        echo '<figure>';
-        $slideshow_01 = explode('|', $humo_option["slideshow_01"]);
-        if ($slideshow_01[0] && file_exists($slideshow_01[0])) {
-            echo '<img src="' . $slideshow_01[0] . '" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">' . $slideshow_01[1] . '</figcaption>';
-        } else {
-            echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">Missing image 01</figcaption>';
-        }
-        echo '</figure>';
+                <figure>
+                    <?php
+                    $slideshow_02 = explode('|', $humo_option["slideshow_02"]);
+                    if ($slideshow_02[0] && file_exists($slideshow_02[0])) {
+                        echo '<img src="' . $slideshow_02[0] . '" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">' . $slideshow_02[1] . '</figcaption>';
+                    } else {
+                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">Missing image 02</figcaption>';
+                    }
+                    ?>
+                </figure>
 
-        echo '<figure>';
-        $slideshow_02 = explode('|', $humo_option["slideshow_02"]);
-        if ($slideshow_02[0] && file_exists($slideshow_02[0])) {
-            echo '<img src="' . $slideshow_02[0] . '" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">' . $slideshow_02[1] . '</figcaption>';
-        } else {
-            echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">Missing image 02</figcaption>';
-        }
-        echo '</figure>';
+                <figure>
+                    <?php
+                    $slideshow_03 = explode('|', $humo_option["slideshow_03"]);
+                    if ($slideshow_03[0] && file_exists($slideshow_03[0])) {
+                        echo '<img src="' . $slideshow_03[0] . '" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">' . $slideshow_03[1] . '</figcaption>';
+                    } else {
+                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">Missing image 03</figcaption>';
+                    }
+                    ?>
+                </figure>
 
-        echo '<figure>';
-        $slideshow_03 = explode('|', $humo_option["slideshow_03"]);
-        if ($slideshow_03[0] && file_exists($slideshow_03[0])) {
-            echo '<img src="' . $slideshow_03[0] . '" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">' . $slideshow_03[1] . '</figcaption>';
-        } else {
-            echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">Missing image 03</figcaption>';
-        }
-        echo '</figure>';
+                <figure>
+                    <?php
+                    $slideshow_04 = explode('|', $humo_option["slideshow_04"]);
+                    if ($slideshow_04[0] && file_exists($slideshow_04[0])) {
+                        echo '<img src="' . $slideshow_04[0] . '" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">' . $slideshow_04[1] . '</figcaption>';
+                    } else {
+                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">Missing image 04</figcaption>';
+                    }
+                    ?>
+                </figure>
 
-        echo '<figure>';
-        $slideshow_04 = explode('|', $humo_option["slideshow_04"]);
-        if ($slideshow_04[0] && file_exists($slideshow_04[0])) {
-            echo '<img src="' . $slideshow_04[0] . '" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">' . $slideshow_04[1] . '</figcaption>';
-        } else {
-            echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">Missing image 04</figcaption>';
-        }
-        echo '</figure>';
+                <!-- 5th picture must be the same as 1st picture -->
+                <figure>
+                    <?php
+                    $slideshow_01 = explode('|', $humo_option["slideshow_01"]);
+                    if ($slideshow_01[0] && file_exists($slideshow_01[0])) {
+                        echo '<img src="' . $slideshow_01[0] . '" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">' . $slideshow_01[1] . '</figcaption>';
+                    } else {
+                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
+                        echo '<figcaption class="d-none d-md-block">Missing image 01</figcaption>';
+                    }
+                    ?>
+                </figure>
 
-        // *** 5th picture must be the same as 1st picture ***
-        echo '<figure>';
-        $slideshow_01 = explode('|', $humo_option["slideshow_01"]);
-        if ($slideshow_01[0] && file_exists($slideshow_01[0])) {
-            echo '<img src="' . $slideshow_01[0] . '" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">' . $slideshow_01[1] . '</figcaption>';
-        } else {
-            echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-            echo '<figcaption class="mobile_hidden">Missing image 01</figcaption>';
-        }
-        echo '</figure>';
-
-        echo '</figure>';
-        echo '</div>';
+            </figure>
+        </div>
+<?php
     }
 }

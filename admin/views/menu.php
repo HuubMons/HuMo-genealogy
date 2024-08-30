@@ -58,7 +58,7 @@ if ($popup == false) {
                 <?php if ($show_menu_left == true and $page != 'login') {; ?>
                     <?php if ($group_administrator == 'j') {; ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle <?php if ($page == 'install' || $page == 'extensions' || $page == 'settings' || $page == 'settings_homepage' || $page == 'settings_special' || $page == 'cms_pages' || $page == 'language_editor' || $page == 'prefix_editor' || $page == 'google_maps')  echo 'active'; ?>" href="<?= $path_tmp; ?>page=admin" data-bs-toggle="dropdown"><?= __('Control'); ?></a>
+                            <a class="nav-link dropdown-toggle <?php if ($page == 'install' || $page == 'extensions' || $page == 'settings' || $page == 'settings_homepage' || $page == 'settings_special' || $page == 'cms_pages' || $page == 'language_editor' || $page == 'prefix_editor' || $page == 'maps')  echo 'active'; ?>" href="<?= $path_tmp; ?>page=admin" data-bs-toggle="dropdown"><?= __('Control'); ?></a>
 
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item <?php if ($page == 'install') echo 'active'; ?>" href="<?= $path_tmp; ?>page=install"><?= __('Install'); ?></a></li>
@@ -69,7 +69,7 @@ if ($popup == false) {
                                 <li><a class="dropdown-item <?php if ($page == 'cms_pages') echo 'active'; ?>" href="<?= $path_tmp; ?>page=cms_pages"><?= __('CMS Own pages'); ?></a></li>
                                 <li><a class="dropdown-item <?php if ($page == 'language_editor') echo 'active'; ?>" href="<?= $path_tmp; ?>page=language_editor"><?= __('Language editor'); ?></a></li>
                                 <li><a class="dropdown-item <?php if ($page == 'prefix_editor') echo 'active'; ?>" href="<?= $path_tmp; ?>page=prefix_editor"><?= __('Prefix editor'); ?></a></li>
-                                <li><a class="dropdown-item <?php if ($page == 'google_maps') echo 'active'; ?>" href="<?= $path_tmp; ?>page=google_maps"><?= __('World map'); ?></a></li>
+                                <li><a class="dropdown-item <?php if ($page == 'maps') echo 'active'; ?>" href="<?= $path_tmp; ?>page=maps"><?= __('World map'); ?></a></li>
                             </ul>
                         </li>
 

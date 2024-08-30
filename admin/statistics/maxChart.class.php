@@ -14,6 +14,7 @@ class maxChart
     var $metaSpaceHorizontal = 60; // Total space needed for chart title + bar title + bar value
     var $metaSpaceVertical = 60; // Total space needed for chart title + bar title + bar value
     var $variousColors = false;
+    var $thismonth;
 
     //function maxChart($data){
     function __construct($data)

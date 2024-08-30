@@ -36,12 +36,14 @@ $path = $link_cls->get_link($uri_path, 'addresses', $tree_id, true);
     </form><br>
 
     <!-- *** Show results *** -->
-    <table class="humo" style="margin-left:auto;margin-right:auto">
-        <tr class="table_headline">
-            <th><a href="<?= $path; ?><?= $data["place_link"]; ?>" <?php if ($data["select_sort"] == 'sort_place') echo ' style="background-color:#ffffa0"'; ?>><?= __('City'); ?> <img src="<?= $data["place_image"]; ?>"></a></th>
-            <th><a href="<?= $path; ?><?= $data["address_link"]; ?>" <?php if ($data["select_sort"] == 'sort_address') echo ' style="background-color:#ffffa0"'; ?>><?= __('Street'); ?> <img src="<?= $data["address_image"]; ?>"></a></th>
-            <th><?= __('Text'); ?></th>
-        </tr>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th><a href="<?= $path; ?><?= $data["place_link"]; ?>" <?php if ($data["select_sort"] == 'sort_place') echo ' style="background-color:#ffffa0"'; ?>><?= __('City'); ?> <img src="<?= $data["place_image"]; ?>"></a></th>
+                <th><a href="<?= $path; ?><?= $data["address_link"]; ?>" <?php if ($data["select_sort"] == 'sort_address') echo ' style="background-color:#ffffa0"'; ?>><?= __('Street'); ?> <img src="<?= $data["address_image"]; ?>"></a></th>
+                <th><?= __('Text'); ?></th>
+            </tr>
+        </thead>
 
         <?php foreach ($data["addresses"] as $addressDb) { ?>
             <tr>

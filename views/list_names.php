@@ -197,7 +197,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
 <!-- Show options line -->
 <form method="POST" action="<?= $url; ?>" style="display:inline;" id="frqnames">
-    <div class="row mb-3">
+    <div class="row mb-3 me-1">
         <div class="col-sm-3"></div>
         <div class="col-sm-3">
             <select size=1 name="freqsurnames" class="form-select form-select-sm" onChange="this.form.submit();">
@@ -289,15 +289,18 @@ if ($show_line_pages) {
 ?>
 
 <?php $col_width = ((round(100 / $maxcols)) - 6) . "%"; ?>
-<table style="width:90%;" class="humo nametbl" align="center">
-    <tr class=table_headline>
-        <?php for ($x = 1; $x < $maxcols; $x++) { ?>
+<table class="table table-sm nametbl">
+    <thead class="table-primary">
+        <tr>
+            <?php for ($x = 1; $x < $maxcols; $x++) { ?>
+                <th width="<?= $col_width; ?>"><?= __('Name'); ?></th>
+                <th style="text-align:center;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
+            <?php } ?>
             <th width="<?= $col_width; ?>"><?= __('Name'); ?></th>
-            <th style="text-align:center;font-size:90%;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
-        <?php } ?>
-        <th width="<?= $col_width; ?>"><?= __('Name'); ?></th>
-        <th style="text-align:center;font-size:90%;width:6%"><?= __('Total'); ?></th>
-    </tr>
+            <th style="text-align:center;width:6%"><?= __('Total'); ?></th>
+        </tr>
+    </thead>
+
     <?php
     for ($i = 0; $i < $row; $i++) {
         echo '<tr>';

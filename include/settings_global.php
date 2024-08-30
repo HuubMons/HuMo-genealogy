@@ -3,7 +3,7 @@
 
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"] = '6.7.7';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"] = '6.7.8';  // Version line, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Beta (not stable enough for production, but it's functional ***
@@ -12,7 +12,7 @@ $humo_option["version"] = '6.7.7';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"] = '2024-07-17';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"] = '2024-08-30';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Test lines for update procedure ***
@@ -70,7 +70,6 @@ while (@$row = $result->fetch(PDO::FETCH_NUM)) {
 
 // *** Automatic installation or update ***
 
-//if (!isset($humo_option["template_homepage"])){
 // THIS PART CAN BE MOVED TO DATABASE UPDATE IF NEEDED.
 if (!isset($humo_option["template_homepage"]) && $humo_option["update_status"] > 10) {
     $order = 1;
@@ -366,44 +365,12 @@ if (!isset($humo_option["one_name_thename"])) {
     $sql = "INSERT INTO humo_settings SET setting_variable='one_name_thename', setting_value=''";
     @$result = $dbh->query($sql);
 }
+
 if (!isset($humo_option["geo_trees"])) {
-    $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-    if (!$temp->rowCount()) {
-        // no humo_location table was created yet. just enter the geo_trees setting with empty value to be ready if needed in future
-        $humo_option["geo_trees"] = '';
-        $sql = "INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value=''";
-        @$result = $dbh->query($sql);
-    } else {
-        // A humo_location table already exists. A situation where there is a location table but no geo_trees setting can only happen one time
-        // when upgrading to the first version that introduces this option. We'll check and enter the required tree_ids of trees that have been indexed.
-        $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY'";
-        $tree_search_result = $dbh->query($tree_search_sql);
-        $geo_string = ""; // string to hold the tree_ids of the trees that have been indexed in the location table
-        while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {  // for each tree...
-
-            // make sure the location_status column exists. If not create it
-            $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-            $exists = $result->rowCount();
-            if (!$exists) {
-                $dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
-            }
-
-            $found = false;
-            $loc_sql = "SELECT location_status FROM humo_location";
-            $loc_result = $dbh->query($loc_sql);
-            while ($loc_resultDb = $loc_result->fetch(PDO::FETCH_OBJ)) {
-                if (strpos($loc_resultDb->location_status, $tree_searchDb->tree_prefix) !== false) {  // the tree prefix is listed
-                    $found = true; // this tree should be included in the geo_trees setting
-                }
-            }
-            if ($found) {
-                $geo_string .= "@" . $tree_searchDb->tree_id . ";";
-            } // we create string: @4;@12;@13; which can also be searched by strpos
-        }
-        $humo_option["geo_trees"] = $geo_string;
-        $sql = "INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value='" . $geo_string . "'";
-        @$result = $dbh->query($sql);
-    }
+    $geo_string='';
+    $humo_option["geo_trees"] = $geo_string;
+    $sql = "INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value='" . $geo_string . "'";
+    $result = $dbh->query($sql);
 }
 
 // *** Slideshow_show homepage ***
@@ -506,7 +473,13 @@ if (!isset($humo_option["hide_themes"])) {
     @$result = $dbh->query($sql);
 }
 
-// *** New mail settings ***
+// *** Mail settings ***
+if (!isset($humo_option["email_sender"])) {
+    // *** Added july 2024 ***
+    $humo_option["email_sender"] = '';
+    $sql = "INSERT INTO humo_settings SET setting_variable='email_sender', setting_value=''";
+    @$result = $dbh->query($sql);
+}
 if (!isset($humo_option["mail_auto"])) {
     $humo_option["mail_auto"] = 'manual';
     $sql = "INSERT INTO humo_settings SET setting_variable='mail_auto', setting_value='manual'";

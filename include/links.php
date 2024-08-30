@@ -41,6 +41,7 @@ class Link_cls
         ['page' => 'photoalbum', 'file_rewrite' => 'photoalbum', 'file' => 'index.php?page=photoalbum', 'seperator' => '&amp;'],
         ['page' => 'register', 'file_rewrite' => 'register', 'file' => 'index.php?page=register', 'seperator' => '&amp;'],
         ['page' => 'relations', 'file_rewrite' => 'relations', 'file' => 'index.php?page=relations', 'seperator' => '&amp;'],
+        ['page' => 'reset_password', 'file_rewrite' => 'reset_password', 'file' => 'index.php?page=reset_password', 'seperator' => '&amp;'],
         ['page' => 'outline_report', 'file_rewrite' => 'outline_report', 'file' => 'index.php?page=outline_report', 'seperator' => '&amp;'],
         ['page' => 'sources', 'file_rewrite' => 'sources', 'file' => 'index.php?page=sources', 'seperator' => '&amp;'],
         ['page' => 'source', 'file_rewrite' => 'source', 'file' => 'index.php?page=source', 'seperator' => '&amp;'],

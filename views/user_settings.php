@@ -24,8 +24,8 @@ if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y
     <!-- TODO use bootstrap message box. -->
     <?php if ($data["result_message"]) echo '<h3 class="center">' . $data["result_message"] . '</h3>'; ?>
 
-    <div class="container">
-        <form action="<?= $action; ?>" method="post">
+    <form action="<?= $action; ?>" method="post">
+        <div class="container me-1">
             <div class="mb-2 row">
                 <label for="mail_sender" class="col-sm-3 col-form-label"><?= __('E-mail address'); ?></label>
                 <div class="col-sm-5">
@@ -90,8 +90,8 @@ if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y
                     <input type="submit" class="col-sm-4 btn btn-success" name="update_settings" value="<?= __('Change'); ?>">
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 <?php
 }
 
@@ -115,7 +115,7 @@ if ($show_theme_select == true) {
     <h1 class="my-4"><?= __('Select a theme'); ?></h1>
 
     <form action="<?= $action; ?>" class="center mb-3">
-        <div class="row">
+        <div class="row me-1">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
                 <select name="switchcontrol" class="form-select form-select-sm" onchange="chooseStyle(this.options[this.selectedIndex].value, 365)">

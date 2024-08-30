@@ -1,5 +1,7 @@
 /* Basic page styles */
 /* dec. 2023 test */
+
+/*
 html {
     height: 100%;
     max-height: 100%;
@@ -7,27 +9,22 @@ html {
     margin: 0;
     border: 0;
 }
+*/
 
 body.humo {
     background-color: white;
     background-image: url('style_admin/background.gif');
     background-repeat: no-repeat;
 
-    /* font: 12px Verdana, tahoma, arial, sans-serif; */
     font: 15px Verdana, tahoma, arial, sans-serif;
-    /* line-height:150%; */
 
+    /*
     height: 100%;
     max-height: 100%;
     padding: 0;
     margin: 0;
     border: 0;
-}
-
-.mobile_visible {
-    visibility: hidden;
-    width: 0px;
-    height: 0px;
+    */
 }
 
 #top_website_name {
@@ -122,24 +119,6 @@ table.humo td {
     background-color: white;
 }
 
-/* Special table items (used in Admin - Main menu table) */
-.line_item {
-    font-weight: bold;
-    background-color: #BDBDBD;
-}
-
-/* .line_ok { background-color:#00FF00; } */
-/* .line_ok { background-color:#66FF33; } */
-/* .line_ok { background-color:#9CFF7B; } */
-.line_ok {
-    background-color: #FFFFFF;
-}
-
-/* .line_nok { background-color:#FF6600; } */
-.line_nok {
-    background-color: #FF8000;
-}
-
 .iframe {
     width: 90%;
     height: 500px;
@@ -161,8 +140,7 @@ table.humo td {
     text-align: left;
     color: #737373;
     background-color: #f7f7f7;
-    /* height: 40px; */
-    padding: 5px 0px 0;
+    /* padding: 5px 0px 0; */
 }
 
 /* Border pop-up menu */
@@ -216,14 +194,6 @@ div.rtlsddm #sub_2 ul {
     padding-right: 0px;
 }
 */
-
-#content_admin {
-    display: block;
-    position: relative;
-    /* z-index: 3; */
-    /* boven, rechts, onder */
-    padding: 10px 0px 10px 10px;
-}
 
 /* Center buttons, etc. */
 .center {

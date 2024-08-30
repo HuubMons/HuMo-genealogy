@@ -42,6 +42,7 @@ class Router
         ['path' => 'photoalbum', 'title' => 'Photobook', 'page' => 'photoalbum', 'vars' => 'select_tree_id'],
         ['path' => 'register', 'title' => 'Register', 'page' => 'register'],
         ['path' => 'relations', 'title' => 'Relationship calculator', 'page' => 'relations'],
+        ['path' => 'reset_password', 'title' => 'Reset password', 'page' => 'reset_password'],
         // *** Must be before source ***
         ['path' => 'sources', 'title' => 'Sources', 'page' => 'sources', 'vars' => 'select_tree_id'],
         ['path' => 'source', 'title' => 'Source', 'page' => 'source', 'vars' => 'select_tree_id,id'],

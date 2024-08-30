@@ -14,12 +14,7 @@ if (!defined('ADMIN_PAGE')) {
 
 <div class="p-3 my-md-2 genealogy_search container-md">
     <div class="row">
-        <div class="col-auto">
-            <label for="tree" class="col-form-label">
-                <?= __('Family tree'); ?>:
-            </label>
-        </div>
-        <div class="col-auto">
+        <div class="col-3">
             <?= select_tree($dbh, $page, $tree_id); ?>
         </div>
 

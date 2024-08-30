@@ -1537,7 +1537,6 @@ class EditorModel
             $this->family_tree_update();
         }
 
-
         // *** Switch parents ***
         if (isset($_POST['parents_switch'])) {
             $sql = "UPDATE humo_families SET
@@ -1550,7 +1549,6 @@ class EditorModel
             $_POST['search_quicksearch_woman'] = '';
             $_POST['search_quicksearch_man'] = '';
         }
-
 
         // *** Also save relation data if witnesses are added ***
         $save_relation_data = false;
@@ -1578,7 +1576,6 @@ class EditorModel
         }
 
         // ** Change relation ***
-        //if (isset($_POST['marriage_change'])){
         if ($save_relation_data == true) {
             // *** Change i10 into I10 ***
             $_POST["connect_man"] = ucfirst($_POST["connect_man"]);

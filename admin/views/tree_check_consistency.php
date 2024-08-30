@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * 16-08-2024 Huub: changed layout to Bootstrap.
+ */
+
 // easily set other defaults:
 $b1_def    = 50;  //Birth date - more than X years after mother's birth
 $b2_def    = 60;  //Birth date - more than X years after father's birth
@@ -31,95 +36,259 @@ if (isset($_POST['mark_all'])) {
     <input type="hidden" name="tab" value="consistency">
 
     <h3><?= __('Check consistency of dates'); ?></h3>
-    <?= __('You can mark or unmark any of the check options and change defaults. Then press '); ?>
+    <input type="submit" class="btn btn-sm btn-secondary" name="unmark" value="<?= __('Unmark all options'); ?>">
+    <input type="submit" class="btn btn-sm btn-secondary ms-2" name="mark_all" value="<?= __('Mark all options'); ?>">
     <input type="submit" class="btn btn-sm btn-success" name="final_check" value="<?= __('Check'); ?>"><br>
-    <?= __('(with default settings a full check may take between 12-15 seconds per 10,000 persons)'); ?><br><br>
+    <?= __('Value x is the entered value at beginning of the line.'); ?>
 
-    <table class="humo" style="width:100%;<?= $rtlmarker == "rtl" ? ' text-align:right;' : ''; ?>border:none">
-        <tr>
-            <td style="border:none;width:50%">
-                <input type="submit" class="btn btn-sm btn-secondary" name="unmark" value="<?= __('Unmark all options'); ?>">
-                <input type="submit" class="btn btn-sm btn-secondary ms-2" name="mark_all" value="<?= __('Mark all options'); ?>"><br><br>
+    <!-- <div class="p-2 my-md-2 genealogy_search container-md"> -->
+    <div class="p-2 my-md-2 genealogy_search container-fluid">
 
-                <input type="checkbox" id="1" class="form-check-input" name="birth_date1" value="1" <?= $checked; ?>> <?= __('Birth date - after bapt/marr/death/burial date'); ?><br>
+        <!-- large screen: use 2 columns -->
+        <div class="row">
+            <div class="col-xl-6">
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="1" class="form-check-input" name="birth_date1" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="birth_date1" class="col-auto form-label col-form-label-sm"><?= __('Birth date - after bapt/marr/death/burial date.'); ?></label>
+                </div>
+
                 <!-- id 2 was moved to end -->
-                <input type="checkbox" id="3" class="form-check-input" name="birth_date3" value="1" <?= $checked; ?>> <?= __('Birth date - more than '); ?>
-                <input type="text" name="birth_date3_nr" style="width:30px" value="<?= $b1_def; ?>">
-                <?= __(' years after mother\'s birth'); ?><br>
-                <input type="checkbox" id="4" class="form-check-input" name="birth_date4" value="1" <?= $checked; ?>> <?= __('Birth date - more than '); ?>
-                <input type="text" name="birth_date4_nr" style="width:30px" value="<?= $b2_def; ?>">
-                <?= __(' years after father\'s birth'); ?><br>
-                <input type="checkbox" id="5" class="form-check-input" name="birth_date5" value="1" <?= $checked; ?>> <?= __('Birth date - less than '); ?>
-                <input type="text" name="birth_date5_nr" style="width:30px" value="<?= $b3_def; ?>">
-                <?= __(' years after mother\'s birth'); ?><br>
-                <input type="checkbox" id="6" class="form-check-input" name="birth_date6" value="1" <?= $checked; ?>> <?= __('Birth date - less than '); ?>
-                <input type="text" name="birth_date6_nr" style="width:30px" value="<?= $b4_def; ?>">
-                <?= __(' years after father\'s birth'); ?><br>
 
-                <!-- NEW -->
-                <input type="checkbox" id="23" class="form-check-input" name="birth_date7" value="1" <?= $checked; ?>> <?= __('Birth date - less than '); ?>
-                <input type="text" name="birth_date7_nr" style="width:30px" value="<?= $b5_def; ?>">
-                <?= __(' months after wedding parents'); ?><br>
-                <input type="checkbox" id="24" class="form-check-input" name="birth_date8" value="1" <?= $checked; ?>> <?= __('Birth date - before wedding parents'); ?><br>
-                <input type="checkbox" id="25" class="form-check-input" name="birth_date9" value="1" <?= $checked; ?>> <?= __('Birth date - less than '); ?>
-                <input type="text" name="birth_date9_nr" style="width:30px" value="<?= $b6_def; ?>">
-                <?= __(' months after previous child of mother'); ?><br>
-                <!-- END NEW -->
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="3" class="form-check-input" name="birth_date3" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="birth_date3_nr" id="birth_date3_nr" value="<?= $b1_def; ?>" class="form-control form-control-sm    ">
+                    </div>
+                    <label for="birth_date3_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - more than x years after mother\'s birth.'); ?></label>
+                </div>
 
-                <input type="checkbox" id="7" class="form-check-input" name="baptism_date1" value="1" <?= $checked; ?>> <?= __('Baptism date - after death/burial date'); ?><br>
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="4" class="form-check-input" name="birth_date4" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="birth_date4_nr" id="birth_date4_nr" value="<?= $b2_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="birth_date4_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - more than x years after father\'s birth.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="5" class="form-check-input" name="birth_date5" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="birth_date5_nr" id="birth_date5_nr" value="<?= $b3_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="birth_date5_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x years after mother\'s birth.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="6" class="form-check-input" name="birth_date6" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="birth_date6_nr" id="birth_date6_nr" value="<?= $b4_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="birth_date6_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x years after father\'s birth.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="23" class="form-check-input" name="birth_date7" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="birth_date7_nr" id="birth_date7_nr" value="<?= $b5_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="birth_date7_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x months after wedding parents.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="24" class="form-check-input" name="birth_date8" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="birth_date8_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - before wedding parents.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="25" class="form-check-input" name="birth_date9" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="birth_date9_nr" id="birth_date9_nr" value="<?= $b6_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="birth_date9_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x months after previous child of mother.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="7" class="form-check-input" name="baptism_date1" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="baptism_date1" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - after death/burial date.'); ?></label>
+                </div>
+
                 <!-- id 8 was joined in with id 2 -->
-                <input type="checkbox" id="9" class="form-check-input" name="baptism_date3" value="1" <?= $checked; ?>> <?= __('Baptism date - more than '); ?>
-                <input type="text" name="baptism_date3_nr" style="width:30px" value="<?= $bp1_def; ?>">
-                <?= __(' years after mother\'s birth'); ?><br>
-                <input type="checkbox" id="10" class="form-check-input" name="baptism_date4" value="1" <?= $checked; ?>> <?= __('Baptism date - more than '); ?>
-                <input type="text" name="baptism_date4_nr" style="width:30px" value="<?= $bp2_def; ?>">
-                <?= __(' years after father\'s birth'); ?><br>
-                <input type="checkbox" id="11" class="form-check-input" name="baptism_date5" value="1" <?= $checked; ?>> <?= __('Baptism date - less than '); ?>
-                <input type="text" name="baptism_date5_nr" style="width:30px" value="<?= $bp3_def; ?>">
-                <?= __(' years after mother\'s birth'); ?><br>
-                <input type="checkbox" id="12" class="form-check-input" name="baptism_date6" value="1" <?= $checked; ?>> <?= __('Baptism date - less than '); ?>
-                <input type="text" name="baptism_date6_nr" style="width:30px" value="<?= $bp4_def; ?>">
-                <?= __(' years after father\'s birth'); ?><br>
-            </td>
-            <td style="border:none;width:50%"><br>
-                <input type="checkbox" id="13" class="form-check-input" name="marriage_date1" value="1" <?= $checked; ?>> <?= __('Marriage date(s) - after death/burial date'); ?><br>
-                <input type="checkbox" id="14" class="form-check-input" name="marriage_date2" value="1" <?= $checked; ?>> <?= __('Marriage date(s) - less than '); ?>
-                <input type="text" name="marriage_date2_nr" style="width:30px" value="<?= $marr1_def; ?>">
-                <?= __(' years after birth date'); ?><br>
-                <input type="checkbox" id="15" class="form-check-input" name="marriage_age" value="1" <?= $checked; ?>> <?= __('Marriage age - age difference of more than '); ?>
-                <input type="text" name="marriage_age_nr" style="width:30px" value="<?= $marr2_def; ?>">
-                <?= __(' years between partners'); ?><br>
-                <input type="checkbox" id="16" class="form-check-input" name="death_date1" value="1" <?= $checked; ?>> <?= __('Death date - after burial date'); ?><br>
-                <input type="checkbox" id="17" class="form-check-input" name="death_date2" value="1" <?= $checked; ?>> <?= __('Death date - bef birth of mother'); ?><br>
-                <input type="checkbox" id="18" class="form-check-input" name="death_date3" value="1" <?= $checked; ?>> <?= __('Death date - bef birth of father'); ?><br>
-                <input type="checkbox" id="19" class="form-check-input" name="burial_date1" value="1" <?= $checked; ?>> <?= __('Burial date - bef birth of mother'); ?><br>
-                <input type="checkbox" id="20" class="form-check-input" name="burial_date2" value="1" <?= $checked; ?>> <?= __('Burial date - bef birth of father'); ?><br>
-                <input type="checkbox" id="21" class="form-check-input" name="age1" value="1" <?= $checked; ?>> <?= __('Age (by death date) - more than '); ?>
-                <input type="text" name="age1_nr" style="width:30px" value="<?= $age1_def; ?>">
-                <?= __(' years'); ?><br>
-                <input type="checkbox" id="22" class="form-check-input" name="age2" value="1" <?= $checked; ?>> <?= __('Age (by burial date) - more than '); ?>
-                <input type="text" name="age2_nr" style="width:30px" value="<?= $age2_def; ?>">
-                <?= __(' years'); ?><br>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="9" class="form-check-input" name="baptism_date3" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="baptism_date3_nr" id="baptism_date3" value="<?= $bp1_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="baptism_date3" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - more than x years after mother\'s birth.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="10" class="form-check-input" name="baptism_date4" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="baptism_date4_nr" id="baptism_date4" value="<?= $bp2_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="baptism_date4" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - more than x years after father\'s birth.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="11" class="form-check-input" name="baptism_date5" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="baptism_date5_nr" id="baptism_date5" value="<?= $bp3_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="baptism_date5" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - less than x years after mother\'s birth.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="12" class="form-check-input" name="baptism_date6" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="baptism_date6_nr" id="baptism_date6" value="<?= $bp4_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="baptism_date6" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - less than x years after father\'s birth.'); ?></label>
+                </div>
+
+            </div>
+
+            <div class="col-xl-6">
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="13" class="form-check-input" name="marriage_date1" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="marriage_date1" class="col-auto form-label col-form-label-sm"><?= __('Marriage date - after death/burial date.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="14" class="form-check-input" name="marriage_date2" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="marriage_date2_nr" id="marriage_date2" value="<?= $marr1_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="marriage_date2" class="col-auto form-label col-form-label-sm"><?= __('Marriage date - less than x years after birth date.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="15" class="form-check-input" name="marriage_age" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="marriage_age_nr" id="marriage_age" value="<?= $marr2_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="marriage_age" class="col-auto form-label col-form-label-sm"><?= __('Marriage age - age difference of more than x years between partners.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="16" class="form-check-input" name="death_date1" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="death_date1" class="col-auto form-label col-form-label-sm"><?= __('Death date - after burial date.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="17" class="form-check-input" name="death_date2" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="death_date2" class="col-auto form-label col-form-label-sm"><?= __('Death date - bef birth of mother.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="18" class="form-check-input" name="death_date3" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="death_date3" class="col-auto form-label col-form-label-sm"><?= __('Death date - bef birth of father.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="19" class="form-check-input" name="burial_date1" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="burial_date1" class="col-auto form-label col-form-label-sm"><?= __('Burial date - bef birth of mother.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="20" class="form-check-input" name="burial_date2" value="1" <?= $checked; ?>>
+                    </div>
+                    <label for="burial_date2" class="col-auto form-label col-form-label-sm"><?= __('Burial date - bef birth of father.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="21" class="form-check-input" name="age1" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="age1_nr" id="age1" value="<?= $age1_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="age1" class="col-auto form-label col-form-label-sm"><?= __('Age (by death date) - more than x years.'); ?></label>
+                </div>
+
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="22" class="form-check-input" name="age2" value="1" <?= $checked; ?>>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="age2_nr" id="age2" value="<?= $age2_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="age2" class="col-auto form-label col-form-label-sm"><?= __('Age (by burial date) - more than x years.'); ?></label>
+                </div>
+
                 <!-- since displaying people with no death/bur date and not marked as deceased might give a long list, this is not checked by default -->
-                <input type="checkbox" id="2" class="form-check-input" name="birth_date2" value="1"> <?= __('Age (up till today) - more than '); ?>
-                <input type="text" name="birth_date2_nr" style="width:30px" value="<?= $age3_def; ?>">
-                <?= __(' years <b>(may give long list!)'); ?></b><br>
-            </td>
-        </tr>
-    </table>
+                <div class="row">
+                    <div class="col-auto">
+                        <input type="checkbox" id="2" class="form-check-input" name="birth_date2" value="1">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="birth_date2_nr" id="birth_date2" value="<?= $age3_def; ?>" class="form-control form-control-sm">
+                    </div>
+                    <label for="birth_date2" class="col-auto form-label col-form-label-sm"><?= __('Age (up till today) - more than x years. <b>(may give long list!)</b>.'); ?></label>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </form>
 
 <?php if (isset($_POST['final_check'])) { ?>
     <!-- performs the date consistency check -->
     <h3><?= __('Results'); ?></h3>
 
-    <table class="humo" style="width:100%;<?= $rtlmarker == "rtl" ? 'text-align:right' : ''; ?>">
+    <table class="table">
+        <thead class="table-primary">
         <tr>
-            <th style="width:20%;border:1px solid black;text-align:center;"><?= __('Person'); ?></th>
-            <th style="width:10%;border:1px solid black;text-align:center;"><?= __('ID'); ?></th>
-            <th style="width:35%;border:1px solid black;text-align:center;"><?= __('Possible consistency problems'); ?></th>
-            <th style="width:35%;border:1px solid black;text-align:center;"><?= __('Details'); ?></th>
+            <th style="width:20%;"><?= __('Person'); ?></th>
+            <th style="width:10%;"><?= __('ID'); ?></th>
+            <th style="width:35%;"><?= __('Possible consistency problems'); ?></th>
+            <th style="width:35%;"><?= __('Details'); ?></th>
         </tr>
+        </thead>
 
         <?php
         $results_found = 0;

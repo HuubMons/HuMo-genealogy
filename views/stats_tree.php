@@ -34,47 +34,55 @@ $tree_date = show_tree_date($dataDb->tree_date);
 ?>
 
 <br>
-<table class="humo" align="center">
-    <tr class="table_headline">
-        <th><?= __('Item'); ?></th>
-        <th><br></th>
-        <th><br></th>
-    </tr>
 
-    <!-- Latest database update -->
-    <tr>
-        <td><?= __('Latest update'); ?></td>
-        <td align="center"><i><?= $tree_date; ?></i></td>
-        <td><br></td>
-    </tr>
+<div class="row me-1">
+    <div class="col-md-8">
 
-    <tr>
-        <td colspan="3"><br></td>
-    </tr>
+        <table class="table">
+            <thead class="table-primary">
+                <tr>
+                    <th><?= __('Item'); ?></th>
+                    <th><br></th>
+                    <th><br></th>
+                </tr>
+            </thead>
 
-    <!-- Nr. of families in database -->
-    <tr>
-        <td><?= __('No. of families'); ?></td>
-        <td align="center"><i><?= $dataDb->tree_families; ?></i></td>
-        <td><br></td>
-    </tr>
+            <!-- Latest database update -->
+            <tr>
+                <td><?= __('Latest update'); ?></td>
+                <td align="center"><i><?= $tree_date; ?></i></td>
+                <td><br></td>
+            </tr>
 
-    <tr>
-        <td><?= __('Most children in family'); ?></td>
-        <td align='center'><i><?= $test_number; ?></i></td>
-        <td align="center">
-            <?php
-            if ($test_number != "0") {
-                echo '<a href="' . $url . '"><i><b>' . $man . __(' and ') . $woman . '</b></i></a>';
-            }
-            ?>
-        </td>
-    </tr>
+            <tr>
+                <td colspan="3"><br></td>
+            </tr>
 
-    <!-- Nr. of persons database -->
-    <tr>
-        <td><?= __('No. of persons'); ?></td>
-        <td align='center'><i><?= $dataDb->tree_persons; ?></i></td>
-        <td><br></td>
-    </tr>
-</table>
+            <!-- Nr. of families in database -->
+            <tr>
+                <td><?= __('No. of families'); ?></td>
+                <td align="center"><i><?= $dataDb->tree_families; ?></i></td>
+                <td><br></td>
+            </tr>
+
+            <tr>
+                <td><?= __('Most children in family'); ?></td>
+                <td align='center'><i><?= $test_number; ?></i></td>
+                <td align="center">
+                    <?php
+                    if ($test_number != "0") {
+                        echo '<a href="' . $url . '"><i><b>' . $man . __(' and ') . $woman . '</b></i></a>';
+                    }
+                    ?>
+                </td>
+            </tr>
+
+            <!-- Nr. of persons database -->
+            <tr>
+                <td><?= __('No. of persons'); ?></td>
+                <td align='center'><i><?= $dataDb->tree_persons; ?></i></td>
+                <td><br></td>
+            </tr>
+        </table>
+    </div>
+</div>

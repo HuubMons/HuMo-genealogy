@@ -344,8 +344,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         ?>
 
         <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $page; ?>">
-            <input type="hidden" name="menu_tab" value="picture_categorie">
+            <input type="hidden" name="page" value="thumbs">
+            <input type="hidden" name="menu_tab" value="picture_categories">
             <input type="hidden" name="language_tree" value="<?= $language_tree; ?>">
 
             <div class="p-3 m-2 genealogy_search">

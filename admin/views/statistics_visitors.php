@@ -7,8 +7,8 @@ if (isset($_POST['month'])) {
 }
 
 //TODO select month is double code. Also used in previous part.
-
 ?>
+
 <div class="center">
     <br>
     <form method="POST" action="<?= $phpself; ?>" style="display : inline;">
@@ -28,8 +28,8 @@ if (isset($_POST['month'])) {
             <option value="11" <?php if ($month == '11') echo ' selected'; ?>><?= __('November'); ?></option>
             <option value="12" <?php if ($month == '12') echo ' selected'; ?>><?= __('December'); ?></option>
         </select>
-        <?php
 
+        <?php
         // *** Selection of year ***
 
         // *** Find oldest record in database ***
@@ -54,16 +54,14 @@ if (isset($_POST['month'])) {
             echo '<option value="' . $year_select . '"' . $select . '>' . $year_select . '</option>';
         }
         echo "</select>";
-
         ?>
-        <input type="submit" name="submit" value="<?= __('Select'); ?>">
-    </form>
 
-    <!-- Visitors in present month -->
-    <br><br><b><?= __('Visitors'); ?></b><br>
+        <input type="submit" name="submit" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
+    </form><br><br>
+    <b><?= __('Visitors'); ?></b><br>
 </div><br>
-<?php
 
+<?php
 // Graphic of present month
 if ($month == $present_month && $year == $present_year) {
     calender($month, $year, true);

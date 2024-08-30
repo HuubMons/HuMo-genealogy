@@ -39,6 +39,47 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
     $maps['display_death'] = true;
     $maps['display_birth'] = false;
 }
+
+if ($maps['select_world_map'] == 'Google') {
+    // slider defaults
+    $realmin = 1560;  // first year shown on slider
+    $step = "50";     // interval
+    $minval = "1510"; // OFF position (first year minus step, year is not shown)
+    $yr = date("Y");
+
+    // check for stored min value, created with google maps admin menu
+    $query = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_" . $tree_prefix_quoted . "' ";
+    $result = $dbh->query($query);
+    if ($result->rowCount() > 0) {
+        $sliderDb = $result->fetch(PDO::FETCH_OBJ);
+        $realmin = $sliderDb->setting_value;
+        $step = floor(($yr - $realmin) / 9);
+        $minval = $realmin - $step;
+    }
+
+    $qry = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_default_pos'";
+    $result = $dbh->query($qry);
+    if ($result->rowCount() > 0) {
+        $def = $result->fetch(); // defaults to array
+        $slider_def = $def['setting_value'];
+        if ($slider_def == "off") {
+            // slider at leftmost position
+            $defaultyr = $minval;
+            $default_display = "------>";
+            $makesel = "";
+        } else {
+            // slider ar rightmost position
+            $defaultyr = $yr;
+            $default_display = $defaultyr;
+            $makesel = " makeSelection(3); ";
+        }
+    } else {
+        //$defaultyr = $minval; $default_display = "------>"; $makesel=""; // slider at leftmost position 
+        $defaultyr = $yr;
+        $default_display = $defaultyr;
+        $makesel = " makeSelection(3); ";  // slider at rightmost position (default)
+    }
+}
 ?>
 
 
@@ -46,6 +87,16 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
     <div class="row mb-2">
         <div class="col-auto">
             <?= __('Display birth or death locations across different time periods'); ?>
+        </div>
+
+        <div class="col-auto">
+            <!-- Help popup. Remark: Bootstrap popover javascript in layout script. -->
+            <?php $popup_text = __('Click markers to show information about the location and see a list off all persons connected to the location.'); ?>
+            <?php $popup_text = str_replace('"', "'", $popup_text); ?>
+
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
+                <?= __('Help'); ?>
+            </button>
         </div>
     </div>
 
@@ -97,19 +148,8 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
         <div class="col-auto">
             <form name="type_form" method="POST" action="" style="display : inline;">
                 <select style="max-width:200px" size="1" onChange="document.type_form.submit()" id="map_type" name="map_type" class="form-select form-select-sm">
-                    <?php
-                    $selected = '';
-                    if ($maps['display_birth']) {
-                        $selected = ' selected ';
-                    }
-                    echo '<option value="type_birth" ' . $selected . '>' . __('Birth locations') . '</option>';
-
-                    $selected = '';
-                    if ($maps['display_death']) {
-                        $selected = ' selected ';
-                    }
-                    echo '<option value="type_death" ' . $selected . '>' . __('Death locations') . '</option>';
-                    ?>
+                    <option value="type_birth" <?= $maps['display_birth'] ? 'selected' : ''; ?>><?= __('Birth locations'); ?></option>
+                    <option value="type_death" <?= $maps['display_death'] ? 'selected' : ''; ?>><?= __('Death locations'); ?></option>
                 </select>
             </form>
         </div>
@@ -117,65 +157,9 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
 
         <?php if ($maps['select_world_map'] == 'Google') { ?>
             <div class="col-auto">
-                <?php
-                // div tree choice
-                //if ($language['dir'] != "rtl") {
-                //    echo '<div style="margin-top:4px;font-size:110%;float:left"></div>';
-                //} else {
-                //    echo '<div style="font-size:110%;float:right"></div>';
-                //}
-
-                //echo __('Filters:') . '&nbsp;&nbsp;';
-                //echo '</div>';
-
-                // div slider text + year box
-                if ($language['dir'] != "rtl") {
-                    $left_right = 'float:left';
-                } else {
-                    $left_right = 'float:right';
-                }
-                ?>
-                <div style="<?= $left_right; ?>">
+                <!-- Slider text & year box -->
+                <div style="<?= $language['dir'] != "rtl" ? 'float:left' : 'float:right'; ?>">
                     <?php
-                    // slider defaults
-                    $realmin = 1560;  // first year shown on slider
-                    $step = "50";     // interval
-                    $minval = "1510"; // OFF position (first year minus step, year is not shown)
-                    $yr = date("Y");
-
-                    // check for stored min value, created with google maps admin menu
-                    $query = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_" . $tree_prefix_quoted . "' ";
-                    $result = $dbh->query($query);
-                    if ($result->rowCount() > 0) {
-                        $sliderDb = $result->fetch(PDO::FETCH_OBJ);
-                        $realmin = $sliderDb->setting_value;
-                        $step = floor(($yr - $realmin) / 9);
-                        $minval = $realmin - $step;
-                    }
-
-                    $qry = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_default_pos'";
-                    $result = $dbh->query($qry);
-                    if ($result->rowCount() > 0) {
-                        $def = $result->fetch(); // defaults to array
-                        $slider_def = $def['setting_value'];
-                        if ($slider_def == "off") {
-                            // slider at leftmost position
-                            $defaultyr = $minval;
-                            $default_display = "------>";
-                            $makesel = "";
-                        } else {
-                            // slider ar rightmost position
-                            $defaultyr = $yr;
-                            $default_display = $defaultyr;
-                            $makesel = " makeSelection(3); ";
-                        }
-                    } else {
-                        //$defaultyr = $minval; $default_display = "------>"; $makesel=""; // slider at leftmost position 
-                        $defaultyr = $yr;
-                        $default_display = $defaultyr;
-                        $makesel = " makeSelection(3); ";  // slider at rightmost position (default)
-                    }
-
                     echo '
                     <script>
                     var minval = ' . $minval . ';
@@ -205,20 +189,12 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
                             }
                             startPos = endPos;
                         });
-
                     });
                     </script>'; ?>
                 </div>
 
-                <?php
-                // *** Slider ***
-                if ($language['dir'] != "rtl") {
-                    $left_right = 'float:left';
-                } else {
-                    $left_right = 'float:right';
-                }
-                ?>
-                <div style="<?= $left_right; ?>">
+                <!-- Slider text -->
+                <div style="<?= $language['dir'] != "rtl" ? 'float:left' : 'float:right'; ?>">
                     <?php if ($maps['display_birth']) { ?>
                         <?= __('Display births until: '); ?>
                     <?php } elseif ($maps['display_death']) { ?>
@@ -226,9 +202,10 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
                     <?php } ?>
 
                     &nbsp;<input type="text" id="amount" disabled="disabled" size="4" style="border:0;color:#0000CC;font-weight:normal;font-size:115%;">
-                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;
                 </div>
 
+                <!-- Slider -->
                 <?php if ($language['dir'] != "rtl") { ?>
                     <div id="slider" style="float:left;width:170px;margin-top:7px;margin-right:15px;"></div>
                 <?php } else { ?>
@@ -243,10 +220,53 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
 
     <?php if ($maps['select_world_map'] == 'Google') { ?>
         <div class="row mb-2">
+
+            <!-- Select specific family name(s) -->
             <div class="col-auto">
-                <input type="submit" name="anything" onclick="document.getElementById('namemapping').style.display='block' ;" value="<?= __('Filter by specific family name(s)'); ?>" class="btn btn-sm btn-secondary">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#familynameModal">
+                    <?= __('Filter by specific family name(s)'); ?>
+                </button>
+
+                <form method="POST" action="<?= $link; ?>">
+                    <?php
+                    $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
+                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                        AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ORDER BY totalname";
+                    $fam_search_result = $dbh->query($fam_search);
+                    ?>
+                    <div class="modal fade" id="familynameModal" tabindex="-1" aria-labelledby="familynameModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable"> <!-- <div class="modal-dialog modal-xl"> -->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="familynameModalLabel"><?= __('Filter by specific family name(s)'); ?></h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <b><?= __('Mark checkbox next to name(s)'); ?></b><br>
+                                    <?php
+                                    while ($fam_searchDb = $fam_search_result->fetch(PDO::FETCH_OBJ)) {
+                                        $pos = strpos($fam_searchDb->totalname, '_');
+                                        $pref = substr($fam_searchDb->totalname, $pos + 1);
+                                        if ($pref !== '') {
+                                            $pref = ', ' . $pref;
+                                        }
+                                        $last = substr($fam_searchDb->totalname, 0, $pos);
+                                    ?>
+                                        <input type="checkbox" name="items[]" value="<?= $fam_searchDb->totalname; ?>" class="form-check-input"> <?= $last . $pref; ?><br>
+                                    <?php } ?>
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button> -->
+                                    <button type="submmit" name="submit" class="btn btn-primary"><?= __('Choose'); ?></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
 
+
+            <!-- TODO: use bootstrap. Don't show list of persons, but use search options -->
             <div class="col-auto">
                 <form method="POST" style="display:inline" name="descform" action="<?= $link; ?>">
                     <input type="hidden" name="descmap" value="1">
@@ -254,6 +274,75 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
                 </form>
             </div>
 
+
+
+            <?php /*
+            // Maybe just add a search box in the main form? Use 1 search box with option: descendants/ anscestors.
+            <!-- Select descendants -->
+            <div class="col-auto">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#descendantsModal">
+                    <?= __('Filter by descendants'); ?>
+                </button>
+
+                <form method="POST" action="<?= $link; ?>">
+                    <?php
+                    $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
+                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                        AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
+                    $fam_search_result = $dbh->query($fam_search);
+                    ?>
+                    <div class="modal fade" id="descendantsModal" tabindex="-1" aria-labelledby="descendantsModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable"> <!-- <div class="modal-dialog modal-xl"> -->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="familynameModalLabel"><?= __('Filter by descendants'); ?></h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <form method="POST" action="" style="display : inline;">
+                                        <div class="row mb-2">
+                                            <div class="col-4">
+                                                <input type="text" name="search_quicksearch_man" placeholder="<?= __('Name'); ?>" value="" size="15" class="form-control form-control-sm">
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <?= __('or ID:'); ?>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <input type="text" name="search_man_id" value="" size="5" class="form-control form-control-sm">
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <input type="submit" name="submit" value="TEST" class="btn btn-sm btn-secondary">
+
+                                                <input type="submit" name="submit" value="TEST 2" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#descendantsModal">
+                                                
+                                                <input type="submit" name="submit" value="TEST 3" class="btn btn-sm btn-secondary" data-dismiss="modal">
+
+                                                
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button> -->
+                                    <button type="submmit" name="submit" class="btn btn-primary"><?= __('Choose'); ?></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            */
+            ?>
+
+
+
+
+            <!-- TODO: use bootstrap. Don't show list of persons, but use search options -->
             <div class="col-auto">
                 <form method="POST" style="display:inline" name="ancform" action="<?= $link; ?>">
                     <input type="hidden" name="ancmap" value="1">
@@ -262,70 +351,22 @@ if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
             </div>
 
             <div class="col-auto">
-                <!-- Help popup. Remark: Bootstrap popover javascript in layout script. -->
-                <style>
-                    .popover {
-                        max-width: 500px;
-                    }
-
-                    .popover-body {
-                        height: 500px;
-                        overflow-y: auto;
-                    }
-                </style>
-                <?php $popup_text = __('<b>Top menu line:</b>
-<ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>
-<li>Choose whether to display birth location or death locations.</li></ul>
-<b>Second menu line:</b>
-<ul><li>The "births until" slider. With this slider you can mark the birthplaces of persons who were born until a certain date. The slider has ten positions.</li>
-<li>Filter by specific family name(s)". This will open a window with all family names. Mark checkboxes next to names and press "Choose" to start mapping the locations of those families only.<br>
-After pressing "Choose" you will see a yellow banner near the top of the map, informing you which family names are being filtered. Now use the slider or "mark all location" button to place the markers.</li>
-<li>Filter by descendants". This will open a window with all persons that have descendants. Click the person whose descendants you want to map.<br>
-A yellow banner will appear near the top of the map, informing which persons\' descendants are filtered. Now use the slider or "mark all location" button to place the markers.</li></ul>
-<b>Third menu line:</b>
-<ul><li>Find location on the map". Here you can pick a location from all locations in the tree and zoom in to it automatically.</li></ul>
-<b>The map:</b>
-<ul><li>Colored markers are placed on the map according to the settings made in the menu. Inside the marker you will see the number of people born in that location.</li>
-<li>There are 4 different size markers (from small to big): Red markers (over 100 people), blue markers (50-99 people), green markers (9-49 people) and yellow markers (1-9 people)</li>
-<li>When you hover with the mouse over a marker a "tooltip" will show with the name of the location.</li>
-<li>When you click on the marker you will see two links.</li>
-<li>The first link will open a new browser tab with the Wikipedia entry about this location (if such an entry exists).</li>
-<li>The second link will present (in the Info Window itself) a list of all persons born in this location.</li>
-<li>The names in this list are clickable and will open a new browser tab with the family page of this person.</li>'); ?>
-                <?php $popup_text = str_replace('"', "'", $popup_text); ?>
-
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
-                    <?= __('Help'); ?>
-                </button>
-            </div>
-
-            <div class="col-auto">
                 <?php
-                //echo __('Other tools:') . '&nbsp;&nbsp;&nbsp;&nbsp;';
                 /*
-                // BIRTH LOCATION BUTTON
-                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                 if($maps['display_birth']) {
-                echo ' <input style="font-size:14px" type="button" value="'.__('Mark all birth locations').'" onclick="makeSelection(3)"> ';
+                    echo ' <input style="font-size:14px" type="button" value="'.__('Mark all birth locations').'" onclick="makeSelection(3)"> ';
                 }
                 elseif($maps['display_death']) {
-                echo ' <input style="font-size:14px" type="button" value="'.__('Mark all death locations').'" onclick="makeSelection(3)"> ';
+                    echo ' <input style="font-size:14px" type="button" value="'.__('Mark all death locations').'" onclick="makeSelection(3)"> ';
                 }
-                echo '</div>';
                 */
 
                 // PULL-DOWN: FIND LOCATION
-                $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-                if ($result->rowCount() > 0) {
-                    if ($maps['display_birth']) {
-                        $loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%" . $tree_prefix_quoted . "birth%' OR location_status LIKE '%" . $tree_prefix_quoted . "bapt%' OR location_status = '' ORDER BY location_location";
-                    }
-                    if ($maps['display_death']) {
-                        $loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%" . $tree_prefix_quoted . "death%' OR location_status LIKE '%" . $tree_prefix_quoted . "buried%' OR location_status = '' ORDER BY location_location";
-                    }
-                } else {
-                    // this is for backward compatibility - if someone doesn't yet have a location_status column: show all locations as until now
-                    $loc_search = "SELECT * FROM humo_location ORDER BY location_location";
+                if ($maps['display_birth']) {
+                    $loc_search = "SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_status LIKE '%" . $tree_prefix_quoted . "birth%' OR location_status LIKE '%" . $tree_prefix_quoted . "bapt%' OR location_status = '' ORDER BY location_location";
+                }
+                if ($maps['display_death']) {
+                    $loc_search = "SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_status LIKE '%" . $tree_prefix_quoted . "death%' OR location_status LIKE '%" . $tree_prefix_quoted . "buried%' OR location_status = '' ORDER BY location_location";
                 }
                 $loc_search_result = $dbh->query($loc_search);
                 //if ($loc_search_result !== false) {
@@ -487,7 +528,7 @@ A yellow banner will appear near the top of the map, informing which persons\' d
             $persfams = $_GET['anc_persfams'];
             $persfams_arr = explode(';', $persfams);
             $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
-                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
+                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
             $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
             //also check privacy
             $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
@@ -628,49 +669,6 @@ A yellow banner will appear near the top of the map, informing which persons\' d
 
 
 <?php
-// FIXED WINDOW WITH LIST OF SPECIFIC FAMILY NAMES TO MAP BY
-$fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
-    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-    AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
-$fam_search_result = $dbh->query($fam_search);
-?>
-<div id="namemapping" style="display:none; z-index:100; position:absolute; top:150px; margin-left:10px; height:460px; width:250px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;">
-    <form method="POST" action="<?= $link; ?>" name="yossi" style="display : inline;">
-        <table style="z-index:200;">
-            <tr>
-                <td style="text-align:center"><?= __('Mark checkbox next to name(s)'); ?></td>
-            </tr>
-            <tr>
-                <td>
-                    <div style="z-index:110;height: 400px; width:241px; overflow: auto; border: 1px solid #000; background: #eee; color: #000;">
-                        <?php
-                        while ($fam_searchDb = $fam_search_result->fetch(PDO::FETCH_OBJ)) {
-                            $pos = strpos($fam_searchDb->totalname, '_');
-                            $pref = substr($fam_searchDb->totalname, $pos + 1);
-                            if ($pref !== '') {
-                                $pref = ', ' . $pref;
-                            }
-                            $last = substr($fam_searchDb->totalname, 0, $pos);
-                            echo '<input type="checkbox" name="items[]" value="' . $fam_searchDb->totalname . '">' . $last . $pref . '<br>';
-                        }
-                        ?>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align:center">
-                    <input type="submit" name="submit" value="<?= __('Choose'); ?>">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <?php
-                    echo '<input type="button" name="cancelfam" onclick="document.getElementById(\'namemapping\').style.display=\'none\';"  value="' . __('Cancel') . '">';
-                    ?>
-                </td>
-            </tr>
-        </table>
-    </form>
-</div>
-
-<?php
 // FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH DESCENDANTS
 if (isset($_POST['descmap'])) {
     //adjust pulldown for mobiles/tablets
@@ -692,9 +690,9 @@ if (isset($_POST['descmap'])) {
         $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
         $desc_search = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
         $desc_search_result = $dbh->query($desc_search);
-        echo '&nbsp;&nbsp;<strong>' . __('Filter by descendants of a person') . '</strong><br>';
-        echo '&nbsp;&nbsp;' . __('Pick a name or enter ID:') . '<br>';
         ?>
+        &nbsp;&nbsp;<strong><?= __('Filter by descendants of a person'); ?></strong><br>
+        &nbsp;&nbsp;<?= __('Pick a name or enter ID:'); ?><br>
         <form method="POST" action="" style="display : inline;">
             <select style="max-width:396px;background:#eee" <?= $select_size; ?> onChange="window.location=this.value;" id="desc_map" name="desc_map">
                 <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
@@ -770,7 +768,11 @@ if (isset($_POST['descmap'])) {
                                     }
                                     $name = $last . $first . $pref;
                                 }
-                                echo '<option value="' . $link2 . 'persged=' . $desc_searchDb->pers_gedcomnumber . '&persfams=' . $desc_searchDb->pers_fams . '" ' . $selected . '>' . $name . $date . ' [#' . $desc_searchDb->pers_gedcomnumber . ']</option>';
+                ?>
+                                <option value="<?= $link2; ?>persged=<?= $desc_searchDb->pers_gedcomnumber; ?>&persfams=<?= $desc_searchDb->pers_fams; ?>" <?= $selected; ?>>
+                                    <?= $name . $date; ?> [<?= $desc_searchDb->pers_gedcomnumber; ?>]
+                                </option>
+                <?php
                             }
                         }
                     }
@@ -787,10 +789,13 @@ if (isset($_POST['descmap'])) {
                 }
             }
         </script>
-        <?php
-        echo '<br><div style="margin-top:5px;text-align:left">&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="' . __('Go!') . '" onclick="findGednr(getElementById(\'id_field\').value);">';
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . $link . '">' . __('Cancel') . '</a></div>';
-        ?>
+        <br>
+        <div style="margin-top:5px;text-align:left">
+            <?php
+            echo '&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="' . __('Go!') . '" onclick="findGednr(getElementById(\'id_field\').value);">';
+            ?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?= $link; ?>"><?= __('Cancel'); ?></a>
+        </div>
     </div>
 <?php
 }
@@ -816,9 +821,9 @@ if (isset($_POST['ancmap'])) {
         $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
         $anc_search = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
         $anc_search_result = $dbh->query($anc_search);
-        echo '&nbsp;&nbsp;<strong>' . __('Filter by ancestors of a person') . '</strong><br>';
-        echo '&nbsp;&nbsp;' . __('Pick a name or enter ID:') . '<br>';
         ?>
+        &nbsp;&nbsp;<strong><?= __('Filter by ancestors of a person'); ?></strong><br>
+        &nbsp;&nbsp;<?= __('Pick a name or enter ID:'); ?><br>
         <form method="POST" action="" style="display : inline;">
             <select style="max-width:396px;background:#eee" <?= $select_size; ?> onChange="window.location=this.value;" id="anc_map" name="anc_map">
                 <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
@@ -896,7 +901,11 @@ if (isset($_POST['ancmap'])) {
                                     }
                                     $name = $last . $first . $pref;
                                 }
-                                echo '<option value="' . $link2 . 'anc_persged=' . $anc_searchDb->pers_gedcomnumber . '&anc_persfams=' . $anc_searchDb->pers_fams . '" ' . $selected . '>' . $name . $date . ' [#' . $anc_searchDb->pers_gedcomnumber . ']</option>';
+                ?>
+                                <option value="<?= $link2; ?>anc_persged=<?= $anc_searchDb->pers_gedcomnumber; ?>&anc_persfams=<?= $anc_searchDb->pers_fams; ?>" <?= $selected; ?>>
+                                    <?= $name . $date; ?> [<?= $anc_searchDb->pers_gedcomnumber; ?>]
+                                </option>
+                <?php
                             }
                         }
                     }
@@ -913,14 +922,16 @@ if (isset($_POST['ancmap'])) {
                 }
             }
         </script>
-        <?php
-        echo '<br><div style="margin-top:5px;text-align:left">&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="' . __('Go!') . '" onclick="findGednr(getElementById(\'id_field\').value);">';
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . $link . '">' . __('Cancel') . '</a></div>';
-        ?>
+        <br>
+        <div style="margin-top:5px;text-align:left">
+            <?php
+            echo '&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="' . __('Go!') . '" onclick="findGednr(getElementById(\'id_field\').value);">';
+            ?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?= $link; ?>"><?= __('Cancel'); ?></a>
+        </div>
     </div>
 <?php
 }
-// END NEW~~~~~~~~~~~~~~~~~~~~~~
 
 
 // *** OpenStreetMap ***
@@ -931,9 +942,8 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
     $text_array[] = '';
     $text_count_array[] = '';
 
-    $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location");
+    $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL");
     while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
-        //$locarray[$locationDb->location_location][0] = $locationDb->location_location;
         $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
         $locarray[$locationDb->location_location][1] = $locationDb->location_lat;
         $locarray[$locationDb->location_location][2] = $locationDb->location_lng;
@@ -949,12 +959,14 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
         //$locarray[$locationDb->location_location][12] = 0;   // till today (=2010 and beyond)
         //$locarray[$locationDb->location_location][13] = 0;   // all
 
+
         //TEST add all location in maps...
-        //$location_array[]=htmlspecialchars($locationDb->location_location);
-        //$lat_array[]=$locationDb->location_lat;
-        //$lon_array[]=$locationDb->location_lng;
-        //$text_array[]='test';
+        //$location_array[] = htmlspecialchars($locationDb->location_location);
+        //$text_array[] = '<b>'.htmlspecialchars($locationDb->location_location).'</b>';
+        //$lat_array[] = $locationDb->location_lat;
+        //$lon_array[] = $locationDb->location_lng;
     }
+
     $namesearch_string = '';
     if ($maps['display_birth']) {
         //$persoon=$dbh->query("SELECT pers_tree_id, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
@@ -990,7 +1002,7 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
             }
         }
 
-        if (isset($locarray[$place])) { // birthplace exists in location database
+        if (isset($locarray[$place])) { // Place exists in location database
             if ($date) {
                 $year = substr($date, -4);
 
@@ -1007,9 +1019,9 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
                 //$locarray[$place][13]++;  // array of all people incl without birth date
 
                 // *** Use person class ***
+                // TODO: this slows down page for large family trees. Use Javascript to show persons?
                 $person_cls = new person_cls($personDb);
                 $name = $person_cls->person_name($personDb);
-
 
                 $key = array_search($locarray[$place][0], $location_array);
                 if (isset($key) && $key > 0) {
@@ -1041,18 +1053,14 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
     <link rel="stylesheet" href="assets/leaflet/leaflet.css">
     <script src="assets/leaflet/leaflet.js"></script>
 
-    <!-- Show map -->
-    <div id="map" style="width:1000px; height:520px"></div>
+    <!-- Show OpenStreetMap -->
+    <div id="map" style="height:520px"></div>
 
-<?php
+    <?php
     // *** Map using fitbound (all markers visible) ***
     echo '<script>
         var map = L.map("map").setView([48.85, 2.35], 10);
         var markers = [';
-
-    //echo 'L.marker([51,5, -0.09]) .bindPopup(\'Test\')';
-
-    //include_once(__DIR__ . "/../googlemaps/google_initiate.php");
 
     // *** Add all markers from array ***
     for ($i = 1; $i < count($location_array); $i++) {
@@ -1072,7 +1080,7 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
 } else {
 
     // *** Google Maps ***
-    echo '<div id="map_canvas" style="width:1000px; height:520px"></div>'; // placeholder div for map generated below
+    echo '<div id="map_canvas" style="height:520px"></div>'; // placeholder div for map generated below
 
     // function to read multiple values from location search bar and zoom to map location:
     echo '
@@ -1093,36 +1101,45 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
 
     $api_key = '';
     if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
-        $api_key = '?key=' . $humo_option['google_api_key'] . '&callback=Function.prototype'; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
+        //$api_key = '?key=' . $humo_option['google_api_key'] . '&callback=Function.prototype';
+        //$api_key = '?key=' . $humo_option['google_api_key'] . '&loading=async&callback=initMap';
+
+        // July 2024: for advanced markers use:
+        $api_key = '?key=' . $humo_option['google_api_key'] . '&callback=initMap&v=weekly&libraries=marker';
     }
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
         echo '<script src="https://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
     } else {
         echo '<script src="http://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
     }
-    $maptype = "ROADMAP";
-    if (isset($humo_option['google_map_type'])) {
-        $maptype = $humo_option['google_map_type'];
-    }
+    //$maptype = "ROADMAP";
+    //if (isset($humo_option['google_map_type'])) {
+    //    $maptype = $humo_option['google_map_type'];
+    //}
+    // Removed from initialize:
+    //mapTypeId: google.maps.MapTypeId.<?= $maptype;
 
-    echo '
+    ?>
+
     <script>
         var map;
+
         function initialize() {
             var latlng = new google.maps.LatLng(22, -350);
             var myOptions = {
                 zoom: 2,
                 center: latlng,
-                mapTypeId: google.maps.MapTypeId.' . $maptype . '
+                mapId: "MAP_07_2024", // Map ID is required for advanced markers.
             };
             map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
         }
-    </script>';
+    </script>
 
-    echo '<script>
+    <script>
         initialize();
-    </script>';
+    </script>
 
+<?php
     include_once(__DIR__ . "/../googlemaps/google_initiate.php");
 
     /*
@@ -1132,3 +1149,172 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
     */
 }
 ?>
+
+
+
+
+<?php if (1 == 0) { ?>
+    <!-- TEST for colored and sized markers -->
+    <!-- https://developers.google.com/maps/documentation/javascript/examples/advanced-markers-basic-style -->
+    <!-- TODO check: https://developers.google.com/maps/documentation/javascript/advanced-markers/basic-customization -->
+
+    <div id="map" style="height:520px"></div>
+
+    <!-- prettier-ignore -->
+    <script>
+        (g => {
+            var h, a, k, p = "The Google Maps JavaScript API",
+                c = "google",
+                l = "importLibrary",
+                q = "__ib__",
+                m = document,
+                b = window;
+            b = b[c] || (b[c] = {});
+            var d = b.maps || (b.maps = {}),
+                r = new Set,
+                e = new URLSearchParams,
+                u = () => h || (h = new Promise(async (f, n) => {
+                    await (a = m.createElement("script"));
+                    e.set("libraries", [...r] + "");
+                    for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+                    e.set("callback", c + ".maps." + q);
+                    a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                    d[q] = f;
+                    a.onerror = () => h = n(Error(p + " could not load."));
+                    a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                    m.head.append(a)
+                }));
+            d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+        })
+        ({
+            key: "<?= $humo_option['google_api_key']; ?>",
+            v: "weekly"
+        });
+    </script>
+
+    <script>
+        const parser = new DOMParser();
+
+        async function initMap() {
+            // Request needed libraries.
+            const {
+                Map
+            } = await google.maps.importLibrary("maps");
+            const {
+                AdvancedMarkerElement,
+                PinElement
+            } = await google.maps.importLibrary(
+                "marker",
+            );
+            const map = new Map(document.getElementById("map"), {
+                center: {
+                    lat: 37.419,
+                    lng: -122.02
+                },
+                zoom: 14,
+                mapId: "4504f8b37365c3d0",
+            });
+
+            // Each PinElement is paired with a MarkerView to demonstrate setting each parameter.
+            // Default marker with title text (no PinElement).
+            const markerViewWithText = new AdvancedMarkerElement({
+                map,
+                position: {
+                    lat: 37.419,
+                    lng: -122.03
+                },
+                title: "Title text for the marker at lat: 37.419, lng: -122.03",
+            });
+
+            // Adjust the scale.
+            const pinScaled = new PinElement({
+                scale: 1.5,
+            });
+            const markerViewScaled = new AdvancedMarkerElement({
+                map,
+                position: {
+                    lat: 37.419,
+                    lng: -122.02
+                },
+                content: pinScaled.element,
+            });
+
+            // Change the background color.
+            const pinBackground = new PinElement({
+                background: "#FBBC04",
+            });
+            const markerViewBackground = new AdvancedMarkerElement({
+                map,
+                position: {
+                    lat: 37.419,
+                    lng: -122.01
+                },
+                content: pinBackground.element,
+            });
+
+            // Change the background color.
+            const pinTest = new PinElement({
+                background: "#FFFFFF",
+            });
+            var test = new AdvancedMarkerElement({
+                map,
+                position: {
+                    lat: 37.417,
+                    lng: -122.01
+                },
+                content: pinTest.element,
+            });
+
+            var test = new AdvancedMarkerElement({
+                map,
+                position: {
+                    lat: 37.417,
+                    lng: -122.03
+                },
+                //content: pinTest.element,
+            });
+
+            // Change the border color.
+            const pinBorder = new PinElement({
+                borderColor: "#137333",
+            });
+            const markerViewBorder = new AdvancedMarkerElement({
+                map,
+                position: {
+                    lat: 37.415,
+                    lng: -122.03
+                },
+                content: pinBorder.element,
+            });
+
+            // Change the glyph color.
+            const pinGlyph = new PinElement({
+                glyphColor: "white",
+            });
+            const markerViewGlyph = new AdvancedMarkerElement({
+                map,
+                position: {
+                    lat: 37.415,
+                    lng: -122.02
+                },
+                content: pinGlyph.element,
+            });
+
+            // Hide the glyph.
+            const pinNoGlyph = new PinElement({
+                glyph: "",
+            });
+            const markerViewNoGlyph = new AdvancedMarkerElement({
+                map,
+                position: {
+                    lat: 37.415,
+                    lng: -122.01
+                },
+                content: pinNoGlyph.element,
+            });
+        }
+
+        initMap();
+    </script>
+
+<?php } ?>

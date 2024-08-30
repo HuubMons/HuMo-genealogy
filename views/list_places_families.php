@@ -205,13 +205,15 @@ $privcount = 0; // *** Count privacy persons ***
 $selected_place = "";
 ?>
 <!-- Table to hold left sort date column (when necessary) and right person list column -->
-<table class="humo index_table" align="center">
-    <tr class="table_headline">
-        <th><?= __('Places'); ?></th>
-        <th colspan="2"><?= __('Family'); ?></th>
-        <th colspan="2" width="280px"><?= ucfirst(__('Married notice (religious)')); ?></th>
-        <th colspan="2" width="280px"><?= ucfirst(__('Married (religious)')); ?></th>
-    </tr>
+<table class="table table-sm">
+    <thead class="table-primary">
+        <tr>
+            <th><?= __('Places'); ?></th>
+            <th colspan="2"><?= __('Family'); ?></th>
+            <th colspan="2" width="280px"><?= ucfirst(__('Married notice (religious)')); ?></th>
+            <th colspan="2" width="280px"><?= ucfirst(__('Married (religious)')); ?></th>
+        </tr>
+    </thead>
 
     <?php
     while (@$familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
@@ -247,22 +249,6 @@ $selected_place = "";
 <br>
 
 <?php
-// For inline use?
-echo '<script>
-    if(window.self != window.top) {
-        var framew = window.frameElement.offsetWidth; 
-        document.getElementById("content").style.width = framew-40+"px";
-        var indexes = document.getElementsByClassName("index_table");
-        for (var i = 0; i < indexes.length; i++) {
-            indexes[i].style.width = framew-40+"px";
-        }
-        var lists = document.getElementsByClassName("index_list1");
-        for (var i = 0; i < lists.length; i++) {
-            lists[i].style.width = framew-40+"px";
-        }
-    }
-</script>';
-
 // *** show person ***
 function show_person($familyDb)
 {

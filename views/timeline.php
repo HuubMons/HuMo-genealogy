@@ -153,6 +153,7 @@ $path = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, fals
                     .popover {
                         max-width: 500px;
                     }
+
                     .popover-body {
                         height: 500px;
                         overflow-y: auto;
@@ -216,22 +217,26 @@ if ($data["privacy_filtered"] == true) {
     </div>
 <?php } ?>
 
-<table align="center" class="humo index_table">
-    <tr class=table_headline>
-        <th colspan='3'><?= $name["name"]; ?></th>
-    </tr>
+<table class="table">
+    <thead class="table-primary">
+        <tr>
+            <th colspan='3'><?= $name["name"]; ?></th>
+        </tr>
+    </thead>
 
-    <tr class=table_headline>
-        <th><?= __('Life events'); ?></th>
-        <th><?= __('Year'); ?></th>
-        <th>
-            <?= __('Historic events'); ?>
+    <thead class="table-primary">
+        <tr>
+            <th><?= __('Life events'); ?></th>
+            <th><?= __('Year'); ?></th>
+            <th>
+                <?= __('Historic events'); ?>
 
-            <?php if (!file_exists($filenames[0][0])) { ?>
-                <br><?= __('There are no timeline files available for this language.'); ?>
-            <?php } ?>
-        </th>
-    </tr>
+                <?php if (!file_exists($filenames[0][0])) { ?>
+                    <br><?= __('There are no timeline files available for this language.'); ?>
+                <?php } ?>
+            </th>
+        </tr>
+    </thead>
 
     <?php
     $step == 1 ? $yearwidth = 60 : $yearwidth = 120; // when step is 1 the column can be much shorter

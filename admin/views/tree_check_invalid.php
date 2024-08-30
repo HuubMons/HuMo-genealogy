@@ -1,18 +1,19 @@
 <?php
 $found = false; // if this stays false, displays message that no problems where found
-
-// displays results of validity check (with help of the invalid() function)
 ?>
-<table class="humo" style="width:100%">
+
+<table class="table">
+    <thead class="table-primary">
     <tr>
-        <th style="width:10%;border:1px solid black"><?= __('ID'); ?></th>
-        <th style="width:55%;border:1px solid black"><?= __('Edit invalid date'); ?></th>
-        <th style="width:20%;border:1px solid black"><?= __('Details'); ?></th>
-        <th style="width:15%;border:1px solid black"><?= __('Invalid date'); ?></th>
+        <th style="width:10%;"><?= __('ID'); ?></th>
+        <th style="width:55%;"><?= __('Edit invalid date'); ?></th>
+        <th style="width:20%;"><?= __('Details'); ?></th>
+        <th style="width:15%;"><?= __('Invalid date'); ?></th>
     </tr>
+    </thead>
 
     <?php
-    echo '<tr><td colspan="4" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid person dates:') . '</td></tr>';
+    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid person dates:') . '</td></tr>';
 
     $person = $dbh->query("SELECT pers_gedcomnumber, pers_birth_date, pers_bapt_date, pers_death_date, pers_buried_date FROM humo_persons
         WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
@@ -47,7 +48,7 @@ $found = false; // if this stays false, displays message that no problems where 
         echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
     }
 
-    echo '<tr><td colspan="4" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid family dates:') . '</td></tr>';
+    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid family dates:') . '</td></tr>';
     $found = false;
     $family = $dbh->query("SELECT fam_gedcomnumber, fam_div_date, fam_marr_church_date, fam_marr_church_notice_date, fam_marr_date, fam_marr_notice_date, fam_relation_date FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
     while ($famdateDb = $family->fetch()) {
@@ -92,7 +93,7 @@ $found = false; // if this stays false, displays message that no problems where 
         echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
     }
 
-    echo '<tr><td colspan="4" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid event dates:') . '</td></tr>';
+    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid event dates:') . '</td></tr>';
     $found = false;
     $event = $dbh->query("SELECT event_id, event_date FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_date NOT LIKE ''");
     while ($eventdateDb = $event->fetch()) {
@@ -105,7 +106,7 @@ $found = false; // if this stays false, displays message that no problems where 
         echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
     }
 
-    echo '<tr><td colspan="4" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid connection dates:') . '</td></tr>';
+    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid connection dates:') . '</td></tr>';
     $found = false;
     $connection = $dbh->query("SELECT connect_id, connect_date FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_date NOT LIKE ''");
     while ($connectdateDb = $connection->fetch()) {
@@ -118,7 +119,7 @@ $found = false; // if this stays false, displays message that no problems where 
         echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
     }
 
-    echo '<tr><td colspan="4" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid address dates:') . '</td></tr>';
+    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid address dates:') . '</td></tr>';
     $found = false;
     $address = $dbh->query("SELECT address_id, address_date FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_date NOT LIKE ''");
     while ($addressdateDb = $address->fetch()) {
@@ -131,7 +132,7 @@ $found = false; // if this stays false, displays message that no problems where 
         echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
     }
 
-    echo '<tr><td colspan="4" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid repository dates:') . '</td></tr>';
+    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid repository dates:') . '</td></tr>';
     $found = false;
     $repo = $dbh->query("SELECT repo_gedcomnr, repo_date FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' AND repo_date NOT LIKE ''");
     while ($repodateDb = $repo->fetch()) {
@@ -144,7 +145,7 @@ $found = false; // if this stays false, displays message that no problems where 
         echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
     }
 
-    echo '<tr><td colspan="4" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid source dates:') . '</td></tr>';
+    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid source dates:') . '</td></tr>';
     $found = false;
     $sources = $dbh->query("SELECT source_gedcomnr, source_date FROM humo_sources WHERE source_tree_id='" . $tree_id . "' AND source_date NOT LIKE ''");
     while ($sourcedateDb = $sources->fetch()) {
@@ -158,9 +159,8 @@ $found = false; // if this stays false, displays message that no problems where 
     }
     ?>
 </table>
+
 <?php
-
-
 function invalid($date, $gednr, $table)
 {  // checks validity with validate_cls.php and displays invalid dates and their details
     global $dbh, $db_functions, $tree_id, $direction, $dirmark1, $dirmark2;

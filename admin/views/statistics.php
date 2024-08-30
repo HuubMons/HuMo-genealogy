@@ -54,21 +54,23 @@ function calender($month, $year, $thismonth)
     }
 
 ?>
-    <table class="humo standard" border="1" cellspacing="0">
-        <tr class="table_header">
-            <th colspan="8"><?= $calender_head . ' ' . $year; ?></th>
-        </tr>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th colspan="8"><?= $calender_head . ' ' . $year; ?></th>
+            </tr>
 
-        <tr>
-            <th><?= __('Nr.'); ?></th>
-            <th><?= __('Monday'); ?></th>
-            <th><?= __('Tuesday'); ?></th>
-            <th><?= __('Wednesday'); ?></th>
-            <th><?= __('Thursday'); ?></th>
-            <th><?= __('Friday'); ?></th>
-            <th><?= __('Saturday'); ?></th>
-            <th><?= __('Sunday'); ?></th>
-        </tr>
+            <tr>
+                <th><?= __('Nr.'); ?></th>
+                <th><?= __('Monday'); ?></th>
+                <th><?= __('Tuesday'); ?></th>  
+                <th><?= __('Wednesday'); ?></th>
+                <th><?= __('Thursday'); ?></th>
+                <th><?= __('Friday'); ?></th>
+                <th><?= __('Saturday'); ?></th>
+                <th><?= __('Sunday'); ?></th>
+            </tr>
+        </thead>
 
         <?php
         $week = mktime(0, 0, 0, $month, 1, $year);
@@ -153,7 +155,7 @@ function calender($month, $year, $thismonth)
         }
         ?>
     </table><br>
-    <?php
+<?php
 
     // *** Show graphical month statistics ***
     //$this_month=$thismonth;
@@ -248,56 +250,6 @@ function year_graphics($month, $year)
     }
 }
 // End statistics
-
-// *** Country statistics ***
-function country2()
-{
-    global $dbh;
-    $temp = $dbh->query("SHOW TABLES LIKE 'humo_stat_country'");
-    if ($temp->rowCount()) {
-        $max = 400; // *** For now just show all countries ***
-
-        // *** Names of countries ***
-        include_once(__DIR__ . '/../include/countries.php');
-
-        $statqry = "SELECT stat_country_code, count(stat_country_code) as count_country_code
-            FROM humo_stat_country
-            GROUP BY stat_country_code ORDER BY count_country_code DESC LIMIT 0," . $max;
-        $stat = $dbh->query($statqry);
-
-    ?>
-        <table class="humo standard" border="1" cellspacing="0">
-            <tr class="table_header">
-                <th><?= __('Country of origin'); ?></th>
-                <th><?= __('Number of unique visitors'); ?></th>
-            </tr>
-            <?php
-            while (@$statDb = $stat->fetch(PDO::FETCH_OBJ)) {
-                $country_code = $statDb->stat_country_code;
-                $flag = "images/flags/" . $country_code . ".gif";
-                if (!file_exists($flag)) {
-                    $flag = 'images/flags/noflag.gif';
-                }
-            ?>
-                <tr>
-                    <td>
-                        <img src="<?= $flag; ?>" width="30" height="15">&nbsp;
-                        <?php
-                        if ($country_code != __('Unknown') && $country_code) {
-                            echo $countries[$country_code][1] . '&nbsp;(' . $country_code . ')';
-                        } else {
-                            echo $country_code;
-                        }
-                        ?>
-                    </td>
-                    <td><?= $statDb->count_country_code; ?></td>
-                </tr>
-            <?php } ?>
-        </table>
-<?php
-    }
-}
-// *** End country statistics ***
 
 $tab = 'general_statistics';
 // TODO check these variables (partly from old tab menu)

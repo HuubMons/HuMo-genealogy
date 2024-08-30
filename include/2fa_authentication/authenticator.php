@@ -73,7 +73,9 @@ class Authenticator
             $urlencoded .= urlencode('&issuer=' . urlencode($title));
         }
 
-        return 'https://chart.googleapis.com/chart?chs=' . $width . 'x' . $height . '&chld=' . $level . '|0&cht=qr&chl=' . $urlencoded . '';
+        // August 2024, Google QR Code no longer works. Replaced with qrserver.
+        //return 'https://chart.googleapis.com/chart?chs=' . $width . 'x' . $height . '&chld=' . $level . '|0&cht=qr&chl=' . $urlencoded . '';
+        return 'https://api.qrserver.com/v1/create-qr-code/?size=' . $width . 'x' . $height . '&data=' . $urlencoded;
     }
 
     public function verifyCode($secret, $code, $discrepancy = 1, $currentTimeSlice = null)

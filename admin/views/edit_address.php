@@ -48,12 +48,7 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
     <input type="hidden" name="page" value="<?= $page; ?>">
     <div class="p-3 my-md-2 genealogy_search container-md">
         <div class="row">
-            <div class="col-md-auto">
-                <label for="tree" class="col-form-label">
-                    <?= __('Family tree'); ?>:
-                </label>
-            </div>
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <?= select_tree($dbh, $page, $tree_id); ?>
             </div>
 
@@ -210,7 +205,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                                         <?php }   ?>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button>
                                         <!-- <button type="button" class="btn btn-sm btn-primary">Save changes</button> -->
                                     </div>
                                 </div>

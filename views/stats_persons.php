@@ -95,16 +95,16 @@ function show_person($row, $date = 'EMPTY')
     if (!$privacy) {
         $line = '';
         if ($date != 'EMPTY') {
-            $line = "<td align='center'><i>" . date_place($date, '') . "</i></td>\n";
+            $line = "<td><i>" . date_place($date, '') . "</i></td>\n";
         }
 
         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
         $url = $person_cls->person_url2($row->pers_tree_id, $row->pers_famc, $row->pers_fams, $row->pers_gedcomnumber);
-        $line .= '<td align="center"><a href="' . $url . '"><i><b>' . $name["standard_name"] . '</b></i> </a> </td>';
+        $line .= '<td><a href="' . $url . '"><i><b>' . $name["standard_name"] . '</b></i> </a> </td>';
     } else {
-        $line = '<td align="center">' . __('PRIVACY FILTER') . '</td>';
+        $line = '<td>' . __('PRIVACY FILTER') . '</td>';
         if ($date != 'EMPTY') {
-            $line .= '<td align="center">' . __('PRIVACY FILTER') . '</td>';
+            $line .= '<td>' . __('PRIVACY FILTER') . '</td>';
         }
     }
     return $line;
@@ -341,19 +341,23 @@ $woman_percentage = round($percent, 1);
 ?>
 
 <br>
-<table style="width:80%;" class="humo" align="center">
-    <tr class=table_headline>
-        <th width="20%"><?= __('Item'); ?></th>
-        <th colspan="2" width="40%"><?= __('Male'); ?></th>
-        <th colspan="2" width="40%"><?= __('Female'); ?></th>
-    </tr>
+
+<!-- <div class="table-responsive"> -->
+<table class="table">
+    <thead class="table-primary">
+        <tr>
+            <th><?= __('Item'); ?></th>
+            <th colspan="2"><?= __('Male'); ?></th>
+            <th colspan="2"><?= __('Female'); ?></th>
+        </tr>
+    </thead>
 
     <tr>
         <td><?= __('No. of persons'); ?></td>
-        <td align='center'><i><?= $countman; ?></i></td>
-        <td align="center"><?= $man_percentage; ?>%</td>
-        <td align='center'><i><?= $countwoman; ?></i></td>
-        <td align="center"><?= $woman_percentage; ?>%</td>
+        <td><i><?= $countman; ?></i></td>
+        <td><?= $man_percentage; ?>%</td>
+        <td><i><?= $countwoman; ?></i></td>
+        <td><?= $woman_percentage; ?>%</td>
     </tr>
 
     <tr>
@@ -381,151 +385,177 @@ $woman_percentage = round($percent, 1);
         ?>
     </tr>
 
-    <?php
-    // *** Youngest pers_birth_date man.
-    echo "<tr><td>" . __('Youngest birth date') . "</td>\n";
-    if ($latest_man_bir_date != null) {
-        $row = $db_functions->get_person($latest_man_bir_ged);
-        echo show_person($row, $row->pers_birth_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+    <!-- Youngest pers_birth_date man -->
+    <tr>
+        <td><?= __('Youngest birth date'); ?></td>
+        <?php
+        if ($latest_man_bir_date != null) {
+            $row = $db_functions->get_person($latest_man_bir_ged);
+            echo show_person($row, $row->pers_birth_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Youngest pers_birth_date woman.
-    if ($latest_woman_bir_date != null) {
-        $row = $db_functions->get_person($latest_woman_bir_ged);
-        echo show_person($row, $row->pers_birth_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Youngest pers_birth_date woman.
+        if ($latest_woman_bir_date != null) {
+            $row = $db_functions->get_person($latest_woman_bir_ged);
+            echo show_person($row, $row->pers_birth_date);
+        } else {
+            echo "<td></td><td></td>";
+        }
+        ?>
+    </tr>
 
-    // *** Oldest pers_bapt_date man.
-    echo "<tr><td>" . __('Oldest baptism date') . "</td>\n";
-    if ($oldest_man_bap_date != null) {
-        $row = $db_functions->get_person($oldest_man_bap_ged);
-        echo show_person($row, $row->pers_bapt_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+    <!-- Oldest pers_bapt_date man -->
+    <tr>
+        <td><?= __('Oldest baptism date'); ?></td>
+        <?php
+        if ($oldest_man_bap_date != null) {
+            $row = $db_functions->get_person($oldest_man_bap_ged);
+            echo show_person($row, $row->pers_bapt_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Oldest pers_bapt_date woman.
-    if ($oldest_woman_bap_date != null) {
-        $row = $db_functions->get_person($oldest_woman_bap_ged);
-        echo show_person($row, $row->pers_bapt_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Oldest pers_bapt_date woman.
+        if ($oldest_woman_bap_date != null) {
+            $row = $db_functions->get_person($oldest_woman_bap_ged);
+            echo show_person($row, $row->pers_bapt_date);
+        } else {
+            echo "<td></td><td></td>";
+        }
+        ?>
+    </tr>
 
-    // *** Youngest pers_bapt_date man.
-    echo "<tr><td>" . __('Youngest baptism date') . "</td>\n";
-    if ($latest_man_bap_date != null) {
-        $row = $db_functions->get_person($latest_man_bap_ged);
-        echo show_person($row, $row->pers_bapt_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+    <!-- Youngest pers_bapt_date man -->
+    <tr>
+        <td><?= __('Youngest baptism date'); ?></td>
+        <?php
+        if ($latest_man_bap_date != null) {
+            $row = $db_functions->get_person($latest_man_bap_ged);
+            echo show_person($row, $row->pers_bapt_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Youngest pers_bapt_date woman.
-    if ($latest_woman_bap_date != null) {
-        $row = $db_functions->get_person($latest_woman_bap_ged);
-        echo show_person($row, $row->pers_bapt_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Youngest pers_bapt_date woman.
+        if ($latest_woman_bap_date != null) {
+            $row = $db_functions->get_person($latest_woman_bap_ged);
+            echo show_person($row, $row->pers_bapt_date);
+        } else {
+            echo "<td></td><td></td>";
+        }
+        ?>
+    </tr>
 
-    // *** Oldest pers_death_date man.
-    echo "<tr><td>" . __('Oldest death date') . "</td>\n";
-    if ($oldest_man_dea_date != null) {
-        $row = $db_functions->get_person($oldest_man_dea_ged);
-        echo show_person($row, $row->pers_death_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+    <!-- Oldest pers_death_date man -->
+    <tr>
+        <td><?= __('Oldest death date'); ?></td>
+        <?php
+        if ($oldest_man_dea_date != null) {
+            $row = $db_functions->get_person($oldest_man_dea_ged);
+            echo show_person($row, $row->pers_death_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Oldest pers_death_date woman.
-    if ($oldest_woman_dea_date != null) {
-        $row = $db_functions->get_person($oldest_woman_dea_ged);
-        echo show_person($row, $row->pers_death_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Oldest pers_death_date woman.
+        if ($oldest_woman_dea_date != null) {
+            $row = $db_functions->get_person($oldest_woman_dea_ged);
+            echo show_person($row, $row->pers_death_date);
+        } else {
+            echo "<td></td><td></td>";
+        }
+        ?>
+    </tr>
 
-    // *** Youngest pers_death_date man.
-    echo "<tr><td>" . __('Youngest death date') . "</td>\n";
-    if ($latest_man_dea_date != null) {
-        $row = $db_functions->get_person($latest_man_dea_ged);
-        echo show_person($row, $row->pers_death_date);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
+    <!-- Youngest pers_death_date man -->
+    <tr>
+        <td><?= __('Youngest death date'); ?></td>
+        <?php
+        if ($latest_man_dea_date != null) {
+            $row = $db_functions->get_person($latest_man_dea_ged);
+            echo show_person($row, $row->pers_death_date);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
 
-    // *** Youngest pers_death_date woman.
-    if ($latest_woman_dea_date != null) {
-        $row = $db_functions->get_person($latest_woman_dea_ged);
-        echo show_person($row, $row->pers_death_date);
-        echo "</tr>\n";
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
+        // *** Youngest pers_death_date woman.
+        if ($latest_woman_dea_date != null) {
+            $row = $db_functions->get_person($latest_woman_dea_ged);
+            echo show_person($row, $row->pers_death_date);
+        } else {
+            echo "<td></td><td></td>";
+        }
+        ?>
+    </tr>
 
-    echo "<tr><td>" . __('Longest living person') . "</td>\n";
-    // *** Longest living man.
-    if ($longest_living_man != null) {
-        $row = $db_functions->get_person($longest_living_man_ged);
-        echo '<td align="center"><i>' . $longest_living_man . ' ' . __('years') . "</i></td>\n";
-        echo show_person($row);
-    } else {
-        echo "<td></td><td></td>\n";
-    }
-    // *** Longest living woman.
-    if ($longest_living_woman != null) {
-        $row = $db_functions->get_person($longest_living_woman_ged);
-        echo '<td align="center"><i>' . $longest_living_woman . ' ' . __('years') . "</i></td>\n";
-        echo show_person($row);
-    } else {
-        echo "<td></td><td></td></tr>\n";
-    }
-    // *** Average age ***
-    echo "<tr><td>" . __('Average age') . "</td>\n";
-    // Man
-    echo '<td align="center">';
-    if ($average_living_man != 0) {
-        echo round($average_living_man, 1);
-    }
-    echo ' ' . __('years') . '</td><td></td>';
-    // Woman
-    echo '<td align="center">';
-    if ($average_living_woman != 0) {
-        echo round($average_living_woman, 1);
-    }
-    echo ' ' . __('years') . '</td><td></td></tr>';
+    <tr>
+        <td><?= __('Longest living person'); ?></td>
+        <?php
+        // *** Longest living man.
+        if ($longest_living_man != null) {
+            $row = $db_functions->get_person($longest_living_man_ged);
+            echo '<td><i>' . $longest_living_man . ' ' . __('years') . "</i></td>\n";
+            echo show_person($row);
+        } else {
+            echo "<td></td><td></td>\n";
+        }
+        // *** Longest living woman.
+        if ($longest_living_woman != null) {
+            $row = $db_functions->get_person($longest_living_woman_ged);
+            echo '<td><i>' . $longest_living_woman . ' ' . __('years') . "</i></td>\n";
+            echo show_person($row);
+        } else {
+            echo "<td></td><td></td>";
+        }
+        ?>
+    </tr>
 
-    // *** Average age married ***
-    echo "<tr><td>" . __('Average age married persons') . "</td>\n";
+    <!-- Average age -->
+    <tr>
+        <td><?= __('Average age'); ?></td>
+        <?php
+        // Man
+        echo '<td>';
+        if ($average_living_man != 0) {
+            echo round($average_living_man, 1);
+        }
+        echo ' ' . __('years') . '</td><td></td>';
+        // Woman
+        echo '<td>';
+        if ($average_living_woman != 0) {
+            echo round($average_living_woman, 1);
+        }
+        echo ' ' . __('years') . '</td><td></td>';
+        ?>
+    </tr>
 
-    // Man
-    echo '<td align="center">';
-    if ($average_living_man_marr != 0) {
-        echo round($average_living_man_marr, 1);
-    }
-    echo ' ' . __('years') . '</td><td></td>';
-    // Woman
-    echo '<td align="center">';
-    if ($average_living_woman_marr != 0) {
-        echo round($average_living_woman_marr, 1);
-    }
-    echo ' ' . __('years') . '</td><td></td></tr>';
-    ?>
+    <!-- Average age married -->
+    <tr>
+        <td><?= __('Average age married persons'); ?></td>
+        <?php
+        // Man
+        echo '<td>';
+        if ($average_living_man_marr != 0) {
+            echo round($average_living_man_marr, 1);
+        }
+        echo ' ' . __('years') . '</td><td></td>';
+        // Woman
+        echo '<td>';
+        if ($average_living_woman_marr != 0) {
+            echo round($average_living_woman_marr, 1);
+        }
+        echo ' ' . __('years') . '</td><td></td>';
+        ?>
+    </tr>
 
     <tr>
         <td><?= __('Lifespan range of married individuals'); ?></td>
-        <td align="center"><?= $shortest_living_man_marr . ' - ' . $longest_living_man_marr . ' ' . __('years'); ?></td>
-        <td align="center">&nbsp;</td>
-        <td align="center"><?= $shortest_living_woman_marr . ' - ' . $longest_living_woman_marr . ' ' . __('years'); ?></td>
-        <td align="center">&nbsp;</td>
+        <td><?= $shortest_living_man_marr . ' - ' . $longest_living_man_marr . ' ' . __('years'); ?></td>
+        <td>&nbsp;</td>
+        <td><?= $shortest_living_woman_marr . ' - ' . $longest_living_woman_marr . ' ' . __('years'); ?></td>
+        <td>&nbsp;</td>
     </tr>
 </table>
+<!-- </div> -->

@@ -14,9 +14,8 @@ if ($humo_option["url_rewrite"] == "j") {
 <h1><?= __('Recently changed persons and new persons'); ?></h1>
 
 <!-- *** Search box *** -->
-<div class="row">
-    <div class="col-sm-4">
-    </div>
+<div class="row me-1">
+    <div class="col-sm-4"></div>
     <div class="col-sm-4">
         <form action="<?= $path; ?>" method="post">
             <div class="input-group mb-3 text-center">
@@ -25,28 +24,26 @@ if ($humo_option["url_rewrite"] == "j") {
             </div>
         </form>
     </div>
-    <div class="col-sm-4">
-    </div>
+    <div class="col-sm-4"></div>
 </div>
 
-<table class="humo" align="center">
-    <tr class="table_headline">
-        <th><?= __('Changed/ Added'); ?></th>
-        <th><?= __('When changed'); ?></th>
-        <th><?= __('When added'); ?></th>
-    </tr>
+<div class="table-responsive">
+    <table class="table w-75" align="center">
+        <thead class="table-primary">
+            <tr>
+                <th><?= __('Changed/ Added'); ?></th>
+                <th><?= __('When changed'); ?></th>
+                <th><?= __('When added'); ?></th>
+            </tr>
+        </thead>
 
-    <?php foreach ($data["listchanges"] as $changeDb) { ?>
-        <tr>
-            <td><?= $changeDb->show_person ?></td>
-            <td>
-                <span style="white-space: nowrap"><?= $changeDb->changed_date; ?></span>
-            </td>
-            <td>
-                <span style="white-space: nowrap"><?= $changeDb->new_date; ?></span>
-            </td>
-        </tr>
-    <?php } ?>
-
-</table>
+        <?php foreach ($data["listchanges"] as $changeDb) { ?>
+            <tr>
+                <td class="text-nowrap"><?= $changeDb->show_person ?></td>
+                <td class="text-nowrap"><?= $changeDb->changed_date; ?></td>
+                <td class="text-nowrap"><?= $changeDb->new_date; ?></td>
+            </tr>
+        <?php } ?>
+    </table>
+</div>
 <br>

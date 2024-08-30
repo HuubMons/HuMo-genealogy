@@ -83,14 +83,17 @@ function topline($data)
                             <li>&nbsp;</li>
                             <li>
                                 <?php
+                                // TODO: maybe count valid loacions in table.
                                 // *** Only show selection if there is a location database ***
-                                $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-                                if ($temp->rowCount()) {
+                                //$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+                                //if ($temp->rowCount()) {
                                 ?>
-                                    <b><?= __('Family map'); ?></b><br>
-                                    <input type="radio" name="keuze2" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=show&xx='+this.value" <?= $data["maps_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show family map'); ?><br>
-                                    <input type="radio" name="keuze2" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=hide&xx='+this.value" <?= $data["maps_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide family map'); ?><br>
-                                <?php } ?>
+                                <b><?= __('Family map'); ?></b><br>
+                                <input type="radio" name="keuze2" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=show&xx='+this.value" <?= $data["maps_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show family map'); ?><br>
+                                <input type="radio" name="keuze2" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=hide&xx='+this.value" <?= $data["maps_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide family map'); ?><br>
+                                <?php
+                                //}
+                                ?>
                             </li>
                         <?php } ?>
 
@@ -238,6 +241,7 @@ if (!$data["family_id"]) {
 
     $id = '';
     ?>
+
     <table class="humo standard">
         <!-- Show person topline (top text, settings, favourite) -->
         <?php topline($data); ?>
@@ -262,16 +266,8 @@ else {
     $descendant_main_person2[] = $data["main_person"];
 
     // *** Nr. of generations ***
-    try { // only prepare location statement if table exists otherwise PDO throws exception!
-        $result = $dbh->query("SELECT 1 FROM humo_location LIMIT 1");
-    } catch (Exception $e) {
-        // We got an exception == table not found
-        $result = FALSE;
-    }
-    if ($result !== FALSE) {
-        $location_prep = $dbh->prepare("SELECT * FROM humo_location where location_location =?");
-        $location_prep->bindParam(1, $location_var);
-    }
+    $location_prep = $dbh->prepare("SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_location =?");
+    $location_prep->bindParam(1, $location_var);
 
     $old_stat_prep = $dbh->prepare("UPDATE humo_families SET fam_counter=? WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber=?");
     $old_stat_prep->bindParam(1, $fam_counter_var);
@@ -447,6 +443,7 @@ else {
                 <?php } ?>
 
                 <table class="humo standard">
+                <!-- <table class="table"> -->
                     <?php
                     // *** Show family top line (family top text, settings, favourite) ***
                     topline($data);
@@ -958,7 +955,7 @@ else {
                             <script src="assets/leaflet/leaflet.js"></script>
                         <?php } ?>
                         <!-- Show openstreetmap by every family -->
-                        <div id="<?= $map; ?>" style="width: 600px; height: 300px;"></div>
+                        <div id="<?= $map; ?>" style="height: 400px;" class="container-md"></div><br>
 
                         <?php
                         // *** Map using fitbound (all markers visible) ***
@@ -983,6 +980,7 @@ else {
                             }).addTo(' . $map . ');
                         </script>';
                     } else {
+
                         $show_google_map = false;
                         // *** Only show main javascript once ***
                         if ($family_nr == 2) {
@@ -992,9 +990,9 @@ else {
                             }
 
                             if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-                                echo '<script src="https://maps.google.com/maps/api/js?v=3' . $api_key . '&callback=Function.prototype"></script>';
+                                echo '<script src="https://maps.google.com/maps/api/js?v=3' . $api_key . '&callback=initMap&v=weekly&libraries=marker"></script>';
                             } else {
-                                echo '<script src="http://maps.google.com/maps/api/js?v=3' . $api_key . '&callback=Function.prototype"></script>';
+                                echo '<script src="http://maps.google.com/maps/api/js?v=3' . $api_key . '&callback=initMap&v=weekly&libraries=marker"></script>';
                             }
 
                             echo '<script>
@@ -1004,6 +1002,7 @@ else {
                                 var bounds = new google.maps.LatLngBounds();
                             </script>';
 
+                            /*
                             echo '<script>
                                 function addMarker(family_nr, lat, lng, info, icon) {
                                     var pt = new google.maps.LatLng(lat, lng);
@@ -1018,33 +1017,51 @@ else {
                                     });
                                 }
                             </script>';
+                            */
+
+                            echo '<script>
+                                function addMarker(family_nr, lat, lng, info, icon) {
+                                    var pt = new google.maps.LatLng(lat, lng);
+                                    var fam_nr=family_nr;
+                                    bounds.extend(pt);
+                                    //bounds(fam_nr).extend(pt);
+                                    var marker = new google.maps.Marker({
+                                        position: pt,
+                                        title: info,
+                                        map: map[fam_nr]
+                                    });
+                                }
+                            </script>';
                         }
 
-                        $maptype = "ROADMAP";
-                        if (isset($humo_option['google_map_type'])) {
-                            $maptype = $humo_option['google_map_type'];
+                        $api_key = '';
+                        if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
+                            $api_key = "&key=" . $humo_option['google_api_key'];
                         }
+
+                        //$maptype = "ROADMAP";
+                        //if (isset($humo_option['google_map_type'])) {
+                        //    $maptype = $humo_option['google_map_type'];
+                        //}
+
+                        //mapTypeId: google.maps.MapTypeId.' . $maptype . ',
                         echo '<script>
                             function initMap' . $family_nr . '(family_nr) {
                                 var fam_nr=family_nr;
                                 map[fam_nr] = new google.maps.Map(document.getElementById(fam_nr), {
                                     center: new google.maps.LatLng(50.917293, 5.974782),
                                     maxZoom: 16,
-                                    mapTypeId: google.maps.MapTypeId.' . $maptype . ',
                                     mapTypeControl: true,
                                     mapTypeControlOptions: {
                                         style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
-                                    }
+                                    },
+                                    mapId: "MAP_07_2024", // Map ID is required for advanced markers.
                                 });
                                 ';
 
                         // *** Add all markers from array ***
                         for ($i = 1; $i < count($location_array); $i++) {
                             $show_google_map = true;
-                            $api_key = '';
-                            if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
-                                $api_key = "&key=" . $humo_option['google_api_key'];
-                            }
 
                             if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
                                 echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '" . $text_array[$i] . "', 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|" . $api_key . "');\n");
@@ -1053,15 +1070,15 @@ else {
                             }
                         }
 
-                        echo 'center = bounds.getCenter();';
-                        echo 'map[fam_nr].fitBounds(bounds);';
-                        echo '}
+                        echo 'center = bounds.getCenter();
+                        map[fam_nr].fitBounds(bounds);
+                        }
                             </script>';
 
                         if ($show_google_map == true) {
                         ?>
                             <?= __('Family events'); ?><br>
-                            <div style="width: 600px; height: 300px; border: 0px; padding: 0px;" id="<?= $family_nr; ?>"></div>
+                            <div style="height: 400px;" id="<?= $family_nr; ?>" class="container-md"></div><br>
                             <script>
                                 initMap<?= $family_nr; ?>(<?= $family_nr; ?>);
                             </script>

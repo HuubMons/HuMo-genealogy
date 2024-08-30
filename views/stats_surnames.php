@@ -94,7 +94,7 @@ if (isset($_POST['freqsurnames'])) {
 ?>
 
 <form method="POST" action="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>" style="display:inline;" id="frqnames">
-    <div class="mb-2 row">
+    <div class="mb-2 row me-1">
         <div class="col-md-1"></div>
 
         <div class="col-md-3 text-end">
@@ -130,17 +130,18 @@ if (isset($_POST['freqsurnames'])) {
 </form>
 
 <?php $col_width = ((round(100 / $maxcols)) - 6) . "%"; ?>
-<br>
-<table style="width:90%;" class="humo nametbl" align="center">
-    <tr class=table_headline>
-        <?php
-        for ($x = 1; $x < $maxcols; $x++) {
-            echo '<th width="' . $col_width . '">' . __('Surname') . '</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">' . __('Total') . '</th>';
-        }
-        ?>
-        <th width="<?= $col_width; ?>"><?= __('Surname'); ?></th>
-        <th style="text-align:center;font-size:90%;width:6%"><?= __('Total'); ?></th>
-    </tr>
+<table class="table nametbl mt-4">
+    <thead class="table-primary">
+        <tr>
+            <?php
+            for ($x = 1; $x < $maxcols; $x++) {
+                echo '<th width="' . $col_width . '">' . __('Surname') . '</th><th style="text-align:center;border-right-width:3px;width:6%">' . __('Total') . '</th>';
+            }
+            ?>
+            <th width="<?= $col_width; ?>"><?= __('Surname'); ?></th>
+            <th style="text-align:center;width:6%"><?= __('Total'); ?></th>
+        </tr>
+    </thead>
     <!-- displays the table and sets the $baseperc (= the name with highest frequency that will be 100%) -->
     <?php $baseperc = last_names($maxnames); ?>
 </table>

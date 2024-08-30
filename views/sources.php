@@ -34,59 +34,61 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
 
 <?php include __DIR__ . '/partial/pagination.php'; ?>
 
-<table class="humo index_table" align="center">
-    <tr class=table_headline>
-        <?php
-        $sort_reverse = $data["sort_desc"];
-        $img = '';
-        if ($data["order_sources"] == "title") {
-            $sort_reverse = '1';
-            if ($data["sort_desc"] == '1') {
-                $sort_reverse = '0';
-                $img = 'up';
+<table class="table">
+    <thead class="table-primary">
+        <tr>
+            <?php
+            $sort_reverse = $data["sort_desc"];
+            $img = '';
+            if ($data["order_sources"] == "title") {
+                $sort_reverse = '1';
+                if ($data["sort_desc"] == '1') {
+                    $sort_reverse = '0';
+                    $img = 'up';
+                }
             }
-        }
-        ?>
-        <th>
-            <a href="<?= $url_order; ?>&amp;order_sources=title&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "title" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Title'); ?>
-                <img src="images/button3<?= $img; ?>.png">
-            </a>
-        </th>
+            ?>
+            <th>
+                <a href="<?= $url_order; ?>&amp;order_sources=title&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "title" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Title'); ?>
+                    <img src="images/button3<?= $img; ?>.png">
+                </a>
+            </th>
 
-        <?php
-        $sort_reverse = $data["sort_desc"];
-        $img = '';
-        if ($data["order_sources"] == "date") {
-            $sort_reverse = '1';
-            if ($data["sort_desc"] == '1') {
-                $sort_reverse = '0';
-                $img = 'up';
+            <?php
+            $sort_reverse = $data["sort_desc"];
+            $img = '';
+            if ($data["order_sources"] == "date") {
+                $sort_reverse = '1';
+                if ($data["sort_desc"] == '1') {
+                    $sort_reverse = '0';
+                    $img = 'up';
+                }
             }
-        }
-        ?>
-        <th>
-            <a href="<?= $url_order; ?>&amp;order_sources=date&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "date" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Date'); ?>
-                <img src="images/button3<?= $img; ?>.png">
-            </a>
-        </th>
+            ?>
+            <th>
+                <a href="<?= $url_order; ?>&amp;order_sources=date&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "date" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Date'); ?>
+                    <img src="images/button3<?= $img; ?>.png">
+                </a>
+            </th>
 
-        <?php
-        $sort_reverse = $data["sort_desc"];
-        $img = '';
-        if ($data["order_sources"] == "place") {
-            $sort_reverse = '1';
-            if ($data["sort_desc"] == '1') {
-                $sort_reverse = '0';
-                $img = 'up';
+            <?php
+            $sort_reverse = $data["sort_desc"];
+            $img = '';
+            if ($data["order_sources"] == "place") {
+                $sort_reverse = '1';
+                if ($data["sort_desc"] == '1') {
+                    $sort_reverse = '0';
+                    $img = 'up';
+                }
             }
-        }
-        ?>
-        <th>
-            <a href="<?= $url_order; ?>&amp;order_sources=place&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "place" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Place'); ?>
-                <img src="images/button3<?= $img; ?>.png">
-            </a>
-        </th>
-    </tr>
+            ?>
+            <th>
+                <a href="<?= $url_order; ?>&amp;order_sources=place&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "place" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Place'); ?>
+                    <img src="images/button3<?= $img; ?>.png">
+                </a>
+            </th>
+        </tr>
+    </thead>
 
     <?php foreach ($data["listsources"] as $sourceDb) { ?>
         <?php

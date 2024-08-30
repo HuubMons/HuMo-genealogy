@@ -10,8 +10,6 @@ if (!defined('ADMIN_PAGE')) {
 <?= __('Installation of the standard tables. Or create tables from a scratch, they will be filled in with standard data.'); ?><br><br>
 
 <?php
-$path_tmp = 'index.php';
-
 // *** Check if tables exists ***
 $table['settings'] = '';
 $table['trees'] = '';
@@ -218,7 +216,7 @@ if (!isset($_POST['install_tables2'])) {
     }
 
 ?>
-    <form method="post" action="<?= $path_tmp; ?>" style="display : inline;">
+    <form method="post" action="index.php" style="display : inline;">
         <input type="hidden" name="page" value="<?= $page; ?>">
 
         <div class="form-check">
@@ -236,29 +234,33 @@ if (!isset($_POST['install_tables2'])) {
             <label class="form-check-label"><?= __('(Re) create user table. <b>The user table will be filled with new users. Please add passwords:</b>'); ?></label>
         </div>
 
-        <table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B" style="margin-left: 20px;">
-            <tr class="table_header">
-                <td><b><?= __('User'); ?></b></td>
-                <td><b><?= __('Username'); ?></b></td>
-                <td><b><?= __('Password'); ?></b></td>
-            </tr>
+        <div class="me-4">
+            <table class="table ms-4">
+                <thead class="table-primary">
+                    <tr class="table_header">
+                        <th><?= __('User'); ?></th>
+                        <th><?= __('Username'); ?></th>
+                        <th><?= __('Password'); ?></th>
+                    </tr>
+                </thead>
 
-            <tr>
-                <td><?= __('Administrator'); ?></td>
-                <td><input type="text" name="username_admin" value="<?= $username_admin; ?>" size="15"></td>
-                <td><input type="password" name="password_admin" value="<?= $password_admin; ?>" size="15"> <?= __('THIS WILL BE YOUR ADMIN PASSWORD! (default password = humogen)'); ?></td>
-            </tr>
+                <tr>
+                    <td><?= __('Administrator'); ?></td>
+                    <td><input type="text" name="username_admin" value="<?= $username_admin; ?>" size="15"></td>
+                    <td><input type="password" name="password_admin" value="<?= $password_admin; ?>" size="15"> <?= __('THIS WILL BE YOUR ADMIN PASSWORD! (default password = humogen)'); ?></td>
+                </tr>
 
-            <tr>
-                <td><?= __('Family or genealogists'); ?></td>
-                <td><input type="text" name="username_family" value="<?= $username_family; ?>" size="15"></td>
-                <td><input type="password" name="password_family" value="<?= $password_family; ?>" size="15"> <?= __('Password for user: "family" (default password = humogen)'); ?></td>
-            </tr>
+                <tr>
+                    <td><?= __('Family or genealogists'); ?></td>
+                    <td><input type="text" name="username_family" value="<?= $username_family; ?>" size="15"></td>
+                    <td><input type="password" name="password_family" value="<?= $password_family; ?>" size="15"> <?= __('Password for user: "family" (default password = humogen)'); ?></td>
+                </tr>
 
-            <tr>
-                <td colspan="3"><?= __('Remark: more users can be added after installation.'); ?></td>
-            </tr>
-        </table><br>
+                <tr>
+                    <td colspan="3"><?= __('Remark: more users can be added after installation.'); ?></td>
+                </tr>
+            </table>
+        </div>
 
         <div class="form-check">
             <input class="form-check-input" type="checkbox" name="table_groups" <?= $check_groups; ?>>

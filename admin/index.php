@@ -103,8 +103,37 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
         $eventsql = "UPDATE humo_events SET event_connect_kind='family' WHERE event_kind='marriage_witness' OR event_kind='marriage_witness_rel'";
         $dbh->query($eventsql);
 
-        // *** Remove old system files ***
-        include_once(__DIR__ . '/include/index_remove_files.php');
+        // *** Create humo_location if not exists ***
+        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+        if (!$temp->rowCount()) {
+            // no database exists - so create it
+            // It has 4 columns:
+            //     1. id
+            //     2. name of location
+            //     3. latitude as received from a geocode call
+            //     4. longitude as received from a geocode call
+            //     5. status: what is this location used for: birth/bapt/death/buried, and by which tree(s)
+            $locationtbl = "CREATE TABLE humo_location (
+                location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                location_location VARCHAR(120) CHARACTER SET utf8,
+                location_lat FLOAT(10,6),
+                location_lng FLOAT(10,6),
+                location_status TEXT
+            )";
+            $dbh->query($locationtbl);
+        }
+        $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
+        $exists = $result->rowCount();
+        if (!$exists) {
+            $dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
+        }
+
+        // Table humo_no_location no longer in use.
+        $temp = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
+        if ($temp->rowCount()) {
+            $dbh->query("DROP TABLE humo_no_location");
+        }
+
 
         $show_menu_left = true;
 
@@ -402,7 +431,7 @@ if (file_exists('../media/favicon.ico')) {
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-    <!-- *** Rescale standard HuMo-genealogy pages for mobile devices *** -->
+    <!-- *** Bootstrap: rescale standard HuMo-genealogy pages for mobile devices *** -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title><?= __('Administration'); ?></title>
@@ -414,9 +443,6 @@ if (file_exists('../media/favicon.ico')) {
     <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <link href="admin.css" rel="stylesheet" type="text/css">
-
-    <!-- CSS changes for mobile devices -->
-    <link rel="stylesheet" media="(max-width: 640px)" href="admin_mobile.css">
 
     <script src="../assets/jquery/jquery.min.js"></script>
     <script src="../assets/jqueryui/jquery-ui.min.js"></script>
@@ -480,10 +506,20 @@ if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
 
     die();
 } else {
-    echo '<body class="humo">';
+    //echo '<body class="humo">';
+
+    if (isset($_GET['page']) && $_GET['page'] == 'maps') {
+?>
+
+        <body onload="initialize()" class="humo"> <!-- initialize is used to show map in maps editor -->
+        <?php
+    } else {
+        echo '<body class="humo">';
+    }
 }
 
 // *** Show top menu ***
+// TODO check if variable is still needed.
 $path_tmp = 'index.php?';
 
 $top_dir = '';
@@ -492,332 +528,348 @@ if ($language["dir"] == "rtl") {
 }
 
 if ($popup == false) {
-?>
-    <div id="humo_top" <?= $top_dir; ?>>
+        ?>
+        <div id="humo_top" <?= $top_dir; ?>>
 
-        <span id="top_website_name">
-            &nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy</a>
-        </span>
-    <?php
-}
-
-// *** Check for HuMo-genealogy updates ***
-if (isset($database_check) && $database_check && $group_administrator == 'j') { // Otherwise we can't make $dbh statements
-    include_once(__DIR__ . '/include/index_check_update.php');
-}
-
-// *** Feb. 2020: centralised processing of tree_id and tree_prefix ***
-// *** Selected family tree, using tree_id ***
-
-// *** Don't check for group_administrator, because of family tree editors ***
-//if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
-if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh statements
-    $check_tree_id = '';
-    // *** admin_tree_id must be numeric ***
-    if (isset($_SESSION['admin_tree_id']) && is_numeric($_SESSION['admin_tree_id'])) {
-        $check_tree_id = $_SESSION['admin_tree_id'];
-    }
-    // *** tree_id must be numeric ***
-    if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
-        $check_tree_id = $_POST['tree_id'];
-    }
-    // *** tree_id must be numeric ***
-    if (isset($_GET['tree_id']) && is_numeric($_GET['tree_id'])) {
-        $check_tree_id = $_GET['tree_id'];
+            <span id="top_website_name">
+                &nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy</a>
+            </span>
+        <?php
     }
 
-    // *** Check editor permissions ***
-    $edit_tree_array = explode(";", $group_edit_trees);
-    if ($group_administrator == 'j' || in_array($check_tree_id, $edit_tree_array)) {
-        // OK
-    } else {
-        // *** No valid family tree. Select first allowed family tree ***
-        $check_tree_id = $edit_tree_array[0];
+    // *** Check for HuMo-genealogy updates ***
+    if (isset($database_check) && $database_check && $group_administrator == 'j') { // Otherwise we can't make $dbh statements
+        include_once(__DIR__ . '/include/index_check_update.php');
     }
 
-    // *** Just logged in, or no tree_id available: find first family tree ***
-    if ($check_tree_id == '') {
-        $check_tree_sql = false;
-        try {
-            $check_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order LIMIT 0,1");
-        } catch (Exception $e) {
-            //
+    // *** Feb. 2020: centralised processing of tree_id and tree_prefix ***
+    // *** Selected family tree, using tree_id ***
+
+    // *** Don't check for group_administrator, because of family tree editors ***
+    //if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
+    if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh statements
+        $check_tree_id = '';
+        // *** admin_tree_id must be numeric ***
+        if (isset($_SESSION['admin_tree_id']) && is_numeric($_SESSION['admin_tree_id'])) {
+            $check_tree_id = $_SESSION['admin_tree_id'];
         }
-        if ($check_tree_sql) {
-            @$check_treeDb = $check_tree_sql->fetch(PDO::FETCH_OBJ);
-            $check_tree_id = $check_treeDb->tree_id;
+        // *** tree_id must be numeric ***
+        if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
+            $check_tree_id = $_POST['tree_id'];
         }
-    }
+        // *** tree_id must be numeric ***
+        if (isset($_GET['tree_id']) && is_numeric($_GET['tree_id'])) {
+            $check_tree_id = $_GET['tree_id'];
+        }
 
-    // *** Double check tree_id and save tree id in session ***
-    $tree_id = '';
-    $tree_prefix = '';
-    if (isset($check_tree_id) && $check_tree_id && $check_tree_id != '') {
-        // *** New installation: table doesn't exist and could generate an error ***
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_trees'");
-        if ($temp->rowCount() > 0) {
+        // *** Check editor permissions ***
+        $edit_tree_array = explode(";", $group_edit_trees);
+        if ($group_administrator == 'j' || in_array($check_tree_id, $edit_tree_array)) {
+            // OK
+        } else {
+            // *** No valid family tree. Select first allowed family tree ***
+            $check_tree_id = $edit_tree_array[0];
+        }
+
+        // *** Just logged in, or no tree_id available: find first family tree ***
+        if ($check_tree_id == '') {
+            $check_tree_sql = false;
             try {
-                $get_treeDb = $db_functions->get_tree($check_tree_id);
+                $check_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order LIMIT 0,1");
             } catch (Exception $e) {
                 //
             }
-
-            if (isset($get_treeDb) && $get_treeDb) {
-                $tree_id = $get_treeDb->tree_id;
-                $_SESSION['admin_tree_id'] = $tree_id;
-                $tree_prefix = $get_treeDb->tree_prefix;
+            if ($check_tree_sql) {
+                @$check_treeDb = $check_tree_sql->fetch(PDO::FETCH_OBJ);
+                $check_tree_id = $check_treeDb->tree_id;
             }
         }
+
+        // *** Double check tree_id and save tree id in session ***
+        $tree_id = '';
+        $tree_prefix = '';
+        if (isset($check_tree_id) && $check_tree_id && $check_tree_id != '') {
+            // *** New installation: table doesn't exist and could generate an error ***
+            $temp = $dbh->query("SHOW TABLES LIKE 'humo_trees'");
+            if ($temp->rowCount() > 0) {
+                try {
+                    $get_treeDb = $db_functions->get_tree($check_tree_id);
+                } catch (Exception $e) {
+                    //
+                }
+
+                if (isset($get_treeDb) && $get_treeDb) {
+                    $tree_id = $get_treeDb->tree_id;
+                    $_SESSION['admin_tree_id'] = $tree_id;
+                    $tree_prefix = $get_treeDb->tree_prefix;
+                }
+            }
+        }
+
+        //echo 'test'.$tree_id.' '.$tree_prefix;
     }
+        ?>
 
-    //echo 'test'.$tree_id.' '.$tree_prefix;
-}
-    ?>
+        <!-- Offcanvas Sidebar -->
+        <div class="offcanvas offcanvas-end" id="demo">
+            <div class="offcanvas-header">
+                <h1 class="offcanvas-title"><?= __('Sidebar'); ?></h1>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+            </div>
 
-    <!-- Offcanvas Sidebar -->
-    <div class="offcanvas offcanvas-end" id="demo">
-        <div class="offcanvas-header">
-            <h1 class="offcanvas-title"><?= __('Sidebar'); ?></h1>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+            <div class="offcanvas-body">
+                <!-- <p>Some text lorem ipsum.</p> -->
+                <!-- <button class="btn btn-secondary" type="button">A Button</button> -->
+
+                <!-- Control -->
+                <?php if ($show_menu_left == true && $page !== 'login') {; ?>
+                    <?php if ($group_administrator == 'j') {; ?>
+                        <ul>
+                            <li><a href="index.php?page=install"><?= __('Install'); ?></a></li>
+                            <li>
+                                <a href="index.php?page=extensions"><?= __('Extensions'); ?></a>
+                                <ul>
+                                    <li><?= __('Show/ hide languages'); ?></li>
+                                    <li><?= __('Show/ hide theme\'s'); ?></li>
+                                </ul>
+                            </li>
+                            <li><a href="index.php?page=settings"><?= __('Settings'); ?></a></li>
+                            <li>
+                                <a href="index.php?page=settings&amp;menu_admin=settings_homepage"><?= __('Homepage'); ?></a>
+                                <ul>
+                                    <li><?= __('Homepage'); ?></li>
+                                    <li><?= __('Homepage favourites'); ?></li>
+                                    <li><?= __('Slideshow on the homepage'); ?></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="index.php?page=settings&amp;menu_admin=settings_special"><?= __('Special settings'); ?></a>
+                                <ul>
+                                    <li><?= __('Jewish settings'); ?></li>
+                                    <li><?= __('Sitemap'); ?></li>
+                                </ul>
+                            </li>
+                            <li><a href="index.php?page=cms_pages"><?= __('CMS Own pages'); ?></a></li>
+                            <li><a href="index.php?page=language_editor"><?= __('Language editor'); ?></a></li>
+                            <li><a href="index.php?page=prefix_editor"><?= __('Prefix editor'); ?></a></li>
+                            <li><a href="index.php?page=maps"><?= __('World map'); ?></a></li>
+                        </ul>
+
+                        <!-- Family trees -->
+                        <ul>
+                            <li><a href="index.php?page=tree"><?= __('Family trees'); ?></a></li>
+                            <li>
+                                <a href="index.php?page=thumbs"><?= __('Pictures/ create thumbnails'); ?></a>
+                                <ul>
+                                    <li><?= __('Picture settings'); ?></li>
+                                    <li><?= __('Create thumbnails'); ?></li>
+                                    <li><?= __('Photo album categories'); ?></li>
+                                </ul>
+                            </li>
+                            <li><a href="index.php?page=notes"><?= __('Notes'); ?></a></li>
+                            <li>
+                                <a href="index.php?page=check"><?= __('Family tree data check'); ?></a>
+                                <ul>
+                                    <li><?= __('Check consistency of dates'); ?></li>
+                                    <li><?= __('Find invalid dates'); ?></li>
+                                    <li><?= __('Check database integrity'); ?></li>
+                                </ul>
+                            </li>
+                            <li><a href="index.php?page=check&amp;tab=changes"><?= __('View latest changes'); ?></a></li>
+                            <li>
+                                <a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?></a>
+                                <ul>
+                                    <li><?= __('Privacy filter'); ?></li>
+                                </ul>
+                            </li>
+                            <li><a href="index.php?page=export"><?= __('Gedcom export'); ?></a></li>
+                            <li><a href="index.php?page=backup"><?= __('Database backup'); ?></a></li>
+                            <li><a href="index.php?page=statistics"><?= __('Statistics'); ?></a></li>
+                        </ul>
+                    <?php }; ?>
+
+                    <!-- Editor -->
+                    <ul>
+                        <li><a href="index.php?page=editor"><?= __('Persons and families'); ?></a></li>
+                        <li><a href="index.php?page=edit_sources"><?= __('Sources'); ?></a></li>
+                        <li><a href="index.php?page=edit_repositories"><?= __('Repositories'); ?></a></li>
+                        <li><a href="index.php?page=edit_addresses"><?= __('Shared addresses'); ?></a></li>
+                        <li><a href="index.php?page=edit_places"><?= __('Rename places'); ?></a></li>
+                    </ul>
+
+                    <!-- Users -->
+                    <?php if ($group_administrator == 'j') {; ?>
+                        <ul>
+                            <li><a href="index.php?page=users"><?= __('Users'); ?></a></li>
+                            <li><a href="index.php?page=groups"><?= __('User groups'); ?></a></li>
+                            <li>
+                                <a href="index.php?page=log"><?= __('Log'); ?></a>
+
+                                <ul>
+                                    <li><?= __('Logfile users'); ?></li>
+                                    <li><?= __('IP Blacklist'); ?></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    <?php }; ?>
+                <?php }; ?>
+            </div>
         </div>
 
-        <div class="offcanvas-body">
-            <!-- <p>Some text lorem ipsum.</p> -->
-            <!-- <button class="btn btn-secondary" type="button">A Button</button> -->
+        <?php
+        // *** Show menu ***
+        include_once(__DIR__ . '/views/menu.php');
 
-            <!-- Control -->
-            <?php if ($show_menu_left == true && $page !== 'login') {; ?>
-                <?php if ($group_administrator == 'j') {; ?>
-                    <ul>
-                        <li><a href="<?= $path_tmp; ?>page=install"><?= __('Install'); ?></a></li>
-                        <li>
-                            <a href="<?= $path_tmp; ?>page=extensions"><?= __('Extensions'); ?></a>
-                            <ul>
-                                <li><?= __('Show/ hide languages'); ?></li>
-                                <li><?= __('Show/ hide theme\'s'); ?></li>
-                            </ul>
-                        </li>
-                        <li><a href="<?= $path_tmp; ?>page=settings"><?= __('Settings'); ?></a></li>
-                        <li>
-                            <a href="<?= $path_tmp; ?>page=settings&amp;menu_admin=settings_homepage"><?= __('Homepage'); ?></a>
-                            <ul>
-                                <li><?= __('Homepage'); ?></li>
-                                <li><?= __('Homepage favourites'); ?></li>
-                                <li><?= __('Slideshow on the homepage'); ?></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="<?= $path_tmp; ?>page=settings&amp;menu_admin=settings_special"><?= __('Special settings'); ?></a>
-                            <ul>
-                                <li><?= __('Jewish settings'); ?></li>
-                                <li><?= __('Sitemap'); ?></li>
-                            </ul>
-                        </li>
-                        <li><a href="<?= $path_tmp; ?>page=cms_pages"><?= __('CMS Own pages'); ?></a></li>
-                        <li><a href="<?= $path_tmp; ?>page=language_editor"><?= __('Language editor'); ?></a></li>
-                        <li><a href="<?= $path_tmp; ?>page=prefix_editor"><?= __('Prefix editor'); ?></a></li>
-                        <li><a href="<?= $path_tmp; ?>page=google_maps"><?= __('World map'); ?></a></li>
-                    </ul>
+        if ($popup == false) {
+        ?>
+        </div> <!-- End of humo_top -->
+    <?php } ?>
 
-                    <!-- Family trees -->
-                    <ul>
-                        <li><a href="<?= $path_tmp; ?>page=tree"><?= __('Family trees'); ?></a></li>
-                        <li>
-                            <a href="<?= $path_tmp; ?>page=thumbs"><?= __('Pictures/ create thumbnails'); ?></a>
-                            <ul>
-                                <li><?= __('Picture settings'); ?></li>
-                                <li><?= __('Create thumbnails'); ?></li>
-                                <li><?= __('Photo album categories'); ?></li>
-                            </ul>
-                        </li>
-                        <li><a href="<?= $path_tmp; ?>page=notes"><?= __('Notes'); ?></a></li>
-                        <li>
-                            <a href="<?= $path_tmp; ?>page=check"><?= __('Family tree data check'); ?></a>
-                            <ul>
-                                <li><?= __('Check consistency of dates'); ?></li>
-                                <li><?= __('Find invalid dates'); ?></li>
-                                <li><?= __('Check database integrity'); ?></li>
-                            </ul>
-                        </li>
-                        <li><a href="<?= $path_tmp; ?>page=check&amp;tab=changes"><?= __('View latest changes'); ?></a></li>
-                        <li>
-                            <a href="<?= $path_tmp; ?>page=cal_date"><?= __('Calculated birth date'); ?></a>
-                            <ul>
-                                <li><?= __('Privacy filter'); ?></li>
-                            </ul>
-                        </li>
-                        <li><a href="<?= $path_tmp; ?>page=export"><?= __('Gedcom export'); ?></a></li>
-                        <li><a href="<?= $path_tmp; ?>page=backup"><?= __('Database backup'); ?></a></li>
-                        <li><a href="<?= $path_tmp; ?>page=statistics"><?= __('Statistics'); ?></a></li>
-                    </ul>
-                <?php }; ?>
+    <div class="p-md-2">
+        <?php
+        define('ADMIN_PAGE', true); // *** Safety line ***
 
-                <!-- Editor -->
-                <ul>
-                    <li><a href="<?= $path_tmp; ?>page=editor"><?= __('Persons and families'); ?></a></li>
-                    <li><a href="<?= $path_tmp; ?>page=edit_sources"><?= __('Sources'); ?></a></li>
-                    <li><a href="<?= $path_tmp; ?>page=edit_repositories"><?= __('Repositories'); ?></a></li>
-                    <li><a href="<?= $path_tmp; ?>page=edit_addresses"><?= __('Shared addresses'); ?></a></li>
-                    <li><a href="<?= $path_tmp; ?>page=edit_places"><?= __('Rename places'); ?></a></li>
-                </ul>
+        if ($page === 'install') {
+            include_once(__DIR__ . "/views/install.php");
+        } elseif ($page === 'extensions') {
+            include_once(__DIR__ . "/views/extensions.php");
+        } elseif ($page === 'login') {
+            include_once(__DIR__ . "/views/login.php");
+        } elseif ($group_administrator == 'j' && $page === 'tree') {
+            require __DIR__ . '/controller/treesController.php';
+            $controllerObj = new TreesController();
+            $trees = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            include_once(__DIR__ . "/views/trees.php");
+        } elseif ($page === 'editor') {
+            include_once(__DIR__ . "/views/editor.php");
+        } elseif ($page === 'editor_sources') {
+            include_once(__DIR__ . "/include/editor_sources.php");
+        } elseif ($page === 'edit_sources') {
+            require __DIR__ . '/controller/edit_sourceController.php';
+            $controllerObj = new SourceController();
+            $editSource = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            include_once(__DIR__ . "/views/edit_source.php");
+        } elseif ($page === 'edit_repositories') {
+            require __DIR__ . '/controller/edit_repositoryController.php';
+            $controllerObj = new RepositoryController();
+            $editRepository = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            include_once(__DIR__ . "/views/edit_repository.php");
+        } elseif ($page === 'edit_addresses') {
+            require __DIR__ . '/controller/edit_addressController.php';
+            $controllerObj = new AddressController();
+            $editAddress = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            include_once(__DIR__ . "/views/edit_address.php");
+        } elseif ($page === 'edit_places') {
+            require __DIR__ . '/controller/edit_rename_placeController.php';
+            $controllerObj = new PlaceController();
+            $place = $controllerObj->detail($dbh, $tree_id);
+            include_once(__DIR__ . "/views/edit_rename_place.php");
+        } elseif ($page === 'editor_place_select') {
+            include_once(__DIR__ . "/include/editor_place_select.php");
+        } elseif ($page === 'editor_person_select') {
+            include_once(__DIR__ . "/include/editor_person_select.php");
+        } elseif ($page === 'editor_relation_select') {
+            include_once(__DIR__ . "/include/editor_relation_select.php");
+        } elseif ($page === 'editor_media_select') {
+            include_once(__DIR__ . "/include/editor_media_select.php");
+        } elseif ($page === 'check') {
+            include_once(__DIR__ . "/views/tree_check.php");
+        } elseif ($page === 'latest_changes') {
+            include_once(__DIR__ . "/views/tree_check.php");
+        } elseif ($page === 'gedcom') {
+            include_once(__DIR__ . "/views/gedcom.php");
+        } elseif ($page === 'settings') {
+            include_once(__DIR__ . "/views/settings_admin.php");
+        } elseif ($page === 'thumbs') {
+            //require __DIR__ . '/controller/thumbsController.php';
+            //$controllerObj = new ThumbsController();
+            //$thumbs = $controllerObj->detail();
+            include_once(__DIR__ . "/views/thumbs.php");
+            //} elseif ($page == 'favorites') {
+            //    include_once(__DIR__ . "/include/favorites.php");
+        } elseif ($page === 'users') {
+            require __DIR__ . '/controller/usersController.php';
+            $controllerObj = new UsersController();
+            $edit_users = $controllerObj->detail($dbh);
+            include_once(__DIR__ . "/views/users.php");
+        } elseif ($page === 'editor_user_settings') {
+            include_once(__DIR__ . "/include/editor_user_settings.php");
+        } elseif ($page === 'groups') {
+            require __DIR__ . '/controller/groupsController.php';
+            $controllerObj = new GroupsController();
+            $groups = $controllerObj->detail($dbh);
+            include_once(__DIR__ . "/views/groups.php");
+        } elseif ($page === 'cms_pages') {
+            require __DIR__ . '/controller/edit_cms_pagesController.php';
+            $controllerObj = new edit_cms_pagesController();
+            $cms_pages = $controllerObj->detail($dbh);
+            include_once(__DIR__ . "/views/cms_pages.php");
+        } elseif ($page === 'backup') {
+            include_once(__DIR__ . "/views/backup.php");
+        } elseif ($page === 'notes') {
+            require __DIR__ . '/controller/notesController.php';
+            $controllerObj = new NotesController();
+            $notes = $controllerObj->detail($dbh);
+            include_once(__DIR__ . "/views/notes.php");
+        } elseif ($page === 'cal_date') {
+            include_once(__DIR__ . "/views/cal_date.php");
+        } elseif ($page === 'export') {
+            require __DIR__ . '/controller/gedcom_exportController.php';
+            $controllerObj = new Gedcom_exportController();
+            $export = $controllerObj->detail($dbh, $tree_id, $humo_option, $db_functions);
+            include_once(__DIR__ . "/views/gedcom_export.php");
+        } elseif ($page === 'log') {
+            require __DIR__ . '/controller/logController.php';
+            $controllerObj = new LogController();
+            $log = $controllerObj->detail($dbh);
+            include_once(__DIR__ . "/views/log.php");
+        } elseif ($page === 'language_editor') {
+            require __DIR__ . '/controller/language_editorController.php';
+            $controllerObj = new Language_editorController();
+            $language_editor = $controllerObj->detail($dbh, $humo_option);
+            include_once(__DIR__ . "/views/language_editor.php");
+        } elseif ($page === 'prefix_editor') {
+            include_once(__DIR__ . "/views/prefix_editor.php");
+        } elseif ($page === 'maps') {
+            require __DIR__ . '/controller/mapsController.php';
+            $controllerObj = new MapsController();
+            $maps = $controllerObj->detail($dbh, $db_functions);
+            include_once(__DIR__ . "/views/maps.php");
+        } elseif ($page === 'statistics') {
+            include_once(__DIR__ . "/views/statistics.php");
+        } elseif ($page === 'install_update') {
+            include_once(__DIR__ . "/update/install_update.php");
+        } elseif ($page === 'update') {
+            include_once(__DIR__ . "/include/update.php");
+        }
+        //elseif ($page=='photoalbum'){ include_once (__DIR__ . "/include/photoalbum_categories.php"); }
 
-                <!-- Users -->
-                <?php if ($group_administrator == 'j') {; ?>
-                    <ul>
-                        <li><a href="<?= $path_tmp; ?>page=users"><?= __('Users'); ?></a></li>
-                        <li><a href="<?= $path_tmp; ?>page=groups"><?= __('User groups'); ?></a></li>
-                        <li>
-                            <a href="<?= $path_tmp; ?>page=log"><?= __('Log'); ?></a>
+        // *** Edit event by person ***
+        //elseif ($page=='editor_person_event'){ include_once (__DIR__ . "/include/editor_person_event.php"); }
 
-                            <ul>
-                                <li><?= __('Logfile users'); ?></li>
-                                <li><?= __('IP Blacklist'); ?></li>
-                            </ul>
-                        </li>
-                    </ul>
-                <?php }; ?>
-            <?php }; ?>
-        </div>
+        // *** Default page for editor ***
+        elseif ($group_administrator != 'j' && $group_edit_trees) {
+            include_once(__DIR__ . "/views/editor.php");
+        }
+
+        // *** Default page for administrator ***
+        else {
+            // *** TODO: improve processing of uninstalled database ***
+            if (!isset($database_check)){
+                $database_check='';
+            }
+            if (!isset($dbh)){
+                $dbh='';
+            }
+            require __DIR__ . '/controller/index_adminController.php';
+            $controllerObj = new IndexController();
+            $index = $controllerObj->detail($database_check, $dbh);
+            include_once(__DIR__ . "/views/index_admin.php");
+        }
+        ?>
+
     </div>
 
-    <?php
-    // *** Show menu ***
-    include_once(__DIR__ . '/views/menu.php');
-
-    if ($popup == false) {
-    ?>
-    </div> <!-- End of humo_top -->
-<?php } ?>
-
-<div id="content_admin">
-    <?php
-    define('ADMIN_PAGE', true); // *** Safety line ***
-
-    if ($page === 'install') {
-        include_once(__DIR__ . "/views/install.php");
-    } elseif ($page === 'extensions') {
-        include_once(__DIR__ . "/views/extensions.php");
-    } elseif ($page === 'login') {
-        include_once(__DIR__ . "/views/login.php");
-    } elseif ($group_administrator == 'j' && $page === 'tree') {
-        require __DIR__ . '/controller/treesController.php';
-        $controllerObj = new TreesController();
-        $trees = $controllerObj->detail($dbh, $tree_id, $db_functions);
-        include_once(__DIR__ . "/views/trees.php");
-    } elseif ($page === 'editor') {
-        include_once(__DIR__ . "/views/editor.php");
-    } elseif ($page === 'editor_sources') {
-        include_once(__DIR__ . "/include/editor_sources.php");
-    } elseif ($page === 'edit_sources') {
-        require __DIR__ . '/controller/edit_sourceController.php';
-        $controllerObj = new SourceController();
-        $editSource = $controllerObj->detail($dbh, $tree_id, $db_functions);
-        include_once(__DIR__ . "/views/edit_source.php");
-    } elseif ($page === 'edit_repositories') {
-        require __DIR__ . '/controller/edit_repositoryController.php';
-        $controllerObj = new RepositoryController();
-        $editRepository = $controllerObj->detail($dbh, $tree_id, $db_functions);
-        include_once(__DIR__ . "/views/edit_repository.php");
-    } elseif ($page === 'edit_addresses') {
-        require __DIR__ . '/controller/edit_addressController.php';
-        $controllerObj = new AddressController();
-        $editAddress = $controllerObj->detail($dbh, $tree_id, $db_functions);
-        include_once(__DIR__ . "/views/edit_address.php");
-    } elseif ($page === 'edit_places') {
-        require __DIR__ . '/controller/edit_rename_placeController.php';
-        $controllerObj = new PlaceController();
-        $place = $controllerObj->detail($dbh, $tree_id);
-        include_once(__DIR__ . "/views/edit_rename_place.php");
-    } elseif ($page === 'editor_place_select') {
-        include_once(__DIR__ . "/include/editor_place_select.php");
-    } elseif ($page === 'editor_person_select') {
-        include_once(__DIR__ . "/include/editor_person_select.php");
-    } elseif ($page === 'editor_relation_select') {
-        include_once(__DIR__ . "/include/editor_relation_select.php");
-    } elseif ($page === 'editor_media_select') {
-        include_once(__DIR__ . "/include/editor_media_select.php");
-    } elseif ($page === 'check') {
-        include_once(__DIR__ . "/views/tree_check.php");
-    } elseif ($page === 'latest_changes') {
-        include_once(__DIR__ . "/views/tree_check.php");
-    } elseif ($page === 'gedcom') {
-        include_once(__DIR__ . "/views/gedcom.php");
-    } elseif ($page === 'settings') {
-        include_once(__DIR__ . "/views/settings_admin.php");
-    } elseif ($page === 'thumbs') {
-        include_once(__DIR__ . "/views/thumbs.php");
-        //} elseif ($page == 'favorites') {
-        //    include_once(__DIR__ . "/include/favorites.php");
-    } elseif ($page === 'users') {
-        require __DIR__ . '/controller/usersController.php';
-        $controllerObj = new UsersController();
-        $edit_users = $controllerObj->detail($dbh);
-        include_once(__DIR__ . "/views/users.php");
-    } elseif ($page === 'editor_user_settings') {
-        include_once(__DIR__ . "/include/editor_user_settings.php");
-    } elseif ($page === 'groups') {
-        require __DIR__ . '/controller/groupsController.php';
-        $controllerObj = new GroupsController();
-        $groups = $controllerObj->detail($dbh);
-        include_once(__DIR__ . "/views/groups.php");
-    } elseif ($page === 'cms_pages') {
-        require __DIR__ . '/controller/edit_cms_pagesController.php';
-        $controllerObj = new edit_cms_pagesController();
-        $cms_pages = $controllerObj->detail($dbh);
-        include_once(__DIR__ . "/views/cms_pages.php");
-    } elseif ($page === 'backup') {
-        include_once(__DIR__ . "/views/backup.php");
-    } elseif ($page === 'notes') {
-        require __DIR__ . '/controller/notesController.php';
-        $controllerObj = new NotesController();
-        $notes = $controllerObj->detail($dbh);
-        include_once(__DIR__ . "/views/notes.php");
-    } elseif ($page === 'cal_date') {
-        include_once(__DIR__ . "/views/cal_date.php");
-    } elseif ($page === 'export') {
-        require __DIR__ . '/controller/gedcom_exportController.php';
-        $controllerObj = new Gedcom_exportController();
-        $export = $controllerObj->detail($dbh, $tree_id, $humo_option, $db_functions);
-        include_once(__DIR__ . "/views/gedcom_export.php");
-    } elseif ($page === 'log') {
-        require __DIR__ . '/controller/logController.php';
-        $controllerObj = new LogController();
-        $log = $controllerObj->detail($dbh);
-        include_once(__DIR__ . "/views/log.php");
-    } elseif ($page === 'language_editor') {
-        require __DIR__ . '/controller/language_editorController.php';
-        $controllerObj = new Language_editorController();
-        $language_editor = $controllerObj->detail($dbh, $humo_option);
-        include_once(__DIR__ . "/views/language_editor.php");
-    } elseif ($page === 'prefix_editor') {
-        include_once(__DIR__ . "/views/prefix_editor.php");
-    } elseif ($page === 'google_maps') {
-        include_once(__DIR__ . "/views/make_db_maps.php");
-    } elseif ($page === 'statistics') {
-        include_once(__DIR__ . "/views/statistics.php");
-    } elseif ($page === 'install_update') {
-        include_once(__DIR__ . "/update/install_update.php");
-    } elseif ($page === 'update') {
-        include_once(__DIR__ . "/include/update.php");
-    }
-    //elseif ($page=='photoalbum'){ include_once (__DIR__ . "/include/photoalbum_categories.php"); }
-
-    // *** Edit event by person ***
-    //elseif ($page=='editor_person_event'){ include_once (__DIR__ . "/include/editor_person_event.php"); }
-
-    // *** Default page for editor ***
-    elseif ($group_administrator != 'j' && $group_edit_trees) {
-        include_once(__DIR__ . "/views/editor.php");
-    }
-
-    // *** Default page for administrator ***
-    else {
-        include_once(__DIR__ . "/views/index_admin.php");
-    }
-    ?>
-
-</div>
-
-</body>
+        </body>
 
 </html>

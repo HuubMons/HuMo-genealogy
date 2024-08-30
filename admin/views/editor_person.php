@@ -419,7 +419,7 @@
                     ?>
                         <!-- Hebrew name -->
                         <div class="row mb-2">
-                            <label for "hebrew_name" class="col-md-3 col-form-label"><?= ucfirst(__('Hebrew name')); ?></label>
+                            <label for="hebrew_name" class="col-md-3 col-form-label"><?= ucfirst(__('Hebrew name')); ?></label>
                             <div class="col-md-7">
                                 <input type="text" name="even_hebname" value="<?= htmlspecialchars($he_name); ?>" size="35" class="form-control form-control-sm">
                                 <span style="font-size: 13px;"><?= __("For example: Joseph ben Hirsch Zvi"); ?></span>
@@ -438,7 +438,7 @@
                     ?>
                     <!-- Text -->
                     <div class="row mb-2">
-                        <label for "text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <label for="text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
                             <textarea rows="1" name="pers_name_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                         </div>
@@ -502,7 +502,7 @@
                     ?>
                         <!-- Source -->
                         <div class="row mb-2">
-                            <label for "source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <label for="source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'pers_name_source', $pers_gedcomnumber);
@@ -665,14 +665,14 @@
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
-                        <label for "pers_birth_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <label for="pers_birth_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                         <div class="col-md-7">
                             <?php $editor_cls->date_show($pers_birth_date, 'pers_birth_date', '', $pers_birth_date_hebnight, 'pers_birth_date_hebnight'); ?>
                         </div>
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_birth_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <label for="pers_birth_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
                                 <input type="text" name="pers_birth_place" value="<?= htmlspecialchars($pers_birth_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -682,7 +682,7 @@
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_birth_time" class="col-md-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
+                        <label for="pers_birth_time" class="col-md-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
                         <div class="col-md-2">
                             <input type="text" name="pers_birth_time" value="<?= $pers_birth_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
                         </div>
@@ -699,7 +699,7 @@
                     }
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
                             <textarea rows="1" name="pers_birth_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($pers_birth_text); ?></textarea>
                         </div>
@@ -707,7 +707,7 @@
 
                     <?php if (!isset($_GET['add_person'])) { ?>
                         <div class="row mb-2">
-                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('born', 'pers_birth_source', $pers_gedcomnumber);
@@ -765,14 +765,14 @@
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
                         <div class="row mb-2">
-                            <label for "even_brit_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                            <label for="even_brit_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                             <div class="col-md-7">
                                 <?php $editor_cls->date_show($britdate, 'even_brit_date'); ?>
                             </div>
                         </div>
 
                         <div class="row mb-2">
-                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                            <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <input type="text" name="even_brit_place" value="<?= htmlspecialchars($britplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                             </div>
@@ -787,7 +787,7 @@
                         }
                         ?>
                         <div class="row mb-2">
-                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                            <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
                                 <textarea rows="1" name="even_brit_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                             </div>
@@ -795,7 +795,7 @@
 
                         <?php if (!isset($_GET['add_person'])) { ?>
                             <div class="row mb-2">
-                                <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
                                     <?php
                                     source_link3('person', 'pers_event_source', $britid);
@@ -860,14 +860,14 @@
                     ?>
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                         <div class="row mb-2">
-                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                            <label for="even_barm_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                             <div class="col-md-7">
                                 <?php $editor_cls->date_show($bardate, 'even_barm_date'); ?>
                             </div>
                         </div>
 
                         <div class="row mb-2">
-                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                            <label for="even_barm_date" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <input type="text" name="even_barm_place" value="<?= htmlspecialchars($barplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
                             </div>
@@ -882,7 +882,7 @@
                         }
                         ?>
                         <div class="row mb-2">
-                            <label for "even_barm_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                            <label for="even_barm_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
                                 <textarea rows="1" name="even_barm_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                             </div>
@@ -890,7 +890,7 @@
 
                         <?php if (!isset($_GET['add_person'])) { ?>
                             <div class="row mb-2">
-                                <label for "pers_event_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                <label for="pers_event_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                 <div class="col-md-7">
                                     <?php
                                     source_link3('person', 'pers_event_source', $barid);
@@ -936,14 +936,14 @@
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
                     <div class="row mb-2">
-                        <label for "pers_bapt_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <label for="pers_bapt_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                         <div class="col-md-7">
                             <?php $editor_cls->date_show($pers_bapt_date, 'pers_bapt_date'); ?>
                         </div>
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_bapt_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <label for="pers_bapt_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
                                 <input type="text" name="pers_bapt_place" value="<?= htmlspecialchars($pers_bapt_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -953,7 +953,7 @@
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_religion" class="col-md-3 col-form-label"><?= ucfirst(__('religion')); ?></label>
+                        <label for="pers_religion" class="col-md-3 col-form-label"><?= ucfirst(__('religion')); ?></label>
                         <div class="col-md-7">
                             <input type="text" name="pers_religion" value="<?= htmlspecialchars($pers_religion); ?>" size="20" class="form-control form-control-sm">
                         </div>
@@ -968,7 +968,7 @@
                     }
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_bapt_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <label for="pers_bapt_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
                             <textarea rows="1" name="pers_bapt_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                         </div>
@@ -976,7 +976,7 @@
 
                     <?php if (!isset($_GET['add_person'])) { ?>
                         <div class="row mb-2">
-                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'pers_bapt_source', $pers_gedcomnumber);
@@ -1073,14 +1073,14 @@
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
-                        <label for "pers_death_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <label for="pers_death_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                         <div class="col-md-7">
                             <?php $editor_cls->date_show($pers_death_date, 'pers_death_date', '', $pers_death_date_hebnight, 'pers_death_date_hebnight'); ?>
                         </div>
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_death_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <label for="pers_death_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
                                 <input type="text" name="pers_death_place" value="<?= htmlspecialchars($pers_death_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -1091,7 +1091,7 @@
 
                     <!-- Age by death -->
                     <div class="row mb-2">
-                        <label for "pers_death_age" class="col-md-3 col-form-label"><?= __('Age'); ?></label>
+                        <label for="pers_death_age" class="col-md-3 col-form-label"><?= __('Age'); ?></label>
                         <div class="col-md-2">
                             <div class="input-group">
                                 <input type="text" name="pers_death_age" value="<?= $pers_death_age; ?>" size="3" class="form-control form-control-sm">
@@ -1108,7 +1108,7 @@
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_death_place" class="col-md-3 col-form-label"><?= ucfirst(__('death time')); ?></label>
+                        <label for="pers_death_place" class="col-md-3 col-form-label"><?= ucfirst(__('death time')); ?></label>
                         <div class="col-md-2">
                             <input type="text" name="pers_death_time" value="<?= $pers_death_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
                         </div>
@@ -1125,7 +1125,7 @@
                     }
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_death_cause" class="col-md-3 col-form-label"><?= ucfirst(__('cause')); ?></label>
+                        <label for="pers_death_cause" class="col-md-3 col-form-label"><?= ucfirst(__('cause')); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
                                 <select size="1" name="pers_death_cause" class="form-select form-select-sm">
@@ -1157,7 +1157,7 @@
                     }
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_death_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <label for="pers_death_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
                             <textarea rows="1" name="pers_death_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                         </div>
@@ -1165,7 +1165,7 @@
 
                     <?php if (!isset($_GET['add_person'])) { ?>
                         <div class="row mb-2">
-                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'pers_death_source', $pers_gedcomnumber);
@@ -1210,14 +1210,14 @@
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
-                        <label for "pers_buried_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <label for="pers_buried_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                         <div class="col-md-7">
                             <?php $editor_cls->date_show($pers_buried_date, 'pers_buried_date', '', $pers_buried_date_hebnight, 'pers_buried_date_hebnight'); ?>
                         </div>
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_buried_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
                                 <input type="text" name="pers_buried_place" value="<?= htmlspecialchars($pers_buried_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
@@ -1227,7 +1227,7 @@
                     </div>
 
                     <div class="row mb-2">
-                        <label for "pers_cremation" class="col-md-3 col-form-label"><?= ucfirst(__('method of burial')); ?></label>
+                        <label for="pers_cremation" class="col-md-3 col-form-label"><?= ucfirst(__('method of burial')); ?></label>
                         <div class="col-md-7">
                             <select size="1" name="pers_cremation" class="form-select form-select-sm">
                                 <option value=""><?= __('buried'); ?></option>
@@ -1248,7 +1248,7 @@
                     }
                     ?>
                     <div class="row mb-2">
-                        <label for "pers_buried_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <label for="pers_buried_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                         <div class="col-md-7">
                             <textarea rows="1" name="pers_buried_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $text; ?></textarea>
                         </div>
@@ -1256,7 +1256,7 @@
 
                     <?php if (!isset($_GET['add_person'])) { ?>
                         <div class="row mb-2">
-                            <label for "pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'pers_buried_source', $pers_gedcomnumber);
@@ -1286,7 +1286,7 @@
 
                 <?php if (!isset($_GET['add_person'])) { ?>
                     <div class="row mb-2">
-                        <!-- <label for "pers_text_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
+                        <!-- <label for="pers_text_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
                         <div class="col-md-7">
                             <?php
                             source_link3('person', 'pers_text_source', $pers_gedcomnumber);
@@ -1311,7 +1311,7 @@
                 <td>
                     <?php if (!isset($_GET['add_person'])) { ?>
                         <div class="row mb-2">
-                            <!-- <label for "pers_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
+                            <!-- <label for="pers_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label> -->
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'person_source', $pers_gedcomnumber);
@@ -1334,7 +1334,7 @@
             <td><?= ucfirst(__('own code')); ?></td>
             <td colspan="2">
                 <div class="row mb-2">
-                    <!-- <label for "pers_buried_place" class="col-md-3 col-form-label"><?= ucfirst(__('own code')); ?></label> -->
+                    <!-- <label for="pers_buried_place" class="col-md-3 col-form-label"><?= ucfirst(__('own code')); ?></label> -->
                     <div class="col-md-7">
                         <div class="input-group">
                             <input type="text" name="pers_own_code" value="<?= htmlspecialchars($pers_own_code); ?>" class="form-control form-control-sm">

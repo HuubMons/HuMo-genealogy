@@ -526,6 +526,10 @@ if ($page == 'address') {
     require __DIR__ . '/app/controller/relationsController.php';
     $controllerObj = new RelationsController($dbh);
     $relation = $controllerObj->getRelations($db_functions, $person_cls);
+} elseif ($page == 'reset_password') {
+    require __DIR__ . '/app/controller/reset_passwordController.php';
+    $controllerObj = new ResetpasswordController();
+    $resetpassword = $controllerObj->detail($dbh, $humo_option);
 } elseif ($page == 'outline_report') {
     require __DIR__ . '/app/controller/outline_reportController.php';
     $controllerObj = new Outline_reportController();

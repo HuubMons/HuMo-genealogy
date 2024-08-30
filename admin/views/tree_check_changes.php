@@ -252,31 +252,27 @@ $select_editor_result = $dbh->query($select_editor_qry);
             <input type="submit" name="last_changes" class="btn btn-sm btn-success" value="<?= __('Select'); ?>">
         </div>
     </div>
-</form><br>
+</form>
 
-<!-- Show results -->
-<!-- <div style="margin-left:auto; margin-right:auto; height:350px; width:90%; overflow-y: scroll;"> -->
-<!-- <div style="margin-left:auto; margin-right:auto; height:400px; overflow-y: scroll;"> -->
-<div style="margin-left:auto; margin-right:auto;">
-    <table class="humo" style="width:100%">
+<table class="table my-2">
+    <thead class="table-primary">
         <tr>
-            <th style="text-align: center"><?= __('Item'); ?></th>
-            <th style="text-align: center"><?= __('Changed/ Added'); ?></th>
-            <th style="text-align: center"><?= __('When changed'); ?></th>
-            <th style="text-align: center"><?= __('When added'); ?></th>
+            <th><?= __('Item'); ?></th>
+            <th><?= __('Changed/ Added'); ?></th>
+            <th><?= __('When changed'); ?></th>
+            <th><?= __('When added'); ?></th>
         </tr>
+    </thead>
 
-        <!-- Show results -->
-        <?php
-        $counter = count($result_array);
-        for ($row = 0; $row < $counter; $row++) {
-        ?>
-            <tr>
-                <td><?= $result_array[$row][0]; ?></td>
-                <td><?= $result_array[$row][1]; ?></td>
-                <td><?= $result_array[$row][2]; ?></td>
-                <td><?= $result_array[$row][3]; ?></td>
-            </tr>
-        <?php } ?>
-    </table><br><br>
-</div>
+    <?php
+    $counter = count($result_array);
+    for ($row = 0; $row < $counter; $row++) {
+    ?>
+        <tr>
+            <td><?= $result_array[$row][0]; ?></td>
+            <td><?= $result_array[$row][1]; ?></td>
+            <td><?= $result_array[$row][2]; ?></td>
+            <td><?= $result_array[$row][3]; ?></td>
+        </tr>
+    <?php } ?>
+</table>

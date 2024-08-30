@@ -76,7 +76,7 @@ $f_keys = array_keys($f_first_names);
 
 <div style="text-align:center">
     <form method="POST" action="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?> " style="display:inline;" id="frqfirnames">
-        <div class="mb-2 row">
+        <div class="mb-2 row me-1">
             <div class="col-sm-2"></div>
 
             <div class="col-sm-3 text-end">
@@ -96,24 +96,29 @@ $f_keys = array_keys($f_first_names);
             </div>
         </div>
     </form>
-</div><br>
+</div>
 
-<table style="width:90%;" class="humo nametbl" align="center">
-    <tr class=table_headline style="height:25px">
-        <th style="border-right-width:6px;width:50%" colspan="4"><span style="font-size:135%"><?= __('Male'); ?></span></th>
-        <th style="width:50%" colspan="4"><span style="font-size:135%"><?= __('Female'); ?></span></th>
-    </tr>
+<!-- <table style="width:90%;" class="humo nametbl" align="center"> -->
+<table class="table nametbl mt-4">
+    <thead class="table-primary">
+        <tr style="height:25px">
+            <th style="border-right-width:6px;width:50%" colspan="4"><span style="font-size:135%"><?= __('Male'); ?></span></th>
+            <th style="width:50%" colspan="4"><span style="font-size:135%"><?= __('Female'); ?></span></th>
+        </tr>
+    </thead>
 
-    <tr class=table_headline>
-        <th width="19%"><?= __('First name'); ?></th>
-        <th style="text-align:center;font-size:90%;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
-        <th width="19%"><?= __('First name'); ?></th>
-        <th style="text-align:center;font-size:90%;border-right-width:6px;width:6%"><?= __('Total'); ?></th>
-        <th width="19%"><?= __('First name'); ?></th>
-        <th style="text-align:center;font-size:90%;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
-        <th width="19%"><?= __('First name'); ?></th>
-        <th style="text-align:center;font-size:90%;width:6%"><?= __('Total'); ?></th>
-    </tr>
+    <thead class="table-primary">
+        <tr>
+            <th width="19%"><?= __('First name'); ?></th>
+            <th style="text-align:center;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
+            <th width="19%"><?= __('First name'); ?></th>
+            <th style="text-align:center;border-right-width:6px;width:6%"><?= __('Total'); ?></th>
+            <th width="19%"><?= __('First name'); ?></th>
+            <th style="text-align:center;border-right-width:3px;width:6%"><?= __('Total'); ?></th>
+            <th width="19%"><?= __('First name'); ?></th>
+            <th style="text-align:center;width:6%"><?= __('Total'); ?></th>
+        </tr>
+    </thead>
 
     <?php for ($i = 0; $i < $row; $i++) { ?>
         <tr>
