@@ -54,8 +54,7 @@ if (isset($_POST['save_option'])) {
 
     /*
     ***************************
-    Kai Mahnke 2020-04
-    Save email configuration settings 
+    Kai Mahnke 2020-04: Save email configuration settings 
     ****************************
     */
     $db_functions->update_settings('email_sender', $_POST["email_sender"]);
@@ -67,11 +66,7 @@ if (isset($_POST['save_option'])) {
     $db_functions->update_settings('smtp_auth', $_POST["smtp_auth"]);
     $db_functions->update_settings('smtp_encryption', $_POST["smtp_encryption"]);
     $db_functions->update_settings('smtp_debug', $_POST["smtp_debug"]);
-    /*
-    ***************************
-    End changes
-    ***************************
-    */
+    /* End changes */
 
     $db_functions->update_settings('descendant_generations', $_POST["descendant_generations"]);
 

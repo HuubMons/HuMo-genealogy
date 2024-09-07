@@ -1,6 +1,10 @@
 <?php
+// TODO move items to model and view scripts.
+
 global $selected_language;
 
+// TODO probably better not to load all places. Combine queries?
+// Allready done for openstreetmap.
 $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL");
 while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
     $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
@@ -36,6 +40,17 @@ if ($flag_desc_search == 1 and $desc_array != '') {
                 FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                 AND pers_gedcomnumber ='" . $value . "'
                 AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
+
+
+            // TODO use join. Prebuild array not needed anymore.
+            /*
+            $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
+            ON humo_location.location_location = humo_persons.pers_birth_place
+            OR humo_location.location_location = humo_persons.pers_bapt_place
+            WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
+            */
+
+
             @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
         } elseif ($_SESSION['type_death'] == 1) {
             $persoon = $dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
@@ -95,7 +110,7 @@ if ($flag_desc_search == 1 and $desc_array != '') {
                     if ($year > 1 and $year < ($realmin + (8 * $step))) {
                         $locarray[$place][11]++;
                     }
-                    if ($year > 1 and $year < 2050) {
+                    if ($year > 1 and $year < 2100) {
                         $locarray[$place][12]++;
                     }
                     $locarray[$place][13]++;  // array of all people incl without birth date
@@ -103,8 +118,8 @@ if ($flag_desc_search == 1 and $desc_array != '') {
                     $locarray[$place][13]++; // array of all people incl without birth date
                 }
             }
-        }        // end if($personDb)
-    }        // end for
+        }
+    }
 } elseif ($flag_anc_search == 1 and $anc_array != '') {
     //elseif(1==3) {
     foreach ($anc_array as $value) {
@@ -180,8 +195,8 @@ if ($flag_desc_search == 1 and $desc_array != '') {
                     $locarray[$place][13]++; // array of all people incl without birth date
                 }
             }
-        }    // end if($personDb)
-    }        // end for
+        }
+    }
 } else {
     if ($_SESSION['type_birth'] == 1) {
         $persoon = $dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date

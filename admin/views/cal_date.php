@@ -61,8 +61,7 @@ if (isset($_POST['submit_button']) && isset($tree_id)) {
     }
 ?>
 
-    <!-- TODO use div instead of table -->
-    <table class="humo standard" style="width:800px;" border="1">
+    <table class="table">
         <tr>
             <td colspan="2">
                 <?php

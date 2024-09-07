@@ -10,7 +10,6 @@ $user = $dbh->query($usersql);
 
 <h1 class="center"><?= __('Users'); ?></h1>
 
-<!-- Remove user -->
 <?php if (isset($_GET['remove_user'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to delete this user?'); ?></strong>
@@ -45,19 +44,21 @@ $user = $dbh->query($usersql);
 
 <form method="POST" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
-    <table class="humo standard" border="1" style="width:95%;">
-        <tr class="table_header_large">
-            <th><?= __('User'); ?></th>
-            <th><?= __('E-mail address'); ?></th>
-            <th><?= __('Change password'); ?></th>
-            <th><?= __('User group'); ?></th>
-            <th><?= __('Extra settings'); ?></th>
-            <th><?= __('Statistics'); ?></th>
-            <th><input type="submit" name="change_user" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-        </tr>
+    <table class="table table-bordered">
+        <thead class="table-primary">
+            <tr>
+                <th><?= __('User'); ?></th>
+                <th><?= __('E-mail address'); ?></th>
+                <th><?= __('Change password'); ?></th>
+                <th><?= __('User group'); ?></th>
+                <th><?= __('Extra settings'); ?></th>
+                <th><?= __('Statistics'); ?></th>
+                <th><input type="submit" name="change_user" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+            </tr>
+        </thead>
 
         <?php while ($userDb = $user->fetch(PDO::FETCH_OBJ)) { ?>
-            <tr align="center">
+            <tr>
                 <td>
                     <input type="hidden" name="<?= $userDb->user_id; ?>user_id" value="<?= $userDb->user_id; ?>">
 
@@ -162,7 +163,7 @@ $user = $dbh->query($usersql);
         $groupresult = $dbh->query($groupsql);
         ?>
         <!-- Add user -->
-        <tr align="center" bgcolor="green">
+        <tr class="table-secondary">
             <td><input type="text" name="add_username" size="15"></td>
             <td><input type="text" name="add_usermail" size="20"></td>
             <td><input type="password" name="add_password" size="15"></td>

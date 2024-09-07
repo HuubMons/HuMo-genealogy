@@ -282,12 +282,12 @@ if (isset($_POST['mark_all'])) {
 
     <table class="table">
         <thead class="table-primary">
-        <tr>
-            <th style="width:20%;"><?= __('Person'); ?></th>
-            <th style="width:10%;"><?= __('ID'); ?></th>
-            <th style="width:35%;"><?= __('Possible consistency problems'); ?></th>
-            <th style="width:35%;"><?= __('Details'); ?></th>
-        </tr>
+            <tr>
+                <th style="width:20%;"><?= __('Person'); ?></th>
+                <th style="width:10%;"><?= __('ID'); ?></th>
+                <th style="width:35%;"><?= __('Possible consistency problems'); ?></th>
+                <th style="width:35%;"><?= __('Details'); ?></th>
+            </tr>
         </thead>
 
         <?php
@@ -975,42 +975,47 @@ function write_pers($name, $id, $first_date, $second_date, $first_text, $second_
         $second = __('BURIED_SHORT');
     }
 
-    echo '<tr><td style="padding-left:5px;padding-right:5px"><a href="../admin/index.php?page=editor&menu_tab=person&tree_id=' . $tree_id . '&person=' . $personDb['pers_gedcomnumber'] . '" target=\'_blank\'>' . $name . '</a></td>';
+?>
+    <tr>
+        <td style="padding-left:5px;padding-right:5px"><a href="../admin/index.php?page=editor&menu_tab=person&tree_id=<?= $tree_id; ?>&person=<?= $personDb['pers_gedcomnumber']; ?>" target=\'_blank\'><?= $name; ?></a></td>
 
-    echo '<td style="padding-left:5px;padding-right:5px">' . $personDb['pers_gedcomnumber'] . '</td>';
-    echo '<td style="padding-left:5px;padding-right:5px">';
-
-    if ($id == "1" || $id == "7" || $id == "13" || $id == "16") {
-        echo $first_text . ' ' . __("after") . ' ' . $second_text;
-    } elseif ($id == "3" || $id == "4" || $id == "9" || $id == "10") {
-        printf(__("%s more than %d years after %s"), $first, $nr, __('birth date') . ' ' . $second_text);
-        $second = $second_text . ' ' . __('BORN_SHORT');
-    }
-    //elseif($id=="9" OR $id=="10") { printf(__("%s more than %d years after %s"),$first,$nr,__('birth date').' '.$second_text); $second = $second_text.' '.__('BAPTISED_SHORT');}
-    elseif ($id == "5" || $id == "6" || $id == "11" || $id == "12") {
-        printf(__("%s before or less than %d years after %s"), $first, $nr, __('birth date') . ' ' . $second_text);
-        $second = $second_text . ' ' . __('BORN_SHORT');
-    }
-    //elseif($id=="11" OR $id=="12"){ printf(__("%s before or less than %d years after %s"),$first,$nr,__('birth date').' '.$second_text); $second = $second_text.' '.__('BAPTISED_SHORT');}
-    elseif ($id == "14") {
-        printf(__("%s less than %d years after %s"), $first, $nr, $second_text);
-    } elseif ($id == "17" || $id == "18" || $id == "19" || $id == "20") {
-        echo $first . ' ' . __("before") . ' ' . __('birth date') . ' ' . $second_text;
-        $second = $second_text . ' ' . __('BORN_SHORT');
-    } elseif ($id == "2") {
-        printf(__("age (up till today) more than %d years (age: %d)"), $nr, $gap);
-        $dash = '';
-        $second_colon = '';
-    } elseif ($id == "21" || $id == "22") {
-        printf(__("age (by %s) more than %d years (age: %d)"), $second_text, $nr, $gap);
-    } elseif ($id == "15") {
-        printf(__("age difference of more than %d years with spouse (%d)"), $nr, abs($gap));
-        $second = strtolower($second_text) . ' ' . __('BORN_SHORT');
-    } elseif ($id == "23" || $id == "25") {
-        printf(__("%s less than %d months after %s"), $first, $nr, $second_text);
-    } elseif ($id == "24") {
-        printf(__("%s before %s"), $first, $second_text);
-    }
-    echo '</td>';
-    echo '<td style="padding-left:5px;padding-right:5px">' . $first . ': ' . $first_date . $dash . $second . $second_colon . $second_date . '</td></tr>';
+        <td style="padding-left:5px;padding-right:5px"><?= $personDb['pers_gedcomnumber']; ?></td>
+        <td style="padding-left:5px;padding-right:5px">
+            <?php
+            if ($id == "1" || $id == "7" || $id == "13" || $id == "16") {
+                echo $first_text . ' ' . __("after") . ' ' . $second_text;
+            } elseif ($id == "3" || $id == "4" || $id == "9" || $id == "10") {
+                printf(__("%s more than %d years after %s"), $first, $nr, __('birth date') . ' ' . $second_text);
+                $second = $second_text . ' ' . __('BORN_SHORT');
+            }
+            //elseif($id=="9" OR $id=="10") { printf(__("%s more than %d years after %s"),$first,$nr,__('birth date').' '.$second_text); $second = $second_text.' '.__('BAPTISED_SHORT');}
+            elseif ($id == "5" || $id == "6" || $id == "11" || $id == "12") {
+                printf(__("%s before or less than %d years after %s"), $first, $nr, __('birth date') . ' ' . $second_text);
+                $second = $second_text . ' ' . __('BORN_SHORT');
+            }
+            //elseif($id=="11" OR $id=="12"){ printf(__("%s before or less than %d years after %s"),$first,$nr,__('birth date').' '.$second_text); $second = $second_text.' '.__('BAPTISED_SHORT');}
+            elseif ($id == "14") {
+                printf(__("%s less than %d years after %s"), $first, $nr, $second_text);
+            } elseif ($id == "17" || $id == "18" || $id == "19" || $id == "20") {
+                echo $first . ' ' . __("before") . ' ' . __('birth date') . ' ' . $second_text;
+                $second = $second_text . ' ' . __('BORN_SHORT');
+            } elseif ($id == "2") {
+                printf(__("age (up till today) more than %d years (age: %d)"), $nr, $gap);
+                $dash = '';
+                $second_colon = '';
+            } elseif ($id == "21" || $id == "22") {
+                printf(__("age (by %s) more than %d years (age: %d)"), $second_text, $nr, $gap);
+            } elseif ($id == "15") {
+                printf(__("age difference of more than %d years with spouse (%d)"), $nr, abs($gap));
+                $second = strtolower($second_text) . ' ' . __('BORN_SHORT');
+            } elseif ($id == "23" || $id == "25") {
+                printf(__("%s less than %d months after %s"), $first, $nr, $second_text);
+            } elseif ($id == "24") {
+                printf(__("%s before %s"), $first, $second_text);
+            }
+            ?>
+        </td>
+        <td style="padding-left:5px;padding-right:5px"><?= $first; ?>: <?= $first_date . $dash . $second . $second_colon . $second_date; ?></td>
+    </tr>
+<?php
 }

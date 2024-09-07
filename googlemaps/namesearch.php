@@ -123,7 +123,7 @@ function mapbirthplace($place)
                     FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                     AND " . $idstring . $namestring . " (pers_birth_place = '" . $place . "' OR (pers_birth_place = '' AND pers_bapt_place = '" . $place . "')) ORDER BY wholename";
                 $maplist = $dbh->query($sql);
-            } else { // the slider
+            } else { // *** Slider is used ***
                 echo '<b><u>' . __('Persons born here until ') . $map_max . ':</u></b><br>';
                 $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
                     WHERE pers_tree_id='" . $tree_id . "'
@@ -145,7 +145,7 @@ function mapbirthplace($place)
                     (pers_death_place = '" . $place . "' OR (pers_death_place = '' AND pers_buried_place = '" . $place . "'))
                     ORDER BY wholename";
                 $maplist = $dbh->query($sql);
-            } else { // the slider
+            } else { // *** Slider is used ***
                 echo '<b><u>' . __('Persons that died here until ') . $map_max . ':</u></b><br>';
                 $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
                     WHERE pers_tree_id='" . $tree_id . "' AND " . $idstring . $namestring . "

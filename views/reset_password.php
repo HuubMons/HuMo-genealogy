@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Password retreival code from: http://www.plus2net.com/
+ * Original password retreival code from: http://www.plus2net.com/
  * 25-08-2024 Huub: rebuild script.
  */
 
@@ -12,37 +12,10 @@ if ($user['group_menu_login'] != 'j') {
 
 
 
-// TODO Items for model script:
-
-// *** Check if new password is valid ***
-$message_password = '';
-if (isset($_POST['password']) && $_POST['password'] != '') {
-    $password = safe_text_db($_POST['password']);
-    $password2 = safe_text_db($_POST['password2']);
-    $tm = time() - 86400;
-
-    $sql = $dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval
-        WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
-    $sql->bindParam(':userid', $resetpassword['userid'], PDO::PARAM_STR, 10);
-    $sql->bindParam(':ak', $resetpassword['activation_key'], PDO::PARAM_STR, 32);
-    $sql->execute();
-    $no = $sql->rowCount();
-    if ($no <> 1) {
-        $message_password = $message_password . __('Password activation failed.') . '&nbsp;' . __('Please contact the site owner.') . '<br>';
-    }
-
-    if (strlen($password) < 4 || strlen($password) > 15) {
-        $message_password = $message_password . __('Password must be at least 4 char and maximum 15 char long') . '<br>';
-    }
-
-    if ($password <> $password2) {
-        $message_password = $message_password . __('The passwords don\'t match!') . '<br>';
-    }
-}
-
 // TODO: process text in variable.
-if (isset($_POST['password']) && $_POST['password'] != '' && !$message_password) {
-    // Update the new password now (and use salted password)
+if (isset($_POST['password']) && $_POST['password'] != '' && !$resetpassword['message_password']) {
+    // *** Update the new password now (and use salted password) ***
+    $password = safe_text_db($_POST['password']);
     $hashToStoreInDb = password_hash($password, PASSWORD_DEFAULT);
     $count = $dbh->prepare("update humo_users set user_password_salted='" . $hashToStoreInDb . "', user_password='' where user_id='" . $resetpassword['userid'] . "'");
     $count->execute();
@@ -128,7 +101,7 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
     <br>
     <?php
     $countmail = $dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail=:email");
-    $countmail->bindValue(':email', $email, PDO::PARAM_STR);
+    $countmail->bindValue(':email', $_POST['user_mail'], PDO::PARAM_STR);
     $countmail->execute();
     $row = $countmail->fetch(PDO::FETCH_OBJ);
 
@@ -198,12 +171,12 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
 }
 
 // *** Enter new password 2x (after reset link was used) ***
-elseif ((isset($_GET['ak']) && $_GET['ak'] != '') || $message_password) {
+elseif ((isset($_GET['ak']) && $_GET['ak'] != '') || $resetpassword['message_password']) {
 ?>
     <h1 class="my-4"><?= __('New Password'); ?></h1>
 
-    <?php if ($message_password) { ?>
-        <div class="alert alert-danger me-2" role="alert"><?= $message_password; ?></div>
+    <?php if ($resetpassword['message_password']) { ?>
+        <div class="alert alert-danger me-2" role="alert"><?= $resetpassword['message_password']; ?></div>
     <?php } ?>
 
     <form action="<?= $path_reset_password; ?>" method="post">

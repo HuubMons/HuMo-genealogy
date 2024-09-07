@@ -119,4 +119,33 @@ class ResetpasswordModel
         }
         return $site_url;
     }
+
+    public function check_new_password($dbh,$userid,$activation_key)
+    {
+        $message_password = '';
+        if (isset($_POST['password']) && $_POST['password'] != '') {
+            $password = safe_text_db($_POST['password']);
+            $password2 = safe_text_db($_POST['password2']);
+            $tm = time() - 86400;
+
+            $sql = $dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval
+                WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
+            $sql->bindParam(':userid', $userid, PDO::PARAM_STR, 10);
+            $sql->bindParam(':ak', $activation_key, PDO::PARAM_STR, 32);
+            $sql->execute();
+            $no = $sql->rowCount();
+            if ($no <> 1) {
+                $message_password = $message_password . __('Password activation failed.') . '&nbsp;' . __('Please contact the site owner.') . '<br>';
+            }
+
+            if (strlen($password) < 4 || strlen($password) > 15) {
+                $message_password = $message_password . __('Password must be at least 4 char and maximum 15 char long') . '<br>';
+            }
+
+            if ($password <> $password2) {
+                $message_password = $message_password . __('The passwords don\'t match!') . '<br>';
+            }
+        }
+        return $message_password;
+    }
 }

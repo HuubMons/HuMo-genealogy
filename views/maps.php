@@ -15,31 +15,6 @@ $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tre
 $tree_search_result = $dbh->query($tree_search_sql);
 $count = 0;
 
-// *** Set birth or death display. Default values ***
-// *** BE AWARE: session values are used in google_initiate script. If these are disabled, the slider doesn't work ***
-$maps['display_birth'] = true;
-$maps['display_death'] = false;
-if (!isset($_SESSION['type_death']) && !isset($_SESSION['type_death'])) {
-    $_SESSION['type_birth'] = 1;
-    $_SESSION['type_death'] = 0;
-}
-if (isset($_SESSION['type_death']) && $_SESSION['type_death'] == 1) {
-    $maps['display_death'] = true;
-    $maps['display_birth'] = false;
-}
-if (isset($_POST['map_type']) && $_POST['map_type'] == "type_birth") {
-    $_SESSION['type_birth'] = 1;
-    $_SESSION['type_death'] = 0;
-    $maps['display_birth'] = true;
-    $maps['display_death'] = false;
-}
-if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
-    $_SESSION['type_death'] = 1;
-    $_SESSION['type_birth'] = 0;
-    $maps['display_death'] = true;
-    $maps['display_birth'] = false;
-}
-
 if ($maps['select_world_map'] == 'Google') {
     // slider defaults
     $realmin = 1560;  // first year shown on slider
@@ -158,6 +133,7 @@ if ($maps['select_world_map'] == 'Google') {
         <?php if ($maps['select_world_map'] == 'Google') { ?>
             <div class="col-auto">
                 <!-- Slider text & year box -->
+                <!-- TODO try to build a flexible slider, without special pre fixes -->
                 <div style="<?= $language['dir'] != "rtl" ? 'float:left' : 'float:right'; ?>">
                     <?php
                     echo '
@@ -320,8 +296,6 @@ if ($maps['select_world_map'] == 'Google') {
                                                 <input type="submit" name="submit" value="TEST 2" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#descendantsModal">
                                                 
                                                 <input type="submit" name="submit" value="TEST 3" class="btn btn-sm btn-secondary" data-dismiss="modal">
-
-                                                
                                             </div>
                                         </div>
                                     </form>
@@ -362,6 +336,7 @@ if ($maps['select_world_map'] == 'Google') {
                 */
 
                 // PULL-DOWN: FIND LOCATION
+                // TODO: location_status could probably be totally removed. Combine google_initiate results with this query to generate a location list.
                 if ($maps['display_birth']) {
                     $loc_search = "SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_status LIKE '%" . $tree_prefix_quoted . "birth%' OR location_status LIKE '%" . $tree_prefix_quoted . "bapt%' OR location_status = '' ORDER BY location_location";
                 }
@@ -415,8 +390,7 @@ if ($maps['select_world_map'] == 'Google') {
             $chosenperson = $_GET['persged'];
             $persfams = $_GET['persfams'];
             $persfams_arr = explode(';', $persfams);
-            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
-                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
+            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
             $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
             $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
 
@@ -527,8 +501,7 @@ if ($maps['select_world_map'] == 'Google') {
             $chosenperson = $_GET['anc_persged'];
             $persfams = $_GET['anc_persfams'];
             $persfams_arr = explode(';', $persfams);
-            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
-                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
+            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
             $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
             //also check privacy
             $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
@@ -669,6 +642,7 @@ if ($maps['select_world_map'] == 'Google') {
 
 
 <?php
+// TODO: use bootstrap.
 // FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH DESCENDANTS
 if (isset($_POST['descmap'])) {
     //adjust pulldown for mobiles/tablets
@@ -800,6 +774,7 @@ if (isset($_POST['descmap'])) {
 <?php
 }
 
+// TODO: use bootstrap.
 // FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH ANCESTORS
 if (isset($_POST['ancmap'])) {
     //adjust pulldown for mobiles/tablets
@@ -936,120 +911,7 @@ if (isset($_POST['ancmap'])) {
 
 // *** OpenStreetMap ***
 if ($maps['select_world_map'] == 'OpenStreetMap') {
-    $location_array[] = '';
-    $lat_array[] = '';
-    $lon_array[] = '';
-    $text_array[] = '';
-    $text_count_array[] = '';
-
-    $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL");
-    while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
-        $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
-        $locarray[$locationDb->location_location][1] = $locationDb->location_lat;
-        $locarray[$locationDb->location_location][2] = $locationDb->location_lng;
-        //$locarray[$locationDb->location_location][3] = 0;    // till starting year  (depending on settings)
-        //$locarray[$locationDb->location_location][4] = 0;    // + 1 interval
-        //$locarray[$locationDb->location_location][5] = 0;    // + 2 intervals
-        //$locarray[$locationDb->location_location][6] = 0;    // + 3 intervals
-        //$locarray[$locationDb->location_location][7] = 0;    // + 4 intervals
-        //$locarray[$locationDb->location_location][8] = 0;    // + 5 intervals
-        //$locarray[$locationDb->location_location][9] = 0;    // + 6 intervals
-        //$locarray[$locationDb->location_location][10] = 0;   // + 7 intervals
-        //$locarray[$locationDb->location_location][11] = 0;   // + 8 intervals
-        //$locarray[$locationDb->location_location][12] = 0;   // till today (=2010 and beyond)
-        //$locarray[$locationDb->location_location][13] = 0;   // all
-
-
-        //TEST add all location in maps...
-        //$location_array[] = htmlspecialchars($locationDb->location_location);
-        //$text_array[] = '<b>'.htmlspecialchars($locationDb->location_location).'</b>';
-        //$lat_array[] = $locationDb->location_lat;
-        //$lon_array[] = $locationDb->location_lng;
-    }
-
-    $namesearch_string = '';
-    if ($maps['display_birth']) {
-        //$persoon=$dbh->query("SELECT pers_tree_id, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
-        //	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-        //	AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
-        $persoon = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-            AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) " . $namesearch_string);
-    } elseif ($maps['display_death']) {
-        //$persoon=$dbh->query("SELECT pers_tree_id, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
-        //	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-        //	AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
-        $persoon = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-            AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) " . $namesearch_string);
-    }
-    while (@$personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
-        if ($maps['display_birth']) {
-            $place = $personDb->pers_birth_place;
-            $date = $personDb->pers_birth_date;
-            if (!$personDb->pers_birth_place && $personDb->pers_bapt_place) {
-                $place = $personDb->pers_bapt_place;
-            }
-            if (!$personDb->pers_birth_date && $personDb->pers_bapt_date) {
-                $date = $personDb->pers_bapt_date;
-            }
-        } elseif ($maps['display_death']) {
-            $place = $personDb->pers_death_place;
-            $date = $personDb->pers_death_date;
-            if (!$personDb->pers_death_place && $personDb->pers_buried_place) {
-                $place = $personDb->pers_buried_place;
-            }
-            if (!$personDb->pers_death_date && $personDb->pers_buried_date) {
-                $date = $personDb->pers_buried_date;
-            }
-        }
-
-        if (isset($locarray[$place])) { // Place exists in location database
-            if ($date) {
-                $year = substr($date, -4);
-
-                //if($year > 1 AND $year < $realmin) {  $locarray[$place][3]++; }
-                //if($year > 1 AND $year < ($realmin+ $step)) {  $locarray[$place][4]++; }
-                //if($year > 1 AND $year < ($realmin+ (2*$step))) {  $locarray[$place][5]++; }
-                //if($year > 1 AND $year < ($realmin+ (3*$step))) {  $locarray[$place][6]++; }
-                //if($year > 1 AND $year < ($realmin+ (4*$step))) {  $locarray[$place][7]++; }
-                //if($year > 1 AND $year < ($realmin+ (5*$step))) {  $locarray[$place][8]++; }
-                //if($year > 1 AND $year < ($realmin+ (6*$step))) {  $locarray[$place][9]++; }
-                //if($year > 1 AND $year < ($realmin+ (7*$step))) {  $locarray[$place][10]++; }
-                //if($year > 1 AND $year < ($realmin+ (8*$step))) {  $locarray[$place][11]++; }
-                //if($year > 1 AND $year < 2050) {  $locarray[$place][12]++; }
-                //$locarray[$place][13]++;  // array of all people incl without birth date
-
-                // *** Use person class ***
-                // TODO: this slows down page for large family trees. Use Javascript to show persons?
-                $person_cls = new person_cls($personDb);
-                $name = $person_cls->person_name($personDb);
-
-                $key = array_search($locarray[$place][0], $location_array);
-                if (isset($key) && $key > 0) {
-                    // *** Check the number of lines of the text_array ***
-                    $text_count_array[$key]++;
-                    // *** For now: limited results in text box of OpenStreetMap ***
-                    if ($text_count_array[$key] < 26) {
-                        $text_array[$key] .= '<br>' . addslashes($name["standard_name"] . ' ' . $locarray[$place][0]);
-                    }
-                    if ($text_count_array[$key] == 26) {
-                        $text_array[$key] .= '<br>' . __('Results are limited.');
-                    }
-                } else {
-                    $location_array[] = htmlspecialchars($locarray[$place][0]);
-                    $lat_array[] = $locarray[$place][1];
-                    $lon_array[] = $locarray[$place][2];
-
-                    $text_array[] = addslashes($name["standard_name"] . ' ' . $locarray[$place][0]);
-                    $text_count_array[] = 1; // *** Number of text lines ***
-                }
-            } else {
-                //$locarray[$place][13]++ ; // array of all people incl without birth date
-            }
-            //echo $locarray[$place][1].'!'.$locarray[$place][2];
-        }
-    }
 ?>
-
     <link rel="stylesheet" href="assets/leaflet/leaflet.css">
     <script src="assets/leaflet/leaflet.js"></script>
 
@@ -1063,9 +925,9 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
         var markers = [';
 
     // *** Add all markers from array ***
-    for ($i = 1; $i < count($location_array); $i++) {
+    for ($i = 1; $i < count($maps['location']); $i++) {
         if ($i > 1) echo ',';
-        echo 'L.marker([' . $lat_array[$i] . ', ' . $lon_array[$i] . ']) .bindPopup(\'' . $text_array[$i] . '\')';
+        echo 'L.marker([' . $maps['latitude'][$i] . ', ' . $maps['longitude'][$i] . ']) .bindPopup(\'' . $maps['location_text'][$i] . '\')';
     }
 
     echo '];
@@ -1080,7 +942,7 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
 } else {
 
     // *** Google Maps ***
-    echo '<div id="map_canvas" style="height:520px"></div>'; // placeholder div for map generated below
+    echo '<div id="map_canvas" style="height:520px"></div>';
 
     // function to read multiple values from location search bar and zoom to map location:
     echo '
@@ -1118,7 +980,6 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
     //}
     // Removed from initialize:
     //mapTypeId: google.maps.MapTypeId.<?= $maptype;
-
     ?>
 
     <script>

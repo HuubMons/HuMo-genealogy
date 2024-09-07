@@ -40,11 +40,8 @@ if (isset($_POST['upload_the_file'])) {
 }
 ?>
 
-<!-- CREATE BACKUP FILE -->
-<table class="humo standard" style="width:800px;" border="1">
-    <tr class="table_header">
-        <th><?= __('Create backup file'); ?></th>
-    </tr>
+<h2><?= __('Create backup file'); ?></h2>
+<table class="table">
     <tr>
         <td>
             <?php
@@ -89,15 +86,10 @@ if (isset($_POST['upload_the_file'])) {
             ?>
         </td>
     </tr>
+</table>
 
-    <!-- Empty line in table -->
-    <tr>
-        <td class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td>
-    </tr>
-
-    <tr class="table_header">
-        <th><?= __('Restore database from backup file'); ?></th>
-    </tr>
+<h2><?= __('Restore database from backup file'); ?></h2>
+<table class="table">
     <tr>
         <td>
             <?php
@@ -110,8 +102,14 @@ if (isset($_POST['upload_the_file'])) {
                 <h3><?= __('Optional: upload a database backup file'); ?></h3>
 
                 <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">
-                    <input type="file" id="upload_file" name="upload_file">
-                    <input type="submit" style="margin-top:4px" name="upload_the_file" value="<?= __('Upload'); ?>" class="btn btn-sm btn-secondary"><br>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input type="file" id="upload_file" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" style="margin-top:4px" name="upload_the_file" value="<?= __('Upload'); ?>" class="btn btn-sm btn-secondary"><br>
+                        </div>
+                    </div>
                 </form>
             <?php
             }
@@ -153,8 +151,8 @@ if (isset($_POST['upload_the_file'])) {
         </td>
     </tr>
 </table>
-<?php
 
+<?php
 // *** BACKUP FUNCTION ***
 function backup_tables()
 {

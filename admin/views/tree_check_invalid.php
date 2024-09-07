@@ -4,17 +4,18 @@ $found = false; // if this stays false, displays message that no problems where 
 
 <table class="table">
     <thead class="table-primary">
-    <tr>
-        <th style="width:10%;"><?= __('ID'); ?></th>
-        <th style="width:55%;"><?= __('Edit invalid date'); ?></th>
-        <th style="width:20%;"><?= __('Details'); ?></th>
-        <th style="width:15%;"><?= __('Invalid date'); ?></th>
-    </tr>
+        <tr>
+            <th style="width:10%;"><?= __('ID'); ?></th>
+            <th style="width:55%;"><?= __('Edit invalid date'); ?></th>
+            <th style="width:20%;"><?= __('Details'); ?></th>
+            <th style="width:15%;"><?= __('Invalid date'); ?></th>
+        </tr>
     </thead>
 
+    <tr>
+        <td colspan="4" class="table-secondary" style="text-align:<?= $direction; ?>;font-weight:bold"><?= __('Invalid person dates:'); ?></td>
+    </tr>
     <?php
-    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid person dates:') . '</td></tr>';
-
     $person = $dbh->query("SELECT pers_gedcomnumber, pers_birth_date, pers_bapt_date, pers_death_date, pers_buried_date FROM humo_persons
         WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
     while ($persdateDb = $person->fetch()) {

@@ -24,11 +24,13 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 <form method="post" action="index.php" enctype="multipart/form-data">
     <input type="hidden" name="page" value="<?= $page; ?>">
 
-    <table class="humo" border="1">
-        <tr class="table_header">
-            <th><?= __('General settings'); ?></th>
-            <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-        </tr>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th><?= __('General settings'); ?></th>
+                <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+            </tr>
+        </thead>
 
         <tr>
             <td><?= __('Default skin'); ?></td>
@@ -136,7 +138,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Search engine settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -171,7 +173,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 </select><br></td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Contact & registration form settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -250,7 +252,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <td><input type="email" name="password_retreival" value="<?= $humo_option["password_retreival"]; ?>" size="40" placeholder="no-reply@your-website.com"> <?= __('To enable password forgotten option: set a sender e-mail address.'); ?></td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Email Settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -263,7 +265,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         <tr>
             <td><?= __('Mail: sender'); ?></td>
             <td><input type="text" name="email_sender" value="<?= $humo_option["email_sender"]; ?>" size="32">
-                <?= __('Gmail: [email_address]@gmail.com'); ?>. <b><?= __('If filled in: will be used as mail sender.');?></b>
+                <?= __('Gmail: [email_address]@gmail.com'); ?>. <b><?= __('If filled in: will be used as mail sender.'); ?></b>
             </td>
         </tr>
 
@@ -342,7 +344,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('International settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -446,7 +448,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Settings Main Menu'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -483,7 +485,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <!-- FAMILY -->
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Settings family page'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -499,7 +501,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <!-- Watermark text and color in PDF file -->
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Watermark text in PDF file'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -518,7 +520,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <!-- Display for One Name Study web sites -->
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Display for One Name Study web sites'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -538,7 +540,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Save settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>

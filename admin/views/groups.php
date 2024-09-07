@@ -3,6 +3,31 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+
+/* *** Automatic installation or update ***
+ * Januari 2016: Older updates are moved to update and installation script (was already a long list...)!
+ */
+$column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
+while ($columnDb = $column_qry->fetch()) {
+    $field_value = $columnDb['Field'];
+    $field[$field_value] = $field_value;
+}
+if (!isset($field['group_citation_generation'])) {
+    $sql = "ALTER TABLE humo_groups ADD group_citation_generation VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n' AFTER group_own_code;";
+    $result = $dbh->query($sql);
+}
+if (!isset($field['group_menu_change_password'])) {
+    $sql = "ALTER TABLE humo_groups ADD group_menu_change_password VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
+    $result = $dbh->query($sql);
+}
+if (!isset($field['group_menu_cms'])) {
+    $sql = "ALTER TABLE humo_groups ADD group_menu_cms VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
+    $result = $dbh->query($sql);
+}
+if (!isset($field['group_show_age_living_person'])) {
+    $sql = "ALTER TABLE humo_groups ADD group_show_age_living_person VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_maps_presentation;";
+    $result = $dbh->query($sql);
+}
 ?>
 
 <h1 class="center"><?= __('User groups'); ?></h1>
@@ -41,53 +66,22 @@ $groupsql = "SELECT group_id, group_name FROM humo_groups";
 $groupresult = $dbh->query($groupsql);
 ?>
 <br>
-<table class="humo standard" style="text-align:center;">
-    <tr class="table_header_large">
-        <td>
-            <b><?= __('Choose a user group: '); ?></b>
-            <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
-                <form method="POST" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
-                    <input type="hidden" name="group_id" value="<?= $groupDb->group_id; ?>">
-                    <input type="submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
-                </form>
-            <?php } ?>
+<b><?= __('Choose a user group: '); ?></b>
+<?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
+    <form method="POST" action="index.php" style="display : inline;">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="group_id" value="<?= $groupDb->group_id; ?>">
+        <input type="submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
+    </form>
+<?php } ?>
 
-            <!-- Add group -->
-            <form method="POST" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
-                <input type="submit" name="group_add" value="<?= __('ADD GROUP'); ?>" class="btn btn-sm btn-secondary">
-            </form>
-        </td>
-    </tr>
-</table><br>
+<!-- Add group -->
+<form method="POST" action="index.php" style="display : inline;">
+    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="submit" name="group_add" value="<?= __('ADD GROUP'); ?>" class="btn btn-sm btn-secondary">
+</form><br><br>
 
 <?php
-/* *** Automatic installation or update ***
- * Januari 2016: Older updates are moved to update and installation script (was already a long list...)!
- */
-$column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
-while ($columnDb = $column_qry->fetch()) {
-    $field_value = $columnDb['Field'];
-    $field[$field_value] = $field_value;
-}
-if (!isset($field['group_citation_generation'])) {
-    $sql = "ALTER TABLE humo_groups ADD group_citation_generation VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n' AFTER group_own_code;";
-    $result = $dbh->query($sql);
-}
-if (!isset($field['group_menu_change_password'])) {
-    $sql = "ALTER TABLE humo_groups ADD group_menu_change_password VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
-    $result = $dbh->query($sql);
-}
-if (!isset($field['group_menu_cms'])) {
-    $sql = "ALTER TABLE humo_groups ADD group_menu_cms VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
-    $result = $dbh->query($sql);
-}
-if (!isset($field['group_show_age_living_person'])) {
-    $sql = "ALTER TABLE humo_groups ADD group_show_age_living_person VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_maps_presentation;";
-    $result = $dbh->query($sql);
-}
-
 // *** Show usergroup ***
 $groupsql = "SELECT * FROM humo_groups WHERE group_id='" . $groups['group_id'] . "'";
 $groupresult = $dbh->query($groupsql);
@@ -97,17 +91,19 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 <form method="POST" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
-    <table class="humo standard" border="1">
-        <tr class="table_header">
-            <th><?= __('Group'); ?>
-                <?php
-                if ($groupDb->group_id > '3') {
-                    echo ' <input type="submit" name="group_remove" value="' . __('REMOVE GROUP') . '" class="btn btn-sm btn-secondary">';
-                }
-                ?>
-            </th>
-            <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-        </tr>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th><?= __('Group'); ?>
+                    <?php
+                    if ($groupDb->group_id > '3') {
+                        echo ' <input type="submit" name="group_remove" value="' . __('REMOVE GROUP') . '" class="btn btn-sm btn-secondary">';
+                    }
+                    ?>
+                </th>
+                <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+            </tr>
+        </thead>
 
         <tr>
             <td><?= __('Group name'); ?></td>
@@ -136,7 +132,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
             <td><input type="checkbox" name="group_statistics" <?php if ($groupDb->group_statistics != 'n') echo ' checked' ?>></td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Menu'); ?></th>
             <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -224,7 +220,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
             <td><input type="checkbox" name="group_menu_change_password" <?= $groupDb->group_menu_change_password != 'n' ? 'checked' : ''; ?>></td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('General'); ?></th>
             <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -355,7 +351,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         </tr>
 
         <!-- Sources -->
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Sources'); ?></th>
             <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -390,7 +386,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
             <td><input type="checkbox" name="group_show_restricted_source" <?= $groupDb->group_show_restricted_source != 'n' ? 'checked' : ''; ?>></td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Texts'); ?></th>
             <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -437,7 +433,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
             <td><input type="checkbox" name="group_texts_fam" <?= $groupDb->group_texts_fam != 'n' ? 'checked' : ''; ?>></td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Privacy filter'); ?></th>
             <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -550,7 +546,7 @@ If possible, try to filter with that'); ?></i>
             <td><input type="checkbox" name="group_gen_protection" <?= $check; ?>></td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th>
                 <?php
                 // *** SPARE ITEM ***
@@ -611,16 +607,18 @@ If possible, try to filter with that'); ?></i>
     }
     ?>
 
-    <h2 align="center"><?= __('Hide or show family trees per user group.'); ?></h2>
+    <h2><?= __('Hide or show family trees per user group.'); ?></h2>
     <?= __('Editor') . ': ' . __('If an .htpasswd file is used: add username in .htpasswd file.'); ?><br>
     <?= __('These settings can also be set per user!'); ?>
 
-    <table class="humo standard" border="1">
-        <tr class="table_header">
-            <th><?= __('Family tree'); ?></th>
-            <th><?= __('Show tree?'); ?></th>
-            <th><?= __('Edit tree?'); ?> <input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-        </tr>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th><?= __('Family tree'); ?></th>
+                <th><?= __('Show tree?'); ?></th>
+                <th><?= __('Edit tree?'); ?> <input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+            </tr>
+        </thead>
         <?php
         $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
         while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
@@ -706,12 +704,14 @@ If possible, try to filter with that'); ?></i>
     }
     ?>
 
-    <h2 align="center"><?= __('Hide or show photo categories per user group.'); ?></h2>
-    <table class="humo standard" border="1">
-        <tr class="table_header">
-            <th><?= __('Category prefix'); ?></th>
-            <th><?= __('Show category?'); ?> <input type="submit" name="change_photocat" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-        </tr>
+    <h2><?= __('Hide or show photo categories per user group.'); ?></h2>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th><?= __('Category prefix'); ?></th>
+                <th><?= __('Show category?'); ?> <input type="submit" name="change_photocat" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+            </tr>
+        </thead>
 
         <?php
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");

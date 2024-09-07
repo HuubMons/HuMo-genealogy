@@ -18,14 +18,21 @@ class MapsController
     }
     */
 
-    public function detail($humo_option)
+    public function detail($humo_option, $dbh, $tree_id)
     {
         $mapsModel = new MapsModel();
 
-        $select_world_map = $mapsModel->select_world_map($humo_option);
+        $maps['select_world_map'] = $mapsModel->select_world_map($humo_option);
 
-        return array(
-            "select_world_map" => $select_world_map
-        );
+        // *** Variables: $maps['display_birth'] and $maps['display_death'] ***
+        $maps_array = $mapsModel->get_maps_type();
+        $maps = array_merge($maps, $maps_array);
+
+        if ($maps['select_world_map'] == 'OpenStreetMap') {
+            $maps_locations = $mapsModel->get_locations($dbh, $tree_id, $maps);
+            $maps = array_merge($maps, $maps_locations);
+        }
+
+        return $maps;
     }
 }

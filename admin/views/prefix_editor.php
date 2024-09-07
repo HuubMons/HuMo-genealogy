@@ -21,27 +21,18 @@ if (isset($_POST['save_language'])) {
 
 <?= __('These prefixes are used to process name-prefixes if a GEDCOM file is read.'); ?><br><br>
 
-<form method="POST" action="index.php?page=prefix_editor" style="display : inline;">
-    <table class="humo" border="1" cellspacing="0">
-        <tr class="table_header_large">
-            <th>
-                <?php
-                if (is_writable($file)) {
-                    echo ' <input type="submit" class="btn btn-success btn-sm" name="save_language" value="' . __('Save') . '"> ';
-                } else {
-                    echo '<b>' . __('FILE IS NOT WRITABLE!') . '</b>';
-                }
-                // *** Show "Save" message ***
-                echo $message;
-                ?>
-            </th>
-        </tr>
+<form method="POST" action="index.php?page=prefix_editor">
+    <?php
+    if (is_writable($file)) {
+        echo ' <input type="submit" class="btn btn-success btn-sm" name="save_language" value="' . __('Save') . '"> ';
+    } else {
+        echo '<b>' . __('FILE IS NOT WRITABLE!') . '</b>';
+    }
+    // *** Show "Save" message ***
+    echo $message;
+    ?>
+    <br><br>
 
-        <tr>
-            <td valign="top" width="100%">
-                <textarea rows="35" cols="120" name="language_text" style="direction:ltr"><?= file_get_contents($file); ?></textarea>
-            </td>
-        </tr>
-    </table>
+    <textarea rows="35" cols="120" name="language_text" style="direction:ltr"><?= file_get_contents($file); ?></textarea>
 </form>
 <br>

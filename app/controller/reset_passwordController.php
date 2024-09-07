@@ -31,6 +31,9 @@ class ResetpasswordController
 
         $resetpassword['site_url'] = $resetpasswordModel->get_activation_url();
 
+        // *** Check new password ***
+        $resetpassword['message_password'] = $resetpasswordModel->check_new_password($dbh, $resetpassword['userid'], $resetpassword['activation_key']);
+
         return $resetpassword;
     }
 }

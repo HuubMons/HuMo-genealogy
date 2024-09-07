@@ -761,18 +761,18 @@ if (isset($_POST['check_new'])) {
                     <?php
                         // *** Map using fitbound (all markers visible) ***
                         echo '<script>
-                                var map = L.map("map").setView([' . $location_lat . ', ' . $location_lng . '], 15);
-                                var markers = [';
+                            var map = L.map("map").setView([' . $location_lat . ', ' . $location_lng . '], 15);
+                            var markers = [';
 
                         echo '];
-                                var group = L.featureGroup(markers).addTo(map);
-                                setTimeout(function () {
-                                    map.fitBounds(group.getBounds());
-                                }, 1000);
-                                L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
-                                    attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
-                                }).addTo(map);
-                            </script>';
+                            var group = L.featureGroup(markers).addTo(map);
+                            setTimeout(function () {
+                                map.fitBounds(group.getBounds());
+                            }, 1000);
+                            L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
+                                attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
+                            }).addTo(map);
+                        </script>';
                     } ?>
 
                 </div>

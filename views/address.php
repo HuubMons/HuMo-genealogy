@@ -6,7 +6,7 @@ if ($data["authorised"] != '') {
 }
 ?>
 
-<table class="humo standard">
+<table class="table">
     <tr>
         <td>
             <h2><?php echo __('Address'); ?></h2>
@@ -27,7 +27,7 @@ if ($data["authorised"] != '') {
             }
             if ($data["address"]->address_phone) {
             ?>
-                <b><?= __('Phone'); ?>:</b><?= $data["address"]->address_phone; ?><br>
+                <b><?= __('Phone'); ?>:</b> <?= $data["address"]->address_phone; ?><br>
             <?php
             } ?>
         </td>
