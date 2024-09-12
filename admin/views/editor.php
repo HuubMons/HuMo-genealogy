@@ -28,6 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
 ?>
 
 <!-- Only use Save button, don't use [Enter] -->
@@ -38,63 +43,17 @@
 </script>
 
 <?php
-// *** Safety line ***
-if (!defined('ADMIN_PAGE')) {
-    exit;
-}
-
-
-
-// TODO create seperate controller script.
-$phpself = 'index.php';
-$sourcestring = '../source.php?';
-$addresstring = '../address.php?';
+//$phpself = 'index.php';
+//$sourcestring = '../source.php?';
+//$addresstring = '../address.php?';
 $path_prefix = '../';
 
-include_once(__DIR__ . "/../include/editor_cls.php");
-$editor_cls = new editor_cls;
-
-include_once(__DIR__ . "/../include/select_tree.php");
-
-// *** Used for person color selection for descendants and ancestors, etc. ***
-include_once(__DIR__ . "/../../include/ancestors_descendants.php");
-
-include(__DIR__ . '/../include/editor_event_cls.php');
+$editor_cls = new editor_cls; // TODO editor_cls is also added in controller.
 $event_cls = new editor_event_cls;
 
-// *** Editor icon for admin and editor: select family tree ***
-if (isset($tree_id) && $tree_id) {
-    $db_functions->set_tree_id($tree_id);
-}
-
-require_once  __DIR__ . "/../models/editor.php";
-$editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
-$editorModel->set_hebrew_night();
-
-$editorModel->set_pers_gedcomnumber($db_functions);
-$editorModel->set_search_name();
-$editorModel->set_marriage();
-
-$confirm = $editorModel->update_editor();
-$confirm_note = $editorModel->update_note();
-
-$editor['pers_gedcomnumber'] = $editorModel->get_pers_gedcomnumber();
+// *** Temp variables ***
 $pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***
-
-$editor['search_id'] = $editorModel->get_search_id();
-
-$editor['search_name'] = $editorModel->get_search_name();
-
-$editor['new_tree'] = $editorModel->get_new_tree();
-$editorModel->set_favorite($dbh, $tree_id);
-
-$editor['marriage'] = $editorModel->get_marriage();
 $marriage = $editor['marriage']; // *** Temp variable ***
-
-// *** Check for new person ***
-$editorModel->set_add_person();
-$editor['add_person'] = $editorModel->get_add_person();
-$add_person = $editor['add_person']; // *** Temp variable ***
 
 //TEST
 //include (__DIR__.'/../include/editor_sources.php');
@@ -103,16 +62,6 @@ $add_person = $editor['add_person']; // *** Temp variable ***
 // *** Process queries ***
 include_once(__DIR__ . "/../include/editor_inc.php");
 
-if ($editor['new_tree'] == false) {
-    // *** Favourites ***
-    $fav_qry = "SELECT * FROM humo_settings LEFT JOIN humo_persons ON setting_value=pers_gedcomnumber
-        WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND pers_tree_id='" . safe_text_db($tree_id) . "'";
-    $fav_result = $dbh->query($fav_qry);
-
-    // *** Update cache for list of latest changes ***
-    cache_latest_changes();
-}
-
 $person_found = true;
 ?>
 
@@ -120,7 +69,7 @@ $person_found = true;
     <?php if ($editor['new_tree'] == false) { ?>
         <div class="row mb-2">
             <div class="col-md-3">
-                <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group input-group-sm">
@@ -128,7 +77,7 @@ $person_found = true;
 
                         <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
                             <option value=""><?= __('Favourites list'); ?></option>
-                            <?php while ($favDb = $fav_result->fetch(PDO::FETCH_OBJ)) { ?>
+                            <?php while ($favDb = $editor['favorites']->fetch(PDO::FETCH_OBJ)) { ?>
                                 <option value="<?= $favDb->setting_value; ?>"><?= $editor_cls->show_selected_person($favDb); ?></option>
                             <?php } ?>
                         </select>
@@ -137,7 +86,7 @@ $person_found = true;
             </div>
 
             <div class="col-md-3">
-                <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
@@ -190,7 +139,7 @@ $person_found = true;
             </div>
 
             <div class="col-md-auto">
-                <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group">
@@ -302,7 +251,7 @@ $person_found = true;
                     // *** Found multiple persons ***
                     elseif ($nr_persons > 0) {
                 ?>
-                        <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
                             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                             <select size="1" name="person" class="form-select form-select-sm bg-primary-subtle" onChange="this.form.submit();">
@@ -349,7 +298,7 @@ $person_found = true;
             ?>
             <div class="col-auto">
                 <!-- Search person GEDCOM number -->
-                <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group input-group-sm">
@@ -385,7 +334,7 @@ if (isset($_POST['person_remove'])) {
         <input type="checkbox" name="XXXXX" value="XXXXX" <?= $selected . $disabled; ?>> <?= __('Also remove ALL RELATED PERSONS (including all items)'); ?><br>
         </span>
 
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="submit" name="person_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
             <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
@@ -399,7 +348,7 @@ if (isset($_GET['child_disconnect'])) {
 ?>
     <div class="alert alert-danger">
         <?= __('Are you sure you want to disconnect this child?'); ?>
-        <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+        <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $_GET['page']; ?>">
             <input type="hidden" name="family_id" value="<?= $_GET['family_id']; ?>">
             <input type="hidden" name="child_disconnect2" value="<?= $_GET['child_disconnect']; ?>">
@@ -411,16 +360,20 @@ if (isset($_GET['child_disconnect'])) {
 <?php
 }
 
+if ($editor['confirm']) {
+    echo $editor['confirm'];
+}
+// *** For events ***
 if ($confirm) {
     echo $confirm;
 }
-if ($confirm_note) {
-    echo $confirm_note;
+if ($editor['confirm_note']) {
+    echo $editor['confirm_note'];
 }
 
 $check_person = false;
 if (isset($pers_gedcomnumber)) {
-    if ($editor['new_tree'] == false && $add_person == false && !$pers_gedcomnumber) {
+    if ($editor['new_tree'] == false && $editor['add_person'] == false && !$pers_gedcomnumber) {
         $check_person = false;
     }
 
@@ -440,7 +393,7 @@ if (isset($pers_gedcomnumber)) {
             }
         }
     }
-    if (!$person && $editor['new_tree'] == false && $add_person == false) {
+    if (!$person && $editor['new_tree'] == false && $editor['add_person'] == false) {
         $check_person = false;
     }
 }
@@ -449,11 +402,11 @@ if ($editor['new_tree']) {
 }
 if ($check_person) {
     // *** Exit if selection of person is needed ***
-    //if ($editor['new_tree']==false AND $add_person==false AND !$pers_gedcomnumber) exit;
+    //if ($editor['new_tree']==false AND $editor['add_person']==false AND !$pers_gedcomnumber) exit;
 
     // *** Get person data to show name and calculate nr. of items ***
     //$person = $db_functions->get_person($pers_gedcomnumber);
-    //if (!$person AND $editor['new_tree']==false AND $add_person==false) exit;
+    //if (!$person AND $editor['new_tree']==false AND $editor['add_person']==false) exit;
 
     // *** Save person GEDCOM number, needed for source pop-up ***
     $_SESSION['admin_pers_gedcomnumber'] = $pers_gedcomnumber;
@@ -537,14 +490,14 @@ if ($check_person) {
                         $firstDb = $first_result->fetch(PDO::FETCH_OBJ);
                     }
             ?>
-                    <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                    <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="hidden" name="person" value="<?= $firstDb->pers_gedcomnumber; ?>">
                         <input type="submit" value="<<">
                     </form>
 
                     <?php if ($previousDb) { ?>
-                        <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
                             <input type="hidden" name="person" value="<?= $previousDb->pers_gedcomnumber; ?>">
                             <input type="submit" value="<">
@@ -593,7 +546,7 @@ if ($check_person) {
                 }
                 if ($nextDb) {
                 ?>
-                    <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                    <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="hidden" name="person" value="<?= $nextDb->pers_gedcomnumber; ?>">
                         <input type="submit" value=">">
@@ -614,7 +567,7 @@ if ($check_person) {
                     $lastDb = $last_result->fetch(PDO::FETCH_OBJ);
                     if (substr($lastDb->pers_gedcomnumber, 2) > substr($person->pers_gedcomnumber, 2)) {
                     ?>
-                        <form method="POST" action="<?= $phpself; ?>?menu_tab=person" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
                             <input type="hidden" name="person" value="<?= $lastDb->pers_gedcomnumber; ?>">
                             <input type="submit" value=">>">
@@ -644,7 +597,7 @@ if ($check_person) {
                 style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
                 direction:' . $rtlmarker . '; box-shadow: 2px 2px 2px #999; border-radius: 3px;" id="browse_menu"
                 onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-            if ($add_person == false) {
+            if ($editor['add_person'] == false) {
                 ?>
                 <table>
                     <tr>
@@ -799,7 +752,7 @@ if ($check_person) {
         </div>
     </ul>
 
-    <div style="float: left; background-color:white; height:500px; padding:10px;">
+    <div style="background-color:white; height:500px; padding:10px;">
 
         <?php
         // *****************
@@ -814,7 +767,8 @@ if ($check_person) {
         $field_text = 'style="height: 45px;"';
         //$field_text_medium = 'style="height: 45px; width:550px;"';
         $field_text_medium = 'style="height: 45px;"';
-        $field_text_large = 'style="height: 100px; width:550px"';
+        //$field_text_large = 'style="height: 100px; width:550px"';
+        $field_text_large = 'style="height: 200px;"';
 
         // *** Script voor expand and collapse of items ***
         // Script is used for person, family AND source editor.
@@ -844,7 +798,7 @@ if ($check_person) {
         // *** Show person ***
         // *******************
 
-        if ($add_person == true) {
+        if ($editor['add_person'] == true) {
             $pers_gedcomnumber = '';
             $pers_firstname = ''; //$pers_callname='';
             $pers_prefix = '';
@@ -1836,89 +1790,6 @@ if ($check_person) {
             echo '<script>
             Show("' . $link_id . '");
         </script>';
-        }
-    }
-
-    // *** force_update = only update cache, so skip some variables ***
-    function cache_latest_changes($force_update = false)
-    {
-        global $dbh, $tree_id, $pers_id;
-        $cache = '';
-        $cache_count = 0;
-        $cache_exists = false;
-        $cache_check = false; // *** Use cache for large family trees ***
-        $cacheqry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='cache_latest_changes' AND setting_tree_id='" . $tree_id . "'");
-        $cacheDb = $cacheqry->fetch(PDO::FETCH_OBJ);
-        if ($cacheDb) {
-            $cache_exists = true;
-            $cache_array = explode("|", $cacheDb->setting_value);
-            foreach ($cache_array as $cache_line) {
-                $cacheDb = json_decode(unserialize($cache_line));
-
-                if (!$force_update) {
-                    $pers_id[] = $cacheDb->pers_id;
-                }
-
-                $cache_check = true;
-                $test_time = time() - 10800; // *** 86400 = 1 day, 7200 = 2 hours, 10800 = 3 hours ***
-                if ($cacheDb->time < $test_time) {
-                    $cache_check = false;
-                }
-            }
-        }
-
-        if ($force_update) {
-            $cache_check = false;
-        }
-
-        if ($cache_check == false) {
-            // *** First get pers_id, will be quicker in very large family trees ***
-            /*
-            $person_qry = "(SELECT pers_id, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')
-                UNION (SELECT pers_id, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL)
-                ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
-            */
-
-            $person_qry = "(SELECT pers_id, pers_changed_datetime as changed_datetime
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NOT NULL)
-                UNION (SELECT pers_id, pers_new_datetime AS changed_datetime
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL)
-                ORDER BY changed_datetime DESC LIMIT 0,15";
-            $person_result = $dbh->query($person_qry);
-            $count_latest_changes = $person_result->rowCount();
-            while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                // *** Cache: only use cache if there are > 5.000 persons in database ***
-                //if (isset($dataDb->tree_persons) AND $dataDb->tree_persons>5000){
-                $person->time = time(); // *** Add linux time to array ***
-                if ($cache) $cache .= '|';
-                $cache .= serialize(json_encode($person));
-                $cache_count++;
-                //}
-                if (!$force_update) {
-                    $pers_id[] = $person->pers_id;
-                }
-            }
-
-            // *** Add or renew cache in database (only if cache_count is valid) ***
-            if ($cache && $cache_count == $count_latest_changes) {
-                if ($cache_exists) {
-                    //$sql = "UPDATE humo_settings SET setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "' WHERE setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_variable='cache_latest_changes'";
-
-                    // Because of bug found in jan. 2024, remove value from database and insert again.
-                    $sql = "DELETE FROM humo_settings WHERE setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_variable='cache_latest_changes'";
-                    $dbh->query($sql);
-
-                    $sql = "INSERT INTO humo_settings SET
-                        setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $dbh->query($sql);
-                } else {
-                    $sql = "INSERT INTO humo_settings SET
-                    setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $dbh->query($sql);
-                }
-            }
         }
     }
 

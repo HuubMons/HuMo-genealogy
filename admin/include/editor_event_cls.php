@@ -165,6 +165,7 @@ class editor_event_cls
         }
 
         // *** Change line colour ***
+        // TODO: check, probably no longer needed.
         $change_bg_colour = ' class="humo_color3"';
 
         // 2021: No longer in use (only needed if source is edited in a pop-up screen)?

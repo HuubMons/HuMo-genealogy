@@ -85,7 +85,7 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
                     $child_family = explode(";", $childDb->pers_fams);
                     $child1stfam = $child_family[0];
                     // *** Recursive, process ancestors of child ***
-                    descendants($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $nr_generations);
+                    get_descendants($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $nr_generations);
                 } else {    // *** Child without own family ***
                     $descendant_id++;
                     $descendant_array[$descendant_id] = $childDb->pers_gedcomnumber;

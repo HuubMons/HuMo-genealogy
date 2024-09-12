@@ -1191,7 +1191,7 @@ if ($data["descendant_report"] == false) {
                     $user_name = $userDb->user_name;
                 }
             ?>
-                <tr class="humo_color">
+                <tr>
                     <td valign="top">
                         <?= show_datetime($noteDb->note_new_datetime) . ' ' . $user_name; ?><br>
                     </td>

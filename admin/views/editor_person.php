@@ -1,5 +1,5 @@
 <!-- Start of editor table -->
-<form method="POST" action="<?= $phpself; ?>" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
+<form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="person" value="<?= $pers_gedcomnumber; ?>">
 
@@ -8,7 +8,7 @@
     <input type="hidden" name="pers_bapt_date_previous" value="<?= $pers_bapt_date; ?>">
 
     <?php
-    if ($add_person == false) {
+    if ($editor['add_person'] == false) {
         // *** Update settings ***
         if (isset($_POST['admin_online_search']) && ($_POST['admin_online_search'] == 'y' || $_POST['admin_online_search'] == 'n')) {
             $result = $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
@@ -44,7 +44,7 @@
                             <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153); direction:<?= $rtlmarker; ?>; box-shadow: 2px 2px 2px #999; border-radius: 3px;" id="archive_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                                 <?php
                                 // *** Show box with list link to archives ***
-                                if ($add_person == false) {
+                                if ($editor['add_person'] == false) {
                                     $OAfromyear = '';
                                     if ($person->pers_birth_date) {
                                         if (substr($person->pers_birth_date, -4)) $OAfromyear = substr($person->pers_birth_date, -4);
@@ -319,8 +319,8 @@
 
 
 
-    <table class="humo" id="table_editor" border="1" style="line-height: 150%;">
-        <?php if ($add_person == false) { ?>
+    <table class="table table-light" id="table_editor">
+        <?php if ($editor['add_person'] == false) { ?>
             <?php
             // *** Show message if age < 0 or > 120 ***
             $error_color = '';
@@ -345,32 +345,36 @@
 
         <?php } ?>
 
-        <tr class="table_header_large">
-            <td><a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">[+]</span> <?= __('All'); ?></a></td>
+        <thead class="table-primary">
+            <tr>
+                <td><a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">[+]</span> <?= __('All'); ?></a></td>
 
-            <th style="border-left: none; text-align:left; font-size: 1.5em;" colspan="2">
-                <?php
-                if ($add_person == false) {
-                    echo '<input type="submit" name="person_change" value="' . __('Save') . '" class="btn btn-sm btn-success">';
+                <th style="font-size: 1.5em;" colspan="2">
+                    <?php
+                    if ($editor['add_person'] == false) {
+                    ?>
+                        <input type="submit" name="person_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
 
-                    echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
+                    <?php
+                        echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
 
-                    // *** Add person to admin favourite list ***
-                    $fav_qry = "SELECT * FROM humo_settings
+                        // *** Add person to admin favourite list ***
+                        $fav_qry = "SELECT * FROM humo_settings
                         WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_value='" . $pers_gedcomnumber . "'";
-                    $fav_result = $dbh->query($fav_qry);
-                    $rows = $fav_result->rowCount();
-                    if ($rows > 0) {
-                        echo '<a href="' . $phpself . '?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=0"><img src="../images/favorite_blue.png" style="border: 0px"></a>';
+                        $fav_result = $dbh->query($fav_qry);
+                        $rows = $fav_result->rowCount();
+                        if ($rows > 0) {
+                            echo '<a href="index.php?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=0"><img src="../images/favorite_blue.png" style="border: 0px"></a>';
+                        } else {
+                            echo '<a href="index.php?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=1"><img src="../images/favorite.png" style="border: 0px"></a>';
+                        }
                     } else {
-                        echo '<a href="' . $phpself . '?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=1"><img src="../images/favorite.png" style="border: 0px"></a>';
+                        echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
                     }
-                } else {
-                    echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
-                }
-                ?>
-            </th>
-        </tr>
+                    ?>
+                </th>
+            </tr>
+        </thead>
 
         <tr>
             <!-- Name-->
@@ -516,7 +520,7 @@
         </tr>
 
         <?php
-        if ($add_person == false) {
+        if ($editor['add_person'] == false) {
             // *** Event name (also show ADD line for prefix, suffix, title etc. ***
             echo $event_cls->show_event('person', $pers_gedcomnumber, 'name');
 
@@ -588,7 +592,7 @@
         if ($pers_sexe == '') {
             $colour = ' bgcolor="#FFAA80"';
         }
-        if ($add_person == true && $pers_sexe == '') {
+        if ($editor['add_person'] == true && $pers_sexe == '') {
             $colour = ' bgcolor="#FFAA80"';
         }
 
@@ -722,7 +726,7 @@
 
         <?php
         // *** Birth declaration ***
-        if ($add_person == false) {
+        if ($editor['add_person'] == false) {
             echo $event_cls->show_event('person', $pers_gedcomnumber, 'birth_declaration');
         }
 
@@ -993,7 +997,7 @@
 
         <?php
         // *** Baptism Witness ***
-        if ($add_person == false) {
+        if ($editor['add_person'] == false) {
             echo $event_cls->show_event('person', $pers_gedcomnumber, 'baptism_witness');
         }
 
@@ -1180,7 +1184,7 @@
         </tr>
         <?php
         // *** Death Declaration ***
-        if ($add_person == false) {
+        if ($editor['add_person'] == false) {
             echo $event_cls->show_event('person', $pers_gedcomnumber, 'death_declaration');
         }
 
@@ -1272,7 +1276,7 @@
 
         <?php
         // *** Burial Witness ***
-        if ($add_person == false) {
+        if ($editor['add_person'] == false) {
             echo $event_cls->show_event('person', $pers_gedcomnumber, 'burial_witness');
         }
 
@@ -1513,7 +1517,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             <td></td>
             <td colspan="2">
                 <?php
-                if ($add_person == false) {
+                if ($editor['add_person'] == false) {
                 ?>
                     <input type="submit" name="person_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                     <?= __('or'); ?>

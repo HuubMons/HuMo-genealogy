@@ -741,6 +741,9 @@ if ($popup == false) {
             $trees = $controllerObj->detail($dbh, $tree_id, $db_functions);
             include_once(__DIR__ . "/views/trees.php");
         } elseif ($page === 'editor') {
+            require __DIR__ . '/controller/editorController.php';
+            $controllerObj = new EditorController();
+            $editor = $controllerObj->detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option);
             include_once(__DIR__ . "/views/editor.php");
         } elseif ($page === 'editor_sources') {
             include_once(__DIR__ . "/include/editor_sources.php");

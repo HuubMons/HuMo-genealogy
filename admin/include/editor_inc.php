@@ -596,7 +596,7 @@ if (isset($_POST['event_id'])) {
 if (isset($_GET['event_drop'])) {
     $confirm .= '<div class="alert alert-danger">';
     $confirm .= '<strong>' . __('Are you sure you want to remove this event?') . '</strong>';
-    $confirm .= ' <form method="post" action="' . $phpself;
+    $confirm .= ' <form method="post" action="index.php';
     if (isset($_GET['source_id'])) {
         $confirm .= '?source_id=' . $_GET['source_id'];
     }

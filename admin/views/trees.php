@@ -128,7 +128,7 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 </ul>
 
 <!-- Align content to the left -->
-<div style="float: left; background-color:white; height:500px; padding:10px;">
+<div style="background-color:white; height:500px; padding:10px;">
     <?php
     // *** Show main tree screen ***
     if (isset($menu_admin) && $menu_admin == 'tree_main') {

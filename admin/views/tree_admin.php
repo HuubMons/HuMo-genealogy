@@ -12,35 +12,47 @@ if ($language_tree == 'default') {
 include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
 include_once(__DIR__ . "/../../views/partial/select_language.php");
 $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
+
+    // *** Find latest tree_prefix ***
+    $found = '1';
+    $i = 1;
+    while ($found == '1') {
+        $new_tree_prefix = 'humo' . $i . '_';
+        $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='$new_tree_prefix'");
+        $found = $datasql->rowCount();
+        $i++;
+    }
 ?>
 
 <br>
 <?= __('Administration of the family tree(s), i.e. the name can be changed here, and trees can be added or removed.'); ?><br>
 
-<table class="humo" border="1" cellspacing="0" width="100%">
-    <tr class="table_header">
-        <th><?= __('Order'); ?></th>
-        <th><?= __('Name of family tree'); ?></th>
-        <th><?= __('Family tree data'); ?></th>
-        <th><?= __('Remove'); ?></th>
-    </tr>
+<table class="table">
+    <thead class="table-primary">
+        <tr>
+            <th><?= __('Order'); ?></th>
+            <th><?= __('Name of family tree'); ?></th>
+            <th><?= __('Family tree data'); ?></th>
+            <th><?= __('Remove'); ?></th>
+        </tr>
 
-    <tr class="table_header">
-        <td></td>
-        <td>
-            <div class="row mb-2">
-                <div class="col-md-3">
-                    <a href="index.php?page=tree&amp;language_tree=default&amp;tree_id=<?= $tree_id; ?>"><?= __('Default'); ?></a>
-                </div>
+        <tr>
+            <td></td>
+            <td>
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="index.php?page=tree&amp;language_tree=default&amp;tree_id=<?= $tree_id; ?>"><?= __('Default'); ?></a>
+                    </div>
 
-                <div class="col-md-auto ms-2">
-                    <?= show_country_flags($language_tree2, '../', 'language_tree', $language_path); ?>
+                    <div class="col-md-auto ms-2">
+                        <?= show_country_flags($language_tree2, '../', 'language_tree', $language_path); ?>
+                    </div>
                 </div>
-            </div>
-        </td>
-        <td></td>
-        <td></td>
-    </tr>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
 
     <?php
     // *** Check number of family trees, because last tree is not allowed to be removed ***
@@ -56,7 +68,8 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
         while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
             $style = '';
             if ($dataDb->tree_id == $tree_id) {
-                $style = ' bgcolor="#99CCFF"';
+                //$style = ' bgcolor="#99CCFF"';
+                $style = ' class="table-active"';
             }
     ?>
             <tr <?= $style; ?>>
@@ -100,11 +113,11 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
                     if ($dataDb->tree_prefix == 'EMPTY') {
                         //
                     } elseif ($dataDb->tree_persons > 0) {
-                        echo ' <font color="#00FF00"><b>' . __('OK') . '</b></font>';
+                    ?>
+                        <font color="#00FF00"><b><?= __('OK'); ?></b></font>
 
-                        // *** Show tree data ***
-                        echo ' <font size=-1>' . show_tree_date($dataDb->tree_date) . ': ' . $dataDb->tree_persons . ' ' .
-                            __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families') . '</font>';
+                        <font size=-1><?= show_tree_date($dataDb->tree_date); ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?></font>
+                    <?php
                     } else {
                         //echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';
                         echo ' <b>' . __('This tree does not yet contain any data or has not been imported properly!') . '</b>';
@@ -127,54 +140,27 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
     }
 
     // *** Add new family tree ***
-
-    // *** Find latest tree_prefix ***
-    $found = '1';
-    $i = 1;
-    while ($found == '1') {
-        $new_tree_prefix = 'humo' . $i . '_';
-        $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='$new_tree_prefix'");
-        $found = $datasql->rowCount();
-        $i++;
-    }
-
     if ($new_number < 10) {
         $new_number = '0' . $new_number;
     }
     ?>
-
-    <tr>
-        <td colspan="4"><br></td>
-    </tr>
-
-    <tr>
-        <td><?= $new_number; ?></td>
-        <td colspan="3">
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
-                <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
-                <input type="hidden" name="tree_prefix" value="<?= $new_tree_prefix; ?>">
-                <input type="submit" name="add_tree_data" value="<?= __('Add family tree'); ?>" class="btn btn-sm btn-success">
-            </form>
-        </td>
-    </tr>
-
-    <tr>
-        <td colspan="4"><br></td>
-    </tr>
-
-    <tr>
-        <td><?= $new_number; ?></td>
-        <td colspan="3">
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
-                <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
-                <input type="submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>" class="btn btn-sm btn-success">
-                <?= __('Add empty line in list of family trees'); ?>
-            </form>
-        </td>
-    </tr>
 </table>
+
+<form method="post" action="index.php" class="mb-2">
+    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
+    <input type="hidden" name="tree_prefix" value="<?= $new_tree_prefix; ?>">
+    <input type="submit" name="add_tree_data" value="<?= __('Add family tree'); ?>" class="btn btn-sm btn-success">
+</form>
+
+
+<form method="post" action="index.php">
+    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
+    <input type="submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>" class="btn btn-sm btn-success">
+    <?= __('Add empty line in list of family trees'); ?>
+</form>
+
 
 <?php
 // ** Change collation of family tree (needed for Swedish etc.) ***

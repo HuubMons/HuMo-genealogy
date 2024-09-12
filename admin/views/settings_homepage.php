@@ -512,7 +512,7 @@ if (isset($_GET['down'])) {
                 <th colspan="4"><?= __('Show list of favourites in homepage'); ?></th>
             </tr>
 
-            <tr class="table_header">
+            <tr>
                 <th>Nr.</th>
                 <th><?= __('Own code'); ?></th>
                 <th><?= __('Description'); ?></th>
