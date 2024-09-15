@@ -2370,9 +2370,11 @@ if (isset($_POST['step4'])) {
                 }
             }
         }
+        /*
         foreach ($loca_array as $key => $value) {
             $dbh->query("UPDATE humo_location SET location_status = '" . $value . "' WHERE location_location = '" . addslashes($key) . "'");
         }
+        */
         if (strpos($humo_option['geo_trees'], "@" . $tree_id . ";") === false) {
             $dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $tree_id . ";') WHERE setting_variable = 'geo_trees'");
             $humo_option['geo_trees'] .= "@" . $tree_id . ";";

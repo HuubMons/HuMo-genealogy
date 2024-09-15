@@ -2516,18 +2516,23 @@ class gedcom_cls
             for ($i = 1; $i <= $geocode_nr; $i++) {
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
                 if (!$loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
+                    //$geosql = "INSERT IGNORE INTO humo_location SET
+                    //    location_location='" . $this->text_process($geocode_plac[$i]) . "',
+                    //    location_lat='" . $geocode_lati[$i] . "',
+                    //    location_lng='" . $geocode_long[$i] . "',
+                    //    location_status='" . $tree_prefix . $geocode_type[$i] . "'";
                     $geosql = "INSERT IGNORE INTO humo_location SET
                         location_location='" . $this->text_process($geocode_plac[$i]) . "',
                         location_lat='" . $geocode_lati[$i] . "',
-                        location_lng='" . $geocode_long[$i] . "',
-                        location_status='" . $tree_prefix . $geocode_type[$i] . "'";
+                        location_lng='" . $geocode_long[$i] . "'";
                     $dbh->query($geosql);
-                } elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {   // location already exists, check if we need to add something in location_status
-                    $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
-                    if (strpos($loc_qryDb->location_status, $tree_prefix . $geocode_type[$i]) === false) {
-                        $dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' " . $tree_prefix . $geocode_type[$i] . "') WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
-                    }
                 }
+                // elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {   // location already exists, check if we need to add something in location_status
+                //    $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
+                //    if (strpos($loc_qryDb->location_status, $tree_prefix . $geocode_type[$i]) === false) {
+                //        $dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' " . $tree_prefix . $geocode_type[$i] . "') WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
+                //    }
+                //}
             }
             if (strpos($humo_option['geo_trees'], "@" . $tree_id . ";") === false) {
                 $dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $tree_id . ";') WHERE setting_variable = 'geo_trees'");
@@ -4038,19 +4043,23 @@ class gedcom_cls
                 $loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
 
                 if (!$loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
+                    //$geosql = "INSERT IGNORE INTO humo_location SET
+                    //    location_location='" . $this->text_process($geocode_plac[$i]) . "',
+                    //    location_lat='" . $geocode_lati[$i] . "',
+                    //    location_lng='" . $geocode_long[$i] . "',
+                    //    location_status='" . $tree_prefix . $geocode_type[$i] . "'";
                     $geosql = "INSERT IGNORE INTO humo_location SET
                         location_location='" . $this->text_process($geocode_plac[$i]) . "',
                         location_lat='" . $geocode_lati[$i] . "',
-                        location_lng='" . $geocode_long[$i] . "',
-                        location_status='" . $tree_prefix . $geocode_type[$i] . "'
-                        ";
+                        location_lng='" . $geocode_long[$i] . "'";
                     $dbh->query($geosql);
-                } elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // location already exists, check if we need to add something in location_status
-                    $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
-                    if (strpos($loc_qryDb->location_status, $tree_prefix . $geocode_type[$i]) === false) {
-                        $dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' " . $tree_prefix . $geocode_type[$i] . "') WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
-                    }
                 }
+                // elseif ($loc_qry->rowCount() && $geocode_type[$geocode_nr] != "") {  // location already exists, check if we need to add something in location_status
+                //    $loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
+                //    if (strpos($loc_qryDb->location_status, $tree_prefix . $geocode_type[$i]) === false) {
+                //        $dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' " . $tree_prefix . $geocode_type[$i] . "') WHERE location_location = '" . $this->text_process($geocode_plac[$i]) . "'");
+                //    }
+                //}
             }
             if (strpos($humo_option['geo_trees'], "@" . $tree_id . ";") === false) {
                 $dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $tree_id . ";') WHERE setting_variable = 'geo_trees'");
