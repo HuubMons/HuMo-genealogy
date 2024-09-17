@@ -87,6 +87,25 @@ $count = 0;
             </form>
         </div>
 
+        <?php if ($maps['select_world_map'] == 'OpenStreetMap') { ?>
+            <div class="col-auto">
+                <form method="POST" action="" style="display : inline;">
+                    <select onChange="findPlace()" size="1" id="loc_search" name="loc_search" class="form-select form-select-sm">
+                        <option value="toptext"><?= __('Find location on the map'); ?></option>
+                        <?php
+                        //sort ($maps['location']);
+                        for ($i = 1; $i < count($maps['location']); $i++) {
+                            //echo 'L.marker([' . $maps['latitude'][$i] . ', ' . $maps['longitude'][$i] . ']) .bindPopup(\'' . $maps['location_text'][$i] . '\')';
+                        ?>
+                            <option value="<?= $maps['latitude'][$i]; ?>,<?= $maps['longitude'][$i]; ?>">
+                                <?= $maps['location'][$i]; ?> #<?= $maps['location_text_count'][$i]; ?>
+                            </option>
+                        <?php } ?>
+
+                    </select>
+                </form>
+            </div>
+        <?php } ?>
 
         <?php if ($maps['select_world_map'] == 'Google') { ?>
             <div class="col-auto">
@@ -148,57 +167,54 @@ $count = 0;
 
             </div>
         <?php } ?>
-
     </div>
 
+    <div class="row mb-2">
+        <!-- Select specific family name(s) -->
+        <div class="col-auto">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#familynameModal">
+                <?= __('Filter by specific family name(s)'); ?>
+            </button>
 
-    <?php if ($maps['select_world_map'] == 'Google') { ?>
-        <div class="row mb-2">
-
-            <!-- Select specific family name(s) -->
-            <div class="col-auto">
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#familynameModal">
-                    <?= __('Filter by specific family name(s)'); ?>
-                </button>
-
-                <form method="POST" action="<?= $link; ?>">
-                    <?php
-                    $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                        AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ORDER BY totalname";
-                    $fam_search_result = $dbh->query($fam_search);
-                    ?>
-                    <div class="modal fade" id="familynameModal" tabindex="-1" aria-labelledby="familynameModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable"> <!-- <div class="modal-dialog modal-xl"> -->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="familynameModalLabel"><?= __('Filter by specific family name(s)'); ?></h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <b><?= __('Mark checkbox next to name(s)'); ?></b><br>
-                                    <?php
-                                    while ($fam_searchDb = $fam_search_result->fetch(PDO::FETCH_OBJ)) {
-                                        $pos = strpos($fam_searchDb->totalname, '_');
-                                        $pref = substr($fam_searchDb->totalname, $pos + 1);
-                                        if ($pref !== '') {
-                                            $pref = ', ' . $pref;
-                                        }
-                                        $last = substr($fam_searchDb->totalname, 0, $pos);
-                                    ?>
-                                        <input type="checkbox" name="items[]" value="<?= $fam_searchDb->totalname; ?>" class="form-check-input"> <?= $last . $pref; ?><br>
-                                    <?php } ?>
-                                </div>
-                                <div class="modal-footer">
-                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button> -->
-                                    <button type="submmit" name="submit" class="btn btn-primary"><?= __('Choose'); ?></button>
-                                </div>
+            <form method="POST" action="<?= $link; ?>">
+                <?php
+                $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
+                    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                    AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ORDER BY totalname";
+                $fam_search_result = $dbh->query($fam_search);
+                ?>
+                <div class="modal fade" id="familynameModal" tabindex="-1" aria-labelledby="familynameModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable"> <!-- <div class="modal-dialog modal-xl"> -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="familynameModalLabel"><?= __('Filter by specific family name(s)'); ?></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <b><?= __('Mark checkbox next to name(s)'); ?></b><br>
+                                <?php
+                                while ($fam_searchDb = $fam_search_result->fetch(PDO::FETCH_OBJ)) {
+                                    $pos = strpos($fam_searchDb->totalname, '_');
+                                    $pref = substr($fam_searchDb->totalname, $pos + 1);
+                                    if ($pref !== '') {
+                                        $pref = ', ' . $pref;
+                                    }
+                                    $last = substr($fam_searchDb->totalname, 0, $pos);
+                                ?>
+                                    <input type="checkbox" name="items[]" value="<?= $fam_searchDb->totalname; ?>" class="form-check-input"> <?= $last . $pref; ?><br>
+                                <?php } ?>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button> -->
+                                <button type="submmit" name="submit" class="btn btn-primary"><?= __('Choose'); ?></button>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
+        </div>
 
+        <?php if ($maps['select_world_map'] == 'Google') { ?>
 
             <!-- TODO: use bootstrap. Don't show list of persons, but use search options -->
             <div class="col-auto">
@@ -207,7 +223,6 @@ $count = 0;
                     <input type="submit" name="anything" value="<?= __('Filter by descendants'); ?>" class="btn btn-sm btn-secondary">
                 </form>
             </div>
-
 
 
             <?php /*
@@ -308,18 +323,6 @@ $count = 0;
                 <form method="POST" action="" style="display : inline;">
                     <select onChange="findPlace()" size="1" id="loc_search" name="loc_search" class="form-select form-select-sm">
                         <option value="toptext"><?= __('Find location on the map'); ?></option>
-
-                        <?php
-                        /*
-                        while ($loc_searchDb = $loc_search_result->fetch(PDO::FETCH_OBJ)) {
-                            $count++;
-                        ?>
-                            <option value="<?= $loc_searchDb->location_id; ?>,<?= $loc_searchDb->location_lat; ?>,<?= $loc_searchDb->location_lng; ?>">
-                                <?= $loc_searchDb->location_location; ?>
-                            </option>
-                        <?php }
-                        */ ?>
-
                         <?php
                         foreach ($maps['locarray'] as $key => $value) {
                             if ($maps['locarray'][$key][13] > 0) {
@@ -332,53 +335,52 @@ $count = 0;
                             }
                         }
                         ?>
-
                     </select>
                 </form>
             </div>
-        </div>
-
-        <?php
-        // *** Optional row ***
-        if (isset($_POST['items']) || isset($_GET['persged']) && isset($_GET['persfams']) || isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
-        ?>
-            <div class="row mb-2 p-2 bg-info">
-                <div class="col-auto">
-
-                    <!-- Searching by specific names -->
-                    <?php if ($maps['show_family_names']) { ?>
-                        <div id="name_search">
-                            <?= __('Mapping with specific name(s): '); ?>
-                            <?= $maps['show_family_names']; ?>. <a href="<?= $link; ?>"><?= __('Switch name filter off'); ?></a>
-                        </div>
-                    <?php } ?>
-
-                    <!-- Find descendants of chosen person -->
-                    <?php if (isset($_GET['persged']) && isset($_GET['persfams'])) { ?>
-                        <div id="desc_search">
-                            <?php if ($maps['desc_array'] != '') { ?>
-                                <?= __('Filter by descendants of: ') . trim($maps['desc_chosen_name']); ?>. <a href="<?= $link; ?>"><?= __('Switch descendant filter off'); ?></a>
-                            <?php } else { ?>
-                                <?= __('No known birth places amongst descendants'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-
-                    <!-- Find ancestors -->
-                    <?php if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) { ?>
-                        <div id="anc_search">
-                            <?php if ($maps['anc_array'] != '') { ?>
-                                <?= __('Filter by ancestors of: ') . trim($maps['chosen_name']); ?>. <a href="<?= $link; ?>"><?= __('Switch ancestor filter off'); ?></a>
-                            <?php } else { ?>
-                                <?= __('No known birth places amongst ancestors'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-
-                </div>
-            </div>
         <?php } ?>
+    </div>
 
+
+    <?php
+    // *** Optional row ***
+    if (isset($_POST['items']) || isset($_GET['persged']) && isset($_GET['persfams']) || isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
+    ?>
+        <div class="row mb-2 p-2 bg-info">
+            <div class="col-auto">
+
+                <!-- Searching by specific names -->
+                <?php if ($maps['show_family_names']) { ?>
+                    <div id="name_search">
+                        <?= __('Mapping with specific name(s): '); ?>
+                        <?= $maps['show_family_names']; ?>. <a href="<?= $link; ?>"><?= __('Switch name filter off'); ?></a>
+                    </div>
+                <?php } ?>
+
+                <!-- Find descendants of chosen person -->
+                <?php if (isset($_GET['persged']) && isset($_GET['persfams'])) { ?>
+                    <div id="desc_search">
+                        <?php if ($maps['desc_array'] != '') { ?>
+                            <?= __('Filter by descendants of: ') . trim($maps['desc_chosen_name']); ?>. <a href="<?= $link; ?>"><?= __('Switch descendant filter off'); ?></a>
+                        <?php } else { ?>
+                            <?= __('No known birth places amongst descendants'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+
+                <!-- Find ancestors -->
+                <?php if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) { ?>
+                    <div id="anc_search">
+                        <?php if ($maps['anc_array'] != '') { ?>
+                            <?= __('Filter by ancestors of: ') . trim($maps['chosen_name']); ?>. <a href="<?= $link; ?>"><?= __('Switch ancestor filter off'); ?></a>
+                        <?php } else { ?>
+                            <?= __('No known birth places amongst ancestors'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+
+            </div>
+        </div>
     <?php } ?>
 
 </div>
@@ -662,6 +664,22 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
     <!-- Show OpenStreetMap -->
     <div id="map" style="height:520px"></div>
 
+    <!-- Zoom in to map location -->
+    <script>
+        function findPlace() {
+            var e = document.getElementById("loc_search");
+            var locSearch = e.options[e.selectedIndex].value;
+            if (locSearch != "toptext") { // if not default text "find location on map"
+                var opt_array = new Array();
+                opt_array = locSearch.split(",", 2);
+
+                //map.setView([lat, lng], zoomLevel);
+                // WERKT: map.setView([48.85, 2.35], 10);
+                map.setView([opt_array[0], opt_array[1]], 10);
+            }
+        }
+    </script>
+
     <?php
     // *** Map using fitbound (all markers visible) ***
     echo '<script>
@@ -685,11 +703,12 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
     </script>';
 } else {
     ?>
+
     <!-- Google Maps -->
     <div id="map_canvas" style="height:520px"></div>
 
+    <!-- Zoom in to map location -->
     <?php
-    // function to read multiple values from location search bar and zoom to map location:
     echo '
     <script>
     function findPlace () {

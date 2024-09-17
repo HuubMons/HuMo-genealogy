@@ -203,6 +203,21 @@ class MapsModel
         $maps['location_text'][] = '';
         $maps['location_text_count'][] = '';
 
+
+
+        $namesearch_string = '';
+        if ($maps['family_names'] != '') {
+            $namesearch_string = ' AND (';
+            foreach ($maps['family_names'] as $value) {
+                //$namesearch_string .= " pers_lastname = '".$value."' OR ";
+                //$namesearch_string .= " totalname = '".$value."' OR ";
+                $namesearch_string .= "CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) = '" . $value . "' OR ";
+            }
+            $namesearch_string = substr($namesearch_string, 0, -3) . ")"; // take off last "OR "
+        }
+
+
+
         if ($maps['display_birth']) {
             /*
             $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
@@ -211,10 +226,15 @@ class MapsModel
                 WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
             */
             // See problems with death / burial. Also change this birth/ baptise query.
-            $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
-                ON humo_location.location_location = humo_persons.pers_birth_place
-                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
-        } elseif ($maps['display_death']) {
+            //$persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
+            //    ON humo_location.location_location = humo_persons.pers_birth_place
+            //    WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "' ORDER BY location_location");
+
+$persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
+ON humo_location.location_location = humo_persons.pers_birth_place
+WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "' ".$namesearch_string." ORDER BY location_location");
+
+} elseif ($maps['display_death']) {
             /*
             $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
                 ON humo_location.location_location = humo_persons.pers_death_place
@@ -224,7 +244,7 @@ class MapsModel
 
             $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
                 ON humo_location.location_location = humo_persons.pers_death_place
-                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
+                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "' ORDER BY location_location");
         }
         while (@$personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
             if ($maps['display_birth']) {
@@ -290,7 +310,7 @@ class MapsModel
     {
         // TODO probably better not to load all places. Combine queries?
         // Allready done for openstreetmap.
-        $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL");
+        $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL ORDER BY location_location");
         while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
             $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
             $locarray[$locationDb->location_location][1] = $locationDb->location_lat;
