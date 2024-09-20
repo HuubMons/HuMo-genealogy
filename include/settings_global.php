@@ -232,10 +232,20 @@ if (!isset($humo_option["registration_use_spam_question"])) {
     @$result = $dbh->query($sql);
 }
 
-if (!isset($humo_option["password_retreival"])) {
-    $humo_option["password_retreival"] = '';
-    $sql = "INSERT INTO humo_settings SET setting_variable='password_retreival', setting_value=''";
-    @$result = $dbh->query($sql);
+// *** Solve bug in database (name of variable) ***
+if (isset($humo_option["password_retreival"])) {
+    $sql = "INSERT INTO humo_settings SET setting_variable='password_retrieval', setting_value='" . $humo_option["password_retreival"] . "'";
+    $result = $dbh->query($sql);
+
+    $sql = "DELETE FROM humo_settings WHERE setting_variable='password_retreival'";
+    $result = $dbh->query($sql);
+
+    $humo_option["password_retrieval"] = $humo_option["password_retreival"];
+}
+if (!isset($humo_option["password_retrieval"])) {
+    $humo_option["password_retrieval"] = '';
+    $sql = "INSERT INTO humo_settings SET setting_variable='password_retrieval', setting_value=''";
+    $result = $dbh->query($sql);
 }
 
 if (!isset($humo_option["update_last_check"])) {
@@ -367,7 +377,7 @@ if (!isset($humo_option["one_name_thename"])) {
 }
 
 if (!isset($humo_option["geo_trees"])) {
-    $geo_string='';
+    $geo_string = '';
     $humo_option["geo_trees"] = $geo_string;
     $sql = "INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value='" . $geo_string . "'";
     $result = $dbh->query($sql);

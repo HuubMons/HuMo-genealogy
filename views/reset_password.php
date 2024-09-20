@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Original password retreival code from: http://www.plus2net.com/
+ * Original password retrieval code from: http://www.plus2net.com/
  * 25-08-2024 Huub: rebuild script.
  */
 
@@ -49,7 +49,7 @@ if ($resetpassword['message_activation']) {
 }
 
 // *** Form to enter mail address in order to receive reset link ***
-// *** An e-mail address is necessary for password retreival ***
+// *** An e-mail address is necessary for password retrieval ***
 if (isset($_POST['forgotpw']) || $resetpassword['check_input_msg']) {
 ?>
     <h1 class="my-4"><?= __('Password retrieval'); ?></h1>
@@ -100,6 +100,12 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
 ?>
     <br>
     <?php
+    //$email = safe_text_db($_POST['user_mail']);
+    //if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    //    $msg = __('Your email address is not correct') . "<br>";
+    //    $status = "NOTOK";
+    //}
+
     $countmail = $dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail=:email");
     $countmail->bindValue(':email', $_POST['user_mail'], PDO::PARAM_STR);
     $countmail->execute();
@@ -134,8 +140,8 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
 
     include_once(__DIR__ . '/../include/mail.php');
 
-    // *** Get mail for password retreival ***
-    $mail_address = $humo_option["password_retreival"];
+    // *** Get mail for password retrieval ***
+    $mail_address = $humo_option["password_retrieval"];
 
     $mail_message = __('This is in response to your request for password reset at ') . $resetpassword['site_url'];
 
@@ -149,7 +155,13 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
     $mail->AddReplyTo($mail_address, $mail_address);
 
     // *** Set who the message is sent from (this will automatically be set to your server's mail to prevent false "phishing" alarms)***
-    $mail->setFrom($mail_address, $mail_address);
+    //$mail->setFrom($mail_address, $mail_address);
+    if ($humo_option["email_sender"] && filter_var($humo_option["email_sender"], FILTER_VALIDATE_EMAIL)) {
+        // *** Some providers don't accept other e-mail addresses because of safety reasons! ***
+        $mail->setFrom($humo_option["email_sender"], $humo_option["email_sender"]);
+    } else {
+        $mail->setFrom($mail_address, $mail_address);
+    }
 
     // *** Set who the message is to be sent to. Use mail address from database ***
     $mail->addAddress($row->user_mail, $row->user_mail);

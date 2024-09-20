@@ -337,7 +337,7 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
                             }
                             // *** Skip all backup files in folder backup_files/
                             // ../admin/backup_files/2023_02_11_09_56_humo-genealogy_backup.sql.zip
-                            if (substr($dir, 0, 21) == '../admin/backup_files' and !is_dir($dir . '/' . $ff) and $ff != 'readme.txt') {
+                            elseif (substr($dir, 0, 21) == '../admin/backup_files' and !is_dir($dir . '/' . $ff) and $ff != 'readme.txt') {
                                 // skip backup files
                             } else {
                                 if ($file_array == 'existing_files') {
@@ -434,7 +434,7 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
             if (isset($_GET['re_install'])) {
                 echo '&re_install=1';
             }
-            echo '&amp;select_all=1">' . __('Select all files (recommended option)') . '</a><br>';
+            echo '&amp;select_all=1">' . __('Select all files (recommended option, please check these files first!)') . '</a><br>';
             ?>
             <div style="border:1px solid black;height:200px;width:700px;overflow:scroll">
                 <?php

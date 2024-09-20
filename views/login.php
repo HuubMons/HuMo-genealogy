@@ -52,8 +52,8 @@ $path_reset_password = $link_cls->get_link($uri_path, 'reset_password');
         </div>
     </form>
 
-    <!-- Only use password retreival option if sender mail is set in admin settings and is a valid mail address -->
-    <?php if ($humo_option["password_retreival"] && filter_var($humo_option["password_retreival"], FILTER_VALIDATE_EMAIL)) { ?>
+    <!-- Only use password retrieval option if sender mail is set in admin settings and is a valid mail address -->
+    <?php if ($humo_option["password_retrieval"] && filter_var($humo_option["password_retrieval"], FILTER_VALIDATE_EMAIL)) { ?>
         <div class="center">
             <form name="forget_form" method="post" action="<?= $path_reset_password; ?>">
                 <input type="hidden" name="forgotpw" value="1">

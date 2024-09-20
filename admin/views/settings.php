@@ -249,7 +249,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         <!-- Using HTML 5 email check -->
         <tr>
             <td><?= __('Password forgotten e-mail address'); ?></td>
-            <td><input type="email" name="password_retreival" value="<?= $humo_option["password_retreival"]; ?>" size="40" placeholder="no-reply@your-website.com"> <?= __('To enable password forgotten option: set a sender e-mail address.'); ?></td>
+            <td><input type="email" name="password_retrieval" value="<?= $humo_option["password_retrieval"]; ?>" size="40" placeholder="no-reply@your-website.com"> <?= __('To enable password forgotten option: set a sender e-mail address.'); ?></td>
         </tr>
 
         <tr class="table-primary">

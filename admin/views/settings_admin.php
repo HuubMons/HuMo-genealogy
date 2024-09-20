@@ -50,7 +50,7 @@ if (isset($_POST['save_option'])) {
     $db_functions->update_settings('general_email', $_POST["general_email"]);
     $db_functions->update_settings('visitor_registration_group', $_POST["visitor_registration_group"]);
     $db_functions->update_settings('registration_use_spam_question', $_POST["registration_use_spam_question"]);
-    $db_functions->update_settings('password_retreival', $_POST["password_retreival"]);
+    $db_functions->update_settings('password_retrieval', $_POST["password_retrieval"]);
 
     /*
     ***************************

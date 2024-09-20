@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-15 10:59+0200\n"
-"PO-Revision-Date: 2024-09-15 10:59+0200\n"
+"POT-Creation-Date: 2024-09-17 22:35+0200\n"
+"PO-Revision-Date: 2024-09-17 22:35+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -508,7 +508,7 @@ msgstr "GEDCOM-nummer (ID)"
 #: admin/views/editor_relation.php:673 admin/views/editor_relation.php:749
 #: admin/views/editor_relation.php:847 admin/views/editor_relation.php:1226
 #: admin/views/gedcom_export.php:164 admin/views/language_editor.php:250
-#: admin/views/maps_locations.php:764 admin/views/settings_homepage.php:220
+#: admin/views/maps_locations.php:753 admin/views/settings_homepage.php:220
 #: admin/views/settings_homepage.php:415 admin/views/tree_merge.php:615
 #: admin/views/tree_merge.php:631 admin/views/tree_merge.php:694
 #: admin/views/users.php:120 app/model/tree_index.php:56
@@ -987,41 +987,41 @@ msgstr "Sekse"
 
 #: admin/include/editor_sources.php:77 admin/views/editor.php:1246
 #: admin/views/editor_person.php:650 app/model/tree_index.php:906
-#: app/model/tree_index.php:908 googlemaps/namesearch.php:183
+#: app/model/tree_index.php:908 googlemaps/namesearch.php:185
 #: include/person_cls.php:2034 include/person_cls.php:2035
 #: include/person_cls.php:2037 include/person_cls.php:2038
 #: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:373
 #: views/anniversary.php:95 views/descendant_chart.php:444
 #: views/family.php:1143 views/list.php:235 views/list.php:243
-#: views/list.php:640 views/maps.php:443 views/maps.php:574
+#: views/list.php:640 views/maps.php:445 views/maps.php:576
 msgid "born"
 msgstr "geboren"
 
 #: admin/include/editor_sources.php:83 admin/views/editor.php:1280
 #: admin/views/editor_person.php:924 app/model/timeline.php:102
 #: app/model/tree_index.php:915 app/model/tree_index.php:917
-#: googlemaps/namesearch.php:186 include/person_cls.php:2173
+#: googlemaps/namesearch.php:188 include/person_cls.php:2173
 #: include/person_cls.php:2174 include/person_cls.php:2176
 #: include/person_cls.php:2177 views/family.php:1145 views/list.php:235
-#: views/list.php:243 views/list.php:640 views/maps.php:446 views/maps.php:577
+#: views/list.php:243 views/list.php:640 views/maps.php:448 views/maps.php:579
 msgid "baptised"
 msgstr "gedoopt"
 
 #: admin/include/editor_sources.php:89 admin/views/editor.php:1300
 #: admin/views/editor_person.php:1014 app/model/tree_index.php:924
-#: app/model/tree_index.php:926 googlemaps/namesearch.php:192
+#: app/model/tree_index.php:926 googlemaps/namesearch.php:194
 #: include/person_cls.php:2359 include/person_cls.php:2360
 #: include/person_cls.php:2362 include/person_cls.php:2363
 #: views/ancestor_sheet.php:295 views/ancestor_sheet_pdf.php:373
 #: views/anniversary.php:97 views/list.php:255 views/list.php:263
-#: views/list.php:641 views/maps.php:449 views/maps.php:580
+#: views/list.php:641 views/maps.php:451 views/maps.php:582
 msgid "died"
 msgstr "overleden"
 
 #: admin/include/editor_sources.php:95 admin/views/editor.php:1320
 #: admin/views/editor_person.php:1237 app/model/timeline.php:128
-#: googlemaps/namesearch.php:195 include/person_cls.php:2468 views/list.php:255
-#: views/list.php:263 views/list.php:641 views/maps.php:452 views/maps.php:583
+#: googlemaps/namesearch.php:197 include/person_cls.php:2468 views/list.php:255
+#: views/list.php:263 views/list.php:641 views/maps.php:454 views/maps.php:585
 msgid "buried"
 msgstr "begraven"
 
@@ -1823,8 +1823,9 @@ msgstr ""
 "Als u wilt, kunnen ze worden verwijderd."
 
 #: admin/update/install_update.php:437
-msgid "Select all files (recommended option)"
-msgstr "Alle bestanden selecteren (aanbevolen optie)"
+msgid "Select all files (recommended option, please check these files first!)"
+msgstr ""
+"Selecteer alle bestanden (aanbevolen optie, controleer deze bestanden eerst!)"
 
 #: admin/update/install_update.php:471
 msgid "Update new db_login.php file..."
@@ -2299,7 +2300,7 @@ msgid "Phone"
 msgstr "Telefoon"
 
 #: admin/views/edit_address.php:208 admin/views/editor.php:1058
-#: views/maps.php:193 views/maps.php:362 views/maps.php:373
+#: views/maps.php:208 views/maps.php:366 views/maps.php:377
 msgid "Close"
 msgstr "Sluiten"
 
@@ -3424,8 +3425,8 @@ msgstr ""
 "De gegevens van deze GEDCOM zullen worden toegevoegd bij de bestaande "
 "gegevens in deze stamboom!"
 
-#: admin/views/gedcom.php:1015 admin/views/maps_locations.php:646
-#: views/maps.php:515 views/maps.php:649
+#: admin/views/gedcom.php:1015 admin/views/maps_locations.php:635
+#: views/maps.php:517 views/maps.php:651
 msgid "Cancel"
 msgstr "Sluiten"
 
@@ -4251,7 +4252,7 @@ msgstr "JA, installeer ook de database"
 msgid "NO"
 msgstr "NEE"
 
-#: admin/views/index_admin.php:165 admin/views/maps_locations.php:644
+#: admin/views/index_admin.php:165 admin/views/maps_locations.php:633
 msgid "YES"
 msgstr "JA"
 
@@ -4677,7 +4678,7 @@ msgstr "Inloggen"
 msgid "World map administration"
 msgstr "Wereldkaart beheer"
 
-#: admin/views/maps.php:32 admin/views/maps_locations.php:474
+#: admin/views/maps.php:32 admin/views/maps_locations.php:463
 msgid "Edit geolocation database"
 msgstr "Muteer geolocatiedatabase"
 
@@ -4750,15 +4751,15 @@ msgstr ""
 "De volgende %d locaties kunnen niet geïndexeerd worden. Controleer deze "
 "locaties."
 
-#: admin/views/maps_locations.php:223
+#: admin/views/maps_locations.php:221
 msgid "Retry to index these locations"
 msgstr "Probeer deze locaties opnieuw te indexeren"
 
-#: admin/views/maps_locations.php:240
+#: admin/views/maps_locations.php:235
 msgid "Started adding to data base."
 msgstr "Begonnen met toevoegen aan de database."
 
-#: admin/views/maps_locations.php:344
+#: admin/views/maps_locations.php:335
 msgid ""
 "<b>A location database could not be created.</b>\n"
 "<p>This could mean that the PHP function \"allow_url_fopen\" was disabled by "
@@ -4774,11 +4775,11 @@ msgstr ""
 "<p>Neem contact op met je provider en verzoek om \"allow_url_fopen\" in te "
 "schakelen of om \"curl\" te laden."
 
-#: admin/views/maps_locations.php:403
+#: admin/views/maps_locations.php:392
 msgid "locations were successfully mapped."
 msgstr "plaatsen succesvol toegevoegd."
 
-#: admin/views/maps_locations.php:407 admin/views/maps_locations.php:423
+#: admin/views/maps_locations.php:396 admin/views/maps_locations.php:412
 #, php-format
 msgid ""
 "The following %d new locations were passed for query, but were not found. "
@@ -4787,7 +4788,7 @@ msgstr ""
 "De volgende %d nieuwe locatie zijn gecontroleerd, maar niet gevonden. "
 "Controleer deze locaties."
 
-#: admin/views/maps_locations.php:416
+#: admin/views/maps_locations.php:405
 msgid ""
 "The process was interrupted because Google limits to maximum 2500 queries "
 "within one day (counting is reset at midnight PST, which is 08:00 AM GMT)"
@@ -4795,63 +4796,63 @@ msgstr ""
 "Het proces is onderbroken door de Google limieten van maximaal 2500 queries "
 "per dag (wordt gereset om PST middernacht, dat is 08:00 AM GMT)"
 
-#: admin/views/maps_locations.php:417
+#: admin/views/maps_locations.php:406
 #, php-format
 msgid ""
 "In total %1$d out of %2$d new locations were passed for query to Google."
 msgstr ""
 "In totaal %1$d van de %2$d nieuwe locaties zijn door Google gecontroleerd."
 
-#: admin/views/maps_locations.php:418
+#: admin/views/maps_locations.php:407
 msgid ""
 "Tomorrow you can run this process again to add the locations that were not "
 "passed for geocoding today."
 msgstr "Je kunt morgen dit proces herhalen om meer plaatsen toe te voegen."
 
-#: admin/views/maps_locations.php:419
+#: admin/views/maps_locations.php:408
 msgid ""
 "locations were recognized by geocoding and have been saved in the database."
 msgstr "plaatsen herkend door geo-code en zijn opgeslagen in de database."
 
-#: admin/views/maps_locations.php:463
+#: admin/views/maps_locations.php:452
 msgid "Delete entire geolocation database"
 msgstr "Verwijder volledige geolocatiedatabase"
 
-#: admin/views/maps_locations.php:464
+#: admin/views/maps_locations.php:453
 #, php-format
 msgid "%d locations."
 msgstr "%d plaatsen."
 
-#: admin/views/maps_locations.php:465
+#: admin/views/maps_locations.php:454
 #, php-format
 msgid "%d non-indexable locations."
 msgstr "%d niet-indexeerbare locaties."
 
-#: admin/views/maps_locations.php:667
+#: admin/views/maps_locations.php:656
 msgid "Location already exists. Updated latitude/longitude"
 msgstr "Locatie bestaat al. Lengte-/breedtegraad is bijgewerkt."
 
-#: admin/views/maps_locations.php:770
+#: admin/views/maps_locations.php:759
 msgid "Latitude"
 msgstr "Breedtegraad"
 
-#: admin/views/maps_locations.php:779
+#: admin/views/maps_locations.php:768
 msgid "Longitude"
 msgstr "Lengtegraad"
 
-#: admin/views/maps_locations.php:786
+#: admin/views/maps_locations.php:775
 msgid "You can also drag the marker."
 msgstr "Je kunt ook de marker verplaatsen."
 
-#: admin/views/maps_locations.php:788
+#: admin/views/maps_locations.php:777
 msgid "Change this location"
 msgstr "Wijzig deze plaats"
 
-#: admin/views/maps_locations.php:789
+#: admin/views/maps_locations.php:778
 msgid "Add this location"
 msgstr "Deze plaats toevoegen"
 
-#: admin/views/maps_locations.php:790
+#: admin/views/maps_locations.php:779
 msgid "Delete this location"
 msgstr "Verwijder deze plaats"
 
@@ -6685,7 +6686,7 @@ msgstr "Overslaan"
 msgid "Skip to nr: "
 msgstr "Door naar nr.: "
 
-#: admin/views/tree_merge.php:147 views/maps.php:513 views/maps.php:647
+#: admin/views/tree_merge.php:147 views/maps.php:515 views/maps.php:649
 msgid "Go!"
 msgstr "Ga!"
 
@@ -7559,7 +7560,7 @@ msgstr "Laatst bezochte gezin:"
 msgid "Receive newsletter"
 msgstr "Nieuwsbrief ontvangen"
 
-#: app/model/maps.php:273
+#: app/model/maps.php:284
 msgid "Results are limited."
 msgstr "Resultaten zijn beperkt."
 
@@ -9760,107 +9761,107 @@ msgstr "Geboorteplaatsen"
 msgid "Death locations"
 msgstr "Overlijdensplaatsen"
 
-#: views/maps.php:133
-msgid "Display births until: "
-msgstr "Toon geboorten tot: "
-
-#: views/maps.php:135
-msgid "Display deaths until: "
-msgstr "Toon overlijden tot: "
-
-#: views/maps.php:161 views/maps.php:175
-msgid "Filter by specific family name(s)"
-msgstr "Filter specifieke achternamen"
-
-#: views/maps.php:179
-msgid "Mark checkbox next to name(s)"
-msgstr "Vink hokje(s) voor de namen aan"
-
-#: views/maps.php:194
-msgid "Choose"
-msgstr "Kies"
-
-#: views/maps.php:207
-msgid "Filter by descendants"
-msgstr "Filter afstammelingen"
-
-#: views/maps.php:280
-msgid "Filter by ancestors"
-msgstr "Filter voorouders"
-
-#: views/maps.php:310
+#: views/maps.php:94 views/maps.php:325
 msgid "Find location on the map"
 msgstr "Zoek een plaats op de kaart"
 
-#: views/maps.php:351
+#: views/maps.php:152
+msgid "Display births until: "
+msgstr "Toon geboorten tot: "
+
+#: views/maps.php:154
+msgid "Display deaths until: "
+msgstr "Toon overlijden tot: "
+
+#: views/maps.php:176 views/maps.php:190
+msgid "Filter by specific family name(s)"
+msgstr "Filter specifieke achternamen"
+
+#: views/maps.php:194
+msgid "Mark checkbox next to name(s)"
+msgstr "Vink hokje(s) voor de namen aan"
+
+#: views/maps.php:209
+msgid "Choose"
+msgstr "Kies"
+
+#: views/maps.php:223
+msgid "Filter by descendants"
+msgstr "Filter afstammelingen"
+
+#: views/maps.php:295
+msgid "Filter by ancestors"
+msgstr "Filter voorouders"
+
+#: views/maps.php:355
 msgid "Mapping with specific name(s): "
 msgstr "Alleen deze namen worden nu gemarkeerd: "
 
-#: views/maps.php:352
+#: views/maps.php:356
 msgid "Switch name filter off"
 msgstr "Naam filter uitzetten"
 
-#: views/maps.php:360
+#: views/maps.php:364
 msgid "Filter by descendants of: "
 msgstr "Alleen afstammelingen van: "
 
-#: views/maps.php:360
+#: views/maps.php:364
 msgid "Switch descendant filter off"
 msgstr "Afstammelingen filter uitzetten"
 
-#: views/maps.php:362
+#: views/maps.php:366
 msgid "No known birth places amongst descendants"
 msgstr "Er zijn geen geboorteplaatsen van afstammelingen bekend"
 
-#: views/maps.php:371
+#: views/maps.php:375
 msgid "Filter by ancestors of: "
 msgstr "Filter voorouders van: "
 
-#: views/maps.php:371
+#: views/maps.php:375
 msgid "Switch ancestor filter off"
 msgstr "Schakel afstammelingen filter uit"
 
-#: views/maps.php:373
+#: views/maps.php:377
 msgid "No known birth places amongst ancestors"
 msgstr "Geen geboorteplaatsen bij voorouders"
 
-#: views/maps.php:412
+#: views/maps.php:414
 msgid "Filter by descendants of a person"
 msgstr "Toon afstammelingen van een persoon"
 
-#: views/maps.php:413 views/maps.php:545
+#: views/maps.php:415 views/maps.php:547
 msgid "Pick a name or enter ID:"
 msgstr "Kies een naam of voer ID in:"
 
-#: views/maps.php:416 views/maps.php:548
+#: views/maps.php:418 views/maps.php:550
 msgid "Pick a name from the pulldown list"
 msgstr "Kies een naam uit de lijst"
 
-#: views/maps.php:544
+#: views/maps.php:546
 msgid "Filter by ancestors of a person"
 msgstr "Filter voorouders van een persoon"
 
-#: views/maps.php:874
+#: views/maps.php:893
 msgid "today "
 msgstr "vandaag "
 
-#: views/maps.php:960
+#: views/maps.php:979
 msgid "Location: "
 msgstr "Plaats: "
 
-#: views/maps.php:962
+#: views/maps.php:981
 msgid "For a list of persons born here until "
 msgstr "Voor een lijst van personen geboren tot "
 
-#: views/maps.php:964
+#: views/maps.php:983
 msgid "For a list of all people that died here until "
 msgstr "Voor een lijst met alle personen die zijn overleden tot "
 
-#: views/maps.php:966
+#: views/maps.php:985
 msgid " click here"
 msgstr " klik hier"
 
-#: views/maps.php:967
+#: views/maps.php:986
 msgid "Read about this location in "
 msgstr "Lees over deze plaats in "
 
@@ -10566,35 +10567,3 @@ msgstr "Selecteer een thema"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Standaard-kleuren"
-
-#~ msgid "The locationlist has been refreshed."
-#~ msgstr "De locatielijst is bijgewerkt."
-
-#~ msgid ""
-#~ "Refresh the location list to display a proper functional \"Find a "
-#~ "location on the map\" list."
-#~ msgstr ""
-#~ "Vernieuw de locatielijst om een goed functionerende \"Zoek een locatie op "
-#~ "de kaart\" lijst weer te geven."
-
-#~ msgid ""
-#~ "Also delete all locations that have become obsolete (not connected to any "
-#~ "persons anymore)."
-#~ msgstr ""
-#~ "Verwijder ook de locaties die niet meer gebruikt worden (niet meer aan "
-#~ "personen gekoppeld)."
-
-#~ msgid "Refresh"
-#~ msgstr "Verversen"
-
-#~ msgid "Error"
-#~ msgstr "Fout"
-
-#~ msgid "Retry"
-#~ msgstr "Nogmaals"
-
-#~ msgid "Notice"
-#~ msgstr "Opmerking"
-
-#~ msgid "Success"
-#~ msgstr "Success"
