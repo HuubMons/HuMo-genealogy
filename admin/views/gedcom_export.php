@@ -368,7 +368,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <?php
                 $selected = '';
                 if (isset($_POST['gedcom_version']) and $_POST['gedcom_version'] == '70') {
-                    $selected = ' selected';
+                    $selected = 'selected';
 
                     // *** GEDCOM 7.0 is selected, always use UTF-8 character set ***
                     $_POST['gedcom_char_set'] = 'UTF-8';

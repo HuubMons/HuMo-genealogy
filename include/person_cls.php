@@ -2002,32 +2002,6 @@ $own_code=0;
                     $temp = "born_add";
                 }
 
-                // *** Birth declaration/ registration ***
-                if ($personDb->pers_gedcomnumber) {
-                    $text_array = witness($personDb->pers_gedcomnumber, 'birth_declaration');
-                    if ($text_array) {
-                        if ($temp) {
-                            $templ_person[$temp] .= ' ';
-                        }
-                        $templ_person["born_witn"] = '(' . __('birth declaration') . ': ' . $text_array['text'];
-                        $temp = "born_witn";
-                        $text .= ' ' . $templ_person["born_witn"];
-                        if (isset($text_array['source'])) {
-                            $templ_person["born_witn_source"] = $text_array['source'];
-                            $temp = "born_witn_source";
-
-                            // *** Extra item, so it's possible to add a comma or space ***
-                            $templ_person["born_witn_add"] = '';
-                            $temp = "born_witn_add";
-
-                            $text .= $text_array['source'];
-                        }
-                        //$templ_person["born_witn"].=')';
-                        $templ_person[$temp] .= ')';
-                        $text .= ')';
-                    }
-                }
-
                 // *** Check for birth items, if needed use a new line ***
                 if ($text) {
                     if (!$temp_previous || $data["family_expanded"] != 'compact') {
@@ -2047,10 +2021,59 @@ $own_code=0;
                             $text = ', ' . $text;
                         }
                     }
-
                     $process_text .= $text;
                 }
 
+                // ***************************************
+                // *** BIRTH Declaration/ registration ***
+                // ***************************************
+                $text = '';
+                $temp_previous = $temp;
+                
+                if ($personDb->pers_gedcomnumber) {
+                    $text_array = witness($personDb->pers_gedcomnumber, 'birth_declaration');
+                    if ($text_array) {
+                        if ($temp) {
+                            $templ_person[$temp] .= ' ';
+                        }
+                        $templ_person["birth_declaration"] = $text_array['text'];
+                        $temp = "birth_declaration";
+                        $text .= ' ' . $templ_person["birth_declaration"];
+                        if (isset($text_array['source'])) {
+                            $templ_person["birth_declaration_source"] = $text_array['source'];
+                            $temp = "birth_declaration";
+
+                            // *** Extra item, so it's possible to add a comma or space ***
+                            $templ_person["birth_declaration_add"] = '';
+                            $temp = "birth_declaration_add";
+
+                            $text .= $text_array['source'];
+                        }
+                    }
+                }
+
+                // *** Check for birth declaration items, if needed use a new line ***
+                if ($text) {
+                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
+                        $templ_person["birth_declaration_start"] = ucfirst(__('birth declaration')) . ' ';
+                        $text = '<b>' . ucfirst(__('birth declaration')) . '</b> ' . $text;
+                    } else {
+                        $templ_person["birth_declaration_start"] = __('birth declaration') . ' ';
+                        $text = '<b>' . __('birth declaration') . '</b> ' . $text;
+                    }
+
+                    if ($temp_previous) {
+                        if ($data["family_expanded"] != 'compact') {
+                            $templ_person[$temp_previous] .= '.';
+                            $text = '.<br>' . $text;
+                        } else {
+                            $templ_person[$temp_previous] .= ', ';
+                            $text = ', ' . $text;
+                        }
+                    }
+
+                    $process_text .= $text;
+                }
 
                 // ***************
                 // *** BAPTISE ***
@@ -2101,13 +2124,6 @@ $own_code=0;
 
                 // *** Show baptise witnesses ***
                 if ($personDb->pers_gedcomnumber) {
-                    //$temp_text=witness($personDb->pers_gedcomnumber, 'baptism_witness');
-                    //if ($temp_text){
-                    //	if($temp) { $templ_person[$temp].=" ("; }
-                    //	$templ_person["bapt_witn"]=__('baptism witness').': '.$temp_text.')';
-                    //	$temp="bapt_witn";
-                    //	$text.= ' ('.__('baptism witness').': '.$temp_text.')';
-                    //}
                     $text_array = witness($personDb->pers_gedcomnumber, 'baptism_witness');
                     if ($text_array) {
                         if ($temp) {
@@ -2134,14 +2150,6 @@ $own_code=0;
 
                 // *** Geneanet/Geneweb godfather/ doopheffer ***
                 if ($personDb->pers_gedcomnumber) {
-                    //$temp_text=witness($personDb->pers_gedcomnumber, 'godfather');
-                    //if ($temp_text){
-                    //	if($temp) { $templ_person[$temp].=" ("; }
-                    //	$templ_person["godfather"]=_('godfather').': '.$temp_text.')';
-                    //	$temp="godfather";
-                    //	$text.= ' ('.__('godfather').': '.$temp_text.')';
-                    //}
-                    // AUG 2022: NOT TESTED YET!!
                     $text_array = witness($personDb->pers_gedcomnumber, 'godfather');
                     if ($text_array) {
                         if ($temp) {
@@ -2320,39 +2328,6 @@ $own_code=0;
                     $temp = "dead_add";
                 }
 
-                // *** Death declaration ***
-                if ($personDb->pers_gedcomnumber) {
-                    //$temp_text=witness($personDb->pers_gedcomnumber, 'death_declaration');
-                    //if ($temp_text){
-                    //	if ($temp) { $templ_person[$temp].=" ("; }
-                    //	$templ_person["dead_witn"]= __('death declaration').': '.$temp_text.')';
-                    //	$temp="dead_witn";
-                    //	$text.= ' ('.__('death declaration').': '.$temp_text.')';
-                    //}
-                    $text_array = witness($personDb->pers_gedcomnumber, 'death_declaration');
-                    if ($text_array) {
-                        if ($temp) {
-                            $templ_person[$temp] .= ' ';
-                        }
-                        $templ_person["dead_witn"] = '(' . __('death declaration') . ': ' . $text_array['text'];
-                        $temp = "dead_witn";
-                        $text .= ' ' . $templ_person["dead_witn"];
-                        if (isset($text_array['source'])) {
-                            $templ_person["dead_witn_source"] = $text_array['source'];
-                            $temp = "dead_witn_source";
-
-                            // *** Extra item, so it's possible to add a comma or space ***
-                            $templ_person["dead_witn_add"] = '';
-                            $temp = "dead_witn_add";
-
-                            $text .= $text_array['source'];
-                        }
-                        //$templ_person["dead_witn"].=')';
-                        $templ_person[$temp] .= ')';
-                        $text .= ')';
-                    }
-                }
-
                 // *** Check for death items, if needed use a new line ***
                 if ($text) {
                     if (!$temp_previous || $data["family_expanded"] != 'compact') {
@@ -2361,6 +2336,57 @@ $own_code=0;
                     } else {
                         $templ_person["dead_start"] = __('died') . ' ';
                         $text = '<b>' . __('died') . '</b> ' . $text;
+                    }
+
+                    if ($temp_previous) {
+                        if ($data["family_expanded"] != 'compact') {
+                            $templ_person[$temp_previous] .= '.';
+                            $text = '.<br>' . $text;
+                        } else {
+                            $templ_person[$temp_previous] .= ', ';
+                            $text = ', ' . $text;
+                        }
+                    }
+
+                    $process_text .= $text;
+                }
+
+                // *************************
+                // *** Death declaration ***
+                // *************************
+                $text = '';
+                $temp_previous = $temp;
+
+                if ($personDb->pers_gedcomnumber) {
+                    $text_array = witness($personDb->pers_gedcomnumber, 'death_declaration');
+                    if ($text_array) {
+                        if ($temp) {
+                            $templ_person[$temp] .= ' ';
+                        }
+                        $templ_person["death_declaration_witn"] = $text_array['text'];
+                        $temp = "death_declaration_witn";
+                        $text .= ' ' . $templ_person["death_declaration_witn"];
+                        if (isset($text_array['source'])) {
+                            $templ_person["death_declaration_source"] = $text_array['source'];
+                            $temp = "death_declaration_source";
+
+                            // *** Extra item, so it's possible to add a comma or space ***
+                            $templ_person["death_declaration_add"] = '';
+                            $temp = "death_declaration_add";
+
+                            $text .= $text_array['source'];
+                        }
+                    }
+                }
+
+                // *** Check for death declaration items, if needed use a new line ***
+                if ($text) {
+                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
+                        $templ_person["death_declaration_start"] = ucfirst(__('death declaration')) . ' ';
+                        $text = '<b>' . ucfirst(__('death declaration')) . '</b> ' . $text;
+                    } else {
+                        $templ_person["death_declaration_start"] = __('death declaration') . ' ';
+                        $text = '<b>' . __('death declaration') . '</b> ' . $text;
                     }
 
                     if ($temp_previous) {

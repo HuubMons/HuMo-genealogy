@@ -465,7 +465,7 @@ if (isset($_POST['event_id'])) {
                     $event_changed = true;
                 }
             }
-            if ($_POST["event_place" . $key] != $eventDb->event_place) {
+            if (isset($_POST["event_place" . $key]) && $_POST["event_place" . $key] != $eventDb->event_place) {
                 $event_changed = true;
             }
             if (isset($_POST["event_gedcom"][$key]) && $_POST["event_gedcom"][$key] != $eventDb->event_gedcom) {
@@ -479,9 +479,16 @@ if (isset($_POST['event_id'])) {
                 $sql = "UPDATE humo_events SET
                     event_event='" . $event_event . "',
                     event_connect_kind2='" . $event_connect_kind2 . "',
-                    event_connect_id2='" . $event_connect_id2 . "',
-                    event_date='" . $editor_cls->date_process("event_date", $key) . "',
-                    event_place='" . $editor_cls->text_process($_POST["event_place" . $key]) . "',";
+                    event_connect_id2='" . $event_connect_id2 . "',";
+
+                if (isset($_POST["event_date"][$key])) {
+                    $sql .= "event_date='" . $editor_cls->date_process("event_date", $key) . "',";
+                }
+
+                if (isset($_POST["event_place"][$key])) {
+                    $sql .= "event_place='" . $editor_cls->text_process($_POST["event_place" . $key]) . "',";
+                }
+
                 if (isset($_POST["event_gedcom"][$key])) {
                     $sql .= "event_gedcom='" . $editor_cls->text_process($_POST["event_gedcom"][$key]) . "',";
                 }

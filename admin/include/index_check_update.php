@@ -175,33 +175,33 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
 
         // *** Copy HuMo-genealogy to server using file_get_contents ***
         /*
-                if (!file_exists('update/temp_update_check.php')){
-                    $source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_version;
-                    $update_file='update/temp_update_check.php';
+        if (!file_exists('update/temp_update_check.php')){
+            $source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_version;
+            $update_file='update/temp_update_check.php';
 
-                    $content = @file_get_contents($source);
-                    //if ($content === false) {
-                    //	$this->_log->addError(sprintf('Could not download update "%s"!', $updateUrl));
-                    //	return false;
-                    //}
+            $content = @file_get_contents($source);
+            //if ($content === false) {
+            //	$this->_log->addError(sprintf('Could not download update "%s"!', $updateUrl));
+            //	return false;
+            //}
 
-                    // *** Open file ***
-                    $handle = fopen($update_file, 'w');
-                    //if (!$handle) {
-                    //	$this->_log->addError(sprintf('Could not open file handle to save update to "%s"!', $updateFile));
-                    //	return false;
-                    //}
+            // *** Open file ***
+            $handle = fopen($update_file, 'w');
+            //if (!$handle) {
+            //	$this->_log->addError(sprintf('Could not open file handle to save update to "%s"!', $updateFile));
+            //	return false;
+            //}
 
-                    // *** Copy file ***
-                    if (!fwrite($handle, $content)) {
-                    //	$this->_log->addError(sprintf('Could not write update to file "%s"!', $updateFile));
-                    //	fclose($handle);
-                    //	return false;
-                    }
+            // *** Copy file ***
+            if (!fwrite($handle, $content)) {
+            //	$this->_log->addError(sprintf('Could not write update to file "%s"!', $updateFile));
+            //	fclose($handle);
+            //	return false;
+            }
 
-                    fclose($handle);
-                }
-                */
+            fclose($handle);
+        }
+        */
 
         // *** Copy HuMo-genealogy to server using copy ***
         // DISABLED BECAUSE MOST PROVIDERS BLOCK THIS COPY FUNCTION FOR OTHER WEBSITES...

@@ -1182,6 +1182,7 @@
                 </span>
             </td>
         </tr>
+
         <?php
         // *** Death Declaration ***
         if ($editor['add_person'] == false) {

@@ -100,6 +100,7 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
 
         // **** Temporary update scripts ***
         // *** Restore update problem generate in version 6.4.1 (accidently changed family into person) ***
+        /*
         $eventsql = "UPDATE humo_events SET event_connect_kind='family' WHERE event_kind='marriage_witness' OR event_kind='marriage_witness_rel'";
         $dbh->query($eventsql);
 
@@ -133,6 +134,7 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
         if ($temp->rowCount()) {
             $dbh->query("DROP TABLE humo_no_location");
         }
+        */
 
 
         $show_menu_left = true;

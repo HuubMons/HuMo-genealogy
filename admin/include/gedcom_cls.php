@@ -1416,12 +1416,12 @@ class gedcom_cls
             //  2 TYPE INDI
             //  2 RELA birth registration
 
-            // Aldfaer baptise registration (by person who did registration)
+            // Aldfaer baptise
             //  1 ASSO @I1281@
             //  2 TYPE INDI
             //  2 RELA baptize
 
-            //  Aldfaer
+            //  Aldfaer death registration (by person who did the registration)
             //  1 ASSO @I1281@
             //  2 TYPE INDI
             //  2 RELA death registration
@@ -2214,6 +2214,84 @@ class gedcom_cls
                         $event['gedcom'][$event_nr] = substr($buffer, 7) . ":";
                     }
                 }
+
+
+
+                // *** Sept. 2024: Aldfaer GEDCOM 7 ***
+                // 1 EVEN
+                // 2 TYPE birth registration
+                // 2 DATE 2 JAN 1980
+                // 2 SOUR @S5@
+                // 2 _OBJE
+                // 3 FILE 0d0d3dfdf7eb5ec8d94609dc49079b2a.jpg
+                // 2 ASSO @I4@
+                // 3 ROLE OFFICIATOR
+                // 2 ASSO @I3@
+                // 3 ROLE WITN
+                // 2 ASSO @I5@
+                // 3 ROLE OTHER
+                // 4 PHRASE informant
+                /*
+                // TODO: probably need a new event in table for every witness (use seperate array $event3).
+                if ($buffer6 === '2 ASSO') {
+                    //$processed = 1;
+                    //$event_nr++;
+                    //$calculated_event_id++;
+                    //$event['connect_kind'][$event_nr] = 'person';
+                    // Database example
+                    // Field: event_connect_id = I1 (main person)
+                    // Field: event_connect_id2 = I2012 (witness)
+                    //$event['connect_id'][$event_nr] = substr($buffer, 8, -1);
+                    //$event['connect_kind2'][$event_nr] = 'person';
+                    //$event['connect_id2'][$event_nr] = $pers_gedcomnumber;
+
+                    if (substr($buffer, 7, 1) === '@') {
+                        // 2 WITN @I1@
+                        // *** For now: only add connected person if there isn't allready a person connected ***
+                        // Otherwise it's another ROLE, not in use yet.
+                        if (!$event['connect_id2'][$event_nr]) {
+                            // TODO maybe add this field if ASSO is read. So it's possible to use this field to check for processing.
+                            $event['connect_kind2'][$event_nr] = 'person';
+                            $event['connect_id2'][$event_nr] = substr($buffer, 8, -1);
+                        }
+                    } else {
+                        // 2 WITN Doopgetuige1//
+                        $event['event'][$event_nr] = substr($buffer, 7);
+                    }
+
+                    //$event['kind'][$event_nr] = 'witness';
+                    //$event['event'][$event_nr] = '';
+                    //$event['event_extra'][$event_nr] = '';
+                    //$event['gedcom'][$event_nr] = 'ASSO';
+                    //$event['date'][$event_nr] = '';
+                    //$event['text'][$event_nr] = '';
+                    //$event['place'][$event_nr] = '';
+                }
+                // *** Officiator not in use yet, reset connected person ***
+                if ($buffer == '3 ROLE OFFICIATOR') {
+                    //$processed = 1;
+                    //$event['kind'][$event_nr] = 'officiator';
+                    //$event['connect_kind2'][$event_nr] = '';
+                    //$event['connect_id2'][$event_nr] = '';
+                }
+
+                if ($buffer == '3 ROLE WITN') {
+                    $processed = 1;
+                    //$event['kind'][$event_nr] = 'birth_declaration';
+                }
+
+                // *** Informant not in use yet, reset connected person ***
+                if ($buffer == '3 ROLE OTHER') {
+                    $processed = 1;
+                    //$event['connect_kind2'][$event_nr] = '';
+                    //$event['connect_id2'][$event_nr] = '';
+                }
+                if ($buffer == '4 PHRASE informant') {
+                    //$processed = 1;
+                }
+                */
+
+
 
                 if ($buffer6 === '2 DATE') {
                     $processed = 1;

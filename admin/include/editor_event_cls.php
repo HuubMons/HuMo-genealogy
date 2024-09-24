@@ -1458,12 +1458,14 @@ class editor_event_cls
                         <?php } ?>
 
                         <!-- Date and place by event -->
-                        <div class="row mb-2">
-                            <label for="event_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
-                            <div class="col-md-7">
-                                <?php $editor_cls->date_show($data_listDb->event_date, 'event_date', "[$data_listDb->event_id]"); ?>
+                        <?php if ($event_kind != 'baptism_witness' && $event_kind != 'burial_witness' && $event_kind != 'marriage_witness' && $event_kind != 'marriage_witness_rel') { ?>
+                            <div class="row mb-2">
+                                <label for="event_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($data_listDb->event_date, 'event_date', "[$data_listDb->event_id]"); ?>
+                                </div>
                             </div>
-                        </div>
+                        <?php } ?>
 
                         <!-- To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id -->
                         <?php
@@ -1475,15 +1477,17 @@ class editor_event_cls
                             $form = 3;
                         }
                         ?>
-                        <div class="row mb-2">
-                            <label for="event_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
-                            <div class="col-md-7">
-                                <div class="input-group">
-                                    <input type="text" name="event_place<?= $data_listDb->event_id; ?>" value="<?= $data_listDb->event_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=event_place&amp;event_id=<?= $data_listDb->event_id; ?>","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                        <?php if ($event_kind != 'baptism_witness' && $event_kind != 'burial_witness' && $event_kind != 'marriage_witness' && $event_kind != 'marriage_witness_rel') { ?>
+                            <div class="row mb-2">
+                                <label for="event_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <input type="text" name="event_place<?= $data_listDb->event_id; ?>" value="<?= $data_listDb->event_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=event_place&amp;event_id=<?= $data_listDb->event_id; ?>","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php } ?>
 
                         <?php
                         // *** Text by event ***

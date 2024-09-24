@@ -333,7 +333,6 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             }
             // PMB if 'minimal' option selected don't export this
             if ($_POST['export_type'] == 'normal') {
-
                 if ($gedcom_sources == 'yes') {
                     sources_export('person', 'pers_birth_source', $person->pers_gedcomnumber, 2);
                 }
@@ -348,10 +347,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // *** New sept. 2023 ***
                 // *** Remark: only exported if there is another birth item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
+                // TODO 2024: check this. Should be connected to event declaration.
                 $buffer .= export_witnesses('person', $person->pers_gedcomnumber, 'birth_declaration');
             }
-            // PMB end of if 'minimal' option selected don't export this
-
         }
 
         // *** Christened data ***
@@ -414,6 +412,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // *** Remark: only exported if there is another baptism item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
+                // TODO 2024: check this. Should be connected to event declaration.
                 $buffer .= export_witnesses('person', $person->pers_gedcomnumber, 'death_declaration');
             }
             // PMB end of if 'minimal' option selected don't export this			
