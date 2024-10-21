@@ -44,7 +44,44 @@ if (isset($tree_id) && $tree_id) {
 }
 
 $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "' ORDER BY IF (source_title!='',source_title,source_text)");
+
+// TODO move JS to other script.
+// *** Script to expand and collapse source items ***
+echo '
+    <script>
+    function hideShow(el_id){
+        // *** Hide or show item ***
+        var arr = document.getElementsByClassName(\'row\'+el_id);
+        for (i=0; i<arr.length; i++){
+            if(arr[i].style.display!="none"){
+                arr[i].style.display="none";
+            }else{
+                arr[i].style.display="";
+            }
+        }
+    }
+    </script>';
+
+// TODO: this is a temporary copy of script in views/editor.php.
+include_once(__DIR__ . "/../../include/language_date.php");
+include_once(__DIR__ . "/../../include/date_place.php");
+// TODO: this is a temporary copy of script in views/editor.php.
+function hideshow_date_place($hideshow_date, $hideshow_place)
+{
+    // *** If date ends with ! then date isn't valid. Show red line ***
+    $check_date = false;
+    if (isset($hideshow_date) && substr($hideshow_date, -1) === '!') {
+        $check_date = true;
+        $hideshow_date = substr($hideshow_date, 0, -1);
+    }
+    $text = date_place($hideshow_date, $hideshow_place);
+    if ($check_date) {
+        $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
+    }
+    return $text;
+}
 ?>
+
 
 <h1 class="center"><?= __('Sources'); ?></h1>
 <?= __('These sources can be connected to multiple persons, families, events and other items.'); ?>

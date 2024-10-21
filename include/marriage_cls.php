@@ -316,19 +316,13 @@ class marriage_cls
         }
         // *** Aldfaer/ HuMo-genealogy: show witnesses ***
         if ($marriageDb->fam_gedcomnumber) {
-            //$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness','family');
-            //if ($temp_text2){
-            //	$temp_text.= ' ('.__('marriage witness').' '.$temp_text2.')';
-            //	if($temp) { $templ_relation[$temp].=" ("; }
-            //	$templ_relation["wedd_witn"]= __('marriage witness').' '.$temp_text2.')';
-            //	$temp="wedd_witn";
-            //}
-            $text_array = witness($marriageDb->fam_gedcomnumber, 'marriage_witness', 'family');
+            $text_array = witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR');
             if ($text_array) {
                 if ($temp) {
                     $templ_relation[$temp] .= ' ';
                 }
-                $templ_relation["wedd_witn"] = '(' . __('marriage witness') . ': ' . $text_array['text'];
+                //$templ_relation["wedd_witn"] = '(' . __('marriage witness') . ': ' . $text_array['text'];
+                $templ_relation["wedd_witn"] = $text_array['text'];
                 $temp = "wedd_witn";
                 $temp_text .= ' ' . $templ_relation["wedd_witn"];
                 if (isset($text_array['source'])) {
@@ -341,9 +335,8 @@ class marriage_cls
 
                     $temp_text .= $text_array['source'];
                 }
-                //$templ_relation["wedd_witn"].=')';
-                $templ_relation[$temp] .= ')';
-                $temp_text .= ')';
+                //$templ_relation[$temp] .= ')';
+                //$temp_text .= ')';
             }
         }
 
@@ -490,19 +483,13 @@ class marriage_cls
         }
         // *** Aldfaer/ HuMo-genealogy show witnesses ***
         if ($marriageDb->fam_gedcomnumber) {
-            //$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness_rel','family');
-            //if ($temp_text2){
-            //	$temp_text.= ' ('.__('marriage witness (religious)').' '.$temp_text2.')';
-            //	if($temp) { $templ_relation[$temp].=" ("; }
-            //	$templ_relation["chur_witn"]=__('marriage witness (religious)').' '.$temp_text2.')';
-            //	$temp="chur_witn";
-            //}
-            $text_array = witness($marriageDb->fam_gedcomnumber, 'marriage_witness_rel', 'family');
+            $text_array = witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR_REL');
             if ($text_array) {
                 if ($temp) {
                     $templ_relation[$temp] .= ' ';
                 }
-                $templ_relation["chur_witn"] = '(' . __('marriage witness (religious)') . ': ' . $text_array['text'];
+                //$templ_relation["chur_witn"] = '(' . __('marriage witness (religious)') . ': ' . $text_array['text'];
+                $templ_relation["chur_witn"] = $text_array['text'];
                 $temp = "chur_witn";
                 $temp_text .= ' ' . $templ_relation["chur_witn"];
                 if (isset($text_array['source'])) {
@@ -515,9 +502,8 @@ class marriage_cls
 
                     $temp_text .= $text_array['source'];
                 }
-                //$templ_relation["chur_witn"].=')';
-                $templ_relation[$temp] .= ')';
-                $temp_text .= ')';
+                //$templ_relation[$temp] .= ')';
+                //$temp_text .= ')';
             }
         }
 

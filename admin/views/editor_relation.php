@@ -516,7 +516,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     ?>
                     <?= hideshow_editor($hideshow, $hideshow_text, $fam_marr_text); ?>
 
-                    <input type="submit" name="add_marriage_witness" value="<?= __('marriage witness'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+                    <input type="submit" name="add_marriage_witness" value="<?= __('witness') . ' - ' . __('officiator'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
@@ -630,7 +630,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             <?php
             // *** Marriage Witness ***
-            echo $event_cls->show_event('family', $marriage, 'marriage_witness');
+            echo $event_cls->show_event('MARR', $marriage, 'ASSO');
 
             // *** Religious marriage notice ***
             // *** Use hideshow to show and hide the editor lines ***
@@ -730,7 +730,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     ?>
                     <?= hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_text); ?>
 
-                    <input type="submit" name="add_marriage_witness_rel" value="<?= __('marriage witness (religious)'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+                    <input type="submit" name="add_marriage_witness_rel" value="<?= __('witness') . ' - ' . __('clergy'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
@@ -784,7 +784,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             <?php
             // *** Marriage Witness (church) ***
-            echo $event_cls->show_event('family', $marriage, 'marriage_witness_rel');
+            echo $event_cls->show_event('MARR_REL', $marriage, 'ASSO');
             ?>
 
             <!-- Religion -->

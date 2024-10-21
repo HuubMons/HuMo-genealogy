@@ -3880,7 +3880,7 @@ class update_cls
             <td style="background-color:#00FF00"><?= __('Update in progress...'); ?><div id="information v6_7_2" style="display: inline; font-weight:bold;"></div>
             </td>
         </tr>
-<?php
+        <?php
         //ob_flush();
         flush();
 
@@ -4002,8 +4002,6 @@ class update_cls
         flush();
     }
 
-
-/*
     public function update_v6_7_9($dbh): void
     {
         // **************************************
@@ -4021,9 +4019,6 @@ class update_cls
 <?php
         //ob_flush();
         flush();
-
-
-        // >>>>>>>>>>> THIS update: there is a temporary update in admin/index.php line 103:
 
         // *** Restore update problem generate in version 6.4.1 (accidently changed family into person) ***
         $eventsql = "UPDATE humo_events SET event_connect_kind='family' WHERE event_kind='marriage_witness' OR event_kind='marriage_witness_rel'";
@@ -4061,71 +4056,75 @@ class update_cls
         }
 
 
+
+
+        // *** Change witnesses because of multiple kind of ASSO/ witnesses in GEDCOM 7 ***
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='CHR', event_gedcom='WITN' WHERE event_kind='baptism_witness'");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='BURI', event_gedcom='WITN' WHERE event_kind='burial_witness'");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='MARR', event_gedcom='WITN' WHERE event_kind='marriage_witness'");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='MARR_REL', event_gedcom='WITN' WHERE event_kind='marriage_witness_rel'");
+
         // *** Change birth_declaration into birth_decl_witness ***
-
         // *** ONLY convert to birth_decl_witness if event_connect_kind2 is a person ***
-        $dbh->query("UPDATE humo_events SET event_kind='birth_decl_witness' WHERE event_kind='birth_declaration' AND event_connect_kind2='person'");
-
-        $dbh->query("UPDATE humo_events SET event_kind='death_decl_witness' WHERE event_kind='death_declaration' AND event_connect_kind2='person'");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='birth_declaration', event_gedcom='WITN' WHERE event_kind='birth_declaration' AND (event_connect_kind2='person' OR event_event LIKE '_%')");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='death_declaration', event_gedcom='WITN' WHERE event_kind='death_declaration' AND (event_connect_kind2='person' OR event_event LIKE '_%')");
 
         // *** Add seperate general birth_declaration and death_declaration events ***
-
-        // Also check or text?
-
         // *** Only convert declaration events where witness is connected ***
-        $sql = "SELECT * from humo_events WHERE (event_kind='birth_decl_witness' OR event_kind='death_decl_witness') AND event_order='1' AND (event_date IS NOT NULL OR event_place IS NOT NULL)";
+        $sql = "SELECT * from humo_events WHERE (event_connect_kind='birth_declaration' OR event_connect_kind='death_declaration') AND event_order='1'";
         $qry = $dbh->query($sql);
 
         // *** Batch processing ***
         $dbh->beginTransaction();
 
+        // Maybe also check for source
+        // Maybe connect birth_decl_witness and death_decl_witness to event instead of person. Processing needs to be changed then.
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            if ($event_date || $event_place){
-                $event_kind='birth_declaration';
-                if ($qryDb->event_kind=='death_decl_witness'){
-                    $event_kind='death_declaration';
-                }
-
+            if ($qryDb->event_date || $qryDb->event_place || $qryDb->event_text) {
                 $sql_put = "INSERT INTO humo_events SET
-                event_tree_id='" . $qryDb->tree_id . "',
-
-                event_gedcomnr='" . $qryDb->event_gedcomnr . "',
-
+                event_tree_id='" . $qryDb->event_tree_id . "',
+                event_gedcomnr='',
                 event_order='" . $qryDb->event_order . "',
-                event_connect_kind='" . $qryDb->event_connect_kind . "',
+                event_connect_kind='person',
                 event_connect_id='" . $qryDb->event_connect_id . "',
-                event_kind='" . $event_kind . "',
-
-                event_event='" . safe_text_db($qryDb->event_event) . "',
+                event_kind='" . $qryDb->event_connect_kind . "',
+                event_event='',
                 event_event_extra='" . safe_text_db($qryDb->event_event_extra) . "',
-
                 event_gedcom='EVEN',
                 event_date='" . $qryDb->event_date . "',
                 event_place='" . safe_text_db($qryDb->event_place) . "',
                 event_text='" . safe_text_db($qryDb->event_text) . "',
                 event_quality='" . $qryDb->event_quality . "',
-                event_new_date='" . $qryDb->event_new_date . "',
-                event_new_time='" . $qryDb->event_new_time . "',
-                event_changed_date='" . $qryDb->event_changed_date . "',
-                event_changed_time='" . $qryDb->event_changed_time . "'";
-                $dbh->query($sql_put);
+                event_new_user_id='" . $qryDb->event_new_user_id . "',
+                event_new_datetime='" . $qryDb->event_new_datetime . "',
+                event_changed_user_id='" . $qryDb->event_changed_user_id . "',
+                event_changed_datetime='" . $qryDb->event_changed_datetime . "'";
 
+                $dbh->query($sql_put);
+                $last_insert = $dbh->lastInsertId();
 
                 // *** Update sources connected to these events connections ***
-                $dbh->query("UPDATE humo_connections SET connect_connect_id='".$dbh->lastInsertId()."' WHERE connect_connect_id='".$qryDb->event_id."'");
+                $dbh->query("UPDATE humo_connections SET connect_connect_id='" . $last_insert . "' WHERE connect_connect_id='" . $qryDb->event_id . "'");
             }
         }
 
         // *** Commit data in database ***
         $dbh->commit();
 
-
+        // *** Update for godfather events ***
+        $sql = "SELECT * from humo_events WHERE event_kind='godfather'";
+        $qry = $dbh->query($sql);
+        while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
+            $eventsql = "UPDATE humo_events SET
+                event_connect_kind2='person',
+                event_connect_id2='" . substr($qryDb->event_event, 1, -1) . "',
+                event_event=''
+                WHERE event_id= '" . $qryDb->event_id . "'";
+            $dbh->query($eventsql);
+        }
 
         // *** Update "update_status" ***
         $dbh->query("UPDATE humo_settings SET setting_value='18' WHERE setting_variable='update_status'");
-
-        // *** Commit data in database ***
-        //$dbh->commit();
 
         // *** Show status of database update ***
         //ob_start();
@@ -4134,13 +4133,9 @@ class update_cls
         flush();
     }
 
-*/
 
 
-
-
-
-    // Next update(s): remove some old datafields.
+    // Future update(s): remove some old datafields.
 
 
     /*	*** UPDATE REMARKS ***

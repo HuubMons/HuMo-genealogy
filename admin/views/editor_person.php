@@ -665,8 +665,6 @@
                 ?>
                 <?= hideshow_editor($hideshow, $hideshow_text, $pers_birth_text); ?>
 
-                <input type="submit" name="add_birth_declaration" value="<?= __('birth declaration'); ?>" class="btn btn-sm btn-outline-primary ms-4">
-
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
                         <label for="pers_birth_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
@@ -725,10 +723,102 @@
         </tr>
 
         <?php
+        // *** Sep. 2024: using seperate birth declaration lines ***
+        // *** Use hideshow to show and hide the editor lines ***
+        $hideshow = '201';
+        // *** If items are missing show all editor fields ***
+        $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
+        $sql = "SELECT * FROM humo_events WHERE event_tree_id = '" . $tree_id . "' AND event_kind = 'birth_declaration' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
+        $result = $dbh->query($sql);
+        if ($result->rowCount() > 0) {
+            $birth_declDb = $result->fetch(PDO::FETCH_OBJ);
+            $birth_decl_id = $birth_declDb->event_id;
+            $birth_decl_date = $birth_declDb->event_date;
+            $birth_decl_place = $birth_declDb->event_place;
+            $birth_decl_text = $birth_declDb->event_text;
+        } else {
+            $birth_decl_id = '';
+            $birth_decl_date = "";
+            $birth_decl_place = "";
+            $birth_decl_text = "";
+        }
+        ?>
+        <tr>
+            <td><a name="birth_declaration"></a>
+                <?= ucfirst(__('birth declaration')); ?>
+
+                <input type="hidden" name="birth_decl_id" value="<?= $birth_decl_id; ?>">
+            </td>
+            <td colspan="2">
+
+                <?php
+                $hideshow_text = hideshow_date_place($birth_decl_date, $birth_decl_place);
+                if ($pers_gedcomnumber) {
+                    $check_sources_text = check_sources('birth_decl', 'birth_decl_source', $pers_gedcomnumber);
+                    $hideshow_text .= $check_sources_text;
+                }
+                ?>
+                <?= hideshow_editor($hideshow, $hideshow_text, $birth_decl_text); ?>
+
+                <input type="submit" name="add_birth_declaration" value="<?= __('witness') . ' - ' . __('officiator'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+
+                <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+                    <div class="row mb-2">
+                        <label for="birth_decl_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <!-- TODO check this -->
+                            <?php $editor_cls->date_show($birth_decl_date, 'birth_decl_date', '', '', ''); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="birth_decl_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="birth_decl_place" value="<?= htmlspecialchars($birth_decl_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <!-- TODO check this line. -->
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                    // *** Check if there are multiple lines in text ***
+                    $field_text_selected = $field_text;
+                    if ($birth_decl_text && preg_match('/\R/', $birth_decl_text)) {
+                        $field_text_selected = $field_text_medium;
+                    }
+                    ?>
+                    <div class="row mb-2">
+                        <label for="birth_decl_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" name="birth_decl_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($birth_decl_text); ?></textarea>
+                        </div>
+                    </div>
+
+                    <?php if (!isset($_GET['add_person'])) { ?>
+                        <div class="row mb-2">
+                            <label for="birth_decl_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                // *** This sourve is connected to person, not to event. Because event id is only available when saved ***
+                                source_link3('birth_decl', 'birth_decl_source', $pers_gedcomnumber);
+                                echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </span>
+            </td>
+        </tr>
+        <?php
         // *** Birth declaration ***
         if ($editor['add_person'] == false) {
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'birth_declaration');
+            //show_event($event_connect_kind, $event_connect_id, $event_kind)
+            echo $event_cls->show_event('birth_declaration', $pers_gedcomnumber, 'witness');
         }
+
 
         // **** BRIT MILA ***
         if ($humo_option['admin_brit'] == "y" && $pers_sexe != "F") {
@@ -914,7 +1004,7 @@
         }
 
 
-        // *** Baptise ***
+        // *** Baptise/ Christened ***
         // *** Use hideshow to show and hide the editor lines ***
         $hideshow = '3';
         // *** If items are missing show all editor fields ***
@@ -935,7 +1025,7 @@
                 ?>
                 <?= hideshow_editor($hideshow, $hideshow_text, $pers_bapt_text); ?>
 
-                <input type="submit" name="add_baptism_witness" value="<?= __('baptism witness'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+                <input type="submit" name="add_baptism_witness" value="<?= __('witness') . ' - ' . __('clergy') . ' - ' . __('godfather'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
@@ -998,7 +1088,7 @@
         <?php
         // *** Baptism Witness ***
         if ($editor['add_person'] == false) {
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'baptism_witness');
+            echo $event_cls->show_event('CHR', $pers_gedcomnumber, 'ASSO');
         }
 
 
@@ -1072,8 +1162,6 @@
                 }
                 ?>
                 <?= hideshow_editor($hideshow, $hideshow_text, $pers_death_text); ?>
-
-                <input type="submit" name="add_death_declaration" value="<?= __('death declaration'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
@@ -1184,9 +1272,99 @@
         </tr>
 
         <?php
-        // *** Death Declaration ***
+        // *** Sep. 2024: using seperate death declaration lines ***
+        // *** Use hideshow to show and hide the editor lines ***
+        $hideshow = '401';
+        // *** If items are missing show all editor fields ***
+        $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
+        $sql = "SELECT * FROM humo_events WHERE event_tree_id = '" . $tree_id . "' AND event_kind = 'death_declaration' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
+        $result = $dbh->query($sql);
+        if ($result->rowCount() > 0) {
+            $death_declDb = $result->fetch(PDO::FETCH_OBJ);
+            $death_decl_id = $death_declDb->event_id;
+            $death_decl_date = $death_declDb->event_date;
+            $death_decl_place = $death_declDb->event_place;
+            $death_decl_text = $death_declDb->event_text;
+        } else {
+            $death_decl_id = '';
+            $death_decl_date = "";
+            $death_decl_place = "";
+            $death_decl_text = "";
+        }
+        ?>
+        <tr>
+            <td><a name="death_declaration"></a>
+                <?= ucfirst(__('death declaration')); ?>
+
+                <input type="hidden" name="death_decl_id" value="<?= $death_decl_id; ?>">
+            </td>
+            <td colspan="2">
+
+                <?php
+                $hideshow_text = hideshow_date_place($death_decl_date, $death_decl_place);
+                if ($pers_gedcomnumber) {
+                    $check_sources_text = check_sources('death_decl', 'death_decl_source', $pers_gedcomnumber);
+                    $hideshow_text .= $check_sources_text;
+                }
+                ?>
+                <?= hideshow_editor($hideshow, $hideshow_text, $death_decl_text); ?>
+
+                <input type="submit" name="add_death_declaration" value="<?= __('witness') . ' - ' . __('officiator'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+
+                <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
+                    <div class="row mb-2">
+                        <label for="death_decl_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <!-- TODO check this -->
+                            <?php $editor_cls->date_show($death_decl_date, 'death_decl_date', '', '', ''); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="death_decl_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" name="death_decl_place" value="<?= htmlspecialchars($death_decl_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <!-- TODO check this line. -->
+                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                    // *** Check if there are multiple lines in text ***
+                    $field_text_selected = $field_text;
+                    if ($death_decl_text && preg_match('/\R/', $death_decl_text)) {
+                        $field_text_selected = $field_text_medium;
+                    }
+                    ?>
+                    <div class="row mb-2">
+                        <label for="death_decl_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" name="death_decl_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($death_decl_text); ?></textarea>
+                        </div>
+                    </div>
+
+                    <?php if (!isset($_GET['add_person'])) { ?>
+                        <div class="row mb-2">
+                            <label for="death_decl_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <div class="col-md-7">
+                                <?php
+                                // *** This source is connected to person, not to event. Because event id is only available when saved ***
+                                source_link3('death_decl', 'death_decl_source', $pers_gedcomnumber);
+                                echo $check_sources_text;
+                                ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </span>
+            </td>
+        </tr>
+        <?php
+        // *** Death declaration ***
         if ($editor['add_person'] == false) {
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'death_declaration');
+            echo $event_cls->show_event('death_declaration', $pers_gedcomnumber, 'ASSO');
         }
 
 
@@ -1211,7 +1389,7 @@
                 ?>
                 <?= hideshow_editor($hideshow, $hideshow_text, $pers_buried_text); ?>
 
-                <input type="submit" name="add_burial_witness" value="<?= __('burial witness'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+                <input type="submit" name="add_burial_witness" value="<?= __('witness').' - '.__('clergy'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
@@ -1261,7 +1439,7 @@
 
                     <?php if (!isset($_GET['add_person'])) { ?>
                         <div class="row mb-2">
-                            <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <label for="pers_burial_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'pers_buried_source', $pers_gedcomnumber);
@@ -1278,7 +1456,7 @@
         <?php
         // *** Burial Witness ***
         if ($editor['add_person'] == false) {
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'burial_witness');
+            echo $event_cls->show_event('BURI', $pers_gedcomnumber, 'ASSO');
         }
 
 

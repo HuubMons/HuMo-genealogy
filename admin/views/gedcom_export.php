@@ -376,7 +376,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 ?>
                 <select size="1" name="gedcom_version" class="form-select form-select-sm">
                     <option value="551"><?= __('GEDCOM 5.5.1'); ?></option>
-                    <option value="70" <?= $selected; ?> disabled><?= __('GEDCOM 7.0'); ?></option>
+                    <option value="70" <?= $selected; ?>><?= __('GEDCOM 7.0'); ?></option>
                 </select>
             </div>
             <div class="col-md-4">

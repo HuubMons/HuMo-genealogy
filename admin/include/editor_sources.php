@@ -78,6 +78,12 @@ if ($connect_sub_kind == 'pers_birth_source') {
     source_edit("person", "pers_birth_source", $pers_gedcomnumber);
 }
 
+// *** Sept. 2024: new seperate item ***
+if ($connect_sub_kind == 'birth_decl_source') {
+    show_source_header(__('Source') . ' - ' . ucfirst(__('born')));
+    source_edit("person", "birth_decl_source", $pers_gedcomnumber);
+}
+
 // *** Edit source by baptise ***
 if ($connect_sub_kind == 'pers_bapt_source') {
     show_source_header(__('Source') . ' - ' . ucfirst(__('baptised')));
@@ -88,6 +94,12 @@ if ($connect_sub_kind == 'pers_bapt_source') {
 if ($connect_sub_kind == 'pers_death_source') {
     show_source_header(__('Source') . ' - ' . ucfirst(__('died')));
     source_edit("person", "pers_death_source", $pers_gedcomnumber);
+}
+
+// *** Sept. 2024: new seperate item ***
+if ($connect_sub_kind == 'death_decl_source') {
+    show_source_header(__('Source') . ' - ' . ucfirst(__('died')));
+    source_edit("person", "death_decl_source", $pers_gedcomnumber);
 }
 
 // *** Edit source by buried ***
@@ -226,8 +238,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
             }
         }
     }
-    </script>
-    ';
+    </script>';
 ?>
 
     <form method="POST" action="<?= $phpself2; ?>">

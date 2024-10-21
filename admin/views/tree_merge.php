@@ -1457,8 +1457,8 @@ function show_regular_text($left_item, $right_item, $title, $name)
 function show_events($left_ged, $right_ged)
 {
     global $dbh, $tree_id, $language, $data2Db, $color;
-    $l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_declaration = $l_baptism_witness = $l_death_declaration = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = array();
-    $r_address = $r_picture = $r_profession = $r_source = $r_event = $r_birth_declaration = $r_baptism_witness = $r_death_declaration = $r_burial_witness = $r_name = $r_nobility = $r_title = $r_lordship = $r_URL = $r_else = array();
+    $l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_decl_witness = $l_baptism_witness = $l_death_decl_witness = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = array();
+    $r_address = $r_picture = $r_profession = $r_source = $r_event = $r_birth_decl_witness = $r_baptism_witness = $r_death_decl_witness = $r_burial_witness = $r_name = $r_nobility = $r_title = $r_lordship = $r_URL = $r_else = array();
     $left_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
         AND event_connect_kind='person' AND event_connect_id ='" . $left_ged . "' ORDER BY event_kind ");
     $right_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
@@ -1475,12 +1475,12 @@ function show_events($left_ged, $right_ged)
                 $l_profession[$l_eventsDb->event_id] = $l_eventsDb->event_event;
             } elseif ($l_eventsDb->event_kind == "event") {
                 $l_event[$l_eventsDb->event_id] = $l_eventsDb->event_event;
-            } elseif ($l_eventsDb->event_kind == "birth_declaration") {
-                $l_birth_declaration[$l_eventsDb->event_id] = $l_eventsDb->event_event;
+            } elseif ($l_eventsDb->event_kind == "birth_decl_witness") {
+                $l_birth_decl_witness[$l_eventsDb->event_id] = $l_eventsDb->event_event;
             } elseif ($l_eventsDb->event_kind == "baptism_witness") {
                 $l_baptism_witness[$l_eventsDb->event_id] = $l_eventsDb->event_event;
-            } elseif ($l_eventsDb->event_kind == "death_declaration") {
-                $l_death_declaration[$l_eventsDb->event_id] = $l_eventsDb->event_event;
+            } elseif ($l_eventsDb->event_kind == "death_decl_witness") {
+                $l_death_decl_witness[$l_eventsDb->event_id] = $l_eventsDb->event_event;
             } elseif ($l_eventsDb->event_kind == "burial_witness") {
                 $l_burial_witness[$l_eventsDb->event_id] = $l_eventsDb->event_event;
             } elseif ($l_eventsDb->event_kind == "name") {
@@ -1507,11 +1507,11 @@ function show_events($left_ged, $right_ged)
                 $r_profession[$r_eventsDb->event_id] = $r_eventsDb->event_event;
             } elseif ($r_eventsDb->event_kind == "event") {
                 $r_event[$r_eventsDb->event_id] = $r_eventsDb->event_event;
-            } elseif ($r_eventsDb->event_kind == "birth_declaration") {
-                $r_birth_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event;
+            } elseif ($r_eventsDb->event_kind == "birth_decl_witness") {
+                $r_birth_decl_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event;
 
                 if ($r_eventsDb->event_connect_id2) {
-                    $r_birth_declaration[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
+                    $r_birth_decl_witness[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
                 }
             } elseif ($r_eventsDb->event_kind == "baptism_witness") {
                 $r_baptism_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event;
@@ -1519,11 +1519,11 @@ function show_events($left_ged, $right_ged)
                 if ($r_eventsDb->event_connect_id2) {
                     $r_baptism_witness[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
                 }
-            } elseif ($r_eventsDb->event_kind == "death_declaration") {
-                $r_death_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event;
+            } elseif ($r_eventsDb->event_kind == "death_decl_witness") {
+                $r_death_decl_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event;
 
                 if ($r_eventsDb->event_connect_id2) {
-                    $r_death_declaration[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
+                    $r_death_decl_witness[$r_eventsDb->event_id] = '@' . $r_eventsDb->event_connect_id2;
                 }
             } elseif ($r_eventsDb->event_kind == "burial_witness") {
                 $r_burial_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event;
@@ -1558,15 +1558,23 @@ function show_events($left_ged, $right_ged)
         if (!empty($r_event)) {
             put_event('event', __('Event'), $l_event, $r_event);
         }
-        if (!empty($r_birth_declaration)) {
-            put_event('birth_declaration', __('birth declaration'), $l_birth_declaration, $r_birth_declaration);
+
+        // *** Sept. 2024: declaration and declaration witnesses are now seperate events *** 
+        // TODO add declaration/ TEST CODE/ change text into birth declaration witness? 
+        if (!empty($r_birth_decl_witness)) {
+            put_event('birth_decl_witness', __('birth declaration'), $l_birth_decl_witness, $r_birth_decl_witness);
         }
+
         if (!empty($r_baptism_witness)) {
             put_event('baptism_witness', __('baptism witness'), $l_baptism_witness, $r_baptism_witness);
         }
-        if (!empty($r_death_declaration)) {
-            put_event('death_declaration', __('death declaration'), $l_death_declaration, $r_death_declaration);
+
+        // *** Sept. 2024: declaration and declaration witnesses are now seperate events *** 
+        // TODO add declaration/ TEST CODE/ change text into death declaration witness?
+        if (!empty($r_death_decl_witness)) {
+            put_event('death_decl_witness', __('death declaration'), $l_death_decl_witness, $r_death_decl_witness);
         }
+
         if (!empty($r_burial_witness)) {
             put_event('burial_witness', __('burial witness'), $l_burial_witness, $r_burial_witness);
         }

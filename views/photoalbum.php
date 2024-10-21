@@ -103,6 +103,7 @@ while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
             // TODO: use the person_cls constructor (adding personDb).
             $person_cls = new person_cls;
             $personDb = $db_functions->get_person($picqryDb->event_connect_id);
+            // TODO check $privacy. This line isn't needed anymore?
             $privacy = $person_cls->set_privacy($personDb);
             if ($privacy) {
                 $process_picture = false;

@@ -4,6 +4,14 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
+
+// Needed to process witnesses etc.
+if (isset($tree_id) && $tree_id) {
+    $db_functions->set_tree_id($tree_id);
+}
+
+
+
 if (isset($tree_id) and isset($_POST['submit_button'])) {
     if ($export["part_tree"] == 'part' and isset($_POST['kind_tree']) and $_POST['kind_tree'] == "descendant") {
         // map descendants
@@ -197,6 +205,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         $devider = 200;
     }
     $step = round($nr_records / $devider);
+    if ($step < 1) {
+        $step = 1;
+    }
     $perc = 0;
     $record_nr = 0;
 
@@ -296,7 +307,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // *** 2 _RUFNAME is only used in BK, HuMo-genealogy uses 2 _RUFN ***
                 //if($nameDb->event_gedcom == "_RUFN") $eventgedcom = '_RUFNAME';
                 $buffer .= '2 ' . $eventgedcom . ' ' . $nameDb->event_event . "\r\n";
-                if ($nameDb->event_date) $buffer .= '3 DATE ' . process_date($nameDb->event_date) . "\r\n";
+                if ($nameDb->event_date) $buffer .= '3 DATE ' . process_date($gedcom_version, $nameDb->event_date) . "\r\n";
                 if ($gedcom_sources == 'yes')
                     sources_export('person', 'pers_event_source', $nameDb->event_id, 3);
                 if ($gedcom_texts == 'yes' and $nameDb->event_text) {
@@ -316,11 +327,11 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         // *** Birth data ***
         if (
             $person->pers_birth_date or $person->pers_birth_place or $person->pers_birth_text
-            or     (isset($person->pers_stillborn) and $person->pers_stillborn == 'y')
+            or (isset($person->pers_stillborn) and $person->pers_stillborn == 'y')
         ) {
             $buffer .= "1 BIRT\r\n";
             if ($person->pers_birth_date) {
-                $buffer .= '2 DATE ' . process_date($person->pers_birth_date) . "\r\n";
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $person->pers_birth_date) . "\r\n";
                 if (isset($person->pers_birth_date_hebnight) and $person->pers_birth_date_hebnight == 'y') {
                     $buffer .= '2 _HNIT y' . "\r\n";
                 }
@@ -348,15 +359,51 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // *** Remark: only exported if there is another birth item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
                 // TODO 2024: check this. Should be connected to event declaration.
-                $buffer .= export_witnesses('person', $person->pers_gedcomnumber, 'birth_declaration');
+                //$buffer .= export_witnesses('person', $person->pers_gedcomnumber, 'birth_declaration');
+                //export_witnesses($gedcom_version, $event_connect_kind, $event_connect_id, $event_kind)
+                //$buffer .= export_witnesses($gedcom_version, 'person', $person->pers_gedcomnumber, 'birth_decl_witness');
+                $buffer .= export_witnesses($gedcom_version, 'birth_declaration', $person->pers_gedcomnumber, 'ASSO');
             }
         }
+
+        // Move birth declaration to seperate event? Check GEDCOM 5/7 reference.
+        // ALSO CHECK WITNESSES FOR BIRTH_DECLARATION SEE LINE 365 (above)
+        // GEDCOM 5.5.1
+        // 1 EVEN
+        // 2 TYPE birth registration
+        // 2 DATE 2 JAN 1980
+        // 2 SOUR @S5@
+        //
+        // GEDCOM 7.0 (Aldfaer)
+        // 1 EVEN
+        // 2 TYPE birth registration
+        // 2 DATE 2 JAN 1980
+        // 2 SOUR @S5@
+        // 2 _OBJE
+        // 3 FILE 0d0d3dfdf7eb5ec8d94609dc49079b2a.jpg
+        // 2 ASSO @I4@
+        // 3 ROLE OFFICIATOR
+        // 2 ASSO @I3@
+        // 3 ROLE WITN
+        // 2 ASSO @I5@
+        // 3 ROLE OTHER
+        // 4 PHRASE informant
+
+        //if ($gedcom_version != '551') {
+        //  *** Birth registration ***
+        //$birth_registrationqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
+        //AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
+        //AND event_kind='birth_declaration' ORDER BY event_order");
+        //while ($birth_declarationDb = $birth_registration->fetch(PDO::FETCH_OBJ)) {
+        //    $buffer .= '1 OCCU ' . $birth_declarationDb->event_event . "\r\n";
+        //}
+        //}
 
         // *** Christened data ***
         if ($person->pers_bapt_date or $person->pers_bapt_place or $person->pers_bapt_text or $person->pers_religion) {
             $buffer .= "1 CHR\r\n";
             if ($person->pers_bapt_date) {
-                $buffer .= '2 DATE ' . process_date($person->pers_bapt_date) . "\r\n";
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $person->pers_bapt_date) . "\r\n";
             }
             if ($person->pers_bapt_place) {
                 $buffer .= process_place($person->pers_bapt_place, 2);
@@ -376,7 +423,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // *** Remark: only exported if there is another baptism item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
-                $buffer .= export_witnesses('person', $person->pers_gedcomnumber, 'baptism_witness');
+                // export_witnesses($gedcom_version, $event_connect_kind, $event_connect_id, $event_kind)
+                //$buffer .= export_witnesses($gedcom_version, 'person', $person->pers_gedcomnumber, 'baptism_witness');
+                $buffer .= export_witnesses($gedcom_version, 'CHR', $person->pers_gedcomnumber, 'ASSO');
             }
             // PMB end of if 'minimal' option selected don't export this
 
@@ -386,7 +435,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         if ($person->pers_death_date or $person->pers_death_place or $person->pers_death_text or $person->pers_death_cause) {
             $buffer .= "1 DEAT\r\n";
             if ($person->pers_death_date) {
-                $buffer .= '2 DATE ' . process_date($person->pers_death_date) . "\r\n";
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $person->pers_death_date) . "\r\n";
                 if (isset($person->pers_death_date_hebnight) and $person->pers_death_date_hebnight == 'y') {
                     $buffer .= '2 _HNIT y' . "\r\n";
                 }
@@ -413,16 +462,27 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // *** Remark: only exported if there is another baptism item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
                 // TODO 2024: check this. Should be connected to event declaration.
-                $buffer .= export_witnesses('person', $person->pers_gedcomnumber, 'death_declaration');
+                //$buffer .= export_witnesses('person', $person->pers_gedcomnumber, 'death_declaration');
+                // export_witnesses($gedcom_version, $event_connect_kind, $event_connect_id, $event_kind)
+                //$buffer .= export_witnesses($gedcom_version, 'person', $person->pers_gedcomnumber, 'death_decl_witness');
+                $buffer .= export_witnesses($gedcom_version, 'death_declaration', $person->pers_gedcomnumber, 'ASSO');
             }
             // PMB end of if 'minimal' option selected don't export this			
         }
+
+
+
+
+        // ADD DEATH DECLARATION HERE
+        // ALSO ADD witnesses, at this moment added in death.
+
+
 
         // *** Buried data ***
         if ($person->pers_buried_date or $person->pers_buried_place or $person->pers_buried_text or $person->pers_cremation) {
             $buffer .= "1 BURI\r\n";
             if ($person->pers_buried_date) {
-                $buffer .= '2 DATE ' . process_date($person->pers_buried_date) . "\r\n";
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $person->pers_buried_date) . "\r\n";
                 if (isset($person->pers_buried_date_hebnight) and $person->pers_buried_date_hebnight == 'y') {
                     $buffer .= '2 _HNIT y' . "\r\n";
                 }
@@ -453,7 +513,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // *** Remark: only exported if there is another baptism item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
-                $buffer .= export_witnesses('person', $person->pers_gedcomnumber, 'burial_witness');
+                // export_witnesses($gedcom_version, $event_connect_kind, $event_connect_id, $event_kind)
+                //$buffer .= export_witnesses($gedcom_version, 'person', $person->pers_gedcomnumber, 'burial_witness');
+                $buffer .= export_witnesses($gedcom_version, 'BURI', $person->pers_gedcomnumber, 'ASSO');
             }
             // PMB end of if 'minimal' option selected don't export this
         }
@@ -478,7 +540,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 $buffer .= '1 OCCU ' . $professionDb->event_event . "\r\n";
 
                 if ($professionDb->event_date) {
-                    $buffer .= '2 DATE ' . process_date($professionDb->event_date) . "\r\n";
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $professionDb->event_date) . "\r\n";
                 }
                 if ($professionDb->event_place) {
                     $buffer .= '2 PLAC ' . $professionDb->event_place . "\r\n";
@@ -501,7 +563,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 $buffer .= '1 RELI ' . $professionDb->event_event . "\r\n";
 
                 if ($professionDb->event_date) {
-                    $buffer .= '2 DATE ' . process_date($professionDb->event_date) . "\r\n";
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $professionDb->event_date) . "\r\n";
                 }
                 if ($professionDb->event_place) {
                     $buffer .= '2 PLAC ' . $professionDb->event_place . "\r\n";
@@ -529,7 +591,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 $buffer .= "1 OBJE\r\n";
                 $buffer .= "2 FORM jpg\r\n";
                 $buffer .= '2 FILE ' . $sourceDb->event_event . "\r\n";
-                if ($sourceDb->event_date) $buffer .= '2 DATE ' . process_date($sourceDb->event_date) . "\r\n";
+                if ($sourceDb->event_date) $buffer .= '2 DATE ' . process_date($gedcom_version, $sourceDb->event_date) . "\r\n";
 
                 if ($gedcom_texts == 'yes' and $sourceDb->event_text) {
                     $buffer .= '2 NOTE ' . process_text(3, $sourceDb->event_text);
@@ -762,7 +824,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // *** Text is added in the first line: 1 _MILT military items. ***
                 if ($process_event){
                     if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
-                    if ($eventDb->event_date) $buffer.='2 DATE '.process_date($eventDb->event_date)."\r\n";
+                    if ($eventDb->event_date) $buffer.='2 DATE '.process_date($gedcom_version,$eventDb->event_date)."\r\n";
                     if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
                 }
                 */
@@ -779,7 +841,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                         $buffer .= '2 NOTE ' . process_text(3, $eventDb->event_text);
                     }
                     if ($eventDb->event_date) {
-                        $buffer .= '2 DATE ' . process_date($eventDb->event_date) . "\r\n";
+                        $buffer .= '2 DATE ' . process_date($gedcom_version, $eventDb->event_date) . "\r\n";
                     }
                     if ($eventDb->event_place) {
                         $buffer .= '2 PLAC ' . $eventDb->event_place . "\r\n";
@@ -847,12 +909,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             // 1_NEW
             // 2 DATE 04 AUG 2004
             // 3 TIME 13:39:58
-            $buffer .= process_datetime('new', $person->pers_new_datetime, $person->pers_new_user_id);
+            $buffer .= process_datetime($gedcom_version, 'new', $person->pers_new_datetime, $person->pers_new_user_id);
             // *** Datetime changed in database ***
             // 1_CHAN
             // 2 DATE 04 AUG 2004
             // 3 TIME 13:39:58
-            $buffer .= process_datetime('changed', $person->pers_changed_datetime, $person->pers_changed_user_id);
+            $buffer .= process_datetime($gedcom_version, 'changed', $person->pers_changed_datetime, $person->pers_changed_user_id);
         }
         // PMB end of if 'minimal' option selected don't export this
 
@@ -944,7 +1006,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             // *** Relation start date ***
             if ($family->fam_relation_date) {
-                $buffer .= '2 DATE ' . process_date($family->fam_relation_date) . "\r\n";
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $family->fam_relation_date) . "\r\n";
             }
 
             // *** Relation end date ***
@@ -969,7 +1031,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 $buffer .= "1 MARB\r\n";
                 $buffer .= "2 TYPE civil\r\n";
                 if ($family->fam_marr_notice_date) {
-                    $buffer .= '2 DATE ' . process_date($family->fam_marr_notice_date) . "\r\n";
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $family->fam_marr_notice_date) . "\r\n";
                     if (isset($family->fam_marr_notice_date_hebnight) and $family->fam_marr_notice_date_hebnight == 'y') {
                         $buffer .= '2 _HNIT y' . "\r\n";
                     }
@@ -991,7 +1053,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 $buffer .= "1 MARB\r\n";
                 $buffer .= "2 TYPE religious\r\n";
                 if ($family->fam_marr_church_notice_date) {
-                    $buffer .= '2 DATE ' . process_date($family->fam_marr_church_notice_date) . "\r\n";
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $family->fam_marr_church_notice_date) . "\r\n";
                     if (isset($family->fam_marr_church_notice_date_hebnight) and $family->fam_marr_church_notice_date_hebnight == 'y') {
                         $buffer .= '2 _HNIT y' . "\r\n";
                     }
@@ -1033,7 +1095,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             // PMB end of if 'minimal' option selected don't export this
 
             if ($family->fam_marr_date) {
-                $buffer .= '2 DATE ' . process_date($family->fam_marr_date) . "\r\n";
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $family->fam_marr_date) . "\r\n";
                 if (isset($family->fam_marr_date_hebnight) and $family->fam_marr_date_hebnight == 'y') {
                     $buffer .= '2 _HNIT y' . "\r\n";
                 }
@@ -1059,7 +1121,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // *** Remark: only exported if there is another baptism item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
-                $buffer .= export_witnesses('family', $family->fam_gedcomnumber, 'marriage_witness');
+                // export_witnesses($gedcom_version, $event_connect_kind, $event_connect_id, $event_kind)
+                //$buffer .= export_witnesses($gedcom_version, 'family', $family->fam_gedcomnumber, 'marriage_witness');
+                $buffer .= export_witnesses($gedcom_version, 'MARR', $family->fam_gedcomnumber, 'ASSO');
             }
             // PMB end of if 'minimal' option selected don't export this
         }
@@ -1074,7 +1138,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             // PMB end of if 'minimal' option selected don't export this
 
             if ($family->fam_marr_church_date) {
-                $buffer .= '2 DATE ' . process_date($family->fam_marr_church_date) . "\r\n";
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $family->fam_marr_church_date) . "\r\n";
                 if (isset($family->fam_marr_church_date_hebnight) and $family->fam_marr_church_date_hebnight == 'y') {
                     $buffer .= '2 _HNIT y' . "\r\n";
                 }
@@ -1095,7 +1159,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                 // *** Remark: only exported if there is another baptism item ***
                 // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
-                $buffer .= export_witnesses('family', $family->fam_gedcomnumber, 'marriage_witness_rel');
+                // export_witnesses($gedcom_version, $event_connect_kind, $event_connect_id, $event_kind)
+                //$buffer .= export_witnesses($gedcom_version, 'family', $family->fam_gedcomnumber, 'marriage_witness_rel');
+                $buffer .= export_witnesses($gedcom_version, 'MARR_REL', $family->fam_gedcomnumber, 'ASSO');
             }
             // PMB end of if 'minimal' option selected don't export this
         }
@@ -1108,7 +1174,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             if ($family->fam_div_date or $family->fam_div_place or $family->fam_div_text) {
                 $buffer .= "1 DIV\r\n";
                 if ($family->fam_div_date) {
-                    $buffer .= '2 DATE ' . process_date($family->fam_div_date) . "\r\n";
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $family->fam_div_date) . "\r\n";
                 }
                 if ($family->fam_div_place) {
                     $buffer .= process_place($family->fam_div_place, 2);
@@ -1154,7 +1220,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 $buffer .= "2 FORM jpg\r\n";
                 $buffer .= '2 FILE ' . $sourceDb->event_event . "\r\n";
                 if ($sourceDb->event_date) {
-                    $buffer .= '2 DATE ' . process_date($sourceDb->event_date) . "\r\n";
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $sourceDb->event_date) . "\r\n";
                 }
 
                 if ($gedcom_texts == 'yes' and $sourceDb->event_text) {
@@ -1219,7 +1285,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // *** Text is added in the first line: 1 _MILT military items. ***
                 //if ($process_event){
                 //	if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
-                //	if ($eventDb->event_date) $buffer.='2 DATE '.process_date($eventDb->event_date)."\r\n";
+                //	if ($eventDb->event_date) $buffer.='2 DATE '.process_date($gedcom_version,$eventDb->event_date)."\r\n";
                 //	if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
                 //}
 
@@ -1229,7 +1295,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     if ($eventDb->event_event) $buffer .= ' ' . $eventDb->event_event;
                     $buffer .= "\r\n";
                     if ($eventDb->event_text) $buffer .= '2 NOTE ' . process_text(3, $eventDb->event_text);
-                    if ($eventDb->event_date) $buffer .= '2 DATE ' . process_date($eventDb->event_date) . "\r\n";
+                    if ($eventDb->event_date) $buffer .= '2 DATE ' . process_date($gedcom_version, $eventDb->event_date) . "\r\n";
                     if ($eventDb->event_place) $buffer .= '2 PLAC ' . $eventDb->event_place . "\r\n";
                 }
             }
@@ -1238,12 +1304,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             // 1_NEW
             // 2 DATE 04 AUG 2004
             // 3 TIME 13:39:58
-            $buffer .= process_datetime('new', $family->fam_new_datetime, $family->fam_new_user_id);
+            $buffer .= process_datetime($gedcom_version, 'new', $family->fam_new_datetime, $family->fam_new_user_id);
             // *** Datetime changed in database ***
             // 1_CHAN
             // 2 DATE 04 AUG 2004
             // 3 TIME 13:39:58
-            $buffer .= process_datetime('changed', $family->fam_changed_datetime, $family->fam_changed_user_id);
+            $buffer .= process_datetime($gedcom_version, 'changed', $family->fam_changed_datetime, $family->fam_changed_user_id);
         }
         // PMB end of if 'minimal' option selected don't export this
 
@@ -1397,7 +1463,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     $buffer .= '1 ABBR ' . $family->source_abbr . "\r\n";
                 }
                 if ($family->source_date) {
-                    $buffer .= '1 DATE ' . process_date($family->source_date) . "\r\n";
+                    $buffer .= '1 DATE ' . process_date($gedcom_version, $family->source_date) . "\r\n";
                 }
                 if ($family->source_place) {
                     $buffer .= '1 PLAC ' . $family->source_place . "\r\n";
@@ -1436,7 +1502,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     $buffer .= "2 FORM jpg\r\n";
                     $buffer .= '2 FILE ' . $sourceDb->event_event . "\r\n";
                     if ($sourceDb->event_date) {
-                        $buffer .= '2 DATE ' . process_date($sourceDb->event_date) . "\r\n";
+                        $buffer .= '2 DATE ' . process_date($gedcom_version, $sourceDb->event_date) . "\r\n";
                     }
 
                     if ($gedcom_texts == 'yes' and $sourceDb->event_text) {
@@ -1454,12 +1520,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // 1_NEW
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                $buffer .= process_datetime('new', $family->source_new_datetime, $family->source_new_user_id);
+                $buffer .= process_datetime($gedcom_version, 'new', $family->source_new_datetime, $family->source_new_user_id);
                 // *** Datetime changed in database ***
                 // 1_CHAN
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                $buffer .= process_datetime('changed', $family->source_changed_datetime, $family->source_changed_user_id);
+                $buffer .= process_datetime($gedcom_version, 'changed', $family->source_changed_datetime, $family->source_changed_user_id);
 
 
                 // *** Write source data ***
@@ -1488,7 +1554,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             /*
             repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
-            repo_date='".process_date('repo_date')."',
+            repo_date='".process_date($gedcom_version,'repo_date')."',
             repo_mail='".safe_text_db($_POST['repo_mail'])."',
             repo_url='".safe_text_db($_POST['repo_url'])."',
             */
@@ -1522,12 +1588,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // 1_NEW
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                $buffer .= process_datetime('new', $repoDb->repo_new_datetime, $repoDb->repo_new_user_id);
+                $buffer .= process_datetime($gedcom_version, 'new', $repoDb->repo_new_datetime, $repoDb->repo_new_user_id);
                 // *** Datetime changed in database ***
                 // 1_CHAN
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                $buffer .= process_datetime('changed', $repoDb->repo_changed_datetime, $repoDb->repo_changed_user_id);
+                $buffer .= process_datetime($gedcom_version, 'changed', $repoDb->repo_changed_datetime, $repoDb->repo_changed_user_id);
 
                 // *** Write repoitory data ***
                 $buffer = decode($buffer);
@@ -1573,7 +1639,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     $buffer .= '1 ZIP ' . $family->address_zip . "\r\n";
                 }
                 if ($family->address_date) {
-                    $buffer .= '1 DATE ' . process_date($family->address_date) . "\r\n";
+                    $buffer .= '1 DATE ' . process_date($gedcom_version, $family->address_date) . "\r\n";
                 }
                 if ($family->address_place) {
                     $buffer .= '1 PLAC ' . $family->address_place . "\r\n";
@@ -1620,12 +1686,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     // 1_NEW
                     // 2 DATE 04 AUG 2004
                     // 3 TIME 13:39:58
-                    $buffer .= process_datetime('new', $textDb->text_new_datetime, $textDb->text_new_user_id);
+                    $buffer .= process_datetime($gedcom_version, 'new', $textDb->text_new_datetime, $textDb->text_new_user_id);
                     // *** Datetime changed in database ***
                     // 1_CHAN
                     // 2 DATE 04 AUG 2004
                     // 3 TIME 13:39:58
-                    $buffer .= process_datetime('changed', $textDb->text_changed_datetime, $textDb->text_changed_user_id);
+                    $buffer .= process_datetime($gedcom_version, 'changed', $textDb->text_changed_datetime, $textDb->text_changed_user_id);
                 }
             }
 
@@ -1673,9 +1739,8 @@ function decode($buffer)
     return $buffer;
 }
 
-function process_date($text)
+function process_date($gedcom_version, $text)
 {
-    global $gedcom_version;
     if ($gedcom_version == '551') {
         //
     } else {
@@ -1798,7 +1863,7 @@ function process_place($place, $number)
 // *** jan. 2021 new function ***
 function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
 {
-    global $dbh, $buffer, $tree_id, $db_functions, $gedcom_sources;
+    global $dbh, $buffer, $tree_id, $db_functions, $gedcom_sources, $gedcom_version;
 
     // *** Addresses (shared addresses are no valid GEDCOM 5.5.1) ***
     // *** Living place ***
@@ -1822,7 +1887,7 @@ function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
             // 2 DATE 1 JAN 2021
             // 2 ROLE ROL
             $buffer .= '1 RESI @' . $connectDb->connect_item_id . "@\r\n";
-            if ($connectDb->connect_date) $buffer .= '2 DATE ' . process_date($connectDb->connect_date) . "\r\n";
+            if ($connectDb->connect_date) $buffer .= '2 DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
             if ($connectDb->connect_role) {
                 $buffer .= '2 ROLE ' . $connectDb->connect_role . "\r\n";
             }
@@ -1877,8 +1942,8 @@ function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
             if ($addressDb->address_phone) {
                 $buffer .= '2 PHON ' . $addressDb->address_phone . "\r\n";
             }
-            //if ($addressDb->address_date){ $buffer.='2 DATE '.process_date($addressDb->address_date)."\r\n"; }
-            if ($connectDb->connect_date) $buffer .= '2 DATE ' . process_date($connectDb->connect_date) . "\r\n";
+            //if ($addressDb->address_date){ $buffer.='2 DATE '.process_date($gedcom_version,$addressDb->address_date)."\r\n"; }
+            if ($connectDb->connect_date) $buffer .= '2 DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
             if ($addressDb->address_text) {
                 $buffer .= '2 NOTE ' . process_text(3, $addressDb->address_text);
             }
@@ -1908,7 +1973,7 @@ function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
 // *** Function to export all kind of sources including role, pages etc. ***
 function sources_export($connect_kind, $connect_sub_kind, $connect_connect_id, $start_number)
 {
-    global $dbh, $buffer, $tree_id;
+    global $dbh, $buffer, $tree_id, $gedcom_version;
     // *** Search for all connected sources ***
     $connect_qry = "SELECT * FROM humo_connections LEFT JOIN humo_sources ON source_gedcomnr=connect_source_id
         WHERE connect_tree_id='" . $tree_id . "' AND source_tree_id='" . $tree_id . "'
@@ -1946,7 +2011,7 @@ function sources_export($connect_kind, $connect_sub_kind, $connect_connect_id, $
         }
 
         if ($connectDb->source_date) {
-            $buffer .= ($start_number + 1) . ' DATE ' . process_date($connectDb->connect_date) . "\r\n";
+            $buffer .= ($start_number + 1) . ' DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
         }
         if ($connectDb->source_place) {
             $buffer .= ($start_number + 1) . ' PLAC ' . $connectDb->connect_place . "\r\n";
@@ -2204,33 +2269,75 @@ function ancestors($person_id, $max_generations)
     }    // loop ancestors function
 }
 
-function export_witnesses($event_connect_kind, $event_connect_id, $event_kind)
+function export_witnesses($gedcom_version, $event_connect_kind, $event_connect_id, $event_kind)
 {
     global $db_functions;
     $witnesses = '';
-    // *** Baptise witness: 2 _WITN @I1@ or: 2 _WITN firstname lastname ***
+    //get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
+
     $witness_qry = $db_functions->get_events_connect($event_connect_kind, $event_connect_id, $event_kind);
     foreach ($witness_qry as $witnessDb) {
-        if ($witnessDb->event_connect_id2) {
-            $witnesses .= '2 WITN @' . $witnessDb->event_connect_id2 . "@\r\n";
+        if ($gedcom_version == '551') {
+            // *** Baptise witness: 2 _WITN @I1@ or: 2 _WITN firstname lastname ***
+            if ($witnessDb->event_connect_id2) {
+                $witnesses .= '2 WITN @' . $witnessDb->event_connect_id2 . "@\r\n";
+            } else {
+                $witnesses .= '2 WITN ' . $witnessDb->event_event . "\r\n";
+            }
         } else {
-            $witnesses .= '2 WITN ' . $witnessDb->event_event . "\r\n";
+            // *** GEDCOM 7 ***
+
+            // 1 BURI
+            // 2 ASSO @I9@
+            // 3 ROLE OTHER
+            // 4 PHRASE funeral leader
+            if ($witnessDb->event_connect_id2) {
+                // *** Connected person ***
+                $witnesses .= '2 ASSO @' . $witnessDb->event_connect_id2 . "@\r\n";
+                $witnesses .= '3 ROLE ' . $witnessDb->event_gedcom . "\r\n";
+                // *** 4 PHRASE for role OTHER ***
+                if ($witnessDb->event_gedcom == 'OTHER') {
+                    $witnesses .= '4 PHRASE ' . $witnessDb->event_event_extra . "\r\n";
+                }
+            } else {
+                // *** No person connected, text is used for name of person ***
+                // 1 ASSO @VOID@
+                // 2 PHRASE Mr Stockdale
+                // 2 ROLE OTHER
+                // 3 PHRASE Teacher -> event_event_extra?
+                $witnesses .= "2 ASSO @VOID@\r\n";
+                $witnesses .= '3 PHRASE ' . $witnessDb->event_event . "\r\n";
+
+                $witnesses .= '4 ROLE ' . $witnessDb->event_gedcom . "\r\n";
+
+                // *** 4 PHRASE for role OTHER ***
+                if ($witnessDb->event_gedcom == 'OTHER') {
+                    $witnesses .= '5 PHRASE ' . $witnessDb->event_event_extra . "\r\n";
+                }
+            }
         }
     }
     return $witnesses;
 }
 
-function process_datetime($new_changed, $datetime, $user_id)
+// *** GEDCOM 5.5.1: 1 _NEW. GEDCOM 7.x: 1 CREA ***
+function process_datetime($gedcom_version, $new_changed, $datetime, $user_id)
 {
     $buffer = '';
     if ($datetime and $datetime != '1970-01-01 00:00:01') {
-        if ($new_changed == 'new') {
+        if ($new_changed == 'new' && $gedcom_version == '551') {
             $buffer .= "1 _NEW\r\n";
+        } elseif ($new_changed == 'new') {
+            $buffer .= "1 CREA\r\n";
         } else {
             $buffer .= "1 CHAN\r\n";
         }
-        $buffer .= "2 DATE " . strtoupper(date('d M Y', (strtotime($datetime)))) . "\r\n";
+
+        $export_date = strtoupper(date('d M Y', (strtotime($datetime))));
+        $buffer .= "2 DATE " . process_date($gedcom_version, $export_date) . "\r\n";
+
         $buffer .= "3 TIME " . date('H:i:s', (strtotime($datetime))) . "\r\n";
+
         if ($user_id) {
             $buffer .= "2 _USR " . $user_id . "\r\n";
         }

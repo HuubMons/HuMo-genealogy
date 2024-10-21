@@ -61,7 +61,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="3" class="form-check-input" name="birth_date3" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date3_nr" id="birth_date3_nr" value="<?= $b1_def; ?>" class="form-control form-control-sm    ">
                     </div>
                     <label for="birth_date3_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - more than x years after mother\'s birth.'); ?></label>
@@ -71,7 +71,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="4" class="form-check-input" name="birth_date4" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date4_nr" id="birth_date4_nr" value="<?= $b2_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date4_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - more than x years after father\'s birth.'); ?></label>
@@ -81,7 +81,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="5" class="form-check-input" name="birth_date5" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date5_nr" id="birth_date5_nr" value="<?= $b3_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date5_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x years after mother\'s birth.'); ?></label>
@@ -91,7 +91,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="6" class="form-check-input" name="birth_date6" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date6_nr" id="birth_date6_nr" value="<?= $b4_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date6_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x years after father\'s birth.'); ?></label>
@@ -101,7 +101,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="23" class="form-check-input" name="birth_date7" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date7_nr" id="birth_date7_nr" value="<?= $b5_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date7_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x months after wedding parents.'); ?></label>
@@ -118,7 +118,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="25" class="form-check-input" name="birth_date9" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date9_nr" id="birth_date9_nr" value="<?= $b6_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date9_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x months after previous child of mother.'); ?></label>
@@ -137,7 +137,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="9" class="form-check-input" name="baptism_date3" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="baptism_date3_nr" id="baptism_date3" value="<?= $bp1_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="baptism_date3" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - more than x years after mother\'s birth.'); ?></label>
@@ -147,7 +147,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="10" class="form-check-input" name="baptism_date4" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="baptism_date4_nr" id="baptism_date4" value="<?= $bp2_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="baptism_date4" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - more than x years after father\'s birth.'); ?></label>
@@ -157,7 +157,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="11" class="form-check-input" name="baptism_date5" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="baptism_date5_nr" id="baptism_date5" value="<?= $bp3_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="baptism_date5" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - less than x years after mother\'s birth.'); ?></label>
@@ -167,7 +167,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="12" class="form-check-input" name="baptism_date6" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="baptism_date6_nr" id="baptism_date6" value="<?= $bp4_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="baptism_date6" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - less than x years after father\'s birth.'); ?></label>
@@ -188,7 +188,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="14" class="form-check-input" name="marriage_date2" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="marriage_date2_nr" id="marriage_date2" value="<?= $marr1_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="marriage_date2" class="col-auto form-label col-form-label-sm"><?= __('Marriage date - less than x years after birth date.'); ?></label>
@@ -198,7 +198,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="15" class="form-check-input" name="marriage_age" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="marriage_age_nr" id="marriage_age" value="<?= $marr2_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="marriage_age" class="col-auto form-label col-form-label-sm"><?= __('Marriage age - age difference of more than x years between partners.'); ?></label>

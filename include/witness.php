@@ -10,29 +10,53 @@
  * marriage witness
  * marriage-church witness
  *
- * $field = person/ family.
+ * $event_connect_kind = person/ family.
 */
 
 // **********************************************************************
 // * function witness (person gedcomnumber, $event item, database field);
 // **********************************************************************
-function witness($gedcomnr, $event, $field = 'person')
+function witness($gedcomnr, $event_kind, $event_connect_kind = 'person')
 {
     global $dbh, $db_functions;
     $counter = 0;
     $text = '';
+
+    $text_array = [];
+
     if ($gedcomnr) {
         $witness_cls = new person_cls;
-        if ($field == 'person') {
-            $witness_qry = $db_functions->get_events_connect('person', $gedcomnr, $event);
-        } else {
-            $witness_qry = $db_functions->get_events_connect('family', $gedcomnr, $event);
-        }
+        //get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
+        $witness_qry = $db_functions->get_events_connect($event_connect_kind, $gedcomnr, $event_kind);
 
+        $last_text = ''; // *** Show texts only once ***
         foreach ($witness_qry as $witnessDb) {
             $counter++;
             if ($counter > 1) {
                 $text .= ', ';
+            }
+
+            // All roles allowed:
+            // CHIL, CLERGY, FATH, FRIEND, GODP, HUSB, MOTH, MULTIPLE, NGHBR, OFFICIATOR, PARENT, SPOU, WIFE, WITN, OTHER.
+            if ($witnessDb->event_gedcom == 'WITN' && $last_text != 'witness') {
+                $text .= __('witness') . ': ';
+                $last_text = 'witness';
+            } elseif ($witnessDb->event_gedcom == 'OFFICIATOR') {
+                $text .= __('officiator') . ': ';
+                $last_text = 'officiator';
+            } elseif ($witnessDb->event_gedcom == 'OTHER') {
+                $text .= $witnessDb->event_event_extra . ': ';
+                $last_text = 'other';
+            } elseif ($witnessDb->event_gedcom == 'GODP') {
+                $text .= __('godfather') . ': ';
+                $last_text = 'godfather';
+            } elseif ($witnessDb->event_gedcom == 'CLERGY') {
+                $text .= __('clergy') . ': ';
+                $last_text = 'clergy';
+            } elseif ($last_text != 'witness') {
+                // For now, just show witness text in other cases.
+                $text .= __('witness') . ': ';
+                $last_text = 'witness';
             }
 
             if ($witnessDb->event_connect_id2) {
@@ -49,33 +73,42 @@ function witness($gedcomnr, $event, $field = 'person')
                 $text .= $witnessDb->event_event;
             }
 
-            if ($witnessDb->event_date || $witnessDb->event_place) {
-                $text .= ' ' . date_place($witnessDb->event_date, $witnessDb->event_place);
-            }
+            /* OLD CODE. There is no need to add a seperate date/ place/ text or source to witnesses.
+            // *** Birth declaration witness: no date/ place/ text/ source in use ***
+            if ($event_connect_kind != 'birth_declaration' && $event_connect_kind != 'death_declaration') {
+                if ($witnessDb->event_date || $witnessDb->event_place) {
+                    $text .= ' ' . date_place($witnessDb->event_date, $witnessDb->event_place);
+                }
 
-            if ($witnessDb->event_text) {
-                $text .= ' ' . process_text($witnessDb->event_text);
+                if ($witnessDb->event_text) {
+                    $text .= ' ' . process_text($witnessDb->event_text);
+                }
             }
-
             $text_array['text'] = $text;
 
             // *** Show sources by witnesses ***
-            if ($field == 'person') {
-                $source_array = show_sources2($field, "pers_event_source", $witnessDb->event_id);
+            if ($event_connect_kind == 'person') {
+                $source_array = show_sources2($event_connect_kind, "pers_event_source", $witnessDb->event_id);
             } else {
-                $source_array = show_sources2($field, "fam_event_source", $witnessDb->event_id);
+                $source_array = show_sources2($event_connect_kind, "fam_event_source", $witnessDb->event_id);
             }
             if ($source_array) {
                 $text_array['source'] = $source_array['text'];
             }
+            */
+        }
+        if ($text) {
+            //$text_array['text'] = $text;
+            $text_array['text'] = ' (' . $text . ')';
         }
     }
 
-    if (isset($text_array)) {
-        return $text_array;
-    } else {
-        return '';
-    }
+    //if (isset($text_array)) {
+    //    return $text_array;
+    //} else {
+    //    return '';
+    //}
+    return $text_array;
 }
 
 /*
@@ -103,14 +136,24 @@ function witness_by_events($gedcomnr)
     if ($gedcomnr) {
         $witness_cls = new person_cls;
 
+        /*
         $source_prep = $dbh->prepare("SELECT * FROM humo_events
             WHERE event_tree_id=:event_tree_id
             AND event_connect_id2=:event_connect_id2
-            AND (event_kind='birth_declaration' OR event_kind='baptism_witness'
-                OR event_kind='death_declaration' OR event_kind='burial_witness'
+            AND (event_kind='birth_decl_witness' OR event_kind='baptism_witness'
+                OR event_kind='death_decl_witness' OR event_kind='burial_witness'
                 OR event_kind='marriage_witness' OR event_kind='marriage_witness_rel')
             ORDER BY event_kind
         ");
+        */
+        $source_prep = $dbh->prepare("SELECT * FROM humo_events
+        WHERE event_tree_id=:event_tree_id
+        AND event_connect_id2=:event_connect_id2
+        AND (event_kind='ASSO' OR event_kind='baptism_witness' OR event_kind='burial_witness'
+            OR event_kind='marriage_witness' OR event_kind='marriage_witness_rel')
+        ORDER BY event_kind
+        ");
+
         $source_prep->bindParam(':event_tree_id', $tree_id);
         $source_prep->bindParam(':event_connect_id2', $gedcomnr);
         $source_prep->execute();
@@ -127,7 +170,8 @@ function witness_by_events($gedcomnr)
                 }
             }
             $counter++;
-            if ($witnessDb->event_kind == 'birth_declaration' && $witness_line !== 'birth declaration') {
+            // TODO check code. GEDCOM 7 supports multiple witnesses.
+            if ($witnessDb->event_kind == 'birth_decl_witness' && $witness_line !== 'birth declaration') {
                 if ($witness_line !== '') {
                     $text .= ".<br>\n";
                 }
@@ -139,7 +183,7 @@ function witness_by_events($gedcomnr)
                 }
                 $text .= __('baptism witness') . ': ';
                 $witness_line = 'baptism witness';
-            } elseif ($witnessDb->event_kind == 'death_declaration' && $witness_line !== 'death declaration') {
+            } elseif ($witnessDb->event_kind == 'death_decl_witness' && $witness_line !== 'death declaration') {
                 if ($witness_line !== '') {
                     $text .= ".<br>\n";
                 }
@@ -201,7 +245,7 @@ function witness_by_events($gedcomnr)
                 $text .= ' ' . date_place($witnessDb->event_date, '');
             } // *** Use date_place function, there is no place here... ***
 
-            //$source_array=show_sources2($field,"pers_event_source",$witnessDb->event_id);
+            //$source_array=show_sources2($event_connect_kind,"pers_event_source",$witnessDb->event_id);
             //if ($source) $text.=$source_array['text'];
         }
     }
