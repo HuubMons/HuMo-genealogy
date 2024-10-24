@@ -45,7 +45,15 @@ function witness($gedcomnr, $event_kind, $event_connect_kind = 'person')
                 $text .= __('officiator') . ': ';
                 $last_text = 'officiator';
             } elseif ($witnessDb->event_gedcom == 'OTHER') {
-                $text .= $witnessDb->event_event_extra . ': ';
+                $event_event_extra = $witnessDb->event_event_extra;
+                // *** Translate texts from Aldfaer ***
+                if ($witnessDb->event_event_extra=='funeral leader'){
+                    $event_event_extra = __('funeral leader');
+                }
+                if ($witnessDb->event_event_extra=='informant'){
+                    $event_event_extra = __('informant');
+                }
+                $text .= $event_event_extra . ': ';
                 $last_text = 'other';
             } elseif ($witnessDb->event_gedcom == 'GODP') {
                 $text .= __('godfather') . ': ';

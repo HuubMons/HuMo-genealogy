@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-19 13:21+0200\n"
-"PO-Revision-Date: 2024-10-19 13:21+0200\n"
+"POT-Creation-Date: 2024-10-24 19:49+0200\n"
+"PO-Revision-Date: 2024-10-24 19:49+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -210,8 +210,8 @@ msgstr "November"
 msgid "December"
 msgstr "December"
 
-#: admin/include/editor_cls.php:296 admin/include/editor_event_cls.php:1235
-#: admin/include/editor_event_cls.php:1244 admin/views/editor.php:661
+#: admin/include/editor_cls.php:296 admin/include/editor_event_cls.php:1219
+#: admin/include/editor_event_cls.php:1228 admin/views/editor.php:661
 #: admin/views/editor.php:670 admin/views/editor.php:1382
 #: admin/views/statistics_old.php:89 admin/views/statistics_old.php:100
 #: include/person_cls.php:915 include/person_cls.php:917
@@ -223,8 +223,8 @@ msgstr "December"
 #: include/person_cls.php:1565 include/person_cls.php:1567
 #: include/person_cls.php:1586 include/person_cls.php:1587
 #: include/person_cls.php:1656 include/person_cls.php:1675
-#: include/person_cls.php:2875 include/person_cls.php:2894
-#: include/person_cls.php:2910 include/witness.php:218 include/witness.php:224
+#: include/person_cls.php:2815 include/person_cls.php:2834
+#: include/person_cls.php:2850 include/witness.php:226 include/witness.php:232
 #: views/ancestor_sheet_pdf.php:102 views/ancestor_sheet_pdf.php:205
 #: views/descendant_chart.php:452 views/list.php:1088
 #: views/list_places_families.php:381
@@ -265,52 +265,62 @@ msgstr "&#134;"
 msgid "[]"
 msgstr "[]"
 
-#: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:64
-#: admin/include/editor_event_cls.php:553
-#: admin/include/editor_event_cls.php:1213
-#: admin/include/editor_event_cls.php:1216
+#: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:50
+#: admin/include/editor_event_cls.php:527
+#: admin/include/editor_event_cls.php:1197
+#: admin/include/editor_event_cls.php:1200
 msgid "Picture/ Media"
 msgstr "Afbeelding/ Media"
 
-#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:499
-#: admin/include/editor_event_cls.php:1374
-#: admin/include/editor_event_cls.php:1688
-#: admin/include/editor_event_cls.php:1691 admin/views/editor.php:1171
+#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:473
+#: admin/include/editor_event_cls.php:1358
+#: admin/include/editor_event_cls.php:1672
+#: admin/include/editor_event_cls.php:1675 admin/views/editor.php:1171
 #: admin/views/tree_merge.php:1556 views/list.php:320 views/list.php:327
 msgid "Profession"
 msgstr "Beroep"
 
-#: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:347
-#: admin/include/editor_event_cls.php:366
-#: admin/include/editor_event_cls.php:389
-#: admin/include/editor_event_cls.php:405
-#: admin/include/editor_event_cls.php:1431 admin/include/editor_sources.php:205
+#: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:321
+#: admin/include/editor_event_cls.php:340
+#: admin/include/editor_event_cls.php:363
+#: admin/include/editor_event_cls.php:379
+#: admin/include/editor_event_cls.php:1415 admin/include/editor_sources.php:205
 #: admin/include/editor_sources.php:213 admin/views/tree_merge.php:1559
 #: app/model/tree_index.php:951
 msgid "Event"
 msgstr "Gebeurtenis"
 
-#: admin/include/editor_event_cls.php:26 include/witness.php:54
+#: admin/include/editor_event_cls.php:24
+#: admin/include/editor_event_cls.php:1034 admin/views/editor_person.php:1028
+#: admin/views/editor_person.php:1392 admin/views/editor_relation.php:733
+#: include/witness.php:62
 msgid "clergy"
 msgstr "voorganger"
 
-#: admin/include/editor_event_cls.php:28 include/witness.php:45
+#: admin/include/editor_event_cls.php:26
+#: admin/include/editor_event_cls.php:1038 admin/views/editor_person.php:764
+#: admin/views/editor_person.php:1313 admin/views/editor_relation.php:519
+#: include/witness.php:45
 msgid "officiator"
 msgstr "ambtenaar"
 
-#: admin/include/editor_event_cls.php:30 include/witness.php:51
+#: admin/include/editor_event_cls.php:28
+#: admin/include/editor_event_cls.php:1042 admin/views/editor_person.php:1028
+#: include/witness.php:59
 msgid "godfather"
 msgstr "peetvader"
 
-#: admin/include/editor_event_cls.php:32 admin/views/editor_person.php:764
-#: admin/views/editor_person.php:1321 include/witness.php:42
-#: include/witness.php:58 views/list.php:392 views/list.php:399
+#: admin/include/editor_event_cls.php:30 admin/views/editor_person.php:764
+#: admin/views/editor_person.php:1028 admin/views/editor_person.php:1313
+#: admin/views/editor_person.php:1392 admin/views/editor_relation.php:519
+#: admin/views/editor_relation.php:733 include/witness.php:42
+#: include/witness.php:66 views/list.php:392 views/list.php:399
 msgid "witness"
 msgstr "getuige"
 
-#: admin/include/editor_event_cls.php:42
-#: admin/include/editor_event_cls.php:1045
-#: admin/include/editor_event_cls.php:1863
+#: admin/include/editor_event_cls.php:32
+#: admin/include/editor_event_cls.php:1012
+#: admin/include/editor_event_cls.php:1847
 #: admin/include/editor_media_select.php:80
 #: admin/include/editor_person_select.php:115
 #: admin/include/editor_place_select.php:78
@@ -327,26 +337,26 @@ msgstr "getuige"
 msgid "Name"
 msgstr "Naam"
 
-#: admin/include/editor_event_cls.php:44 admin/include/editor_event_cls.php:433
-#: admin/include/editor_event_cls.php:1855
-#: admin/include/editor_event_cls.php:1856 admin/views/editor.php:1126
+#: admin/include/editor_event_cls.php:34 admin/include/editor_event_cls.php:407
+#: admin/include/editor_event_cls.php:1839
+#: admin/include/editor_event_cls.php:1840 admin/views/editor.php:1126
 msgid "Prefix"
 msgstr "Voorvoegsel"
 
-#: admin/include/editor_event_cls.php:46 admin/include/editor_event_cls.php:433
-#: admin/include/editor_event_cls.php:1855
-#: admin/include/editor_event_cls.php:1857 admin/views/editor.php:1126
+#: admin/include/editor_event_cls.php:36 admin/include/editor_event_cls.php:407
+#: admin/include/editor_event_cls.php:1839
+#: admin/include/editor_event_cls.php:1841 admin/views/editor.php:1126
 msgid "Suffix"
 msgstr "Navoegsel"
 
-#: admin/include/editor_event_cls.php:48
-#: admin/include/editor_event_cls.php:1858 admin/views/tree_merge.php:1585
+#: admin/include/editor_event_cls.php:38
+#: admin/include/editor_event_cls.php:1842 admin/views/tree_merge.php:1585
 msgid "Title of Nobility"
 msgstr "Predikaat"
 
-#: admin/include/editor_event_cls.php:50 admin/include/editor_event_cls.php:433
-#: admin/include/editor_event_cls.php:1855
-#: admin/include/editor_event_cls.php:1859 admin/include/editor_sources.php:338
+#: admin/include/editor_event_cls.php:40 admin/include/editor_event_cls.php:407
+#: admin/include/editor_event_cls.php:1839
+#: admin/include/editor_event_cls.php:1843 admin/include/editor_sources.php:338
 #: admin/views/edit_repository.php:127 admin/views/edit_source.php:239
 #: admin/views/editor.php:1126 admin/views/tree_merge.php:1588
 #: include/show_source_pdf.php:43 views/source.php:33 views/source.php:109
@@ -354,99 +364,99 @@ msgstr "Predikaat"
 msgid "Title"
 msgstr "Titel"
 
-#: admin/include/editor_event_cls.php:52 admin/include/editor_event_cls.php:348
-#: admin/include/editor_event_cls.php:1258
-#: admin/include/editor_event_cls.php:1469
+#: admin/include/editor_event_cls.php:42 admin/include/editor_event_cls.php:322
+#: admin/include/editor_event_cls.php:1242
+#: admin/include/editor_event_cls.php:1453
 msgid "Adoption"
 msgstr "Adoptie"
 
-#: admin/include/editor_event_cls.php:54
-#: admin/include/editor_event_cls.php:1860 admin/views/tree_merge.php:1591
+#: admin/include/editor_event_cls.php:44
+#: admin/include/editor_event_cls.php:1844 admin/views/tree_merge.php:1591
 msgid "Title of Lordship"
 msgstr "Heerlijkheid"
 
-#: admin/include/editor_event_cls.php:56 admin/include/editor_event_cls.php:349
-#: admin/views/edit_repository.php:207 include/person_cls.php:2939
+#: admin/include/editor_event_cls.php:46 admin/include/editor_event_cls.php:323
+#: admin/views/edit_repository.php:207 include/person_cls.php:2879
 msgid "URL/ Internet link"
 msgstr "URL/ Internet link"
 
-#: admin/include/editor_event_cls.php:58 admin/include/editor_event_cls.php:350
+#: admin/include/editor_event_cls.php:48 admin/include/editor_event_cls.php:324
 msgid "Colour mark by person"
 msgstr "Kleur markering bij persoon"
 
-#: admin/include/editor_event_cls.php:66 admin/include/editor_event_cls.php:526
-#: admin/include/editor_event_cls.php:1394
-#: admin/include/editor_event_cls.php:1721
-#: admin/include/editor_event_cls.php:1724 admin/views/editor_relation.php:794
-#: admin/views/editor_relation.php:797
+#: admin/include/editor_event_cls.php:52 admin/include/editor_event_cls.php:500
+#: admin/include/editor_event_cls.php:1378
+#: admin/include/editor_event_cls.php:1705
+#: admin/include/editor_event_cls.php:1708 admin/views/editor_relation.php:792
+#: admin/views/editor_relation.php:795
 msgid "Religion"
 msgstr "Religie"
 
-#: admin/include/editor_event_cls.php:99 admin/include/editor_sources.php:113
+#: admin/include/editor_event_cls.php:85 admin/include/editor_sources.php:113
 #: admin/include/editor_sources.php:167 admin/include/editor_sources.php:456
 #: admin/views/editor.php:1539 admin/views/editor.php:1916
 #: admin/views/gedcom.php:1708 admin/views/notes.php:243
 msgid "text"
 msgstr "tekst"
 
-#: admin/include/editor_event_cls.php:105
+#: admin/include/editor_event_cls.php:91
 #: admin/views/tree_check_consistency.php:287
 #: admin/views/tree_check_invalid.php:8
 msgid "ID"
 msgstr "ID"
 
-#: admin/include/editor_event_cls.php:340
-#: admin/include/editor_event_cls.php:383
-#: admin/include/editor_event_cls.php:1448 views/list.php:76 views/list.php:77
+#: admin/include/editor_event_cls.php:314
+#: admin/include/editor_event_cls.php:357
+#: admin/include/editor_event_cls.php:1432 views/list.php:76 views/list.php:77
 #: views/list.php:991
 msgid "Events"
 msgstr "Gebeurtenissen"
 
-#: admin/include/editor_event_cls.php:354
-#: admin/include/editor_event_cls.php:394
+#: admin/include/editor_event_cls.php:328
+#: admin/include/editor_event_cls.php:368
 msgid "Add event"
 msgstr "Gebeurtenis toevoegen"
 
-#: admin/include/editor_event_cls.php:366
-#: admin/include/editor_event_cls.php:405
+#: admin/include/editor_event_cls.php:340
+#: admin/include/editor_event_cls.php:379
 msgid "For items like:"
 msgstr "Voor items zoals:"
 
-#: admin/include/editor_event_cls.php:366 include/language_event.php:12
+#: admin/include/editor_event_cls.php:340 include/language_event.php:12
 msgid "baptized as child"
 msgstr "gedoopt als kind"
 
-#: admin/include/editor_event_cls.php:366 include/language_event.php:25
+#: admin/include/editor_event_cls.php:340 include/language_event.php:25
 msgid "depart"
 msgstr "vertrokken"
 
-#: admin/include/editor_event_cls.php:366
-#: admin/include/editor_event_cls.php:405
+#: admin/include/editor_event_cls.php:340
+#: admin/include/editor_event_cls.php:379
 msgid "etc."
 msgstr "etc."
 
-#: admin/include/editor_event_cls.php:405 include/language_event.php:42
+#: admin/include/editor_event_cls.php:379 include/language_event.php:42
 msgid "Marriage contract"
 msgstr "Huwelijkscontract"
 
-#: admin/include/editor_event_cls.php:405 include/language_event.php:43
+#: admin/include/editor_event_cls.php:379 include/language_event.php:43
 msgid "Marriage license"
 msgstr "Huwelijkstoestemming"
 
-#: admin/include/editor_event_cls.php:433
-#: admin/include/editor_event_cls.php:1406
-#: admin/include/editor_event_cls.php:1849
-#: admin/include/editor_event_cls.php:1851 admin/views/editor.php:1126
+#: admin/include/editor_event_cls.php:407
+#: admin/include/editor_event_cls.php:1390
+#: admin/include/editor_event_cls.php:1833
+#: admin/include/editor_event_cls.php:1835 admin/views/editor.php:1126
 #: include/person_cls.php:1851
 msgid "Nickname"
 msgstr "Roepnaam"
 
-#: admin/include/editor_event_cls.php:436
+#: admin/include/editor_event_cls.php:410
+#: admin/include/editor_event_cls.php:486
 #: admin/include/editor_event_cls.php:512
-#: admin/include/editor_event_cls.php:538
-#: admin/include/editor_event_cls.php:558
-#: admin/include/editor_event_cls.php:560
-#: admin/include/editor_event_cls.php:562 admin/include/editor_sources.php:540
+#: admin/include/editor_event_cls.php:532
+#: admin/include/editor_event_cls.php:534
+#: admin/include/editor_event_cls.php:536 admin/include/editor_sources.php:540
 #: admin/views/cms_pages.php:224 admin/views/cms_pages.php:292
 #: admin/views/edit_address.php:264 admin/views/edit_address.php:267
 #: admin/views/edit_repository.php:218 admin/views/edit_repository.php:221
@@ -454,27 +464,27 @@ msgstr "Roepnaam"
 #: admin/views/editor.php:1417 admin/views/editor.php:1419
 #: admin/views/editor.php:1760 admin/views/editor.php:1823
 #: admin/views/editor.php:1912 admin/views/editor_person.php:372
-#: admin/views/editor_person.php:1721 admin/views/log.php:112
+#: admin/views/editor_person.php:1706 admin/views/log.php:112
 #: admin/views/settings_homepage.php:430 admin/views/settings_homepage.php:571
 #: admin/views/users.php:180
 msgid "Add"
 msgstr "Toevoegen"
 
-#: admin/include/editor_event_cls.php:1020
+#: admin/include/editor_event_cls.php:987
 msgid "Select GEDCOM number or type name of person:"
 msgstr "Selecteer GEDCOM-nummer of vul de naam van de persoon in:"
 
-#: admin/include/editor_event_cls.php:1026
-#: admin/include/editor_event_cls.php:1261 admin/views/editor.php:306
+#: admin/include/editor_event_cls.php:993
+#: admin/include/editor_event_cls.php:1245 admin/views/editor.php:306
 #: admin/views/editor_person.php:307 admin/views/editor_relation.php:115
-#: admin/views/editor_relation.php:1227
+#: admin/views/editor_relation.php:1225
 msgid "GEDCOM number (ID)"
 msgstr "GEDCOM-nummer (ID)"
 
-#: admin/include/editor_event_cls.php:1030
-#: admin/include/editor_event_cls.php:1217
-#: admin/include/editor_event_cls.php:1262
-#: admin/include/editor_event_cls.php:1628
+#: admin/include/editor_event_cls.php:997
+#: admin/include/editor_event_cls.php:1201
+#: admin/include/editor_event_cls.php:1246
+#: admin/include/editor_event_cls.php:1612
 #: admin/include/editor_media_select.php:81
 #: admin/include/editor_person_select.php:127
 #: admin/include/editor_place_select.php:79
@@ -486,13 +496,13 @@ msgstr "GEDCOM-nummer (ID)"
 #: admin/views/editor.php:1605 admin/views/editor_person.php:139
 #: admin/views/editor_person.php:220 admin/views/editor_person.php:308
 #: admin/views/editor_person.php:681 admin/views/editor_person.php:781
-#: admin/views/editor_person.php:1050 admin/views/editor_person.php:1187
-#: admin/views/editor_person.php:1338 admin/views/editor_person.php:1421
+#: admin/views/editor_person.php:1044 admin/views/editor_person.php:1179
+#: admin/views/editor_person.php:1330 admin/views/editor_person.php:1407
 #: admin/views/editor_relation.php:116 admin/views/editor_relation.php:291
 #: admin/views/editor_relation.php:310 admin/views/editor_relation.php:368
 #: admin/views/editor_relation.php:445 admin/views/editor_relation.php:535
-#: admin/views/editor_relation.php:674 admin/views/editor_relation.php:750
-#: admin/views/editor_relation.php:849 admin/views/editor_relation.php:1228
+#: admin/views/editor_relation.php:673 admin/views/editor_relation.php:749
+#: admin/views/editor_relation.php:847 admin/views/editor_relation.php:1226
 #: admin/views/gedcom_export.php:164 admin/views/language_editor.php:250
 #: admin/views/maps_locations.php:753 admin/views/settings_homepage.php:220
 #: admin/views/settings_homepage.php:415 admin/views/tree_merge.php:615
@@ -507,38 +517,38 @@ msgstr "GEDCOM-nummer (ID)"
 msgid "Search"
 msgstr "Zoeken"
 
-#: admin/include/editor_event_cls.php:1038
-#: admin/include/editor_event_cls.php:1043
-#: admin/include/editor_event_cls.php:1072 admin/views/cms_pages.php:196
+#: admin/include/editor_event_cls.php:1005
+#: admin/include/editor_event_cls.php:1010
+#: admin/include/editor_event_cls.php:1050 admin/views/cms_pages.php:196
 #: admin/views/edit_address.php:87 admin/views/edit_address.php:278
 #: admin/views/edit_repository.php:70 admin/views/edit_repository.php:229
 #: admin/views/edit_source.php:160 admin/views/edit_source.php:371
-#: admin/views/editor_person.php:1245 admin/views/editor_person.php:1717
-#: admin/views/editor_relation.php:1053 admin/views/index_admin.php:663
+#: admin/views/editor_person.php:1237 admin/views/editor_person.php:1702
+#: admin/views/editor_relation.php:1051 admin/views/index_admin.php:663
 #: admin/views/thumbs.php:404 include/calculate_age_cls.php:371
 #: include/calculate_age_cls.php:393 include/calculate_age_cls.php:497
 #: include/calculate_age_cls.php:519 views/fanchart.php:657
 msgid "or"
 msgstr "of"
 
-#: admin/include/editor_event_cls.php:1058
+#: admin/include/editor_event_cls.php:1024
 msgid "Select role or type other role:"
 msgstr "Selecteer rol of typ andere rol:"
 
-#: admin/include/editor_event_cls.php:1062
+#: admin/include/editor_event_cls.php:1028
 msgid "Select role"
 msgstr "Selecteer rol"
 
-#: admin/include/editor_event_cls.php:1065
+#: admin/include/editor_event_cls.php:1031
 msgid "Witness"
 msgstr "Getuige"
 
-#: admin/include/editor_event_cls.php:1067
-#: admin/include/editor_event_cls.php:1074
+#: admin/include/editor_event_cls.php:1045
+#: admin/include/editor_event_cls.php:1052
 msgid "Other role"
 msgstr "Andere rol"
 
-#: admin/include/editor_event_cls.php:1238
+#: admin/include/editor_event_cls.php:1222
 #: admin/include/editor_relation_select.php:110 admin/views/editor.php:664
 #: admin/views/editor_person.php:249 admin/views/editor_relation.php:63
 #: admin/views/editor_relation.php:272 admin/views/editor_relation.php:305
@@ -553,214 +563,214 @@ msgstr "Andere rol"
 msgid "and"
 msgstr "en"
 
-#: admin/include/editor_event_cls.php:1319
-#: admin/include/editor_event_cls.php:1332
+#: admin/include/editor_event_cls.php:1303
+#: admin/include/editor_event_cls.php:1316
 msgid "Selected colour"
 msgstr "Geselecteerde kleur"
 
-#: admin/include/editor_event_cls.php:1335
+#: admin/include/editor_event_cls.php:1319
 msgid "Change colour mark by person"
 msgstr "Wijzig kleur markering bij persoon"
 
-#: admin/include/editor_event_cls.php:1336
+#: admin/include/editor_event_cls.php:1320
 msgid "Colour 1"
 msgstr "Kleur 1"
 
-#: admin/include/editor_event_cls.php:1337
+#: admin/include/editor_event_cls.php:1321
 msgid "Colour 2"
 msgstr "Kleur 2"
 
-#: admin/include/editor_event_cls.php:1338
+#: admin/include/editor_event_cls.php:1322
 msgid "Colour 3"
 msgstr "Kleur 3"
 
-#: admin/include/editor_event_cls.php:1339
+#: admin/include/editor_event_cls.php:1323
 msgid "Colour 4"
 msgstr "Kleur 4"
 
-#: admin/include/editor_event_cls.php:1340
+#: admin/include/editor_event_cls.php:1324
 msgid "Colour 5"
 msgstr "Kleur 5"
 
-#: admin/include/editor_event_cls.php:1341
+#: admin/include/editor_event_cls.php:1325
 msgid "Colour 6"
 msgstr "Kleur 6"
 
-#: admin/include/editor_event_cls.php:1342
+#: admin/include/editor_event_cls.php:1326
 msgid "Colour 7"
 msgstr "Kleur 7"
 
-#: admin/include/editor_event_cls.php:1343
+#: admin/include/editor_event_cls.php:1327
 msgid "Colour 8"
 msgstr "Kleur 8"
 
-#: admin/include/editor_event_cls.php:1344
+#: admin/include/editor_event_cls.php:1328
 msgid "Colour 9"
 msgstr "Kleur 9"
 
-#: admin/include/editor_event_cls.php:1345
+#: admin/include/editor_event_cls.php:1329
 msgid "Colour 10"
 msgstr "Kleur 10"
 
-#: admin/include/editor_event_cls.php:1346
+#: admin/include/editor_event_cls.php:1330
 msgid "Colour 11"
 msgstr "Kleur 11"
 
-#: admin/include/editor_event_cls.php:1347
+#: admin/include/editor_event_cls.php:1331
 msgid "Colour 12"
 msgstr "Kleur 12"
 
-#: admin/include/editor_event_cls.php:1348
+#: admin/include/editor_event_cls.php:1332
 msgid "Colour 13"
 msgstr "Kleur 13"
 
-#: admin/include/editor_event_cls.php:1349
+#: admin/include/editor_event_cls.php:1333
 msgid "Colour 14"
 msgstr "Kleur 14"
 
-#: admin/include/editor_event_cls.php:1355
+#: admin/include/editor_event_cls.php:1339
 msgid "Also change"
 msgstr "Ook wijzigen"
 
-#: admin/include/editor_event_cls.php:1357 admin/include/editor_inc.php:648
+#: admin/include/editor_event_cls.php:1341 admin/include/editor_inc.php:627
 #: admin/views/gedcom_export.php:256 app/model/family.php:263
 #: include/person_cls.php:1025 include/person_cls.php:1026
 #: views/hourglass.php:160
 msgid "Descendants"
 msgstr "Afstammelingen"
 
-#: admin/include/editor_event_cls.php:1358 admin/include/editor_inc.php:649
+#: admin/include/editor_event_cls.php:1342 admin/include/editor_inc.php:628
 #: admin/views/gedcom_export.php:274 app/model/ancestor.php:176
 #: include/person_cls.php:1034 include/person_cls.php:1035
 #: views/hourglass.php:140
 msgid "Ancestors"
 msgstr "Voorouders"
 
-#: admin/include/editor_event_cls.php:1408
-#: admin/include/editor_event_cls.php:1888
+#: admin/include/editor_event_cls.php:1392
+#: admin/include/editor_event_cls.php:1872
 msgid "German Rufname"
 msgstr "German Rufname"
 
-#: admin/include/editor_event_cls.php:1461
+#: admin/include/editor_event_cls.php:1445
 msgid "Baptise"
 msgstr "Doop"
 
-#: admin/include/editor_event_cls.php:1477
+#: admin/include/editor_event_cls.php:1461
 msgid "Settling"
 msgstr "Vestiging"
 
-#: admin/include/editor_event_cls.php:1489
+#: admin/include/editor_event_cls.php:1473
 msgid "Characteristics"
 msgstr "Kenmerken"
 
-#: admin/include/editor_event_cls.php:1499 admin/views/editor_person.php:1394
+#: admin/include/editor_event_cls.php:1483 admin/views/editor_person.php:1380
 msgid "Buried"
 msgstr "Begraven"
 
-#: admin/include/editor_event_cls.php:1506
+#: admin/include/editor_event_cls.php:1490
 msgid "Will"
 msgstr "Testament"
 
-#: admin/include/editor_event_cls.php:1513 views/anniversary.php:62
+#: admin/include/editor_event_cls.php:1497 views/anniversary.php:62
 #: views/anniversary.php:217
 msgid "Religious"
 msgstr "Religeus"
 
-#: admin/include/editor_event_cls.php:1522 include/language_event.php:27
+#: admin/include/editor_event_cls.php:1506 include/language_event.php:27
 msgid "Education"
 msgstr "Opleiding"
 
-#: admin/include/editor_event_cls.php:1529
+#: admin/include/editor_event_cls.php:1513
 msgid "Social"
 msgstr "Sociaal"
 
-#: admin/include/editor_event_cls.php:1537
+#: admin/include/editor_event_cls.php:1521
 msgid "LDS"
 msgstr "LDS"
 
-#: admin/include/editor_event_cls.php:1547
+#: admin/include/editor_event_cls.php:1531
 msgid "Jewish"
 msgstr "Joods"
 
-#: admin/include/editor_event_cls.php:1577
-#: admin/include/editor_event_cls.php:1856
+#: admin/include/editor_event_cls.php:1561
+#: admin/include/editor_event_cls.php:1840
 msgid "e.g. Lt. Cmndr."
 msgstr "bijv. Lt. Cmndr."
 
-#: admin/include/editor_event_cls.php:1579
-#: admin/include/editor_event_cls.php:1857
+#: admin/include/editor_event_cls.php:1563
+#: admin/include/editor_event_cls.php:1841
 msgid "e.g. Jr."
 msgstr "Bijv. Jr."
 
-#: admin/include/editor_event_cls.php:1581
-#: admin/include/editor_event_cls.php:1858
+#: admin/include/editor_event_cls.php:1565
+#: admin/include/editor_event_cls.php:1842
 msgid "e.g. Jhr., Jkvr."
 msgstr "bijv. Jhr., Jkvr."
 
-#: admin/include/editor_event_cls.php:1583
-#: admin/include/editor_event_cls.php:1859
+#: admin/include/editor_event_cls.php:1567
+#: admin/include/editor_event_cls.php:1843
 msgid "e.g. Prof., Dr."
 msgstr "bijv. Prof., Dr."
 
-#: admin/include/editor_event_cls.php:1585
-#: admin/include/editor_event_cls.php:1860
+#: admin/include/editor_event_cls.php:1569
+#: admin/include/editor_event_cls.php:1844
 msgid "e.g. Lord of Amsterdam"
 msgstr "bijv. Lord of Amsterdam"
 
-#: admin/include/editor_event_cls.php:1600
-#: admin/include/editor_event_cls.php:1698
-#: admin/include/editor_event_cls.php:1731 admin/include/editor_sources.php:345
+#: admin/include/editor_event_cls.php:1584
+#: admin/include/editor_event_cls.php:1682
+#: admin/include/editor_event_cls.php:1715 admin/include/editor_sources.php:345
 #: admin/include/editor_sources.php:407 admin/views/edit_repository.php:157
 #: admin/views/edit_source.php:255 admin/views/editor.php:1249
 #: admin/views/editor.php:1283 admin/views/editor.php:1303
 #: admin/views/editor.php:1323 admin/views/editor.php:1662
 #: admin/views/editor_person.php:670 admin/views/editor_person.php:768
-#: admin/views/editor_person.php:868 admin/views/editor_person.php:963
-#: admin/views/editor_person.php:1039 admin/views/editor_person.php:1176
-#: admin/views/editor_person.php:1325 admin/views/editor_person.php:1410
+#: admin/views/editor_person.php:862 admin/views/editor_person.php:957
+#: admin/views/editor_person.php:1033 admin/views/editor_person.php:1168
+#: admin/views/editor_person.php:1317 admin/views/editor_person.php:1396
 #: admin/views/editor_relation.php:357 admin/views/editor_relation.php:434
-#: admin/views/editor_relation.php:524 admin/views/editor_relation.php:663
-#: admin/views/editor_relation.php:739 admin/views/editor_relation.php:838
+#: admin/views/editor_relation.php:524 admin/views/editor_relation.php:662
+#: admin/views/editor_relation.php:738 admin/views/editor_relation.php:836
 #: app/model/tree_index.php:951 include/show_source_pdf.php:49
 #: views/list.php:237 views/list.php:257 views/list.php:702 views/list.php:728
 #: views/source.php:37 views/source.php:115 views/sources.php:69
 msgid "Date"
 msgstr "Datum"
 
-#: admin/include/editor_event_cls.php:1624
-#: admin/include/editor_event_cls.php:1705
-#: admin/include/editor_event_cls.php:1738 admin/include/editor_sources.php:352
+#: admin/include/editor_event_cls.php:1608
+#: admin/include/editor_event_cls.php:1689
+#: admin/include/editor_event_cls.php:1722 admin/include/editor_sources.php:352
 #: admin/include/editor_sources.php:414 admin/views/edit_address.php:141
 #: admin/views/edit_repository.php:167 admin/views/edit_source.php:263
 #: admin/views/editor.php:1255 admin/views/editor.php:1289
 #: admin/views/editor.php:1309 admin/views/editor.php:1329
 #: admin/views/editor.php:1601 admin/views/editor_person.php:677
-#: admin/views/editor_person.php:776 admin/views/editor_person.php:875
-#: admin/views/editor_person.php:970 admin/views/editor_person.php:1046
-#: admin/views/editor_person.php:1183 admin/views/editor_person.php:1333
-#: admin/views/editor_person.php:1417 admin/views/editor_relation.php:364
+#: admin/views/editor_person.php:776 admin/views/editor_person.php:869
+#: admin/views/editor_person.php:964 admin/views/editor_person.php:1040
+#: admin/views/editor_person.php:1175 admin/views/editor_person.php:1325
+#: admin/views/editor_person.php:1403 admin/views/editor_relation.php:364
 #: admin/views/editor_relation.php:441 admin/views/editor_relation.php:531
-#: admin/views/editor_relation.php:670 admin/views/editor_relation.php:746
-#: admin/views/editor_relation.php:845 include/show_source_pdf.php:84
+#: admin/views/editor_relation.php:669 admin/views/editor_relation.php:745
+#: admin/views/editor_relation.php:843 include/show_source_pdf.php:84
 #: views/address.php:25 views/list.php:250 views/list.php:270
 #: views/list.php:361 views/list.php:368 views/list.php:715 views/list.php:741
 #: views/source.php:50 views/source.php:119 views/sources.php:86
 msgid "Place"
 msgstr "Plaats"
 
-#: admin/include/editor_event_cls.php:1646
-#: admin/include/editor_event_cls.php:1712
-#: admin/include/editor_event_cls.php:1745 admin/include/editor_sources.php:366
+#: admin/include/editor_event_cls.php:1630
+#: admin/include/editor_event_cls.php:1696
+#: admin/include/editor_event_cls.php:1729 admin/include/editor_sources.php:366
 #: admin/views/edit_address.php:253 admin/views/edit_repository.php:187
 #: admin/views/edit_source.php:344 admin/views/editor.php:1655
 #: admin/views/editor_person.php:445 admin/views/editor_person.php:704
-#: admin/views/editor_person.php:794 admin/views/editor_person.php:890
-#: admin/views/editor_person.php:985 admin/views/editor_person.php:1071
-#: admin/views/editor_person.php:1260 admin/views/editor_person.php:1351
-#: admin/views/editor_person.php:1448 admin/views/editor_relation.php:389
+#: admin/views/editor_person.php:794 admin/views/editor_person.php:884
+#: admin/views/editor_person.php:979 admin/views/editor_person.php:1065
+#: admin/views/editor_person.php:1252 admin/views/editor_person.php:1343
+#: admin/views/editor_person.php:1434 admin/views/editor_relation.php:389
 #: admin/views/editor_relation.php:458 admin/views/editor_relation.php:608
-#: admin/views/editor_relation.php:687 admin/views/editor_relation.php:763
-#: admin/views/editor_relation.php:878 admin/views/editor_relation.php:918
+#: admin/views/editor_relation.php:686 admin/views/editor_relation.php:762
+#: admin/views/editor_relation.php:876 admin/views/editor_relation.php:916
 #: admin/views/groups.php:497 admin/views/groups.php:505
 #: admin/views/groups.php:513 admin/views/settings_homepage.php:226
 #: admin/views/settings_homepage.php:334 admin/views/settings_homepage.php:421
@@ -770,7 +780,7 @@ msgstr "Plaats"
 msgid "Text"
 msgstr "Tekst"
 
-#: admin/include/editor_event_cls.php:1654 admin/include/editor_sources.php:71
+#: admin/include/editor_event_cls.php:1638 admin/include/editor_sources.php:71
 #: admin/include/editor_sources.php:77 admin/include/editor_sources.php:83
 #: admin/include/editor_sources.php:89 admin/include/editor_sources.php:95
 #: admin/include/editor_sources.php:101 admin/include/editor_sources.php:107
@@ -785,121 +795,121 @@ msgstr "Tekst"
 #: admin/views/edit_address.php:198 admin/views/editor.php:1031
 #: admin/views/editor.php:1039 admin/views/editor.php:1700
 #: admin/views/editor_person.php:509 admin/views/editor_person.php:712
-#: admin/views/editor_person.php:802 admin/views/editor_person.php:898
-#: admin/views/editor_person.php:993 admin/views/editor_person.php:1079
-#: admin/views/editor_person.php:1268 admin/views/editor_person.php:1359
-#: admin/views/editor_person.php:1456 admin/views/editor_person.php:1487
-#: admin/views/editor_person.php:1512 admin/views/editor_relation.php:397
+#: admin/views/editor_person.php:802 admin/views/editor_person.php:892
+#: admin/views/editor_person.php:987 admin/views/editor_person.php:1073
+#: admin/views/editor_person.php:1260 admin/views/editor_person.php:1351
+#: admin/views/editor_person.php:1442 admin/views/editor_person.php:1472
+#: admin/views/editor_person.php:1497 admin/views/editor_relation.php:397
 #: admin/views/editor_relation.php:466 admin/views/editor_relation.php:616
-#: admin/views/editor_relation.php:695 admin/views/editor_relation.php:771
-#: admin/views/editor_relation.php:886 admin/views/editor_relation.php:926
-#: admin/views/editor_relation.php:949 app/controller/sourceController.php:22
+#: admin/views/editor_relation.php:694 admin/views/editor_relation.php:770
+#: admin/views/editor_relation.php:884 admin/views/editor_relation.php:924
+#: admin/views/editor_relation.php:947 app/controller/sourceController.php:22
 #: views/address.php:49 views/source.php:15
 msgid "Source"
 msgstr "Bron"
 
-#: admin/include/editor_event_cls.php:1762
+#: admin/include/editor_event_cls.php:1746
 msgid "Upload new image"
 msgstr "Nieuwe afbeelding uploaden"
 
-#: admin/include/editor_event_cls.php:1764 admin/update/install_update.php:605
+#: admin/include/editor_event_cls.php:1748 admin/update/install_update.php:605
 #: admin/views/backup.php:110 admin/views/gedcom.php:149
 #: admin/views/settings.php:98 admin/views/settings.php:467
 msgid "Upload"
 msgstr "Upload"
 
-#: admin/include/editor_event_cls.php:1866 include/person_cls.php:1835
+#: admin/include/editor_event_cls.php:1850 include/person_cls.php:1835
 #: include/person_cls.php:1841
 msgid "Also known as"
 msgstr "Ook bekend als"
 
-#: admin/include/editor_event_cls.php:1867 include/language_event.php:80
+#: admin/include/editor_event_cls.php:1851 include/language_event.php:80
 msgid "alias name"
 msgstr "alias"
 
-#: admin/include/editor_event_cls.php:1868 include/language_event.php:83
+#: admin/include/editor_event_cls.php:1852 include/language_event.php:83
 msgid "Short name (for reports)"
 msgstr "Verkort voor rapporten"
 
-#: admin/include/editor_event_cls.php:1869 include/language_event.php:86
+#: admin/include/editor_event_cls.php:1853 include/language_event.php:86
 msgid "Adopted name"
 msgstr "Adoptienaam"
 
-#: admin/include/editor_event_cls.php:1873 admin/views/editor_person.php:426
+#: admin/include/editor_event_cls.php:1857 admin/views/editor_person.php:426
 #: include/language_event.php:89
 msgid "Hebrew name"
 msgstr "Hebreeuwse naam"
 
-#: admin/include/editor_event_cls.php:1876 include/language_event.php:92
+#: admin/include/editor_event_cls.php:1860 include/language_event.php:92
 msgid "Census name"
 msgstr "Censusnaam"
 
-#: admin/include/editor_event_cls.php:1877 include/language_event.php:95
+#: admin/include/editor_event_cls.php:1861 include/language_event.php:95
 msgid "Married name"
 msgstr "Huwelijksnaam"
 
-#: admin/include/editor_event_cls.php:1878 include/language_event.php:98
+#: admin/include/editor_event_cls.php:1862 include/language_event.php:98
 msgid "Given name"
 msgstr "Roepnaam"
 
-#: admin/include/editor_event_cls.php:1879 include/language_event.php:101
+#: admin/include/editor_event_cls.php:1863 include/language_event.php:101
 msgid "Farm name"
 msgstr "Boerderijnaam"
 
-#: admin/include/editor_event_cls.php:1880 include/language_event.php:104
+#: admin/include/editor_event_cls.php:1864 include/language_event.php:104
 msgid "Birth name"
 msgstr "Geboortenaam"
 
-#: admin/include/editor_event_cls.php:1881 include/language_event.php:107
+#: admin/include/editor_event_cls.php:1865 include/language_event.php:107
 msgid "Indian name"
 msgstr "Indiaanse naam"
 
-#: admin/include/editor_event_cls.php:1882 include/language_event.php:110
+#: admin/include/editor_event_cls.php:1866 include/language_event.php:110
 msgid "Formal name"
 msgstr "Officiële naam"
 
-#: admin/include/editor_event_cls.php:1883 include/language_event.php:113
+#: admin/include/editor_event_cls.php:1867 include/language_event.php:113
 msgid "Current name"
 msgstr "Huidige naam"
 
-#: admin/include/editor_event_cls.php:1884 include/language_event.php:116
+#: admin/include/editor_event_cls.php:1868 include/language_event.php:116
 msgid "Soldier name"
 msgstr "Soldatennaam"
 
-#: admin/include/editor_event_cls.php:1885 include/language_event.php:122
+#: admin/include/editor_event_cls.php:1869 include/language_event.php:122
 msgid "Religious name"
 msgstr "Kloosternaam"
 
-#: admin/include/editor_event_cls.php:1886 include/language_event.php:125
+#: admin/include/editor_event_cls.php:1870 include/language_event.php:125
 msgid "Other name"
 msgstr "Andere naam"
 
-#: admin/include/editor_event_cls.php:1887 include/language_event.php:119
+#: admin/include/editor_event_cls.php:1871 include/language_event.php:119
 msgid "Formerly known as"
 msgstr "Voorheen bekend als"
 
-#: admin/include/editor_inc.php:298 admin/views/settings_admin.php:116
+#: admin/include/editor_inc.php:278 admin/views/settings_admin.php:116
 #: admin/views/settings_admin.php:135
 msgid "Photo upload failed, check folder rights"
 msgstr "De foto upload is mislukt, controleer de map rechten"
 
-#: admin/include/editor_inc.php:391
+#: admin/include/editor_inc.php:371
 msgid "Media upload failed, check folder rights"
 msgstr "De upload is mislukt, controleer de map rechten"
 
-#: admin/include/editor_inc.php:424
+#: admin/include/editor_inc.php:404
 msgid "No valid picture, media or document file"
 msgstr "Geen geldige afbeelding, media of document bestand"
 
-#: admin/include/editor_inc.php:626 admin/include/editor_inc.php:1136
+#: admin/include/editor_inc.php:613 admin/include/editor_inc.php:1185
 msgid "Are you sure you want to remove this event?"
 msgstr "Weet je zeker dat je deze gebeurtenis wilt verwijderen?"
 
-#: admin/include/editor_inc.php:647
+#: admin/include/editor_inc.php:626
 msgid "Also remove colour marks of"
 msgstr "Verwijder ook kleuren markering van"
 
-#: admin/include/editor_inc.php:652 admin/include/editor_inc.php:1137
+#: admin/include/editor_inc.php:631 admin/include/editor_inc.php:1186
 #: admin/include/editor_user_settings.php:100 admin/models/editor.php:1358
 #: admin/models/editor.php:1923 admin/views/cms_pages.php:37
 #: admin/views/cms_pages.php:60 admin/views/edit_address.php:35
@@ -924,7 +934,7 @@ msgstr "Verwijder ook kleuren markering van"
 msgid "Yes"
 msgstr "Ja"
 
-#: admin/include/editor_inc.php:653 admin/include/editor_inc.php:1138
+#: admin/include/editor_inc.php:632 admin/include/editor_inc.php:1187
 #: admin/include/editor_user_settings.php:106 admin/models/editor.php:1359
 #: admin/models/editor.php:1924 admin/views/cms_pages.php:38
 #: admin/views/cms_pages.php:61 admin/views/edit_address.php:36
@@ -1008,29 +1018,29 @@ msgid "born"
 msgstr "geboren"
 
 #: admin/include/editor_sources.php:89 admin/views/editor.php:1280
-#: admin/views/editor_person.php:1020 app/model/timeline.php:102
+#: admin/views/editor_person.php:1014 app/model/timeline.php:102
 #: app/model/tree_index.php:915 app/model/tree_index.php:917
-#: googlemaps/namesearch.php:188 include/person_cls.php:2232
-#: include/person_cls.php:2233 include/person_cls.php:2235
-#: include/person_cls.php:2236 views/family.php:1145 views/list.php:235
+#: googlemaps/namesearch.php:188 include/person_cls.php:2199
+#: include/person_cls.php:2200 include/person_cls.php:2202
+#: include/person_cls.php:2203 views/family.php:1145 views/list.php:235
 #: views/list.php:243 views/list.php:640 views/maps.php:448 views/maps.php:579
 msgid "baptised"
 msgstr "gedoopt"
 
 #: admin/include/editor_sources.php:95 admin/include/editor_sources.php:101
-#: admin/views/editor.php:1300 admin/views/editor_person.php:1112
+#: admin/views/editor.php:1300 admin/views/editor_person.php:1104
 #: app/model/tree_index.php:924 app/model/tree_index.php:926
-#: googlemaps/namesearch.php:194 include/person_cls.php:2385
-#: include/person_cls.php:2386 include/person_cls.php:2388
-#: include/person_cls.php:2389 views/ancestor_sheet.php:295
+#: googlemaps/namesearch.php:194 include/person_cls.php:2352
+#: include/person_cls.php:2353 include/person_cls.php:2355
+#: include/person_cls.php:2356 views/ancestor_sheet.php:295
 #: views/ancestor_sheet_pdf.php:373 views/anniversary.php:97 views/list.php:255
 #: views/list.php:263 views/list.php:641 views/maps.php:451 views/maps.php:582
 msgid "died"
 msgstr "overleden"
 
 #: admin/include/editor_sources.php:107 admin/views/editor.php:1320
-#: admin/views/editor_person.php:1430 app/model/timeline.php:128
-#: googlemaps/namesearch.php:197 include/person_cls.php:2591 views/list.php:255
+#: admin/views/editor_person.php:1416 app/model/timeline.php:128
+#: googlemaps/namesearch.php:197 include/person_cls.php:2531 views/list.php:255
 #: views/list.php:263 views/list.php:641 views/maps.php:454 views/maps.php:585
 msgid "buried"
 msgstr "begraven"
@@ -1071,15 +1081,15 @@ msgstr "Ondertrouw"
 msgid "Marriage"
 msgstr "Huwelijk"
 
-#: admin/include/editor_sources.php:149 admin/views/editor_relation.php:646
+#: admin/include/editor_sources.php:149 admin/views/editor_relation.php:645
 msgid "Religious Notice of Marriage"
 msgstr "Ondertrouw religieus"
 
-#: admin/include/editor_sources.php:155 admin/views/editor_relation.php:720
+#: admin/include/editor_sources.php:155 admin/views/editor_relation.php:719
 msgid "Religious Marriage"
 msgstr "Huwelijk religieus"
 
-#: admin/include/editor_sources.php:161 admin/views/editor_relation.php:816
+#: admin/include/editor_sources.php:161 admin/views/editor_relation.php:814
 msgid "Divorce"
 msgstr "Scheiding"
 
@@ -1093,19 +1103,19 @@ msgstr "relatie"
 #: admin/views/edit_rename_place.php:82 admin/views/edit_repository.php:225
 #: admin/views/edit_repository.php:228 admin/views/edit_source.php:368
 #: admin/views/edit_source.php:370 admin/views/editor_person.php:356
-#: admin/views/editor_person.php:1716 admin/views/editor_relation.php:271
-#: admin/views/editor_relation.php:1051 admin/views/index_admin.php:170
+#: admin/views/editor_person.php:1701 admin/views/editor_relation.php:271
+#: admin/views/editor_relation.php:1049 admin/views/index_admin.php:170
 #: admin/views/language_editor.php:264 admin/views/maps_worldmap.php:103
 #: admin/views/maps_worldmap.php:138 admin/views/prefix_editor.php:27
 #: admin/views/tree_merge.php:1042
 msgid "Save"
 msgstr "Opslaan"
 
-#: admin/include/editor_sources.php:264 admin/views/editor_relation.php:1180
+#: admin/include/editor_sources.php:264 admin/views/editor_relation.php:1178
 msgid "Drag to change order (saves automatically)"
 msgstr "Sleep om de volgorde te wijzigen (wordt automatisch opgeslagen)"
 
-#: admin/include/editor_sources.php:264 admin/views/editor_relation.php:1180
+#: admin/include/editor_sources.php:264 admin/views/editor_relation.php:1178
 msgid "Drag to change order"
 msgstr "Sleep om volgorde te wijzigen"
 
@@ -2469,13 +2479,13 @@ msgid "Latest changes"
 msgstr "Laatste wijzigingen"
 
 #: admin/views/editor.php:110 admin/views/editor.php:1853
-#: admin/views/editor_person.php:1663 admin/views/editor_person.php:1682
-#: admin/views/editor_relation.php:1023 admin/views/notes.php:234
+#: admin/views/editor_person.php:1648 admin/views/editor_person.php:1667
+#: admin/views/editor_relation.php:1021 admin/views/notes.php:234
 msgid "Added by"
 msgstr "Toegevoegd door"
 
 #: admin/views/editor.php:118 admin/views/editor.php:1865
-#: admin/views/editor_person.php:1699 admin/views/editor_relation.php:1040
+#: admin/views/editor_person.php:1684 admin/views/editor_relation.php:1038
 msgid "Changed by"
 msgstr "Gewijzigd door"
 
@@ -2531,23 +2541,23 @@ msgid "Browse"
 msgstr "Bladeren"
 
 #: admin/views/editor.php:617 admin/views/editor_relation.php:278
-#: admin/views/editor_relation.php:491 include/marriage_cls.php:814
+#: admin/views/editor_relation.php:491 include/marriage_cls.php:798
 msgid "marriage/ relation"
 msgstr "huwelijk/ relatie"
 
 #: admin/views/editor.php:619 admin/views/editor_relation.php:579
-#: include/marriage_cls.php:383 include/marriage_cls.php:389
-#: include/marriage_cls.php:398 include/marriage_cls.php:399
+#: include/marriage_cls.php:375 include/marriage_cls.php:381
+#: include/marriage_cls.php:390 include/marriage_cls.php:391
 msgid "Married"
 msgstr "Gehuwd"
 
 #: admin/views/editor.php:626 include/marriage_cls.php:61
 #: include/marriage_cls.php:158 include/marriage_cls.php:256
-#: include/marriage_cls.php:370 include/marriage_cls.php:397
-#: include/marriage_cls.php:453 include/marriage_cls.php:545
-#: include/marriage_cls.php:790 include/marriage_cls.php:794
-#: include/marriage_cls.php:802 include/marriage_cls.php:806
-#: include/marriage_cls.php:819 include/marriage_cls.php:823
+#: include/marriage_cls.php:362 include/marriage_cls.php:389
+#: include/marriage_cls.php:445 include/marriage_cls.php:529
+#: include/marriage_cls.php:774 include/marriage_cls.php:778
+#: include/marriage_cls.php:786 include/marriage_cls.php:790
+#: include/marriage_cls.php:803 include/marriage_cls.php:807
 #: views/ancestor_report.php:221 views/ancestor_report_pdf.php:282
 #: views/ancestor_report_rtf.php:271 views/descendant_chart.php:383
 msgid " to: "
@@ -2653,7 +2663,7 @@ msgid "Add relation"
 msgstr "Relatie toevoegen"
 
 #: admin/views/editor.php:1231 admin/views/editor.php:1349
-#: admin/views/editor_relation.php:1196 admin/views/editor_relation.php:1198
+#: admin/views/editor_relation.php:1194 admin/views/editor_relation.php:1196
 msgid "Add child"
 msgstr "Kind toevoegen"
 
@@ -2824,30 +2834,30 @@ msgstr "Alle"
 msgid "For example: Joseph ben Hirsch Zvi"
 msgstr "Bijvoorbeeld: Joseph ben Hirsch Zvi"
 
-#: admin/views/editor_person.php:656 admin/views/editor_person.php:1119
+#: admin/views/editor_person.php:656 admin/views/editor_person.php:1111
 #: include/person_cls.php:1962 include/person_cls.php:1964
-#: include/person_cls.php:1968 include/person_cls.php:2283
+#: include/person_cls.php:1968 include/person_cls.php:2250
 msgid "at"
 msgstr "om"
 
-#: admin/views/editor_person.php:656 admin/views/editor_person.php:1119
+#: admin/views/editor_person.php:656 admin/views/editor_person.php:1111
 #: include/person_cls.php:1962 include/person_cls.php:1964
-#: include/person_cls.php:1968 include/person_cls.php:2283
+#: include/person_cls.php:1968 include/person_cls.php:2250
 msgid "hour"
 msgstr "uur"
 
 #: admin/views/editor_person.php:749 admin/views/tree_merge.php:1565
 #: include/person_cls.php:2098 include/person_cls.php:2099
 #: include/person_cls.php:2101 include/person_cls.php:2102
-#: include/witness.php:178
+#: include/witness.php:186
 msgid "birth declaration"
 msgstr "geboorteaangifte"
 
-#: admin/views/editor_person.php:854 include/language_event.php:16
+#: admin/views/editor_person.php:848 include/language_event.php:16
 msgid "Brit Mila"
 msgstr "Brit Mila"
 
-#: admin/views/editor_person.php:909 admin/views/editor_person.php:1004
+#: admin/views/editor_person.php:903 admin/views/editor_person.php:998
 msgid ""
 "To display this, the option \"Show events\" has to be checked in \"Users -> "
 "Groups\""
@@ -2855,96 +2865,91 @@ msgstr ""
 "Om dit weer te geven, moet de optie \"Gebeurtenissen weergeven\" worden "
 "aangevinkt in \"Gebruikers -> Groepen\""
 
-#: admin/views/editor_person.php:945 include/language_event.php:14
+#: admin/views/editor_person.php:939 include/language_event.php:14
 msgid "Bat Mitzvah"
 msgstr "Bat Mitzvah"
 
-#: admin/views/editor_person.php:947 include/language_event.php:13
+#: admin/views/editor_person.php:941 include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
 
-#: admin/views/editor_person.php:1025 admin/views/editor_person.php:1056
+#: admin/views/editor_person.php:1019 admin/views/editor_person.php:1050
 #: admin/views/tree_merge.php:1302 include/person_cls.php:2146
-#: include/person_cls.php:2148 include/person_cls.php:2724
+#: include/person_cls.php:2148 include/person_cls.php:2664
 msgid "religion"
 msgstr "religie"
 
-#: admin/views/editor_person.php:1034 admin/views/tree_merge.php:1569
-#: include/witness.php:184
-msgid "baptism witness"
-msgstr "doopgetuige"
-
-#: admin/views/editor_person.php:1128 admin/views/editor_person.php:1131
-#: admin/views/editor_person.php:1134 admin/views/editor_person.php:1143
-#: admin/views/editor_person.php:1146 admin/views/editor_person.php:1163
-#: admin/views/tree_merge.php:1297 include/person_cls.php:2310
-#: include/person_cls.php:2313 include/person_cls.php:2316
-#: include/person_cls.php:2325 include/person_cls.php:2328
-#: include/person_cls.php:2351 include/person_cls.php:2353
-#: include/person_cls.php:2361
+#: admin/views/editor_person.php:1120 admin/views/editor_person.php:1123
+#: admin/views/editor_person.php:1126 admin/views/editor_person.php:1135
+#: admin/views/editor_person.php:1138 admin/views/editor_person.php:1155
+#: admin/views/tree_merge.php:1297 include/person_cls.php:2277
+#: include/person_cls.php:2280 include/person_cls.php:2283
+#: include/person_cls.php:2292 include/person_cls.php:2295
+#: include/person_cls.php:2318 include/person_cls.php:2320
+#: include/person_cls.php:2328
 msgid "cause of death"
 msgstr "doodsoorzaak"
 
-#: admin/views/editor_person.php:1128 admin/views/editor_person.php:1233
-#: include/person_cls.php:2310 include/person_cls.php:2361
+#: admin/views/editor_person.php:1120 admin/views/editor_person.php:1225
+#: include/person_cls.php:2277 include/person_cls.php:2328
 msgid "murdered"
 msgstr "vermoord"
 
-#: admin/views/editor_person.php:1131 admin/views/editor_person.php:1234
-#: include/person_cls.php:2313
+#: admin/views/editor_person.php:1123 admin/views/editor_person.php:1226
+#: include/person_cls.php:2280
 msgid "drowned"
 msgstr "verdronken"
 
-#: admin/views/editor_person.php:1134 admin/views/editor_person.php:1235
-#: include/person_cls.php:2316
+#: admin/views/editor_person.php:1126 admin/views/editor_person.php:1227
+#: include/person_cls.php:2283
 msgid "perished"
 msgstr "verongelukt"
 
-#: admin/views/editor_person.php:1137 admin/views/editor_person.php:1236
-#: include/person_cls.php:2319
+#: admin/views/editor_person.php:1129 admin/views/editor_person.php:1228
+#: include/person_cls.php:2286
 msgid "killed in action"
 msgstr "gesneuveld"
 
-#: admin/views/editor_person.php:1140 admin/views/editor_person.php:1237
-#: include/person_cls.php:2322
+#: admin/views/editor_person.php:1132 admin/views/editor_person.php:1229
+#: include/person_cls.php:2289
 msgid "being missed"
 msgstr "vermist"
 
-#: admin/views/editor_person.php:1143 admin/views/editor_person.php:1238
-#: include/person_cls.php:2325
+#: admin/views/editor_person.php:1135 admin/views/editor_person.php:1230
+#: include/person_cls.php:2292
 msgid "committed suicide"
 msgstr "zelfmoord"
 
-#: admin/views/editor_person.php:1146 admin/views/editor_person.php:1239
-#: include/person_cls.php:2328
+#: admin/views/editor_person.php:1138 admin/views/editor_person.php:1231
+#: include/person_cls.php:2295
 msgid "executed"
 msgstr "terechtgesteld"
 
-#: admin/views/editor_person.php:1149 admin/views/editor_person.php:1240
-#: include/person_cls.php:2331
+#: admin/views/editor_person.php:1141 admin/views/editor_person.php:1232
+#: include/person_cls.php:2298
 msgid "died young"
 msgstr "jong overleden"
 
-#: admin/views/editor_person.php:1152 admin/views/editor_person.php:1241
-#: include/person_cls.php:2334
+#: admin/views/editor_person.php:1144 admin/views/editor_person.php:1233
+#: include/person_cls.php:2301
 msgid "died unmarried"
 msgstr "ongehuwd overleden"
 
-#: admin/views/editor_person.php:1155 admin/views/editor_person.php:1242
-#: include/person_cls.php:2337
+#: admin/views/editor_person.php:1147 admin/views/editor_person.php:1234
+#: include/person_cls.php:2304
 msgid "registration"
 msgstr "overlijden aangegeven"
 
-#: admin/views/editor_person.php:1158 admin/views/editor_person.php:1243
-#: include/person_cls.php:2340
+#: admin/views/editor_person.php:1150 admin/views/editor_person.php:1235
+#: include/person_cls.php:2307
 msgid "declared death"
 msgstr "dood verklaard"
 
-#: admin/views/editor_person.php:1194
+#: admin/views/editor_person.php:1186
 msgid "Age"
 msgstr "Leeftijd"
 
-#: admin/views/editor_person.php:1203
+#: admin/views/editor_person.php:1195
 msgid ""
 "If death year and age are used, then birth year is calculated automatically "
 "(when empty)."
@@ -2952,63 +2957,58 @@ msgstr ""
 "Als overlijdensjaar en leeftijd is ingevuld, dan wordt het geboortejaar "
 "automatisch ingevuld (als die niet is ingevuld)."
 
-#: admin/views/editor_person.php:1211 admin/views/tree_merge.php:1296
+#: admin/views/editor_person.php:1203 admin/views/tree_merge.php:1296
 msgid "death time"
 msgstr "ovl. tijd"
 
-#: admin/views/editor_person.php:1228
+#: admin/views/editor_person.php:1220
 msgid "cause"
 msgstr "oorzaak"
 
-#: admin/views/editor_person.php:1306 admin/views/tree_merge.php:1575
-#: include/person_cls.php:2480 include/person_cls.php:2481
-#: include/person_cls.php:2483 include/person_cls.php:2484
-#: include/witness.php:190
+#: admin/views/editor_person.php:1298 admin/views/tree_merge.php:1575
+#: include/person_cls.php:2420 include/person_cls.php:2421
+#: include/person_cls.php:2423 include/person_cls.php:2424
+#: include/witness.php:198
 msgid "death declaration"
 msgstr "overlijdensaangifte"
 
-#: admin/views/editor_person.php:1406 admin/views/tree_merge.php:1579
-#: include/witness.php:196
-msgid "burial witness"
-msgstr "begrafenisgetuige"
-
-#: admin/views/editor_person.php:1427
+#: admin/views/editor_person.php:1413
 msgid "method of burial"
 msgstr "methode van begraven"
 
-#: admin/views/editor_person.php:1431 admin/views/tree_merge.php:1298
-#: include/person_cls.php:2583
+#: admin/views/editor_person.php:1417 admin/views/tree_merge.php:1298
+#: include/person_cls.php:2523
 msgid "cremation"
 msgstr "crematie"
 
-#: admin/views/editor_person.php:1432 include/person_cls.php:2585
+#: admin/views/editor_person.php:1418 include/person_cls.php:2525
 msgid "resomated"
 msgstr "geresomeerd"
 
-#: admin/views/editor_person.php:1433 include/person_cls.php:2587
+#: admin/views/editor_person.php:1419 include/person_cls.php:2527
 msgid "sailor's grave"
 msgstr "zeemansgraf"
 
-#: admin/views/editor_person.php:1434 include/person_cls.php:2589
+#: admin/views/editor_person.php:1420 include/person_cls.php:2529
 msgid "donated to science"
 msgstr "geschonken aan de wetenschap"
 
-#: admin/views/editor_person.php:1481
+#: admin/views/editor_person.php:1466
 msgid "Text for person"
 msgstr "Tekst bij persoon"
 
-#: admin/views/editor_person.php:1508 include/show_sources.php:67
+#: admin/views/editor_person.php:1493 include/show_sources.php:67
 #: include/show_sources.php:175 include/show_sources.php:252
 msgid "Source for person"
 msgstr "Bron bij persoon"
 
-#: admin/views/editor_person.php:1532 admin/views/editor_person.php:1535
+#: admin/views/editor_person.php:1517 admin/views/editor_person.php:1520
 #: admin/views/tree_merge.php:1303 include/show_sources.php:302
 #: include/show_sources.php:391
 msgid "own code"
 msgstr "eigen code"
 
-#: admin/views/editor_person.php:1546
+#: admin/views/editor_person.php:1531
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users "
@@ -3023,28 +3023,28 @@ msgstr ""
 "icoon in de images map bijv. 'person.gif', and zet 'person' in het eigen "
 "code veld."
 
-#: admin/views/editor_person.php:1609 admin/views/editor_relation.php:988
+#: admin/views/editor_person.php:1594 admin/views/editor_relation.php:986
 msgid "GEDCOM tags"
 msgstr "GEDCOM-items"
 
-#: admin/views/editor_person.php:1614 admin/views/editor_person.php:1616
-#: admin/views/editor_relation.php:993 admin/views/editor_relation.php:995
+#: admin/views/editor_person.php:1599 admin/views/editor_person.php:1601
+#: admin/views/editor_relation.php:991 admin/views/editor_relation.php:993
 #, php-format
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr "Er zijn %d onverwerkte GEDCOM-items."
 
-#: admin/views/editor_person.php:1643 admin/views/notes.php:69
+#: admin/views/editor_person.php:1628 admin/views/notes.php:69
 #: views/family.php:1171
 msgid "User notes"
 msgstr "Gebruikersnotities"
 
-#: admin/views/editor_person.php:1645 admin/views/editor_person.php:1647
+#: admin/views/editor_person.php:1630 admin/views/editor_person.php:1632
 #: views/family.php:1176 views/family.php:1178
 #, php-format
 msgid "There are %d user added notes."
 msgstr "Er zijn %d toegevoegde gebruikersnotities."
 
-#: admin/views/editor_person.php:1718
+#: admin/views/editor_person.php:1703
 msgid "Delete person"
 msgstr "Verwijder persoon"
 
@@ -3089,10 +3089,6 @@ msgstr "Einddatum"
 #: admin/views/editor_relation.php:573 admin/views/editor_relation.php:578
 msgid "Marriage/ Related"
 msgstr "Gehuwd/ relatie"
-
-#: admin/views/editor_relation.php:519 include/witness.php:202
-msgid "marriage witness"
-msgstr "huwelijksgetuige"
 
 #: admin/views/editor_relation.php:542
 msgid "Age person 1"
@@ -3149,58 +3145,54 @@ msgstr "Geregistreerd partnerschap"
 msgid "Unknown relation"
 msgstr "Onbekende relatie"
 
-#: admin/views/editor_relation.php:594 admin/views/editor_relation.php:861
+#: admin/views/editor_relation.php:594 admin/views/editor_relation.php:859
 msgid "Registrar"
 msgstr "Instantie"
 
-#: admin/views/editor_relation.php:734 include/witness.php:208
-msgid "marriage witness (religious)"
-msgstr "huwelijksgetuige (religieus)"
-
-#: admin/views/editor_relation.php:909
+#: admin/views/editor_relation.php:907
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr ""
 "Scheiding (gebruik dit selectievakje voor een scheiding zonder verdere "
 "gegevens)."
 
-#: admin/views/editor_relation.php:915
+#: admin/views/editor_relation.php:913
 msgid "Text by relation"
 msgstr "Tekst bij relatie"
 
-#: admin/views/editor_relation.php:945
+#: admin/views/editor_relation.php:943
 msgid "Source by relation"
 msgstr "Bron bij relatie"
 
-#: admin/views/editor_relation.php:1057
+#: admin/views/editor_relation.php:1055
 msgid "Delete relation"
 msgstr "Verwijder relatie"
 
-#: admin/views/editor_relation.php:1159
+#: admin/views/editor_relation.php:1157
 msgid "Use this icon to order children (drag and drop)"
 msgstr ""
 "Gebruik dit icoon om kinderen op volgorde te zetten (slepen en neerzetten)"
 
-#: admin/views/editor_relation.php:1160
+#: admin/views/editor_relation.php:1158
 msgid "Or automatically order children:"
 msgstr "Of kinderen automatisch op volgorde zetten:"
 
-#: admin/views/editor_relation.php:1160
+#: admin/views/editor_relation.php:1158
 msgid "Automatic order children"
 msgstr "Automatisch kinderen op volgorde zetten"
 
-#: admin/views/editor_relation.php:1162
+#: admin/views/editor_relation.php:1160
 msgid "Children are re-ordered."
 msgstr "Volgorde kinderen is gewijzigd."
 
-#: admin/views/editor_relation.php:1184
+#: admin/views/editor_relation.php:1182
 msgid "Disconnect child"
 msgstr "Kind loskoppelen"
 
-#: admin/views/editor_relation.php:1220
+#: admin/views/editor_relation.php:1218
 msgid "Or add existing person as a child:"
 msgstr "Of voeg een bestaand persoon toe als kind:"
 
-#: admin/views/editor_relation.php:1232
+#: admin/views/editor_relation.php:1230
 msgid "Select child"
 msgstr "Selecteer kind"
 
@@ -6428,7 +6420,7 @@ msgstr "begrafenisdatum"
 #: admin/views/tree_check_consistency.php:610
 #: admin/views/tree_check_consistency.php:614
 #: admin/views/tree_check_consistency.php:658 app/model/timeline.php:221
-#: app/model/timeline.php:338 include/marriage_cls.php:788
+#: app/model/timeline.php:338 include/marriage_cls.php:772
 #: views/ancestor_sheet_pdf.php:373
 msgid "marriage"
 msgstr "huwelijk"
@@ -7383,6 +7375,14 @@ msgstr "(geen gegevens)"
 msgid "Picture"
 msgstr "Afbeelding"
 
+#: admin/views/tree_merge.php:1569 include/witness.php:192
+msgid "baptism witness"
+msgstr "doopgetuige"
+
+#: admin/views/tree_merge.php:1579 include/witness.php:204
+msgid "burial witness"
+msgstr "begrafenisgetuige"
+
 #: admin/views/tree_merge.php:1582
 msgid "Other names"
 msgstr "Andere namen"
@@ -8178,57 +8178,57 @@ msgstr "Ongehuwd"
 msgid "Marriage notice"
 msgstr "Ondertrouwd"
 
-#: include/marriage_cls.php:458 include/marriage_cls.php:460
-#: include/marriage_cls.php:462 views/list_places_families.php:63
+#: include/marriage_cls.php:450 include/marriage_cls.php:452
+#: include/marriage_cls.php:454 views/list_places_families.php:63
 #: views/list_places_families.php:213
 msgid "Married notice (religious)"
 msgstr "Ondertrouwd (religieus)"
 
-#: include/marriage_cls.php:550 include/marriage_cls.php:552
-#: include/marriage_cls.php:554 views/list_places_families.php:71
+#: include/marriage_cls.php:534 include/marriage_cls.php:536
+#: include/marriage_cls.php:538 views/list_places_families.php:71
 #: views/list_places_families.php:214
 msgid "Married (religious)"
 msgstr "Gehuwd (religieus)"
 
-#: include/marriage_cls.php:560 include/marriage_cls.php:561
+#: include/marriage_cls.php:544 include/marriage_cls.php:545
 msgid "religion: "
 msgstr "religie: "
 
-#: include/marriage_cls.php:612
+#: include/marriage_cls.php:596
 msgid "from:"
 msgstr "van:"
 
-#: include/marriage_cls.php:617 include/marriage_cls.php:619
-#: include/marriage_cls.php:621 include/marriage_cls.php:834
-#: include/marriage_cls.php:835
+#: include/marriage_cls.php:601 include/marriage_cls.php:603
+#: include/marriage_cls.php:605 include/marriage_cls.php:818
+#: include/marriage_cls.php:819
 msgid "divorced"
 msgstr "gescheiden"
 
-#: include/marriage_cls.php:631 include/marriage_cls.php:632
-#: include/marriage_cls.php:821
+#: include/marriage_cls.php:615 include/marriage_cls.php:616
+#: include/marriage_cls.php:805
 msgid "Married/ Related"
 msgstr "Huwelijk/relatie"
 
-#: include/marriage_cls.php:774 include/person_cls.php:1261 views/list.php:1097
+#: include/marriage_cls.php:758 include/person_cls.php:1261 views/list.php:1097
 #: views/list_places_families.php:395
 msgid "1st"
 msgstr "1e"
 
-#: include/marriage_cls.php:777 include/person_cls.php:1263 views/list.php:1099
+#: include/marriage_cls.php:761 include/person_cls.php:1263 views/list.php:1099
 #: views/list_places_families.php:397 views/relations.php:1631
 #: views/relations.php:2082 views/relations.php:2285 views/relations.php:2441
 #: views/relations.php:2893
 msgid "2nd"
 msgstr "2e"
 
-#: include/marriage_cls.php:780 include/person_cls.php:1265 views/list.php:1101
+#: include/marriage_cls.php:764 include/person_cls.php:1265 views/list.php:1101
 #: views/list_places_families.php:399 views/relations.php:1634
 #: views/relations.php:2085 views/relations.php:2288 views/relations.php:2444
 #: views/relations.php:2896
 msgid "3rd"
 msgstr "3e"
 
-#: include/marriage_cls.php:783 include/person_cls.php:1267 views/list.php:1103
+#: include/marriage_cls.php:767 include/person_cls.php:1267 views/list.php:1103
 #: views/list_places_families.php:401 views/relations.php:1307
 #: views/relations.php:1638 views/relations.php:2089 views/relations.php:2661
 #: views/relations.php:2765 views/relations.php:2900 views/relations.php:3645
@@ -8236,15 +8236,15 @@ msgstr "3e"
 msgid "th"
 msgstr "e"
 
-#: include/marriage_cls.php:792
+#: include/marriage_cls.php:776
 msgid "Married "
 msgstr "Gehuwd "
 
-#: include/marriage_cls.php:800 include/marriage_cls.php:804
+#: include/marriage_cls.php:784 include/marriage_cls.php:788
 msgid "related"
 msgstr "relatie"
 
-#: include/marriage_cls.php:816
+#: include/marriage_cls.php:800
 msgid "married/ related"
 msgstr "gehuwd/ relatie"
 
@@ -8357,19 +8357,19 @@ msgstr "adoptieouders"
 msgid "adoptive parent"
 msgstr "adoptieouder"
 
-#: include/person_cls.php:2618
+#: include/person_cls.php:2558
 msgid "ash dispersion"
 msgstr "asverstrooiing"
 
-#: include/person_cls.php:2640
+#: include/person_cls.php:2580
 msgid "occupation"
 msgstr "beroep"
 
-#: include/person_cls.php:2642
+#: include/person_cls.php:2582
 msgid "occupations"
 msgstr "beroepen"
 
-#: include/person_cls.php:2724
+#: include/person_cls.php:2664
 msgid "religions"
 msgstr "religies"
 
@@ -8442,9 +8442,25 @@ msgstr "bladzijde"
 msgid "PDF Created with %s on"
 msgstr "PDF Gemaakt met %s op"
 
-#: include/witness.php:166 include/witness.php:169
+#: include/witness.php:51
+msgid "funeral leader"
+msgstr "uitvaartleider"
+
+#: include/witness.php:54
+msgid "informant"
+msgstr "aangever"
+
+#: include/witness.php:174 include/witness.php:177
 msgid "This person was witness at:"
 msgstr "Deze persoon was getuige bij:"
+
+#: include/witness.php:210
+msgid "marriage witness"
+msgstr "huwelijksgetuige"
+
+#: include/witness.php:216
+msgid "marriage witness (religious)"
+msgstr "huwelijksgetuige (religieus)"
 
 #: views/addresses.php:24 views/addresses.php:42
 msgid "City"

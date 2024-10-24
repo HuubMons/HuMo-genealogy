@@ -4055,9 +4055,6 @@ class update_cls
             $dbh->query("DROP TABLE humo_no_location");
         }
 
-
-
-
         // *** Change witnesses because of multiple kind of ASSO/ witnesses in GEDCOM 7 ***
         $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='CHR', event_gedcom='WITN' WHERE event_kind='baptism_witness'");
         $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='BURI', event_gedcom='WITN' WHERE event_kind='burial_witness'");
