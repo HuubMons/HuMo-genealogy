@@ -14,74 +14,7 @@ $tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " 
 $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
 $tree_search_result = $dbh->query($tree_search_sql);
 $count = 0;
-
-// *** Set birth or death display. Default values ***
-// *** BE AWARE: session values are used in google_initiate script. If these are disabled, the slider doesn't work ***
-$maps['display_birth'] = true;
-$maps['display_death'] = false;
-if (!isset($_SESSION['type_death']) && !isset($_SESSION['type_death'])) {
-    $_SESSION['type_birth'] = 1;
-    $_SESSION['type_death'] = 0;
-}
-if (isset($_SESSION['type_death']) && $_SESSION['type_death'] == 1) {
-    $maps['display_death'] = true;
-    $maps['display_birth'] = false;
-}
-if (isset($_POST['map_type']) && $_POST['map_type'] == "type_birth") {
-    $_SESSION['type_birth'] = 1;
-    $_SESSION['type_death'] = 0;
-    $maps['display_birth'] = true;
-    $maps['display_death'] = false;
-}
-if (isset($_POST['map_type']) && $_POST['map_type'] == "type_death") {
-    $_SESSION['type_death'] = 1;
-    $_SESSION['type_birth'] = 0;
-    $maps['display_death'] = true;
-    $maps['display_birth'] = false;
-}
-
-if ($maps['select_world_map'] == 'Google') {
-    // slider defaults
-    $realmin = 1560;  // first year shown on slider
-    $step = "50";     // interval
-    $minval = "1510"; // OFF position (first year minus step, year is not shown)
-    $yr = date("Y");
-
-    // check for stored min value, created with google maps admin menu
-    $query = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_" . $tree_prefix_quoted . "' ";
-    $result = $dbh->query($query);
-    if ($result->rowCount() > 0) {
-        $sliderDb = $result->fetch(PDO::FETCH_OBJ);
-        $realmin = $sliderDb->setting_value;
-        $step = floor(($yr - $realmin) / 9);
-        $minval = $realmin - $step;
-    }
-
-    $qry = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_default_pos'";
-    $result = $dbh->query($qry);
-    if ($result->rowCount() > 0) {
-        $def = $result->fetch(); // defaults to array
-        $slider_def = $def['setting_value'];
-        if ($slider_def == "off") {
-            // slider at leftmost position
-            $defaultyr = $minval;
-            $default_display = "------>";
-            $makesel = "";
-        } else {
-            // slider ar rightmost position
-            $defaultyr = $yr;
-            $default_display = $defaultyr;
-            $makesel = " makeSelection(3); ";
-        }
-    } else {
-        //$defaultyr = $minval; $default_display = "------>"; $makesel=""; // slider at leftmost position 
-        $defaultyr = $yr;
-        $default_display = $defaultyr;
-        $makesel = " makeSelection(3); ";  // slider at rightmost position (default)
-    }
-}
 ?>
-
 
 <div class="p-3 m-2 genealogy_search">
     <div class="row mb-2">
@@ -154,30 +87,50 @@ if ($maps['select_world_map'] == 'Google') {
             </form>
         </div>
 
+        <?php if ($maps['select_world_map'] == 'OpenStreetMap') { ?>
+            <div class="col-auto">
+                <form method="POST" action="" style="display : inline;">
+                    <select onChange="findPlace()" size="1" id="loc_search" name="loc_search" class="form-select form-select-sm">
+                        <option value="toptext"><?= __('Find location on the map'); ?></option>
+                        <?php
+                        //sort ($maps['location']);
+                        for ($i = 1; $i < count($maps['location']); $i++) {
+                            //echo 'L.marker([' . $maps['latitude'][$i] . ', ' . $maps['longitude'][$i] . ']) .bindPopup(\'' . $maps['location_text'][$i] . '\')';
+                        ?>
+                            <option value="<?= $maps['latitude'][$i]; ?>,<?= $maps['longitude'][$i]; ?>">
+                                <?= $maps['location'][$i]; ?> #<?= $maps['location_text_count'][$i]; ?>
+                            </option>
+                        <?php } ?>
+
+                    </select>
+                </form>
+            </div>
+        <?php } ?>
 
         <?php if ($maps['select_world_map'] == 'Google') { ?>
             <div class="col-auto">
                 <!-- Slider text & year box -->
+                <!-- TODO try to build a flexible slider, without special pre fixes -->
                 <div style="<?= $language['dir'] != "rtl" ? 'float:left' : 'float:right'; ?>">
                     <?php
                     echo '
                     <script>
-                    var minval = ' . $minval . ';
+                    var minval = ' . $maps['slider_off'] . ';
                     $(function() {
                         // Set default slider setting
-                        ' . $makesel . '
+                        ' . $maps['slider_makesel'] . '
                         $( "#slider" ).slider({
-                            value: ' . $defaultyr . ',
-                            min: ' . $minval . ',
-                            max: ' . $yr . ',
-                            step: ' . $step . ',
+                            value: ' . $maps['slider_default_year'] . ',
+                            min: ' . $maps['slider_off'] . ',
+                            max: ' . $maps['slider_year'] . ',
+                            step: ' . $maps['slider_step'] . ',
                             slide: function( event, ui ) {
                                 if(ui.value == minval) { $( "#amount" ).val("----->"); }
-                                else if(ui.value > 2000) { $( "#amount" ).val(' . $yr . '); }
+                                else if(ui.value > 2000) { $( "#amount" ).val(' . $maps['slider_year'] . '); }
                                 else {	$( "#amount" ).val(ui.value ); }
                             }
                         });
-                        $( "#amount" ).val("' . $default_display . '");
+                        $( "#amount" ).val("' . $maps['slider_default_display'] . '");
 
                         // Only change map if value is changed.
                         startPos = $("#slider").slider("value");
@@ -214,57 +167,54 @@ if ($maps['select_world_map'] == 'Google') {
 
             </div>
         <?php } ?>
-
     </div>
 
+    <div class="row mb-2">
+        <!-- Select specific family name(s) -->
+        <div class="col-auto">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#familynameModal">
+                <?= __('Filter by specific family name(s)'); ?>
+            </button>
 
-    <?php if ($maps['select_world_map'] == 'Google') { ?>
-        <div class="row mb-2">
-
-            <!-- Select specific family name(s) -->
-            <div class="col-auto">
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#familynameModal">
-                    <?= __('Filter by specific family name(s)'); ?>
-                </button>
-
-                <form method="POST" action="<?= $link; ?>">
-                    <?php
-                    $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                        AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ORDER BY totalname";
-                    $fam_search_result = $dbh->query($fam_search);
-                    ?>
-                    <div class="modal fade" id="familynameModal" tabindex="-1" aria-labelledby="familynameModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable"> <!-- <div class="modal-dialog modal-xl"> -->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="familynameModalLabel"><?= __('Filter by specific family name(s)'); ?></h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <b><?= __('Mark checkbox next to name(s)'); ?></b><br>
-                                    <?php
-                                    while ($fam_searchDb = $fam_search_result->fetch(PDO::FETCH_OBJ)) {
-                                        $pos = strpos($fam_searchDb->totalname, '_');
-                                        $pref = substr($fam_searchDb->totalname, $pos + 1);
-                                        if ($pref !== '') {
-                                            $pref = ', ' . $pref;
-                                        }
-                                        $last = substr($fam_searchDb->totalname, 0, $pos);
-                                    ?>
-                                        <input type="checkbox" name="items[]" value="<?= $fam_searchDb->totalname; ?>" class="form-check-input"> <?= $last . $pref; ?><br>
-                                    <?php } ?>
-                                </div>
-                                <div class="modal-footer">
-                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button> -->
-                                    <button type="submmit" name="submit" class="btn btn-primary"><?= __('Choose'); ?></button>
-                                </div>
+            <form method="POST" action="<?= $link; ?>">
+                <?php
+                $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
+                    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                    AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ORDER BY totalname";
+                $fam_search_result = $dbh->query($fam_search);
+                ?>
+                <div class="modal fade" id="familynameModal" tabindex="-1" aria-labelledby="familynameModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable"> <!-- <div class="modal-dialog modal-xl"> -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="familynameModalLabel"><?= __('Filter by specific family name(s)'); ?></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <b><?= __('Mark checkbox next to name(s)'); ?></b><br>
+                                <?php
+                                while ($fam_searchDb = $fam_search_result->fetch(PDO::FETCH_OBJ)) {
+                                    $pos = strpos($fam_searchDb->totalname, '_');
+                                    $pref = substr($fam_searchDb->totalname, $pos + 1);
+                                    if ($pref !== '') {
+                                        $pref = ', ' . $pref;
+                                    }
+                                    $last = substr($fam_searchDb->totalname, 0, $pos);
+                                ?>
+                                    <input type="checkbox" name="items[]" value="<?= $fam_searchDb->totalname; ?>" class="form-check-input"> <?= $last . $pref; ?><br>
+                                <?php } ?>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button> -->
+                                <button type="submmit" name="submit" class="btn btn-primary"><?= __('Choose'); ?></button>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
+        </div>
 
+        <?php if ($maps['select_world_map'] == 'Google') { ?>
 
             <!-- TODO: use bootstrap. Don't show list of persons, but use search options -->
             <div class="col-auto">
@@ -273,7 +223,6 @@ if ($maps['select_world_map'] == 'Google') {
                     <input type="submit" name="anything" value="<?= __('Filter by descendants'); ?>" class="btn btn-sm btn-secondary">
                 </form>
             </div>
-
 
 
             <?php /*
@@ -320,8 +269,6 @@ if ($maps['select_world_map'] == 'Google') {
                                                 <input type="submit" name="submit" value="TEST 2" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#descendantsModal">
                                                 
                                                 <input type="submit" name="submit" value="TEST 3" class="btn btn-sm btn-secondary" data-dismiss="modal">
-
-                                                
                                             </div>
                                         </div>
                                     </form>
@@ -338,7 +285,6 @@ if ($maps['select_world_map'] == 'Google') {
             </div>
             */
             ?>
-
 
 
 
@@ -362,6 +308,8 @@ if ($maps['select_world_map'] == 'Google') {
                 */
 
                 // PULL-DOWN: FIND LOCATION
+                // TODO: location_status could probably be totally removed. Combine google_initiate results with this query to generate a location list.
+                /*
                 if ($maps['display_birth']) {
                     $loc_search = "SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_status LIKE '%" . $tree_prefix_quoted . "birth%' OR location_status LIKE '%" . $tree_prefix_quoted . "bapt%' OR location_status = '' ORDER BY location_location";
                 }
@@ -369,299 +317,70 @@ if ($maps['select_world_map'] == 'Google') {
                     $loc_search = "SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_status LIKE '%" . $tree_prefix_quoted . "death%' OR location_status LIKE '%" . $tree_prefix_quoted . "buried%' OR location_status = '' ORDER BY location_location";
                 }
                 $loc_search_result = $dbh->query($loc_search);
+                */
                 //if ($loc_search_result !== false) {
                 ?>
                 <form method="POST" action="" style="display : inline;">
                     <select onChange="findPlace()" size="1" id="loc_search" name="loc_search" class="form-select form-select-sm">
                         <option value="toptext"><?= __('Find location on the map'); ?></option>
                         <?php
-                        while ($loc_searchDb = $loc_search_result->fetch(PDO::FETCH_OBJ)) {
-                            $count++;
+                        foreach ($maps['locarray'] as $key => $value) {
+                            if ($maps['locarray'][$key][13] > 0) {
                         ?>
-                            <option value="<?= $loc_searchDb->location_id; ?>,<?= $loc_searchDb->location_lat; ?>,<?= $loc_searchDb->location_lng; ?>">
-                                <?= $loc_searchDb->location_location; ?>
-                            </option>
-                        <?php } ?>
+                                <option value="<?= $maps['locarray'][$key][14]; ?>,<?= $maps['locarray'][$key][1]; ?>,<?= $maps['locarray'][$key][2]; ?>">
+                                    <?= $maps['locarray'][$key][0]; ?> #<?= $maps['locarray'][$key][13]; ?>
+                                </option>
+
+                        <?php
+                            }
+                        }
+                        ?>
                     </select>
                 </form>
             </div>
-        </div>
-
-        <!-- optional row -->
-        <?php
-        // *** Searching by specific names ***
-        $flag_namesearch = '';
-        if (isset($_POST['items'])) {
-            $flag_namesearch = $_POST['items'];
-            $names = '';
-            foreach ($flag_namesearch as $value) {
-                $pos = strpos($value, '_');
-                $pref = substr($value, $pos + 1);
-                if ($pref !== '') {
-                    $pref .= ' ';
-                }
-                $last = substr($value, 0, $pos);
-                $names .= $pref . $last . ", ";
-            }
-            $names = substr($names, 0, -2); // take off last ", "
-        }
-
-        // *** Find descendants of chosen person ***
-        $flag_desc_search = 0;
-        $chosenperson = '';
-        $persfams = '';
-        if (isset($_GET['persged']) && isset($_GET['persfams'])) {
-            $flag_desc_search = 1;
-            $chosenperson = $_GET['persged'];
-            $persfams = $_GET['persfams'];
-            $persfams_arr = explode(';', $persfams);
-            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
-                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
-            $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
-            $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
-
-            $generation_number = 0; // generation number
-
-            // TODO use general descendant function
-            function outline($outline_family_id, $outline_person, $generation_number)
-            {
-                global $dbh, $db_functions, $desc_array;
-                global $language, $dirmark1, $dirmark1;
-                $family_nr = 1; //*** Process multiple families ***
-
-                $familyDb = $db_functions->get_family($outline_family_id, 'man-woman');
-                $parent1 = '';
-                $parent2 = '';
-                $swap_parent1_parent2 = false;
-
-                // *** Standard main_person is the father ***
-                if ($familyDb->fam_man) {
-                    $parent1 = $familyDb->fam_man;
-                }
-                // *** If mother is selected, mother will be main_person ***
-                if ($familyDb->fam_woman == $outline_person) {
-                    $parent1 = $familyDb->fam_woman;
-                    $swap_parent1_parent2 = true;
-                }
-
-                // *** Check family with parent1: N.N. ***
-                if ($parent1) {
-                    // *** Save man's families in array ***
-                    @$personDb = $db_functions->get_person($parent1, 'famc-fams');
-                    $marriage_array = explode(";", $personDb->pers_fams);
-                    $nr_families = substr_count($personDb->pers_fams, ";");
-                } else {
-                    $marriage_array[0] = $outline_family_id;
-                    $nr_families = "0";
-                }
-
-                // *** Loop multiple marriages of main_person ***
-                for ($parent1_marr = 0; $parent1_marr <= $nr_families; $parent1_marr++) {
-                    @$familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
-
-                    // *** Privacy filter man and woman ***
-                    @$person_manDb = $db_functions->get_person($familyDb->fam_man);
-                    @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-
-                    // *************************************************************
-                    // *** Parent1 (normally the father)                         ***
-                    // *************************************************************
-                    if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, vrouw zonder man
-                        if ($family_nr == 1) {
-                            // *** Show data of man ***
-
-                            if ($swap_parent1_parent2 == true) {
-                                if ($person_womanDb->pers_birth_place || $person_womanDb->pers_bapt_place) {
-                                    $desc_array[] = $person_womanDb->pers_gedcomnumber;
-                                }
-                            } elseif ($person_manDb->pers_birth_place || $person_manDb->pers_bapt_place) {
-                                $desc_array[] = $person_manDb->pers_gedcomnumber;
-                            }
-                        } else {
-                        }   // don't take person twice!
-                        $family_nr++;
-                    } // *** end check of PRO-GEN ***
-
-                    // *************************************************************
-                    // *** Children                                              ***
-                    // *************************************************************
-                    if ($familyDb->fam_children) {
-                        //$childnr=1;
-                        $child_array = explode(";", $familyDb->fam_children);
-                        foreach ($child_array as $i => $value) {
-                            @$childDb = $db_functions->get_person($child_array[$i]);
-
-                            // *** Build descendant_report ***
-                            if ($childDb->pers_fams) {
-                                // *** 1e family of child ***
-                                $child_family = explode(";", $childDb->pers_fams);
-                                $child1stfam = $child_family[0];
-                                outline($child1stfam, $childDb->pers_gedcomnumber, $generation_number);  // recursive
-                            } else {    // Child without own family
-                                if ($childDb->pers_birth_place || $childDb->pers_bapt_place) {
-                                    $desc_array[] = $childDb->pers_gedcomnumber;
-                                }
-                            }
-                        }
-                        //$childnr++;
-                    }
-                } // Show  multiple marriages
-            } // End of outline function
-
-            // ******* Start function here - recursive if started ******
-            $desc_array = [];
-            outline($persfams_arr[0], $chosenperson, $generation_number);
-            if ($desc_array != '') {
-                $desc_array = array_unique($desc_array); // removes duplicate persons (because of related ancestors)
-            }
-        }
-
-        // =============================
-        // TODO use general ancestor function
-        // *** Find ancestors ***
-        $flag_anc_search = 0;
-        $chosenperson = '';
-        $persfams = '';
-        if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
-            $flag_anc_search = 1;
-            $chosenperson = $_GET['anc_persged'];
-            $persfams = $_GET['anc_persfams'];
-            $persfams_arr = explode(';', $persfams);
-            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
-                WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
-            $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
-            //also check privacy
-            $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
-
-            // function to find all ancestors - family_id = person GEDCOM number
-            function find_anc($family_id)
-            {
-                global $dbh, $db_functions, $anc_array;
-                global $language, $dirmark1, $dirmark1;
-                global $listed_array;
-                $ancestor_array2[] = $family_id;
-                $ancestor_number2[] = 1;
-                $marriage_gedcomnumber2[] = 0;
-                $generation = 1;
-
-                //$listed_array=array();
-
-                // *** Loop for ancestor report ***
-                while (isset($ancestor_array2[0])) {
-                    unset($ancestor_array);
-                    $ancestor_array = $ancestor_array2;
-                    unset($ancestor_array2);
-
-                    unset($ancestor_number);
-                    $ancestor_number = $ancestor_number2;
-                    unset($ancestor_number2);
-
-                    unset($marriage_gedcomnumber);
-                    $marriage_gedcomnumber = $marriage_gedcomnumber2;
-                    unset($marriage_gedcomnumber2);
-                    // *** Loop per generation ***
-                    $counter = count($ancestor_array);
-
-                    // *** Loop per generation ***
-                    for ($i = 0; $i < $counter; $i++) {
-                        $listednr = '';
-
-                        foreach ($listed_array as $key => $value) {
-                            if ($value == $ancestor_array[$i]) {
-                                $listednr = $key;
-                            }
-                            // if person was already listed, $listednr gets kwartier number for reference in report:
-                            // instead of person's details it will say: "already listed above under number 4234"
-                            // and no additional ancestors will be looked for, to prevent duplicated branches
-                        }
-                        if ($listednr == '') {  //if not listed yet, add person to array
-                            $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
-                            //$listed_array[]=$ancestor_array[$i];  
-                        }
-
-                        if ($ancestor_array[$i] != '0') {
-                            @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
-
-                            // ==	Check for parents
-                            if ($person_manDb->pers_famc && $listednr == '') {
-                                @$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
-                                if ($family_parentsDb->fam_man) {
-                                    $ancestor_array2[] = $family_parentsDb->fam_man;
-                                    $ancestor_number2[] = (2 * $ancestor_number[$i]);
-                                    $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
-                                }
-
-                                if ($family_parentsDb->fam_woman) {
-                                    $ancestor_array2[] = $family_parentsDb->fam_woman;
-                                    $ancestor_number2[] = (2 * $ancestor_number[$i] + 1);
-                                    $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
-                                } else {
-                                    // *** N.N. name ***
-                                    $ancestor_array2[] = '0';
-                                    $ancestor_number2[] = (2 * $ancestor_number[$i] + 1);
-                                    $marriage_gedcomnumber2[] = $person_manDb->pers_famc;
-                                }
-                            }
-                        } else {
-                            // *** Show N.N. person ***
-                            @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
-                            $listed_array[0] = $person_manDb->pers_gedcomnumber;
-                        }
-                    }    // loop per generation
-                    $generation++;
-                }    // loop ancestor report
-
-            }
-
-            // ******* Start function here ******
-            $anc_array = array();
-            $listed_array = array();
-            find_anc($chosenperson);
-            foreach ($listed_array as $value) {
-                $anc_array[] = $value;
-            }
-            //$anc_array = $listed_array;
-        }
-
-        if (isset($_POST['items']) || isset($_GET['persged']) && isset($_GET['persfams']) || isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
-        ?>
-            <div class="row mb-2 p-2 bg-info">
-                <div class="col-auto">
-
-                    <!-- Searching by specific names -->
-                    <?php if (isset($_POST['items'])) { ?>
-                        <div id="name_search">
-                            <?= __('Mapping with specific name(s): '); ?>
-                            <?= $names; ?>. <a href="<?= $link; ?>"><?= __('Switch name filter off'); ?></a>
-                        </div>
-                    <?php } ?>
-
-                    <!-- Find descendants of chosen person -->
-                    <?php if (isset($_GET['persged']) && isset($_GET['persfams'])) { ?>
-                        <div id="desc_search">
-                            <?php if ($desc_array != '') { ?>
-                                <?= __('Filter by descendants of: ') . trim($chosenname); ?>. <a href="<?= $link; ?>"><?= __('Switch descendant filter off'); ?></a>
-                            <?php } else { ?>
-                                <?= __('No known birth places amongst descendants'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-
-                    <!-- Find ancestors -->
-                    <?php if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) { ?>
-                        <div id="anc_search">
-                            <?php if ($anc_array != '') { ?>
-                                <?= __('Filter by ancestors of: ') . trim($chosenname); ?>. <a href="<?= $link; ?>"><?= __('Switch ancestor filter off'); ?></a>
-                            <?php } else { ?>
-                                <?= __('No known birth places amongst ancestors'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-
-                </div>
-            </div>
         <?php } ?>
+    </div>
 
+
+    <?php
+    // *** Optional row ***
+    if (isset($_POST['items']) || isset($_GET['persged']) && isset($_GET['persfams']) || isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
+    ?>
+        <div class="row mb-2 p-2 bg-info">
+            <div class="col-auto">
+
+                <!-- Searching by specific names -->
+                <?php if ($maps['show_family_names']) { ?>
+                    <div id="name_search">
+                        <?= __('Mapping with specific name(s): '); ?>
+                        <?= $maps['show_family_names']; ?>. <a href="<?= $link; ?>"><?= __('Switch name filter off'); ?></a>
+                    </div>
+                <?php } ?>
+
+                <!-- Find descendants of chosen person -->
+                <?php if (isset($_GET['persged']) && isset($_GET['persfams'])) { ?>
+                    <div id="desc_search">
+                        <?php if ($maps['desc_array'] != '') { ?>
+                            <?= __('Filter by descendants of: ') . trim($maps['desc_chosen_name']); ?>. <a href="<?= $link; ?>"><?= __('Switch descendant filter off'); ?></a>
+                        <?php } else { ?>
+                            <?= __('No known birth places amongst descendants'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+
+                <!-- Find ancestors -->
+                <?php if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) { ?>
+                    <div id="anc_search">
+                        <?php if ($maps['anc_array'] != '') { ?>
+                            <?= __('Filter by ancestors of: ') . trim($maps['chosen_name']); ?>. <a href="<?= $link; ?>"><?= __('Switch ancestor filter off'); ?></a>
+                        <?php } else { ?>
+                            <?= __('No known birth places amongst ancestors'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+
+            </div>
+        </div>
     <?php } ?>
 
 </div>
@@ -669,6 +388,7 @@ if ($maps['select_world_map'] == 'Google') {
 
 
 <?php
+// TODO: use bootstrap.
 // FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH DESCENDANTS
 if (isset($_POST['descmap'])) {
     //adjust pulldown for mobiles/tablets
@@ -800,6 +520,7 @@ if (isset($_POST['descmap'])) {
 <?php
 }
 
+// TODO: use bootstrap.
 // FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH ANCESTORS
 if (isset($_POST['ancmap'])) {
     //adjust pulldown for mobiles/tablets
@@ -936,125 +657,28 @@ if (isset($_POST['ancmap'])) {
 
 // *** OpenStreetMap ***
 if ($maps['select_world_map'] == 'OpenStreetMap') {
-    $location_array[] = '';
-    $lat_array[] = '';
-    $lon_array[] = '';
-    $text_array[] = '';
-    $text_count_array[] = '';
-
-    $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL");
-    while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
-        $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
-        $locarray[$locationDb->location_location][1] = $locationDb->location_lat;
-        $locarray[$locationDb->location_location][2] = $locationDb->location_lng;
-        //$locarray[$locationDb->location_location][3] = 0;    // till starting year  (depending on settings)
-        //$locarray[$locationDb->location_location][4] = 0;    // + 1 interval
-        //$locarray[$locationDb->location_location][5] = 0;    // + 2 intervals
-        //$locarray[$locationDb->location_location][6] = 0;    // + 3 intervals
-        //$locarray[$locationDb->location_location][7] = 0;    // + 4 intervals
-        //$locarray[$locationDb->location_location][8] = 0;    // + 5 intervals
-        //$locarray[$locationDb->location_location][9] = 0;    // + 6 intervals
-        //$locarray[$locationDb->location_location][10] = 0;   // + 7 intervals
-        //$locarray[$locationDb->location_location][11] = 0;   // + 8 intervals
-        //$locarray[$locationDb->location_location][12] = 0;   // till today (=2010 and beyond)
-        //$locarray[$locationDb->location_location][13] = 0;   // all
-
-
-        //TEST add all location in maps...
-        //$location_array[] = htmlspecialchars($locationDb->location_location);
-        //$text_array[] = '<b>'.htmlspecialchars($locationDb->location_location).'</b>';
-        //$lat_array[] = $locationDb->location_lat;
-        //$lon_array[] = $locationDb->location_lng;
-    }
-
-    $namesearch_string = '';
-    if ($maps['display_birth']) {
-        //$persoon=$dbh->query("SELECT pers_tree_id, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
-        //	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-        //	AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
-        $persoon = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-            AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) " . $namesearch_string);
-    } elseif ($maps['display_death']) {
-        //$persoon=$dbh->query("SELECT pers_tree_id, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
-        //	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-        //	AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
-        $persoon = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-            AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) " . $namesearch_string);
-    }
-    while (@$personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
-        if ($maps['display_birth']) {
-            $place = $personDb->pers_birth_place;
-            $date = $personDb->pers_birth_date;
-            if (!$personDb->pers_birth_place && $personDb->pers_bapt_place) {
-                $place = $personDb->pers_bapt_place;
-            }
-            if (!$personDb->pers_birth_date && $personDb->pers_bapt_date) {
-                $date = $personDb->pers_bapt_date;
-            }
-        } elseif ($maps['display_death']) {
-            $place = $personDb->pers_death_place;
-            $date = $personDb->pers_death_date;
-            if (!$personDb->pers_death_place && $personDb->pers_buried_place) {
-                $place = $personDb->pers_buried_place;
-            }
-            if (!$personDb->pers_death_date && $personDb->pers_buried_date) {
-                $date = $personDb->pers_buried_date;
-            }
-        }
-
-        if (isset($locarray[$place])) { // Place exists in location database
-            if ($date) {
-                $year = substr($date, -4);
-
-                //if($year > 1 AND $year < $realmin) {  $locarray[$place][3]++; }
-                //if($year > 1 AND $year < ($realmin+ $step)) {  $locarray[$place][4]++; }
-                //if($year > 1 AND $year < ($realmin+ (2*$step))) {  $locarray[$place][5]++; }
-                //if($year > 1 AND $year < ($realmin+ (3*$step))) {  $locarray[$place][6]++; }
-                //if($year > 1 AND $year < ($realmin+ (4*$step))) {  $locarray[$place][7]++; }
-                //if($year > 1 AND $year < ($realmin+ (5*$step))) {  $locarray[$place][8]++; }
-                //if($year > 1 AND $year < ($realmin+ (6*$step))) {  $locarray[$place][9]++; }
-                //if($year > 1 AND $year < ($realmin+ (7*$step))) {  $locarray[$place][10]++; }
-                //if($year > 1 AND $year < ($realmin+ (8*$step))) {  $locarray[$place][11]++; }
-                //if($year > 1 AND $year < 2050) {  $locarray[$place][12]++; }
-                //$locarray[$place][13]++;  // array of all people incl without birth date
-
-                // *** Use person class ***
-                // TODO: this slows down page for large family trees. Use Javascript to show persons?
-                $person_cls = new person_cls($personDb);
-                $name = $person_cls->person_name($personDb);
-
-                $key = array_search($locarray[$place][0], $location_array);
-                if (isset($key) && $key > 0) {
-                    // *** Check the number of lines of the text_array ***
-                    $text_count_array[$key]++;
-                    // *** For now: limited results in text box of OpenStreetMap ***
-                    if ($text_count_array[$key] < 26) {
-                        $text_array[$key] .= '<br>' . addslashes($name["standard_name"] . ' ' . $locarray[$place][0]);
-                    }
-                    if ($text_count_array[$key] == 26) {
-                        $text_array[$key] .= '<br>' . __('Results are limited.');
-                    }
-                } else {
-                    $location_array[] = htmlspecialchars($locarray[$place][0]);
-                    $lat_array[] = $locarray[$place][1];
-                    $lon_array[] = $locarray[$place][2];
-
-                    $text_array[] = addslashes($name["standard_name"] . ' ' . $locarray[$place][0]);
-                    $text_count_array[] = 1; // *** Number of text lines ***
-                }
-            } else {
-                //$locarray[$place][13]++ ; // array of all people incl without birth date
-            }
-            //echo $locarray[$place][1].'!'.$locarray[$place][2];
-        }
-    }
 ?>
-
     <link rel="stylesheet" href="assets/leaflet/leaflet.css">
     <script src="assets/leaflet/leaflet.js"></script>
 
     <!-- Show OpenStreetMap -->
     <div id="map" style="height:520px"></div>
+
+    <!-- Zoom in to map location -->
+    <script>
+        function findPlace() {
+            var e = document.getElementById("loc_search");
+            var locSearch = e.options[e.selectedIndex].value;
+            if (locSearch != "toptext") { // if not default text "find location on map"
+                var opt_array = new Array();
+                opt_array = locSearch.split(",", 2);
+
+                //map.setView([lat, lng], zoomLevel);
+                // WERKT: map.setView([48.85, 2.35], 10);
+                map.setView([opt_array[0], opt_array[1]], 10);
+            }
+        }
+    </script>
 
     <?php
     // *** Map using fitbound (all markers visible) ***
@@ -1063,9 +687,9 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
         var markers = [';
 
     // *** Add all markers from array ***
-    for ($i = 1; $i < count($location_array); $i++) {
+    for ($i = 1; $i < count($maps['location']); $i++) {
         if ($i > 1) echo ',';
-        echo 'L.marker([' . $lat_array[$i] . ', ' . $lon_array[$i] . ']) .bindPopup(\'' . $text_array[$i] . '\')';
+        echo 'L.marker([' . $maps['latitude'][$i] . ', ' . $maps['longitude'][$i] . ']) .bindPopup(\'' . $maps['location_text'][$i] . '\')';
     }
 
     echo '];
@@ -1078,11 +702,13 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
         }).addTo(map);
     </script>';
 } else {
+    ?>
 
-    // *** Google Maps ***
-    echo '<div id="map_canvas" style="height:520px"></div>'; // placeholder div for map generated below
+    <!-- Google Maps -->
+    <div id="map_canvas" style="height:520px"></div>
 
-    // function to read multiple values from location search bar and zoom to map location:
+    <!-- Zoom in to map location -->
+    <?php
     echo '
     <script>
     function findPlace () {
@@ -1118,7 +744,6 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
     //}
     // Removed from initialize:
     //mapTypeId: google.maps.MapTypeId.<?= $maptype;
-
     ?>
 
     <script>
@@ -1139,9 +764,279 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
         initialize();
     </script>
 
-<?php
-    include_once(__DIR__ . "/../googlemaps/google_initiate.php");
+    <script src="googlemaps/StyledMarker.js"></script>
 
+    <script>
+        var markersArray = [];
+        var markerContent = "This is a test window";
+
+        // Show marker text in infowindow.
+        infoWindow = new google.maps.InfoWindow({
+            maxWidth: 500
+        });
+
+        google.maps.event.addListener(map, 'click', function() {
+            infoWindow.close();
+        });
+
+        function handleMarkerClick(marker, index) {
+            return function() {
+                infoWindow.setContent(index);
+                infoWindow.setZIndex(1000000);
+                infoWindow.open(map, marker);
+            };
+        }
+
+        function clearOverlays() {
+            if (markersArray) {
+                for (i in markersArray) {
+                    markersArray[i].setMap(null);
+                }
+                markersArray = new Array();
+            }
+        }
+
+        <?php
+        $nr = 0;
+        // 1 letter array name to keep download as short as possible.
+        echo 'var j = new Array();';
+        foreach ($maps['locarray'] as $key => $value) {
+            echo 'j[' . $nr . '] = new Array();';
+            echo 'j[' . $nr . '][0] = "' . $maps['locarray'][$key][0] . '";';
+            echo 'j[' . $nr . '][1] = "' . $maps['locarray'][$key][1] . '";';
+            echo 'j[' . $nr . '][2] = "' . $maps['locarray'][$key][2] . '";';
+            echo 'j[' . $nr . '][' . $maps['slider_min'] . '] = "' . $maps['locarray'][$key][3] . '";';
+            echo 'j[' . $nr . '][' . ($maps['slider_min'] + $maps['slider_step']) . '] = "' . $maps['locarray'][$key][4] . '";';
+            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (2 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][5] . '";';
+            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (3 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][6] . '";';
+            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (4 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][7] . '";';
+            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (5 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][8] . '";';
+            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (6 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][9] . '";';
+            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (7 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][10] . '";';
+            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (8 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][11] . '";';
+            echo 'j[' . $nr . '][2000] = "' . $maps['locarray'][$key][12] . '";'; // called 2000 but contains up till today
+            echo 'j[' . $nr . '][3] = "' . $maps['locarray'][$key][13] . '";';
+            echo "\n";
+            $nr++;
+        }
+
+        echo 'var namesearch = "";';
+        $javastring = '';
+        if ($maps['family_names'] != '') {   // querystring for multiple family names in popup names
+            foreach ($maps['family_names'] as $value) {
+                $javastring .= $value . "@";
+            }
+            $javastring = substr($javastring, 0, -1);  // Beck@Willems@Douglas@Smith
+            echo " namesearch = '" . $javastring . "'; ";
+        }
+        ?>
+
+        function setcolor(total) {
+            var red = "fe2e2e";
+            var blue = "2e64fe";
+            var green = "2efe2e";
+            var yellow = "f7fe2e";
+            var cyan = "04b4ae";
+            if (total < 10) {
+                return yellow;
+            } else if (total < 50) {
+                return green;
+            } else if (total < 100) {
+                return blue;
+            } else if (total < 10000) {
+                return red;
+            } else {
+                return red;
+            }
+        }
+
+        function setmarkersize(total) {
+            if (total < 10) {
+                return '0.4';
+            } else if (total < 50) {
+                return '0.5';
+            } else if (total < 100) {
+                return '0.75';
+            } else if (total < 10000) {
+                return '0.9';
+            } else {
+                return '1.05';
+            }
+        }
+
+        function setfontsize(total) {
+            if (total < 10) {
+                return '12';
+            } else if (total < 50) {
+                return '12';
+            } else if (total < 100) {
+                return '12';
+            } else if (total < 10000) {
+                return '12';
+            } else {
+                return '12';
+            }
+        }
+
+        function makeSelection(sel) {
+            clearOverlays();
+
+            var max = sel; // max is used for the "what" and "until" variables for the url_querystring to namesearch.php
+            if (sel > 2000) { // gslider.js returned present year = last step in slider
+                sel = 2000; // sel is used as member in the j array (j[4][sel]). this member is called "2000" for all born till present year
+            }
+
+            var what;
+            var until;
+            if (sel == 3) { // 3 flags the "all locations" button (j[i][3])
+                what = "all=1"; // for url query string
+                until = "<?= __('today '); ?>";
+            } else { // years 1550, 1600 .... till today for slider
+                what = "max=" + max; // for url querystring
+                until = max; // "until 1850"
+            }
+
+            var namestring = '';
+            if (namesearch != '') {
+                namestring = 'namestring=' + namesearch;
+                //namestring = encodeURI(namestring);
+            }
+
+            // simulates the php html_entity_decode function otherwise "Delft" is displayed in tooltip as &quot;Delft&quot;
+            function convert_html(str) {
+                var temp = document.createElement("pre");
+                temp.innerHTML = str;
+                return temp.firstChild.nodeValue;
+            }
+
+            var i;
+
+            // Automatic map zoom.
+            var latlngbounds = new google.maps.LatLngBounds();
+
+            for (i = 0; i < j.length; i++) {
+                var thislat = parseFloat(j[i][1]);
+                var thislng = parseFloat(j[i][2]);
+                var thisplace = encodeURI(j[i][0]);
+                //a single quote in the name breaks the query string, so we escape it (+ double \\ to escape the \)
+                thisplace = thisplace.replace(/'/g, "\\'"); // l'Ile d'Orleans becomes l\'Ile d\'Orleans
+
+                // if 0: this location is not relevant for this period
+                if (j[i][sel] > 0) {
+                    /* Old script. Doesn't work anymore in 2024.
+                    var latlng = new google.maps.LatLng(thislat, thislng);
+                    // convert html entities in tooltip of marker:
+                    var html_loc = convert_html(j[i][0]);
+                    var styleMaker1 = new StyledMarker({
+                        styleIcon: new StyledIcon(StyledIconTypes.MARKER, {
+                            color: setcolor(j[i][sel]),
+                            text: j[i][sel],
+                            size: setmarkersize(j[i][sel]),
+                            font: setfontsize(j[i][sel])
+                        }),
+                        title: html_loc,
+                        position: latlng,
+                        map: map
+                    });
+                    markersArray.push(styleMaker1);
+                    */
+
+
+                    // July 2024: new script
+                    // convert html entities in tooltip of marker:
+                    //var html_loc = convert_html(j[i][0]);
+                    //var styleMaker1 = new google.maps.Marker({
+                    //var styleMaker1 = new google.maps.marker.AdvancedMarkerElement({
+                    var styleMaker1 = new google.maps.marker.AdvancedMarkerElement({
+                        position: {
+                            lat: thislat,
+                            lng: thislng
+                        },
+                        map,
+                        //shape: shape,
+                        //title: html_loc,
+                        //content: pinBackground.element,
+                    });
+
+
+                    // July 2024: Added automatic zoom
+                    latlng = new google.maps.LatLng(thislat, thislng);
+                    latlngbounds.extend(latlng);
+
+
+                    // wikipedia doesn't search well with "Newcastle, NSW, Australia", so we just take the place name Newcastle
+                    // Of course there are multiple places with this name but they will appear at the start of the wikipedia page, one click away...
+                    var place;
+                    var comma = j[i][0].search(/,/);
+                    if (comma != -1) {
+                        place = j[i][0].substr(0, comma);
+                    } else {
+                        place = j[i][0];
+                    }
+
+                    <?php
+                    // language variables
+                    echo 'var location ="' . __('Location: ') . '";';
+                    if ($_SESSION['type_birth'] == 1) {
+                        echo 'var list ="' . __('For a list of persons born here until ') . '";';
+                    } elseif ($_SESSION['type_death'] == 1) {
+                        echo 'var list ="' . __('For a list of all people that died here until ') . '";';
+                    }
+                    echo 'var click ="' . __(' click here') . '";';
+                    echo 'var readabout ="' . __('Read about this location in ') . '";';
+
+                    if ($selected_language == "hu") {
+                        echo 'var wikilang="hu";';
+                    } elseif ($selected_language == "nl") {
+                        echo 'var wikilang="nl";';
+                    } elseif ($selected_language == "fr") {
+                        echo 'var wikilang="fr";';
+                    } elseif ($selected_language == "de") {
+                        echo 'var wikilang="de";';
+                    } elseif ($selected_language == "fi") {
+                        echo 'var wikilang="fi";';
+                    } elseif ($selected_language == "es") {
+                        echo 'var wikilang="es";';
+                    } elseif ($selected_language == "pt") {
+                        echo 'var wikilang="pt";';
+                    } elseif ($selected_language == "it") {
+                        echo 'var wikilang="it";';
+                    } elseif ($selected_language == "no") {
+                        echo 'var wikilang="no";';
+                    } elseif ($selected_language == "sv") {
+                        echo 'var wikilang="sv";';
+                    } else {
+                        echo 'var wikilang="en";';
+                    }
+                    ?>
+
+                    google.maps.event.addListener(
+                        styleMaker1, 'click', handleMarkerClick(
+                            styleMaker1,
+                            "<div>" + location + j[i][0] + "<br>" +
+                            readabout +
+                            "<a href=\"http://" + wikilang + ".wikipedia.org/wiki/" + place + "\" target=\"blank\"> Wikipedia </a><br> <div style = \"display:inline;\" id=\"ajaxlink\" onclick=\"loadurl('googlemaps/namesearch.php?thisplace=" +
+                            thisplace + "&amp;" +
+                            what +
+                            "&amp;" +
+                            namestring +
+                            "')\">" +
+                            list +
+                            until +
+                            ", <span style=\"color:blue;font-weight:bold\"><a href=\"javascript:void(0)\">" +
+                            click + "</a></span><br><br><br><br><div style=\"min-width:370px\"></div></div></div>"
+                        )
+                    );
+
+                }
+
+                // Automatic zoom.
+                map.fitBounds(latlngbounds);
+            }
+        }
+    </script>
+
+<?php
     /*
     echo '<script>
         window.onload = hide;

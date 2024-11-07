@@ -4,17 +4,18 @@ $found = false; // if this stays false, displays message that no problems where 
 
 <table class="table">
     <thead class="table-primary">
-    <tr>
-        <th style="width:10%;"><?= __('ID'); ?></th>
-        <th style="width:55%;"><?= __('Edit invalid date'); ?></th>
-        <th style="width:20%;"><?= __('Details'); ?></th>
-        <th style="width:15%;"><?= __('Invalid date'); ?></th>
-    </tr>
+        <tr>
+            <th style="width:10%;"><?= __('ID'); ?></th>
+            <th style="width:55%;"><?= __('Edit invalid date'); ?></th>
+            <th style="width:20%;"><?= __('Details'); ?></th>
+            <th style="width:15%;"><?= __('Invalid date'); ?></th>
+        </tr>
     </thead>
 
+    <tr>
+        <td colspan="4" class="table-secondary" style="text-align:<?= $direction; ?>;font-weight:bold"><?= __('Invalid person dates:'); ?></td>
+    </tr>
     <?php
-    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid person dates:') . '</td></tr>';
-
     $person = $dbh->query("SELECT pers_gedcomnumber, pers_birth_date, pers_bapt_date, pers_death_date, pers_buried_date FROM humo_persons
         WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
     while ($persdateDb = $person->fetch()) {
@@ -320,27 +321,46 @@ function invalid($date, $gednr, $table)
                 echo '<tr><td style="text-align:' . $direction . '">' . $persDb->pers_gedcomnumber . '</td><td style="text-align:' . $direction . '"><a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $persDb->pers_gedcomnumber . '" target=\'_blank\'>' . $name . '</a> (' . __('Click addresses') . ')</td><td style="text-align:' . $direction . '">' . $table . '</td><td style="text-align:' . $direction . '">' . $date . '</td></tr>';
             }
             if ($addressesDb['address_gedcomnr'] != '') {
-                $second_column = '<a href="index.php?page=edit_addresses" target=\'_blank\'>' . __('Address editor') . '</a> (Search for: ' . $addressesDb['address_address'] . ')';
-                echo '<tr><td style="text-align:' . $direction . '">' . $gednr . '</td><td style="text-align:' . $direction . '">' . $second_column . '</td><td style="text-align:' . $direction . '">' . $table . '</td><td style="text-align:' . $direction . '">' . $dirmark2 . $date . '</td></tr>';
+?>
+                <tr>
+                    <td style="text-align:<?= $direction; ?>"><?= $gednr; ?></td>
+                    <td style="text-align:<?= $direction; ?>">
+                        <a href="index.php?page=edit_addresses" target="_blank"><?= __('Address editor'); ?></a>
+                        (<?= __('search for:'); ?> <?= $addressesDb['address_address']; ?>)
+                    </td>
+                    <td style="text-align:<?= $direction; ?>"><?= $table; ?></td>
+                    <td style="text-align:<?= $direction; ?>"><?= $dirmark2 . $date; ?></td>
+                </tr>
+            <?php
             }
         }
         if (substr($table, 0, 3) === "sou") {
             $sourcesDb = $db_functions->get_source($gednr);
-?>
+            ?>
             <tr>
                 <td style="text-align:<?= $direction; ?>"><?= $gednr; ?></td>
                 <td style="text-align:<?= $direction; ?>">
                     <a href="index.php?page=edit_sources&amp;source_id=<?= $sourcesDb->source_gedcomnr; ?>" target=" _blank"><?= __('Source editor'); ?></a>
-                    (Search for: <?= $sourcesDb->source_title; ?>)
+                    (<?= __('search for:'); ?> <?= $sourcesDb->source_title; ?>)
+                </td>
+                <td style="text-align:<?= $direction; ?>"><?= $table; ?></td>
+                <td style="text-align:<?= $direction; ?>"><?= $dirmark2 . $date; ?></td>
+            </tr>
+        <?php
+        }
+        if (substr($table, 0, 3) === "rep") {
+            $reposDb = $db_functions->get_repository($gednr);
+        ?>
+            <tr>
+                <td style="text-align:<?= $direction; ?>"><?= $gednr; ?></td>
+                <td style="text-align:<?= $direction; ?>">
+                    <a href="index.php?page=edit_repositories" target="_blank"><?= __('Repository editor'); ?></a>
+                    (<?= __('search for:'); ?> <?= $reposDb->repo_name; ?>)
                 </td>
                 <td style="text-align:<?= $direction; ?>"><?= $table; ?></td>
                 <td style="text-align:<?= $direction; ?>"><?= $dirmark2 . $date; ?></td>
             </tr>
 <?php
-        }
-        if (substr($table, 0, 3) === "rep") {
-            $reposDb = $db_functions->get_repository($gednr);
-            echo '<tr><td style="text-align:' . $direction . '">' . $gednr . '</td><td style="text-align:' . $direction . '">' . '<a href="index.php?page=edit_repositories" target=\'_blank\'>' . __('Repository editor') . '</a> (Search for: ' . $reposDb->repo_name . ')</td><td style="text-align:' . $direction . '">' . $table . '</td><td style="text-align:' . $direction . '">' . $dirmark2 . $date . '</td></tr>';
         }
         return true;  // found invalid date
     }

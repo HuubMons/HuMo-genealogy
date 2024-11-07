@@ -61,7 +61,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="3" class="form-check-input" name="birth_date3" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date3_nr" id="birth_date3_nr" value="<?= $b1_def; ?>" class="form-control form-control-sm    ">
                     </div>
                     <label for="birth_date3_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - more than x years after mother\'s birth.'); ?></label>
@@ -71,7 +71,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="4" class="form-check-input" name="birth_date4" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date4_nr" id="birth_date4_nr" value="<?= $b2_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date4_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - more than x years after father\'s birth.'); ?></label>
@@ -81,7 +81,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="5" class="form-check-input" name="birth_date5" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date5_nr" id="birth_date5_nr" value="<?= $b3_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date5_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x years after mother\'s birth.'); ?></label>
@@ -91,7 +91,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="6" class="form-check-input" name="birth_date6" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date6_nr" id="birth_date6_nr" value="<?= $b4_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date6_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x years after father\'s birth.'); ?></label>
@@ -101,7 +101,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="23" class="form-check-input" name="birth_date7" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date7_nr" id="birth_date7_nr" value="<?= $b5_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date7_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x months after wedding parents.'); ?></label>
@@ -118,7 +118,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="25" class="form-check-input" name="birth_date9" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="birth_date9_nr" id="birth_date9_nr" value="<?= $b6_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="birth_date9_nr" class="col-auto form-label col-form-label-sm"><?= __('Birth date - less than x months after previous child of mother.'); ?></label>
@@ -137,7 +137,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="9" class="form-check-input" name="baptism_date3" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="baptism_date3_nr" id="baptism_date3" value="<?= $bp1_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="baptism_date3" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - more than x years after mother\'s birth.'); ?></label>
@@ -147,7 +147,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="10" class="form-check-input" name="baptism_date4" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="baptism_date4_nr" id="baptism_date4" value="<?= $bp2_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="baptism_date4" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - more than x years after father\'s birth.'); ?></label>
@@ -157,7 +157,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="11" class="form-check-input" name="baptism_date5" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="baptism_date5_nr" id="baptism_date5" value="<?= $bp3_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="baptism_date5" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - less than x years after mother\'s birth.'); ?></label>
@@ -167,7 +167,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="12" class="form-check-input" name="baptism_date6" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="baptism_date6_nr" id="baptism_date6" value="<?= $bp4_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="baptism_date6" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - less than x years after father\'s birth.'); ?></label>
@@ -188,7 +188,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="14" class="form-check-input" name="marriage_date2" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="marriage_date2_nr" id="marriage_date2" value="<?= $marr1_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="marriage_date2" class="col-auto form-label col-form-label-sm"><?= __('Marriage date - less than x years after birth date.'); ?></label>
@@ -198,7 +198,7 @@ if (isset($_POST['mark_all'])) {
                     <div class="col-auto">
                         <input type="checkbox" id="15" class="form-check-input" name="marriage_age" value="1" <?= $checked; ?>>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input type="text" name="marriage_age_nr" id="marriage_age" value="<?= $marr2_def; ?>" class="form-control form-control-sm">
                     </div>
                     <label for="marriage_age" class="col-auto form-label col-form-label-sm"><?= __('Marriage age - age difference of more than x years between partners.'); ?></label>
@@ -282,12 +282,12 @@ if (isset($_POST['mark_all'])) {
 
     <table class="table">
         <thead class="table-primary">
-        <tr>
-            <th style="width:20%;"><?= __('Person'); ?></th>
-            <th style="width:10%;"><?= __('ID'); ?></th>
-            <th style="width:35%;"><?= __('Possible consistency problems'); ?></th>
-            <th style="width:35%;"><?= __('Details'); ?></th>
-        </tr>
+            <tr>
+                <th style="width:20%;"><?= __('Person'); ?></th>
+                <th style="width:10%;"><?= __('ID'); ?></th>
+                <th style="width:35%;"><?= __('Possible consistency problems'); ?></th>
+                <th style="width:35%;"><?= __('Details'); ?></th>
+            </tr>
         </thead>
 
         <?php
@@ -802,9 +802,11 @@ if (isset($_POST['mark_all'])) {
         } // end of while loop with $personDb
 
         if ($results_found == 0) {
-            echo '<tr><td style="color:red;text-align:center;font-weight:bold;font-size:120%" colspan=4><br>No inconsistencies found!<br><br></td></tr>';
-        }
         ?>
+            <tr>
+                <td style="text-align:center;font-weight:bold;font-size:120%" colspan=4><?= __('No inconsistencies found!'); ?></td>
+            </tr>
+        <?php } ?>
     </table>
 <?php
 }
@@ -940,6 +942,7 @@ function compare_gap($first_date, $second_date)
     }
 }
 
+// TODO translate dates.
 function write_pers($name, $id, $first_date, $second_date, $first_text, $second_text, $nr)
 {
     // displays results for date consistency check
@@ -975,42 +978,47 @@ function write_pers($name, $id, $first_date, $second_date, $first_text, $second_
         $second = __('BURIED_SHORT');
     }
 
-    echo '<tr><td style="padding-left:5px;padding-right:5px"><a href="../admin/index.php?page=editor&menu_tab=person&tree_id=' . $tree_id . '&person=' . $personDb['pers_gedcomnumber'] . '" target=\'_blank\'>' . $name . '</a></td>';
+?>
+    <tr>
+        <td style="padding-left:5px;padding-right:5px"><a href="../admin/index.php?page=editor&menu_tab=person&tree_id=<?= $tree_id; ?>&person=<?= $personDb['pers_gedcomnumber']; ?>" target=\'_blank\'><?= $name; ?></a></td>
 
-    echo '<td style="padding-left:5px;padding-right:5px">' . $personDb['pers_gedcomnumber'] . '</td>';
-    echo '<td style="padding-left:5px;padding-right:5px">';
-
-    if ($id == "1" || $id == "7" || $id == "13" || $id == "16") {
-        echo $first_text . ' ' . __("after") . ' ' . $second_text;
-    } elseif ($id == "3" || $id == "4" || $id == "9" || $id == "10") {
-        printf(__("%s more than %d years after %s"), $first, $nr, __('birth date') . ' ' . $second_text);
-        $second = $second_text . ' ' . __('BORN_SHORT');
-    }
-    //elseif($id=="9" OR $id=="10") { printf(__("%s more than %d years after %s"),$first,$nr,__('birth date').' '.$second_text); $second = $second_text.' '.__('BAPTISED_SHORT');}
-    elseif ($id == "5" || $id == "6" || $id == "11" || $id == "12") {
-        printf(__("%s before or less than %d years after %s"), $first, $nr, __('birth date') . ' ' . $second_text);
-        $second = $second_text . ' ' . __('BORN_SHORT');
-    }
-    //elseif($id=="11" OR $id=="12"){ printf(__("%s before or less than %d years after %s"),$first,$nr,__('birth date').' '.$second_text); $second = $second_text.' '.__('BAPTISED_SHORT');}
-    elseif ($id == "14") {
-        printf(__("%s less than %d years after %s"), $first, $nr, $second_text);
-    } elseif ($id == "17" || $id == "18" || $id == "19" || $id == "20") {
-        echo $first . ' ' . __("before") . ' ' . __('birth date') . ' ' . $second_text;
-        $second = $second_text . ' ' . __('BORN_SHORT');
-    } elseif ($id == "2") {
-        printf(__("age (up till today) more than %d years (age: %d)"), $nr, $gap);
-        $dash = '';
-        $second_colon = '';
-    } elseif ($id == "21" || $id == "22") {
-        printf(__("age (by %s) more than %d years (age: %d)"), $second_text, $nr, $gap);
-    } elseif ($id == "15") {
-        printf(__("age difference of more than %d years with spouse (%d)"), $nr, abs($gap));
-        $second = strtolower($second_text) . ' ' . __('BORN_SHORT');
-    } elseif ($id == "23" || $id == "25") {
-        printf(__("%s less than %d months after %s"), $first, $nr, $second_text);
-    } elseif ($id == "24") {
-        printf(__("%s before %s"), $first, $second_text);
-    }
-    echo '</td>';
-    echo '<td style="padding-left:5px;padding-right:5px">' . $first . ': ' . $first_date . $dash . $second . $second_colon . $second_date . '</td></tr>';
+        <td style="padding-left:5px;padding-right:5px"><?= $personDb['pers_gedcomnumber']; ?></td>
+        <td style="padding-left:5px;padding-right:5px">
+            <?php
+            if ($id == "1" || $id == "7" || $id == "13" || $id == "16") {
+                echo $first_text . ' ' . __("after") . ' ' . $second_text;
+            } elseif ($id == "3" || $id == "4" || $id == "9" || $id == "10") {
+                printf(__("%s more than %d years after %s"), $first, $nr, __('birth date') . ' ' . $second_text);
+                $second = $second_text . ' ' . __('BORN_SHORT');
+            }
+            //elseif($id=="9" OR $id=="10") { printf(__("%s more than %d years after %s"),$first,$nr,__('birth date').' '.$second_text); $second = $second_text.' '.__('BAPTISED_SHORT');}
+            elseif ($id == "5" || $id == "6" || $id == "11" || $id == "12") {
+                printf(__("%s before or less than %d years after %s"), $first, $nr, __('birth date') . ' ' . $second_text);
+                $second = $second_text . ' ' . __('BORN_SHORT');
+            }
+            //elseif($id=="11" OR $id=="12"){ printf(__("%s before or less than %d years after %s"),$first,$nr,__('birth date').' '.$second_text); $second = $second_text.' '.__('BAPTISED_SHORT');}
+            elseif ($id == "14") {
+                printf(__("%s less than %d years after %s"), $first, $nr, $second_text);
+            } elseif ($id == "17" || $id == "18" || $id == "19" || $id == "20") {
+                echo $first . ' ' . __("before") . ' ' . __('birth date') . ' ' . $second_text;
+                $second = $second_text . ' ' . __('BORN_SHORT');
+            } elseif ($id == "2") {
+                printf(__("age (up till today) more than %d years (age: %d)"), $nr, $gap);
+                $dash = '';
+                $second_colon = '';
+            } elseif ($id == "21" || $id == "22") {
+                printf(__("age (by %s) more than %d years (age: %d)"), $second_text, $nr, $gap);
+            } elseif ($id == "15") {
+                printf(__("age difference of more than %d years with spouse (%d)"), $nr, abs($gap));
+                $second = strtolower($second_text) . ' ' . __('BORN_SHORT');
+            } elseif ($id == "23" || $id == "25") {
+                printf(__("%s less than %d months after %s"), $first, $nr, $second_text);
+            } elseif ($id == "24") {
+                printf(__("%s before %s"), $first, $second_text);
+            }
+            ?>
+        </td>
+        <td style="padding-left:5px;padding-right:5px"><?= $first; ?>: <?= $first_date . $dash . $second . $second_colon . $second_date; ?></td>
+    </tr>
+<?php
 }

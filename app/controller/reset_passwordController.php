@@ -26,10 +26,13 @@ class ResetpasswordController
         // *** Check clicked linked in mail ***
         $resetpassword['message_activation'] = $resetpasswordModel->check_clicked_link($dbh, $resetpassword['userid'], $resetpassword['activation_key']);
 
-        // *** Create pw_retreival table if not exists ***
+        // *** Create pw_retrieval table if not exists ***
         $resetpasswordModel->check_table($dbh);
 
         $resetpassword['site_url'] = $resetpasswordModel->get_activation_url();
+
+        // *** Check new password ***
+        $resetpassword['message_password'] = $resetpasswordModel->check_new_password($dbh, $resetpassword['userid'], $resetpassword['activation_key']);
 
         return $resetpassword;
     }

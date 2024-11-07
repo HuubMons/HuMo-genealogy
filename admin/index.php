@@ -99,41 +99,8 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
         include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
 
         // **** Temporary update scripts ***
-        // *** Restore update problem generate in version 6.4.1 (accidently changed family into person) ***
-        $eventsql = "UPDATE humo_events SET event_connect_kind='family' WHERE event_kind='marriage_witness' OR event_kind='marriage_witness_rel'";
-        $dbh->query($eventsql);
-
-        // *** Create humo_location if not exists ***
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-        if (!$temp->rowCount()) {
-            // no database exists - so create it
-            // It has 4 columns:
-            //     1. id
-            //     2. name of location
-            //     3. latitude as received from a geocode call
-            //     4. longitude as received from a geocode call
-            //     5. status: what is this location used for: birth/bapt/death/buried, and by which tree(s)
-            $locationtbl = "CREATE TABLE humo_location (
-                location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                location_location VARCHAR(120) CHARACTER SET utf8,
-                location_lat FLOAT(10,6),
-                location_lng FLOAT(10,6),
-                location_status TEXT
-            )";
-            $dbh->query($locationtbl);
-        }
-        $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-        $exists = $result->rowCount();
-        if (!$exists) {
-            $dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
-        }
-
-        // Table humo_no_location no longer in use.
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
-        if ($temp->rowCount()) {
-            $dbh->query("DROP TABLE humo_no_location");
-        }
-
+        //
+        //
 
         $show_menu_left = true;
 
@@ -168,9 +135,8 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
         //
     }
 
-    // *** Check HuMo-genealogy database status ***
-    // *** Change this value if the database must be updated ***
-    if (isset($humo_option["update_status"]) && $humo_option["update_status"] < 17) {
+    // *** Check HuMo-genealogy database status, will be changed if database update is needed ***
+    if (isset($humo_option["update_status"]) && $humo_option["update_status"] < 18) {
         $page = 'update';
         $show_menu_left = false;
     }
@@ -181,17 +147,6 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
         $show_menu_left = false;
         $popup = true;
     }
-    /*
-    if (isset($_GET['page'])
-        AND ($_GET['page']=='editor_place_select'
-            OR $_GET['page']=='editor_person_select'
-            OR $_GET['page']=='editor_relation_select'
-            OR $_GET['page']=='editor_media_select'
-            OR $_GET['page']=='editor_user_settings')){
-        $show_menu_left=false;
-        $popup=true;
-    }
-    */
 }
 
 // *** Set timezone ***
@@ -242,7 +197,7 @@ if ($language["dir"] == "rtl") {
     $rtlmarker = "rtl";
 }
 
-//TODO remove PHP-MySQL login from admin pages?
+//TODO remove PHP-MySQL login from admin pages, only login in front main page?
 // *** Process login form ***
 $fault = false;
 $valid_user = false;
@@ -423,8 +378,8 @@ if (file_exists('../media/favicon.ico')) {
 } else {
     $favicon = '<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">';
 }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
 
@@ -506,8 +461,6 @@ if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
 
     die();
 } else {
-    //echo '<body class="humo">';
-
     if (isset($_GET['page']) && $_GET['page'] == 'maps') {
 ?>
 
@@ -544,9 +497,6 @@ if ($popup == false) {
 
     // *** Feb. 2020: centralised processing of tree_id and tree_prefix ***
     // *** Selected family tree, using tree_id ***
-
-    // *** Don't check for group_administrator, because of family tree editors ***
-    //if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
     if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh statements
         $check_tree_id = '';
         // *** admin_tree_id must be numeric ***
@@ -605,8 +555,6 @@ if ($popup == false) {
                 }
             }
         }
-
-        //echo 'test'.$tree_id.' '.$tree_prefix;
     }
         ?>
 
@@ -738,9 +686,12 @@ if ($popup == false) {
         } elseif ($group_administrator == 'j' && $page === 'tree') {
             require __DIR__ . '/controller/treesController.php';
             $controllerObj = new TreesController();
-            $trees = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            $trees = $controllerObj->detail($dbh, $tree_id, $db_functions, $selected_language);
             include_once(__DIR__ . "/views/trees.php");
         } elseif ($page === 'editor') {
+            require __DIR__ . '/controller/editorController.php';
+            $controllerObj = new EditorController();
+            $editor = $controllerObj->detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option);
             include_once(__DIR__ . "/views/editor.php");
         } elseif ($page === 'editor_sources') {
             include_once(__DIR__ . "/include/editor_sources.php");
@@ -773,17 +724,23 @@ if ($popup == false) {
         } elseif ($page === 'editor_media_select') {
             include_once(__DIR__ . "/include/editor_media_select.php");
         } elseif ($page === 'check') {
+            require __DIR__ . '/controller/tree_checkController.php';
+            $controllerObj = new TreeCheckController();
+            $tree_check = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/tree_check.php");
         } elseif ($page === 'latest_changes') {
             include_once(__DIR__ . "/views/tree_check.php");
         } elseif ($page === 'gedcom') {
             include_once(__DIR__ . "/views/gedcom.php");
         } elseif ($page === 'settings') {
+            require __DIR__ . '/controller/settings_adminController.php';
+            $controllerObj = new SettingsController();
+            $settings = $controllerObj->detail($dbh, $db_functions, $humo_option);
             include_once(__DIR__ . "/views/settings_admin.php");
         } elseif ($page === 'thumbs') {
-            //require __DIR__ . '/controller/thumbsController.php';
-            //$controllerObj = new ThumbsController();
-            //$thumbs = $controllerObj->detail();
+            require __DIR__ . '/controller/thumbsController.php';
+            $controllerObj = new ThumbsController();
+            $thumbs = $controllerObj->detail($dbh, $tree_id);
             include_once(__DIR__ . "/views/thumbs.php");
             //} elseif ($page == 'favorites') {
             //    include_once(__DIR__ . "/include/favorites.php");
@@ -855,11 +812,11 @@ if ($popup == false) {
         // *** Default page for administrator ***
         else {
             // *** TODO: improve processing of uninstalled database ***
-            if (!isset($database_check)){
-                $database_check='';
+            if (!isset($database_check)) {
+                $database_check = '';
             }
-            if (!isset($dbh)){
-                $dbh='';
+            if (!isset($dbh)) {
+                $dbh = '';
             }
             require __DIR__ . '/controller/index_adminController.php';
             $controllerObj = new IndexController();

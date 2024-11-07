@@ -1072,7 +1072,7 @@ if (isset($_POST['step3'])) {
     }
 
     // for merging when we read in a new tree we have to make sure that the relevant rel_merge row in the Db is removed.
-    $qry = "DELETE FROM humo_settings WHERE setting_variable ='rel_merge_" . $tree_prefix . "'"; // doesn't create error if not exists
+    $qry = "DELETE FROM humo_settings WHERE setting_variable ='rel_merge_" . $tree_id . "'";
     $result = $dbh->query($qry);
     // we have to make sure that the dupl_arr session is unset if it exists.
     if (isset($_SESSION['dupl_arr_' . $tree_prefix])) {
@@ -1170,7 +1170,7 @@ if (isset($_POST['step3'])) {
         <!-- Progress information -->
         <div id="information"></div>
 
-    <?php
+        <?php
         $i = $_SESSION['save_progress2']; // save number of lines processed
         $perc = $_SESSION['save_perc'];   // save percentage processed
 
@@ -1612,29 +1612,31 @@ if (isset($_POST['step3'])) {
                 $_SESSION['save_start_timeout'] = time();
 
                 // *** Restart after controlled time-out. ***
-                echo '<form method="post" action="' . $phpself . '" style="display : inline">';
-                echo '<input type="hidden" name="page" value="' . $page . '">';
-                echo '<input type="hidden" name="menu_admin" value="' . $menu_admin . '">';
-                echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
+        ?>
+                <form method="post" action="<?= $phpself; ?>" style="display : inline">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="gedcom_accent" value="<?= $_POST['gedcom_accent']; ?>">
+                    <?php
+                    if (isset($_POST['check_processed'])) {
+                        echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
+                    }
+                    if (isset($_POST['show_gedcomnumbers'])) {
+                        echo '<input type="hidden" name="show_gedcomnumbers" value="' . $_POST['show_gedcomnumbers'] . '">';
+                    }
+                    if (isset($_POST['debug_mode'])) {
+                        echo '<input type="hidden" name="debug_mode" value="' . $_POST['debug_mode'] . '">';
+                    }
 
-                echo '<input type="hidden" name="gedcom_accent" value="' . $_POST['gedcom_accent'] . '">';
-                if (isset($_POST['check_processed'])) {
-                    echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
-                }
-                if (isset($_POST['show_gedcomnumbers'])) {
-                    echo '<input type="hidden" name="show_gedcomnumbers" value="' . $_POST['show_gedcomnumbers'] . '">';
-                }
-                if (isset($_POST['debug_mode'])) {
-                    echo '<input type="hidden" name="debug_mode" value="' . $_POST['debug_mode'] . '">';
-                }
+                    echo '<input type="hidden" name="gedcom_file" value="' . $_POST['gedcom_file'] . '">';
+                    echo '<input type="hidden" name="time_out" value="' . $time_out . '">';
+                    echo '<b>' . __('Controlled time-out to continue reading of GEDCOM file, click:') . '</b> <input type="submit" name="step3" value="' . __('Step') . ' 3" class="btn btn-sm btn-success"><br>';
+                    printf(' <b>' . __('Or wait %s seconds for automatic continuation. Some browsers will give a reload message...') . '</b>', '5');
+                    ?>
+                </form><br><br>
 
-                echo '<input type="hidden" name="gedcom_file" value="' . $_POST['gedcom_file'] . '">';
-                echo '<input type="hidden" name="time_out" value="' . $time_out . '">';
-                echo '<b>' . __('Controlled time-out to continue reading of GEDCOM file, click:') . '</b> <input type="submit" name="step3" value="' . __('Step') . ' 3"><br>';
-                printf(' <b>' . __('Or wait %s seconds for automatic continuation. Some browsers will give a reload message...') . '</b>', '5');
-
-                echo '</form><br><br>';
-
+        <?php
                 // *** Automatic reload after 5 seconds ***
                 echo '<script>setTimeout(function () { location.reload(true); }, 5000);</script>';
                 exit();
@@ -1690,20 +1692,34 @@ if (isset($_POST['step3'])) {
 
     //*** Show "non-processed GEDCOM items" ***
     if (isset($_POST['check_processed'])) {
-        echo '<div style="height:350px;width:900px; overflow-y: scroll; white-space:nowrap;">';
-        echo '<table class="humo" border="1" cellspacing="0">';
-        echo '<tr><th>nr.</th><th colspan=5>' . __('Non-processed items') . '</th></tr>';
-        echo '<tr><th><br></th><th>' . __('Level') . ' 0</th><th>' . __('Level') . ' 1</th><th>' . __('Level') . ' 2</th><th>' . __('Level') . ' 3</th><th>' . __('text') . '</th></tr>';
-        if (isset($not_processed)) {
-            $counter = count($not_processed);
-            for ($i = 0; $i < $counter; $i++) {
-                echo '<tr><td>' . ($i + 1) . '</td><td>' . $not_processed[$i] . '</td></tr>' . "\n";
-            }
-        } else {
-            echo '<tr><td>0</td><td colspan=4>' . __('All items have been processed!') . '</td></tr>' . "\n";
-        }
-        echo '</table><br>';
-        echo '</div>';
+        ?>
+        <div style="height:350px;width:900px;overflow-y:scroll;white-space:nowrap;">
+            <table class="table">
+                <tr>
+                    <th>nr.</th>
+                    <th colspan=5><?= __('Non-processed items'); ?></th>
+                </tr>
+                <tr>
+                    <th><br></th>
+                    <th><?= __('Level'); ?> 0</th>
+                    <th><?= __('Level'); ?> 1</th>
+                    <th><?= __('Level'); ?> 2</th>
+                    <th><?= __('Level'); ?> 3</th>
+                    <th><?= __('text'); ?></th>
+                </tr>
+                <?php
+                if (isset($not_processed)) {
+                    $counter = count($not_processed);
+                    for ($i = 0; $i < $counter; $i++) {
+                        echo '<tr><td>' . ($i + 1) . '</td><td>' . $not_processed[$i] . '</td></tr>' . "\n";
+                    }
+                } else {
+                    echo '<tr><td>0</td><td colspan=4>' . __('All items have been processed!') . '</td></tr>' . "\n";
+                }
+                ?>
+            </table>
+        </div>
+    <?php
     }
     if (!isset($_POST['show_gedcomnumbers'])) {
         echo '<script>';
@@ -2370,9 +2386,11 @@ if (isset($_POST['step4'])) {
                 }
             }
         }
+        /*
         foreach ($loca_array as $key => $value) {
             $dbh->query("UPDATE humo_location SET location_status = '" . $value . "' WHERE location_location = '" . addslashes($key) . "'");
         }
+        */
         if (strpos($humo_option['geo_trees'], "@" . $tree_id . ";") === false) {
             $dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $tree_id . ";') WHERE setting_variable = 'geo_trees'");
             $humo_option['geo_trees'] .= "@" . $tree_id . ";";

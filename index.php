@@ -513,7 +513,7 @@ if ($page == 'address') {
 } elseif ($page == 'maps') {
     require __DIR__ . '/app/controller/mapsController.php';
     $controllerObj = new MapsController($db_functions);
-    $maps = $controllerObj->detail($humo_option);
+    $maps = $controllerObj->detail($humo_option, $dbh, $tree_id, $tree_prefix_quoted);
 } elseif ($page == 'photoalbum') {
     require __DIR__ . '/app/controller/photoalbumController.php';
     $controllerObj = new PhotoalbumController();

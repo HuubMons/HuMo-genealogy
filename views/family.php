@@ -83,7 +83,7 @@ function topline($data)
                             <li>&nbsp;</li>
                             <li>
                                 <?php
-                                // TODO: maybe count valid loacions in table.
+                                // TODO: maybe count valid locations in table.
                                 // *** Only show selection if there is a location database ***
                                 //$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
                                 //if ($temp->rowCount()) {
@@ -1191,7 +1191,7 @@ if ($data["descendant_report"] == false) {
                     $user_name = $userDb->user_name;
                 }
             ?>
-                <tr class="humo_color">
+                <tr>
                     <td valign="top">
                         <?= show_datetime($noteDb->note_new_datetime) . ' ' . $user_name; ?><br>
                     </td>

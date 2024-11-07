@@ -123,7 +123,7 @@ function mapbirthplace($place)
                     FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                     AND " . $idstring . $namestring . " (pers_birth_place = '" . $place . "' OR (pers_birth_place = '' AND pers_bapt_place = '" . $place . "')) ORDER BY wholename";
                 $maplist = $dbh->query($sql);
-            } else { // the slider
+            } else { // *** Slider is used ***
                 echo '<b><u>' . __('Persons born here until ') . $map_max . ':</u></b><br>';
                 $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
                     WHERE pers_tree_id='" . $tree_id . "'
@@ -145,7 +145,7 @@ function mapbirthplace($place)
                     (pers_death_place = '" . $place . "' OR (pers_death_place = '' AND pers_buried_place = '" . $place . "'))
                     ORDER BY wholename";
                 $maplist = $dbh->query($sql);
-            } else { // the slider
+            } else { // *** Slider is used ***
                 echo '<b><u>' . __('Persons that died here until ') . $map_max . ':</u></b><br>';
                 $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
                     WHERE pers_tree_id='" . $tree_id . "' AND " . $idstring . $namestring . "
@@ -157,53 +157,57 @@ function mapbirthplace($place)
             }
         }
         //echo 'TEST: '.$sql;
+?>
 
-        echo '<div style="direction:ltr">';
-        while (@$maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
-            $man_cls = new person_cls($maplistDb);
-            $privacy_man = $man_cls->privacy;
-            $name = $man_cls->person_name($maplistDb);
-            if ($name["show_name"] == true) {
-                $pers_family = '';
-                if ($maplistDb->pers_famc) {
-                    $pers_family = $maplistDb->pers_famc;
+        <div style="direction:ltr">
+            <?php
+            while (@$maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
+                $man_cls = new person_cls($maplistDb);
+                $privacy_man = $man_cls->privacy;
+                $name = $man_cls->person_name($maplistDb);
+                if ($name["show_name"] == true) {
+                    $pers_family = '';
+                    if ($maplistDb->pers_famc) {
+                        $pers_family = $maplistDb->pers_famc;
+                    }
+                    if ($maplistDb->pers_fams) {
+                        $pers_fams = explode(';', $maplistDb->pers_fams);
+                        $pers_family = $pers_fams[0];
+                    }
+                    $vars['pers_family'] = $pers_family;
+                    $link = $link_cls->get_link('', 'family', $maplistDb->pers_tree_id, true, $vars);
+                    $link .= "main_person=" . $maplistDb->pers_gedcomnumber;
+                    echo '<a href=' . $link . ' target="blank">';
                 }
-                if ($maplistDb->pers_fams) {
-                    $pers_fams = explode(';', $maplistDb->pers_fams);
-                    $pers_family = $pers_fams[0];
+                if ($_SESSION['type_birth'] == 1) {
+                    echo $name["index_name"];
+                    $date = $maplistDb->pers_birth_date;
+                    $sign = __('born') . ' ';
+                    if (!$maplistDb->pers_birth_date and $maplistDb->pers_bapt_date) {
+                        $date = $maplistDb->pers_bapt_date;
+                        $sign = __('baptised') . ' ';
+                    }
                 }
-                $vars['pers_family'] = $pers_family;
-                $link = $link_cls->get_link('', 'family', $maplistDb->pers_tree_id, true, $vars);
-                $link .= "main_person=" . $maplistDb->pers_gedcomnumber;
-                echo '<a href=' . $link . ' target="blank">';
-            }
-            if ($_SESSION['type_birth'] == 1) {
-                echo $name["index_name"];
-                $date = $maplistDb->pers_birth_date;
-                $sign = __('born') . ' ';
-                if (!$maplistDb->pers_birth_date and $maplistDb->pers_bapt_date) {
-                    $date = $maplistDb->pers_bapt_date;
-                    $sign = __('baptised') . ' ';
+                if ($_SESSION['type_death'] == 1) {
+                    echo $name["index_name"];
+                    $date = $maplistDb->pers_death_date;
+                    $sign = __('died') . ' ';
+                    if (!$maplistDb->pers_death_date and $maplistDb->pers_buried_date) {
+                        $date = $maplistDb->pers_buried_date;
+                        $sign = __('buried') . ' ';
+                    }
                 }
-            }
-            if ($_SESSION['type_death'] == 1) {
-                echo $name["index_name"];
-                $date = $maplistDb->pers_death_date;
-                $sign = __('died') . ' ';
-                if (!$maplistDb->pers_death_date and $maplistDb->pers_buried_date) {
-                    $date = $maplistDb->pers_buried_date;
-                    $sign = __('buried') . ' ';
+                if (!$privacy_man and $date and $name["show_name"] == true) {
+                    echo ' (' . $sign . date_place($date, '') . ')';
                 }
-            }
-            if (!$privacy_man and $date and $name["show_name"] == true) {
-                echo ' (' . $sign . date_place($date, '') . ')';
-            }
-            if ($name["show_name"] == true) {
-                echo '</a>';
-            }
-            echo '<br>';
-        }
-        echo '</div>';
+                if ($name["show_name"] == true) {
+                    echo '</a>';
+                }
+            ?>
+                <br>
+            <?php } ?>
+        </div>
+<?php
     } else { // Logically we can never get here
         echo 'No persons found';
     }

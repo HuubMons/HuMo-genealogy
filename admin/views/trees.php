@@ -13,16 +13,10 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 $tree_id = $trees['tree_id']; // TODO for now use old variable (used in tab scripts: tree_admin.php, tree_data.php, etc.)
+$language_tree = $trees['language']; // TODO for now use old variable (used in tab scripts)
+$menu_admin = $trees['menu_tab']; // TODO for now use old variable (used in tab scripts)
 
 
-
-$language_tree = $selected_language; // Default language
-if (isset($_GET['language_tree'])) {
-    $language_tree = $_GET['language_tree'];
-}
-if (isset($_POST['language_tree'])) {
-    $language_tree = $_POST['language_tree'];
-}
 
 // ******************************************
 // *** Show texts of selected family tree ***
@@ -44,14 +38,6 @@ if ($data2Db) {
     //$treetext_family_top='Family page';
     $treetext_family_top = '';
     $treetext_family_footer = '';
-}
-
-$menu_admin = 'tree_main';
-if (isset($_POST['menu_admin'])) {
-    $menu_admin = $_POST['menu_admin'];
-}
-if (isset($_GET['menu_admin'])) {
-    $menu_admin = $_GET['menu_admin'];
 }
 
 // *** Select family tree ***
@@ -128,7 +114,7 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 </ul>
 
 <!-- Align content to the left -->
-<div style="float: left; background-color:white; height:500px; padding:10px;">
+<div style="background-color:white; height:500px; padding:10px;">
     <?php
     // *** Show main tree screen ***
     if (isset($menu_admin) && $menu_admin == 'tree_main') {

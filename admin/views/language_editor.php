@@ -286,8 +286,8 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
             <td style="width:2%">
                 <a onmouseover="popup('<?= popclean($mytext); ?> ',300);" href="#"><img style="border:0px;background:none" src="../images/reports.gif" alt="references"></a>
             </td>
-            <td style="padding:2px;"><?= msgid_display($value["msgid"]); ?></td>
-            <td style="text-align:center;"><input type="checkbox" value="fuzzie" name="fuz<?= $value["nr"]; ?>" <?= $fuzz ? 'checked' : ''; ?>></td>
+            <td><?= msgid_display($value["msgid"]); ?></td>
+            <td><input type="checkbox" value="fuzzie" name="fuz<?= $value["nr"]; ?>" <?= $fuzz ? 'checked' : ''; ?>></td>
             <td style="vertical-align:top">
                 <!-- <label for="txt_id<?= $key; ?>" class="form-label">Label</label> -->
                 <textarea name="txt_name<?= $key; ?>" rows="<?= $rows; ?>" class="form-control <?= $color ? 'bg-warning' : ''; ?>" id="txt_id<?= $key; ?>"><?= msgstr_display($value["msgstr"]) ?></textarea>
@@ -296,15 +296,15 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
     <?php } ?>
 
     <!-- Show translation table -->
-    <table class="humo" border="1" cellspacing="0" width="98%" style="margin-left:auto;margin-right:auto">
-        <tr class="table_header_large">
-            <th></th>
-            <th style="border-right:none;width:48.5%"><?= __('Template'); ?></th>
-            <th style="font-size:85%;width:4%"><?= __('Fuzzy'); ?></th>
-            <th style="border-left:none;width:47.5%">
-                &nbsp;&nbsp;&nbsp;<?= __('Translation into') . ' ' . $language["name"]; ?>
-            </th>
-        </tr>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th></th>
+                <th style="width:48.5%"><?= __('Template'); ?></th>
+                <th style="width:4%"><?= __('Fuzzy'); ?></th>
+                <th style="width:47.5%"><?= __('Translation into') . ' ' . $language["name"]; ?></th>
+            </tr>
+        </thead>
 
         <?php
         $count = 0;

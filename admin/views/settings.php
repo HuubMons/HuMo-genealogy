@@ -24,11 +24,13 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 <form method="post" action="index.php" enctype="multipart/form-data">
     <input type="hidden" name="page" value="<?= $page; ?>">
 
-    <table class="humo" border="1">
-        <tr class="table_header">
-            <th><?= __('General settings'); ?></th>
-            <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-        </tr>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th><?= __('General settings'); ?></th>
+                <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+            </tr>
+        </thead>
 
         <tr>
             <td><?= __('Default skin'); ?></td>
@@ -37,15 +39,10 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     <option value="">Standard</option>
                     <?php
                     for ($i = 0; $i < count($theme_folder); $i++) {
-                        $theme = $theme_folder[$i];
-                        $theme = str_replace(".css", "", $theme);
-                        $select = '';
-                        if ($humo_option['default_skin'] == $theme) {
-                            $select = ' selected';
-                        }
-                        echo '<option value="' . $theme . '"' . $select . '>' . $theme . '</option>';
-                    }
+                        $theme = str_replace(".css", "", $theme_folder[$i]);
                     ?>
+                        <option value="<?= $theme; ?>" <?= $humo_option['default_skin'] == $theme ? 'selected' : ''; ?>><?= $theme; ?></option>
+                    <?php } ?>
                 </select>
             </td>
         </tr>
@@ -57,11 +54,9 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     <?php
                     if ($langs) {
                         for ($i = 0; $i < count($langs); $i++) {
-                            $select = '';
-                            if ($humo_option['default_language'] == $langs[$i][1]) {
-                                $select = ' selected';
-                            }
-                            echo '<option value="' . $langs[$i][1] . '"' . $select . '>' . $langs[$i][0] . '</option>';
+                    ?>
+                            <option value="<?= $langs[$i][1]; ?>" <?= $humo_option['default_language'] == $langs[$i][1] ? 'selected' : ''; ?>><?= $langs[$i][0]; ?></option>
+                    <?php
                         }
                     }
                     ?>
@@ -76,11 +71,9 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     <?php
                     if ($langs_admin) {
                         for ($i = 0; $i < count($langs_admin); $i++) {
-                            $select = '';
-                            if ($humo_option['default_language_admin'] == $langs_admin[$i][1]) {
-                                $select = ' selected';
-                            }
-                            echo '<option value="' . $langs_admin[$i][1] . '"' . $select . '>' . $langs_admin[$i][0] . '</option>';
+                    ?>
+                            <option value="<?= $langs_admin[$i][1]; ?>" <?= $humo_option['default_language_admin'] == $langs_admin[$i][1] ? 'selected' : ''; ?>><?= $langs_admin[$i][0]; ?></option>
+                    <?php
                         }
                     }
                     ?>
@@ -136,7 +129,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Search engine settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -155,7 +148,8 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 
         <tr class="humo_color">
             <td><?= __('Stop search engines'); ?></td>
-            <td><select size="1" name="searchengine">
+            <td>
+                <select size="1" name="searchengine">
                     <option value="j"><?= __('Yes'); ?></option>
                     <option value="n" <?php if ($humo_option["searchengine"] != 'j') echo ' selected'; ?>><?= __('No'); ?></option>
                 </select><br>
@@ -165,13 +159,15 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 
         <tr class="humo_color">
             <td><?= __('Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS pages'); ?></td>
-            <td><select size="1" name="searchengine_cms_only">
+            <td>
+                <select size="1" name="searchengine_cms_only">
                     <option value="y"><?= __('Yes'); ?></option>
                     <option value="n" <?php if ($humo_option["searchengine_cms_only"] != 'y') echo ' selected'; ?>><?= __('No'); ?></option>
-                </select><br></td>
+                </select>
+            </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Contact & registration form settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -215,15 +211,9 @@ foreach (timezone_identifiers_list() as $key => $zone) {
 
                 <?= __('Default user-group for new users:'); ?>
                 <select size="1" name="visitor_registration_group">
-                    <?php
-                    while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) {
-                        $selected = '';
-                        if ($humo_option["visitor_registration_group"] == $groupDb->group_id) {
-                            $selected = '  selected';
-                        }
-                        echo '<option value="' . $groupDb->group_id . '"' . $selected . '>' . $groupDb->group_name . '</option>';
-                    }
-                    ?>
+                    <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
+                        <option value="<?= $groupDb->group_id; ?>" <?= $humo_option["visitor_registration_group"] == $groupDb->group_id ? 'selected' : ''; ?>><?= $groupDb->group_name; ?></option>
+                    <?php } ?>
                 </select>
             </td>
         </tr>
@@ -247,10 +237,10 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         <!-- Using HTML 5 email check -->
         <tr>
             <td><?= __('Password forgotten e-mail address'); ?></td>
-            <td><input type="email" name="password_retreival" value="<?= $humo_option["password_retreival"]; ?>" size="40" placeholder="no-reply@your-website.com"> <?= __('To enable password forgotten option: set a sender e-mail address.'); ?></td>
+            <td><input type="email" name="password_retrieval" value="<?= $humo_option["password_retrieval"]; ?>" size="40" placeholder="no-reply@your-website.com"> <?= __('To enable password forgotten option: set a sender e-mail address.'); ?></td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Email Settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -263,7 +253,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         <tr>
             <td><?= __('Mail: sender'); ?></td>
             <td><input type="text" name="email_sender" value="<?= $humo_option["email_sender"]; ?>" size="32">
-                <?= __('Gmail: [email_address]@gmail.com'); ?>. <b><?= __('If filled in: will be used as mail sender.');?></b>
+                <?= __('Gmail: [email_address]@gmail.com'); ?>. <b><?= __('If filled in: will be used as mail sender.'); ?></b>
             </td>
         </tr>
 
@@ -342,7 +332,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('International settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -351,15 +341,9 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <td valign="top"><?= __('Timezone'); ?></td>
             <td>
                 <select size="1" name="timezone">
-                    <?php
-                    foreach ($zones_array as $t) {
-                        $selected = '';
-                        if ($humo_option["timezone"] == $t['zone']) {
-                            $selected = ' selected';
-                        }
-                        echo '<option value="' . $t['zone'] . '"' . $selected . '>' . $t['diff_from_GMT'] . ' - ' . $t['zone'] . '</option>';
-                    }
-                    ?>
+                    <?php foreach ($zones_array as $t) { ?>
+                        <option value="<?= $t['zone']; ?>" <?= $humo_option["timezone"] == $t['zone'] ? 'selected' : ''; ?>><?= $t['diff_from_GMT']; ?> - <?= $t['zone']; ?></option>
+                    <?php } ?>
                 </select>
             </td>
         </tr>
@@ -395,58 +379,58 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         <tr id="timeline_anchor">
             <td><?= __('Default timeline file (per language)'); ?></td>
             <td>
-                <?php
-                // *** First select language ***
-                if ($langs) {
-                    echo '<select onChange="window.location =\'index.php?page=settings&timeline_language=\' + this.value + \'#timeline_anchor\'; "  size="1" name="timeline_language">';
-                    // *** Default language = english ***
-                    //echo '<option value="default_timelines"'.$select.'>English</option>'; // *** Don't add "English" in translation file! ***
-                    echo '<option value="default_timelines"' . $select . '>' . __('Default') . '</option>'; // *** Don't add "English" in translation file! ***
-                    for ($i = 0; $i < count($langs); $i++) {
-                        if (is_dir('../languages/' . $langs[$i][1] . '/timelines/')) {
-                            $select = '';
-                            if ($time_lang == $langs[$i][1]) {
-                                $select = ' selected';
+                <!-- First select language -->
+                <?php if ($langs) { ?>
+                    <select onChange="window.location ='index.php?page=settings&timeline_language=' + this.value + '#timeline_anchor'; " size="1" name="timeline_language">
+                        <option value="default_timelines"><?= __('Default'); ?></option>
+                        <?php
+                        for ($i = 0; $i < count($langs); $i++) {
+                            if (is_dir('../languages/' . $langs[$i][1] . '/timelines/')) {
+                        ?>
+                                <option value="<?= $langs[$i][1]; ?>" <?= $settings['time_lang'] == $langs[$i][1] ? 'selected' : ''; ?>><?= $langs[$i][0]; ?></option>
+                        <?php
                             }
-                            echo '<option value="' . $langs[$i][1] . '"' . $select . '>' . $langs[$i][0] . '</option>';
                         }
-                    }
-                    echo '</select>';
+                        ?>
+                    </select>
+                <?php
                 }
 
                 echo "&nbsp;&nbsp;";
 
                 // *** First select language, then the timeline files of that language is shown ***
-                $folder = @opendir('../languages/' . $time_lang . '/timelines/');
+                $folder = @opendir('../languages/' . $settings['time_lang'] . '/timelines/');
                 // *** Default language = english ***
-                if ($time_lang == 'default_timelines') $folder = @opendir('../languages/' . $time_lang);
+                if ($settings['time_lang'] == 'default_timelines') $folder = @opendir('../languages/' . $settings['time_lang']);
                 if ($folder !== false) {  // no use showing the option if we can't access the timeline folder
                     while (false !== ($file = readdir($folder))) {
                         if (substr($file, -4, 4) == '.txt') {
                             $timeline_files[] = $file;
                         }
                     }
-                    echo '<select size="1" name="default_timeline">';
-                    for ($i = 0; $i < count($timeline_files); $i++) {
-                        $timeline = $timeline_files[$i];
-                        $timeline = str_replace(".txt", "", $timeline);
-                        $select = "";
-                        if (strpos($humo_option['default_timeline'], $time_lang . "!" . $timeline) !== false) {
-                            $select = ' selected';
-                        }
-                        echo '<option value="' . $time_lang . '!' . $timeline . '@"' . $select . '>' . $timeline . '</option>';
-                    }
-                    echo '</select>';
+                ?>
+                    <select size="1" name="default_timeline">
+                        <?php
+                        for ($i = 0; $i < count($timeline_files); $i++) {
+                            $timeline = str_replace(".txt", "", $timeline_files[$i]);
+                            $select = "";
+                            if (strpos($humo_option['default_timeline'], $settings['time_lang'] . "!" . $timeline) !== false) {
+                                $select = ' selected';
+                            }
+                        ?>
+                            <option value="<?= $settings['time_lang']; ?>!<?= $timeline; ?>@" <?= $select; ?>><?= $timeline; ?></option>
+                        <?php } ?>
+                    </select>
+                <?php
                     echo "&nbsp;&nbsp;";
                     echo __('First select language, then select the default timeline for that language.');
                 }
-                //@closedir($folder);
                 if ($folder !== false) @closedir($folder);
                 ?>
             </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Settings Main Menu'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -483,7 +467,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <!-- FAMILY -->
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Settings family page'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -499,7 +483,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <!-- Watermark text and color in PDF file -->
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Watermark text in PDF file'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -518,7 +502,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </tr>
 
         <!-- Display for One Name Study web sites -->
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Display for One Name Study web sites'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
@@ -538,7 +522,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </td>
         </tr>
 
-        <tr class="table_header">
+        <tr class="table-primary">
             <th><?= __('Save settings'); ?></th>
             <th><input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>

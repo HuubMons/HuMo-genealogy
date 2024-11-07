@@ -367,20 +367,14 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             <div class="col-md-4">
                 <?php
                 $selected = '';
-                if (isset($_POST['gedcom_version']) and $_POST['gedcom_version'] == '70') {
-                    $selected = ' selected';
-
-                    // *** GEDCOM 7.0 is selected, always use UTF-8 character set ***
-                    $_POST['gedcom_char_set'] = 'UTF-8';
+                if (isset($_POST['gedcom_version']) && $_POST['gedcom_version'] == '551') {
+                    $selected = 'selected';
                 }
                 ?>
                 <select size="1" name="gedcom_version" class="form-select form-select-sm">
-                    <option value="551"><?= __('GEDCOM 5.5.1'); ?></option>
-                    <option value="70" <?= $selected; ?> disabled><?= __('GEDCOM 7.0'); ?></option>
+                    <option value="70"><?= __('GEDCOM 7.0'); ?></option>
+                    <option value="551" <?= $selected; ?>><?= __('GEDCOM 5.5.1'); ?></option>
                 </select>
-            </div>
-            <div class="col-md-4">
-                GEDCOM 7.0 export: under construction!
             </div>
         </div>
 
@@ -391,7 +385,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     <?php
                     $selected = '';
                     if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'UTF-8') {
-                        $selected = ' selected';
+                        $selected = 'selected';
+                    }
+                    if (isset($_POST['gedcom_version']) && $_POST['gedcom_version'] == '70') {
+                        // *** GEDCOM 7.0 is selected, always use UTF-8 character set ***
+                        $_POST['gedcom_char_set'] = 'UTF-8';
+                        $selected = 'selected';
                     }
                     ?>
                     <option value="UTF-8" <?= $selected; ?>><?= __('UTF-8 (recommended character set)'); ?></option>

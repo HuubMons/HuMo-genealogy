@@ -78,6 +78,12 @@ if ($connect_sub_kind == 'pers_birth_source') {
     source_edit("person", "pers_birth_source", $pers_gedcomnumber);
 }
 
+// *** Sept. 2024: new seperate item ***
+if ($connect_sub_kind == 'birth_decl_source') {
+    show_source_header(__('Source') . ' - ' . ucfirst(__('born')));
+    source_edit("person", "birth_decl_source", $pers_gedcomnumber);
+}
+
 // *** Edit source by baptise ***
 if ($connect_sub_kind == 'pers_bapt_source') {
     show_source_header(__('Source') . ' - ' . ucfirst(__('baptised')));
@@ -88,6 +94,12 @@ if ($connect_sub_kind == 'pers_bapt_source') {
 if ($connect_sub_kind == 'pers_death_source') {
     show_source_header(__('Source') . ' - ' . ucfirst(__('died')));
     source_edit("person", "pers_death_source", $pers_gedcomnumber);
+}
+
+// *** Sept. 2024: new seperate item ***
+if ($connect_sub_kind == 'death_decl_source') {
+    show_source_header(__('Source') . ' - ' . ucfirst(__('died')));
+    source_edit("person", "death_decl_source", $pers_gedcomnumber);
 }
 
 // *** Edit source by buried ***
@@ -226,8 +238,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
             }
         }
     }
-    </script>
-    ';
+    </script>';
 ?>
 
     <form method="POST" action="<?= $phpself2; ?>">
@@ -250,7 +261,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
         <ul id="sortable<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>" class="sortable" style="padding-left:0px;">
 
             <?php foreach ($connect_sql as $connectDb) { ?>
-                <li><span style="cursor:move;" id="<?= $connectDb->connect_id; ?>" class="handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>"><img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>"></span>
+                <li>
+                    <span style="cursor:move;" id="<?= $connectDb->connect_id; ?>" class="handle<?= $connect_kind . $connect_sub_kind . $connect_connect_id; ?>">
+                        <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
+                    </span>
 
                     <?php
                     echo '<input type="hidden" name="connect_change[' . $connectDb->connect_id . ']" value="' . $connectDb->connect_id . '">';
@@ -441,37 +455,52 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                     ?>
 
                         <h3><?= __('Search existing source'); ?></h3>
-                        <input type="text" name="source_search_gedcomnr" value="<?= $source_search_gedcomnr; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>">
-                        <input type="text" name="source_search" value="<?= $source_search; ?>" size="20" placeholder="<?= __('text'); ?>">
-                        <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary"><br>
-                        <select size="1" name="connect_source_id[<?= $connectDb->connect_id; ?>]" style="width: 300px">
-                            <option value=""><?= __('Select existing source'); ?>:</option>
-                            <?php
-                            while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
-                                // TODO $selected not useful here?
-                                $selected = '';
-                                if ($connectDb->connect_source_id != '' && $sourceDb->source_gedcomnr == $connectDb->connect_source_id) {
-                                    $selected = ' selected';
-                                }
-                                echo '<option value="' . @$sourceDb->source_gedcomnr . '"' . $selected . '>';
-                                if ($sourceDb->source_title) {
-                                    echo $sourceDb->source_title;
-                                } else {
-                                    echo substr($sourceDb->source_text, 0, 40);
-                                    if (strlen($sourceDb->source_text) > 40) {
-                                        echo '...';
-                                    }
-                                }
-                                echo ' [' . @$sourceDb->source_gedcomnr . ']</option>' . "\n";
-                            }
-                            ?>
-                            <option value="">*** <?= __('Results are limited, use search to find more sources.'); ?> ***</option>
-                        </select>
 
-                        &nbsp;&nbsp;<input type="submit" name="submit" title="submit" value="<?= __('Select'); ?>" class="btn btn-sm btn-secondary">
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <input type="text" name="source_search_gedcomnr" value="<?= $source_search_gedcomnr; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" name="source_search" value="<?= $source_search; ?>" size="20" placeholder="<?= __('text'); ?>" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-10">
+                                <select size="1" name="connect_source_id[<?= $connectDb->connect_id; ?>]" class="form-select form-select-sm">
+                                    <option value=""><?= __('Select existing source'); ?>:</option>
+                                    <?php
+                                    while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
+                                        // TODO $selected not useful here?
+                                        $selected = '';
+                                        if ($connectDb->connect_source_id != '' && $sourceDb->source_gedcomnr == $connectDb->connect_source_id) {
+                                            $selected = ' selected';
+                                        }
+                                        echo '<option value="' . @$sourceDb->source_gedcomnr . '"' . $selected . '>';
+                                        if ($sourceDb->source_title) {
+                                            echo $sourceDb->source_title;
+                                        } else {
+                                            echo substr($sourceDb->source_text, 0, 40);
+                                            if (strlen($sourceDb->source_text) > 40) {
+                                                echo '...';
+                                            }
+                                        }
+                                        echo ' [' . @$sourceDb->source_gedcomnr . ']</option>' . "\n";
+                                    }
+                                    ?>
+                                    <option value="">*** <?= __('Results are limited, use search to find more sources.'); ?> ***</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="submit" name="submit" title="submit" value="<?= __('Select'); ?>" class="btn btn-sm btn-secondary">
+                            </div>
+                        </div>
 
                         <!-- Add new source -->
-                        <br><br><?= __('Or:'); ?>
+                        <br><?= __('Or:'); ?>
                         <a href="index.php?page=<?= $page; ?>&amp;source_add2=1&amp;connect_id=<?= $connectDb->connect_id; ?>
                             &amp;connect_order=<?= $connectDb->connect_order; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>
                             &amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>

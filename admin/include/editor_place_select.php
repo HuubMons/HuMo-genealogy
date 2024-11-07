@@ -18,8 +18,7 @@ if (isset($_GET['form'])) {
     $check_array = array(
         "pers_birth_place", "pers_bapt_place", "pers_death_place", "pers_buried_place",
         "fam_relation_place", "fam_marr_notice_place", "fam_marr_place", "fam_marr_church_notice_place", "fam_marr_church_place", "fam_div_place",
-        "address_place",
-        "event_place"
+        "address_place", "event_place", "birth_decl_place", "death_decl_place"
     );
     if (in_array($_GET['place_item'], $check_array)) {
         $url_place_item = $_GET['place_item'];

@@ -135,20 +135,23 @@ for ($i = 0; $i < $counter; $i++) {
         }
     }
 }
-
-// *** Show all links ***
 ?>
+
 <form method="post" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="menu_admin" value="settings_homepage">
-    <table class="humo" border="1">
-        <tr class="table_header_large">
-            <th class="table_header" colspan="7"><? __('Homepage template'); ?>
-                <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;template_homepage_reset=1">[<?= __('Default settings'); ?>]</a>
-            </th>
-        </tr>
 
-        <tr class="table_header">
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th colspan="7"><?= __('Homepage template'); ?>
+                    <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;template_homepage_reset=1">[<?= __('Default settings'); ?>]</a><br>
+                    <?= __("If the left column isn't used, the center column will be made large automatically."); ?><br>
+                </th>
+            </tr>
+        </thead>
+
+        <tr class="table-primary">
             <th><?= __('Status'); ?></th>
             <th><?= __('Position'); ?></th>
             <th><?= __('Item'); ?></th>
@@ -197,8 +200,8 @@ for ($i = 0; $i < $counter; $i++) {
                             <option value="center" <?php if ($lijst[1] == 'center') echo ' selected'; ?>><?= __('Center'); ?></option>
                             <option value="right" <?php if ($lijst[1] == 'right') echo ' selected'; ?>><?= __('Right'); ?></option>
                         </select>
-                        <?php
 
+                        <?php
                         if ($dataDb->setting_order != '1') {
                             echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;mod_up=1&amp;module_order=' . $dataDb->setting_order .
                                 '&amp;id=' . $dataDb->setting_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
@@ -434,7 +437,6 @@ for ($i = 0; $i < $counter; $i++) {
     </table>
 </form>
 
-<?= __("If the left column isn't used, the center column will be made large automatically."); ?><br>
 <?php
 // *** Change Link ***
 if (isset($_POST['change_link'])) {
@@ -498,26 +500,26 @@ if (isset($_GET['down'])) {
 
     $dbh->query($sql);
 }
-
-// *** Show all links ***
 ?>
-<h1 align=center><?= __('Homepage favourites'); ?></h1>
 
 <form method="post" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="menu_admin" value="settings_homepage">
 
-    <table class="humo standard" border="1">
-        <tr class="table_header_large">
-            <th class="table_header" colspan="4"><?= __('Show list of favourites in homepage'); ?></th>
-        </tr>
+    <table class="table" border="1">
+        <thead class="table-primary">
+            <tr>
+                <th colspan="4"><?= __('Show list of favourites in homepage'); ?></th>
+            </tr>
 
-        <tr class="table_header">
-            <th>Nr.</th>
-            <th><?= __('Own code'); ?></th>
-            <th><?= __('Description'); ?></th>
-            <th><input type="submit" name="change_link" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-        </tr>
+            <tr>
+                <th>Nr.</th>
+                <th><?= __('Own code'); ?></th>
+                <th><?= __('Description'); ?></th>
+                <th><input type="submit" name="change_link" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+            </tr>
+        </thead>
+
         <?php
         $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' ORDER BY setting_order");
         // *** Number for new link ***
@@ -593,11 +595,13 @@ $slideshow_04 = explode('|', $humo_option["slideshow_04"]);
 <form method="post" action="index.php">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="menu_admin" value="settings_homepage">
-    <table class="humo" border="1">
 
-        <tr class="table_header">
-            <th colspan="2"><?= __('Slideshow on the homepage'); ?> <input type="submit" name="save_option2" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-        </tr>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th colspan="2"><?= __('Slideshow on the homepage'); ?> <input type="submit" name="save_option2" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+            </tr>
+        </thead>
 
         <tr>
             <td colspan="2"><?= __('This option shows a slideshow at the homepage. Put the images in the media/slideshow/ folder at the website.<br>Example of image link:'); ?> <b>media/slideshow/slide01.jpg</b><br>

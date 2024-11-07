@@ -7,79 +7,26 @@ if (!defined('ADMIN_PAGE')) {
 include_once(__DIR__ . "/../include/select_tree.php");
 
 $prefx = '../'; // to get out of the admin map
-
-// *** Tab menu ***
-$menu_tab = 'picture_settings';
-if (isset($_POST['menu_tab'])) {
-    $menu_tab = $_POST['menu_tab'];
-}
-if (isset($_GET['menu_tab'])) {
-    $menu_tab = $_GET['menu_tab'];
-}
-
-// *** Default settings ***
-$show_table = false;
-if (isset($menu_tab) && $menu_tab == 'picture_settings') {
-    $show_table = true;
-}
-if (isset($menu_tab) && $menu_tab == 'picture_thumbnails') {
-    $show_table = true;
-}
-if (isset($menu_tab) && $menu_tab == 'picture_show') {
-    $show_table = true;
-}
 ?>
 
 <ul class="nav nav-tabs mt-1">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'picture_settings') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('Picture settings'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($thumbs['menu_tab'] == 'picture_settings') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('Picture settings'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'picture_thumbnails') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_thumbnails"><?= __('Create thumbnails'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($thumbs['menu_tab'] == 'picture_thumbnails') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_thumbnails"><?= __('Create thumbnails'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'picture_show') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_show"><?= __('Show thumbnails'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($thumbs['menu_tab'] == 'picture_show') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_show"><?= __('Show thumbnails'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'picture_categories') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_categories"><?= __('Photo album categories'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($thumbs['menu_tab'] == 'picture_categories') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_categories"><?= __('Photo album categories'); ?></a>
     </li>
 </ul>
 
 <!-- Align content to the left -->
 <div style="float: left; background-color:white; height:500px; padding:10px;">
-    <?php
-    if ($show_table) {
-        // *** Save new/ changed picture path ***
-        if (isset($_POST['change_tree_data'])) {
-            $tree_pict_path = $_POST['tree_pict_path'];
-            if (substr($_POST['tree_pict_path'], 0, 1) === '|') {
-                if (isset($_POST['default_path']) && $_POST['default_path'] == 'no') {
-                    $tree_pict_path = substr($tree_pict_path, 1);
-                }
-            } elseif (isset($_POST['default_path']) && $_POST['default_path'] == 'yes') {
-                $tree_pict_path = '|' . $tree_pict_path;
-            }
-            $sql = "UPDATE humo_trees SET tree_pict_path='" . safe_text_db($tree_pict_path) . "' WHERE tree_id=" . safe_text_db($tree_id);
-            $result = $dbh->query($sql);
-        }
-
-        $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
-        $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
-
-        // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
-        if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
-            $checked1 = ' checked';
-            $checked2 = '';
-        } else {
-            $checked1 = '';
-            $checked2 = ' checked';
-        }
-        $tree_pict_path = $data2Db->tree_pict_path;
-        if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
-            $tree_pict_path = substr($tree_pict_path, 1);
-        }
-    ?>
-
+    <?php if ($thumbs['menu_tab'] == 'picture_settings' || $thumbs['menu_tab'] == 'picture_thumbnails' || $thumbs['menu_tab'] == 'picture_show') { ?>
         <div class="p-3 m-2 genealogy_search">
 
             <div class="row mb-2">
@@ -88,7 +35,7 @@ if (isset($menu_tab) && $menu_tab == 'picture_show') {
                 </div>
 
                 <div class="col-md-7">
-                    <?= select_tree($dbh, $page, $tree_id, $menu_tab); ?>
+                    <?= select_tree($dbh, $page, $tree_id, $thumbs['menu_tab']); ?>
                 </div>
             </div>
 
@@ -101,19 +48,19 @@ if (isset($menu_tab) && $menu_tab == 'picture_show') {
                 <div class="col-md-8">
                     <form method="POST" action="index.php">
                         <input type="hidden" name="page" value="thumbs">
-                        <input type="hidden" name="menu_tab" value="<?= $menu_tab; ?>">
+                        <input type="hidden" name="menu_tab" value="<?= $thumbs['menu_tab']; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="yes" name="default_path" id="default_path" <?= $checked1; ?>>
+                            <input class="form-check-input" type="radio" value="yes" name="default_path" id="default_path" <?= $thumbs['default_path'] ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="default_path">
                                 <?= __('Use default picture path:'); ?> <b>media/</b>
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="no" name="default_path" id="default_path" <?= $checked2; ?>>
+                            <input class="form-check-input" type="radio" value="no" name="default_path" id="default_path" <?= !$thumbs['default_path'] ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="default_path">
-                                <input type="text" name="tree_pict_path" value="<?= $tree_pict_path; ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
+                                <input type="text" name="tree_pict_path" value="<?= $thumbs['own_pict_path']; ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
                             </label>
                         </div>
 
@@ -123,7 +70,6 @@ www.myhomepage.nl/pictures/ => folder for pictures.<br>
 Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealogy'); ?><br><br>
 
                         <input type="submit" name="change_tree_data" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"><br>
-
                     </form>
                 </div>
             </div>
@@ -146,24 +92,19 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 }
                 closedir($dh);
             }
-
-            // *** Status of picture path ***
-            $tree_pict_path = $data2Db->tree_pict_path;
-            if (substr($tree_pict_path, 0, 1) === '|') {
-                $tree_pict_path = 'media/';
-            }
             ?>
+
             <div class="row mb-2">
                 <div class="col-md-4"><?= __('Status of picture path'); ?></div>
 
                 <div class="col-md-7">
-                    <?php if ($tree_pict_path != '' && file_exists($prefx . $tree_pict_path)) { ?>
+                    <?php if ($thumbs['tree_pict_path'] != '' && file_exists($prefx . $thumbs['tree_pict_path'])) { ?>
                         <span class="bg-success-subtle"><?= __('Picture path exists.'); ?></span>
 
                     <?php
                         // *** Show subdirectories ***
                         $first = false;
-                        get_media_files($first, $prefx, $tree_pict_path);
+                        get_media_files($first, $prefx, $thumbs['tree_pict_path']);
                     } else {
                         echo '<span class="bg-warning-subtle"><b>' . __('Picture path doesn\'t exist!') . '</b></span>';
                     }
@@ -173,7 +114,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
             <!-- Create thumbnails -->
             <?php
-            if (isset($menu_tab) && $menu_tab == 'picture_thumbnails') {
+            if ($thumbs['menu_tab'] == 'picture_thumbnails') {
                 $thumb_height = 120; // *** Standard thumb height ***
             ?>
                 <div class="row mb-2">
@@ -191,7 +132,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             <?php } ?>
 
             <!-- Show thumbnails -->
-            <?php if (isset($menu_tab) && $menu_tab == 'picture_show') { ?>
+            <?php if ($thumbs['menu_tab'] == 'picture_show') { ?>
                 <div class="row mb-2">
                     <div class="col-md-4"><?= __('Show thumbnails'); ?></div>
 
@@ -209,14 +150,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
         </div>
 
-        <?php if (isset($menu_tab) && $menu_tab == 'picture_settings') { ?>
+        <?php if ($thumbs['menu_tab'] == 'picture_settings') { ?>
             - <?= __('To show pictures, also check the user-group settings: '); ?>
             <a href="index.php?page=groups"><?= __('User groups'); ?></a>
         <?php
         }
 
         // *** Create picture thumbnails ***
-        if (isset($menu_tab) && $menu_tab == 'picture_thumbnails') {
+        if ($thumbs['menu_tab'] == 'picture_thumbnails') {
         ?>
             <?= __('- Creating thumbnails<br>
 - ATTENTION: it may be necessary to (temporarily) change access to the folder with the pictures (rwxrwxrwx)<br>
@@ -227,7 +168,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
 
     // *** Picture categories ***
-    if (isset($menu_tab) && $menu_tab == 'picture_categories') {
+    if ($thumbs['menu_tab'] == 'picture_categories') {
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
         if (!$temp->rowCount()) {
             // no category database table exists - so create it
@@ -482,29 +423,29 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <tr>
                         <td></td>
                         <td style="white-space:nowrap;"><input type="text" name="new_cat_prefix" value="<?= $content; ?>" size="6" class="form-control form-control-sm">
+                            <?php if (isset($warning_invalid_prefix)) { ?>
+                                <br><span style="color:red"><?= $warning_invalid_prefix; ?></span>
                             <?php
-                            if (isset($warning_invalid_prefix)) {
-                                echo '<br><span style="color:red">' . $warning_invalid_prefix . '</span>';
                             }
                             if (isset($warning_exist_prefix)) {
-                                echo '<br><span style="color:red">' . $warning_exist_prefix . '</span>';
-                            }
-                            echo '</td><td><input type="text" name="new_cat_name" value="" size="30" class="form-control form-control-sm">';
-                            if (isset($warning_noname)) {
-                                echo '<br><span style="color:red">' . $warning_noname . '</span>';
-                            }
                             ?>
+                                <br><span style="color:red"><?= $warning_exist_prefix; ?></span>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <input type="text" name="new_cat_name" value="" size="30" class="form-control form-control-sm">
+                            <?php if (isset($warning_noname)) { ?>
+                                <br><span style="color:red"><?= $warning_noname; ?></span>
+                            <?php } ?>
                         </td>
                     </tr>
 
                     <?php if (isset($_GET['cat_drop']) && $_GET['cat_drop'] == 1) { ?>
                         <tr>
                             <td colspan="3" style="color:red;font-weight:bold;font-size:120%">
-                                <?php
-                                echo __('Do you really want to delete category:') . '&nbsp;' . $_GET['cat_prefix'] . '&nbsp;?';
-                                echo '&nbsp;&nbsp;&nbsp;<input type="button" style="color:red;font-weight:bold" onclick="location.href=\'index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_order=' . $_GET['cat_order'] . '&amp;cat_prefix=' . $_GET['cat_prefix'] . '&amp;cat_drop2=1\';" value="' . __('Yes') . '">';
-                                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" style="color:green;font-weight:bold" onclick="location.href=\'index.php?page=thumbs&amp;menu_tab=picture_categories\';" value="' . __('No') . '">';
-                                ?>
+                                <?= __('Do you really want to delete category:'); ?>&nbsp;<?= $_GET['cat_prefix']; ?>&nbsp;?
+                                &nbsp;&nbsp;&nbsp;<input type="button" style="color:red;font-weight:bold" onclick="location.href='index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_order=<?= $_GET['cat_order']; ?>&amp;cat_prefix=<?= $_GET['cat_prefix']; ?>&amp;cat_drop2=1';" value="<?= __('Yes'); ?>">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" style="color:green;font-weight:bold" onclick="location.href='index.php?page=thumbs&amp;menu_tab=picture_categories';" value="<?= __('No'); ?>">
                             </td>
                         </tr>
                     <?php } ?>
@@ -669,19 +610,19 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 echo $picture_text;
 
                                 if (isset($_POST['change_filename'])) {
-                                    echo '<form method="POST" action="index.php">';
-                                    echo '<input type="hidden" name="page" value="thumbs">';
-                                    echo '<input type="hidden" name="menu_tab" value="picture_show">';
-                                    echo '<input type="hidden" name="tree_id" value="' . $tree_id . '">';
-                                    echo '<input type="hidden" name="picture_path" value="' . $selected_picture_folder . '">';
-                                    echo '<input type="hidden" name="filename_old" value="' . $filename . '">';
-                                    echo '<input type="text" name="filename" value="' . $filename . '" size="20">';
-                                    echo '<input type="submit" name="change_filename" value="' . __('Change filename') . '">';
-                                    echo '</form>';
-                                } else {
-                                    echo '<div class="photobooktext">' . $filename . '</div>';
-                                }
                                 ?>
+                                    <form method="POST" action="index.php">
+                                        <input type="hidden" name="page" value="thumbs">
+                                        <input type="hidden" name="menu_tab" value="picture_show">
+                                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                                        <input type="hidden" name="picture_path" value="<?= $selected_picture_folder; ?>">
+                                        <input type="hidden" name="filename_old" value="<?= $filename; ?>">
+                                        <input type="text" name="filename" value="<?= $filename; ?>" size="20">
+                                        <input type="submit" name="change_filename" value="<?= __('Change filename'); ?>">
+                                    </form>
+                                <?php } else { ?>
+                                    <div class="photobooktext"><?= $filename; ?></div>
+                                <?php } ?>
                             </div>
     <?php
                         }

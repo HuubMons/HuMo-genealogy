@@ -3,13 +3,21 @@
 //echo '<h3>'.__('Checking database tables...').'<br>'.__('Please wait till finished').'.</h3>';
 echo '<h3>' . __('Checking database tables...') . '</h3>';
 
+$wrong_indexnr = 0;
+$wrong_famc = 0;
+$wrong_fams = 0;
+$removed = '';
+if (isset($_POST['remove'])) {
+    $removed = ' <b>Link is removed.</b>';
+}
+
 // *** Option to remove wrong database connections ***
 ?>
 <form method="POST" action="index.php">
-    <input type="hidden" name="page" value="<?= $page;?>">
+    <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="tab" value="integrity">
-    <?= __('Remove links to missing items from database (first make a database backup!)');?>
-    <input type="submit" name="remove" value="<?= __('REMOVE');?>" class="btn btn-sm btn-secondary">
+    <?= __('Remove links to missing items from database (first make a database backup!)'); ?>
+    <input type="submit" name="remove" value="<?= __('REMOVE'); ?>" class="btn btn-sm btn-secondary">
 </form>
 
 <table class="table mt-2">
@@ -22,14 +30,6 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
     </thead>
 
     <?php
-    $wrong_indexnr = 0;
-    $wrong_famc = 0;
-    $wrong_fams = 0;
-    $removed = '';
-    if (isset($_POST['remove'])) {
-        $removed = ' <b>Link is removed.</b>';
-    }
-
     // Test line to show processing time
     //$processing_time=time();
 
@@ -40,7 +40,7 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
 
         // *** Now get all data for one person at a time ***
         $person = $dbh->query("SELECT pers_gedcomnumber,pers_famc,pers_fams FROM humo_persons
-        WHERE pers_id='" . $person_startDb['pers_id'] . "'");
+            WHERE pers_id='" . $person_startDb['pers_id'] . "'");
         $person = $person->fetch(PDO::FETCH_OBJ);
 
         // *** Relations/ marriages ***
@@ -74,14 +74,17 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                                 $new_fams .= $fams[$j];
                             }
                         }
-                        $sql = "UPDATE humo_persons SET pers_fams='" . $new_fams . "'
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
+                        $sql = "UPDATE humo_persons SET pers_fams='" . $new_fams . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
                         $dbh->query($sql);
                     }
                     $wrong_fams++;
-                    echo '<tr><td><b>Missing marriage/ relation record</b></td>';
-                    echo '<td>Person gedcomnr: ' . $person->pers_gedcomnumber . '</td>';
-                    echo '<td>Missing marriage/ relation gedcomnr: ' . $fams[$i] . $removed . '</td></tr>';
+    ?>
+                    <tr>
+                        <td><b>Missing marriage/ relation record</b></td>
+                        <td>Person gedcomnr: <?= $person->pers_gedcomnumber; ?></td>
+                        <td>Missing marriage/ relation gedcomnr: <?= $fams[$i] . $removed; ?></td>
+                    </tr>
+                <?php
                 }
             }
         }
@@ -108,24 +111,29 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                     } else {
                         $fam_children = $person->pers_gedcomnumber;
                     }
-                    $sql = "UPDATE humo_families SET fam_children='" . $fam_children . "'
-                                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $person->pers_famc . "'";
+                    $sql = "UPDATE humo_families SET fam_children='" . $fam_children . "' WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $person->pers_famc . "'";
                     $dbh->query($sql);
                     $check_children = true;
-                    echo '<tr><td><b>Missing child nr.</b></td>';
-                    echo '<td>Fam gedcomnr: ' . $person->pers_famc . '</td>';
-                    echo '<td>Missing child gedcomnr: ' . $person->pers_gedcomnumber . '. <b>Is restored.</b></td></tr>';
+                ?>
+                    <tr>
+                        <td><b>Missing child nr.</b></td>
+                        <td>Fam gedcomnr: <?= $person->pers_famc; ?></td>
+                        <td>Missing child gedcomnr: <?= $person->pers_gedcomnumber; ?>. <b>Is restored.</b></td>
+                    </tr>
+                <?php
                 } else {
                     if (isset($_POST['remove'])) {
-                        $sql = "UPDATE humo_persons SET pers_famc=''
-                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
+                        $sql = "UPDATE humo_persons SET pers_famc='' WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
                         $dbh->query($sql);
                     }
 
                     // *** Missing parent record, no restore possible? ***
-                    echo '<tr><td><b>Missing parents record</b></td>';
-                    echo '<td>Child gedcomnr: ' . $person->pers_gedcomnumber . '</td>';
-                    echo '<td>missing parents gedcomnr: ' . $person->pers_famc . $removed . '</td>';
+                ?>
+                    <tr>
+                        <td><b>Missing parents record</b></td>
+                        <td>Child gedcomnr: <?= $person->pers_gedcomnumber; ?></td>
+                        <td>missing parents gedcomnr: <?= $person->pers_famc . $removed; ?></td>
+                    <?php
                     $wrong_famc++;
                 }
             }
@@ -157,23 +165,28 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                 if ($check_item == false) {
                     // *** Restore pers_fams ***
                     $pers_fams = $person->pers_fams ? $person->pers_fams . ';' . $famDb->fam_gedcomnumber : $famDb->fam_gedcomnumber;
-                    $sql = "UPDATE humo_persons SET pers_fams='" . $pers_fams . "'
-                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
+                    $sql = "UPDATE humo_persons SET pers_fams='" . $pers_fams . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
                     $dbh->query($sql);
-                    echo '<tr><td><b>Missing marriage/ relation nr. in person record</b></td>';
-                    echo '<td>Man gedcomnr: ' . $famDb->fam_man . '</td>';
-                    echo '<td>Missing marriage/ relation gedcomnr: ' . $famDb->fam_gedcomnumber . '. <b>Is restored.</b></td></tr>';
+                    ?>
+                    <tr>
+                        <td><b>Missing marriage/ relation nr. in person record</b></td>
+                        <td>Man gedcomnr: <?= $famDb->fam_man; ?></td>
+                        <td>Missing marriage/ relation gedcomnr: <?= $famDb->fam_gedcomnumber; ?>. <b>Is restored.</b></td>
+                    </tr>
+                <?php
                 }
             } else {
                 if (isset($_POST['remove'])) {
-                    $sql = "UPDATE humo_families SET fam_man='0'
-                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
+                    $sql = "UPDATE humo_families SET fam_man='0' WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
                     $dbh->query($sql);
                 }
-
-                echo '<tr><td><b>Missing man record in family</b></td>';
-                echo '<td>Family gedcomnr: ' . $famDb->fam_gedcomnumber . '</td>';
-                echo '<td>Missing man gedcomnr: ' . $famDb->fam_man . $removed . '</td></tr>';
+                ?>
+                <tr>
+                    <td><b>Missing man record in family</b></td>
+                    <td>Family gedcomnr: <?= $famDb->fam_gedcomnumber; ?></td>
+                    <td>Missing man gedcomnr: <?= $famDb->fam_man . $removed; ?></td>
+                </tr>
+                <?php
             }
         }
 
@@ -190,23 +203,28 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                 if ($check_item == false) {
                     // *** Restore pers_fams ***
                     $pers_fams = $person->pers_fams ? $person->pers_fams . ';' . $famDb->fam_gedcomnumber : $famDb->fam_gedcomnumber;
-                    $sql = "UPDATE humo_persons SET pers_fams='" . $pers_fams . "'
-                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
+                    $sql = "UPDATE humo_persons SET pers_fams='" . $pers_fams . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
                     $dbh->query($sql);
-                    echo '<tr><td><b>Missing marriage/ relation nr. in person record</b></td>';
-                    echo '<td>Woman gedcomnr: ' . $famDb->fam_woman . '</td>';
-                    echo '<td>Missing marriage/ relation gedcomnr: ' . $famDb->fam_gedcomnumber . '. <b>Is restored.</b></td></tr>';
+                ?>
+                    <tr>
+                        <td><b>Missing marriage/ relation nr. in person record</b></td>
+                        <td>Woman gedcomnr: <?= $famDb->fam_woman; ?></td>
+                        <td>Missing marriage/ relation gedcomnr: <?= $famDb->fam_gedcomnumber; ?>. <b>Is restored.</b></td>
+                    </tr>
+                <?php
                 }
             } else {
                 if (isset($_POST['remove'])) {
-                    $sql = "UPDATE humo_families SET fam_woman='0'
-                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
+                    $sql = "UPDATE humo_families SET fam_woman='0' WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
                     $dbh->query($sql);
                 }
-
-                echo '<tr><td><b>Missing woman record in family</b></td>';
-                echo '<td>Family gedcomnr: ' . $famDb->fam_gedcomnumber . '</td>';
-                echo '<td>Missing woman gedcomnr: ' . $famDb->fam_woman . $removed . '</td></tr>';
+                ?>
+                <tr>
+                    <td><b>Missing woman record in family</b></td>
+                    <td>Family gedcomnr: <?= $famDb->fam_gedcomnumber; ?></td>
+                    <td>Missing woman gedcomnr: <?= $famDb->fam_woman . $removed; ?></td>
+                </tr>
+                <?php
             }
         }
 
@@ -217,12 +235,15 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                 $person = $db_functions->get_person($children[$i]);
                 if ($person) {
                     if ($person->pers_famc == '') {
-                        $sql = "UPDATE humo_persons SET pers_famc='" . $famDb->fam_gedcomnumber . "'
-                        WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
+                        $sql = "UPDATE humo_persons SET pers_famc='" . $famDb->fam_gedcomnumber . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $person->pers_gedcomnumber . "'";
                         $dbh->query($sql);
-                        echo '<tr><td><b>Missing parent connection</b></td>';
-                        echo '<td>Child gedcomnr: ' . $children[$i] . '</td>';
-                        echo '<td>Missing parent gedcomnr: ' . $famDb->fam_gedcomnumber . '. <b>Is restored.</b></td></tr>';
+                ?>
+                        <tr>
+                            <td><b>Missing parent connection</b></td>
+                            <td>Child gedcomnr: <?= $children[$i]; ?></td>
+                            <td>Missing parent gedcomnr: <?= $famDb->fam_gedcomnumber; ?>. <b>Is restored.</b></td>
+                        </tr>
+                    <?php
                     }
                 } else {
                     if (isset($_POST['remove'])) {
@@ -233,15 +254,18 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                                 $new_children .= $children[$j];
                             }
                         }
-                        $sql = "UPDATE humo_families SET fam_children='" . $new_children . "'
-                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
+                        $sql = "UPDATE humo_families SET fam_children='" . $new_children . "' WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famDb->fam_gedcomnumber . "'";
                         $dbh->query($sql);
                     }
 
                     $wrong_children++;
-                    echo '<tr><td><b>Missing child record</b></td>';
-                    echo '<td>Fam gedcomnr: ' . $famDb->fam_gedcomnumber . '</td>';
-                    echo '<td>Missing child gedcomnr: ' . $children[$i] . $removed . '</td></tr>';
+                    ?>
+                    <tr>
+                        <td><b>Missing child record</b></td>
+                        <td>Fam gedcomnr: <?= $famDb->fam_gedcomnumber; ?></td>
+                        <td>Missing child gedcomnr: <?= $children[$i] . $removed; ?></td>
+                    </tr>
+                <?php
                     // NO RESTORE YET (not possible?)
                 }
             }
@@ -269,10 +293,13 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                     $sql = "DELETE FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_id='" . $connect->connect_id . "'";
                     $dbh->query($sql);
                 }
-
-                echo '<tr><td><b>Missing person record</b></td>';
-                echo '<td>Connection record: ' . $connect->connect_id . '/ ' . $connect->connect_sub_kind . '</td>';
-                echo '<td>Missing person gedcomnr: ' . $connect->connect_connect_id . $removed . '</td></tr>';
+                ?>
+                <tr>
+                    <td><b>Missing person record</b></td>
+                    <td>Connection record: <?= $connect->connect_id; ?>/ <?= $connect->connect_sub_kind; ?></td>
+                    <td>Missing person gedcomnr: <?= $connect->connect_connect_id . $removed; ?></td>
+                </tr>
+            <?php
             }
         }
 
@@ -287,10 +314,13 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                     $sql = "DELETE FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_id='" . $connect->connect_id . "'";
                     $dbh->query($sql);
                 }
-
-                echo '<tr><td><b>Missing family record</b></td>';
-                echo '<td>Connection record: ' . $connect->connect_id . '/ ' . $connect->connect_sub_kind . '</td>';
-                echo '<td>Missing family gedcomnr: ' . $connect->connect_connect_id . $removed . '</td></tr>';
+            ?>
+                <tr>
+                    <td><b>Missing family record</b></td>
+                    <td>Connection record: <?= $connect->connect_id; ?>/ <?= $connect->connect_sub_kind; ?></td>
+                    <td>Missing family gedcomnr: <?= $connect->connect_connect_id . $removed; ?></td>
+                </tr>
+            <?php
                 // NO RESTORE YET (not possible?)
             }
         }
@@ -317,10 +347,13 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                     $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_id='" . $connect->event_id . "'";
                     $dbh->query($sql);
                 }
-
-                echo '<tr><td><b>Missing person record</b></td>';
-                echo '<td>Event record: ' . $connect->event_id . '/ ' . $connect->event_kind . '</td>';
-                echo '<td>Missing person gedcomnr: ' . $connect->event_connect_id . $removed . '</td></tr>';
+            ?>
+                <tr>
+                    <td><b>Missing person record</b></td>
+                    <td>Event record: <?= $connect->event_id; ?>/ <?= $connect->event_kind; ?></td>
+                    <td>Missing person gedcomnr: <?= $connect->event_connect_id . $removed; ?></td>
+                </tr>
+            <?php
             }
         }
 
@@ -336,10 +369,13 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
                     $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_id='" . $connect->event_id . "'";
                     $dbh->query($sql);
                 }
-
-                echo '<tr><td><b>Missing family record</b></td>';
-                echo '<td>Event record: ' . $connect->event_id . '/ ' . $connect->event_kind . '</td>';
-                echo '<td>Missing family gedcomnr: ' . $connect->event_connect_id . '</td></tr>';
+            ?>
+                <tr>
+                    <td><b>Missing family record</b></td>
+                    <td>Event record: <?= $connect->event_id; ?>/ <?= $connect->event_kind; ?></td>
+                    <td>Missing family gedcomnr: <?= $connect->event_connect_id; ?></td>
+                </tr>
+        <?php
             }
         }
     }
@@ -348,16 +384,40 @@ echo '<h3>' . __('Checking database tables...') . '</h3>';
     //$processing_time=time();
 
     if ($wrong_indexnr == 0) {
-        echo '<tr><td>' . __('Checked all person index numbers') . '</td><td></td><td>ok</td></tr>';
+        ?>
+        <tr>
+            <td><?= __('Checked all person index numbers'); ?></td>
+            <td></td>
+            <td>ok</td>
+        </tr>
+    <?php
     }
     if ($wrong_fams == 0) {
-        echo '<tr><td>' . __('Checked all person - relation connections') . '</td><td></td><td>ok</td></tr>';
+    ?>
+        <tr>
+            <td><?= __('Checked all person - relation connections'); ?></td>
+            <td></td>
+            <td>ok</td>
+        </tr>
+    <?php
     }
     if ($wrong_famc == 0) {
-        echo '<tr><td>' . __('Checked all child - parent connections') . '</td><td></td><td>ok</td></tr>';
+    ?>
+        <tr>
+            <td><?= __('Checked all child - parent connections'); ?></td>
+            <td></td>
+            <td>ok</td>
+        </tr>
+    <?php
     }
     if ($wrong_children == 0) {
-        echo '<tr><td>' . __('Checked all parent - child connections') . '</td><td></td><td>ok</td></tr>';
+    ?>
+        <tr>
+            <td><?= __('Checked all parent - child connections'); ?></td>
+            <td></td>
+            <td>ok</td>
+        </tr>
+    <?php
     }
     ?>
 </table>

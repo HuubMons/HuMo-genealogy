@@ -43,8 +43,64 @@ if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
 
-$source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "' ORDER BY IF (source_title!='',source_title,source_text)");
+$source_search_gedcomnr = '';
+if (isset($_POST['source_search_gedcomnr'])) {
+    $source_search_gedcomnr = safe_text_db($_POST['source_search_gedcomnr']);
+}
+$source_search = '';
+if (isset($_POST['source_search'])) {
+    $source_search = safe_text_db($_POST['source_search']);
+}
+
+//$source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "' ORDER BY IF (source_title!='',source_title,source_text)");
+$qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
+if (isset($_POST['source_search_gedcomnr'])) {
+    $qry .= " AND source_gedcomnr LIKE '%" . safe_text_db($_POST['source_search_gedcomnr']) . "%'";
+}
+if (isset($_POST['source_search'])) {
+    $qry .= " AND ( source_title LIKE '%" . safe_text_db($_POST['source_search']) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($source_search) . "%') )";
+}
+$qry .= " ORDER BY IF (source_title!='',source_title,source_text)";
+$source_qry = $dbh->query($qry);
+
+
+// TODO move JS to other script.
+// *** Script to expand and collapse source items ***
+echo '
+    <script>
+    function hideShow(el_id){
+        // *** Hide or show item ***
+        var arr = document.getElementsByClassName(\'row\'+el_id);
+        for (i=0; i<arr.length; i++){
+            if(arr[i].style.display!="none"){
+                arr[i].style.display="none";
+            }else{
+                arr[i].style.display="";
+            }
+        }
+    }
+    </script>';
+
+// TODO: this is a temporary copy of script in views/editor.php.
+include_once(__DIR__ . "/../../include/language_date.php");
+include_once(__DIR__ . "/../../include/date_place.php");
+// TODO: this is a temporary copy of script in views/editor.php.
+function hideshow_date_place($hideshow_date, $hideshow_place)
+{
+    // *** If date ends with ! then date isn't valid. Show red line ***
+    $check_date = false;
+    if (isset($hideshow_date) && substr($hideshow_date, -1) === '!') {
+        $check_date = true;
+        $hideshow_date = substr($hideshow_date, 0, -1);
+    }
+    $text = date_place($hideshow_date, $hideshow_place);
+    if ($check_date) {
+        $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
+    }
+    return $text;
+}
 ?>
+
 
 <h1 class="center"><?= __('Sources'); ?></h1>
 <?= __('These sources can be connected to multiple persons, families, events and other items.'); ?>
@@ -69,12 +125,27 @@ $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . 
 <?php }; ?>
 
 <div class="p-3 my-md-2 genealogy_search container-md">
-    <div class="row">
+    <form method="POST" action="index.php" style="display : inline;">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <?= select_tree($dbh, $page, $tree_id); ?>
+            </div>
 
-        <div class="col-md-3">
-            <?= select_tree($dbh, $page, $tree_id); ?>
+            <div class="col-md-3">
+                <input type="text" name="source_search_gedcomnr" value="<?= $source_search_gedcomnr; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="source_search" value="<?= $source_search; ?>" size="20" placeholder="<?= __('text'); ?>" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-2">
+                <input type="submit" name="source_select" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+            </div>
+
         </div>
+    </form>
 
+    <div class="row">
         <div class="col-auto">
             <label for="tree" class="col-form-label">
                 <?= __('Select source'); ?>:

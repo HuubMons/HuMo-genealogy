@@ -246,12 +246,14 @@ Please disconnect the pages from this menu first.'); ?></strong>
     ?>
         <!-- List of categories -->
         <?= __('Add and edit menu/ category items:'); ?>
-        <table class="humo standard" border="1">
-            <tr class="table_header">
-                <th><?= __('Order'); ?></th>
-                <th><?= __('Menu item/ category'); ?></th>
-                <th><?= __('Save'); ?></th>
-            </tr>
+        <table class="table">
+            <thead class="table-primary">
+                <tr>
+                    <th><?= __('Order'); ?></th>
+                    <th><?= __('Menu item/ category'); ?></th>
+                    <th><?= __('Save'); ?></th>
+                </tr>
+            </thead>
             <?php while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) { ?>
                 <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
@@ -365,11 +367,13 @@ Please disconnect the pages from this menu first.'); ?></strong>
         <form method="post" name="cms_setting_form" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
             <input type="hidden" name="cms_settings" value="1"> <!-- if Save button is not pressed but checkboxes changed! -->
-            <table class="humo" border="1" cellspacing="0" width="95%">
-                <tr class="table_header">
-                    <th><?= __('CMS Settings'); ?></th>
-                    <th><input type="submit" name="cms_settings" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
-                </tr>
+            <table class="table">
+                <thead class="table-primary">
+                    <tr>
+                        <th><?= __('CMS Settings'); ?></th>
+                        <th><input type="submit" name="cms_settings" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+                    </tr>
+                </thead>
 
                 <tr>
                     <td>

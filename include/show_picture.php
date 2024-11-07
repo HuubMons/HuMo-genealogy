@@ -118,69 +118,10 @@ function show_media($event_connect_kind, $event_connect_id)
                 $event_event = strtolower($event_event);
             }
 
-            // *** Show PDF file ***
-            if (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "pdf") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/pdf.jpeg" alt="PDF"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '"><img src="' . $picpath . 'images/pdf.jpeg" alt="PDF"></a>';
-            }
-            // *** Show DOC file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "doc" || substr($tree_pict_path . $event_event, -4, 4) === "docx") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/msdoc.gif" alt="DOC"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '"><img src="' . $picpath . 'images/msdoc.gif" alt="DOC"></a>';
-            }
-            // *** Show AVI Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "avi") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="AVI"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="AVI"></a>';
-            }
-            // *** Show WMV Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "wmv") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="WMV"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="WMV"></a>';
-            }
-            // *** Show MPG Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mpg") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MPG"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="MPG"></a>';
-            }
-            // *** Show MP4 Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mp4") {
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="MP4"></a>';
-            }
-            // *** Show MOV Video file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mov") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MOV"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/video-file.png" alt="MOV"></a>';
-            }
-            // *** Show WMA Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "wma") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif" alt="WMA"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif" alt="WMA"></a>';
-            }
-            // *** Show MP3 Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mp3") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="MP3"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="MP3"></a>';
-            }
-            // *** Show WAV Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "wav") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="WAV"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="WAV"></a>';
-            }
-            // *** Show MID Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "mid") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="MID"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="MID"></a>';
-            }
-            // *** Show RAM Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -3, 3)) === "ram") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RAM"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="RAM"></a>';
-            }
-            // *** Show RA Audio file ***
-            elseif (strtolower(substr($tree_pict_path . $event_event, -2, 2)) === "ra") {
-                //$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RA"></a>';
-                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank"><img src="' . $picpath . 'images/audio.gif"" alt="RA"></a>';
+            // *** Check for PDF, DOC file etc. Show standard icon ***
+            $thumbnail_type = thumbnail_type($event_event);
+            if ($thumbnail_type[0]) {
+                $picture = '<a href="' . $tree_pict_path . $event_event . '"><img src="' . $picpath . $thumbnail_type[0] . '" alt="' . $thumbnail_type[1] . '"></a>';
             } else {
                 // *** Show photo using the lightbox effect ***
                 $picture_array = show_picture($tree_pict_path, $event_event, '', 120);
@@ -290,7 +231,7 @@ function show_media($event_connect_kind, $event_connect_id)
 
 function show_picture($picture_path, $picture_org, $pict_width = '', $pict_height = '')
 {
-    global $dbh, $screen_mode;
+    global $dbh, $screen_mode, $uri_path;
     // in case subfolders are made for photobook categories and this was not already set in $picture_path, look there
     // in cases where the $picture_path is already set with subfolder this anyway gives false and so the $picture_path gives will work
     $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
@@ -363,6 +304,14 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
         $picture['picture'] = 'missing-image.jpg';
     }
 
+    // *** Check for PDF, DOC file etc. Show standard icon ***
+    $thumbnail_type = thumbnail_type($picture['picture']);
+    if ($thumbnail_type[0]) {
+        $picture["path"] = '';
+        $picture['thumb'] = '';
+        $picture['picture'] = $uri_path . $thumbnail_type[0];
+    }
+
     // *** If photo is too wide, correct the size ***
     list($width, $height) = getimagesize($picture["path"] . $picture['thumb'] . $picture['picture']);
 
@@ -406,4 +355,90 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
     }
 
     return $picture;
+}
+
+function thumbnail_type($file)
+{
+    // *** Show PDF file ***
+    if (strtolower(substr($file, -3, 3)) === "pdf") {
+        $thumbnail_type[0] = 'images/pdf.jpeg';
+        $thumbnail_type[1] = 'PDF';
+        return $thumbnail_type;
+    }
+    // *** Show DOC file ***
+    elseif (strtolower(substr($file, -3, 3)) === "doc" || substr($file, -4, 4) === "docx") {
+        $thumbnail_type[0] = 'images/msdoc.gif';
+        $thumbnail_type[1] = 'DOC';
+        return $thumbnail_type;
+    }
+    // *** Show AVI Video file ***
+    elseif (strtolower(substr($file, -3, 3)) === "avi") {
+        $thumbnail_type[0] = 'images/video-file.png';
+        $thumbnail_type[1] = 'AVI';
+        return $thumbnail_type;
+    }
+    // *** Show WMV Video file ***
+    elseif (strtolower(substr($file, -3, 3)) === "wmv") {
+        $thumbnail_type[0] = 'images/video-file.png';
+        $thumbnail_type[1] = 'WMV';
+        return $thumbnail_type;
+    }
+    // *** Show MPG Video file ***
+    elseif (strtolower(substr($file, -3, 3)) === "mpg") {
+        $thumbnail_type[0] = 'images/video-file.png';
+        $thumbnail_type[1] = 'MPG';
+        return $thumbnail_type;
+    }
+    // *** Show MP4 Video file ***
+    elseif (strtolower(substr($file, -3, 3)) === "mp4") {
+        $thumbnail_type[0] = 'images/video-file.png';
+        $thumbnail_type[1] = 'MP4';
+        return $thumbnail_type;
+    }
+    // *** Show MOV Video file ***
+    elseif (strtolower(substr($file, -3, 3)) === "mov") {
+        $thumbnail_type[0] = 'images/video-file.png';
+        $thumbnail_type[1] = 'MOV';
+        return $thumbnail_type;
+    }
+    // *** Show WMA Audio file ***
+    elseif (strtolower(substr($file, -3, 3)) === "wma") {
+        $thumbnail_type[0] = 'images/audio.gif';
+        $thumbnail_type[1] = 'WMA';
+        return $thumbnail_type;
+    }
+    // *** Show MP3 Audio file ***
+    elseif (strtolower(substr($file, -3, 3)) === "mp3") {
+        $thumbnail_type[0] = 'images/audio.gif';
+        $thumbnail_type[1] = 'MP3';
+        return $thumbnail_type;
+    }
+    // *** Show WAV Audio file ***
+    elseif (strtolower(substr($file, -3, 3)) === "wav") {
+        $thumbnail_type[0] = 'images/audio.gif';
+        $thumbnail_type[1] = 'WAV';
+        return $thumbnail_type;
+    }
+    // *** Show MID Audio file ***
+    elseif (strtolower(substr($file, -3, 3)) === "mid") {
+        $thumbnail_type[0] = 'images/audio.gif';
+        $thumbnail_type[1] = 'MID';
+        return $thumbnail_type;
+    }
+    // *** Show RAM Audio file ***
+    elseif (strtolower(substr($file, -3, 3)) === "ram") {
+        $thumbnail_type[0] = 'images/audio.gif';
+        $thumbnail_type[1] = 'RAM';
+        return $thumbnail_type;
+    }
+    // *** Show RA Audio file ***
+    elseif (strtolower(substr($file, -2, 2)) === "ra") {
+        $thumbnail_type[0] = 'images/audio.gif';
+        $thumbnail_type[1] = 'RA';
+        return $thumbnail_type;
+    }
+
+    $thumbnail_type[0] = '';
+    $thumbnail_type[1] = '';
+    return $thumbnail_type;
 }

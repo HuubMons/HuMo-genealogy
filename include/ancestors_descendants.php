@@ -5,6 +5,7 @@
  * April 2015 Huub Mons: created a general ancestors - descendants functions script.
  * 
  * Jan. 2024: at this moment these scripts are only used in editor_inc.php to add a colour for ancestors/ descendants.
+ * Sept. 2024: also used in maps script.
  * TODO: use these functions for multiple descendant/ ascendant scripts.
  */
 
@@ -22,12 +23,11 @@
  *  child1                  descendant[4]
  *  child2                  descendant[5]
  */
-$generation_number = 0;    // *** Generation number ***
+$generation_number = 0;
 $descendant_id = 0;
 function get_descendants($family_id, $main_person, $generation_number, $nr_generations)
 {
-    global $dbh, $db_functions;
-    global $descendant_id, $descendant_array;
+    global $dbh, $db_functions, $descendant_id, $descendant_array;
 
     // *** Selected person ***
     $descendant_id++;
@@ -37,12 +37,13 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
         return;
     }
 
+    // TODO check this function. Could be improved.
+
     // *** Count marriages of main person (man) ***
-    // *** YB: if needed show woman as main_person ***
     @$familyDb = $db_functions->get_family($family_id, 'man-woman');
     $parent1 = '';
-    $parent2 = '';
-    $swap_parent1_parent2 = false;
+    //$parent2 = '';
+    //$swap_parent1_parent2 = false;
     // *** Standard main_person is the father ***
     if ($familyDb->fam_man) {
         $parent1 = $familyDb->fam_man;
@@ -50,22 +51,17 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
     // *** If mother is selected, mother will be main_person ***
     if ($familyDb->fam_woman == $main_person) {
         $parent1 = $familyDb->fam_woman;
-        $swap_parent1_parent2 = true;
+        //$swap_parent1_parent2 = true;
     }
 
     // *** Check family with parent1: N.N. ***
     $nr_families = 0;
     if ($parent1) {
-        // *** Save man's families in array ***
+        // *** Save family of person in array ***
         @$personDb = $db_functions->get_person($parent1, 'famc-fams');
         $marriage_array = explode(";", $personDb->pers_fams);
         $nr_families = substr_count($personDb->pers_fams, ";");
     }
-    //else{
-    //check code:
-    //	$marriage_array[0]=$family_id;
-    //	$nr_families=0;
-    //}
 
     // *** Loop multiple marriages of main_person ***
     for ($parent1_marr = 0; $parent1_marr <= $nr_families; $parent1_marr++) {
@@ -79,25 +75,27 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
         if ($familyDb->fam_children) {
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {
-                @$childDb = $db_functions->get_person($child_array[$i]);
+                //@$childDb = $db_functions->get_person($child_array[$i]);
+                @$childDb = $db_functions->get_person($child_array[$i], 'famc-fams');
                 if ($childDb->pers_fams) {
                     // *** 1st family of child ***
                     $child_family = explode(";", $childDb->pers_fams);
                     $child1stfam = $child_family[0];
                     // *** Recursive, process ancestors of child ***
-                    descendants($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $nr_generations);
+                    //get_descendants($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $nr_generations);
+                    get_descendants($child1stfam, $child_array[$i], $generation_number, $nr_generations);
                 } else {    // *** Child without own family ***
                     $descendant_id++;
-                    $descendant_array[$descendant_id] = $childDb->pers_gedcomnumber;
+                    //$descendant_array[$descendant_id] = $childDb->pers_gedcomnumber;
+                    $descendant_array[$descendant_id] = $child_array[$i];
                     //if($nr_generations>=$generation_number) {
                     //	$childgn=$generation_number+1;
                     //}
                 }
             }
         }
-    } // *** Process multiple marriages ***
-
-} // *** End of descendants function ***
+    }
+}
 
 /*
  * Original function used for ancestor sheet, made by Yossi.

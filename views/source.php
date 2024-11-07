@@ -26,7 +26,7 @@ if (!isset($data["sourceDb"]->source_id)) {
 }
 ?>
 
-<table class="humo standard">
+<table class="table">
     <tr>
         <td>
             <?php if ($data["sourceDb"]->source_title) { ?>

@@ -319,6 +319,22 @@ class EditorModel
         }
     }
 
+    public function get_favorites($dbh, $tree_id, $new_tree)
+    {
+        if ($new_tree == false) {
+            // *** Favourites ***
+            $fav_qry = "SELECT * FROM humo_settings LEFT JOIN humo_persons ON setting_value=pers_gedcomnumber
+                WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND pers_tree_id='" . safe_text_db($tree_id) . "'";
+            $fav_result = $dbh->query($fav_qry);
+
+            // *** Update cache for list of latest changes ***
+            $this->cache_latest_changes();
+
+            return $fav_result;
+        }
+        return false;
+    }
+
     public function update_editor()
     {
         // *** Return deletion confim box in $confirm variabele ***
@@ -426,7 +442,7 @@ class EditorModel
             $this->dbh->query($sql);
 
             // *** Update cache for list of latest changes ***
-            cache_latest_changes(true);
+            $this->cache_latest_changes(true);
 
             $confirm .= '<strong>' . __('Person is removed') . '</strong>';
 
@@ -606,6 +622,71 @@ class EditorModel
                 WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($this->pers_gedcomnumber) . "'";
             $this->dbh->query($sql);
 
+
+
+            // *** Save birth declaration ***
+            if ($_POST['birth_decl_date'] || $_POST['birth_decl_place'] || $_POST['birth_decl_text']) {
+                if ($_POST['birth_decl_id'] && is_numeric($_POST['birth_decl_id'])) {
+                    $sql = "UPDATE humo_events SET
+                        event_date='" . safe_text_db($_POST['birth_decl_date']) . "',
+                        event_place='" . safe_text_db($_POST['birth_decl_place']) . "',
+                        event_text='" . safe_text_db($_POST['birth_decl_text']) . "',
+                        event_changed_user_id='" . $this->userid . "'
+                        WHERE event_id='" . $_POST['birth_decl_id'] . "'";
+                    //echo $sql;
+                    $this->dbh->query($sql);
+                } else {
+                    $sql = "INSERT INTO humo_events SET
+                        event_tree_id='" . $this->tree_id . "',
+                        event_gedcomnr='',
+                        event_order='1',
+                        event_connect_kind='person',
+                        event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "',
+                        event_kind='birth_declaration',
+                        event_event='',
+                        event_event_extra='',
+                        event_gedcom='EVEN',
+                        event_date='" . safe_text_db($_POST['birth_decl_date']) . "',
+                        event_place='" . safe_text_db($_POST['birth_decl_place']) . "',
+                        event_text='" . safe_text_db($_POST['birth_decl_text']) . "',
+                        event_quality='',
+                        event_new_user_id='" . $this->userid . "'";
+                    $this->dbh->query($sql);
+                }
+            }
+
+            // *** Save death declaration ***
+            if ($_POST['death_decl_date'] || $_POST['death_decl_place'] || $_POST['death_decl_text']) {
+                if ($_POST['death_decl_id'] && is_numeric($_POST['death_decl_id'])) {
+                    $sql = "UPDATE humo_events SET
+                        event_date='" . safe_text_db($_POST['death_decl_date']) . "',
+                        event_place='" . safe_text_db($_POST['death_decl_place']) . "',
+                        event_text='" . safe_text_db($_POST['death_decl_text']) . "',
+                        event_changed_user_id='" . $this->userid . "'
+                        WHERE event_id='" . $_POST['death_decl_id'] . "'";
+                    //echo $sql;
+                    $this->dbh->query($sql);
+                } else {
+                    $sql = "INSERT INTO humo_events SET
+                        event_tree_id='" . $this->tree_id . "',
+                        event_gedcomnr='',
+                        event_order='1',
+                        event_connect_kind='person',
+                        event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "',
+                        event_kind='death_declaration',
+                        event_event='',
+                        event_event_extra='',
+                        event_gedcom='EVEN',
+                        event_date='" . safe_text_db($_POST['death_decl_date']) . "',
+                        event_place='" . safe_text_db($_POST['death_decl_place']) . "',
+                        event_text='" . safe_text_db($_POST['death_decl_text']) . "',
+                        event_quality='',
+                        event_new_user_id='" . $this->userid . "'";
+                    $this->dbh->query($sql);
+                }
+            }
+
+
             // extra UPDATE queries if jewish dates is enabled
             if ($this->humo_option['admin_hebnight'] == "y") {
                 $per_bir_heb = "";
@@ -707,7 +788,7 @@ class EditorModel
             $this->family_tree_update();
 
             // *** Update cache for list of latest changes ***
-            cache_latest_changes(true);
+            $this->cache_latest_changes(true);
         }
 
         // TODO check this code.
@@ -891,7 +972,7 @@ class EditorModel
             }
 
             // *** Update cache for list of latest changes ***
-            cache_latest_changes(true);
+            $this->cache_latest_changes(true);
         }
 
         // *** Family move down ***
@@ -1850,5 +1931,87 @@ class EditorModel
         }
 
         return $confirm;
+    }
+
+    private function cache_latest_changes($force_update = false)
+    {
+        global $dbh, $tree_id, $pers_id;
+        $cache = '';
+        $cache_count = 0;
+        $cache_exists = false;
+        $cache_check = false; // *** Use cache for large family trees ***
+        $cacheqry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='cache_latest_changes' AND setting_tree_id='" . $tree_id . "'");
+        $cacheDb = $cacheqry->fetch(PDO::FETCH_OBJ);
+        if ($cacheDb) {
+            $cache_exists = true;
+            $cache_array = explode("|", $cacheDb->setting_value);
+            foreach ($cache_array as $cache_line) {
+                $cacheDb = json_decode(unserialize($cache_line));
+
+                if (!$force_update) {
+                    $pers_id[] = $cacheDb->pers_id;
+                }
+
+                $cache_check = true;
+                $test_time = time() - 10800; // *** 86400 = 1 day, 7200 = 2 hours, 10800 = 3 hours ***
+                if ($cacheDb->time < $test_time) {
+                    $cache_check = false;
+                }
+            }
+        }
+
+        if ($force_update) {
+            $cache_check = false;
+        }
+
+        if ($cache_check == false) {
+            // *** First get pers_id, will be quicker in very large family trees ***
+            /*
+            $person_qry = "(SELECT pers_id, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')
+                UNION (SELECT pers_id, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_date IS NULL)
+                ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
+            */
+
+            $person_qry = "(SELECT pers_id, pers_changed_datetime as changed_datetime
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NOT NULL)
+                UNION (SELECT pers_id, pers_new_datetime AS changed_datetime
+                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL)
+                ORDER BY changed_datetime DESC LIMIT 0,15";
+            $person_result = $dbh->query($person_qry);
+            $count_latest_changes = $person_result->rowCount();
+            while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
+                // *** Cache: only use cache if there are > 5.000 persons in database ***
+                //if (isset($dataDb->tree_persons) AND $dataDb->tree_persons>5000){
+                $person->time = time(); // *** Add linux time to array ***
+                if ($cache) $cache .= '|';
+                $cache .= serialize(json_encode($person));
+                $cache_count++;
+                //}
+                if (!$force_update) {
+                    $pers_id[] = $person->pers_id;
+                }
+            }
+
+            // *** Add or renew cache in database (only if cache_count is valid) ***
+            if ($cache && $cache_count == $count_latest_changes) {
+                if ($cache_exists) {
+                    //$sql = "UPDATE humo_settings SET setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "' WHERE setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_variable='cache_latest_changes'";
+
+                    // Because of bug found in jan. 2024, remove value from database and insert again.
+                    $sql = "DELETE FROM humo_settings WHERE setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_variable='cache_latest_changes'";
+                    $dbh->query($sql);
+
+                    $sql = "INSERT INTO humo_settings SET
+                        setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($tree_id) . "'";
+                    $dbh->query($sql);
+                } else {
+                    $sql = "INSERT INTO humo_settings SET
+                    setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($tree_id) . "'";
+                    $dbh->query($sql);
+                }
+            }
+        }
     }
 }

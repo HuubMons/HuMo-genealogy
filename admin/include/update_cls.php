@@ -3662,7 +3662,7 @@ class update_cls
             $dbh->query($sql);
         }
 
-        // *** Update "update_status" to number 15 ***
+        // *** Update "update_status" ***
         $dbh->query("UPDATE humo_settings SET setting_value='15' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
@@ -3851,7 +3851,7 @@ class update_cls
         // *** Commit data in database ***
         $dbh->commit();
 
-        // *** Update "update_status" to number 16 ***
+        // *** Update "update_status" ***
         $dbh->query("UPDATE humo_settings SET setting_value='16' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
@@ -3880,7 +3880,7 @@ class update_cls
             <td style="background-color:#00FF00"><?= __('Update in progress...'); ?><div id="information v6_7_2" style="display: inline; font-weight:bold;"></div>
             </td>
         </tr>
-<?php
+        <?php
         //ob_flush();
         flush();
 
@@ -3989,7 +3989,7 @@ class update_cls
         // *** Allready using user_id ***
         update_datetime_username($dbh, 'humo_user_notes', 'note');
 
-        // *** Update "update_status" to number 16 ***
+        // *** Update "update_status" ***
         $dbh->query("UPDATE humo_settings SET setting_value='17' WHERE setting_variable='update_status'");
 
         // *** Commit data in database ***
@@ -4002,11 +4002,141 @@ class update_cls
         flush();
     }
 
+    public function update_v6_7_9($dbh): void
+    {
+        // **************************************
+        // *** Update procedure version 6.7.9 ***
+        // **************************************
 
-    // Next update: there is a temporary update in admin/index.php line 103.
-    // Also remove some other old datafields.
+        // *** Show update status ***
+        //ob_start();
+        ?>
+        <tr>
+            <td>HuMo-genealogy update V6.7.9</td>
+            <td style="background-color:#00FF00"><?= __('Update in progress...'); ?><div id="information v6_7_9" style="display: inline; font-weight:bold;"></div>
+            </td>
+        </tr>
+<?php
+        //ob_flush();
+        flush();
+
+        // *** Restore update problem generate in version 6.4.1 (accidently changed family into person) ***
+        $eventsql = "UPDATE humo_events SET event_connect_kind='family' WHERE event_kind='marriage_witness' OR event_kind='marriage_witness_rel'";
+        $dbh->query($eventsql);
+
+        // *** Create humo_location if not exists ***
+        $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+        if (!$temp->rowCount()) {
+            // no database exists - so create it
+            // It has 4 columns:
+            //     1. id
+            //     2. name of location
+            //     3. latitude as received from a geocode call
+            //     4. longitude as received from a geocode call
+            //     5. status: what is this location used for: birth/bapt/death/buried, and by which tree(s)
+            $locationtbl = "CREATE TABLE humo_location (
+                location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                location_location VARCHAR(120) CHARACTER SET utf8,
+                location_lat FLOAT(10,6),
+                location_lng FLOAT(10,6),
+                location_status TEXT
+            )";
+            $dbh->query($locationtbl);
+        }
+        $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
+        $exists = $result->rowCount();
+        if (!$exists) {
+            $dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
+        }
+
+        // Table humo_no_location no longer in use.
+        $temp = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
+        if ($temp->rowCount()) {
+            $dbh->query("DROP TABLE humo_no_location");
+        }
+
+        // *** Change witnesses because of multiple kind of ASSO/ witnesses in GEDCOM 7 ***
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='CHR', event_gedcom='WITN' WHERE event_kind='baptism_witness'");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='BURI', event_gedcom='WITN' WHERE event_kind='burial_witness'");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='MARR', event_gedcom='WITN' WHERE event_kind='marriage_witness'");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='MARR_REL', event_gedcom='WITN' WHERE event_kind='marriage_witness_rel'");
+
+        // *** Change birth_declaration into birth_decl_witness ***
+        // *** ONLY convert to birth_decl_witness if event_connect_kind2 is a person ***
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='birth_declaration', event_gedcom='WITN' WHERE event_kind='birth_declaration' AND (event_connect_kind2='person' OR event_event LIKE '_%')");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='death_declaration', event_gedcom='WITN' WHERE event_kind='death_declaration' AND (event_connect_kind2='person' OR event_event LIKE '_%')");
+
+        // *** Add seperate general birth_declaration and death_declaration events ***
+        // *** Only convert declaration events where witness is connected ***
+        $qry = $dbh->query("SELECT * from humo_events WHERE (event_connect_kind='birth_declaration' OR event_connect_kind='death_declaration') AND event_order='1'");
+
+        // *** Batch processing ***
+        $dbh->beginTransaction();
+
+        // *** Add seperate general birth_declaration and death_declaration events ***
+        while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
+            if ($qryDb->event_date || $qryDb->event_place || $qryDb->event_text) {
+                $sql_put = "INSERT INTO humo_events SET
+                event_tree_id='" . $qryDb->event_tree_id . "',
+                event_gedcomnr='',
+                event_order='" . $qryDb->event_order . "',
+                event_connect_kind='person',
+                event_connect_id='" . $qryDb->event_connect_id . "',
+                event_kind='" . $qryDb->event_connect_kind . "',
+                event_event='',
+                event_event_extra='" . safe_text_db($qryDb->event_event_extra) . "',
+                event_gedcom='EVEN',
+                event_date='" . $qryDb->event_date . "',
+                event_place='" . safe_text_db($qryDb->event_place) . "',
+                event_text='" . safe_text_db($qryDb->event_text) . "',
+                event_quality='" . $qryDb->event_quality . "',
+                event_new_user_id='" . $qryDb->event_new_user_id . "',
+                event_new_datetime='" . $qryDb->event_new_datetime . "',
+                event_changed_user_id='" . $qryDb->event_changed_user_id . "',
+                event_changed_datetime='" . $qryDb->event_changed_datetime . "'";
+
+                $dbh->query($sql_put);
+                $last_insert = $dbh->lastInsertId();
+
+                // *** Update sources connected to these events connections ***
+                $dbh->query("UPDATE humo_connections SET connect_connect_id='" . $last_insert . "' WHERE connect_connect_id='" . $qryDb->event_id . "'");
+            }
+        }
+
+        // *** Commit data in database ***
+        $dbh->commit();
+
+        // *** Update for godfather events ***
+        $sql = "SELECT * from humo_events WHERE event_kind='godfather'";
+        $qry = $dbh->query($sql);
+        while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
+            $eventsql = "UPDATE humo_events SET
+                event_connect_kind='CHR',
+                event_connect_kind2='person',
+                event_connect_id2='" . substr($qryDb->event_event, 1, -1) . "',
+                event_kind='ASSO',
+                event_event='',
+                event_gedcom='GODP'
+                WHERE event_id= '" . $qryDb->event_id . "'";
+            $dbh->query($eventsql);
+        }
+
+        // Remove old rel_merge_ variables using tree_prefix. Now tree_id is used.
+        $dbh->query("DELETE FROM humo_settings WHERE setting_variable LIKE 'rel_merge_humo%'");
+
+        // *** Update "update_status" ***
+        $dbh->query("UPDATE humo_settings SET setting_value='18' WHERE setting_variable='update_status'");
+
+        // *** Show status of database update ***
+        //ob_start();
+        echo '<script>document.getElementById("information v6_7_9").innerHTML="Database updated!";</script>';
+        //ob_flush();
+        flush();
+    }
 
 
+
+    // Future update(s): remove some old datafields.
 
 
     /*	*** UPDATE REMARKS ***

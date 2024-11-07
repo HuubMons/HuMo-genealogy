@@ -32,7 +32,7 @@
                 <div class="row mb-2 <?= $line_selected; ?>">
                     <div class="col-2">
                         <?php if ($fam_count > 1) { ?>
-                            <form method="POST" action="<?= $phpself; ?>">
+                            <form method="POST" action="index.php">
                                 <input type="hidden" name="page" value="<?= $page; ?>">
                                 <input type="hidden" name="marriage_nr" value="<?= $familyDb->fam_gedcomnumber; ?>">
                                 <input type="submit" name="dummy3" value="<?= __('Family') . ' ' . ($i + 1); ?>" class="btn btn-sm <?= $button_selected; ?>">
@@ -100,7 +100,7 @@ if ($menu_tab != 'children') {
 
 <div style="display:none;" class="row<?= $hideshow; ?> p-3 m-2 genealogy_search">
     <?= add_person('partner', $new_partner_sexe); ?><br><br>
-    <form method="POST" style="display: inline;" action="<?= $phpself; ?>#marriage" name="form4" id="form4">
+    <form method="POST" style="display: inline;" action="index.php#marriage" name="form4" id="form4">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <div class="row mb-2">
             <div class="col-md-3"></div>
@@ -213,7 +213,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
     $person2 = $db_functions->get_person($woman_gedcomnumber);
 ?>
 
-    <form method="POST" action="<?= $phpself; ?>" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
+    <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="connect_man_old" value="<?= $man_gedcomnumber; ?>">
         <input type="hidden" name="connect_woman_old" value="<?= $woman_gedcomnumber; ?>">
@@ -255,22 +255,24 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
         }
         ?>
 
-        <table class="humo" border="1">
+        <table class="table table-light">
             <!-- Empty line in table -->
             <!-- <tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr> -->
 
-            <tr class="table_header_large">
-                <!-- Hide or show all hide-show items -->
-                <td id="target1">
-                    <a href="#marriage" onclick="hideShowAll2();"><span id="hideshowlinkall2">[+]</span> <?= __('All'); ?></a>
-                    <a name="marriage"></a>
-                </td>
+            <thead class="table-primary">
+                <tr>
+                    <!-- Hide or show all hide-show items -->
+                    <td id="target1">
+                        <a href="#marriage" onclick="hideShowAll2();"><span id="hideshowlinkall2">[+]</span> <?= __('All'); ?></a>
+                        <a name="marriage"></a>
+                    </td>
 
-                <th id="target2" colspan="2" style="font-size: 1.5em;">
-                    <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
-                    [<?= $fam_gedcomnumber; ?>] <?= show_person($man_gedcomnumber); ?> <?= __('and'); ?> <?= show_person($woman_gedcomnumber); ?>
-                </th>
-            </tr>
+                    <th id="target2" colspan="2" style="font-size: 1.5em;">
+                        <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                        [<?= $fam_gedcomnumber; ?>] <?= show_person($man_gedcomnumber); ?> <?= __('and'); ?> <?= show_person($woman_gedcomnumber); ?>
+                    </th>
+                </tr>
+            </thead>
 
             <tr>
                 <td><?= ucfirst(__('marriage/ relation')); ?></td>
@@ -278,8 +280,9 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
                     <?php if ($person1->pers_sexe == 'F' && $person2->pers_sexe == 'M') { ?>
                         <div class="alert alert-danger" role="alert">
-                            <?= __('Person 1 should be the man. Switch person 1 and person 2.');?>
-                            <button type="submit" name="parents_switch" title="Switch Persons" class="button"><img src="images/turn_around.gif" width="17"></button></div>
+                            <?= __('Person 1 should be the man. Switch person 1 and person 2.'); ?>
+                            <button type="submit" name="parents_switch" title="Switch Persons" class="button"><img src="images/turn_around.gif" width="17"></button>
+                        </div>
                     <?php } ?>
 
                     <?= __('Select person 1'); ?> <input type="text" name="connect_man" value="<?= $man_gedcomnumber; ?>" size="5">
@@ -513,7 +516,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     ?>
                     <?= hideshow_editor($hideshow, $hideshow_text, $fam_marr_text); ?>
 
-                    <input type="submit" name="add_marriage_witness" value="<?= __('marriage witness'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+                    <input type="submit" name="add_marriage_witness" value="<?= __('witness') . ' - ' . __('officiator'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
@@ -627,7 +630,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             <?php
             // *** Marriage Witness ***
-            echo $event_cls->show_event('family', $marriage, 'marriage_witness');
+            echo $event_cls->show_event('MARR', $marriage, 'ASSO');
 
             // *** Religious marriage notice ***
             // *** Use hideshow to show and hide the editor lines ***
@@ -727,7 +730,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     ?>
                     <?= hideshow_editor($hideshow, $hideshow_text, $fam_marr_church_text); ?>
 
-                    <input type="submit" name="add_marriage_witness_rel" value="<?= __('marriage witness (religious)'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+                    <input type="submit" name="add_marriage_witness_rel" value="<?= __('witness') . ' - ' . __('clergy'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
 
@@ -781,7 +784,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             <?php
             // *** Marriage Witness (church) ***
-            echo $event_cls->show_event('family', $marriage, 'marriage_witness_rel');
+            echo $event_cls->show_event('MARR_REL', $marriage, 'ASSO');
             ?>
 
             <!-- Religion -->
@@ -911,7 +914,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                 <td style="border-left:0px;">
                     <div class="row mb-2">
                         <!-- <label for="fam_relation_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label> -->
-                        <div class="col-md-7">
+                        <div class="col-md-12">
                             <textarea rows="1" name="fam_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $fam_text; ?></textarea>
                         </div>
                     </div>
@@ -1200,7 +1203,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             <?= add_person('child', ''); ?><br>
 
             <!-- Search existing person as child -->
-            <form method="POST" action="<?= $phpself; ?>" style="display : inline;" name="form7" id="form7">
+            <form method="POST" action="index.php" style="display : inline;" name="form7" id="form7">
                 <input type="hidden" name="page" value="<?= $page; ?>">
                 <?php
                 if (isset($familyDb->fam_children)) {

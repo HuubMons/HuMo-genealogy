@@ -33,7 +33,6 @@ if ($show_persons) {
             UNION (SELECT *, pers_new_datetime AS changed_datetime
             FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL AND pers_new_user_id='" . $editor . "')
             ORDER BY changed_datetime DESC LIMIT 0," . $limit;
-        //LIMIT 0,".$limit;
     } else {
         // *** Show latest changes and additions ***
         // *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
@@ -42,7 +41,6 @@ if ($show_persons) {
             UNION (SELECT *, pers_new_datetime AS changed_datetime
             FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL)
             ORDER BY changed_datetime DESC LIMIT 0," . $limit;
-        //LIMIT 0,".$limit;
         //FROM humo_persons WHERE pers_tree_id='".$tree_id."')
     }
 

@@ -59,7 +59,6 @@ if (isset($_POST['check_new'])) {
     }
 
     $thistree_non_exist = array();
-    // This will hold only those non-indexable locations (from $non_exist_locs) that appear in the chosen tree (or trees if 'all' was chosen)
 
     while (@$personDb = $map_person->fetch(PDO::FETCH_OBJ)) {
         // for each location we check:
@@ -105,11 +104,14 @@ if (isset($_POST['check_new'])) {
     <?php } ?>
 
     <?php
+    /*
     if (isset($_POST['refresh'])) {
         refresh_status($dbh, $humo_option);  // see function at end of script
     ?>
         <div class="alert alert-success" role="alert"><?= __('The locationlist has been refreshed.'); ?></div>
-    <?php } ?>
+    <?php }
+    */
+    ?>
 
     <?php if (isset($_POST['loc_delete']) && (is_numeric($_POST['location_id']))) { ?>
         <input type="hidden" name="location_id" value="<?= $_POST['location_id']; ?>">
@@ -190,13 +192,6 @@ if (isset($_POST['check_new'])) {
                 <?= $one_tree; ?>
                 <?php printf(__('There are %s new unique birth/ death locations to add to the database.'), $new_locations); ?><br>
 
-                <?php
-                // *** Show list of locations to add to the database ***
-                foreach ($add_locations as $val) {
-                    echo $val . "<br>";
-                }
-                ?>
-
                 <br>
                 <?php printf(__('This will take approximately <b>%1$d minutes and %2$d seconds.</b>'), $map_mins, $map_secs); ?><br>
                 <?= __('Do you wish to add these locations to the database now?'); ?>
@@ -204,6 +199,12 @@ if (isset($_POST['check_new'])) {
                     <input type="submit" value="<?= __('Yes'); ?>" name="makedatabase" class="btn btn-sm btn-primary">
                     <input type="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-secondary">
                 </form><br>
+
+                <!-- Show list of locations to add to the database -->
+                <?php foreach ($add_locations as $val) { ?>
+                    <?= $val; ?><br>
+                <?php } ?>
+
             </div>
 
         <?php
@@ -212,14 +213,17 @@ if (isset($_POST['check_new'])) {
         if ($thistree_non_exist) {
         ?>
             <div class="alert alert-warning" role="alert">
-                <b>
-                    <?php printf(__('The following %d locations are already known as non-indexable. Please check their validity.'), count($thistree_non_exist)); ?>
-                </b><br>
-                <?php
-                foreach ($thistree_non_exist as $value) {
-                    echo $value . "<br>";
-                }
-                ?>
+                <b><?php printf(__('The following %d locations are already known as non-indexable. Please check their validity.'), count($thistree_non_exist)); ?></b><br>
+
+                <form action="index.php?page=maps&amp;menu=locations" method="post">
+                    <input type="hidden" name="non_exist_locations" value="1">
+                    <input type="hidden" name="check_new" value="1">
+                    <input type="submit" value="<?= __('Retry to index these locations'); ?>" name="makedatabase" class="btn btn-sm btn-primary">
+                </form><br>
+
+                <?php foreach ($thistree_non_exist as $value) { ?>
+                    <?= $value; ?><br>
+                <?php } ?>
             </div>
     <?php
         }
@@ -232,6 +236,7 @@ if (isset($_POST['check_new'])) {
         <?php
         sleep(1); // make sure this gets printed before the next is executed
 
+        // TODO Sept. 2024: refresh option is no longer needed. Also check geo_trees variable.
         // If the locations are taken from one tree, add the id of this tree to humo_settings "geo_trees", if not already there
         // so we can update correctly with the "REFRESH BIRTH/DEATH STATUS" option further on.
         if ($maps['geo_tree_id'] != '') {
@@ -250,7 +255,16 @@ if (isset($_POST['check_new'])) {
             $result = $db_functions->update_settings('geo_trees', $str);
             $humo_option['geo_trees'] = $str; // humo_option is used further on before page is refreshed so we have to update it manually
         }
-        foreach ($_SESSION['add_locations'] as $value) {
+
+        // *** Index new locations or non indexed locations from database ***
+        if (isset($_POST['non_exist_locations'])) {
+            $index_locations = $thistree_non_exist;
+        } else {
+            $index_locations = $_SESSION['add_locations'];
+        }
+
+        //foreach ($_SESSION['add_locations'] as $value) {
+        foreach ($index_locations as $value) {
             $count_parsed++;
             //if($count_parsed<110 OR $count_parsed > 125) continue;
             $loc = urlencode($value);
@@ -266,14 +280,23 @@ if (isset($_POST['check_new'])) {
                     //$address = $json->results[0]->formatted_address;
                     $latitude = $json->results[0]->geometry->location->lat;
                     $longitude = $json->results[0]->geometry->location->lng;
-                    $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $latitude . "', location_lng='" . $longitude . "'");
+
+                    if (isset($_POST['non_exist_locations'])) {
+                        $dbh->query("UPDATE humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $latitude . "', location_lng='" . $longitude . "' WHERE location_location='" . safe_text_db($value) . "'");
+                    } else {
+                        $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $latitude . "', location_lng='" . $longitude . "'");
+                    }
+
                     sleep(1);
                 } else {
                     //echo $json->status.'!! ';
                     //$map_notfound_array[] = $json_output['status'] . ' - ' . $value;
                     //$map_count_notfound++;
-                    //$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('" . safe_text_db($value) . "') ");
-                    $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "'");
+
+                    if (!isset($_POST['non_exist_locations'])) {
+                        $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "'");
+                    }
+
                     sleep(1);
                 }
             } else {
@@ -326,13 +349,23 @@ if (isset($_POST['check_new'])) {
                     $map_count_found++;
                     $lat = $json_output['results'][0]['geometry']['location']['lat'];
                     $lng = $json_output['results'][0]['geometry']['location']['lng'];
-                    $dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('" . safe_text_db($value) . "', '" . $lat . "', '" . $lng . "') ");
+
+                    //$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('" . safe_text_db($value) . "', '" . $lat . "', '" . $lng . "') ");
+                    if (isset($_POST['non_exist_locations'])) {
+                        $dbh->query("UPDATE humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $lat . "', location_lng='" . $lng . "' WHERE location_location='" . safe_text_db($value) . "'");
+                    } else {
+                        $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $lat . "', location_lng='" . $lng . "'");
+                    }
 
                     sleep(1);  // crucial, otherwise google kicks you out after a few queries
                 } elseif ($json_output['status'] == "ZERO_RESULTS") { // store locations that were not found by google geocoding
                     $map_notfound_array[] = $json_output['status'] . ' - ' . $value;
                     $map_count_notfound++;
-                    $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "'");
+
+                    if (!isset($_POST['non_exist_locations'])) {
+                        $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "'");
+                    }
+
                     sleep(1);  // crucial, otherwise google kicks you out after a few queries
                 } elseif ($json_output['status'] == "OVER_QUERY_LIMIT") {
                     $flag_stop = 1;
@@ -385,12 +418,14 @@ if (isset($_POST['check_new'])) {
         }
 
         // refresh the location_status column
-        refresh_status($dbh, $humo_option);  // see function at end of script
+        //refresh_status($dbh, $humo_option);  // see function at end of script
 
         unset($_SESSION['add_locations']);
         ?>
     <?php } ?>
 
+    <?php
+    /* Sept. 2024: no longer needed.
     <form action="index.php?page=maps&amp;menu=locations" method="post">
         <div class="row mb-2">
             <div class="col-md-12">
@@ -400,6 +435,8 @@ if (isset($_POST['check_new'])) {
             </div>
         </div>
     </form>
+    */
+    ?>
 
     <div class="row mb-2">
         <div class="col-md-12">
@@ -761,18 +798,18 @@ if (isset($_POST['check_new'])) {
                     <?php
                         // *** Map using fitbound (all markers visible) ***
                         echo '<script>
-                                var map = L.map("map").setView([' . $location_lat . ', ' . $location_lng . '], 15);
-                                var markers = [';
+                            var map = L.map("map").setView([' . $location_lat . ', ' . $location_lng . '], 15);
+                            var markers = [';
 
                         echo '];
-                                var group = L.featureGroup(markers).addTo(map);
-                                setTimeout(function () {
-                                    map.fitBounds(group.getBounds());
-                                }, 1000);
-                                L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
-                                    attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
-                                }).addTo(map);
-                            </script>';
+                            var group = L.featureGroup(markers).addTo(map);
+                            setTimeout(function () {
+                                map.fitBounds(group.getBounds());
+                            }, 1000);
+                            L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
+                                attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
+                            }).addTo(map);
+                        </script>';
                     } ?>
 
                 </div>
@@ -782,6 +819,7 @@ if (isset($_POST['check_new'])) {
 
     <?php
     // *** Function to refresh location_status column ***
+    /*
     function refresh_status($dbh, $humo_option)
     {
         $all_loc = $dbh->query("SELECT location_location FROM humo_location");
@@ -821,3 +859,4 @@ if (isset($_POST['check_new'])) {
             }
         }
     }
+    */

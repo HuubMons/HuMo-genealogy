@@ -64,8 +64,10 @@ class PDF extends tFPDF
         // *** Check if we have first occurance of birth, death etc. data, so we add "Born", "Died", etc. ***
         $own_code = 0;
         $born = 0;
+        $birth_declaration = 0;
         $bapt = 0;
         $dead = 0;
+        $death_declaration = 0;
         $buri = 0;
         $prof = 0;
         $religion = 0;
@@ -152,6 +154,19 @@ class PDF extends tFPDF
                 $born = 1;
             }
 
+            if (strpos($key, "birth_declaration_start") !== false) {
+                continue;
+            }
+            if (!$birth_declaration && strpos($key, "birth_declaration") !== false) {
+                if ($data["family_expanded"] != 'compact') {
+                    $pdf->Ln(6);
+                }
+
+                // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
+                $this->show_text($templ_personing["birth_declaration_start"], 'B', $font_size);
+                $birth_declaration = 1;
+            }
+
             if (strpos($key, "bapt_start") !== false) {
                 continue;
             }
@@ -176,6 +191,19 @@ class PDF extends tFPDF
                 // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_personing["dead_start"], 'B', $font_size);
                 $dead = 1;
+            }
+
+            if (strpos($key, "death_declaration_start") !== false) {
+                continue;
+            }
+            if (!$death_declaration && strpos($key, "death_declaration") !== false) {
+                if ($data["family_expanded"] != 'compact') {
+                    $pdf->Ln(6);
+                }
+
+                // Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
+                $this->show_text($templ_personing["death_declaration_start"], 'B', $font_size);
+                $death_declaration = 1;
             }
 
             if (strpos($key, "buri_start") !== false) {

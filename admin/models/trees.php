@@ -16,6 +16,30 @@ class TreesModel
         return $this->tree_id;
     }
 
+    public function get_language($selected_language)
+    {
+        $language = $selected_language; // Default language
+        if (isset($_GET['language_tree'])) {
+            $language = $_GET['language_tree'];
+        }
+        if (isset($_POST['language_tree'])) {
+            $language = $_POST['language_tree'];
+        }
+        return $language;
+    }
+
+    public function get_menu_tab()
+    {
+        $menu_tab = 'tree_main';
+        if (isset($_POST['menu_admin'])) {
+            $menu_tab = $_POST['menu_admin'];
+        }
+        if (isset($_GET['menu_admin'])) {
+            $menu_tab = $_GET['menu_admin'];
+        }
+        return $menu_tab;
+    }
+
     public function update_tree($dbh, $db_functions): void
     {
         // *** Add family tree ***

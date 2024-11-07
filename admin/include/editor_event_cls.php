@@ -12,7 +12,7 @@ class editor_event_cls
     //}
 
     // *** Show event_kind text ***
-    function event_text($event_kind)
+    function event_text($event_kind, $event_gedcom = '', $event_event_extra = '')
     {
         if ($event_kind == 'picture') {
             $event_text = __('Picture/ Media');
@@ -20,14 +20,18 @@ class editor_event_cls
             $event_text = __('Profession');
         } elseif ($event_kind == 'event') {
             $event_text = __('Event');
-        } elseif ($event_kind == 'birth_declaration') {
-            $event_text = __('birth declaration');
-        } elseif ($event_kind == 'baptism_witness') {
-            $event_text = __('baptism witness');
-        } elseif ($event_kind == 'death_declaration') {
-            $event_text = __('death declaration');
-        } elseif ($event_kind == 'burial_witness') {
-            $event_text = __('burial witness');
+        } elseif ($event_kind == 'ASSO' && $event_gedcom == 'CLERGY') {
+            $event_text = __('clergy');
+        } elseif ($event_kind == 'ASSO' && $event_gedcom == 'OFFICIATOR') {
+            $event_text = __('officiator');
+        } elseif ($event_kind == 'ASSO' && $event_gedcom == 'GODP') {
+            $event_text = __('godfather');
+        } elseif ($event_kind == 'ASSO' && $event_gedcom == 'OTHER') {
+            $event_text = $event_event_extra;
+            if ($event_text == 'informant') $event_text = __('informant');
+            if ($event_text == 'funeral leader') $event_text = __('funeral leader');
+        } elseif ($event_kind == 'ASSO') {
+            $event_text = __('witness');
         } elseif ($event_kind == 'name') {
             $event_text = __('Name');
         } elseif ($event_kind == 'NPFX') {
@@ -46,10 +50,6 @@ class editor_event_cls
             $event_text = __('URL/ Internet link');
         } elseif ($event_kind == 'person_colour_mark') {
             $event_text = __('Colour mark by person');
-        } elseif ($event_kind == 'marriage_witness') {
-            $event_text = __('marriage witness');
-        } elseif ($event_kind == 'marriage_witness_rel') {
-            $event_text = __('marriage witness (religious)');
         } elseif ($event_kind == 'source_picture') {
             $event_text = __('Picture/ Media');
         } elseif ($event_kind == 'religion') {
@@ -113,7 +113,6 @@ class editor_event_cls
 
         $text = '';
 
-        //if ($event_kind == 'picture') {
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
             $picture_array = array();
             // *** Picture list for selecting pictures ***
@@ -165,19 +164,8 @@ class editor_event_cls
         }
 
         // *** Change line colour ***
+        // TODO: check, probably no longer needed.
         $change_bg_colour = ' class="humo_color3"';
-
-        // 2021: No longer in use (only needed if source is edited in a pop-up screen)?
-        //$event_group='event_person=1';
-        if ($event_connect_kind == 'person') {
-            $event_group = 'event_person=1';
-        }
-        if ($event_connect_kind == 'family') {
-            $event_group = 'event_family=1';
-        }
-        if ($event_connect_kind == 'source') {
-            $event_group = 'event_source=1';
-        }
 
         // *** Show all events EXCEPT for events already processed by person data (profession etc.) ***
 
@@ -192,61 +180,70 @@ class editor_event_cls
 
         if ($event_kind == 'person') {
             // *** Filter several events, allready shown in seperate lines in editor ***
+            /*
             $qry = "SELECT * FROM humo_events
                 WHERE event_tree_id='" . $tree_id . "'
                 AND event_connect_kind='person'
                 AND event_connect_id='" . $event_connect_id . "'
                 AND event_kind NOT IN ('name','NPFX','NSFX','nobility','title','lordship','birth_declaration','baptism_witness',
-                'death_declaration','burial_witness','profession','religion','picture')
-            " . $hebtext . "
-            ORDER BY event_kind, event_order";
+                'death_declaration','burial_witness','profession','religion','picture',
+                'birth_decl_witness', 'death_decl_witness')
+                " . $hebtext . "
+                ORDER BY event_kind, event_order";
+            */
+
+            $qry = "SELECT * FROM humo_events
+                WHERE event_tree_id='" . $tree_id . "'
+                AND event_connect_kind='person'
+                AND event_connect_id='" . $event_connect_id . "'
+                AND event_kind NOT IN ('name','NPFX','NSFX','nobility','title','lordship','birth_declaration','ASSO',
+                'death_declaration','profession','religion','picture','witness')
+                " . $hebtext . "
+                ORDER BY event_kind, event_order";
         } elseif ($event_kind == 'name') {
             $hebclause = "";
             if ($humo_option['admin_hebname'] == 'y') {
                 $hebclause = " AND event_gedcom!='_HEBN' ";
             }
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='name' " . $hebclause . "ORDER BY event_order";
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='name' " . $hebclause . "ORDER BY event_order";
         } elseif ($event_kind == 'NPFX') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='NPFX' ORDER BY event_order";
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='NPFX' ORDER BY event_order";
         } elseif ($event_kind == 'NSFX') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='NSFX' ORDER BY event_order";
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='NSFX' ORDER BY event_order";
         } elseif ($event_kind == 'nobility') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='nobility' ORDER BY event_order";
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='nobility' ORDER BY event_order";
         } elseif ($event_kind == 'title') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='title' ORDER BY event_order";
         } elseif ($event_kind == 'lordship') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='lordship' ORDER BY event_order";
-        } elseif ($event_kind == 'birth_declaration') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='birth_declaration' ORDER BY event_order";
-        } elseif ($event_kind == 'baptism_witness') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='baptism_witness' ORDER BY event_order";
-        } elseif ($event_kind == 'death_declaration') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='death_declaration' ORDER BY event_order";
-        } elseif ($event_kind == 'burial_witness') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='burial_witness' ORDER BY event_order";
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='lordship' ORDER BY event_order";
+            //} elseif ($event_connect_kind == 'birth_declaration') {
+            //    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='birth_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='witness' ORDER BY event_order";
+
+        } elseif ($event_kind == 'ASSO' && $event_connect_kind == 'CHR') {
+            // ADDED oct. 2024
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='CHR' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
+        } elseif ($event_connect_kind == 'birth_declaration') {
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='birth_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
+            //} elseif ($event_kind == 'baptism_witness') {
+            // TODO: remove this query
+            //$qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='baptism_witness' ORDER BY event_order";
+            //} elseif ($event_connect_kind == 'death_declaration') {
+            //    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='death_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='witness' ORDER BY event_order";
+
+        } elseif ($event_kind == 'ASSO' && $event_connect_kind == 'BURI') {
+            // ADDED oct. 2024
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='BURI' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
+        } elseif ($event_connect_kind == 'death_declaration') {
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='death_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
+            //} elseif ($event_kind == 'burial_witness') {
+            // TODO: remove this query
+            //$qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='burial_witness' ORDER BY event_order";
+
         } elseif ($event_kind == 'profession') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='profession' ORDER BY event_order";
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='profession' ORDER BY event_order";
         } elseif ($event_kind == 'religion') {
-            $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='religion' ORDER BY event_order";
-        }
-        /*
-        elseif ($event_kind=='picture'){
-            $qry="SELECT * FROM humo_events
-                WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND
-                event_kind='picture' ORDER BY event_order";
-        }
-        */ elseif ($event_kind == 'picture') {
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='religion' ORDER BY event_order";
+        } elseif ($event_kind == 'picture') {
             $search_picture = "";
             $searchpic = "";
             if (isset($_POST['searchpic'])) {
@@ -259,24 +256,35 @@ class editor_event_cls
                 WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND
                 event_kind='picture' " . $searchpic . " ORDER BY event_order";
         } elseif ($event_kind == 'family') {
+            /*
             $qry = "SELECT * FROM humo_events 
                 WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "'
                 AND event_kind!='marriage_witness'
                 AND event_kind!='marriage_witness_rel'
                 AND event_kind!='picture'
                 ORDER BY event_kind, event_order";
-        } elseif ($event_kind == 'marriage_witness') {
-            $qry = "SELECT * FROM humo_events
-                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness' ORDER BY event_kind, event_order";
-        } elseif ($event_kind == 'marriage_witness_rel') {
-            $qry = "SELECT * FROM humo_events
-                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
+            */
+            $qry = "SELECT * FROM humo_events 
+                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "'
+                AND event_kind!='ASSO'
+                AND event_kind!='picture'
+                ORDER BY event_kind, event_order";
+
+            //} elseif ($event_kind == 'marriage_witness') {
+            //    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness' ORDER BY event_kind, event_order";
+        } elseif ($event_connect_kind == 'MARR' && $event_kind == 'ASSO') {
+            // TODO: remove this query
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='MARR' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_kind, event_order";
+
+            //} elseif ($event_kind == 'marriage_witness_rel') {
+            //    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
+        } elseif ($event_connect_kind == 'MARR_REL' && $event_kind == 'ASSO') {
+            // TODO: remove this query
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='MARR_REL' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_kind, event_order";
         } elseif ($event_kind == 'marriage_picture') {
-            $qry = "SELECT * FROM humo_events
-                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
         } elseif ($event_kind == 'source_picture') {
-            $qry = "SELECT * FROM humo_events
-                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='source' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
+            $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='source' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
         }
 
         $data_list_qry = $dbh->query($qry);
@@ -344,6 +352,7 @@ class editor_event_cls
                         <div class="col-4">
                             <select size="1" name="event_kind" class="form-select form-select-sm">
                                 <option value="event"><?= __('Event'); ?></option>
+                                <option value="URL"><?= __('URL/ Internet link'); ?></option>
                             </select>
                         </div>
 
@@ -606,14 +615,12 @@ class editor_event_cls
                     if ($event_connect_kind == 'person') {
                         $connect_qry = "SELECT * FROM humo_connections
                             WHERE connect_tree_id='" . $tree_id . "'
-                            AND connect_sub_kind='pers_object'
-                            AND connect_connect_id='" . $event_connect_id . "'
+                            AND connect_sub_kind='pers_object' AND connect_connect_id='" . $event_connect_id . "'
                             ORDER BY connect_order";
                     } elseif ($event_connect_kind == 'family') {
                         $connect_qry = "SELECT * FROM humo_connections
                             WHERE connect_tree_id='" . $tree_id . "'
-                            AND connect_sub_kind='fam_object'
-                            AND connect_connect_id='" . $event_connect_id . "'
+                            AND connect_sub_kind='fam_object' AND connect_connect_id='" . $event_connect_id . "'
                             ORDER BY connect_order";
                     }
                     if ($event_connect_kind == 'person' || $event_connect_kind == 'family') {
@@ -765,16 +772,18 @@ class editor_event_cls
                     $expand_link = '';
                     $change_bg_colour = '';
                 }
-                if ($event_kind == 'birth_declaration') {
+                //if ($event_kind == 'birth_decl_witness') {
+                if ($event_connect_kind == 'birth_declaration') {
                     //$expand_link=' style="display:none;" class="row2 humo_color" name="row2"';
                     $expand_link = '';
                     if ($data_listDb->event_order == '1') {
-                        $expand_link = ' id="birth_declaration"';
+                        $expand_link = ' id="birth_decl_witness"';
                     }
                     //$change_bg_colour='';
                     $change_bg_colour = ' class="humo_color"';
                 }
-                if ($event_kind == 'baptism_witness') {
+                //if ($event_kind == 'baptism_witness') {
+                if ($event_connect_kind == 'BAPT') {
                     //$expand_link=' style="display:none;" class="row3" name="row3"';
                     $expand_link = '';
                     if ($data_listDb->event_order == '1') {
@@ -783,16 +792,18 @@ class editor_event_cls
                     //$change_bg_colour=' class="humo_color"';
                     $change_bg_colour = '';
                 }
+                //if ($event_kind == 'death_decl_witness') {
                 if ($event_kind == 'death_declaration') {
                     //$expand_link=' style="display:none;" class="row4 humo_color" name="row4"';
                     $expand_link = '';
                     if ($data_listDb->event_order == '1') {
-                        $expand_link = ' id="death_declaration"';
+                        $expand_link = ' id="death_decl_witness"';
                     }
                     //$change_bg_colour='';
                     $change_bg_colour = ' class="humo_color"';
                 }
-                if ($event_kind == 'burial_witness') {
+                //if ($event_kind == 'burial_witness') {
+                if ($event_connect_kind == 'BURI') {
                     //$expand_link=' style="display:none;" class="row5" name="row5"';
                     $expand_link = '';
                     if ($data_listDb->event_order == '1') {
@@ -822,7 +833,8 @@ class editor_event_cls
                     $change_bg_colour = ' class="humo_color"';
                     $internal_link = '#picture';
                 }
-                if ($event_kind == 'marriage_witness') {
+                //if ($event_kind == 'marriage_witness') {
+                if ($event_connect_kind == 'MARR') {
                     //$expand_link=' style="display:none;" class="row8 humo_color" name="row8"';
                     $expand_link = '';
                     if ($data_listDb->event_order == '1') {
@@ -832,7 +844,8 @@ class editor_event_cls
                     $change_bg_colour = ' class="humo_color"';
                     $internal_link = '#event_family_link';
                 }
-                if ($event_kind == 'marriage_witness_rel') {
+                //if ($event_kind == 'marriage_witness_rel') {
+                if ($event_kind == 'MARR_REL') {
                     //$expand_link=' style="display:none;" class="row10 humo_color" name="row10"';
                     $expand_link = '';
                     if ($data_listDb->event_order == '1') {
@@ -854,59 +867,60 @@ class editor_event_cls
                         if (isset($_GET['add_person'])) {
                             $newpers = "&amp;add_person=1";
                         }
-                        echo '<a href="index.php?page=' . $page . $newpers . '&amp;' . $event_group .
-                            '&amp;event_kind=' . $data_listDb->event_kind . '&amp;event_drop=' . $data_listDb->event_order;
-                        // *** Remove picture by source ***
-                        if ($event_kind == 'source_picture') {
-                            echo '&amp;source_id=' . $data_listDb->event_connect_id;
-                        }
-                        echo '"><img src="images/button_drop.png" border="0" alt="down"></a>';
+                        ?>
+                        <a href="index.php?page=<?= $page . $newpers; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?>&amp;event_drop=<?= $data_listDb->event_order; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>">
+                            <img src="images/button_drop.png" border="0" alt="down">
+                        </a>
 
-                        //if ($data_listDb->event_kind !='picture'){
+                        <?php
                         // *** Count number of events ***
                         if ($event_connect_kind == 'person') {
-                            $count_event = $dbh->query("SELECT * FROM humo_events
-                                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                        } elseif ($event_connect_kind == 'CHR') {
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='CHR' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                        } elseif ($event_connect_kind == 'BURI') {
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='BURI' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                        } elseif ($event_connect_kind == 'birth_declaration') {
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='birth_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                        } elseif ($event_connect_kind == 'death_declaration') {
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='death_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
                         } elseif ($event_connect_kind == 'family') {
-                            $count_event = $dbh->query("SELECT * FROM humo_events
-                                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
-                        }
-                        // *** Edit picture by source in seperate source page ***
-                        elseif ($event_connect_kind == 'source') {
-                            $count_event = $dbh->query("SELECT * FROM humo_events
-                                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='source' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                        } elseif ($event_connect_kind == 'MARR') {
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='MARR' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                        } elseif ($event_connect_kind == 'MARR_REL') {
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='MARR_REL' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
+                        } elseif ($event_connect_kind == 'source') {
+                            // *** Edit picture by source in seperate source page ***
+                            $count_event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='source' AND event_connect_id='" . $event_connect_id . "' AND event_kind='" . $data_listDb->event_kind . "'");
                         }
                         $count = $count_event->rowCount();
 
                         // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
                         if ($data_listDb->event_order < $count) {
-                            echo ' <a href="index.php?page=' . $page . '&amp;' . $event_group . '&amp;event_down=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
-                            // *** Edit picture by source in seperate source page ***
-                            if ($event_kind == 'source_picture') {
-                                echo '&amp;source_id=' . $data_listDb->event_connect_id;
-                            }
-                            echo '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
+                        ?>
+                            <a href="index.php?page=<?= $page; ?>&amp;event_down=<?= $data_listDb->event_order; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>&amp;dummy=<?= $data_listDb->event_id . $internal_link; ?>">
+                                <img src="images/arrow_down.gif" border="0" alt="down">
+                            </a>
+                        <?php
                         } else {
                             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                         }
 
                         // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
                         if ($data_listDb->event_order > 1) {
-                            echo ' <a href="index.php?page=' . $page . '&amp;' . $event_group . '&amp;event_up=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
-                            // *** Edit picture by source in seperate source page ***
-                            if ($event_kind == 'source_picture') {
-                                echo '&amp;source_id=' . $data_listDb->event_connect_id;
-                            }
-                            echo '&amp;dummy=' . $data_listDb->event_id . $internal_link;
-                            echo '"><img src="images/arrow_up.gif" border="0" alt="down"></a>';
+                        ?>
+                            <a href="index.php?page=<?= $page; ?>&amp;event_up=<?= $data_listDb->event_order; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>&amp;dummy=<?= $data_listDb->event_id . $internal_link; ?>">
+                                <img src="images/arrow_up.gif" border="0" alt="down">
+                            </a>
+                        <?php
                         } else {
                             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                         }
-                        //}
                         ?>
                     </td>
 
-                    <td colspan="2">
+                    <td colspan=" 2">
                         <?php
                         // *** Check number of sources and valid connected sources ***
                         $check_sources_text = ''; // For source editor.
@@ -917,12 +931,19 @@ class editor_event_cls
                         }
 
                         // *** Witness and declaration persons ***
+                        //if (
+                        //    $data_listDb->event_kind == 'baptism_witness' || $data_listDb->event_kind == 'birth_decl_witness' || $data_listDb->event_kind == 'death_decl_witness' || $data_listDb->event_kind == 'burial_witness' || $data_listDb->event_kind == 'marriage_witness' || $data_listDb->event_kind == 'marriage_witness_rel'
+                        //) {
+                        //if (
+                        //    $data_listDb->event_kind == 'baptism_witness' || $data_listDb->event_connect_kind == 'birth_declaration' || $data_listDb->event_connect_kind == 'death_declaration' || $data_listDb->event_kind == 'burial_witness' || $data_listDb->event_kind == 'marriage_witness' || $data_listDb->event_kind == 'marriage_witness_rel'
+                        //) {
                         if (
-                            $data_listDb->event_kind == 'baptism_witness' || $data_listDb->event_kind == 'birth_declaration' || $data_listDb->event_kind == 'death_declaration' || $data_listDb->event_kind == 'burial_witness' || $data_listDb->event_kind == 'marriage_witness' || $data_listDb->event_kind == 'marriage_witness_rel'
+                            $data_listDb->event_kind == 'ASSO' || $data_listDb->event_connect_kind == 'birth_declaration' || $data_listDb->event_connect_kind == 'death_declaration'
                         ) {
                             // *** Hide or show editor fields ***
                             if ($data_listDb->event_connect_id2) {
-                                $witness_name = show_person($data_listDb->event_connect_id2, $gedcom_date = false, $show_link = false);
+                                //$witness_name = show_person($data_listDb->event_connect_id2, $gedcom_date = false, $show_link = false);
+                                $witness_name = show_person($data_listDb->event_connect_id2, false, false);
                             } else {
                                 $witness_name = $data_listDb->event_event;
                             }
@@ -931,7 +952,7 @@ class editor_event_cls
                                 $witness_name .= ' ' . $check_sources_text;
                             }
 
-                            $event_text = $this->event_text($data_listDb->event_kind);
+                            $event_text = $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom);
                             $person_item = 'person_witness';
                             if ($event_connect_kind == 'family') {
                                 $person_item = 'marriage_witness';
@@ -944,36 +965,94 @@ class editor_event_cls
                         ?>
 
                             <!-- Show name of item -->
-                            <?= $this->event_text($data_listDb->event_kind); ?>:
+                            <?= $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom, $data_listDb->event_event_extra); ?>:
 
                             <!-- Hide/show line (start <span> to hide edit line) -->
                             <?= $this->hide_show_start($data_listDb, $witness_name); ?>
 
 
-
                             <div class="row mb-1">
-                                <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind)); ?></label>
+                                <!-- <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label> -->
+                                <div class="col-md-3"></div>
                                 <label for="event" class="col-md-9 col-form-label"><?= __('Select GEDCOM number or type name of person:'); ?></label>
                             </div>
 
                             <div class="row mb-1">
-                                <!-- <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind)); ?></label> -->
-                                <div class="col-md-3"></div>
+                                <!-- <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label> -->
+                                <!-- <div class="col-md-3"></div> -->
+                                <label for="event" class="col-md-3 col-form-label"><?= __('GEDCOM number (ID)'); ?></label>
                                 <div class="col-md-4">
                                     <div class="input-group">
-                                        <input <?= $style; ?> type="text" name="event_connect_id2<?= $data_listDb->event_id; ?>" value="<?= $data_listDb->event_connect_id2; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>" class="form-control form-control-sm">
+                                        <input <?= $style; ?> type="text" name="event_connect_id2<?= $data_listDb->event_id; ?>" value="<?= $data_listDb->event_connect_id2; ?>" size="17" class="form-control form-control-sm">
                                         &nbsp;<a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=<?= $person_item; ?>&event_row=<?= $data_listDb->event_id; ?>&tree_id=<?= $tree_id; ?>","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
                                     </div>
                                 </div>
                             </div>
+
+                            <!--
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label>
+                            </div>
+                            -->
+
                             <div class="row mb-2">
                                 <!-- <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label> -->
-                                <div class="col-md-3"></div>
+                                <!-- <div class="col-md-3"></div> -->
+                                <label for="event" class="col-md-3 col-form-label"><?= __('Name'); ?></label>
                                 <div class="col-md-7">
                                     <!-- <input type="text" <?= $style; ?> name="text_event[<?= $data_listDb->event_id; ?>]" value="<?= htmlspecialchars($data_listDb->event_event); ?>" placeholder="<?= $event_text; ?>" size="44" class="form-control form-control-sm"> -->
-                                    <input type="text" <?= $style; ?> name="text_event[<?= $data_listDb->event_id; ?>]" value="<?= htmlspecialchars($data_listDb->event_event); ?>" placeholder="<?= __('Name'); ?>" size="44" class="form-control form-control-sm">
+                                    <input type="text" <?= $style; ?> name="text_event[<?= $data_listDb->event_id; ?>]" value="<?= htmlspecialchars($data_listDb->event_event); ?>" size="44" class="form-control form-control-sm">
                                 </div>
                             </div>
+
+                            <!-- Select ROLE. If own role is added, ROLE will be OTHER *** -->
+                            <div class="row mb-1">
+                                <!-- <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label> -->
+                                <div class="col-md-3"></div>
+                                <label for="event" class="col-md-9 col-form-label"><?= __('Select role or type other role:'); ?></label>
+                            </div>
+
+                            <div class="row mb-2">
+                                <label for="event" class="col-md-3 col-form-label"><?= __('Select role'); ?></label>
+                                <div class="col-md-7">
+
+                                    <input type="hidden" name="check_event_kind[<?= $data_listDb->event_id; ?>]" value="<?= $data_listDb->event_kind; ?>">
+
+                                    <select size="1" name="event_gedcom[<?= $data_listDb->event_id; ?>]" class="form-select form-select-sm">
+                                        <option value="WITN"><?= __('Witness'); ?></option>
+
+                                        <?php if ($data_listDb->event_connect_kind == 'CHR' || $data_listDb->event_connect_kind == 'BURI' || $data_listDb->event_connect_kind == 'MARR_REL') { ?>
+                                            <option value="CLERGY" <?= $data_listDb->event_gedcom == 'CLERGY' ? 'selected' : ''; ?>><?= ucfirst(__('clergy')); ?></option>
+                                        <?php } ?>
+
+                                        <?php if ($data_listDb->event_connect_kind == 'birth_declaration' || $data_listDb->event_connect_kind == 'death_declaration' || $data_listDb->event_connect_kind == 'MARR') { ?>
+                                            <option value="OFFICIATOR" <?= $data_listDb->event_gedcom == 'OFFICIATOR' ? 'selected' : ''; ?>><?= ucfirst(__('officiator')); ?></option>
+                                        <?php } ?>
+
+                                        <?php if ($data_listDb->event_connect_kind == 'CHR') { ?>
+                                            <option value="GODP" <?= $data_listDb->event_gedcom == 'GODP' ? 'selected' : ''; ?>><?= ucfirst(__('godfather')); ?></option>
+                                        <?php } ?>
+
+                                        <option value="OTHER" <?= $data_listDb->event_gedcom == 'OTHER' ? 'selected' : ''; ?>><?= __('Other role'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <!-- <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label> -->
+                                <!-- <div class="col-md-3"></div> -->
+                                <label for="event" class="col-md-3 col-form-label"><?= __('Other role'); ?></label>
+                                <div class="col-md-7">
+                                    <?php
+                                    $event_event_extra = '';
+                                    if ($data_listDb->event_event_extra) {
+                                        $event_event_extra = htmlspecialchars($data_listDb->event_event_extra);
+                                    }
+                                    ?>
+                                    <input type="text" name="event_event_extra[<?= $data_listDb->event_id; ?>]" value="<?= $event_event_extra; ?>" size="44" class="form-control form-control-sm">
+                                </div>
+                            </div>
+
 
                         <?php } elseif ($data_listDb->event_kind == 'picture') { ?>
                             <div>
@@ -1142,7 +1221,7 @@ class editor_event_cls
                                 $parent_text .= ' ' . $check_sources_text;
                             }
 
-                            echo $this->event_text($data_listDb->event_kind) . ': ';
+                            echo $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom) . ': ';
 
                             // *** Hide/show line (start <span> to hide edit line) ***
                             echo $this->hide_show_start($data_listDb, $parent_text);
@@ -1215,7 +1294,7 @@ class editor_event_cls
                                 $person_colour .= ' ' . $check_sources_text;
                             }
 
-                            echo $this->event_text($data_listDb->event_kind) . ': ';
+                            echo $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom) . ': ';
 
                             // *** Hide/show line (start <span> to hide edit line) ***
                             echo $this->hide_show_start($data_listDb, $person_colour);
@@ -1274,7 +1353,7 @@ class editor_event_cls
 
                         // *** religion ***
                         elseif ($data_listDb->event_kind == 'religion') {
-                            echo $this->event_text($data_listDb->event_kind) . ': ';
+                            echo $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom) . ': ';
 
                             $religion_link = $data_listDb->event_event;
                             if ($check_sources_text) {
@@ -1302,7 +1381,7 @@ class editor_event_cls
                             } elseif (language_name($data_listDb->event_gedcom)) {
                                 echo language_name($data_listDb->event_gedcom);
                             } else {
-                                echo $this->event_text($data_listDb->event_kind) . ': ';
+                                echo $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom) . ': ';
                             }
 
                             $event_text = $data_listDb->event_event;
@@ -1337,89 +1416,115 @@ class editor_event_cls
                                         <select size="1" name="event_gedcom[<?= $data_listDb->event_id; ?>]" class="form-select form-select-sm">
                                             <?php
                                             if ($event_kind == 'person') {
-                                                echo '<optgroup label="' . __('Events') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'EVEN');
-                                                echo event_option($data_listDb->event_gedcom, '_NMAR');
-                                                echo event_option($data_listDb->event_gedcom, 'NCHI');
-                                                echo event_option($data_listDb->event_gedcom, 'MILI');
-                                                echo event_option($data_listDb->event_gedcom, 'TXPY');
-                                                echo event_option($data_listDb->event_gedcom, 'CENS');
-                                                echo event_option($data_listDb->event_gedcom, 'RETI');
-                                                echo event_option($data_listDb->event_gedcom, 'CAST');
-                                                echo '</optgroup>';
+                                            ?>
+                                                <optgroup label="<?= __('Events'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'EVEN');
+                                                    echo event_option($data_listDb->event_gedcom, '_NMAR');
+                                                    echo event_option($data_listDb->event_gedcom, 'NCHI');
+                                                    echo event_option($data_listDb->event_gedcom, 'MILI');
+                                                    echo event_option($data_listDb->event_gedcom, 'TXPY');
+                                                    echo event_option($data_listDb->event_gedcom, 'CENS');
+                                                    echo event_option($data_listDb->event_gedcom, 'RETI');
+                                                    echo event_option($data_listDb->event_gedcom, 'CAST');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Baptise') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'BAPM');
-                                                echo event_option($data_listDb->event_gedcom, 'CHRA');
-                                                echo event_option($data_listDb->event_gedcom, 'LEGI');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Baptise'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'BAPM');
+                                                    echo event_option($data_listDb->event_gedcom, 'CHRA');
+                                                    echo event_option($data_listDb->event_gedcom, 'LEGI');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Adoption') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'ADOP');
-                                                echo event_option($data_listDb->event_gedcom, '_ADPF');
-                                                echo event_option($data_listDb->event_gedcom, '_ADPM');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Adoption'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'ADOP');
+                                                    echo event_option($data_listDb->event_gedcom, '_ADPF');
+                                                    echo event_option($data_listDb->event_gedcom, '_ADPM');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Settling') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'ARVL');
-                                                echo event_option($data_listDb->event_gedcom, 'DPRT');
-                                                echo event_option($data_listDb->event_gedcom, 'IMMI');
-                                                echo event_option($data_listDb->event_gedcom, 'EMIG');
-                                                echo event_option($data_listDb->event_gedcom, 'NATU');
-                                                echo event_option($data_listDb->event_gedcom, 'NATI');
-                                                echo event_option($data_listDb->event_gedcom, 'PROP');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Settling'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'ARVL');
+                                                    echo event_option($data_listDb->event_gedcom, 'DPRT');
+                                                    echo event_option($data_listDb->event_gedcom, 'IMMI');
+                                                    echo event_option($data_listDb->event_gedcom, 'EMIG');
+                                                    echo event_option($data_listDb->event_gedcom, 'NATU');
+                                                    echo event_option($data_listDb->event_gedcom, 'NATI');
+                                                    echo event_option($data_listDb->event_gedcom, 'PROP');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Characteristics') . '">';
-                                                echo event_option($data_listDb->event_gedcom, '_HEIG');
-                                                echo event_option($data_listDb->event_gedcom, '_WEIG');
-                                                echo event_option($data_listDb->event_gedcom, '_EYEC');
-                                                echo event_option($data_listDb->event_gedcom, '_HAIR');
-                                                echo event_option($data_listDb->event_gedcom, '_MEDC');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Characteristics'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, '_HEIG');
+                                                    echo event_option($data_listDb->event_gedcom, '_WEIG');
+                                                    echo event_option($data_listDb->event_gedcom, '_EYEC');
+                                                    echo event_option($data_listDb->event_gedcom, '_HAIR');
+                                                    echo event_option($data_listDb->event_gedcom, '_MEDC');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Buried') . '">';
-                                                echo event_option($data_listDb->event_gedcom, '_FNRL');
-                                                echo event_option($data_listDb->event_gedcom, '_INTE');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Buried'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, '_FNRL');
+                                                    echo event_option($data_listDb->event_gedcom, '_INTE');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Will') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'PROB');
-                                                echo event_option($data_listDb->event_gedcom, 'WILL');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Will'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'PROB');
+                                                    echo event_option($data_listDb->event_gedcom, 'WILL');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Religious') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'CONF');
-                                                echo event_option($data_listDb->event_gedcom, 'BLES');
-                                                echo event_option($data_listDb->event_gedcom, 'FCOM');
-                                                echo event_option($data_listDb->event_gedcom, 'ORDN');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Religious'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'CONF');
+                                                    echo event_option($data_listDb->event_gedcom, 'BLES');
+                                                    echo event_option($data_listDb->event_gedcom, 'FCOM');
+                                                    echo event_option($data_listDb->event_gedcom, 'ORDN');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Education') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'GRAD');
-                                                echo event_option($data_listDb->event_gedcom, 'EDUC');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Education'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'GRAD');
+                                                    echo event_option($data_listDb->event_gedcom, 'EDUC');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Social') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'AFN');
-                                                echo event_option($data_listDb->event_gedcom, 'SSN');
-                                                echo event_option($data_listDb->event_gedcom, 'IDNO');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Social'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'AFN');
+                                                    echo event_option($data_listDb->event_gedcom, 'SSN');
+                                                    echo event_option($data_listDb->event_gedcom, 'IDNO');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('LDS') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'BAPL');
-                                                echo event_option($data_listDb->event_gedcom, 'CONL');
-                                                echo event_option($data_listDb->event_gedcom, 'ENDL');
-                                                echo event_option($data_listDb->event_gedcom, 'SLGC');
-                                                echo event_option($data_listDb->event_gedcom, 'SLGL');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('LDS'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'BAPL');
+                                                    echo event_option($data_listDb->event_gedcom, 'CONL');
+                                                    echo event_option($data_listDb->event_gedcom, 'ENDL');
+                                                    echo event_option($data_listDb->event_gedcom, 'SLGC');
+                                                    echo event_option($data_listDb->event_gedcom, 'SLGL');
+                                                    ?>
+                                                </optgroup>
 
-                                                echo '<optgroup label="' . __('Jewish') . '">';
-                                                echo event_option($data_listDb->event_gedcom, 'BARM');
-                                                echo event_option($data_listDb->event_gedcom, 'BASM');
-                                                echo event_option($data_listDb->event_gedcom, '_BRTM');
-                                                echo event_option($data_listDb->event_gedcom, '_YART');
-                                                echo '</optgroup>';
+                                                <optgroup label="<?= __('Jewish'); ?>">
+                                                    <?php
+                                                    echo event_option($data_listDb->event_gedcom, 'BARM');
+                                                    echo event_option($data_listDb->event_gedcom, 'BASM');
+                                                    echo event_option($data_listDb->event_gedcom, '_BRTM');
+                                                    echo event_option($data_listDb->event_gedcom, '_YART');
+                                                    ?>
+                                                </optgroup>
+                                            <?php
                                             }
 
                                             if ($event_kind == 'family') {
@@ -1457,12 +1562,19 @@ class editor_event_cls
                         <?php } ?>
 
                         <!-- Date and place by event -->
-                        <div class="row mb-2">
-                            <label for="event_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
-                            <div class="col-md-7">
-                                <?php $editor_cls->date_show($data_listDb->event_date, 'event_date', "[$data_listDb->event_id]"); ?>
+                        <?php
+                        //if ($event_kind != 'baptism_witness' && $event_kind != 'burial_witness' && $event_kind != 'marriage_witness' && $event_kind != 'marriage_witness_rel') { 
+                        //$witness_array = array("birth_decl_witness", "baptism_witness", "death_decl_witness", "burial_witness", "marriage_witness", "marriage_witness_rel");
+                        $witness_array = array("ASSO", "witness");
+                        if (!in_array($event_kind, $witness_array)) {
+                        ?>
+                            <div class="row mb-2">
+                                <label for="event_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                                <div class="col-md-7">
+                                    <?php $editor_cls->date_show($data_listDb->event_date, 'event_date', "[$data_listDb->event_id]"); ?>
+                                </div>
                             </div>
-                        </div>
+                        <?php } ?>
 
                         <!-- To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id -->
                         <?php
@@ -1474,15 +1586,22 @@ class editor_event_cls
                             $form = 3;
                         }
                         ?>
-                        <div class="row mb-2">
-                            <label for="event_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
-                            <div class="col-md-7">
-                                <div class="input-group">
-                                    <input type="text" name="event_place<?= $data_listDb->event_id; ?>" value="<?= $data_listDb->event_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=event_place&amp;event_id=<?= $data_listDb->event_id; ?>","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                        <?php
+                        //if ($event_kind != 'baptism_witness' && $event_kind != 'burial_witness' && $event_kind != 'marriage_witness' && $event_kind != 'marriage_witness_rel') {
+                        //$witness_array = array("birth_decl_witness", "baptism_witness", "death_decl_witness", "burial_witness", "marriage_witness", "marriage_witness_rel");
+                        $witness_array = array("ASSO", "witness");
+                        if (!in_array($event_kind, $witness_array)) {
+                        ?>
+                            <div class="row mb-2">
+                                <label for="event_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <input type="text" name="event_place<?= $data_listDb->event_id; ?>" value="<?= $data_listDb->event_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=event_place&amp;event_id=<?= $data_listDb->event_id; ?>","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php } ?>
 
                         <?php
                         // *** Text by event ***
@@ -1490,31 +1609,36 @@ class editor_event_cls
                         if ($data_listDb->event_text && preg_match('/\R/', $data_listDb->event_text)) {
                             $field_text_selected = $field_text_medium;
                         }
+
+                        //$witness_array = array("birth_decl_witness", "baptism_witness", "death_decl_witness", "burial_witness", "marriage_witness", "marriage_witness_rel");
+                        $witness_array = array("ASSO", "witness");
+                        if (!in_array($event_kind, $witness_array)) {
                         ?>
-                        <div class="row mb-2">
-                            <label for="event_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
-                            <div class="col-md-7">
-                                <textarea rows="1" name="event_text[<?= $data_listDb->event_id; ?>]" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($data_listDb->event_text); ?></textarea>
+                            <div class="row mb-2">
+                                <label for="event_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                                <div class="col-md-7">
+                                    <textarea rows="1" name="event_text[<?= $data_listDb->event_id; ?>]" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($data_listDb->event_text); ?></textarea>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Source by event -->
-                        <div class="row mb-2">
-                            <label for="source_event" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
-                            <div class="col-md-7">
-                                <?php
-                                if ($event_connect_kind == 'person') {
-                                    source_link3('person', 'pers_event_source', $data_listDb->event_id);
-                                } elseif ($event_connect_kind == 'family') {
-                                    source_link3('family', 'fam_event_source', $data_listDb->event_id);
-                                }
+                            <!-- Source by event -->
+                            <div class="row mb-2">
+                                <label for="source_event" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                <div class="col-md-7">
+                                    <?php
+                                    if ($event_connect_kind == 'person') {
+                                        source_link3('person', 'pers_event_source', $data_listDb->event_id);
+                                    } elseif ($event_connect_kind == 'family') {
+                                        source_link3('family', 'fam_event_source', $data_listDb->event_id);
+                                    }
 
-                                if ($check_sources_text) {
-                                    echo $check_sources_text;
-                                }
-                                ?>
+                                    if ($check_sources_text) {
+                                        echo $check_sources_text;
+                                    }
+                                    ?>
+                                </div>
                             </div>
-                        </div>
+                        <?php } ?>
 
                         <?php if (isset($hideshow) && substr($hideshow, 0, 4) === '9000') {
                             echo '</span>';
@@ -1774,13 +1898,13 @@ echo '<script>
 
     // *** If witness is added, jump to witness part of screen ***
     if (isset($_POST['add_birth_declaration'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#birth_declaration";</script>';
+        echo '<script>window.location = window.location.origin + window.location.pathname + "#birth_decl_witness";</script>';
     }
     if (isset($_POST['add_baptism_witness'])) {
         echo '<script>window.location = window.location.origin + window.location.pathname + "#baptism_witness";</script>';
     }
     if (isset($_POST['add_death_declaration'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#death_declaration";</script>';
+        echo '<script>window.location = window.location.origin + window.location.pathname + "#death_decl_witness";</script>';
     }
     if (isset($_POST['add_burial_witness'])) {
         echo '<script>window.location = window.location.origin + window.location.pathname + "#burial_witness";</script>';
