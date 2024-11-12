@@ -387,11 +387,12 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                         if (substr($cms_images_path, 0, 1) === '|') {
                             $checked1 = ' checked';
                             $checked2 = '';
+                            //$cms_pages['default_path'] = true;
                         } else {
                             $checked1 = '';
                             $checked2 = ' checked';
+                            //$cms_pages['default_path'] = false;
                         }
-                        //$tree_pict_path=$data2Db->tree_pict_path;
                         if (substr($cms_images_path, 0, 1) === '|') {
                             $cms_images_path = substr($cms_images_path, 1);
                         }

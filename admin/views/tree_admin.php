@@ -29,11 +29,6 @@
     </thead>
 
     <?php
-    // *** Check number of family trees, because last tree is not allowed to be removed ***
-    $count_trees = 0;
-    $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-    $count_trees = $datasql->rowCount();
-
     $datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
     if ($datasql) {
         $count_lines = $datasql->rowCount();
@@ -92,8 +87,8 @@
 
                 <td>
                     <?php
-                    // *** If there is only one family tree, prevent it can be removed ***
-                    if ($count_trees > 1 || $dataDb->tree_prefix == 'EMPTY') {
+                    // *** If there is only one family tree, prevent it from being removed ***
+                    if ($trees['count_trees'] > 1 || $dataDb->tree_prefix == 'EMPTY') {
                     ?>
                         <a href="index.php?page=tree&amp;remove_tree=<?= $dataDb->tree_id; ?>&amp;treetext_name=<?= $treetext['name']; ?>">
                             <img src="images/button_drop.png" alt="<?= __('Remove tree'); ?>" border="0">
@@ -118,14 +113,6 @@
     <?= __('Add empty line in list of family trees'); ?>
 </form>
 
-
-<?php
-// ** Change collation of family tree (needed for Swedish etc.) ***
-$collation_sql = $dbh->query("SHOW FULL COLUMNS FROM humo_persons WHERE Field = 'pers_firstname'");
-$collationDb = $collation_sql->fetch(PDO::FETCH_OBJ);
-$collation = $collationDb->Collation;
-?>
-
 <form method="post" action="index.php" style="display : inline;">
     <input type="hidden" name="page" value="tree">
 
@@ -137,10 +124,9 @@ $collation = $collationDb->Collation;
 
         <div class="col-md-auto">
             <select size="1" name="tree_collation" class="form-select form-select-sm">
-                <!-- Default collation -->
                 <option value="utf8_general_ci">utf8_general_ci (default)</option>
-                <option value="utf8_swedish_ci" <?= $collation == 'utf8_swedish_ci' || $collation == 'utf8mb3_swedish_ci' ? 'selected' : ''; ?>>utf8_swedish_ci</option>
-                <option value="utf8_danish_ci" <?= $collation == 'utf8_danish_ci' || $collation == 'utf8mb3_danish_ci' ? 'selected' : ''; ?>>utf8_danish_ci</option>
+                <option value="utf8_swedish_ci" <?= $trees['collation'] == 'utf8_swedish_ci' || $trees['collation'] == 'utf8mb3_swedish_ci' ? 'selected' : ''; ?>>utf8_swedish_ci</option>
+                <option value="utf8_danish_ci" <?= $trees['collation'] == 'utf8_danish_ci' || $trees['collation'] == 'utf8mb3_danish_ci' ? 'selected' : ''; ?>>utf8_danish_ci</option>
             </select>
         </div>
 

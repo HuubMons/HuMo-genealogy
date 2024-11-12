@@ -28,10 +28,13 @@ class TreesController
         if ($trees['menu_tab'] == 'tree_main') {
             include_once(__DIR__ . "/../../include/show_tree_date.php");
             include_once(__DIR__ . "/../../views/partial/select_language.php");
-
             include(__DIR__ . '/../../languages/' . $trees['language2'] . '/language_data.php');
 
-            //require_once __DIR__ . "/../models/tree_admin.php";
+            require_once __DIR__ . "/../models/tree_admin.php";
+            $tree_adminModel = new TreeAdminModel($dbh);
+            $trees['count_trees'] = $tree_adminModel->count_trees($dbh);
+            $trees['collation'] = $tree_adminModel->get_collation($dbh);
+
             $trees['language_path'] = 'index.php?page=tree&amp;tree_id=' . $trees['tree_id'] . '&amp;';
         } elseif ($trees['menu_tab'] == 'tree_gedcom') {
             include_once(__DIR__ . "/../include/gedcom_asciihtml.php");
@@ -58,6 +61,8 @@ class TreesController
             }
         } elseif ($trees['menu_tab'] == 'tree_data') {
             //require_once __DIR__ . "/../models/tree_data.php";
+            //$tree_dataModel = new TreeDataModel($dbh);
+            //$trees['count_trees'] = $tree_dataModel->count_trees($dbh);
         } elseif ($trees['menu_tab'] == 'tree_text') {
             require_once __DIR__ . "/../models/tree_text.php";
             $tree_textModel = new TreeTextModel($dbh);
