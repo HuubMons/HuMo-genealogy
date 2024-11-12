@@ -195,7 +195,7 @@ $select_editor_result = $dbh->query($select_editor_qry);
 <h3><?= __('Latest changes'); ?></h3>
 
 <form method="POST" action="index.php">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="page" value="check">
     <input type="hidden" name="tab" value="changes">
 
     <!-- <div class="row p-2 mb-3 mx-sm-1"> -->

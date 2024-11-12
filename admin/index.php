@@ -136,7 +136,7 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
     }
 
     // *** Check HuMo-genealogy database status, will be changed if database update is needed ***
-    if (isset($humo_option["update_status"]) && $humo_option["update_status"] < 18) {
+    if (isset($humo_option["update_status"]) && $humo_option["update_status"] < 19) {
         $page = 'update';
         $show_menu_left = false;
     }
@@ -680,6 +680,9 @@ if ($popup == false) {
         if ($page === 'install') {
             include_once(__DIR__ . "/views/install.php");
         } elseif ($page === 'extensions') {
+            //require __DIR__ . '/controller/extensionsController.php';
+            //$controllerObj = new ExtensionsController();
+            //$extensions = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/extensions.php");
         } elseif ($page === 'login') {
             include_once(__DIR__ . "/views/login.php");
@@ -730,8 +733,8 @@ if ($popup == false) {
             include_once(__DIR__ . "/views/tree_check.php");
         } elseif ($page === 'latest_changes') {
             include_once(__DIR__ . "/views/tree_check.php");
-        } elseif ($page === 'gedcom') {
-            include_once(__DIR__ . "/views/gedcom.php");
+            //} elseif ($page === 'gedcom') {
+            //    include_once(__DIR__ . "/views/gedcom.php");
         } elseif ($page === 'settings') {
             require __DIR__ . '/controller/settings_adminController.php';
             $controllerObj = new SettingsController();
@@ -762,6 +765,9 @@ if ($popup == false) {
             $cms_pages = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/cms_pages.php");
         } elseif ($page === 'backup') {
+            //require __DIR__ . '/controller/backupController.php';
+            //$controllerObj = new BackupController();
+            //$backup = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/backup.php");
         } elseif ($page === 'notes') {
             require __DIR__ . '/controller/notesController.php';
@@ -769,6 +775,9 @@ if ($popup == false) {
             $notes = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/notes.php");
         } elseif ($page === 'cal_date') {
+            //require __DIR__ . '/controller/cal_dateController.php';
+            //$controllerObj = new CalculateDateController();
+            //$cal_date = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/cal_date.php");
         } elseif ($page === 'export') {
             require __DIR__ . '/controller/gedcom_exportController.php';
@@ -793,6 +802,9 @@ if ($popup == false) {
             $maps = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/maps.php");
         } elseif ($page === 'statistics') {
+            //require __DIR__ . '/controller/statisticsController.php';
+            //$controllerObj = new StatisticsController();
+            //$statistics = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/statistics.php");
         } elseif ($page === 'install_update') {
             include_once(__DIR__ . "/update/install_update.php");

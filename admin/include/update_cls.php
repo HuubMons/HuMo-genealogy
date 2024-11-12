@@ -3840,6 +3840,7 @@ class update_cls
             OR event_kind='death_declaration' OR event_kind='burial_witness'
             OR event_kind='marriage_witness' OR event_kind='marriage_witness_rel')
         ";
+        // Bug: forgot to change event_connect_kind2 into person. Solved in later update.
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
             $gebeurtsql = "UPDATE humo_events SET
@@ -4016,7 +4017,7 @@ class update_cls
             <td style="background-color:#00FF00"><?= __('Update in progress...'); ?><div id="information v6_7_9" style="display: inline; font-weight:bold;"></div>
             </td>
         </tr>
-<?php
+        <?php
         //ob_flush();
         flush();
 
@@ -4077,23 +4078,23 @@ class update_cls
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
             if ($qryDb->event_date || $qryDb->event_place || $qryDb->event_text) {
                 $sql_put = "INSERT INTO humo_events SET
-                event_tree_id='" . $qryDb->event_tree_id . "',
-                event_gedcomnr='',
-                event_order='" . $qryDb->event_order . "',
-                event_connect_kind='person',
-                event_connect_id='" . $qryDb->event_connect_id . "',
-                event_kind='" . $qryDb->event_connect_kind . "',
-                event_event='',
-                event_event_extra='" . safe_text_db($qryDb->event_event_extra) . "',
-                event_gedcom='EVEN',
-                event_date='" . $qryDb->event_date . "',
-                event_place='" . safe_text_db($qryDb->event_place) . "',
-                event_text='" . safe_text_db($qryDb->event_text) . "',
-                event_quality='" . $qryDb->event_quality . "',
-                event_new_user_id='" . $qryDb->event_new_user_id . "',
-                event_new_datetime='" . $qryDb->event_new_datetime . "',
-                event_changed_user_id='" . $qryDb->event_changed_user_id . "',
-                event_changed_datetime='" . $qryDb->event_changed_datetime . "'";
+                    event_tree_id='" . $qryDb->event_tree_id . "',
+                    event_gedcomnr='',
+                    event_order='" . $qryDb->event_order . "',
+                    event_connect_kind='person',
+                    event_connect_id='" . $qryDb->event_connect_id . "',
+                    event_kind='" . $qryDb->event_connect_kind . "',
+                    event_event='',
+                    event_event_extra='" . safe_text_db($qryDb->event_event_extra) . "',
+                    event_gedcom='EVEN',
+                    event_date='" . $qryDb->event_date . "',
+                    event_place='" . safe_text_db($qryDb->event_place) . "',
+                    event_text='" . safe_text_db($qryDb->event_text) . "',
+                    event_quality='" . $qryDb->event_quality . "',
+                    event_new_user_id='" . $qryDb->event_new_user_id . "',
+                    event_new_datetime='" . $qryDb->event_new_datetime . "',
+                    event_changed_user_id='" . $qryDb->event_changed_user_id . "',
+                    event_changed_datetime='" . $qryDb->event_changed_datetime . "'";
 
                 $dbh->query($sql_put);
                 $last_insert = $dbh->lastInsertId();
@@ -4130,6 +4131,82 @@ class update_cls
         // *** Show status of database update ***
         //ob_start();
         echo '<script>document.getElementById("information v6_7_9").innerHTML="Database updated!";</script>';
+        //ob_flush();
+        flush();
+    }
+
+    public function update_v6_7_9a($dbh): void
+    {
+        // ***************************************
+        // *** Update procedure version 6.7.9a ***
+        // ***************************************
+
+        // *** Show update status ***
+        //ob_start();
+        ?>
+        <tr>
+            <td>HuMo-genealogy update V6.7.9a</td>
+            <td style="background-color:#00FF00"><?= __('Update in progress...'); ?><div id="information v6_7_9a" style="display: inline; font-weight:bold;"></div>
+            </td>
+        </tr>
+<?php
+        //ob_flush();
+        flush();
+
+        // *** In some cases event_connect_kind is empty, because of bug in previous update ***
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='birth_declaration', event_gedcom='WITN' WHERE event_kind='birth_declaration' AND event_connect_id2 LIKE 'I%'");
+        $dbh->query("UPDATE humo_events SET event_kind='ASSO', event_connect_kind='death_declaration', event_gedcom='WITN' WHERE event_kind='death_declaration' AND event_connect_id2 LIKE 'I%'");
+
+        // *** Because of bug: rerun this query, also check for empty event_connect_kind2 ***
+        // *** Add seperate general birth_declaration and death_declaration events ***
+        // *** Only convert declaration events where witness is connected ***
+        $qry = $dbh->query("SELECT * from humo_events WHERE (event_connect_kind='birth_declaration' OR event_connect_kind='death_declaration') AND event_connect_kind2 = '' AND event_connect_id2 LIKE 'I%' AND event_order='1'");
+
+        // *** Batch processing ***
+        $dbh->beginTransaction();
+
+        // *** Add seperate general birth_declaration and death_declaration events ***
+        while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
+            if ($qryDb->event_date || $qryDb->event_place || $qryDb->event_text) {
+                $sql_put = "INSERT INTO humo_events SET
+                    event_tree_id='" . $qryDb->event_tree_id . "',
+                    event_gedcomnr='',
+                    event_order='" . $qryDb->event_order . "',
+                    event_connect_kind='person',
+                    event_connect_id='" . $qryDb->event_connect_id . "',
+                    event_kind='" . $qryDb->event_connect_kind . "',
+                    event_event='',
+                    event_event_extra='" . safe_text_db($qryDb->event_event_extra) . "',
+                    event_gedcom='EVEN',
+                    event_date='" . $qryDb->event_date . "',
+                    event_place='" . safe_text_db($qryDb->event_place) . "',
+                    event_text='" . safe_text_db($qryDb->event_text) . "',
+                    event_quality='" . $qryDb->event_quality . "',
+                    event_new_user_id='" . $qryDb->event_new_user_id . "',
+                    event_new_datetime='" . $qryDb->event_new_datetime . "',
+                    event_changed_user_id='" . $qryDb->event_changed_user_id . "',
+                    event_changed_datetime='" . $qryDb->event_changed_datetime . "'";
+
+                $dbh->query($sql_put);
+                $last_insert = $dbh->lastInsertId();
+
+                // *** Update sources connected to these events connections ***
+                $dbh->query("UPDATE humo_connections SET connect_connect_id='" . $last_insert . "' WHERE connect_connect_id='" . $qryDb->event_id . "'");
+            }
+        }
+
+        // *** Commit data in database ***
+        $dbh->commit();
+
+        // Solve bug in a previous update.
+        $dbh->query("UPDATE humo_events SET event_connect_kind2='person' WHERE event_kind='ASSO' AND event_connect_id2 LIKE 'I%'");
+
+        // *** Update "update_status" ***
+        $dbh->query("UPDATE humo_settings SET setting_value='19' WHERE setting_variable='update_status'");
+
+        // *** Show status of database update ***
+        //ob_start();
+        echo '<script>document.getElementById("information v6_7_9a").innerHTML="Database updated!";</script>';
         //ob_flush();
         flush();
     }
@@ -4183,5 +4260,5 @@ class update_cls
         echo '<script>document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";</script>';
         //ob_flush();
         flush();
-*/
+    */
 } // *** End of update_cls ***

@@ -3,6 +3,8 @@
 //echo '<h3>'.__('Checking database tables...').'<br>'.__('Please wait till finished').'.</h3>';
 echo '<h3>' . __('Checking database tables...') . '</h3>';
 
+// TODO check translations in this script.
+
 $wrong_indexnr = 0;
 $wrong_famc = 0;
 $wrong_fams = 0;
@@ -10,11 +12,11 @@ $removed = '';
 if (isset($_POST['remove'])) {
     $removed = ' <b>Link is removed.</b>';
 }
-
-// *** Option to remove wrong database connections ***
 ?>
+
+<!-- Option to remove wrong database connections -->
 <form method="POST" action="index.php">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="page" value="check">
     <input type="hidden" name="tab" value="integrity">
     <?= __('Remove links to missing items from database (first make a database backup!)'); ?>
     <input type="submit" name="remove" value="<?= __('REMOVE'); ?>" class="btn btn-sm btn-secondary">

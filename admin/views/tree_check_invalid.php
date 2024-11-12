@@ -13,7 +13,7 @@ $found = false; // if this stays false, displays message that no problems where 
     </thead>
 
     <tr>
-        <td colspan="4" class="table-secondary" style="text-align:<?= $direction; ?>;font-weight:bold"><?= __('Invalid person dates:'); ?></td>
+        <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid person dates:'); ?></td>
     </tr>
     <?php
     $person = $dbh->query("SELECT pers_gedcomnumber, pers_birth_date, pers_bapt_date, pers_death_date, pers_buried_date FROM humo_persons
@@ -46,10 +46,16 @@ $found = false; // if this stays false, displays message that no problems where 
     }
 
     if ($found === false) {
-        echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
-    }
+    ?>
+        <tr>
+            <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
+        </tr>
+    <?php } ?>
 
-    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid family dates:') . '</td></tr>';
+    <tr>
+        <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid family dates:'); ?></td>
+    </tr>
+    <?php
     $found = false;
     $family = $dbh->query("SELECT fam_gedcomnumber, fam_div_date, fam_marr_church_date, fam_marr_church_notice_date, fam_marr_date, fam_marr_notice_date, fam_relation_date FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
     while ($famdateDb = $family->fetch()) {
@@ -91,10 +97,16 @@ $found = false; // if this stays false, displays message that no problems where 
         }
     }
     if ($found === false) {
-        echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
-    }
+    ?>
+        <tr>
+            <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
+        </tr>
+    <?php } ?>
 
-    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid event dates:') . '</td></tr>';
+    <tr>
+        <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid event dates:'); ?></td>
+    </tr>
+    <?php
     $found = false;
     $event = $dbh->query("SELECT event_id, event_date FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_date NOT LIKE ''");
     while ($eventdateDb = $event->fetch()) {
@@ -104,10 +116,18 @@ $found = false; // if this stays false, displays message that no problems where 
         }
     }
     if ($found === false) {
-        echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
+    ?>
+        <tr>
+            <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
+        </tr>
+    <?php
     }
+    ?>
 
-    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid connection dates:') . '</td></tr>';
+    <tr>
+        <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid connection dates:'); ?></td>
+    </tr>
+    <?php
     $found = false;
     $connection = $dbh->query("SELECT connect_id, connect_date FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_date NOT LIKE ''");
     while ($connectdateDb = $connection->fetch()) {
@@ -117,10 +137,18 @@ $found = false; // if this stays false, displays message that no problems where 
         }
     }
     if ($found === false) {
-        echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
+    ?>
+        <tr>
+            <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
+        </tr>
+    <?php
     }
+    ?>
 
-    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid address dates:') . '</td></tr>';
+    <tr>
+        <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid address dates:'); ?></td>
+    </tr>
+    <?php
     $found = false;
     $address = $dbh->query("SELECT address_id, address_date FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_date NOT LIKE ''");
     while ($addressdateDb = $address->fetch()) {
@@ -130,10 +158,16 @@ $found = false; // if this stays false, displays message that no problems where 
         }
     }
     if ($found === false) {
-        echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
-    }
+    ?>
+        <tr>
+            <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
+        </tr>
+    <?php } ?>
 
-    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid repository dates:') . '</td></tr>';
+    <tr>
+        <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid repository dates:'); ?></td>
+    </tr>
+    <?php
     $found = false;
     $repo = $dbh->query("SELECT repo_gedcomnr, repo_date FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' AND repo_date NOT LIKE ''");
     while ($repodateDb = $repo->fetch()) {
@@ -143,10 +177,16 @@ $found = false; // if this stays false, displays message that no problems where 
         }
     }
     if ($found === false) {
-        echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
-    }
+    ?>
+        <tr>
+            <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
+        </tr>
+    <?php } ?>
 
-    echo '<tr><td colspan="4" class="table-secondary" style="text-align:' . $direction . ';font-weight:bold">' . __('Invalid source dates:') . '</td></tr>';
+    <tr>
+        <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid source dates:'); ?></td>
+    </tr>
+    <?php
     $found = false;
     $sources = $dbh->query("SELECT source_gedcomnr, source_date FROM humo_sources WHERE source_tree_id='" . $tree_id . "' AND source_date NOT LIKE ''");
     while ($sourcedateDb = $sources->fetch()) {
@@ -156,15 +196,17 @@ $found = false; // if this stays false, displays message that no problems where 
         }
     }
     if ($found === false) {
-        echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
-    }
     ?>
+        <tr>
+            <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
+        </tr>
+    <?php } ?>
 </table>
 
 <?php
 function invalid($date, $gednr, $table)
 {  // checks validity with validate_cls.php and displays invalid dates and their details
-    global $dbh, $db_functions, $tree_id, $direction, $dirmark1, $dirmark2;
+    global $dbh, $db_functions, $tree_id, $dirmark1, $dirmark2;
     include_once(__DIR__ . '/../../include/validate_date_cls.php');
     $process_date = new validate_date_cls;
     $compare_date = $date;
@@ -182,7 +224,14 @@ function invalid($date, $gednr, $table)
         if (substr($table, 0, 3) === "per") {
             $personDb = $db_functions->get_person($gednr);
             $name = $personDb->pers_firstname . ' ' . str_replace("_", " ", $personDb->pers_prefix . ' ' . $personDb->pers_lastname);
-            echo '<tr><td style="text-align:' . $direction . '">' . $gednr . '</td><td style="text-align:' . $direction . '"><a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $personDb->pers_gedcomnumber . '" target=\'_blank\'>' . $name . '</a></td><td style="text-align:' . $direction . '">' . $table . '</td><td style="text-align:' . $direction . '">' . $dirmark2 . $date . '</td></tr>';
+?>
+            <tr>
+                <td><?= $gednr; ?></td>
+                <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $personDb->pers_gedcomnumber; ?>" target='_blank'><?= $name; ?></a></td>
+                <td><?= $table; ?></td>
+                <td><?= $dirmark2 . $date; ?></td>
+            </tr>
+        <?php
         }
         if (substr($table, 0, 3) === "fam") {
             $fam = $dbh->query("SELECT fam_man,fam_woman FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $gednr . "'");
@@ -202,7 +251,14 @@ function invalid($date, $gednr, $table)
             if ($spouse1Db->pers_gedcomnumber == '' || $spouse2Db->pers_gedcomnumber == '') {
                 $and = '';
             }
-            echo '<tr><td style="text-align:' . $direction . '">' . $gednr . '</td><td style="text-align:' . $direction . '"><a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $spousegednr . '" target=\'_blank\'>' . $name1 . $and . $name2 . '</a></td><td style="text-align:' . $direction . '">' . $table . '</td><td style="text-align:' . $direction . '">' . $dirmark2 . $date . '</td></tr>';
+        ?>
+            <tr>
+                <td><?= $gednr; ?></td>
+                <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $spousegednr; ?>" target='_blank'><?= $name1 . $and . $name2; ?></a></td>
+                <td><?= $table; ?></td>
+                <td><?= $dirmark2 . $date; ?></td>
+            </tr>
+            <?php
         }
         if (substr($table, 0, 3) === "eve") {
             $ev = $dbh->query("SELECT * FROM humo_events WHERE event_id = '" . $gednr . "'");
@@ -217,10 +273,17 @@ function invalid($date, $gednr, $table)
                 if ($evdetail != '') {
                     $evdetail = ': ' . $evdetail;
                 }
-                echo '<tr><td style="text-align:' . $direction . '">' . $persDb->pers_gedcomnumber . '</td><td style="text-align:' . $direction . '"><a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $persDb->pers_gedcomnumber . '" target=\'_blank\'>' . $fullname . '</a> (' . __('Click events by person') . ')</td><td style="text-align:' . $direction . '">' . $evDb['event_kind'] . $evdetail . '</td><td style="text-align:' . $direction . '">' . $dirmark2 . $date . '</td></tr>';
+            ?>
+                <tr>
+                    <td><?= $persDb->pers_gedcomnumber; ?></td>
+                    <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $persDb->pers_gedcomnumber; ?>" target='_blank'><?= $fullname; ?></a> (<?= __('Click events by person'); ?>)</td>
+                    <td><?= $evDb['event_kind'] . $evdetail; ?></td>
+                    <td><?= $dirmark2 . $date; ?></td>
+                </tr>
+            <?php
             } elseif ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
                 $fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
-                WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $evDb['event_connect_id'] . "'");
+                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $evDb['event_connect_id'] . "'");
                 $famDb = $fam->fetch();
 
                 $spouse1Db = $db_functions->get_person($famDb['fam_man']);
@@ -241,7 +304,14 @@ function invalid($date, $gednr, $table)
                 if ($evdetail != '') {
                     $evdetail = ': ' . $evdetail;
                 }
-                echo '<tr><td style="text-align:' . $direction . '">' . $famDb['fam_gedcomnumber'] . '</td><td style="text-align:' . $direction . '"><a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $spousegednr . '" target=\'_blank\'>' . $fullname . '</a> (' . __('Click events by marriage') . ')</td><td style="text-align:' . $direction . '">' . $evDb['event_kind'] . $evdetail . '</td><td style="text-align:' . $direction . '">' . $dirmark2 . $date . '</td></tr>';
+            ?>
+                <tr>
+                    <td><?= $famDb['fam_gedcomnumber']; ?></td>
+                    <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $spousegednr; ?>" target='_blank'><?= $fullname; ?></a> (<?= __('Click events by marriage'); ?>)</td>
+                    <td><?= $evDb['event_kind'] . $evdetail; ?></td>
+                    <td><?= $dirmark2 . $date; ?></td>
+                </tr>
+            <?php
             }
         }
         if (substr($table, 0, 3) === "con") {
@@ -260,7 +330,7 @@ function invalid($date, $gednr, $table)
             }
             if (substr($connectDb['connect_sub_kind'], 0, 3) === 'fam') {
                 $fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
-                WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $connectDb['connect_connect_id'] . "'");
+                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $connectDb['connect_connect_id'] . "'");
                 $famDb = $fam->fetch();
 
                 $spouse1Db = $db_functions->get_person($famDb['fam_man']);
@@ -290,7 +360,7 @@ function invalid($date, $gednr, $table)
                 }
                 if ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
                     $fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
-                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $evDb['event_connect_id'] . "'");
+                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $evDb['event_connect_id'] . "'");
                     $famDb = $fam->fetch();
 
                     $spouse1Db = $db_functions->get_person($famDb['fam_man']);
@@ -310,7 +380,14 @@ function invalid($date, $gednr, $table)
                     $name = '<a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $gednr . '" target=\'_blank\'>' . $name . '</a> (' . __('Click relevant event source') . ')';
                 }
             }
-            echo '<tr><td style="text-align:' . $direction . '">' . $gedcomnr . '</td><td style="text-align:' . $direction . '">' . $name . '</td><td style="text-align:' . $direction . '">' . $connectDb['connect_sub_kind'] . '</td><td style="text-align:' . $direction . '">' . $dirmark2 . $date . '</td></tr>';
+            ?>
+            <tr>
+                <td><?= $gedcomnr; ?></td>
+                <td><?= $name; ?></td>
+                <td><?= $connectDb['connect_sub_kind']; ?></td>
+                <td><?= $dirmark2 . $date; ?></td>
+            </tr>
+            <?php
         }
         if (substr($table, 0, 3) === "add") {
             $addresses = $dbh->query("SELECT * FROM humo_addresses WHERE address_id = '" . $gednr . "' AND address_connect_sub_kind='person'");
@@ -318,18 +395,25 @@ function invalid($date, $gednr, $table)
             if ($addressesDb['address_connect_id'] != '') {
                 $persDb = $db_functions->get_person($addressesDb['address_connect_id']);
                 $name = $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix) . ' ' . $persDb->pers_lastname;
-                echo '<tr><td style="text-align:' . $direction . '">' . $persDb->pers_gedcomnumber . '</td><td style="text-align:' . $direction . '"><a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $persDb->pers_gedcomnumber . '" target=\'_blank\'>' . $name . '</a> (' . __('Click addresses') . ')</td><td style="text-align:' . $direction . '">' . $table . '</td><td style="text-align:' . $direction . '">' . $date . '</td></tr>';
+            ?>
+                <tr>
+                    <td><?= $persDb->pers_gedcomnumber; ?></td>
+                    <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $persDb->pers_gedcomnumber; ?>" target='_blank'><?= $name; ?></a> (<?= __('Click addresses'); ?>)</td>
+                    <td><?= $table; ?></td>
+                    <td><?= $date; ?></td>
+                </tr>
+            <?php
             }
             if ($addressesDb['address_gedcomnr'] != '') {
-?>
+            ?>
                 <tr>
-                    <td style="text-align:<?= $direction; ?>"><?= $gednr; ?></td>
-                    <td style="text-align:<?= $direction; ?>">
+                    <td><?= $gednr; ?></td>
+                    <td>
                         <a href="index.php?page=edit_addresses" target="_blank"><?= __('Address editor'); ?></a>
                         (<?= __('search for:'); ?> <?= $addressesDb['address_address']; ?>)
                     </td>
-                    <td style="text-align:<?= $direction; ?>"><?= $table; ?></td>
-                    <td style="text-align:<?= $direction; ?>"><?= $dirmark2 . $date; ?></td>
+                    <td><?= $table; ?></td>
+                    <td><?= $dirmark2 . $date; ?></td>
                 </tr>
             <?php
             }
@@ -338,13 +422,13 @@ function invalid($date, $gednr, $table)
             $sourcesDb = $db_functions->get_source($gednr);
             ?>
             <tr>
-                <td style="text-align:<?= $direction; ?>"><?= $gednr; ?></td>
-                <td style="text-align:<?= $direction; ?>">
+                <td><?= $gednr; ?></td>
+                <td>
                     <a href="index.php?page=edit_sources&amp;source_id=<?= $sourcesDb->source_gedcomnr; ?>" target=" _blank"><?= __('Source editor'); ?></a>
                     (<?= __('search for:'); ?> <?= $sourcesDb->source_title; ?>)
                 </td>
-                <td style="text-align:<?= $direction; ?>"><?= $table; ?></td>
-                <td style="text-align:<?= $direction; ?>"><?= $dirmark2 . $date; ?></td>
+                <td><?= $table; ?></td>
+                <td><?= $dirmark2 . $date; ?></td>
             </tr>
         <?php
         }
@@ -352,13 +436,13 @@ function invalid($date, $gednr, $table)
             $reposDb = $db_functions->get_repository($gednr);
         ?>
             <tr>
-                <td style="text-align:<?= $direction; ?>"><?= $gednr; ?></td>
-                <td style="text-align:<?= $direction; ?>">
+                <td><?= $gednr; ?></td>
+                <td>
                     <a href="index.php?page=edit_repositories" target="_blank"><?= __('Repository editor'); ?></a>
                     (<?= __('search for:'); ?> <?= $reposDb->repo_name; ?>)
                 </td>
-                <td style="text-align:<?= $direction; ?>"><?= $table; ?></td>
-                <td style="text-align:<?= $direction; ?>"><?= $dirmark2 . $date; ?></td>
+                <td><?= $table; ?></td>
+                <td><?= $dirmark2 . $date; ?></td>
             </tr>
 <?php
         }

@@ -28,11 +28,11 @@ if (isset($_POST['unmark'])) {
 if (isset($_POST['mark_all'])) {
     $checked = ' checked';
 }
-
 ?>
+
 <!-- displays menu for date consistency check -->
 <form method="POST" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="page" value="check">
     <input type="hidden" name="tab" value="consistency">
 
     <h3><?= __('Check consistency of dates'); ?></h3>
@@ -131,7 +131,7 @@ if (isset($_POST['mark_all'])) {
                     <label for="baptism_date1" class="col-auto form-label col-form-label-sm"><?= __('Baptism date - after death/burial date.'); ?></label>
                 </div>
 
-                <!-- id 8 was joined in with id 2 -->
+                <!-- id 8 was joined with id 2 -->
 
                 <div class="row">
                     <div class="col-auto">

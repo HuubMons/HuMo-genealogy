@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-03 17:49+0100\n"
-"PO-Revision-Date: 2024-11-05 18:44+0100\n"
+"POT-Creation-Date: 2024-11-08 11:37+0100\n"
+"PO-Revision-Date: 2024-11-08 11:38+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -96,7 +96,7 @@ msgstr "dec"
 msgid " and "
 msgstr " en "
 
-#: admin/include/editor_cls.php:77 admin/views/tree_check_consistency.php:1002
+#: admin/include/editor_cls.php:77 admin/views/tree_check_consistency.php:1003
 #: include/language_date.php:66 include/language_date.php:84
 #: include/language_date.php:119
 msgid "before"
@@ -108,7 +108,7 @@ msgstr "voor"
 msgid "&#177;"
 msgstr "&#177;"
 
-#: admin/include/editor_cls.php:79 admin/views/tree_check_consistency.php:988
+#: admin/include/editor_cls.php:79 admin/views/tree_check_consistency.php:989
 #: include/language_date.php:60 include/language_date.php:84
 #: include/language_date.php:117
 msgid "after"
@@ -276,7 +276,7 @@ msgstr "Afbeelding/ Media"
 #: admin/include/editor_event_cls.php:1346
 #: admin/include/editor_event_cls.php:1660
 #: admin/include/editor_event_cls.php:1663 admin/views/editor.php:1171
-#: admin/views/tree_merge.php:1507 views/list.php:320 views/list.php:327
+#: admin/views/tree_merge.php:1453 views/list.php:320 views/list.php:327
 msgid "Profession"
 msgstr "Beroep"
 
@@ -285,7 +285,7 @@ msgstr "Beroep"
 #: admin/include/editor_event_cls.php:354
 #: admin/include/editor_event_cls.php:371
 #: admin/include/editor_event_cls.php:1403 admin/include/editor_sources.php:205
-#: admin/include/editor_sources.php:213 admin/views/tree_merge.php:1510
+#: admin/include/editor_sources.php:213 admin/views/tree_merge.php:1456
 #: app/model/tree_index.php:951
 msgid "Event"
 msgstr "Gebeurtenis"
@@ -358,7 +358,7 @@ msgid "Suffix"
 msgstr "Navoegsel"
 
 #: admin/include/editor_event_cls.php:42
-#: admin/include/editor_event_cls.php:1830 admin/views/tree_merge.php:1532
+#: admin/include/editor_event_cls.php:1830 admin/views/tree_merge.php:1478
 msgid "Title of Nobility"
 msgstr "Predikaat"
 
@@ -366,7 +366,7 @@ msgstr "Predikaat"
 #: admin/include/editor_event_cls.php:1827
 #: admin/include/editor_event_cls.php:1831 admin/include/editor_sources.php:341
 #: admin/views/edit_repository.php:127 admin/views/edit_source.php:273
-#: admin/views/editor.php:1126 admin/views/tree_merge.php:1535
+#: admin/views/editor.php:1126 admin/views/tree_merge.php:1481
 #: include/show_source_pdf.php:43 views/source.php:33 views/source.php:109
 #: views/sources.php:52
 msgid "Title"
@@ -379,7 +379,7 @@ msgid "Adoption"
 msgstr "Adoptie"
 
 #: admin/include/editor_event_cls.php:48
-#: admin/include/editor_event_cls.php:1832 admin/views/tree_merge.php:1538
+#: admin/include/editor_event_cls.php:1832 admin/views/tree_merge.php:1484
 msgid "Title of Lordship"
 msgstr "Heerlijkheid"
 
@@ -516,8 +516,8 @@ msgstr "GEDCOM-nummer (ID)"
 #: admin/views/editor_relation.php:1226 admin/views/gedcom_export.php:164
 #: admin/views/language_editor.php:250 admin/views/maps_locations.php:753
 #: admin/views/settings_homepage.php:220 admin/views/settings_homepage.php:415
-#: admin/views/tree_merge.php:562 admin/views/tree_merge.php:578
-#: admin/views/tree_merge.php:641 admin/views/users.php:120
+#: admin/views/tree_merge.php:556 admin/views/tree_merge.php:574
+#: admin/views/tree_merge.php:646 admin/views/users.php:120
 #: app/model/tree_index.php:56 app/model/tree_index.php:163
 #: app/model/tree_index.php:645 views/addresses.php:31
 #: views/latest_changes.php:23 views/layout.php:353 views/list.php:100
@@ -536,7 +536,7 @@ msgstr "Zoeken"
 #: admin/views/edit_source.php:194 admin/views/edit_source.php:405
 #: admin/views/editor_person.php:1238 admin/views/editor_person.php:1702
 #: admin/views/editor_relation.php:1051 admin/views/index_admin.php:663
-#: admin/views/thumbs.php:404 include/calculate_age_cls.php:371
+#: admin/views/thumbs.php:345 include/calculate_age_cls.php:371
 #: include/calculate_age_cls.php:393 include/calculate_age_cls.php:497
 #: include/calculate_age_cls.php:519 views/fanchart.php:657
 msgid "or"
@@ -563,7 +563,7 @@ msgstr "Andere rol"
 #: admin/include/editor_relation_select.php:110 admin/views/editor.php:664
 #: admin/views/editor_person.php:249 admin/views/editor_relation.php:63
 #: admin/views/editor_relation.php:272 admin/views/editor_relation.php:305
-#: admin/views/tree_check_invalid.php:201 include/calculate_age_cls.php:307
+#: admin/views/tree_check_invalid.php:231 include/calculate_age_cls.php:307
 #: include/calculate_age_cls.php:324 include/calculate_age_cls.php:332
 #: include/language_date.php:102 include/language_date.php:106
 #: include/language_date.php:110 include/language_date.php:125
@@ -825,7 +825,7 @@ msgstr "Nieuwe afbeelding uploaden"
 
 #: admin/include/editor_event_cls.php:1736 admin/update/install_update.php:605
 #: admin/views/backup.php:110 admin/views/gedcom.php:149
-#: admin/views/settings.php:98 admin/views/settings.php:467
+#: admin/views/settings.php:89 admin/views/settings.php:449
 msgid "Upload"
 msgstr "Upload"
 
@@ -899,8 +899,8 @@ msgstr "Andere naam"
 msgid "Formerly known as"
 msgstr "Voorheen bekend als"
 
-#: admin/include/editor_inc.php:277 admin/views/settings_admin.php:116
-#: admin/views/settings_admin.php:135
+#: admin/include/editor_inc.php:277 admin/models/settings_admin.php:125
+#: admin/models/settings_admin.php:144
 msgid "Photo upload failed, check folder rights"
 msgstr "De foto upload is mislukt, controleer de map rechten"
 
@@ -932,15 +932,15 @@ msgstr "Verwijder ook kleuren markering van"
 #: admin/views/groups.php:50 admin/views/groups.php:532
 #: admin/views/install.php:304 admin/views/maps_locations.php:98
 #: admin/views/maps_locations.php:120 admin/views/maps_locations.php:199
-#: admin/views/notes.php:91 admin/views/settings.php:123
-#: admin/views/settings.php:134 admin/views/settings.php:150
-#: admin/views/settings.php:161 admin/views/settings.php:171
-#: admin/views/settings.php:193 admin/views/settings.php:203
-#: admin/views/settings.php:214 admin/views/settings.php:243
-#: admin/views/settings.php:530 admin/views/settings_homepage.php:616
-#: admin/views/thumbs.php:505 admin/views/tree_merge.php:933
-#: admin/views/tree_merge.php:946 admin/views/tree_merge.php:959
-#: admin/views/tree_merge.php:976 admin/views/trees.php:57
+#: admin/views/notes.php:91 admin/views/settings.php:114
+#: admin/views/settings.php:125 admin/views/settings.php:141
+#: admin/views/settings.php:153 admin/views/settings.php:164
+#: admin/views/settings.php:187 admin/views/settings.php:197
+#: admin/views/settings.php:208 admin/views/settings.php:231
+#: admin/views/settings.php:512 admin/views/settings_homepage.php:616
+#: admin/views/thumbs.php:447 admin/views/tree_merge.php:892
+#: admin/views/tree_merge.php:905 admin/views/tree_merge.php:918
+#: admin/views/tree_merge.php:935 admin/views/trees.php:57
 #: admin/views/users.php:19 views/mailform.php:79
 msgid "Yes"
 msgstr "Ja"
@@ -957,15 +957,15 @@ msgstr "Ja"
 #: admin/views/groups.php:51 admin/views/groups.php:533
 #: admin/views/install.php:305 admin/views/maps_locations.php:99
 #: admin/views/maps_locations.php:121 admin/views/maps_locations.php:200
-#: admin/views/notes.php:92 admin/views/settings.php:124
-#: admin/views/settings.php:135 admin/views/settings.php:151
-#: admin/views/settings.php:162 admin/views/settings.php:172
-#: admin/views/settings.php:194 admin/views/settings.php:204
-#: admin/views/settings.php:215 admin/views/settings.php:244
-#: admin/views/settings.php:531 admin/views/settings_homepage.php:617
-#: admin/views/thumbs.php:506 admin/views/tree_merge.php:934
-#: admin/views/tree_merge.php:947 admin/views/tree_merge.php:960
-#: admin/views/tree_merge.php:977 admin/views/trees.php:58
+#: admin/views/notes.php:92 admin/views/settings.php:115
+#: admin/views/settings.php:126 admin/views/settings.php:142
+#: admin/views/settings.php:154 admin/views/settings.php:165
+#: admin/views/settings.php:188 admin/views/settings.php:198
+#: admin/views/settings.php:209 admin/views/settings.php:232
+#: admin/views/settings.php:513 admin/views/settings_homepage.php:617
+#: admin/views/thumbs.php:448 admin/views/tree_merge.php:893
+#: admin/views/tree_merge.php:906 admin/views/tree_merge.php:919
+#: admin/views/tree_merge.php:936 admin/views/trees.php:58
 #: admin/views/users.php:20 views/mailform.php:80
 msgid "No"
 msgstr "Nee"
@@ -1069,7 +1069,7 @@ msgstr "persoon"
 #: admin/include/editor_sources.php:125 admin/include/editor_sources.php:179
 #: admin/include/editor_sources.php:185 admin/views/edit_repository.php:137
 #: admin/views/editor.php:1728 admin/views/gedcom_export.php:337
-#: admin/views/tree_merge.php:1501 app/controller/addressController.php:31
+#: admin/views/tree_merge.php:1447 app/controller/addressController.php:31
 #: app/controller/addressesController.php:34
 #: app/controller/cms_pagesController.php:29 views/address.php:12
 #: views/source.php:111
@@ -1118,7 +1118,7 @@ msgstr "relatie"
 #: admin/views/editor_relation.php:1049 admin/views/index_admin.php:170
 #: admin/views/language_editor.php:264 admin/views/maps_worldmap.php:103
 #: admin/views/maps_worldmap.php:138 admin/views/prefix_editor.php:27
-#: admin/views/tree_merge.php:989
+#: admin/views/tree_merge.php:948
 msgid "Save"
 msgstr "Opslaan"
 
@@ -1206,7 +1206,7 @@ msgstr ""
 #: admin/views/edit_rename_place.php:53 admin/views/editor_person.php:309
 #: admin/views/notes.php:78 admin/views/notes.php:208
 #: admin/views/statistics_date.php:58 admin/views/statistics_visitors.php:59
-#: admin/views/tree_check_changes.php:252
+#: admin/views/tree_check_changes.php:250
 msgid "Select"
 msgstr "Selecteren"
 
@@ -1267,13 +1267,13 @@ msgstr "Stamboom muteren?"
 #: admin/views/groups.php:568 admin/views/groups.php:619
 #: admin/views/groups.php:712 admin/views/log.php:98
 #: admin/views/maps_settings.php:41 admin/views/settings.php:31
-#: admin/views/settings.php:143 admin/views/settings.php:178
-#: admin/views/settings.php:257 admin/views/settings.php:349
-#: admin/views/settings.php:453 admin/views/settings.php:490
-#: admin/views/settings.php:506 admin/views/settings.php:525
-#: admin/views/settings.php:545 admin/views/settings_homepage.php:159
+#: admin/views/settings.php:134 admin/views/settings.php:172
+#: admin/views/settings.php:245 admin/views/settings.php:337
+#: admin/views/settings.php:435 admin/views/settings.php:472
+#: admin/views/settings.php:488 admin/views/settings.php:507
+#: admin/views/settings.php:527 admin/views/settings_homepage.php:159
 #: admin/views/settings_homepage.php:519 admin/views/settings_homepage.php:602
-#: admin/views/settings_special.php:51 admin/views/thumbs.php:125
+#: admin/views/settings_special.php:51 admin/views/thumbs.php:72
 #: admin/views/tree_data.php:85 admin/views/tree_text.php:81
 #: admin/views/tree_text.php:83 admin/views/users.php:56
 #: views/user_settings.php:90
@@ -1451,13 +1451,13 @@ msgstr "Toon/ verberg thema's"
 #: admin/index.php:584 admin/views/gedcom_export.php:361
 #: admin/views/maps.php:35 admin/views/maps_settings.php:24
 #: admin/views/menu.php:66 admin/views/settings_admin.php:8
-#: admin/views/settings_admin.php:249 admin/views/tree_merge.php:1080
+#: admin/views/settings_admin.php:38 admin/views/tree_merge.php:1039
 #: views/family.php:53 views/family.php:1319
 msgid "Settings"
 msgstr "Instellingen"
 
 #: admin/index.php:586 admin/index.php:588 admin/views/menu.php:67
-#: admin/views/settings_admin.php:252
+#: admin/views/settings_admin.php:41
 msgid "Homepage"
 msgstr "Homepage"
 
@@ -1470,7 +1470,7 @@ msgid "Slideshow on the homepage"
 msgstr "Diashow op de homepage"
 
 #: admin/index.php:594 admin/views/menu.php:68
-#: admin/views/settings_admin.php:255
+#: admin/views/settings_admin.php:44
 msgid "Special settings"
 msgstr "Speciale instellingen"
 
@@ -1512,16 +1512,16 @@ msgstr "Stambomen"
 msgid "Pictures/ create thumbnails"
 msgstr "Afbeeldingen/thumbnails maken"
 
-#: admin/index.php:612 admin/views/gedcom.php:332 admin/views/thumbs.php:35
+#: admin/index.php:612 admin/views/gedcom.php:332 admin/views/thumbs.php:14
 msgid "Picture settings"
 msgstr "Afbeeldingen instellingen"
 
-#: admin/index.php:613 admin/views/thumbs.php:38 admin/views/thumbs.php:180
-#: admin/views/thumbs.php:187
+#: admin/index.php:613 admin/views/thumbs.php:17 admin/views/thumbs.php:121
+#: admin/views/thumbs.php:128
 msgid "Create thumbnails"
 msgstr "Thumbnails maken"
 
-#: admin/index.php:614 admin/views/thumbs.php:44
+#: admin/index.php:614 admin/views/thumbs.php:23
 msgid "Photo album categories"
 msgstr "Fotoboeken categorieën"
 
@@ -1529,26 +1529,26 @@ msgstr "Fotoboeken categorieën"
 msgid "Notes"
 msgstr "Notities"
 
-#: admin/index.php:619 admin/views/menu.php:84 admin/views/tree_check.php:33
-#: admin/views/tree_check.php:48
+#: admin/index.php:619 admin/views/menu.php:84 admin/views/tree_check.php:17
+#: admin/views/tree_check.php:32
 msgid "Family tree data check"
 msgstr "Stamboom controle"
 
-#: admin/index.php:621 admin/views/tree_check.php:51
-#: admin/views/tree_check.php:69 admin/views/tree_check_consistency.php:38
+#: admin/index.php:621 admin/views/tree_check.php:35
+#: admin/views/tree_check.php:53 admin/views/tree_check_consistency.php:38
 msgid "Check consistency of dates"
 msgstr "Controleer consistentie van datums"
 
-#: admin/index.php:622 admin/views/tree_check.php:54
+#: admin/index.php:622 admin/views/tree_check.php:38
 msgid "Find invalid dates"
 msgstr "Zoek ongeldige datums"
 
-#: admin/index.php:623 admin/views/tree_check.php:57
-#: admin/views/tree_check.php:82
+#: admin/index.php:623 admin/views/tree_check.php:41
+#: admin/views/tree_check.php:66
 msgid "Check database integrity"
 msgstr "Controleer databasetabellen"
 
-#: admin/index.php:626 admin/views/menu.php:85 admin/views/tree_check.php:60
+#: admin/index.php:626 admin/views/menu.php:85 admin/views/tree_check.php:44
 msgid "View latest changes"
 msgstr "Laatste wijzigingen"
 
@@ -1582,7 +1582,7 @@ msgstr "Personen en gezinnen"
 
 #: admin/index.php:642 admin/views/edit_source.php:105
 #: admin/views/groups.php:355 admin/views/menu.php:100
-#: admin/views/tree_merge.php:1645 app/controller/sourcesController.php:29
+#: admin/views/tree_merge.php:1591 app/controller/sourcesController.php:29
 #: include/show_sources.php:346 views/ancestor_report_pdf.php:375
 #: views/family.php:72 views/family_pdf.php:562 views/help.php:86
 #: views/layout.php:542 views/sources.php:16
@@ -1610,7 +1610,7 @@ msgid "Users"
 msgstr "Gebruikers"
 
 #: admin/index.php:652 admin/views/groups.php:33 admin/views/menu.php:114
-#: admin/views/thumbs.php:214
+#: admin/views/thumbs.php:155
 msgid "User groups"
 msgstr "Gebruikersgroepen"
 
@@ -1705,10 +1705,22 @@ msgstr ""
 msgid "Saved"
 msgstr "Opgeslagen"
 
-#: admin/models/language_editor.php:90 admin/views/thumbs.php:394
+#: admin/models/language_editor.php:90 admin/views/thumbs.php:335
 #: admin/views/tree_text.php:25
 msgid "Language"
 msgstr "Taal"
+
+#: admin/models/settings_admin.php:118 admin/models/settings_admin.php:137
+msgid "Photo too large"
+msgstr "De foto is te groot"
+
+#: admin/models/settings_admin.php:123
+msgid "Changed favicon icon."
+msgstr "Het favicon icoon is gewijzigd."
+
+#: admin/models/settings_admin.php:142
+msgid "Changed logo."
+msgstr "Gewijzigd logo."
 
 #: admin/models/users.php:30 admin/models/users.php:48
 msgid "Error: user name probably allready exist."
@@ -2123,7 +2135,7 @@ msgstr ""
 "begrafenis- en huwelijkdatums van personen en deze datums van ouders en "
 "kinderen."
 
-#: admin/views/cal_date.php:21 admin/views/thumbs.php:87
+#: admin/views/cal_date.php:21 admin/views/thumbs.php:34
 msgid "Choose family tree"
 msgstr "Kies stamboom"
 
@@ -2260,7 +2272,7 @@ msgstr ""
 "Verwijs naar de map buiten (en parallel aan) de humo-gen folder, "
 "gebruik ../../../../foldername"
 
-#: admin/views/cms_pages.php:399 admin/views/thumbs.php:110
+#: admin/views/cms_pages.php:399 admin/views/thumbs.php:57
 #: admin/views/tree_data.php:53
 msgid "Use default picture path:"
 msgstr "Gebruik standaard afbeeldingenpad:"
@@ -2483,8 +2495,8 @@ msgstr "Archief"
 msgid "Favourites list"
 msgstr "Favorieten lijst"
 
-#: admin/views/editor.php:93 admin/views/tree_check.php:85
-#: admin/views/tree_check_changes.php:197
+#: admin/views/editor.php:93 admin/views/tree_check.php:69
+#: admin/views/tree_check_changes.php:195
 #: app/controller/latest_changesController.php:20 views/help.php:114
 #: views/layout.php:609
 msgid "Latest changes"
@@ -2502,21 +2514,21 @@ msgid "Changed by"
 msgstr "Gewijzigd door"
 
 #: admin/views/editor.php:147 admin/views/editor.php:430
-#: admin/views/tree_check_changes.php:51
-#: admin/views/tree_check_consistency.php:286 admin/views/tree_merge.php:567
-#: admin/views/tree_merge.php:629 views/family.php:1307 views/relations.php:92
+#: admin/views/tree_check_changes.php:49
+#: admin/views/tree_check_consistency.php:286 admin/views/tree_merge.php:563
+#: admin/views/tree_merge.php:634 views/family.php:1307 views/relations.php:92
 #: views/relations.php:206
 msgid "Person"
 msgstr "Persoon"
 
 #: admin/views/editor.php:258 admin/views/notes.php:54
-#: admin/views/tree_check_changes.php:231
+#: admin/views/tree_check_changes.php:229
 #: admin/views/tree_check_consistency.php:281
 msgid "Results"
 msgstr "Resultaten"
 
 #: admin/views/editor.php:319 admin/views/tree_merge.php:611
-#: admin/views/tree_merge.php:676 views/relations.php:190
+#: admin/views/tree_merge.php:681 views/relations.php:190
 #: views/relations.php:304
 msgid "Person not found"
 msgstr "Persoon is niet gevonden"
@@ -2539,7 +2551,7 @@ msgstr "Weet je zeker dat je dit kind wilt loskoppelen?"
 
 #: admin/views/editor.php:433 admin/views/editor_relation.php:38
 #: admin/views/editor_relation.php:42 admin/views/statistics_general.php:273
-#: admin/views/statistics_old.php:84 admin/views/tree_check_changes.php:125
+#: admin/views/statistics_old.php:84 admin/views/tree_check_changes.php:123
 #: app/controller/descendant_chartController.php:96
 #: app/controller/familyController.php:44
 #: app/controller/hourglassController.php:77
@@ -2575,7 +2587,7 @@ msgstr "Gehuwd"
 msgid " to: "
 msgstr " met: "
 
-#: admin/views/editor.php:635 admin/views/tree_merge.php:1293
+#: admin/views/editor.php:635 admin/views/tree_merge.php:1249
 #: views/family.php:588 views/family_rtf.php:404
 msgid "Children"
 msgstr "Kinderen"
@@ -2651,7 +2663,7 @@ msgid "patronymic"
 msgstr "patroniem"
 
 #: admin/views/editor.php:1139 admin/views/editor_person.php:567
-#: admin/views/tree_merge.php:1248
+#: admin/views/tree_merge.php:1205
 msgid "alive"
 msgstr "levend"
 
@@ -2680,7 +2692,7 @@ msgid "Add child"
 msgstr "Kind toevoegen"
 
 #: admin/views/editor.php:1266 admin/views/editor_person.php:687
-#: admin/views/tree_merge.php:1238
+#: admin/views/tree_merge.php:1195
 msgid "birth time"
 msgstr "geboorte tijd"
 
@@ -2694,7 +2706,7 @@ msgstr "levenloos geboren kind"
 msgid "NO NAME"
 msgstr "GEEN NAAM"
 
-#: admin/views/editor.php:1413 admin/views/tree_merge.php:1728
+#: admin/views/editor.php:1413 admin/views/tree_merge.php:1674
 #: views/addresses.php:12 views/layout.php:555
 msgid "Addresses"
 msgstr "Adressen"
@@ -2814,11 +2826,11 @@ msgstr "ouders"
 msgid "Add parents"
 msgstr "Ouders toevoegen"
 
-#: admin/views/editor_person.php:267 admin/views/tree_merge.php:1283
+#: admin/views/editor_person.php:267 admin/views/tree_merge.php:1239
 msgid "Father"
 msgstr "Vader"
 
-#: admin/views/editor_person.php:283 admin/views/tree_merge.php:1288
+#: admin/views/editor_person.php:283 admin/views/tree_merge.php:1244
 msgid "Mother"
 msgstr "Moeder"
 
@@ -2858,7 +2870,7 @@ msgstr "om"
 msgid "hour"
 msgstr "uur"
 
-#: admin/views/editor_person.php:749 admin/views/tree_merge.php:1515
+#: admin/views/editor_person.php:749 admin/views/tree_merge.php:1461
 #: include/person_cls.php:2098 include/person_cls.php:2099
 #: include/person_cls.php:2101 include/person_cls.php:2102
 #: include/witness.php:182
@@ -2886,7 +2898,7 @@ msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
 
 #: admin/views/editor_person.php:1020 admin/views/editor_person.php:1051
-#: admin/views/tree_merge.php:1249 include/person_cls.php:2146
+#: admin/views/tree_merge.php:1206 include/person_cls.php:2146
 #: include/person_cls.php:2148 include/person_cls.php:2664
 msgid "religion"
 msgstr "religie"
@@ -2894,7 +2906,7 @@ msgstr "religie"
 #: admin/views/editor_person.php:1121 admin/views/editor_person.php:1124
 #: admin/views/editor_person.php:1127 admin/views/editor_person.php:1136
 #: admin/views/editor_person.php:1139 admin/views/editor_person.php:1156
-#: admin/views/tree_merge.php:1244 include/person_cls.php:2277
+#: admin/views/tree_merge.php:1201 include/person_cls.php:2277
 #: include/person_cls.php:2280 include/person_cls.php:2283
 #: include/person_cls.php:2292 include/person_cls.php:2295
 #: include/person_cls.php:2318 include/person_cls.php:2320
@@ -2969,7 +2981,7 @@ msgstr ""
 "Als overlijdensjaar en leeftijd is ingevuld, dan wordt het geboortejaar "
 "automatisch ingevuld (als die niet is ingevuld)."
 
-#: admin/views/editor_person.php:1204 admin/views/tree_merge.php:1243
+#: admin/views/editor_person.php:1204 admin/views/tree_merge.php:1200
 msgid "death time"
 msgstr "ovl. tijd"
 
@@ -2977,7 +2989,7 @@ msgstr "ovl. tijd"
 msgid "cause"
 msgstr "oorzaak"
 
-#: admin/views/editor_person.php:1299 admin/views/tree_merge.php:1522
+#: admin/views/editor_person.php:1299 admin/views/tree_merge.php:1468
 #: include/person_cls.php:2420 include/person_cls.php:2421
 #: include/person_cls.php:2423 include/person_cls.php:2424
 #: include/witness.php:196
@@ -2988,7 +3000,7 @@ msgstr "overlijdensaangifte"
 msgid "method of burial"
 msgstr "methode van begraven"
 
-#: admin/views/editor_person.php:1417 admin/views/tree_merge.php:1245
+#: admin/views/editor_person.php:1417 admin/views/tree_merge.php:1202
 #: include/person_cls.php:2523
 msgid "cremation"
 msgstr "crematie"
@@ -3015,7 +3027,7 @@ msgid "Source for person"
 msgstr "Bron bij persoon"
 
 #: admin/views/editor_person.php:1517 admin/views/editor_person.php:1520
-#: admin/views/tree_merge.php:1250 include/show_sources.php:302
+#: admin/views/tree_merge.php:1207 include/show_sources.php:302
 #: include/show_sources.php:391
 msgid "own code"
 msgstr "eigen code"
@@ -3908,7 +3920,7 @@ msgstr ""
 msgid "Is allowed to change password"
 msgstr "Mag wachtwoord wijzigen"
 
-#: admin/views/groups.php:224 admin/views/tree_merge.php:912
+#: admin/views/groups.php:224 admin/views/tree_merge.php:871
 msgid "General"
 msgstr "Algemeen"
 
@@ -4205,7 +4217,7 @@ msgstr "Deze instellingen kunnen ook per gebruiker worden ingesteld!"
 msgid "Hide or show photo categories per user group."
 msgstr "Weergave van fotocategorieën per gebruikersgroep."
 
-#: admin/views/groups.php:711 admin/views/thumbs.php:369
+#: admin/views/groups.php:711 admin/views/thumbs.php:310
 msgid "Category prefix"
 msgstr "Categorievoorvoegsel"
 
@@ -5092,79 +5104,79 @@ msgstr "Instellingen algemeen"
 msgid "Default skin"
 msgstr "Standaardthema"
 
-#: admin/views/settings.php:56
+#: admin/views/settings.php:51
 #, php-format
 msgid "Standard language %s"
 msgstr "Standaard taal %s"
 
-#: admin/views/settings.php:75
+#: admin/views/settings.php:68
 msgid "Standard language admin menu"
 msgstr "Standaard taal beheer menu"
 
-#: admin/views/settings.php:94
+#: admin/views/settings.php:85
 msgid "Change favicon icon"
 msgstr "Wijzig favicon icoon"
 
-#: admin/views/settings.php:96
+#: admin/views/settings.php:87
 #, php-format
 msgid "Upload favicon.ico file. File size max: %1$d kB."
 msgstr "Upload favicon.ico bestand. Bestandsgrootte max: %1$d kB."
 
-#: admin/views/settings.php:103
+#: admin/views/settings.php:94
 msgid "Scripts in &lt;head&gt; section for all pages"
 msgstr "Scripts in &lt;head&gt; deel van alle bladzijden"
 
-#: admin/views/settings.php:106
+#: admin/views/settings.php:97
 msgid "Can be used for statistics, counter, etc."
 msgstr "Kan gebruikt worden voor statistieken, tellers, etc."
 
-#: admin/views/settings.php:111
+#: admin/views/settings.php:102
 msgid "Text in footer for all pages"
 msgstr "Tekst aan onderzijde van alle bladzijden"
 
-#: admin/views/settings.php:114
+#: admin/views/settings.php:105
 msgid ""
 "Can be used for statistics, counter, etc. It's possible to use HTML codes!"
 msgstr ""
 "Kan gebruikt worden voor statistieken, tellers, etc. HTML codes zijn "
 "mogelijk!"
 
-#: admin/views/settings.php:120
+#: admin/views/settings.php:111
 #, php-format
 msgid "Debug %s front pages"
 msgstr "Debug %s bladzijden"
 
-#: admin/views/settings.php:126 admin/views/settings.php:137
+#: admin/views/settings.php:117 admin/views/settings.php:128
 #, php-format
 msgid "Only use this option to debug problems in %s."
 msgstr "Gebruik deze optie alleen bij oplossen van %s problemen."
 
-#: admin/views/settings.php:131
+#: admin/views/settings.php:122
 #, php-format
 msgid "Debug %s admin pages"
 msgstr "Debug %s beheer bladzijden"
 
-#: admin/views/settings.php:142
+#: admin/views/settings.php:133
 msgid "Search engine settings"
 msgstr "Instellingen zoekmachine"
 
-#: admin/views/settings.php:147
+#: admin/views/settings.php:138
 msgid "Improve indexing of search engines (like Google)"
 msgstr "Zoekmachines (o.a. Google) beter laten indexeren"
 
-#: admin/views/settings.php:152
+#: admin/views/settings.php:143
 msgid "ATTENTION: the Apache module \"mod_rewrite\" has to be installed!"
 msgstr "LET OP: De apache module \"mod_rewrite\" moet geinstalleerd zijn!"
 
-#: admin/views/settings.php:154
+#: admin/views/settings.php:145
 msgid "becomes:"
 msgstr "wordt:"
 
-#: admin/views/settings.php:159
+#: admin/views/settings.php:150
 msgid "Stop search engines"
 msgstr "Zoekmachines tegenhouden"
 
-#: admin/views/settings.php:169
+#: admin/views/settings.php:161
 msgid ""
 "Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS "
 "pages"
@@ -5172,66 +5184,66 @@ msgstr ""
 "Zoekmachines:<br>Verberg stamboom (niet indexeren)<br>Toon homepage en CMS "
 "bladzijden"
 
-#: admin/views/settings.php:177
+#: admin/views/settings.php:171
 msgid "Contact & registration form settings"
 msgstr "Instellingen contact & registratie formulier"
 
-#: admin/views/settings.php:182
+#: admin/views/settings.php:176
 msgid "Block spam question"
 msgstr "Blokkeer spam vraag"
 
-#: admin/views/settings.php:182
+#: admin/views/settings.php:176
 msgid "Block spam answer"
 msgstr "Blokkeer spam antwoord"
 
-#: admin/views/settings.php:190
+#: admin/views/settings.php:184
 msgid "Mail form: use spam question"
 msgstr "Mail formulier: gebruik spam vraag"
 
-#: admin/views/settings.php:200
+#: admin/views/settings.php:194
 msgid "Mail form: use newsletter question"
 msgstr "Contact formulier: gebruik nieuwsbrief vraag"
 
-#: admin/views/settings.php:206
+#: admin/views/settings.php:200
 msgid "Adds the question: \"Receive newsletter: yes/ no\" to the mailform."
 msgstr ""
 "Voeg de vraag: \"Ontvang nieuwsbrief: ja/nee\" toe aan het contact formulier."
 
-#: admin/views/settings.php:211
+#: admin/views/settings.php:205
 msgid "Visitors can register"
 msgstr "Bezoekers kunnen registreren"
 
-#: admin/views/settings.php:218
+#: admin/views/settings.php:212
 msgid "Default user-group for new users:"
 msgstr "Standaard gebruiksgroep voor nieuwe gebruikers:"
 
-#: admin/views/settings.php:235
+#: admin/views/settings.php:223
 msgid "Registration form: e-mail address"
 msgstr "Registratie formulier: e-mailadres"
 
-#: admin/views/settings.php:236
+#: admin/views/settings.php:224
 msgid "Send registration form to this e-mail address."
 msgstr "Stuur registratie formulier naar dit e-mailadres."
 
-#: admin/views/settings.php:240
+#: admin/views/settings.php:228
 msgid "Visitor registration: use spam question"
 msgstr "Registratie formulier: gebruik spam vraag"
 
-#: admin/views/settings.php:251
+#: admin/views/settings.php:239
 msgid "Password forgotten e-mail address"
 msgstr "Wachtwoord vergeten e-mail adres"
 
-#: admin/views/settings.php:252
+#: admin/views/settings.php:240
 msgid "To enable password forgotten option: set a sender e-mail address."
 msgstr ""
 "Als u de optie wachtwoord vergeten wilt inschakelen: stel een e-mailadres "
 "van de afzender in."
 
-#: admin/views/settings.php:256 admin/views/settings.php:261
+#: admin/views/settings.php:244 admin/views/settings.php:249
 msgid "Email Settings"
 msgstr "E-mail Instellingen"
 
-#: admin/views/settings.php:262
+#: admin/views/settings.php:250
 msgid ""
 "TIP: mail will work without changing these parameters at most hosting "
 "providers."
@@ -5239,31 +5251,31 @@ msgstr ""
 "TIP: bij de meeste hosting providers zal de e-mail werken zonder wijzigingen "
 "van onderstaande instellingen."
 
-#: admin/views/settings.php:266
+#: admin/views/settings.php:254
 msgid "Mail: sender"
 msgstr "Mail: afzender"
 
-#: admin/views/settings.php:268 admin/views/settings.php:286
+#: admin/views/settings.php:256 admin/views/settings.php:274
 msgid "Gmail: [email_address]@gmail.com"
 msgstr "Gmail: [email_address]@gmail.com"
 
-#: admin/views/settings.php:268
+#: admin/views/settings.php:256
 msgid "If filled in: will be used as mail sender."
 msgstr "Indien ingevuld: wordt gebruikt als afzender van e-mail."
 
-#: admin/views/settings.php:273
+#: admin/views/settings.php:261
 msgid "Mail: configuration"
 msgstr "Mail: configuratie"
 
-#: admin/views/settings.php:276
+#: admin/views/settings.php:264
 msgid "auto"
 msgstr "automatisch"
 
-#: admin/views/settings.php:277
+#: admin/views/settings.php:265
 msgid "manual"
 msgstr "handmatig"
 
-#: admin/views/settings.php:279
+#: admin/views/settings.php:267
 msgid ""
 "Setting: \"auto\" = use settings below.<br>Setting: \"manual\" = change "
 "settings in /include/mail.php"
@@ -5271,122 +5283,122 @@ msgstr ""
 "Instelling: \"automatisch\" = gebruik onderstaande instellingen."
 "<br>Instelling: \"handmatig\" = wijzig instellingen in /include/mail.php"
 
-#: admin/views/settings.php:284
+#: admin/views/settings.php:272
 msgid "Mail: username"
 msgstr "Mail: gebruikersnaam"
 
-#: admin/views/settings.php:291
+#: admin/views/settings.php:279
 msgid "Mail: password"
 msgstr "Mail: wachtwoord"
 
-#: admin/views/settings.php:296
+#: admin/views/settings.php:284
 msgid "SMTP: mail server"
 msgstr "SMTP: mail server"
 
-#: admin/views/settings.php:298
+#: admin/views/settings.php:286
 msgid "Gmail: smtp.gmail.com"
 msgstr "Gmail: smtp.gmail.com"
 
-#: admin/views/settings.php:303
+#: admin/views/settings.php:291
 msgid "SMTP: port"
 msgstr "SMTP: poort"
 
-#: admin/views/settings.php:310
+#: admin/views/settings.php:298
 msgid "Gmail: 587"
 msgstr "Gmail: 587"
 
-#: admin/views/settings.php:315
+#: admin/views/settings.php:303
 msgid "SMTP: authentication"
 msgstr "SMTP: authentication"
 
-#: admin/views/settings.php:318
+#: admin/views/settings.php:306
 msgid "true"
 msgstr "true"
 
-#: admin/views/settings.php:319
+#: admin/views/settings.php:307
 msgid "false"
 msgstr "false"
 
-#: admin/views/settings.php:321
+#: admin/views/settings.php:309
 msgid "Gmail: true"
 msgstr "Gmail: true"
 
-#: admin/views/settings.php:326
+#: admin/views/settings.php:314
 msgid "SMTP: encryption type"
 msgstr "SMTP: encryption type"
 
-#: admin/views/settings.php:332
+#: admin/views/settings.php:320
 msgid "Gmail: TLS"
 msgstr "Gmail: TLS"
 
-#: admin/views/settings.php:337
+#: admin/views/settings.php:325
 msgid "SMTP: debugging"
 msgstr "SMTP: debugging"
 
-#: admin/views/settings.php:340
+#: admin/views/settings.php:328
 msgid "Off"
 msgstr "Uit"
 
-#: admin/views/settings.php:341
+#: admin/views/settings.php:329
 msgid "Client"
 msgstr "Client"
 
-#: admin/views/settings.php:342
+#: admin/views/settings.php:330
 msgid "Client and Server"
 msgstr "Client en Server"
 
-#: admin/views/settings.php:348
+#: admin/views/settings.php:336
 msgid "International settings"
 msgstr "Instellingen internationaal"
 
-#: admin/views/settings.php:353
+#: admin/views/settings.php:341
 msgid "Timezone"
 msgstr "Tijdzone"
 
-#: admin/views/settings.php:370
+#: admin/views/settings.php:352
 msgid "Minimum characters in search box"
 msgstr "Minimaal aantal karakters in zoek vak"
 
-#: admin/views/settings.php:371
+#: admin/views/settings.php:353
 msgid ""
 "Minimum characters in search boxes (standard value=3. For Chinese set to 1)."
 msgstr ""
 "Minimaal aantal karakters in zoek vak (standaard waarde=3, voor chinees "
 "zetten op 1)."
 
-#: admin/views/settings.php:375 views/fanchart.php:602
+#: admin/views/settings.php:357 views/fanchart.php:602
 msgid "Date display"
 msgstr "Datum weergave"
 
-#: admin/views/settings.php:378
+#: admin/views/settings.php:360
 msgid "Europe/Global - 5 Jan 1787"
 msgstr "Europe/Global - 5 Jan 1787"
 
-#: admin/views/settings.php:379
+#: admin/views/settings.php:361
 msgid "USA - Jan 5, 1787"
 msgstr "USA - Jan 5, 1787"
 
-#: admin/views/settings.php:380
+#: admin/views/settings.php:362
 msgid "China - 1787-01-05"
 msgstr "China - 1787-01-05"
 
-#: admin/views/settings.php:386
+#: admin/views/settings.php:368
 msgid "Order of names in reports"
 msgstr "Naam volgorde in rapporten"
 
-#: admin/views/settings.php:389
+#: admin/views/settings.php:371
 msgid "Western"
 msgstr "Westers"
 
-#: admin/views/settings.php:390
+#: admin/views/settings.php:372
 msgid "Chinese"
 msgstr "Chinees"
 
-#: admin/views/settings.php:390
+#: admin/views/settings.php:372
 msgid "Hungarian"
 msgstr "Hongaars"
 
-#: admin/views/settings.php:392
+#: admin/views/settings.php:374
 msgid ""
 "Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports "
 "and lists: 刘 理想"
@@ -5394,132 +5406,120 @@ msgstr ""
 "Westers - rapporten: John Smith, indexen: Smith, John. Chinese 中文 - "
 "rapporten en indexen: 刘 理想"
 
-#: admin/views/settings.php:392
+#: admin/views/settings.php:374
 msgid "Hungarian - reports and lists: Smith John"
 msgstr "Hongaars - rapporten en lijsten: Smith John"
 
-#: admin/views/settings.php:398
+#: admin/views/settings.php:380
 msgid "Default timeline file (per language)"
 msgstr "Standaard tijdlijn bestand (per taal)"
 
-#: admin/views/settings.php:406 admin/views/thumbs.php:405
+#: admin/views/settings.php:385 admin/views/thumbs.php:346
 #: admin/views/tree_admin.php:44 admin/views/tree_text.php:27
 msgid "Default"
 msgstr "Standaard"
 
-#: admin/views/settings.php:443
+#: admin/views/settings.php:426
 msgid ""
 "First select language, then select the default timeline for that language."
 msgstr "Selecteer eerst taal en vervolgens de standaardtijdlijn voor die taal."
 
-#: admin/views/settings.php:452
+#: admin/views/settings.php:434
 msgid "Settings Main Menu"
 msgstr "Instellingen hoofdmenu"
 
-#: admin/views/settings.php:457
+#: admin/views/settings.php:439
 msgid "Website name"
 msgstr "Website naam"
 
-#: admin/views/settings.php:463
+#: admin/views/settings.php:445
 msgid "Use logo image instead of text"
 msgstr "Gebruik logo afbeelding in plaats van tekst"
 
-#: admin/views/settings.php:465
+#: admin/views/settings.php:447
 #, php-format
 msgid "Upload logo image. Recommended size: 165 x 25 px. Picture max: %1$d MB."
 msgstr ""
 "Upload logo afbeelding. Aanbevolen grootte: 165 x 25 px. Afbeelding max: "
 "%1$d MB."
 
-#: admin/views/settings.php:472
+#: admin/views/settings.php:454
 msgid "Link homepage"
 msgstr "Link homepage"
 
-#: admin/views/settings.php:472 admin/views/settings_homepage.php:624
+#: admin/views/settings.php:454 admin/views/settings_homepage.php:624
 #: admin/views/settings_homepage.php:631 admin/views/settings_homepage.php:638
 #: admin/views/settings_homepage.php:645
 msgid "Link description"
 msgstr "Link omschrijving"
 
-#: admin/views/settings.php:473 admin/views/settings.php:482
+#: admin/views/settings.php:455 admin/views/settings.php:464
 msgid "(link to this site including http://)"
 msgstr "(link naar deze site inclusief http://)"
 
-#: admin/views/settings.php:480
+#: admin/views/settings.php:462
 msgid "Link for birthdays RSS"
 msgstr "Link voor verjaardagen RSS"
 
-#: admin/views/settings.php:483
+#: admin/views/settings.php:465
 msgid "This option can be turned on or off in the user groups."
 msgstr "Deze optie wordt aan- of uitgezet bij de gebruikersgroepen."
 
-#: admin/views/settings.php:489
+#: admin/views/settings.php:471
 msgid "Settings family page"
 msgstr "Instellingen gezinsscherm"
 
-#: admin/views/settings.php:494
+#: admin/views/settings.php:476
 msgid "Number of generations in descendant report"
 msgstr "Aantal generaties bij parenteel"
 
-#: admin/views/settings.php:495
+#: admin/views/settings.php:477
 msgid "Show number of generation in descendant report (standard value=4)."
 msgstr "Aantal generaties van parenteel weergeven (standaard waarde=4)."
 
-#: admin/views/settings.php:499
+#: admin/views/settings.php:481
 msgid "Number of persons in search results"
 msgstr "Aantal personen in de zoekresultaten"
 
-#: admin/views/settings.php:500
+#: admin/views/settings.php:482
 msgid "Show number of persons in search results (standard value=30)."
 msgstr "Aantal personen weergeven bij zoekresultaten (standaard waarde=30)."
 
-#: admin/views/settings.php:505 admin/views/settings.php:509
+#: admin/views/settings.php:487 admin/views/settings.php:491
 msgid "Watermark text in PDF file"
 msgstr "Watermerk tekst in PDF uitvoer"
 
-#: admin/views/settings.php:510
+#: admin/views/settings.php:492
 msgid "Watermark text (clear to remove watermark)"
 msgstr "Watermerk tekst (wissen om watermerk te verwijderen)"
 
-#: admin/views/settings.php:513
+#: admin/views/settings.php:495
 msgid "Watermark RGB text color"
 msgstr "Watermerk RGB tekst kleur"
 
-#: admin/views/settings.php:518
+#: admin/views/settings.php:500
 msgid "Default values: R = 224, G = 224, B = 224."
 msgstr "Standaardwaarden: R = 224, G = 224, B = 224."
 
-#: admin/views/settings.php:524
+#: admin/views/settings.php:506
 msgid "Display for One Name Study web sites"
 msgstr "Weergave voor één naam studie websites"
 
-#: admin/views/settings.php:528
+#: admin/views/settings.php:510
 msgid "One Name Study display"
 msgstr "Één naam studie weergave"
 
-#: admin/views/settings.php:533
+#: admin/views/settings.php:515
 msgid "Only use this option if you're doing a \"One Name Study\" project."
 msgstr "Gebruik deze optie alleen als je een \"One Name Study\" project doet."
 
-#: admin/views/settings.php:537
+#: admin/views/settings.php:519
 msgid "Enter the One Name of this site"
 msgstr "Naam voor de één naam website"
 
-#: admin/views/settings.php:544
+#: admin/views/settings.php:526
 msgid "Save settings"
 msgstr "Alle wijzigingen opslaan"
-
-#: admin/views/settings_admin.php:109 admin/views/settings_admin.php:128
-msgid "Photo too large"
-msgstr "De foto is te groot"
-
-#: admin/views/settings_admin.php:114
-msgid "Changed favicon icon."
-msgstr "Het favicon icoon is gewijzigd."
-
-#: admin/views/settings_admin.php:133
-msgid "Changed logo."
-msgstr "Gewijzigd logo."
 
 #: admin/views/settings_homepage.php:147
 msgid "Homepage template"
@@ -5542,7 +5542,7 @@ msgid "Position"
 msgstr "Positie"
 
 #: admin/views/settings_homepage.php:157 admin/views/statistics_general.php:78
-#: admin/views/tree_check_changes.php:260
+#: admin/views/tree_check_changes.php:258
 #: admin/views/tree_check_integrity.php:27 views/stats_persons.php:349
 #: views/stats_tree.php:44
 msgid "Item"
@@ -5937,16 +5937,16 @@ msgstr "VERWIJDER statistiek gegevens"
 msgid "User agent information"
 msgstr "User agent informatie"
 
-#: admin/views/thumbs.php:41 admin/views/thumbs.php:196
-#: admin/views/thumbs.php:203
+#: admin/views/thumbs.php:20 admin/views/thumbs.php:137
+#: admin/views/thumbs.php:144
 msgid "Show thumbnails"
 msgstr "Toon thumbnails"
 
-#: admin/views/thumbs.php:97 admin/views/tree_data.php:49
+#: admin/views/thumbs.php:44 admin/views/tree_data.php:49
 msgid "Path to the pictures"
 msgstr "Pad naar de afbeeldingen"
 
-#: admin/views/thumbs.php:120 admin/views/tree_data.php:62
+#: admin/views/thumbs.php:67 admin/views/tree_data.php:62
 #, php-format
 msgid ""
 "Example of picture path:<br>\n"
@@ -5959,32 +5959,32 @@ msgstr ""
 "www.myhomepage.nl/pictures/ => map voor afbeeldingen.<br>\n"
 "Gebruik een relatief pad, precies als dit voorbeeld: <b>../pictures/</b>"
 
-#: admin/views/thumbs.php:140
+#: admin/views/thumbs.php:86
 msgid "Subdirectories:"
 msgstr "Submappen:"
 
-#: admin/views/thumbs.php:157
+#: admin/views/thumbs.php:98
 msgid "Status of picture path"
 msgstr "Status van afbeeldingen map"
 
-#: admin/views/thumbs.php:161
+#: admin/views/thumbs.php:102
 msgid "Picture path exists."
 msgstr "De afbeeldingen map bestaat."
 
-#: admin/views/thumbs.php:168
+#: admin/views/thumbs.php:109
 msgid "Picture path doesn't exist!"
 msgstr "Afbeeldingen map bestaat niet!"
 
-#: admin/views/thumbs.php:204
+#: admin/views/thumbs.php:145
 msgid "You can change filenames here."
 msgstr "Hier kun je bestandsnamen wijzigen."
 
-#: admin/views/thumbs.php:213
+#: admin/views/thumbs.php:154
 msgid "To show pictures, also check the user-group settings: "
 msgstr ""
 "Om afbeeldingen te tonen, controleer ook de gebruikers-groep instellingen: "
 
-#: admin/views/thumbs.php:221
+#: admin/views/thumbs.php:162
 msgid ""
 "- Creating thumbnails<br>\n"
 "- ATTENTION: it may be necessary to (temporarily) change access to the "
@@ -5998,27 +5998,27 @@ msgstr ""
 "- Soms moet het php.ini bestand iets aangepast worden, haal de ; weg voor de "
 "regel met:"
 
-#: admin/views/thumbs.php:249
+#: admin/views/thumbs.php:190
 msgid "Photos"
 msgstr "Foto's"
 
-#: admin/views/thumbs.php:319
+#: admin/views/thumbs.php:260
 msgid "Prefix has to be 2 letters and _"
 msgstr "Voorvoegsel moet 2 letters hebben en _"
 
-#: admin/views/thumbs.php:326
+#: admin/views/thumbs.php:267
 msgid "When creating a category you have to give it a name"
 msgstr "Bij het maken van een categorie moet je een naam geven"
 
-#: admin/views/thumbs.php:337
+#: admin/views/thumbs.php:278
 msgid "A category with this prefix already exists!"
 msgstr "Er bestaat al een categorie met dit voorvoegsel!"
 
-#: admin/views/thumbs.php:355
+#: admin/views/thumbs.php:296
 msgid "Create categories for your photo albums"
 msgstr "Maak categorieën voor je fotoboeken"
 
-#: admin/views/thumbs.php:361
+#: admin/views/thumbs.php:302
 msgid ""
 "Here you can create categories for all your photo albums.</li><li><b>A "
 "category will not be displayed in the photobook menu unless there is at "
@@ -6045,7 +6045,7 @@ msgstr ""
 "categorie moeten komen moeten beginnen met het voorvoegsel: <b>sp_</b>John "
 "Smith.jpg</li><li>Standaard afbeeldingen hoeven geen voorvoegsel te hebben."
 
-#: admin/views/thumbs.php:362
+#: admin/views/thumbs.php:303
 msgid ""
 "A (sub)directory could also be a category. Example: category prefix = ab_, "
 "the directory name = ab."
@@ -6053,35 +6053,35 @@ msgstr ""
 "Een (sub)directory kan ook een categorie zijn. Voorbeeld: "
 "categorievoorvoegsel = ab_, de mapnaam = ab."
 
-#: admin/views/thumbs.php:370
+#: admin/views/thumbs.php:311
 msgid "Category name"
 msgstr "Categorie naam"
 
-#: admin/views/thumbs.php:440
+#: admin/views/thumbs.php:381
 msgid "default - without prefix"
 msgstr "standaard - zonder voorvoegsel"
 
-#: admin/views/thumbs.php:504
+#: admin/views/thumbs.php:446
 msgid "Do you really want to delete category:"
 msgstr "Wil je echt deze categorie verwijderen:"
 
-#: admin/views/thumbs.php:512
+#: admin/views/thumbs.php:453
 msgid "Save changes"
 msgstr "Wijzigingen opslaan"
 
-#: admin/views/thumbs.php:542 admin/views/thumbs.php:547
+#: admin/views/thumbs.php:483 admin/views/thumbs.php:488
 msgid "Changed filename:"
 msgstr "Gewijzigde bestandsnaam:"
 
-#: admin/views/thumbs.php:542 admin/views/thumbs.php:547
+#: admin/views/thumbs.php:483 admin/views/thumbs.php:488
 msgid "into filename:"
 msgstr "in bestandsnaam:"
 
-#: admin/views/thumbs.php:679
+#: admin/views/thumbs.php:621
 msgid "Change filename"
 msgstr "Wijzig bestandsnaam"
 
-#: admin/views/thumbs.php:694
+#: admin/views/thumbs.php:635
 msgid "This folder does not exists!"
 msgstr "Deze map bestaat niet!"
 
@@ -6121,16 +6121,16 @@ msgstr "Lege regel toevoegen in stambomenlijst"
 msgid "Collation"
 msgstr "Collatie"
 
-#: admin/views/tree_check.php:38
+#: admin/views/tree_check.php:22
 msgid "Choose tree:"
 msgstr "Kies stamboom:"
 
-#: admin/views/tree_check.php:70
+#: admin/views/tree_check.php:54
 msgid ""
 "With this option you can check the consistency of the dates in your database."
 msgstr "Met deze optie kunt u de databasetabellen controleren."
 
-#: admin/views/tree_check.php:71
+#: admin/views/tree_check.php:55
 msgid ""
 "For example: birth date after death date, marriage date at age 7, birth date "
 "80 years after mother's birth date etc."
@@ -6138,11 +6138,11 @@ msgstr ""
 "Bijv: geboorte na overlijdensdatum, huwelijk op leeftijd 7 jaar, geboorte 80 "
 "jaar na geboorte van moeder enz."
 
-#: admin/views/tree_check.php:73
+#: admin/views/tree_check.php:57
 msgid "Check invalid dates"
 msgstr "Controleer ongeldige datums"
 
-#: admin/views/tree_check.php:74
+#: admin/views/tree_check.php:58
 msgid ""
 "With this option you can check the database for invalid dates. You will be "
 "given a link to edit the errors."
@@ -6150,7 +6150,7 @@ msgstr ""
 "Met deze optie kunt U de database controleren op ongeldige datums. U krijgt "
 "een link om die datums te corrigeren."
 
-#: admin/views/tree_check.php:75
+#: admin/views/tree_check.php:59
 msgid ""
 "This item checks for impossible dates (such as \"31 apr 1920\"), future "
 "dates, incomplete dates (\"3 apr\") and invalid GEDCOM date entries."
@@ -6158,11 +6158,11 @@ msgstr ""
 "Dit item controleert onmogelijke datums (zoals \"31 apr 1920\"), toekomstige "
 "datums, onvolledige datums (\"3 apr\") en ongeldige GEDCOM-noteringen."
 
-#: admin/views/tree_check.php:76
+#: admin/views/tree_check.php:60
 msgid "Tip for GEDCOM validation (case is irrelevant):"
 msgstr "Tip om GEDCOM-datums juist te krijgen (hoofdletters onbelangrijk):"
 
-#: admin/views/tree_check.php:77
+#: admin/views/tree_check.php:61
 msgid ""
 "Only valid month notation: \"jan\", \"feb\", \"mar\", \"apr\", \"may\", "
 "\"jun\", \"jul\", \"aug\", \"sep\", \"oct\", \"nov\", \"dec\""
@@ -6170,7 +6170,7 @@ msgstr ""
 "De geldige maandnoteringen: \"jan\", \"feb\", \"mar\", \"apr\", \"may\", "
 "\"jun\", \"jul\", \"aug\", \"sep\", \"oct\", \"nov\", \"dec\""
 
-#: admin/views/tree_check.php:78
+#: admin/views/tree_check.php:62
 msgid ""
 "Only valid single prefixes: \"bef\", \"aft\", \"abt\", \"est\", \"int\", "
 "\"cal\""
@@ -6178,14 +6178,14 @@ msgstr ""
 "De enige geldige enkele voorzetsels: \"bef\", \"aft\", \"abt\", \"est\", "
 "\"int\", \"cal\""
 
-#: admin/views/tree_check.php:79
+#: admin/views/tree_check.php:63
 msgid ""
 "Only valid double prefixes: \"from 1898 to 1899\", \"bet 1850 and 1860\""
 msgstr ""
 "De enige geldige dubbele voorzetsels: \"from 1898 to 1899\", \"bet 1850 and "
 "1860\""
 
-#: admin/views/tree_check.php:80
+#: admin/views/tree_check.php:64
 msgid ""
 "Invalid GEDCOM entries: \"1877-1879\" (-> bet 1877 and 1879), \"12 april "
 "2003\" (-> 12 apr 2003), \"cir 1884\" (-> abt 1884), \"1845 ?\" (abt 1845)"
@@ -6194,45 +6194,45 @@ msgstr ""
 "april 2003\" (-> 12 apr 2003), \"cir 1884\" (-> abt 1884), \"1845 ?\" (abt "
 "1845)"
 
-#: admin/views/tree_check.php:83
+#: admin/views/tree_check.php:67
 msgid ""
 "With this option you can check the integrity of the tables in the MySQL "
 "database."
 msgstr "Met deze optie kunt u de databasetabellen controleren."
 
-#: admin/views/tree_check.php:86
+#: admin/views/tree_check.php:70
 msgid ""
 "Here you can view the latest changes that were made to data in your database."
 msgstr ""
 "Hier kunt u de laatste veranderingen zien die in de database zijn "
 "aangebracht."
 
-#: admin/views/tree_check_changes.php:208
+#: admin/views/tree_check_changes.php:206
 msgid "Select editor:"
 msgstr "Selecteer editor:"
 
-#: admin/views/tree_check_changes.php:210
+#: admin/views/tree_check_changes.php:208
 msgid "All editors"
 msgstr "Alle editors"
 
-#: admin/views/tree_check_changes.php:243 views/help.php:68
+#: admin/views/tree_check_changes.php:241 views/help.php:68
 #: views/layout.php:516 views/statistics.php:24
 msgid "Persons"
 msgstr "Personen"
 
-#: admin/views/tree_check_changes.php:246
+#: admin/views/tree_check_changes.php:244
 msgid "Families"
 msgstr "Gezinnen"
 
-#: admin/views/tree_check_changes.php:261 views/latest_changes.php:34
+#: admin/views/tree_check_changes.php:259 views/latest_changes.php:34
 msgid "Changed/ Added"
 msgstr "Gewijzigd/ Toegevoegd"
 
-#: admin/views/tree_check_changes.php:262 views/latest_changes.php:35
+#: admin/views/tree_check_changes.php:260 views/latest_changes.php:35
 msgid "When changed"
 msgstr "Wanneer gewijzigd"
 
-#: admin/views/tree_check_changes.php:263 views/latest_changes.php:36
+#: admin/views/tree_check_changes.php:261 views/latest_changes.php:36
 msgid "When added"
 msgstr "Wanneer gemaakt"
 
@@ -6375,11 +6375,11 @@ msgstr "Details"
 #: admin/views/tree_check_consistency.php:743
 #: admin/views/tree_check_consistency.php:759
 #: admin/views/tree_check_consistency.php:788
-#: admin/views/tree_check_consistency.php:955
-#: admin/views/tree_check_consistency.php:967
-#: admin/views/tree_check_consistency.php:990
-#: admin/views/tree_check_consistency.php:995
-#: admin/views/tree_check_consistency.php:1002 admin/views/tree_merge.php:1236
+#: admin/views/tree_check_consistency.php:956
+#: admin/views/tree_check_consistency.php:968
+#: admin/views/tree_check_consistency.php:991
+#: admin/views/tree_check_consistency.php:996
+#: admin/views/tree_check_consistency.php:1003 admin/views/tree_merge.php:1193
 msgid "birth date"
 msgstr "geboortedatum"
 
@@ -6393,8 +6393,8 @@ msgstr "geboortedatum"
 #: admin/views/tree_check_consistency.php:746
 #: admin/views/tree_check_consistency.php:762
 #: admin/views/tree_check_consistency.php:791
-#: admin/views/tree_check_consistency.php:958
-#: admin/views/tree_check_consistency.php:970 admin/views/tree_merge.php:1239
+#: admin/views/tree_check_consistency.php:959
+#: admin/views/tree_check_consistency.php:971 admin/views/tree_merge.php:1196
 msgid "baptism date"
 msgstr "doopdatum"
 
@@ -6408,8 +6408,8 @@ msgstr "doopdatum"
 #: admin/views/tree_check_consistency.php:712
 #: admin/views/tree_check_consistency.php:718
 #: admin/views/tree_check_consistency.php:750
-#: admin/views/tree_check_consistency.php:961
-#: admin/views/tree_check_consistency.php:973 admin/views/tree_merge.php:1241
+#: admin/views/tree_check_consistency.php:962
+#: admin/views/tree_check_consistency.php:974 admin/views/tree_merge.php:1198
 msgid "death date"
 msgstr "overlijdensdatum"
 
@@ -6423,8 +6423,8 @@ msgstr "overlijdensdatum"
 #: admin/views/tree_check_consistency.php:726
 #: admin/views/tree_check_consistency.php:732
 #: admin/views/tree_check_consistency.php:766
-#: admin/views/tree_check_consistency.php:964
-#: admin/views/tree_check_consistency.php:976 admin/views/tree_merge.php:1246
+#: admin/views/tree_check_consistency.php:965
+#: admin/views/tree_check_consistency.php:977 admin/views/tree_merge.php:1203
 msgid "burial date"
 msgstr "begrafenisdatum"
 
@@ -6487,7 +6487,7 @@ msgstr "kerkelijk huwelijk"
 msgid "church marriage notice"
 msgstr "kerkelijk ondertrouw"
 
-#: admin/views/tree_check_consistency.php:694 admin/views/tree_merge.php:1278
+#: admin/views/tree_check_consistency.php:694 admin/views/tree_merge.php:1234
 msgid "Spouse"
 msgstr "Echtgenoot/te"
 
@@ -6495,70 +6495,70 @@ msgstr "Echtgenoot/te"
 msgid "No inconsistencies found!"
 msgstr "Geen inconsistenties gevonden!"
 
-#: admin/views/tree_check_consistency.php:956
-#: admin/views/tree_check_consistency.php:968
-#: admin/views/tree_check_consistency.php:991
-#: admin/views/tree_check_consistency.php:996
-#: admin/views/tree_check_consistency.php:1003
-#: admin/views/tree_check_consistency.php:1012 views/family.php:752
+#: admin/views/tree_check_consistency.php:957
+#: admin/views/tree_check_consistency.php:969
+#: admin/views/tree_check_consistency.php:992
+#: admin/views/tree_check_consistency.php:997
+#: admin/views/tree_check_consistency.php:1004
+#: admin/views/tree_check_consistency.php:1013 views/family.php:752
 #: views/family.php:776 views/family.php:910 views/family.php:915
 msgid "BORN_SHORT"
 msgstr "geb."
 
-#: admin/views/tree_check_consistency.php:959
-#: admin/views/tree_check_consistency.php:971 views/family.php:755
+#: admin/views/tree_check_consistency.php:960
+#: admin/views/tree_check_consistency.php:972 views/family.php:755
 #: views/family.php:779
 msgid "BAPTISED_SHORT"
 msgstr "doop"
 
-#: admin/views/tree_check_consistency.php:962
-#: admin/views/tree_check_consistency.php:974 views/family.php:803
+#: admin/views/tree_check_consistency.php:963
+#: admin/views/tree_check_consistency.php:975 views/family.php:803
 #: views/family.php:833 views/family.php:932 views/family.php:937
 msgid "DIED_SHORT"
 msgstr "ovl."
 
-#: admin/views/tree_check_consistency.php:965
-#: admin/views/tree_check_consistency.php:977 views/family.php:806
+#: admin/views/tree_check_consistency.php:966
+#: admin/views/tree_check_consistency.php:978 views/family.php:806
 #: views/family.php:836
 msgid "BURIED_SHORT"
 msgstr "begr."
 
-#: admin/views/tree_check_consistency.php:990
+#: admin/views/tree_check_consistency.php:991
 #, php-format
 msgid "%s more than %d years after %s"
 msgstr "%s meer dan %d jaar na %s"
 
-#: admin/views/tree_check_consistency.php:995
+#: admin/views/tree_check_consistency.php:996
 #, php-format
 msgid "%s before or less than %d years after %s"
 msgstr "%s voor of minder dan %d jaar na %s"
 
-#: admin/views/tree_check_consistency.php:1000
+#: admin/views/tree_check_consistency.php:1001
 #, php-format
 msgid "%s less than %d years after %s"
 msgstr "%s minder dan %d jaar na %s"
 
-#: admin/views/tree_check_consistency.php:1005
+#: admin/views/tree_check_consistency.php:1006
 #, php-format
 msgid "age (up till today) more than %d years (age: %d)"
 msgstr "leeftijd (tot nu) meer dan %d jaar (leeftijd: %d)"
 
-#: admin/views/tree_check_consistency.php:1009
+#: admin/views/tree_check_consistency.php:1010
 #, php-format
 msgid "age (by %s) more than %d years (age: %d)"
 msgstr "leeftijd (volgens %s) meer dan %d jaar (age: %d)"
 
-#: admin/views/tree_check_consistency.php:1011
+#: admin/views/tree_check_consistency.php:1012
 #, php-format
 msgid "age difference of more than %d years with spouse (%d)"
 msgstr "leeftijdsverschil van meer dan %d jaar tussen partners  (%d)"
 
-#: admin/views/tree_check_consistency.php:1014
+#: admin/views/tree_check_consistency.php:1015
 #, php-format
 msgid "%s less than %d months after %s"
 msgstr "%s minder dan %d maanden na %s"
 
-#: admin/views/tree_check_consistency.php:1016
+#: admin/views/tree_check_consistency.php:1017
 #, php-format
 msgid "%s before %s"
 msgstr "%s voor %s"
@@ -6614,70 +6614,79 @@ msgstr "Geen geldige datum"
 msgid "Invalid person dates:"
 msgstr "Ongeldige persoons datums:"
 
-#: admin/views/tree_check_invalid.php:52
+#: admin/views/tree_check_invalid.php:51 admin/views/tree_check_invalid.php:102
+#: admin/views/tree_check_invalid.php:121
+#: admin/views/tree_check_invalid.php:138
+#: admin/views/tree_check_invalid.php:155
+#: admin/views/tree_check_invalid.php:172
+#: admin/views/tree_check_invalid.php:189
+msgid "No invalid dates found"
+msgstr "Geen ongeldige datums gevonden"
+
+#: admin/views/tree_check_invalid.php:56
 msgid "Invalid family dates:"
 msgstr "Ongeldige familie datums:"
 
-#: admin/views/tree_check_invalid.php:97
+#: admin/views/tree_check_invalid.php:107
 msgid "Invalid event dates:"
 msgstr "Ongeldige gebeurtenis datums:"
 
-#: admin/views/tree_check_invalid.php:110
+#: admin/views/tree_check_invalid.php:126
 msgid "Invalid connection dates:"
 msgstr "Ongeldige koppelings datums:"
 
-#: admin/views/tree_check_invalid.php:123
+#: admin/views/tree_check_invalid.php:143
 msgid "Invalid address dates:"
 msgstr "Ongeldige adres datums:"
 
-#: admin/views/tree_check_invalid.php:136
+#: admin/views/tree_check_invalid.php:160
 msgid "Invalid repository dates:"
 msgstr "Ongeldige bewaarplaats datums:"
 
-#: admin/views/tree_check_invalid.php:149
+#: admin/views/tree_check_invalid.php:177
 msgid "Invalid source dates:"
 msgstr "Ongeldige bron datums:"
 
-#: admin/views/tree_check_invalid.php:220
+#: admin/views/tree_check_invalid.php:250
 msgid "Click events by person"
 msgstr "Klik op gebeurtenissen bij persoon"
 
-#: admin/views/tree_check_invalid.php:244
+#: admin/views/tree_check_invalid.php:274
 msgid "Click events by marriage"
 msgstr "Klik op gebeurtenissen bij huwelijk"
 
-#: admin/views/tree_check_invalid.php:254
+#: admin/views/tree_check_invalid.php:284
 msgid "Click relevant person source"
 msgstr "Klik op relevante persoons bron"
 
-#: admin/views/tree_check_invalid.php:257
-#: admin/views/tree_check_invalid.php:321
+#: admin/views/tree_check_invalid.php:287
+#: admin/views/tree_check_invalid.php:351
 msgid "Click addresses"
 msgstr "Klik op adressen"
 
-#: admin/views/tree_check_invalid.php:278
+#: admin/views/tree_check_invalid.php:308
 msgid "Click relevant family source"
 msgstr "Klik relevante familie bron"
 
-#: admin/views/tree_check_invalid.php:310
+#: admin/views/tree_check_invalid.php:340
 msgid "Click relevant event source"
 msgstr "Klik op relevante gebeurtenissen bron"
 
-#: admin/views/tree_check_invalid.php:328
+#: admin/views/tree_check_invalid.php:358
 msgid "Address editor"
 msgstr "Adres editor"
 
-#: admin/views/tree_check_invalid.php:329
-#: admin/views/tree_check_invalid.php:344
-#: admin/views/tree_check_invalid.php:358
+#: admin/views/tree_check_invalid.php:359
+#: admin/views/tree_check_invalid.php:374
+#: admin/views/tree_check_invalid.php:388
 msgid "search for:"
 msgstr "zoek naar:"
 
-#: admin/views/tree_check_invalid.php:343
+#: admin/views/tree_check_invalid.php:373
 msgid "Source editor"
 msgstr "Bron editor"
 
-#: admin/views/tree_check_invalid.php:357
+#: admin/views/tree_check_invalid.php:387
 msgid "Repository editor"
 msgstr "Bewaarplaats editor"
 
@@ -6714,7 +6723,7 @@ msgstr "Alle personen WEERGEVEN"
 msgid "This option is valid for ALL persons in this tree!"
 msgstr "LET OP: deze instelling geldt voor ALLE personen van deze stamboom!"
 
-#: admin/views/tree_merge.php:39 admin/views/tree_merge.php:156
+#: admin/views/tree_merge.php:39 admin/views/tree_merge.php:150
 msgid ""
 "Carefully compare these two persons. Only if you are <b>absolutely sure</b> "
 "they are identical, press \"Merge right into left\"."
@@ -6723,20 +6732,20 @@ msgstr ""
 "bent dat het dezelfde persoon betreft, druk op de knop \"Combineer rechts "
 "met links\"."
 
-#: admin/views/tree_merge.php:56 admin/views/tree_merge.php:122
-#: admin/views/tree_merge.php:164 admin/views/tree_merge.php:249
-#: admin/views/tree_merge.php:293 admin/views/tree_merge.php:361
-#: admin/views/tree_merge.php:432 admin/views/tree_merge.php:720
-#: admin/views/tree_merge.php:837
+#: admin/views/tree_merge.php:56 admin/views/tree_merge.php:116
+#: admin/views/tree_merge.php:158 admin/views/tree_merge.php:243
+#: admin/views/tree_merge.php:287 admin/views/tree_merge.php:355
+#: admin/views/tree_merge.php:426 admin/views/tree_merge.php:725
+#: admin/views/tree_merge.php:840
 msgid "Back to main merge menu"
 msgstr "Terug naar het hoofd menu"
 
-#: admin/views/tree_merge.php:67 admin/views/tree_merge.php:174
-#: admin/views/tree_merge.php:270
+#: admin/views/tree_merge.php:67 admin/views/tree_merge.php:168
+#: admin/views/tree_merge.php:264
 msgid "<- Switch left and right ->"
 msgstr "<- Verwissel rechts met links ->"
 
-#: admin/views/tree_merge.php:75 admin/views/tree_merge.php:259
+#: admin/views/tree_merge.php:75 admin/views/tree_merge.php:253
 msgid "Skip to next"
 msgstr "Overslaan"
 
@@ -6744,37 +6753,37 @@ msgstr "Overslaan"
 msgid "Skip to nr: "
 msgstr "Door naar nr.: "
 
-#: admin/views/tree_merge.php:94 views/maps.php:515 views/maps.php:649
+#: admin/views/tree_merge.php:88 views/maps.php:515 views/maps.php:649
 msgid "Go!"
 msgstr "Ga!"
 
-#: admin/views/tree_merge.php:103 admin/views/tree_merge.php:193
-#: admin/views/tree_merge.php:282
+#: admin/views/tree_merge.php:97 admin/views/tree_merge.php:187
+#: admin/views/tree_merge.php:276
 msgid "Merge right into left"
 msgstr "Combineer rechts met links"
 
-#: admin/views/tree_merge.php:117
+#: admin/views/tree_merge.php:111
 msgid "No more duplicates found"
 msgstr "Geen verdere dubbelen gevonden"
 
-#: admin/views/tree_merge.php:136
+#: admin/views/tree_merge.php:130
 msgid "You cannot merge persons of opposite sex. Please try again"
 msgstr ""
 "Het is niet mogelijk personen van verschillende sekse te combineren. Probeer "
 "nogmaals"
 
-#: admin/views/tree_merge.php:142 admin/views/tree_merge.php:153
-#: admin/views/tree_merge.php:182 admin/views/tree_merge.php:2658
+#: admin/views/tree_merge.php:136 admin/views/tree_merge.php:147
+#: admin/views/tree_merge.php:176 admin/views/tree_merge.php:2604
 msgid "Choose another pair"
 msgstr "Kies een ander paar"
 
-#: admin/views/tree_merge.php:147
+#: admin/views/tree_merge.php:141
 msgid "This is one person already - you can't merge! Please try again"
 msgstr ""
 "Dit is al een uniek persoon - kan niet met zichzelf gecombineerd worden! "
 "Probeer nogmaals"
 
-#: admin/views/tree_merge.php:157
+#: admin/views/tree_merge.php:151
 msgid ""
 "The checked items will be the ones entered into the database for the merged "
 "person. You can change the default settings"
@@ -6782,11 +6791,11 @@ msgstr ""
 "De aangevinkte items zullen worden opgeslagen in de database voor de "
 "gecombineerde persoon. U kunt deze default instellingen veranderen"
 
-#: admin/views/tree_merge.php:287
+#: admin/views/tree_merge.php:281
 msgid "No more surrounding relatives to check"
 msgstr "Er zijn geen verdere familieleden te onderzoeken voor combineren"
 
-#: admin/views/tree_merge.php:320
+#: admin/views/tree_merge.php:314
 msgid ""
 "With \"Duplicate merge\" the program will look for all persons with a fixed "
 "set of criteria for identical data.\n"
@@ -6841,31 +6850,31 @@ msgstr ""
 "<b>Houd er rekening mee dat het enige tijd kan duren voor de dubbelen lijst "
 "aangemaakt is. Dit is afhankelijk van de grootte van de boom.</b>"
 
-#: admin/views/tree_merge.php:343 admin/views/tree_merge.php:2646
+#: admin/views/tree_merge.php:337 admin/views/tree_merge.php:2592
 msgid "Continue duplicate merge"
 msgstr "Doorgaan met dubbelen combineren"
 
-#: admin/views/tree_merge.php:352
+#: admin/views/tree_merge.php:346
 msgid "Find doubles only within this family name (optional)"
 msgstr "Zoek dubbelen met deze familienaam (optioneel)"
 
-#: admin/views/tree_merge.php:353
+#: admin/views/tree_merge.php:347
 msgid "Generate new duplicate merge"
 msgstr "Nieuwe dubbelen lijst aanmaken"
 
-#: admin/views/tree_merge.php:369
+#: admin/views/tree_merge.php:363
 msgid "Please wait while duplicate list is generated"
 msgstr "Even wachten tot de dubbelen lijst is aangemaakt"
 
-#: admin/views/tree_merge.php:416
+#: admin/views/tree_merge.php:410
 msgid "Possible duplicates found: "
 msgstr "Mogelijke dubbelen gevonden: "
 
-#: admin/views/tree_merge.php:421
+#: admin/views/tree_merge.php:415
 msgid "Start comparing duplicates"
 msgstr "Begin de dubbelen te vergelijken"
 
-#: admin/views/tree_merge.php:424
+#: admin/views/tree_merge.php:418
 msgid ""
 "No duplicates found. Duplicate merge and Automatic merge won't result in "
 "merges!"
@@ -6873,15 +6882,15 @@ msgstr ""
 "Geen dubbelen gevonden. Dit wil zeggen dat \"Dubbelen combineren\" en "
 "\"Automatisch combineren\" geen resultaten zullen opleveren!"
 
-#: admin/views/tree_merge.php:425
+#: admin/views/tree_merge.php:419
 msgid "You can try one of the other merge options"
 msgstr "U kunt een van de andere combinatie opties proberen"
 
-#: admin/views/tree_merge.php:443
+#: admin/views/tree_merge.php:437
 msgid "Pick the two persons you want to check for merging"
 msgstr "Kies de twee personen die u wilt controleren voor combineren"
 
-#: admin/views/tree_merge.php:444
+#: admin/views/tree_merge.php:437
 msgid ""
 "You can enter names (or part of names) or GEDCOM no. (INDI), or leave boxes "
 "empty"
@@ -6889,7 +6898,7 @@ msgstr ""
 "U kunt een naam (of een gedeelte ervan) of GEDCOM-nr. in de zoekvakjes "
 "zetten, of een vakje leeg laten"
 
-#: admin/views/tree_merge.php:445
+#: admin/views/tree_merge.php:438
 msgid ""
 "<b>TIP: when you click \"search\" with all boxes left empty you will get a "
 "list with all persons in the database. (May take a few seconds)</b>"
@@ -6898,36 +6907,36 @@ msgstr ""
 "krijgt u een lijst met alle namen in de database (kan een paar seconden "
 "duren).</b>"
 
-#: admin/views/tree_merge.php:559 views/list.php:178 views/list.php:185
+#: admin/views/tree_merge.php:553 views/list.php:178 views/list.php:185
 #: views/list.php:411 views/stats_firstnames.php:112
 #: views/stats_firstnames.php:114 views/stats_firstnames.php:116
 #: views/stats_firstnames.php:118
 msgid "First name"
 msgstr "Voornaam"
 
-#: admin/views/tree_merge.php:560 views/list.php:197 views/list.php:207
+#: admin/views/tree_merge.php:554 views/list.php:197 views/list.php:207
 #: views/list.php:211 views/list.php:423
 msgid "Last name"
 msgstr "Achternaam"
 
-#: admin/views/tree_merge.php:561
+#: admin/views/tree_merge.php:555
 msgid "GEDCOM no. (\"I43\")"
 msgstr "GEDCOM-nr. (\"I43\")"
 
-#: admin/views/tree_merge.php:563 views/relations.php:110
+#: admin/views/tree_merge.php:557 views/relations.php:110
 #: views/relations.php:224
 msgid "Pick a name from search results"
 msgstr "Kies naam uit zoekresultaten"
 
-#: admin/views/tree_merge.php:564 admin/views/tree_merge.php:623
+#: admin/views/tree_merge.php:558 admin/views/tree_merge.php:627
 msgid "Show details"
 msgstr "Toon de gegevens"
 
-#: admin/views/tree_merge.php:620 views/relations.php:325
+#: admin/views/tree_merge.php:624 views/relations.php:325
 msgid "Switch persons"
 msgstr "Verwissel personen"
 
-#: admin/views/tree_merge.php:698
+#: admin/views/tree_merge.php:703
 msgid ""
 "Automatic merge will go through the entire database and merge all persons "
 "who comply with ALL the following conditions:<br>\n"
@@ -6958,27 +6967,27 @@ msgstr ""
 "dat moet worden uitgevoerd.</b><br>\n"
 "U krijgt een bericht wanneer het automatisch combineren is voltooid."
 
-#: admin/views/tree_merge.php:713
+#: admin/views/tree_merge.php:718
 msgid "Start automatic merge"
 msgstr "Start automatisch samenvoegen"
 
-#: admin/views/tree_merge.php:727
+#: admin/views/tree_merge.php:732
 msgid "Please wait while the automatic merges are processed..."
 msgstr "Wacht a.u.b. tot het automatisch combineren is voltooid..."
 
-#: admin/views/tree_merge.php:799
+#: admin/views/tree_merge.php:802
 msgid "No automatic merge options were found."
 msgstr "Er werden geen automatisch te combineren personen gevonden."
 
-#: admin/views/tree_merge.php:801
+#: admin/views/tree_merge.php:804
 msgid "Automatic merge completed"
 msgstr "Het automatisch combineren is voltooid"
 
-#: admin/views/tree_merge.php:801
+#: admin/views/tree_merge.php:804
 msgid " merges were performed"
 msgstr " combinaties zijn uitgevoerd"
 
-#: admin/views/tree_merge.php:805
+#: admin/views/tree_merge.php:808
 msgid ""
 "It is recommended to continue with <b>\"Relatives merge\"</b> to consider "
 "merging persons affected by previous merges that were performed."
@@ -6987,38 +6996,38 @@ msgstr ""
 "combineren\", zodat U personen kunt combineren die zijn aangetast door de "
 "vorige combinatie(s)."
 
-#: admin/views/tree_merge.php:811 admin/views/tree_merge.php:1037
-#: admin/views/tree_merge.php:1040 admin/views/tree_merge.php:2634
+#: admin/views/tree_merge.php:814 admin/views/tree_merge.php:996
+#: admin/views/tree_merge.php:999 admin/views/tree_merge.php:2580
 msgid "Relatives merge"
 msgstr "Familieleden combineren"
 
-#: admin/views/tree_merge.php:814
+#: admin/views/tree_merge.php:817
 msgid "You may wish to proceed with duplicate merge or manual merge."
 msgstr "U kunt doorgaan met dubbelen combineren of handmatig combineren."
 
-#: admin/views/tree_merge.php:821 admin/views/tree_merge.php:926
-#: admin/views/tree_merge.php:1055 admin/views/tree_merge.php:1199
+#: admin/views/tree_merge.php:824 admin/views/tree_merge.php:885
+#: admin/views/tree_merge.php:1014 admin/views/tree_merge.php:1157
 msgid "Duplicate merge"
 msgstr "Dubbelen combineren"
 
-#: admin/views/tree_merge.php:828 admin/views/tree_merge.php:1069
-#: admin/views/tree_merge.php:1203
+#: admin/views/tree_merge.php:831 admin/views/tree_merge.php:1028
+#: admin/views/tree_merge.php:1161
 msgid "Manual merge"
 msgstr "Handmatig combineren"
 
-#: admin/views/tree_merge.php:842
+#: admin/views/tree_merge.php:845
 msgid "These are the persons that were merged:"
 msgstr "Dit zijn de personen die zijn gecombineerd:"
 
-#: admin/views/tree_merge.php:908
+#: admin/views/tree_merge.php:867
 msgid "Merge filter settings"
 msgstr "Instellingen samenvoegen"
 
-#: admin/views/tree_merge.php:916
+#: admin/views/tree_merge.php:875
 msgid "Max characters to match firstname:"
 msgstr "Maximaal aantal letters om als indentiek te worden beschouwd:"
 
-#: admin/views/tree_merge.php:921
+#: admin/views/tree_merge.php:880
 msgid ""
 "In different trees, first names may be listed differently: Thomas Julian "
 "Booth, Thomas J. Booth, Thomas Booth etc. By default a match of the first 10 "
@@ -7057,11 +7066,11 @@ msgstr ""
 "de trouwdatum van de ouderparen vergeleken. Als U dit een beetje teveel "
 "vindt, kunt U de trouwdatum van de ouders uitzetten."
 
-#: admin/views/tree_merge.php:930
+#: admin/views/tree_merge.php:889
 msgid "include blank lastnames"
 msgstr "inclusief lege achternamen"
 
-#: admin/views/tree_merge.php:938
+#: admin/views/tree_merge.php:897
 msgid ""
 "By default two persons with missing lastnames will be included as possible "
 "duplicates. Two persons called \"John\" without lastname will be considered "
@@ -7076,11 +7085,11 @@ msgstr ""
 "geval wilt u deze optie misschien uitzetten, zodat alleen personen die een "
 "achternaam hebben zullen worden opgenomen."
 
-#: admin/views/tree_merge.php:943
+#: admin/views/tree_merge.php:902
 msgid "include blank firstnames"
 msgstr "inclusief lege voornamen"
 
-#: admin/views/tree_merge.php:951
+#: admin/views/tree_merge.php:910
 msgid ""
 "Same as above, but for first names. When enabled (default), all persons "
 "called \"Smith\" without first name will be considered possible duplicates "
@@ -7091,11 +7100,11 @@ msgstr ""
 "zullen alle personen die \"Willemse\" heten (zonder voornaam) als mogelijke "
 "dubbelen worden beschouwd."
 
-#: admin/views/tree_merge.php:956
+#: admin/views/tree_merge.php:915
 msgid "include blank dates"
 msgstr "inclusief lege datums"
 
-#: admin/views/tree_merge.php:964
+#: admin/views/tree_merge.php:923
 msgid ""
 "By default, two persons with identical names, but with one or both missing "
 "birth/death dates are considered possible duplicates. In certain trees this "
@@ -7114,15 +7123,15 @@ msgstr ""
 "drastisch verkorten, maar U kunt er natuurlijk ook vele mogelijke dubbelen "
 "door missen."
 
-#: admin/views/tree_merge.php:969 admin/views/tree_merge.php:1022
+#: admin/views/tree_merge.php:928 admin/views/tree_merge.php:981
 msgid "Automatic merge"
 msgstr "Automatisch combineren"
 
-#: admin/views/tree_merge.php:973
+#: admin/views/tree_merge.php:932
 msgid "include parents marriage date:"
 msgstr "inclusief trouwdatum van ouders:"
 
-#: admin/views/tree_merge.php:981
+#: admin/views/tree_merge.php:940
 msgid ""
 "Automatic merging is a dangerous business. Therefore many clauses are used "
 "to make sure the persons are indeed identical. Besides identical names, "
@@ -7137,15 +7146,15 @@ msgstr ""
 "trouwdatum van de ouderparen vergeleken. Als u dit een beetje teveel vindt, "
 "kunt u de trouwdatum van de ouders uitzetten."
 
-#: admin/views/tree_merge.php:990
+#: admin/views/tree_merge.php:949
 msgid "Reset"
 msgstr "Reset"
 
-#: admin/views/tree_merge.php:1005
+#: admin/views/tree_merge.php:964
 msgid "Merge Options"
 msgstr "Combineringsopties"
 
-#: admin/views/tree_merge.php:1009
+#: admin/views/tree_merge.php:968
 msgid ""
 "<b>NOTE:</b> None of these buttons will cause immediate merging. You will "
 "first be presented with information and can then decide to make a merge."
@@ -7174,7 +7183,7 @@ msgstr ""
 "Als er toch nog over zijn, kunt u deze altijd combineren met de optie "
 "\"Handmatig combineren\"."
 
-#: admin/views/tree_merge.php:1026
+#: admin/views/tree_merge.php:985
 msgid ""
 "You will be shown the set of strict criteria used for automatic merging and "
 "then you can decide whether to continue."
@@ -7182,7 +7191,7 @@ msgstr ""
 "U krijgt alle strenge criteria te zien, die worden gebruikt voor het "
 "automatisch combineren en dan kunt u besluiten of u hier mee door wilt gaan."
 
-#: admin/views/tree_merge.php:1044
+#: admin/views/tree_merge.php:1003
 msgid ""
 "This button will become available if you have made merges, and surrounding "
 "relatives (parents, children or spouses) have to be considered for merging "
@@ -7204,7 +7213,7 @@ msgstr ""
 "De lijst van de mogelijk te combineren familieleden wordt opgeslagen in de "
 "database, zodat U er ook later weer mee door kan gaan."
 
-#: admin/views/tree_merge.php:1059
+#: admin/views/tree_merge.php:1018
 msgid ""
 "You will be presented, one after the other, with pairs of possible "
 "duplicates to consider for merging.<br>\n"
@@ -7216,28 +7225,28 @@ msgstr ""
 "Na iedere combinatie kunt u overstappen op \"Familieleden combineren\" en "
 "daarna weer terug gaan naar het dubbelen combineren."
 
-#: admin/views/tree_merge.php:1072
+#: admin/views/tree_merge.php:1031
 msgid "You can pick two persons out of the database to consider for merging."
 msgstr ""
 "Kies twee personen uit de database om te zien of ze gecombineerd moeten "
 "worden."
 
-#: admin/views/tree_merge.php:1083
+#: admin/views/tree_merge.php:1042
 msgid ""
 "Here you can change the default filters for the different merge options."
 msgstr ""
 "Hier kunt u de standaardinstellingen aanpassen voor de verschillende "
 "combinerings opties."
 
-#: admin/views/tree_merge.php:1201
+#: admin/views/tree_merge.php:1159
 msgid "Surrounding relatives check"
 msgstr "Familieleden combineren"
 
-#: admin/views/tree_merge.php:1214
+#: admin/views/tree_merge.php:1171
 msgid "Nr. "
 msgstr "Nr. "
 
-#: admin/views/tree_merge.php:1214 views/ancestor_report_pdf.php:67
+#: admin/views/tree_merge.php:1171 views/ancestor_report_pdf.php:67
 #: views/ancestor_report_pdf.php:82 views/ancestor_report_rtf.php:62
 #: views/ancestor_sheet.php:250 views/ancestor_sheet_pdf.php:295
 #: views/ancestor_sheet_pdf.php:316 views/descendant_chart.php:122
@@ -7307,123 +7316,123 @@ msgstr "Nr. "
 msgid " of "
 msgstr " van "
 
-#: admin/views/tree_merge.php:1218
+#: admin/views/tree_merge.php:1175
 msgid " relatives to check"
 msgstr " familieleden te onderzoeken"
 
-#: admin/views/tree_merge.php:1222
+#: admin/views/tree_merge.php:1179
 msgid "Person 1: "
 msgstr "Persoon 1: "
 
-#: admin/views/tree_merge.php:1223
+#: admin/views/tree_merge.php:1180
 msgid "Person 2: "
 msgstr "Persoon 2: "
 
-#: admin/views/tree_merge.php:1226
+#: admin/views/tree_merge.php:1183
 msgid "Gedcom number:"
 msgstr "GEDCOM-nummer:"
 
-#: admin/views/tree_merge.php:1232
+#: admin/views/tree_merge.php:1189
 msgid "last name"
 msgstr "achternaam"
 
-#: admin/views/tree_merge.php:1233
+#: admin/views/tree_merge.php:1190
 msgid "first name"
 msgstr "voornaam"
 
-#: admin/views/tree_merge.php:1235
+#: admin/views/tree_merge.php:1192
 msgid "patronym"
 msgstr "patroniem"
 
-#: admin/views/tree_merge.php:1237
+#: admin/views/tree_merge.php:1194
 msgid "birth place"
 msgstr "geb. pl."
 
-#: admin/views/tree_merge.php:1240
+#: admin/views/tree_merge.php:1197
 msgid "baptism place"
 msgstr "doopplaats"
 
-#: admin/views/tree_merge.php:1242
+#: admin/views/tree_merge.php:1199
 msgid "death place"
 msgstr "overlijdensplaats"
 
-#: admin/views/tree_merge.php:1247
+#: admin/views/tree_merge.php:1204
 msgid "burial place"
 msgstr "begrafenisplaats"
 
-#: admin/views/tree_merge.php:1251
+#: admin/views/tree_merge.php:1208
 msgid "stillborn"
 msgstr "levenloos geboren jongen"
 
-#: admin/views/tree_merge.php:1252
+#: admin/views/tree_merge.php:1209
 msgid "general text"
 msgstr "instellingen algemeen"
 
-#: admin/views/tree_merge.php:1253
+#: admin/views/tree_merge.php:1210
 msgid "name text"
 msgstr "tekst bij naam"
 
-#: admin/views/tree_merge.php:1254
+#: admin/views/tree_merge.php:1211
 msgid "birth text"
 msgstr "geboortedatum"
 
-#: admin/views/tree_merge.php:1255
+#: admin/views/tree_merge.php:1212
 msgid "baptism text"
 msgstr "tekst bij doop"
 
-#: admin/views/tree_merge.php:1256
+#: admin/views/tree_merge.php:1213
 msgid "death text"
 msgstr "tekst bij overlijden"
 
-#: admin/views/tree_merge.php:1257
+#: admin/views/tree_merge.php:1214
 msgid "burial text"
 msgstr "tekst bij begraven"
 
-#: admin/views/tree_merge.php:1275
+#: admin/views/tree_merge.php:1231
 msgid "Relatives"
 msgstr "Familieleden"
 
-#: admin/views/tree_merge.php:1366 admin/views/tree_merge.php:1384
+#: admin/views/tree_merge.php:1316 admin/views/tree_merge.php:1332
 msgid "Read text"
 msgstr "Toon de tekst"
 
-#: admin/views/tree_merge.php:1377 admin/views/tree_merge.php:1579
-#: admin/views/tree_merge.php:1607 admin/views/tree_merge.php:1665
-#: admin/views/tree_merge.php:1744
+#: admin/views/tree_merge.php:1329 admin/views/tree_merge.php:1525
+#: admin/views/tree_merge.php:1553 admin/views/tree_merge.php:1611
+#: admin/views/tree_merge.php:1690
 msgid "(no data)"
 msgstr "(geen gegevens)"
 
-#: admin/views/tree_merge.php:1504
+#: admin/views/tree_merge.php:1450
 msgid "Picture"
 msgstr "Afbeelding"
 
-#: admin/views/tree_merge.php:1518 include/witness.php:189
+#: admin/views/tree_merge.php:1464 include/witness.php:189
 msgid "baptism witness"
 msgstr "doopgetuige"
 
-#: admin/views/tree_merge.php:1525 include/witness.php:203
+#: admin/views/tree_merge.php:1471 include/witness.php:203
 msgid "burial witness"
 msgstr "begrafenisgetuige"
 
-#: admin/views/tree_merge.php:1529
+#: admin/views/tree_merge.php:1475
 msgid "Other names"
 msgstr "Andere namen"
 
-#: admin/views/tree_merge.php:1541
+#: admin/views/tree_merge.php:1487
 msgid "Internet link / URL"
 msgstr "Internet link / URL"
 
-#: admin/views/tree_merge.php:1574 admin/views/tree_merge.php:1602
-#: admin/views/tree_merge.php:1654 admin/views/tree_merge.php:1680
-#: admin/views/tree_merge.php:1736 admin/views/tree_merge.php:1759
+#: admin/views/tree_merge.php:1520 admin/views/tree_merge.php:1548
+#: admin/views/tree_merge.php:1600 admin/views/tree_merge.php:1626
+#: admin/views/tree_merge.php:1682 admin/views/tree_merge.php:1705
 msgid "Show"
 msgstr "Toon"
 
-#: admin/views/tree_merge.php:2617
+#: admin/views/tree_merge.php:2563
 msgid " was successfully merged into "
 msgstr " is succesvol gecombineerd met "
 
-#: admin/views/tree_merge.php:2621
+#: admin/views/tree_merge.php:2567
 #, php-format
 msgid ""
 "After this merge there are %d surrounding relatives to be checked for "
@@ -7432,7 +7441,7 @@ msgstr ""
 "Na deze combinatie zijn er %d familieleden te onderzoeken voor mogelijk "
 "combineren!"
 
-#: admin/views/tree_merge.php:2624
+#: admin/views/tree_merge.php:2570
 msgid ""
 "<b>You are strongly advised to move to \"Relatives merge\" mode to check all "
 "surrounding persons who may have to be checked for merging.</b><br>\n"
@@ -7449,11 +7458,11 @@ msgstr ""
 "Dit is de makkelijkste manier om er zeker van te zijn dat u niemand over het "
 "hoofd ziet."
 
-#: admin/views/tree_merge.php:2644
+#: admin/views/tree_merge.php:2590
 msgid "Continue manual merge"
 msgstr "Doorgaan met handmatig combineren"
 
-#: admin/views/tree_merge.php:2660
+#: admin/views/tree_merge.php:2606
 msgid "Continue with next pair"
 msgstr "Doorgaan met volgend paar"
 
@@ -8418,7 +8427,7 @@ msgstr "Woningen (gezin)"
 msgid "phone"
 msgstr "telefoon"
 
-#: include/show_picture.php:261
+#: include/show_picture.php:202
 msgid "Missing image"
 msgstr "Afbeelding ontbreekt"
 

@@ -221,6 +221,15 @@ if (!isset($_GET['proceed'])) {
             $update_cls->update_v6_7_9($dbh);
         }
 
+        // ***************************************
+        // *** Update procedure version 6.7.9a ***
+        // ***************************************
+        if ($humo_option["update_status"] > '18') {
+            echo '<tr><td>HuMo-genealogy update V6.7.9a</td><td style="background-color:#00FF00">OK</td></tr>';
+        } else {
+            $update_cls->update_v6_7_9a($dbh);
+        }
+
         /*	END OF MAIN UPDATE SCRIPT
         *** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***
         * 1) Change update_status in install.php

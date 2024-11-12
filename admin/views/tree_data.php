@@ -3,9 +3,11 @@
 if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
     $checked1 = ' checked';
     $checked2 = '';
+    //$trees['default_path'] = true;
 } else {
     $checked1 = '';
     $checked2 = ' checked';
+    //$trees['default_path'] = false;
 }
 $tree_pict_path = $data2Db->tree_pict_path;
 if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
@@ -24,9 +26,9 @@ if ($data2Db->tree_privacy == 'show_persons') {
 
 ?>
 <form method="post" action="index.php">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="page" value="tree">
     <input type="hidden" name="tree_id" value="<?= $data2Db->tree_id; ?>">
-    <input type="hidden" name="menu_admin" value="<?= $menu_admin; ?>">
+    <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
 
     <div class="p-2 me-sm-2 genealogy_search">
 

@@ -1,29 +1,3 @@
-<?php
-
-// *** Read settings here to be sure radio buttons show proper values. ***
-include_once(__DIR__ . "/../../include/settings_global.php"); // *** Read settings ***
-include_once(__DIR__ . "/../../include/show_tree_date.php");
-
-// *** Language choice ***
-$language_tree2 = $language_tree;
-if ($language_tree == 'default') {
-    $language_tree2 = $selected_language;
-}
-include(__DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php');
-include_once(__DIR__ . "/../../views/partial/select_language.php");
-$language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
-
-    // *** Find latest tree_prefix ***
-    $found = '1';
-    $i = 1;
-    while ($found == '1') {
-        $new_tree_prefix = 'humo' . $i . '_';
-        $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='$new_tree_prefix'");
-        $found = $datasql->rowCount();
-        $i++;
-    }
-?>
-
 <br>
 <?= __('Administration of the family tree(s), i.e. the name can be changed here, and trees can be added or removed.'); ?><br>
 
@@ -41,11 +15,11 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
             <td>
                 <div class="row">
                     <div class="col-md-3">
-                        <a href="index.php?page=tree&amp;language_tree=default&amp;tree_id=<?= $tree_id; ?>"><?= __('Default'); ?></a>
+                        <a href="index.php?page=tree&amp;language_tree=default&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Default'); ?></a>
                     </div>
 
                     <div class="col-md-auto ms-2">
-                        <?= show_country_flags($language_tree2, '../', 'language_tree', $language_path); ?>
+                        <?= show_country_flags($trees['language2'], '../', 'language_tree', $trees['language_path']); ?>
                     </div>
                 </div>
             </td>
@@ -60,103 +34,86 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
     $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
     $count_trees = $datasql->rowCount();
 
-    $new_number = '1';
     $datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
     if ($datasql) {
-        // *** Count lines in query ***
         $count_lines = $datasql->rowCount();
         while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-            $style = '';
-            if ($dataDb->tree_id == $tree_id) {
-                //$style = ' bgcolor="#99CCFF"';
-                $style = ' class="table-active"';
-            }
     ?>
-            <tr <?= $style; ?>>
+            <tr <?= $dataDb->tree_id == $trees['tree_id'] ? 'class="table-active"' : ''; ?>>
                 <td nowrap>
+                    <?= $dataDb->tree_order < 10 ? '0' : ''; ?><?= $dataDb->tree_order; ?>
+                    <?php if ($dataDb->tree_order != '1') { ?>
+                        <a href="index.php?page=tree&amp;up=1&amp;tree_order=<?= $dataDb->tree_order; ?>&amp;id=<?= $dataDb->tree_id; ?>">
+                            <img src="images/arrow_up.gif" border="0" alt="up">
+                        </a>
                     <?php
-                    if ($dataDb->tree_order < 10) {
-                        echo '0';
-                    }
-                    echo $dataDb->tree_order;
-                    // *** Number for new family tree ***
-                    $new_number = $dataDb->tree_order + 1;
-                    if ($dataDb->tree_order != '1') {
-                        echo ' <a href="index.php?page=' . $page . '&amp;up=1&amp;tree_order=' . $dataDb->tree_order .
-                            '&amp;id=' . $dataDb->tree_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
                     }
                     if ($dataDb->tree_order != $count_lines) {
-                        echo ' <a href="index.php?page=' . $page . '&amp;down=1&amp;tree_order=' . $dataDb->tree_order .
-                            '&amp;id=' . $dataDb->tree_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
-                    }
                     ?>
+                        <a href="index.php?page=tree&amp;down=1&amp;tree_order=<?= $dataDb->tree_order; ?>&amp;id=<?= $dataDb->tree_id; ?>">
+                            <img src="images/arrow_down.gif" border="0" alt="down">
+                        </a>
+                    <?php } ?>
                 </td>
 
                 <td>
                     <?php
                     // *** Show/ Change family tree name ***
-                    $treetext = show_tree_text($dataDb->tree_id, $language_tree);
+                    $treetext = show_tree_text($dataDb->tree_id, $trees['language']);
                     if ($dataDb->tree_prefix == 'EMPTY') {
-                        echo '* ' . __('EMPTY LINE') . ' *';
-                    } else {
-                        echo '<a href="index.php?page=' . $page . '&amp;menu_admin=tree_text&amp;tree_id=' . $dataDb->tree_id . '"><img src="images/edit.jpg" title="edit" alt="edit"></a> ' . $treetext['name'];
-                    }
                     ?>
+                        * <?= __('EMPTY LINE'); ?> *
+                    <?php } else { ?>
+                        <a href="index.php?page=tree&amp;menu_admin=tree_text&amp;tree_id=<?= $dataDb->tree_id; ?>">
+                            <img src="images/edit.jpg" title="edit" alt="edit">
+                        </a> <?= $treetext['name']; ?>
+                    <?php } ?>
                 </td>
 
                 <td>
+                    <?php if ($dataDb->tree_prefix != 'EMPTY') { ?>
+                        <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $dataDb->tree_id; ?>&tree_prefix=<?= $dataDb->tree_prefix; ?>&step1=read_gedcom">
+                            <img src="images/import.jpg" title="gedcom import" alt="gedcom import">
+                        </a>
                     <?php
-                    if ($dataDb->tree_prefix != 'EMPTY') {
-                        echo '<a href="index.php?page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
                     }
 
                     if ($dataDb->tree_prefix == 'EMPTY') {
-                        //
+                        // *** Empty line, don't show any text ***
                     } elseif ($dataDb->tree_persons > 0) {
                     ?>
                         <font color="#00FF00"><b><?= __('OK'); ?></b></font>
 
                         <font size=-1><?= show_tree_date($dataDb->tree_date); ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?></font>
-                    <?php
-                    } else {
-                        //echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';
-                        echo ' <b>' . __('This tree does not yet contain any data or has not been imported properly!') . '</b>';
-                    }
-                    ?>
+                    <?php } else { ?>
+                        <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b>
+                    <?php } ?>
                 </td>
 
                 <td>
                     <?php
                     // *** If there is only one family tree, prevent it can be removed ***
                     if ($count_trees > 1 || $dataDb->tree_prefix == 'EMPTY') {
-                        echo ' <a href="index.php?page=' . $page . '&amp;remove_tree=' . $dataDb->tree_id . '&amp;treetext_name=' . $treetext['name'] . '">';
-                        echo '<img src="images/button_drop.png" alt="' . __('Remove tree') . '" border="0"></a>';
-                    }
                     ?>
+                        <a href="index.php?page=tree&amp;remove_tree=<?= $dataDb->tree_id; ?>&amp;treetext_name=<?= $treetext['name']; ?>">
+                            <img src="images/button_drop.png" alt="<?= __('Remove tree'); ?>" border="0">
+                        </a>
+                    <?php } ?>
                 </td>
             </tr>
     <?php
         }
     }
-
-    // *** Add new family tree ***
-    if ($new_number < 10) {
-        $new_number = '0' . $new_number;
-    }
     ?>
 </table>
 
 <form method="post" action="index.php" class="mb-2">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-    <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
-    <input type="hidden" name="tree_prefix" value="<?= $new_tree_prefix; ?>">
+    <input type="hidden" name="page" value="tree">
     <input type="submit" name="add_tree_data" value="<?= __('Add family tree'); ?>" class="btn btn-sm btn-success">
 </form>
 
-
 <form method="post" action="index.php">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-    <input type="hidden" name="tree_order" value="<?= $new_number; ?>">
+    <input type="hidden" name="page" value="tree">
     <input type="submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>" class="btn btn-sm btn-success">
     <?= __('Add empty line in list of family trees'); ?>
 </form>
@@ -167,22 +124,10 @@ $language_path = 'index.php?page=tree&amp;tree_id=' . $tree_id . '&amp;';
 $collation_sql = $dbh->query("SHOW FULL COLUMNS FROM humo_persons WHERE Field = 'pers_firstname'");
 $collationDb = $collation_sql->fetch(PDO::FETCH_OBJ);
 $collation = $collationDb->Collation;
-
-// *** Swedish collation ***
-$select_swedish = '';
-if ($collation == 'utf8_swedish_ci') {
-    $select_swedish = 'selected';
-}
-
-// *** Danish collation ***
-$select_danish = '';
-if ($collation == 'utf8_danish_ci') {
-    $select_danish = 'selected';
-}
 ?>
 
 <form method="post" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="page" value="tree">
 
     <br>
     <div class="row mb-2">
@@ -194,8 +139,8 @@ if ($collation == 'utf8_danish_ci') {
             <select size="1" name="tree_collation" class="form-select form-select-sm">
                 <!-- Default collation -->
                 <option value="utf8_general_ci">utf8_general_ci (default)</option>
-                <option value="utf8_swedish_ci" <?= $select_swedish; ?>>utf8_swedish_ci</option>
-                <option value="utf8_danish_ci" <?= $select_danish; ?>>utf8_danish_ci</option>
+                <option value="utf8_swedish_ci" <?= $collation == 'utf8_swedish_ci' || $collation == 'utf8mb3_swedish_ci' ? 'selected' : ''; ?>>utf8_swedish_ci</option>
+                <option value="utf8_danish_ci" <?= $collation == 'utf8_danish_ci' || $collation == 'utf8mb3_danish_ci' ? 'selected' : ''; ?>>utf8_danish_ci</option>
             </select>
         </div>
 
