@@ -1515,6 +1515,7 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
                         if ($this_event == 'picture') { // show link to pic
                             $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $trees['tree_id'] . "'");
                             $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+                            // TODO check if this works using a default picture path.
                             $tree_pict_path = $dataDb->tree_pict_path;
                             $dir = '../' . $tree_pict_path;
                             $value = $value . ' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;' . $dir . $value . '&quot;>\',\'150px\');" href="#">[' . __('Show') . ']</a>';

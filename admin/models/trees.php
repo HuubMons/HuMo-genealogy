@@ -49,6 +49,17 @@ class TreesModel
         return $menu_tab;
     }
 
+    public function get_tree_pict_path($dbh, $tree_id)
+    {
+        $data2sql = $dbh->query("SELECT tree_pict_path FROM humo_trees WHERE tree_id=" . $tree_id);
+        $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
+        $tree_pict_path = $data2Db->tree_pict_path;
+        //if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
+        //    $tree_pict_path = substr($trees['tree_pict_path'], 1);
+        //}
+        return $tree_pict_path;
+    }
+
     public function update_tree($dbh, $db_functions): void
     {
         // *** Add family tree ***

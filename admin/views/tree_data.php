@@ -1,17 +1,3 @@
-<?php
-// *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
-if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
-    $trees['default_path'] = true;
-} else {
-    $trees['default_path'] = false;
-}
-
-$trees['tree_pict_path'] = $data2Db->tree_pict_path;
-if (substr($data2Db->tree_pict_path, 0, 1) === '|') {
-    $trees['tree_pict_path'] = substr($trees['tree_pict_path'], 1);
-}
-?>
-
 <form method="post" action="index.php">
     <input type="hidden" name="page" value="tree">
     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">

@@ -60,6 +60,16 @@ class TreesController
                 $trees['gedcom_directory'] = $gedcomModel->get_gedcom_directory();
             }
         } elseif ($trees['menu_tab'] == 'tree_data') {
+            $trees['tree_pict_path'] = $treesModel->get_tree_pict_path($dbh, $tree_id);
+
+            // *** Check for default path ***
+            if (substr($trees['tree_pict_path'], 0, 1) === '|') {
+                $trees['tree_pict_path'] = substr($trees['tree_pict_path'], 1);
+                $trees['default_path'] = true;
+            } else {
+                $trees['default_path'] = false;
+            }
+
             //require_once __DIR__ . "/../models/tree_data.php";
             //$tree_dataModel = new TreeDataModel($dbh);
             //$trees['count_trees'] = $tree_dataModel->count_trees($dbh);
