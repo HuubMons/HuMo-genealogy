@@ -103,15 +103,15 @@ if (isset($_POST['upload_the_file'])) {
 
                 <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">
                     <div class="row">
-                        <div class="col-md-3">
-                            <input type="file" id="upload_file" class="form-control">
+                        <div class="col-md-6">
+                            <input type="file" id="upload_file" name="upload_file" class="form-control">
                         </div>
                         <div class="col-md-2">
                             <input type="submit" style="margin-top:4px" name="upload_the_file" value="<?= __('Upload'); ?>" class="btn btn-sm btn-secondary"><br>
                         </div>
                     </div>
                 </form>
-            <?php
+                <?php
             }
 
             if ($backup_count > 0) {
@@ -119,34 +119,36 @@ if (isset($_POST['upload_the_file'])) {
                     $restore_file = 'backup_files/' . $_POST['select_file'];
                     if (is_file($restore_file)) {
                         // *** restore from backup on server made by HuMo-genealogy backup ***
-                        echo '<br><span style="color:red">' . __('Starting to restore database. This may take some time. Please wait...') . '</span><br>';
+                ?>
+                        <br><span style="color:red"><?= __('Starting to restore database. This may take some time. Please wait...'); ?></span><br>
+                <?php
                         restore_tables($restore_file);
                     }
                 }
 
-            ?>
+                ?>
                 <h3><?= __('Restore database from backup file'); ?></h3>
 
                 <!-- List of backup files -->
                 <form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">
-                    <select size="1" style="margin-top:4px;" name="select_file">
-                        <?php
-                        for ($i = 0; $i < $backup_count; $i++) {
-                            echo '<option value="' . $backup_files[$i] . '">' . $backup_files[$i];
-                            if ($i == 0) {
-                                echo ' * ' . __('Most recent backup!') . ' *';
-                            }
-                            echo '</option>';
-                        }
-                        ?>
-                    </select>
-                    <input type="submit" style="font-size:14px" name="restore_server" value="<?= __('Restore database'); ?>">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select size="1" style="margin-top:4px;" name="select_file" class="form-select form-select-sm">
+                                <?php for ($i = 0; $i < $backup_count; $i++) { ?>
+                                    <option value="<?= $backup_files[$i]; ?>"><?= $backup_files[$i]; ?>
+                                        <?= $i == 0 ? ' * ' . __('Most recent backup!') . ' *' : ''; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" style="font-size:14px" name="restore_server" value="<?= __('Restore database'); ?>" class="btn btn-sm btn-secondary">
+                        </div>
+                    </div>
                 </form>
-            <?php
-            } else {
-                echo "<b>&nbsp;&nbsp;&nbsp;" . __('No backup file found!') . '</b>';
-            }
-            ?>
+            <?php } else { ?>
+                <b>&nbsp;&nbsp;&nbsp;<?= __('No backup file found!'); ?></b>
+            <?php } ?>
             <br><br>
         </td>
     </tr>
@@ -199,7 +201,7 @@ function backup_tables()
         <div class="progress-bar"></div>
     </div>
 
-<?php
+    <?php
     // This is for the buffer achieve the minimum size in order to flush data
     echo str_repeat(' ', 1024 * 64);
     // Send output to browser immediately
@@ -304,7 +306,9 @@ function backup_tables()
         unlink($name);
         $name .= '.zip'; // last backup file is always stored in /admin as: humo_backup.sql.zip
     }
-    echo '<div>' . __('A backup file was saved to the server. We strongly suggest you download a copy to your computer in case you might need it later.') . '</div>';
+    ?>
+    <div><?= __('A backup file was saved to the server. We strongly suggest you download a copy to your computer in case you might need it later.'); ?></div>
+    <?php
 }
 
 // *** RESTORE FUNCTION ***
@@ -404,7 +408,9 @@ function restore_tables($filename)
         if ($original_name != $filename) {
             unlink($filename);
         }
-        echo '<span style="color:red;font-weight:bold">' . __('Database has been restored successfully!') . '</span><br>';
+    ?>
+        <span style="color:red;font-weight:bold"><?= __('Database has been restored successfully!'); ?></span><br>
+<?php
     } else {
         if ($zip_success == 0) {
             echo "file could not be unzipped<br>";
