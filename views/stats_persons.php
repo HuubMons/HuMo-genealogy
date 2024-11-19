@@ -333,11 +333,15 @@ if ($latest_woman_bap_date == '0') {
     $latest_woman_bap_date = null;
 }
 
+$man_percentage = 0;
+$woman_percentage = 0;
 $both = $countman + $countwoman;
-@$percent = ($countman / $both) * 100;
-$man_percentage = round($percent, 1);
-@$percent = ($countwoman / $both) * 100;
-$woman_percentage = round($percent, 1);
+if ($both) {
+    $percent = ($countman / $both) * 100;
+    $man_percentage = round($percent, 1);
+    $percent = ($countwoman / $both) * 100;
+    $woman_percentage = round($percent, 1);
+} 
 ?>
 
 <br>

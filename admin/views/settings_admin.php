@@ -46,8 +46,9 @@ closedir($folder);
 </ul>
 
 <!-- Align content to the left -->
-<div style="float: left; background-color:white; height:500px; padding:10px;">
-    <?php
+<!-- <div style="float: left; background-color:white; height:500px; padding:10px;"> -->
+<div style="background-color:white;">
+<?php
     // *** Show settings ***
     if ($settings['menu_tab'] == 'settings') {
         include(__DIR__ . '/settings.php');

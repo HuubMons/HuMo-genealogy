@@ -2,8 +2,21 @@
 // *** Selection of month ***
 $present_month = date("n");
 $month = $present_month;
-if (isset($_POST['month'])) {
+if (isset($_POST['month']) && is_numeric($_POST['month'])) {
     $month = $_POST['month'];
+}
+
+// *** Search oldest record in database***
+$datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
+$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+if (isset($dataDb->stat_date_linux)) {
+    $first_year = date("Y", $dataDb->stat_date_linux);
+}
+
+$present_year = date("Y");
+$year = $present_year;
+if (isset($_POST['year']) && is_numeric($_POST['year'])) {
+    $year = $_POST['year'];
 }
 ?>
 
@@ -26,34 +39,12 @@ if (isset($_POST['month'])) {
             <option value="11" <?php if ($month == '11') echo ' selected'; ?>><?= __('November'); ?></option>
             <option value="12" <?php if ($month == '12') echo ' selected'; ?>><?= __('December'); ?></option>
         </select>
-        <?php
 
-        // *** Selection of year ***
-
-        // *** Search oldest record in database***
-        $datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
-        $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-        if (isset($dataDb->stat_date_linux)) {
-            $first_year = date("Y", $dataDb->stat_date_linux);
-        }
-
-        $present_year = date("Y");
-        $year = $present_year;
-        if (isset($_POST['year'])) {
-            $year = $_POST['year'];
-        }
-
-        ?>
+        <!-- Select year -->
         <select size='1' name='year'>
-            <?php
-            for ($year_select = $first_year; $year_select <= $present_year; $year_select++) {
-                $select = '';
-                if ($year == $year_select) {
-                    $select = ' selected';
-                }
-                echo '<option value="' . $year_select . '"' . $select . '>' . $year_select . '</option>';
-            }
-            ?>
+            <?php for ($year_select = $first_year; $year_select <= $present_year; $year_select++) { ?>
+                <option value="<?= $year_select; ?>" <?= $year == $year_select ? 'selected' : ''; ?>><?= $year_select; ?></option>
+            <?php } ?>
         </select>
         <input type="submit" name="submit" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
     </form><br><br>

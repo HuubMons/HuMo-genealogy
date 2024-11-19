@@ -7,6 +7,9 @@ if (!defined('ADMIN_PAGE')) {
 include_once(__DIR__ . "/../include/select_tree.php");
 
 $prefx = '../'; // to get out of the admin map
+
+$data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
+$data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 ?>
 
 <ul class="nav nav-tabs mt-1">

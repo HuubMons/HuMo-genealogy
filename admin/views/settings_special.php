@@ -1,8 +1,8 @@
-<h2><?= __('Jewish settings'); ?></h2>
-
-<form method="post" action="index.php">
+<form method="post" action="index.php" class="p-2">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="menu_admin" value="settings_special">
+
+    <h2><?= __('Jewish settings'); ?></h2>
 
     <div class="genealogy_search p-2">
         <h4><?= __('Display settings'); ?>:</h4>
@@ -54,5 +54,5 @@
 
 <h2 class="mt-2"><?= __('Sitemap'); ?></h2>
 <?= __('A sitemap can be used for quick indexing of the family screens by search engines. Add the sitemap link to a search engine (like Google), or add the link in a robots.txt file (in the root folder of your website). Example of robots.txt file, sitemap line:<br>
-Sitemap: http://www.yourwebsite.com/humo-gen/sitemap.php'); ?>
-<br><a href="../sitemap.php"><?= __('Sitemap'); ?></a>
+Sitemap: http://www.yourwebsite.com/humo-gen/sitemap.php'); ?><br>
+<a href="../sitemap.php"><?= __('Sitemap'); ?></a>

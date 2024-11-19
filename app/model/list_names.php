@@ -20,8 +20,9 @@ class list_namesModel
             $person_qry = "SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character
             FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
         }
-        @$person_result = $dbh->query($person_qry);
-        while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
+        $person_result = $dbh->query($person_qry);
+        $alphabet = [];
+        while ($personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
             $alphabet[] = $personDb->first_character;
         }
         return $alphabet;

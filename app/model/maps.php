@@ -296,11 +296,11 @@ class MapsModel
         return $maps;
     }
 
-    //public function get_locations_google($dbh)
     public function get_locations_google($dbh, $tree_id, $maps)
     {
         // TODO probably better not to load all places. Combine queries?
         // Allready done for openstreetmap.
+        $locarray = [];
         $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL ORDER BY location_location");
         while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
             $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);

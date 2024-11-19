@@ -137,7 +137,7 @@ for ($i = 0; $i < $counter; $i++) {
 }
 ?>
 
-<form method="post" action="index.php">
+<form method="post" action="index.php" class="p-2">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="menu_admin" value="settings_homepage">
 

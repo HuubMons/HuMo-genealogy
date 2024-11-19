@@ -67,7 +67,7 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
             $content_array = explode(PHP_EOL, $content); // *** Split array into seperate lines ***
 
             // *** Debug information and validation of data ***
-            if (isset($content_array[0])) {
+            if (isset($content_array[0]) && isset($content_array[1])) { 
                 $debug_update .= ' Github:' . $content_array[1] . '. ';
 
                 // *** Check if there is valid information, there should be at least 4 version lines ***
