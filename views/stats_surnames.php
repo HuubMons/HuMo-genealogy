@@ -65,7 +65,7 @@ function last_names($max)
     $person = $dbh->query($personqry);
     $freq_last_names = [];
     $freq_pers_prefix = [];
-    $freq_count_last_names = [0];
+    $freq_count_last_names = [];
     while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
         $freq_last_names[] = $personDb->pers_lastname;
         $freq_pers_prefix[] = $personDb->pers_prefix;
