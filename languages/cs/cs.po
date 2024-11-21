@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-27 14:22+0100\n"
-"PO-Revision-Date: 2024-10-27 14:22+0100\n"
+"POT-Creation-Date: 2024-11-21 22:20+0100\n"
+"PO-Revision-Date: 2024-11-21 22:20+0100\n"
 "Last-Translator: Jerry Verner, 2023-2024\n"
 "Language-Team: Czech (http://app.transifex.com/humo-gen/humo-gen/language/"
 "cs/)\n"
@@ -102,7 +102,7 @@ msgstr "pro"
 msgid " and "
 msgstr " a "
 
-#: admin/include/editor_cls.php:77 admin/views/tree_check_consistency.php:1000
+#: admin/include/editor_cls.php:77 admin/views/tree_check_consistency.php:1003
 #: include/language_date.php:66 include/language_date.php:84
 #: include/language_date.php:119
 msgid "before"
@@ -114,7 +114,7 @@ msgstr "před"
 msgid "&#177;"
 msgstr "&#177;"
 
-#: admin/include/editor_cls.php:79 admin/views/tree_check_consistency.php:986
+#: admin/include/editor_cls.php:79 admin/views/tree_check_consistency.php:989
 #: include/language_date.php:60 include/language_date.php:84
 #: include/language_date.php:117
 msgid "after"
@@ -145,80 +145,80 @@ msgid "After nightfall"
 msgstr "Po soumraku"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:20
-#: admin/views/statistics_date.php:16 admin/views/statistics_visitors.php:18
+#: admin/views/statistics_date.php:29 admin/views/statistics_visitors.php:18
 #: include/language_date.php:37
 msgid "January"
 msgstr "Leden"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:23
-#: admin/views/statistics_date.php:17 admin/views/statistics_visitors.php:19
+#: admin/views/statistics_date.php:30 admin/views/statistics_visitors.php:19
 #: include/language_date.php:38
 msgid "February"
 msgstr "Únor"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:26
-#: admin/views/statistics_date.php:18 admin/views/statistics_visitors.php:20
+#: admin/views/statistics_date.php:31 admin/views/statistics_visitors.php:20
 #: include/language_date.php:39
 msgid "March"
 msgstr "Březen"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:29
-#: admin/views/statistics_date.php:19 admin/views/statistics_visitors.php:21
+#: admin/views/statistics_date.php:32 admin/views/statistics_visitors.php:21
 #: include/language_date.php:40
 msgid "April"
 msgstr "Duben"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:32
-#: admin/views/statistics_date.php:20 admin/views/statistics_visitors.php:22
+#: admin/views/statistics_date.php:33 admin/views/statistics_visitors.php:22
 #: include/language_date.php:41
 msgid "May"
 msgstr "Květen"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:35
-#: admin/views/statistics_date.php:21 admin/views/statistics_visitors.php:23
+#: admin/views/statistics_date.php:34 admin/views/statistics_visitors.php:23
 #: include/language_date.php:42
 msgid "June"
 msgstr "Červen"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:38
-#: admin/views/statistics_date.php:22 admin/views/statistics_visitors.php:24
+#: admin/views/statistics_date.php:35 admin/views/statistics_visitors.php:24
 #: include/language_date.php:43
 msgid "July"
 msgstr "Červenec"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:41
-#: admin/views/statistics_date.php:23 admin/views/statistics_visitors.php:25
+#: admin/views/statistics_date.php:36 admin/views/statistics_visitors.php:25
 #: include/language_date.php:44
 msgid "August"
 msgstr "Srpen"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:44
-#: admin/views/statistics_date.php:24 admin/views/statistics_visitors.php:26
+#: admin/views/statistics_date.php:37 admin/views/statistics_visitors.php:26
 #: include/language_date.php:45
 msgid "September"
 msgstr "Září"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:47
-#: admin/views/statistics_date.php:25 admin/views/statistics_visitors.php:27
+#: admin/views/statistics_date.php:38 admin/views/statistics_visitors.php:27
 #: include/language_date.php:46
 msgid "October"
 msgstr "Říjen"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:50
-#: admin/views/statistics_date.php:26 admin/views/statistics_visitors.php:28
+#: admin/views/statistics_date.php:39 admin/views/statistics_visitors.php:28
 #: include/language_date.php:47
 msgid "November"
 msgstr "Listopad"
 
 #: admin/include/editor_cls.php:191 admin/views/statistics.php:53
-#: admin/views/statistics_date.php:27 admin/views/statistics_visitors.php:29
+#: admin/views/statistics_date.php:40 admin/views/statistics_visitors.php:29
 #: include/language_date.php:48
 msgid "December"
 msgstr "Prosinec"
 
 # Nomen Nescio: unknown name.
-#: admin/include/editor_cls.php:296 admin/include/editor_event_cls.php:1206
-#: admin/include/editor_event_cls.php:1215 admin/views/editor.php:661
+#: admin/include/editor_cls.php:296 admin/include/editor_event_cls.php:1207
+#: admin/include/editor_event_cls.php:1216 admin/views/editor.php:661
 #: admin/views/editor.php:670 admin/views/editor.php:1382
 #: admin/views/statistics_old.php:89 admin/views/statistics_old.php:100
 #: include/person_cls.php:915 include/person_cls.php:917
@@ -275,17 +275,17 @@ msgid "[]"
 msgstr "[]"
 
 #: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:54
-#: admin/include/editor_event_cls.php:518
-#: admin/include/editor_event_cls.php:1184
-#: admin/include/editor_event_cls.php:1187
+#: admin/include/editor_event_cls.php:519
+#: admin/include/editor_event_cls.php:1185
+#: admin/include/editor_event_cls.php:1188
 msgid "Picture/ Media"
 msgstr "Obrázek/ Média"
 
-#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:464
-#: admin/include/editor_event_cls.php:1345
-#: admin/include/editor_event_cls.php:1659
-#: admin/include/editor_event_cls.php:1662 admin/views/editor.php:1171
-#: admin/views/tree_merge.php:1556 views/list.php:320 views/list.php:327
+#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:465
+#: admin/include/editor_event_cls.php:1346
+#: admin/include/editor_event_cls.php:1660
+#: admin/include/editor_event_cls.php:1663 admin/views/editor.php:1171
+#: admin/views/tree_merge.php:1453 views/list.php:320 views/list.php:327
 msgid "Profession"
 msgstr "Profese"
 
@@ -293,29 +293,29 @@ msgstr "Profese"
 #: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:312
 #: admin/include/editor_event_cls.php:331
 #: admin/include/editor_event_cls.php:354
-#: admin/include/editor_event_cls.php:370
-#: admin/include/editor_event_cls.php:1402 admin/include/editor_sources.php:205
-#: admin/include/editor_sources.php:213 admin/views/tree_merge.php:1559
+#: admin/include/editor_event_cls.php:371
+#: admin/include/editor_event_cls.php:1403 admin/include/editor_sources.php:205
+#: admin/include/editor_sources.php:213 admin/views/tree_merge.php:1456
 #: app/model/tree_index.php:951
 msgid "Event"
 msgstr "Událost"
 
 #: admin/include/editor_event_cls.php:24
-#: admin/include/editor_event_cls.php:1025 admin/views/editor_person.php:1029
+#: admin/include/editor_event_cls.php:1026 admin/views/editor_person.php:1029
 #: admin/views/editor_person.php:1392 admin/views/editor_relation.php:733
 #: include/witness.php:62
 msgid "clergy"
 msgstr ""
 
 #: admin/include/editor_event_cls.php:26
-#: admin/include/editor_event_cls.php:1029 admin/views/editor_person.php:764
+#: admin/include/editor_event_cls.php:1030 admin/views/editor_person.php:764
 #: admin/views/editor_person.php:1314 admin/views/editor_relation.php:519
 #: include/witness.php:45
 msgid "officiator"
 msgstr ""
 
 #: admin/include/editor_event_cls.php:28
-#: admin/include/editor_event_cls.php:1033 admin/views/editor_person.php:1029
+#: admin/include/editor_event_cls.php:1034 admin/views/editor_person.php:1029
 #: include/witness.php:59
 msgid "godfather"
 msgstr "kmotr"
@@ -339,8 +339,8 @@ msgid "witness"
 msgstr "svědek"
 
 #: admin/include/editor_event_cls.php:36
-#: admin/include/editor_event_cls.php:1001
-#: admin/include/editor_event_cls.php:1834
+#: admin/include/editor_event_cls.php:1002
+#: admin/include/editor_event_cls.php:1835
 #: admin/include/editor_media_select.php:80
 #: admin/include/editor_person_select.php:115
 #: admin/include/editor_place_select.php:77
@@ -357,46 +357,47 @@ msgstr "svědek"
 msgid "Name"
 msgstr "Jméno"
 
-#: admin/include/editor_event_cls.php:38 admin/include/editor_event_cls.php:398
-#: admin/include/editor_event_cls.php:1826
-#: admin/include/editor_event_cls.php:1827 admin/views/editor.php:1126
+#: admin/include/editor_event_cls.php:38 admin/include/editor_event_cls.php:399
+#: admin/include/editor_event_cls.php:1827
+#: admin/include/editor_event_cls.php:1828 admin/views/editor.php:1126
 msgid "Prefix"
 msgstr "Předpona"
 
-#: admin/include/editor_event_cls.php:40 admin/include/editor_event_cls.php:398
-#: admin/include/editor_event_cls.php:1826
-#: admin/include/editor_event_cls.php:1828 admin/views/editor.php:1126
+#: admin/include/editor_event_cls.php:40 admin/include/editor_event_cls.php:399
+#: admin/include/editor_event_cls.php:1827
+#: admin/include/editor_event_cls.php:1829 admin/views/editor.php:1126
 msgid "Suffix"
 msgstr "Přípona"
 
 #: admin/include/editor_event_cls.php:42
-#: admin/include/editor_event_cls.php:1829 admin/views/tree_merge.php:1585
+#: admin/include/editor_event_cls.php:1830 admin/views/tree_merge.php:1478
 msgid "Title of Nobility"
 msgstr "Šlechtický titul"
 
-#: admin/include/editor_event_cls.php:44 admin/include/editor_event_cls.php:398
-#: admin/include/editor_event_cls.php:1826
-#: admin/include/editor_event_cls.php:1830 admin/include/editor_sources.php:338
-#: admin/views/edit_repository.php:127 admin/views/edit_source.php:239
-#: admin/views/editor.php:1126 admin/views/tree_merge.php:1588
+#: admin/include/editor_event_cls.php:44 admin/include/editor_event_cls.php:399
+#: admin/include/editor_event_cls.php:1827
+#: admin/include/editor_event_cls.php:1831 admin/include/editor_sources.php:341
+#: admin/views/edit_repository.php:127 admin/views/edit_source.php:273
+#: admin/views/editor.php:1126 admin/views/tree_merge.php:1481
 #: include/show_source_pdf.php:43 views/source.php:33 views/source.php:109
 #: views/sources.php:52
 msgid "Title"
 msgstr "Název"
 
 #: admin/include/editor_event_cls.php:46 admin/include/editor_event_cls.php:313
-#: admin/include/editor_event_cls.php:1229
-#: admin/include/editor_event_cls.php:1440
+#: admin/include/editor_event_cls.php:1230
+#: admin/include/editor_event_cls.php:1441
 msgid "Adoption"
 msgstr "Adoptování"
 
 #: admin/include/editor_event_cls.php:48
-#: admin/include/editor_event_cls.php:1831 admin/views/tree_merge.php:1591
+#: admin/include/editor_event_cls.php:1832 admin/views/tree_merge.php:1484
 msgid "Title of Lordship"
 msgstr "Titul Lorda"
 
 #: admin/include/editor_event_cls.php:50 admin/include/editor_event_cls.php:314
-#: admin/views/edit_repository.php:207 include/person_cls.php:2879
+#: admin/include/editor_event_cls.php:355 admin/views/edit_repository.php:207
+#: include/marriage_cls.php:689 include/person_cls.php:2879
 msgid "URL/ Internet link"
 msgstr "URL/ internetový odkaz"
 
@@ -404,18 +405,19 @@ msgstr "URL/ internetový odkaz"
 msgid "Colour mark by person"
 msgstr "Barevná značka osoby"
 
-#: admin/include/editor_event_cls.php:56 admin/include/editor_event_cls.php:491
-#: admin/include/editor_event_cls.php:1365
-#: admin/include/editor_event_cls.php:1692
-#: admin/include/editor_event_cls.php:1695 admin/views/editor_relation.php:792
+#: admin/include/editor_event_cls.php:56 admin/include/editor_event_cls.php:492
+#: admin/include/editor_event_cls.php:1366
+#: admin/include/editor_event_cls.php:1693
+#: admin/include/editor_event_cls.php:1696 admin/views/editor_relation.php:792
 #: admin/views/editor_relation.php:795
 msgid "Religion"
 msgstr "Náboženství"
 
 #: admin/include/editor_event_cls.php:89 admin/include/editor_sources.php:113
-#: admin/include/editor_sources.php:167 admin/include/editor_sources.php:456
-#: admin/views/editor.php:1539 admin/views/editor.php:1916
-#: admin/views/gedcom.php:1708 admin/views/notes.php:243
+#: admin/include/editor_sources.php:167 admin/include/editor_sources.php:464
+#: admin/views/edit_source.php:139 admin/views/editor.php:1539
+#: admin/views/editor.php:1916 admin/views/gedcom.php:1470
+#: admin/views/notes.php:243
 msgid "text"
 msgstr "text"
 
@@ -428,18 +430,18 @@ msgstr "ID"
 # Language indicator, used for birthday RSS
 #: admin/include/editor_event_cls.php:305
 #: admin/include/editor_event_cls.php:348
-#: admin/include/editor_event_cls.php:1419 views/list.php:76 views/list.php:77
+#: admin/include/editor_event_cls.php:1420 views/list.php:76 views/list.php:77
 #: views/list.php:991
 msgid "Events"
 msgstr "Události"
 
 #: admin/include/editor_event_cls.php:319
-#: admin/include/editor_event_cls.php:359
+#: admin/include/editor_event_cls.php:360
 msgid "Add event"
 msgstr "Přidat událost"
 
 #: admin/include/editor_event_cls.php:331
-#: admin/include/editor_event_cls.php:370
+#: admin/include/editor_event_cls.php:371
 msgid "For items like:"
 msgstr "Pro položky jako:"
 
@@ -452,134 +454,135 @@ msgid "depart"
 msgstr "odchod"
 
 #: admin/include/editor_event_cls.php:331
-#: admin/include/editor_event_cls.php:370
+#: admin/include/editor_event_cls.php:371
 msgid "etc."
 msgstr "atd."
 
-#: admin/include/editor_event_cls.php:370 include/language_event.php:42
+#: admin/include/editor_event_cls.php:371 include/language_event.php:42
 msgid "Marriage contract"
 msgstr "Manželská smlouva"
 
-#: admin/include/editor_event_cls.php:370 include/language_event.php:43
+#: admin/include/editor_event_cls.php:371 include/language_event.php:43
 msgid "Marriage license"
 msgstr "Manželský průkaz"
 
-#: admin/include/editor_event_cls.php:398
-#: admin/include/editor_event_cls.php:1377
-#: admin/include/editor_event_cls.php:1820
-#: admin/include/editor_event_cls.php:1822 admin/views/editor.php:1126
+#: admin/include/editor_event_cls.php:399
+#: admin/include/editor_event_cls.php:1378
+#: admin/include/editor_event_cls.php:1821
+#: admin/include/editor_event_cls.php:1823 admin/views/editor.php:1126
 #: include/person_cls.php:1851
 msgid "Nickname"
 msgstr "Přezdívka"
 
-#: admin/include/editor_event_cls.php:401
-#: admin/include/editor_event_cls.php:477
-#: admin/include/editor_event_cls.php:503
-#: admin/include/editor_event_cls.php:523
-#: admin/include/editor_event_cls.php:525
-#: admin/include/editor_event_cls.php:527 admin/include/editor_sources.php:540
+#: admin/include/editor_event_cls.php:402
+#: admin/include/editor_event_cls.php:478
+#: admin/include/editor_event_cls.php:504
+#: admin/include/editor_event_cls.php:524
+#: admin/include/editor_event_cls.php:526
+#: admin/include/editor_event_cls.php:528 admin/include/editor_sources.php:558
 #: admin/views/cms_pages.php:224 admin/views/cms_pages.php:292
 #: admin/views/edit_address.php:264 admin/views/edit_address.php:267
 #: admin/views/edit_repository.php:218 admin/views/edit_repository.php:221
-#: admin/views/edit_source.php:363 admin/views/edit_source.php:365
+#: admin/views/edit_source.php:397 admin/views/edit_source.php:399
 #: admin/views/editor.php:1417 admin/views/editor.php:1419
 #: admin/views/editor.php:1760 admin/views/editor.php:1823
 #: admin/views/editor.php:1912 admin/views/editor_person.php:372
 #: admin/views/editor_person.php:1706 admin/views/log.php:112
-#: admin/views/settings_homepage.php:430 admin/views/settings_homepage.php:571
+#: admin/views/settings_homepage.php:219 admin/views/settings_homepage.php:364
 #: admin/views/users.php:180
 msgid "Add"
 msgstr "Přidat"
 
-#: admin/include/editor_event_cls.php:976
+#: admin/include/editor_event_cls.php:977
 msgid "Select GEDCOM number or type name of person:"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:982
-#: admin/include/editor_event_cls.php:1232 admin/views/editor.php:306
+#: admin/include/editor_event_cls.php:983
+#: admin/include/editor_event_cls.php:1233 admin/views/editor.php:306
 #: admin/views/editor_person.php:307 admin/views/editor_relation.php:115
 #: admin/views/editor_relation.php:1225
 msgid "GEDCOM number (ID)"
 msgstr "Číslo GEDCOM (ID)"
 
-#: admin/include/editor_event_cls.php:986
-#: admin/include/editor_event_cls.php:1188
-#: admin/include/editor_event_cls.php:1233
-#: admin/include/editor_event_cls.php:1599
+#: admin/include/editor_event_cls.php:987
+#: admin/include/editor_event_cls.php:1189
+#: admin/include/editor_event_cls.php:1234
+#: admin/include/editor_event_cls.php:1600
 #: admin/include/editor_media_select.php:81
 #: admin/include/editor_person_select.php:127
 #: admin/include/editor_place_select.php:78
 #: admin/include/editor_relation_select.php:54
-#: admin/include/editor_sources.php:457 admin/views/editor.php:149
-#: admin/views/editor.php:307 admin/views/editor.php:747
-#: admin/views/editor.php:1259 admin/views/editor.php:1293
-#: admin/views/editor.php:1313 admin/views/editor.php:1333
-#: admin/views/editor.php:1605 admin/views/editor_person.php:139
-#: admin/views/editor_person.php:220 admin/views/editor_person.php:308
-#: admin/views/editor_person.php:681 admin/views/editor_person.php:781
-#: admin/views/editor_person.php:1045 admin/views/editor_person.php:1180
-#: admin/views/editor_person.php:1330 admin/views/editor_person.php:1407
-#: admin/views/editor_relation.php:116 admin/views/editor_relation.php:291
-#: admin/views/editor_relation.php:310 admin/views/editor_relation.php:368
-#: admin/views/editor_relation.php:445 admin/views/editor_relation.php:535
-#: admin/views/editor_relation.php:673 admin/views/editor_relation.php:749
-#: admin/views/editor_relation.php:847 admin/views/editor_relation.php:1226
-#: admin/views/gedcom_export.php:164 admin/views/language_editor.php:250
-#: admin/views/maps_locations.php:753 admin/views/settings_homepage.php:220
-#: admin/views/settings_homepage.php:415 admin/views/tree_merge.php:615
-#: admin/views/tree_merge.php:631 admin/views/tree_merge.php:694
-#: admin/views/users.php:120 app/model/tree_index.php:56
-#: app/model/tree_index.php:163 app/model/tree_index.php:645
-#: views/addresses.php:31 views/latest_changes.php:23 views/layout.php:353
-#: views/list.php:100 views/list.php:163 views/list.php:454
-#: views/list_places_families.php:95 views/photoalbum.php:355
-#: views/relations.php:97 views/relations.php:105 views/relations.php:208
-#: views/relations.php:211 views/relations.php:219 views/sources.php:26
+#: admin/include/editor_sources.php:467 admin/views/edit_source.php:142
+#: admin/views/editor.php:149 admin/views/editor.php:307
+#: admin/views/editor.php:747 admin/views/editor.php:1259
+#: admin/views/editor.php:1293 admin/views/editor.php:1313
+#: admin/views/editor.php:1333 admin/views/editor.php:1605
+#: admin/views/editor_person.php:139 admin/views/editor_person.php:220
+#: admin/views/editor_person.php:308 admin/views/editor_person.php:681
+#: admin/views/editor_person.php:781 admin/views/editor_person.php:1045
+#: admin/views/editor_person.php:1180 admin/views/editor_person.php:1330
+#: admin/views/editor_person.php:1407 admin/views/editor_relation.php:116
+#: admin/views/editor_relation.php:291 admin/views/editor_relation.php:310
+#: admin/views/editor_relation.php:368 admin/views/editor_relation.php:445
+#: admin/views/editor_relation.php:535 admin/views/editor_relation.php:673
+#: admin/views/editor_relation.php:749 admin/views/editor_relation.php:847
+#: admin/views/editor_relation.php:1226 admin/views/gedcom_export.php:164
+#: admin/views/language_editor.php:250 admin/views/maps_locations.php:753
+#: admin/views/settings_homepage.php:88 admin/views/settings_homepage.php:204
+#: admin/views/tree_merge.php:556 admin/views/tree_merge.php:574
+#: admin/views/tree_merge.php:646 admin/views/users.php:120
+#: app/model/tree_index.php:56 app/model/tree_index.php:163
+#: app/model/tree_index.php:645 views/addresses.php:31
+#: views/latest_changes.php:23 views/layout.php:353 views/list.php:100
+#: views/list.php:163 views/list.php:454 views/list_places_families.php:95
+#: views/photoalbum.php:355 views/relations.php:97 views/relations.php:105
+#: views/relations.php:208 views/relations.php:211 views/relations.php:219
+#: views/sources.php:26
 msgid "Search"
 msgstr "Vyhledat"
 
-#: admin/include/editor_event_cls.php:994
-#: admin/include/editor_event_cls.php:999
-#: admin/include/editor_event_cls.php:1041 admin/views/cms_pages.php:196
+#: admin/include/editor_event_cls.php:995
+#: admin/include/editor_event_cls.php:1000
+#: admin/include/editor_event_cls.php:1042 admin/views/cms_pages.php:196
 #: admin/views/edit_address.php:87 admin/views/edit_address.php:278
 #: admin/views/edit_repository.php:70 admin/views/edit_repository.php:229
-#: admin/views/edit_source.php:160 admin/views/edit_source.php:371
+#: admin/views/edit_source.php:194 admin/views/edit_source.php:405
 #: admin/views/editor_person.php:1238 admin/views/editor_person.php:1702
 #: admin/views/editor_relation.php:1051 admin/views/index_admin.php:663
-#: admin/views/thumbs.php:404 include/calculate_age_cls.php:371
+#: admin/views/thumbs.php:348 include/calculate_age_cls.php:371
 #: include/calculate_age_cls.php:393 include/calculate_age_cls.php:497
 #: include/calculate_age_cls.php:519 views/fanchart.php:657
 msgid "or"
 msgstr "nebo"
 
-#: admin/include/editor_event_cls.php:1012
+#: admin/include/editor_event_cls.php:1013
 msgid "Select role or type other role:"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:1016
+#: admin/include/editor_event_cls.php:1017
 #, fuzzy
 #| msgid "Select place"
 msgid "Select role"
 msgstr "Vyberte místo"
 
-#: admin/include/editor_event_cls.php:1022
+#: admin/include/editor_event_cls.php:1023
 #, fuzzy
 #| msgid "witness"
 msgid "Witness"
 msgstr "svědek"
 
-#: admin/include/editor_event_cls.php:1036
-#: admin/include/editor_event_cls.php:1043
+#: admin/include/editor_event_cls.php:1037
+#: admin/include/editor_event_cls.php:1044
 #, fuzzy
 #| msgid "Other name"
 msgid "Other role"
 msgstr "Jiné jméno"
 
-#: admin/include/editor_event_cls.php:1209
+#: admin/include/editor_event_cls.php:1210
 #: admin/include/editor_relation_select.php:110 admin/views/editor.php:664
 #: admin/views/editor_person.php:249 admin/views/editor_relation.php:63
 #: admin/views/editor_relation.php:272 admin/views/editor_relation.php:305
-#: admin/views/tree_check_invalid.php:201 include/calculate_age_cls.php:307
+#: admin/views/tree_check_invalid.php:250 include/calculate_age_cls.php:307
 #: include/calculate_age_cls.php:324 include/calculate_age_cls.php:332
 #: include/language_date.php:102 include/language_date.php:106
 #: include/language_date.php:110 include/language_date.php:125
@@ -590,165 +593,165 @@ msgstr "Jiné jméno"
 msgid "and"
 msgstr "a"
 
-#: admin/include/editor_event_cls.php:1290
-#: admin/include/editor_event_cls.php:1303
+#: admin/include/editor_event_cls.php:1291
+#: admin/include/editor_event_cls.php:1304
 msgid "Selected colour"
 msgstr "Vybraná barva"
 
-#: admin/include/editor_event_cls.php:1306
+#: admin/include/editor_event_cls.php:1307
 msgid "Change colour mark by person"
 msgstr "Změňte značku barev osoby"
 
-#: admin/include/editor_event_cls.php:1307
+#: admin/include/editor_event_cls.php:1308
 msgid "Colour 1"
 msgstr "Barva 1"
 
-#: admin/include/editor_event_cls.php:1308
+#: admin/include/editor_event_cls.php:1309
 msgid "Colour 2"
 msgstr "Barva 2"
 
-#: admin/include/editor_event_cls.php:1309
+#: admin/include/editor_event_cls.php:1310
 msgid "Colour 3"
 msgstr "Barva 3"
 
-#: admin/include/editor_event_cls.php:1310
+#: admin/include/editor_event_cls.php:1311
 msgid "Colour 4"
 msgstr "Barva 4"
 
-#: admin/include/editor_event_cls.php:1311
+#: admin/include/editor_event_cls.php:1312
 msgid "Colour 5"
 msgstr "Barva 5"
 
-#: admin/include/editor_event_cls.php:1312
+#: admin/include/editor_event_cls.php:1313
 msgid "Colour 6"
 msgstr "Barva 6"
 
-#: admin/include/editor_event_cls.php:1313
+#: admin/include/editor_event_cls.php:1314
 msgid "Colour 7"
 msgstr "Barva 7"
 
-#: admin/include/editor_event_cls.php:1314
+#: admin/include/editor_event_cls.php:1315
 msgid "Colour 8"
 msgstr "Barva 8"
 
-#: admin/include/editor_event_cls.php:1315
+#: admin/include/editor_event_cls.php:1316
 msgid "Colour 9"
 msgstr "Barva 9"
 
-#: admin/include/editor_event_cls.php:1316
+#: admin/include/editor_event_cls.php:1317
 msgid "Colour 10"
 msgstr "Barva 10"
 
-#: admin/include/editor_event_cls.php:1317
+#: admin/include/editor_event_cls.php:1318
 msgid "Colour 11"
 msgstr "Barva 11"
 
-#: admin/include/editor_event_cls.php:1318
+#: admin/include/editor_event_cls.php:1319
 msgid "Colour 12"
 msgstr "Barva 12"
 
-#: admin/include/editor_event_cls.php:1319
+#: admin/include/editor_event_cls.php:1320
 msgid "Colour 13"
 msgstr "Barva 13"
 
-#: admin/include/editor_event_cls.php:1320
+#: admin/include/editor_event_cls.php:1321
 msgid "Colour 14"
 msgstr "Barva 14"
 
-#: admin/include/editor_event_cls.php:1326
+#: admin/include/editor_event_cls.php:1327
 msgid "Also change"
 msgstr "Také změnit"
 
-#: admin/include/editor_event_cls.php:1328 admin/include/editor_inc.php:630
+#: admin/include/editor_event_cls.php:1329 admin/include/editor_inc.php:630
 #: admin/views/gedcom_export.php:256 app/model/family.php:263
 #: include/person_cls.php:1025 include/person_cls.php:1026
 #: views/hourglass.php:160
 msgid "Descendants"
 msgstr "Potomci"
 
-#: admin/include/editor_event_cls.php:1329 admin/include/editor_inc.php:631
+#: admin/include/editor_event_cls.php:1330 admin/include/editor_inc.php:631
 #: admin/views/gedcom_export.php:274 app/model/ancestor.php:176
 #: include/person_cls.php:1034 include/person_cls.php:1035
 #: views/hourglass.php:140
 msgid "Ancestors"
 msgstr "Předci"
 
-#: admin/include/editor_event_cls.php:1379
-#: admin/include/editor_event_cls.php:1859
+#: admin/include/editor_event_cls.php:1380
+#: admin/include/editor_event_cls.php:1860
 msgid "German Rufname"
 msgstr "Německé Rufname"
 
-#: admin/include/editor_event_cls.php:1432
+#: admin/include/editor_event_cls.php:1433
 msgid "Baptise"
 msgstr "Pokřtít"
 
-#: admin/include/editor_event_cls.php:1448
+#: admin/include/editor_event_cls.php:1449
 msgid "Settling"
 msgstr "Zúčtování"
 
-#: admin/include/editor_event_cls.php:1460
+#: admin/include/editor_event_cls.php:1461
 msgid "Characteristics"
 msgstr "Charakteristika"
 
-#: admin/include/editor_event_cls.php:1470 admin/views/editor_person.php:1380
+#: admin/include/editor_event_cls.php:1471 admin/views/editor_person.php:1380
 msgid "Buried"
 msgstr "Pohřben(a)"
 
-#: admin/include/editor_event_cls.php:1477
+#: admin/include/editor_event_cls.php:1478
 msgid "Will"
 msgstr "Závěť"
 
-#: admin/include/editor_event_cls.php:1484 views/anniversary.php:62
+#: admin/include/editor_event_cls.php:1485 views/anniversary.php:62
 #: views/anniversary.php:217
 msgid "Religious"
 msgstr "Náboženské"
 
-#: admin/include/editor_event_cls.php:1493 include/language_event.php:27
+#: admin/include/editor_event_cls.php:1494 include/language_event.php:27
 msgid "Education"
 msgstr "Vzdělání"
 
-#: admin/include/editor_event_cls.php:1500
+#: admin/include/editor_event_cls.php:1501
 msgid "Social"
 msgstr "Sociální"
 
-#: admin/include/editor_event_cls.php:1508
+#: admin/include/editor_event_cls.php:1509
 msgid "LDS"
 msgstr "LDS"
 
-#: admin/include/editor_event_cls.php:1518
+#: admin/include/editor_event_cls.php:1519
 msgid "Jewish"
 msgstr "Židovský"
 
-#: admin/include/editor_event_cls.php:1548
-#: admin/include/editor_event_cls.php:1827
+#: admin/include/editor_event_cls.php:1549
+#: admin/include/editor_event_cls.php:1828
 msgid "e.g. Lt. Cmndr."
 msgstr "např. Lt. Cmndr."
 
-#: admin/include/editor_event_cls.php:1550
-#: admin/include/editor_event_cls.php:1828
+#: admin/include/editor_event_cls.php:1551
+#: admin/include/editor_event_cls.php:1829
 msgid "e.g. Jr."
 msgstr "např. Jr."
 
-#: admin/include/editor_event_cls.php:1552
-#: admin/include/editor_event_cls.php:1829
+#: admin/include/editor_event_cls.php:1553
+#: admin/include/editor_event_cls.php:1830
 msgid "e.g. Jhr., Jkvr."
 msgstr "např. Jhr., Jkvr."
 
-#: admin/include/editor_event_cls.php:1554
-#: admin/include/editor_event_cls.php:1830
+#: admin/include/editor_event_cls.php:1555
+#: admin/include/editor_event_cls.php:1831
 msgid "e.g. Prof., Dr."
 msgstr "např. Prof., Dr."
 
-#: admin/include/editor_event_cls.php:1556
-#: admin/include/editor_event_cls.php:1831
+#: admin/include/editor_event_cls.php:1557
+#: admin/include/editor_event_cls.php:1832
 msgid "e.g. Lord of Amsterdam"
 msgstr "např. Lord of Amsterdam"
 
-#: admin/include/editor_event_cls.php:1571
-#: admin/include/editor_event_cls.php:1669
-#: admin/include/editor_event_cls.php:1702 admin/include/editor_sources.php:345
-#: admin/include/editor_sources.php:407 admin/views/edit_repository.php:157
-#: admin/views/edit_source.php:255 admin/views/editor.php:1249
+#: admin/include/editor_event_cls.php:1572
+#: admin/include/editor_event_cls.php:1670
+#: admin/include/editor_event_cls.php:1703 admin/include/editor_sources.php:348
+#: admin/include/editor_sources.php:410 admin/views/edit_repository.php:157
+#: admin/views/edit_source.php:289 admin/views/editor.php:1249
 #: admin/views/editor.php:1283 admin/views/editor.php:1303
 #: admin/views/editor.php:1323 admin/views/editor.php:1662
 #: admin/views/editor_person.php:670 admin/views/editor_person.php:768
@@ -764,11 +767,11 @@ msgstr "např. Lord of Amsterdam"
 msgid "Date"
 msgstr "Datum"
 
-#: admin/include/editor_event_cls.php:1595
-#: admin/include/editor_event_cls.php:1676
-#: admin/include/editor_event_cls.php:1709 admin/include/editor_sources.php:352
-#: admin/include/editor_sources.php:414 admin/views/edit_address.php:141
-#: admin/views/edit_repository.php:167 admin/views/edit_source.php:263
+#: admin/include/editor_event_cls.php:1596
+#: admin/include/editor_event_cls.php:1677
+#: admin/include/editor_event_cls.php:1710 admin/include/editor_sources.php:355
+#: admin/include/editor_sources.php:417 admin/views/edit_address.php:141
+#: admin/views/edit_repository.php:167 admin/views/edit_source.php:297
 #: admin/views/editor.php:1255 admin/views/editor.php:1289
 #: admin/views/editor.php:1309 admin/views/editor.php:1329
 #: admin/views/editor.php:1601 admin/views/editor_person.php:677
@@ -785,11 +788,11 @@ msgstr "Datum"
 msgid "Place"
 msgstr "Místo"
 
-#: admin/include/editor_event_cls.php:1617
-#: admin/include/editor_event_cls.php:1683
-#: admin/include/editor_event_cls.php:1716 admin/include/editor_sources.php:366
+#: admin/include/editor_event_cls.php:1618
+#: admin/include/editor_event_cls.php:1684
+#: admin/include/editor_event_cls.php:1717 admin/include/editor_sources.php:369
 #: admin/views/edit_address.php:253 admin/views/edit_repository.php:187
-#: admin/views/edit_source.php:344 admin/views/editor.php:1655
+#: admin/views/edit_source.php:378 admin/views/editor.php:1655
 #: admin/views/editor_person.php:445 admin/views/editor_person.php:704
 #: admin/views/editor_person.php:795 admin/views/editor_person.php:885
 #: admin/views/editor_person.php:980 admin/views/editor_person.php:1066
@@ -799,15 +802,15 @@ msgstr "Místo"
 #: admin/views/editor_relation.php:686 admin/views/editor_relation.php:762
 #: admin/views/editor_relation.php:876 admin/views/editor_relation.php:916
 #: admin/views/groups.php:497 admin/views/groups.php:505
-#: admin/views/groups.php:513 admin/views/settings_homepage.php:226
-#: admin/views/settings_homepage.php:334 admin/views/settings_homepage.php:421
+#: admin/views/groups.php:513 admin/views/settings_homepage.php:94
+#: admin/views/settings_homepage.php:134 admin/views/settings_homepage.php:210
 #: include/process_text.php:120 include/process_text.php:122
 #: views/addresses.php:44 views/family.php:1330 views/list.php:307
 #: views/list.php:314
 msgid "Text"
 msgstr "Text"
 
-#: admin/include/editor_event_cls.php:1625 admin/include/editor_sources.php:71
+#: admin/include/editor_event_cls.php:1626 admin/include/editor_sources.php:71
 #: admin/include/editor_sources.php:77 admin/include/editor_sources.php:83
 #: admin/include/editor_sources.php:89 admin/include/editor_sources.php:95
 #: admin/include/editor_sources.php:101 admin/include/editor_sources.php:107
@@ -817,7 +820,7 @@ msgstr "Text"
 #: admin/include/editor_sources.php:155 admin/include/editor_sources.php:161
 #: admin/include/editor_sources.php:167 admin/include/editor_sources.php:173
 #: admin/include/editor_sources.php:179 admin/include/editor_sources.php:185
-#: admin/include/editor_sources.php:277 admin/include/editor_sources.php:310
+#: admin/include/editor_sources.php:280 admin/include/editor_sources.php:313
 #: admin/views/edit_address.php:185 admin/views/edit_address.php:190
 #: admin/views/edit_address.php:198 admin/views/editor.php:1031
 #: admin/views/editor.php:1039 admin/views/editor.php:1700
@@ -835,88 +838,88 @@ msgstr "Text"
 msgid "Source"
 msgstr "Zdroj"
 
-#: admin/include/editor_event_cls.php:1733
+#: admin/include/editor_event_cls.php:1734
 msgid "Upload new image"
 msgstr "Nahrajte nový obrázek"
 
-#: admin/include/editor_event_cls.php:1735 admin/update/install_update.php:605
-#: admin/views/backup.php:110 admin/views/gedcom.php:149
-#: admin/views/settings.php:98 admin/views/settings.php:467
+#: admin/include/editor_event_cls.php:1736 admin/update/install_update.php:605
+#: admin/views/backup.php:110 admin/views/gedcom.php:67
+#: admin/views/settings.php:99 admin/views/settings.php:652
 msgid "Upload"
 msgstr "Nahrát"
 
-#: admin/include/editor_event_cls.php:1837 include/person_cls.php:1835
+#: admin/include/editor_event_cls.php:1838 include/person_cls.php:1835
 #: include/person_cls.php:1841
 msgid "Also known as"
 msgstr "Také známý jako"
 
-#: admin/include/editor_event_cls.php:1838 include/language_event.php:80
+#: admin/include/editor_event_cls.php:1839 include/language_event.php:80
 msgid "alias name"
 msgstr "přezdívka"
 
-#: admin/include/editor_event_cls.php:1839 include/language_event.php:83
+#: admin/include/editor_event_cls.php:1840 include/language_event.php:83
 msgid "Short name (for reports)"
 msgstr "Krátké jméno (pro zprávy)"
 
-#: admin/include/editor_event_cls.php:1840 include/language_event.php:86
+#: admin/include/editor_event_cls.php:1841 include/language_event.php:86
 msgid "Adopted name"
 msgstr "Přijaté jméno"
 
-#: admin/include/editor_event_cls.php:1844 admin/views/editor_person.php:426
+#: admin/include/editor_event_cls.php:1845 admin/views/editor_person.php:426
 #: include/language_event.php:89
 msgid "Hebrew name"
 msgstr "Hebrejské jméno"
 
-#: admin/include/editor_event_cls.php:1847 include/language_event.php:92
+#: admin/include/editor_event_cls.php:1848 include/language_event.php:92
 msgid "Census name"
 msgstr "Census jméno"
 
-#: admin/include/editor_event_cls.php:1848 include/language_event.php:95
+#: admin/include/editor_event_cls.php:1849 include/language_event.php:95
 msgid "Married name"
 msgstr "Manželské jméno"
 
-#: admin/include/editor_event_cls.php:1849 include/language_event.php:98
+#: admin/include/editor_event_cls.php:1850 include/language_event.php:98
 msgid "Given name"
 msgstr "Křestní jméno"
 
-#: admin/include/editor_event_cls.php:1850 include/language_event.php:101
+#: admin/include/editor_event_cls.php:1851 include/language_event.php:101
 msgid "Farm name"
 msgstr "Farmářské jméno"
 
-#: admin/include/editor_event_cls.php:1851 include/language_event.php:104
+#: admin/include/editor_event_cls.php:1852 include/language_event.php:104
 msgid "Birth name"
 msgstr "Rodné jméno"
 
-#: admin/include/editor_event_cls.php:1852 include/language_event.php:107
+#: admin/include/editor_event_cls.php:1853 include/language_event.php:107
 msgid "Indian name"
 msgstr "Indánské jméno"
 
-#: admin/include/editor_event_cls.php:1853 include/language_event.php:110
+#: admin/include/editor_event_cls.php:1854 include/language_event.php:110
 msgid "Formal name"
 msgstr "Formální jméno"
 
-#: admin/include/editor_event_cls.php:1854 include/language_event.php:113
+#: admin/include/editor_event_cls.php:1855 include/language_event.php:113
 msgid "Current name"
 msgstr "Aktuální jméno"
 
-#: admin/include/editor_event_cls.php:1855 include/language_event.php:116
+#: admin/include/editor_event_cls.php:1856 include/language_event.php:116
 msgid "Soldier name"
 msgstr "Vojenské jméno"
 
-#: admin/include/editor_event_cls.php:1856 include/language_event.php:122
+#: admin/include/editor_event_cls.php:1857 include/language_event.php:122
 msgid "Religious name"
 msgstr "Náboženské jméno"
 
-#: admin/include/editor_event_cls.php:1857 include/language_event.php:125
+#: admin/include/editor_event_cls.php:1858 include/language_event.php:125
 msgid "Other name"
 msgstr "Jiné jméno"
 
-#: admin/include/editor_event_cls.php:1858 include/language_event.php:119
+#: admin/include/editor_event_cls.php:1859 include/language_event.php:119
 msgid "Formerly known as"
 msgstr "Dříve známý jako"
 
-#: admin/include/editor_inc.php:277 admin/views/settings_admin.php:116
-#: admin/views/settings_admin.php:135
+#: admin/include/editor_inc.php:277 admin/models/settings_admin.php:125
+#: admin/models/settings_admin.php:144
 msgid "Photo upload failed, check folder rights"
 msgstr "Nahrávání fotografií selhalo, zkontrolujte práva složky"
 
@@ -940,23 +943,23 @@ msgstr "Také odstraňte barevné značky od"
 #: admin/include/editor_user_settings.php:100 admin/models/editor.php:1358
 #: admin/models/editor.php:1923 admin/views/cms_pages.php:37
 #: admin/views/cms_pages.php:60 admin/views/edit_address.php:35
-#: admin/views/edit_repository.php:31 admin/views/edit_source.php:102
+#: admin/views/edit_repository.php:31 admin/views/edit_source.php:121
 #: admin/views/editor.php:339 admin/views/editor.php:356
-#: admin/views/editor_relation.php:246 admin/views/gedcom.php:171
+#: admin/views/editor_relation.php:246 admin/views/gedcom.php:88
 #: admin/views/gedcom_export.php:462 admin/views/gedcom_export.php:478
 #: admin/views/gedcom_export.php:495 admin/views/gedcom_export.php:540
 #: admin/views/groups.php:50 admin/views/groups.php:532
 #: admin/views/install.php:304 admin/views/maps_locations.php:98
 #: admin/views/maps_locations.php:120 admin/views/maps_locations.php:199
-#: admin/views/notes.php:91 admin/views/settings.php:123
-#: admin/views/settings.php:134 admin/views/settings.php:150
-#: admin/views/settings.php:161 admin/views/settings.php:171
-#: admin/views/settings.php:193 admin/views/settings.php:203
-#: admin/views/settings.php:214 admin/views/settings.php:243
-#: admin/views/settings.php:530 admin/views/settings_homepage.php:616
-#: admin/views/thumbs.php:505 admin/views/tree_merge.php:986
-#: admin/views/tree_merge.php:999 admin/views/tree_merge.php:1012
-#: admin/views/tree_merge.php:1029 admin/views/trees.php:71
+#: admin/views/notes.php:91 admin/views/settings.php:147
+#: admin/views/settings.php:162 admin/views/settings.php:188
+#: admin/views/settings.php:211 admin/views/settings.php:226
+#: admin/views/settings.php:268 admin/views/settings.php:280
+#: admin/views/settings.php:295 admin/views/settings.php:332
+#: admin/views/settings.php:804 admin/views/settings_homepage.php:409
+#: admin/views/thumbs.php:450 admin/views/tree_merge.php:892
+#: admin/views/tree_merge.php:905 admin/views/tree_merge.php:918
+#: admin/views/tree_merge.php:935 admin/views/trees.php:29
 #: admin/views/users.php:19 views/mailform.php:79
 msgid "Yes"
 msgstr "Ano"
@@ -965,23 +968,23 @@ msgstr "Ano"
 #: admin/include/editor_user_settings.php:106 admin/models/editor.php:1359
 #: admin/models/editor.php:1924 admin/views/cms_pages.php:38
 #: admin/views/cms_pages.php:61 admin/views/edit_address.php:36
-#: admin/views/edit_repository.php:32 admin/views/edit_source.php:103
+#: admin/views/edit_repository.php:32 admin/views/edit_source.php:122
 #: admin/views/editor.php:340 admin/views/editor.php:357
-#: admin/views/editor_relation.php:247 admin/views/gedcom.php:172
+#: admin/views/editor_relation.php:247 admin/views/gedcom.php:89
 #: admin/views/gedcom_export.php:463 admin/views/gedcom_export.php:479
 #: admin/views/gedcom_export.php:496 admin/views/gedcom_export.php:539
 #: admin/views/groups.php:51 admin/views/groups.php:533
 #: admin/views/install.php:305 admin/views/maps_locations.php:99
 #: admin/views/maps_locations.php:121 admin/views/maps_locations.php:200
-#: admin/views/notes.php:92 admin/views/settings.php:124
-#: admin/views/settings.php:135 admin/views/settings.php:151
-#: admin/views/settings.php:162 admin/views/settings.php:172
-#: admin/views/settings.php:194 admin/views/settings.php:204
-#: admin/views/settings.php:215 admin/views/settings.php:244
-#: admin/views/settings.php:531 admin/views/settings_homepage.php:617
-#: admin/views/thumbs.php:506 admin/views/tree_merge.php:987
-#: admin/views/tree_merge.php:1000 admin/views/tree_merge.php:1013
-#: admin/views/tree_merge.php:1030 admin/views/trees.php:72
+#: admin/views/notes.php:92 admin/views/settings.php:148
+#: admin/views/settings.php:163 admin/views/settings.php:189
+#: admin/views/settings.php:212 admin/views/settings.php:227
+#: admin/views/settings.php:269 admin/views/settings.php:281
+#: admin/views/settings.php:296 admin/views/settings.php:333
+#: admin/views/settings.php:805 admin/views/settings_homepage.php:410
+#: admin/views/thumbs.php:451 admin/views/tree_merge.php:893
+#: admin/views/tree_merge.php:906 admin/views/tree_merge.php:919
+#: admin/views/tree_merge.php:936 admin/views/trees.php:30
 #: admin/views/users.php:20 views/mailform.php:80
 msgid "No"
 msgstr "Ne"
@@ -1084,7 +1087,7 @@ msgstr "osoba"
 #: admin/include/editor_sources.php:125 admin/include/editor_sources.php:179
 #: admin/include/editor_sources.php:185 admin/views/edit_repository.php:137
 #: admin/views/editor.php:1728 admin/views/gedcom_export.php:337
-#: admin/views/tree_merge.php:1550 app/controller/addressController.php:31
+#: admin/views/tree_merge.php:1447 app/controller/addressController.php:31
 #: app/controller/addressesController.php:34
 #: app/controller/cms_pagesController.php:29 views/address.php:12
 #: views/source.php:111
@@ -1127,115 +1130,116 @@ msgstr "vztah"
 #: admin/views/cms_pages.php:254 admin/views/cms_pages.php:281
 #: admin/views/edit_address.php:274 admin/views/edit_address.php:277
 #: admin/views/edit_rename_place.php:82 admin/views/edit_repository.php:225
-#: admin/views/edit_repository.php:228 admin/views/edit_source.php:368
-#: admin/views/edit_source.php:370 admin/views/editor_person.php:356
+#: admin/views/edit_repository.php:228 admin/views/edit_source.php:402
+#: admin/views/edit_source.php:404 admin/views/editor_person.php:356
 #: admin/views/editor_person.php:1701 admin/views/editor_relation.php:271
 #: admin/views/editor_relation.php:1049 admin/views/index_admin.php:170
 #: admin/views/language_editor.php:264 admin/views/maps_worldmap.php:103
 #: admin/views/maps_worldmap.php:138 admin/views/prefix_editor.php:27
-#: admin/views/tree_merge.php:1042
+#: admin/views/tree_merge.php:948
 msgid "Save"
 msgstr "Uložit"
 
-#: admin/include/editor_sources.php:264 admin/views/editor_relation.php:1178
+#: admin/include/editor_sources.php:266 admin/views/editor_relation.php:1178
 msgid "Drag to change order (saves automatically)"
 msgstr "Přetáhnout pro změnu pořadí (uloží se automaticky)"
 
-#: admin/include/editor_sources.php:264 admin/views/editor_relation.php:1178
+#: admin/include/editor_sources.php:266 admin/views/editor_relation.php:1178
 msgid "Drag to change order"
 msgstr "Přetáhnout pro změnu pořadí"
 
-#: admin/include/editor_sources.php:359 admin/views/edit_source.php:296
-#: admin/views/settings_homepage.php:517 include/person_cls.php:1927
+#: admin/include/editor_sources.php:362 admin/views/edit_source.php:330
+#: admin/views/settings_homepage.php:306 include/person_cls.php:1927
 #: include/person_cls.php:1928 include/person_cls.php:1930
 #: include/person_cls.php:1931 include/show_source_pdf.php:90
 #: views/list.php:333 views/list.php:340 views/source.php:53
 msgid "Own code"
 msgstr "Vlastní kód"
 
-#: admin/include/editor_sources.php:377
+#: admin/include/editor_sources.php:380
 msgid "Sourcerole"
 msgstr "Role zdroje"
 
-#: admin/include/editor_sources.php:380
+#: admin/include/editor_sources.php:383
 msgid "e.g. Writer, Brother, Sister, Father."
 msgstr "např. Spisovatel, Bratr, Sestra, Otec."
 
-#: admin/include/editor_sources.php:385 admin/views/edit_source.php:336
+#: admin/include/editor_sources.php:388 admin/views/edit_source.php:370
 #: include/show_source_pdf.php:126 include/tfpdf/tfpdfextend.php:1083
 #: views/source.php:71
 msgid "Page"
 msgstr "Strana"
 
-#: admin/include/editor_sources.php:388
+#: admin/include/editor_sources.php:391
 msgid "Page in source."
 msgstr "Stránka ve zdroji."
 
-#: admin/include/editor_sources.php:394
+#: admin/include/editor_sources.php:397
 msgid "Quality"
 msgstr "Kvalita"
 
-#: admin/include/editor_sources.php:397
+#: admin/include/editor_sources.php:400
 msgid "quality: default"
 msgstr "kvalita: výchozí"
 
-#: admin/include/editor_sources.php:398 include/show_quality.php:7
+#: admin/include/editor_sources.php:401 include/show_quality.php:7
 msgid "quality: unreliable evidence or estimated data"
 msgstr "kvalita: nespolehlivé důkazy nebo odhadované údaje"
 
-#: admin/include/editor_sources.php:399 include/show_quality.php:10
+#: admin/include/editor_sources.php:402 include/show_quality.php:10
 msgid "quality: questionable reliability of evidence"
 msgstr "kvalita: pochybná spolehlivost důkazů"
 
-#: admin/include/editor_sources.php:400 include/show_quality.php:13
+#: admin/include/editor_sources.php:403 include/show_quality.php:13
 msgid "quality: data from secondary evidence"
 msgstr "kvalita: data ze sekundárních důkazů"
 
-#: admin/include/editor_sources.php:401 include/show_quality.php:16
+#: admin/include/editor_sources.php:404 include/show_quality.php:16
 msgid "quality: data from direct source"
 msgstr "kvalita: data z přímého zdroje"
 
-#: admin/include/editor_sources.php:422
+#: admin/include/editor_sources.php:425
 msgid "Extra text"
 msgstr "Extra text"
 
-#: admin/include/editor_sources.php:454
+#: admin/include/editor_sources.php:457
 msgid "Search existing source"
 msgstr "Hledat existující zdroj"
 
-#: admin/include/editor_sources.php:455 views/list.php:219 views/list.php:226
+#: admin/include/editor_sources.php:461 admin/views/edit_source.php:136
+#: views/list.php:219 views/list.php:226
 msgid "gedcomnumber (ID)"
 msgstr "gedcomnumber (ID)"
 
-#: admin/include/editor_sources.php:459
+#: admin/include/editor_sources.php:474
 msgid "Select existing source"
 msgstr "Vybratat existující zdroj"
 
-#: admin/include/editor_sources.php:479
+#: admin/include/editor_sources.php:494
 msgid "Results are limited, use search to find more sources."
 msgstr "Výsledky jsou omezené, použijte vyhledávání k nalezení dalších zdrojů."
 
-#: admin/include/editor_sources.php:482 admin/views/cal_date.php:36
+#: admin/include/editor_sources.php:498 admin/views/cal_date.php:36
 #: admin/views/edit_rename_place.php:53 admin/views/editor_person.php:309
 #: admin/views/notes.php:78 admin/views/notes.php:208
-#: admin/views/statistics_date.php:58 admin/views/statistics_visitors.php:59
-#: admin/views/tree_check_changes.php:252
+#: admin/views/statistics_date.php:49 admin/views/statistics_visitors.php:59
+#: admin/views/tree_check_changes.php:250
 msgid "Select"
 msgstr "Vybrat"
 
-#: admin/include/editor_sources.php:485
+#: admin/include/editor_sources.php:503
 msgid "Or:"
 msgstr "Nebo:"
 
-#: admin/include/editor_sources.php:497
+#: admin/include/editor_sources.php:515
 msgid "add new source"
 msgstr "přidat nový zdroj"
 
-#: admin/include/editor_sources.php:558
+#: admin/include/editor_sources.php:576
 msgid "Add another source"
 msgstr "Přidat další zdroj"
 
-#: admin/include/editor_sources.php:560 admin/views/edit_source.php:163
+#: admin/include/editor_sources.php:578 admin/views/edit_source.php:197
 msgid "Add source"
 msgstr "Přidejte zdroj"
 
@@ -1257,7 +1261,7 @@ msgstr ""
 
 #: admin/include/editor_user_settings.php:76 admin/views/groups.php:617
 #: admin/views/maps_locations.php:188 admin/views/notes.php:22
-#: admin/views/trees.php:80 views/help.php:68 views/help.php:72
+#: admin/views/trees.php:38 views/help.php:68 views/help.php:72
 #: views/help.php:76 views/help.php:81 views/layout.php:285
 #: views/layout.php:508 views/list.php:152 views/list.php:443
 #: views/list.php:643 views/statistics.php:21
@@ -1279,17 +1283,16 @@ msgstr "Upravit strom?"
 #: admin/views/groups.php:391 admin/views/groups.php:438
 #: admin/views/groups.php:568 admin/views/groups.php:619
 #: admin/views/groups.php:712 admin/views/log.php:98
-#: admin/views/maps_settings.php:41 admin/views/settings.php:31
-#: admin/views/settings.php:143 admin/views/settings.php:178
-#: admin/views/settings.php:257 admin/views/settings.php:349
-#: admin/views/settings.php:453 admin/views/settings.php:490
-#: admin/views/settings.php:506 admin/views/settings.php:525
-#: admin/views/settings.php:545 admin/views/settings_homepage.php:159
-#: admin/views/settings_homepage.php:519 admin/views/settings_homepage.php:602
-#: admin/views/settings_special.php:51 admin/views/thumbs.php:125
-#: admin/views/tree_data.php:85 admin/views/tree_text.php:81
-#: admin/views/tree_text.php:83 admin/views/users.php:56
-#: views/user_settings.php:90
+#: admin/views/maps_settings.php:41 admin/views/settings.php:33
+#: admin/views/settings.php:178 admin/views/settings.php:240
+#: admin/views/settings.php:361 admin/views/settings.php:502
+#: admin/views/settings.php:632 admin/views/settings.php:709
+#: admin/views/settings.php:744 admin/views/settings.php:794
+#: admin/views/settings_homepage.php:21 admin/views/settings_homepage.php:308
+#: admin/views/settings_homepage.php:395 admin/views/settings_special.php:51
+#: admin/views/thumbs.php:75 admin/views/tree_data.php:60
+#: admin/views/tree_text.php:71 admin/views/tree_text.php:73
+#: admin/views/users.php:56 views/user_settings.php:90
 msgid "Change"
 msgstr "Změnit"
 
@@ -1297,7 +1300,7 @@ msgstr "Změnit"
 msgid "Use user-group setting"
 msgstr "Použijte nastavení uživatelské skupiny"
 
-#: admin/include/gedcom_export.php:2081
+#: admin/include/gedcom_export.php:2065
 msgid "No valid family number."
 msgstr "Žádné platné číslo rodiny."
 
@@ -1357,11 +1360,11 @@ msgstr ""
 msgid "%s status"
 msgstr "%s stav"
 
-#: admin/include/update.php:236 admin/views/install.php:1158
+#: admin/include/update.php:245 admin/views/install.php:1158
 msgid "All updates completed, click at \"Mainmenu\""
 msgstr "Všechny aktualizace dokončeny, klikněte na \"Hlavní menu\""
 
-#: admin/include/update.php:237 admin/views/install.php:1159
+#: admin/include/update.php:246 admin/views/install.php:1159
 #: admin/views/menu.php:48
 msgid "Main menu"
 msgstr "Hlavní menu"
@@ -1418,8 +1421,8 @@ msgstr "vytváření humo_cms_pages..."
 #: admin/include/update_cls.php:2921 admin/include/update_cls.php:3058
 #: admin/include/update_cls.php:3240 admin/include/update_cls.php:3377
 #: admin/include/update_cls.php:3520 admin/include/update_cls.php:3599
-#: admin/include/update_cls.php:3692 admin/include/update_cls.php:3880
-#: admin/include/update_cls.php:4016
+#: admin/include/update_cls.php:3692 admin/include/update_cls.php:3881
+#: admin/include/update_cls.php:4017 admin/include/update_cls.php:4149
 msgid "Update in progress..."
 msgstr "Aktualizace probíhá..."
 
@@ -1464,13 +1467,13 @@ msgstr "Ukázat/ skrýt témata"
 #: admin/index.php:584 admin/views/gedcom_export.php:361
 #: admin/views/maps.php:35 admin/views/maps_settings.php:24
 #: admin/views/menu.php:66 admin/views/settings_admin.php:8
-#: admin/views/settings_admin.php:249 admin/views/tree_merge.php:1133
+#: admin/views/settings_admin.php:39 admin/views/tree_merge.php:1039
 #: views/family.php:53 views/family.php:1319
 msgid "Settings"
 msgstr "Nastavení"
 
 #: admin/index.php:586 admin/index.php:588 admin/views/menu.php:67
-#: admin/views/settings_admin.php:252
+#: admin/views/settings_admin.php:44
 msgid "Homepage"
 msgstr "Domovská stránka"
 
@@ -1478,16 +1481,16 @@ msgstr "Domovská stránka"
 msgid "Homepage favourites"
 msgstr "Oblíbené na domovské stránce"
 
-#: admin/index.php:590 admin/views/settings_homepage.php:602
+#: admin/index.php:590 admin/views/settings_homepage.php:395
 msgid "Slideshow on the homepage"
 msgstr "Prezentace na domovské stránce"
 
 #: admin/index.php:594 admin/views/menu.php:68
-#: admin/views/settings_admin.php:255
+#: admin/views/settings_admin.php:49
 msgid "Special settings"
 msgstr "Speciální nastavení"
 
-#: admin/index.php:596 admin/views/settings_special.php:1
+#: admin/index.php:596 admin/views/settings_special.php:5
 msgid "Jewish settings"
 msgstr "Židovské nastavení"
 
@@ -1497,7 +1500,7 @@ msgid "Sitemap"
 msgstr "Mapa webu"
 
 #: admin/index.php:600 admin/views/cms_pages.php:8 admin/views/menu.php:69
-#: admin/views/settings_homepage.php:228 admin/views/settings_homepage.php:423
+#: admin/views/settings_homepage.php:96 admin/views/settings_homepage.php:212
 msgid "CMS Own pages"
 msgstr "Vlastní stránky CMS"
 
@@ -1521,20 +1524,20 @@ msgid "Family trees"
 msgstr "Rodokmeny"
 
 #: admin/index.php:610 admin/views/groups.php:231 admin/views/menu.php:82
-#: admin/views/tree_data.php:66
+#: admin/views/tree_data.php:41
 msgid "Pictures/ create thumbnails"
 msgstr "Obrázky/ vytvořit miniatury"
 
-#: admin/index.php:612 admin/views/gedcom.php:332 admin/views/thumbs.php:35
+#: admin/index.php:612 admin/views/gedcom.php:249 admin/views/thumbs.php:17
 msgid "Picture settings"
 msgstr "Nastavení obrázku"
 
-#: admin/index.php:613 admin/views/thumbs.php:38 admin/views/thumbs.php:180
-#: admin/views/thumbs.php:187
+#: admin/index.php:613 admin/views/thumbs.php:20 admin/views/thumbs.php:124
+#: admin/views/thumbs.php:131
 msgid "Create thumbnails"
 msgstr "Vytvořit miniatury"
 
-#: admin/index.php:614 admin/views/thumbs.php:44
+#: admin/index.php:614 admin/views/thumbs.php:26
 msgid "Photo album categories"
 msgstr "Kategorie fotoalb"
 
@@ -1542,26 +1545,26 @@ msgstr "Kategorie fotoalb"
 msgid "Notes"
 msgstr "Poznámky"
 
-#: admin/index.php:619 admin/views/menu.php:84 admin/views/tree_check.php:33
-#: admin/views/tree_check.php:48
+#: admin/index.php:619 admin/views/menu.php:84 admin/views/tree_check.php:11
+#: admin/views/tree_check.php:26
 msgid "Family tree data check"
 msgstr "Kontrola dat rodokmenu"
 
-#: admin/index.php:621 admin/views/tree_check.php:51
-#: admin/views/tree_check.php:69 admin/views/tree_check_consistency.php:38
+#: admin/index.php:621 admin/views/tree_check.php:29
+#: admin/views/tree_check.php:44 admin/views/tree_check_consistency.php:38
 msgid "Check consistency of dates"
 msgstr "Zkontrolujte konzistenci dat"
 
-#: admin/index.php:622 admin/views/tree_check.php:54
+#: admin/index.php:622 admin/views/tree_check.php:32
 msgid "Find invalid dates"
 msgstr "Najděte neplatná data"
 
-#: admin/index.php:623 admin/views/tree_check.php:57
-#: admin/views/tree_check.php:82
+#: admin/index.php:623 admin/views/tree_check.php:35
+#: admin/views/tree_check.php:57
 msgid "Check database integrity"
 msgstr "Zkontrolujte integritu databáze"
 
-#: admin/index.php:626 admin/views/menu.php:85 admin/views/tree_check.php:60
+#: admin/index.php:626 admin/views/menu.php:85 admin/views/tree_check.php:38
 msgid "View latest changes"
 msgstr "Zobrazit poslední změny"
 
@@ -1593,9 +1596,9 @@ msgstr "Statistika"
 msgid "Persons and families"
 msgstr "Osoby a rodiny"
 
-#: admin/index.php:642 admin/views/edit_source.php:86
+#: admin/index.php:642 admin/views/edit_source.php:105
 #: admin/views/groups.php:355 admin/views/menu.php:100
-#: admin/views/tree_merge.php:1700 app/controller/sourcesController.php:29
+#: admin/views/tree_merge.php:1592 app/controller/sourcesController.php:29
 #: include/show_sources.php:346 views/ancestor_report_pdf.php:375
 #: views/family.php:72 views/family_pdf.php:562 views/help.php:86
 #: views/layout.php:542 views/sources.php:16
@@ -1623,7 +1626,7 @@ msgid "Users"
 msgstr "Uživatelé"
 
 #: admin/index.php:652 admin/views/groups.php:33 admin/views/menu.php:114
-#: admin/views/thumbs.php:214
+#: admin/views/thumbs.php:158
 msgid "User groups"
 msgstr "Skupiny uživatelů"
 
@@ -1674,6 +1677,14 @@ msgstr ""
 msgid "Are you sure you want to remove this note?"
 msgstr "Opravdu chcete odstranit tuto poznámku?"
 
+#: admin/models/gedcom.php:47
+msgid "File successfully uploaded."
+msgstr "Soubor úspěšně nahrán."
+
+#: admin/models/gedcom.php:49 admin/models/gedcom.php:76
+msgid "Upload has failed."
+msgstr "Nahrávání selhalo."
+
 #: admin/models/index_admin.php:25
 msgid "Database connection status:"
 msgstr "Stav připojení k databázi:"
@@ -1714,10 +1725,27 @@ msgstr "V souboru db_login je problém, možná je použit starý soubor db_logi
 msgid "Saved"
 msgstr "Uložené"
 
-#: admin/models/language_editor.php:90 admin/views/thumbs.php:394
-#: admin/views/tree_text.php:25
+#: admin/models/language_editor.php:90 admin/views/thumbs.php:338
+#: admin/views/tree_text.php:15
 msgid "Language"
 msgstr "Jazyk"
+
+#: admin/models/settings_admin.php:118 admin/models/settings_admin.php:137
+msgid "Photo too large"
+msgstr "Obrázek je příliš velký"
+
+#: admin/models/settings_admin.php:123
+msgid "Changed favicon icon."
+msgstr "Změněna ikona favicon."
+
+#: admin/models/settings_admin.php:142
+msgid "Changed logo."
+msgstr "Změněné logo."
+
+#: admin/models/tree_text.php:17 admin/views/editor.php:1372
+#: include/show_tree_text.php:7 views/photoalbum.php:195
+msgid "NO NAME"
+msgstr "BEZE JMÉNA"
 
 #: admin/models/users.php:30 admin/models/users.php:48
 msgid "Error: user name probably allready exist."
@@ -2052,7 +2080,7 @@ msgstr ""
 "Doporučujeme stáhnout nejnovější záložní soubor pro případ, že by data na "
 "vašem serveru (včetně záložního souboru) mohla být smazána nebo poškozena."
 
-#: admin/views/backup.php:91 admin/views/backup.php:128
+#: admin/views/backup.php:91 admin/views/backup.php:130
 msgid "Restore database from backup file"
 msgstr "Obnovte databázi ze záložního souboru"
 
@@ -2069,33 +2097,33 @@ msgstr ""
 msgid "Optional: upload a database backup file"
 msgstr "Volitelné: nahrajte záložní soubor databáze"
 
-#: admin/views/backup.php:122
+#: admin/views/backup.php:123
 msgid "Starting to restore database. This may take some time. Please wait..."
 msgstr ""
 "Začíná se obnovovat databáze. To může nějakou dobu trvat. Prosím, čekejte..."
 
-#: admin/views/backup.php:137
+#: admin/views/backup.php:139
 msgid "Most recent backup!"
 msgstr "Nejnovější záloha!"
 
-#: admin/views/backup.php:143
+#: admin/views/backup.php:145
 msgid "Restore database"
 msgstr "Obnovit databázi"
 
-#: admin/views/backup.php:147 admin/views/index_admin.php:422
+#: admin/views/backup.php:150 admin/views/index_admin.php:422
 msgid "No backup file found!"
 msgstr "Žádný záložní soubor nebyl nalezen!"
 
-#: admin/views/backup.php:196
+#: admin/views/backup.php:198
 msgid "Creating backup file. This may take some time. Please wait..."
 msgstr ""
 "Vytváření záložního souboru. To může nějakou dobu trvat. Prosím, čekejte..."
 
-#: admin/views/backup.php:224
+#: admin/views/backup.php:226
 msgid "Skipped backup of table:"
 msgstr "Přeskočená záloha tabulky:"
 
-#: admin/views/backup.php:307
+#: admin/views/backup.php:310
 msgid ""
 "A backup file was saved to the server. We strongly suggest you download a "
 "copy to your computer in case you might need it later."
@@ -2103,11 +2131,11 @@ msgstr ""
 "Na server byl uložen záložní soubor. Důrazně doporučujeme stáhnout kopii do "
 "počítače pro případ, že ji budete potřebovat později."
 
-#: admin/views/backup.php:345
+#: admin/views/backup.php:349
 msgid "Processed lines..."
 msgstr "Zpracované řádky ..."
 
-#: admin/views/backup.php:407
+#: admin/views/backup.php:412
 msgid "Database has been restored successfully!"
 msgstr "Databáze byla úspěšně obnovena!"
 
@@ -2127,7 +2155,7 @@ msgstr ""
 "Výpočet bude prováděn pomocí dat narození, křtu, úmrtí, pohřbu a manželství "
 "osob a těchto dat rodičů a dětí."
 
-#: admin/views/cal_date.php:21 admin/views/thumbs.php:87
+#: admin/views/cal_date.php:21 admin/views/thumbs.php:37
 msgid "Choose family tree"
 msgstr "Vybrat strom rodokmenu"
 
@@ -2232,7 +2260,7 @@ msgstr "Počítač návštěv"
 msgid "Add and edit menu/ category items:"
 msgstr "Přidejte a upravte položky nabídky/ kategorie:"
 
-#: admin/views/cms_pages.php:252 admin/views/tree_admin.php:33
+#: admin/views/cms_pages.php:252 admin/views/tree_admin.php:7
 msgid "Order"
 msgstr "Pořadí"
 
@@ -2262,12 +2290,12 @@ msgstr ""
 "Pro ukázání na složku zvenku (a paralelně se) složkou humo-gen, "
 "použijte ../../../../foldername"
 
-#: admin/views/cms_pages.php:399 admin/views/thumbs.php:110
-#: admin/views/tree_data.php:53
+#: admin/views/cms_pages.php:400 admin/views/thumbs.php:60
+#: admin/views/tree_data.php:28
 msgid "Use default picture path:"
 msgstr "Použijte výchozí cestu obrázků:"
 
-#: admin/views/cms_pages.php:408
+#: admin/views/cms_pages.php:409
 #, php-format
 msgid ""
 "Select main homepage (welcome page for visitors) for %s<br>\n"
@@ -2277,15 +2305,15 @@ msgstr ""
 "<br>\n"
 "<b> Vybraná stránka CMS nahradí hlavní index! </b>"
 
-#: admin/views/cms_pages.php:422
+#: admin/views/cms_pages.php:423
 msgid "Use for all languages"
 msgstr "Použít pro všechny jazyky"
 
-#: admin/views/cms_pages.php:425 admin/views/cms_pages.php:465
+#: admin/views/cms_pages.php:426 admin/views/cms_pages.php:466
 msgid "Standard main index"
 msgstr "Standardní hlavní index"
 
-#: admin/views/cms_pages.php:435
+#: admin/views/cms_pages.php:436
 msgid "Set per language"
 msgstr "Nastavit na jazyk"
 
@@ -2341,11 +2369,11 @@ msgid "Close"
 msgstr "Zavřít"
 
 #: admin/views/edit_address.php:279 admin/views/edit_repository.php:230
-#: admin/views/edit_source.php:371
+#: admin/views/edit_source.php:405
 msgid "Delete"
 msgstr "Vymazat"
 
-#: admin/views/edit_address.php:296 admin/views/edit_source.php:386
+#: admin/views/edit_address.php:296 admin/views/edit_source.php:420
 #: admin/views/editor.php:729
 msgid "Preview"
 msgstr "Náhled"
@@ -2396,7 +2424,7 @@ msgstr "Žádné platné číslo úložiště."
 msgid "E-mail"
 msgstr "E-mail"
 
-#: admin/views/edit_source.php:87
+#: admin/views/edit_source.php:106
 msgid ""
 "These sources can be connected to multiple persons, families, events and "
 "other items."
@@ -2404,80 +2432,80 @@ msgstr ""
 "Tyto zdroje mohou být spojeny s více osobami, rodinami, akcemi a dalšími "
 "položkami."
 
-#: admin/views/edit_source.php:91
+#: admin/views/edit_source.php:110
 msgid "Source is removed!"
 msgstr "Zdroj je odstraněn!"
 
-#: admin/views/edit_source.php:97
+#: admin/views/edit_source.php:116
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr ""
 "Jste si jisti, že chcete tento zdroj a všechny zdrojové odkazy odstranit?"
 
-#: admin/views/edit_source.php:117 admin/views/edit_source.php:127
+#: admin/views/edit_source.php:151 admin/views/edit_source.php:161
 msgid "Select source"
 msgstr "Vyberte zdroj"
 
-#: admin/views/edit_source.php:150 admin/views/edit_source.php:231
+#: admin/views/edit_source.php:184 admin/views/edit_source.php:265
 msgid "restricted"
 msgstr "omezeno"
 
-#: admin/views/edit_source.php:192 include/show_source_pdf.php:31
+#: admin/views/edit_source.php:226 include/show_source_pdf.php:31
 #: views/source.php:20 views/source.php:25
 msgid "No valid source number."
 msgstr "Žádné platné zdrojové číslo."
 
-#: admin/views/edit_source.php:227 admin/views/editor.php:1880
+#: admin/views/edit_source.php:261 admin/views/editor.php:1880
 #: admin/views/log.php:35 admin/views/notes.php:224
-#: admin/views/settings_homepage.php:155
+#: admin/views/settings_homepage.php:16
 msgid "Status"
 msgstr "Stav"
 
-#: admin/views/edit_source.php:230
+#: admin/views/edit_source.php:264
 msgid "publish"
 msgstr "publikovat"
 
-#: admin/views/edit_source.php:233
+#: admin/views/edit_source.php:267
 msgid "restricted = only visible for selected user groups"
 msgstr "omezeno = viditelné pouze pro vybrané skupiny uživatelů"
 
-#: admin/views/edit_source.php:247 include/show_source_pdf.php:102
+#: admin/views/edit_source.php:281 include/show_source_pdf.php:102
 #: views/mailform.php:62 views/mailform.php:64 views/source.php:59
 msgid "Subject"
 msgstr "Předmět"
 
-#: admin/views/edit_source.php:271 views/source.php:108
+#: admin/views/edit_source.php:305 views/source.php:108
 msgid "Repository"
 msgstr "Úložiště"
 
-#: admin/views/edit_source.php:281
+#: admin/views/edit_source.php:315
 msgid "Add repositories"
 msgstr "Přidejte repozitáře"
 
-#: admin/views/edit_source.php:287 include/show_source_pdf.php:69
+#: admin/views/edit_source.php:321 include/show_source_pdf.php:69
 #: views/source.php:47
 msgid "Publication"
 msgstr "Vydání"
 
-#: admin/views/edit_source.php:290
+#: admin/views/edit_source.php:324
 msgid "will be shown as a link."
 msgstr "zobrazí se jako odkaz."
 
-#: admin/views/edit_source.php:304 include/show_source_pdf.php:96
+#: admin/views/edit_source.php:338 include/show_source_pdf.php:96
 #: views/source.php:56
 msgid "Author"
 msgstr "Autor"
 
-#: admin/views/edit_source.php:312 admin/views/statistics.php:64
+#: admin/views/edit_source.php:346 admin/views/statistics.php:64
 #: include/show_source_pdf.php:108 views/source.php:62
 msgid "Nr."
 msgstr "No."
 
-#: admin/views/edit_source.php:320 include/show_source_pdf.php:114
+#: admin/views/edit_source.php:354 include/show_source_pdf.php:114
 #: views/source.php:65
 msgid "Kind"
 msgstr "Druh"
 
-#: admin/views/edit_source.php:328 include/show_source_pdf.php:120
+#: admin/views/edit_source.php:362 include/show_source_pdf.php:120
 #: views/source.php:68
 msgid "Archive"
 msgstr "Archiv"
@@ -2486,8 +2514,8 @@ msgstr "Archiv"
 msgid "Favourites list"
 msgstr "Seznam oblíbených"
 
-#: admin/views/editor.php:93 admin/views/tree_check.php:85
-#: admin/views/tree_check_changes.php:197
+#: admin/views/editor.php:93 admin/views/tree_check.php:60
+#: admin/views/tree_check_changes.php:195
 #: app/controller/latest_changesController.php:20 views/help.php:114
 #: views/layout.php:609
 msgid "Latest changes"
@@ -2505,21 +2533,21 @@ msgid "Changed by"
 msgstr "Změněno"
 
 #: admin/views/editor.php:147 admin/views/editor.php:430
-#: admin/views/tree_check_changes.php:51
-#: admin/views/tree_check_consistency.php:286 admin/views/tree_merge.php:620
-#: admin/views/tree_merge.php:682 views/family.php:1307 views/relations.php:92
+#: admin/views/tree_check_changes.php:49
+#: admin/views/tree_check_consistency.php:286 admin/views/tree_merge.php:563
+#: admin/views/tree_merge.php:634 views/family.php:1307 views/relations.php:92
 #: views/relations.php:206
 msgid "Person"
 msgstr "Osoba"
 
 #: admin/views/editor.php:258 admin/views/notes.php:54
-#: admin/views/tree_check_changes.php:231
+#: admin/views/tree_check_changes.php:229
 #: admin/views/tree_check_consistency.php:281
 msgid "Results"
 msgstr "Výsledky"
 
-#: admin/views/editor.php:319 admin/views/tree_merge.php:664
-#: admin/views/tree_merge.php:729 views/relations.php:190
+#: admin/views/editor.php:319 admin/views/tree_merge.php:611
+#: admin/views/tree_merge.php:681 views/relations.php:190
 #: views/relations.php:304
 msgid "Person not found"
 msgstr "Osoba nenalezena"
@@ -2541,8 +2569,8 @@ msgid "Are you sure you want to disconnect this child?"
 msgstr "Jste si jisti, že chcete toto dítě odpojit?"
 
 #: admin/views/editor.php:433 admin/views/editor_relation.php:38
-#: admin/views/editor_relation.php:42 admin/views/statistics_general.php:273
-#: admin/views/statistics_old.php:84 admin/views/tree_check_changes.php:125
+#: admin/views/editor_relation.php:42 admin/views/statistics_general.php:286
+#: admin/views/statistics_old.php:84 admin/views/tree_check_changes.php:123
 #: app/controller/descendant_chartController.php:96
 #: app/controller/familyController.php:44
 #: app/controller/hourglassController.php:77
@@ -2556,7 +2584,7 @@ msgid "Browse"
 msgstr "Procházet"
 
 #: admin/views/editor.php:617 admin/views/editor_relation.php:278
-#: admin/views/editor_relation.php:491 include/marriage_cls.php:798
+#: admin/views/editor_relation.php:491 include/marriage_cls.php:812
 msgid "marriage/ relation"
 msgstr "manželství/ vztah"
 
@@ -2570,15 +2598,15 @@ msgstr "Oddáni"
 #: include/marriage_cls.php:158 include/marriage_cls.php:256
 #: include/marriage_cls.php:362 include/marriage_cls.php:389
 #: include/marriage_cls.php:445 include/marriage_cls.php:529
-#: include/marriage_cls.php:774 include/marriage_cls.php:778
-#: include/marriage_cls.php:786 include/marriage_cls.php:790
-#: include/marriage_cls.php:803 include/marriage_cls.php:807
+#: include/marriage_cls.php:788 include/marriage_cls.php:792
+#: include/marriage_cls.php:800 include/marriage_cls.php:804
+#: include/marriage_cls.php:817 include/marriage_cls.php:821
 #: views/ancestor_report.php:221 views/ancestor_report_pdf.php:282
 #: views/ancestor_report_rtf.php:271 views/descendant_chart.php:383
 msgid " to: "
 msgstr " : "
 
-#: admin/views/editor.php:635 admin/views/tree_merge.php:1346
+#: admin/views/editor.php:635 admin/views/tree_merge.php:1249
 #: views/family.php:588 views/family_rtf.php:404
 msgid "Children"
 msgstr "Děti"
@@ -2654,7 +2682,7 @@ msgid "patronymic"
 msgstr "patronymic"
 
 #: admin/views/editor.php:1139 admin/views/editor_person.php:567
-#: admin/views/tree_merge.php:1301
+#: admin/views/tree_merge.php:1205
 msgid "alive"
 msgstr "živí"
 
@@ -2683,7 +2711,7 @@ msgid "Add child"
 msgstr "Přidat dítě"
 
 #: admin/views/editor.php:1266 admin/views/editor_person.php:687
-#: admin/views/tree_merge.php:1291
+#: admin/views/tree_merge.php:1195
 msgid "birth time"
 msgstr "čas narození"
 
@@ -2692,12 +2720,7 @@ msgstr "čas narození"
 msgid "stillborn child"
 msgstr "mrtvě narozené dítě"
 
-#: admin/views/editor.php:1372 admin/views/trees.php:41
-#: include/show_tree_text.php:7 views/photoalbum.php:195
-msgid "NO NAME"
-msgstr "BEZE JMÉNA"
-
-#: admin/views/editor.php:1413 admin/views/tree_merge.php:1783
+#: admin/views/editor.php:1413 admin/views/tree_merge.php:1675
 #: views/addresses.php:12 views/layout.php:555
 msgid "Addresses"
 msgstr "Adresy"
@@ -2713,8 +2736,8 @@ msgid ""
 msgstr ""
 "Sdílená adresa je podporována pouze programy Haza-data a HuMo-genealogy."
 
-#: admin/views/editor.php:1526 admin/views/settings_homepage.php:229
-#: admin/views/settings_homepage.php:424 admin/views/tree_admin.php:100
+#: admin/views/editor.php:1526 admin/views/settings_homepage.php:97
+#: admin/views/settings_homepage.php:213 admin/views/tree_admin.php:60
 msgid "EMPTY LINE"
 msgstr "PRÁZDNÝ ŘÁDEK"
 
@@ -2815,11 +2838,11 @@ msgstr "rodiče"
 msgid "Add parents"
 msgstr "Přidat rodiče"
 
-#: admin/views/editor_person.php:267 admin/views/tree_merge.php:1336
+#: admin/views/editor_person.php:267 admin/views/tree_merge.php:1239
 msgid "Father"
 msgstr "Otec"
 
-#: admin/views/editor_person.php:283 admin/views/tree_merge.php:1341
+#: admin/views/editor_person.php:283 admin/views/tree_merge.php:1244
 msgid "Mother"
 msgstr "Matka"
 
@@ -2839,7 +2862,7 @@ msgstr "rok"
 #: admin/views/editor_person.php:350 admin/views/editor_relation.php:266
 #: admin/views/gedcom_export.php:234 views/list.php:301 views/list.php:352
 #: views/list_names.php:211 views/stats_firstnames.php:94
-#: views/stats_surnames.php:114
+#: views/stats_surnames.php:116
 msgid "All"
 msgstr "Všechno"
 
@@ -2859,7 +2882,7 @@ msgstr "v"
 msgid "hour"
 msgstr "hodin"
 
-#: admin/views/editor_person.php:749 admin/views/tree_merge.php:1565
+#: admin/views/editor_person.php:749 admin/views/tree_merge.php:1461
 #: include/person_cls.php:2098 include/person_cls.php:2099
 #: include/person_cls.php:2101 include/person_cls.php:2102
 #: include/witness.php:182
@@ -2887,7 +2910,7 @@ msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
 
 #: admin/views/editor_person.php:1020 admin/views/editor_person.php:1051
-#: admin/views/tree_merge.php:1302 include/person_cls.php:2146
+#: admin/views/tree_merge.php:1206 include/person_cls.php:2146
 #: include/person_cls.php:2148 include/person_cls.php:2664
 msgid "religion"
 msgstr "náboženství"
@@ -2895,7 +2918,7 @@ msgstr "náboženství"
 #: admin/views/editor_person.php:1121 admin/views/editor_person.php:1124
 #: admin/views/editor_person.php:1127 admin/views/editor_person.php:1136
 #: admin/views/editor_person.php:1139 admin/views/editor_person.php:1156
-#: admin/views/tree_merge.php:1297 include/person_cls.php:2277
+#: admin/views/tree_merge.php:1201 include/person_cls.php:2277
 #: include/person_cls.php:2280 include/person_cls.php:2283
 #: include/person_cls.php:2292 include/person_cls.php:2295
 #: include/person_cls.php:2318 include/person_cls.php:2320
@@ -2970,7 +2993,7 @@ msgstr ""
 "Pokud se používá rok a věk smrti, vypočítá se rok narození automaticky "
 "(pokud je prázdný)."
 
-#: admin/views/editor_person.php:1204 admin/views/tree_merge.php:1296
+#: admin/views/editor_person.php:1204 admin/views/tree_merge.php:1200
 msgid "death time"
 msgstr "doba úmrtí"
 
@@ -2978,7 +3001,7 @@ msgstr "doba úmrtí"
 msgid "cause"
 msgstr "příčina"
 
-#: admin/views/editor_person.php:1299 admin/views/tree_merge.php:1575
+#: admin/views/editor_person.php:1299 admin/views/tree_merge.php:1468
 #: include/person_cls.php:2420 include/person_cls.php:2421
 #: include/person_cls.php:2423 include/person_cls.php:2424
 #: include/witness.php:196
@@ -2989,7 +3012,7 @@ msgstr "deklarace smrti"
 msgid "method of burial"
 msgstr "metoda pohřbu"
 
-#: admin/views/editor_person.php:1417 admin/views/tree_merge.php:1298
+#: admin/views/editor_person.php:1417 admin/views/tree_merge.php:1202
 #: include/person_cls.php:2523
 msgid "cremation"
 msgstr "kremace"
@@ -3016,7 +3039,7 @@ msgid "Source for person"
 msgstr "Zdroj pro osobu"
 
 #: admin/views/editor_person.php:1517 admin/views/editor_person.php:1520
-#: admin/views/tree_merge.php:1303 include/show_sources.php:302
+#: admin/views/tree_merge.php:1207 include/show_sources.php:302
 #: include/show_sources.php:391
 msgid "own code"
 msgstr "vlastní kód"
@@ -3206,23 +3229,15 @@ msgstr "Nebo přidat stávající osobu jako dítě:"
 msgid "Select child"
 msgstr "Vyberte dítě"
 
-#: admin/views/gedcom.php:87
-msgid "File successfully uploaded."
-msgstr "Soubor úspěšně nahrán."
-
-#: admin/views/gedcom.php:89 admin/views/gedcom.php:116
-msgid "Upload has failed."
-msgstr "Nahrávání selhalo."
-
-#: admin/views/gedcom.php:121
+#: admin/views/gedcom.php:39
 msgid "STEP 1) Select GEDCOM file:"
 msgstr "Krok 1) Vyberte soubor GEDCOM:"
 
-#: admin/views/gedcom.php:126
+#: admin/views/gedcom.php:44
 msgid "Add and remove GEDCOM files"
 msgstr "Přidejte a odeberte soubory Gedcom"
 
-#: admin/views/gedcom.php:154
+#: admin/views/gedcom.php:72
 msgid ""
 "Here you can upload a GEDCOM file (for example: gedcom_name.ged or "
 "gedcom_name.zip)."
@@ -3230,11 +3245,11 @@ msgstr ""
 "Zde můžete nahrát soubor GEDCOM (například: gedcom_name.ged nebo gedcom_name."
 "zip)."
 
-#: admin/views/gedcom.php:155
+#: admin/views/gedcom.php:73
 msgid "ATTENTION: the privileges of the file map may have to be adjusted!"
 msgstr "POZOR: oprávnění mapy souborů může být nutné upravit!"
 
-#: admin/views/gedcom.php:156
+#: admin/views/gedcom.php:74
 msgid ""
 "Another option is to upload GEDCOM files manually by using FTP to folder: /"
 "humo-gen/admin/gedcom_files/"
@@ -3242,73 +3257,73 @@ msgstr ""
 "Další možností je nahrát soubory GEDCOM ručně pomocí FTP do složky:/humo-gen/"
 "admin/gedcom_files/"
 
-#: admin/views/gedcom.php:164
+#: admin/views/gedcom.php:82
 msgid "Are you sure to remove GEDCOM files?"
 msgstr "Určitě chcete odstranit soubory GEDCOM?"
 
-#: admin/views/gedcom.php:203
+#: admin/views/gedcom.php:120
 msgid "GEDCOM file is REMOVED."
 msgstr "GEDCOM soubor je ODSTRANĚN."
 
-#: admin/views/gedcom.php:209
+#: admin/views/gedcom.php:126
 msgid "If needed remove GEDCOM files (except test GEDCOM file):"
 msgstr ""
 "V případě potřeby odebrat soubory GEDCOM (kromě testovacího souboru GEDCOM):"
 
-#: admin/views/gedcom.php:218
+#: admin/views/gedcom.php:135
 msgid "Remove all GEDCOM files"
 msgstr "Odstranit všechny GEDCOM soubory"
 
-#: admin/views/gedcom.php:220
+#: admin/views/gedcom.php:137
 #, php-format
 msgid "Remove GEDCOM files older than %d month(s)"
 msgstr "Odstraňte soubory GEDCOM starší než %d měsíce(ů)"
 
-#: admin/views/gedcom.php:223
+#: admin/views/gedcom.php:140
 #, php-format
 msgid "Remove GEDCOM files older than %d year(s)"
 msgstr "Odstraňte soubory GEDCOM starší než %d let"
 
-#: admin/views/gedcom.php:226 admin/views/log.php:64 admin/views/log.php:99
-#: admin/views/notes.php:204 admin/views/tree_admin.php:36
+#: admin/views/gedcom.php:143 admin/views/log.php:64 admin/views/log.php:99
+#: admin/views/notes.php:204 admin/views/tree_admin.php:10
 msgid "Remove"
 msgstr "Odstranit"
 
-#: admin/views/gedcom.php:262
+#: admin/views/gedcom.php:179
 msgid "Select GEDCOM file and settings"
 msgstr "Vyberte soubor a nastavení GEDCOM"
 
-#: admin/views/gedcom.php:266
+#: admin/views/gedcom.php:183
 msgid "Select GEDCOM file"
 msgstr "Vyberte GEDCOM soubor"
 
-#: admin/views/gedcom.php:281
+#: admin/views/gedcom.php:198
 msgid "GEDCOM settings"
 msgstr "GEDCOM nastavení"
 
-#: admin/views/gedcom.php:290
+#: admin/views/gedcom.php:207
 msgid "Add a general source connected to all persons in this GEDCOM file."
 msgstr "Přidejte obecný zdroj připojený ke všem osobám v tomto souboru GEDCOM."
 
-#: admin/views/gedcom.php:297
+#: admin/views/gedcom.php:214
 msgid ""
 "Reassign new ID numbers for persons, fams etc. (don't use IDs from GEDCOM)"
 msgstr ""
 "Přiřadit nová čísla ID pro osoby, FAMS atd. (nepoužívejte IDs z GEDCOM)"
 
-#: admin/views/gedcom.php:304
+#: admin/views/gedcom.php:221
 msgid "Order children by date (only needed if children are in wrong order)"
 msgstr ""
 "Seřaďte děti podle data (potřebné pouze v případě, že jsou děti v nesprávném "
 "pořadí)"
 
-#: admin/views/gedcom.php:311
+#: admin/views/gedcom.php:228
 msgid "Order families by date (only needed if families are in wrong order)"
 msgstr ""
 "Seřaďte rodiny podle data (potřebné pouze tehdy, pokud jsou rodiny v "
 "nesprávném pořadí)"
 
-#: admin/views/gedcom.php:318
+#: admin/views/gedcom.php:235
 msgid ""
 "Add new locations to geo-location database (for Google Maps locations). This "
 "will slow down reading of GEDCOM file!"
@@ -3316,7 +3331,7 @@ msgstr ""
 "Přidejte nová místa do Geo-Location databáse (pro umístění Map Google). Tím "
 "se zpomalí čtení souboru Gedcom!"
 
-#: admin/views/gedcom.php:325
+#: admin/views/gedcom.php:242
 msgid ""
 "Don't remove picture links from database (only needed for Geneanet GEDCOM "
 "file)."
@@ -3324,7 +3339,7 @@ msgstr ""
 "Neodstraňujte odkazy obrázků z databáze (potřebné pouze pro soubor Geneanet "
 "GEDCOM)."
 
-#: admin/views/gedcom.php:326
+#: admin/views/gedcom.php:243
 msgid ""
 "In Geneanet add HuMo-genealogy picture id in the source by a person. Using "
 "this example: #media1254,media13454#"
@@ -3332,56 +3347,56 @@ msgstr ""
 "V Geneanet přidejte HuMo-genealogy id obrázku ve zdroji osoby. Pomocí tohoto "
 "příkladu: #media1254,media13454#"
 
-#: admin/views/gedcom.php:336
+#: admin/views/gedcom.php:253
 msgid "Only process picture file name. For example: picture.jpg [DEFAULT]"
 msgstr ""
 "Pouze zpracujte název souboru obrázku. Například: picture.jpg [VÝCHOZÍ]"
 
-#: admin/views/gedcom.php:339
+#: admin/views/gedcom.php:256
 msgid "Process full picture path. For example: picture_path&#92;picture.jpg"
 msgstr ""
 "Zpracovat plnou cestu k obrázku. Například: picture_path &#92; picture.jpg"
 
-#: admin/views/gedcom.php:354
+#: admin/views/gedcom.php:271
 msgid "GEDCOM process settings"
 msgstr "Nastavení procesu GEDCOM"
 
-#: admin/views/gedcom.php:363
+#: admin/views/gedcom.php:280
 msgid "Show non-processed items when processing GEDCOM (can be a long list!"
 msgstr ""
 "Při zpracování GEDCOM zobrazte nezpracované položky (může to být dlouhý "
 "seznam!"
 
-#: admin/views/gedcom.php:370
+#: admin/views/gedcom.php:287
 msgid ""
 "Show all numbers when processing GEDCOM (useful when a time-out occurs!)"
 msgstr ""
 "Zobrazit všechna čísla při zpracování GEDCOM (užitečné, když nastane časový "
 "limit!)"
 
-#: admin/views/gedcom.php:377
+#: admin/views/gedcom.php:294
 msgid "Debug mode"
 msgstr "Debugovací mód"
 
-#: admin/views/gedcom.php:382
+#: admin/views/gedcom.php:299
 msgid "Batch processing"
 msgstr "Dávkové zpracování"
 
-#: admin/views/gedcom.php:385
+#: admin/views/gedcom.php:302
 msgid "1 record (slow processing, but needs less server-memory)"
 msgstr "1 záznam (pomalé zpracování, ale potřebuje méně paměti serveru)"
 
-#: admin/views/gedcom.php:386 admin/views/gedcom.php:387
-#: admin/views/gedcom.php:388 admin/views/gedcom.php:389
-#: admin/views/gedcom.php:390 admin/views/gedcom.php:391
+#: admin/views/gedcom.php:303 admin/views/gedcom.php:304
+#: admin/views/gedcom.php:305 admin/views/gedcom.php:306
+#: admin/views/gedcom.php:307 admin/views/gedcom.php:308
 msgid "records per batch"
 msgstr "záznamy na dávku"
 
-#: admin/views/gedcom.php:392
+#: admin/views/gedcom.php:309
 msgid "ALL records (fast processing, but needs server-memory)"
 msgstr "VŠECHNY záznamy (rychlé zpracování, ale potřebuje paměť serveru)"
 
-#: admin/views/gedcom.php:407
+#: admin/views/gedcom.php:324
 msgid ""
 "Time-out detected! Controlled time-out setting is adjusted. Retry reading of "
 "GEDCOM with new setting."
@@ -3389,7 +3404,7 @@ msgstr ""
 "Zjištěn časový limit! Nastavení kontrolovaného časového limitu je upraveno. "
 "Zopakujte načtení GEDCOM s novým nastavením."
 
-#: admin/views/gedcom.php:416
+#: admin/views/gedcom.php:333
 msgid ""
 "seconds. Controlled time-out, the GEDCOM script will restart and continue."
 "<br>Use this if the server has a time-out setting (set less seconds then "
@@ -3399,50 +3414,50 @@ msgstr ""
 "<br> Použijte toto, pokud server má nastavení časového limitu (nastavte méně "
 "sekund než časový limit serveru). <br> 0 = zakázat ovládaný časový limit."
 
-#: admin/views/gedcom.php:417
+#: admin/views/gedcom.php:334
 #, php-format
 msgid "Your server time-out setting is: %s seconds."
 msgstr "Nastavení časového limitu na serveru je: %s vteřin."
 
-#: admin/views/gedcom.php:442
+#: admin/views/gedcom.php:359
 #, php-format
 msgid "Yes, replace existing family tree: <b>\"%1$s\"</b> with %2$s persons!"
 msgstr "Ano, nahraďte stávající rodokmen: <b>\"%1$s\" </b> s %2$s!"
 
-#: admin/views/gedcom.php:448
+#: admin/views/gedcom.php:365
 msgid "Add this GEDCOM file to the existing tree"
 msgstr "Přidejte tento soubor GEDCOM do stávajícího stromu"
 
-#: admin/views/gedcom.php:451 admin/views/gedcom.php:453
-#: admin/views/gedcom.php:547 admin/views/gedcom.php:1006
-#: admin/views/gedcom.php:1634 admin/views/gedcom.php:1748
-#: admin/views/gedcom.php:1769
+#: admin/views/gedcom.php:368 admin/views/gedcom.php:371
+#: admin/views/gedcom.php:465 admin/views/gedcom.php:778
+#: admin/views/gedcom.php:1396 admin/views/gedcom.php:1519
+#: admin/views/gedcom.php:1541
 msgid "Step"
 msgstr "Krok"
 
-#: admin/views/gedcom.php:519
+#: admin/views/gedcom.php:436
 msgid "STEP 2) Remove old family tree:"
 msgstr "KROK 2) Odstraňte starý rodokmen:"
 
-#: admin/views/gedcom.php:546 admin/views/gedcom.php:1152
-#: admin/views/gedcom.php:1769
+#: admin/views/gedcom.php:463 admin/views/gedcom.php:922
+#: admin/views/gedcom.php:1541
 msgid "ONLY use in case of a time-out, to continue click:"
 msgstr "Používejte POUZE v případě časového limitu, klikněte pro pokračování:"
 
-#: admin/views/gedcom.php:566 admin/views/gedcom.php:607
-#: admin/views/gedcom.php:651 admin/views/gedcom.php:680
-#: admin/views/gedcom.php:694 admin/views/gedcom.php:725
-#: admin/views/gedcom.php:767 admin/views/gedcom.php:811
-#: admin/views/gedcom.php:853 admin/views/gedcom.php:898
+#: admin/views/gedcom.php:471 admin/views/gedcom.php:496
+#: admin/views/gedcom.php:519 admin/views/gedcom.php:545
+#: admin/views/gedcom.php:557 admin/views/gedcom.php:569
+#: admin/views/gedcom.php:595 admin/views/gedcom.php:619
+#: admin/views/gedcom.php:645 admin/views/gedcom.php:670
 #, php-format
 msgid "Remove old family tree items from %s table..."
 msgstr "Odstraňte staré položky rodokmenu z %s tabulky..."
 
-#: admin/views/gedcom.php:585 admin/views/gedcom.php:624
-#: admin/views/gedcom.php:670 admin/views/gedcom.php:686
-#: admin/views/gedcom.php:700 admin/views/gedcom.php:744
-#: admin/views/gedcom.php:786 admin/views/gedcom.php:830
-#: admin/views/gedcom.php:872 admin/views/gedcom.php:926
+#: admin/views/gedcom.php:488 admin/views/gedcom.php:511
+#: admin/views/gedcom.php:536 admin/views/gedcom.php:550
+#: admin/views/gedcom.php:562 admin/views/gedcom.php:586
+#: admin/views/gedcom.php:612 admin/views/gedcom.php:636
+#: admin/views/gedcom.php:662 admin/views/gedcom.php:698
 #: admin/views/index_admin.php:311 admin/views/index_admin.php:318
 #: admin/views/index_admin.php:325 admin/views/index_admin.php:332
 #: admin/views/index_admin.php:339 admin/views/index_admin.php:346
@@ -3451,22 +3466,22 @@ msgstr "Odstraňte staré položky rodokmenu z %s tabulky..."
 msgid "Optimize table..."
 msgstr "Optimalizovat tabulku ..."
 
-#: admin/views/gedcom.php:936
+#: admin/views/gedcom.php:707
 msgid "No error messages above? In that case the tables have been created!"
 msgstr "Žádné chybové zprávy výše? V tom případě byly tabulky vytvořeny!"
 
-#: admin/views/gedcom.php:940
+#: admin/views/gedcom.php:711
 msgid ""
 "The data in this GEDCOM will be appended to the existing data in this tree!"
 msgstr ""
 "Data v tomto GEDCOM budou připojena k existujícím datům v tomto stromu!"
 
-#: admin/views/gedcom.php:1015 admin/views/maps_locations.php:635
+#: admin/views/gedcom.php:787 admin/views/maps_locations.php:635
 #: views/maps.php:517 views/maps.php:651
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: admin/views/gedcom.php:1126
+#: admin/views/gedcom.php:897
 msgid ""
 "<b>STEP 3) Processing GEDCOM file:</b>\n"
 "<p>The following lines have to be processed without error messages...<br>\n"
@@ -3476,37 +3491,37 @@ msgstr ""
 "<p> Následující řádky musí být zpracovány bez chybových zpráv ... <br> \n"
 "<b> Zpracování může chvíli trvat !! </b>"
 
-#: admin/views/gedcom.php:1152
+#: admin/views/gedcom.php:922
 msgid "Restart"
 msgstr "Restart"
 
-#: admin/views/gedcom.php:1153
+#: admin/views/gedcom.php:923
 msgid "Restarts reading of GEDCOM using a controlled time-out."
 msgstr "Restartuje čtení GEDCOM pomocí kontrolovaného časového limitu."
 
-#: admin/views/gedcom.php:1229 admin/views/gedcom.php:1576
-#: admin/views/gedcom.php:1727 admin/views/gedcom.php:1831
-#: admin/views/gedcom.php:2025 admin/views/gedcom.php:2256
-#: admin/views/gedcom.php:2291
+#: admin/views/gedcom.php:999 admin/views/gedcom.php:1336
+#: admin/views/gedcom.php:1497 admin/views/gedcom.php:1603
+#: admin/views/gedcom.php:1795 admin/views/gedcom.php:2024
+#: admin/views/gedcom.php:2059
 msgid "lines processed"
 msgstr "zpracované řádky"
 
-#: admin/views/gedcom.php:1529
+#: admin/views/gedcom.php:1291
 msgid "GEDCOM file"
 msgstr "GEDCOM soubor"
 
-#: admin/views/gedcom.php:1531
+#: admin/views/gedcom.php:1293
 #, php-format
 msgid "this is an <b>%s</b> file"
 msgstr "toto je soubor <b>%s</b>"
 
-#: admin/views/gedcom.php:1634
+#: admin/views/gedcom.php:1396
 msgid "Controlled time-out to continue reading of GEDCOM file, click:"
 msgstr ""
 "Kontrolovaný časový limit pro pokračování ve čtení souboru GEDCOM, klikněte "
 "na:"
 
-#: admin/views/gedcom.php:1635
+#: admin/views/gedcom.php:1397
 #, php-format
 msgid ""
 "Or wait %s seconds for automatic continuation. Some browsers will give a "
@@ -3515,84 +3530,84 @@ msgstr ""
 "Nebo počkejte %s vteřin na automatické pokračování. Některé prohlížeče "
 "poskytnou zprávu o opětovném načtení ..."
 
-#: admin/views/gedcom.php:1659 admin/views/gedcom.php:1671
+#: admin/views/gedcom.php:1421 admin/views/gedcom.php:1433
 msgid "Persons added by GEDCOM import."
 msgstr "Osoby přidané GEDCOM importem."
 
-#: admin/views/gedcom.php:1691
+#: admin/views/gedcom.php:1453
 #, php-format
 msgid "Reading in the file took: %d seconds"
 msgstr "Čtení v souboru trvalo: %d vteřin"
 
-#: admin/views/gedcom.php:1700
+#: admin/views/gedcom.php:1462
 msgid "Non-processed items"
 msgstr "Nezpracované položky"
 
-#: admin/views/gedcom.php:1704 admin/views/gedcom.php:1705
-#: admin/views/gedcom.php:1706 admin/views/gedcom.php:1707
+#: admin/views/gedcom.php:1466 admin/views/gedcom.php:1467
+#: admin/views/gedcom.php:1468 admin/views/gedcom.php:1469
 msgid "Level"
 msgstr "Úroveň"
 
-#: admin/views/gedcom.php:1717
+#: admin/views/gedcom.php:1487
 msgid "All items have been processed!"
 msgstr "Všechny položky byly zpracovány!"
 
-#: admin/views/gedcom.php:1760
+#: admin/views/gedcom.php:1531
 msgid "STEP 4) Final database processing:"
 msgstr "Krok 4) Zpracování konečné databáze:"
 
-#: admin/views/gedcom.php:1800
+#: admin/views/gedcom.php:1572
 msgid "Processing of referenced texts into standard texts..."
 msgstr "Zpracování referenčních textů do standardních textů ..."
 
-#: admin/views/gedcom.php:2025 admin/views/index_admin.php:649
-#: admin/views/statistics_old.php:66 admin/views/tree_admin.php:119
+#: admin/views/gedcom.php:1795 admin/views/index_admin.php:649
+#: admin/views/statistics_old.php:66 admin/views/tree_admin.php:82
 #: app/model/tree_index.php:297
 msgid "persons"
 msgstr "osoby"
 
-#: admin/views/gedcom.php:2256 admin/views/index_admin.php:649
-#: admin/views/statistics_old.php:66 admin/views/tree_admin.php:119
+#: admin/views/gedcom.php:2024 admin/views/index_admin.php:649
+#: admin/views/statistics_old.php:66 admin/views/tree_admin.php:82
 #: app/model/tree_index.php:297
 msgid "families"
 msgstr "rodiny"
 
-#: admin/views/gedcom.php:2315
+#: admin/views/gedcom.php:2082
 msgid "Processing texts IN names..."
 msgstr "Zpracování textů VE jménech ..."
 
-#: admin/views/gedcom.php:2353
+#: admin/views/gedcom.php:2113
 msgid "Updating location database..."
 msgstr "Aktualizace databáze polohy ..."
 
-#: admin/views/gedcom.php:2422
+#: admin/views/gedcom.php:2182
 msgid "Order children..."
 msgstr "Seřadit děti..."
 
-#: admin/views/gedcom.php:2487
+#: admin/views/gedcom.php:2244
 msgid "Order families..."
 msgstr "Seřadit rodiny..."
 
-#: admin/views/gedcom.php:2623
+#: admin/views/gedcom.php:2373
 msgid "Counting persons and families and enter into database..."
 msgstr "Počítání jednotlivců a rodin a přidání do databáze ..."
 
-#: admin/views/gedcom.php:2645
+#: admin/views/gedcom.php:2394
 #, php-format
 msgid "Processing took: %d seconds"
 msgstr "Zpracování trvalo: %d vteřin"
 
-#: admin/views/gedcom.php:2646
+#: admin/views/gedcom.php:2395
 msgid "No error messages? In this case the database is ready for use!"
 msgstr ""
 "Žádné chybové zprávy? V tomto případě je databáze připravena k použití!"
 
-#: admin/views/gedcom.php:2648
+#: admin/views/gedcom.php:2397
 #, php-format
 msgid "Ready! Now click %s to watch the family tree"
 msgstr "Připraveno! Nyní kliknutím na %s zobrazíte svůj rodokmen"
 
-#: admin/views/gedcom.php:2649
+#: admin/views/gedcom.php:2398
 msgid ""
 "TIP: Use <a href=\"index.php?page=cal_date\">\"Calculated birth dates\"</a> "
 "for a better privacy filter."
@@ -3913,7 +3928,7 @@ msgstr "Zobrazit odkaz \"Přihlášení\" (lze změnit pouze ve skupině \"host\
 msgid "Is allowed to change password"
 msgstr "Je povoleno změnit heslo"
 
-#: admin/views/groups.php:224 admin/views/tree_merge.php:965
+#: admin/views/groups.php:224 admin/views/tree_merge.php:871
 msgid "General"
 msgstr "Všeobecné"
 
@@ -4204,7 +4219,7 @@ msgstr "Tato nastavení lze také nastavit pro každého uživatele!"
 msgid "Hide or show photo categories per user group."
 msgstr "Skrýt nebo zobrazit kategorie fotografií podle skupiny uživatelů."
 
-#: admin/views/groups.php:711 admin/views/thumbs.php:369
+#: admin/views/groups.php:711 admin/views/thumbs.php:313
 msgid "Category prefix"
 msgstr "Předpona kategorie"
 
@@ -4242,7 +4257,7 @@ msgid "Database"
 msgstr "Databáze"
 
 #: admin/views/index_admin.php:78 admin/views/index_admin.php:463
-#: admin/views/tree_admin.php:117
+#: admin/views/tree_admin.php:80
 msgid "OK"
 msgstr "OK"
 
@@ -4485,12 +4500,12 @@ msgstr "NEBEZPEČNÉ (volba je ZAPNUTA)."
 msgid "Status tree"
 msgstr "Stavový strom"
 
-#: admin/views/index_admin.php:653 admin/views/tree_admin.php:123
+#: admin/views/index_admin.php:653 admin/views/tree_admin.php:84
 msgid ""
 "This tree does not yet contain any data or has not been imported properly!"
 msgstr "Tento strom ještě neobsahuje žádná data nebo nebyl správně importován!"
 
-#: admin/views/index_admin.php:659 admin/views/trees.php:120
+#: admin/views/index_admin.php:659 admin/views/trees.php:55
 msgid "Import Gedcom file"
 msgstr "Import Gedcom soubor"
 
@@ -4681,7 +4696,7 @@ msgid ""
 msgstr "IP Blacklist: přístup k %s bude pro tyto IP adresy zcela zablokován."
 
 #: admin/views/log.php:62 admin/views/log.php:111
-#: admin/views/settings_homepage.php:518 include/language_event.php:26
+#: admin/views/settings_homepage.php:307 include/language_event.php:26
 msgid "Description"
 msgstr "Popis"
 
@@ -4693,8 +4708,8 @@ msgstr "Změnit / Přidat"
 msgid "IP Address"
 msgstr "IP Adresa"
 
-#: admin/views/log.php:117 admin/views/settings_homepage.php:434
-#: admin/views/settings_homepage.php:575
+#: admin/views/log.php:117 admin/views/settings_homepage.php:223
+#: admin/views/settings_homepage.php:368
 msgid "Database is not yet available."
 msgstr "Databáze zatím není k dispozici."
 
@@ -5115,7 +5130,7 @@ msgstr ""
 msgid "General settings"
 msgstr "Obecné nastavení"
 
-#: admin/views/settings.php:36
+#: admin/views/settings.php:39
 msgid "Default skin"
 msgstr "Výchozí vzhled"
 
@@ -5132,64 +5147,64 @@ msgstr "Standardní nabídka pro správu jazyků"
 msgid "Change favicon icon"
 msgstr "Změnit ikonu favicon"
 
-#: admin/views/settings.php:96
+#: admin/views/settings.php:106
 #, php-format
 msgid "Upload favicon.ico file. File size max: %1$d kB."
 msgstr "Nahrajte soubor favicon.ico. Maximální velikost souboru: %1$d kB."
 
-#: admin/views/settings.php:103
+#: admin/views/settings.php:112
 msgid "Scripts in &lt;head&gt; section for all pages"
 msgstr "Skripty v &lt;head&gt; sekce pro všechny stránky"
 
-#: admin/views/settings.php:106
+#: admin/views/settings.php:121
 msgid "Can be used for statistics, counter, etc."
 msgstr "Lze použít pro statistiku, počítadlo atd."
 
-#: admin/views/settings.php:111
+#: admin/views/settings.php:127
 msgid "Text in footer for all pages"
 msgstr "Text v zápatí pro všechny stránky"
 
-#: admin/views/settings.php:114
+#: admin/views/settings.php:136
 msgid ""
 "Can be used for statistics, counter, etc. It's possible to use HTML codes!"
 msgstr "Lze použít pro statistiky, počítadlo atd. Je možné použít HTML kódy!"
 
-#: admin/views/settings.php:120
+#: admin/views/settings.php:143
 #, php-format
 msgid "Debug %s front pages"
 msgstr "Ladění %s předních stránek"
 
-#: admin/views/settings.php:126 admin/views/settings.php:137
+#: admin/views/settings.php:152 admin/views/settings.php:167
 #, php-format
 msgid "Only use this option to debug problems in %s."
 msgstr "Tuto možnost použijte pouze k ladění problémů v %s."
 
-#: admin/views/settings.php:131
+#: admin/views/settings.php:158
 #, php-format
 msgid "Debug %s admin pages"
 msgstr "Ladit %s administrátorské stránky"
 
-#: admin/views/settings.php:142
+#: admin/views/settings.php:175
 msgid "Search engine settings"
 msgstr "Nastavení vyhledávače"
 
-#: admin/views/settings.php:147
-msgid "Improve indexing of search engines (like Google)"
-msgstr "Zlepšení indexování vyhledávačů (jako je Google)"
-
-#: admin/views/settings.php:152
+#: admin/views/settings.php:193
 msgid "ATTENTION: the Apache module \"mod_rewrite\" has to be installed!"
 msgstr "POZOR: modul Apache \"mod_rewrite\" musí být nainstalován!"
 
-#: admin/views/settings.php:154
+#: admin/views/settings.php:199
+msgid "Improve indexing of search engines (like Google)"
+msgstr "Zlepšení indexování vyhledávačů (jako je Google)"
+
+#: admin/views/settings.php:201
 msgid "becomes:"
 msgstr "se stává:"
 
-#: admin/views/settings.php:159
+#: admin/views/settings.php:207 admin/views/settings.php:222
 msgid "Stop search engines"
 msgstr "Zastavit vyhledávače"
 
-#: admin/views/settings.php:169
+#: admin/views/settings.php:229
 msgid ""
 "Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS "
 "pages"
@@ -5197,65 +5212,65 @@ msgstr ""
 "Vyhledávače:<br>Skrýt rodokmen (bez indexování)<br>Zobrazit úvodní stránku a "
 "stránky CMS"
 
-#: admin/views/settings.php:177
+#: admin/views/settings.php:237
 msgid "Contact & registration form settings"
 msgstr "Nastavení kontaktního a registračního formuláře"
 
-#: admin/views/settings.php:182
+#: admin/views/settings.php:246
 msgid "Block spam question"
 msgstr "Blokovat spamovou otázku"
 
-#: admin/views/settings.php:182
+#: admin/views/settings.php:255
 msgid "Block spam answer"
 msgstr "Blokovat odpověď na spam"
 
-#: admin/views/settings.php:190
+#: admin/views/settings.php:264
 msgid "Mail form: use spam question"
 msgstr "E-mailový formulář: použijte spamovou otázku"
 
-#: admin/views/settings.php:200
+#: admin/views/settings.php:276
 msgid "Mail form: use newsletter question"
 msgstr "E-mailový formulář: použijte otázku newsletteru"
 
-#: admin/views/settings.php:206
+#: admin/views/settings.php:285
 msgid "Adds the question: \"Receive newsletter: yes/ no\" to the mailform."
 msgstr "Přidá do mailového formuláře otázku: \"Přijímat newsletter: ano/ne\"."
 
-#: admin/views/settings.php:211
+#: admin/views/settings.php:291
 msgid "Visitors can register"
 msgstr "Návštěvníci se mohou registrovat"
 
-#: admin/views/settings.php:218
+#: admin/views/settings.php:301
 msgid "Default user-group for new users:"
 msgstr "Výchozí uživatelská skupina pro nové uživatele:"
 
-#: admin/views/settings.php:235
+#: admin/views/settings.php:315
 msgid "Registration form: e-mail address"
 msgstr "Registrační formulář: e-mailová adresa"
 
-#: admin/views/settings.php:236
+#: admin/views/settings.php:321
 msgid "Send registration form to this e-mail address."
 msgstr "Registrační formulář zašlete na tuto e-mailovou adresu."
 
-#: admin/views/settings.php:240
+#: admin/views/settings.php:327
 msgid "Visitor registration: use spam question"
 msgstr "Registrace návštěvníka: použít spamovou otázku"
 
-#: admin/views/settings.php:251
+#: admin/views/settings.php:341
 msgid "Password forgotten e-mail address"
 msgstr "E-mailová adresa zapomenutého hesla"
 
-#: admin/views/settings.php:252
+#: admin/views/settings.php:350
 msgid "To enable password forgotten option: set a sender e-mail address."
 msgstr ""
 "Chcete-li povolit možnost zapomenutí hesla: nastavte e-mailovou adresu "
 "odesílatele."
 
-#: admin/views/settings.php:256 admin/views/settings.php:261
+#: admin/views/settings.php:358 admin/views/settings.php:366
 msgid "Email Settings"
 msgstr "Nastavení e-mailu"
 
-#: admin/views/settings.php:262
+#: admin/views/settings.php:367
 msgid ""
 "TIP: mail will work without changing these parameters at most hosting "
 "providers."
@@ -5263,33 +5278,33 @@ msgstr ""
 "TIP: pošta bude fungovat bez změny těchto parametrů u většiny poskytovatelů "
 "hostingu."
 
-#: admin/views/settings.php:266
+#: admin/views/settings.php:372
 #, fuzzy
 #| msgid "Mail: username"
 msgid "Mail: sender"
 msgstr "Mail: uživatelské jméno"
 
-#: admin/views/settings.php:268 admin/views/settings.php:286
+#: admin/views/settings.php:378 admin/views/settings.php:411
 msgid "Gmail: [email_address]@gmail.com"
 msgstr "Gmail: [e-mailová_adresa]@gmail.com"
 
-#: admin/views/settings.php:268
+#: admin/views/settings.php:382
 msgid "If filled in: will be used as mail sender."
 msgstr ""
 
-#: admin/views/settings.php:273
+#: admin/views/settings.php:387
 msgid "Mail: configuration"
 msgstr "Mail: konfigurace"
 
-#: admin/views/settings.php:276
+#: admin/views/settings.php:391
 msgid "auto"
 msgstr "automaticky"
 
-#: admin/views/settings.php:277
+#: admin/views/settings.php:392
 msgid "manual"
 msgstr "manuál"
 
-#: admin/views/settings.php:279
+#: admin/views/settings.php:399
 msgid ""
 "Setting: \"auto\" = use settings below.<br>Setting: \"manual\" = change "
 "settings in /include/mail.php"
@@ -5297,398 +5312,390 @@ msgstr ""
 "Nastavení: \"auto\" = použijte nastavení níže.<br>Nastavení: \"manuální\" = "
 "změna nastavení v /include/mail.php"
 
-#: admin/views/settings.php:284
+#: admin/views/settings.php:405
 msgid "Mail: username"
 msgstr "Mail: uživatelské jméno"
 
-#: admin/views/settings.php:291
+#: admin/views/settings.php:417
 msgid "Mail: password"
 msgstr "Mail: heslo"
 
-#: admin/views/settings.php:296
+#: admin/views/settings.php:426
 msgid "SMTP: mail server"
 msgstr "SMTP: poštovní server"
 
-#: admin/views/settings.php:298
+#: admin/views/settings.php:432
 msgid "Gmail: smtp.gmail.com"
 msgstr "Gmail: smtp.gmail.com"
 
-#: admin/views/settings.php:303
+#: admin/views/settings.php:438
 msgid "SMTP: port"
 msgstr "SMTP: port"
 
-#: admin/views/settings.php:310
+#: admin/views/settings.php:448
 msgid "Gmail: 587"
 msgstr "Gmail: 587"
 
-#: admin/views/settings.php:315
+#: admin/views/settings.php:454
 msgid "SMTP: authentication"
 msgstr "SMTP: ověřování"
 
-#: admin/views/settings.php:318
+#: admin/views/settings.php:458
 msgid "true"
 msgstr "pravdivé"
 
-#: admin/views/settings.php:319
+#: admin/views/settings.php:459
 msgid "false"
 msgstr "nepravdivé"
 
-#: admin/views/settings.php:321
+#: admin/views/settings.php:463
 msgid "Gmail: true"
 msgstr "Gmail: pravdivé"
 
-#: admin/views/settings.php:326
+#: admin/views/settings.php:469
 msgid "SMTP: encryption type"
 msgstr "SMTP: typ šifrování"
 
-#: admin/views/settings.php:332
+#: admin/views/settings.php:478
 msgid "Gmail: TLS"
 msgstr "Gmail: TLS"
 
-#: admin/views/settings.php:337
+#: admin/views/settings.php:484
 msgid "SMTP: debugging"
 msgstr "SMTP: ladění"
 
-#: admin/views/settings.php:340
+#: admin/views/settings.php:488
 msgid "Off"
 msgstr "Vypnuto"
 
-#: admin/views/settings.php:341
+#: admin/views/settings.php:489
 msgid "Client"
 msgstr "Zákazník"
 
-#: admin/views/settings.php:342
+#: admin/views/settings.php:490
 msgid "Client and Server"
 msgstr "Zákazník a Server"
 
-#: admin/views/settings.php:348
+#: admin/views/settings.php:499
 msgid "International settings"
 msgstr "Mezinárodní nastavení"
 
-#: admin/views/settings.php:353
+#: admin/views/settings.php:508
 msgid "Timezone"
 msgstr "Časové pásmo"
 
-#: admin/views/settings.php:370
+#: admin/views/settings.php:521
 msgid "Minimum characters in search box"
 msgstr "Minimální počet znaků ve vyhledávacím poli"
 
-#: admin/views/settings.php:371
+#: admin/views/settings.php:527
 msgid ""
 "Minimum characters in search boxes (standard value=3. For Chinese set to 1)."
 msgstr ""
 "Minimální počet znaků ve vyhledávacích polích (standardní hodnota=3. Pro "
 "čínštinu nastavena na 1)."
 
-#: admin/views/settings.php:375 views/fanchart.php:602
+#: admin/views/settings.php:533 views/fanchart.php:602
 msgid "Date display"
 msgstr "Zobrazení data"
 
-#: admin/views/settings.php:378
+#: admin/views/settings.php:537
 msgid "Europe/Global - 5 Jan 1787"
 msgstr "Evropa/globální – 5 Jan 1787"
 
-#: admin/views/settings.php:379
+#: admin/views/settings.php:538
 msgid "USA - Jan 5, 1787"
 msgstr "USA - Jan 5, 1787"
 
-#: admin/views/settings.php:380
+#: admin/views/settings.php:539
 msgid "China - 1787-01-05"
 msgstr "Čína - 1787-01-05"
 
-#: admin/views/settings.php:386
+#: admin/views/settings.php:546
 msgid "Order of names in reports"
 msgstr "Pořadí jmen v přehledech"
 
-#: admin/views/settings.php:389
+#: admin/views/settings.php:550
 msgid "Western"
 msgstr "Západní"
 
-#: admin/views/settings.php:390
+#: admin/views/settings.php:551
 msgid "Chinese"
 msgstr "Čínština"
 
-#: admin/views/settings.php:390
+#: admin/views/settings.php:551
 msgid "Hungarian"
 msgstr "Maďarština"
 
-#: admin/views/settings.php:392
-msgid ""
-"Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports "
-"and lists: 刘 理想"
+#: admin/views/settings.php:558
+#, fuzzy
+#| msgid "Hungarian - reports and lists: Smith John"
+msgid "Western - reports: John Smith, lists: Smith, John."
+msgstr "Maďarština - zprávy a seznamy: Smith John"
+
+#: admin/views/settings.php:559
+#, fuzzy
+#| msgid ""
+#| "Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports "
+#| "and lists: 刘 理想"
+msgid "Chinese 中文 - reports and lists: 刘 理想"
 msgstr ""
 "Západní - zprávy: John Smith, seznamy: Smith, John. Chinese 中文 - zprávy a "
 "seznamy: 刘 理想"
 
-#: admin/views/settings.php:392
+#: admin/views/settings.php:560
 msgid "Hungarian - reports and lists: Smith John"
 msgstr "Maďarština - zprávy a seznamy: Smith John"
 
-#: admin/views/settings.php:398
+#: admin/views/settings.php:567
 msgid "Default timeline file (per language)"
 msgstr "Výchozí soubor časové osy (podle jazyka)"
 
-#: admin/views/settings.php:406 admin/views/thumbs.php:405
-#: admin/views/tree_admin.php:44 admin/views/tree_text.php:27
+#: admin/views/settings.php:573 admin/views/thumbs.php:349
+#: admin/views/tree_admin.php:18 admin/views/tree_text.php:17
 msgid "Default"
 msgstr "Výchozí"
 
-#: admin/views/settings.php:443
+#: admin/views/settings.php:618
 msgid ""
 "First select language, then select the default timeline for that language."
 msgstr ""
 "Nejprve vyberte jazyk a poté vyberte výchozí časovou osu pro daný jazyk."
 
-#: admin/views/settings.php:452
+#: admin/views/settings.php:629
 msgid "Settings Main Menu"
 msgstr "Nastavení Hlavní Menu"
 
-#: admin/views/settings.php:457
+#: admin/views/settings.php:638
 msgid "Website name"
 msgstr "Název webu"
 
-#: admin/views/settings.php:463
+#: admin/views/settings.php:647
 msgid "Use logo image instead of text"
 msgstr "Místo textu použijte obrázek loga"
 
-#: admin/views/settings.php:465
+#: admin/views/settings.php:659
 #, php-format
 msgid "Upload logo image. Recommended size: 165 x 25 px. Picture max: %1$d MB."
 msgstr ""
 "Nahrajte obrázek loga. Doporučená velikost: 165 x 25 px. Max. počet obrázků: "
 "%1$d MB."
 
-#: admin/views/settings.php:472
+#: admin/views/settings.php:665
 msgid "Link homepage"
 msgstr "Odkaz na domovskou stránku"
 
-#: admin/views/settings.php:472 admin/views/settings_homepage.php:624
-#: admin/views/settings_homepage.php:631 admin/views/settings_homepage.php:638
-#: admin/views/settings_homepage.php:645
-msgid "Link description"
-msgstr "Popis odkazu"
-
-#: admin/views/settings.php:473 admin/views/settings.php:482
+#: admin/views/settings.php:672 admin/views/settings.php:692
 msgid "(link to this site including http://)"
 msgstr "(odkaz na tuto stránku včetně http://)"
 
-#: admin/views/settings.php:480
+#: admin/views/settings.php:677 admin/views/settings_homepage.php:417
+#: admin/views/settings_homepage.php:424 admin/views/settings_homepage.php:431
+#: admin/views/settings_homepage.php:438
+msgid "Link description"
+msgstr "Popis odkazu"
+
+#: admin/views/settings.php:686
 msgid "Link for birthdays RSS"
 msgstr "Odkaz na narozeniny RSS"
 
-#: admin/views/settings.php:483
+#: admin/views/settings.php:698
 msgid "This option can be turned on or off in the user groups."
 msgstr "Tuto možnost lze zapnout nebo vypnout ve skupinách uživatelů."
 
-#: admin/views/settings.php:489
+#: admin/views/settings.php:706
 msgid "Settings family page"
 msgstr "Nastavení rodinné stránky"
 
-#: admin/views/settings.php:494
+#: admin/views/settings.php:715
 msgid "Number of generations in descendant report"
 msgstr "Počet generací v přehledu potomků"
 
-#: admin/views/settings.php:495
+#: admin/views/settings.php:721
 msgid "Show number of generation in descendant report (standard value=4)."
 msgstr "Zobrazit počet generací v sestavě potomka (standardní hodnota=4)."
 
-#: admin/views/settings.php:499
+#: admin/views/settings.php:727
 msgid "Number of persons in search results"
 msgstr "Počet jednotlivců ve výsledcích vyhledávání"
 
-#: admin/views/settings.php:500
+#: admin/views/settings.php:733
 msgid "Show number of persons in search results (standard value=30)."
 msgstr ""
 "Zobrazit počet jednotlivců ve výsledcích vyhledávání (standardní hodnota=30)."
 
-#: admin/views/settings.php:505 admin/views/settings.php:509
+#: admin/views/settings.php:741 admin/views/settings.php:750
 msgid "Watermark text in PDF file"
 msgstr "Text vodoznaku v souboru PDF"
 
-#: admin/views/settings.php:510
+#: admin/views/settings.php:756
 msgid "Watermark text (clear to remove watermark)"
 msgstr "Text vodoznaku (smazat pro odstranění vodoznaku)"
 
-#: admin/views/settings.php:513
+#: admin/views/settings.php:762
 msgid "Watermark RGB text color"
 msgstr "Barva textu vodoznaku RGB"
 
-#: admin/views/settings.php:518
+#: admin/views/settings.php:783
 msgid "Default values: R = 224, G = 224, B = 224."
 msgstr "Výchozí hodnoty: R = 224, G = 224, B = 224."
 
-#: admin/views/settings.php:524
+#: admin/views/settings.php:791
 msgid "Display for One Name Study web sites"
 msgstr "Zobrazení pro webové stránky One Name Study"
 
-#: admin/views/settings.php:528
+#: admin/views/settings.php:800
 msgid "One Name Study display"
 msgstr "Zobrazení One Name Study"
 
-#: admin/views/settings.php:533
+#: admin/views/settings.php:809
 msgid "Only use this option if you're doing a \"One Name Study\" project."
 msgstr ""
 "Tuto možnost použijte pouze v případě, že děláte projekt „One Name Study“."
 
-#: admin/views/settings.php:537
+#: admin/views/settings.php:815
 msgid "Enter the One Name of this site"
 msgstr "Zadejte One Name tohoto webu"
 
-#: admin/views/settings.php:544
-msgid "Save settings"
-msgstr "Uložit nastavení"
-
-#: admin/views/settings_admin.php:109 admin/views/settings_admin.php:128
-msgid "Photo too large"
-msgstr "Obrázek je příliš velký"
-
-#: admin/views/settings_admin.php:114
-msgid "Changed favicon icon."
-msgstr "Změněna ikona favicon."
-
-#: admin/views/settings_admin.php:133
-msgid "Changed logo."
-msgstr "Změněné logo."
-
-#: admin/views/settings_homepage.php:147
+#: admin/views/settings_homepage.php:8
 msgid "Homepage template"
 msgstr "Šablona domovské stránky"
 
-#: admin/views/settings_homepage.php:148
+#: admin/views/settings_homepage.php:9
 msgid "Default settings"
 msgstr "Výchozí nastavení"
 
-#: admin/views/settings_homepage.php:149
+#: admin/views/settings_homepage.php:10
 msgid ""
 "If the left column isn't used, the center column will be made large "
 "automatically."
 msgstr ""
 "Pokud není použit levý sloupec, středový sloupec se automaticky zvětší."
 
-#: admin/views/settings_homepage.php:156
+#: admin/views/settings_homepage.php:17
 msgid "Position"
 msgstr "Pozice"
 
-#: admin/views/settings_homepage.php:157 admin/views/statistics_general.php:78
-#: admin/views/tree_check_changes.php:260
-#: admin/views/tree_check_integrity.php:27 views/stats_persons.php:349
+#: admin/views/settings_homepage.php:19 admin/views/statistics_general.php:79
+#: admin/views/tree_check_changes.php:258
+#: admin/views/tree_check_integrity.php:29 views/stats_persons.php:353
 #: views/stats_tree.php:44
 msgid "Item"
 msgstr "Položka"
 
-#: admin/views/settings_homepage.php:191 admin/views/settings_homepage.php:398
+#: admin/views/settings_homepage.php:53 admin/views/settings_homepage.php:185
 msgid "Active"
 msgstr "Aktivní"
 
-#: admin/views/settings_homepage.php:192 admin/views/settings_homepage.php:399
+#: admin/views/settings_homepage.php:54 admin/views/settings_homepage.php:186
 msgid "Inactive"
 msgstr "Neaktivní"
 
-#: admin/views/settings_homepage.php:199 admin/views/settings_homepage.php:405
+#: admin/views/settings_homepage.php:61 admin/views/settings_homepage.php:192
 msgid "Left"
 msgstr "Vlevo"
 
-#: admin/views/settings_homepage.php:200 admin/views/settings_homepage.php:406
+#: admin/views/settings_homepage.php:62 admin/views/settings_homepage.php:193
 msgid "Center"
 msgstr "Střed"
 
-#: admin/views/settings_homepage.php:201 admin/views/settings_homepage.php:407
+#: admin/views/settings_homepage.php:63 admin/views/settings_homepage.php:194
 msgid "Right"
 msgstr "Vpravo"
 
-#: admin/views/settings_homepage.php:218 admin/views/settings_homepage.php:413
+#: admin/views/settings_homepage.php:86 admin/views/settings_homepage.php:202
 #: admin/views/statistics_old.php:12
 msgid "Select family tree"
 msgstr "Vyberte rodokmen"
 
-#: admin/views/settings_homepage.php:219 admin/views/settings_homepage.php:414
+#: admin/views/settings_homepage.php:87 admin/views/settings_homepage.php:203
 #: app/model/tree_index.php:240 app/model/tree_index.php:627 views/list.php:154
 #: views/list.php:445
 msgid "Selected family tree"
 msgstr "Vybraný rodokmen"
 
-#: admin/views/settings_homepage.php:221 admin/views/settings_homepage.php:416
+#: admin/views/settings_homepage.php:89 admin/views/settings_homepage.php:205
 #: app/model/tree_index.php:127 views/help.php:72 views/layout.php:521
 msgid "Names"
 msgstr "Jména"
 
-#: admin/views/settings_homepage.php:222 admin/views/settings_homepage.php:417
+#: admin/views/settings_homepage.php:90 admin/views/settings_homepage.php:206
 #: app/model/tree_index.php:114
 msgid "Today in history"
 msgstr "Dnes v historii"
 
-#: admin/views/settings_homepage.php:223 admin/views/settings_homepage.php:418
+#: admin/views/settings_homepage.php:91 admin/views/settings_homepage.php:207
 #: app/model/tree_index.php:106 views/layout.php:386
 msgid "Favourites"
 msgstr "Oblíbené"
 
-#: admin/views/settings_homepage.php:224 admin/views/settings_homepage.php:419
+#: admin/views/settings_homepage.php:92 admin/views/settings_homepage.php:208
 #: app/model/tree_index.php:121
 msgid "Surnames Index"
 msgstr "Index příjmení"
 
-#: admin/views/settings_homepage.php:225 admin/views/settings_homepage.php:420
+#: admin/views/settings_homepage.php:93 admin/views/settings_homepage.php:209
 #: app/model/tree_index.php:171
 msgid "Random photo"
 msgstr "Náhodná fotografie"
 
-#: admin/views/settings_homepage.php:227 admin/views/settings_homepage.php:422
+#: admin/views/settings_homepage.php:95 admin/views/settings_homepage.php:211
 msgid "Own script"
 msgstr "Vlastní skript"
 
-#: admin/views/settings_homepage.php:241
+#: admin/views/settings_homepage.php:104
 msgid "Columns"
 msgstr "Sloupce"
 
-#: admin/views/settings_homepage.php:261
+#: admin/views/settings_homepage.php:112
 msgid "Rows"
 msgstr "Řádky"
 
-#: admin/views/settings_homepage.php:328 admin/views/settings_homepage.php:345
+#: admin/views/settings_homepage.php:133 admin/views/settings_homepage.php:142
 msgid "Header"
 msgstr "Záhlaví"
 
-#: admin/views/settings_homepage.php:336
+#: admin/views/settings_homepage.php:135
 msgid "Show text block, HTML codes can be used."
 msgstr "Zobrazit blok textu, lze použít HTML kódy."
 
-#: admin/views/settings_homepage.php:350
+#: admin/views/settings_homepage.php:143
 msgid "File name"
 msgstr "Název souboru"
 
-#: admin/views/settings_homepage.php:351
+#: admin/views/settings_homepage.php:144
 msgid "File name (full path) of the file with own script."
 msgstr "Název souboru (úplná cesta) souboru s vlastním skriptem."
 
-#: admin/views/settings_homepage.php:366
+#: admin/views/settings_homepage.php:156
 msgid "Show text from CMS system."
 msgstr "Zobrazit text z CMS systému."
 
-#: admin/views/settings_homepage.php:370 views/fanchart.php:634
+#: admin/views/settings_homepage.php:162 views/fanchart.php:634
 msgid "View"
 msgstr "Pohled"
 
-#: admin/views/settings_homepage.php:372
+#: admin/views/settings_homepage.php:164
 msgid "with table"
 msgstr "s tabulkou"
 
-#: admin/views/settings_homepage.php:378
+#: admin/views/settings_homepage.php:165
 msgid "without table"
 msgstr "bez tabulky"
 
-#: admin/views/settings_homepage.php:512
+#: admin/views/settings_homepage.php:301
 msgid "Show list of favourites in homepage"
 msgstr "Zobrazit seznam oblíbených na domovské stránce"
 
-#: admin/views/settings_homepage.php:544
+#: admin/views/settings_homepage.php:334
 msgid "Link"
 msgstr "Odkaz"
 
-#: admin/views/settings_homepage.php:570 admin/views/tree_data.php:42
+#: admin/views/settings_homepage.php:363 admin/views/tree_data.php:17
 msgid "Owner of tree"
 msgstr "Majitel stromu"
 
-#: admin/views/settings_homepage.php:581
+#: admin/views/settings_homepage.php:374
 msgid ""
 "Own code is the code that has to be entered in your genealogy program under "
 "\"own code or REFN\"\n"
@@ -5708,7 +5715,7 @@ msgstr ""
 "3) Po zpracování souboru GEDCOM se v hlavní nabídce objeví další odkaz, tj. "
 "patriarcha!<br>"
 
-#: admin/views/settings_homepage.php:607
+#: admin/views/settings_homepage.php:400
 msgid ""
 "This option shows a slideshow at the homepage. Put the images in the media/"
 "slideshow/ folder at the website.<br>Example of image link:"
@@ -5716,16 +5723,16 @@ msgstr ""
 "Tato možnost zobrazuje prezentaci na domovské stránce. Na webu vložte "
 "obrázky do složky média/ slideshow/. <br> Příklad odkazu na obrázek:"
 
-#: admin/views/settings_homepage.php:608
+#: admin/views/settings_homepage.php:401
 msgid "Images size should be about:"
 msgstr "Velikost obrázků by měla být přibližně:"
 
-#: admin/views/settings_homepage.php:613
+#: admin/views/settings_homepage.php:406
 msgid "Show slideshow on the homepage"
 msgstr "Zobrazit prezentaci na domovské stránce"
 
-#: admin/views/settings_homepage.php:624 admin/views/settings_homepage.php:631
-#: admin/views/settings_homepage.php:638 admin/views/settings_homepage.php:645
+#: admin/views/settings_homepage.php:417 admin/views/settings_homepage.php:424
+#: admin/views/settings_homepage.php:431 admin/views/settings_homepage.php:438
 msgid "Link to image"
 msgstr "Odkaz na obrázek"
 
@@ -5858,28 +5865,28 @@ msgstr "Staré statistiky"
 msgid "Remove statistics"
 msgstr "Odebrat statistiky"
 
-#: admin/views/statistics_date.php:61 admin/views/statistics_general.php:93
+#: admin/views/statistics_date.php:52 admin/views/statistics_general.php:101
 msgid "Total number of visited families:"
 msgstr "Celkový počet navštívených rodin:"
 
-#: admin/views/statistics_general.php:20
+#: admin/views/statistics_general.php:18
 msgid "Status statistics table"
 msgstr "Statistická tabulka stavu"
 
-#: admin/views/statistics_general.php:27 admin/views/statistics_general.php:193
-#: admin/views/statistics_general.php:222
+#: admin/views/statistics_general.php:25 admin/views/statistics_general.php:206
+#: admin/views/statistics_general.php:235
 msgid "family tree"
 msgstr "rodokmen"
 
-#: admin/views/statistics_general.php:28
+#: admin/views/statistics_general.php:26
 msgid "Records"
 msgstr "Záznamy"
 
-#: admin/views/statistics_general.php:29 admin/views/statistics_general.php:131
+#: admin/views/statistics_general.php:27 admin/views/statistics_general.php:145
 msgid "Number of unique visitors"
 msgstr "Počet unikátních návštěvníků"
 
-#: admin/views/statistics_general.php:42
+#: admin/views/statistics_general.php:41
 msgid "FAMILY TREE ERASED"
 msgstr "RODOKMEN VYMAZÁN"
 
@@ -5887,49 +5894,49 @@ msgstr "RODOKMEN VYMAZÁN"
 msgid "General statistics:"
 msgstr "Obecné statistiky:"
 
-#: admin/views/statistics_general.php:79
+#: admin/views/statistics_general.php:80
 msgid "Counter"
 msgstr "Počítač"
 
-#: admin/views/statistics_general.php:86
+#: admin/views/statistics_general.php:89
 msgid "Total number of unique visitors:"
 msgstr "Celkový počet unikátních návštěvníků:"
 
-#: admin/views/statistics_general.php:102
+#: admin/views/statistics_general.php:115
 msgid "Total number of families in the last hour:"
 msgstr "Celkový počet rodin za poslední hodinu:"
 
-#: admin/views/statistics_general.php:109
+#: admin/views/statistics_general.php:123
 msgid "Unique visitors - Country of origin"
 msgstr "Jedineční návštěvníci – Země původu"
 
-#: admin/views/statistics_general.php:130
+#: admin/views/statistics_general.php:144
 msgid "Country of origin"
 msgstr "Země původu"
 
-#: admin/views/statistics_general.php:146 app/model/descendant.php:446
+#: admin/views/statistics_general.php:160 app/model/descendant.php:446
 #: views/list.php:355
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: admin/views/statistics_general.php:185 admin/views/statistics_old.php:75
+#: admin/views/statistics_general.php:198 admin/views/statistics_old.php:75
 msgid "Most visited families:"
 msgstr "Nejnavštěvovanější rodiny:"
 
-#: admin/views/statistics_general.php:194
-#: admin/views/statistics_general.php:224
+#: admin/views/statistics_general.php:207
+#: admin/views/statistics_general.php:237
 msgid "family"
 msgstr "rodina"
 
-#: admin/views/statistics_general.php:215
+#: admin/views/statistics_general.php:228
 msgid "last visited families:"
 msgstr "naposledy navštívené rodiny:"
 
-#: admin/views/statistics_general.php:223
+#: admin/views/statistics_general.php:236
 msgid "date-time"
 msgstr "datum-čas"
 
-#: admin/views/statistics_general.php:296
+#: admin/views/statistics_general.php:309
 msgid "FAMILY NOT FOUND IN FAMILY TREE"
 msgstr "RODINA NENÍ V RODOKMENU NALEZENA"
 
@@ -5965,16 +5972,16 @@ msgstr "ODSTRANIT statistická data"
 msgid "User agent information"
 msgstr "Informace o uživatelském agentovi"
 
-#: admin/views/thumbs.php:41 admin/views/thumbs.php:196
-#: admin/views/thumbs.php:203
+#: admin/views/thumbs.php:23 admin/views/thumbs.php:140
+#: admin/views/thumbs.php:147
 msgid "Show thumbnails"
 msgstr "Zobrazit miniatury"
 
-#: admin/views/thumbs.php:97 admin/views/tree_data.php:49
+#: admin/views/thumbs.php:47 admin/views/tree_data.php:24
 msgid "Path to the pictures"
 msgstr "Cesta k obrázkům"
 
-#: admin/views/thumbs.php:120 admin/views/tree_data.php:62
+#: admin/views/thumbs.php:70 admin/views/tree_data.php:37
 #, php-format
 msgid ""
 "Example of picture path:<br>\n"
@@ -5988,32 +5995,32 @@ msgstr ""
 "Použijte relativní cestu, přesně tak, jak je uvedeno zde: <b> ../pictures/</"
 "b>"
 
-#: admin/views/thumbs.php:140
+#: admin/views/thumbs.php:89
 msgid "Subdirectories:"
 msgstr "Podadresáře:"
 
-#: admin/views/thumbs.php:157
+#: admin/views/thumbs.php:101
 msgid "Status of picture path"
 msgstr "Stav cesty k obrázku"
 
-#: admin/views/thumbs.php:161
+#: admin/views/thumbs.php:105
 msgid "Picture path exists."
 msgstr "Cesta k obrázku existuje."
 
-#: admin/views/thumbs.php:168
+#: admin/views/thumbs.php:112
 msgid "Picture path doesn't exist!"
 msgstr "Cesta k obrázku neexistuje!"
 
-#: admin/views/thumbs.php:204
+#: admin/views/thumbs.php:148
 msgid "You can change filenames here."
 msgstr "Zde můžete změnit názvy souborů."
 
-#: admin/views/thumbs.php:213
+#: admin/views/thumbs.php:157
 msgid "To show pictures, also check the user-group settings: "
 msgstr ""
 "Chcete-li zobrazit obrázky, zkontrolujte také nastavení skupiny uživatelů: "
 
-#: admin/views/thumbs.php:221
+#: admin/views/thumbs.php:165
 msgid ""
 "- Creating thumbnails<br>\n"
 "- ATTENTION: it may be necessary to (temporarily) change access to the "
@@ -6026,27 +6033,27 @@ msgstr ""
 "(rwxrwxrwx)<br>\n"
 "- Někdy musí být php.ini mírně změněno, odstraňte ; před řádkem s:"
 
-#: admin/views/thumbs.php:249
+#: admin/views/thumbs.php:193
 msgid "Photos"
 msgstr "Fotky"
 
-#: admin/views/thumbs.php:319
+#: admin/views/thumbs.php:263
 msgid "Prefix has to be 2 letters and _"
 msgstr "Předpona musí být 2 písmena a _"
 
-#: admin/views/thumbs.php:326
+#: admin/views/thumbs.php:270
 msgid "When creating a category you have to give it a name"
 msgstr "Při vytváření kategorie ji musíte pojmenovat"
 
-#: admin/views/thumbs.php:337
+#: admin/views/thumbs.php:281
 msgid "A category with this prefix already exists!"
 msgstr "Kategorie s touto předponou již existuje!"
 
-#: admin/views/thumbs.php:355
+#: admin/views/thumbs.php:299
 msgid "Create categories for your photo albums"
 msgstr "Vytvořte kategorie pro svá fotoalba"
 
-#: admin/views/thumbs.php:361
+#: admin/views/thumbs.php:305
 msgid ""
 "Here you can create categories for all your photo albums.</li><li><b>A "
 "category will not be displayed in the photobook menu unless there is at "
@@ -6077,7 +6084,7 @@ msgstr ""
 "li><li>Snímky, které chcete zobrazovat ve výchozí kategorii fotografií, "
 "nepotřebují předponu."
 
-#: admin/views/thumbs.php:362
+#: admin/views/thumbs.php:306
 msgid ""
 "A (sub)directory could also be a category. Example: category prefix = ab_, "
 "the directory name = ab."
@@ -6085,78 +6092,78 @@ msgstr ""
 "(Pod)adresář může být také kategorií. Příklad: Předpona kategorie = ab_, "
 "název adresáře = ab."
 
-#: admin/views/thumbs.php:370
+#: admin/views/thumbs.php:314
 msgid "Category name"
 msgstr "Název Kategorie"
 
-#: admin/views/thumbs.php:440
+#: admin/views/thumbs.php:384
 msgid "default - without prefix"
 msgstr "výchozí - bez prefixu"
 
-#: admin/views/thumbs.php:504
+#: admin/views/thumbs.php:449
 msgid "Do you really want to delete category:"
 msgstr "Opravdu chcete smazat kategorii:"
 
-#: admin/views/thumbs.php:512
+#: admin/views/thumbs.php:456
 msgid "Save changes"
 msgstr "Uložit změny"
 
-#: admin/views/thumbs.php:542 admin/views/thumbs.php:547
+#: admin/views/thumbs.php:486 admin/views/thumbs.php:491
 msgid "Changed filename:"
 msgstr "Změněný název souboru:"
 
-#: admin/views/thumbs.php:542 admin/views/thumbs.php:547
+#: admin/views/thumbs.php:486 admin/views/thumbs.php:491
 msgid "into filename:"
 msgstr "do názvu souboru:"
 
-#: admin/views/thumbs.php:679
+#: admin/views/thumbs.php:624
 msgid "Change filename"
 msgstr "Změnit název souboru"
 
-#: admin/views/thumbs.php:694
+#: admin/views/thumbs.php:638
 msgid "This folder does not exists!"
 msgstr "Tato složka neexistuje!"
 
-#: admin/views/tree_admin.php:28
+#: admin/views/tree_admin.php:2
 msgid ""
 "Administration of the family tree(s), i.e. the name can be changed here, and "
 "trees can be added or removed."
 msgstr ""
 "Správa rodokmenů, např. zde lze změnit název a přidat nebo odebrat stromy."
 
-#: admin/views/tree_admin.php:34 admin/views/tree_text.php:38
+#: admin/views/tree_admin.php:8 admin/views/tree_text.php:28
 msgid "Name of family tree"
 msgstr "Název rodokmenu"
 
-#: admin/views/tree_admin.php:35 admin/views/trees.php:117
+#: admin/views/tree_admin.php:9 admin/views/trees.php:52
 msgid "Family tree data"
 msgstr "Data rodokmenu"
 
-#: admin/views/tree_admin.php:133
+#: admin/views/tree_admin.php:94
 msgid "Remove tree"
 msgstr "Odstranit strom"
 
-#: admin/views/tree_admin.php:153
+#: admin/views/tree_admin.php:107
 msgid "Add family tree"
 msgstr "Přidat rodokmen"
 
-#: admin/views/tree_admin.php:160
+#: admin/views/tree_admin.php:112
 msgid "Add empty line"
 msgstr "Přidat prázdnou řádku"
 
-#: admin/views/tree_admin.php:161
+#: admin/views/tree_admin.php:113
 msgid "Add empty line in list of family trees"
 msgstr "Přidejte prázdný řádek do seznamu rodokmenů"
 
-#: admin/views/tree_admin.php:190
+#: admin/views/tree_admin.php:122
 msgid "Collation"
 msgstr "Řazení"
 
-#: admin/views/tree_check.php:38
+#: admin/views/tree_check.php:16
 msgid "Choose tree:"
 msgstr "Vyberte strom:"
 
-#: admin/views/tree_check.php:70
+#: admin/views/tree_check.php:45
 #, fuzzy
 #| msgid ""
 #| "With this option you can check the integrity of the tables in the MySQL "
@@ -6166,7 +6173,7 @@ msgid ""
 msgstr ""
 "Pomocí této možnosti můžete zkontrolovat integritu tabulek v databázi MySQL."
 
-#: admin/views/tree_check.php:71
+#: admin/views/tree_check.php:46
 #, fuzzy
 #| msgid ""
 #| "With this option you can check the consistency of the dates in your "
@@ -6180,11 +6187,11 @@ msgstr ""
 "Například: datum narození po datu úmrtí, datum svatby ve věku 7 let, datum "
 "narození 80 let po datu narození matky atd."
 
-#: admin/views/tree_check.php:73
+#: admin/views/tree_check.php:48
 msgid "Check invalid dates"
 msgstr "Zkontrolujte neplatná data"
 
-#: admin/views/tree_check.php:74
+#: admin/views/tree_check.php:49
 msgid ""
 "With this option you can check the database for invalid dates. You will be "
 "given a link to edit the errors."
@@ -6192,7 +6199,7 @@ msgstr ""
 "Pomocí této volby můžete zkontrolovat, zda databáze neobsahuje neplatná "
 "data. Zobrazí se vám odkaz na úpravu chyb."
 
-#: admin/views/tree_check.php:75
+#: admin/views/tree_check.php:50
 msgid ""
 "This item checks for impossible dates (such as \"31 apr 1920\"), future "
 "dates, incomplete dates (\"3 apr\") and invalid GEDCOM date entries."
@@ -6200,11 +6207,11 @@ msgstr ""
 "Tato položka kontroluje nemožná data (jako je \"31 apr 1920\"), budoucí "
 "data, neúplná data (\"3 apr\") a neplatné záznamy dat  v GEDCOM souboru."
 
-#: admin/views/tree_check.php:76
+#: admin/views/tree_check.php:51
 msgid "Tip for GEDCOM validation (case is irrelevant):"
 msgstr "Tip pro ověření GEDCOM (velikost písmen je irelevantní):"
 
-#: admin/views/tree_check.php:77
+#: admin/views/tree_check.php:52
 msgid ""
 "Only valid month notation: \"jan\", \"feb\", \"mar\", \"apr\", \"may\", "
 "\"jun\", \"jul\", \"aug\", \"sep\", \"oct\", \"nov\", \"dec\""
@@ -6212,7 +6219,7 @@ msgstr ""
 "Pouze platné názvy měsíců: \"jan\", \"feb\", \"mar\", \"apr\", \"may\", "
 "\"jun\", \"jul\", \"aug\", \"sep\", \"oct\", \"nov\", \"dec\""
 
-#: admin/views/tree_check.php:78
+#: admin/views/tree_check.php:53
 msgid ""
 "Only valid single prefixes: \"bef\", \"aft\", \"abt\", \"est\", \"int\", "
 "\"cal\""
@@ -6220,13 +6227,13 @@ msgstr ""
 "Pouze platné jednotlivé předpony: \"bef\", \"aft\", \"abt\", \"est\", "
 "\"int\", \"cal\""
 
-#: admin/views/tree_check.php:79
+#: admin/views/tree_check.php:54
 msgid ""
 "Only valid double prefixes: \"from 1898 to 1899\", \"bet 1850 and 1860\""
 msgstr ""
 "Pouze platné dvojité předpony: \"from 1898 to 1899\", \"bet 1850 and 1860\""
 
-#: admin/views/tree_check.php:80
+#: admin/views/tree_check.php:55
 msgid ""
 "Invalid GEDCOM entries: \"1877-1879\" (-> bet 1877 and 1879), \"12 april "
 "2003\" (-> 12 apr 2003), \"cir 1884\" (-> abt 1884), \"1845 ?\" (abt 1845)"
@@ -6234,46 +6241,46 @@ msgstr ""
 "Neplatné GEDCOM záznamy: \"1877-1879\" (-> bet 1877 and 1879), \"12 april "
 "2003\" (-> 12 apr 2003), \"cir 1884\" (-> abt 1884), \"1845 ?\" (abt 1845)"
 
-#: admin/views/tree_check.php:83
+#: admin/views/tree_check.php:58
 msgid ""
 "With this option you can check the integrity of the tables in the MySQL "
 "database."
 msgstr ""
 "Pomocí této možnosti můžete zkontrolovat integritu tabulek v databázi MySQL."
 
-#: admin/views/tree_check.php:86
+#: admin/views/tree_check.php:61
 msgid ""
 "Here you can view the latest changes that were made to data in your database."
 msgstr ""
 "Zde si můžete prohlédnout nejnovější změny, které byly provedeny v datech ve "
 "vaší databázi."
 
-#: admin/views/tree_check_changes.php:208
+#: admin/views/tree_check_changes.php:206
 msgid "Select editor:"
 msgstr "Vyberte editor:"
 
-#: admin/views/tree_check_changes.php:210
+#: admin/views/tree_check_changes.php:208
 msgid "All editors"
 msgstr "Všechny editory"
 
-#: admin/views/tree_check_changes.php:243 views/help.php:68
+#: admin/views/tree_check_changes.php:241 views/help.php:68
 #: views/layout.php:516 views/statistics.php:24
 msgid "Persons"
 msgstr "Jednotlivci"
 
-#: admin/views/tree_check_changes.php:246
+#: admin/views/tree_check_changes.php:244
 msgid "Families"
 msgstr "Rodiny"
 
-#: admin/views/tree_check_changes.php:261 views/latest_changes.php:34
+#: admin/views/tree_check_changes.php:259 views/latest_changes.php:34
 msgid "Changed/ Added"
 msgstr "Změněno/Přidáno"
 
-#: admin/views/tree_check_changes.php:262 views/latest_changes.php:35
+#: admin/views/tree_check_changes.php:260 views/latest_changes.php:35
 msgid "When changed"
 msgstr "Při změně"
 
-#: admin/views/tree_check_changes.php:263 views/latest_changes.php:36
+#: admin/views/tree_check_changes.php:261 views/latest_changes.php:36
 msgid "When added"
 msgstr "Při přidání"
 
@@ -6461,11 +6468,11 @@ msgstr "Podrobnosti"
 #: admin/views/tree_check_consistency.php:743
 #: admin/views/tree_check_consistency.php:759
 #: admin/views/tree_check_consistency.php:788
-#: admin/views/tree_check_consistency.php:953
-#: admin/views/tree_check_consistency.php:965
-#: admin/views/tree_check_consistency.php:988
-#: admin/views/tree_check_consistency.php:993
-#: admin/views/tree_check_consistency.php:1000 admin/views/tree_merge.php:1289
+#: admin/views/tree_check_consistency.php:956
+#: admin/views/tree_check_consistency.php:968
+#: admin/views/tree_check_consistency.php:991
+#: admin/views/tree_check_consistency.php:996
+#: admin/views/tree_check_consistency.php:1003 admin/views/tree_merge.php:1193
 msgid "birth date"
 msgstr "datum narození"
 
@@ -6479,8 +6486,8 @@ msgstr "datum narození"
 #: admin/views/tree_check_consistency.php:746
 #: admin/views/tree_check_consistency.php:762
 #: admin/views/tree_check_consistency.php:791
-#: admin/views/tree_check_consistency.php:956
-#: admin/views/tree_check_consistency.php:968 admin/views/tree_merge.php:1292
+#: admin/views/tree_check_consistency.php:959
+#: admin/views/tree_check_consistency.php:971 admin/views/tree_merge.php:1196
 msgid "baptism date"
 msgstr "datum křtu"
 
@@ -6494,8 +6501,8 @@ msgstr "datum křtu"
 #: admin/views/tree_check_consistency.php:712
 #: admin/views/tree_check_consistency.php:718
 #: admin/views/tree_check_consistency.php:750
-#: admin/views/tree_check_consistency.php:959
-#: admin/views/tree_check_consistency.php:971 admin/views/tree_merge.php:1294
+#: admin/views/tree_check_consistency.php:962
+#: admin/views/tree_check_consistency.php:974 admin/views/tree_merge.php:1198
 msgid "death date"
 msgstr "datum úmrtí"
 
@@ -6509,8 +6516,8 @@ msgstr "datum úmrtí"
 #: admin/views/tree_check_consistency.php:726
 #: admin/views/tree_check_consistency.php:732
 #: admin/views/tree_check_consistency.php:766
-#: admin/views/tree_check_consistency.php:962
-#: admin/views/tree_check_consistency.php:974 admin/views/tree_merge.php:1299
+#: admin/views/tree_check_consistency.php:965
+#: admin/views/tree_check_consistency.php:977 admin/views/tree_merge.php:1203
 msgid "burial date"
 msgstr "datum pohřbu"
 
@@ -6518,7 +6525,7 @@ msgstr "datum pohřbu"
 #: admin/views/tree_check_consistency.php:610
 #: admin/views/tree_check_consistency.php:614
 #: admin/views/tree_check_consistency.php:658 app/model/timeline.php:221
-#: app/model/timeline.php:338 include/marriage_cls.php:772
+#: app/model/timeline.php:338 include/marriage_cls.php:786
 #: views/ancestor_sheet_pdf.php:373
 msgid "marriage"
 msgstr "manželství"
@@ -6573,78 +6580,84 @@ msgstr "církevní sňatek"
 msgid "church marriage notice"
 msgstr "oznámení o církevním sňatku"
 
-#: admin/views/tree_check_consistency.php:694 admin/views/tree_merge.php:1331
+#: admin/views/tree_check_consistency.php:694 admin/views/tree_merge.php:1234
 msgid "Spouse"
 msgstr "Manžel"
 
+#: admin/views/tree_check_consistency.php:807
+#, fuzzy
+#| msgid "No names found."
+msgid "No inconsistencies found!"
+msgstr "Nebyla nalezena žádná jména."
+
 # Enter a short text for born (there is no short text for born in english).
-#: admin/views/tree_check_consistency.php:954
-#: admin/views/tree_check_consistency.php:966
-#: admin/views/tree_check_consistency.php:989
-#: admin/views/tree_check_consistency.php:994
-#: admin/views/tree_check_consistency.php:1001
-#: admin/views/tree_check_consistency.php:1010 views/family.php:752
+#: admin/views/tree_check_consistency.php:957
+#: admin/views/tree_check_consistency.php:969
+#: admin/views/tree_check_consistency.php:992
+#: admin/views/tree_check_consistency.php:997
+#: admin/views/tree_check_consistency.php:1004
+#: admin/views/tree_check_consistency.php:1013 views/family.php:752
 #: views/family.php:776 views/family.php:910 views/family.php:915
 msgid "BORN_SHORT"
 msgstr "born"
 
 # Enter a short text for baptise, like: bapt.
-#: admin/views/tree_check_consistency.php:957
-#: admin/views/tree_check_consistency.php:969 views/family.php:755
+#: admin/views/tree_check_consistency.php:960
+#: admin/views/tree_check_consistency.php:972 views/family.php:755
 #: views/family.php:779
 msgid "BAPTISED_SHORT"
 msgstr "bap"
 
 # Enter a short text for died here. There is no short text for died in
 # english.
-#: admin/views/tree_check_consistency.php:960
-#: admin/views/tree_check_consistency.php:972 views/family.php:803
+#: admin/views/tree_check_consistency.php:963
+#: admin/views/tree_check_consistency.php:975 views/family.php:803
 #: views/family.php:833 views/family.php:932 views/family.php:937
 msgid "DIED_SHORT"
 msgstr "died"
 
-#: admin/views/tree_check_consistency.php:963
-#: admin/views/tree_check_consistency.php:975 views/family.php:806
+#: admin/views/tree_check_consistency.php:966
+#: admin/views/tree_check_consistency.php:978 views/family.php:806
 #: views/family.php:836
 msgid "BURIED_SHORT"
 msgstr "bur"
 
-#: admin/views/tree_check_consistency.php:988
+#: admin/views/tree_check_consistency.php:991
 #, php-format
 msgid "%s more than %d years after %s"
 msgstr "%s více než %d let po %s"
 
-#: admin/views/tree_check_consistency.php:993
+#: admin/views/tree_check_consistency.php:996
 #, php-format
 msgid "%s before or less than %d years after %s"
 msgstr "%s před nebo méně než %d let po %s"
 
-#: admin/views/tree_check_consistency.php:998
+#: admin/views/tree_check_consistency.php:1001
 #, php-format
 msgid "%s less than %d years after %s"
 msgstr "%s méně než %d let po %s"
 
-#: admin/views/tree_check_consistency.php:1003
+#: admin/views/tree_check_consistency.php:1006
 #, php-format
 msgid "age (up till today) more than %d years (age: %d)"
 msgstr "věk (do dneška) více než %d let (věk: %d)"
 
-#: admin/views/tree_check_consistency.php:1007
+#: admin/views/tree_check_consistency.php:1010
 #, php-format
 msgid "age (by %s) more than %d years (age: %d)"
 msgstr "věk (o %s) více než %d let (věk: %d)"
 
-#: admin/views/tree_check_consistency.php:1009
+#: admin/views/tree_check_consistency.php:1012
 #, php-format
 msgid "age difference of more than %d years with spouse (%d)"
 msgstr "věkový rozdíl více než %d let s partnerem (%d)"
 
-#: admin/views/tree_check_consistency.php:1012
+#: admin/views/tree_check_consistency.php:1015
 #, php-format
 msgid "%s less than %d months after %s"
 msgstr "%s méně než %d měsíců po %s"
 
-#: admin/views/tree_check_consistency.php:1014
+#: admin/views/tree_check_consistency.php:1017
 #, php-format
 msgid "%s before %s"
 msgstr "%s před %s"
@@ -6653,38 +6666,38 @@ msgstr "%s před %s"
 msgid "Checking database tables..."
 msgstr "Kontrola databázových tabulek..."
 
-#: admin/views/tree_check_integrity.php:19
+#: admin/views/tree_check_integrity.php:21
 msgid ""
 "Remove links to missing items from database (first make a database backup!)"
 msgstr ""
 "Odstraňte odkazy na chybějící položky z databáze (nejprve vytvořte zálohu "
 "databáze!)"
 
-#: admin/views/tree_check_integrity.php:20
+#: admin/views/tree_check_integrity.php:22
 msgid "REMOVE"
 msgstr "ODSTRANIT"
 
-#: admin/views/tree_check_integrity.php:26
+#: admin/views/tree_check_integrity.php:28
 msgid "Check item"
 msgstr "Zkontrolujte položku"
 
-#: admin/views/tree_check_integrity.php:28
+#: admin/views/tree_check_integrity.php:30
 msgid "Result"
 msgstr "Výsledek"
 
-#: admin/views/tree_check_integrity.php:389
+#: admin/views/tree_check_integrity.php:391
 msgid "Checked all person index numbers"
 msgstr "Zkontrolovat všechna čísla indexů osob"
 
-#: admin/views/tree_check_integrity.php:398
+#: admin/views/tree_check_integrity.php:400
 msgid "Checked all person - relation connections"
 msgstr "Zkontrolována všechna spojení osoba - vztah"
 
-#: admin/views/tree_check_integrity.php:407
+#: admin/views/tree_check_integrity.php:409
 msgid "Checked all child - parent connections"
 msgstr "Zkontrolována všechna spojení dítě - rodič"
 
-#: admin/views/tree_check_integrity.php:416
+#: admin/views/tree_check_integrity.php:418
 msgid "Checked all parent - child connections"
 msgstr "Zkontrolována všechna spojení rodič - dítě"
 
@@ -6700,74 +6713,93 @@ msgstr "Neplatné datum"
 msgid "Invalid person dates:"
 msgstr "Neplatná data osoby:"
 
-#: admin/views/tree_check_invalid.php:52
+#: admin/views/tree_check_invalid.php:51 admin/views/tree_check_invalid.php:102
+#: admin/views/tree_check_invalid.php:121
+#: admin/views/tree_check_invalid.php:142
+#: admin/views/tree_check_invalid.php:163
+#: admin/views/tree_check_invalid.php:182
+#: admin/views/tree_check_invalid.php:201
+#, fuzzy
+#| msgid "No names found."
+msgid "No invalid dates found"
+msgstr "Nebyla nalezena žádná jména."
+
+#: admin/views/tree_check_invalid.php:56
 msgid "Invalid family dates:"
 msgstr "Neplatná data rodiny:"
 
-#: admin/views/tree_check_invalid.php:97
+#: admin/views/tree_check_invalid.php:107
 msgid "Invalid event dates:"
 msgstr "Neplatná data událostí:"
 
-#: admin/views/tree_check_invalid.php:110
+#: admin/views/tree_check_invalid.php:128
 msgid "Invalid connection dates:"
 msgstr "Neplatná data připojení:"
 
-#: admin/views/tree_check_invalid.php:123
+#: admin/views/tree_check_invalid.php:149
 msgid "Invalid address dates:"
 msgstr "Neplatná data adres:"
 
-#: admin/views/tree_check_invalid.php:136
+#: admin/views/tree_check_invalid.php:168
 msgid "Invalid repository dates:"
 msgstr "Neplatná data úložiště:"
 
-#: admin/views/tree_check_invalid.php:149
+#: admin/views/tree_check_invalid.php:187
 msgid "Invalid source dates:"
 msgstr "Neplatná data zdrojů:"
 
-#: admin/views/tree_check_invalid.php:220
+#: admin/views/tree_check_invalid.php:279
 msgid "Click events by person"
 msgstr "Klikněte na události podle osoby"
 
-#: admin/views/tree_check_invalid.php:244
+#: admin/views/tree_check_invalid.php:310
 msgid "Click events by marriage"
 msgstr "Klikněte na události podle manželství"
 
-#: admin/views/tree_check_invalid.php:254
+#: admin/views/tree_check_invalid.php:324
 msgid "Click relevant person source"
 msgstr "Klikněte na zdroj relevantní osoby"
 
-#: admin/views/tree_check_invalid.php:257
-#: admin/views/tree_check_invalid.php:321
+#: admin/views/tree_check_invalid.php:327
+#: admin/views/tree_check_invalid.php:401
 msgid "Click addresses"
 msgstr "Klikněte na adresy"
 
-#: admin/views/tree_check_invalid.php:278
+#: admin/views/tree_check_invalid.php:348
 msgid "Click relevant family source"
 msgstr "Klikněte na příslušný zdroj rodiny"
 
-#: admin/views/tree_check_invalid.php:310
+#: admin/views/tree_check_invalid.php:380
 msgid "Click relevant event source"
 msgstr "Klikněte na příslušný zdroj události"
 
-#: admin/views/tree_check_invalid.php:324
+#: admin/views/tree_check_invalid.php:412
 msgid "Address editor"
 msgstr "Editor adres"
 
-#: admin/views/tree_check_invalid.php:334
+#: admin/views/tree_check_invalid.php:413
+#: admin/views/tree_check_invalid.php:428
+#: admin/views/tree_check_invalid.php:442
+#, fuzzy
+#| msgid "Source for:"
+msgid "search for:"
+msgstr "Zdroj pro:"
+
+#: admin/views/tree_check_invalid.php:427
 msgid "Source editor"
 msgstr "Editor zdroje"
 
-#: admin/views/tree_check_invalid.php:344
+#: admin/views/tree_check_invalid.php:441
 msgid "Repository editor"
 msgstr "Editor úložiště"
 
-#: admin/views/tree_data.php:34 admin/views/users.php:51 views/family.php:1318
+#: admin/views/tree_data.php:9 admin/views/users.php:51 views/family.php:1318
 #: views/mailform.php:55 views/mailform.php:57 views/register.php:65
 #: views/user_settings.php:30 views/user_settings.php:32
 msgid "E-mail address"
 msgstr "E-mail adresa"
 
-#: admin/views/tree_data.php:37
+#: admin/views/tree_data.php:12
 msgid ""
 "E-mail address will not be shown on the site: an e-mail form will be "
 "generated!"
@@ -6775,27 +6807,27 @@ msgstr ""
 "E-mailová adresa nebude na stránce zobrazena: bude vygenerován e-mailový "
 "formulář!"
 
-#: admin/views/tree_data.php:71
+#: admin/views/tree_data.php:46
 msgid "Tree privacy"
 msgstr "Soukromí stromu"
 
-#: admin/views/tree_data.php:74
+#: admin/views/tree_data.php:49
 msgid "Standard"
 msgstr "Standard"
 
-#: admin/views/tree_data.php:75
+#: admin/views/tree_data.php:50
 msgid "FILTER ALL persons"
 msgstr "FILTROVAT VŠECHNY osoby"
 
-#: admin/views/tree_data.php:76
+#: admin/views/tree_data.php:51
 msgid "DISPLAY ALL persons"
 msgstr "ZOBRAZIT VŠECHNY osoby"
 
-#: admin/views/tree_data.php:78
+#: admin/views/tree_data.php:53
 msgid "This option is valid for ALL persons in this tree!"
 msgstr "Tato možnost platí pro VŠECHNY osoby v tomto stromu!"
 
-#: admin/views/tree_merge.php:92 admin/views/tree_merge.php:209
+#: admin/views/tree_merge.php:39 admin/views/tree_merge.php:150
 #, fuzzy
 #| msgid ""
 #| "Carefully compare these two persons. Only if you are <b>absolutely sure</"
@@ -6807,54 +6839,54 @@ msgstr ""
 "Tyto dva jedince pečlivě porovnejte. Pokud jste si naprosto jisti, že jsou "
 "totožné, stiskněte \"Sloučit zprava doleva\""
 
-#: admin/views/tree_merge.php:109 admin/views/tree_merge.php:175
-#: admin/views/tree_merge.php:217 admin/views/tree_merge.php:302
-#: admin/views/tree_merge.php:346 admin/views/tree_merge.php:414
-#: admin/views/tree_merge.php:485 admin/views/tree_merge.php:773
-#: admin/views/tree_merge.php:890
+#: admin/views/tree_merge.php:56 admin/views/tree_merge.php:116
+#: admin/views/tree_merge.php:158 admin/views/tree_merge.php:243
+#: admin/views/tree_merge.php:287 admin/views/tree_merge.php:355
+#: admin/views/tree_merge.php:426 admin/views/tree_merge.php:725
+#: admin/views/tree_merge.php:840
 msgid "Back to main merge menu"
 msgstr "Zpět do hlavní nabídky sloučení"
 
-#: admin/views/tree_merge.php:120 admin/views/tree_merge.php:227
-#: admin/views/tree_merge.php:323
+#: admin/views/tree_merge.php:67 admin/views/tree_merge.php:168
+#: admin/views/tree_merge.php:264
 msgid "<- Switch left and right ->"
 msgstr "<- Zaměnit levou a pravou ->"
 
-#: admin/views/tree_merge.php:128 admin/views/tree_merge.php:312
+#: admin/views/tree_merge.php:75 admin/views/tree_merge.php:253
 msgid "Skip to next"
 msgstr "Přejít na další"
 
-#: admin/views/tree_merge.php:131
+#: admin/views/tree_merge.php:78
 msgid "Skip to nr: "
 msgstr "Přejít na č: "
 
-#: admin/views/tree_merge.php:147 views/maps.php:515 views/maps.php:649
+#: admin/views/tree_merge.php:88 views/maps.php:515 views/maps.php:649
 msgid "Go!"
 msgstr "Pokračovat!"
 
-#: admin/views/tree_merge.php:156 admin/views/tree_merge.php:246
-#: admin/views/tree_merge.php:335
+#: admin/views/tree_merge.php:97 admin/views/tree_merge.php:187
+#: admin/views/tree_merge.php:276
 msgid "Merge right into left"
 msgstr "Spojte pravou s levou"
 
-#: admin/views/tree_merge.php:170
+#: admin/views/tree_merge.php:111
 msgid "No more duplicates found"
 msgstr "Nebyly nalezeny žádné další duplikáty"
 
-#: admin/views/tree_merge.php:189
+#: admin/views/tree_merge.php:130
 msgid "You cannot merge persons of opposite sex. Please try again"
 msgstr "Nemůžete sloučit jedince opačného pohlaví. Prosím zkuste to znovu"
 
-#: admin/views/tree_merge.php:195 admin/views/tree_merge.php:206
-#: admin/views/tree_merge.php:235 admin/views/tree_merge.php:2666
+#: admin/views/tree_merge.php:136 admin/views/tree_merge.php:147
+#: admin/views/tree_merge.php:176 admin/views/tree_merge.php:2605
 msgid "Choose another pair"
 msgstr "Vyberte jiný pár"
 
-#: admin/views/tree_merge.php:200
+#: admin/views/tree_merge.php:141
 msgid "This is one person already - you can't merge! Please try again"
 msgstr "Toto je již jedna osoba – nelze se sloučit! Prosím zkuste to znovu"
 
-#: admin/views/tree_merge.php:210
+#: admin/views/tree_merge.php:151
 msgid ""
 "The checked items will be the ones entered into the database for the merged "
 "person. You can change the default settings"
@@ -6862,11 +6894,11 @@ msgstr ""
 "Zaškrtnuté položky budou ty, které byly vloženy do databáze pro sloučený "
 "záznam. Výchozí nastavení můžete změnit"
 
-#: admin/views/tree_merge.php:340
+#: admin/views/tree_merge.php:281
 msgid "No more surrounding relatives to check"
 msgstr "Už žádné okolní příbuzné ke kontrole"
 
-#: admin/views/tree_merge.php:373
+#: admin/views/tree_merge.php:314
 msgid ""
 "With \"Duplicate merge\" the program will look for all persons with a fixed "
 "set of criteria for identical data.\n"
@@ -6919,31 +6951,31 @@ msgstr ""
 "<b>Upozorňujeme, že generování duplikátů může nějakou dobu trvat v "
 "závislosti na velikosti stromu.</b>"
 
-#: admin/views/tree_merge.php:396 admin/views/tree_merge.php:2654
+#: admin/views/tree_merge.php:337 admin/views/tree_merge.php:2593
 msgid "Continue duplicate merge"
 msgstr "Pokračujte ve slučování duplicit"
 
-#: admin/views/tree_merge.php:405
+#: admin/views/tree_merge.php:346
 msgid "Find doubles only within this family name (optional)"
 msgstr "Najít dvojníky pouze v rámci tohoto příjmení (volitelné)"
 
-#: admin/views/tree_merge.php:406
+#: admin/views/tree_merge.php:347
 msgid "Generate new duplicate merge"
 msgstr "Vygenerovat nové duplicitní sloučení"
 
-#: admin/views/tree_merge.php:422
+#: admin/views/tree_merge.php:363
 msgid "Please wait while duplicate list is generated"
 msgstr "Počkejte prosím, než se vygeneruje duplicitní seznam"
 
-#: admin/views/tree_merge.php:469
+#: admin/views/tree_merge.php:410
 msgid "Possible duplicates found: "
 msgstr "Nalezené možné duplikáty: "
 
-#: admin/views/tree_merge.php:474
+#: admin/views/tree_merge.php:415
 msgid "Start comparing duplicates"
 msgstr "Začněte porovnávat duplikáty"
 
-#: admin/views/tree_merge.php:477
+#: admin/views/tree_merge.php:418
 msgid ""
 "No duplicates found. Duplicate merge and Automatic merge won't result in "
 "merges!"
@@ -6951,15 +6983,15 @@ msgstr ""
 "Nebyly nalezeny žádné duplikáty. Duplicitní sloučení a automatické sloučení "
 "nepovedou ke sloučení!"
 
-#: admin/views/tree_merge.php:478
+#: admin/views/tree_merge.php:419
 msgid "You can try one of the other merge options"
 msgstr "Můžete zkusit jednu z dalších možností sloučení"
 
-#: admin/views/tree_merge.php:496
+#: admin/views/tree_merge.php:437
 msgid "Pick the two persons you want to check for merging"
 msgstr "Vyberte dvě osoby, u kterých chcete zkontrolovat sloučení"
 
-#: admin/views/tree_merge.php:497
+#: admin/views/tree_merge.php:437
 msgid ""
 "You can enter names (or part of names) or GEDCOM no. (INDI), or leave boxes "
 "empty"
@@ -6967,7 +6999,7 @@ msgstr ""
 "Můžete zadat jména (nebo část jmen) nebo číslo GEDCOM. (INDI), nebo ponechte "
 "políčka prázdná"
 
-#: admin/views/tree_merge.php:498
+#: admin/views/tree_merge.php:438
 msgid ""
 "<b>TIP: when you click \"search\" with all boxes left empty you will get a "
 "list with all persons in the database. (May take a few seconds)</b>"
@@ -6975,36 +7007,36 @@ msgstr ""
 "<b>TIP: když kliknete na \"hledat\" a všechna políčka zůstanou prázdná, "
 "získáte seznam všech lidí v databázi. (Může to trvat několik vteřin)</b>"
 
-#: admin/views/tree_merge.php:612 views/list.php:178 views/list.php:185
+#: admin/views/tree_merge.php:553 views/list.php:178 views/list.php:185
 #: views/list.php:411 views/stats_firstnames.php:112
 #: views/stats_firstnames.php:114 views/stats_firstnames.php:116
 #: views/stats_firstnames.php:118
 msgid "First name"
 msgstr "Jméno"
 
-#: admin/views/tree_merge.php:613 views/list.php:197 views/list.php:207
+#: admin/views/tree_merge.php:554 views/list.php:197 views/list.php:207
 #: views/list.php:211 views/list.php:423
 msgid "Last name"
 msgstr "Příjmení"
 
-#: admin/views/tree_merge.php:614
+#: admin/views/tree_merge.php:555
 msgid "GEDCOM no. (\"I43\")"
 msgstr "GEDCOM č. (\"I43\")"
 
-#: admin/views/tree_merge.php:616 views/relations.php:110
+#: admin/views/tree_merge.php:557 views/relations.php:110
 #: views/relations.php:224
 msgid "Pick a name from search results"
 msgstr "Vyberte jméno z výsledků vyhledávání"
 
-#: admin/views/tree_merge.php:617 admin/views/tree_merge.php:676
+#: admin/views/tree_merge.php:558 admin/views/tree_merge.php:627
 msgid "Show details"
 msgstr "Ukázat detaily"
 
-#: admin/views/tree_merge.php:673 views/relations.php:325
+#: admin/views/tree_merge.php:624 views/relations.php:325
 msgid "Switch persons"
 msgstr "Zaměnit osoby"
 
-#: admin/views/tree_merge.php:751
+#: admin/views/tree_merge.php:703
 msgid ""
 "Automatic merge will go through the entire database and merge all persons "
 "who comply with ALL the following conditions:<br>\n"
@@ -7033,27 +7065,27 @@ msgstr ""
 "závislosti na velikosti databáze a počtu sloučení.</b><br>\n"
 "Po dokončení akce budete informováni o výsledcích"
 
-#: admin/views/tree_merge.php:766
+#: admin/views/tree_merge.php:718
 msgid "Start automatic merge"
 msgstr "Spusťte automatické slučování"
 
-#: admin/views/tree_merge.php:780
+#: admin/views/tree_merge.php:732
 msgid "Please wait while the automatic merges are processed..."
 msgstr "Počkejte prosím, než se zpracují automatická sloučení..."
 
-#: admin/views/tree_merge.php:852
+#: admin/views/tree_merge.php:802
 msgid "No automatic merge options were found."
 msgstr "Nebyly nalezeny žádné možnosti automatického sloučení."
 
-#: admin/views/tree_merge.php:854
+#: admin/views/tree_merge.php:804
 msgid "Automatic merge completed"
 msgstr "Automatické sloučení dokončeno"
 
-#: admin/views/tree_merge.php:854
+#: admin/views/tree_merge.php:804
 msgid " merges were performed"
 msgstr " byla provedena sloučení"
 
-#: admin/views/tree_merge.php:858
+#: admin/views/tree_merge.php:808
 msgid ""
 "It is recommended to continue with <b>\"Relatives merge\"</b> to consider "
 "merging persons affected by previous merges that were performed."
@@ -7061,39 +7093,39 @@ msgstr ""
 "Doporučuje se pokračovat v <b>\"Sloučení příbuzných\"</b>, abyste zvážili "
 "sloučení osob ovlivněných předchozími sloučeními, která byla provedena."
 
-#: admin/views/tree_merge.php:864 admin/views/tree_merge.php:1090
-#: admin/views/tree_merge.php:1093 admin/views/tree_merge.php:2642
+#: admin/views/tree_merge.php:814 admin/views/tree_merge.php:996
+#: admin/views/tree_merge.php:999 admin/views/tree_merge.php:2581
 msgid "Relatives merge"
 msgstr "Spojení příbuzných"
 
-#: admin/views/tree_merge.php:867
+#: admin/views/tree_merge.php:817
 msgid "You may wish to proceed with duplicate merge or manual merge."
 msgstr ""
 "Možná budete chtít pokračovat v duplicitním sloučení nebo ručním sloučení."
 
-#: admin/views/tree_merge.php:874 admin/views/tree_merge.php:979
-#: admin/views/tree_merge.php:1108 admin/views/tree_merge.php:1252
+#: admin/views/tree_merge.php:824 admin/views/tree_merge.php:885
+#: admin/views/tree_merge.php:1014 admin/views/tree_merge.php:1157
 msgid "Duplicate merge"
 msgstr "Duplicitní sloučení"
 
-#: admin/views/tree_merge.php:881 admin/views/tree_merge.php:1122
-#: admin/views/tree_merge.php:1256
+#: admin/views/tree_merge.php:831 admin/views/tree_merge.php:1028
+#: admin/views/tree_merge.php:1161
 msgid "Manual merge"
 msgstr "Ruční sloučení"
 
-#: admin/views/tree_merge.php:895
+#: admin/views/tree_merge.php:845
 msgid "These are the persons that were merged:"
 msgstr "Toto jsou osoby, které byly sloučeny:"
 
-#: admin/views/tree_merge.php:961
+#: admin/views/tree_merge.php:867
 msgid "Merge filter settings"
 msgstr "Nastavení filtru sloučení"
 
-#: admin/views/tree_merge.php:969
+#: admin/views/tree_merge.php:875
 msgid "Max characters to match firstname:"
 msgstr "Maximální počet znaků odpovídajících křestnímu jménu:"
 
-#: admin/views/tree_merge.php:974
+#: admin/views/tree_merge.php:880
 msgid ""
 "In different trees, first names may be listed differently: Thomas Julian "
 "Booth, Thomas J. Booth, Thomas Booth etc. By default a match of the first 10 "
@@ -7109,11 +7141,11 @@ msgstr ""
 "počet znaků, získáte mnoho nechtěných možných shod. Pokud jej nastavíte "
 "příliš vysoko, můžete přehlédnout možné shody jako v příkladech výše."
 
-#: admin/views/tree_merge.php:983
+#: admin/views/tree_merge.php:889
 msgid "include blank lastnames"
 msgstr "zahrnout prázdná příjmení"
 
-#: admin/views/tree_merge.php:991
+#: admin/views/tree_merge.php:897
 msgid ""
 "By default two persons with missing lastnames will be included as possible "
 "duplicates. Two persons called \"John\" without lastname will be considered "
@@ -7127,11 +7159,11 @@ msgstr ""
 "získat dlouhý seznam možných duplikátů a možná budete chtít toto zakázat, "
 "aby byly zahrnuty pouze osoby s příjmením."
 
-#: admin/views/tree_merge.php:996
+#: admin/views/tree_merge.php:902
 msgid "include blank firstnames"
 msgstr "zahrnout prázdná křestní jména"
 
-#: admin/views/tree_merge.php:1004
+#: admin/views/tree_merge.php:910
 msgid ""
 "Same as above, but for first names. When enabled (default), all persons "
 "called \"Smith\" without first name will be considered possible duplicates "
@@ -7143,11 +7175,11 @@ msgstr ""
 "duplikáty. Pokud máte mnoho případů, jako je tento, mohl by vám poskytnout "
 "dlouhý seznam a možná jej budete chtít deaktivovat."
 
-#: admin/views/tree_merge.php:1009
+#: admin/views/tree_merge.php:915
 msgid "include blank dates"
 msgstr "zahrnout prázdná data"
 
-#: admin/views/tree_merge.php:1017
+#: admin/views/tree_merge.php:923
 msgid ""
 "By default, two persons with identical names, but with one or both missing "
 "birth/death dates are considered possible duplicates. In certain trees this "
@@ -7165,15 +7197,15 @@ msgstr ""
 "snížit počet možných duplikátů, ale samozřejmě také můžete přijít o páry, "
 "které jsou ve skutečnosti duplikáty."
 
-#: admin/views/tree_merge.php:1022 admin/views/tree_merge.php:1075
+#: admin/views/tree_merge.php:928 admin/views/tree_merge.php:981
 msgid "Automatic merge"
 msgstr "Automatické sloučení"
 
-#: admin/views/tree_merge.php:1026
+#: admin/views/tree_merge.php:932
 msgid "include parents marriage date:"
 msgstr "zahrnout datum svatby rodičů:"
 
-#: admin/views/tree_merge.php:1034
+#: admin/views/tree_merge.php:940
 msgid ""
 "Automatic merging is a dangerous business. Therefore many clauses are used "
 "to make sure the persons are indeed identical. Besides identical names, "
@@ -7187,15 +7219,15 @@ msgstr ""
 "svatby rodičů. Pokud to příliš zvažujete a spoléháte se na on the above "
 "clauses, you can disable this."
 
-#: admin/views/tree_merge.php:1043
+#: admin/views/tree_merge.php:949
 msgid "Reset"
 msgstr "Resetovat"
 
-#: admin/views/tree_merge.php:1058
+#: admin/views/tree_merge.php:964
 msgid "Merge Options"
 msgstr "Možnosti sloučení"
 
-#: admin/views/tree_merge.php:1062
+#: admin/views/tree_merge.php:968
 msgid ""
 "<b>NOTE:</b> None of these buttons will cause immediate merging. You will "
 "first be presented with information and can then decide to make a merge."
@@ -7222,7 +7254,7 @@ msgstr ""
 "je třeba zvážit pro sloučení.<br>\n"
 "Jako poslední možnost můžete provést ruční sloučení."
 
-#: admin/views/tree_merge.php:1079
+#: admin/views/tree_merge.php:985
 msgid ""
 "You will be shown the set of strict criteria used for automatic merging and "
 "then you can decide whether to continue."
@@ -7230,7 +7262,7 @@ msgstr ""
 "Zobrazí se vám sada přísných kritérií používaných pro automatické slučování "
 "a poté se můžete rozhodnout, zda budete pokračovat."
 
-#: admin/views/tree_merge.php:1097
+#: admin/views/tree_merge.php:1003
 msgid ""
 "This button will become available if you have made merges, and surrounding "
 "relatives (parents, children or spouses) have to be considered for merging "
@@ -7251,7 +7283,7 @@ msgstr ""
 "Okolní příbuzní se ukládají do databáze a můžete se do ní také vrátit "
 "později."
 
-#: admin/views/tree_merge.php:1112
+#: admin/views/tree_merge.php:1018
 msgid ""
 "You will be presented, one after the other, with pairs of possible "
 "duplicates to consider for merging.<br>\n"
@@ -7263,25 +7295,25 @@ msgstr ""
 "Po sloučení se můžete přepnout na \"sloučení příbuzných\" a poté se vrátit k "
 "duplicitnímu vyhledávání tam, kde jste skončili."
 
-#: admin/views/tree_merge.php:1125
+#: admin/views/tree_merge.php:1031
 msgid "You can pick two persons out of the database to consider for merging."
 msgstr ""
 "Z databáze můžete vybrat dvě osoby, které byste měli zvážit pro sloučení."
 
-#: admin/views/tree_merge.php:1136
+#: admin/views/tree_merge.php:1042
 msgid ""
 "Here you can change the default filters for the different merge options."
 msgstr "Zde můžete změnit výchozí filtry pro různé možnosti sloučení."
 
-#: admin/views/tree_merge.php:1254
+#: admin/views/tree_merge.php:1159
 msgid "Surrounding relatives check"
 msgstr "Kontrola okolních příbuzných"
 
-#: admin/views/tree_merge.php:1267
+#: admin/views/tree_merge.php:1171
 msgid "Nr. "
 msgstr "Č. "
 
-#: admin/views/tree_merge.php:1267 views/ancestor_report_pdf.php:67
+#: admin/views/tree_merge.php:1171 views/ancestor_report_pdf.php:67
 #: views/ancestor_report_pdf.php:82 views/ancestor_report_rtf.php:62
 #: views/ancestor_sheet.php:250 views/ancestor_sheet_pdf.php:295
 #: views/ancestor_sheet_pdf.php:316 views/descendant_chart.php:122
@@ -7351,123 +7383,123 @@ msgstr "Č. "
 msgid " of "
 msgstr " od "
 
-#: admin/views/tree_merge.php:1271
+#: admin/views/tree_merge.php:1175
 msgid " relatives to check"
 msgstr " příbuzní ke kontrole"
 
-#: admin/views/tree_merge.php:1275
+#: admin/views/tree_merge.php:1179
 msgid "Person 1: "
 msgstr "Osoba 1: "
 
-#: admin/views/tree_merge.php:1276
+#: admin/views/tree_merge.php:1180
 msgid "Person 2: "
 msgstr "Osoba 2: "
 
-#: admin/views/tree_merge.php:1279
+#: admin/views/tree_merge.php:1183
 msgid "Gedcom number:"
 msgstr "Gedcom číslo:"
 
-#: admin/views/tree_merge.php:1285
+#: admin/views/tree_merge.php:1189
 msgid "last name"
 msgstr "příjmení"
 
-#: admin/views/tree_merge.php:1286
+#: admin/views/tree_merge.php:1190
 msgid "first name"
 msgstr "jméno"
 
-#: admin/views/tree_merge.php:1288
+#: admin/views/tree_merge.php:1192
 msgid "patronym"
 msgstr "patronym"
 
-#: admin/views/tree_merge.php:1290
+#: admin/views/tree_merge.php:1194
 msgid "birth place"
 msgstr "místo narození"
 
-#: admin/views/tree_merge.php:1293
+#: admin/views/tree_merge.php:1197
 msgid "baptism place"
 msgstr "místo křtu"
 
-#: admin/views/tree_merge.php:1295
+#: admin/views/tree_merge.php:1199
 msgid "death place"
 msgstr "místo úmrtí"
 
-#: admin/views/tree_merge.php:1300
+#: admin/views/tree_merge.php:1204
 msgid "burial place"
 msgstr "místo pohřbu"
 
-#: admin/views/tree_merge.php:1304
+#: admin/views/tree_merge.php:1208
 msgid "stillborn"
 msgstr "mrtvě narozený"
 
-#: admin/views/tree_merge.php:1305
+#: admin/views/tree_merge.php:1209
 msgid "general text"
 msgstr "obecný text"
 
-#: admin/views/tree_merge.php:1306
+#: admin/views/tree_merge.php:1210
 msgid "name text"
 msgstr "text jména"
 
-#: admin/views/tree_merge.php:1307
+#: admin/views/tree_merge.php:1211
 msgid "birth text"
 msgstr "text narození"
 
-#: admin/views/tree_merge.php:1308
+#: admin/views/tree_merge.php:1212
 msgid "baptism text"
 msgstr "text křtu"
 
-#: admin/views/tree_merge.php:1309
+#: admin/views/tree_merge.php:1213
 msgid "death text"
 msgstr "text úmrtí"
 
-#: admin/views/tree_merge.php:1310
+#: admin/views/tree_merge.php:1214
 msgid "burial text"
 msgstr "text pohřbu"
 
-#: admin/views/tree_merge.php:1328
+#: admin/views/tree_merge.php:1231
 msgid "Relatives"
 msgstr "Příbuzní"
 
-#: admin/views/tree_merge.php:1419 admin/views/tree_merge.php:1437
+#: admin/views/tree_merge.php:1316 admin/views/tree_merge.php:1332
 msgid "Read text"
 msgstr "Načíst text"
 
-#: admin/views/tree_merge.php:1430 admin/views/tree_merge.php:1632
-#: admin/views/tree_merge.php:1660 admin/views/tree_merge.php:1720
-#: admin/views/tree_merge.php:1799
+#: admin/views/tree_merge.php:1329 admin/views/tree_merge.php:1526
+#: admin/views/tree_merge.php:1554 admin/views/tree_merge.php:1612
+#: admin/views/tree_merge.php:1691
 msgid "(no data)"
 msgstr "(žádná data)"
 
-#: admin/views/tree_merge.php:1553
+#: admin/views/tree_merge.php:1450
 msgid "Picture"
 msgstr "Obrázek"
 
-#: admin/views/tree_merge.php:1569 include/witness.php:189
+#: admin/views/tree_merge.php:1464 include/witness.php:189
 msgid "baptism witness"
 msgstr "svědek křestu"
 
-#: admin/views/tree_merge.php:1579 include/witness.php:203
+#: admin/views/tree_merge.php:1471 include/witness.php:203
 msgid "burial witness"
 msgstr "svědek pohřbu"
 
-#: admin/views/tree_merge.php:1582
+#: admin/views/tree_merge.php:1475
 msgid "Other names"
 msgstr "Další jména"
 
-#: admin/views/tree_merge.php:1594
+#: admin/views/tree_merge.php:1487
 msgid "Internet link / URL"
 msgstr "Internetový odkaz / URL"
 
-#: admin/views/tree_merge.php:1627 admin/views/tree_merge.php:1655
-#: admin/views/tree_merge.php:1709 admin/views/tree_merge.php:1735
-#: admin/views/tree_merge.php:1791 admin/views/tree_merge.php:1814
+#: admin/views/tree_merge.php:1521 admin/views/tree_merge.php:1549
+#: admin/views/tree_merge.php:1601 admin/views/tree_merge.php:1627
+#: admin/views/tree_merge.php:1683 admin/views/tree_merge.php:1706
 msgid "Show"
 msgstr "Ukázat"
 
-#: admin/views/tree_merge.php:2625
+#: admin/views/tree_merge.php:2564
 msgid " was successfully merged into "
 msgstr " byl úspěšně začleněn do "
 
-#: admin/views/tree_merge.php:2629
+#: admin/views/tree_merge.php:2568
 #, php-format
 msgid ""
 "After this merge there are %d surrounding relatives to be checked for "
@@ -7476,7 +7508,7 @@ msgstr ""
 "Po tomto sloučení existuje %d okolních příbuzných, kteří mají být "
 "zkontrolováni pro sloučení!"
 
-#: admin/views/tree_merge.php:2632
+#: admin/views/tree_merge.php:2571
 msgid ""
 "<b>You are strongly advised to move to \"Relatives merge\" mode to check all "
 "surrounding persons who may have to be checked for merging.</b><br>\n"
@@ -7492,15 +7524,15 @@ msgstr ""
 "<br>\n"
 "To je nejjednodušší způsob, jak zajistit, abyste na nikoho nezapomněli."
 
-#: admin/views/tree_merge.php:2652
+#: admin/views/tree_merge.php:2591
 msgid "Continue manual merge"
 msgstr "Pokračujte v ručním slučování"
 
-#: admin/views/tree_merge.php:2668
+#: admin/views/tree_merge.php:2607
 msgid "Continue with next pair"
 msgstr "Pokračujte dalším párem"
 
-#: admin/views/tree_text.php:21
+#: admin/views/tree_text.php:11
 msgid ""
 "Here you can add some overall texts for EVERY family tree (and for  EVERY "
 "LANGUAGE!).<br>Select language, and change text"
@@ -7508,7 +7540,7 @@ msgstr ""
 "Zde můžete přidat nějaké celkové texty pro KAŽDÝ rodokmen (a pro KAŽDÝ "
 "JAZYK!).<br>Vyberte jazyk a změňte text"
 
-#: admin/views/tree_text.php:22
+#: admin/views/tree_text.php:12
 msgid ""
 "Add \"Default\" (e.g. english) texts  for all languages, and/ or select a "
 "language to add texts for that specific language"
@@ -7516,58 +7548,58 @@ msgstr ""
 "Přidejte \"Výchozí\" (např. anglický) texty pro všechny jazyky a/ nebo "
 "vyberte jazyk pro přidání textů pro tento konkrétní jazyk"
 
-#: admin/views/tree_text.php:45
+#: admin/views/tree_text.php:35
 msgid "Extra text in main menu"
 msgstr "Další text v hlavní nabídce"
 
-#: admin/views/tree_text.php:48
+#: admin/views/tree_text.php:38
 msgid "I.e. a website"
 msgstr "Tj. webová stránka"
 
-#: admin/views/tree_text.php:53
+#: admin/views/tree_text.php:43
 msgid "Extra source in main menu"
 msgstr "Extra zdroj v hlavní nabídce"
 
-#: admin/views/tree_text.php:56
+#: admin/views/tree_text.php:46
 msgid " I.e. a website"
 msgstr " Tj. webová stránka"
 
-#: admin/views/tree_text.php:61
+#: admin/views/tree_text.php:51
 msgid "Upper text family page"
 msgstr "Horní text rodinné stránky"
 
-#: admin/views/tree_text.php:64
+#: admin/views/tree_text.php:54
 msgid "I.e. Familypage"
 msgstr "Tj. Rodinná stránka"
 
-#: admin/views/tree_text.php:69
+#: admin/views/tree_text.php:59
 msgid "Lower text family page"
 msgstr "Dolní text rodinné stránky"
 
-#: admin/views/tree_text.php:72
+#: admin/views/tree_text.php:62
 msgid ""
 "I.e.: For more information: &lt;a href=\"mailform.php\"&gt;contact&lt;/a&gt;"
 msgstr ""
 "Tj.: Další informace: &lt;a href=\"mailform.php\"&gt;kontaktujte&lt;/a&gt;"
 
-#: admin/views/trees.php:62 admin/views/trees.php:114
+#: admin/views/trees.php:20 admin/views/trees.php:49
 msgid "Family tree administration"
 msgstr "Správa rodokmenu"
 
-#: admin/views/trees.php:66
+#: admin/views/trees.php:24
 msgid "Selected:"
 msgstr "Vybraný:"
 
-#: admin/views/trees.php:67
+#: admin/views/trees.php:25
 msgid ""
 "Are you sure you want to remove this tree <b>AND all its statistics</b>?"
 msgstr "Opravdu chcete odstranit tento strom <b>A všechny jeho statistiky</b>?"
 
-#: admin/views/trees.php:123
+#: admin/views/trees.php:58
 msgid "Family tree texts (per language)"
 msgstr "Texty rodokmenu (podle jazyka)"
 
-#: admin/views/trees.php:126
+#: admin/views/trees.php:61
 msgid "Merge Data"
 msgstr "Sloučit data"
 
@@ -7810,7 +7842,7 @@ msgid "Owner family tree:"
 msgstr "Majitel rodokmenu:"
 
 #: app/model/tree_index.php:502 app/model/tree_index.php:504
-#: views/stats_surnames.php:138 views/stats_surnames.php:141
+#: views/stats_surnames.php:140 views/stats_surnames.php:143
 msgid "Surname"
 msgstr "Příjmení"
 
@@ -7818,7 +7850,7 @@ msgstr "Příjmení"
 #: views/list_names.php:297 views/list_names.php:300
 #: views/stats_firstnames.php:113 views/stats_firstnames.php:115
 #: views/stats_firstnames.php:117 views/stats_firstnames.php:119
-#: views/stats_surnames.php:138 views/stats_surnames.php:142
+#: views/stats_surnames.php:140 views/stats_surnames.php:144
 msgid "Total"
 msgstr "Celkem"
 
@@ -7929,10 +7961,10 @@ msgstr "přibližně"
 #: include/calculate_age_cls.php:497 include/calculate_age_cls.php:501
 #: include/calculate_age_cls.php:508 include/calculate_age_cls.php:513
 #: include/calculate_age_cls.php:519 include/calculate_age_cls.php:523
-#: views/stats_persons.php:499 views/stats_persons.php:507
-#: views/stats_persons.php:524 views/stats_persons.php:530
-#: views/stats_persons.php:543 views/stats_persons.php:549
-#: views/stats_persons.php:555 views/stats_persons.php:557
+#: views/stats_persons.php:503 views/stats_persons.php:511
+#: views/stats_persons.php:528 views/stats_persons.php:534
+#: views/stats_persons.php:547 views/stats_persons.php:553
+#: views/stats_persons.php:559 views/stats_persons.php:561
 msgid "years"
 msgstr "let"
 
@@ -8265,36 +8297,36 @@ msgid "from:"
 msgstr "od:"
 
 #: include/marriage_cls.php:601 include/marriage_cls.php:603
-#: include/marriage_cls.php:605 include/marriage_cls.php:818
-#: include/marriage_cls.php:819
+#: include/marriage_cls.php:605 include/marriage_cls.php:832
+#: include/marriage_cls.php:833
 msgid "divorced"
 msgstr "rozvedeni"
 
 #: include/marriage_cls.php:615 include/marriage_cls.php:616
-#: include/marriage_cls.php:805
+#: include/marriage_cls.php:819
 msgid "Married/ Related"
 msgstr "Ženatý/příbuzný"
 
-#: include/marriage_cls.php:758 include/person_cls.php:1261 views/list.php:1097
+#: include/marriage_cls.php:772 include/person_cls.php:1261 views/list.php:1097
 #: views/list_places_families.php:395
 msgid "1st"
 msgstr "1."
 
-#: include/marriage_cls.php:761 include/person_cls.php:1263 views/list.php:1099
+#: include/marriage_cls.php:775 include/person_cls.php:1263 views/list.php:1099
 #: views/list_places_families.php:397 views/relations.php:1631
 #: views/relations.php:2082 views/relations.php:2285 views/relations.php:2441
 #: views/relations.php:2893
 msgid "2nd"
 msgstr "2."
 
-#: include/marriage_cls.php:764 include/person_cls.php:1265 views/list.php:1101
+#: include/marriage_cls.php:778 include/person_cls.php:1265 views/list.php:1101
 #: views/list_places_families.php:399 views/relations.php:1634
 #: views/relations.php:2085 views/relations.php:2288 views/relations.php:2444
 #: views/relations.php:2896
 msgid "3rd"
 msgstr "3."
 
-#: include/marriage_cls.php:767 include/person_cls.php:1267 views/list.php:1103
+#: include/marriage_cls.php:781 include/person_cls.php:1267 views/list.php:1103
 #: views/list_places_families.php:401 views/relations.php:1307
 #: views/relations.php:1638 views/relations.php:2089 views/relations.php:2661
 #: views/relations.php:2765 views/relations.php:2900 views/relations.php:3645
@@ -8302,15 +8334,15 @@ msgstr "3."
 msgid "th"
 msgstr "."
 
-#: include/marriage_cls.php:776
+#: include/marriage_cls.php:790
 msgid "Married "
 msgstr "Oddáni "
 
-#: include/marriage_cls.php:784 include/marriage_cls.php:788
+#: include/marriage_cls.php:798 include/marriage_cls.php:802
 msgid "related"
 msgstr "příbuzný"
 
-#: include/marriage_cls.php:800
+#: include/marriage_cls.php:814
 msgid "married/ related"
 msgstr "ženatý/příbuzný"
 
@@ -8462,7 +8494,7 @@ msgstr "Rezidence (rodinné)"
 msgid "phone"
 msgstr "telefon"
 
-#: include/show_picture.php:261
+#: include/show_picture.php:202
 msgid "Missing image"
 msgstr "Chybí obrázek"
 
@@ -9689,12 +9721,12 @@ msgid "Choose sex:"
 msgstr "Vybrat pohlaví:"
 
 #: views/list.php:353 views/stats_firstnames.php:105
-#: views/stats_persons.php:350
+#: views/stats_persons.php:354
 msgid "Male"
 msgstr "Muž"
 
 #: views/list.php:354 views/stats_firstnames.php:106
-#: views/stats_persons.php:351
+#: views/stats_persons.php:355
 msgid "Female"
 msgstr "Žena"
 
@@ -9771,11 +9803,11 @@ msgstr "Všechna jména"
 msgid "Frequency of Surnames"
 msgstr "Frekvence příjmení"
 
-#: views/list_names.php:204 views/stats_surnames.php:101
+#: views/list_names.php:204 views/stats_surnames.php:103
 msgid "Number of displayed surnames"
 msgstr "Počet zobrazených příjmení"
 
-#: views/list_names.php:217 views/stats_surnames.php:119
+#: views/list_names.php:217 views/stats_surnames.php:121
 msgid "Number of columns"
 msgstr "Počet sloupců"
 
@@ -10480,47 +10512,47 @@ msgstr "Frekvence křestních jmen"
 msgid "Number of displayed first names"
 msgstr "Počet zobrazených křestních jmen"
 
-#: views/stats_persons.php:356 views/stats_tree.php:82
+#: views/stats_persons.php:360 views/stats_tree.php:82
 msgid "No. of persons"
 msgstr "Počet osob"
 
-#: views/stats_persons.php:369
+#: views/stats_persons.php:373
 msgid "Oldest birth date"
 msgstr "Nejčasnější datum narození"
 
-#: views/stats_persons.php:390
+#: views/stats_persons.php:394
 msgid "Youngest birth date"
 msgstr "Poslední datum narození"
 
-#: views/stats_persons.php:411
+#: views/stats_persons.php:415
 msgid "Oldest baptism date"
 msgstr "Nejstarší datum křtu"
 
-#: views/stats_persons.php:432
+#: views/stats_persons.php:436
 msgid "Youngest baptism date"
 msgstr "Nejmladší datum křtu"
 
-#: views/stats_persons.php:453
+#: views/stats_persons.php:457
 msgid "Oldest death date"
 msgstr "Nejčasnější datum úmrtí"
 
-#: views/stats_persons.php:474
+#: views/stats_persons.php:478
 msgid "Youngest death date"
 msgstr "Poslední datum úmrtí"
 
-#: views/stats_persons.php:494
+#: views/stats_persons.php:498
 msgid "Longest living person"
 msgstr "Největší životnost"
 
-#: views/stats_persons.php:517
+#: views/stats_persons.php:521
 msgid "Average age"
 msgstr "Průměrná životnost"
 
-#: views/stats_persons.php:536
+#: views/stats_persons.php:540
 msgid "Average age married persons"
 msgstr "Průměrná délka života vdaných jedinců"
 
-#: views/stats_persons.php:554
+#: views/stats_persons.php:558
 msgid "Lifespan range of married individuals"
 msgstr "Rozsah života vdaných jedinců"
 
@@ -10669,6 +10701,9 @@ msgstr "Vyberte motiv"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Standard-colours"
+
+#~ msgid "Save settings"
+#~ msgstr "Uložit nastavení"
 
 #, fuzzy
 #~| msgid "The e-mail function has been switched off!"
