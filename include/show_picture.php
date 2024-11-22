@@ -7,6 +7,8 @@ function show_media($event_connect_kind, $event_connect_id)
     global $sect, $screen_mode; // *** RTF Export ***
     global $data, $page;
 
+    include_once(__DIR__ . "/../admin/include/media_inc.php");
+
     $templ_person = array(); // local version
     $process_text = '';
     $media_nr = 0;
@@ -117,13 +119,8 @@ function show_media($event_connect_kind, $event_connect_id)
             if (file_exists($tree_pict_path . strtolower($event_event))) {
                 $event_event = strtolower($event_event);
             }
-
-            // *** Check for PDF, DOC file etc. Show standard icon ***
-            $thumbnail_type = thumbnail_type($event_event);
-            if ($thumbnail_type[0]) {
-                $picture = '<a href="' . $tree_pict_path . $event_event . '"><img src="' . $picpath . $thumbnail_type[0] . '" alt="' . $thumbnail_type[1] . '"></a>';
-            } else {
-                // *** Show photo using the lightbox effect ***
+            // *** Show photo using the lightbox effect ***
+            if (in_array(strtolower(pathinfo($event_event, PATHINFO_EXTENSION)), array('jpg', 'png', 'gif', 'bmp', 'tif'))) {
                 $picture_array = show_picture($tree_pict_path, $event_event, '', 120);
                 // *** lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
                 // *** But: reverse change of / character (if sub folders are used) ***
@@ -151,13 +148,16 @@ function show_media($event_connect_kind, $event_connect_id)
                 }
                 $picture .= $title_txt . '</div>';
 
-                $picture .= '<img src="' . $picture_array['path'] . $picture_array['thumb'] . $picture_array['picture'] . '" height="' . $picture_array['height'] . '" alt="' . $event_event . '"></a>';
-                //$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" width="'.$picture_array['width'].'" alt="'.$event_event.'"></a>';
+                $picture .= '<img src="' . $picture_array['path'] . $picture_array['thumb_prefix'] . $picture_array['picture'] . $picture_array['thumb_suffix'] . '" height="' . $picture_array['height'] . '" alt="' . $event_event . '"></a>';
+                //$picture.='<img src="'.$picture_array['path'].$picture_array['thumb_prefix'].$picture_array['picture'].'" width="'.$picture_array['width'].'" alt="'.$event_event.'"></a>';
 
-                $templ_person["pic_path" . $i] = $picture_array['path'] . "thumb_" . $picture_array['picture']; //for the time being pdf only with thumbs
+                $templ_person["pic_path" . $i] = $picture_array['path'] . "thumb_" . $picture_array['picture'] . $picture_array['thumb_suffix']; //for the time being pdf only with thumbs
                 // *** Remove spaces ***
                 $templ_person["pic_path" . $i] = trim($templ_person["pic_path" . $i]);
+            } else {
+                $picture = '<a href="' . $tree_pict_path . $event_event . '" target="_blank">' . print_thumbnail($tree_pict_path, $event_event) . '</a>';
             }
+
 
             // *** Show picture date and place ***
             $picture_text = '';
@@ -227,7 +227,7 @@ function show_media($event_connect_kind, $event_connect_id)
 // *** Made by Huub Mons sept. 2011/ update aug. 2014 ***
 // Example:
 // $picture=show_picture($tree_pict_path,$pictureDb->event_event,'',120);
-// $popup.='<img src="'.$picture['path'].$picture['thumb'].$picture['picture'].'" style="margin-left:50px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
+// $popup.='<img src="'.$picture['path'].$picture['thumb_prefix'].$picture['picture'].'" style="margin-left:50px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
 
 function show_picture($picture_path, $picture_org, $pict_width = '', $pict_height = '')
 {
@@ -260,28 +260,47 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
         $found_picture = true;
     }
 
-    $picture['thumb'] = '';
+    $picture['thumb_prefix'] = '';
+    $picture['thumb_suffix'] = '';
     // *** Lowercase thumbnail ***
-    if (file_exists($picture["path"] . 'thumb_' . strtolower($picture['picture']))) {
+    if (file_exists($picture["path"] . 'thumb_' . strtolower($picture['picture'] . '.jpg'))) {
         $found_picture = true;
-        $picture['thumb'] = 'thumb_';
+        $picture['thumb_prefix'] = 'thumb_';
+        $picture['thumb_suffix'] = '.jpg';
+        $picture['picture'] = strtolower($picture['picture']);
+    } elseif (file_exists($picture["path"] . 'thumb_' . strtolower($picture['picture']))) {
+        $found_picture = true;
+        $picture['thumb_prefix'] = 'thumb_';
         $picture['picture'] = strtolower($picture['picture']);
     }
     // *** Thumbnail ***
-    if (file_exists($picture["path"] . 'thumb_' . $picture['picture'])) {
+    if (file_exists($picture["path"] . 'thumb_' . $picture['picture'] . '.jpg')) {
         $found_picture = true;
-        $picture['thumb'] = 'thumb_';
+        $picture['thumb_prefix'] = 'thumb_';
+        $picture['thumb_suffix'] = '.jpg';
+    } elseif (file_exists($picture["path"] . 'thumb_' . $picture['picture'])) {
+        $found_picture = true;
+        $picture['thumb_prefix'] = 'thumb_';
     }
 
     // *** Check if picture is in subdirectory ***
     // Example: subdir1_test/xy/2022_02_12 Scheveningen.jpg
-    if ($picture['thumb'] === '') {
+    if ($picture['thumb_prefix'] === '') {
         $dirname = dirname($picture['picture']); // subdir1_test/xy/2022_02_12
         $basename = basename($picture['picture']); // 2022_02_12 Scheveningen.jpg
-        if (file_exists($picture["path"] . $dirname . '/thumb_' . $basename)) {
+        if (file_exists($picture["path"] . $dirname . '/thumb_' . $basename . '.jpg')) {
             $picture["path"] = $picture["path"] . $dirname . '/'; // *** Add subdirectory to path ***
-            $picture['thumb'] = 'thumb_';
+            $picture['thumb_prefix'] = 'thumb_';
+            $picture['thumb_suffix'] = '.jpg';
             $picture['picture'] = $basename;
+        } elseif (file_exists($picture["path"] . $dirname . '/thumb_' . $basename)) {
+            $picture["path"] = $picture["path"] . $dirname . '/'; // *** Add subdirectory to path ***
+            $picture['thumb_prefix'] = 'thumb_';
+            $picture['picture'] = $basename;
+        } else {
+            $picture['path'] = 'images/';
+            $picture['thumb_prefix'] = 'thumb_';
+            $picture['picture'] = 'missing-image.jpg';
         }
     }
 
@@ -291,7 +310,7 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
         if ($screen_mode == 'PDF' || $screen_mode == 'RTF') {
             $picture['path'] = __DIR__ . '/../images/';
         }
-        $picture['thumb'] = 'thumb_';
+        $picture['thumb_prefix'] = 'thumb_';
         $picture['picture'] = 'missing-image.jpg';
     }
 
@@ -300,20 +319,20 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
         if ($screen_mode == 'PDF' || $screen_mode == 'RTF') {
             $picture['path'] = __DIR__ . '/../images/';
         }
-        $picture['thumb'] = 'thumb_';
+        $picture['thumb_prefix'] = 'thumb_';
         $picture['picture'] = 'missing-image.jpg';
     }
-
+    /* Not needed with new thumbnail system
     // *** Check for PDF, DOC file etc. Show standard icon ***
     $thumbnail_type = thumbnail_type($picture['picture']);
     if ($thumbnail_type[0]) {
         $picture["path"] = '';
-        $picture['thumb'] = '';
+        $picture['thumb_prefix'] = '';
         $picture['picture'] = $uri_path . $thumbnail_type[0];
     }
-
+*/
     // *** If photo is too wide, correct the size ***
-    list($width, $height) = getimagesize($picture["path"] . $picture['thumb'] . $picture['picture']);
+    list($width, $height) = getimagesize($picture["path"] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix']);
 
     if ($pict_width > 0 && $pict_height > 0) {
         /*
@@ -356,7 +375,7 @@ function show_picture($picture_path, $picture_org, $pict_width = '', $pict_heigh
 
     return $picture;
 }
-
+/*
 function thumbnail_type($file)
 {
     // *** Show PDF file ***
@@ -442,3 +461,4 @@ function thumbnail_type($file)
     $thumbnail_type[1] = '';
     return $thumbnail_type;
 }
+*/

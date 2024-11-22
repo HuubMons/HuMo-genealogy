@@ -322,9 +322,9 @@ for ($w = 0; $w < count($genarray); $w++) {
                             if (isset($picture_qry[0])) {
                                 $pictureDb = $picture_qry[0];
                                 $picture = show_picture($tree_pict_path, $pictureDb->event_event, 60, 65);
-                                //$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" height="65px">';
-                                //$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'"';
-                                $replacement_text .= '<img src="' . $picture['path'] . $picture['thumb'] . $picture['picture'] . '" style="float:left; margin:5px;" alt="' . $pictureDb->event_text . '" width="' . $picture['width'] . '"';
+                                //$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb_prefix'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" height="65px">';
+                                //$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb_prefix'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'"';
+                                $replacement_text .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="float:left; margin:5px;" alt="' . $pictureDb->event_text . '" width="' . $picture['width'] . '"';
                                 //if (isset($picture['height'])) $replacement_text.=' height="'.$picture['height'].'"';
                                 $replacement_text .= '>';
                             }

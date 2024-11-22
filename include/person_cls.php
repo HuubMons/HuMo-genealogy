@@ -1110,8 +1110,8 @@ class person_cls
                     if (isset($picture_qry[0])) {
                         $pictureDb = $picture_qry[0];
                         $picture = show_picture($tree_pict_path, $pictureDb->event_event, '', 120);
-                        $text .= '<img src="' . $picture['path'] . $picture['thumb'] . $picture['picture'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
-                        //$popover_content .= '<img src="' . $picture['path'] . $picture['thumb'] . $picture['picture'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
+                        $text .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
+                        //$popover_content .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
                     }
                 }
 
@@ -2492,7 +2492,7 @@ $own_code=0;
                     //	$text.= $templ_person["buri_witn"];
                     //}
                     //$text_array = witness($personDb->pers_gedcomnumber, 'burial_witness','person');
-                    $text_array = witness($personDb->pers_gedcomnumber, 'ASSO','BURI');
+                    $text_array = witness($personDb->pers_gedcomnumber, 'ASSO', 'BURI');
                     if ($text_array) {
                         if ($temp) {
                             $templ_person[$temp] .= ' ';

@@ -1057,6 +1057,9 @@ class editor_event_cls
                         <?php } elseif ($data_listDb->event_kind == 'picture') { ?>
                             <div>
                                 <?php
+
+                                include_once(__DIR__ . "/../include/media_inc.php");
+
                                 $tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
                                 $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
                                 if ($temp->rowCount()) {  // there is a category table 
@@ -1069,97 +1072,9 @@ class editor_event_cls
                                         }
                                     }
                                 }
+                                echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank">' .
+                                    print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
 
-                                $extensions_check = substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -3, 3);
-                                if (strtolower($extensions_check) === "pdf") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="../images/pdf.jpeg"></a>';
-                                } elseif (strtolower($extensions_check) === "doc" || strtolower(substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -4, 4)) === "docx") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="../images/msdoc.gif"></a>';
-                                }
-                                // *** Show AVI Video file ***
-                                elseif ($extensions_check === "avi") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
-                                }
-                                // *** Show WMV Video file ***
-                                elseif ($extensions_check === "wmv") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
-                                }
-                                // *** Show MPG Video file ***
-                                elseif (strtolower($extensions_check) === "mpg") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
-                                }
-                                // *** Show MP4 Video file ***
-                                elseif (strtolower($extensions_check) === "mp4") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
-                                }
-                                // *** Show MOV Video file ***
-                                elseif (strtolower($extensions_check) === "mov") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/video-file.png"></a>';
-                                }
-                                // *** Show WMA Audio file ***
-                                elseif (strtolower($extensions_check) === "wma") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
-                                }
-                                // *** Show WAV Audio file ***
-                                elseif (strtolower($extensions_check) === "wav") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
-                                }
-                                // *** Show MP3 Audio file ***
-                                elseif (strtolower($extensions_check) === "mp3") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
-                                }
-                                // *** Show MID Audio file ***
-                                elseif (strtolower($extensions_check) === "mid") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
-                                }
-                                // *** Show RAM Audio file ***
-                                elseif (strtolower($extensions_check) === "ram") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
-                                }
-                                // *** Show RA Audio file ***
-                                elseif (strtolower($extensions_check) === ".ra") {
-                                    echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="../images/audio.gif"></a>';
-                                } else {
-                                    $show_image = '';
-
-                                    // *** No subdirectory: show picture/ thumbnail ***
-                                    $thumb_prefix = '';
-                                    if (file_exists($path_prefix . $tree_pict_path3 . 'thumb_' . $data_listDb->event_event)) {
-                                        $thumb_prefix = 'thumb_';
-                                    }
-                                    $picture = $path_prefix . $tree_pict_path3 . $thumb_prefix . $data_listDb->event_event;
-                                    //$tree_pic_path3 is missing for family picture
-                                    //    echo $path_prefix .'-'. $tree_pict_path3.'-'.$data_listDb->event_event;
-                                    // *** Check if picture is in subdirectory ***
-                                    // Example: subdir1_test/xy/2022_02_12 Scheveningen.jpg
-                                    if ($thumb_prefix === '') {
-                                        $dirname = dirname($data_listDb->event_event); // subdir1_test/xy/2022_02_12
-                                        $basename = basename($data_listDb->event_event); // 2022_02_12 Scheveningen.jpg
-                                        if (file_exists($path_prefix . $tree_pict_path3 . $dirname . '/thumb_' . $basename)) {
-                                            $thumb_prefix = 'thumb_';
-                                        }
-                                        $picture = $path_prefix . $tree_pict_path3 . $dirname . '/' . $thumb_prefix . $basename;
-                                    }
-
-                                    if ($data_listDb->event_event && file_exists($picture)) {
-                                        // *** Get size of original picture ***
-                                        list($width, $height) = getimagesize($picture);
-                                        $size = ' style="width:100px"';
-                                        if ($height > $width) {
-                                            $size = ' style="height:80px"';
-                                        }
-                                        //$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'"'.$size.'>';
-                                        $show_image = '<img src="' . $picture . '"' . $size . '>';
-                                    } else {
-                                        $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
-                                    }
-                                    //Check line above. If thumb if missing, missing picture is shown...
-
-                                    if (!$data_listDb->event_event) {
-                                        $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
-                                    }
-                                    echo $show_image;
-                                }
                                 ?>
                             </div>
 

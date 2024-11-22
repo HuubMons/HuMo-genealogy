@@ -238,6 +238,9 @@ if (isset($_POST['marriage_event_add'])) {
 
 // *** Upload images ***
 if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
+
+    include_once(__DIR__ . "/../include/media_inc.php");
+
     // *** get path of pictures folder 
     $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
@@ -261,146 +264,39 @@ if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
             }
         }
     }
+    $picture_original = $dir . $_FILES['photo_upload']['name'];
+    if (!move_uploaded_file($_FILES['photo_upload']['tmp_name'], $picture_original)) {
+        echo __('Photo upload failed, check folder rights');
+    } elseif (check_media_type($dir, $_FILES['photo_upload']['name'])) {
+        resize_picture($dir, $_FILES['photo_upload']['name']); // resize only big image files to H=1080px
+        create_thumbnail($dir, $_FILES['photo_upload']['name']);
+        // *** Add picture to array ***
+        $picture_array[] = $_FILES['photo_upload']['name'];
 
-    if ($_FILES['photo_upload']['type'] == "image/pjpeg" || $_FILES['photo_upload']['type'] == "image/jpeg") {
-        $fault = "";
+        // *** Re-order pictures by alphabet ***
+        @sort($picture_array);
+        $nr_pictures = count($picture_array);
 
-        // *** feb. 2023: removed limits ***
-        // 100000=100kb.
-        //if($_FILES['photo_upload']['size']>2000000){ $fault=__('Photo too large'); }
-
-        if ($fault === '') {
-            $picture_original = $dir . $_FILES['photo_upload']['name'];
-            $picture_original_tmp = $dir . '0_temp.jpg';
-            $picture_thumb = $dir . 'thumb_' . $_FILES['photo_upload']['name'];
-            if (!move_uploaded_file($_FILES['photo_upload']['tmp_name'], $picture_original)) {
-                echo __('Photo upload failed, check folder rights');
-            } else {
-                // *** Resize uploaded picture and create thumbnail ***
-                if (strtolower(substr($picture_original, -3)) === "jpg") {
-                    // *** Get width and height of original file ***
-                    list($width, $height) = getimagesize($picture_original);
-
-                    // *** If filesize > 2MB: resize image to: height 720px/ width 1280px or: width 1920px/ height 1080px ***
-                    if ($_FILES['photo_upload']['size'] > 2000000 && $height > 1080) {
-                        // *** First rename original file to temp. file name ***
-                        rename($picture_original, $picture_original_tmp);
-                        $newheight = 1080;
-                        $factor = $height / $newheight;
-                        $newwidth = $width / $factor;
-                        $resize_media = imagecreatetruecolor($newwidth, $newheight);
-                        $source = imagecreatefromjpeg($picture_original_tmp);
-                        // *** Resize ***
-                        imagecopyresized($resize_media, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-                        @imagejpeg($resize_media, $picture_original);
-                        // *** Remove temp. file ***
-                        unlink($picture_original_tmp);
-                        // *** Recalculate width and height of file, needed for thumbnail ***
-                        list($width, $height) = getimagesize($picture_original);
-                    }
-
-                    $create_thumb_height = 120;
-                    $newheight = $create_thumb_height;
-                    $factor = $height / $newheight;
-                    $newwidth = $width / $factor;
-
-                    $create_thumb = imagecreatetruecolor($newwidth, $newheight);
-                    $source = imagecreatefromjpeg($picture_original);
-
-                    // Resize
-                    imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-                    @imagejpeg($create_thumb, $picture_thumb);
-                }
-
-                // *** Add picture to array ***
-                $picture_array[] = $_FILES['photo_upload']['name'];
-
-                // *** Re-order pictures by alphabet ***
-                @sort($picture_array);
-                $nr_pictures = count($picture_array);
-
-                // *** Directly connect new media to person or relation ***
-                if (isset($_POST['person_add_media'])) {
-                    $event_connect_kind = 'person';
-                    $event_connect_id = $pers_gedcomnumber;
-                    $event_kind = 'picture';
-                    $event_event = $_FILES['photo_upload']['name'];
-                    $event_gedcom = '';
-                }
-                if (isset($_POST['relation_add_media'])) {
-                    $event_connect_kind = 'family';
-                    $event_connect_id = $marriage;
-                    $event_kind = 'picture';
-                    $event_event = $_FILES['photo_upload']['name'];
-                    $event_gedcom = '';
-                }
-                // *** Add event. If event is new, use: $new_event=true. ***
-                // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(false, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, '', '', '');
-            }
-        } else {
-            print "<FONT COLOR=red>$fault</FONT>";
+        // *** Directly connect new media to person or relation ***
+        if (isset($_POST['person_add_media'])) {
+            $event_connect_kind = 'person';
+            $event_connect_id = $pers_gedcomnumber;
+            $event_kind = 'picture';
+            $event_event = $_FILES['photo_upload']['name'];
+            $event_gedcom = '';
         }
-    } elseif (
-        $_FILES['photo_upload']['type'] == "audio/mpeg" || $_FILES['photo_upload']['type'] == "audio/mpeg3" ||
-        $_FILES['photo_upload']['type'] == "audio/x-mpeg" || $_FILES['photo_upload']['type'] == "audio/x-mpeg3" ||
-        $_FILES['photo_upload']['type'] == "audio/mpg" || $_FILES['photo_upload']['type'] == "audio/mp3" ||
-        $_FILES['photo_upload']['type'] == "audio/mid" || $_FILES['photo_upload']['type'] == "audio/midi" ||
-        $_FILES['photo_upload']['type'] == "audio/x-midi" || $_FILES['photo_upload']['type'] == "audio/x-ms-wma" ||
-        $_FILES['photo_upload']['type'] == "audio/wav" || $_FILES['photo_upload']['type'] == "audio/x-wav" ||
-        $_FILES['photo_upload']['type'] == "audio/x-pn-realaudio" || $_FILES['photo_upload']['type'] == "audio/x-realaudio" ||
-        $_FILES['photo_upload']['type'] == "application/pdf" || $_FILES['photo_upload']['type'] == "application/msword" ||
-        $_FILES['photo_upload']['type'] == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-        $_FILES['photo_upload']['type'] == "video/quicktime" || $_FILES['photo_upload']['type'] == "video/x-ms-wmv" ||
-        $_FILES['photo_upload']['type'] == "video/avi" || $_FILES['photo_upload']['type'] == "video/x-msvideo" ||
-        $_FILES['photo_upload']['type'] == "video/msvideo" || $_FILES['photo_upload']['type'] == "video/mpeg" ||
-        $_FILES['photo_upload']['type'] == "video/msvideo" || $_FILES['photo_upload']['type'] == "video/mp4"
-
-        || $_FILES['photo_upload']['type'] == "image/png" // Added in sept. 2023. TODO resize png
-    ) {
-        $fault = "";
-
-        // *** feb. 2023: removed limits ***
-        // *** Limit to 49MB ***
-        //if($_FILES['photo_upload']['size']>49000000){ $fault=__('Media too large'); }
-
-        if (!$fault) {
-            $picture_original = $dir . $_FILES['photo_upload']['name'];
-            if (!move_uploaded_file($_FILES['photo_upload']['tmp_name'], $picture_original)) {
-                echo __('Media upload failed, check folder rights');
-            } else {
-                // *** Add picture to array ***
-                $picture_array[] = $_FILES['photo_upload']['name'];
-
-                // *** Re-order pictures by alphabet ***
-                @sort($picture_array);
-                $nr_pictures = count($picture_array);
-
-                // Added in sept. 2023
-                // *** Directly connect new media to person or relation ***
-                if (isset($_POST['person_add_media'])) {
-                    $event_connect_kind = 'person';
-                    $event_connect_id = $pers_gedcomnumber;
-                    $event_kind = 'picture';
-                    $event_event = $_FILES['photo_upload']['name'];
-                    $event_gedcom = '';
-                }
-                if (isset($_POST['relation_add_media'])) {
-                    $event_connect_kind = 'family';
-                    $event_connect_id = $marriage;
-                    $event_kind = 'picture';
-                    $event_event = $_FILES['photo_upload']['name'];
-                    $event_gedcom = '';
-                }
-                // *** Add event. If event is new, use: $new_event=true. ***
-                // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-                add_event(false, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, '', '', '');
-            }
-        } else {
-            echo '<font color="red">' . $fault . '</font>';
+        if (isset($_POST['relation_add_media'])) {
+            $event_connect_kind = 'family';
+            $event_connect_id = $marriage;
+            $event_kind = 'picture';
+            $event_event = $_FILES['photo_upload']['name'];
+            $event_gedcom = '';
         }
+        // *** Add event. If event is new, use: $new_event=true. ***
+        // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+        add_event(false, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, '', '', '');
     } else {
-        echo '<font color="red">' . __('No valid picture, media or document file') . '</font>';
+        echo '<font color="red">' . __('No valid picture, media or document file') .  '</font>';
     }
 }
 

@@ -442,23 +442,28 @@ function show_media_files($pref)
 
                 $picture2 = show_picture($dir, $filename, 175, 120);
                 // *** Check if media exists ***
-                if (file_exists($picture2['path'] . $picture2['thumb'] . $picture2['picture'])) {
-                    $picture = '<img src="' . $picture2['path'] . $picture2['thumb'] . $picture2['picture'] . '" width="' . $picture2['width'] . '" alt="' . $filename . '">';
+                if (file_exists($picture2['path'] . $picture2['thumb_prefix'] . $picture2['picture'] . $picture2['thumb_suffix'])) {
+                    $picture = '<img src="' . $picture2['path'] . $picture2['thumb_prefix'] . $picture2['picture'] . $picture2['thumb_suffix'] . '" width="' . $picture2['width'] . '" alt="' . $filename . '">';
                 } else {
                     $picture = '<img src="images/missing-image.jpg" width="' . $picture2['width'] . '" alt="' . $filename . '">';
                 }
+                if (in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), array('jpg', 'png', 'gif', 'bmp', 'tif'))) {
         ?>
 
-                <div class="photobook">
-                    <!-- Show photo using the lightbox: GLightbox effect -->
-                    <a href="<?= $dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
-                        <!-- Need a class for multiple lines and HTML code in a text -->
-                        <div class="glightbox-desc custom-desc<?= $picture_nr; ?>"><?= $picture_text2; ?></div>
-                        <?= $picture; ?>
-                    </a>
-                    <div class="photobooktext"><?= $picture_text; ?></div>
-                </div>
+                    <div class="photobook">
+                        <!-- Show photo using the lightbox: GLightbox effect -->
+                        <a href="<?= $dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
+                            <!-- Need a class for multiple lines and HTML code in a text -->
+                            <div class="glightbox-desc custom-desc<?= $picture_nr; ?>"><?= $picture_text2; ?></div>
+                            <?= $picture; ?>
+                        </a>
+                        <div class="photobooktext"><?= $picture_text; ?></div>
+                    </div>
         <?php
+                } else {
+                    $picture = '<div class="photobook"><a href="' .  $dir . $filename . '" target="_blank">' . $picture . '</a><div class="photobooktext">' . $picture_text . '</div></div>';
+                    echo $picture;
+                }
             }
         }
         ?>
