@@ -6,3 +6,24 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
 RewriteRule ^ index.php [QSA,L]
+
+# # Enable these lines when website is slow because of search engine indexation 
+# BrowserMatchNoCase "claudebot" bad_bot
+# BrowserMatchNoCase "facebookexternalhit/1.1" bad_bot
+# BrowserMatchNoCase "Python/3.10 aiohttp/3.9.3" bad_bot
+# Order Deny,Allow
+# Deny from env=bad_bot
+
+# # Blocking Bot traffic except search bots
+# RewriteEngine On
+# RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+# RewriteCond %{HTTP_USER_AGENT} (bot|crawl|robot|facebook|spider)
+# RewriteCond %{HTTP_USER_AGENT} !(Bing|Google|msn|MSR|Twitter|Yandex|Slurp|DuckDuck|Baidu|Exa) [NC]
+# RewriteRule ^ - [F]
+# # END Blocking Bot traffic except search bots
+
+# Explanation of RewriteCond lines:
+# Line 1 stops unidentified bots.
+# Line 2 stops bots including text: bot, crawl of robot zit.
+# Line 3 enables access to robots including text: Bing, Google, etc.
+# Line 4 block all useless bots including an acces denied message.
