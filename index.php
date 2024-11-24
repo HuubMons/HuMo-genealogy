@@ -243,7 +243,7 @@ if (isset($matchedRoute['page'])) {
 
     // Old link from http://www.stamboomzoeker.nl to updated website using new links.
     // http://127.0.0.1/humo-genealogy/gezin.php?database=humo2_&id=F59&hoofdpersoon=I151
-    if ($humo_option["url_rewrite"] == 'j' && isset($_GET["id"])) {
+    if ($humo_option["url_rewrite"] == 'j' && isset($_GET["database"]) && isset($_GET["id"])) {
         // Skip routing. Just use $_GET["id"] from link.
     } elseif (isset($matchedRoute['id'])) {
         // *** Used for source ***

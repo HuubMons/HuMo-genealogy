@@ -17,31 +17,9 @@ include_once(__DIR__ . '/../../include/show_addresses.php');
 include_once(__DIR__ . '/../../include/show_picture.php');
 include_once(__DIR__ . '/../../include/show_quality.php');
 
-
-
-//TEST to use multiple functions in multiple classes
-//https://www.w3schools.com/php/php_oop_traits.asp
-//https://wiki.php.net/rfc/traits
-/*
-trait Hello {
-    public function sayHello() {
-      echo 'Hello ';
-    }
-  }
-  
-  trait World {
-    public function sayWorld() {
-      echo ' World';
-    }
-  }
-*/
-
 class FamilyModel
 {
     private $dbh;
-
-    // TEST
-    //use Hello, World;
 
     public function __construct($dbh)
     {
@@ -228,7 +206,6 @@ class FamilyModel
         $data['header_link'][] = $path_tmp;
         $data['header_active'][] = $name == 'Descendant report' ? 'active' : '';
         $data['header_text'][] = __('Descendant report');
-
 
         if (isset($_GET['dnachart'])) $name='DNA charts';
 

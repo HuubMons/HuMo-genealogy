@@ -1,9 +1,10 @@
 <head>
-    <!-- THIS SCRIPT IS FOR BACKWARDS COMPATIBLY AND GENDEX SITES ONLY!!!! -->
     <!--
+    THIS SCRIPT IS FOR BACKWARDS COMPATIBILITY AND GENDEX SITES ONLY!
+
     November 2024: this script is still needed for links from stamboomzoeker.nl.
-    Example: http://127.0.0.1/humo-genealogy/gezin.php?database=humo_&id=F59&hoofdpersoon=I151
-    url_rewrite off: http://127.0.0.1/humo-genealogy/family.php?database=humo_&id=F59&main_person=I151
+    Example: http://127.0.0.1/humo-genealogy/gezin.php?database=humo2_&id=F59&hoofdpersoon=I151
+    url_rewrite off: http://127.0.0.1/humo-genealogy/family.php?database=humo2_&id=F59&main_person=I151
     url_rewrite on:  http://127.0.0.1/humo-genealogy/family/3/F59?main_person=I151
     -->
 
@@ -24,21 +25,16 @@
         $id = $_POST["id"];
     }
 
-    $main_person = ''; // *** Mainperson of family ***
+    $main_person = ''; // *** Main person of family ***
     if (isset($_GET["hoofdpersoon"])) {
         $main_person = $_GET["hoofdpersoon"];
     }
     if (isset($_POST["hoofdpersoon"])) {
         $main_person = $_POST["hoofdpersoon"];
     }
-
-    $location = "family.php?database=" . $database . '&id=' . $id;
-    if ($main_person != '') {
-        $location .= '&main_person=' . $main_person;
-    }
     ?>
 
     <script>
-        window.location = "<?= $location; ?>";
+        window.location = "family.php?database=<?= $database; ?>&id=<?= $id; ?><?= $main_person != '' ? '&main_person=' . $main_person : ''; ?>";
     </script>
 </head>

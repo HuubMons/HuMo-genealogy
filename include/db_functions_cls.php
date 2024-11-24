@@ -2,8 +2,8 @@
 
 /**--------------------[database functions]----------------------------
  *
- * AUTHOR		: Huub Mons. Created: jan. 2015.
- * THANKS TO	: Michael.j.Falconer
+ * AUTHOR        : Huub Mons. Created: jan. 2015.
+ * THANKS TO    : Michael.j.Falconer
  *
  * FUNCTIONS:
  *      check_visitor               Check for valid visitor.
@@ -27,22 +27,22 @@
  *      get_connections_connect_id  Get multiple connections of a person or family.
  *      get_repository              Get a single repository from database.
  *
- *		generate_gedcomnr
+ *      generate_gedcomnr
  *
  * SET family tree variabele:
- *	$db_functions->set_tree_id($tree_id);
+ *      $db_functions->set_tree_id($tree_id);
  *
  * EXAMPLE get single item from database:
- *		$person_manDb = $db_functions->get_person($familyDb->fam_man);
- *		if ($person_manDb==false){ }
+ *      $person_manDb = $db_functions->get_person($familyDb->fam_man);
+ *      if ($person_manDb==false){ }
  *
  * EXAMPLE get multiple items from database:
- *		$colour = $db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'person_colour_mark');
- *		foreach($colour as $colourDb){
- *			echo $colourDb->event_event;
- *		}
- *		$num_rows=count($colour); // *** number of rows ***
- *		unset($colour); // *** If finished, remove data from memory ***
+ *      $colour = $db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'person_colour_mark');
+ *      foreach($colour as $colourDb){
+ *          echo $colourDb->event_event;
+ *      }
+ *      $num_rows=count($colour); // *** number of rows ***
+ *      unset($colour); // *** If finished, remove data from memory ***
  *
  * Some remarks:
  * event_connect_id = reference to person, family or source gedcomnumber.
@@ -80,10 +80,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Check visitor
-     * QUERY	: SELECT * FROM humo_user_log
-     *				WHERE log_ip_address=:log_ip_address ORDER BY log_date DESC LIMIT 0,11
-     * RETURNS	: True/ false.
+     * FUNCTION     : Check visitor
+     * QUERY        : SELECT * FROM humo_user_log WHERE log_ip_address=:log_ip_address ORDER BY log_date DESC LIMIT 0,11
+     * RETURNS      : True/ false.
      */
     public function check_visitor($ip_address, $block = 'total')
     {
@@ -126,12 +125,10 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get user from database return false if it isn't.
-     * QUERY	: SELECT * FROM humo_users
-     *				(user_name=:user_name OR user_mail=:user_name) AND user_password_salted!=''
-     * QUERY	: SELECT * FROM humo_users
-     *				(user_name=:user_name OR user_mail=:user_name) AND user_password=:user_password
-     * RETURNS	: user data.
+     * FUNCTION     : Get user from database return false if it isn't.
+     * QUERY        : SELECT * FROM humo_users (user_name=:user_name OR user_mail=:user_name) AND user_password_salted!=''
+     * QUERY        : SELECT * FROM humo_users (user_name=:user_name OR user_mail=:user_name) AND user_password=:user_password
+     * RETURNS      : user data.
      */
     public function get_user($user_name, $user_password)
     {
@@ -174,12 +171,10 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get family tree data from database.
-     * QUERY 1	: SELECT * FROM humo_trees
-     *				WHERE tree_prefix=:tree_prefix
-     * QUERY 2	: SELECT * FROM humo_trees
-     *				WHERE tree_id=:tree_id
-     * RETURNS	: family tree data.
+     * FUNCTION     : Get family tree data from database.
+     * QUERY 1      : SELECT * FROM humo_trees WHERE tree_prefix=:tree_prefix
+     * QUERY 2      : SELECT * FROM humo_trees WHERE tree_id=:tree_id
+     * RETURNS      : family tree data.
      */
     public function get_tree($tree_prefix)
     {
@@ -213,10 +208,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get all data from family trees.
-     * QUERY	: SELECT * FROM humo_trees
-     *				WHERE tree_prefix!='EMPTY' ORDER BY tree_order
-     * RETURNS	: all data from family trees.
+     * FUNCTION     : Get all data from family trees.
+     * QUERY        : SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order
+     * RETURNS      : all data from family trees.
      */
     public function get_trees()
     {
@@ -233,10 +227,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Check for valid person in database.
-     * QUERY 1	: SELECT pers_id FROM humo_persons
-     *				WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
-     * RETURNS	: Check for valid person.
+     * FUNCTION     : Check for valid person in database.
+     * QUERY 1      : SELECT pers_id FROM humo_persons WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
+     * RETURNS      : Check for valid person.
      */
     //public function check_person(string $pers_gedcomnumber)
     // *** If string is used, script could stop if value is NULL ***
@@ -265,12 +258,10 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get a single person from database.
-     * QUERY 1	: SELECT * FROM humo_persons
-     *				WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
-     * QUERY 2	: SELECT pers_famc, pers_fams FROM humo_persons
-     *				WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
-     * RETURNS	: a single person.
+     * FUNCTION     : Get a single person from database.
+     * QUERY 1      : SELECT * FROM humo_persons WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
+     * QUERY 2      : SELECT pers_famc, pers_fams FROM humo_persons WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
+     * RETURNS      : a single person.
      */
     //public function get_person(string $pers_gedcomnumber, string $item = '')
     // *** If string is used, script could stop if value is NULL ***
@@ -299,9 +290,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get a single person from database.
-     * QUERY	: SELECT * FROM humo_persons WHERE pers_id=:pers_tree_id
-     * RETURNS	: a single person.
+     * FUNCTION     : Get a single person from database.
+     * QUERY        : SELECT * FROM humo_persons WHERE pers_id=:pers_tree_id
+     * RETURNS      : a single person.
      */
     public function get_person_with_id(int $pers_id)
     {
@@ -319,9 +310,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Count persons in selected family tree.
-     * QUERY	: SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id=:pers_tree_id
-     * RETURNS	: Number of persons in family tree.
+     * FUNCTION     : Count persons in selected family tree.
+     * QUERY        : SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id=:pers_tree_id
+     * RETURNS      : Number of persons in family tree.
      */
     public function count_persons(int $tree_id)
     {
@@ -340,10 +331,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Check for valid family in database.
-     * QUERY 1	: SELECT fam_id FROM humo_families
-     *				WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber
-     * RETURNS	: Check for valid family.
+     * FUNCTION     : Check for valid family in database.
+     * QUERY 1      : SELECT fam_id FROM humo_families WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber
+     * RETURNS      : Check for valid family.
      */
     public function check_family($fam_gedcomnumber)
     {
@@ -370,13 +360,11 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get a single family from database.
-     * QUERY 1	: SELECT fam_man, fam_woman FROM humo_families
-     *				WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
-     * QUERY 2	: SELECT * FROM humo_families
-     *				WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
-     * USE		: get_family($fam_number,'man-woman') to get man and woman id.
-     * RETURNS	: a single family.
+     * FUNCTION     : Get a single family from database.
+     * QUERY 1      : SELECT fam_man, fam_woman FROM humo_families WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
+     * QUERY 2      : SELECT * FROM humo_families WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
+     * USE          : get_family($fam_number,'man-woman') to get man and woman id.
+     * RETURNS      : a single family.
      */
     public function get_family($fam_gedcomnumber, $item = '')
     {
@@ -404,9 +392,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Count families in selected family tree.
-     * QUERY	: SELECT COUNT(*) FROM humo_families WHERE fam_tree_id=:fam_tree_id
-     * RETURNS	: Number of families in family tree.
+     * FUNCTION     : Count families in selected family tree.
+     * QUERY        : SELECT COUNT(*) FROM humo_families WHERE fam_tree_id=:fam_tree_id
+     * RETURNS      : Number of families in family tree.
      */
     public function count_families(int $tree_id)
     {
@@ -425,10 +413,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get a single text from database.
-     * QUERY	: SELECT * FROM humo_texts
-     * 				WHERE fam_tree_id=:fam_tree_id AND text_gedcomnr=:text_gedcomnr
-     * RETURNS	: a single text.
+     * FUNCTION     : Get a single text from database.
+     * QUERY        : SELECT * FROM humo_texts WHERE fam_tree_id=:fam_tree_id AND text_gedcomnr=:text_gedcomnr
+     * RETURNS      : a single text.
      */
     public function get_text($text_gedcomnr)
     {
@@ -447,9 +434,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get a single event from database.
-     * QUERY	: SELECT * FROM humo_events WHERE event_id=:event_id
-     * RETURNS	: a single event.
+     * FUNCTION     : Get a single event from database.
+     * QUERY        : SELECT * FROM humo_events WHERE event_id=:event_id
+     * RETURNS      : a single event.
      */
     public function get_event($event_id)
     {
@@ -467,10 +454,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get all selected events from database.
-     * QUERY	: SELECT * FROM humo_events WHERE event_tree_id=:event_tree_id
-     *				 AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order
-     * RETURNS	: multiple selected events.
+     * FUNCTION     : Get all selected events from database.
+     * QUERY        : SELECT * FROM humo_events WHERE event_tree_id=:event_tree_id AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order
+     * RETURNS      : multiple selected events.
      */
     public function get_events_kind($event_event, $event_kind)
     {
@@ -494,11 +480,11 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get all selected events by a person, family etc. from database.
-     * QUERY	: SELECT * FROM humo_events
-     *				WHERE event_tree_id=:event_tree_id AND event_connect_kind=:event_connect_kind
-     *				AND event_connect_id=:event_connect_id AND event_kind=:event_kind ORDER BY event_order
-     * RETURNS	: all selected events by a person.
+     * FUNCTION     : Get all selected events by a person, family etc. from database.
+     * QUERY        : SELECT * FROM humo_events
+     *                WHERE event_tree_id=:event_tree_id AND event_connect_kind=:event_connect_kind
+     *                AND event_connect_id=:event_connect_id AND event_kind=:event_kind ORDER BY event_order
+     * RETURNS      : all selected events by a person.
      */
     public function get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
     {
@@ -524,15 +510,10 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get a single source from database.
-     * QUERY 1	: SELECT * FROM humo_sources
-     *				WHERE source_tree_id=:source_tree_id
-     *				AND source_gedcomnr=:source_gedcomnr
-     * QUERY 2	: SELECT * FROM humo_sources
-     *				WHERE source_tree_id=:source_tree_id
-     *				AND source_gedcomnr=:source_gedcomnr
-     *				AND source_status!='restricted'"
-     * RETURNS	: a single source.
+     * FUNCTION     : Get a single source from database.
+     * QUERY 1      : SELECT * FROM humo_sources WHERE source_tree_id=:source_tree_id AND source_gedcomnr=:source_gedcomnr
+     * QUERY 2      : SELECT * FROM humo_sources WHERE source_tree_id=:source_tree_id AND source_gedcomnr=:source_gedcomnr AND source_status!='restricted'"
+     * RETURNS      : a single source.
      */
     public function get_source(string $source_gedcomnr)
     {
@@ -553,10 +534,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get a single address from database.
-     * QUERY	: SELECT * FROM humo_addresses
-     * 				WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr
-     * RETURNS	: a single address.
+     * FUNCTION     : Get a single address from database.
+     * QUERY        : SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr
+     * RETURNS    : a single address.
      */
     public function get_address($address_gedcomnr)
     {
@@ -575,15 +555,15 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get all places by a person, family etc. from database.
-     *			SELECT * FROM humo_connections
-     *				LEFT JOIN humo_addresses ON address_gedcomnr=connect_item_id
-     *				WHERE connect_tree_id=:connect_tree_id AND address_tree_id=:connect_tree_id
-     *				AND connect_kind=:connect_kind
-     *				AND connect_sub_kind=:connect_sub_kind
-     *				AND connect_connect_id=:connect_connect_connect_id
-     *				ORDER BY connect_order
-     * RETURNS	: all places by a person, family etc.
+     * FUNCTION     : Get all places by a person, family etc. from database.
+     *              SELECT * FROM humo_connections
+     *                  LEFT JOIN humo_addresses ON address_gedcomnr=connect_item_id
+     *                  WHERE connect_tree_id=:connect_tree_id AND address_tree_id=:connect_tree_id
+     *                  AND connect_kind=:connect_kind
+     *                  AND connect_sub_kind=:connect_sub_kind
+     *                  AND connect_connect_id=:connect_connect_connect_id
+     *                  ORDER BY connect_order
+     * RETURNS      : all places by a person, family etc.
      */
     public function get_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
     {
@@ -610,10 +590,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get multiple connections (sources or addresses) from database.
-     * QUERY	: SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id
-     *				AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id
-     * RETURNS	: multiple connections.
+     * FUNCTION     : Get multiple connections (sources or addresses) from database.
+     * QUERY        : SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id
+     * RETURNS      : multiple connections.
      */
     public function get_connections($connect_sub_kind, $connect_item_id)
     {
@@ -633,12 +612,12 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get multiple connections from database (for a person or family).
-     * QUERY	: SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id
-     *				AND connect_kind=:connect_kind AND connect_sub_kind=:connect_sub_kind
-     *				AND connect_connect_id=:connect_connect_id ORDER BY connect_order
-     * RETURNS	: multiple connections.
-     * EXAMPLE	: $connect_sql = $db_functions->get_connections_connect_id('person','pers_object',$event_connect_id);
+     * FUNCTION     : Get multiple connections from database (for a person or family).
+     * QUERY        : SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id
+     *                  AND connect_kind=:connect_kind AND connect_sub_kind=:connect_sub_kind
+     *                  AND connect_connect_id=:connect_connect_id ORDER BY connect_order
+     * RETURNS      : multiple connections.
+     * EXAMPLE      : $connect_sql = $db_functions->get_connections_connect_id('person','pers_object',$event_connect_id);
      */
     public function get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id)
     {
@@ -664,11 +643,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Get a single repository from database.
-     * QUERY	: SELECT * FROM humo_repositories
-     *				WHERE repo_tree_id=:repo_tree_id
-     *				AND repo_gedcomnr=:repo_gedcomnr
-     * RETURNS	: a single repository.
+     * FUNCTION     : Get a single repository from database.
+     * QUERY        : SELECT * FROM humo_repositories WHERE repo_tree_id=:repo_tree_id AND repo_gedcomnr=:repo_gedcomnr
+     * RETURNS      : a single repository.
      */
     public function get_repository($repo_gedcomnr)
     {
@@ -687,10 +664,9 @@ class db_functions
     }
 
     /**
-     * FUNCTION	: Update humo_settings.
-     * QUERY	: UPDATE humo_settings
-     * 				SET setting_value=:setting_value WHERE setting_variable=:setting_variable
-     * RETURNS	: result.
+     * FUNCTION     : Update humo_settings.
+     * QUERY        : UPDATE humo_settings SET setting_value=:setting_value WHERE setting_variable=:setting_variable
+     * RETURNS      : result.
      */
     public function update_settings($setting_variable, $setting_value)
     {
