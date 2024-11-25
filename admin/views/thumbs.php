@@ -549,16 +549,11 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         check_media_type($selected_picture_folder, $filename)
                     ) {
 
-                        // this is an approach to prevent the script being blocked forever by errors from corrupted media files
-                        // also skip files with existing thumbs to avoid timeout on very big files and/or too many pictures
                         if (
-                            !is_file($selected_picture_folder . '.' . $filename . '.skip') &&
-                            !thumbnail_exists($selected_picture_folder, $filename)
-                        ) {
-                            $fhandle = fopen($selected_picture_folder . '.' . $filename . '.skip', "w");
-                            fclose($fhandle);
-                            create_thumbnail($selected_picture_folder, $filename); // script will probably die here and hidden skip file becomes persistent
-                            unlink($selected_picture_folder . '.' . $filename . '.skip');
+                            !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') && // don't create thumb on corrupt file
+                            empty(thumbnail_exists($selected_picture_folder, $filename))
+                        ) {    // don't create thumb if one exists
+                            create_thumbnail($selected_picture_folder, $filename); // in media_inc.php script 
                         }
                     }
 

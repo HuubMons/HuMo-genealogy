@@ -936,6 +936,9 @@ class person_cls
         global $dbh, $db_functions, $bot_visit, $humo_option, $uri_path, $user, $language;
         global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
         global $selected_language, $hourglass, $link_cls, $page;
+
+        include_once(__DIR__ . "/../admin/include/media_inc.php");
+
         $text_start = '';
         $text = '';
         $popover_content = '';
@@ -1109,8 +1112,10 @@ class person_cls
                     // *** Only show 1st picture ***
                     if (isset($picture_qry[0])) {
                         $pictureDb = $picture_qry[0];
-                        $picture = show_picture($tree_pict_path, $pictureDb->event_event, '', 120);
-                        $text .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
+                        $text .= print_thumbnail($tree_pict_path, $pictureDb->event_event, 0, 120, 'margin-left:10px; margin-top:5px;') . '<br>';
+                        
+                        //$picture = show_picture($tree_pict_path, $pictureDb->event_event, '', 120);
+                        //$text .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
                         //$popover_content .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
                     }
                 }

@@ -134,6 +134,8 @@ function ancestor_chart_person($id, $box_appearance)
     global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
     global $data, $language, $dirmark1, $dirmark2;
 
+    include_once(__DIR__ . "/../admin/include/media_inc.php");
+
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {
         $hour_value = substr($box_appearance, 4);
@@ -267,9 +269,7 @@ function ancestor_chart_person($id, $box_appearance)
                 // *** Only show 1st picture ***
                 if (isset($picture_qry[0])) {
                     $pictureDb = $picture_qry[0];
-                    $picture = show_picture($tree_pict_path, $pictureDb->event_event, 80, 70);
-                    //$text.='<img src="'.$tree_pict_path.$picture['thumb_prefix'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'">';
-                    $text .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="float:left; margin:5px;" alt="' . $pictureDb->event_text . '" width="' . $picture['width'] . '">';
+                    $text .= print_thumbnail($tree_pict_path, $pictureDb->event_event, 80, 70, 'float:left; margin:5px;');
                 }
             }
         }

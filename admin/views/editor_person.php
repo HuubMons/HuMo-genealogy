@@ -1389,7 +1389,7 @@
                 ?>
                 <?= hideshow_editor($hideshow, $hideshow_text, $pers_buried_text); ?>
 
-                <input type="submit" name="add_burial_witness" value="<?= __('witness').' - '.__('clergy'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+                <input type="submit" name="add_burial_witness" value="<?= __('witness') . ' - ' . __('clergy'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">

@@ -622,8 +622,6 @@ class EditorModel
                 WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($this->pers_gedcomnumber) . "'";
             $this->dbh->query($sql);
 
-
-
             // *** Save birth declaration ***
             if ($_POST['birth_decl_date'] || $_POST['birth_decl_place'] || $_POST['birth_decl_text']) {
                 if ($_POST['birth_decl_id'] && is_numeric($_POST['birth_decl_id'])) {
@@ -663,7 +661,6 @@ class EditorModel
                         event_text='" . safe_text_db($_POST['death_decl_text']) . "',
                         event_changed_user_id='" . $this->userid . "'
                         WHERE event_id='" . $_POST['death_decl_id'] . "'";
-                    //echo $sql;
                     $this->dbh->query($sql);
                 } else {
                     $sql = "INSERT INTO humo_events SET
@@ -685,8 +682,7 @@ class EditorModel
                 }
             }
 
-
-            // extra UPDATE queries if jewish dates is enabled
+            // *** Extra UPDATE queries if jewish dates is enabled ***
             if ($this->humo_option['admin_hebnight'] == "y") {
                 $per_bir_heb = "";
                 $per_bur_heb = "";

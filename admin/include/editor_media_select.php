@@ -116,8 +116,6 @@ if (file_exists($array_picture_folder[0])) {
         if (isset($list_filename)) {
             array_multisort($list_filename_order, $list_filename);
             foreach ($list_filename as $selected_filename) {
-                $thumb = '';
-
                 echo '<div class="photobook">';
                 echo  print_thumbnail($selected_picture_folder, $selected_filename);
                 // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***

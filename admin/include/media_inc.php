@@ -1,11 +1,17 @@
 <?php
+// holds the prefixes for existent category subdirectories
+global $pcat_dirs;
+$pcat_dirs = get_pcat_dirs();
+
+
 // lookup which library is available or none
 function create_thumbnail($folder, $file)
 {
+    $theight = 120; // default
     if (extension_loaded('imagick')) {
-        return (create_thumbnail_IM($folder, $file));
+        return (create_thumbnail_IM($folder, $file, $theight)); // true on success
     } elseif ((extension_loaded('gd'))) {
-        return (create_thumbnail_GD($folder, $file));
+        return (create_thumbnail_GD($folder, $file, $theight)); // true on success
     } else {
         return (false); // no thumbnails
     }
@@ -13,17 +19,19 @@ function create_thumbnail($folder, $file)
 // lookup which library is available or none
 function resize_picture($folder, $file)
 {
+    $maxheight = 2160; // default : 1080;
+    $maxwidth = 3840;  // default : 1920;
     if (extension_loaded('imagick')) {
-        return (resize_picture_IM($folder, $file));
+        return (resize_picture_IM($folder, $file, $maxwidth, $maxheight)); // true on success
     } elseif ((extension_loaded('gd'))) {
-        return (resize_picture_GD($folder, $file));
+        return (resize_picture_GD($folder, $file, $maxwidth, $maxheight)); // true on success
     } else {
         return (false); // no resizing
     }
 }
 
-// Imagick library - returns true if a thumbnail has been created (value not used yet)
-function create_thumbnail_IM($folder, $file)
+// Imagick library - returns true if a thumbnail has been created 
+function create_thumbnail_IM($folder, $file, $theight = 120)
 {
     $is_ghostscript = false;   // ghostscript has to be installed for pdf handling
     $is_ffmpeg      = false;   // ffmpeg has to be installed for video handling 
@@ -34,12 +42,13 @@ function create_thumbnail_IM($folder, $file)
         $is_ffmpeg = true;
     }
     $add_arrow = false;
-    $theight = 120; // set hight of thumbnail
-    $success = true;
+    $success = false;
     $pict_path_original = $folder . $file;
     $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
     $imtype = strtoupper(substr($file, -3));
     if (Imagick::queryformats($imtype . '*')) {
+        $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+        fclose($fhandle);
         if ($imtype == 'PDF' && $is_ghostscript) {
             $im = new \Imagick($pict_path_original . '[0]'); //first page of PDF (default: last page)
             $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE); // without you only get black frames
@@ -50,7 +59,7 @@ function create_thumbnail_IM($folder, $file)
                 $imtype == 'AVI')
             && $is_ffmpeg
         ) {
-            $im = new \Imagick($pict_path_original . "[15]"); // [] should select frame 15 of video, not working
+            $im = new \Imagick($pict_path_original . "[15]"); // [] should select frame 15 of video, not working, allways takes the first frame
             $add_arrow = true;
         } else {
             $im = new \Imagick($pict_path_original);
@@ -58,7 +67,7 @@ function create_thumbnail_IM($folder, $file)
         $im->setbackgroundcolor('rgb(255, 255, 255)');
         $im->thumbnailImage(0, $theight);                     // autmatic proportional scaling
         // add play_button to movie thumbnails
-        if ($add_arrow) {
+        if ($add_arrow && is_file(__DIR__ . '/../images/play_button.png')) {
             $im2 = new \Imagick(__DIR__ . '/../images/play_button.png');
             $xpos = floor($im->getImageWidth() / 2 - $im2->getImageWidth() / 2);
             $ypos = floor($im->getImageHeight() / 2 - $im2->getImageHeight() / 2);
@@ -67,17 +76,16 @@ function create_thumbnail_IM($folder, $file)
             $im2->destroy();
         }
         $success = ($im->writeImage($pict_path_thumb));
+        unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
         $im->clear();
         $im->destroy();
     }
     return ($success);
 }
 
-// Imagic library - returns true on success or if no resizing has to be done  (value not used yet)
-function resize_picture_IM($folder, $file)
+// Imagic library - returns true on success or if picture already fits 
+function resize_picture_IM($folder, $file, $maxheight = 1080, $maxwidth = 1920)
 {
-    $maxheight = 1080;
-    $maxwidth = 1920;
     $success = true;
     $pict_path_original = $folder . $file;
     $pict_path_resize = $pict_path_original;
@@ -102,27 +110,51 @@ function resize_picture_IM($folder, $file)
     }
     return ($success);
 }
-
 //search for a thumbnail or mime type placeholder and returns the image tag
-function print_thumbnail($folder, $file)
+function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $attrib = '')
 {
-    $pparts = pathinfo($file);
-    if (!$file || !file_exists($folder . $file)) {
-        return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;">';
+    $img_style = ' style="';
+    if ($maxw > 0 && $maxh > 0) {
+        $img_style .= 'width:auto; height:auto; max-width:' . $maxw . 'px; max-height:' . $maxh . 'px; ' . $css . '" ' . $attrib;
+    } elseif ($maxw > 0) {
+        $img_style .= 'height:auto; max-width:' . $maxw . 'px; ' . $css . '" ' . $attrib;
+    } elseif ($maxh > 0) {
+        $img_style .= 'width:auto; max-height:' . $maxh . 'px; ' . $css . '" ' . $attrib;
+    } else {
+        $img_style .= 'width:auto; height:120px; ' . $css . '" ' . $attrib;
     }
-    if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
-        return '<img src="' . $folder . 'thumb_' . $file . '.jpg" style="width:auto; height:120px;">';
+
+    if (!$file || !$folder) {
+        return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' missing path/filename">';
     }
-    if (file_exists($folder . 'thumb_' . $file)) {
-        return '<img src="' . $folder . 'thumb_' . $file . '" style="width:auto; height:120px;">';
+
+    $thumb_url =  thumbnail_exists($folder, $file);
+    if (!empty($thumb_url)) {
+        return '<img src="' . $thumb_url . '"' . $img_style . '>';
+    } // found thumbnail
+
+    global $pcat_dirs;
+
+    // no thumbnail found, create a new one
+    // first check if/where org_file exist
+    if (array_key_exists(substr($file, 0, 3), $pcat_dirs)) {
+        $folder .= substr($file, 0, 2) . '/';
+    } // photobook categories
+    if (!file_exists($folder . $file)) {
+        return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' not found">';
     }
-    if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg')) {
-        return '<img src="' . $folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg" style="width:auto; height:120px;">';
+    // check for mime type and no_thumb file
+    if (
+        check_media_type($folder, $file) &&
+        !is_file($folder . '.' . $file . '.no_thumb')
+    ) {
+        // script will possibily die here and hidden no_thumb file becomes persistent
+        // so this code might be skiped afterwords
+        if (create_thumbnail($folder, $file)) {
+            return '<img src="' . $folder . 'thumb_' . $file . '.jpg' . '"' . $img_style . '>';
+        }
     }
-    if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'])) {
-        return '<img src="' . $folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '" style="width:auto; height:120px;">';
-    }
-    // no thumbnail found
+
     $extensions_check = strtolower(pathinfo($file, PATHINFO_EXTENSION));
     switch ($extensions_check) {
         case 'pdf':
@@ -154,16 +186,22 @@ function print_thumbnail($folder, $file)
         case 'ra':
             return '<img src="../images/audio.gif" alt="RA">';
         case 'jpg':
-            return '<img src="' . $folder . $file . '" style="width:auto; height:120px;" alt="JPG">';
+            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+        case 'jpeg':
+            return '<img src="' . $folder . $file . '"' . $img_style . '>';
         case 'png':
-            return '<img src="' . $folder . $file . '" style="width:auto; height:120px;" alt="PNG">';
+            return '<img src="' . $folder . $file . '"' . $img_style . '>';
         case 'gif':
-            return '<img src="' . $folder . $file . '" style="width:auto; height:120px;" alt="GIF">';
+            return '<img src="' . $folder . $file . '"' . $img_style . '>';
         case 'tif':
-            return '<img src="' . $folder . $file . '" style="width:auto; height:120px;" alt="TIFF">';
+            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+        case 'tiff':
+            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+        case 'bmp':
+            return '<img src="' . $folder . $file . '"' . $img_style . '>';
     }
+    return '<img src="../images/thumb_missing-image.jpg"' . $img_style . '>';
 }
-
 // returns false if mime type of file is not listed here 
 function check_media_type($folder, $file)
 {
@@ -172,6 +210,8 @@ function check_media_type($folder, $file)
         'image/jpeg',
         'image/gif',
         'image/png',
+        'image/bmp',
+        'image/tiff',
         'audio/mpeg',
         'audio/mpeg3',
         'audio/x-mpeg',
@@ -207,28 +247,37 @@ function check_media_type($folder, $file)
 
 function thumbnail_exists($folder, $file)
 {
+    global $pcat_dirs;
     $pparts = pathinfo($file);
     if (!$file || !file_exists($folder . $file)) {
-        return false;
+        return '';
     }
     if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
-        return true;
+        return ($folder . 'thumb_' . $file . '.jpg');
     }
     if (file_exists($folder . 'thumb_' . $file)) {
-        return true;
-    }
+        return ($folder . 'thumb_' . $file);
+    } // old naming
     if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg')) {
-        return true;
+        return ($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg');
     }
     if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'])) {
-        return true;
+        return ($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename']);
+    } // old naming
+    if (array_key_exists(substr($file, 0, 3), $pcat_dirs)) {
+        $folder .= substr($file, 0, 2) . '/';
+    } // check for cat folder
+    if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
+        return ($folder . 'thumb_' . $file . '.jpg');
     }
-    return false;
+    if (file_exists($folder . 'thumb_' . $file)) {
+        return ($folder . 'thumb_' . $file);
+    }  // old naming
+    return '';
 }
-// GD library - returns true if a thumbnail has been created (value not used yet)
-function create_thumbnail_GD($folder, $file)
+// GD library - returns true if a thumbnail has been created 
+function create_thumbnail_GD($folder, $file, $theight = 120)
 {
-    $theight = 120; // set hight of thumbnail
     $pict_path_original = $folder . $file;
     $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
     $gd_info = gd_info();
@@ -239,40 +288,45 @@ function create_thumbnail_GD($folder, $file)
     if ($height == 0) {
         return ($success);
     }
-    $twidth = ($theight / $height) * $width;
-    $twidth = floor($twidth);
+    $twidth = floor($width * ($theight / $height));
 
     if ($imtype == 'JPG' && $is_gdjpg) {
-        //$create_thumb = imagecreatetruecolor($twidth, $theight);
+        $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+        fclose($fhandle);
         $create_thumb = imagecreatetruecolor($twidth, $theight);
         $source = imagecreatefromjpeg($pict_path_original);
         imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
         $success = imagejpeg($create_thumb, $pict_path_thumb);
         imagedestroy($create_thumb);
         imagedestroy($source);
+        unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
     } elseif ($imtype == 'PNG' && $is_gdpng) {
+        $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+        fclose($fhandle);
         $create_thumb = imagecreatetruecolor($twidth, $theight);
         $source = imagecreatefrompng($pict_path_original);
         imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
         $success = imagejpeg($create_thumb, $pict_path_thumb);
         imagedestroy($create_thumb);
         imagedestroy($source);
+        unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
     } elseif ($imtype == 'GIF' && $is_gdgif) {
+        $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+        fclose($fhandle);
         $create_thumb = imagecreatetruecolor($twidth, $theight);
         $source = imagecreatefromgif($pict_path_original);
         imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
         $success = imagejpeg($create_thumb, $pict_path_thumb);
         imagedestroy($create_thumb);
         imagedestroy($source);
+        unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
     }
     return ($success);
 }
 
-// GD library - returns true on success or if no resizing has to be done  (value not used yet)
-function resize_picture_GD($folder, $file)
+// GD library - returns true on success or if no resizing has to be done  
+function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
 {
-    $maxheight = 1080;
-    $maxwidth = 1920;
     $success = false;
 
     $pict_path_original = $folder . $file;
@@ -294,7 +348,7 @@ function resize_picture_GD($folder, $file)
         $rwidth = $maxwidth;
         $rheight = ($rwidth / $width) * $height;
     }
-
+    echo ('Resize: ' . $rwidth . ' - ' . $rheight);
     if ($imtype == 'JPG' && $is_gdjpg) {
         rename($pict_path_original, $picture_original_tmp);
         $create_resized = imagecreatetruecolor($rwidth, $rheight);
@@ -324,4 +378,27 @@ function resize_picture_GD($folder, $file)
         unlink($picture_original_tmp);
     }
     return ($success);
+}
+function get_pcat_dirs()
+{
+    global $dbh, $tree_id;
+
+    $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
+    $dataDb = $data2sql->fetch(PDO::FETCH_OBJ);
+
+    $tree_pict_path = $dataDb->tree_pict_path;
+    $tmp_pcat_dirs = array();
+    $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+    if ($temp->rowCount()) {   // there is a category table     
+        $catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+        if ($catg->rowCount()) {
+            while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
+                $dirtest = $catDb->photocat_prefix;
+                if (is_dir($tree_pict_path . '/' . substr($dirtest, 0, 2))) {  // there is a subfolder of this prefix
+                    $tmp_pcat_dirs[$dirtest] = substr($dirtest, 0, 2);
+                }
+            }
+        }
+    }
+    return $tmp_pcat_dirs;
 }

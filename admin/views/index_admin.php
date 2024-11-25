@@ -426,6 +426,45 @@ $install_status = true;
                 <?php } ?>
             </div>
         </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Thumbnail libraries and tools'); ?>
+            </div>
+
+            <div class="col-md-8">
+                <?php
+                $is_thumblib = false;
+
+                echo __('Imagick (images):');
+                if (extension_loaded('imagick')) {
+                    echo ' ' . strtolower(__('Yes')) . '<br>';
+
+                    echo '- ' . __('Ghostscript (PDF support):') . ' ';
+                    echo (trim(shell_exec('type -P gs'))) ? strtolower('Yes') . '<br>' : strtolower('No') . '<br>';
+
+                    echo '- ' . __('ffmpeg (movie support):') . ' ';
+                    echo (trim(shell_exec('type -P ffmpeg'))) ? strtolower(__('Yes')) . '<br>' : strtolower('No') . '<br>';
+
+                    $is_thumblib = true;
+                } else {
+                    echo ' ' . strtolower(__('No')) . '<br>';
+                }
+
+                echo __('GD (images):');
+                if (extension_loaded('gd')) {
+                    echo ' ' . strtolower(__('Yes'));
+                    $is_thumblib = true;
+                } else {
+                    echo ' ' . strtolower(__('No')) . '<br>';
+                }
+
+                if (!$is_thumblib) {
+                    echo __('No Thumbnail library available');
+                }
+                ?>
+            </div>
+        </div>
     <?php } ?>
 
 </div>

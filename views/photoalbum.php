@@ -241,6 +241,9 @@ function show_media_files($pref)
     global $dataDb, $dbh, $photoalbum, $uri_path, $tree_id, $db_functions,
         $cat_string, $show_categories, $chosen_tab, $media_files, $humo_option, $link_cls;
 
+    include_once(__DIR__ . "/../admin/include/media_inc.php");
+    global $pcat_dirs;
+
     $tree_pict_path = $dataDb->tree_pict_path;
     if (substr($tree_pict_path, 0, 1) === '|') {
         $tree_pict_path = 'media/';
@@ -439,30 +442,31 @@ function show_media_files($pref)
                         }
                     }
                 }
-
-                $picture2 = show_picture($dir, $filename, 175, 120);
-                // *** Check if media exists ***
-                if (file_exists($picture2['path'] . $picture2['thumb_prefix'] . $picture2['picture'] . $picture2['thumb_suffix'])) {
-                    $picture = '<img src="' . $picture2['path'] . $picture2['thumb_prefix'] . $picture2['picture'] . $picture2['thumb_suffix'] . '" width="' . $picture2['width'] . '" alt="' . $filename . '">';
-                } else {
-                    $picture = '<img src="images/missing-image.jpg" width="' . $picture2['width'] . '" alt="' . $filename . '">';
+                $tmp_dir = $dir;
+                $picture = print_thumbnail($dir, $filename, 175, 120);
+                if (array_key_exists(substr($filename, 0, 3), $pcat_dirs)) {
+                    $tmp_dir .= substr($filename, 0, 2) . '/';
                 }
                 if (in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), array('jpg', 'png', 'gif', 'bmp', 'tif'))) {
         ?>
 
                     <div class="photobook">
                         <!-- Show photo using the lightbox: GLightbox effect -->
-                        <a href="<?= $dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
+                        <a href="<?= $tmp_dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
                             <!-- Need a class for multiple lines and HTML code in a text -->
                             <div class="glightbox-desc custom-desc<?= $picture_nr; ?>"><?= $picture_text2; ?></div>
                             <?= $picture; ?>
                         </a>
                         <div class="photobooktext"><?= $picture_text; ?></div>
                     </div>
-        <?php
+                <?php
                 } else {
-                    $picture = '<div class="photobook"><a href="' .  $dir . $filename . '" target="_blank">' . $picture . '</a><div class="photobooktext">' . $picture_text . '</div></div>';
-                    echo $picture;
+                ?>
+                    <div class="photobook">
+                        <a href="<?= $tmp_dir . $filename; ?>" target="_blank"><?= $picture; ?></a>
+                        <div class="photobooktext"><?= $picture_text; ?></div>
+                    </div>
+        <?php
                 }
             }
         }
