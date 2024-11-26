@@ -571,8 +571,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             include_once(__DIR__ . '/../../include/person_cls.php');
                             $picture_text = '';
                             $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "'
-                                    AND event_connect_kind='person' AND event_kind='picture'
-                                    AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
+                                AND event_connect_kind='person' AND event_kind='picture'
+                                AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
                             $afbqry = $dbh->query($sql);
                             $picture_privacy = false;
                             while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
@@ -608,9 +608,6 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 }
             }
         }
-    } else {
-        // *** Normally this is not used ***
-        echo '<b>' . __('This folder does not exists!') . '</b>';
     }
     ?>
 </div>

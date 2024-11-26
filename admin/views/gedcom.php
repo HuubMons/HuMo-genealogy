@@ -1775,9 +1775,8 @@ elseif ($trees['step'] == '4') {
                 $i++;
                 $_SESSION['save_progress2'] = $i;
 
-                // TODO check value $step. In some cases 0.
                 // Calculate the percentage
-                if ($i % $step == 0) {
+                if ($step > 0 && $i % $step == 0) {
                     if ($devider == 50) {
                         $perc += 2;
                     } elseif ($devider == 100) {
@@ -1790,8 +1789,6 @@ elseif ($trees['step'] == '4') {
 
                     // Javascript for updating the progress bar and information
                     echo '<script>';
-                    //echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
-                    //echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $percent . ')' . ' ' . __('persons') . '";';
                     echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' ' . __('persons') . '";';
                     echo '</script>';
 
@@ -2080,11 +2077,8 @@ elseif ($trees['step'] == '4') {
 
     // *** Process text by name etc. ***
     echo '<br>&gt;&gt;&gt; ' . __('Processing texts IN names...');
-    //$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname
-    //	FROM humo_persons WHERE pers_tree_id='".$trees['tree_id']."'");
     $person_qry = $dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname
         FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_name_text!=''");
-    //echo 'AANTAL '.$person_qry->rowCount();
     while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
         //*** Haza-data option: text IN name where "*" is. ***
         if ($personDb->pers_name_text) {

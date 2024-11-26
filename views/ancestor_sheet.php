@@ -25,6 +25,8 @@ function ancestor_chart_person($id, $box_appearance)
     global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
     global $data, $language, $screen_mode, $dirmark1, $dirmark2;
 
+    include_once(__DIR__ . "/../admin/include/media_inc.php");
+
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {
         $hour_value = substr($box_appearance, 4);

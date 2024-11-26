@@ -438,9 +438,12 @@ $install_status = true;
 
                 echo __('Imagick (images):');
                 if (extension_loaded('imagick')) {
-                    echo ' ' . strtolower(__('Yes')) . '<br>';
+                ?>
+                    <?= strtolower(__('Yes')); ?><br>
 
-                    echo '- ' . __('Ghostscript (PDF support):') . ' ';
+                    - <?= __('Ghostscript (PDF support):'); ?>
+
+                <?php
                     echo (trim(shell_exec('type -P gs'))) ? strtolower('Yes') . '<br>' : strtolower('No') . '<br>';
 
                     echo '- ' . __('ffmpeg (movie support):') . ' ';

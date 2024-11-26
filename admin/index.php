@@ -461,14 +461,9 @@ if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
 
     die();
 } else {
-    if (isset($_GET['page']) && $_GET['page'] == 'maps') {
 ?>
-
-        <body onload="initialize()" class="humo"> <!-- initialize is used to show map in maps editor -->
-        <?php
-    } else {
-        echo '<body class="humo">';
-    }
+    <body <?= isset($_GET['page']) && $_GET['page'] == 'maps' ? 'onload="initialize()"' : ''; ?> class="humo">
+    <?php
 }
 
 // *** Show top menu ***
@@ -481,7 +476,7 @@ if ($language["dir"] == "rtl") {
 }
 
 if ($popup == false) {
-        ?>
+    ?>
         <div id="humo_top" <?= $top_dir; ?>>
 
             <span id="top_website_name">
@@ -839,6 +834,6 @@ if ($popup == false) {
 
     </div>
 
-        </body>
+    </body>
 
 </html>
