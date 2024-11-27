@@ -34,7 +34,7 @@ function resize_picture($folder, $file)
 function create_thumbnail_IM($folder, $file, $theight = 120)
 {
     $is_ghostscript = false;   // ghostscript has to be installed for pdf handling
-    $is_ffmpeg      = false;   // ffmpeg has to be installed for video handling 
+    $is_ffmpeg      = false;   // ffmpeg has to be installed for video handling
     if (trim(shell_exec('type -P gs'))) {
         $is_ghostscript = true;
     }
@@ -65,7 +65,7 @@ function create_thumbnail_IM($folder, $file, $theight = 120)
             $im = new \Imagick($pict_path_original);
         }
         $im->setbackgroundcolor('rgb(255, 255, 255)');
-        $im->thumbnailImage(0, $theight);                     // autmatic proportional scaling
+        $im->thumbnailImage(0, $theight);                     // automatic proportional scaling
         // add play_button to movie thumbnails
         if ($add_arrow && is_file(__DIR__ . '/../images/play_button.png')) {
             $im2 = new \Imagick(__DIR__ . '/../images/play_button.png');
@@ -76,7 +76,7 @@ function create_thumbnail_IM($folder, $file, $theight = 120)
             $im2->destroy();
         }
         $success = ($im->writeImage($pict_path_thumb));
-        unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
+        unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
         $im->clear();
         $im->destroy();
     }
@@ -202,7 +202,7 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
     }
     return '<img src="../images/thumb_missing-image.jpg"' . $img_style . '>';
 }
-// returns false if mime type of file is not listed here 
+// returns false if mime type of file is not listed here
 function check_media_type($folder, $file)
 {
     $mtypes = [
@@ -275,7 +275,7 @@ function thumbnail_exists($folder, $file)
     }  // old naming
     return '';
 }
-// GD library - returns true if a thumbnail has been created 
+// GD library - returns true if a thumbnail has been created
 function create_thumbnail_GD($folder, $file, $theight = 120)
 {
     $pict_path_original = $folder . $file;
@@ -324,7 +324,7 @@ function create_thumbnail_GD($folder, $file, $theight = 120)
     return ($success);
 }
 
-// GD library - returns true on success or if no resizing has to be done  
+// GD library - returns true on success or if no resizing has to be done
 function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
 {
     $success = false;
@@ -389,7 +389,7 @@ function get_pcat_dirs()
     $tree_pict_path = $dataDb->tree_pict_path;
     $tmp_pcat_dirs = array();
     $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-    if ($temp->rowCount()) {   // there is a category table     
+    if ($temp->rowCount()) {   // there is a category table
         $catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
         if ($catg->rowCount()) {
             while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {

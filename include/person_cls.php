@@ -2036,29 +2036,6 @@ $own_code=0;
                 $temp_previous = $temp;
 
                 if ($personDb->pers_gedcomnumber) {
-                    //$text_array = witness($personDb->pers_gedcomnumber, 'birth_declaration');
-                    /*
-                    $text_array = witness($personDb->pers_gedcomnumber, 'birth_decl_witness');
-                    if ($text_array) {
-                        if ($temp) {
-                            $templ_person[$temp] .= ' ';
-                        }
-                        $templ_person["birth_declaration"] = $text_array['text'];
-                        $temp = "birth_declaration";
-                        $text .= ' ' . $templ_person["birth_declaration"];
-                        if (isset($text_array['source'])) {
-                            $templ_person["birth_declaration_source"] = $text_array['source'];
-                            $temp = "birth_declaration";
-
-                            // *** Extra item, so it's possible to add a comma or space ***
-                            $templ_person["birth_declaration_add"] = '';
-                            $temp = "birth_declaration_add";
-
-                            $text .= $text_array['source'];
-                        }
-                    }
-                    */
-
                     // *** Sept. 2024: birth declaration and birth declaration witnesses are now seperate events *** 
                     $birth_declaration = '';
                     $birth_decl_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'birth_declaration');

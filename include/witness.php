@@ -104,6 +104,11 @@ function witness($gedcomnr, $event_kind, $event_connect_kind = 'person')
                 $text_array['source'] = $source_array['text'];
             }
             */
+
+            // *** Nov. 2024: restored text. ***
+            if ($witnessDb->event_text) {
+                $text .= ' ' . process_text($witnessDb->event_text);
+            }
         }
         if ($text) {
             //$text_array['text'] = $text;

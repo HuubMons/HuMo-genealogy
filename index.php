@@ -523,7 +523,7 @@ if ($page == 'address') {
 } elseif ($page == 'photoalbum') {
     require __DIR__ . '/app/controller/photoalbumController.php';
     $controllerObj = new PhotoalbumController();
-    $photoalbum = $controllerObj->detail($dbh);
+    $photoalbum = $controllerObj->detail($dbh, $tree_id, $db_functions);
 } elseif ($page == 'register') {
     require __DIR__ . '/app/controller/registerController.php';
     $controllerObj = new RegisterController($db_functions);

@@ -1159,7 +1159,6 @@ class gedcom_cls
                     // GEDCOM 5.x
                     if (substr($buffer, 0, 11) === '3 RELA GODP') {
                         $processed = true;
-                        //$event['kind'][$event_nr] = 'godfather';
                         $event['kind'][$event_nr] = 'ASSO';
                         $event['gedcom'][$event_nr] = 'GODP';
                     }

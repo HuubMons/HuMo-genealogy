@@ -180,18 +180,6 @@ class editor_event_cls
 
         if ($event_kind == 'person') {
             // *** Filter several events, allready shown in seperate lines in editor ***
-            /*
-            $qry = "SELECT * FROM humo_events
-                WHERE event_tree_id='" . $tree_id . "'
-                AND event_connect_kind='person'
-                AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind NOT IN ('name','NPFX','NSFX','nobility','title','lordship','birth_declaration','baptism_witness',
-                'death_declaration','burial_witness','profession','religion','picture',
-                'birth_decl_witness', 'death_decl_witness')
-                " . $hebtext . "
-                ORDER BY event_kind, event_order";
-            */
-
             $qry = "SELECT * FROM humo_events
                 WHERE event_tree_id='" . $tree_id . "'
                 AND event_connect_kind='person'
@@ -224,21 +212,11 @@ class editor_event_cls
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='CHR' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
         } elseif ($event_connect_kind == 'birth_declaration') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='birth_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
-            //} elseif ($event_kind == 'baptism_witness') {
-            // TODO: remove this query
-            //$qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='baptism_witness' ORDER BY event_order";
-            //} elseif ($event_connect_kind == 'death_declaration') {
-            //    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='death_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='witness' ORDER BY event_order";
-
         } elseif ($event_kind == 'ASSO' && $event_connect_kind == 'BURI') {
             // ADDED oct. 2024
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='BURI' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
         } elseif ($event_connect_kind == 'death_declaration') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='death_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
-            //} elseif ($event_kind == 'burial_witness') {
-            // TODO: remove this query
-            //$qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='burial_witness' ORDER BY event_order";
-
         } elseif ($event_kind == 'profession') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='profession' ORDER BY event_order";
         } elseif ($event_kind == 'religion') {
@@ -256,28 +234,14 @@ class editor_event_cls
                 WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND
                 event_kind='picture' " . $searchpic . " ORDER BY event_order";
         } elseif ($event_kind == 'family') {
-            /*
-            $qry = "SELECT * FROM humo_events 
-                WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind!='marriage_witness'
-                AND event_kind!='marriage_witness_rel'
-                AND event_kind!='picture'
-                ORDER BY event_kind, event_order";
-            */
             $qry = "SELECT * FROM humo_events 
                 WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "'
                 AND event_kind!='ASSO'
                 AND event_kind!='picture'
                 ORDER BY event_kind, event_order";
-
-            //} elseif ($event_kind == 'marriage_witness') {
-            //    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness' ORDER BY event_kind, event_order";
         } elseif ($event_connect_kind == 'MARR' && $event_kind == 'ASSO') {
             // TODO: remove this query
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='MARR' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_kind, event_order";
-
-            //} elseif ($event_kind == 'marriage_witness_rel') {
-            //    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
         } elseif ($event_connect_kind == 'MARR_REL' && $event_kind == 'ASSO') {
             // TODO: remove this query
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='MARR_REL' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_kind, event_order";
@@ -931,12 +895,6 @@ class editor_event_cls
                         }
 
                         // *** Witness and declaration persons ***
-                        //if (
-                        //    $data_listDb->event_kind == 'baptism_witness' || $data_listDb->event_kind == 'birth_decl_witness' || $data_listDb->event_kind == 'death_decl_witness' || $data_listDb->event_kind == 'burial_witness' || $data_listDb->event_kind == 'marriage_witness' || $data_listDb->event_kind == 'marriage_witness_rel'
-                        //) {
-                        //if (
-                        //    $data_listDb->event_kind == 'baptism_witness' || $data_listDb->event_connect_kind == 'birth_declaration' || $data_listDb->event_connect_kind == 'death_declaration' || $data_listDb->event_kind == 'burial_witness' || $data_listDb->event_kind == 'marriage_witness' || $data_listDb->event_kind == 'marriage_witness_rel'
-                        //) {
                         if (
                             $data_listDb->event_kind == 'ASSO' || $data_listDb->event_connect_kind == 'birth_declaration' || $data_listDb->event_connect_kind == 'death_declaration'
                         ) {
@@ -1478,8 +1436,6 @@ class editor_event_cls
 
                         <!-- Date and place by event -->
                         <?php
-                        //if ($event_kind != 'baptism_witness' && $event_kind != 'burial_witness' && $event_kind != 'marriage_witness' && $event_kind != 'marriage_witness_rel') { 
-                        //$witness_array = array("birth_decl_witness", "baptism_witness", "death_decl_witness", "burial_witness", "marriage_witness", "marriage_witness_rel");
                         $witness_array = array("ASSO", "witness");
                         if (!in_array($event_kind, $witness_array)) {
                         ?>
@@ -1502,8 +1458,6 @@ class editor_event_cls
                         }
                         ?>
                         <?php
-                        //if ($event_kind != 'baptism_witness' && $event_kind != 'burial_witness' && $event_kind != 'marriage_witness' && $event_kind != 'marriage_witness_rel') {
-                        //$witness_array = array("birth_decl_witness", "baptism_witness", "death_decl_witness", "burial_witness", "marriage_witness", "marriage_witness_rel");
                         $witness_array = array("ASSO", "witness");
                         if (!in_array($event_kind, $witness_array)) {
                         ?>
@@ -1524,18 +1478,19 @@ class editor_event_cls
                         if ($data_listDb->event_text && preg_match('/\R/', $data_listDb->event_text)) {
                             $field_text_selected = $field_text_medium;
                         }
+                        ?>
 
-                        //$witness_array = array("birth_decl_witness", "baptism_witness", "death_decl_witness", "burial_witness", "marriage_witness", "marriage_witness_rel");
+                        <div class="row mb-2">
+                            <label for="event_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                            <div class="col-md-7">
+                                <textarea rows="1" name="event_text[<?= $data_listDb->event_id; ?>]" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($data_listDb->event_text); ?></textarea>
+                            </div>
+                        </div>
+
+                        <?php
                         $witness_array = array("ASSO", "witness");
                         if (!in_array($event_kind, $witness_array)) {
                         ?>
-                            <div class="row mb-2">
-                                <label for="event_date" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
-                                <div class="col-md-7">
-                                    <textarea rows="1" name="event_text[<?= $data_listDb->event_id; ?>]" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($data_listDb->event_text); ?></textarea>
-                                </div>
-                            </div>
-
                             <!-- Source by event -->
                             <div class="row mb-2">
                                 <label for="source_event" class="col-md-3 col-form-label"><?= __('Source'); ?></label>

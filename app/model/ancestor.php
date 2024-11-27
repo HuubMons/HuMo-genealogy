@@ -6,20 +6,6 @@
 
 // *** This model is used by multiple ancestor reports (report/ chart/ sheet) ***
 
-include_once(__DIR__ . '/../../include/language_date.php');
-include_once(__DIR__ . '/../../include/language_event.php');
-include_once(__DIR__ . '/../../include/calculate_age_cls.php');
-include_once(__DIR__ . '/../../include/person_cls.php');
-include_once(__DIR__ . '/../../include/witness.php');
-// Needed for marriage:
-include_once(__DIR__ . '/../../include/process_text.php');
-include_once(__DIR__ . '/../../include/date_place.php');
-include_once(__DIR__ . '/../../include/marriage_cls.php');
-include_once(__DIR__ . '/../../include/show_sources.php');
-include_once(__DIR__ . '/../../include/show_addresses.php');
-include_once(__DIR__ . '/../../include/show_picture.php');
-include_once(__DIR__ . '/../../include/show_quality.php');
-
 // TODO move to controller?
 include_once(__DIR__ . '/family.php');
 

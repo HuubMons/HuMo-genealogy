@@ -5,14 +5,6 @@ include_once(__DIR__ . "/../../include/show_tree_date.php");
 
 class Mainindex_cls
 {
-
-    /*
-    public function __construct()
-    {
-        $this->var = $var;
-    }
-    */
-
     public function show_tree_index()
     {
         global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
@@ -267,13 +259,6 @@ class Mainindex_cls
                 } elseif (isset($_SESSION['tree_prefix']) && $_SESSION['tree_prefix'] == $dataDb->tree_prefix) {
                     $tree_name = '<span class="tree_link">' . $treetext_name . '</span>';
                 } else {
-                    // *** url_rewrite ***
-                    //if ($humo_option["url_rewrite"] == "j") {
-                    //    $path_tmp = $uri_path . 'tree_index/' . $dataDb->tree_id;
-                    //} else {
-                    //    //$path_tmp = 'tree_index.php?tree_id=' . $dataDb->tree_id;
-                    //    $path_tmp = 'index.php?page=tree_index&amp;tree_id=' . $dataDb->tree_id;
-                    //}
                     $path_tmp = $link_cls->get_link($uri_path, 'tree_index', $dataDb->tree_id);
                     $tree_name = '<span class="tree_link"><a href="' . $path_tmp . '">' . $treetext_name . '</a></span>';
                 }
@@ -332,7 +317,6 @@ class Mainindex_cls
             $maxnames = $rows * $maxcols;
         }
 
-        //$table2_width="500";
         $text = '';
 
         if (!function_exists('tablerow')) {
@@ -666,12 +650,12 @@ class Mainindex_cls
             ORDER BY RAND()";
         $picqry = $dbh->query($qry);
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
+            // TODO check code. Doesn't show pictures including a space.
             $picname = str_replace(" ", "_", $picqryDb->event_event);
             $check_file = strtolower(substr($picname, -3, 3));
             if (($check_file === 'png' || $check_file === 'gif' || $check_file === 'jpg') && file_exists($tree_pict_path . $picname)) {
                 @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
                 $man_cls = new person_cls($personmnDb);
-                $man_privacy = $man_cls->privacy;
                 if ($man_cls->privacy == '') {
                     $date_place = '';
 
@@ -682,15 +666,12 @@ class Mainindex_cls
                     $text .= '<div style="text-align: center;">';
 
                     // *** Show picture using GLightbox ***
-                    //$text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
-                    //    '" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
                     $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
                         '" width="90%" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
 
-                    //$text.='<a href="'.$url.'">'.$picqryDb->event_text.'</a></div><br>';
                     $text .= '<a href="' . $url . '">' . $date_place . $picqryDb->event_text . '</a></div>';
 
                     // *** Show first available picture without privacy restrictions ***
@@ -847,8 +828,7 @@ class Mainindex_cls
             }
         }
 
-        $person = "SELECT pers_patronym FROM humo_persons
-            WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
+        $person = "SELECT pers_patronym FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
         @$personDb = $dbh->query($person);
         if ($personDb->rowCount() > 0) {
             $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
