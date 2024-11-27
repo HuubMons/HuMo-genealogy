@@ -672,7 +672,16 @@ class Mainindex_cls
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
 
-                    $text .= '<a href="' . $url . '">' . $date_place . $picqryDb->event_text . '</a></div>';
+                    // TODO: this is almost same code as code in photoalbum.php.
+                    $name = $man_cls->person_name($personmnDb);
+                    $privacy = $man_cls->set_privacy($personmnDb);
+                    //$text .= '<a href="' . $url . '">' . $date_place . $picqryDb->event_text . '</a></div>';
+                    if (!$privacy && $name["standard_name"]) {
+                        $text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a></div>';
+                    } else {
+                        $text .= '<a href="' . $url . '">' . __('Go to person&apos;s page') . '</a></div><br>';
+                    }
+                    $text .= $date_place . $picqryDb->event_text;
 
                     // *** Show first available picture without privacy restrictions ***
                     break;
