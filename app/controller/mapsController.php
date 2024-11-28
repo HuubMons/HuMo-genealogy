@@ -12,16 +12,6 @@ include_once(__DIR__ . "/../../include/ancestors_descendants.php");
 
 class MapsController
 {
-    /*
-    private $db_functions, $user;
-
-    public function __construct($db_functions, $user)
-    {
-        $this->db_functions = $db_functions;
-        $this->user = $user;
-    }
-    */
-
     public function detail($humo_option, $dbh, $tree_id, $tree_prefix_quoted)
     {
         $mapsModel = new MapsModel();

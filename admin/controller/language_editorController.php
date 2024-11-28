@@ -3,15 +3,6 @@ require_once __DIR__ . "/../models/language_editor.php";
 
 class Language_editorController
 {
-    /*
-    private $editor_cls;
-
-    public function __construct()
-    {
-        $this->editor_cls = new editor_cls;
-    }
-    */
-
     public function detail($dbh, $humo_option)
     {
         $language_model = new LanguageEditorModel($dbh, $humo_option);

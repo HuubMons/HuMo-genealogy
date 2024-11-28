@@ -2,15 +2,6 @@
 
 class FanchartModel extends AncestorModel
 {
-    /*
-    private $Connection;
-
-    public function __construct($Connection)
-    {
-        $this->Connection = $Connection;
-    }
-    */
-
     public function get_chosengen()
     {
         $chosengen = 5;
@@ -83,7 +74,8 @@ class FanchartModel extends AncestorModel
         return $fan_width;
     }
 
-    public function get_real_width($fan_width){
+    public function get_real_width($fan_width)
+    {
         if ($fan_width > 50 and $fan_width < 301) {
             $tmp_width = $fan_width;
         } else {

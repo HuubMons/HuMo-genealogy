@@ -1,15 +1,6 @@
 <?php
 class NotesModel
 {
-    //private $note_id;
-
-    //public function set_note_id()
-    //{
-    //    if (isset($_POST['note_id']) and is_numeric(($_POST['note_id']))) {
-    //        $this->note_id = $_POST['note_id'];
-    //    }
-    //}
-
     public function get_limit()
     {
         $limit = 50;

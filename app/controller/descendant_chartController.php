@@ -4,14 +4,6 @@ require_once  __DIR__ . "/../model/descendant.php";
 
 class Descendant_chartController
 {
-    //private $db_functions, $user;
-
-    //public function __construct($db_functions, $user)
-    //{
-    //    $this->db_functions = $db_functions;
-    //    $this->user = $user;
-    //}
-
     public function getFamily($dbh, $tree_id)
     {
         $descendantModel = new DescendantModel($dbh);

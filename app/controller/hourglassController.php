@@ -5,13 +5,6 @@ require_once  __DIR__ . "/../model/ancestor.php";
 
 class HourglassController
 {
-    //private $db_functions, $user;
-
-    //public function __construct($db_functions)
-    //{
-    //    $this->db_functions = $db_functions;
-    //}
-
     public function getHourglass($dbh, $tree_id)
     {
         $descendantModel = new DescendantModel($dbh);

@@ -3,15 +3,6 @@ require_once __DIR__ . "/../models/log.php";
 
 class LogController
 {
-    /*
-    private $editor_cls;
-
-    public function __construct()
-    {
-        $this->editor_cls = new editor_cls;
-    }
-    */
-
     public function detail($dbh)
     {
         $logModel = new LogModel();

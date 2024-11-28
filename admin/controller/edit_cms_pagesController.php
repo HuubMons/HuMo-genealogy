@@ -3,15 +3,6 @@ require_once __DIR__ . "/../models/cms_pages.php";
 
 class edit_cms_pagesController
 {
-    /*
-    private $editor_cls;
-
-    public function __construct()
-    {
-        $this->editor_cls = new editor_cls;
-    }
-    */
-
     public function detail($dbh)
     {
         $CMS_pagesModel = new CMS_pagesModel($dbh);

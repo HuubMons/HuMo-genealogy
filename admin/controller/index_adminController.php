@@ -3,15 +3,6 @@ require_once __DIR__ . "/../models/index_admin.php";
 
 class IndexController
 {
-    /*
-    private $editor_cls;
-
-    public function __construct()
-    {
-        $this->editor_cls = new editor_cls;
-    }
-    */
-
     public function detail($database_check, $dbh)
     {
         $indexModel = new IndexModel();

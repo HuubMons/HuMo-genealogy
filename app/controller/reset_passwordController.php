@@ -3,16 +3,6 @@ require_once  __DIR__ . "/../model/reset_password.php";
 
 class ResetpasswordController
 {
-    /*
-    private $db_functions, $user;
-
-    public function __construct($db_functions, $user)
-    {
-        $this->db_functions = $db_functions;
-        $this->user = $user;
-    }
-    */
-
     public function detail($dbh, $humo_option)
     {
         $resetpasswordModel = new ResetpasswordModel();

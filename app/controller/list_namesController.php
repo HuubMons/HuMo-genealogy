@@ -3,17 +3,6 @@ require_once  __DIR__ . "/../model/list_names.php";
 
 class List_namesController
 {
-    //private $db_functions, $user;
-
-    //public function __construct($db_functions, $user)
-    /*
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-        //$this->user = $user;
-    }
-    */
-
     public function list_names($dbh, $tree_id, $user)
     {
         $list_namesModel = new list_namesModel();

@@ -1,15 +1,6 @@
 <?php
 class list_namesModel
 {
-    //private $db_functions;
-
-    /*
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-    */
-
     public function getAlphabetArray($dbh, $tree_id, $user)
     {
         $person_qry = "SELECT UPPER(substring(pers_lastname,1,1)) as first_character

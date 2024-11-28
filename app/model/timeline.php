@@ -1,25 +1,6 @@
 <?php
 class TimelineModel
 {
-    //private $db_functions;
-
-    /*
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-    */
-
-    /*
-    private function julgreg($date)
-    {   // alters a julian/gregorian date entry such as 4 mar 1572/3 to use regular date for calculations
-        if (strpos($date, '/') > 0) {
-            $date_array = explode('/', $date);
-            $date = $date_array[0];
-        }
-        return $date;
-    }
-    */
     // TODO remove return_array check (and use array in all julgreg lines.).
     private function julgreg($process_date, $return_array = false)
     {

@@ -1,15 +1,6 @@
 <?php
 class UserSettingsModel
 {
-    //private $db_functions;
-
-    /*
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-    */
-
     public function getUser($dbh)
     {
         $userDb = '';

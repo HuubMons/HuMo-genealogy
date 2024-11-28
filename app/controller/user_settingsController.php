@@ -4,19 +4,8 @@ require_once  __DIR__ . "/../model/user_settings.php";
 include_once(__DIR__ . "/../../include/2fa_authentication/authenticator.php");
 //if (isset($_POST['update_settings'])) include_once(__DIR__ . '/../../include/mail.php');
 
-
 class User_settingsController
 {
-    //private $db_functions, $user;
-
-    /*
-    public function __construct($db_functions, $user)
-    {
-        $this->db_functions = $db_functions;
-        $this->user = $user;
-    }
-    */
-
     public function user_settings($dbh, $dataDb, $humo_option, $user)
     {
         $user_settingsModel = new UserSettingsModel();

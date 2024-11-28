@@ -1,7 +1,6 @@
 <?php
 class CMS_pagesModel
 {
-
     private $select_page;
 
     public function __construct()

@@ -1,22 +1,6 @@
 <?php
 class MapsModel
 {
-    /*
-    private $address_id;
-
-    public function set_address_id(): void
-    {
-        if (isset($_POST['address_id']) && is_numeric(($_POST['address_id']))) {
-            $this->address_id = $_POST['address_id'];
-        }
-    }
-
-    public function get_address_id()
-    {
-        return $this->address_id;
-    }
-    */
-
     public function get_use_world_map($dbh)
     {
         $use_world_map = 'Google';

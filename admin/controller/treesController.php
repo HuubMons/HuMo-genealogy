@@ -4,15 +4,6 @@ include_once(__DIR__ . "/../include/select_tree.php");
 
 class TreesController
 {
-    /*
-    private $editor_cls;
-
-    public function __construct()
-    {
-        $this->editor_cls = new editor_cls;
-    }
-    */
-
     public function detail($dbh, $tree_id, $db_functions, $selected_language)
     {
         $treesModel = new TreesModel($dbh);

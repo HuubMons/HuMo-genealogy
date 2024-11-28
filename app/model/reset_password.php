@@ -1,26 +1,6 @@
 <?php
 class ResetpasswordModel
 {
-    /*
-    private $db_functions;
-
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-    */
-
-    /*
-    public function getId()
-    {
-        return $this->id;
-    }
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-    */
-
     public function get_activation_key()
     {
         $activation_key = '';

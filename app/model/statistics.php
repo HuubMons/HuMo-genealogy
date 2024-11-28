@@ -1,15 +1,6 @@
 <?php
 class StatisticsModel
 {
-    /*
-    private $db_functions;
-
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-    */
-
     public function get_menu_tab()
     {
         // *** Tab menu ***

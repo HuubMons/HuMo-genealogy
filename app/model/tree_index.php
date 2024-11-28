@@ -986,79 +986,100 @@ class Mainindex_cls
         return $text . '</div>';
     }
 
-    public function show_footer(): void
-    {
-        global $bot_visit, $humo_option, $uri_path;
-
-        echo '<br><div class="humo_version">';
-        // *** Show owner of family tree ***
-        echo $this->owner();
-
-        // *** Show HuMo-genealogy link ***
-        //printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="https://humo-gen.com">HuMo-genealogy</a>');
-        printf(__('This website is created using %s, a freeware genealogical  program'), '<a href="https://humo-gen.com">HuMo-genealogy</a>');
-        echo '.<br>';
-
-        // *** Show European cookie information ***
-        $url = $humo_option["url_rewrite"] == "j" ? $uri_path . 'cookies' : 'index.php?page=cookies';
-        if (!$bot_visit) {
-            printf(__('European law: %s cookie information'), '<a href="' . $url . '">HuMo-genealogy');
-        }
-        echo '</a>';
-        echo '</div>';
-    }
-
     // *** Show slideshow ***
     public function show_slideshow(): void
     {
         global $humo_option;
+?>
 
-        // *** Used inline CSS, so it will be possible to use other CSS style (can be used for future slideshow options) ***
-        echo '<style>
+        <!-- Used inline CSS, so it will be possible to use other CSS style (can be used for future slideshow options) -->
+        <style>
             /* CSS3 slider for mainmenu */
             /* @import url(http://fonts.googleapis.com/css?family=Istok+Web); */
             @keyframes slidy {
-                0% { left: 0%; }
-                20% { left: 0%; }
-                25% { left: -100%; }
-                45% { left: -100%; }
-                50% { left: -200%; }
-                70% { left: -200%; }
-                75% { left: -300%; }
-                95% { left: -300%; }
-                100% { left: -400%; }
+                0% {
+                    left: 0%;
+                }
+
+                20% {
+                    left: 0%;
+                }
+
+                25% {
+                    left: -100%;
+                }
+
+                45% {
+                    left: -100%;
+                }
+
+                50% {
+                    left: -200%;
+                }
+
+                70% {
+                    left: -200%;
+                }
+
+                75% {
+                    left: -300%;
+                }
+
+                95% {
+                    left: -300%;
+                }
+
+                100% {
+                    left: -400%;
+                }
             }
+
             /* body, figure { */
             figure {
                 margin: 0;
                 /*	font-family: Istok Web, sans-serif; */
                 font-weight: 100;
-                
+
                 /* height:250px; */
             }
+
             div#captioned-gallery {
-                width: 100%; overflow: hidden; 
+                width: 100%;
+                overflow: hidden;
                 margin-top: -17px;
             }
-            figure.slider { 
-                position: relative; width: 500%; 
-                font-size: 0; animation: 30s slidy infinite; 
+
+            figure.slider {
+                position: relative;
+                width: 500%;
+                font-size: 0;
+                animation: 30s slidy infinite;
             }
-            figure.slider figure { 
-                width: 20%; height: auto;
-                display: inline-block;  position: inherit; 
+
+            figure.slider figure {
+                width: 20%;
+                height: auto;
+                display: inline-block;
+                position: inherit;
             }
-            figure.slider img { width: 100%; height: auto; }
+
+            figure.slider img {
+                width: 100%;
+                height: auto;
+            }
+
             figure.slider figure figcaption {
-                position: absolute; bottom: 10px;
-                background: rgba(0,0,0,0.4);
-                color: #fff; width: 100%;
-                font-size: 1.2rem; padding: .6rem;
-                text-shadow: 2px 2px 4px #000000; 
+                position: absolute;
+                bottom: 10px;
+                background: rgba(0, 0, 0, 0.4);
+                color: #fff;
+                width: 100%;
+                font-size: 1.2rem;
+                padding: .6rem;
+                text-shadow: 2px 2px 4px #000000;
             }
             /* end of CSS3 slider */
-        </style>';
-?>
+        </style>
 
         <div id="captioned-gallery">
             <figure class="slider">

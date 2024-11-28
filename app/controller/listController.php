@@ -7,17 +7,6 @@ include_once(__DIR__ . "/../../include/person_cls.php");
 
 class ListController
 {
-    //private $db_functions, $user;
-
-    //public function __construct($db_functions, $user)
-    /*
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-        //$this->user = $user;
-    }
-    */
-
     public function list_names($dbh, $tree_id, $user, $humo_option)
     {
         $listModel = new ListModel();
