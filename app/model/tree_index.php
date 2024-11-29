@@ -637,6 +637,8 @@ class Mainindex_cls
     public function random_photo()
     {
         global $dataDb, $tree_id, $dbh, $db_functions;
+        // adding static table for displayed photos storage
+        static $temp_pic_names_table = [];
         $text = '';
 
         $tree_pict_path = $dataDb->tree_pict_path;
@@ -649,17 +651,18 @@ class Mainindex_cls
             WHERE event_tree_id='" . $tree_id . "' AND event_kind='picture' AND (event_connect_kind='person' OR event_connect_kind='family')  AND event_connect_id NOT LIKE ''
             ORDER BY RAND()";
         $picqry = $dbh->query($qry);
-        // 'ORDER BY RAND' is pseudorandom. Sometimes it gives the same randoms in a row - i had many times the same image in a row. We can improve randomness by skiping different numers of rows after query is made
+        // We will go unique-random aproach than only randomness
+        // 'ORDER BY RAND' is pseudorandom. It's still not random - now im implementing uniqueness
         // first we count number of rows with this query
-        $rowCount = $picqry->rowCount();
+        // $rowCount = $picqry->rowCount();
         // then we skip some rows if sum of rows is enough to skip - thats why we count
-        $skipCount = random_int(0, $rowCount - 5);
-        for ($i = 0; $i < $skipCount; $i++) {
-            if (!$picqry->fetch(PDO::FETCH_OBJ)) {
-                return null;
-            }
-        }
-        //so now fetched row below is more random
+        // $skipCount = random_int(0, $rowCount - 5);
+        // for ($i = 0; $i < $skipCount; $i++) {
+        //     if (!$picqry->fetch(PDO::FETCH_OBJ)) {
+        //         return null;
+        //     }
+        // }
+        
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
             // TODO check code. Doesn't show pictures including a space. Nov 2024: disabled this code.
             #    $picname = str_replace(" ", "_", $picqryDb->event_event);
@@ -670,8 +673,8 @@ class Mainindex_cls
             // im now using dedicated function to determine extension - it get 3letter extensions and 4 letter for jpeg which i'm adding too below
             $check_file = pathinfo($picname, PATHINFO_EXTENSION);
 
-            // im adding jpeg also
-            if (($check_file === 'png' || $check_file === 'gif' || $check_file === 'jpg' || $check_file === 'jpeg') && file_exists($tree_pict_path . $picname)) {
+            // im adding jpeg also and adding uniqueness 
+            if (($check_file === 'png' || $check_file === 'gif' || $check_file === 'jpg' || $check_file === 'jpeg') && file_exists($tree_pict_path . $picname) && !in_array($picname, $temp_pic_names_table)) {
 
                 @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
                 // echo '<pre>';
@@ -725,7 +728,8 @@ class Mainindex_cls
                         $text .= '<br>' . $date_place . $shortEventText;
                     }
                     $text .= '</div>';
-
+                    // add displayed photo to table for checking uniqueness
+                    $temp_pic_names_table[] = $picname;
                     // *** Show first available picture without privacy restrictions ***
                     break;
                 }
