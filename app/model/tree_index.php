@@ -651,6 +651,7 @@ class Mainindex_cls
         $picqry = $dbh->query($qry);
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
             // TODO check code. Doesn't show pictures including a space.
+            // testing if git works
             $picname = str_replace(" ", "_", $picqryDb->event_event);
             $check_file = strtolower(substr($picname, -3, 3));
             if (($check_file === 'png' || $check_file === 'gif' || $check_file === 'jpg') && file_exists($tree_pict_path . $picname)) {
