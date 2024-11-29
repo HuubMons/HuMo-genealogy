@@ -650,8 +650,9 @@ class Mainindex_cls
             ORDER BY RAND()";
         $picqry = $dbh->query($qry);
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
-            // TODO check code. Doesn't show pictures including a space.
-            $picname = str_replace(" ", "_", $picqryDb->event_event);
+            // TODO check code. Doesn't show pictures including a space. Nov 2024: disabled this code.
+            //$picname = str_replace(" ", "_", $picqryDb->event_event);
+            $picname = $picqryDb->event_event;
             $check_file = strtolower(substr($picname, -3, 3));
             if (($check_file === 'png' || $check_file === 'gif' || $check_file === 'jpg') && file_exists($tree_pict_path . $picname)) {
                 @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
