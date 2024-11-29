@@ -24,8 +24,11 @@ if (isset($_GET['re_install'])) {
 }
 
 if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
-    // *** Show HuMo-genealogy version number ***
-    echo '<br><br><h2>HuMo-genealogy</h2>';
+?>
+    <!-- Show HuMo-genealogy version number -->
+    <br><br>
+    <h2>HuMo-genealogy</h2>
+    <?php
     echo __('Version:') . ' ';
     if (isset($humo_option["version"])) {
         echo $humo_option["version"] . '.';
@@ -61,7 +64,7 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
     echo '<br><br><h2>';
     printf(__('Enable/ disable %s update check.'), 'HuMo-genealogy');
     echo '</h2>';
-?>
+    ?>
 
     <form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">
         <input type="checkbox" name="enable_update_check" <?= $check; ?> onChange="this.form.submit();">
@@ -78,18 +81,20 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
     echo '<br><br><h2>';
     printf(__('Debug %s update'), 'HuMo-genealogy');
     echo '</h2>';
-    echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
-    echo '<input type="submit" name="debug_update" value="' . __('Debug') . '" class="btn btn-secondary btn-sm">';
-    echo '</form>';
-    echo '<br><br>';
+    ?>
+    <form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">
+        <input type="submit" name="debug_update" value="<?= __('Debug'); ?>" class="btn btn-secondary btn-sm">
+    </form><br><br>
+    <?php
 } elseif (isset($update['up_to_date']) && $update['up_to_date'] == 'no') {
 
     if (isset($_GET['auto'])) {
-        echo '<h2>' . __('Automatic update') . '</h2>';
+    ?>
+        <h2><?= __('Automatic update'); ?></h2>
 
-        echo __('Every step can take some time, please be patient and wait till the step is completed!') . '<br><br>';
+        <?= __('Every step can take some time, please be patient and wait till the step is completed!'); ?><br><br>
 
-
+        <?php
         /*
         // Problem: HuMo-genealogy = 11 MB. Could be too large to upload for some providers in standard form without changing parameters.
 
@@ -118,7 +123,7 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
             <input type="file" name="upload_file">
             <input type="submit" name="optional_upload" value="Upload">
         </form><br>
-*/
+        */
 
 
         printf(__('Step 1) Download and unzip new %s version'), 'HuMo-genealogy');
@@ -135,12 +140,12 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
             echo '">';
             printf(__('Download and unzip new %s version'), 'HuMo-genealogy');
             echo '</a><br>';
+        ?>
 
-            echo '<h2>';
-            printf(__('%s version history'), 'HuMo-genealogy');
-            echo '</h2>';
+            <h2><?php printf(__('%s version history'), 'HuMo-genealogy'); ?></h2>
 
-            echo '<p><iframe height="300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe>';
+            <p><iframe height="300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe>
+            <?php
         }
 
         // *** STEP 1: Download humo-genealogy.zip and unzip to update folder ***
@@ -317,61 +322,64 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
 
         // *** STEP 2: check files ***
         if (isset($_GET['step']) && ($_GET['step'] == '2' || $_GET['step'] == '3')) {
-            echo '<br>' . __('Step 2) Compare existing and update files (no installation yet)...') . '<br>';
+            ?>
+                <br><?= __('Step 2) Compare existing and update files (no installation yet)...'); ?><br>
 
-            if ($_GET['step'] == '3') {
-                echo '<br>' . __('Step 3) Installation of new files...') . '<br>';
-            }
+                <?php
+                if ($_GET['step'] == '3') {
+                    echo '<br>' . __('Step 3) Installation of new files...') . '<br>';
+                }
 
-            function listFolderFiles($dir, $exclude, $file_array)
-            {
-                global $existing_dir_files, $existing_dir, $existing_files;
-                global $update_dir_files, $update_dir, $update_files;
-                $ffs = scandir($dir);
-                foreach ($ffs as $ff) {
-                    if (is_array($exclude) and !in_array($ff, $exclude)) {
-                        if ($ff != '.' && $ff != '..') {
-                            // *** Skip all media files in folders ../media/, ../media/cms/ etc.
-                            if (substr($dir, 0, 8) == '../media' and !is_dir($dir . '/' . $ff) and $ff != 'readme.txt') {
-                                // skip media files
-                            }
-                            // *** Skip all backup files in folder backup_files/
-                            // ../admin/backup_files/2023_02_11_09_56_humo-genealogy_backup.sql.zip
-                            elseif (substr($dir, 0, 21) == '../admin/backup_files' and !is_dir($dir . '/' . $ff) and $ff != 'readme.txt') {
-                                // skip backup files
-                            } else {
-                                if ($file_array == 'existing_files') {
-                                    $existing_dir[] = $dir;
-                                    $existing_files[] = $ff;
-                                    $existing_dir_files[] = substr($dir . '/' . $ff, 3);
-                                } else {
-                                    $update_dir[] = $dir;
-                                    $update_files[] = $ff;
-                                    $update_dir_files[] = substr($dir . '/' . $ff, 25);
+                function listFolderFiles($dir, $exclude, $file_array)
+                {
+                    global $existing_dir_files, $existing_dir, $existing_files;
+                    global $update_dir_files, $update_dir, $update_files;
+                    $ffs = scandir($dir);
+                    foreach ($ffs as $ff) {
+                        if (is_array($exclude) and !in_array($ff, $exclude)) {
+                            if ($ff != '.' && $ff != '..') {
+                                // *** Skip all media files in folders ../media/, ../media/cms/ etc.
+                                if (substr($dir, 0, 8) == '../media' and !is_dir($dir . '/' . $ff) and $ff != 'readme.txt') {
+                                    // skip media files
                                 }
-                                if (is_dir($dir . '/' . $ff)) listFolderFiles($dir . '/' . $ff, $exclude, $file_array);
+                                // *** Skip all backup files in folder backup_files/
+                                // ../admin/backup_files/2023_02_11_09_56_humo-genealogy_backup.sql.zip
+                                elseif (substr($dir, 0, 21) == '../admin/backup_files' and !is_dir($dir . '/' . $ff) and $ff != 'readme.txt') {
+                                    // skip backup files
+                                } else {
+                                    if ($file_array == 'existing_files') {
+                                        $existing_dir[] = $dir;
+                                        $existing_files[] = $ff;
+                                        $existing_dir_files[] = substr($dir . '/' . $ff, 3);
+                                    } else {
+                                        $update_dir[] = $dir;
+                                        $update_files[] = $ff;
+                                        $update_dir_files[] = substr($dir . '/' . $ff, 25);
+                                    }
+                                    if (is_dir($dir . '/' . $ff)) listFolderFiles($dir . '/' . $ff, $exclude, $file_array);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // *** Find all existing HuMo-genealogy files, skip humo-gen_update.zip, humo-gen_update folder and ip_files folders. ***
-            listFolderFiles('..', array('humo-gen_update.zip', 'humo-gen_update', 'ip_files'), 'existing_files');
+                // *** Find all existing HuMo-genealogy files, skip humo-gen_update.zip, humo-gen_update folder and ip_files folders. ***
+                listFolderFiles('..', array('humo-gen_update.zip', 'humo-gen_update', 'ip_files'), 'existing_files');
 
-            // *** Find all update HuMo-genealogy files, a__ is just some random text (skip items)... ***
-            listFolderFiles('./update/humo-gen_update', array('a__', 'a__'), 'update_files');
+                // *** Find all update HuMo-genealogy files, a__ is just some random text (skip items)... ***
+                listFolderFiles('./update/humo-gen_update', array('a__', 'a__'), 'update_files');
 
-            echo '<form method="POST" action="' . $path_tmp . 'page=install_update&auto=1&step=3&update_check=1';
-            if (isset($_GET['install_beta'])) {
-                echo '&install_beta=1';
-            }
-            if (isset($_GET['re_install'])) {
-                echo '&re_install=1';
-            }
-            echo '" style="display : inline;">';
-            echo '<input type="hidden" name="page" value="' . $page . '">';
-    ?>
+                // TODO </form> is missing?
+                echo '<form method="POST" action="' . $path_tmp . 'page=install_update&auto=1&step=3&update_check=1';
+                if (isset($_GET['install_beta'])) {
+                    echo '&install_beta=1';
+                }
+                if (isset($_GET['re_install'])) {
+                    echo '&re_install=1';
+                }
+                echo '" style="display : inline;">';
+                echo '<input type="hidden" name="page" value="' . $page . '">';
+                ?>
             <div style="border:1px solid black;height:200px;width:700px;overflow:scroll">
                 <?php
                 // *** Compare new files with old files, show list of renewed files ***
@@ -466,10 +474,11 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
                 }
                 ?>
             </div>
-<?php
-            if ($_GET['step'] == '3' && DATABASE_HOST) {
-                echo '<br>' . __('Update new db_login.php file...') . '<br>';
 
+            <?php if ($_GET['step'] == '3' && DATABASE_HOST) { ?>
+                <br><?= __('Update new db_login.php file...'); ?><br>
+
+                <?php
                 $login_file = "../include/db_login.php";
                 if (!is_writable($login_file)) {
                     $result_message = '<b> *** ' . __('The configuration file is not writable! Please change the include/db_login.php file manually.') . ' ***</b>';
@@ -523,10 +532,9 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
             }
 
             if ($_GET['step'] == '2') {
-                //echo '<br><br>'.__('Step 3)').' <a href="'.$path_tmp.'page=install_update&auto=1&step=3';
-                //if (isset($_GET['install_beta'])){ echo '&install_beta=1'; }
-                //echo '">'.__('Install files!').'</a><br>';
-                echo '<br><input type="submit" name="submit" value="' . __('Install files!') . '" class="btn btn-success btn-sm"><br><br>';
+                ?>
+                <br><input type="submit" name="submit" value="<?= __('Install files!'); ?>" class="btn btn-success btn-sm"><br><br>
+        <?php
             } else {
                 // *** Update settings ***
                 $result = $dbh->query("UPDATE humo_settings SET setting_value='2012-01-01' WHERE setting_variable='update_last_check'");
@@ -558,16 +566,16 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
         }
 
         echo __('There are 2 update methods: automatic and manually.');
+        ?>
 
-        echo '<h2>';
-        printf(__('1) Automatic update of %s'), 'HuMo-genealogy');
-        echo '</h2>';
+        <h2><?php printf(__('1) Automatic update of %s'), 'HuMo-genealogy'); ?></h2>
+        <?php
         echo __('a) [Optional, but highly recommended] Do a database backup first') . ': <a href="' . $path_tmp . 'page=backup">' . __('backup page') . '.</a><br>';
         echo __('b)') . ' <a href="' . $path_tmp . 'page=install_update&auto=1&update_check=1">' . __('Start automatic update') . '.</a><br>';
+        ?>
 
-        echo '<h2>';
-        printf(__('1) Manual update of %s'), 'HuMo-genealogy');
-        echo '</h2>';
+        <h2><?php printf(__('1) Manual update of %s'), 'HuMo-genealogy'); ?></h2>
+    <?php
         echo __('a) [Optional, but highly recommended] Do a database backup first') . ': <a href="' . $path_tmp . 'page=backup">' . __('backup page') . '.</a><br>';
 
         echo __('b) Download the new version: ') . ' <a href="' . $update['version_download'] . '" target="_blank">';
@@ -581,15 +589,16 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
         echo '</a>';
     }
 } else {
-    echo __('Online version check unavailable.');
-
     // *** Semi-automatic update ***
     // *** REMARK: to test this, just disable two lines "$content_array" in index.php ***
-    echo '<h2>' . __('Semi-automatic update') . '</h2>';
-    echo __('In some cases the automatic update doesn\'t work. Then use this semi-automatic update method.') . '<br>';
-    printf(__('1. Download a new version of %s.'), 'HuMo-genealogy');
-    echo '<br>' . __('2. Rename the zip file into: humo-gen_update.zip') . '<br>';
+    ?>
+    <?= __('Online version check unavailable.'); ?>
+    <h2><?= __('Semi-automatic update'); ?></h2>
+    <?= __('In some cases the automatic update doesn\'t work. Then use this semi-automatic update method.'); ?><br>
+    <?php printf(__('1. Download a new version of %s.'), 'HuMo-genealogy'); ?><br>
+    <?= __('2. Rename the zip file into: humo-gen_update.zip'); ?><br>
 
+    <?php
     // *** Upload file ***
     if (isset($_FILES['update_file']) && $_FILES['update_file']['name']) {
         $fault = "";
@@ -600,12 +609,14 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
             }
         }
     }
-    echo '<form method="POST" action="' . $path_tmp . 'page=install_update" style="display : inline;" enctype="multipart/form-data"  name="formx" id="formx">';
-    echo __('3. Upload humo-gen_update.zip:') . ' <input type="file" name="update_file">';
-    echo '<input type="submit" name="submit" title="submit" value="' . __('Upload') . '">';
-    echo '</form><br>';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;' . __('OR: manually upload the file to folder: admin/update/') . '<br>';
+    ?>
+    <form method="POST" action="<?= $path_tmp; ?>page=install_update" style="display : inline;" enctype="multipart/form-data" name="formx" id="formx">
+        <?= __('3. Upload humo-gen_update.zip:'); ?> <input type="file" name="update_file">
+        <input type="submit" name="submit" title="submit" value="<?= __('Upload'); ?>">
+    </form><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<?= __('OR: manually upload the file to folder: admin/update/'); ?><br>
 
+    <?php
     // *** Start update ***
     echo __('4. Then click:');
     echo ' <a href="' . $path_tmp . 'page=install_update&auto=1&step=1&update_check=1';
@@ -617,30 +628,20 @@ if (isset($update['up_to_date']) && $update['up_to_date'] == 'yes') {
     echo '">';
     printf(__('start update of %s.'), 'HuMo-genealogy');
     echo '</a><br>';
+    ?>
 
-    // *** Show version ***
-    echo '<h2>';
-    printf(__('%s version history'), 'HuMo-genealogy');
-    echo '</h2>';
-    printf(__('%s version'), 'HuMo-genealogy');
-    echo ' ' . $humo_option["version"];
-    echo '<p><iframe height="300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe>';
+    <!-- Show version -->
+    <h2><?php printf(__('%s version history'), 'HuMo-genealogy'); ?></h2>
+    <?php printf(__('%s version'), 'HuMo-genealogy'); ?> <?= $humo_option["version"]; ?>
 
-    // *** Check for HuMo-genealogy beta version SAME CODE AS CODE ABOVE ***
-    $check = ' checked';
-    if ($humo_option['update_last_check'] == 'DISABLED') {
-        $check = '';
-    }
-    echo '<h2>';
-    printf(__('Enable/ disable %s update check.'), 'HuMo-genealogy');
-    echo '</h2>';
+    <p><iframe height="300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe>
 
-    echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
-    echo '<input type="checkbox" name="enable_update_check"' . $check . ' onChange="this.form.submit();"> ';
-    printf(__('Check regularly for %s updates.'), 'HuMo-genealogy');
-    echo '<br>';
+    <h2><?php printf(__('Enable/ disable %s update check.'), 'HuMo-genealogy'); ?></h2>
 
-    //print '<input type="submit" name="enable_update_check_change" value="'.__('Change').'">';
-    print '<input type="hidden" name="enable_update_check_change" value="1">';
-    echo '</form>';
+    <form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">
+        <input type="hidden" name="enable_update_check_change" value="1">
+        <input type="checkbox" name="enable_update_check" <?= $humo_option['update_last_check'] != 'DISABLED' ? 'checked' : ''; ?> onChange="this.form.submit();">
+        <?php printf(__('Check regularly for %s updates.'), 'HuMo-genealogy'); ?><br>
+    </form>
+<?php
 }

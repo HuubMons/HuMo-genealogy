@@ -3,9 +3,6 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-
-// *** Check if database and tables are ok ***
-$install_status = true;
 ?>
 
 <h1 align=center><?= __('Administration'); ?></h1>
@@ -71,6 +68,7 @@ $install_status = true;
     <!-- Check database -->
     <div class="row mb-2">
         <?php if ($index['database_check']) { ?>
+
             <div class="col-md-4">
                 <?= __('Database'); ?>
             </div>
@@ -78,42 +76,13 @@ $install_status = true;
                 <?= __('OK'); ?>
                 <font size=-1>(<?= __('Database name'); ?>: <?= DATABASE_NAME; ?>)</font>
             </div>
+
         <?php } else { ?>
 
             <div class="col-md-12">
-                <?php
-                printf(__('<b>There is no database connection! To connect the MySQL database to %s, fill in these settings:</b>'), 'HuMo-genealogy');
-                echo '<br><br>';
+                <?php printf(__('<b>There is no database connection! To connect the MySQL database to %s, fill in these settings:</b>'), 'HuMo-genealogy'); ?><br><br>
 
-                $install_status = false;
-
-                $db_host = 'localhost';
-                if (isset($_POST['db_host'])) {
-                    $db_host = $_POST['db_host'];
-                }
-
-                $db_username = 'root';
-                if (isset($_POST['db_username'])) {
-                    $db_username = $_POST['db_username'];
-                }
-
-                $db_password = '';
-                if (isset($_POST['db_password'])) {
-                    $db_password = $_POST['db_password'];
-                }
-
-                $db_name = 'humo-gen';
-                if (isset($_POST['db_name'])) {
-                    $db_name = $_POST['db_name'];
-                }
-
-                $install_database = '';
-                if (isset($_POST["install_database"])) {
-                    $install_database = ' checked';
-                }
-
-                // *** Get database settings ***
-                ?>
+                <!-- Get database settings -->
                 <form method="post" action="index.php" style="display : inline;">
                     <table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B">
                         <tr>
@@ -125,21 +94,21 @@ $install_status = true;
 
                         <tr>
                             <td><?= __('Database host'); ?></td>
-                            <td><input type="text" name="db_host" value="<?= $db_host; ?>" class="form-control" size="15"></td>
+                            <td><input type="text" name="db_host" value="<?= $index['db_host']; ?>" class="form-control" size="15"></td>
                             <td>localhost</td>
                             <td>localhost</td>
                         </tr>
 
                         <tr>
                             <td><?= __('Database username'); ?></td>
-                            <td><input type="text" name="db_username" value="<?= $db_username; ?>" class="form-control" size="15"></td>
+                            <td><input type="text" name="db_username" value="<?= $index['db_username']; ?>" class="form-control" size="15"></td>
                             <td>database_username</td>
                             <td>root</td>
                         </tr>
 
                         <tr>
                             <td><?= __('Database password'); ?></td>
-                            <td><input type="text" name="db_password" value="<?= $db_password; ?>" class="form-control" size="15"></td>
+                            <td><input type="text" name="db_password" value="<?= $index['db_password']; ?>" class="form-control" size="15"></td>
                             <td>database_password</td>
                             <td><br></td>
                         </tr>
@@ -147,7 +116,7 @@ $install_status = true;
                         <tr>
                             <td><?= __('Database name'); ?></td>
                             <td>
-                                <input type="text" name="db_name" value="<?= $db_name; ?>" class="form-control" size="15">
+                                <input type="text" name="db_name" value="<?= $index['db_name']; ?>" class="form-control" size="15">
                             </td>
                             <td>database_name</td>
                             <td>humo-gen</td>
@@ -157,7 +126,7 @@ $install_status = true;
                             <td><?= __('At a local PC also install database'); ?></td>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="install_database" <?= $install_database; ?>>
+                                    <input class="form-check-input" type="checkbox" name="install_database" <?= isset($_POST["install_database"]) ? 'checked' : ''; ?>>
                                     <label class="form-check-label"><?= __('YES, also install database'); ?></label>
                                 </div>
                             </td>
@@ -179,24 +148,21 @@ $install_status = true;
                 extension=pdo_sqlite.so<br>
                 extension=pdo_mysql.so<br>
 
-                <?php
-                if (isset($_POST['install_database'])) {
-                    if ($index['database_check']) {
-                        //
-                    } else {
-                        echo '<p><b>' . __('The database has NOT been created!') . '</b>';
-                        $install_status = false;
-                    }
+                <?php if (isset($_POST['install_database']) && !$index['database_check']) { ?>
+                    <p><b><?= __('The database has NOT been created!'); ?></b>
+                    <?php
+                    $index['install_status'] = false;
                 }
-                ?>
+                    ?>
             </div>
+
         <?php } ?>
     </div>
 
     <?php
     // *** Show button to continue installation (otherwise the tables are not recognised) ***
     if (isset($_POST['save_settings_database'])) {
-        $install_status = false;
+        $index['install_status'] = false;
     ?>
         <div class="row mb-2">
             <div class="col-md-4"></div>
@@ -219,16 +185,11 @@ $install_status = true;
 
     <?php
     $index['database_tables'] = false;
-    if ($install_status) {
-        // *** Check database tables ***
-        if (isset($check_tables) && $check_tables) {
-            $index['database_tables'] = true;
-        } else {
-            //$install_status = false;
-        }
+    if ($index['install_status'] && isset($check_tables) && $check_tables) {
+        $index['database_tables'] = true;
     }
     ?>
-    <?php if ($install_status && !$index['database_tables']) { ?>
+    <?php if ($index['install_status'] && !$index['database_tables']) { ?>
         <div class="row mb-2">
             <div class="col-md-4">
                 <?= __('Database tables'); ?>
@@ -242,13 +203,13 @@ $install_status = true;
                     <input type="submit" name="submit" class="btn btn-success" value="<?php printf(__('Install %s database tables'), 'HuMo-genealogy'); ?>">
                 </form>
 
-                <?php $install_status = false; ?>
+                <?php $index['install_status'] = false; ?>
             </div>
         </div>
     <?php } ?>
 
     <?php
-    if ($install_status) {
+    if ($index['install_status']) {
         // *** Show size of statistics table ***
         $sizeqry = $dbh->query('SHOW TABLE STATUS LIKE "humo_stat_date"');
         $sizeDb = $sizeqry->fetch(PDO::FETCH_OBJ);
@@ -269,7 +230,7 @@ $install_status = true;
     }
     ?>
 
-    <?php if ($install_status) { ?>
+    <?php if ($index['install_status']) { ?>
         <div class="row mb-2">
             <div class="col-md-4">
                 <?= __('Size of statistics table'); ?>
@@ -282,7 +243,7 @@ $install_status = true;
         </div>
     <?php } ?>
 
-    <?php if ($install_status) { ?>
+    <?php if ($index['install_status']) { ?>
         <?php
         // *** Show size of database and optimize option ***
         $size = 0;
@@ -383,7 +344,7 @@ $install_status = true;
         </div>
     <?php } ?>
 
-    <?php if ($install_status == true) { ?>
+    <?php if ($index['install_status'] == true) { ?>
         <?php
         // *** Check last database backup ***
         // *** Get list of backup files ***
@@ -408,21 +369,15 @@ $install_status = true;
             </div>
 
             <div class="col-md-8">
-                <?php
-                if (isset($backup_files[0])) {
-                    // 2023_02_23_09_56_humo-genealogy_backup.sql.zip
-                    $backup_status = __('Last database backup') . ': ' . substr($backup_files[0], 8, 2) . '-' . substr($backup_files[0], 5, 2) . '-' . substr($backup_files[0], 0, 4) . '.';
-                ?>
-                    <?= $backup_status; ?>
+                <?php if (isset($backup_files[0])) { ?>
+                    <!-- 2023_02_23_09_56_humo-genealogy_backup.sql.zip -->
+                    <?= __('Last database backup') . ': ' . substr($backup_files[0], 8, 2) . '-' . substr($backup_files[0], 5, 2) . '-' . substr($backup_files[0], 0, 4) . '.'; ?>
                     <a href="index.php?page=backup"><?= __('Database backup'); ?></a>
-
                 <?php } else { ?>
-
                     <div class="alert alert-danger" role="alert">
                         <?= __('No backup file found!'); ?><br>
                         <a href="index.php?page=backup"><?= __('Database backup'); ?></a>
                     </div>
-
                 <?php } ?>
             </div>
         </div>
@@ -487,252 +442,251 @@ $install_status = true;
                 </form>
 
             </div>
-        <?php } ?>
-
         </div>
+    <?php } ?>
 
-        <?php if ($install_status == true) { ?>
+
+
+    <?php if ($index['install_status'] == true) { ?>
+        <?php
+        // *** Check for standard admin username and password ***
+        $check_admin_user = false;
+        $check_admin_pw = false;
+        $sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
+        $check_login = $dbh->query($sql);
+        while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
+            if ($check_loginDb->user_name == 'admin') {
+                $check_admin_user = true;
+            }
+            if ($check_loginDb->user_password == MD5('humogen')) {
+                $check_admin_pw = true;
+            } // *** Check old password method ***
+            $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
+            if ($check_password) {
+                $check_admin_pw = true;
+            }
+        }
+        $index['security_status'] = true;
+        if ($check_admin_user && $check_admin_pw) {
+            $check_login = __('Standard admin username and admin password is used.');
+            $check_login .= '<br><a href="index.php?page=users">' . __('Change admin username and password.') . '</a>';
+        } elseif ($check_admin_user) {
+            $check_login = __('Standard admin username is used.');
+            $check_login .= '<br><a href="index.php?page=users">' . __('Change admin username.') . '</a>';
+        } elseif ($check_admin_pw) {
+            $check_login = __('Standard admin password is used.');
+            $check_login .= '<br><a href="index.php?page=users">' . __('Change admin password.') . '</a>';
+        } else {
+            $check_login = __('OK');
+            $index['security_status'] = false;
+        }
+
+        // *** Show failed logins ***
+        //3600 = 1 uur
+        //86400 = 1 dag
+        //604800 = 1 week
+        //2419200 = 1 maand
+        //31536000 = jaar
+        $sql = "SELECT count(log_id) as count_failed FROM humo_user_log WHERE log_status='failed' AND UNIX_TIMESTAMP(log_date) > (UNIX_TIMESTAMP(NOW()) - 2419200)";
+        $check_login_sql = $dbh->query($sql);
+        $check_loginDb = $check_login_sql->fetch(PDO::FETCH_OBJ);
+        if ($check_loginDb) {
+            $check_login2 = __('Number of failed logins attempts last month') . ': ' . $check_loginDb->count_failed;
+            $check_login2 .= '<br><a href="index.php?page=log">' . __('Logfile users') . '</a>';
+        }
+        ?>
+        <div class="p-3 my-md-2 genealogy_search container-md">
+            <div class="row mb-2">
+                <div class="col-md-auto">
+                    <h2><?php printf(__('%s security items'), 'HuMo-genealogy'); ?></h2>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <?= __('Check admin account'); ?>
+                </div>
+
+                <div class="col-md-8">
+                    <?php if ($index['security_status']) { ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?= $check_login; ?>
+                        </div>
+                    <?php } else { ?>
+                        <?= $check_login; ?>
+                    <?php } ?>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <?= __('Failed login attempts'); ?>
+                </div>
+
+                <div class="col-md-8">
+                    <?= $check_login2; ?>
+                </div>
+            </div>
+
+
             <?php
-            // *** Check for standard admin username and password ***
-            $check_admin_user = false;
-            $check_admin_pw = false;
-            $sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
-            $check_login = $dbh->query($sql);
-            while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
-                if ($check_loginDb->user_name == 'admin') {
-                    $check_admin_user = true;
-                }
-                if ($check_loginDb->user_password == MD5('humogen')) {
-                    $check_admin_pw = true;
-                } // *** Check old password method ***
-                $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
-                if ($check_password) {
-                    $check_admin_pw = true;
-                }
-            }
-            $index['security_status'] = true;
-            if ($check_admin_user && $check_admin_pw) {
-                $check_login = __('Standard admin username and admin password is used.');
-                $check_login .= '<br><a href="index.php?page=users">' . __('Change admin username and password.') . '</a>';
-            } elseif ($check_admin_user) {
-                $check_login = __('Standard admin username is used.');
-                $check_login .= '<br><a href="index.php?page=users">' . __('Change admin username.') . '</a>';
-            } elseif ($check_admin_pw) {
-                $check_login = __('Standard admin password is used.');
-                $check_login .= '<br><a href="index.php?page=users">' . __('Change admin password.') . '</a>';
-            } else {
-                $check_login = __('OK');
-                $index['security_status'] = false;
-            }
-
-            // *** Show failed logins ***
-            //3600 = 1 uur
-            //86400 = 1 dag
-            //604800 = 1 week
-            //2419200 = 1 maand
-            //31536000 = jaar
-            $sql = "SELECT count(log_id) as count_failed FROM humo_user_log
-        WHERE log_status='failed'
-        AND UNIX_TIMESTAMP(log_date) > (UNIX_TIMESTAMP(NOW()) - 2419200)";
-            $check_login_sql = $dbh->query($sql);
-            $check_loginDb = $check_login_sql->fetch(PDO::FETCH_OBJ);
-            if ($check_loginDb) {
-                $check_login2 = __('Number of failed logins attempts last month') . ': ' . $check_loginDb->count_failed;
-                $check_login2 .= '<br><a href="index.php?page=log">' . __('Logfile users') . '</a>';
+            // TODO: check this. This situation doesn't occur?
+            $index['wrong_username'] = true;
+            // *** Check login ***
+            if (isset($_SESSION["user_name_admin"])) {
+                $index['wrong_username'] = false;
+            } elseif (isset($_SERVER["PHP_AUTH_USER"])) {
+                $index['wrong_username'] = false;
             }
             ?>
-            <div class="p-3 my-md-2 genealogy_search container-md">
-                <div class="row mb-2">
-                    <div class="col-md-auto">
-                        <h2><?php printf(__('%s security items'), 'HuMo-genealogy'); ?></h2>
-                    </div>
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <?= __('Login control'); ?>
                 </div>
 
-                <div class="row mb-2">
-                    <div class="col-md-4">
-                        <?= __('Check admin account'); ?>
-                    </div>
+                <div class="col-md-8 <?= $index['wrong_username'] ? 'bg-warning' : ''; ?> ">
+                    <?php
+                    // *** Check login ***
+                    if (isset($_SESSION["user_name_admin"])) {
+                        echo __('At the moment you are logged in through PHP-MySQL.');
+                    } elseif (isset($_SERVER["PHP_AUTH_USER"])) {
+                        echo __('At the moment you are logged in through an .htacces file.');
+                    } else {
+                        echo '<b>' . __('The folder "admin" has NOT YET been secured.') . '</b>';
+                    }
+                    ?>
 
-                    <div class="col-md-8">
-                        <?php if ($index['security_status']) { ?>
-                            <div class="alert alert-danger" role="alert">
-                                <?= $check_login; ?>
-                            </div>
-                        <?php } else { ?>
-                            <?= $check_login; ?>
-                        <?php } ?>
-                    </div>
-                </div>
+                    <form method="POST" action="index.php" style="display : inline;">
+                        <input type="hidden" name="page" value="<?= $page; ?>">
+                        <input type="submit" name="login_info" class="btn btn-sm btn-success" value="<?= __('INFO'); ?>">
+                    </form>
 
-                <div class="row mb-2">
-                    <div class="col-md-4">
-                        <?= __('Failed login attempts'); ?>
-                    </div>
+                    <?php if (isset($_POST['login_info'])) { ?>
+                        <div id="security_remark">
 
-                    <div class="col-md-8">
-                        <?= $check_login2; ?>
-                    </div>
-                </div>
-
-
-                <?php
-                // TODO: check this. This situation doesn't occur?
-                $index['wrong_username'] = true;
-                // *** Check login ***
-                if (isset($_SESSION["user_name_admin"])) {
-                    $index['wrong_username'] = false;
-                } elseif (isset($_SERVER["PHP_AUTH_USER"])) {
-                    $index['wrong_username'] = false;
-                }
-                ?>
-                <div class="row mb-2">
-                    <div class="col-md-4">
-                        <?= __('Login control'); ?>
-                    </div>
-
-                    <div class="col-md-8 <?= $index['wrong_username'] ? 'bg-warning' : ''; ?> ">
-                        <?php
-                        // *** Check login ***
-                        if (isset($_SESSION["user_name_admin"])) {
-                            echo __('At the moment you are logged in through PHP-MySQL.');
-                        } elseif (isset($_SERVER["PHP_AUTH_USER"])) {
-                            echo __('At the moment you are logged in through an .htacces file.');
-                        } else {
-                            echo '<b>' . __('The folder "admin" has NOT YET been secured.') . '</b>';
-                        }
-                        ?>
-
-                        <form method="POST" action="index.php" style="display : inline;">
-                            <input type="hidden" name="page" value="<?= $page; ?>">
-                            <input type="submit" name="login_info" class="btn btn-sm btn-success" value="<?= __('INFO'); ?>">
-                        </form>
-
-                        <?php if (isset($_POST['login_info'])) { ?>
-                            <div id="security_remark">
-
-                                <?php printf(__('After installation of the tables (click on the left at Install) the admin folder will be secured with PHP-MySQL security.
+                            <?php printf(__('After installation of the tables (click on the left at Install) the admin folder will be secured with PHP-MySQL security.
 <p>You can have better security with .htaccess (server security).<br>
 If the administration panel of your webhost has an option to password-protect directories, use this option on the \"admin\" folder of %s. If you don\'t have such an option, you can make an .htaccess file yourself.<br>
 Make a file .htaccess:'), 'HuMo-genealogy'); ?>
 
-                                <p>AuthType Basic<br>
-                                    AuthName "<?= __('Secured website'); ?>"<br>
-                                    AuthUserFile <?= $_SERVER['DOCUMENT_ROOT']; ?>/humo-gen/admin/.htpasswd<br>
-                                    &lt;LIMIT GET POST&gt;<br>
-                                    require valid-user<br>
-                                    &lt;/LIMIT&gt;';
+                            <p>AuthType Basic<br>
+                                AuthName "<?= __('Secured website'); ?>"<br>
+                                AuthUserFile <?= $_SERVER['DOCUMENT_ROOT']; ?>/humo-gen/admin/.htpasswd<br>
+                                &lt;LIMIT GET POST&gt;<br>
+                                require valid-user<br>
+                                &lt;/LIMIT&gt;';
 
-                                <p><?= __('Next, you need a file with user names and passwords.<br>
+                            <p><?= __('Next, you need a file with user names and passwords.<br>
 For example go to: http://www.htaccesstools.com/htpasswd-generator/<br>
 The file .htpasswd will look something like this:<br>'); ?>
 
-                                <p>Huub:mmb95Tozzk3a2</p>
+                            <p>Huub:mmb95Tozzk3a2</p>
 
-                                <form method="POST" action="index.php" style="display : inline;">
-                                    <p><?= __('You can also try this password generator:'); ?><br>
-                                        <input type="hidden" name="page" value="<?= $page; ?>">
-                                        <input type="text" name="username" value="username" class="form-control" size="20"><br>
-                                        <input type="text" name="password" value="password" class="form-control" size="20"><br>
-                                        <input type="submit" name="login_info" class="btn btn-sm btn-success" value="<?= __('Generate new ht-password'); ?>">
-                                </form>
+                            <form method="POST" action="index.php" style="display : inline;">
+                                <p><?= __('You can also try this password generator:'); ?><br>
+                                    <input type="hidden" name="page" value="<?= $page; ?>">
+                                    <input type="text" name="username" value="username" class="form-control" size="20"><br>
+                                    <input type="text" name="password" value="password" class="form-control" size="20"><br>
+                                    <input type="submit" name="login_info" class="btn btn-sm btn-success" value="<?= __('Generate new ht-password'); ?>">
+                            </form>
 
-                                <?php
-                                if (isset($_POST['username'])) {
-                                    //$htpassword=crypt(trim($_POST['password']),base64_encode(CRYPT_STD_DES));
-                                    $htpassword2 = crypt($_POST['password'], base64_encode($_POST['password']));
-                                    //echo $_POST['username'].":".$htpassword.'<br>';
-                                    echo $_POST['username'] . ":" . $htpassword2;
-                                }
-                                ?>
-                            </div>
-                        <?php } ?>
-                    </div>
+                            <?php
+                            if (isset($_POST['username'])) {
+                                //$htpassword=crypt(trim($_POST['password']),base64_encode(CRYPT_STD_DES));
+                                $htpassword2 = crypt($_POST['password'], base64_encode($_POST['password']));
+                                //echo $_POST['username'].":".$htpassword.'<br>';
+                                echo $_POST['username'] . ":" . $htpassword2;
+                            }
+                            ?>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+
+            <?php
+            if ($humo_option["debug_front_pages"] == 'n' && $humo_option["debug_admin_pages"] == 'n') {
+                $index['debug_front_pages'] = false;
+            } else {
+                $index['debug_front_pages'] = true;
+            }
+            ?>
+
+            <!-- HuMo-genealogy debug options -->
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?>
                 </div>
 
-                <?php
-                if ($humo_option["debug_front_pages"] == 'n' && $humo_option["debug_admin_pages"] == 'n') {
-                    $index['debug_front_pages'] = false;
-                } else {
-                    $index['debug_front_pages'] = true;
-                }
-                ?>
+                <div class="col-md-8">
+                    <?php if (!$index['debug_front_pages']) { ?>
+                        <?= __('OK (option is OFF)'); ?>
+                        <a href="index.php?page=settings"><?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?></a>
+                    <?php } else { ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?= __('UNSAFE (option is ON).'); ?><br>
+                            <a href="index.php?page=settings"><?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?></a>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
 
-                <!-- HuMo-genealogy debug options -->
+        </div>
+    <?php } ?>
+
+    <?php if ($index['install_status'] == true) { ?>
+        <div class="p-3 my-md-2 genealogy_search container-md">
+
+            <div class="row mb-2">
+                <div class="col-md-auto">
+                    <h2><?= __('Family trees'); ?></h2>
+                </div>
+            </div>
+
+            <?php
+            // *** Family trees ***
+            $tree_counter = 0;
+            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                // *** Skip empty lines (didn't work in query...) ***
+                $tree_counter++;
+                $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+            ?>
+
                 <div class="row mb-2">
                     <div class="col-md-4">
-                        <?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?>
+                        <?= __('Status tree'); ?> <?= $tree_counter; ?>
                     </div>
 
                     <div class="col-md-8">
-                        <?php if (!$index['debug_front_pages']) { ?>
-                            <?= __('OK (option is OFF)'); ?>
-                            <a href="index.php?page=settings"><?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?></a>
+
+                        <?php if ($dataDb->tree_persons > 0) { ?>
+                            <?= $dirmark1; ?><a href="index.php?page=tree&amp;tree_id=<?= $dataDb->tree_id; ?>"><?= $treetext['name']; ?></a>
+                            <?= $dirmark1; ?> <font size=-1>(<?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?>)</font>
                         <?php } else { ?>
                             <div class="alert alert-danger" role="alert">
-                                <?= __('UNSAFE (option is ON).'); ?><br>
-                                <a href="index.php?page=settings"><?php printf(__('Debug %s pages'), 'HuMo-genealogy'); ?></a>
+                                <?= $dirmark1; ?><a href="index.php?page=tree"><?= $treetext['name']; ?></a>
+                                <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b><br>
+
+                                <!-- Read GEDCOM file -->
+                                <form method="post" action="index.php" style="display : inline;">
+                                    <input type="hidden" name="page" value="tree">
+                                    <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
+                                    <input type="submit" name="step1" class="btn btn-sm btn-success" value="<?= __('Import Gedcom file'); ?>">
+                                </form>
+
+                                <!-- Editor -->
+                                <?= __('or'); ?>
+                                <form method="post" action="index.php?page=editor" style="display : inline;">
+                                    <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
+                                    <input type="submit" name="submit" class="btn btn-sm btn-success" value="<?= __('Editor'); ?>">
+                                </form>
                             </div>
                         <?php } ?>
+
                     </div>
                 </div>
 
-            </div>
-        <?php } ?>
+            <?php } ?>
 
-        <?php if ($install_status == true) { ?>
-            <div class="p-3 my-md-2 genealogy_search container-md">
-
-                <div class="row mb-2">
-                    <div class="col-md-auto">
-                        <h2><?= __('Family trees'); ?></h2>
-                    </div>
-                </div>
-
-                <?php
-                // *** Family trees ***
-                $tree_counter = 0;
-                $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-                while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                    // *** Skip empty lines (didn't work in query...) ***
-                    $tree_counter++;
-                    $treetext = show_tree_text($dataDb->tree_id, $selected_language);
-                ?>
-
-                    <div class="row mb-2">
-                        <div class="col-md-4">
-                            <?= __('Status tree'); ?> <?= $tree_counter; ?>
-                        </div>
-
-                        <div class="col-md-8">
-
-                            <?php if ($dataDb->tree_persons > 0) { ?>
-                                <?= $dirmark1; ?><a href="index.php?page=tree"><?= $treetext['name']; ?></a>
-                                <?= $dirmark1; ?> <font size=-1>(<?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?>)</font>
-                            <?php } else { ?>
-                                <div class="alert alert-danger" role="alert">
-                                    <?= $dirmark1; ?><a href="index.php?page=tree"><?= $treetext['name']; ?></a>
-                                    <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b><br>
-
-                                    <!-- Read GEDCOM file -->
-                                    <form method="post" action="index.php" style="display : inline;">
-                                        <input type="hidden" name="page" value="tree">
-                                        <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
-                                        <input type="submit" name="step1" class="btn btn-sm btn-success" value="<?= __('Import Gedcom file'); ?>">
-                                    </form>
-
-                                    <!-- Editor -->
-                                    <?= __('or'); ?>
-                                    <form method="post" action="index.php?page=editor" style="display : inline;">
-                                        <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
-                                        <input type="submit" name="submit" class="btn btn-sm btn-success" value="<?= __('Editor'); ?>">
-                                    </form>
-                                </div>
-                            <?php } ?>
-
-                        </div>
-                    </div>
-
-                <?php } ?>
-
-            </div>
-        <?php } ?>
+        </div>
+    <?php } ?>

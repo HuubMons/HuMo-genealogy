@@ -35,7 +35,6 @@ class IndexModel
                 }
                 $temp_dbh = null;
             } catch (PDOException $e) {
-                //unset($database_check);
                 $result_message .= '<b>*** ' . __('No database found! Check MySQL connection and database name') . ' ***</b><br>';
             }
 
