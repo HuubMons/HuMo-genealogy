@@ -423,7 +423,7 @@ if (isset($_POST['install_tables2'])) {
         // *** Other settings are saved in the table in file: settings_global.php ***
 
         // *** Update status number. Number must be: update_status+1! ***
-        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','17')");
+        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','19')");
     }
 
     if (!$table_stat_date) {

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-27 20:59+0100\n"
-"PO-Revision-Date: 2024-11-27 20:59+0100\n"
+"POT-Creation-Date: 2024-11-29 15:26+0100\n"
+"PO-Revision-Date: 2024-11-29 15:26+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: English (http://www.transifex.com/projects/p/humo-gen/"
 "language/en/)\n"
@@ -293,7 +293,7 @@ msgstr "Profession"
 #: admin/include/editor_event_cls.php:335
 #: admin/include/editor_event_cls.php:1276 admin/include/editor_sources.php:205
 #: admin/include/editor_sources.php:213 admin/views/tree_merge.php:1456
-#: app/model/tree_index.php:940
+#: app/model/tree_index.php:941
 msgid "Event"
 msgstr "Event"
 
@@ -338,8 +338,8 @@ msgstr "witness"
 #: admin/include/editor_relation_select.php:46 admin/views/editor.php:148
 #: admin/views/editor_person.php:393 admin/views/gedcom_export.php:330
 #: app/model/mailform.php:83 app/model/register.php:95
-#: app/model/tree_index.php:583 app/model/tree_index.php:940
-#: app/model/user_settings.php:88 views/anniversary.php:96
+#: app/model/tree_index.php:583 app/model/tree_index.php:941
+#: app/model/user_settings.php:79 views/anniversary.php:96
 #: views/family.php:1244 views/family.php:1312 views/layout.php:352
 #: views/list.php:147 views/list.php:639 views/list_names.php:296
 #: views/list_names.php:299 views/mailform.php:48 views/mailform.php:50
@@ -539,7 +539,7 @@ msgstr "Search"
 #: admin/views/edit_repository.php:70 admin/views/edit_repository.php:229
 #: admin/views/edit_source.php:194 admin/views/edit_source.php:405
 #: admin/views/editor_person.php:1238 admin/views/editor_person.php:1702
-#: admin/views/editor_relation.php:1051 admin/views/index_admin.php:705
+#: admin/views/editor_relation.php:1051 admin/views/index_admin.php:724
 #: admin/views/thumbs.php:349 include/calculate_age_cls.php:371
 #: include/calculate_age_cls.php:393 include/calculate_age_cls.php:497
 #: include/calculate_age_cls.php:519 views/fanchart.php:657
@@ -655,7 +655,7 @@ msgid "Descendants"
 msgstr "Descendants"
 
 #: admin/include/editor_event_cls.php:1203 admin/include/editor_inc.php:527
-#: admin/views/gedcom_export.php:274 app/model/ancestor.php:162
+#: admin/views/gedcom_export.php:274 app/model/ancestor.php:153
 #: include/person_cls.php:1037 include/person_cls.php:1038
 #: views/hourglass.php:140
 msgid "Ancestors"
@@ -746,7 +746,7 @@ msgstr "e.g. Lord of Amsterdam"
 #: admin/views/editor_relation.php:357 admin/views/editor_relation.php:434
 #: admin/views/editor_relation.php:524 admin/views/editor_relation.php:662
 #: admin/views/editor_relation.php:738 admin/views/editor_relation.php:836
-#: app/model/tree_index.php:940 include/show_source_pdf.php:49
+#: app/model/tree_index.php:941 include/show_source_pdf.php:49
 #: views/list.php:237 views/list.php:257 views/list.php:702 views/list.php:728
 #: views/source.php:37 views/source.php:115 views/sources.php:69
 msgid "Date"
@@ -930,19 +930,20 @@ msgstr "Also remove colour marks of"
 #: admin/views/gedcom_export.php:462 admin/views/gedcom_export.php:478
 #: admin/views/gedcom_export.php:495 admin/views/gedcom_export.php:540
 #: admin/views/groups.php:50 admin/views/groups.php:532
-#: admin/views/index_admin.php:442 admin/views/index_admin.php:450
-#: admin/views/index_admin.php:459 admin/views/install.php:304
-#: admin/views/maps_locations.php:98 admin/views/maps_locations.php:120
-#: admin/views/maps_locations.php:199 admin/views/notes.php:91
-#: admin/views/settings.php:147 admin/views/settings.php:162
-#: admin/views/settings.php:188 admin/views/settings.php:211
-#: admin/views/settings.php:226 admin/views/settings.php:268
-#: admin/views/settings.php:280 admin/views/settings.php:295
-#: admin/views/settings.php:332 admin/views/settings.php:804
-#: admin/views/settings_homepage.php:345 admin/views/thumbs.php:451
-#: admin/views/tree_merge.php:892 admin/views/tree_merge.php:905
-#: admin/views/tree_merge.php:918 admin/views/tree_merge.php:935
-#: admin/views/trees.php:29 admin/views/users.php:19 views/mailform.php:79
+#: admin/views/index_admin.php:442 admin/views/index_admin.php:449
+#: admin/views/index_admin.php:458 admin/views/index_admin.php:483
+#: admin/views/install.php:304 admin/views/maps_locations.php:98
+#: admin/views/maps_locations.php:120 admin/views/maps_locations.php:199
+#: admin/views/notes.php:91 admin/views/settings.php:147
+#: admin/views/settings.php:162 admin/views/settings.php:188
+#: admin/views/settings.php:211 admin/views/settings.php:226
+#: admin/views/settings.php:268 admin/views/settings.php:280
+#: admin/views/settings.php:295 admin/views/settings.php:332
+#: admin/views/settings.php:804 admin/views/settings_homepage.php:345
+#: admin/views/thumbs.php:451 admin/views/tree_merge.php:892
+#: admin/views/tree_merge.php:905 admin/views/tree_merge.php:918
+#: admin/views/tree_merge.php:935 admin/views/trees.php:29
+#: admin/views/users.php:19 views/mailform.php:79
 msgid "Yes"
 msgstr "Yes"
 
@@ -956,19 +957,19 @@ msgstr "Yes"
 #: admin/views/gedcom_export.php:463 admin/views/gedcom_export.php:479
 #: admin/views/gedcom_export.php:496 admin/views/gedcom_export.php:539
 #: admin/views/groups.php:51 admin/views/groups.php:533
-#: admin/views/index_admin.php:454 admin/views/index_admin.php:462
-#: admin/views/install.php:305 admin/views/maps_locations.php:99
-#: admin/views/maps_locations.php:121 admin/views/maps_locations.php:200
-#: admin/views/notes.php:92 admin/views/settings.php:148
-#: admin/views/settings.php:163 admin/views/settings.php:189
-#: admin/views/settings.php:212 admin/views/settings.php:227
-#: admin/views/settings.php:269 admin/views/settings.php:281
-#: admin/views/settings.php:296 admin/views/settings.php:333
-#: admin/views/settings.php:805 admin/views/settings_homepage.php:346
-#: admin/views/thumbs.php:452 admin/views/tree_merge.php:893
-#: admin/views/tree_merge.php:906 admin/views/tree_merge.php:919
-#: admin/views/tree_merge.php:936 admin/views/trees.php:30
-#: admin/views/users.php:20 views/mailform.php:80
+#: admin/views/index_admin.php:453 admin/views/index_admin.php:461
+#: admin/views/index_admin.php:482 admin/views/install.php:305
+#: admin/views/maps_locations.php:99 admin/views/maps_locations.php:121
+#: admin/views/maps_locations.php:200 admin/views/notes.php:92
+#: admin/views/settings.php:148 admin/views/settings.php:163
+#: admin/views/settings.php:189 admin/views/settings.php:212
+#: admin/views/settings.php:227 admin/views/settings.php:269
+#: admin/views/settings.php:281 admin/views/settings.php:296
+#: admin/views/settings.php:333 admin/views/settings.php:805
+#: admin/views/settings_homepage.php:346 admin/views/thumbs.php:452
+#: admin/views/tree_merge.php:893 admin/views/tree_merge.php:906
+#: admin/views/tree_merge.php:919 admin/views/tree_merge.php:936
+#: admin/views/trees.php:30 admin/views/users.php:20 views/mailform.php:80
 msgid "No"
 msgstr "No"
 
@@ -1019,7 +1020,7 @@ msgstr "Sex"
 
 #: admin/include/editor_sources.php:77 admin/include/editor_sources.php:83
 #: admin/views/editor.php:1246 admin/views/editor_person.php:650
-#: app/model/tree_index.php:895 app/model/tree_index.php:897
+#: app/model/tree_index.php:896 app/model/tree_index.php:898
 #: googlemaps/namesearch.php:185 include/person_cls.php:2013
 #: include/person_cls.php:2014 include/person_cls.php:2016
 #: include/person_cls.php:2017 views/ancestor_sheet.php:295
@@ -1030,8 +1031,8 @@ msgid "born"
 msgstr "born"
 
 #: admin/include/editor_sources.php:89 admin/views/editor.php:1280
-#: admin/views/editor_person.php:1015 app/model/timeline.php:102
-#: app/model/tree_index.php:904 app/model/tree_index.php:906
+#: admin/views/editor_person.php:1015 app/model/timeline.php:83
+#: app/model/tree_index.php:905 app/model/tree_index.php:907
 #: googlemaps/namesearch.php:188 include/person_cls.php:2181
 #: include/person_cls.php:2182 include/person_cls.php:2184
 #: include/person_cls.php:2185 views/family.php:1145 views/list.php:235
@@ -1041,7 +1042,7 @@ msgstr "baptised"
 
 #: admin/include/editor_sources.php:95 admin/include/editor_sources.php:101
 #: admin/views/editor.php:1300 admin/views/editor_person.php:1105
-#: app/model/tree_index.php:913 app/model/tree_index.php:915
+#: app/model/tree_index.php:914 app/model/tree_index.php:916
 #: googlemaps/namesearch.php:194 include/person_cls.php:2334
 #: include/person_cls.php:2335 include/person_cls.php:2337
 #: include/person_cls.php:2338 views/ancestor_sheet.php:295
@@ -1051,7 +1052,7 @@ msgid "died"
 msgstr "died"
 
 #: admin/include/editor_sources.php:107 admin/views/editor.php:1320
-#: admin/views/editor_person.php:1416 app/model/timeline.php:128
+#: admin/views/editor_person.php:1416 app/model/timeline.php:109
 #: googlemaps/namesearch.php:197 include/person_cls.php:2513 views/list.php:255
 #: views/list.php:263 views/list.php:641 views/maps.php:454 views/maps.php:585
 msgid "buried"
@@ -1501,7 +1502,7 @@ msgstr "Prefix editor"
 msgid "World map"
 msgstr "World map"
 
-#: admin/index.php:603 admin/views/index_admin.php:668 admin/views/menu.php:78
+#: admin/index.php:603 admin/views/index_admin.php:687 admin/views/menu.php:78
 #: admin/views/menu.php:81
 msgid "Family trees"
 msgstr "Family trees"
@@ -1617,7 +1618,7 @@ msgstr "User groups"
 msgid "Log"
 msgstr "Log"
 
-#: admin/index.php:652 admin/views/index_admin.php:522 admin/views/log.php:12
+#: admin/index.php:652 admin/views/index_admin.php:541 admin/views/log.php:12
 msgid "Logfile users"
 msgstr "Logfile users"
 
@@ -1669,28 +1670,28 @@ msgstr "File successfully uploaded."
 msgid "Upload has failed."
 msgstr "Upload has failed."
 
-#: admin/models/index_admin.php:25
+#: admin/models/index_admin.php:10
 msgid "Database connection status:"
 msgstr "Database connection status:"
 
-#: admin/models/index_admin.php:32
+#: admin/models/index_admin.php:17
 msgid "MySQL connection: OK!"
 msgstr "MySQL connection: OK!"
 
-#: admin/models/index_admin.php:39
+#: admin/models/index_admin.php:24
 msgid "There is no MySQL connection: please check host/ username and password."
 msgstr ""
 "There is no MySQL connection: please check host/ username and password."
 
-#: admin/models/index_admin.php:49
+#: admin/models/index_admin.php:34
 msgid "Database connection: OK!"
 msgstr "Database connection: OK!"
 
-#: admin/models/index_admin.php:54
+#: admin/models/index_admin.php:39
 msgid "No database found! Check MySQL connection and database name"
 msgstr "No database found! Check MySQL connection and database name"
 
-#: admin/models/index_admin.php:60 admin/update/install_update.php:475
+#: admin/models/index_admin.php:45 admin/update/install_update.php:475
 msgid ""
 "The configuration file is not writable! Please change the include/db_login."
 "php file manually."
@@ -1698,7 +1699,7 @@ msgstr ""
 "The configuration file is not writable! Please change the include/db_login."
 "php file manually."
 
-#: admin/models/index_admin.php:103 admin/update/install_update.php:517
+#: admin/models/index_admin.php:88 admin/update/install_update.php:517
 msgid ""
 "There is a problem in the db_login file, maybe an old db_login file is used."
 msgstr ""
@@ -2400,7 +2401,7 @@ msgstr "No valid repository number."
 
 #: admin/views/edit_repository.php:197 admin/views/gedcom_export.php:351
 #: app/model/mailform.php:84 app/model/register.php:96
-#: app/model/user_settings.php:89
+#: app/model/user_settings.php:80
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -2550,10 +2551,10 @@ msgstr "Are you sure you want to disconnect this child?"
 #: admin/views/editor.php:433 admin/views/editor_relation.php:38
 #: admin/views/editor_relation.php:42 admin/views/statistics_general.php:286
 #: admin/views/statistics_old.php:84 admin/views/tree_check_changes.php:123
-#: app/controller/descendant_chartController.php:96
-#: app/controller/familyController.php:44
-#: app/controller/hourglassController.php:77
-#: app/controller/outline_reportController.php:57
+#: app/controller/descendant_chartController.php:88
+#: app/controller/familyController.php:36
+#: app/controller/hourglassController.php:70
+#: app/controller/outline_reportController.php:49
 #: views/list_places_families.php:212
 msgid "Family"
 msgstr "Family"
@@ -2607,7 +2608,7 @@ msgstr "Editing in %s? <b>Always backup your data!</b>"
 msgid "Add person"
 msgstr "Add person"
 
-#: admin/views/editor.php:741 views/layout.php:808 views/list.php:479
+#: admin/views/editor.php:741 views/layout.php:823 views/list.php:479
 #: views/maps.php:31 views/relations.php:354 views/timeline.php:178
 msgid "Help"
 msgstr "Help"
@@ -3527,13 +3528,13 @@ msgstr "STEP 4) Final database processing:"
 msgid "Processing of referenced texts into standard texts..."
 msgstr "Processing of referenced texts into standard texts..."
 
-#: admin/views/gedcom.php:1792 admin/views/index_admin.php:691
+#: admin/views/gedcom.php:1792 admin/views/index_admin.php:710
 #: admin/views/statistics_old.php:66 admin/views/tree_admin.php:82
 #: app/model/tree_index.php:282
 msgid "persons"
 msgstr "individuals"
 
-#: admin/views/gedcom.php:2021 admin/views/index_admin.php:691
+#: admin/views/gedcom.php:2021 admin/views/index_admin.php:710
 #: admin/views/statistics_old.php:66 admin/views/tree_admin.php:82
 #: app/model/tree_index.php:282
 msgid "families"
@@ -4147,7 +4148,7 @@ msgstr "Save all changes"
 msgid "Hide or show family trees per user group."
 msgstr "Hide or show family trees per user group."
 
-#: admin/views/groups.php:611 admin/views/index_admin.php:708
+#: admin/views/groups.php:611 admin/views/index_admin.php:727
 #: admin/views/menu.php:96 include/person_cls.php:1094
 #: include/person_cls.php:1095
 msgid "Editor"
@@ -4202,7 +4203,7 @@ msgstr "It is recommended to update MySQL!"
 msgid "Database"
 msgstr "Database"
 
-#: admin/views/index_admin.php:78 admin/views/index_admin.php:505
+#: admin/views/index_admin.php:78 admin/views/index_admin.php:524
 #: admin/views/tree_admin.php:80
 msgid "OK"
 msgstr "OK"
@@ -4334,84 +4335,89 @@ msgstr "Thumbnail libraries and tools"
 msgid "Imagick (images):"
 msgstr "Imagick (images):"
 
-#: admin/views/index_admin.php:444
+#: admin/views/index_admin.php:443
 msgid "Ghostscript (PDF support):"
 msgstr "Ghostscript (PDF support):"
 
-#: admin/views/index_admin.php:449
+#: admin/views/index_admin.php:448
 msgid "ffmpeg (movie support):"
 msgstr "ffmpeg (movie support):"
 
-#: admin/views/index_admin.php:457
+#: admin/views/index_admin.php:456
 msgid "GD (images):"
 msgstr "GD (images):"
 
-#: admin/views/index_admin.php:466
+#: admin/views/index_admin.php:465
 msgid "No Thumbnail library available"
 msgstr "No Thumbnail library available"
 
-#: admin/views/index_admin.php:496 admin/views/users.php:33
+#: admin/views/index_admin.php:478
+#| msgid "Pictures/ create thumbnails"
+msgid "Automatically create thumbnails?"
+msgstr "Automatically create thumbnails?"
+
+#: admin/views/index_admin.php:515 admin/views/users.php:33
 msgid "Standard admin username and admin password is used."
 msgstr "Standard admin username and admin password is used."
 
-#: admin/views/index_admin.php:497
+#: admin/views/index_admin.php:516
 msgid "Change admin username and password."
 msgstr "Change admin username and password."
 
-#: admin/views/index_admin.php:499 admin/views/users.php:37
+#: admin/views/index_admin.php:518 admin/views/users.php:37
 msgid "Standard admin username is used."
 msgstr "Standard admin username is used."
 
-#: admin/views/index_admin.php:500
+#: admin/views/index_admin.php:519
 msgid "Change admin username."
 msgstr "Change admin username."
 
-#: admin/views/index_admin.php:502 admin/views/users.php:41
+#: admin/views/index_admin.php:521 admin/views/users.php:41
 msgid "Standard admin password is used."
 msgstr "Standard admin password is used."
 
-#: admin/views/index_admin.php:503
+#: admin/views/index_admin.php:522
 msgid "Change admin password."
 msgstr "Change admin password."
 
-#: admin/views/index_admin.php:521
+#: admin/views/index_admin.php:540
 msgid "Number of failed logins attempts last month"
 msgstr "Number of failed logins attempts last month"
 
-#: admin/views/index_admin.php:528
+#: admin/views/index_admin.php:547
 #, php-format
 msgid "%s security items"
 msgstr "%s security items"
 
-#: admin/views/index_admin.php:534
+#: admin/views/index_admin.php:553
 msgid "Check admin account"
 msgstr "Check admin account"
 
-#: admin/views/index_admin.php:550
+#: admin/views/index_admin.php:569
 msgid "Failed login attempts"
 msgstr "Failed login attempts"
 
-#: admin/views/index_admin.php:571
+#: admin/views/index_admin.php:590
 msgid "Login control"
 msgstr "Login control"
 
-#: admin/views/index_admin.php:578
+#: admin/views/index_admin.php:597
 msgid "At the moment you are logged in through PHP-MySQL."
 msgstr "At the moment you are logged in through PHP-MySQL."
 
-#: admin/views/index_admin.php:580
+#: admin/views/index_admin.php:599
 msgid "At the moment you are logged in through an .htacces file."
 msgstr "At the moment you are logged in through an .htacces file."
 
-#: admin/views/index_admin.php:582
+#: admin/views/index_admin.php:601
 msgid "The folder \"admin\" has NOT YET been secured."
 msgstr "The folder \"admin\" has NOT YET been secured."
 
-#: admin/views/index_admin.php:588
+#: admin/views/index_admin.php:607
 msgid "INFO"
 msgstr "INFO"
 
-#: admin/views/index_admin.php:594
+#: admin/views/index_admin.php:613
 #, php-format
 msgid ""
 "After installation of the tables (click on the left at Install) the admin "
@@ -4430,11 +4436,11 @@ msgstr ""
 "don't have such an option, you can make an .htaccess file yourself.<br>\n"
 "Make a file .htaccess:"
 
-#: admin/views/index_admin.php:600
+#: admin/views/index_admin.php:619
 msgid "Secured website"
 msgstr "Secured website"
 
-#: admin/views/index_admin.php:606
+#: admin/views/index_admin.php:625
 msgid ""
 "Next, you need a file with user names and passwords.<br>\n"
 "For example go to: http://www.htaccesstools.com/htpasswd-generator/<br>\n"
@@ -4444,39 +4450,39 @@ msgstr ""
 "For example go to: http://www.htaccesstools.com/htpasswd-generator/<br>\n"
 "The file .htpasswd will look something like this:<br>"
 
-#: admin/views/index_admin.php:613
+#: admin/views/index_admin.php:632
 msgid "You can also try this password generator:"
 msgstr "You can also try this password generator:"
 
-#: admin/views/index_admin.php:617
+#: admin/views/index_admin.php:636
 msgid "Generate new ht-password"
 msgstr "Generate new ht-password"
 
-#: admin/views/index_admin.php:644 admin/views/index_admin.php:650
-#: admin/views/index_admin.php:654
+#: admin/views/index_admin.php:663 admin/views/index_admin.php:669
+#: admin/views/index_admin.php:673
 #, php-format
 msgid "Debug %s pages"
 msgstr "Debug %s pages"
 
-#: admin/views/index_admin.php:649
+#: admin/views/index_admin.php:668
 msgid "OK (option is OFF)"
 msgstr "OK (option is OFF)"
 
-#: admin/views/index_admin.php:653
+#: admin/views/index_admin.php:672
 msgid "UNSAFE (option is ON)."
 msgstr "UNSAFE (option is ON)."
 
-#: admin/views/index_admin.php:684
+#: admin/views/index_admin.php:703
 msgid "Status tree"
 msgstr "Status tree"
 
-#: admin/views/index_admin.php:695 admin/views/tree_admin.php:84
+#: admin/views/index_admin.php:714 admin/views/tree_admin.php:84
 msgid ""
 "This tree does not yet contain any data or has not been imported properly!"
 msgstr ""
 "This tree does not yet contain any data or has not been imported properly!"
 
-#: admin/views/index_admin.php:701 admin/views/trees.php:55
+#: admin/views/index_admin.php:720 admin/views/trees.php:55
 msgid "Import Gedcom file"
 msgstr "Import Gedcom file"
 
@@ -6387,8 +6393,8 @@ msgstr "burial date"
 #: admin/views/tree_check_consistency.php:481
 #: admin/views/tree_check_consistency.php:610
 #: admin/views/tree_check_consistency.php:614
-#: admin/views/tree_check_consistency.php:658 app/model/timeline.php:221
-#: app/model/timeline.php:338 include/marriage_cls.php:786
+#: admin/views/tree_check_consistency.php:658 app/model/timeline.php:202
+#: app/model/timeline.php:319 include/marriage_cls.php:786
 #: views/ancestor_sheet_pdf.php:373
 msgid "marriage"
 msgstr "marriage"
@@ -6424,22 +6430,22 @@ msgstr "previous child of mother"
 
 #: admin/views/tree_check_consistency.php:621
 #: admin/views/tree_check_consistency.php:625
-#: admin/views/tree_check_consistency.php:665 app/model/timeline.php:227
-#: app/model/timeline.php:344
+#: admin/views/tree_check_consistency.php:665 app/model/timeline.php:208
+#: app/model/timeline.php:325
 msgid "marriage notice"
 msgstr "marriage notice"
 
 #: admin/views/tree_check_consistency.php:631
 #: admin/views/tree_check_consistency.php:635
-#: admin/views/tree_check_consistency.php:672 app/model/timeline.php:224
-#: app/model/timeline.php:341
+#: admin/views/tree_check_consistency.php:672 app/model/timeline.php:205
+#: app/model/timeline.php:322
 msgid "church marriage"
 msgstr "church marriage"
 
 #: admin/views/tree_check_consistency.php:641
 #: admin/views/tree_check_consistency.php:645
-#: admin/views/tree_check_consistency.php:679 app/model/timeline.php:230
-#: app/model/timeline.php:347
+#: admin/views/tree_check_consistency.php:679 app/model/timeline.php:211
+#: app/model/timeline.php:328
 msgid "church marriage notice"
 msgstr "church marriage notice"
 
@@ -7473,13 +7479,13 @@ msgid "Unblock IP address"
 msgstr "Unblock IP address"
 
 #: app/controller/ancestor_chartController.php:25
-#: app/controller/ancestor_sheetController.php:28 app/model/ancestor.php:150
+#: app/controller/ancestor_sheetController.php:28 app/model/ancestor.php:141
 #: views/ancestor_sheet.php:250 views/ancestor_sheet_pdf.php:295
 #: views/ancestor_sheet_pdf.php:316 views/help.php:34
 msgid "Ancestor sheet"
 msgstr "Ancestor Sheet"
 
-#: app/controller/ancestor_reportController.php:35 app/model/ancestor.php:131
+#: app/controller/ancestor_reportController.php:35 app/model/ancestor.php:122
 #: include/person_cls.php:1037 include/person_cls.php:1038
 #: views/ancestor_report_pdf.php:67 views/ancestor_report_pdf.php:82
 #: views/ancestor_report_rtf.php:62 views/help.php:22
@@ -7497,11 +7503,11 @@ msgstr "You are not authorised to see this page."
 msgid "Address by person"
 msgstr "Address by person"
 
-#: app/model/ancestor.php:141
+#: app/model/ancestor.php:132
 msgid "Ancestor chart"
 msgstr "Ancestor Chart"
 
-#: app/model/ancestor.php:157 views/help.php:38
+#: app/model/ancestor.php:148 views/help.php:38
 msgid "Fanchart"
 msgstr "Fanchart"
 
@@ -7534,7 +7540,7 @@ msgid "%s Mail form."
 msgstr "%s Mail form."
 
 #: app/model/mailform.php:79 app/model/register.php:92
-#: app/model/user_settings.php:85 views/family.php:1241
+#: app/model/user_settings.php:76 views/family.php:1241
 #, php-format
 msgid "Message sent through %s from the website."
 msgstr "Message sent through %s from the website."
@@ -7547,7 +7553,7 @@ msgstr "Last visited family:"
 msgid "Receive newsletter"
 msgstr "Receive newsletter"
 
-#: app/model/maps.php:284
+#: app/model/maps.php:275
 msgid "Results are limited."
 msgstr "Results are limited."
 
@@ -7555,7 +7561,7 @@ msgstr "Results are limited."
 msgid "ERROR: username already exists"
 msgstr "ERROR: username already exists"
 
-#: app/model/register.php:59 app/model/user_settings.php:34
+#: app/model/register.php:59 app/model/user_settings.php:25
 msgid "ERROR: No identical passwords"
 msgstr "ERROR: No identical passwords"
 
@@ -7567,103 +7573,103 @@ msgstr "ERROR: Password has to contain at least 6 characters"
 msgid "New registered user"
 msgstr "New registered user"
 
-#: app/model/reset_password.php:55
+#: app/model/reset_password.php:35
 msgid "Your email address is not correct"
 msgstr "Your email address is not correct"
 
-#: app/model/reset_password.php:61 views/mailform.php:35 views/register.php:51
+#: app/model/reset_password.php:41 views/mailform.php:35 views/register.php:51
 msgid "Wrong answer to the block-spam question! Try again..."
 msgstr "Wrong answer to the block-spam question! Try again..."
 
-#: app/model/reset_password.php:70
+#: app/model/reset_password.php:50
 msgid "This email address was not found in our database."
 msgstr "This email address was not found in our database."
 
-#: app/model/reset_password.php:70 app/model/reset_password.php:72
-#: app/model/reset_password.php:138 views/reset_password.php:32
+#: app/model/reset_password.php:50 app/model/reset_password.php:52
+#: app/model/reset_password.php:118 views/reset_password.php:32
 #: views/reset_password.php:178
 msgid "Please contact the site owner."
 msgstr "Please contact the site owner."
 
-#: app/model/reset_password.php:72
+#: app/model/reset_password.php:52
 msgid "Password activation failed because mail address is used multiple times."
 msgstr ""
 "Password activation failed because mail address is used multiple times."
 
-#: app/model/reset_password.php:138
+#: app/model/reset_password.php:118
 msgid "Password activation failed."
 msgstr "Password activation failed."
 
-#: app/model/reset_password.php:142
+#: app/model/reset_password.php:122
 msgid "Password must be at least 4 char and maximum 15 char long"
 msgstr "Password must be at least 4 char and maximum 15 char long"
 
-#: app/model/reset_password.php:146
+#: app/model/reset_password.php:126
 msgid "The passwords don't match!"
 msgstr "The passwords don't match!"
 
-#: app/model/timeline.php:80 app/model/timeline.php:296
-#: app/model/timeline.php:404
+#: app/model/timeline.php:61 app/model/timeline.php:277
+#: app/model/timeline.php:385
 msgid "birth"
 msgstr "birth"
 
-#: app/model/timeline.php:113 app/model/timeline.php:210
-#: app/model/timeline.php:308 app/model/timeline.php:415
+#: app/model/timeline.php:94 app/model/timeline.php:191
+#: app/model/timeline.php:289 app/model/timeline.php:396
 msgid "death"
 msgstr "death"
 
-#: app/model/timeline.php:138 app/model/timeline.php:159
-#: app/model/timeline.php:170
+#: app/model/timeline.php:119 app/model/timeline.php:140
+#: app/model/timeline.php:151
 msgid "Date of death unknown"
 msgstr "Date of death unknown"
 
-#: app/model/timeline.php:148 app/model/timeline.php:158
-#: app/model/timeline.php:169
+#: app/model/timeline.php:129 app/model/timeline.php:139
+#: app/model/timeline.php:150
 msgid "Date of birth unknown"
 msgstr "Date of birth unknown"
 
 # Use a spouse male text here. There is no seperate male/ female text in english.
-#: app/model/timeline.php:205
+#: app/model/timeline.php:186
 msgid "SPOUSE_MALE"
 msgstr "Spouse"
 
 # Use a spouse male text here. There is no seperate male/ female text in english.
-#: app/model/timeline.php:205
+#: app/model/timeline.php:186
 msgid "SPOUSE_FEMALE"
 msgstr "Spouse"
 
-#: app/model/timeline.php:233 app/model/timeline.php:350
+#: app/model/timeline.php:214 app/model/timeline.php:331
 msgid "partnership"
 msgstr "partnership"
 
-#: app/model/timeline.php:241 app/model/timeline.php:358
+#: app/model/timeline.php:222 app/model/timeline.php:339
 msgid "with "
 msgstr "with "
 
-#: app/model/timeline.php:272 views/relations.php:1704 views/relations.php:1737
+#: app/model/timeline.php:253 views/relations.php:1704 views/relations.php:1737
 #: views/relations.php:1790 views/relations.php:1833 views/relations.php:1851
 #: views/relations.php:3181 views/relations.php:3513
 msgid "son"
 msgstr "son"
 
-#: app/model/timeline.php:274 views/relations.php:1704 views/relations.php:3184
+#: app/model/timeline.php:255 views/relations.php:1704 views/relations.php:3184
 #: views/relations.php:3516
 msgid "daughter"
 msgstr "daughter"
 
-#: app/model/timeline.php:276
+#: app/model/timeline.php:257
 msgid "child "
 msgstr "child "
 
-#: app/model/timeline.php:392
+#: app/model/timeline.php:373
 msgid "grandson"
 msgstr "grandson"
 
-#: app/model/timeline.php:394
+#: app/model/timeline.php:375
 msgid "granddaughter"
 msgstr "granddaughter"
 
-#: app/model/timeline.php:396 views/relations.php:1870 views/relations.php:1874
+#: app/model/timeline.php:377 views/relations.php:1870 views/relations.php:1874
 msgid "grandchild"
 msgstr "grandchild"
 
@@ -7725,51 +7731,40 @@ msgstr "All but selected tree"
 msgid "Advanced search"
 msgstr "Advanced search"
 
-#: app/model/tree_index.php:682
-#, fuzzy
+#: app/model/tree_index.php:683
 #| msgid "Photo's per page"
 msgid "Go to person&apos;s page"
-msgstr "Photo's per page"
+msgstr "Go to person&apos;s page"
 
-#: app/model/tree_index.php:845
+#: app/model/tree_index.php:846
 msgid "Patronyms"
 msgstr "Patronyms"
 
-#: app/model/tree_index.php:956 app/model/tree_index.php:983
+#: app/model/tree_index.php:957 app/model/tree_index.php:984
 #: views/anniversary.php:151 views/anniversary.php:312 views/list.php:859
 #: views/list_places_families.php:245
 msgid " persons are not shown due to privacy settings"
 msgstr " persons are not shown due to privacy settings"
 
-#: app/model/tree_index.php:999
-#, php-format
-msgid "This website is created using %s, a freeware genealogical  program"
-msgstr "This website is created using %s, a freeware genealogical  program"
-
-#: app/model/tree_index.php:1005
-#, php-format
-msgid "European law: %s cookie information"
-msgstr "European law: %s cookie information"
-
-#: app/model/user_settings.php:49
+#: app/model/user_settings.php:40
 msgid "Your settings are updated!"
 msgstr "Your settings are updated!"
 
-#: app/model/user_settings.php:64 app/model/user_settings.php:72
+#: app/model/user_settings.php:55 app/model/user_settings.php:63
 msgid ""
 "Wrong 2FA code. Please enter valid 2FA code to enable 2FA authentication."
 msgstr ""
 "Wrong 2FA code. Please enter valid 2FA code to enable 2FA authentication."
 
-#: app/model/user_settings.php:68
+#: app/model/user_settings.php:59
 msgid "Enabled 2FA authentication."
 msgstr "Enabled 2FA authentication."
 
-#: app/model/user_settings.php:80
+#: app/model/user_settings.php:71
 msgid "Updated profile"
 msgstr "Updated profile"
 
-#: app/model/user_settings.php:87
+#: app/model/user_settings.php:78
 msgid "User updated his/ her profile"
 msgstr "User updated his/ her profile"
 
@@ -8765,7 +8760,7 @@ msgstr "Spouses"
 msgid "No results found for this month"
 msgstr "No results found for this month"
 
-#: views/cookies.php:1 views/layout.php:811
+#: views/cookies.php:1 views/layout.php:826
 #, php-format
 msgid "%s cookie information"
 msgstr "%s cookie information"
@@ -9496,6 +9491,16 @@ msgstr "Places (by families)"
 #: views/layout.php:627
 msgid "Register"
 msgstr "Register"
+
+#: views/layout.php:808
+#, php-format
+msgid "This website is created using %s, a freeware genealogical  program"
+msgstr "This website is created using %s, a freeware genealogical  program"
+
+#: views/layout.php:814
+#, php-format
+msgid "European law: %s cookie information"
+msgstr "European law: %s cookie information"
 
 #: views/list.php:35
 msgid "birth pl."
