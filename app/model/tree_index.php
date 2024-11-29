@@ -637,26 +637,57 @@ class Mainindex_cls
     public function random_photo()
     {
         global $dataDb, $tree_id, $dbh, $db_functions;
+        // adding static table for displayed photos storage
+        static $temp_pic_names_table = [];
         $text = '';
 
         $tree_pict_path = $dataDb->tree_pict_path;
         if (substr($tree_pict_path, 0, 1) === '|') {
             $tree_pict_path = 'media/';
         }
-
         // *** Loop through pictures and find first available picture without privacy filter ***
+        // i added also family kind photos
         $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $tree_id . "' AND event_kind='picture' AND event_connect_kind='person' AND event_connect_id NOT LIKE ''
+            WHERE event_tree_id='" . $tree_id . "' AND event_kind='picture' AND (event_connect_kind='person' OR event_connect_kind='family')  AND event_connect_id NOT LIKE ''
             ORDER BY RAND()";
         $picqry = $dbh->query($qry);
+        // We will go unique-random aproach than only randomness
+        // 'ORDER BY RAND' is pseudorandom. It's still not random - now im implementing uniqueness
+        // first we count number of rows with this query
+        // $rowCount = $picqry->rowCount();
+        // then we skip some rows if sum of rows is enough to skip - thats why we count
+        // $skipCount = random_int(0, $rowCount - 5);
+        // for ($i = 0; $i < $skipCount; $i++) {
+        //     if (!$picqry->fetch(PDO::FETCH_OBJ)) {
+        //         return null;
+        //     }
+        // }
+        
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
             // TODO check code. Doesn't show pictures including a space. Nov 2024: disabled this code.
-            //$picname = str_replace(" ", "_", $picqryDb->event_event);
+            #    $picname = str_replace(" ", "_", $picqryDb->event_event);
             $picname = $picqryDb->event_event;
-            $check_file = strtolower(substr($picname, -3, 3));
-            if (($check_file === 'png' || $check_file === 'gif' || $check_file === 'jpg') && file_exists($tree_pict_path . $picname)) {
+            // adding new var to store kind of connection - will be useful to use diifferent aproach for person photos and family photos
+            $pic_conn_kind = $picqryDb->event_connect_kind;
+            // this code was taking extension from name and was not working with 4 letter extensions: $check_file = strtolower(substr($picname, -3, 3));
+            // im now using dedicated function to determine extension - it get 3letter extensions and 4 letter for jpeg which i'm adding too below
+            $check_file = pathinfo($picname, PATHINFO_EXTENSION);
+
+            // im adding jpeg also and adding uniqueness 
+            if (($check_file === 'png' || $check_file === 'gif' || $check_file === 'jpg' || $check_file === 'jpeg') && file_exists($tree_pict_path . $picname) && !in_array($picname, $temp_pic_names_table)) {
+
                 @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
+                // echo '<pre>';
+                // echo $pic_conn_kind . '<br>';
+                // echo $picname . '<br>';
+                // i see that $man_cls also gets information about family privacy so no need to change this code
                 $man_cls = new person_cls($personmnDb);
+                // var_dump($man_cls->privacy);
+                // echo '</pre>';
+                // echo 'privacy:';
+                // var_dump($man_privacy);
+                // echo '<br>';
+
                 if ($man_cls->privacy == '') {
                     $date_place = '';
 
@@ -664,38 +695,44 @@ class Mainindex_cls
                         $date_place = date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
                     }
 
+                    // u can delete this variables if there are some global variables for protocol and omain combined
+                    // Get the protocol (HTTP or HTTPS)
                     $text .= '<div style="text-align: center;">';
 
                     // *** Show picture using GLightbox ***
                     $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
-                        '" width="90%" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
-
+                        '" width="90%" style="border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
-
-                    // TODO: this is almost same code as code in photoalbum.php.
                     $name = $man_cls->person_name($personmnDb);
                     $privacy = $man_cls->set_privacy($personmnDb);
-                    //$text .= '<a href="' . $url . '">' . $date_place . $picqryDb->event_text . '</a></div>';
-                    if (!$privacy && $name["standard_name"]) {
-                        $text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a></div>';
-                    } else {
-                        $text .= '<a href="' . $url . '">' . __('Go to person&apos;s page') . '</a></div><br>';
+                    // if photo is from family there will be different link and text as a first line
+                    if ($pic_conn_kind == 'person') {
+                        if (!$privacy && $name["standard_name"]) {
+                            // $text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a></div>';
+                            $link_text = $name["standard_name"];
+                        } else {
+                            $link_text = __('Go to person&apos;s page');
+                        }
+                        $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
+                    } elseif ($pic_conn_kind == 'family') {
+                        // If there is another method to build link to family u can change
+                        $url = 'index.php?page=family&tree_id=' . $picqryDb->event_tree_id . '&id=' . $picqryDb->event_connect_id;
+                        //integrate it to language. You can also retrieve family father and mother names and put them into text as in persons code (two versions for privacy)
+                        $link_text = 'Go to family&apos;s page';
                     }
-                    $text .= $date_place . $picqryDb->event_text;
 
+                    $text .= '<a href="' . $url . '">' . $link_text . '</a>';
+                    if ($picqryDb->event_text !== '' or $date_place !== '') {
+                        // this code shortens event text below photos to 50 chars and adds '...' if its above 50 chars. Photos with long texts added looks bad...
+                        $shortEventText = (mb_strlen($picqryDb->event_text, "UTF-8") > 50) ? mb_substr($picqryDb->event_text, 0, 50, "UTF-8") . '...' : $picqryDb->event_text;
+                        $text .= '<br>' . $date_place . $shortEventText;
+                    }
+                    $text .= '</div>';
+                    // add displayed photo to table for checking uniqueness
+                    $temp_pic_names_table[] = $picname;
                     // *** Show first available picture without privacy restrictions ***
                     break;
                 }
-
-                // *** TEST privacy filter ***
-                //else{
-                //	$picname = str_replace(" ","_",$picqryDb->event_event);
-                //	$text.='<img src="'.$tree_pict_path.$picname.'" width="200"
-                //		style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">';
-                //	$text.=$picqryDb->event_id.' tree_id:'.$picqryDb->event_tree_id.' ';
-                //	$text.=$man_cls->privacy.'PRIVACY<br>';
-                //}
             }
         }
         return $text;
