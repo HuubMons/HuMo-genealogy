@@ -650,6 +650,7 @@ class Mainindex_cls
             ORDER BY RAND()";
         $picqry = $dbh->query($qry);
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
+            // test comment - testing git
             // TODO check code. Doesn't show pictures including a space. Nov 2024: disabled this code.
             //$picname = str_replace(" ", "_", $picqryDb->event_event);
             $picname = $picqryDb->event_event;
