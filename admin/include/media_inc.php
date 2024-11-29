@@ -3,7 +3,6 @@
 global $pcat_dirs;
 $pcat_dirs = get_pcat_dirs();
 
-
 // lookup which library is available or none
 function create_thumbnail($folder, $file)
 {
@@ -113,6 +112,8 @@ function resize_picture_IM($folder, $file, $maxheight = 1080, $maxwidth = 1920)
 //search for a thumbnail or mime type placeholder and returns the image tag
 function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $attrib = '')
 {
+    global $pcat_dirs, $humo_option;
+
     $img_style = ' style="';
     if ($maxw > 0 && $maxh > 0) {
         $img_style .= 'width:auto; height:auto; max-width:' . $maxw . 'px; max-height:' . $maxh . 'px; ' . $css . '" ' . $attrib;
@@ -133,8 +134,6 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
         return '<img src="' . $thumb_url . '"' . $img_style . '>';
     } // found thumbnail
 
-    global $pcat_dirs;
-
     // no thumbnail found, create a new one
     // first check if/where org_file exist
     if (array_key_exists(substr($file, 0, 3), $pcat_dirs)) {
@@ -150,7 +149,7 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
     ) {
         // script will possibily die here and hidden no_thumb file becomes persistent
         // so this code might be skiped afterwords
-        if (create_thumbnail($folder, $file)) {
+        if ($humo_option["thumbnail_auto_create"] == 'y' && create_thumbnail($folder, $file)) {
             return '<img src="' . $folder . 'thumb_' . $file . '.jpg' . '"' . $img_style . '>';
         }
     }

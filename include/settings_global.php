@@ -482,3 +482,8 @@ if (!isset($humo_option["merge_parentsdate"])) {
     $humo_option["merge_parentsdate"] = 'YES';
     $dbh->query("INSERT INTO humo_settings SET setting_variable='merge_parentsdate', setting_value='YES'");
 }
+
+if (!isset($humo_option["thumbnail_auto_create"])) {
+    $humo_option["thumbnail_auto_create"] = 'n';
+    $dbh->query("INSERT INTO humo_settings SET setting_variable='thumbnail_auto_create', setting_value='n'");
+}
