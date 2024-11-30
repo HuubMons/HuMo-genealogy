@@ -412,6 +412,7 @@ function restore_tables($filename)
         <span style="color:red;font-weight:bold"><?= __('Database has been restored successfully!'); ?></span><br>
 <?php
     } else {
+        // TODO: translate texts.
         if ($zip_success == 0) {
             echo "file could not be unzipped<br>";
         }

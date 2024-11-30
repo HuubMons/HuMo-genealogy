@@ -1,15 +1,4 @@
 /* Basic page styles */
-/* dec. 2023 test */
-
-/*
-html {
-    height: 100%;
-    max-height: 100%;
-    padding: 0;
-    margin: 0;
-    border: 0;
-}
-*/
 
 body.humo {
     background-color: white;
@@ -17,14 +6,6 @@ body.humo {
     background-repeat: no-repeat;
 
     font: 15px Verdana, tahoma, arial, sans-serif;
-
-    /*
-    height: 100%;
-    max-height: 100%;
-    padding: 0;
-    margin: 0;
-    border: 0;
-    */
 }
 
 #top_website_name {
