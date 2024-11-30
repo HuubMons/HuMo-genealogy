@@ -4,7 +4,7 @@
 define("DATABASE_HOST",     'mysql');
 define("DATABASE_USERNAME", 'root');
 define("DATABASE_PASSWORD", '');
-define("DATABASE_NAME",     'humo-gen');2
+define("DATABASE_NAME",     'humo-gen');
 
 // *** Needed for Docker ***
 $DATABASE_HOST = '';
