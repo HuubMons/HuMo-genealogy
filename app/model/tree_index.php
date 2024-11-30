@@ -636,7 +636,7 @@ class Mainindex_cls
     // *** Random photo ***
     public function random_photo()
     {
-        global $dataDb, $tree_id, $dbh, $db_functions;
+        global $dataDb, $tree_id, $dbh, $db_functions, $humo_option;
         // adding static table for displayed photos storage
         static $temp_pic_names_table = [];
         $text = '';
@@ -662,7 +662,7 @@ class Mainindex_cls
         //         return null;
         //     }
         // }
-        
+
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
             // TODO check code. Doesn't show pictures including a space. Nov 2024: disabled this code.
             #    $picname = str_replace(" ", "_", $picqryDb->event_event);
@@ -703,6 +703,8 @@ class Mainindex_cls
                     $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
                         '" width="90%" style="border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+
+                    // TODO: this is almost same code as code in photoalbum.php.
                     $name = $man_cls->person_name($personmnDb);
                     $privacy = $man_cls->set_privacy($personmnDb);
                     // if photo is from family there will be different link and text as a first line
@@ -715,6 +717,10 @@ class Mainindex_cls
                         }
                         $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
                     } elseif ($pic_conn_kind == 'family') {
+
+
+
+
                         // if there are global variables for protocol and domain You can change it. If there is another method to build link to family u can change
                         // $url = 'index.php?page=family&tree_id=' . $picqryDb->event_tree_id . '&id=' . $picqryDb->event_connect_id;
                         //integrate it to language. When family picture is displayed and no privacy filter man's and woman's names are displayed
@@ -727,6 +733,7 @@ class Mainindex_cls
                             $woman_name_id = $picqryDb2->fam_woman;
                             @$personmnDb2 = $db_functions->get_person($man_name_id);
                             @$personmnDb3 = $db_functions->get_person($woman_name_id);
+                            // TODO use function to show names.
                             $man_name_and_surname = ($personmnDb2->pers_firstname) . ' ' . ($personmnDb2->pers_lastname);
                             $woman_name_and_surname = ($personmnDb3->pers_firstname) . ' ' . ($personmnDb3->pers_lastname);
 
@@ -736,11 +743,23 @@ class Mainindex_cls
                         }
 
                         // $link_text = 'Go to family&apos;s page';
+
+
+
                         if ($humo_option["url_rewrite"] == "j") {
                             $url = 'family/' . $picqryDb->event_tree_id . '/' . $picqryDb->event_connect_id;
                         } else {
                             $url = 'index.php?page=family&tree_id=' . $picqryDb->event_tree_id . '&id=' . $picqryDb->event_connect_id;
                         }
+
+                        // TODO use function to build link:
+                        //$vars['pers_family'] = $pers_family;
+                        //$link = $link_cls->get_link('../', 'family', $tree_id, true, $vars);
+                        //$link .= "main_person=" . $person->pers_gedcomnumber;
+
+                        //TODO: retrieve family father and mother names and put them into text as in persons code (two versions for privacy)
+                        //$link_text = __('Go to family&apos;s page');
+
                     }
 
                     $text .= '<a href="' . $url . '">' . $link_text . '</a>';
@@ -1138,6 +1157,7 @@ class Mainindex_cls
                 padding: .6rem;
                 text-shadow: 2px 2px 4px #000000;
             }
+
             /* end of CSS3 slider */
         </style>
 
