@@ -390,20 +390,23 @@ if (!defined('ADMIN_PAGE')) {
             <div class="col-md-8">
                 <?php
                 $is_thumblib = false;
+                $no_windows = (strtolower(substr(PHP_OS, 0, 3)) !== 'win');
 
                 echo __('Imagick (images):');
                 if (extension_loaded('imagick')) {
                 ?>
                     <?= strtolower(__('Yes')); ?><br>
-                    - <?= __('Ghostscript (PDF support):'); ?>
 
                 <?php
-                    echo (trim(shell_exec('type -P gs'))) ? strtolower('Yes') . '<br>' : strtolower('No') . '<br>';
+                    if ($no_windows) {
+                        echo '- ' . __('Ghostscript (PDF support):') . ' ';
+                        echo (trim(shell_exec('type -P gs'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')) . '<br>';
+                        echo '- ' . __('ffmpeg (movie support):') . ' ';
+                        echo (trim(shell_exec('type -P ffmpeg'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')) . '<br>';
 
-                    echo '- ' . __('ffmpeg (movie support):') . ' ';
-                    echo (trim(shell_exec('type -P ffmpeg'))) ? strtolower(__('Yes')) . '<br>' : strtolower('No') . '<br>';
+                        $is_thumblib = true;
+                    }
 
-                    $is_thumblib = true;
                 } else {
                     echo ' ' . strtolower(__('No')) . '<br>';
                 }
