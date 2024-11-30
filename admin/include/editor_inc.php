@@ -754,6 +754,8 @@ if (isset($_GET['event_down'])) {
     } elseif ($event_connect_kind == 'MARR_REL') {
         $event_connect_kind = 'MARR_REL';
         $event_connect_id = $marriage;
+    } elseif ($event_connect_kind == 'family') {
+        $event_connect_id = $marriage;
     }
 
     $sql = "UPDATE humo_events SET event_order='99' WHERE event_tree_id='" . $tree_id . "'
@@ -809,6 +811,8 @@ if (isset($_GET['event_up'])) {
         $event_connect_id = $marriage;
     } elseif ($event_connect_kind == 'MARR_REL') {
         $event_connect_kind = 'MARR_REL';
+        $event_connect_id = $marriage;
+    } elseif ($event_connect_kind == 'family') {
         $event_connect_id = $marriage;
     }
 
