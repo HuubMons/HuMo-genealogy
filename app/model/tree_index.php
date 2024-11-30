@@ -717,18 +717,49 @@ class Mainindex_cls
                         }
                         $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
                     } elseif ($pic_conn_kind == 'family') {
+
+
+
+
+                        // if there are global variables for protocol and domain You can change it. If there is another method to build link to family u can change
+                        // $url = 'index.php?page=family&tree_id=' . $picqryDb->event_tree_id . '&id=' . $picqryDb->event_connect_id;
+                        //integrate it to language. When family picture is displayed and no privacy filter man's and woman's names are displayed
+                        if (!$privacy) {
+                            $qry2 = "SELECT * FROM humo_families
+                        WHERE fam_gedcomnumber='" . $picqryDb->event_connect_id . "'";
+                            $picqry2 = $dbh->query($qry2);
+                            $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
+                            $man_name_id = $picqryDb2->fam_man;
+                            $woman_name_id = $picqryDb2->fam_woman;
+                            @$personmnDb2 = $db_functions->get_person($man_name_id);
+                            @$personmnDb3 = $db_functions->get_person($woman_name_id);
+                            // TODO use function to show names.
+                            $man_name_and_surname = ($personmnDb2->pers_firstname) . ' ' . ($personmnDb2->pers_lastname);
+                            $woman_name_and_surname = ($personmnDb3->pers_firstname) . ' ' . ($personmnDb3->pers_lastname);
+
+                            $link_text = $man_name_and_surname . ' - ' . $woman_name_and_surname . ' family';
+                        } else {
+                            $link_text = __('Go to person&apos;s page');
+                        }
+
+                        // $link_text = 'Go to family&apos;s page';
+
+
+
                         if ($humo_option["url_rewrite"] == "j") {
                             $url = 'family/' . $picqryDb->event_tree_id . '/' . $picqryDb->event_connect_id;
                         } else {
                             $url = 'index.php?page=family&tree_id=' . $picqryDb->event_tree_id . '&id=' . $picqryDb->event_connect_id;
                         }
+
                         // TODO use function to build link:
                         //$vars['pers_family'] = $pers_family;
                         //$link = $link_cls->get_link('../', 'family', $tree_id, true, $vars);
                         //$link .= "main_person=" . $person->pers_gedcomnumber;
 
                         //TODO: retrieve family father and mother names and put them into text as in persons code (two versions for privacy)
-                        $link_text = __('Go to family&apos;s page');
+                        //$link_text = __('Go to family&apos;s page');
+
                     }
 
                     $text .= '<a href="' . $url . '">' . $link_text . '</a>';
