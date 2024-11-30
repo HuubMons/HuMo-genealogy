@@ -34,11 +34,11 @@ function create_thumbnail_IM($folder, $file, $theight = 120)
 {
     $is_ghostscript = false;   // ghostscript has to be installed for pdf handling
     $is_ffmpeg      = false;   // ffmpeg has to be installed for video handling
-    if (trim(shell_exec('type -P gs'))) {
-        $is_ghostscript = true;
-    }
-    if (trim(shell_exec('type -P ffmpeg'))) {
-        $is_ffmpeg = true;
+    $no_windows = (strtolower(substr(PHP_OS, 0, 3)) !== 'win');
+    if ($no_windows) 
+    { 
+        if ( trim(shell_exec('type -P gs')))       { $is_ghostscript = true; }
+        if ( trim(shell_exec('type -P ffmpeg')))   { $is_ffmpeg = true; }
     }
     $add_arrow = false;
     $success = false;
@@ -281,7 +281,8 @@ function create_thumbnail_GD($folder, $file, $theight = 120)
     $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
     $gd_info = gd_info();
     list($is_gdjpg, $is_gdgif, $is_gdpng) = array($gd_info['JPEG Support'], $gd_info['GIF Read Support'], $gd_info['PNG Support']);
-    $imtype = strtoupper(substr($file, -3));
+    $gdmime = get_GDmime(); // a.array
+    $imtype = $gdmime[ check_media_type($folder, $file) ];
     $success = false;
     list($width, $height) = getimagesize($pict_path_original);
     if ($height == 0) {
@@ -332,7 +333,8 @@ function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
     $picture_original_tmp = $folder . '0_temp' . $file . '.jpg';
     $gd_info = gd_info();
     list($is_gdjpg, $is_gdgif, $is_gdpng) = array($gd_info['JPEG Support'], $gd_info['GIF Read Support'], $gd_info['PNG Support']);
-    $imtype = strtoupper(substr($file, -3));
+    $gdmime = get_GDmime(); // a.array
+    $imtype = $gdmime[ check_media_type($folder, $file) ];
     list($width, $height) = getimagesize($pict_path_original);
     if ($width <= $maxwidth && $height <= $maxheight) {
         return (true);
@@ -400,4 +402,37 @@ function get_pcat_dirs()
         }
     }
     return $tmp_pcat_dirs;
+}
+function get_GDmime () {
+    return [ 'image/pjpeg'  => 'JPG',
+             'image/jpeg'   => 'JPG',
+             'image/gif'    => 'GIF',
+             'image/png'    => 'PNG',
+             'image/bmp'    => 'BMP',
+             'image/tiff'   => 'TIF',
+             'audio/mpeg'   => '-',
+             'audio/mpeg3'  => '-',
+             'audio/x-mpeg' => '-',
+             'audio/x-mpeg3'=> '-',
+             'audio/mpg'    => '-',
+             'audio/mp3'    => '-',
+             'audio/mid'    => '-',
+             'audio/midi'   => '-',
+             'audio/x-midi' => '-',
+             'audio/x-ms-wma' => '-',
+             'audio/wav'      => '-',
+             'audio/x-wav'    => '-',
+             'audio/x-pn-realaudio'=> '-',
+             'audio/x-realaudio'   => '-',
+             'application/pdf'     => '-',
+             'application/msword'  => '-',
+             'application/vnd.openxmlformats-officedocument.wordprocessingml.document'  => '-',
+             'video/quicktime' => '-',
+             'video/x-flv'     => '-',
+             'video/avi'       => '-',
+             'video/x-msvideo' => '-',
+             'video/msvideo'   => '-',
+             'video/mpeg'      => '-',
+             'video/mp4'       => '-'
+            ];
 }
