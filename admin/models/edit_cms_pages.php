@@ -81,8 +81,7 @@ class CMS_pagesModel
             $dbh->query($sql);
 
             if (isset($_POST['add_page'])) {
-                $sql = "SELECT * FROM humo_cms_pages ORDER BY page_id DESC LIMIT 0,1";
-                $qry = $dbh->query($sql);
+                $qry = $dbh->query("SELECT * FROM humo_cms_pages ORDER BY page_id DESC LIMIT 0,1");
                 $cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ);
                 $this->select_page = $cms_pagesDb->page_id; // *** Show newly added page ***
             }
@@ -100,14 +99,14 @@ class CMS_pagesModel
 
     public function update_pages($dbh)
     {
-        // *** Move pages. Only numeric values alowed ***
+        // *** Move pages ***
         if (isset($_GET['page_up']) && is_numeric($_GET['page_up']) && is_numeric($_GET['select_page'])) {
             $sql = "UPDATE humo_cms_pages as table1, humo_cms_pages as table2
                 SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
                 WHERE table1.page_id='" . $_GET['page_up'] . "' AND table2.page_id='" . $_GET['select_page'] . "'";
             $dbh->query($sql);
         }
-        // *** Page up, only allow numeric values ***
+        // *** Page up ***
         if (isset($_GET['page_down']) && is_numeric($_GET['page_down']) && is_numeric($_GET['menu_id'])) {
             $sql = "UPDATE humo_cms_pages as table1, humo_cms_pages as table2
                 SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
@@ -166,5 +165,35 @@ class CMS_pagesModel
                 $repair_order++;
             }
         }
+    }
+
+    public function get_pages_in_category($dbh)
+    {
+        // *** Count number of pages in categories (so correct down arrows can be shown) ***
+        // *** Also restore order numbering (if page is moved to another category) ***
+        $page_nr = 0;
+        $page_menu_id = 0;
+        $pages_in_category = [];
+        $qry = $dbh->query("SELECT page_id,page_menu_id,page_order FROM humo_cms_pages ORDER BY page_menu_id, page_order");
+        while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
+            if (!isset($pages_in_category[$cms_pagesDb->page_menu_id])) {
+                $pages_in_category[$cms_pagesDb->page_menu_id] = '1';
+            } else {
+                $pages_in_category[$cms_pagesDb->page_menu_id]++;
+            }
+
+            if ($cms_pagesDb->page_menu_id > 0 && $page_menu_id != $cms_pagesDb->page_menu_id) {
+                $page_nr = 0;
+                $page_menu_id = $cms_pagesDb->page_menu_id;
+            }
+            $page_nr++;
+
+            // *** Restore order numbering (if page is moved to another category) ***
+            if ($page_nr != $cms_pagesDb->page_order) {
+                $sql = "UPDATE humo_cms_pages SET page_order='" . $page_nr . "' WHERE page_id='" . $cms_pagesDb->page_id . "'";
+                $dbh->query($sql);
+            }
+        }
+        return $pages_in_category;
     }
 }

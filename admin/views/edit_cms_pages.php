@@ -10,13 +10,13 @@ if (!defined('ADMIN_PAGE')) {
 
 <ul class="nav nav-tabs pt-2">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($cms_pages['menu_tab'] === 'pages') echo 'active'; ?>" href="index.php?page=cms_pages&amp;cms_tab=pages"><?= __('Pages'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($edit_cms_pages['menu_tab'] === 'pages') echo 'active'; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=pages"><?= __('Pages'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($cms_pages['menu_tab'] === 'menu') echo 'active'; ?>" href="index.php?page=cms_pages&amp;cms_tab=menu"><?= __('Menu'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($edit_cms_pages['menu_tab'] === 'menu') echo 'active'; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=menu"><?= __('Menu'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($cms_pages['menu_tab'] === 'settings')  echo 'active'; ?>" href="index.php?page=cms_pages&amp;cms_tab=settings"><?= __('CMS settings'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($edit_cms_pages['menu_tab'] === 'settings')  echo 'active'; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=settings"><?= __('CMS settings'); ?></a>
     </li>
 </ul>
 
@@ -27,12 +27,12 @@ if (!defined('ADMIN_PAGE')) {
     <?php if (isset($_GET['page_remove']) && is_numeric($_GET['page_remove'])) { ?>
         <div class="alert alert-danger">
             <?php if (isset($humo_option["main_page_cms_id"]) && $humo_option["main_page_cms_id"] == $_GET['page_remove']) { ?>
-                <strong><?= __('This page is selected as homepage!'); ?></strong>
+                <?= __('This page is selected as homepage!'); ?>
             <?php } else { ?>
-                <strong><?= __('Are you sure you want to remove this page?'); ?></strong>
+                <?= __('Are you sure you want to remove this page?'); ?>
                 <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
-                    <input type="hidden" name="cms_pages" value="cms_page">
+                    <input type="hidden" name="edit_cms_pages" value="cms_page">
                     <input type="hidden" name="page_id" value="<?= $_GET['page_remove']; ?>">
                     <input type="submit" name="page_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
                     <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
@@ -42,17 +42,17 @@ if (!defined('ADMIN_PAGE')) {
     <?php
     }
 
-    if (isset($_GET['menu_remove'])) {
-        $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='" . safe_text_db($_GET['menu_remove']) . "' ORDER BY page_order");
+    if (isset($_GET['menu_remove']) && is_numeric($_GET['menu_remove'])) {
+        $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='" . $_GET['menu_remove'] . "' ORDER BY page_order");
         $count = $qry->rowCount();
-
     ?>
+
         <div class="alert alert-danger">
             <?php if ($count > 0) { ?>
-                <strong><?= __('There are still pages connected to this menu!<br>
-Please disconnect the pages from this menu first.'); ?></strong>
+                <?= __('There are still pages connected to this menu!<br>
+Please disconnect the pages from this menu first.'); ?>
             <?php } else { ?>
-                <strong><?= __('Are you sure you want to remove this menu?'); ?></strong>
+                <?= __('Are you sure you want to remove this menu?'); ?>
                 <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="cms_tab" value="menu">
@@ -65,173 +65,155 @@ Please disconnect the pages from this menu first.'); ?></strong>
     <?php
     }
 
-    echo '<p>';
-
     // *** Show and edit pages ***
-    if ($cms_pages['menu_tab'] === 'pages') {
-        // *** Count number of pages in categories (so correct down arrows can be shown) ***
-        // *** Also restore order numbering (if page is moved to another category) ***
-        $page_nr = 0;
-        $page_menu_id = 0;
-        $qry = $dbh->query("SELECT page_id,page_menu_id,page_order FROM humo_cms_pages ORDER BY page_menu_id, page_order");
-        while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            if (!isset($pages_in_category[$cms_pagesDb->page_menu_id])) {
-                $pages_in_category[$cms_pagesDb->page_menu_id] = '1';
-            } else {
-                $pages_in_category[$cms_pagesDb->page_menu_id]++;
-            }
-
-            if ($cms_pagesDb->page_menu_id > 0 && $page_menu_id != $cms_pagesDb->page_menu_id) {
-                $page_nr = 0;
-                $page_menu_id = $cms_pagesDb->page_menu_id;
-            }
-            $page_nr++;
-
-            // *** Restore order numbering (if page is moved to another category) ***
-            if ($page_nr != $cms_pagesDb->page_order) {
-                $sql = "UPDATE humo_cms_pages SET page_order='" . $page_nr . "' WHERE page_id='" . $cms_pagesDb->page_id . "'";
-                $dbh->query($sql);
-            }
-        }
-
+    if ($edit_cms_pages['menu_tab'] === 'pages') {
         $qry = $dbh->query("SELECT * FROM humo_cms_pages ORDER BY page_menu_id, page_order");
         $page_nr = 0;
         $page_menu_id = 0;
-
     ?>
-        <table>
-            <tr>
-                <td valign="top">
-                    <!--  List of pages -->
-                    <table>
-                        <?php
-                        while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                            // ** Show name of menu/ category ***
-                            if ($cms_pagesDb->page_menu_id == '9999') {
-                                echo '<tr><td colspan="2"><b>* ' . __('Hide page in menu') . ' *</b></td></tr>';
-                                $page_nr = 0;
-                            } elseif ($cms_pagesDb->page_menu_id > 0 && $page_menu_id != $cms_pagesDb->page_menu_id) {
-                                $qry_menu = $dbh->query("SELECT * FROM humo_cms_menu WHERE menu_id='" . $cms_pagesDb->page_menu_id . "'");
-                                $cmsDb = $qry_menu->fetch(PDO::FETCH_OBJ);
-                                echo '<tr><td colspan="2"><b>' . $cmsDb->menu_name . '</b></td></tr>';
-                                $page_nr = 0;
-                                $page_menu_id = $cms_pagesDb->page_menu_id;
-                            }
 
-                            $page_nr++;
-                        ?>
+        <div class="row">
+            <div class="col-md-3">
+
+                <!--  List of pages -->
+                <table>
+                    <?php
+                    while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                        // ** Show name of menu/ category ***
+                        if ($cms_pagesDb->page_menu_id == '9999') {
+                    ?>
                             <tr>
-                                <td style="width:60px;">
-                                    <a href="index.php?page=<?= $page; ?>&amp;select_page=<?= $cms_pagesDb->page_id; ?>&amp;page_remove=<?= $cms_pagesDb->page_id; ?>">
-                                        <img src="images/button_drop.png" alt="<?= __('Remove page'); ?>" border="0">
-                                    </a>
-                                    <?php
-                                    if ($page_nr != '1') {
-                                        echo ' <a href="index.php?page=' . $page . '&amp;page_up=' . $previous_page . '&amp;select_page=' . $cms_pagesDb->page_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
-                                    }
-                                    if ($page_nr != $pages_in_category[$cms_pagesDb->page_menu_id]) {
-                                        echo ' <a href="index.php?page=' . $page . '&amp;page_down=' . $cms_pagesDb->page_order . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;menu_id=' . $cms_pagesDb->page_menu_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
-                                    }
-                                    ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    $page_title = '[' . __('No page title') . ']';
-                                    if ($cms_pagesDb->page_title) {
-                                        $page_title = $cms_pagesDb->page_title;
-                                    }
-                                    ?>
-                                    <a href="index.php?page=<?= $page; ?>&amp;select_page=<?= $cms_pagesDb->page_id; ?>"><?= $page_title; ?></a><br>
-                                </td>
+                                <td colspan="2"><b>* <?= __('Hide page in menu'); ?> *</b></td>
                             </tr>
                         <?php
-                            $previous_page = $cms_pagesDb->page_id;
-                        }
+                            $page_nr = 0;
+                        } elseif ($cms_pagesDb->page_menu_id > 0 && $page_menu_id != $cms_pagesDb->page_menu_id) {
+                            $qry_menu = $dbh->query("SELECT * FROM humo_cms_menu WHERE menu_id='" . $cms_pagesDb->page_menu_id . "'");
+                            $cmsDb = $qry_menu->fetch(PDO::FETCH_OBJ);
                         ?>
-                    </table><br>
-                    <a href="index.php?page=cms_pages"><?= __('Add page'); ?></a>
-                </td>
-
-                <td valign="top">
-                    <?php
-                    if ($cms_pages['select_page'] != 0) {
-                        $sql = "SELECT * FROM humo_cms_pages WHERE page_id=" . $cms_pages['select_page'];
-                        $qry = $dbh->query($sql);
-                        $cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ);
-                        //if ($memosoort2Db->website_id==$memosoortDb->menu_website_id){
-                        //	echo '<a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
-                        $page_id = $cms_pagesDb->page_id;
-                        $page_text = $cms_pagesDb->page_text;
-                        $page_status = $cms_pagesDb->page_status;
-                        $page_title = $cms_pagesDb->page_title;
-                        $page_menu_id = $cms_pagesDb->page_menu_id;
-                        $page_counter = $cms_pagesDb->page_counter;
-                        $page_edit = 'change';
-                    } else {
-                        // *** Add new page ***
-                        $page_id = '';
-                        $page_text = '';
-                        $page_status = '1';
-                        $page_title = __('Page title');
-                        $page_menu_id = '';
-                        $page_counter = '';
-                        $page_edit = 'add';
-                    }
-                    ?>
-
-                    <?= __('"Hide page in menu" is a special option. These pages can be accessed using a direct link.'); ?><br>
-                    <?php
-                    if ($page_id) {
-                        // SERVER_NAME   127.0.0.1
-                        // REQUEST_URI: /url_test/index/1abcd2345/
-                        // REQUEST_URI: /url_test/index.php?variabele=1
-
-                        // Search for: /admin/ in $_SERVER['PHP_SELF']
-                        $position = strpos($_SERVER['PHP_SELF'], '/admin/');
-                        $path_tmp = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, $position);
-                        echo __('This page can be accessed using this link: ') . '<br>';
-                        echo '<b>' . $path_tmp . '/index.php?page=cms_pages&amp;select_page=', $page_id . '&amp;menu=1</b><br>';
-                        // TODO link below shows menu and footer. Use menu=1 option.
-                        if ($humo_option["url_rewrite"] == "j") {
-                            echo ' ' . __('or') . ': <b>' . $path_tmp . '/cms_pages/' . $page_id . '?menu=1</b><br>';
-                        }
-                    }
-
-                    ?>
-                    <form method="post" action="index.php" style="display : inline;">
-                        <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="hidden" name="cms_pages" value="cms_page">
-                        <input type="hidden" name="page_id" value="<?= $page_id; ?>">
-                        <input type="hidden" name="page_menu_id_old" value="<?= $page_menu_id; ?>">
-                        <input type="text" name="page_title" value="<?= $page_title; ?>" size=25>
-                        <select size="1" name="page_menu_id">
-                            <option value='0'>* <?= __('No menu selected'); ?> *</option>
-                            <option value="9999" <?php if ($page_menu_id == '9999') echo ' selected'; ?>>* <?= __('Hide page in menu'); ?> *</option>
-                            <?php
-                            $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
-                            while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                            ?>
-                                <option value="<?= $menuDb->menu_id; ?>" <?= $menuDb->menu_id == $page_menu_id ? 'selected' : ''; ?>>
-                                    <?= $menuDb->menu_name; ?>
-                                </option>
-                            <?php } ?>
-                        </select>
-
-                        <input type="checkbox" name="page_status" <?= $page_status ? 'checked' : ''; ?>><?= __('Published'); ?>
-
+                            <tr>
+                                <td colspan="2"><b><?= $cmsDb->menu_name; ?></b></td>
+                            </tr>
                         <?php
-                        if ($page_edit === 'add') {
-                            echo ' <input type="submit" name="add_page" value="' . __('Add') . '" class="btn btn-sm btn-success">';
-                        } else {
-                            echo ' <input type="submit" name="change_page" value="' . __('Save') . '" class="btn btn-sm btn-success">';
+                            $page_nr = 0;
+                            $page_menu_id = $cms_pagesDb->page_menu_id;
                         }
+
+                        $page_nr++;
                         ?>
-                        <?= __('Visitors counter'); ?>: <?= $page_counter; ?><br>
-                        <textarea id="editor" name="page_text"><?= $page_text; ?></textarea>
-                    </form>
-                </td>
-            </tr>
-        </table>
+                        <tr>
+                            <td style="width:60px;">
+                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $cms_pagesDb->page_id; ?>&amp;page_remove=<?= $cms_pagesDb->page_id; ?>">
+                                    <img src="images/button_drop.png" alt="<?= __('Remove page'); ?>" border="0">
+                                </a>
+                                <?php if ($page_nr != '1') { ?>
+                                    <a href="index.php?page=edit_cms_pages&amp;page_up=<?= $previous_page; ?>&amp;select_page=<?= $cms_pagesDb->page_id; ?>"><img src="images/arrow_up.gif" border="0" alt="up"></a>
+                                <?php
+                                }
+                                if ($page_nr != $edit_cms_pages['pages_in_category'][$cms_pagesDb->page_menu_id]) {
+                                ?>
+                                    <a href="index.php?page=edit_cms_pages&amp;page_down=<?= $cms_pagesDb->page_order; ?>&amp;select_page=<?= $cms_pagesDb->page_id; ?>&amp;menu_id=<?= $cms_pagesDb->page_menu_id; ?>"><img src="images/arrow_down.gif" border="0" alt="down"></a>
+                                <?php } ?>
+                            </td>
+                            <td>
+                                <?php
+                                $page_title = '[' . __('No page title') . ']';
+                                if ($cms_pagesDb->page_title) {
+                                    $page_title = $cms_pagesDb->page_title;
+                                }
+                                ?>
+                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $cms_pagesDb->page_id; ?>"><?= $page_title; ?></a><br>
+                            </td>
+                        </tr>
+                    <?php
+                        $previous_page = $cms_pagesDb->page_id;
+                    }
+                    ?>
+                </table><br>
+                <a href="index.php?page=edit_cms_pages"><?= __('Add page'); ?></a>
+
+            </div>
+            <div class="col-md-9">
+
+                <?php
+                if ($edit_cms_pages['select_page'] != 0) {
+                    $sql = "SELECT * FROM humo_cms_pages WHERE page_id=" . $edit_cms_pages['select_page'];
+                    $qry = $dbh->query($sql);
+                    $cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ);
+                    //if ($memosoort2Db->website_id==$memosoortDb->menu_website_id){
+                    //	echo '<a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
+                    $page_id = $cms_pagesDb->page_id;
+                    $page_text = $cms_pagesDb->page_text;
+                    $page_status = $cms_pagesDb->page_status;
+                    $page_title = $cms_pagesDb->page_title;
+                    $page_menu_id = $cms_pagesDb->page_menu_id;
+                    $page_counter = $cms_pagesDb->page_counter;
+                    $page_edit = 'change';
+                } else {
+                    // *** Add new page ***
+                    $page_id = '';
+                    $page_text = '';
+                    $page_status = '1';
+                    $page_title = __('Page title');
+                    $page_menu_id = '';
+                    $page_counter = '';
+                    $page_edit = 'add';
+                }
+                ?>
+
+                <?= __('"Hide page in menu" is a special option. These pages can be accessed using a direct link.'); ?><br>
+                <?php
+                if ($page_id) {
+                    // SERVER_NAME   127.0.0.1
+                    // REQUEST_URI: /url_test/index/1abcd2345/
+                    // REQUEST_URI: /url_test/index.php?variabele=1
+
+                    // Search for: /admin/ in $_SERVER['PHP_SELF']
+                    $position = strpos($_SERVER['PHP_SELF'], '/admin/');
+                    $path_tmp = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, $position);
+                ?>
+                    <?= __('This page can be accessed using this link: '); ?><br>
+                    <b><?= $path_tmp; ?>/index.php?page=cms_pages&amp;select_page=<?= $page_id; ?>&amp;menu=1</b><br>
+                    <?php if ($humo_option["url_rewrite"] == "j") { ?>
+                        <?= __('or'); ?>: <b><?= $path_tmp; ?>/cms_pages/<?= $page_id; ?>?menu=1</b><br>
+                <?php
+                    }
+                }
+                ?>
+
+                <form method="post" action="index.php" style="display : inline;">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <input type="hidden" name="cms_pages" value="cms_page">
+                    <input type="hidden" name="page_id" value="<?= $page_id; ?>">
+                    <input type="hidden" name="page_menu_id_old" value="<?= $page_menu_id; ?>">
+                    <input type="text" name="page_title" value="<?= $page_title; ?>" size=25>
+                    <select size="1" name="page_menu_id">
+                        <option value='0'>* <?= __('No menu selected'); ?> *</option>
+                        <option value="9999" <?php if ($page_menu_id == '9999') echo ' selected'; ?>>* <?= __('Hide page in menu'); ?> *</option>
+                        <?php
+                        $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+                        while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                        ?>
+                            <option value="<?= $menuDb->menu_id; ?>" <?= $menuDb->menu_id == $page_menu_id ? 'selected' : ''; ?>>
+                                <?= $menuDb->menu_name; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+
+                    <input type="checkbox" name="page_status" <?= $page_status ? 'checked' : ''; ?>><?= __('Published'); ?>
+
+                    <?php if ($page_edit === 'add') { ?>
+                        <input type="submit" name="add_page" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                    <?php } else { ?>
+                        <input type="submit" name="change_page" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                    <?php } ?>
+
+                    <?= __('Visitors counter'); ?>: <?= $page_counter; ?><br>
+                    <textarea id="editor" name="page_text"><?= $page_text; ?></textarea>
+                </form>
+
+            </div>
+        </div>
 
         <!-- TinyMCE Editor -->
         <script src="../assets/tinymce/tinymce.min.js"></script>
@@ -240,7 +222,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
     }
 
     // *** Show and edit menu's ***
-    if ($cms_pages['menu_tab'] === 'menu') {
+    if ($edit_cms_pages['menu_tab'] === 'menu') {
         $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
         $count_menu = $qry->rowCount();
     ?>
@@ -296,7 +278,7 @@ Please disconnect the pages from this menu first.'); ?></strong>
     <?php
     }
 
-    if ($cms_pages['menu_tab'] === 'settings') {
+    if ($edit_cms_pages['menu_tab'] === 'settings') {
         // *** Automatic installation or update ***
         if (!isset($humo_option["cms_images_path"])) {
             $sql = "INSERT INTO humo_settings SET setting_variable='cms_images_path', setting_value='|'";
@@ -387,11 +369,11 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                         if (substr($cms_images_path, 0, 1) === '|') {
                             $checked1 = ' checked';
                             $checked2 = '';
-                            //$cms_pages['default_path'] = true;
+                            //$edit_cms_pages['default_path'] = true;
                         } else {
                             $checked1 = '';
                             $checked2 = ' checked';
-                            //$cms_pages['default_path'] = false;
+                            //$edit_cms_pages['default_path'] = false;
                         }
                         if (substr($cms_images_path, 0, 1) === '|') {
                             $cms_images_path = substr($cms_images_path, 1);
