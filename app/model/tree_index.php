@@ -640,6 +640,11 @@ class Mainindex_cls
         // adding static table for displayed photos storage
         static $temp_pic_names_table = [];
         $text = '';
+        // characters limit for rounding text below photo 100 looks good at photos inline, 200 should be good for lightbox desc
+        //this for text without lightbox
+        $char_limit = 100;
+        //this for lightbox
+        $char_limit2 = 400;
 
         $tree_pict_path = $dataDb->tree_pict_path;
         if (substr($tree_pict_path, 0, 1) === '|') {
@@ -733,14 +738,17 @@ class Mainindex_cls
                     $text .= '<div style="text-align: center;">';
 
                     // *** Show picture using GLightbox ***
-                    $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $date_place . str_replace("&", "&amp;", $picqryDb->event_text) . '"><img src="' . $tree_pict_path . $picname .
+                    $desc_for_lightbox =  $date_place . str_replace("&", "&amp;", $picqryDb->event_text);
+                    $desc_for_lightbox = (mb_strlen($desc_for_lightbox, "UTF-8") > $char_limit2) ? mb_substr($desc_for_lightbox, 0, $char_limit2, "UTF-8") . '...' : $desc_for_lightbox;
+
+                    $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $desc_for_lightbox . '"><img src="' . $tree_pict_path . $picname .
                         '" width="90%" style="border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $text .= '<a href="' . $url . '">' . $link_text . '</a>';
                     if ($picqryDb->event_text !== '' or $date_place !== '') {
                         // this code shortens event text below photos to 50 chars and adds '...' if its above 50 chars. Photos with long texts added looks bad...
-                        $shortEventText = (mb_strlen($picqryDb->event_text, "UTF-8") > 50) ? mb_substr($picqryDb->event_text, 0, 50, "UTF-8") . '...' : $picqryDb->event_text;
+                        $shortEventText = (mb_strlen($picqryDb->event_text, "UTF-8") > $char_limit) ? mb_substr($picqryDb->event_text, 0, $char_limit, "UTF-8") . '...' : $picqryDb->event_text;
                         $text .= '<br>' . $date_place . $shortEventText;
                     }
                     $text .= '</div>';
