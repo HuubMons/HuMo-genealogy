@@ -797,10 +797,10 @@ if ($popup == false) {
             $maps = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/maps.php");
         } elseif ($page === 'statistics') {
-            //require __DIR__ . '/controller/statisticsController.php';
-            //$controllerObj = new StatisticsController();
-            //$statistics = $controllerObj->detail($dbh, $db_functions);
-            include_once(__DIR__ . "/views/statistics.php");
+            require __DIR__ . '/controller/admin_statisticsController.php';
+            $controllerObj = new StatisticsController();
+            $statistics = $controllerObj->detail($dbh, $db_functions);
+            include_once(__DIR__ . "/views/admin_statistics.php");
         } elseif ($page === 'install_update') {
             include_once(__DIR__ . "/update/install_update.php");
         } elseif ($page === 'update') {

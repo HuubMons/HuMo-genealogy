@@ -97,6 +97,29 @@ class CMS_pagesModel
         return $this->select_page;
     }
 
+    public function get_page($dbh)
+    {
+        if ($this->select_page != 0) {
+            $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id=" . $this->select_page);
+            $cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ);
+            $edit_cms_pages['page_id'] = $cms_pagesDb->page_id;
+            $edit_cms_pages['page_text'] = $cms_pagesDb->page_text;
+            $edit_cms_pages['page_status'] = $cms_pagesDb->page_status;
+            $edit_cms_pages['page_title'] = $cms_pagesDb->page_title;
+            $edit_cms_pages['page_menu_id'] = $cms_pagesDb->page_menu_id;
+            $edit_cms_pages['page_counter'] = $cms_pagesDb->page_counter;
+        } else {
+            // *** Add new page ***
+            $edit_cms_pages['page_id'] = '';
+            $edit_cms_pages['page_text'] = '';
+            $edit_cms_pages['page_status'] = '1';
+            $edit_cms_pages['page_title'] = __('Page title');
+            $edit_cms_pages['page_menu_id'] = '';
+            $edit_cms_pages['page_counter'] = '';
+        }
+        return $edit_cms_pages;
+    }
+
     public function update_pages($dbh)
     {
         // *** Move pages ***

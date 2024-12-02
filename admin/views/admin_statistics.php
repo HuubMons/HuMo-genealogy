@@ -4,17 +4,59 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-require_once(__DIR__ . "/../statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
-
 // *** Use a class to process person data ***
-global $person_cls, $tab;
+global $person_cls, $statistics;
 $person_cls = new person_cls;
+?>
 
+<h1 class="center"><?= __('Statistics'); ?></h1>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'general_statistics') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=general_statistics"><?= __('General statistics'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'date_statistics') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=date_statistics"><?= __('Statistics by date'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'visitors') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=visitors"><?= __('Visitors'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'statistics_old') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=statistics_old"><?= __('Old statistics'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'remove') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=remove"><?= __('Remove statistics'); ?></a>
+    </li>
+</ul>
+
+<!-- Align content to the left -->
+<div style="float: left; background-color:white; height:500px; padding:10px;">
+    <?php
+    if ($statistics['tab'] == 'remove') {
+        include(__DIR__ . '/statistics_remove.php');
+    }
+    elseif ($statistics['tab'] == 'date_statistics') {
+        include(__DIR__ . '/statistics_date.php');
+    }
+    elseif ($statistics['tab'] == 'visitors') {
+        include(__DIR__ . '/statistics_visitors.php');
+    }
+    elseif ($statistics['tab'] == 'statistics_old') {
+        include(__DIR__ . '/statistics_old.php');
+    }
+    else{
+        // *** Default page ***
+        include(__DIR__ . '/statistics_general.php');
+    }
+    ?>
+</div>
+
+<?php
 // *** Show 1 month, statistics calender ***
 // *** calender($month, $year, true/false); ***
 function calender($month, $year, $thismonth)
 {
-    global $dbh, $language, $tab;
+    global $dbh, $language, $statistics;
 
     if ($month == '1') {
         $calender_head = __('January');
@@ -63,7 +105,7 @@ function calender($month, $year, $thismonth)
             <tr>
                 <th><?= __('Nr.'); ?></th>
                 <th><?= __('Monday'); ?></th>
-                <th><?= __('Tuesday'); ?></th>  
+                <th><?= __('Tuesday'); ?></th>
                 <th><?= __('Wednesday'); ?></th>
                 <th><?= __('Thursday'); ?></th>
                 <th><?= __('Friday'); ?></th>
@@ -75,10 +117,11 @@ function calender($month, $year, $thismonth)
         <?php
         $week = mktime(0, 0, 0, $month, 1, $year);
         $week_number = date("W", $week);
+        $First_Day_Of_Month = date("w", mktime(0, 0, 0, $month, 1, $year));
+
         echo "<tr><th>$week_number</th>";
 
         // If neccesary skip days at start of month
-        $First_Day_Of_Month = date("w", mktime(0, 0, 0, $month, 1, $year));
         if ($First_Day_Of_Month > "1") {
             echo '<td colspan="' . ($First_Day_Of_Month - 1) . '"><br></td>';
         }
@@ -87,7 +130,6 @@ function calender($month, $year, $thismonth)
             echo '<td colspan="6"><br></td>';
         }
 
-        // Show days
         $Days_In_Month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
         $day = 1;
         $row = 1;
@@ -106,14 +148,12 @@ function calender($month, $year, $thismonth)
             $yesterday = strtotime($date);
             $today = $yesterday + 86400;
 
-            if ($tab == 'visitors') {
+            if ($statistics['tab'] == 'visitors') {
                 // *** Show visitors ***
-                $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date
-                WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today . ' GROUP BY stat_ip_address');
+                $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today . ' GROUP BY stat_ip_address');
             } else {
                 // *** Show families ***
-                $datasql = $dbh->query("SELECT * FROM humo_stat_date
-                WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today);
+                $datasql = $dbh->query("SELECT * FROM humo_stat_date WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today);
             }
 
             if ($datasql) {
@@ -123,10 +163,11 @@ function calender($month, $year, $thismonth)
             // *** Use another colour for present day ***
             $color = '';
             if ($date === $present_day) {
-                $color = ' bgcolor="#00FFFF"';
+                $color = 'bgcolor="#00FFFF"';
             }
 
-            echo "<td$color>$day <b>$nr_statistics</b></td>";
+            echo "<td $color>$day <b>$nr_statistics</b></td>";
+
             $day++;
             if ($day <= $Days_In_Month) {
                 $field++;
@@ -151,12 +192,15 @@ function calender($month, $year, $thismonth)
 
         // *** Always make 6 rows ***
         if ($row == 5) {
-            echo "</tr><tr><td colspan=8><br></td></tr>";
-        }
         ?>
+            </tr>
+            <tr>
+                <td colspan=8><br></td>
+            </tr>
+        <?php } ?>
     </table><br>
-<?php
 
+<?php
     // *** Show graphical month statistics ***
     //$this_month=$thismonth;
     $mc = new maxChart($data);
@@ -167,7 +211,7 @@ function calender($month, $year, $thismonth)
 // *** Function to show year statistics ***
 function year_graphics($month, $year)
 {
-    global $dbh, $language, $tab;
+    global $dbh, $language, $statistics;
     $start_month = $month + 1;
     $start_year = $year - 1;
     if ($month == 12) {
@@ -185,15 +229,13 @@ function year_graphics($month, $year)
         $Days_In_Month = cal_days_in_month(CAL_GREGORIAN, $start_month, $start_year);
         $latest_day = $first_day + (86400 * $Days_In_Month);
 
-        if ($tab == 'visitors') {
+        if ($statistics['tab'] == 'visitors') {
             // *** Show visitors ***
             $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date
-                WHERE stat_date_linux > " . $first_day . " AND stat_date_linux < " . $latest_day . "
-                GROUP BY stat_ip_address");
+                WHERE stat_date_linux > " . $first_day . " AND stat_date_linux < " . $latest_day . " GROUP BY stat_ip_address");
         } else {
             // *** Show visited families ***
-            $datasql = $dbh->query("SELECT * FROM humo_stat_date
-                WHERE stat_date_linux > " . $first_day . " AND stat_date_linux < " . $latest_day);
+            $datasql = $dbh->query("SELECT * FROM humo_stat_date WHERE stat_date_linux > " . $first_day . " AND stat_date_linux < " . $latest_day);
         }
 
         if ($datasql) {
@@ -243,77 +285,10 @@ function year_graphics($month, $year)
     $mc = new maxChart($twelve_months);
     $this_month = date("n");
 
-    if ($tab == 'visitors') {
+    if ($statistics['tab'] == 'visitors') {
         $mc->displayChart(__('Visitors'), 1, 700, 200, false, $this_month);
     } else {
         $mc->displayChart(__('Visited families in the past 12 months'), 1, 700, 200, false, $this_month);
     }
 }
-// End statistics
-
-$tab = 'general_statistics';
-// TODO check these variables (partly from old tab menu)
-if (isset($_POST['tab']) && $_POST['tab'] == 'date_statistics') {
-    $tab = 'date_statistics';
-}
-if (isset($_POST['tab']) && $_POST['tab'] == 'visitors') {
-    $tab = 'visitors';
-}
-if (isset($_POST['tab']) && $_POST['tab'] == 'statistics_old') {
-    $tab = 'statistics_old';
-}
-if (isset($_POST['tab']) && $_POST['tab'] == 'remove') {
-    $tab = 'remove';
-}
-if (isset($_GET['tree_id'])) {
-    $tab = 'statistics_old';
-}
-
-// *** Bootstrap tab ***
-if (isset($_GET['tab'])) {
-    $tab = $_GET['tab'];
-}
-
-$phpself = 'index.php';
 ?>
-
-<h1 class="center"><?= __('Statistics'); ?></h1>
-
-<ul class="nav nav-tabs">
-    <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tab == 'general_statistics') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=general_statistics"><?= __('General statistics'); ?></a>
-    </li>
-    <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tab == 'date_statistics') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=date_statistics"><?= __('Statistics by date'); ?></a>
-    </li>
-    <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tab == 'visitors') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=visitors"><?= __('Visitors'); ?></a>
-    </li>
-    <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tab == 'statistics_old') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=statistics_old"><?= __('Old statistics'); ?></a>
-    </li>
-    <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tab == 'remove') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;tab=remove"><?= __('Remove statistics'); ?></a>
-    </li>
-</ul>
-
-<!-- Align content to the left -->
-<div style="float: left; background-color:white; height:500px; padding:10px;">
-    <?php
-    if ($tab == 'remove') {
-        include(__DIR__ . '/statistics_remove.php');
-    }
-    if ($tab == 'general_statistics') {
-        include(__DIR__ . '/statistics_general.php');
-    }
-    if ($tab == 'date_statistics') {
-        include(__DIR__ . '/statistics_date.php');
-    }
-    if ($tab == 'visitors') {
-        include(__DIR__ . '/statistics_visitors.php');
-    }
-    if ($tab == 'statistics_old') {
-        include(__DIR__ . '/statistics_old.php');
-    }
-    ?>
-</div>

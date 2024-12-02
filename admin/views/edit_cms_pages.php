@@ -69,12 +69,11 @@ Please disconnect the pages from this menu first.'); ?>
     if ($edit_cms_pages['menu_tab'] === 'pages') {
         $qry = $dbh->query("SELECT * FROM humo_cms_pages ORDER BY page_menu_id, page_order");
         $page_nr = 0;
-        $page_menu_id = 0;
+        $edit_cms_pages['page_menu_id'] = 0;
     ?>
 
         <div class="row">
             <div class="col-md-3">
-
                 <!--  List of pages -->
                 <table>
                     <?php
@@ -87,7 +86,7 @@ Please disconnect the pages from this menu first.'); ?>
                             </tr>
                         <?php
                             $page_nr = 0;
-                        } elseif ($cms_pagesDb->page_menu_id > 0 && $page_menu_id != $cms_pagesDb->page_menu_id) {
+                        } elseif ($cms_pagesDb->page_menu_id > 0 && $edit_cms_pages['page_menu_id'] != $cms_pagesDb->page_menu_id) {
                             $qry_menu = $dbh->query("SELECT * FROM humo_cms_menu WHERE menu_id='" . $cms_pagesDb->page_menu_id . "'");
                             $cmsDb = $qry_menu->fetch(PDO::FETCH_OBJ);
                         ?>
@@ -96,7 +95,7 @@ Please disconnect the pages from this menu first.'); ?>
                             </tr>
                         <?php
                             $page_nr = 0;
-                            $page_menu_id = $cms_pagesDb->page_menu_id;
+                            $edit_cms_pages['page_menu_id'] = $cms_pagesDb->page_menu_id;
                         }
 
                         $page_nr++;
@@ -116,13 +115,9 @@ Please disconnect the pages from this menu first.'); ?>
                                 <?php } ?>
                             </td>
                             <td>
-                                <?php
-                                $page_title = '[' . __('No page title') . ']';
-                                if ($cms_pagesDb->page_title) {
-                                    $page_title = $cms_pagesDb->page_title;
-                                }
-                                ?>
-                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $cms_pagesDb->page_id; ?>"><?= $page_title; ?></a><br>
+                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $cms_pagesDb->page_id; ?>">
+                                    <?= $cms_pagesDb->page_title ? $cms_pagesDb->page_title : '[' . __('No page title') . ']'; ?>
+                                </a>
                             </td>
                         </tr>
                     <?php
@@ -131,39 +126,12 @@ Please disconnect the pages from this menu first.'); ?>
                     ?>
                 </table><br>
                 <a href="index.php?page=edit_cms_pages"><?= __('Add page'); ?></a>
-
             </div>
+
             <div class="col-md-9">
-
-                <?php
-                if ($edit_cms_pages['select_page'] != 0) {
-                    $sql = "SELECT * FROM humo_cms_pages WHERE page_id=" . $edit_cms_pages['select_page'];
-                    $qry = $dbh->query($sql);
-                    $cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ);
-                    //if ($memosoort2Db->website_id==$memosoortDb->menu_website_id){
-                    //	echo '<a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
-                    $page_id = $cms_pagesDb->page_id;
-                    $page_text = $cms_pagesDb->page_text;
-                    $page_status = $cms_pagesDb->page_status;
-                    $page_title = $cms_pagesDb->page_title;
-                    $page_menu_id = $cms_pagesDb->page_menu_id;
-                    $page_counter = $cms_pagesDb->page_counter;
-                    $page_edit = 'change';
-                } else {
-                    // *** Add new page ***
-                    $page_id = '';
-                    $page_text = '';
-                    $page_status = '1';
-                    $page_title = __('Page title');
-                    $page_menu_id = '';
-                    $page_counter = '';
-                    $page_edit = 'add';
-                }
-                ?>
-
                 <?= __('"Hide page in menu" is a special option. These pages can be accessed using a direct link.'); ?><br>
                 <?php
-                if ($page_id) {
+                if ($edit_cms_pages['page_id']) {
                     // SERVER_NAME   127.0.0.1
                     // REQUEST_URI: /url_test/index/1abcd2345/
                     // REQUEST_URI: /url_test/index.php?variabele=1
@@ -173,9 +141,9 @@ Please disconnect the pages from this menu first.'); ?>
                     $path_tmp = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, $position);
                 ?>
                     <?= __('This page can be accessed using this link: '); ?><br>
-                    <b><?= $path_tmp; ?>/index.php?page=cms_pages&amp;select_page=<?= $page_id; ?>&amp;menu=1</b><br>
+                    <b><?= $path_tmp; ?>/index.php?page=cms_pages&amp;select_page=<?= $edit_cms_pages['page_id']; ?>&amp;menu=1</b><br>
                     <?php if ($humo_option["url_rewrite"] == "j") { ?>
-                        <?= __('or'); ?>: <b><?= $path_tmp; ?>/cms_pages/<?= $page_id; ?>?menu=1</b><br>
+                        <?= __('or'); ?>: <b><?= $path_tmp; ?>/cms_pages/<?= $edit_cms_pages['page_id']; ?>?menu=1</b><br>
                 <?php
                     }
                 }
@@ -184,34 +152,33 @@ Please disconnect the pages from this menu first.'); ?>
                 <form method="post" action="index.php" style="display : inline;">
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="cms_pages" value="cms_page">
-                    <input type="hidden" name="page_id" value="<?= $page_id; ?>">
-                    <input type="hidden" name="page_menu_id_old" value="<?= $page_menu_id; ?>">
-                    <input type="text" name="page_title" value="<?= $page_title; ?>" size=25>
+                    <input type="hidden" name="page_id" value="<?= $edit_cms_pages['page_id']; ?>">
+                    <input type="hidden" name="page_menu_id_old" value="<?= $edit_cms_pages['page_menu_id']; ?>">
+                    <input type="text" name="page_title" value="<?= $edit_cms_pages['page_title']; ?>" size=25>
                     <select size="1" name="page_menu_id">
                         <option value='0'>* <?= __('No menu selected'); ?> *</option>
-                        <option value="9999" <?php if ($page_menu_id == '9999') echo ' selected'; ?>>* <?= __('Hide page in menu'); ?> *</option>
+                        <option value="9999" <?php if ($edit_cms_pages['page_menu_id'] == '9999') echo ' selected'; ?>>* <?= __('Hide page in menu'); ?> *</option>
                         <?php
                         $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
                         while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
                         ?>
-                            <option value="<?= $menuDb->menu_id; ?>" <?= $menuDb->menu_id == $page_menu_id ? 'selected' : ''; ?>>
+                            <option value="<?= $menuDb->menu_id; ?>" <?= $menuDb->menu_id == $edit_cms_pages['page_menu_id'] ? 'selected' : ''; ?>>
                                 <?= $menuDb->menu_name; ?>
                             </option>
                         <?php } ?>
                     </select>
 
-                    <input type="checkbox" name="page_status" <?= $page_status ? 'checked' : ''; ?>><?= __('Published'); ?>
+                    <input type="checkbox" name="page_status" <?= $edit_cms_pages['page_status'] ? 'checked' : ''; ?>><?= __('Published'); ?>
 
-                    <?php if ($page_edit === 'add') { ?>
+                    <?php if ($edit_cms_pages['select_page'] == 0) { ?>
                         <input type="submit" name="add_page" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
                     <?php } else { ?>
                         <input type="submit" name="change_page" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                     <?php } ?>
 
-                    <?= __('Visitors counter'); ?>: <?= $page_counter; ?><br>
-                    <textarea id="editor" name="page_text"><?= $page_text; ?></textarea>
+                    <?= __('Visitors counter'); ?>: <?= $edit_cms_pages['page_counter']; ?><br>
+                    <textarea id="editor" name="page_text"><?= $edit_cms_pages['page_text']; ?></textarea>
                 </form>
-
             </div>
         </div>
 
@@ -281,8 +248,7 @@ Please disconnect the pages from this menu first.'); ?>
     if ($edit_cms_pages['menu_tab'] === 'settings') {
         // *** Automatic installation or update ***
         if (!isset($humo_option["cms_images_path"])) {
-            $sql = "INSERT INTO humo_settings SET setting_variable='cms_images_path', setting_value='|'";
-            @$dbh->query($sql);
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='cms_images_path', setting_value='|'");
             $cms_images_path = '|';
         } else {
             $cms_images_path = $humo_option["cms_images_path"];
@@ -290,8 +256,7 @@ Please disconnect the pages from this menu first.'); ?>
 
         // *** Automatic installation or update ***
         if (!isset($humo_option["main_page_cms_id"])) {
-            $sql = "INSERT INTO humo_settings SET setting_variable='main_page_cms_id', setting_value=''";
-            @$dbh->query($sql);
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='main_page_cms_id', setting_value=''");
             $main_page_cms_id = '';
         } else {
             $main_page_cms_id = $humo_option["main_page_cms_id"];

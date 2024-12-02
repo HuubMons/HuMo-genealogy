@@ -17,6 +17,9 @@ class edit_cms_pagesController
 
         if ($edit_cms_pages['menu_tab'] === 'pages') {
             $edit_cms_pages['pages_in_category'] = $CMS_pagesModel->get_pages_in_category($dbh);
+
+            $get_page = $CMS_pagesModel->get_page($dbh);
+            $edit_cms_pages = array_merge($edit_cms_pages, $get_page);
         }
 
         return $edit_cms_pages;
