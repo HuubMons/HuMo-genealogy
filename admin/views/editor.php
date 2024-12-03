@@ -43,9 +43,6 @@ if (!defined('ADMIN_PAGE')) {
 </script>
 
 <?php
-//$phpself = 'index.php';
-//$sourcestring = '../source.php?';
-//$addresstring = '../address.php?';
 $path_prefix = '../';
 
 $editor_cls = new editor_cls; // TODO editor_cls is also added in controller.

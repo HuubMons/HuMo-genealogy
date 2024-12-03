@@ -592,7 +592,7 @@ if ($popup == false) {
                                     <li><?= __('Sitemap'); ?></li>
                                 </ul>
                             </li>
-                            <li><a href="index.php?page=cms_pages"><?= __('CMS Own pages'); ?></a></li>
+                            <li><a href="index.php?page=edit_cms_pages"><?= __('CMS Own pages'); ?></a></li>
                             <li><a href="index.php?page=language_editor"><?= __('Language editor'); ?></a></li>
                             <li><a href="index.php?page=prefix_editor"><?= __('Prefix editor'); ?></a></li>
                             <li><a href="index.php?page=maps"><?= __('World map'); ?></a></li>
@@ -754,15 +754,15 @@ if ($popup == false) {
             $controllerObj = new GroupsController();
             $groups = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/groups.php");
-        } elseif ($page === 'cms_pages') {
+        } elseif ($page === 'edit_cms_pages') {
             require __DIR__ . '/controller/edit_cms_pagesController.php';
             $controllerObj = new edit_cms_pagesController();
-            $cms_pages = $controllerObj->detail($dbh);
-            include_once(__DIR__ . "/views/cms_pages.php");
+            $edit_cms_pages = $controllerObj->detail($dbh);
+            include_once(__DIR__ . "/views/edit_cms_pages.php");
         } elseif ($page === 'backup') {
-            //require __DIR__ . '/controller/backupController.php';
-            //$controllerObj = new BackupController();
-            //$backup = $controllerObj->detail($dbh);
+            require __DIR__ . '/controller/backupController.php';
+            $controllerObj = new BackupController();
+            $backup = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/backup.php");
         } elseif ($page === 'notes') {
             require __DIR__ . '/controller/notesController.php';
@@ -797,10 +797,10 @@ if ($popup == false) {
             $maps = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/maps.php");
         } elseif ($page === 'statistics') {
-            //require __DIR__ . '/controller/statisticsController.php';
-            //$controllerObj = new StatisticsController();
-            //$statistics = $controllerObj->detail($dbh, $db_functions);
-            include_once(__DIR__ . "/views/statistics.php");
+            require __DIR__ . '/controller/admin_statisticsController.php';
+            $controllerObj = new StatisticsController();
+            $statistics = $controllerObj->detail($dbh, $db_functions);
+            include_once(__DIR__ . "/views/admin_statistics.php");
         } elseif ($page === 'install_update') {
             include_once(__DIR__ . "/update/install_update.php");
         } elseif ($page === 'update') {

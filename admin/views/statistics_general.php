@@ -1,18 +1,7 @@
 <?php
-//$family_qry=$dbh->query("SELECT *, count(humo_stat_date.stat_easy_id) as count_lines
-//	FROM humo_stat_date LEFT JOIN humo_trees
-//	ON humo_trees.tree_id=humo_stat_date.stat_tree_id
-//	GROUP BY humo_stat_date.stat_tree_id
-//	ORDER BY tree_order desc");
-
-$family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2
-RIGHT JOIN
-(
-    SELECT stat_tree_id, count(humo_stat_date.stat_easy_id) as count_lines FROM humo_stat_date
-    GROUP BY stat_tree_id
-) as humo_stat_date2
-ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id
-ORDER BY tree_order desc");
+$family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
+( SELECT stat_tree_id, count(humo_stat_date.stat_easy_id) as count_lines FROM humo_stat_date GROUP BY stat_tree_id )
+ as humo_stat_date2 ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id ORDER BY tree_order desc");
 ?>
 
 <h2 align="center"><?= __('Status statistics table'); ?></h2>
@@ -52,12 +41,9 @@ ORDER BY tree_order desc");
                         //	WHERE humo_trees.tree_id=".$familyDb->tree_id."
                         //	GROUP BY stat_ip_address
                         //	");
-                        $stat = $dbh->query("SELECT stat_ip_address
-                            FROM humo_stat_date LEFT JOIN humo_trees
-                            ON humo_trees.tree_id=humo_stat_date.stat_tree_id
-                            WHERE humo_trees.tree_id=" . $familyDb->tree_id . "
-                            GROUP BY stat_ip_address
-                            ");
+                        $stat = $dbh->query("SELECT stat_ip_address FROM humo_stat_date LEFT JOIN humo_trees
+                            ON humo_trees.tree_id=humo_stat_date.stat_tree_id WHERE humo_trees.tree_id=" . $familyDb->tree_id . "
+                            GROUP BY stat_ip_address");
                         $count_visitors = $stat->rowCount();
                     }
                     ?>
@@ -129,8 +115,7 @@ if ($temp->rowCount()) {
     // *** Names of countries ***
     include_once(__DIR__ . '/../include/countries.php');
 
-    $statqry = "SELECT stat_country_code, count(stat_country_code) as count_country_code
-        FROM humo_stat_country
+    $statqry = "SELECT stat_country_code, count(stat_country_code) as count_country_code FROM humo_stat_country
         GROUP BY stat_country_code ORDER BY count_country_code DESC LIMIT 0," . $max;
     $stat = $dbh->query($statqry);
 
@@ -190,9 +175,7 @@ RIGHT JOIN
     SELECT stat_tree_id, stat_gedcom_fam, stat_gedcom_man, stat_gedcom_woman, count(humo_stat_date.stat_easy_id) as count_lines FROM humo_stat_date
     GROUP BY stat_tree_id, stat_gedcom_fam, stat_gedcom_man, stat_gedcom_woman
 ) as humo_stat_date2
-ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id
-ORDER BY count_lines desc
-LIMIT 0," . $nr_lines);
+ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id ORDER BY count_lines desc LIMIT 0," . $nr_lines);
 ?>
 
 <h2 align="center"><?= $nr_lines; ?> <?= __('Most visited families:'); ?></h2>
@@ -258,16 +241,18 @@ function statistics_line($familyDb)
     }
 ?>
     <tr>
+        <?php if (isset($familyDb->count_lines)) { ?>
+            <td><?= $familyDb->count_lines; ?></td>
         <?php
-        if (isset($familyDb->count_lines)) {
-            echo '<td>' . $familyDb->count_lines . '</td>';
         }
 
         $treetext = show_tree_text($familyDb->tree_id, $selected_language);
-        echo '<td>' . $treetext['name'] . '</td>';
+        ?>
+        <td><?= $treetext['name']; ?></td>
 
-        if (!isset($familyDb->count_lines)) {
-            echo '<td>' . $familyDb->stat_date_stat . '</td>';
+        <?php if (!isset($familyDb->count_lines)) { ?>
+            <td><?= $familyDb->stat_date_stat; ?></td>
+        <?php
         }
 
         // *** Check if family is still in the genealogy! ***

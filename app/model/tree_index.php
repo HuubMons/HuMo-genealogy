@@ -669,33 +669,66 @@ class Mainindex_cls
         // }
 
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
-            // TODO check code. Doesn't show pictures including a space. Nov 2024: disabled this code.
-            #    $picname = str_replace(" ", "_", $picqryDb->event_event);
             $picname = $picqryDb->event_event;
-            // adding new var to store kind of connection - will be useful to use diifferent aproach for person photos and family photos
+            // adding new var to store kind of connection - will be useful to use different approach for person photos and family photos
             $pic_conn_kind = $picqryDb->event_connect_kind;
             // this code was taking extension from name and was not working with 4 letter extensions: $check_file = strtolower(substr($picname, -3, 3));
-            // im now using dedicated function to determine extension - it get 3letter extensions and 4 letter for jpeg which i'm adding too below
+            // im now using dedicated function to determine extension - it get 3 letter extensions and 4 letter for jpeg which i'm adding too below
             $check_file = pathinfo($picname, PATHINFO_EXTENSION);
 
             // im adding jpeg also and adding uniqueness 
             if (($check_file === 'png' || $check_file === 'gif' || $check_file === 'jpg' || $check_file === 'jpeg') && file_exists($tree_pict_path . $picname) && !in_array($picname, $temp_pic_names_table)) {
 
-                @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
-                // echo '<pre>';
-                // echo $pic_conn_kind . '<br>';
-                // echo $picname . '<br>';
-                // i see that $man_cls also gets information about family privacy so no need to change this code
-                $man_cls = new person_cls($personmnDb);
-                // var_dump($man_cls->privacy);
-                // echo '</pre>';
-                // echo 'privacy:';
-                // var_dump($man_privacy);
-                // echo '<br>';
+                $is_privacy = true;
 
-                if ($man_cls->privacy == '') {
+                if ($pic_conn_kind == 'person') {
+                    @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
+                    $man_cls = new person_cls($personmnDb);
+                    if ($man_cls->privacy == '') {
+                        $is_privacy = false;
+
+                        $name = $man_cls->person_name($personmnDb);
+                        $link_text = $name["standard_name"];
+
+                        $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
+                    }
+                } elseif ($pic_conn_kind == 'family') {
+                    $qry2 = "SELECT * FROM humo_families WHERE fam_gedcomnumber='" . $picqryDb->event_connect_id . "'";
+                    $picqry2 = $dbh->query($qry2);
+                    $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
+
+                    @$personmnDb2 = $db_functions->get_person($picqryDb2->fam_man);
+                    $man_cls = new person_cls($personmnDb2);
+
+                    @$personmnDb3 = $db_functions->get_person($picqryDb2->fam_woman);
+                    $woman_cls = new person_cls($personmnDb3);
+
+                    // *** Only use this picture if both man and woman have disabled privacy options ***
+                    if ($man_cls->privacy == '' && $woman_cls->privacy == '') {
+                        $is_privacy = false;
+
+                        $name = $man_cls->person_name($personmnDb2);
+                        $man_name = $name["standard_name"];
+
+                        $name = $woman_cls->person_name($personmnDb3);
+                        $woman_name =  $name["standard_name"];
+
+                        $link_text = __('Family') . ': ' . $man_name . ' &amp; ' . $woman_name;
+
+                        if ($humo_option["url_rewrite"] == "j") {
+                            $url = 'family/' . $picqryDb->event_tree_id . '/' . $picqryDb->event_connect_id;
+                        } else {
+                            $url = 'index.php?page=family&tree_id=' . $picqryDb->event_tree_id . '&id=' . $picqryDb->event_connect_id;
+                        }
+                        // TODO use function to build link:
+                        //$vars['pers_family'] = $familyDb->stat_gedcom_fam;
+                        //$link = $link_cls->get_link('../', 'family', $familyDb->tree_id, false, $vars);
+                        //echo '<a href="' . $link . '">' . __('Family') . ': </a>';
+                    }
+                }
+
+                if (!$is_privacy) {
                     $date_place = '';
-
                     if ($picqryDb->event_date || $picqryDb->event_place) {
                         $date_place = date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
                     }
@@ -710,66 +743,8 @@ class Mainindex_cls
 
                     $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $desc_for_lightbox . '"><img src="' . $tree_pict_path . $picname .
                         '" width="90%" style="border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
+
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-
-                    // TODO: this is almost same code as code in photoalbum.php.
-                    $name = $man_cls->person_name($personmnDb);
-                    $privacy = $man_cls->set_privacy($personmnDb);
-                    // if photo is from family there will be different link and text as a first line
-                    if ($pic_conn_kind == 'person') {
-                        if (!$privacy && $name["standard_name"]) {
-                            // $text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a></div>';
-                            $link_text = $name["standard_name"];
-                        } else {
-                            $link_text = __('Go to person&apos;s page');
-                        }
-                        $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
-                    } elseif ($pic_conn_kind == 'family') {
-
-
-
-
-                        // if there are global variables for protocol and domain You can change it. If there is another method to build link to family u can change
-                        // $url = 'index.php?page=family&tree_id=' . $picqryDb->event_tree_id . '&id=' . $picqryDb->event_connect_id;
-                        //integrate it to language. When family picture is displayed and no privacy filter man's and woman's names are displayed
-                        if (!$privacy) {
-                            $qry2 = "SELECT * FROM humo_families
-                        WHERE fam_gedcomnumber='" . $picqryDb->event_connect_id . "'";
-                            $picqry2 = $dbh->query($qry2);
-                            $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
-                            $man_name_id = $picqryDb2->fam_man;
-                            $woman_name_id = $picqryDb2->fam_woman;
-                            @$personmnDb2 = $db_functions->get_person($man_name_id);
-                            @$personmnDb3 = $db_functions->get_person($woman_name_id);
-                            // TODO use function to show names.
-                            $man_name_and_surname = ($personmnDb2->pers_firstname) . ' ' . ($personmnDb2->pers_lastname);
-                            $woman_name_and_surname = ($personmnDb3->pers_firstname) . ' ' . ($personmnDb3->pers_lastname);
-
-                            $link_text = $man_name_and_surname . ' - ' . $woman_name_and_surname . ' family';
-                        } else {
-                            $link_text = __('Go to person&apos;s page');
-                        }
-
-                        // $link_text = 'Go to family&apos;s page';
-
-
-
-                        if ($humo_option["url_rewrite"] == "j") {
-                            $url = 'family/' . $picqryDb->event_tree_id . '/' . $picqryDb->event_connect_id;
-                        } else {
-                            $url = 'index.php?page=family&tree_id=' . $picqryDb->event_tree_id . '&id=' . $picqryDb->event_connect_id;
-                        }
-
-                        // TODO use function to build link:
-                        //$vars['pers_family'] = $pers_family;
-                        //$link = $link_cls->get_link('../', 'family', $tree_id, true, $vars);
-                        //$link .= "main_person=" . $person->pers_gedcomnumber;
-
-                        //TODO: retrieve family father and mother names and put them into text as in persons code (two versions for privacy)
-                        //$link_text = __('Go to family&apos;s page');
-
-                    }
-
                     $text .= '<a href="' . $url . '">' . $link_text . '</a>';
                     if ($picqryDb->event_text !== '' or $date_place !== '') {
                         // this code shortens event text below photos to 50 chars and adds '...' if its above 50 chars. Photos with long texts added looks bad...
