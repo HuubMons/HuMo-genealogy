@@ -40,4 +40,14 @@ if (isset($_SESSION['admin_tree_id'])) {
             $result = $dbh->query($sql);
         }
     }
+
+    if ($drag_kind == "trees") {
+        $mediastring = safe_text_db($_GET['order']);
+        $media_arr = explode(";", $mediastring);
+        $counter = count($media_arr);
+        for ($x = 0; $x < $counter; $x++) {
+            $sql = "UPDATE humo_trees SET tree_order='" . ($x + 1) . "' WHERE tree_id='" . $media_arr[$x] . "'";
+            $result = $dbh->query($sql);
+        }
+    }
 }

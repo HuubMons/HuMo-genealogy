@@ -1200,7 +1200,8 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                             <div class="col-md-10">
                                 <span id="chldnum<?= $fam_children_array[$j]; ?>">
                                     <?= ($j + 1); ?>
-                                </span><?= show_person($fam_children_array[$j], true); ?>
+                                </span>
+                                <?= show_person($fam_children_array[$j], true); ?>
                             </div>
                     </li>
                 <?php } ?>
