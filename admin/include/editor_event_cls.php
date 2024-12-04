@@ -1597,41 +1597,57 @@ class editor_event_cls
 
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
             // get subfolders of media dir 
-            $subfolders = glob( $path_prefix . $tree_pict_path . '[^.]*' , GLOB_ONLYDIR);
+            $subfolders = glob($path_prefix . $tree_pict_path . '[^.]*', GLOB_ONLYDIR);
             $ignore = array('cms', 'slideshow', 'thumbs');
             // *** Upload image ***
             ?>
             <tr class="table_header_large">
                 <td></td>
-                <td colspan="1">
-                    <?= __('Upload new image'); ?>
-                    <input type="file" name="photo_upload">
-                    <input type="submit" name="<?php 
-                    if ($event_kind == 'picture') { echo 'person_add_media'; }
-                    elseif ($event_kind == 'marriage_picture') { echo 'relation_add_media'; }
-                    else { echo 'source_add_media'; }
-                    ?>" title="submit" value="<?= __('Upload'); ?>" class="btn btn-sm btn-outline-primary">
-                </td>
-                <td colspan="1">
-                   <select size="1" name="select_media_folder" class="form-select form-select-sm">
-                        <!-- For new source in new database... -->
-                        <option value=""><?= __('Main media folder'); ?></option>
-                        <?php
-                            $optcat = '';
-                            $optdir = '';
-                            foreach ($subfolders as $folder) {
-                                $bfolder = pathinfo($folder, PATHINFO_BASENAME);
-                                if (in_array($bfolder, $ignore)) {
-                                    // do nothing
-                                } elseif (array_key_exists( $bfolder .  '_', $pcat_dirs)) {
-                                    $optcat .='<option value="' . $bfolder . '">' . __('Category') .': ' . $pcat_dirs[$bfolder . '_']. '</option>';
-                                } else { 
-                                    $optdir .= '<option value="' . $bfolder . '">' . __('Directory') .': ' . $bfolder . '</option>';
+                <td colspan="2">
+
+                    <div class="row">
+                        <div class="col-md-auto">
+                            <?= __('Upload new image'); ?>
+                        </div>
+
+                        <div class="col-md-auto">
+                            <input type="file" name="photo_upload">
+                        </div>
+
+                        <div class="col-md-auto">
+                            <select size="1" name="select_media_folder" class="form-select form-select-sm">
+                                <!-- For new source in new database... -->
+                                <option value=""><?= __('Main media folder'); ?></option>
+                                <?php
+                                $optcat = '';
+                                $optdir = '';
+                                foreach ($subfolders as $folder) {
+                                    $bfolder = pathinfo($folder, PATHINFO_BASENAME);
+                                    if (in_array($bfolder, $ignore)) {
+                                        // do nothing
+                                    } elseif (array_key_exists($bfolder .  '_', $pcat_dirs)) {
+                                        $optcat .= '<option value="' . $bfolder . '">' . __('Category') . ': ' . $pcat_dirs[$bfolder . '_'] . '</option>';
+                                    } else {
+                                        $optdir .= '<option value="' . $bfolder . '">' . __('Directory') . ': ' . $bfolder . '</option>';
+                                    }
                                 }
-                            }
-                            echo $optcat . $optdir;
-                        ?>
-                    </select>
+                                echo $optcat . $optdir;
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="col-md-auto">
+                            <input type="submit" name="<?php
+                                                        if ($event_kind == 'picture') {
+                                                            echo 'person_add_media';
+                                                        } elseif ($event_kind == 'marriage_picture') {
+                                                            echo 'relation_add_media';
+                                                        } else {
+                                                            echo 'source_add_media';
+                                                        }
+                                                        ?>" title="submit" value="<?= __('Upload'); ?>" class="btn btn-sm btn-outline-primary">
+                        </div>
+                    </div>
                 </td>
             </tr>
         <?php
