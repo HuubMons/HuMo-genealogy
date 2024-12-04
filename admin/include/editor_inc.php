@@ -240,7 +240,8 @@ if (isset($_POST['marriage_event_add'])) {
 if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
 
     include_once(__DIR__ . "/../include/media_inc.php");
-
+    global $pcat_dirs;
+    
     // *** get path of pictures folder 
     $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
@@ -249,20 +250,15 @@ if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
         $tree_pict_path = 'media/';
     }
     $dir = $path_prefix . $tree_pict_path;
-
-    // check if this is a category file (file with existing category prefix) and if a subfolder for this category exists, place it there.
-    $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-    if ($temp->rowCount()) {  // there is a category table
-        $catgry = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
-        if ($catgry->rowCount()) {
-            while ($catDb = $catgry->fetch(PDO::FETCH_OBJ)) {
-                if (
-                    is_dir($dir . substr($_FILES['photo_upload']['name'], 0, 2)) && substr($_FILES['photo_upload']['name'], 0, 3) == $catDb->photocat_prefix
-                ) {   // there is a subfolder of this prefix
-                    $dir = $dir . substr($_FILES['photo_upload']['name'], 0, 2) . '/';  // place uploaded file in that subfolder
-                }
-            }
-        }
+    
+    $safepath = '';
+    $selected_subdir = preg_replace("/[\/\\\\]/", '',  $_POST['select_media_folder']); // remove all / and \ 
+    if (array_key_exists(substr($_FILES['photo_upload']['name'], 0, 3), $pcat_dirs)) { // old suffix style categories
+        $dir .= substr($_FILES['photo_upload']['name'], 0, 2) . '/';
+    } elseif (!empty($selected_subdir) &&                                              // new user selected dirs/cats
+              is_dir($dir . $selected_subdir) ) {
+        $dir .= $selected_subdir . '/';
+        $safepath = $selected_subdir . '/';
     }
     $picture_original = $dir . $_FILES['photo_upload']['name'];
     if (!move_uploaded_file($_FILES['photo_upload']['tmp_name'], $picture_original)) {
@@ -282,14 +278,21 @@ if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
             $event_connect_kind = 'person';
             $event_connect_id = $pers_gedcomnumber;
             $event_kind = 'picture';
-            $event_event = $_FILES['photo_upload']['name'];
+            $event_event = $safepath . $_FILES['photo_upload']['name'];
             $event_gedcom = '';
         }
         if (isset($_POST['relation_add_media'])) {
             $event_connect_kind = 'family';
             $event_connect_id = $marriage;
             $event_kind = 'picture';
-            $event_event = $_FILES['photo_upload']['name'];
+            $event_event = $safepath . $_FILES['photo_upload']['name'];
+            $event_gedcom = '';
+        }
+        if (isset($_POST['source_add_media'])) {
+            $event_connect_kind = 'source';
+            $event_connect_id = $_POST['source_gedcomnr'];
+            $event_kind = 'picture';
+            $event_event = $safepath . $_FILES['photo_upload']['name'];
             $event_gedcom = '';
         }
         // *** Add event. If event is new, use: $new_event=true. ***
@@ -1252,7 +1255,7 @@ if (isset($_POST['source_change'])) {
     $save_source_data = true;
 }
 // *** Also save source data if media is added ***
-if (isset($_POST['add_source_picture'])) {
+ if (isset($_POST['source_add_media'])) {
     $save_source_data = true;
 }
 if ($save_source_data) {
