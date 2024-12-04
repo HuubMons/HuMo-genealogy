@@ -111,6 +111,9 @@ class editor_event_cls
         global $editor_cls, $path_prefix, $tree_pict_path, $humo_option, $field_popup;
         global $db_functions;
 
+        include_once(__DIR__ . "/../include/media_inc.php");
+        global $pcat_dirs;
+
         $text = '';
 
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
@@ -1015,9 +1018,6 @@ class editor_event_cls
                         <?php } elseif ($data_listDb->event_kind == 'picture') { ?>
                             <div>
                                 <?php
-
-                                include_once(__DIR__ . "/../include/media_inc.php");
-
                                 $tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
                                 $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
                                 if ($temp->rowCount()) {  // there is a category table 
@@ -1595,15 +1595,43 @@ class editor_event_cls
             }
         }
 
-        if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
+        if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
+            // get subfolders of media dir 
+            $subfolders = glob( $path_prefix . $tree_pict_path . '[^.]*' , GLOB_ONLYDIR);
+            $ignore = array('cms', 'slideshow', 'thumbs');
             // *** Upload image ***
             ?>
             <tr class="table_header_large">
                 <td></td>
-                <td colspan="2">
+                <td colspan="1">
                     <?= __('Upload new image'); ?>
                     <input type="file" name="photo_upload">
-                    <input type="submit" name="<?php echo ($event_kind == 'picture') ? 'person_add_media' : 'relation_add_media'; ?>" title="submit" value="<?= __('Upload'); ?>" class="btn btn-sm btn-outline-primary">
+                    <input type="submit" name="<?php 
+                    if ($event_kind == 'picture') { echo 'person_add_media'; }
+                    elseif ($event_kind == 'marriage_picture') { echo 'relation_add_media'; }
+                    else { echo 'source_add_media'; }
+                    ?>" title="submit" value="<?= __('Upload'); ?>" class="btn btn-sm btn-outline-primary">
+                </td>
+                <td colspan="1">
+                   <select size="1" name="select_media_folder" class="form-select form-select-sm">
+                        <!-- For new source in new database... -->
+                        <option value=""><?= __('Main media folder'); ?></option>
+                        <?php
+                            $optcat = '';
+                            $optdir = '';
+                            foreach ($subfolders as $folder) {
+                                $bfolder = pathinfo($folder, PATHINFO_BASENAME);
+                                if (in_array($bfolder, $ignore)) {
+                                    // do nothing
+                                } elseif (array_key_exists( $bfolder .  '_', $pcat_dirs)) {
+                                    $optcat .='<option value="' . $bfolder . '">' . __('Category') .': ' . $pcat_dirs[$bfolder . '_']. '</option>';
+                                } else { 
+                                    $optdir .= '<option value="' . $bfolder . '">' . __('Directory') .': ' . $bfolder . '</option>';
+                                }
+                            }
+                            echo $optcat . $optdir;
+                        ?>
+                    </select>
                 </td>
             </tr>
         <?php
