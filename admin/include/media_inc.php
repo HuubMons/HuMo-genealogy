@@ -380,14 +380,16 @@ function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
     }
     return ($success);
 }
-function get_pcat_dirs()
+function get_pcat_dirs() // returns a.array with existing cat subfolders key=>dir val=>category name localized
 {
-    global $dbh, $tree_id;
+    global $dbh, $tree_id, $selected_language;
 
     $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
     $dataDb = $data2sql->fetch(PDO::FETCH_OBJ);
-
     $tree_pict_path = $dataDb->tree_pict_path;
+    if (substr($tree_pict_path, 0, 1) === '|') { $tree_pict_path = 'media/'; }
+    // adjust path to media dir
+    $tree_pict_path = __DIR__ . '/../../' . $tree_pict_path;
     $tmp_pcat_dirs = array();
     $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
     if ($temp->rowCount()) {   // there is a category table
@@ -396,7 +398,20 @@ function get_pcat_dirs()
             while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
                 $dirtest = $catDb->photocat_prefix;
                 if (is_dir($tree_pict_path . '/' . substr($dirtest, 0, 2))) {  // there is a subfolder of this prefix
-                    $tmp_pcat_dirs[$dirtest] = substr($dirtest, 0, 2);
+                    $name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . $catDb->photocat_prefix . "' AND photocat_language = '" . $selected_language . "'");
+                    if ($name->rowCount()) {  // there is a name for this language
+                        $nameDb = $name->fetch(PDO::FETCH_OBJ);
+                        $catname = $nameDb->photocat_name;
+                    } else {  // maybe a default is set
+                        $name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . $catDb->photocat_prefix . "' AND photocat_language = 'default'");
+                        if ($name->rowCount()) {  // there is a default name for this category
+                            $nameDb = $name->fetch(PDO::FETCH_OBJ);
+                            $catname = $nameDb->photocat_name;
+                        } else {  // no name found => show directory name
+                            $catname = substr($dirtest, 0, 2);
+                        }
+                    }
+                   $tmp_pcat_dirs[$dirtest] = $catname;
                 }
             }
         }
