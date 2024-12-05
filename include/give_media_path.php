@@ -7,33 +7,36 @@ function give_media_path($media_dir, $media_filename)
     $media_privacy_mode_off = true;
 
     //in this part we are simulating code that should be executed once while changing options. Need to port this to options code when we implement. Final code should also validate if .htaccess was modified and only then change option
-    {
-        // path to dir for .htaccess
-        $directoryPath = realpath(__DIR__ . '/../media/');
+    //{
+    // path to dir for .htaccess
+    $directoryPath = realpath(__DIR__ . '/../media/');
 
-        if (!$media_privacy_mode_off) {
-            // .htaccess content with directive to not allow to get file by static link - file will be possible to get only by query url
-            $htaccessContent = <<<HTACCESS
+    if (!$media_privacy_mode_off) {
+        // .htaccess content with directive to not allow to get file by static link - file will be possible to get only by query url
+        $htaccessContent = <<<HTACCESS
         <FilesMatch ".*">
           Require all denied
         </FilesMatch>
         HTACCESS;
-        } else {
-            $htaccessContent = <<<HTACCESS
+    } else {
+        $htaccessContent = '';
+        /*
+        $htaccessContent = <<<HTACCESS
         <FilesMatch ".*">
           #Require all denied
         </FilesMatch>
         HTACCESS;
-        }
-        // full path with filename
-        $filePath = $directoryPath . '/.htaccess';
-
-        if (file_put_contents($filePath, $htaccessContent) !== false) {
-            // echo "File modified in $directoryPath";
-        } else {
-            // echo "Check permissions. I couldn't modify .htaccess in $directoryPath";
-        }
+        */
     }
+    // full path with filename
+    $filePath = $directoryPath . '/.htaccess';
+
+    if ($htaccessContent && file_put_contents($filePath, $htaccessContent) !== false) {
+        // echo "File modified in $directoryPath";
+    } else {
+        // echo "Check permissions. I couldn't modify .htaccess in $directoryPath";
+    }
+    //}
 
 
     // first option is for old media path
