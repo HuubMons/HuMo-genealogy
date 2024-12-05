@@ -374,7 +374,8 @@ if ($language["dir"] == "rtl") {   // right to left language
 
 // *** Use your own favicon.ico in media folder ***
 if (file_exists('../media/favicon.ico')) {
-    $favicon = '<link href="../media/favicon.ico" rel="shortcut icon" type="image/x-icon">';
+    include_once(__DIR__ . '/../include/give_media_path.php');
+    $favicon = '<link href="../' . give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
 } else {
     $favicon = '<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">';
 }
@@ -462,6 +463,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
     die();
 } else {
 ?>
+
     <body <?= isset($_GET['page']) && $_GET['page'] == 'maps' ? 'onload="initialize()"' : ''; ?> class="humo">
     <?php
 }
