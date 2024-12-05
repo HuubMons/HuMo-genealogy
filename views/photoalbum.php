@@ -279,12 +279,13 @@ function show_media_files($pref)
                 if (array_key_exists(substr($filename, 0, 3), $pcat_dirs)) {
                     $tmp_dir .= substr($filename, 0, 2) . '/';
                 }
-                if (in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), array('jpg', 'png', 'gif', 'bmp', 'tif'))) {
+                if (in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'tif'))) {
         ?>
 
                     <div class="photobook">
                         <!-- Show photo using the lightbox: GLightbox effect -->
-                        <a href="<?= $tmp_dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
+                        <?php $href_path = give_media_path($tmp_dir, $filename); ?>
+                        <a href="<?= $href_path ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
                             <!-- Need a class for multiple lines and HTML code in a text -->
                             <div class="glightbox-desc custom-desc<?= $picture_nr; ?>"><?= $picture_text2; ?></div>
                             <?= $picture; ?>

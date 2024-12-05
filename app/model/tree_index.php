@@ -650,6 +650,7 @@ class Mainindex_cls
         if (substr($tree_pict_path, 0, 1) === '|') {
             $tree_pict_path = 'media/';
         }
+
         // *** Loop through pictures and find first available picture without privacy filter ***
         // i added also family kind photos
         $qry = "SELECT * FROM humo_events
@@ -732,6 +733,9 @@ class Mainindex_cls
                     if ($picqryDb->event_date || $picqryDb->event_place) {
                         $date_place = date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
                     }
+                    // i decided tu put give_media_path() in new file in include dir
+                    include_once('./include/give_media_path.php');
+                    $picture_path = give_media_path($tree_pict_path, $picname);
 
                     // u can delete this variables if there are some global variables for protocol and omain combined
                     // Get the protocol (HTTP or HTTPS)
@@ -741,7 +745,7 @@ class Mainindex_cls
                     $desc_for_lightbox =  $date_place . str_replace("&", "&amp;", $picqryDb->event_text);
                     $desc_for_lightbox = (mb_strlen($desc_for_lightbox, "UTF-8") > $char_limit2) ? mb_substr($desc_for_lightbox, 0, $char_limit2, "UTF-8") . '...' : $desc_for_lightbox;
 
-                    $text .= '<a href="' . $tree_pict_path . $picname . '" class="glightbox" data-glightbox="description: ' . $desc_for_lightbox . '"><img src="' . $tree_pict_path . $picname .
+                    $text .= '<a href="' . $picture_path . '" class="glightbox" data-glightbox="description: ' . $desc_for_lightbox . '"><img src="' . $picture_path .
                         '" width="90%" style="border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***

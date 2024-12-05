@@ -1030,9 +1030,10 @@ class editor_event_cls
                                         }
                                     }
                                 }
-                                echo '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank">' .
+                                // echo '<a href="../' . give_media_path($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
+                                //     print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
+                                echo '<a href="../' . give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
                                     print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
-
                                 ?>
                             </div>
 

@@ -116,7 +116,7 @@ function show_media($event_connect_kind, $event_connect_id)
                 $event_event = strtolower($event_event);
             }
             // *** Show photo using the lightbox effect ***
-            if (in_array(strtolower(pathinfo($event_event, PATHINFO_EXTENSION)), array('jpg', 'png', 'gif', 'bmp', 'tif'))) {
+            if (in_array(strtolower(pathinfo($event_event, PATHINFO_EXTENSION)), array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'tif'))) {
 
                 $line_pos = 0;
                 if ($media_event_text[$i]) {
@@ -126,11 +126,13 @@ function show_media($event_connect_kind, $event_connect_id)
                 if ($line_pos > 0) {
                     $title_txt = substr($media_event_text[$i], 0, $line_pos);
                 }
-
+                include_once(__DIR__ . '/../include/give_media_path.php');
+                $href_path = give_media_path($temp_path, str_ireplace("%2F", "/", rawurlencode($event_event)));
                 // *** April 2021: using GLightbox ***
                 // *** lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
                 // *** But: reverse change of / character (if sub folders are used) ***
-                $picture = '<a href="' . $temp_path . str_ireplace("%2F", "/", rawurlencode($event_event)) . '" class="glightbox3" data-gallery="gallery' . $event_connect_id . '" data-glightbox="description: .custom-desc' . $media_event_id[$i] . '">';
+                $picture = '<a href="' . $href_path . '" class="glightbox3" data-gallery="gallery' . $event_connect_id . '" data-glightbox="description: .custom-desc' . $media_event_id[$i] . '">';
+                // $picture = '<a href="' . $temp_path . str_ireplace("%2F", "/", rawurlencode($event_event)) . '" class="glightbox3" data-gallery="gallery' . $event_connect_id . '" data-glightbox="description: .custom-desc' . $media_event_id[$i] . '">';
 
                 // *** Need a class for multiple lines and HTML code in a text ***
                 $picture .= '<div class="glightbox-desc custom-desc' . $media_event_id[$i] . '">';
@@ -152,7 +154,8 @@ function show_media($event_connect_kind, $event_connect_id)
                 $templ_person["pic_path" . $i] = trim($templ_person["pic_path" . $i]);
             } else {
                 // other media formats not to be displayed with lightbox
-                $picture = '<a href="' . $temp_path . $event_event . '" target="_blank">' . print_thumbnail($temp_path, $event_event) . '</a>';
+                $href_path = give_media_path($temp_path, $event_event);
+                $picture = '<a href="' . $href_path . '" target="_blank">' . print_thumbnail($temp_path, $event_event) . '</a>';
             }
 
 

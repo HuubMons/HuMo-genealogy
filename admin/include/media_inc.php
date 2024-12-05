@@ -113,7 +113,10 @@ function resize_picture_IM($folder, $file, $maxheight = 1080, $maxwidth = 1920)
 function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $attrib = '')
 {
     global $pcat_dirs, $humo_option;
-
+    // in current state this function is not displayiung all formats of pictures that are allowed - for example it's not displaying webp
+    // echo 'print thumbnail<br>';
+    // echo 'folder:' . $folder;
+    // echo '<br>file:' . $file;
     $img_style = ' style="';
     if ($maxw > 0 && $maxh > 0) {
         $img_style .= 'width:auto; height:auto; max-width:' . $maxw . 'px; max-height:' . $maxh . 'px; ' . $css . '" ' . $attrib;
@@ -126,12 +129,42 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
     }
 
     if (!$file || !$folder) {
+        // echo 'thumb missing';
         return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' missing path/filename">';
     }
 
     $thumb_url =  thumbnail_exists($folder, $file);
+    // echo '<br>sprawdzenie thumb_url: ' . $thumb_url;
     if (!empty($thumb_url)) {
-        return '<img src="' . $thumb_url . '"' . $img_style . '>';
+        // echo '<br>!empty(thumb_url)';
+        // there are problems with these relative paths - when called from lvl +1 (show_picture.php) its ok, when called from lvl +2 (editor_event_cls.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
+        $backtrace = debug_backtrace();
+        if (isset($backtrace[0]['file']) && isset($backtrace[0]['line'])) {
+            $calling_file = basename($backtrace[0]['file']);
+            // echo "<br>Function was called by:" . $calling_file;
+        }
+        include_once(__DIR__ . '/../../include/give_media_path.php');
+        if ($calling_file === 'editor_event_cls.php' || $calling_file === 'thumbs.php' || $calling_file === 'editor_media_select.php') {
+            $folder_for_give_media_path = substr($folder, 3);
+            $prefix = '../';
+        } else {
+            $folder_for_give_media_path = $folder;
+            $prefix = '';
+        }
+        // echo "baza<br>";
+        // echo basename($thumb_url);
+        // echo "baza<br>";
+
+        // i modified thumbnail_exist function to serve also only file in swcond mode with its logic becouse i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
+        $mode = 'onlyfile';
+        $fileName = thumbnail_exists($folder, $file, $mode);
+
+        // echo '<br>onlyfilename:' . $fileName . '<br>';
+
+        $src_path = give_media_path($folder_for_give_media_path, $fileName);
+        // echo '<br>src_path:' . $src_path;
+        // echo '<br>src path:' . $src_path;
+        return '<img src="' . $prefix . $src_path . '"' . $img_style . '>';
     } // found thumbnail
 
     // no thumbnail found, create a new one
@@ -140,6 +173,7 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
         $folder .= substr($file, 0, 2) . '/';
     } // photobook categories
     if (!file_exists($folder . $file)) {
+        // echo '<br>nie istnieje plik1:' . $folder . $file;
         return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' not found">';
     }
     // check for mime type and no_thumb file
@@ -150,11 +184,15 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
         // script will possibily die here and hidden no_thumb file becomes persistent
         // so this code might be skiped afterwords
         if ($humo_option["thumbnail_auto_create"] == 'y' && create_thumbnail($folder, $file)) {
-            return '<img src="' . $folder . 'thumb_' . $file . '.jpg' . '"' . $img_style . '>';
+            include_once(__DIR__ . '/../../include/give_media_path.php');
+            $src_path = give_media_path($folder, 'thumb_' . $file . '.jpg');
+            return '<img src="' . $src_path . '"' . $img_style . '>';
         }
     }
 
     $extensions_check = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+    include_once(__DIR__ . '/../../include/give_media_path.php');
+    $src_path = give_media_path($folder, $file);
     switch ($extensions_check) {
         case 'pdf':
             return '<img src="../images/pdf.jpg" alt="PDF">';
@@ -185,19 +223,19 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
         case 'ra':
             return '<img src="../images/audio.gif" alt="RA">';
         case 'jpg':
-            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+            return '<img src="../' . $src_path . '"' . $img_style . '>';
         case 'jpeg':
-            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+            return '<img src="../' . $src_path . '"' . $img_style . '>';
         case 'png':
-            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+            return '<img src="../' . $src_path . '"' . $img_style . '>';
         case 'gif':
-            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+            return '<img src="../' . $src_path . '"' . $img_style . '>';
         case 'tif':
-            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+            return '<img src="../' . $src_path . '"' . $img_style . '>';
         case 'tiff':
-            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+            return '<img src="../' . $src_path . '"' . $img_style . '>';
         case 'bmp':
-            return '<img src="' . $folder . $file . '"' . $img_style . '>';
+            return '<img src="../' . $src_path . '"' . $img_style . '>';
     }
     return '<img src="../images/thumb_missing-image.jpg"' . $img_style . '>';
 }
@@ -244,33 +282,45 @@ function check_media_type($folder, $file)
     return (false);
 }
 
-function thumbnail_exists($folder, $file)
+function thumbnail_exists($folder, $file, $mode = 'both')
 {
     global $pcat_dirs;
+    // echo '<br>folder ze środka t_e: ' . $folder;
+
+    //added second mode to return only the filename part for function give_media_path (see line ~159)
+    if ($mode === 'onlyfile') {
+        $folder1 = '';
+    } elseif ($mode === 'both') {
+        $folder1 = $folder;
+    }
+
     $pparts = pathinfo($file);
+
+
     if (!$file || !file_exists($folder . $file)) {
+        // echo '<br>thumbnail_exist wnętrz - nie istnieje';
         return '';
     }
     if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
-        return ($folder . 'thumb_' . $file . '.jpg');
+        return ($folder1 . 'thumb_' . $file . '.jpg');
     }
     if (file_exists($folder . 'thumb_' . $file)) {
-        return ($folder . 'thumb_' . $file);
+        return ($folder1 . 'thumb_' . $file);
     } // old naming
     if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg')) {
-        return ($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg');
+        return ($folder1 . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg');
     }
     if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'])) {
-        return ($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename']);
+        return ($folder1 . $pparts['dirname'] . '/thumb_' . $pparts['basename']);
     } // old naming
     if (array_key_exists(substr($file, 0, 3), $pcat_dirs)) {
         $folder .= substr($file, 0, 2) . '/';
     } // check for cat folder
     if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
-        return ($folder . 'thumb_' . $file . '.jpg');
+        return ($folder1 . 'thumb_' . $file . '.jpg');
     }
     if (file_exists($folder . 'thumb_' . $file)) {
-        return ($folder . 'thumb_' . $file);
+        return ($folder1 . 'thumb_' . $file);
     }  // old naming
     return '';
 }
@@ -281,7 +331,7 @@ function create_thumbnail_GD($folder, $file, $theight = 120)
     $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
     $gd_info = gd_info();
     list($is_gdjpg, $is_gdgif, $is_gdpng) = array($gd_info['JPEG Support'], $gd_info['GIF Read Support'], $gd_info['PNG Support']);
-    $imtype = strtoupper(substr($file, -3));
+    $imtype = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
     $success = false;
     list($width, $height) = getimagesize($pict_path_original);
     if ($height == 0) {
@@ -289,7 +339,7 @@ function create_thumbnail_GD($folder, $file, $theight = 120)
     }
     $twidth = floor($width * ($theight / $height));
 
-    if ($imtype == 'JPG' && $is_gdjpg) {
+    if (($imtype == 'JPEG' || $imtype == 'JPG') && $is_gdjpg) {
         $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
         fclose($fhandle);
         $create_thumb = imagecreatetruecolor($twidth, $theight);
@@ -332,7 +382,7 @@ function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
     $picture_original_tmp = $folder . '0_temp' . $file . '.jpg';
     $gd_info = gd_info();
     list($is_gdjpg, $is_gdgif, $is_gdpng) = array($gd_info['JPEG Support'], $gd_info['GIF Read Support'], $gd_info['PNG Support']);
-    $imtype = strtoupper(substr($file, -3));
+    $imtype = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
     list($width, $height) = getimagesize($pict_path_original);
     if ($width <= $maxwidth && $height <= $maxheight) {
         return (true);
@@ -348,7 +398,7 @@ function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
         $rheight = ($rwidth / $width) * $height;
     }
     echo ('Resize: ' . $rwidth . ' - ' . $rheight);
-    if ($imtype == 'JPG' && $is_gdjpg) {
+    if (($imtype == 'JPEG' || $imtype == 'JPG') && $is_gdjpg) {
         rename($pict_path_original, $picture_original_tmp);
         $create_resized = imagecreatetruecolor($rwidth, $rheight);
         $source = imagecreatefromjpeg($picture_original_tmp);
