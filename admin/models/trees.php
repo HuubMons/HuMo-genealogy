@@ -227,6 +227,7 @@ class TreesModel
             }
         }
 
+        /*
         if (isset($_GET['up']) && is_numeric($_GET['tree_order']) && is_numeric($_GET['id'])) {
             // *** Search previous family tree ***
             $item = $dbh->query("SELECT * FROM humo_trees WHERE tree_order=" . ($_GET['tree_order'] - 1));
@@ -250,6 +251,7 @@ class TreesModel
             $sql = "UPDATE humo_trees SET tree_order='" . safe_text_db($_GET['tree_order'] + 1) . "' WHERE tree_id=" . safe_text_db($_GET['id']);
             $dbh->query($sql);
         }
+        */
 
         if (isset($_POST['add_tree_text'])) {
             $sql = "INSERT INTO humo_tree_texts SET

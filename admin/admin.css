@@ -213,7 +213,7 @@ div.rtlsddm #sub_2 ul {
 }
 
 /* Order boxes (children) */
-
+/* TODO it's possible to use bootstrap layout */
 .sortable {
     width: 750px;
     user-select: none;
