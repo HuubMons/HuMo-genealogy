@@ -272,71 +272,61 @@ if (!defined('ADMIN_PAGE')) {
                     echo __('Optimize table...') . ' humo_persons<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_persons";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_persons");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_families<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_families";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_families");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_unprocessed_tags<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_unprocessed_tags";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_unprocessed_tags");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_settings<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_settings";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_settings");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_repositories<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_repositories";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_repositories");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_sources<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_sources";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_sources");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_texts<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_texts";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_texts");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_connections<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_connections";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_connections");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_addresses<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_addresses";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_addresses");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_events<br>';
                     //ob_flush();
                     flush();
-                    $sql = "OPTIMIZE TABLE humo_events";
-                    @$result = $dbh->query($sql);
+                    @$result = $dbh->query("OPTIMIZE TABLE humo_events");
                 }
                 ?>
                 <?= $mbytes; ?> MB <a href="index.php?optimize=1"><?= __('Optimize database.'); ?></a>
@@ -391,22 +381,21 @@ if (!defined('ADMIN_PAGE')) {
                 <?php
                 $is_thumblib = false;
                 $no_windows = (strtolower(substr(PHP_OS, 0, 3)) !== 'win');
-
-                echo __('Imagick (images):');
-                if (extension_loaded('imagick')) {
                 ?>
+
+                <?= __('Imagick (images):'); ?>
+                <?php if (extension_loaded('imagick')) { ?>
                     <?= strtolower(__('Yes')); ?><br>
 
+                    <?php if ($no_windows) { ?>
+                        - <?= __('Ghostscript (PDF support):'); ?>
                 <?php
-                    if ($no_windows) {
-                        echo '- ' . __('Ghostscript (PDF support):') . ' ';
                         echo (trim(shell_exec('type -P gs'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')) . '<br>';
                         echo '- ' . __('ffmpeg (movie support):') . ' ';
                         echo (trim(shell_exec('type -P ffmpeg'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')) . '<br>';
 
                         $is_thumblib = true;
                     }
-
                 } else {
                     echo ' ' . strtolower(__('No')) . '<br>';
                 }
@@ -424,6 +413,7 @@ if (!defined('ADMIN_PAGE')) {
                 }
                 ?>
 
+                <!-- Auto create thumbnails -->
                 <?php if (isset($_POST["thumbnail_auto_create"]) && ($_POST["thumbnail_auto_create"] == 'y' || $_POST["thumbnail_auto_create"] == 'n')) {
                     $db_functions->update_settings('thumbnail_auto_create', $_POST["thumbnail_auto_create"]);
                     $humo_option["thumbnail_auto_create"] = $_POST["thumbnail_auto_create"];
@@ -444,9 +434,7 @@ if (!defined('ADMIN_PAGE')) {
                     </div>
                 </form>
 
-
-
-
+                <!-- Media privacy mode -->
                 <?php if (isset($_POST["media_privacy_mode"]) && ($_POST["media_privacy_mode"] == 'y' || $_POST["media_privacy_mode"] == 'n')) {
                     $db_functions->update_settings('media_privacy_mode', $_POST["media_privacy_mode"]);
                     $humo_option["media_privacy_mode"] = $_POST["media_privacy_mode"];
@@ -478,8 +466,7 @@ if (!defined('ADMIN_PAGE')) {
         // *** Check for standard admin username and password ***
         $check_admin_user = false;
         $check_admin_pw = false;
-        $sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
-        $check_login = $dbh->query($sql);
+        $check_login = $dbh->query("SELECT * FROM humo_users WHERE user_group_id='1'");
         while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
             if ($check_loginDb->user_name == 'admin') {
                 $check_admin_user = true;
@@ -716,3 +703,4 @@ The file .htpasswd will look something like this:<br>'); ?>
 
         </div>
     <?php } ?>
+</div>
