@@ -34,11 +34,14 @@ function create_thumbnail_IM($folder, $file, $theight = 120)
 {
     $is_ghostscript = false;   // ghostscript has to be installed for pdf handling
     $is_ffmpeg      = false;   // ffmpeg has to be installed for video handling
-    if (trim(shell_exec('type -P gs'))) {
-        $is_ghostscript = true;
-    }
-    if (trim(shell_exec('type -P ffmpeg'))) {
-        $is_ffmpeg = true;
+    $no_windows = (strtolower(substr(PHP_OS, 0, 3)) !== 'win');
+    if ($no_windows) {
+        if (trim(shell_exec('type -P gs'))) {
+            $is_ghostscript = true;
+        }
+        if (trim(shell_exec('type -P ffmpeg'))) {
+            $is_ffmpeg = true;
+        }
     }
     $add_arrow = false;
     $success = false;
@@ -331,7 +334,8 @@ function create_thumbnail_GD($folder, $file, $theight = 120)
     $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
     $gd_info = gd_info();
     list($is_gdjpg, $is_gdgif, $is_gdpng) = array($gd_info['JPEG Support'], $gd_info['GIF Read Support'], $gd_info['PNG Support']);
-    $imtype = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
+    $gdmime = get_GDmime(); // a.array
+    $imtype = $gdmime[check_media_type($folder, $file)];
     $success = false;
     list($width, $height) = getimagesize($pict_path_original);
     if ($height == 0) {
@@ -382,7 +386,8 @@ function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
     $picture_original_tmp = $folder . '0_temp' . $file . '.jpg';
     $gd_info = gd_info();
     list($is_gdjpg, $is_gdgif, $is_gdpng) = array($gd_info['JPEG Support'], $gd_info['GIF Read Support'], $gd_info['PNG Support']);
-    $imtype = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
+    $gdmime = get_GDmime(); // a.array
+    $imtype = $gdmime[check_media_type($folder, $file)];
     list($width, $height) = getimagesize($pict_path_original);
     if ($width <= $maxwidth && $height <= $maxheight) {
         return (true);
@@ -428,14 +433,18 @@ function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
     }
     return ($success);
 }
-function get_pcat_dirs()
+function get_pcat_dirs() // returns a.array with existing cat subfolders key=>dir val=>category name localized
 {
-    global $dbh, $tree_id;
+    global $dbh, $tree_id, $selected_language;
 
     $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
     $dataDb = $data2sql->fetch(PDO::FETCH_OBJ);
-
     $tree_pict_path = $dataDb->tree_pict_path;
+    if (substr($tree_pict_path, 0, 1) === '|') {
+        $tree_pict_path = 'media/';
+    }
+    // adjust path to media dir
+    $tree_pict_path = __DIR__ . '/../../' . $tree_pict_path;
     $tmp_pcat_dirs = array();
     $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
     if ($temp->rowCount()) {   // there is a category table
@@ -444,10 +453,58 @@ function get_pcat_dirs()
             while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
                 $dirtest = $catDb->photocat_prefix;
                 if (is_dir($tree_pict_path . '/' . substr($dirtest, 0, 2))) {  // there is a subfolder of this prefix
-                    $tmp_pcat_dirs[$dirtest] = substr($dirtest, 0, 2);
+                    $name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . $catDb->photocat_prefix . "' AND photocat_language = '" . $selected_language . "'");
+                    if ($name->rowCount()) {  // there is a name for this language
+                        $nameDb = $name->fetch(PDO::FETCH_OBJ);
+                        $catname = $nameDb->photocat_name;
+                    } else {  // maybe a default is set
+                        $name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . $catDb->photocat_prefix . "' AND photocat_language = 'default'");
+                        if ($name->rowCount()) {  // there is a default name for this category
+                            $nameDb = $name->fetch(PDO::FETCH_OBJ);
+                            $catname = $nameDb->photocat_name;
+                        } else {  // no name found => show directory name
+                            $catname = substr($dirtest, 0, 2);
+                        }
+                    }
+                    $tmp_pcat_dirs[$dirtest] = $catname;
                 }
             }
         }
     }
     return $tmp_pcat_dirs;
+}
+function get_GDmime()
+{
+    return [
+        'image/pjpeg'  => 'JPG',
+        'image/jpeg'   => 'JPG',
+        'image/gif'    => 'GIF',
+        'image/png'    => 'PNG',
+        'image/bmp'    => 'BMP',
+        'image/tiff'   => 'TIF',
+        'audio/mpeg'   => '-',
+        'audio/mpeg3'  => '-',
+        'audio/x-mpeg' => '-',
+        'audio/x-mpeg3' => '-',
+        'audio/mpg'    => '-',
+        'audio/mp3'    => '-',
+        'audio/mid'    => '-',
+        'audio/midi'   => '-',
+        'audio/x-midi' => '-',
+        'audio/x-ms-wma' => '-',
+        'audio/wav'      => '-',
+        'audio/x-wav'    => '-',
+        'audio/x-pn-realaudio' => '-',
+        'audio/x-realaudio'   => '-',
+        'application/pdf'     => '-',
+        'application/msword'  => '-',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'  => '-',
+        'video/quicktime' => '-',
+        'video/x-flv'     => '-',
+        'video/avi'       => '-',
+        'video/x-msvideo' => '-',
+        'video/msvideo'   => '-',
+        'video/mpeg'      => '-',
+        'video/mp4'       => '-'
+    ];
 }
