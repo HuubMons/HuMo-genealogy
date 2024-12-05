@@ -487,3 +487,8 @@ if (!isset($humo_option["thumbnail_auto_create"])) {
     $humo_option["thumbnail_auto_create"] = 'n';
     $dbh->query("INSERT INTO humo_settings SET setting_variable='thumbnail_auto_create', setting_value='n'");
 }
+
+if (!isset($humo_option["media_privacy_mode"])) {
+    $humo_option["media_privacy_mode"] = 'n';
+    $dbh->query("INSERT INTO humo_settings SET setting_variable='media_privacy_mode', setting_value='n'");
+}

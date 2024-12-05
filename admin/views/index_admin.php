@@ -444,6 +444,29 @@ if (!defined('ADMIN_PAGE')) {
                     </div>
                 </form>
 
+
+
+
+                <?php if (isset($_POST["media_privacy_mode"]) && ($_POST["media_privacy_mode"] == 'y' || $_POST["media_privacy_mode"] == 'n')) {
+                    $db_functions->update_settings('media_privacy_mode', $_POST["media_privacy_mode"]);
+                    $humo_option["media_privacy_mode"] = $_POST["media_privacy_mode"];
+                }
+                ?>
+                <form method="POST" action="index.php">
+                    <input type="hidden" name="page" value="<?= $page; ?>">
+                    <div class="row mb-2">
+                        <div class="col-md-auto">
+                            <?= __('Secure media folder for direct access?'); ?>
+                        </div>
+                        <div class="col-md-auto">
+                            <select size="1" name="media_privacy_mode" onChange="this.form.submit();" class="form-select form-select-sm">
+                                <option value="n"><?= __('No'); ?></option>
+                                <option value="y" <?= $humo_option["media_privacy_mode"] == 'y' ? 'selected' : ''; ?>><?= __('Yes'); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
             </div>
         </div>
     <?php } ?>

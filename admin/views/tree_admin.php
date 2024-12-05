@@ -3,7 +3,7 @@
 
 <ul class="list-group">
     <li class="list-group-item">
-        <div class="row text-bg-info p-3 mt-2">
+        <div class="row bg-primary-subtle p-3 mt-2">
             <div class="col-md-1">
                 <b><?= __('Order'); ?></b>
             </div>
