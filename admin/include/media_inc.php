@@ -280,7 +280,8 @@ function check_media_type($folder, $file)
     $mtype  = mime_content_type($folder . $file);
 
     if (in_array($mtype, $mtypes)) {
-        return (true);
+        //here was bug - giving true rather than $mtype
+        return $mtype;
     }
     return (false);
 }
@@ -334,8 +335,11 @@ function create_thumbnail_GD($folder, $file, $theight = 120)
     $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
     $gd_info = gd_info();
     list($is_gdjpg, $is_gdgif, $is_gdpng) = array($gd_info['JPEG Support'], $gd_info['GIF Read Support'], $gd_info['PNG Support']);
-    $gdmime = get_GDmime(); // a.array
+    $gdmime = get_GDmime(); // a.array it gives (map mime->extensions)
+    // next we try to take some data from array based on bool given by check_media_type - it wont give uppercase extension needed in further code - UPDATE: fixed at check_media_type()
     $imtype = $gdmime[check_media_type($folder, $file)];
+    //old line im leaving it for a while - for deletion when version will be stable
+    // $imtype = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
     $success = false;
     list($width, $height) = getimagesize($pict_path_original);
     if ($height == 0) {
@@ -388,6 +392,8 @@ function resize_picture_GD($folder, $file, $maxheight = 1080, $maxwidth = 1920)
     list($is_gdjpg, $is_gdgif, $is_gdpng) = array($gd_info['JPEG Support'], $gd_info['GIF Read Support'], $gd_info['PNG Support']);
     $gdmime = get_GDmime(); // a.array
     $imtype = $gdmime[check_media_type($folder, $file)];
+    // old working code let it  stay until stable version
+    // $imtype = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
     list($width, $height) = getimagesize($pict_path_original);
     if ($width <= $maxwidth && $height <= $maxheight) {
         return (true);
