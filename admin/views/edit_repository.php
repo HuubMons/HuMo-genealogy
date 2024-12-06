@@ -25,8 +25,7 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
 <?php if (isset($_POST['repo_remove'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Really remove repository with all repository links?'); ?></strong>
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $page; ?>">
+        <form method="post" action="index.php?page=edit_repositories" style="display : inline;">
             <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
             <input type="submit" name="repo_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
             <input type="submit" name="dummy6" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
@@ -53,8 +52,7 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
         </div>
 
         <div class="col-md-auto">
-            <form method="POST" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
+            <form method="POST" action="index.php?page=edit_repositories" style="display : inline;">
                 <select size="1" name="repo_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select repository'); ?></option>
                     <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
@@ -68,8 +66,7 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
 
         <div class="col-auto">
             <?= __('or'); ?>:
-            <form method="POST" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
+            <form method="POST" action="index.php?page=edit_repositories" style="display : inline;">
                 <input type="submit" name="add_repo" value="<?= __('Add repository'); ?>" class="btn btn-sm btn-secondary">
             </form>
         </div>
@@ -117,8 +114,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
     }
 ?>
 
-    <form method="POST" action="index.php">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" action="index.php?page=edit_repositories">
         <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
         <div class="p-2 my-md-2 genealogy_search container-md">
             <div class="row mb-2">

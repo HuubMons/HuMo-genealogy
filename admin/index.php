@@ -675,9 +675,9 @@ if ($popup == false) {
         define('ADMIN_PAGE', true); // *** Safety line ***
 
         if ($page === 'install') {
-            //require __DIR__ . '/controller/installController.php';
-            //$controllerObj = new InstallController();
-            //$install = $controllerObj->detail($dbh);
+            require __DIR__ . '/controller/installController.php';
+            $controllerObj = new InstallController();
+            $install = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/install.php");
         } elseif ($page === 'extensions') {
             require __DIR__ . '/controller/extensionsController.php';

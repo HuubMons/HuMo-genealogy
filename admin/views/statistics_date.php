@@ -1,8 +1,6 @@
 <div class="center">
     <br>
-    <form method="POST" action="index.php" style="display : inline;">
-        <input type="hidden" name="page" value="<?= $page; ?>">
-        <input type="hidden" name="tab" value="date_statistics">
+    <form method="POST" action="index.php?page=statistics&amp;tab=date_statistics" style="display : inline;">
         <select size='1' name='month'>
             <option value="1" <?php if ($statistics['month'] == '1') echo ' selected'; ?>><?= __('January'); ?></option>
             <option value="2" <?php if ($statistics['month'] == '2') echo ' selected'; ?>><?= __('February'); ?></option>
