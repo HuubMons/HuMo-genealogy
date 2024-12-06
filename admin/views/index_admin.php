@@ -436,6 +436,162 @@ if (!defined('ADMIN_PAGE')) {
 
                 <!-- Media privacy mode -->
                 <?php if (isset($_POST["media_privacy_mode"]) && ($_POST["media_privacy_mode"] == 'y' || $_POST["media_privacy_mode"] == 'n')) {
+                    //I'm putting the code related to the "media privacy mode" option here because I don't see a better place. If I'm wrong, this should be moved.
+                    //when media privacy mode is enabled/disabled and media dir is under root dir and this is apache we must update .htaccess content. Below we make validation and give detailed info to user
+                    $server_ok = false;
+                    $htaccess_ok = false;
+                    //text which will be concatenated and use as info at the end
+                    $text = '';
+                    //first we will check what server soft user uses
+                    $text .= "Checking server:<br> ";
+                    $serverName = $_SERVER['SERVER_SOFTWARE'];
+                    //for simulating other options - delete after
+                    // $serverName = 'Apache';
+                    if (strpos($serverName, 'Apache') !== false) {
+                        $server_soft = 'Apache';
+                        $server_ok = true;
+                        $text .= "✅ Apache. Media privacy mode is fully compatible with Apache. It can operate both modes.<br> ";
+                    } elseif (strpos($serverName, 'Nginx') !== false) {
+                        $server_soft = 'Nginx';
+                        $text .= "❌ Nginx. Media privacy mode is not yet fully compatible with Nginx. You can achieve it by placing media directory outside root directory (but then normal mode will not work).<br>";
+                    } else {
+                        $server_soft = '❌ Unknown. We don&apos;t know if we can secure media directory.You can achieve it by placing media directory outside root directory (but then normal mode will not work).<br>';
+                    }
+                    $text .= "<hr>";
+
+                    function checkHtaccessSupport($testDir)
+                    {
+                        //some log arrays
+                        $successes = [];
+                        $errors = [];
+
+                        $htaccessFilePath = $testDir . DIRECTORY_SEPARATOR . '.htaccess';
+                        $testFile = 'test.php';
+                        $testFilePath = $testDir . DIRECTORY_SEPARATOR . $testFile;
+                        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+                        $host = $_SERVER['HTTP_HOST'];
+                        $serverAddress = $protocol . $host;
+                        $testUrl = $serverAddress . DIRECTORY_SEPARATOR . basename($testDir) . '/' . $testFile;
+
+                        try {
+                            $htaccessContent = "Deny from all\n";
+                            if (@file_put_contents($htaccessFilePath, $htaccessContent) === false) {
+                                throw new Exception("❌ Couldn't create .htaccess in directory: $testDir. Check if directory has write permissions.<br>");
+                            } else {
+                                $successes[] = "✅ Created .htaccess in directory: $testDir.<br>";
+                            }
+                            // Tworzymy plik testowy PHP
+                            $phpContent = "<?php echo 'Accessible'; ?>";
+                            if (@file_put_contents($testFilePath, $phpContent) === false) {
+                                throw new Exception("❌ Couldn't create $testFile in directory: $testDir.  Check if directory has write permissions.<br>");
+                            } else {
+                                $successes[] = "✅ Created $testFile in directory: $testDir.<br>";
+                            }
+                            $response = @file_get_contents($testUrl);
+                            // var_dump($response);
+                            if ($response == 'Accessible') {
+                                throw new Exception("❌ I could read $testFilePath ($testUrl) which is wrong. Despite creating a .htaccess file that forbids reading the file, I can access it. You probably don't have
+                                 a misconfigured <a href='https://httpd.apache.org/docs/2.4/mod/core.html#allowoverride' target='_new'>AllowOverride directive </a>in your Apache configuration files. In privacy mode media will be served and visible but anyone with link can display it.<br>");
+                            } else {
+                                $successes[] = "✅ Couldn't read $testFilePath ($testUrl) which means test .htaccess works in $testDir.<br>";
+                            }
+                            $messagesArr['status'] = true;
+                        } catch (Exception $e) {
+                            // delete files on exceptions
+                            $errors[] = $e->getMessage();
+                            $messagesArr['status'] = false;
+                        } finally {
+                            @unlink($htaccessFilePath);
+                            @unlink($testFilePath);
+                            $messagesArr['successes'] = $successes;
+                            $messagesArr['errors'] = $errors;
+                            return $messagesArr;
+                        }
+                    }
+
+                    $tree_qry = "SELECT * FROM humo_trees WHERE tree_pict_path!='EMPTY'";
+                    $datasql = $dbh->query($tree_qry);
+                    $rowCount = $datasql->rowCount();
+                    // $tree_db = $datasql->fetch(PDO::FETCH_OBJ);
+                    $treepaths = [];
+                    for ($i = 0; $i < $rowCount; $i++) {
+                        $tree_db = $datasql->fetch(PDO::FETCH_OBJ);
+                        $tree_pict_path = $tree_db->tree_pict_path;
+                        if (substr($tree_pict_path, 0, 1) === '|') {
+                            $tree_pict_path = 'media/';
+                        }
+
+                        if (!in_array($tree_pict_path, $treepaths)) $treepaths[] = $tree_pict_path;
+                    }
+
+                    foreach ($treepaths as $key => $value) {
+                        $testDirectory = realpath($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . $value);
+                        if ($testDirectory) {
+                            $text .= "Checking media path: $testDirectory:<br>";
+                        } else {
+                            $text .= "Checking media path: $value:<br>";
+                        }
+
+                        if ($testDirectory) {
+                            // Get the realpath of the directory and the document root
+                            $realDirectory = realpath($testDirectory);
+                            $documentRoot = realpath($_SERVER['DOCUMENT_ROOT']);
+                            // Check if the directory is below the document root
+                            if ($realDirectory && $documentRoot && strpos($realDirectory, $documentRoot) === 0) {
+                                $text .= "The directory $testDirectory is below the document root so on Apache we can operate both modes.<br>";
+                                if ($server_soft === "Apache") {
+                                    try {
+                                        $text .= "Checking if we can use .htaccess on Apache:<br>";
+                                        $check = checkHtaccessSupport($testDirectory);
+                                        // echo '<pre>';
+                                        // var_dump($check);
+                                        // echo '</pre>';
+                                        foreach ($check['successes'] as $success) {
+                                            $text .= "$success\n";
+                                        }
+                                        foreach ($check['errors'] as $error) {
+                                            $text .= "$error\n";
+                                        }
+                                        if ($check['status'] === true) {
+                                            $htaccess_ok = true;
+                                        }
+                                        $filePath = $testDirectory . '/.htaccess';
+                                        if ($_POST["media_privacy_mode"] === 'y') {
+                                            // .htaccess content with directive to not allow to get file by static link - file will be possible to get only by query url
+                                            $htaccessContent = "Deny from all\n";
+                                            $state = 'Direct access denied.';
+                                        } else {
+                                            $htaccessContent = '';
+                                            $state = 'Direct access allowed.';
+                                        }
+                                        if (@file_put_contents($filePath, $htaccessContent) !== false) {
+                                            $text .= "File .htaccess modified in $testDirectory. $state";
+                                        } else {
+                                            $text .= "Check permissions. I couldn't modify .htaccess in $testDirectory.";
+                                        }
+                                    } catch (Exception $e) {
+                                        $text .= $e->getMessage();
+                                        $htaccess_ok = false;
+                                    }
+                                }
+                            } else {
+                                $text .= "<p class='alert alert-info'>ℹ️ The directory $value is outside the document root so media privacy mode is only one working for this directory. Normal mode will not work.</p>";
+                            }
+                        } else {
+                            $text .= "<p class='alert alert-danger'>❌ I can't find $value directory. Check if it's created.</p>";
+                        }
+                        $text .= '<hr>';
+                    }
+                    //TODO: make function for automatic checks when directories are changed in tree options
+                    $text .= "<p class='alert alert-danger'>ℹ️ Warning. If You create or change media path for any of your trees You must reenable, redisable this option.</p>";
+
+                    if ($server_ok) {
+                        $alert_class = 'alert-success';
+                    } else {
+                        $alert_class = 'alert-danger';
+                    }
+                    echo '<div class="alert ' . $alert_class . '" role="alert">' . $text . '</div>';
+
                     $db_functions->update_settings('media_privacy_mode', $_POST["media_privacy_mode"]);
                     $humo_option["media_privacy_mode"] = $_POST["media_privacy_mode"];
                 }
