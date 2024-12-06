@@ -48,5 +48,9 @@ function give_media_path($media_dir, $media_filename)
         // serve_file?media_dir=" . $media_dir . "&media_filename=" . $media_filename;
         $final_media_path = "index.php?page=serve_file&media_dir=" . $media_dir . "&media_filename=" . $media_filename;
     }
-    return $final_media_path;
+    //return $final_media_path;
+
+
+    // Temporary solve path problems
+    return $media_dir . $media_filename;
 }
