@@ -675,11 +675,14 @@ if ($popup == false) {
         define('ADMIN_PAGE', true); // *** Safety line ***
 
         if ($page === 'install') {
+            //require __DIR__ . '/controller/installController.php';
+            //$controllerObj = new InstallController();
+            //$install = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/install.php");
         } elseif ($page === 'extensions') {
-            //require __DIR__ . '/controller/extensionsController.php';
-            //$controllerObj = new ExtensionsController();
-            //$extensions = $controllerObj->detail($dbh);
+            require __DIR__ . '/controller/extensionsController.php';
+            $controllerObj = new ExtensionsController();
+            $extensions = $controllerObj->detail($dbh, $db_functions, $humo_option, $language_file);
             include_once(__DIR__ . "/views/extensions.php");
         } elseif ($page === 'login') {
             include_once(__DIR__ . "/views/login.php");
