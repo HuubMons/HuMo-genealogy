@@ -5,6 +5,25 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 $tree_result = $db_functions->get_trees();
+
+$db_functions->set_tree_id($tree_id);
+
+function calculate_person($db_functions, $gedcomnumber)
+{
+    $pers_cal_date = '';
+    $person2_db = $db_functions->get_person($gedcomnumber);
+    if ($person2_db) {
+        if ($person2_db->pers_cal_date) {
+            $pers_cal_date = $person2_db->pers_cal_date;
+        } elseif ($person2_db->pers_birth_date) {
+            $pers_cal_date = $person2_db->pers_birth_date;
+        } elseif ($person2_db->pers_bapt_date) {
+            $pers_cal_date = $person2_db->pers_bapt_date;
+        }
+        $pers_cal_date = substr($pers_cal_date, -4);
+    }
+    return $pers_cal_date;
+}
 ?>
 
 <h1 class="center"><?= __('Calculated birth date'); ?></h1>
@@ -13,9 +32,7 @@ $tree_result = $db_functions->get_trees();
 These calculated dates will be used for persons where all dates are missing (no birth, baptise, death or burial dates).<br>
 Calculation will be done using birth, baptise, death, burial and marriage dates of persons and these dates of parents and children.'); ?><br><br>
 
-<form method="POST" action="index.php">
-    <input type="hidden" name="page" value="cal_date">
-
+<form method="POST" action="index.php?page=cal_date">
     <div class="row justify-content-center align-items-center me-1">
         <div class=" col-auto">
             <?= __('Choose family tree'); ?>
@@ -38,32 +55,10 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
     </div>
 </form><br>
 
-<?php
-if (isset($_POST['submit_button']) && isset($tree_id)) {
-    $db_functions->set_tree_id($tree_id);
-
-    function calculate_person($gedcomnumber)
-    {
-        global $db_functions;
-        $pers_cal_date = '';
-        $person2_db = $db_functions->get_person($gedcomnumber);
-        if ($person2_db) {
-            if ($person2_db->pers_cal_date) {
-                $pers_cal_date = $person2_db->pers_cal_date;
-            } elseif ($person2_db->pers_birth_date) {
-                $pers_cal_date = $person2_db->pers_birth_date;
-            } elseif ($person2_db->pers_bapt_date) {
-                $pers_cal_date = $person2_db->pers_bapt_date;
-            }
-            $pers_cal_date = substr($pers_cal_date, -4);
-        }
-        return $pers_cal_date;
-    }
-?>
-
+<?php if (isset($_POST['submit_button']) && isset($tree_id)) { ?>
     <table class="table">
         <tr>
-            <td colspan="2">
+            <td>
                 <?php
                 // *** Process estimates/ calculated date for privacy filter ***
                 $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND (pers_cal_date='' OR pers_cal_date IS NULL)";
@@ -98,12 +93,12 @@ if (isset($_POST['submit_button']) && isset($tree_id)) {
                         if ($person_db->pers_gedcomnumber == $fam_db->fam_man) {
                             $gedcomnumber = $fam_db->fam_woman;
                         }
-                        $pers_cal_date = calculate_person($gedcomnumber);
+                        $pers_cal_date = calculate_person($db_functions, $gedcomnumber);
 
                         // *** Check date of children ***
                         if ($pers_cal_date == '' && $fam_db->fam_children) {
                             $children_array = explode(";", $fam_db->fam_children);
-                            $pers_cal_date = calculate_person($children_array[0]);
+                            $pers_cal_date = calculate_person($db_functions, $children_array[0]);
                             if ($pers_cal_date) {
                                 $pers_cal_date -= 25;
                             }
@@ -131,14 +126,14 @@ if (isset($_POST['submit_button']) && isset($tree_id)) {
 
                         // *** Check date of father ***
                         if ($pers_cal_date == '' && $fam_db->fam_man) {
-                            $pers_cal_date = calculate_person($fam_db->fam_man);
+                            $pers_cal_date = calculate_person($db_functions, $fam_db->fam_man);
                             if ($pers_cal_date) {
                                 $pers_cal_date += 25;
                             }
                         }
                         // *** Check date of mother ***
                         if ($pers_cal_date == '' && $fam_db->fam_woman) {
-                            $pers_cal_date = calculate_person($fam_db->fam_woman);
+                            $pers_cal_date = calculate_person($db_functions, $fam_db->fam_woman);
                             if ($pers_cal_date) {
                                 $pers_cal_date += 25;
                             }
@@ -151,22 +146,15 @@ if (isset($_POST['submit_button']) && isset($tree_id)) {
                             $pers_cal_date -= 60;
                         }
                     }
-
                 ?>
+
                     <span style="width:80px; display:inline-block;"><?= $person_db->pers_gedcomnumber; ?></span>
+                    <?= $person_db->pers_firstname; ?> <?= strtolower(str_replace("_", " ", $person_db->pers_prefix)); ?><?= $person_db->pers_lastname; ?> <?= $pers_cal_date; ?>
+                    <?= $pers_cal_date == '' ? '<b>' . __('No dates') . '</b>' : ''; ?><br>
                 <?php
-                    // TODO use class to show name.
-                    echo $person_db->pers_firstname . ' ' . strtolower(str_replace("_", " ", $person_db->pers_prefix)) . $person_db->pers_lastname;
-                    echo ' ' . $pers_cal_date;
-                    if ($pers_cal_date == '') {
-                        echo '<b>' . __('No dates') . '</b>';
-                    }
-                    echo '<br>';
-
-                    $sql = "UPDATE humo_persons SET pers_cal_date='" . $pers_cal_date . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $person_db->pers_id . "'";
-                    $dbh->query($sql);
+                    $dbh->query("UPDATE humo_persons SET pers_cal_date='" . $pers_cal_date . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $person_db->pers_id . "'");
                 }
-                ?>
+                ?><br>
                 <b><?= __('Calculation of birth dates is completed. Sometimes more dates will be found if calculation is restarted!'); ?></b>
             </td>
         </tr>
