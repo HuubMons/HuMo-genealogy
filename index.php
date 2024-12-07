@@ -37,148 +37,23 @@ session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
 //session_regenerate_id();
 
-if (isset($_GET['log_off'])) {
-    unset($_SESSION['user_name']);
-    unset($_SESSION['user_id']);
-    unset($_SESSION['user_group_id']);
-    unset($_SESSION['tree_prefix']);
-    session_destroy();
-}
+// *** Connect to database ***
+include_once(__DIR__ . "/include/db_login.php");
 
-include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
-include_once(__DIR__ . '/include/show_tree_text.php');
-include_once(__DIR__ . "/include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
+// *** Added dec. 2024 ***
+require __DIR__ . '/app/controller/indexController.php';
+$controllerObj = new IndexController();
+$index = $controllerObj->detail($dbh, $humo_option);
 
-// *** Show a message at NEW installation ***
-try {
-    $result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-} catch (PDOException $e) {
-    echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
-    exit();
-}
-
-include_once(__DIR__ . "/include/safe.php");
-include_once(__DIR__ . "/include/settings_global.php"); // System variables
-include_once(__DIR__ . "/include/settings_user.php"); // User variables
-
-include_once(__DIR__ . "/include/get_visitor_ip.php");
-$visitor_ip = visitorIP();
-
-// TODO dec. 2023 now included this in index.php. Check other includes...
-include_once(__DIR__ . "/include/person_cls.php");
-$person_cls = new person_cls;
-
-// *** Debug HuMo-genealogy front pages ***
-if ($humo_option["debug_front_pages"] == 'y') {
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-}
-
-// *** Check if visitor is allowed access to website ***
-if (!$db_functions->check_visitor($visitor_ip, 'partial')) {
-    echo 'Access to website is blocked.';
-    exit;
-}
-
-// *** Set timezone ***
-include_once(__DIR__ . "/include/timezone.php"); // set timezone 
-timezone();
-// *** TIMEZONE TEST ***
-//echo date("Y-m-d H:i");
-
-// *** Check if visitor is a bot or crawler ***
-$bot_visit = preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['HTTP_USER_AGENT']);
-// *** Line for bot test! ***
-//$bot_visit=true;
-
-// *** Get ordered list of languages ***
-include(__DIR__ . '/languages/language_cls.php');
-$language_cls = new Language_cls;
-$language_file = $language_cls->get_languages();
-
-// *** Log in ***
-$valid_user = false;
-$fault = false;
-if (isset($_POST["username"]) && isset($_POST["password"])) {
-    $resultDb = $db_functions->get_user($_POST["username"], $_POST["password"]);
-    if ($resultDb) {
-        $valid_user = true;
-
-        // *** 2FA is enabled, so check 2FA code ***
-        if (isset($resultDb->user_2fa_enabled) && $resultDb->user_2fa_enabled) {
-            $valid_user = false;
-            $fault = true;
-            include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
-
-            if ($_POST['2fa_code'] && is_numeric($_POST['2fa_code'])) {
-                $Authenticator = new Authenticator();
-                $checkResult = $Authenticator->verifyCode($resultDb->user_2fa_auth_secret, $_POST['2fa_code'], 2);        // 2 = 2*30sec clock tolerance
-                if ($checkResult) {
-                    $valid_user = true;
-                    $fault = false;
-                }
-            }
-        }
-
-        if ($valid_user) {
-            $_SESSION['user_name'] = $resultDb->user_name;
-            $_SESSION['user_id'] = $resultDb->user_id;
-            $_SESSION['user_group_id'] = $resultDb->user_group_id;
+// TODO dec. 2024 for now: use old variable names.
+$db_functions = $index['db_functions'];
+$visitor_ip = $index['visitor_ip'];
+$person_cls = $index['person_cls'];
+$bot_visit = $index['bot_visit'];
+$language_file = $index['language_file'];
 
 
-            // *** August 2023: Also login for admin pages ***
-            // *** Edit family trees [GROUP SETTING] ***
-            $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $resultDb->user_group_id . "'");
-            @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
-            if (isset($groepDb->group_edit_trees)) {
-                $group_edit_trees = $groepDb->group_edit_trees;
-            }
-            // *** Edit family trees [USER SETTING] ***
-            if (isset($resultDb->user_edit_trees) && $resultDb->user_edit_trees) {
-                if ($group_edit_trees) {
-                    $group_edit_trees .= ';' . $resultDb->user_edit_trees;
-                } else {
-                    $group_edit_trees = $resultDb->user_edit_trees;
-                }
-            }
-            if ($groepDb->group_admin != 'j' && $group_edit_trees == '') {
-                // *** User is not an administrator or editor ***
-                //echo __('Access to admin pages is not allowed.');
-                //exit;
-            } else {
-                $_SESSION['user_name_admin'] = $resultDb->user_name;
-                $_SESSION['user_id_admin'] = $resultDb->user_id;
-                $_SESSION['group_id_admin'] = $resultDb->user_group_id;
-            }
-
-            // *** Save succesful login into log! ***
-            $sql = "INSERT INTO humo_user_log SET
-                log_date='" . date("Y-m-d H:i") . "',
-                log_username='" . $resultDb->user_name . "',
-                log_ip_address='" . $visitor_ip . "',
-                log_user_admin='user',
-                log_status='success'";
-            $dbh->query($sql);
-
-            // *** Send to secured page ***
-            header("Location: index.php?menu_choice=main_index");
-            exit();
-        }
-    } else {
-        // *** No valid user found ***
-        $fault = true;
-
-        // *** Save failed login into log! ***
-        $sql = "INSERT INTO humo_user_log SET
-            log_date='" . date("Y-m-d H:i") . "',
-            log_username='" . safe_text_db($_POST["username"]) . "',
-            log_ip_address='" . $visitor_ip . "',
-            log_user_admin='user',
-            log_status='failed'";
-        $dbh->query($sql);
-    }
-}
+// *** dec. 2024: refactor index.php in progress ***
 
 // *** Language processing after header("..") lines. *** 
 include_once(__DIR__ . "/languages/language.php"); //Taal
@@ -367,38 +242,6 @@ if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cro
         include(__DIR__ . "/languages/change_all.php");
     }
 }
-
-// *** New routing script sept. 2023 ***
-/*
-include_once(__DIR__ . '/app/routing/router.php');
-# Search route, return match or not found
-$router = new Router();
-$matchedRoute = $router->get_route($_SERVER['REQUEST_URI']);
-if (isset($matchedRoute['page'])) {
-    $page = $matchedRoute['page'];
-
-    // TODO remove title from router script
-    $head_text = $matchedRoute['title'];
-
-    if (isset($matchedRoute['select_tree_id'])) {
-        $select_tree_id = $matchedRoute['select_tree_id'];
-    }
-    // *** Used for list_names ***
-    if (isset($matchedRoute['last_name']) and is_string($matchedRoute['last_name'])) {
-        $last_name = $matchedRoute['last_name'];
-    }
-    // *** Used for source ***
-    // TODO improve processing of these variables 
-    if (isset($matchedRoute['id'])) {
-        $id = $matchedRoute['id']; // for source
-        $_GET["id"] = $matchedRoute['id']; // for family page, and other pages? TODO improve processing of these variables.
-    }
-
-    if ($matchedRoute['tmp_path']) {
-        $tmp_path = $matchedRoute['tmp_path'];
-    }
-}
-*/
 
 // *** Backwards compatibility only ***
 // *** Example: gezin.php?database=humo_&id=F1&hoofdpersoon=I2 ***

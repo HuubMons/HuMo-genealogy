@@ -47,20 +47,14 @@ $page = 'index';
 //	die();
 //}
 
-// *** Only logoff admin ***
-if (isset($_GET['log_off'])) {
-    unset($_SESSION['user_name_admin']);
-    unset($_SESSION['user_id_admin']);
-    unset($_SESSION['group_id_admin']);
-}
 
-$ADMIN = TRUE; // *** Override "no database" message for admin ***
-include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
+// *** Added dec. 2024 ***
+require __DIR__ . '/controller/main_adminController.php';
+$controllerObj = new Main_adminController();
+$main_admin = $controllerObj->detail($dbh);
 
-include_once(__DIR__ . "/../include/safe.php"); // Variables
 
-// *** Function to show family tree texts ***
-include_once(__DIR__ . '/../include/show_tree_text.php');
+
 
 include_once(__DIR__ . "/../include/db_functions_cls.php");
 if (isset($dbh)) {
