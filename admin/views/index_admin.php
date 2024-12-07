@@ -446,11 +446,15 @@ if (!defined('ADMIN_PAGE')) {
                     $text .= "Checking server:<br> ";
                     $serverName = $_SERVER['SERVER_SOFTWARE'];
                     //for simulating other options - delete after
-                    // $serverName = 'Apache';
+                    // $serverName = 'Nginx';
                     if (strpos($serverName, 'Apache') !== false) {
                         $server_soft = 'Apache';
                         $server_ok = true;
                         $text .= "✅ Apache. Media privacy mode is fully compatible with Apache. It can operate both modes.<br> ";
+                    } elseif (strpos($serverName, 'LiteSpeed') !== false) {
+                        $server_soft = 'LiteSpeed';
+                        $server_ok = true;
+                        $text .= "✅ LiteSpeed. It's Apache compatible server. Media privacy mode should be fully compatible with LiteSpeed. It can operate both modes.<br> ";
                     } elseif (strpos($serverName, 'Nginx') !== false) {
                         $server_soft = 'Nginx';
                         $text .= "❌ Nginx. Media privacy mode is not yet fully compatible with Nginx. You can achieve it by placing media directory outside root directory (but then normal mode will not work).<br>";
@@ -539,7 +543,7 @@ if (!defined('ADMIN_PAGE')) {
                             // Check if the directory is below the document root
                             if ($realDirectory && $documentRoot && strpos($realDirectory, $documentRoot) === 0) {
                                 $text .= "The directory $testDirectory is below the document root so on Apache we can operate both modes.<br>";
-                                if ($server_soft === "Apache") {
+                                if ($server_soft === "Apache" || $server_soft === "LiteSpeed") {
                                     try {
                                         $text .= "Checking if we can use .htaccess on Apache:<br>";
                                         $check = checkHtaccessSupport($testDirectory);
@@ -559,15 +563,15 @@ if (!defined('ADMIN_PAGE')) {
                                         if ($_POST["media_privacy_mode"] === 'y') {
                                             // .htaccess content with directive to not allow to get file by static link - file will be possible to get only by query url
                                             $htaccessContent = "Deny from all\n";
-                                            $state = 'Direct access denied.';
+                                            $state = '✅ <span style="color: green;">Direct access denied.</span>';
                                         } else {
                                             $htaccessContent = '';
-                                            $state = 'Direct access allowed.';
+                                            $state = '✅ <span style="color: red;">Direct access allowed.</span>';
                                         }
                                         if (@file_put_contents($filePath, $htaccessContent) !== false) {
-                                            $text .= "File .htaccess modified in $testDirectory. $state";
+                                            $text .= "✅ File .htaccess modified in $testDirectory. $state";
                                         } else {
-                                            $text .= "Check permissions. I couldn't modify .htaccess in $testDirectory.";
+                                            $text .= "❌ Check permissions. I couldn't modify .htaccess in $testDirectory.";
                                         }
                                     } catch (Exception $e) {
                                         $text .= $e->getMessage();
