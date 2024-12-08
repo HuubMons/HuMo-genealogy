@@ -248,7 +248,7 @@ $menu_top = getActiveTopMenu($page);
     <!-- Bootstrap: rescale standard HuMo-genealogy pages for mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= $head_text; ?></title>
+    <title><?= $index['main_admin']; ?></title>
 
     <?php if ($humo_option["searchengine"] == "j") { ?>
         <?= $humo_option["robots_option"]; ?>

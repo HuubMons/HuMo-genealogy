@@ -60,7 +60,7 @@ if (isset($screen_mode) && $screen_mode == "PDF") {
 
 // *** Default values
 $page = 'index';
-$head_text = $humo_option["database_name"];
+$index['main_admin'] = $humo_option["database_name"]; // TODO check variable. Not used here?
 $tmp_path = '';
 
 

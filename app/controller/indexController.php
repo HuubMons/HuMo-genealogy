@@ -9,32 +9,24 @@ if (isset($_GET['log_off'])) {
     session_destroy();
 }
 
-include_once(__DIR__ . '/../../include/show_tree_text.php');
-include_once(__DIR__ . "/../../include/db_functions_cls.php");
+include_once(__DIR__ . "/../../include/db_login.php"); // Connect to database
+include_once(__DIR__ . "/../../include/show_tree_text.php");
+include_once(__DIR__ . "/../../include/db_functions_cls.php"); // General database functions
 include_once(__DIR__ . "/../../include/safe.php");
 include_once(__DIR__ . "/../../include/settings_global.php"); // System variables
 include_once(__DIR__ . "/../../include/settings_user.php"); // User variables
-include_once(__DIR__ . "/../../include/get_visitor_ip.php");
+include_once(__DIR__ . "/../../include/get_visitor_ip.php"); // Statistics and option to block certain IP addresses.
 
-// TODO dec. 2023 now included this in index.php. Check other includes...
+// TODO dec. 2023 now included this in index.php. Check other includes.
 include_once(__DIR__ . "/../../include/person_cls.php");
 
 include_once(__DIR__ . "/../../include/timezone.php");
-include(__DIR__ . '/../../languages/language_cls.php');
+include(__DIR__ . "/../../languages/language_cls.php");
 
+include_once(__DIR__ . '/../routing/router.php'); // Page routing.
 
 class IndexController
 {
-    /*
-    private $db_functions, $user;
-
-    public function __construct($db_functions, $user)
-    {
-        $this->db_functions = $db_functions;
-        $this->user = $user;
-    }
-    */
-
     public function detail($dbh, $humo_option)
     {
         $indexModel = new IndexModel();
@@ -70,8 +62,19 @@ class IndexController
         $language_cls = new Language_cls;
         $index['language_file'] = $language_cls->get_languages();
 
+        // *** Language processing after header("..") lines. *** 
+        include_once(__DIR__ . "/../../languages/language.php"); //Taal
+        $index['language'] = $language; // $language = array.
+        $index['selected_language'] = $selected_language;
+
         $login = $indexModel->login($dbh, $index['db_functions'], $index['visitor_ip']);
         $index = array_merge($index, $login);
+
+        $ltr_rtl = $indexModel->process_ltr_rtl($index['language']);
+        $index = array_merge($index, $ltr_rtl);
+
+        $route = $indexModel->get_route($humo_option);
+        $index = array_merge($index, $route);
 
         return $index;
     }
