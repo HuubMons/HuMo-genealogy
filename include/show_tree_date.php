@@ -2,6 +2,10 @@
 // *** June 2024: new general function ***
 function show_tree_date($tree_date, $show_time = false)
 {
+    if (!$tree_date) {
+        $tree_date = ''; // Prevent error for new tree.
+    }
+
     $month = ''; // *** empty date ***
     if (substr($tree_date, 5, 2) === '01') {
         $month = ' ' . __('jan') . ' ';
