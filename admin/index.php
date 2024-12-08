@@ -56,26 +56,9 @@ $main_admin = $controllerObj->detail($dbh);
 
 
 
-include_once(__DIR__ . "/../include/db_functions_cls.php");
-if (isset($dbh)) {
-    $db_functions = new db_functions($dbh);
-}
-
-// *** Added juli 2019: Person functions ***
-include_once(__DIR__ . "/../include/person_cls.php");
-
-// *** Added october 2023: generate links to frontsite ***
-include_once(__DIR__ . "/../include/links.php");
-$link_cls = new Link_cls();
-
-include_once(__DIR__ . "/../include/get_visitor_ip.php");
-$visitor_ip = visitorIP();
-
 // *** Only load settings if database and table exists ***
-$show_menu_left = false;
+$main_admin['show_menu'] = false;
 $popup = false;
-
-$update_message = '';
 
 if (isset($database_check) && @$database_check) {  // otherwise we can't make $dbh statements
     $check_tables = false;
@@ -89,14 +72,13 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
         include_once(__DIR__ . "/../include/settings_global.php");
 
         // *** Added may 2020, needed for some user settings in admin section ***
-        // *** At this moment there is no separation for front user and admin user... ***
         include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
 
         // **** Temporary update scripts ***
         //
         //
 
-        $show_menu_left = true;
+        $main_admin['show_menu'] = true;
 
         // *** Debug HuMo-genealogy`admin pages ***
         if ($humo_option["debug_admin_pages"] == 'y') {
@@ -114,7 +96,7 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
 
 // *** First installation: show menu if installation of tables is started ***
 if (isset($_POST['install_tables2'])) {
-    $show_menu_left = true;
+    $main_admin['show_menu'] = true;
 }
 
 if (isset($database_check) && @$database_check) {  // otherwise we can't make $dbh statements
@@ -123,7 +105,7 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
         $check_update = @$dbh->query("SELECT * FROM humo_instellingen");
         if ($check_update) {
             $page = 'update';
-            $show_menu_left = false;
+            $main_admin['show_menu'] = false;
         }
     } catch (Exception $e) {
         //
@@ -132,13 +114,13 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
     // *** Check HuMo-genealogy database status, will be changed if database update is needed ***
     if (isset($humo_option["update_status"]) && $humo_option["update_status"] < 19) {
         $page = 'update';
-        $show_menu_left = false;
+        $main_admin['show_menu'] = false;
     }
 
     if (
         isset($_GET['page']) && ($_GET['page'] == 'editor_sources' || $_GET['page'] == 'editor_place_select' || $_GET['page'] == 'editor_person_select' || $_GET['page'] == 'editor_relation_select' || $_GET['page'] == 'editor_media_select' || $_GET['page'] == 'editor_user_settings')
     ) {
-        $show_menu_left = false;
+        $main_admin['show_menu'] = false;
         $popup = true;
     }
 }
@@ -561,7 +543,7 @@ if ($popup == false) {
                 <!-- <button class="btn btn-secondary" type="button">A Button</button> -->
 
                 <!-- Control -->
-                <?php if ($show_menu_left == true && $page !== 'login') {; ?>
+                <?php if ($main_admin['show_menu'] == true && $page !== 'login') {; ?>
                     <?php if ($group_administrator == 'j') {; ?>
                         <ul>
                             <li><a href="index.php?page=install"><?= __('Install'); ?></a></li>

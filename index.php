@@ -37,9 +37,6 @@ session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
 //session_regenerate_id();
 
-// *** Connect to database ***
-include_once(__DIR__ . "/include/db_login.php");
-
 // *** Added dec. 2024 ***
 require __DIR__ . '/app/controller/indexController.php';
 $controllerObj = new IndexController();
@@ -50,91 +47,29 @@ $db_functions = $index['db_functions'];
 $visitor_ip = $index['visitor_ip'];
 $person_cls = $index['person_cls'];
 $bot_visit = $index['bot_visit'];
-$language_file = $index['language_file'];
-
-
-// *** dec. 2024: refactor index.php in progress ***
-
-// *** Language processing after header("..") lines. *** 
-include_once(__DIR__ . "/languages/language.php"); //Taal
+$language_file = $index['language_file']; // Array including all languages files.
+$language = $index['language']; // $language = array.
+$selected_language = $index['selected_language'];
 
 // *** Process LTR and RTL variables ***
-$dirmark1 = "&#x200E;";  //ltr marker
-$dirmark2 = "&#x200F;";  //rtl marker
-$rtlmarker = "ltr";
-$alignmarker = "left";
-// *** Switch direction markers if language is RTL ***
-if ($language["dir"] == "rtl") {
-    $dirmark1 = "&#x200F;";  //rtl marker
-    $dirmark2 = "&#x200E;";  //ltr marker
-    $rtlmarker = "rtl";
-    $alignmarker = "right";
+$dirmark1 = $index['dirmark1'];  //ltr marker
+$dirmark2 = $index['dirmark2'];  //rtl marker
+$rtlmarker = $index['rtlmarker'];
+$alignmarker = $index['alignmarker'];
+
+// *** New routing script sept. 2023. Search route, return match or not found ***
+$page = $index['page'];
+if (isset($index['last_name'])) {
+    $last_name = $index['last_name'];
 }
-if (isset($screen_mode) && $screen_mode == "PDF") {
-    $dirmark1 = '';
-    $dirmark2 = '';
+if (isset($index['id'])) {
+    $id = $index['id'];
 }
 
 
-// *** Process title of page and $uri_path ***
-//$request_uri = $_SERVER['REQUEST_URI'];
 
-// *** Option url_rewrite disabled ***
-// http://127.0.0.1/humo-genealogy/index.php?page=ancestor_sheet&tree_id=3&id=I1180
-// change into (but still process index.php, so this will work in NGinx with url_rewrite disabled):
-// http://127.0.0.1/humo-genealogy/ancestor_sheet&tree_id=3&id=I1180
-//if (isset($_GET['page'])) $request_uri = str_replace('index.php?page=', '', $request_uri);
-
-// *** Example: http://localhost/HuMo-genealogy/photoalbum/2?start=1&item=11 ***
-//$request_uri = strtok($request_uri, "?"); // Remove last part of url: ?start=1&item=11
-
-// *** Get url_rewrite variables ***
-//$url_array = explode('/', $request_uri);
-
-// *** Default values
-$page = 'index';
-$head_text = $humo_option["database_name"];
-$tmp_path = '';
-
-// *** New routing script sept. 2023 ***
-include_once(__DIR__ . '/app/routing/router.php');
-# Search route, return match or not found
-$router = new Router();
-$matchedRoute = $router->get_route($_SERVER['REQUEST_URI']);
-if (isset($matchedRoute['page'])) {
-    $page = $matchedRoute['page'];
-
-    // TODO remove title from router script
-    $head_text = $matchedRoute['title'];
-
-    if (isset($matchedRoute['select_tree_id'])) {
-        $select_tree_id = $matchedRoute['select_tree_id'];
-    }
-
-    // *** Used for list_names ***
-    if (isset($matchedRoute['last_name']) && is_string($matchedRoute['last_name'])) {
-        $last_name = $matchedRoute['last_name'];
-    }
-
-    // Old link from http://www.stamboomzoeker.nl to updated website using new links.
-    // http://127.0.0.1/humo-genealogy/gezin.php?database=humo2_&id=F59&hoofdpersoon=I151
-    if ($humo_option["url_rewrite"] == 'j' && isset($_GET["database"]) && isset($_GET["id"])) {
-        // Skip routing. Just use $_GET["id"] from link.
-    } elseif (isset($matchedRoute['id'])) {
-        // *** Used for source ***
-        // TODO improve processing of these variables 
-        $id = $matchedRoute['id']; // for source
-        $_GET["id"] = $matchedRoute['id']; // for family page, and other pages? TODO improve processing of these variables.
-    }
-
-    if ($matchedRoute['tmp_path']) {
-        $tmp_path = $matchedRoute['tmp_path'];
-    }
-}
-
-
-// *** Family tree choice ***
-global $database;
+// *** Family tree choice. Example: database=humo2_ (backwards compatible, now we use tree_id) ***
+// Test link: http://127.0.0.1/humo-genealogy/gezin.php?database=humo2_&id=F59&hoofdpersoon=I151
 $database = '';
 if (isset($_GET["database"])) {
     $database = $_GET["database"];
@@ -143,28 +78,31 @@ if (isset($_POST["database"])) {
     $database = $_POST["database"];
 }
 
-// *** Use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
-if (isset($_GET["tree_id"])) {
-    $select_tree_id = $_GET["tree_id"];
-}
-if (isset($_POST["tree_id"])) {
-    $select_tree_id = $_POST["tree_id"];
-}
-if (isset($select_tree_id) && is_numeric($select_tree_id) && $select_tree_id) {
-    // *** Check if family tree really exists ***
-    $dataDb = $db_functions->get_tree($select_tree_id);
-    if ($dataDb && $select_tree_id == $dataDb->tree_id) {
-        $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
-        $database = $dataDb->tree_prefix;
-    }
-}
-
-// *** For example: database=humo2_ ***
+// *** For example: database=humo2_ (backwards compatible, now we use tree_id) ***
 if (isset($database) && is_string($database) && $database) {
     // *** Check if family tree really exists ***
     $dataDb = $db_functions->get_tree($database);
     if ($dataDb && $database == $dataDb->tree_prefix) {
         $_SESSION['tree_prefix'] = $database;
+    }
+}
+
+
+
+
+
+// *** Use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
+if (isset($_GET["tree_id"])) {
+    $index['select_tree_id'] = $_GET["tree_id"];
+}
+if (isset($_POST["tree_id"])) {
+    $index['select_tree_id'] = $_POST["tree_id"];
+}
+if (isset($index['select_tree_id']) && is_numeric($index['select_tree_id']) && $index['select_tree_id']) {
+    // *** Check if family tree really exists ***
+    $dataDb = $db_functions->get_tree($index['select_tree_id']);
+    if ($dataDb && $index['select_tree_id'] == $dataDb->tree_id) {
+        $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
     }
 }
 
@@ -260,13 +198,13 @@ if (isset($_POST["hoofdpersoon"])) {
 // REQUEST_URI: /url_test/index/1abcd2345/
 // REQUEST_URI: /url_test/index.php?variabele=1
 $base_href = '';
-if ($humo_option["url_rewrite"] == "j" && $tmp_path) {
+if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
     // *** url_rewrite. 26 jan. 2024 Ron: Added proxy check ***
     //if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
     if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
-        $uri_path = 'https://' . $_SERVER['SERVER_NAME'] . $tmp_path;
+        $uri_path = 'https://' . $_SERVER['SERVER_NAME'] . $index['tmp_path'];
     } else {
-        $uri_path = 'http://' . $_SERVER['SERVER_NAME'] . $tmp_path;
+        $uri_path = 'http://' . $_SERVER['SERVER_NAME'] . $index['tmp_path'];
     }
     $base_href = $uri_path;
 } else {

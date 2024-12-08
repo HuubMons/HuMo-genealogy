@@ -19,7 +19,7 @@ function topline($data)
     global $dataDb, $dbh, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker;
     global $alignmarker, $language, $uri_path;
     global $user, $tree_id, $humo_option, $link_cls;
-    global $database, $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
+    global $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
 
     $treetext = show_tree_text($dataDb->tree_id, $selected_language);
 ?>
@@ -123,7 +123,6 @@ function topline($data)
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                         <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                        <input type="hidden" name="database" value="<?= $database; ?>">
                         <?php
                         if ($data["descendant_report"] == true) { ?>
                             <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
@@ -142,9 +141,9 @@ function topline($data)
                         echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'index.php?page=family_rtf" style="display:inline-block; vertical-align:middle;">';
                     }
                 ?>
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                     <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                    <input type="hidden" name="database" value="<?= $database; ?>">
                     <input type="hidden" name="screen_mode" value="RTF">
                     <?php if ($data["descendant_report"] == true) { ?>
                         <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">

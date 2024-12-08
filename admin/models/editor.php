@@ -875,8 +875,8 @@ class EditorModel
                 pers_new_user_id='" . $this->userid . "'";
             $this->dbh->query($sql);
 
-            // *** Save birth declaration ***
-            if ($_POST['birth_decl_date'] || $_POST['birth_decl_place'] || $_POST['birth_decl_text']) {
+            // *** Save birth declaration (there is no birth declaration when new relation is added) ***
+            if (isset($_POST['birth_decl_date']) && ($_POST['birth_decl_date'] || $_POST['birth_decl_place'] || $_POST['birth_decl_text'])) {
                 $sql = "INSERT INTO humo_events SET
                     event_tree_id='" . $this->tree_id . "',
                     event_gedcomnr='',
@@ -895,8 +895,8 @@ class EditorModel
                 $this->dbh->query($sql);
             }
 
-            // *** Save death declaration ***
-            if ($_POST['death_decl_date'] || $_POST['death_decl_place'] || $_POST['death_decl_text']) {
+            // *** Save death declaration (there is no death declaration when new relation is added) ***
+            if (isset($_POST['death_decl_date']) && ($_POST['death_decl_date'] || $_POST['death_decl_place'] || $_POST['death_decl_text'])) {
                 $sql = "INSERT INTO humo_events SET
                     event_tree_id='" . $this->tree_id . "',
                     event_gedcomnr='',

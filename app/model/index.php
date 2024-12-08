@@ -88,4 +88,70 @@ class IndexModel
         }
         return $index;
     }
+
+    public function get_route($humo_option)
+    {
+        // *** New routing script sept. 2023. Search route, return match or not found ***
+        $index['page'] = 'index';
+        $index['main_admin'] = $humo_option["database_name"];
+        $index['tmp_path'] = '';
+
+        $router = new Router();
+        $matchedRoute = $router->get_route($_SERVER['REQUEST_URI']);
+        if (isset($matchedRoute['page'])) {
+            $index['page'] = $matchedRoute['page'];
+
+            // TODO remove title from router script
+            $index['main_admin'] = $matchedRoute['title'];
+
+            if (isset($matchedRoute['select_tree_id'])) {
+                $index['select_tree_id'] = $matchedRoute['select_tree_id'];
+            }
+
+            // *** Used for list_names ***
+            if (isset($matchedRoute['last_name']) && is_string($matchedRoute['last_name'])) {
+                $index['last_name'] = $matchedRoute['last_name'];
+            }
+
+            // Old link from http://www.stamboomzoeker.nl to updated website using new links.
+            // http://127.0.0.1/humo-genealogy/gezin.php?database=humo2_&id=F59&hoofdpersoon=I151
+            if ($humo_option["url_rewrite"] == 'j' && isset($_GET["database"]) && isset($_GET["id"])) {
+                // Skip routing. Just use $_GET["id"] from link.
+            } elseif (isset($matchedRoute['id'])) {
+                // *** Used for source ***
+                // TODO improve processing of these variables 
+                $index['id'] = $matchedRoute['id']; // for source
+                $_GET["id"] = $matchedRoute['id']; // for family page, and other pages? TODO improve processing of these variables.
+            }
+
+            if ($matchedRoute['tmp_path']) {
+                $index['tmp_path'] = $matchedRoute['tmp_path'];
+            }
+        }
+        return $index;
+    }
+
+    public function process_ltr_rtl($language)
+    {
+        // *** Process LTR and RTL variables ***
+        $index['dirmark1'] = "&#x200E;";  //ltr marker
+        $index['dirmark2'] = "&#x200F;";  //rtl marker
+        $index['rtlmarker'] = "ltr";
+        $index['alignmarker'] = "left";
+
+        // *** Switch direction markers if language is RTL ***
+        if ($language["dir"] == "rtl") {
+            $index['dirmark1'] = "&#x200F;";  //rtl marker
+            $index['dirmark2'] = "&#x200E;";  //ltr marker
+            $index['rtlmarker'] = "rtl";
+            $index['alignmarker'] = "right";
+        }
+
+        //if (isset($screen_mode) && $screen_mode == "PDF") {
+        //    $dirmark1 = '';
+        //    $dirmark2 = '';
+        //}
+
+        return $index;
+    }
 }

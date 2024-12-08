@@ -14,8 +14,7 @@ $path = $link_cls->get_link($uri_path, 'addresses', $tree_id, true);
 <div>
     <!-- *** Search form *** -->
     <form method="POST" action="<?= $path_form; ?>">
-        <!-- TODO check database variable -->
-        <input type="hidden" name="database" value="<?= $database; ?>">
+        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <div class="container">
             <div class="mb-2 row">
                 <div class="col-sm-3"></div>

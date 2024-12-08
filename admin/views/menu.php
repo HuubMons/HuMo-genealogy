@@ -55,7 +55,7 @@ if ($popup == false) {
                 </li>
 
                 <!-- Control -->
-                <?php if ($show_menu_left == true and $page != 'login') {; ?>
+                <?php if ($main_admin['show_menu'] == true and $page != 'login') {; ?>
                     <?php if ($group_administrator == 'j') {; ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle <?php if ($page == 'install' || $page == 'extensions' || $page == 'settings' || $page == 'settings_homepage' || $page == 'settings_special' || $page == 'edit_cms_pages' || $page == 'language_editor' || $page == 'prefix_editor' || $page == 'maps')  echo 'active'; ?>" href="<?= $path_tmp; ?>page=admin" data-bs-toggle="dropdown"><?= __('Control'); ?></a>
