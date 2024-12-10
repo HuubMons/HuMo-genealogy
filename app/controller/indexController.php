@@ -27,7 +27,7 @@ include_once(__DIR__ . '/../routing/router.php'); // Page routing.
 
 class IndexController
 {
-    public function detail($dbh, $humo_option)
+    public function detail($dbh, $humo_option, $user)
     {
         $indexModel = new IndexModel();
 
@@ -75,6 +75,9 @@ class IndexController
 
         $route = $indexModel->get_route($humo_option);
         $index = array_merge($index, $route);
+
+        $family_tree = $indexModel->get_family_tree($dbh, $index['db_functions'], $user); // Get tree_id, tree_prefix.
+        $index = array_merge($index, $family_tree);
 
         return $index;
     }

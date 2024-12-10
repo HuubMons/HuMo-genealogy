@@ -154,4 +154,95 @@ class IndexModel
 
         return $index;
     }
+
+    public function get_family_tree($dbh, $db_functions, $user)
+    {
+        // *** Family tree choice. Example: database=humo2_ (backwards compatible, now we use tree_id) ***
+        // Test link: http://127.0.0.1/humo-genealogy/gezin.php?database=humo2_&id=F59&hoofdpersoon=I151
+        $database = '';
+        if (isset($_GET["database"])) {
+            $database = $_GET["database"];
+        }
+        if (isset($_POST["database"])) {
+            $database = $_POST["database"];
+        }
+
+        // *** For example: database=humo2_ (backwards compatible, now we use tree_id) ***
+        if (isset($database) && is_string($database) && $database) {
+            // *** Check if family tree really exists ***
+            $dataDb = $db_functions->get_tree($database);
+            if ($dataDb && $database == $dataDb->tree_prefix) {
+                $_SESSION['tree_prefix'] = $database;
+            }
+        }
+
+        // *** Use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
+        if (isset($_GET["tree_id"])) {
+            $index['select_tree_id'] = $_GET["tree_id"];
+        }
+        if (isset($_POST["tree_id"])) {
+            $index['select_tree_id'] = $_POST["tree_id"];
+        }
+        if (isset($index['select_tree_id']) && is_numeric($index['select_tree_id']) && $index['select_tree_id']) {
+            // *** Check if family tree really exists ***
+            $dataDb = $db_functions->get_tree($index['select_tree_id']);
+            if ($dataDb && $index['select_tree_id'] == $dataDb->tree_id) {
+                $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+            }
+        }
+
+        // *** No family tree selected yet ***
+        if (!isset($_SESSION["tree_prefix"]) || $_SESSION['tree_prefix'] == '') {
+            $_SESSION['tree_prefix'] = ''; // *** If all trees are blocked then session is empty ***
+
+            // *** Find first family tree that's not blocked for this usergroup ***
+            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                // *** Check is family tree is showed or hidden for user group ***
+                $hide_tree_array = explode(";", $user['group_hide_trees']);
+                if (!in_array($dataDb->tree_id, $hide_tree_array)) {
+                    $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+                    break;
+                }
+            }
+        }
+
+        // *** Check if selected tree is allowed for visitor and Google etc. ***
+        @$dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+        $hide_tree_array = explode(";", $user['group_hide_trees']);
+        if (in_array(@$dataDb->tree_id, $hide_tree_array)) {
+            // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
+            $_SESSION['tree_prefix'] = '';
+            $_SESSION['tree_id'] = 0;
+            $index['tree_id'] = 0;
+
+            // *** Find first family tree that's not blocked for this usergroup ***
+            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                // *** Check is family tree is showed or hidden for user group ***
+                $hide_tree_array = explode(";", $user['group_hide_trees']);
+                if (!in_array($dataDb->tree_id, $hide_tree_array)) {
+                    $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+                    $_SESSION['tree_id'] = $dataDb->tree_id;
+                    $index['tree_id'] = $dataDb->tree_id;
+                    break;
+                }
+            }
+        } elseif (isset($dataDb->tree_id)) {
+            $_SESSION['tree_id'] = $dataDb->tree_id;
+            $index['tree_id'] = $dataDb->tree_id;
+        }
+
+        // *** Guest or user has no permission to see any family tree ***
+        if (!isset($index['tree_id'])) {
+            $_SESSION['tree_prefix'] = '';
+            $_SESSION['tree_id'] = 0;
+            $index['tree_id'] = 0;
+        }
+
+        // *** Set variable for queries ***
+        $index['tree_prefix_quoted'] = safe_text_db($_SESSION['tree_prefix']);
+
+        return $index;
+    }
 }

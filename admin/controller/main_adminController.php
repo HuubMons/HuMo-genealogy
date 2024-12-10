@@ -33,7 +33,7 @@ $visitor_ip = visitorIP();
 
 class Main_adminController
 {
-    public function detail($dbh)
+    public function detail()
     {
         $main_adminModel = new Main_adminModel();
         //$main_admin['abc'] = $main_adminModel->get_abc();

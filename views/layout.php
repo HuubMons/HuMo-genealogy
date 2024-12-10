@@ -11,53 +11,14 @@ if (isset($_GET['page']) && $_GET['page'] == 'serve_file' && isset($_GET['media_
     if (isset($_GET['media_dir']) && $_GET['media_dir']) {
         $media_dir = $_GET['media_dir'];
     }
-    // we must check if file has category directory prefix from existing prefixes so we must preserve directory and concatenate with original filename (removing thumb only)
-    // does photocat_prefix has any dependance to tree_id??
-    $photocat_qry = "SELECT * FROM humo_photocat WHERE photocat_prefix!='none'";
-    $datasql = $dbh->query($photocat_qry);
-    $rowCount = $datasql->rowCount();
-    $prefixes = [];
-    for ($i = 0; $i < $rowCount; $i++) {
-        $photocat_db = $datasql->fetch(PDO::FETCH_OBJ);
-        $photocat_prefix = $photocat_db->photocat_prefix;
-        if (!in_array($photocat_prefix, $prefixes)) $prefixes[] = $photocat_prefix;
-    }
-
-    $matching_prefix = '';
-
-    foreach ($prefixes as $key => $prefix) {
-        if (strpos($media_filename, $prefix . DIRECTORY_SEPARATOR) === 0) {
-            $prefix_slash = $prefix . DIRECTORY_SEPARATOR;
-            // we make the filename without dir origin filename prefix and slash
-            $media_filename_with_prefix_dir =  substr($media_filename, strlen($prefix_slash));
-            $matching_prefix = $prefix_slash;
-        }
-    }
-
-    if (isset($media_filename_with_prefix_dir)) {
-        $media_filename_for_thumb_check = $media_filename_with_prefix_dir;
-    } else {
-        $media_filename_for_thumb_check = $media_filename;
-    }
-    // echo 'MFN<br>';
-    // echo $media_filename;
-    // echo '<br>';
-    // echo 'FTC<br>';
-    // echo $media_filename_for_thumb_check;
-    // echo '<br>';
-
     // we are checking if this is thum - if it is we need to check privacy for origin file, not thumb
     // exception will be situation where user puts jpg file with "thumb_" begining in it's name - now this exception is not solved
-    if (strpos($media_filename_for_thumb_check, 'thumb_') === 0) {
+    if (strpos($media_filename, 'thumb_') === 0) {
         // we make the thumbname origin filename
-        $original_media_filename = substr($media_filename_for_thumb_check, 6, -4);
-        $original_media_filename = $matching_prefix . $original_media_filename;
+        $original_media_filename = substr($media_filename, 6, -4);
     } else {
         $original_media_filename = $media_filename;
     }
-    // echo 'O<br>';
-    // echo $original_media_filename;
-    // echo '<br>';
 
     $qry = "SELECT * FROM humo_events
     WHERE event_tree_id='" . $tree_id . "' AND (event_connect_kind='person' OR event_connect_kind='family') AND event_connect_id NOT LIKE '' AND event_event='" . $original_media_filename . "'";
@@ -119,6 +80,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'serve_file' && isset($_GET['media_
         // $media_dir = realpath($media_dir);
         // echo $media_dir . $media_filename;
         if (file_exists($media_dir . $media_filename)) {
+            // echo '<br>plik istnieje';
             //we check what content type is file to put header
             $content_type_header = mime_content_type($media_dir . $media_filename);
             header('Content-Type: ' . $content_type_header);
@@ -312,9 +274,7 @@ $menu_top = getActiveTopMenu($page);
     <?php
     // *** Use your own favicon.ico in media folder ***
     if (file_exists('media/favicon.ico')) {
-        include_once(__DIR__ . '/../include/give_media_path.php');
-        echo '<link href="' . give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
-        // echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
+        echo '<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">';
     } else {
         echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
     }
@@ -442,11 +402,7 @@ $menu_top = getActiveTopMenu($page);
                                         while ($tree_searchDb = $tree_search_result2->fetch(PDO::FETCH_OBJ)) {
                                             // *** Check if family tree is shown or hidden for user group ***
                                             $hide_tree_array2 = explode(";", $user['group_hide_trees']);
-                                            $hide_tree2 = false;
-                                            if (in_array($tree_searchDb->tree_id, $hide_tree_array2)) {
-                                                $hide_tree2 = true;
-                                            }
-                                            if ($hide_tree2 == false) {
+                                            if (!in_array($tree_searchDb->tree_id, $hide_tree_array2)) {
                                                 $selected = '';
                                                 if (isset($_SESSION['tree_prefix'])) {
                                                     if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
