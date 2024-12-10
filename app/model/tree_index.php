@@ -244,11 +244,7 @@ class Mainindex_cls
         while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
             // *** Check is family tree is shown or hidden for user group ***
             $hide_tree_array = explode(";", $user['group_hide_trees']);
-            $hide_tree = false;
-            if (in_array($dataDb->tree_id, $hide_tree_array)) {
-                $hide_tree = true;
-            }
-            if ($hide_tree == false) {
+            if (!in_array($dataDb->tree_id, $hide_tree_array)) {
                 $treetext = show_tree_text($dataDb->tree_id, $selected_language);
                 $treetext_name = $treetext['name'];
 

@@ -935,11 +935,7 @@ class ListModel
 
                     // *** Check is family tree is shown or hidden for user group ***
                     $hide_tree_array = explode(";", $user['group_hide_trees']);
-                    $hide_tree = false;
-                    if (in_array($datapdo['tree_id'], $hide_tree_array)) {
-                        $hide_tree = true;
-                    }
-                    if ($hide_tree == false) {
+                    if (!in_array($datapdo['tree_id'], $hide_tree_array)) {
                         if ($counter > 0) {
                             $multi_tree .= ' OR ';
                         }
@@ -1045,11 +1041,7 @@ class ListModel
                     }
                     // *** Check if family tree is shown or hidden for user group ***
                     $hide_tree_array = explode(";", $user['group_hide_trees']);
-                    $hide_tree = false;
-                    if (in_array($pdoresult['tree_id'], $hide_tree_array)) {
-                        $hide_tree = true;
-                    }
-                    if ($hide_tree == false) {
+                    if (!in_array($pdoresult['tree_id'], $hide_tree_array)) {
                         if ($counter > 0) {
                             $multi_tree .= ' OR ';
                         }

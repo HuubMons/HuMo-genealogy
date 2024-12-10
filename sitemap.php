@@ -48,12 +48,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\r\n"
 foreach ($datasql as $dataDb) {
     // *** Check is family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
-    $hide_tree = false;
-    if (in_array($dataDb->tree_id, $hide_tree_array)) {
-        $hide_tree = true;
-    }
-    if ($hide_tree == false) {
-
+    if (!in_array($dataDb->tree_id, $hide_tree_array)) {
         // *** Get all family pages ***
         $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families
             WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");

@@ -402,11 +402,7 @@ $menu_top = getActiveTopMenu($page);
                                         while ($tree_searchDb = $tree_search_result2->fetch(PDO::FETCH_OBJ)) {
                                             // *** Check if family tree is shown or hidden for user group ***
                                             $hide_tree_array2 = explode(";", $user['group_hide_trees']);
-                                            $hide_tree2 = false;
-                                            if (in_array($tree_searchDb->tree_id, $hide_tree_array2)) {
-                                                $hide_tree2 = true;
-                                            }
-                                            if ($hide_tree2 == false) {
+                                            if (!in_array($tree_searchDb->tree_id, $hide_tree_array2)) {
                                                 $selected = '';
                                                 if (isset($_SESSION['tree_prefix'])) {
                                                     if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {

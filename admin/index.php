@@ -35,8 +35,6 @@ session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
 //session_regenerate_id();
 
-$page = 'index';
-
 // DISABLED because the SECURED PAGE message was shown regularly.
 // *** Prevent Session hijacking ***
 //if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $visitor_ip){
@@ -47,12 +45,16 @@ $page = 'index';
 //	die();
 //}
 
+$page = 'index';
 
 // *** Added dec. 2024 ***
 require __DIR__ . '/controller/main_adminController.php';
 $controllerObj = new Main_adminController();
-$main_admin = $controllerObj->detail($dbh);
+$main_admin = $controllerObj->detail();
 
+//$check_tables = $main_admin['check_table'];
+//$page = $main_admin['page'];
+//$popup = $main_admin['popup'];
 
 
 
@@ -343,11 +345,6 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
     $_SESSION['current_ip_address'] = $visitor_ip;
 }
 
-$html_text = '';
-if ($language["dir"] == "rtl") {   // right to left language
-    $html_text = ' dir="rtl"';
-}
-
 // *** Use your own favicon.ico in media folder ***
 if (file_exists('../media/favicon.ico')) {
     include_once(__DIR__ . '/../include/give_media_path.php');
@@ -358,8 +355,7 @@ if (file_exists('../media/favicon.ico')) {
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
-
+<html lang="<?= $selected_language; ?>" <?= $language["dir"] == "rtl" ? 'dir="rtl"':''; ?>>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 

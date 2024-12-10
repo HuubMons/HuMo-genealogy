@@ -42,11 +42,7 @@ $count = 0;
                     while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
                         // *** Check if family tree is shown or hidden for user group ***
                         $hide_tree_array = explode(";", $user['group_hide_trees']);
-                        $hide_tree = false;
-                        if (in_array($tree_searchDb->tree_id, $hide_tree_array)) {
-                            $hide_tree = true;
-                        }
-                        if ($hide_tree == false) {
+                        if (!in_array($tree_searchDb->tree_id, $hide_tree_array)) {
                             $selected = '';
                             // TODO check tree_prefix. Replace with tree_id.
                             if (isset($_SESSION['tree_prefix'])) {
