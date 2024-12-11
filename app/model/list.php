@@ -149,6 +149,16 @@ class ListModel
             $change = true;
         }
 
+        // *** Enable / disable pers_prefix search. Only use option if advanced search page is started/ used ***
+        $selection['use_pers_prefix'] = 'USED';
+           if (isset($_POST['part_lastname']) && !isset($_POST['use_pers_prefix'])) {
+            $selection['pers_prefix'] = 'EMPTY';
+            $selection['use_pers_prefix'] = 'EMPTY';
+        }
+        if (isset($_GET['adv_search']) && $_GET['adv_search']=='1'){
+            $selection['use_pers_prefix'] = 'USED';
+        }
+
         // *** Lastname ***
         $selection['pers_lastname'] = '';
         if (isset($_POST['pers_lastname'])) {

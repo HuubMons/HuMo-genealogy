@@ -193,10 +193,24 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                             $pers_prefix = '';
                         }
                     ?>
-                        <div class="col-sm-4">
+
+                        <div class="col-sm-auto">
+                            <?= ucfirst(__('prefix')); ?>:
+                            <div class="input-group mb-3">
+                                <div class="input-group-text">
+                                    <!-- Optional search for prefix -->
+                                    <input class="form-check-input mt-0" type="checkbox" name="use_pers_prefix" value="" <?= $selection['use_pers_prefix'] == 'USED' ? 'checked' : ''; ?>>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-auto">
                             <?= __('Last name'); ?>:
                             <div class="input-group mb-3">
+                                <?php /*
                                 <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
+                                */ ?>
 
                                 <!--  Lastname -->
                                 <select size="1" name="part_lastname" class="form-select form-select-sm">
