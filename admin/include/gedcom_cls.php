@@ -1110,12 +1110,7 @@ class gedcom_cls
                 // 2 ASSO @I7@
                 // 3 ROLE GODP (only use GEDCOM 7.x. defined list: WITN, CLERGY, etc.)
 
-                // TODO: use this new function to process ASSO. Check script first.
-                // Oct. 2024: New function to process ASSO.
-                //if ($level[2] == 'ASSO') {
-                //process_association($buffer, $buffer6, $buffer8, $gedcomnumber, $connect_kind = 'person')
-                //$this->process_association($buffer, $buffer6, $buffer8, $pers_gedcomnumber, 'CHR');
-                //}
+                /*
                 if ($level[2] == 'ASSO') {
                     if (substr($buffer, 0, 6) === '2 ASSO') {
                         $processed = true;
@@ -1168,6 +1163,13 @@ class gedcom_cls
                         $processed = true;
                         $event['gedcom'][$event_nr] = substr($buffer, 7);
                     }
+                }
+                */
+                // TODO: use this new function to process ASSO. Check script first.
+                // Oct. 2024: New function to process ASSO.
+                if ($level[2] == 'ASSO') {
+                    //process_association($buffer, $buffer6, $buffer8, $gedcomnumber, $connect_kind = 'person');
+                    $this->process_association($buffer, $buffer6, $buffer8, $pers_gedcomnumber, 'CHR');
                 }
 
                 // *** Religion (1 RELI = event) ***
@@ -2678,10 +2680,10 @@ class gedcom_cls
                     $check_event_kind = $event['kind'][$i];
                 }
                 $gebeurtsql = "INSERT IGNORE INTO humo_events SET
-                event_tree_id='" . $tree_id . "',
-                event_order='" . $event_order . "',
-                event_connect_kind='" . $this->text_process($event['connect_kind'][$i]) . "',
-                event_connect_id='" . $this->text_process($event['connect_id'][$i]) . "',";
+                    event_tree_id='" . $tree_id . "',
+                    event_order='" . $event_order . "',
+                    event_connect_kind='" . $this->text_process($event['connect_kind'][$i]) . "',
+                    event_connect_id='" . $this->text_process($event['connect_id'][$i]) . "',";
 
                 if (isset($event['connect_id2'][$i])) {
                     $gebeurtsql .= "
@@ -2690,13 +2692,13 @@ class gedcom_cls
                 }
 
                 $gebeurtsql .= "
-                event_kind='" . $this->text_process($event['kind'][$i]) . "',
-                event_event='" . $this->text_process($event['event'][$i]) . "',
-                event_event_extra='" . $this->text_process($event['event_extra'][$i]) . "',
-                event_gedcom='" . $this->text_process($event['gedcom'][$i]) . "',
-                event_date='" . $this->process_date($this->text_process($event['date'][$i])) . "',
-                event_text='" . $this->text_process($event['text'][$i]) . "',
-                event_place='" . $this->text_process($event['place'][$i]) . "'";
+                    event_kind='" . $this->text_process($event['kind'][$i]) . "',
+                    event_event='" . $this->text_process($event['event'][$i]) . "',
+                    event_event_extra='" . $this->text_process($event['event_extra'][$i]) . "',
+                    event_gedcom='" . $this->text_process($event['gedcom'][$i]) . "',
+                    event_date='" . $this->process_date($this->text_process($event['date'][$i])) . "',
+                    event_text='" . $this->text_process($event['text'][$i]) . "',
+                    event_place='" . $this->text_process($event['place'][$i]) . "'";
                 $dbh->query($gebeurtsql);
             }
 
@@ -3033,13 +3035,13 @@ class gedcom_cls
                 $created_changed = $this->get_created_changed($buffer, $buffer6);
                 $processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
-                    $family["new_date"] = $created_changed["date"];
+                    $family["changed_date"] = $created_changed["date"];
                 }
                 if ($created_changed["time"]) {
-                    $family["new_time"] = $created_changed["time"];
+                    $family["changed_time"] = $created_changed["time"];
                 }
                 if ($created_changed["user_id"]) {
-                    $family["new_user_id"] = $created_changed["user_id"];
+                    $family["changed_user_id"] = $created_changed["user_id"];
                 }
             }
 
@@ -4435,24 +4437,6 @@ class gedcom_cls
             }
 
             // *** New date/ time ***
-            //1 _NEW
-            //2 DATE 04 AUG 2004
-            /*
-            if ($level[1] === '_NEW') {
-                if ($buffer6 === '1 _NEW') {
-                    $processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $processed = true;
-                    $text["new_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $processed = true;
-                    $text["new_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($level[1] == '_NEW' || $level[1] == 'CREA') {
@@ -4470,37 +4454,19 @@ class gedcom_cls
             }
 
             // *** Changed date/ time ***
-            //1 CHAN
-            //2 DATE 04 AUG 2004
-            /*
-            if ($level[1] === 'CHAN') {
-                if ($buffer6 === '1 CHAN') {
-                    $processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $processed = true;
-                    $text["changed_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $processed = true;
-                    $text["changed_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($level[1] == 'CHAN') {
                 $created_changed = $this->get_created_changed($buffer, $buffer6);
                 $processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
-                    $text["new_date"] = $created_changed["date"];
+                    $text["changed_date"] = $created_changed["date"];
                 }
                 if ($created_changed["time"]) {
-                    $text["new_time"] = $created_changed["time"];
+                    $text["changed_time"] = $created_changed["time"];
                 }
                 if ($created_changed["user_id"]) {
-                    $text["new_user_id"] = $created_changed["user_id"];
+                    $text["changed_user_id"] = $created_changed["user_id"];
                 }
             }
 
@@ -4946,13 +4912,13 @@ class gedcom_cls
                 $created_changed = $this->get_created_changed($buffer, $buffer6);
                 $processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
-                    $source["new_date"] = $created_changed["date"];
+                    $source["changed_date"] = $created_changed["date"];
                 }
                 if ($created_changed["time"]) {
-                    $source["new_time"] = $created_changed["time"];
+                    $source["changed_time"] = $created_changed["time"];
                 }
                 if ($created_changed["user_id"]) {
-                    $source["new_user_id"] = $created_changed["user_id"];
+                    $source["changed_user_id"] = $created_changed["user_id"];
                 }
             }
 
@@ -5365,34 +5331,17 @@ class gedcom_cls
                 $created_changed = $this->get_created_changed($buffer, $buffer6);
                 $processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
-                    $repo["new_date"] = $created_changed["date"];
+                    $repo["repo_new_date"] = $created_changed["date"];
                 }
                 if ($created_changed["time"]) {
-                    $repo["new_time"] = $created_changed["time"];
+                    $repo["repo_new_time"] = $created_changed["time"];
                 }
                 if ($created_changed["user_id"]) {
-                    $repo["new_user_id"] = $created_changed["user_id"];
+                    $repo["repo_new_user_id"] = $created_changed["user_id"];
                 }
             }
 
             // *** Changed date/ time ***
-            //1 CHAN
-            //2 DATE 04 AUG 2004
-            /*
-            if ($level[1] === 'CHAN') {
-                if ($buffer6 === '1 CHAN') {
-                    $processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $processed = true;
-                    $repo["repo_changed_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $processed = true;
-                    $repo["repo_changed_time"] = substr($buffer, 7);
-                }
-            }
-            */
             // *** Save date ***
             // 1 CHAN
             // 2 DATE 04 AUG 2004
@@ -5400,13 +5349,13 @@ class gedcom_cls
                 $created_changed = $this->get_created_changed($buffer, $buffer6);
                 $processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
-                    $repo["new_date"] = $created_changed["date"];
+                    $repo["repo_changed_date"] = $created_changed["date"];
                 }
                 if ($created_changed["time"]) {
-                    $repo["new_time"] = $created_changed["time"];
+                    $repo["repo_changed_time"] = $created_changed["time"];
                 }
                 if ($created_changed["user_id"]) {
-                    $repo["new_user_id"] = $created_changed["user_id"];
+                    $repo["repo_changed_user_id"] = $created_changed["user_id"];
                 }
             }
 
@@ -5460,9 +5409,8 @@ class gedcom_cls
             repo_mail='" . $this->text_process($repo["repo_mail"]) . "',
             repo_url='" . $this->text_process($repo["repo_url"]) . "',
 
-            repo_new_user_id='" . $repo["new_user_id"] . "',
-            repo_changed_user_id='" . $repo["changed_user_id"] . "',
-
+            repo_new_user_id='" . $repo["repo_new_user_id"] . "',
+            repo_changed_user_id='" . $repo["repo_changed_user_id"] . "',
             repo_new_datetime = '" . date('Y-m-d H:i:s', strtotime($repo['repo_new_date'] . ' ' . $repo['repo_new_time']))  . "'
             " . $this->changed_datetime('repo_changed_datetime', $repo['repo_changed_date'], $repo['repo_changed_time']);
         $dbh->query($sql);
@@ -5472,9 +5420,9 @@ class gedcom_cls
         // *** Save unprocessed items ***
         if ($repo["repo_unprocessed_tags"]) {
             $sql = "INSERT IGNORE INTO humo_unprocessed_tags SET
-            tag_repo_id='" . $repo_id . "',
-            tag_tree_id='" . $tree_id . "',
-            tag_tag='" . $this->text_process($repo["repo_unprocessed_tags"]) . "'";
+                tag_repo_id='" . $repo_id . "',
+                tag_tree_id='" . $tree_id . "',
+                tag_tag='" . $this->text_process($repo["repo_unprocessed_tags"]) . "'";
             $dbh->query($sql);
         }
     }
@@ -5644,37 +5592,19 @@ class gedcom_cls
             }
 
             // *** Changed date/ time ***
-            //1 CHAN
-            //2 DATE 04 AUG 2004
-            /*
-            if ($level[1] === 'CHAN') {
-                if ($buffer6 === '1 CHAN') {
-                    $processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $processed = true;
-                    $address["changed_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $processed = true;
-                    $address["changed_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 CHAN
             // 2 DATE 04 AUG 2004
             if ($level[1] == 'CHAN') {
                 $created_changed = $this->get_created_changed($buffer, $buffer6);
                 $processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
-                    $address["new_date"] = $created_changed["date"];
+                    $address["changed_date"] = $created_changed["date"];
                 }
                 if ($created_changed["time"]) {
-                    $address["new_time"] = $created_changed["time"];
+                    $address["changed_time"] = $created_changed["time"];
                 }
                 if ($created_changed["user_id"]) {
-                    $address["new_user_id"] = $created_changed["user_id"];
+                    $address["changed_user_id"] = $created_changed["user_id"];
                 }
             }
 
@@ -5896,24 +5826,6 @@ class gedcom_cls
             }
 
             // *** New date/ time ***
-            //1 _NEW
-            //2 DATE 04 AUG 2004
-            /*
-            if ($level[1] === '_NEW') {
-                if ($buffer6 === '1 _NEW') {
-                    $processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $processed = true;
-                    $event["new_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $processed = true;
-                    $event["new_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($level[1] == '_NEW' || $level[1] == 'CREA') {
@@ -5932,37 +5844,19 @@ class gedcom_cls
 
 
             // *** Changed date/ time ***
-            //1 CHAN
-            //2 DATE 04 AUG 2004
-            /*
-            if ($level[1] === 'CHAN') {
-                if ($buffer6 === '1 CHAN') {
-                    $processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $processed = true;
-                    $event["changed_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $processed = true;
-                    $event["changed_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($level[1] == 'CHAN') {
                 $created_changed = $this->get_created_changed($buffer, $buffer6);
                 $processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
-                    $event["new_date"] = $created_changed["date"];
+                    $event["changed_date"] = $created_changed["date"];
                 }
                 if ($created_changed["time"]) {
-                    $event["new_time"] = $created_changed["time"];
+                    $event["changed_time"] = $created_changed["time"];
                 }
                 if ($created_changed["user_id"]) {
-                    $event["new_user_id"] = $created_changed["user_id"];
+                    $event["changed_user_id"] = $created_changed["user_id"];
                 }
             }
 
@@ -7271,7 +7165,7 @@ class gedcom_cls
 
             // 2 ASSO @VOID@
             // 3 PHRASE Mr Stockdale -> event_event
-            if (substr($buffer, 7, 6) === '@VOID@') {
+            if (substr($buffer, 7, 6) == '@VOID@') {
                 $processed = true;
 
                 if ($level[1] == 'EVEN') {

@@ -449,7 +449,7 @@ if (!defined('ADMIN_PAGE')) {
                         <div class="col-md-auto">
                             <select size="1" name="media_privacy_mode" onChange="this.form.submit();" class="form-select form-select-sm">
                                 <option value="n"><?= __('No'); ?></option>
-                                <option value="y" <?= $humo_option["media_privacy_mode"] == 'y' ? 'selected' : ''; ?>><?= __('Yes'); ?></option>
+                                <option value="y" <?= $humo_option["media_privacy_mode"] == 'y' ? 'selected' : ''; ?> disabled><?= __('Yes'); ?></option>
                             </select>
                         </div>
                     </div>
