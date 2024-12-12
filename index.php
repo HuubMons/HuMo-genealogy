@@ -115,7 +115,7 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 }
 
 // *** To be used to show links in several pages ***
-include_once(__DIR__ . '/include/links.php');
+include_once(__DIR__ . '/include/link_cls.php');
 $link_cls = new Link_cls($uri_path);
 
 // *** Base controller ***

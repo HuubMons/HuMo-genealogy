@@ -212,7 +212,7 @@ function show_media_files($pref)
                     $picture_text = substr($filename, 0, -4);
                 }
                 while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                    $person_cls = new person_cls;
+                    $person_cls = new Person_cls;
                     $personDb = $db_functions->get_person($afbDb->event_connect_id);
                     $name = $person_cls->person_name($personDb);
                     $privacy = $person_cls->set_privacy($personDb);
@@ -245,7 +245,7 @@ function show_media_files($pref)
                     $connect_qry = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
                         AND connect_sub_kind='pers_object' AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
                     while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
-                        $person_cls = new person_cls;
+                        $person_cls = new Person_cls;
                         @$personDb = $db_functions->get_person($connectDb->connect_connect_id);
                         $name = $person_cls->person_name($personDb);
                         $privacy = $person_cls->set_privacy($personDb);

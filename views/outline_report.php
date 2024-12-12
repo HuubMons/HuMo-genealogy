@@ -183,11 +183,11 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
         // *** Privacy filter man and woman ***
         @$person_manDb = $db_functions->get_person($familyDb->fam_man);
-        $man_cls = new person_cls($person_manDb);
+        $man_cls = new Person_cls($person_manDb);
         $privacy_man = $man_cls->privacy;
 
         @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-        $woman_cls = new person_cls($person_womanDb);
+        $woman_cls = new Person_cls($person_womanDb);
         $privacy_woman = $woman_cls->privacy;
 
         $marriage_cls = new marriage_cls($familyDb, $privacy_man, $privacy_woman);
@@ -347,7 +347,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     continue;
                 }
 
-                $child_cls = new person_cls($childDb);
+                $child_cls = new Person_cls($childDb);
                 $child_privacy = $child_cls->privacy;
 
                 // *** Build descendant_report ***

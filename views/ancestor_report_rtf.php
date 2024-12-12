@@ -57,7 +57,7 @@ $parSimple->setIndentRight(0.5);
 // *** Generate title of RTF file ***
 @$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use person class ***
-$pers_cls = new person_cls($persDb);
+$pers_cls = new Person_cls($persDb);
 $name = $pers_cls->person_name($persDb);
 $title = __('Ancestor report') . __(' of ') . $name["standard_name"];
 
@@ -178,7 +178,7 @@ while (isset($ancestor_array2[0])) {
 
         if ($ancestor_array[$i] != '0') {
             @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
-            $man_cls = new person_cls($person_manDb);
+            $man_cls = new Person_cls($person_manDb);
             $privacy_man = $man_cls->privacy;
 
             if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
@@ -186,7 +186,7 @@ while (isset($ancestor_array2[0])) {
 
                 // *** Use privacy filter of woman ***
                 @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-                $woman_cls = new person_cls($person_womanDb);
+                $woman_cls = new Person_cls($person_womanDb);
                 $privacy_woman = $woman_cls->privacy;
 
                 // *** Use class for marriage ***
@@ -313,7 +313,7 @@ while (isset($ancestor_array2[0])) {
 
             // *** Show N.N. person ***
             @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
-            $man_cls = new person_cls($person_manDb);
+            $man_cls = new Person_cls($person_manDb);
             $privacy_man = $man_cls->privacy;
 
             $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());

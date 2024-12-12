@@ -850,7 +850,7 @@ function name_qry($search_name, $search_part)
         // *** Show search results ***
         if ($spouse_found == true && ($parent_status_found === '1' || $parent_status_found !== '1' && !isset($_POST['adv_search']))) {
             $pers_counter++; // needed for spouses search and mother/father only search
-            $person_cls = new person_cls($personDb);
+            $person_cls = new Person_cls($personDb);
             $privacy = $person_cls->privacy;
 
             if ($privacy and ($selection['birth_place'] != '' or $selection['birth_year'] != '' or $selection['death_place'] != '' or $selection['death_year'] != '')) {
@@ -911,7 +911,7 @@ function show_person($personDb)
     $db_functions->set_tree_id($personDb->pers_tree_id);
 
     // *** Person class used for name and person pop-up data ***
-    $person_cls = new person_cls($personDb);
+    $person_cls = new Person_cls($personDb);
     $name = $person_cls->person_name($personDb);
 
     // *** Show name ***
@@ -1096,7 +1096,7 @@ function show_person($personDb)
 
                     if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
-                        $partner_cls = new person_cls;
+                        $partner_cls = new Person_cls;
                         $name = $partner_cls->person_name($partnerDb);
                     } else {
                         $name["standard_name"] = __('N.N.');

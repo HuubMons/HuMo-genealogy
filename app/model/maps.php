@@ -260,7 +260,7 @@ class MapsModel
 
             // *** Use person class ***
             // TODO: this slows down page for large family trees. Use Javascript to show persons?
-            $person_cls = new person_cls($personDb);
+            $person_cls = new Person_cls($personDb);
             $name = $person_cls->person_name($personDb);
 
             $key = array_search($place, $maps['location']);

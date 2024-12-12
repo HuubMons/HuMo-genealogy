@@ -175,7 +175,7 @@ $listed_array = array();
 
             if ($ancestor_array[$i] != '0') {
                 @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
-                $man_cls = new person_cls($person_manDb);
+                $man_cls = new Person_cls($person_manDb);
                 $privacy_man = $man_cls->privacy;
 
                 if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
@@ -183,7 +183,7 @@ $listed_array = array();
 
                     // *** Use privacy filter of woman ***
                     @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-                    $woman_cls = new person_cls($person_womanDb);
+                    $woman_cls = new Person_cls($person_womanDb);
                     $privacy_woman = $woman_cls->privacy;
 
                     // *** Use class for marriage ***
@@ -265,7 +265,7 @@ $listed_array = array();
 
                 // *** Show N.N. person ***
                 @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
-                $man_cls = new person_cls($person_manDb);
+                $man_cls = new Person_cls($person_manDb);
                 $privacy_man = $man_cls->privacy;
                 ?>
 

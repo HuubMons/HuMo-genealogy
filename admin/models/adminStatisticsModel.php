@@ -1,5 +1,5 @@
 <?php
-class StatisticsModel
+class AdminStatisticsModel
 {
     public function get_tab()
     {

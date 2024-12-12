@@ -1,13 +1,11 @@
 <?php
-require_once __DIR__ . "/../models/admin_statistics.php";
-
 require_once(__DIR__ . "/../statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
 
-class StatisticsController
+class AdminStatisticsController
 {
     public function detail($dbh)
     {
-        $statisticsModel = new StatisticsModel($dbh);
+        $statisticsModel = new AdminStatisticsModel($dbh);
 
         $statistics['tab'] = $statisticsModel->get_tab();
 

@@ -8,13 +8,13 @@ include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
 include_once(__DIR__ . "/../include/person_cls.php"); // for privacy
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
-include_once(__DIR__ . '/../include/links.php');
+include_once(__DIR__ . '/../include/link_cls.php');
 $link_cls = new Link_cls();
 
 $tree_id = $_SESSION['tree_id'];
 
 include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
+$db_functions = new Db_functions_cls($dbh);
 $db_functions->set_tree_id($tree_id);
 
 $language_folder = opendir('../languages/');
@@ -162,7 +162,7 @@ function mapbirthplace($place)
         <div style="direction:ltr">
             <?php
             while (@$maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
-                $man_cls = new person_cls($maplistDb);
+                $man_cls = new Person_cls($maplistDb);
                 $privacy_man = $man_cls->privacy;
                 $name = $man_cls->person_name($maplistDb);
                 if ($name["show_name"] == true) {

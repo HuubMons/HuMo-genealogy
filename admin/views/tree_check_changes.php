@@ -21,7 +21,7 @@ if (!$show_persons && !$show_families) {
     $show_persons = true;
 }
 
-$person_cls = new person_cls;
+$person_cls = new Person_cls;
 $row = 0;
 
 if ($show_persons) {

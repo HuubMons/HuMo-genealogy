@@ -103,7 +103,7 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $db_functions->set_tree_id($tree_id);
     $persDb = $db_functions->get_person($parentsDb->fam_man);
 
-    $pers_cls = new person_cls($persDb);
+    $pers_cls = new Person_cls($persDb);
     $name = $pers_cls->person_name($persDb);
     $parent2_text .= $name["standard_name"];
 
@@ -114,7 +114,7 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $db_functions->set_tree_id($tree_id);
     $persDb = $db_functions->get_person($parentsDb->fam_woman);
 
-    $pers_cls = new person_cls($persDb);
+    $pers_cls = new Person_cls($persDb);
     $name = $pers_cls->person_name($persDb);
     $parent2_text .= $name["standard_name"];
 

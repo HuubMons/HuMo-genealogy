@@ -31,11 +31,11 @@ class IndexController
     {
         $indexModel = new IndexModel();
 
-        $index['db_functions'] = new db_functions($dbh);
+        $index['db_functions'] = new Db_functions_cls($dbh);
 
         $index['visitor_ip'] = visitorIP();
 
-        $index['person_cls'] = new person_cls;
+        $index['person_cls'] = new Person_cls;
 
         // *** Debug HuMo-genealogy front pages ***
         if ($humo_option["debug_front_pages"] == 'y') {

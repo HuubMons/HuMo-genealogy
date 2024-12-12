@@ -226,7 +226,7 @@ if (!$data["family_id"]) {
     // *** Privacy filter ***
     @$parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
-    $parent1_cls = new person_cls($parent1Db);
+    $parent1_cls = new Person_cls($parent1Db);
 
     // *** Add tip in person screen ***
     if (!$bot_visit) {
@@ -410,11 +410,11 @@ else {
                 }
                 @$parent1Db = $db_functions->get_person($parent1);
                 // *** Proces parent1 using a class ***
-                $parent1_cls = new person_cls($parent1Db);
+                $parent1_cls = new Person_cls($parent1Db);
 
                 @$parent2Db = $db_functions->get_person($parent2);
                 // *** Proces parent2 using a class ***
-                $parent2_cls = new person_cls($parent2Db);
+                $parent2_cls = new Person_cls($parent2Db);
 
                 // *** Proces marriage using a class ***
                 $marriage_cls = new marriage_cls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
@@ -592,7 +592,7 @@ else {
                         foreach ($child_array as $i => $value) {
                             @$childDb = $db_functions->get_person($child_array[$i]);
                             // *** Use person class ***
-                            $child_cls = new person_cls($childDb);
+                            $child_cls = new Person_cls($childDb);
 
                             // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                             // *** Person must be totally hidden ***
@@ -653,7 +653,7 @@ else {
                     foreach ($famc_adoptive_qry_prep as $famc_adoptiveDb) {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                        $child_cls = new Person_cls($childDb);
                         ?>
                         <tr>
                             <td colspan="4">
@@ -672,7 +672,7 @@ else {
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                        $child_cls = new Person_cls($childDb);
                     ?>
                         <tr>
                             <td colspan="4">
@@ -701,7 +701,7 @@ else {
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                        $child_cls = new Person_cls($childDb);
                     ?>
                         <tr>
                             <td colspan="4">
@@ -890,7 +890,7 @@ else {
                         @$childDb = $db_functions->get_person($child_array[$i]);
                         if ($childDb !== false) {  // no error in query
                             // *** Use person class ***
-                            $person_cls = new person_cls($childDb);
+                            $person_cls = new Person_cls($childDb);
                             if (!$person_cls->privacy) {
 
                                 // *** Child birth ***

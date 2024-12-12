@@ -171,7 +171,7 @@ class TimelineModel
                 $spouse2Db = $db_functions->get_person($spouse);
                 $privacy = true;
                 if ($spouse2Db) {
-                    $person_cls = new person_cls($spouse2Db);
+                    $person_cls = new Person_cls($spouse2Db);
                     $privacy = $person_cls->privacy;
                     $name = $person_cls->person_name($spouse2Db);
                 }
@@ -257,7 +257,7 @@ class TimelineModel
                             $child = __('child ');
                         }
 
-                        $person2_cls = new person_cls($chldDb);
+                        $person2_cls = new Person_cls($chldDb);
                         $privacy = $person2_cls->privacy;
                         $name = $person2_cls->person_name($chldDb);
 
@@ -310,7 +310,7 @@ class TimelineModel
                                 // CHILDREN'S MARRIAGES
                                 $chspouse = $chldDb->pers_gedcomnumber == $chfamilyDb->fam_man ? $chfamilyDb->fam_woman : $chfamilyDb->fam_man;
                                 $chspouse2Db = $db_functions->get_person($chspouse);
-                                $person_cls = new person_cls($chspouse2Db);
+                                $person_cls = new Person_cls($chspouse2Db);
                                 $privacy = $person_cls->privacy;
                                 $name = $person_cls->person_name($chspouse2Db);
                                 if (!$privacy) {
@@ -358,7 +358,7 @@ class TimelineModel
                                     $count_grchildren = count($data["grchildren"][$i][$m][$p]);
                                     for ($g = 0; $g < $count_grchildren; $g++) {
                                         $grchldDb = $db_functions->get_person($data["grchildren"][$i][$m][$p][$g]);
-                                        $person3_cls = new person_cls($grchldDb);
+                                        $person3_cls = new Person_cls($grchldDb);
                                         $privacy = $person3_cls->privacy;
                                         $name = $person3_cls->person_name($grchldDb);
                                         if (!$privacy) {

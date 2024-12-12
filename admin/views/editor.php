@@ -707,7 +707,7 @@ if ($check_person) {
             if ($person) {
                 // Onderstaande person_url2 werkt niet altijd goed!
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                //$popup_cls = New person_cls;
+                //$popup_cls = new Person_cls;
                 //$url=$popup_cls->person_url2($person->pers_tree_id,$person->pers_famc,$person->pers_fams,$person->pers_gedcomnumber);
                 //echo " <a href=\"#\" onClick=\"window.open('".$url."', '','width=800,height=500')\"><b>[".__('Preview').']</b></a>';
 

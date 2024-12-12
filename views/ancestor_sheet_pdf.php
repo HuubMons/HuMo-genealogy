@@ -88,7 +88,7 @@ function data_array($id, $width, $height)
 
     if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
         @$personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
-        $person_cls = new person_cls($personDb);
+        $person_cls = new Person_cls($personDb);
         $pers_privacy = $person_cls->privacy;
         // get length of original name, birth, death strings
         $names = $person_cls->person_name($personDb);
@@ -238,14 +238,14 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             }
             if ($data["gedcomnumber"][$m] != '') {
                 @$personDb = $db_functions->get_person($data["gedcomnumber"][$m]);
-                $person_cls = new person_cls($personDb);
+                $person_cls = new Person_cls($personDb);
                 $pers_privacy = $person_cls->privacy;
             } else {
                 $pers_privacy = false;
             }
             if ($data["gedcomnumber"][$m + 1] != '') {
                 @$womanDb = $db_functions->get_person($data["gedcomnumber"][$m + 1]);
-                $woman_cls = new person_cls($womanDb);
+                $woman_cls = new Person_cls($womanDb);
                 $woman_privacy = $person_cls->privacy;
             } else {
                 $woman_privacy = false;
@@ -290,7 +290,7 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
 //initialize pdf generation
 @$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use person class ***
-$pers_cls = new person_cls($persDb);
+$pers_cls = new Person_cls($persDb);
 $name = $pers_cls->person_name($persDb);
 $title = pdf_convert(__('Ancestor sheet') . __(' of ') . $name["standard_name"]);
 

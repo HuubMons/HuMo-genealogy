@@ -47,6 +47,36 @@ session_start();
 
 $page = 'index';
 
+// *** Dec. 2024: Added autoload. Name of class = AdminSomethingClass. Name of script: adminSomethingClass.php ***
+function custom_autoload($class_name)
+{
+    // Examples of autoload files:
+    // controller/main_adminController.php -> doesn't work because of variables in include files ($dbh etc).
+    // ../include/db_functions_cls.php
+    // ../include/link_cls.php
+    // ../include/person_cls.php
+    // ../languages/language_cls.php
+    // models/groupsmodel.php
+
+    // *** At this moment only a few classes are autoloaded. Under construction ***
+    $classes = array('AdminStatisticsModel', 'Db_functions_cls', 'GroupsModel', 'Language_cls', 'Link_cls', 'Person_cls');
+    if (in_array($class_name, $classes)) { // If all classes are autoloading, this will be removed.
+        //$dirs = array('controller', '../include');
+        $dirs = array('models', '../include', '../languages');
+        foreach ($dirs as $dir) {
+            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
+            if (file_exists($file)) {
+                require $file;
+                break;
+            } else {
+                //throw new Exception("The file $file does not exist.");
+            }
+        }
+    }
+}
+spl_autoload_register('custom_autoload');
+
+
 // *** Added dec. 2024 ***
 require __DIR__ . '/controller/main_adminController.php';
 $controllerObj = new Main_adminController();
@@ -134,7 +164,7 @@ timezone();
 //echo date("Y-m-d H:i");
 
 // *** Get ordered list of languages ***
-include(__DIR__ . '/../languages/language_cls.php');
+//include(__DIR__ . '/../languages/language_cls.php');
 $language_cls = new Language_cls;
 $language_file = $language_cls->get_languages();
 
@@ -355,7 +385,8 @@ if (file_exists('../media/favicon.ico')) {
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $selected_language; ?>" <?= $language["dir"] == "rtl" ? 'dir="rtl"':''; ?>>
+<html lang="<?= $selected_language; ?>" <?= $language["dir"] == "rtl" ? 'dir="rtl"' : ''; ?>>
+
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
@@ -774,8 +805,8 @@ if ($popup == false) {
             $maps = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/maps.php");
         } elseif ($page === 'statistics') {
-            require __DIR__ . '/controller/admin_statisticsController.php';
-            $controllerObj = new StatisticsController();
+            require __DIR__ . '/controller/adminStatisticsController.php';
+            $controllerObj = new AdminStatisticsController();
             $statistics = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/admin_statistics.php");
         } elseif ($page === 'install_update') {

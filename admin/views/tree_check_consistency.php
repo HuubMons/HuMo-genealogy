@@ -301,7 +301,7 @@ if (isset($_POST['mark_all'])) {
             $personDb = $person->fetch();
 
             /*	// using class slows down considerably: 10,000 persons without class 15 sec, with class for name: over 4 minutes...
-            $persclass = New person_cls($personDb);
+            $persclass = new Person_cls($personDb);
             $name=$persclass->person_name($personDb); 
             */
             $name = $personDb['pers_lastname'] . ", " . $personDb['pers_firstname'] . ' ' . str_replace("_", " ", $personDb['pers_prefix']);

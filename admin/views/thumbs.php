@@ -568,7 +568,6 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             <?php
                             echo print_thumbnail($selected_picture_folder, $filename);
                             // *** Show name of connected persons ***
-                            include_once(__DIR__ . '/../../include/person_cls.php');
                             $picture_text = '';
                             $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "'
                                 AND event_connect_kind='person' AND event_kind='picture'
@@ -576,7 +575,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             $afbqry = $dbh->query($sql);
                             $picture_privacy = false;
                             while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                                $person_cls = new person_cls;
+                                $person_cls = new Person_cls;
                                 $db_functions->set_tree_id($tree_id);
                                 $personDb = $db_functions->get_person($afbDb->event_connect_id);
                                 $name = $person_cls->person_name($personDb);

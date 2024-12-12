@@ -14,7 +14,7 @@ include_once(__DIR__ . "/include/settings_user.php"); // USER variables
 include_once(__DIR__ . "/include/person_cls.php");
 
 include_once(__DIR__ . "/include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
+$db_functions = new Db_functions_cls($dbh);
 
 // *** Database ***
 $datasql = $db_functions->get_trees();
@@ -29,7 +29,7 @@ foreach ($datasql as $dataDb) {
         //Birthdate|Birthplace|Deathdate|Deathplace|
         while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
-            $person_cls = new person_cls($personDb);
+            $person_cls = new Person_cls($personDb);
             $privacy = $person_cls->privacy;
 
             // *** Completely filter person ***

@@ -25,7 +25,7 @@ function witness($gedcomnr, $event_kind, $event_connect_kind = 'person')
     $text_array = [];
 
     if ($gedcomnr) {
-        $witness_cls = new person_cls;
+        $witness_cls = new Person_cls;
         //get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
         $witness_qry = $db_functions->get_events_connect($event_connect_kind, $gedcomnr, $event_kind);
 
@@ -147,7 +147,7 @@ function witness_by_events($gedcomnr)
     $counter = 0;
     $text = '';
     if ($gedcomnr) {
-        $witness_cls = new person_cls;
+        $witness_cls = new Person_cls;
 
         /*
         $source_prep = $dbh->prepare("SELECT * FROM humo_events

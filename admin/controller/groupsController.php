@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/groups.php";
-
 class GroupsController
 {
     public function detail($dbh)

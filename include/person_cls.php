@@ -1246,7 +1246,7 @@ class person_cls
 
                 if ($partner_id != '0' && $partner_id != '') {
                     $partnerDb = $db_functions->get_person($partner_id);
-                    $partner_cls = new person_cls;
+                    $partner_cls = new Person_cls;
                     $name = $partner_cls->person_name($partnerDb);
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***

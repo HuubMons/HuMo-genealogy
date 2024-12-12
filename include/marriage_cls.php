@@ -53,7 +53,7 @@ class marriage_cls
         }
 
         // *** Open a person class for witnesses ***
-        $person_cls = new person_cls;
+        $person_cls = new Person_cls;
 
         $relation_kind = '';
         $relation_check = false;

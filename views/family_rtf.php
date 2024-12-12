@@ -92,7 +92,7 @@ $par_child_text->setIndentRight(0.5);
 // *** Generate title of RTF file ***
 $persDb = $db_functions->get_person($data["main_person"]);
 // *** Use class to process person ***
-$pers_cls = new person_cls($persDb);
+$pers_cls = new Person_cls($persDb);
 $name = $pers_cls->person_name($persDb);
 if (!$data["descendant_report"] == false) {
     $title = __('Descendant report') . __(' of ') . $name["standard_name"];
@@ -131,7 +131,7 @@ if (!$data["family_id"]) {
     // *** Privacy filter ***
     @$parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
-    $parent1_cls = new person_cls($parent1Db);
+    $parent1_cls = new Person_cls($parent1Db);
 
     $rtf_text = strip_tags($parent1_cls->name_extended("parent1"), "<b><i>");
     $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
@@ -226,11 +226,11 @@ else {
                 }
                 @$parent1Db = $db_functions->get_person($parent1);
                 // *** Proces parent1 using a class ***
-                $parent1_cls = new person_cls($parent1Db);
+                $parent1_cls = new Person_cls($parent1Db);
 
                 @$parent2Db = $db_functions->get_person($parent2);
                 // *** Proces parent2 using a class ***
-                $parent2_cls = new person_cls($parent2Db);
+                $parent2_cls = new Person_cls($parent2Db);
 
                 // *** Proces marriage using a class ***
                 $marriage_cls = new marriage_cls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
@@ -409,7 +409,7 @@ else {
                     foreach ($child_array as $i => $value) {
                         @$childDb = $db_functions->get_person($child_array[$i]);
                         // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                        $child_cls = new Person_cls($childDb);
 
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
