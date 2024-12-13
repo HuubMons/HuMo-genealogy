@@ -59,8 +59,9 @@ function custom_autoload($class_name)
     // models/groupsmodel.php
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
-    $classes = array('AdminStatisticsModel', 'Db_functions_cls', 'GroupsModel', 'Language_cls', 'Link_cls', 'Person_cls');
-    if (in_array($class_name, $classes)) { // If all classes are autoloading, this will be removed.
+    $classes = array('Db_functions_cls', 'Language_cls', 'Link_cls', 'Person_cls');
+    // If all classes are autoloading, array check of classes will be removed.
+    if (in_array($class_name, $classes) || substr($class_name,-5)=='Model') {
         //$dirs = array('controller', '../include');
         $dirs = array('models', '../include', '../languages');
         foreach ($dirs as $dir) {
@@ -702,23 +703,23 @@ if ($popup == false) {
         } elseif ($page === 'editor_sources') {
             include_once(__DIR__ . "/include/editor_sources.php");
         } elseif ($page === 'edit_sources') {
-            require __DIR__ . '/controller/edit_sourceController.php';
-            $controllerObj = new SourceController();
+            require __DIR__ . '/controller/editSourceController.php';
+            $controllerObj = new EditSourceController();
             $editSource = $controllerObj->detail($dbh, $tree_id, $db_functions);
             include_once(__DIR__ . "/views/edit_source.php");
         } elseif ($page === 'edit_repositories') {
-            require __DIR__ . '/controller/edit_repositoryController.php';
-            $controllerObj = new RepositoryController();
+            require __DIR__ . '/controller/editRepositoryController.php';
+            $controllerObj = new EditRepositoryController();
             $editRepository = $controllerObj->detail($dbh, $tree_id, $db_functions);
             include_once(__DIR__ . "/views/edit_repository.php");
         } elseif ($page === 'edit_addresses') {
-            require __DIR__ . '/controller/edit_addressController.php';
-            $controllerObj = new AddressController();
+            require __DIR__ . '/controller/editAddressController.php';
+            $controllerObj = new EditAddressController();
             $editAddress = $controllerObj->detail($dbh, $tree_id, $db_functions);
             include_once(__DIR__ . "/views/edit_address.php");
         } elseif ($page === 'edit_places') {
-            require __DIR__ . '/controller/edit_rename_placeController.php';
-            $controllerObj = new PlaceController();
+            require __DIR__ . '/controller/RenamePlaceController.php';
+            $controllerObj = new RenamePlaceController();
             $place = $controllerObj->detail($dbh, $tree_id);
             include_once(__DIR__ . "/views/edit_rename_place.php");
         } elseif ($page === 'editor_place_select') {
@@ -730,7 +731,7 @@ if ($popup == false) {
         } elseif ($page === 'editor_media_select') {
             include_once(__DIR__ . "/include/editor_media_select.php");
         } elseif ($page === 'check') {
-            require __DIR__ . '/controller/tree_checkController.php';
+            require __DIR__ . '/controller/treeCheckController.php';
             $controllerObj = new TreeCheckController();
             $tree_check = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/tree_check.php");
@@ -739,8 +740,8 @@ if ($popup == false) {
             //} elseif ($page === 'gedcom') {
             //    include_once(__DIR__ . "/views/gedcom.php");
         } elseif ($page === 'settings') {
-            require __DIR__ . '/controller/settings_adminController.php';
-            $controllerObj = new SettingsController();
+            require __DIR__ . '/controller/adminSettingsController.php';
+            $controllerObj = new AdminSettingsController();
             $settings = $controllerObj->detail($dbh, $db_functions, $humo_option);
             include_once(__DIR__ . "/views/settings_admin.php");
         } elseif ($page === 'thumbs') {
@@ -763,8 +764,8 @@ if ($popup == false) {
             $groups = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/groups.php");
         } elseif ($page === 'edit_cms_pages') {
-            require __DIR__ . '/controller/edit_cms_pagesController.php';
-            $controllerObj = new edit_cms_pagesController();
+            require __DIR__ . '/controller/editCMS_PagesController.php';
+            $controllerObj = new EditCMS_PagesController();
             $edit_cms_pages = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/edit_cms_pages.php");
         } elseif ($page === 'backup') {
@@ -783,8 +784,8 @@ if ($popup == false) {
             //$cal_date = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/cal_date.php");
         } elseif ($page === 'export') {
-            require __DIR__ . '/controller/gedcom_exportController.php';
-            $controllerObj = new Gedcom_exportController();
+            require __DIR__ . '/controller/gedcomExportController.php';
+            $controllerObj = new GedcomExportController();
             $export = $controllerObj->detail($dbh, $tree_id, $humo_option, $db_functions);
             include_once(__DIR__ . "/views/gedcom_export.php");
         } elseif ($page === 'log') {
@@ -793,8 +794,8 @@ if ($popup == false) {
             $log = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/log.php");
         } elseif ($page === 'language_editor') {
-            require __DIR__ . '/controller/language_editorController.php';
-            $controllerObj = new Language_editorController();
+            require __DIR__ . '/controller/languageEditorController.php';
+            $controllerObj = new LanguageEditorController();
             $language_editor = $controllerObj->detail($dbh, $humo_option);
             include_once(__DIR__ . "/views/language_editor.php");
         } elseif ($page === 'prefix_editor') {
@@ -833,8 +834,8 @@ if ($popup == false) {
             if (!isset($dbh)) {
                 $dbh = '';
             }
-            require __DIR__ . '/controller/index_adminController.php';
-            $controllerObj = new IndexController();
+            require __DIR__ . '/controller/indexAdminController.php';
+            $controllerObj = new IndexAdminController();
             $index = $controllerObj->detail($database_check, $dbh);
             include_once(__DIR__ . "/views/index_admin.php");
         }

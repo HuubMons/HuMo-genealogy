@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/extensions.php";
-
 class ExtensionsController
 {
     public function detail($dbh, $db_functions, $humo_option, $language_file)

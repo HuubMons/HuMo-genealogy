@@ -1,10 +1,8 @@
 <?php
-require_once __DIR__ . "/../models/edit_rename_place.php";
-
 include_once(__DIR__ . "/../include/editor_cls.php");
 include_once(__DIR__ . "/../include/select_tree.php");
 
-class PlaceController
+class RenamePlaceController
 {
     private $editor_cls;
 

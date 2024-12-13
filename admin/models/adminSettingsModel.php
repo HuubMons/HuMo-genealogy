@@ -1,5 +1,5 @@
 <?php
-class SettingsModel
+class AdminSettingsModel
 {
     public function get_menu_tab()
     {

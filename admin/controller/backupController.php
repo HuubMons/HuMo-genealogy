@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/backup.php";
-
 class BackupController
 {
     public function detail($dbh)

@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/log.php";
-
 class LogController
 {
     public function detail($dbh)

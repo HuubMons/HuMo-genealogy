@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/maps.php";
-
 class MapsController
 {
     public function detail($dbh, $db_functions)

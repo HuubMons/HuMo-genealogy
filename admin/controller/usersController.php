@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/users.php";
-
 class UsersController
 {
     public function detail($dbh)

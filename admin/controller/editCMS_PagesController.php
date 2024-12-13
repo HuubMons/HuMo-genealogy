@@ -1,11 +1,9 @@
 <?php
-require_once __DIR__ . "/../models/edit_cms_pages.php";
-
-class edit_cms_pagesController
+class editCMS_PagesController
 {
     public function detail($dbh)
     {
-        $CMS_pagesModel = new CMS_pagesModel($dbh);
+        $CMS_pagesModel = new EditCMS_PagesModel($dbh);
 
         $edit_cms_pages['menu_tab'] = $CMS_pagesModel->menu_tab();
 

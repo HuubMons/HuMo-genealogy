@@ -1,10 +1,8 @@
 <?php
-require_once __DIR__ . "/../models/edit_address.php";
-
 include_once(__DIR__ . "/../include/editor_cls.php");
 include_once(__DIR__ . "/../include/select_tree.php");
 
-class AddressController
+class EditAddressController
 {
     private $editor_cls;
 

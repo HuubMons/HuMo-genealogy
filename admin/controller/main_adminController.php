@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/main_admin.php";
-
 // *** Only logoff admin ***
 if (isset($_GET['log_off'])) {
     unset($_SESSION['user_name_admin']);
@@ -30,7 +28,7 @@ class Main_adminController
 {
     public function detail()
     {
-        $main_adminModel = new Main_adminModel();
+        $main_adminModel = new MainAdminModel();
         //$main_admin['abc'] = $main_adminModel->get_abc();
 
         //return $main_admin;

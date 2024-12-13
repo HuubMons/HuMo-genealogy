@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/tree_check.php";
-
 include_once(__DIR__ . "/../../include/language_date.php");
 include_once(__DIR__ . "/../include/select_tree.php");
 

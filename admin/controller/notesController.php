@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/notes.php";
-
 class NotesController
 {
     public function detail($dbh)

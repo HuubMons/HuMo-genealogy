@@ -1,7 +1,5 @@
 <?php
-require_once __DIR__ . "/../models/language_editor.php";
-
-class Language_editorController
+class LanguageEditorController
 {
     public function detail($dbh, $humo_option)
     {

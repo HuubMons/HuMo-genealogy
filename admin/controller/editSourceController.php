@@ -1,10 +1,8 @@
 <?php
-require_once __DIR__ . "/../models/edit_source.php";
-
 include_once(__DIR__ . "/../include/editor_cls.php");
 include_once(__DIR__ . "/../include/select_tree.php");
 
-class SourceController
+class EditSourceController
 {
     private $editor_cls;
 

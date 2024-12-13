@@ -1,7 +1,5 @@
 <?php
-require_once __DIR__ . "/../models/gedcom_export.php";
-
-class Gedcom_exportController
+class GedcomExportController
 {
     public function detail($dbh, $tree_id, $humo_option, $db_functions)
     {

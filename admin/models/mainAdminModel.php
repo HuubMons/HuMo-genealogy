@@ -1,5 +1,5 @@
 <?php
-class Main_adminModel
+class MainAdminModel
 {
     /*
     public function get_abc()

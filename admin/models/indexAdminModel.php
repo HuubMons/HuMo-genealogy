@@ -1,5 +1,5 @@
 <?php
-class IndexModel
+class IndexAdminModel
 {
     // *** TODO: improve function. Probably split into multiple functions ***
     public function database_settings($database_check)
