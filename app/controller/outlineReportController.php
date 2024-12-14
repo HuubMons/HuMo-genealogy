@@ -1,8 +1,5 @@
 <?php
-require_once  __DIR__ . "/../model/family.php";
-require_once  __DIR__ . "/../model/outline_report.php";
-
-class Outline_reportController
+class OutlineReportController
 {
     public function getOutlineReport($dbh, $tree_id, $humo_option)
     {

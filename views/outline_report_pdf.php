@@ -14,7 +14,7 @@ include_once(__DIR__ . "/layout_pdf.php");
 
 
 // TODO create seperate controller script.
-require_once  __DIR__ . "/../app/model/family.php";
+require_once  __DIR__ . "/../app/model/familyModel.php";
 $get_family = new FamilyModel($dbh);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();

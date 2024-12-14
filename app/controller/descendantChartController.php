@@ -1,8 +1,5 @@
 <?php
-require_once  __DIR__ . "/../model/family.php";
-require_once  __DIR__ . "/../model/descendant.php";
-
-class Descendant_chartController
+class DescendantChartController
 {
     public function getFamily($dbh, $tree_id)
     {

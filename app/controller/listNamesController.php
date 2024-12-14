@@ -1,11 +1,9 @@
 <?php
-require_once  __DIR__ . "/../model/list_names.php";
-
-class List_namesController
+class ListNamesController
 {
     public function list_names($dbh, $tree_id, $user)
     {
-        $list_namesModel = new list_namesModel();
+        $list_namesModel = new listNamesModel();
 
         $get_alphabet_array = $list_namesModel->getAlphabetArray($dbh, $tree_id, $user);
         $get_max_cols = $list_namesModel->getMaxCols();

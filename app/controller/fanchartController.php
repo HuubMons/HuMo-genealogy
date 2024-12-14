@@ -1,7 +1,4 @@
 <?php
-require_once  __DIR__ . "/../model/ancestor.php";
-require_once  __DIR__ . "/../model/fanchart.php";
-
 require_once(__DIR__ . "/../../include/fanchart/persian_log2vis.php");
 
 class FanchartController

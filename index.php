@@ -160,20 +160,20 @@ if ($page == 'address') {
     $controllerObj = new AddressesController($dbh, $user, $tree_id);
     $data = $controllerObj->list();
 } elseif ($page == 'ancestor_report') {
-    require __DIR__ . '/app/controller/ancestor_reportController.php';
-    $controllerObj = new Ancestor_reportController($dbh);
+    require __DIR__ . '/app/controller/ancestorReportController.php';
+    $controllerObj = new AncestorReportController($dbh);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_report_rtf') {
-    require __DIR__ . '/app/controller/ancestor_reportController.php';
-    $controllerObj = new Ancestor_reportController($dbh);
+    require __DIR__ . '/app/controller/ancestorReportController.php';
+    $controllerObj = new AncestorReportController($dbh);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_chart') {
-    require __DIR__ . '/app/controller/ancestor_chartController.php';
-    $controllerObj = new Ancestor_chartController($dbh, $db_functions);
+    require __DIR__ . '/app/controller/ancestorChartController.php';
+    $controllerObj = new AncestorChartController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_sheet') {
-    require __DIR__ . '/app/controller/ancestor_sheetController.php';
-    $controllerObj = new Ancestor_sheetController($dbh, $db_functions);
+    require __DIR__ . '/app/controller/ancestorSheetController.php';
+    $controllerObj = new AncestorSheetController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'anniversary') {
     require __DIR__ . '/app/controller/anniversaryController.php';
@@ -186,8 +186,8 @@ if ($page == 'address') {
 } elseif ($page == 'cookies') {
     //
 } elseif ($page == 'descendant_chart') {
-    require __DIR__ . '/app/controller/descendant_chartController.php';
-    $controllerObj = new Descendant_chartController();
+    require __DIR__ . '/app/controller/descendantChartController.php';
+    $controllerObj = new DescendantChartController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
 } elseif ($page == 'family_rtf') {
     //
@@ -206,20 +206,20 @@ if ($page == 'address') {
     $controllerObj = new HourglassController();
     $data = $controllerObj->getHourglass($dbh, $tree_id);
 } elseif ($page == 'latest_changes') {
-    require __DIR__ . '/app/controller/latest_changesController.php';
-    $controllerObj = new Latest_changesController($dbh);
+    require __DIR__ . '/app/controller/latestChangesController.php';
+    $controllerObj = new LatestChangesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id);
 } elseif ($page == 'list') {
     require __DIR__ . '/app/controller/listController.php';
     $controllerObj = new ListController();
     $list = $controllerObj->list_names($dbh, $tree_id, $user, $humo_option);
 } elseif ($page == 'list_places_families') {
-    require __DIR__ . '/app/controller/list_places_familiesController.php';
+    require __DIR__ . '/app/controller/listPlacesFamiliesController.php';
     $controllerObj = new ListPlacesFamiliesController();
     $data = $controllerObj->list_places_names($tree_id);
 } elseif ($page == 'list_names') {
-    require __DIR__ . '/app/controller/list_namesController.php';
-    $controllerObj = new List_namesController();
+    require __DIR__ . '/app/controller/listNamesController.php';
+    $controllerObj = new ListNamesController();
     $data = $controllerObj->list_names($dbh, $tree_id, $user);
 } elseif ($page == 'login') {
     //
@@ -244,16 +244,16 @@ if ($page == 'address') {
     $controllerObj = new RelationsController($dbh);
     $relation = $controllerObj->getRelations($db_functions, $person_cls);
 } elseif ($page == 'reset_password') {
-    require __DIR__ . '/app/controller/reset_passwordController.php';
+    require __DIR__ . '/app/controller/resetPasswordController.php';
     $controllerObj = new ResetpasswordController();
     $resetpassword = $controllerObj->detail($dbh, $humo_option);
 } elseif ($page == 'outline_report') {
-    require __DIR__ . '/app/controller/outline_reportController.php';
-    $controllerObj = new Outline_reportController();
+    require __DIR__ . '/app/controller/outlineReportController.php';
+    $controllerObj = new OutlineReportController();
     $data = $controllerObj->getOutlineReport($dbh, $tree_id, $humo_option);
 } elseif ($page == 'user_settings') {
-    require __DIR__ . '/app/controller/user_settingsController.php';
-    $controllerObj = new User_settingsController();
+    require __DIR__ . '/app/controller/userSettingsController.php';
+    $controllerObj = new UserSettingsController();
     $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
 } elseif ($page == 'statistics') {
     require __DIR__ . '/app/controller/statisticsController.php';
@@ -281,8 +281,8 @@ if ($page == 'address') {
     $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
 } elseif ($page == 'tree_index') {
     //  *** TODO: first improve difference between tree_index and mainindex ***
-    //require __DIR__ . '/app/controller/tree_indexController.php';
-    //$controllerObj = new Tree_indexController();
+    //require __DIR__ . '/app/controller/treeIndexController.php';
+    //$controllerObj = new TreeIndexController();
     //$tree_index["items"] = $controllerObj->get_items($dbh);
 }
 

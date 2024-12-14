@@ -3,7 +3,7 @@ include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/date_place.php');
 include_once(__DIR__ . "/../../include/show_tree_date.php");
 
-class Mainindex_cls
+class TreeIndexModel
 {
     public function show_tree_index()
     {

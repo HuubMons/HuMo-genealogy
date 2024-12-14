@@ -1,6 +1,4 @@
 <?php
-require_once  __DIR__ . "/../model/index.php";
-
 if (isset($_GET['log_off'])) {
     unset($_SESSION['user_name']);
     unset($_SESSION['user_id']);

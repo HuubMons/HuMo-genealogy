@@ -1,5 +1,5 @@
 <?php
-class EditAddressModel
+class AdminAddressModel
 {
     private $address_id;
 

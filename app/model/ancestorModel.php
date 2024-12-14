@@ -6,9 +6,6 @@
 
 // *** This model is used by multiple ancestor reports (report/ chart/ sheet) ***
 
-// TODO move to controller?
-include_once(__DIR__ . '/family.php');
-
 class AncestorModel extends FamilyModel
 {
     //TODO check the $_GET. Normally main_person is used. ID is used for family number.

@@ -1,9 +1,9 @@
 <?php
-class editCMS_PagesController
+class AdminCmsPagesController
 {
     public function detail($dbh)
     {
-        $CMS_pagesModel = new EditCMS_PagesModel($dbh);
+        $CMS_pagesModel = new AdminCmsPagesModel($dbh);
 
         $edit_cms_pages['menu_tab'] = $CMS_pagesModel->menu_tab();
 

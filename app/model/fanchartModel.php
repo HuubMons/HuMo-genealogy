@@ -1,5 +1,4 @@
 <?php
-
 class FanchartModel extends AncestorModel
 {
     public function get_chosengen()

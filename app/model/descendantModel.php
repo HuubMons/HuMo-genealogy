@@ -2,16 +2,7 @@
 // *** Descendant model needs some parts of family model.
 class DescendantModel extends FamilyModel
 {
-    //private $dbh;
-
     private $hsize, $vdist, $vsize, $hdist, $hourglass;
-
-    /*
-    public function __construct($dbh)
-    {
-        $this->dbh = $dbh;
-    }
-    */
 
     public function getDNA()
     {

@@ -1,7 +1,5 @@
 <?php
-require_once  __DIR__ . "/../model/ancestor.php";
-
-class Ancestor_sheetController
+class AncestorSheetController
 {
     private $dbh, $db_functions;
 
@@ -27,7 +25,7 @@ class Ancestor_sheetController
             "ancestor_header" => $ancestor_header,
             "title" => __('Ancestor sheet')
         );
-        
+
         return array_merge($data, $get_ancestors);
     }
 }

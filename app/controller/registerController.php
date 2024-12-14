@@ -1,6 +1,4 @@
 <?php
-require_once  __DIR__ . "/../model/register.php";
-
 class RegisterController
 {
     private $db_functions;

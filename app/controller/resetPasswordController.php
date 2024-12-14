@@ -1,11 +1,9 @@
 <?php
-require_once  __DIR__ . "/../model/reset_password.php";
-
-class ResetpasswordController
+class ResetPasswordController
 {
     public function detail($dbh, $humo_option)
     {
-        $resetpasswordModel = new ResetpasswordModel();
+        $resetpasswordModel = new ResetPasswordModel();
 
         $resetpassword['activation_key'] = $resetpasswordModel->get_activation_key();
         $resetpassword['userid'] = $resetpasswordModel->get_userid();

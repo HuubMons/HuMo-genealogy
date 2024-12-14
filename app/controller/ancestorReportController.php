@@ -1,7 +1,5 @@
 <?php
-require_once  __DIR__ . "/../model/ancestor.php";
-
-class Ancestor_reportController
+class AncestorReportController
 {
     private $dbh;
 
@@ -34,7 +32,7 @@ class Ancestor_reportController
             "picture_presentation" => $picture_presentation,
             "title" => __('Ancestor report')
         );
-        
+
         return $data;
     }
 }

@@ -1,6 +1,4 @@
 <?php
-require_once  __DIR__ . "/../model/source.php";
-
 include_once(__DIR__ . "/../../include/date_place.php");
 include_once(__DIR__ . "/../../include/process_text.php");
 include_once(__DIR__ . "/../../include/show_picture.php");

@@ -1,15 +1,13 @@
 <?php
-class list_namesModel
+class listNamesModel
 {
     public function getAlphabetArray($dbh, $tree_id, $user)
     {
-        $person_qry = "SELECT UPPER(substring(pers_lastname,1,1)) as first_character
-        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
+        $person_qry = "SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
 
         // *** Search pers_prefix for names like: "van Mons" ***
         if ($user['group_kindindex'] == "j") {
-            $person_qry = "SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
+            $person_qry = "SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
         }
         $person_result = $dbh->query($person_qry);
         $alphabet = [];

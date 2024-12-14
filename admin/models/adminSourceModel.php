@@ -1,5 +1,5 @@
 <?php
-class EditSourceModel
+class AdminSourceModel
 {
     private $source_id;
 

@@ -1,5 +1,5 @@
 <?php
-class ResetpasswordModel
+class ResetPasswordModel
 {
     public function get_activation_key()
     {

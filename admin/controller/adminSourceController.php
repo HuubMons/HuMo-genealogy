@@ -2,7 +2,7 @@
 include_once(__DIR__ . "/../include/editor_cls.php");
 include_once(__DIR__ . "/../include/select_tree.php");
 
-class EditSourceController
+class AdminSourceController
 {
     private $editor_cls;
 
@@ -13,7 +13,7 @@ class EditSourceController
 
     public function detail($dbh, $tree_id, $db_functions)
     {
-        $editSourceModel = new EditSourceModel($dbh);
+        $editSourceModel = new AdminSourceModel($dbh);
         $editSourceModel->set_source_id($dbh, $tree_id);
         $editSourceModel->update_source($dbh, $tree_id, $db_functions, $this->editor_cls);
         $editSource['source_id'] = $editSourceModel->get_source_id();

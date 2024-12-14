@@ -1,9 +1,9 @@
 <?php
-class IndexAdminController
+class AdminIndexController
 {
     public function detail($database_check, $dbh)
     {
-        $indexModel = new IndexAdminModel();
+        $indexModel = new AdminIndexModel();
 
         $index['php_version'] = $indexModel->get_php_version();
 

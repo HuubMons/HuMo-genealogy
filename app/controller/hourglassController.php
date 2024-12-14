@@ -1,8 +1,4 @@
 <?php
-require_once  __DIR__ . "/../model/family.php";
-require_once  __DIR__ . "/../model/descendant.php";
-require_once  __DIR__ . "/../model/ancestor.php";
-
 class HourglassController
 {
     public function getHourglass($dbh, $tree_id)

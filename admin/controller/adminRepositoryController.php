@@ -2,7 +2,7 @@
 include_once(__DIR__ . "/../include/editor_cls.php");
 include_once(__DIR__ . "/../include/select_tree.php");
 
-class EditRepositoryController
+class AdminRepositoryController
 {
     private $editor_cls;
 
@@ -13,7 +13,7 @@ class EditRepositoryController
 
     public function detail($dbh, $tree_id, $db_functions)
     {
-        $editRepositoryModel = new EditRepositoryModel($dbh);
+        $editRepositoryModel = new AdminRepositoryModel($dbh);
         $editRepositoryModel->set_repo_id();
         $editRepositoryModel->update_repository($dbh, $tree_id, $db_functions, $this->editor_cls);
         $editRepository['repo_id'] = $editRepositoryModel->get_repo_id();

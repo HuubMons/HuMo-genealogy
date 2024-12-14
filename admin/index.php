@@ -706,18 +706,18 @@ if ($popup == false) {
         } elseif ($page === 'editor_sources') {
             include_once(__DIR__ . "/include/editor_sources.php");
         } elseif ($page === 'edit_sources') {
-            require __DIR__ . '/controller/editSourceController.php';
-            $controllerObj = new EditSourceController();
+            require __DIR__ . '/controller/adminSourceController.php';
+            $controllerObj = new AdminSourceController();
             $editSource = $controllerObj->detail($dbh, $tree_id, $db_functions);
             include_once(__DIR__ . "/views/edit_source.php");
         } elseif ($page === 'edit_repositories') {
-            require __DIR__ . '/controller/editRepositoryController.php';
-            $controllerObj = new EditRepositoryController();
+            require __DIR__ . '/controller/adminRepositoryController.php';
+            $controllerObj = new AdminRepositoryController();
             $editRepository = $controllerObj->detail($dbh, $tree_id, $db_functions);
             include_once(__DIR__ . "/views/edit_repository.php");
         } elseif ($page === 'edit_addresses') {
-            require __DIR__ . '/controller/editAddressController.php';
-            $controllerObj = new EditAddressController();
+            require __DIR__ . '/controller/adminAddressController.php';
+            $controllerObj = new AdminAddressController();
             $editAddress = $controllerObj->detail($dbh, $tree_id, $db_functions);
             include_once(__DIR__ . "/views/edit_address.php");
         } elseif ($page === 'edit_places') {
@@ -767,8 +767,8 @@ if ($popup == false) {
             $groups = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/groups.php");
         } elseif ($page === 'edit_cms_pages') {
-            require __DIR__ . '/controller/editCMS_PagesController.php';
-            $controllerObj = new EditCMS_PagesController();
+            require __DIR__ . '/controller/adminCmsPagesController.php';
+            $controllerObj = new AdminCmsPagesController();
             $edit_cms_pages = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/edit_cms_pages.php");
         } elseif ($page === 'backup') {
@@ -837,8 +837,8 @@ if ($popup == false) {
             if (!isset($dbh)) {
                 $dbh = '';
             }
-            require __DIR__ . '/controller/indexAdminController.php';
-            $controllerObj = new IndexAdminController();
+            require __DIR__ . '/controller/adminIndexController.php';
+            $controllerObj = new AdminIndexController();
             $index = $controllerObj->detail($database_check, $dbh);
             include_once(__DIR__ . "/views/index_admin.php");
         }

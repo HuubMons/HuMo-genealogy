@@ -3,6 +3,42 @@ session_start();
 
 // *** Seperate file for PDF scripts. Copy of layout.php ***
 
+
+
+/** Dec. 2024: Added autoload.
+ *    Name of class = SomethingClass.
+ *    Name of script: SomethingClass.php ***
+ */
+/*
+function custom_autoload($class_name)
+{
+    // Examples of autoload files:
+    // app/model/adresModel.php
+
+    // *** At this moment only a few classes are autoloaded. Under construction ***
+    //$classes = array('xxxxx');
+    // If all classes are autoloading, array check of classes will be removed.
+    //if (in_array($class_name, $classes) || substr($class_name, -5) == 'Model') {
+    // First start autoload using model scripts.
+    if (substr($class_name, -5) == 'Model') {
+        $dirs = array('../app/model', 'test');
+        foreach ($dirs as $dir) {
+            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
+            if (file_exists($file)) {
+                require $file;
+                break;
+            } else {
+                //throw new Exception("The file $file does not exist.");
+            }
+        }
+    }
+}
+spl_autoload_register('custom_autoload');
+*/
+
+
+
+
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . '/../include/show_tree_text.php');
 include_once(__DIR__ . "/../include/db_functions_cls.php");

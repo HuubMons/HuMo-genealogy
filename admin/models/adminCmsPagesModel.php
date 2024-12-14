@@ -1,5 +1,5 @@
 <?php
-class EditCMS_PagesModel
+class AdminCmsPagesModel
 {
     private $select_page;
 

@@ -15,7 +15,7 @@ $screen_mode = 'RTF';
 
 
 // TODO create seperate controller script.
-require_once  __DIR__ . "/../app/model/family.php";
+require_once  __DIR__ . "/../app/model/familyModel.php";
 $get_family = new FamilyModel($dbh);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();

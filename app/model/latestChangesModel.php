@@ -1,22 +1,6 @@
 <?php
-
-// *** Needed to build array ***
-class Change
+class LatestChangesModel
 {
-    public $show_person;
-    public $changed_date;
-    public $new_date;
-}
-
-class Latest_changesModel
-{
-    private $dbh;
-
-    public function __construct($dbh)
-    {
-        $this->dbh = $dbh;
-    }
-
     public function listChanges($dbh, $tree_id)
     {
         // *** EXAMPLE of a UNION querie ***
@@ -72,8 +56,8 @@ class Latest_changesModel
         }
 
         $person_result = $dbh->query($person_qry);
-        $i = 1;
-        $changes = array();
+        $i = 0;
+        $changes = [];
         while (@$person = $person_result->fetch(PDO::FETCH_OBJ)) {
             if ($person->pers_sexe == "M") {
                 $pers_sexe = '<img src="images/man.gif" alt="man">';
@@ -88,12 +72,9 @@ class Latest_changesModel
             $url = $person_cls->person_url2($person->pers_tree_id, $person->pers_famc, $person->pers_fams, $person->pers_gedcomnumber);
             $name = $person_cls->person_name($person);
 
-            $changes[$i] = new Change();
-            $changes[$i]->show_person = $person_cls->person_popup_menu($person) . $pers_sexe;
-            $changes[$i]->show_person .= '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
-
-            $changes[$i]->changed_date = show_datetime($person->pers_changed_datetime);
-            $changes[$i]->new_date = show_datetime($person->pers_new_datetime);
+            $changes['show_person'][$i] = $person_cls->person_popup_menu($person) . $pers_sexe . '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+            $changes['changed_date'][$i] = show_datetime($person->pers_changed_datetime);
+            $changes['new_date'][$i] = show_datetime($person->pers_new_datetime);
 
             $i++;
         }

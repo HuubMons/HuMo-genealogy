@@ -1,5 +1,5 @@
 <?php
-class EditRepositoryModel
+class AdminRepositoryModel
 {
     private $repo_id;
 
