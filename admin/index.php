@@ -47,8 +47,11 @@ session_start();
 
 $page = 'index';
 
-// *** Dec. 2024: Added autoload. Name of class = AdminSomethingClass. Name of script: adminSomethingClass.php ***
-function custom_autoload($class_name)
+/** Dec. 2024: Added autoload.
+ *    Name of class = AdminSomethingClass.
+ *    Name of script: adminSomethingClass.php ***
+ */
+function admin_custom_autoload($class_name)
 {
     // Examples of autoload files:
     // controller/main_adminController.php -> doesn't work because of variables in include files ($dbh etc).
@@ -61,7 +64,7 @@ function custom_autoload($class_name)
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array('Db_functions_cls', 'Language_cls', 'Link_cls', 'Person_cls');
     // If all classes are autoloading, array check of classes will be removed.
-    if (in_array($class_name, $classes) || substr($class_name,-5)=='Model') {
+    if (in_array($class_name, $classes) || substr($class_name, -5) == 'Model') {
         //$dirs = array('controller', '../include');
         $dirs = array('models', '../include', '../languages');
         foreach ($dirs as $dir) {
@@ -75,7 +78,7 @@ function custom_autoload($class_name)
         }
     }
 }
-spl_autoload_register('custom_autoload');
+spl_autoload_register('admin_custom_autoload');
 
 
 // *** Added dec. 2024 ***

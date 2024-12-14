@@ -1,5 +1,5 @@
 <?php
-class CMS_pagesModel
+class CmsPagesModel
 {
     private $dbh;
 

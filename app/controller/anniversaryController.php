@@ -1,6 +1,4 @@
 <?php
-require_once  __DIR__ . "/../model/anniversary.php";
-
 include_once(__DIR__ . "/../../include/person_cls.php");
 include_once(__DIR__ . "/../../include/language_date.php");
 

@@ -1,7 +1,5 @@
 <?php
-require_once  __DIR__ . "/../model/cms_pages.php";
-
-class CMS_pagesController
+class CmsPagesController
 {
     private $dbh, $user;
 
@@ -13,7 +11,7 @@ class CMS_pagesController
 
     public function list()
     {
-        $CMS_pagesModel = new CMS_pagesModel($this->dbh);
+        $CMS_pagesModel = new CmsPagesModel($this->dbh);
 
         $authorised = $CMS_pagesModel->getCMS_pagesAuthorised($this->user);
         $pages = $CMS_pagesModel->getPages($this->dbh);
