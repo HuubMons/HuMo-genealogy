@@ -9,14 +9,10 @@ if (isset($_GET['log_off'])) {
 
 include_once(__DIR__ . "/../../include/db_login.php"); // Connect to database
 include_once(__DIR__ . "/../../include/show_tree_text.php");
-include_once(__DIR__ . "/../../include/db_functions_cls.php"); // General database functions
 include_once(__DIR__ . "/../../include/safe.php");
 include_once(__DIR__ . "/../../include/settings_global.php"); // System variables
 include_once(__DIR__ . "/../../include/settings_user.php"); // User variables
 include_once(__DIR__ . "/../../include/get_visitor_ip.php"); // Statistics and option to block certain IP addresses.
-
-// TODO dec. 2023 now included this in index.php. Check other includes.
-include_once(__DIR__ . "/../../include/person_cls.php");
 
 include_once(__DIR__ . "/../../include/timezone.php");
 include(__DIR__ . "/../../languages/language_cls.php");

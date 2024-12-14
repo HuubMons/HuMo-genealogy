@@ -485,7 +485,6 @@ $menu_top = getActiveTopMenu($page);
 
                     // *** Favourite list for family pages ***
                     if (!$bot_visit) {
-                        include_once(__DIR__ . "/../include/person_cls.php");
                         // *** Show favorites in selection list ***
                         $link = $link_cls->get_link($uri_path, 'family', $tree_id);
                     ?>

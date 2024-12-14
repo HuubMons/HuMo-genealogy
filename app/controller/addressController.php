@@ -1,5 +1,4 @@
 <?php
-include_once(__DIR__ . "/../../include/person_cls.php");
 include_once(__DIR__ . "/../../include/show_sources.php");
 include_once(__DIR__ . "/../../include/show_picture.php");
 

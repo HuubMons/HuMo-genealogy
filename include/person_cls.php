@@ -6,7 +6,7 @@
  * $templ_person is used for PDF reports
  */
 
-class person_cls
+class Person_cls
 {
     public $personDb = null;  // Database record
     public $privacy = false;  // Person privacy
@@ -1438,7 +1438,7 @@ class person_cls
             // TODO check global
             global $relation_check;
             if (!$privacy && $person_kind == 'parent2' && $familyDb->fam_marr_date != '') {
-                $process_age = new calculate_year_cls;
+                $process_age = new CalculateDates;
                 if ($relation_check == true) {
                     $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $familyDb->fam_marr_date, false, 'relation');
                 } else {
@@ -2200,7 +2200,7 @@ $own_code=0;
 
                 // *** Show age of living person ***
                 if (($personDb->pers_bapt_date || $personDb->pers_birth_date) && !$personDb->pers_death_date && $personDb->pers_alive != 'deceased') {
-                    $process_age = new calculate_year_cls;
+                    $process_age = new CalculateDates;
                     $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, '');
                     $templ_person["age_liv"] = $age;
                     if ($templ_person["age_liv"] != '') {
@@ -2245,7 +2245,7 @@ $own_code=0;
 
                 // *** Show age, by Yossi Beck ***
                 if (($personDb->pers_bapt_date || $personDb->pers_birth_date) && $personDb->pers_death_date) {
-                    $process_age = new calculate_year_cls;
+                    $process_age = new CalculateDates;
                     $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $personDb->pers_death_date);
                     $templ_person["dead_age"] = $age;
                     if ($templ_person["dead_age"] != '') {
@@ -2765,7 +2765,7 @@ $own_code=0;
                         $parent2_famDb = $db_functions->get_family($marriage_array[$i]);
                         // *** Use a class for marriage ***
                         // Construct for marriage privacy filter is missing? Probably not needed here because no dates are shown.
-                        $parent2_marr_cls = new marriage_cls;
+                        $parent2_marr_cls = new Marriage_cls;
 
                         // *** Show standard marriage text ***
                         if ($screen_mode != "PDF") {

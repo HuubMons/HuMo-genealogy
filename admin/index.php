@@ -61,6 +61,8 @@ function admin_custom_autoload($class_name)
     // ../languages/language_cls.php
     // models/groupsmodel.php
 
+    // TODO include/calculateDates.php
+
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array('Db_functions_cls', 'Language_cls', 'Link_cls', 'Person_cls');
     // If all classes are autoloading, array check of classes will be removed.

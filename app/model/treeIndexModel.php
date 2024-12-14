@@ -10,8 +10,6 @@ class TreeIndexModel
         global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
         global $link_cls, $uri_path;
 
-        include_once(__DIR__ . '/../../include/person_cls.php');
-
         // *** Option to only index CMS page for bots ***
         if ($bot_visit && $humo_option["searchengine_cms_only"] == 'y') {
             $item_array[0]['position'] = 'center';

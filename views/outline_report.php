@@ -190,7 +190,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         $woman_cls = new Person_cls($person_womanDb);
         $privacy_woman = $woman_cls->privacy;
 
-        $marriage_cls = new marriage_cls($familyDb, $privacy_man, $privacy_woman);
+        $marriage_cls = new Marriage_cls($familyDb, $privacy_man, $privacy_woman);
         $family_privacy = $marriage_cls->privacy;
 
         // *************************************************************

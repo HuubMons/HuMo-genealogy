@@ -835,7 +835,7 @@ function create_rel_array($db_functions, $gedcomnumber)
                     $woman_privacy=$woman_cls->privacy;
 
                     // *** Use class for marriage ***
-                    $marriage_cls = New marriage_cls($familyDb, $man_privacy, $woman_privacy);
+                    $marriage_cls = new Marriage_cls($familyDb, $man_privacy, $woman_privacy);
                     $family_privacy=$marriage_cls->privacy;
                 }
                 */

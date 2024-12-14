@@ -228,7 +228,7 @@ $selected_place = "";
         $woman_cls = new Person_cls($personDb);
 
         // *** Proces marriage using a class ***
-        $marriage_cls = new marriage_cls($familyDb, $man_cls->privacy, $woman_cls->privacy);
+        $marriage_cls = new Marriage_cls($familyDb, $man_cls->privacy, $woman_cls->privacy);
         $family_privacy = $marriage_cls->privacy;
 
         // *** $family_privacy=true => filter ***

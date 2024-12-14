@@ -28,7 +28,7 @@ class TimelineModel
 
     public function getPersonData($personDb)
     {
-        $process_age = new calculate_year_cls;
+        $process_age = new CalculateDates;
 
         $data["isborn"] = 0;
         $data["isdeath"] = 0;
@@ -158,7 +158,7 @@ class TimelineModel
     {
         // *** MARRIAGES & CHILDREN ***
         if (isset($personDb->pers_fams) && $personDb->pers_fams) {
-            $process_age = new calculate_year_cls;
+            $process_age = new CalculateDates;
 
             $data["marriages"] = explode(";", $personDb->pers_fams);
             $count_marriages = count($data["marriages"]);

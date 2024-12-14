@@ -206,7 +206,7 @@ while (isset($ancestor_array2[0])) {
                 $privacy_woman = $woman_cls->privacy;
 
                 // *** Use class for marriage ***
-                $marriage_cls = new marriage_cls($familyDb, $privacy_man, $privacy_woman);
+                $marriage_cls = new Marriage_cls($familyDb, $privacy_man, $privacy_woman);
                 $family_privacy = $marriage_cls->privacy;
             }
 

@@ -41,18 +41,25 @@ session_start();
  *    Name of class = SomethingClass.
  *    Name of script: SomethingClass.php ***
  */
+// TODO add autoload in gendex.php, sitemap.php, editor_ajax.php, namesearch.php, layout_pdf.php.
 function custom_autoload($class_name)
 {
     // Examples of autoload files:
     // app/model/adresModel.php
+    // include/db_functions_cls.php
+    // include/marriage_cls
+    // include/person_cls.php
+    // include/calculateDates.php
+
+    // TODO include/Link_cls
+    // TODO include/validate_date_cls
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
-    //$classes = array('xxxxx');
+    $classes = array('CalculateDates','Db_functions_cls', 'Marriage_cls', 'Person_cls');
     // If all classes are autoloading, array check of classes will be removed.
-    //if (in_array($class_name, $classes) || substr($class_name, -5) == 'Model') {
-    // First start autoload using model scripts.
-    if (substr($class_name, -5) == 'Model') {
-        $dirs = array('app/model', 'test');
+    //if (substr($class_name, -5) == 'Model') {
+    if (in_array($class_name, $classes) || substr($class_name, -5) == 'Model') {
+        $dirs = array('app/model', 'include');
         foreach ($dirs as $dir) {
             $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
             if (file_exists($file)) {

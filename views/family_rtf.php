@@ -233,7 +233,7 @@ else {
                 $parent2_cls = new Person_cls($parent2Db);
 
                 // *** Proces marriage using a class ***
-                $marriage_cls = new marriage_cls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
+                $marriage_cls = new Marriage_cls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
                 $family_privacy = $marriage_cls->privacy;
 
 

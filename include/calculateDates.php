@@ -9,7 +9,7 @@
  * 20-12-2022 Huub: Improved showing of dates for child. Including showing of months, weeks and days.
  */
 
-class calculate_year_cls
+class CalculateDates
 {
 
     public function search_month($search_date)
@@ -45,25 +45,25 @@ class calculate_year_cls
     }
 
     /*
-public function search_day($search_date) {
-    $day="";
-    if (strlen($search_date)==11) {    // 12 sep 2002 or 08 sep 2002
-        $day=substr($search_date, -11, 2);
-        if(substr($day,0,1)=="0") {   // 08 aug 2002
-            $day=substr($day,1,1);
+    public function search_day($search_date) {
+        $day="";
+        if (strlen($search_date)==11) {    // 12 sep 2002 or 08 sep 2002
+            $day=substr($search_date, -11, 2);
+            if(substr($day,0,1)=="0") {   // 08 aug 2002
+                $day=substr($day,1,1);
+            }
         }
+        if (strlen($search_date)==10) {    // 8 aug 2002
+            $day=substr($search_date, -10, 1);
+        }
+        if ($day) {
+            $day=(int)$day;
+        }
+        if ($day>0 AND $day<32) {}
+        else { $day=null; }
+        return($day);
     }
-    if (strlen($search_date)==10) {    // 8 aug 2002
-        $day=substr($search_date, -10, 1);
-    }
-    if ($day) {
-        $day=(int)$day;
-    }
-    if ($day>0 AND $day<32) {}
-    else { $day=null; }
-    return($day);
-}
-*/
+    */
 
     public function search_day($search_date)
     {

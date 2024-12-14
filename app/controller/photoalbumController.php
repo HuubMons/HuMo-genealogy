@@ -1,7 +1,6 @@
 <?php
 include_once(__DIR__ . "/../../include/language_date.php");
 include_once(__DIR__ . "/../../include/date_place.php");
-include_once(__DIR__ . "/../../include/person_cls.php");
 include_once(__DIR__ . "/../../include/show_picture.php");
 
 class PhotoalbumController

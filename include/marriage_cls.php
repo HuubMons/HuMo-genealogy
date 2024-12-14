@@ -5,7 +5,7 @@
  * Class for HuMo-genealogy program
  */
 
-class marriage_cls
+class Marriage_cls
 {
     public $cls_marriage_Db = null;  // Database record
     public $privacy = false;  // Privacy van persoon
@@ -279,7 +279,7 @@ class marriage_cls
             // *** Show age of parent1 when married. Only show age if dates are available. ***
             //if (isset($parent1Db->pers_bapt_date) OR isset($parent1Db->pers_birth_date)){
             if ($marriageDb->fam_marr_date && ($parent1Db->pers_bapt_date || $parent1Db->pers_birth_date)) {
-                $process_age = new calculate_year_cls;
+                $process_age = new CalculateDates;
                 $age = $process_age->calculate_age($parent1Db->pers_bapt_date, $parent1Db->pers_birth_date, $marriageDb->fam_marr_date);
                 $templ_relation["wedd_date"] .= $age;
             }
@@ -657,7 +657,7 @@ class marriage_cls
 
                 // *** Only show marriage years if there is a marriage (don't show for other relations at this moment) ***
                 if ($relation_check == false) {
-                    $marr_years = new calculate_year_cls;
+                    $marr_years = new CalculateDates;
                     $age = $marr_years->calculate_marriage($marriageDb->fam_marr_church_date, $marriageDb->fam_marr_date, $end_date);
                     $text .= $age;  // Space and comma in $age
                     //*** PDF ***

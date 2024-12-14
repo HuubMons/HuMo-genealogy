@@ -42,7 +42,7 @@ function convert_date_number($date)
     $date=substr($date,-4).substr($date,2,2).substr($date,0,2);
     */
 
-    $process_age = new calculate_year_cls;
+    $process_age = new CalculateDates;
 
     if (strpos($date, '/') > 0) {  // if date is gregorian double date, take first part:  972/73 --> 972
         $temp = explode('/', $date);
@@ -164,7 +164,7 @@ $woman_age_count_marr = 0;
 $average_living_man_marr = 0;
 $average_living_woman_marr = 0;
 
-$livingcalc = new calculate_year_cls;
+$livingcalc = new CalculateDates;
 
 $persqr = $dbh->query("SELECT pers_sexe, pers_gedcomnumber, pers_birth_date, pers_death_date, pers_bapt_date, pers_fams
     FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'");

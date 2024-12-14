@@ -326,8 +326,8 @@
             $error_color = '';
             $show_message = '&nbsp;';
             if (($person->pers_bapt_date || $person->pers_birth_date) && $person->pers_death_date) {
-                include_once(__DIR__ . "/../../include/calculate_age_cls.php");
-                $process_age = new calculate_year_cls;
+                include_once(__DIR__ . "/../../include/calculateDates.php");
+                $process_age = new CalculateDates;
                 $age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
                 if ($age && ($age < 0 || $age > 120)) {
                     $error_color = 'background-color:#FFAA80;';
