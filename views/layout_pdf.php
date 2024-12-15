@@ -27,8 +27,6 @@ function custom_autoload($class_name)
             if (file_exists($file)) {
                 require $file;
                 break;
-            } else {
-                //throw new Exception("The file $file does not exist.");
             }
         }
     }

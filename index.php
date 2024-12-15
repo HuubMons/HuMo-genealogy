@@ -72,9 +72,6 @@ function custom_autoload($class_name)
                 require $file;
                 break;
             }
-            // else {
-            //  throw new Exception("The file $file does not exist.");
-            //}
         }
     }
 }
