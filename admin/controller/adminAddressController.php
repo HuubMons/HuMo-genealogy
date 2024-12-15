@@ -1,7 +1,4 @@
 <?php
-include_once(__DIR__ . "/../include/editor_cls.php");
-include_once(__DIR__ . "/../include/select_tree.php");
-
 class AdminAddressController
 {
     private $editor_cls;

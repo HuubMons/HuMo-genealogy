@@ -1,7 +1,4 @@
 <?php
-include_once(__DIR__ . "/../../include/show_sources.php");
-include_once(__DIR__ . "/../../include/show_picture.php");
-
 class AddressController
 {
     private $db_functions, $user;

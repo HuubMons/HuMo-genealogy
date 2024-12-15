@@ -1,7 +1,4 @@
 <?php
-include_once(__DIR__ . "/../../include/language_date.php");
-include_once(__DIR__ . "/../../include/date_place.php");
-
 class ListController
 {
     public function list_names($dbh, $tree_id, $user, $humo_option)

@@ -36,9 +36,6 @@ function custom_autoload($class_name)
 spl_autoload_register('custom_autoload');
 */
 
-
-
-
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . '/../include/show_tree_text.php');
 include_once(__DIR__ . "/../include/db_functions_cls.php");
@@ -50,6 +47,12 @@ include_once(__DIR__ . "/../include/settings_user.php"); // User variables
 
 include_once(__DIR__ . "/../include/get_visitor_ip.php");
 $visitor_ip = visitorIP();
+
+include_once(__DIR__ . '/../include/person_cls.php');
+include_once(__DIR__ . '/../include/marriage_cls.php');
+include_once(__DIR__ . '/../include/calculateDates.php');
+
+
 
 // *** Debug HuMo-genealogy front pages ***
 if ($humo_option["debug_front_pages"] == 'y') {
@@ -122,8 +125,8 @@ if ($humo_option["url_rewrite"] == "j" && $tmp_path) {
 }
 
 // *** To be used to show links in several pages ***
-include_once(__DIR__ . '/../include/link_cls.php');
-$link_cls = new Link_cls($uri_path);
+include_once(__DIR__ . '/../include/processLinks.php');
+$link_cls = new ProcessLinks($uri_path);
 
 // *** For PDF reports: remove html tags en decode ' characters ***
 function pdf_convert($text)

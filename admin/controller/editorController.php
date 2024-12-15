@@ -1,21 +1,4 @@
 <?php
-include_once(__DIR__ . "/../include/editor_cls.php");
-
-include_once(__DIR__ . "/../include/select_tree.php");
-
-// *** Used for person color selection for descendants and ancestors, etc. ***
-include_once(__DIR__ . "/../../include/ancestors_descendants.php");
-
-include_once(__DIR__ . '/../include/editor_event_cls.php');
-
-
-// TODO check processing of tree_id in db_functions.
-// *** Editor icon for admin and editor: select family tree ***
-if (isset($tree_id) && $tree_id) {
-    $db_functions->set_tree_id($tree_id);
-}
-
-
 class EditorController
 {
     private $editor_cls;

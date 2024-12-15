@@ -1,5 +1,4 @@
 <?php
-
 class OutlineReportModel extends FamilyModel
 {
     public function getShowDetails()

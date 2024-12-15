@@ -38,43 +38,74 @@ session_start();
 //session_regenerate_id();
 
 /** Dec. 2024: Added autoload.
- *    Name of class = SomethingClass.
- *    Name of script: SomethingClass.php ***
+ *    Name of class = SomethingClass
+ *    Name of script: somethingClass.php ***
  */
 // TODO add autoload in gendex.php, sitemap.php, editor_ajax.php, namesearch.php, layout_pdf.php.
 function custom_autoload($class_name)
 {
     // Examples of autoload files:
+    // app/model/ All scripts are autoloading.
     // app/model/adresModel.php
+
+    // controller/ All scripts are autoloading.
+    // controller/addressController.php
+
     // include/db_functions_cls.php
     // include/marriage_cls
     // include/person_cls.php
     // include/calculateDates.php
+    // include/ProcessLinks
 
-    // TODO include/Link_cls
     // TODO include/validate_date_cls
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
-    $classes = array('CalculateDates','Db_functions_cls', 'Marriage_cls', 'Person_cls');
+    $classes = array(
+        'CalculateDates', 'Db_functions_cls', 'Marriage_cls', 'Person_cls', 'ProcessLinks'
+    );
     // If all classes are autoloading, array check of classes will be removed.
-    //if (substr($class_name, -5) == 'Model') {
-    if (in_array($class_name, $classes) || substr($class_name, -5) == 'Model') {
-        $dirs = array('app/model', 'include');
+    if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
+        $dirs = array('app/controller', 'app/model', 'include');
         foreach ($dirs as $dir) {
             $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
             if (file_exists($file)) {
                 require $file;
                 break;
-            } else {
-                //throw new Exception("The file $file does not exist.");
             }
+            // else {
+            //  throw new Exception("The file $file does not exist.");
+            //}
         }
     }
 }
 spl_autoload_register('custom_autoload');
 
+
+// TODO move to model script.
+if (isset($_GET['log_off'])) {
+    unset($_SESSION['user_name']);
+    unset($_SESSION['user_id']);
+    unset($_SESSION['user_group_id']);
+    unset($_SESSION['tree_prefix']);
+    session_destroy();
+}
+
+// TODO refactor/ check scripts for autoload.
+include_once(__DIR__ . "/include/db_login.php"); // Connect to database
+include_once(__DIR__ . "/include/show_tree_text.php");
+include_once(__DIR__ . "/include/safe.php");
+include_once(__DIR__ . "/include/settings_global.php"); // System variables
+include_once(__DIR__ . "/include/settings_user.php"); // User variables
+include_once(__DIR__ . "/include/get_visitor_ip.php"); // Statistics and option to block certain IP addresses.
+
+include_once(__DIR__ . "/include/timezone.php");
+include(__DIR__ . "/languages/language_cls.php");
+
+include_once(__DIR__ . '/app/routing/router.php'); // Page routing.
+
+
+
 // *** Added dec. 2024 ***
-require __DIR__ . '/app/controller/indexController.php';
 $controllerObj = new IndexController();
 $index = $controllerObj->detail($dbh, $humo_option, $user);
 
@@ -151,127 +182,152 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 }
 
 // *** To be used to show links in several pages ***
-include_once(__DIR__ . '/include/link_cls.php');
-$link_cls = new Link_cls($uri_path);
+$link_cls = new ProcessLinks($uri_path);
 
-// *** Base controller ***
-require __DIR__ . '/app/controller/Controller.php';
-//$controllerObj = new Controller($dbh, $db_functions);
+// *** Base controller (at this moment only in use with sourcecontroller (using extend) ***
+//$controllerObj = new BaseController($dbh, $db_functions);
 
 if ($page == 'address') {
-    require __DIR__ . '/app/controller/addressController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/show_sources.php");
+    include_once(__DIR__ . "/include/show_picture.php");
+
     $controllerObj = new AddressController($db_functions, $user);
     $data = $controllerObj->detail();
 } elseif ($page == 'addresses') {
-    require __DIR__ . '/app/controller/addressesController.php';
     $controllerObj = new AddressesController($dbh, $user, $tree_id);
     $data = $controllerObj->list();
 } elseif ($page == 'ancestor_report') {
-    require __DIR__ . '/app/controller/ancestorReportController.php';
     $controllerObj = new AncestorReportController($dbh);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_report_rtf') {
-    require __DIR__ . '/app/controller/ancestorReportController.php';
     $controllerObj = new AncestorReportController($dbh);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_chart') {
-    require __DIR__ . '/app/controller/ancestorChartController.php';
     $controllerObj = new AncestorChartController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'ancestor_sheet') {
-    require __DIR__ . '/app/controller/ancestorSheetController.php';
     $controllerObj = new AncestorSheetController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
 } elseif ($page == 'anniversary') {
-    require __DIR__ . '/app/controller/anniversaryController.php';
+    //TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+
     $controllerObj = new AnniversaryController();
     $data = $controllerObj->anniversary();
 } elseif ($page == 'cms_pages') {
-    require __DIR__ . '/app/controller/cmsPagesController.php';
     $controllerObj = new CmsPagesController($dbh, $user);
     $data = $controllerObj->list();
 } elseif ($page == 'cookies') {
     //
 } elseif ($page == 'descendant_chart') {
-    require __DIR__ . '/app/controller/descendantChartController.php';
     $controllerObj = new DescendantChartController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
 } elseif ($page == 'family_rtf') {
     //
 } elseif ($page == 'family') {
-    require __DIR__ . '/app/controller/familyController.php';
     $controllerObj = new FamilyController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
 } elseif ($page == 'fanchart') {
-    require __DIR__ . '/app/controller/fanchartController.php';
+    // TODO refactor
+    require_once(__DIR__ . "/include/fanchart/persian_log2vis.php");
+
     $controllerObj = new FanchartController();
     $data = $controllerObj->detail($dbh, $tree_id);
 } elseif ($page == 'help') {
     //
 } elseif ($page == 'hourglass') {
-    require __DIR__ . '/app/controller/hourglassController.php';
     $controllerObj = new HourglassController();
     $data = $controllerObj->getHourglass($dbh, $tree_id);
 } elseif ($page == 'latest_changes') {
-    require __DIR__ . '/app/controller/latestChangesController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+
     $controllerObj = new LatestChangesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id);
 } elseif ($page == 'list') {
-    require __DIR__ . '/app/controller/listController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+    include_once(__DIR__ . "/include/date_place.php");
+
     $controllerObj = new ListController();
     $list = $controllerObj->list_names($dbh, $tree_id, $user, $humo_option);
 } elseif ($page == 'list_places_families') {
-    require __DIR__ . '/app/controller/listPlacesFamiliesController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+    include_once(__DIR__ . "/include/date_place.php");
+
     $controllerObj = new ListPlacesFamiliesController();
     $data = $controllerObj->list_places_names($tree_id);
 } elseif ($page == 'list_names') {
-    require __DIR__ . '/app/controller/listNamesController.php';
     $controllerObj = new ListNamesController();
     $data = $controllerObj->list_names($dbh, $tree_id, $user);
 } elseif ($page == 'login') {
     //
 } elseif ($page == 'mailform') {
-    require __DIR__ . '/app/controller/mailformController.php';
     $controllerObj = new MailformController($db_functions);
     $mail_data = $controllerObj->get_mail_data($humo_option, $dataDb, $selected_language);
 } elseif ($page == 'maps') {
-    require __DIR__ . '/app/controller/mapsController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+    include_once(__DIR__ . "/include/date_place.php");
+    include_once(__DIR__ . "/include/ancestors_descendants.php");
+
     $controllerObj = new MapsController($db_functions);
     $maps = $controllerObj->detail($humo_option, $dbh, $tree_id, $tree_prefix_quoted);
 } elseif ($page == 'photoalbum') {
-    require __DIR__ . '/app/controller/photoalbumController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+    include_once(__DIR__ . "/include/date_place.php");
+    include_once(__DIR__ . "/include/show_picture.php");
+
     $controllerObj = new PhotoalbumController();
     $photoalbum = $controllerObj->detail($dbh, $tree_id, $db_functions);
 } elseif ($page == 'register') {
-    require __DIR__ . '/app/controller/registerController.php';
     $controllerObj = new RegisterController($db_functions);
     $register = $controllerObj->get_register_data($dbh, $dataDb, $humo_option);
 } elseif ($page == 'relations') {
-    require __DIR__ . '/app/controller/relationsController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+    include_once(__DIR__ . "/include/date_place.php");
+
     $controllerObj = new RelationsController($dbh);
     $relation = $controllerObj->getRelations($db_functions, $person_cls);
 } elseif ($page == 'reset_password') {
-    require __DIR__ . '/app/controller/resetPasswordController.php';
     $controllerObj = new ResetpasswordController();
     $resetpassword = $controllerObj->detail($dbh, $humo_option);
 } elseif ($page == 'outline_report') {
-    require __DIR__ . '/app/controller/outlineReportController.php';
     $controllerObj = new OutlineReportController();
     $data = $controllerObj->getOutlineReport($dbh, $tree_id, $humo_option);
 } elseif ($page == 'user_settings') {
-    require __DIR__ . '/app/controller/userSettingsController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
+    //if (isset($_POST['update_settings'])) include_once(__DIR__ . '/include/mail.php');
+
     $controllerObj = new UserSettingsController();
     $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
 } elseif ($page == 'statistics') {
-    require __DIR__ . '/app/controller/statisticsController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+    include_once(__DIR__ . "/include/date_place.php");
+
     $controllerObj = new StatisticsController();
     $statistics = $controllerObj->detail($dbh, $tree_id);
 } elseif ($page == 'sources') {
-    require __DIR__ . '/app/controller/sourcesController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/language_date.php");
+    include_once(__DIR__ . "/include/date_place.php");
+
     $controllerObj = new SourcesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id, $user, $humo_option, $link_cls, $uri_path);
 } elseif ($page == 'source') {
-    require __DIR__ . '/app/controller/sourceController.php';
+    // TODO refactor
+    include_once(__DIR__ . "/include/date_place.php");
+    include_once(__DIR__ . "/include/process_text.php");
+    include_once(__DIR__ . "/include/show_picture.php");
+    //include_once(__DIR__ . "/include/show_sources.php");
+    include_once(__DIR__ . "/include/language_date.php");
+
     $controllerObj = new SourceController($dbh, $db_functions, $tree_id); // Using Controller.
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
@@ -279,7 +335,9 @@ if ($page == 'address') {
     }
     $data = $controllerObj->source($id);
 } elseif ($page == 'timeline') {
-    require __DIR__ . '/app/controller/timelineController.php';
+    // TODO refactor
+    require_once(__DIR__ . "/include/language_date.php");
+
     $controllerObj = new TimelineController();
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
@@ -288,7 +346,6 @@ if ($page == 'address') {
     $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
 } elseif ($page == 'tree_index') {
     //  *** TODO: first improve difference between tree_index and mainindex ***
-    //require __DIR__ . '/app/controller/treeIndexController.php';
     //$controllerObj = new TreeIndexController();
     //$tree_index["items"] = $controllerObj->get_items($dbh);
 }

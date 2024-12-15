@@ -1,10 +1,5 @@
 <?php
-
-/**
- * Base controller
- */
-
-class Controller
+class BaseController
 {
     protected $dbh, $db_functions, $tree_id;
     //$user

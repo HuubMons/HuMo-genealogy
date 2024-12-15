@@ -1,11 +1,5 @@
 <?php
-include_once(__DIR__ . "/../../include/date_place.php");
-include_once(__DIR__ . "/../../include/process_text.php");
-include_once(__DIR__ . "/../../include/show_picture.php");
-//include_once(__DIR__ . "/../../include/show_sources.php");
-include_once(__DIR__ . "/../../include/language_date.php");
-
-class SourceController extends Controller
+class SourceController extends BaseController
 {
     public function source($id)
     {

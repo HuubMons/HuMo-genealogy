@@ -1,6 +1,4 @@
 <?php
-require_once(__DIR__ . "/../../include/fanchart/persian_log2vis.php");
-
 class FanchartController
 {
     public function detail($dbh, $tree_id)

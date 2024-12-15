@@ -1,6 +1,4 @@
 <?php
-require_once(__DIR__ . "/../../include/language_date.php");
-
 class TimelineController
 {
     public function getTimeline($db_functions, $id, $user, $dirmark1)

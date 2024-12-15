@@ -12,7 +12,7 @@
  *  $link .= "main_person=" . $person->pers_gedcomnumber;
  */
 
-class Link_cls
+class ProcessLinks
 {
     public $path = '';
 

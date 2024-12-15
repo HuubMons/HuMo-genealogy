@@ -1,6 +1,4 @@
 <?php
-require_once(__DIR__ . "/../statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
-
 class AdminStatisticsController
 {
     public function detail($dbh)

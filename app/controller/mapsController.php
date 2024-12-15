@@ -1,9 +1,4 @@
 <?php
-include_once(__DIR__ . "/../../include/language_date.php");
-include_once(__DIR__ . "/../../include/date_place.php");
-
-include_once(__DIR__ . "/../../include/ancestors_descendants.php");
-
 class MapsController
 {
     public function detail($humo_option, $dbh, $tree_id, $tree_prefix_quoted)

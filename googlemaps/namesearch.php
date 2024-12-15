@@ -8,8 +8,8 @@ include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
 include_once(__DIR__ . "/../include/person_cls.php"); // for privacy
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
-include_once(__DIR__ . '/../include/link_cls.php');
-$link_cls = new Link_cls();
+include_once(__DIR__ . '/../include/processLinks.php');
+$link_cls = new ProcessLinks();
 
 $tree_id = $_SESSION['tree_id'];
 

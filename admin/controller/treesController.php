@@ -1,6 +1,4 @@
 <?php
-include_once(__DIR__ . "/../include/select_tree.php");
-
 class TreesController
 {
     public function detail($dbh, $tree_id, $db_functions, $selected_language)

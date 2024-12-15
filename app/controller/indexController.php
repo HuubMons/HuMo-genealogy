@@ -1,24 +1,4 @@
 <?php
-if (isset($_GET['log_off'])) {
-    unset($_SESSION['user_name']);
-    unset($_SESSION['user_id']);
-    unset($_SESSION['user_group_id']);
-    unset($_SESSION['tree_prefix']);
-    session_destroy();
-}
-
-include_once(__DIR__ . "/../../include/db_login.php"); // Connect to database
-include_once(__DIR__ . "/../../include/show_tree_text.php");
-include_once(__DIR__ . "/../../include/safe.php");
-include_once(__DIR__ . "/../../include/settings_global.php"); // System variables
-include_once(__DIR__ . "/../../include/settings_user.php"); // User variables
-include_once(__DIR__ . "/../../include/get_visitor_ip.php"); // Statistics and option to block certain IP addresses.
-
-include_once(__DIR__ . "/../../include/timezone.php");
-include(__DIR__ . "/../../languages/language_cls.php");
-
-include_once(__DIR__ . '/../routing/router.php'); // Page routing.
-
 class IndexController
 {
     public function detail($dbh, $humo_option, $user)
