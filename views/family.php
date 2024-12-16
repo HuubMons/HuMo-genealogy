@@ -353,10 +353,17 @@ else {
                     // *** Extended statistics ***
                     if ($data["descendant_report"] == false && $user['group_statistics'] == 'j') {
                         $stat_easy_id = $familyDb->fam_tree_id . '-' . $familyDb->fam_gedcomnumber . '-' . $familyDb->fam_man . '-' . $familyDb->fam_woman;
+
+                        // *** Only 255 characters allowed for stat_user_agent ***
+                        $stat_user_agent = $_SERVER['HTTP_USER_AGENT'];
+                        if (strlen($_SERVER['HTTP_USER_AGENT']) > 255) {
+                            $stat_user_agent = substr($stat_user_agent, 0, 255);
+                        }
+
                         $update_sql = "INSERT INTO humo_stat_date SET
                             stat_easy_id='" . $stat_easy_id . "',
                             stat_ip_address='" . $visitor_ip . "',
-                            stat_user_agent='" . $_SERVER['HTTP_USER_AGENT'] . "',
+                            stat_user_agent='" . $stat_user_agent . "',
                             stat_tree_id='" . $familyDb->fam_tree_id . "',
                             stat_gedcom_fam='" . $familyDb->fam_gedcomnumber . "',
                             stat_gedcom_man='" . $familyDb->fam_man . "',
@@ -442,7 +449,7 @@ else {
                 <?php } ?>
 
                 <table class="humo standard">
-                <!-- <table class="table"> -->
+                    <!-- <table class="table"> -->
                     <?php
                     // *** Show family top line (family top text, settings, favourite) ***
                     topline($data);

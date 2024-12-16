@@ -158,7 +158,6 @@ if ($search_quicksearch_man != '') {
     //$person = $db_functions->get_person($man_gedcomnumber);
 }
 
-include(__DIR__ . '/editor_cls.php');
 $editor_cls = new Editor_cls;
 
 if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10) !== 'add_child_') {
