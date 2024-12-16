@@ -45,8 +45,8 @@ if (!defined('ADMIN_PAGE')) {
 <?php
 $path_prefix = '../';
 
-$editor_cls = new editor_cls; // TODO editor_cls is also added in controller.
-$event_cls = new editor_event_cls;
+$editor_cls = new Editor_cls; // TODO editor_cls is also added in controller.
+$EditorEvent = new EditorEvent;
 
 // *** Temp variables ***
 $pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***

@@ -33,8 +33,7 @@ if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
 }
 
-include(__DIR__ . '/../include/editor_event_cls.php');
-$event_cls = new editor_event_cls;
+$EditorEvent = new EditorEvent;
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {
@@ -384,7 +383,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <!-- Picture by source -->
                 <?php
                 if (!isset($_POST['add_source'])) {
-                    echo $event_cls->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
+                    echo $EditorEvent->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
                 } ?>
             </table>
 

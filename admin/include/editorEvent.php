@@ -1,5 +1,5 @@
 <?php
-class editor_event_cls
+class EditorEvent
 {
     // *** Encode entire array (for picture array searches) ***
     //function utf8ize($d)

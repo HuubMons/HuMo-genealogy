@@ -634,7 +634,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             <?php
             // *** Marriage Witness ***
-            echo $event_cls->show_event('MARR', $marriage, 'ASSO');
+            echo $EditorEvent->show_event('MARR', $marriage, 'ASSO');
 
             // *** Religious marriage notice ***
             // *** Use hideshow to show and hide the editor lines ***
@@ -788,7 +788,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             <?php
             // *** Marriage Witness (church) ***
-            echo $event_cls->show_event('MARR_REL', $marriage, 'ASSO');
+            echo $EditorEvent->show_event('MARR_REL', $marriage, 'ASSO');
             ?>
 
             <!-- Religion -->
@@ -967,10 +967,10 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             }
 
             // *** Picture ***
-            echo $event_cls->show_event('family', $marriage, 'marriage_picture');
+            echo $EditorEvent->show_event('family', $marriage, 'marriage_picture');
 
             // *** Family event editor ***
-            echo $event_cls->show_event('family', $marriage, 'family');
+            echo $EditorEvent->show_event('family', $marriage, 'family');
 
             // *** Show and edit addresses by family ***
             edit_addresses('family', 'family_address', $marriage);

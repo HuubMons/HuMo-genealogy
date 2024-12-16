@@ -5,7 +5,7 @@ class EditorController
 
     public function __construct()
     {
-        $this->editor_cls = new editor_cls;
+        $this->editor_cls = new Editor_cls;
     }
 
     public function detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option)

@@ -140,14 +140,14 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
     // echo '<br>sprawdzenie thumb_url: ' . $thumb_url;
     if (!empty($thumb_url)) {
         // echo '<br>!empty(thumb_url)';
-        // there are problems with these relative paths - when called from lvl +1 (show_picture.php) its ok, when called from lvl +2 (editor_event_cls.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
+        // there are problems with these relative paths - when called from lvl +1 (show_picture.php) its ok, when called from lvl +2 (editorEvent.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
         $backtrace = debug_backtrace();
         if (isset($backtrace[0]['file']) && isset($backtrace[0]['line'])) {
             $calling_file = basename($backtrace[0]['file']);
             // echo "<br>Function was called by:" . $calling_file;
         }
         include_once(__DIR__ . '/../../include/give_media_path.php');
-        if ($calling_file === 'editor_event_cls.php' || $calling_file === 'thumbs.php' || $calling_file === 'editor_media_select.php') {
+        if ($calling_file === 'editorEvent.php' || $calling_file === 'thumbs.php' || $calling_file === 'editor_media_select.php') {
             $folder_for_give_media_path = substr($folder, 3);
             $prefix = '../';
         } else {

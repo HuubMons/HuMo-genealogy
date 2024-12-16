@@ -11,8 +11,7 @@ if (!defined('ADMIN_PAGE')) {
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-include(__DIR__ . '/../include/editor_event_cls.php');
-$event_cls = new editor_event_cls;
+$EditorEvent = new EditorEvent;
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {

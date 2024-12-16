@@ -21,7 +21,7 @@ if ($adoption_id) {
 }
 
 include(__DIR__ . '/editor_cls.php');
-$editor_cls = new editor_cls;
+$editor_cls = new Editor_cls;
 
 echo '
     <script>

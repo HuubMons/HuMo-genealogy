@@ -5,7 +5,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 include_once(__DIR__ . "/editor_cls.php");
-$editor_cls = new editor_cls;
+$editor_cls = new Editor_cls;
 
 if (isset($_SESSION['admin_pers_gedcomnumber'])) {
     $pers_gedcomnumber = $_SESSION['admin_pers_gedcomnumber'];

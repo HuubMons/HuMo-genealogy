@@ -5,7 +5,7 @@ class AdminSourceController
 
     public function __construct()
     {
-        $this->editor_cls = new editor_cls;
+        $this->editor_cls = new Editor_cls;
     }
 
     public function detail($dbh, $tree_id, $db_functions)

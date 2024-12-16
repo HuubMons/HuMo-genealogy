@@ -1,5 +1,5 @@
 <?php
-class editor_cls
+class Editor_cls
 {
     // *** Date functions ***
     // 13 OCT 1813 = 13 okt 1813

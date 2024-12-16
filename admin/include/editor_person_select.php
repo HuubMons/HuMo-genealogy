@@ -159,7 +159,7 @@ if ($search_quicksearch_man != '') {
 }
 
 include(__DIR__ . '/editor_cls.php');
-$editor_cls = new editor_cls;
+$editor_cls = new Editor_cls;
 
 if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10) !== 'add_child_') {
     while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {

@@ -54,24 +54,27 @@ $page = 'index';
 function admin_custom_autoload($class_name)
 {
     // Examples of autoload files:
+    // include/editor_cls.php
+
+    // models/groupsmodel.php
+
     // ../include/db_functions_cls.php
     // ../include/processLinks.php
     // ../include/person_cls.php
 
     // ../languages/language_cls.php
 
-    // models/groupsmodel.php
-
     // TODO include/calculateDates.php
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array(
         'Language_cls',
-        'Db_functions_cls', 'ProcessLinks', 'Person_cls'
+        'Db_functions_cls', 'ProcessLinks', 'Person_cls',
+        'Editor_cls', 'EditorEvent'
     );
     // If all classes are autoloading, array check of classes will be removed.
     if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
-        $dirs = array('controller', 'models', '../include', '../languages');
+        $dirs = array('controller', 'models', 'include', '../include', '../languages');
         foreach ($dirs as $dir) {
             $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
             if (file_exists($file)) {
@@ -730,14 +733,9 @@ if ($popup == false) {
             include_once(__DIR__ . "/views/trees.php");
         } elseif ($page === 'editor') {
             // TODO refactor.
-            include_once(__DIR__ . "/include/editor_cls.php");
-
             include_once(__DIR__ . "/include/select_tree.php");
-
             // *** Used for person color selection for descendants and ancestors, etc. ***
             include_once(__DIR__ . "/../include/ancestors_descendants.php");
-
-            include_once(__DIR__ . '/include/editor_event_cls.php');
 
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
@@ -752,7 +750,6 @@ if ($popup == false) {
             include_once(__DIR__ . "/include/editor_sources.php");
         } elseif ($page === 'edit_sources') {
             // TODO refactor
-            include_once(__DIR__ . "/include/editor_cls.php");
             include_once(__DIR__ . "/include/select_tree.php");
 
             $controllerObj = new AdminSourceController();
@@ -760,7 +757,6 @@ if ($popup == false) {
             include_once(__DIR__ . "/views/edit_source.php");
         } elseif ($page === 'edit_repositories') {
             // TODO refactor
-            include_once(__DIR__ . "/include/editor_cls.php");
             include_once(__DIR__ . "/include/select_tree.php");
 
             $controllerObj = new AdminRepositoryController();
@@ -768,7 +764,6 @@ if ($popup == false) {
             include_once(__DIR__ . "/views/edit_repository.php");
         } elseif ($page === 'edit_addresses') {
             // TODO refactor.
-            include_once(__DIR__ . "/include/editor_cls.php");
             include_once(__DIR__ . "/include/select_tree.php");
 
             $controllerObj = new AdminAddressController();
@@ -776,7 +771,6 @@ if ($popup == false) {
             include_once(__DIR__ . "/views/edit_address.php");
         } elseif ($page === 'edit_places') {
             // TODO refactor
-            include_once(__DIR__ . "/include/editor_cls.php");
             include_once(__DIR__ . "/include/select_tree.php");
 
             $controllerObj = new RenamePlaceController();
@@ -875,6 +869,19 @@ if ($popup == false) {
 
         // *** Default page for editor ***
         elseif ($group_administrator != 'j' && $group_edit_trees) {
+            // TODO refactor.
+            include_once(__DIR__ . "/include/select_tree.php");
+            // *** Used for person color selection for descendants and ancestors, etc. ***
+            include_once(__DIR__ . "/../include/ancestors_descendants.php");
+
+            // TODO check processing of tree_id in db_functions.
+            // *** Editor icon for admin and editor: select family tree ***
+            if (isset($tree_id) && $tree_id) {
+                $db_functions->set_tree_id($tree_id);
+            }
+
+            $controllerObj = new EditorController();
+            $editor = $controllerObj->detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option);
             include_once(__DIR__ . "/views/editor.php");
         }
 
