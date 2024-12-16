@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-15 18:58+0100\n"
-"PO-Revision-Date: 2024-12-15 18:59+0100\n"
+"PO-Revision-Date: 2024-12-16 21:09+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -4670,7 +4670,7 @@ msgstr "Logboek-tabel leeg maken."
 
 #: admin/views/install.php:152
 msgid "Empty statistics country table."
-msgstr "Leeg statusstatistieken-tabel"
+msgstr "Leeg statistiek landen tabel"
 
 #: admin/views/install.php:155
 msgid "Family tree tables"

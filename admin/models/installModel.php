@@ -14,6 +14,7 @@ class InstallModel
         $install['table_user_notes'] = false;
         $install['table_user_log'] = false;
         $install['table_stat_country'] = false;
+        $install['table_location'] = false;
 
         $query = $dbh->query("SHOW TABLES");
         while ($row = $query->fetch()) {
@@ -46,6 +47,9 @@ class InstallModel
             }
             if ($row[0] == 'humo_stat_country') {
                 $install['table_stat_country'] = true;
+            }
+            if ($row[0] == 'humo_location') {
+                $install['table_location'] = true;
             }
         }
         return $install;

@@ -61,6 +61,11 @@ if (!isset($_POST['install_tables2'])) {
         $check_stat_country = ' checked';
     }
 
+    $check_location = '';
+    if (isset($_POST["table_location"]) || !$install['table_location']) {
+        $check_location = ' checked';
+    }
+
     $username_admin = 'admin';
     if (isset($_POST["username_admin"])) {
         $username_admin = $_POST["username_admin"];
@@ -150,6 +155,11 @@ if (!isset($_POST['install_tables2'])) {
         <div class="form-check">
             <input class="form-check-input" type="checkbox" name="table_stat_country" <?= $check_stat_country; ?> <?= !$install['table_stat_country'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('Empty statistics country table.'); ?></label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_location" <?= $check_location; ?> <?= !$install['table_location'] ? 'disabled' : ''; ?>>
+            <label class="form-check-label"><?= __('(Re) create location table. <b>This will remove all locations used for World map.</b>'); ?></label>
         </div><br>
 
         <p><b><?= __('Family tree tables'); ?></b></p>
@@ -492,6 +502,23 @@ if (isset($_POST['install_tables2'])) {
             note_connect_id varchar(25) CHARACTER SET utf8,
             note_names text CHARACTER SET utf8,
             PRIMARY KEY  (`note_id`)
+            ) DEFAULT CHARSET=utf8");
+    }
+
+    if (!$install['table_location'] || isset($_POST["table_location"])) {
+        try {
+            $dbh->query("DROP TABLE humo_location");
+        } catch (Exception $e) {
+            //
+        }
+        printf(__('create table: %s.'), 'humo_location');
+        echo '<br>';
+        $dbh->query("CREATE TABLE humo_location (
+                location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                location_location VARCHAR(120) CHARACTER SET utf8,
+                location_lat FLOAT(10,6),
+                location_lng FLOAT(10,6),
+                location_status TEXT
             ) DEFAULT CHARSET=utf8");
     }
 
