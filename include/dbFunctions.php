@@ -49,7 +49,7 @@
  *
  */
 
-class Db_functions_cls
+class DbFunctions
 {
     //public int $tree_id = 0;
     public $tree_id = 0;

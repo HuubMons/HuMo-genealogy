@@ -1175,7 +1175,6 @@ class Person_cls
     }
 
 
-
     //*** Show spouse/ partner by child ***
     function get_child_partner($db_functions, $personDb, $person_kind)
     {
@@ -1435,7 +1434,7 @@ class Person_cls
             $text_colour = $name["colour_mark"];
 
             // *** Show age of parent2 when married (don't show age if it's an relation) ***
-            // TODO check global
+            // TODO check global.
             global $relation_check;
             if (!$privacy && $person_kind == 'parent2' && $familyDb->fam_marr_date != '') {
                 $process_age = new CalculateDates;

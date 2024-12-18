@@ -47,9 +47,10 @@ session_start();
 
 $page = 'index';
 
-/** Dec. 2024: Added autoload.
- *    Name of class = AdminSomethingClass
- *    Name of script: adminSomethingClass.php ***
+/**
+ *  Dec. 2024: Added autoload.
+ *  Name of class = AdminSomethingClass
+ *  Name of script: adminSomethingClass.php ***
  */
 function admin_custom_autoload($class_name)
 {
@@ -58,18 +59,20 @@ function admin_custom_autoload($class_name)
 
     // models/groupsmodel.php
 
-    // ../include/db_functions_cls.php
+    // ../include/dbFunctions.php
     // ../include/processLinks.php
     // ../include/person_cls.php
 
     // ../languages/language_cls.php
 
     // TODO include/calculateDates.php
+    // TODO include/gedcom_cls.php
+    // TODO include/update_cls.php
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array(
         'Language_cls',
-        'Db_functions_cls', 'ProcessLinks', 'Person_cls',
+        'DbFunctions', 'ProcessLinks', 'Person_cls',
         'Editor_cls', 'EditorEvent'
     );
     // If all classes are autoloading, array check of classes will be removed.
@@ -105,7 +108,7 @@ include_once(__DIR__ . "/../include/safe.php"); // Variables
 include_once(__DIR__ . '/../include/show_tree_text.php');
 
 if (isset($dbh)) {
-    $db_functions = new Db_functions_cls($dbh);
+    $db_functions = new DbFunctions($dbh);
 }
 
 // *** Added october 2023: generate links to frontsite ***

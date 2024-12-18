@@ -13,8 +13,8 @@ include_once(__DIR__ . "/include/settings_global.php"); //Variables
 include_once(__DIR__ . "/include/settings_user.php"); // USER variables
 include_once(__DIR__ . "/include/person_cls.php");
 
-include_once(__DIR__ . "/include/db_functions_cls.php");
-$db_functions = new Db_functions_cls($dbh);
+include_once(__DIR__ . "/include/dbFunctions.php");
+$db_functions = new DbFunctions($dbh);
 
 $person_cls = new Person_cls;
 

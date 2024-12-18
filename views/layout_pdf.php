@@ -36,8 +36,8 @@ spl_autoload_register('custom_autoload');
 
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . '/../include/show_tree_text.php');
-include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new Db_functions_cls($dbh);
+include_once(__DIR__ . "/../include/dbFunctions.php");
+$db_functions = new Dbfunctions($dbh);
 
 include_once(__DIR__ . "/../include/safe.php");
 include_once(__DIR__ . "/../include/settings_global.php"); // System variables

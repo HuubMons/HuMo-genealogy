@@ -37,9 +37,10 @@ session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
 //session_regenerate_id();
 
-/** Dec. 2024: Added autoload.
- *    Name of class = SomethingClass
- *    Name of script: somethingClass.php ***
+/**
+ *  Dec. 2024: Added autoload.
+ *  Name of class = SomethingClass
+ *  Name of script: somethingClass.php ***
  */
 // TODO add autoload in gendex.php, sitemap.php, editor_ajax.php, namesearch.php, layout_pdf.php.
 function custom_autoload($class_name)
@@ -51,17 +52,16 @@ function custom_autoload($class_name)
     // controller/ All scripts are autoloading.
     // controller/addressController.php
 
-    // include/db_functions_cls.php
+    // include/dbFunctions.php
     // include/marriage_cls
     // include/person_cls.php
     // include/calculateDates.php
-    // include/ProcessLinks
-
-    // TODO include/validate_date_cls
+    // include/processLinks.php
+    // include/validateDate.php
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array(
-        'CalculateDates', 'Db_functions_cls', 'Marriage_cls', 'Person_cls', 'ProcessLinks'
+        'CalculateDates', 'DbFunctions', 'Marriage_cls', 'Person_cls', 'ProcessLinks', 'ValidateDate'
     );
     // If all classes are autoloading, array check of classes will be removed.
     if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {

@@ -12,9 +12,8 @@
 // - and of course any junk that was entered in the date field instead of elsewhere...   ;-)
 // - does not (yet) validate the first date in a "BET ... AND ..." or "FROM ... TO ..." two-date string. Maybe we'll add that later
 
-class validate_date_cls
+class ValidateDate
 {
-
     function check_date($date)
     {
         // *** Remove B.C. (before christ) addition, for further tests of date ***
@@ -99,9 +98,9 @@ class validate_date_cls
         $month = $this->check_month($date);
         $strlen = strlen($year) + 6;
         /*
-    if($year >999) { $strlen=10; }
-    elseif($year >99) { $strlen=9; }
-*/
+        if($year >999) { $strlen=10; }
+        elseif($year >99) { $strlen=9; }
+        */
         $day_len = 1; // to be added to strlen later. if day is "8" (and not "12" or "08") $day_len will be set to 0
 
         if (substr($month, 0, 5) === "month") {

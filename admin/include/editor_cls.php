@@ -175,8 +175,8 @@ class Editor_cls
 
     public function valid_date($date)
     {
-        include_once(__DIR__ . "/../../include/validate_date_cls.php");
-        $check = new validate_date_cls;
+        include_once(__DIR__ . "/../../include/validateDate.php");
+        $check = new validateDate;
 
         // German date input: 01.02.2016 or Scandinavian input: 01,02,2016
         $date2 = str_replace(" B.C.", "", $date); // Don't check . in B.C.!

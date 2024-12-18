@@ -5,7 +5,7 @@ class IndexController
     {
         $indexModel = new IndexModel();
 
-        $index['db_functions'] = new Db_functions_cls($dbh);
+        $index['db_functions'] = new DbFunctions($dbh);
 
         $index['visitor_ip'] = visitorIP();
 
