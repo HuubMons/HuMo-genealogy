@@ -234,7 +234,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                 <!-- Media privacy mode -->
                 <!-- TODO Refactor -->
-                <!-- TODO translations using %d %s -->
+                <!-- TODO add translations using sprintf('Some text %s etc.',$variable); -->
                 <?php if (isset($_POST["media_privacy_mode"]) && ($_POST["media_privacy_mode"] == 'y' || $_POST["media_privacy_mode"] == 'n')) {
                     //I'm putting the code related to the "media privacy mode" option here because I don't see a better place. If I'm wrong, this should be moved.
                     //when media privacy mode is enabled/disabled and media dir is under root dir and this is apache we must update .htaccess content. Below we make validation and give detailed info to user
@@ -248,7 +248,6 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         $errors = [];
 
                         $htaccessFilePath = $testDir . DIRECTORY_SEPARATOR . '.htaccess';
-                        //$testFileJpg = 'HuMo_Gen_test_file.jpg';
                         $testFileJpg = 'HuMo_genealogy_test_file.jpg';
                         $testFileJpgPath = $testDir . DIRECTORY_SEPARATOR . $testFileJpg;
                         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
@@ -261,10 +260,11 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                         try {
                             if ($testDir) {
-                                $messages[] = "✅ Directory '$testDir' exists.<br>";
+                                $messages[] = '✅ ' . __('This media directory exists.') . '<br>';
                             } else {
                                 //if there is no dir we don't check more
-                                throw new Exception("❌ I can't find '$path' directory. Check if it's created.<br>");
+                                $exception = '❌ ' . __('I can\'t find this directory. Check if it\'s created.') . '<br>';
+                                throw new Exception($exception);
                             }
 
                             $realDirectory = realpath($testDir);
@@ -272,21 +272,19 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                             // Check if the directory is under the document root
                             if ($realDirectory && $documentRoot && strpos($realDirectory, $documentRoot) === 0) {
-                                $msg = "✅ The directory '$testDir' is under the document root. ";
+                                $msg = '✅ ' . __('This directory is under the document root.');
                                 $mediaDirUnderRoot = true;
                                 if ($htaccess_support) {
-                                    $msg .= "On Apache we can operate both modes (media privacy on and off).<br>";
-                                } else {
-                                    $msg .= "<br>";
+                                    $msg .= ' ' . __('On Apache we can operate both modes (media privacy on and off).');
                                 }
-                                $messages[] = $msg;
+                                $messages[] = $msg . '<br>';
                             } else {
-                                $messages[] = "ℹ️ The directory '$testDir' is outside the document root so media privacy mode is only one working for this directory.<br>";
+                                $messages[] = 'ℹ️ ' . __('This directory is outside the document root so media privacy mode is only one working for this directory.') . '<br>';
                                 if ($_POST["media_privacy_mode"] === 'y') {
-                                    $messages[] = "✅ In privacy mode Your files will be safe and will be displayed.<br>";
+                                    $messages[] = '✅ ' . __('In privacy mode your files will be safe and will be displayed.') . '<br>';
                                 }
                                 if ($_POST["media_privacy_mode"] === 'n') {
-                                    $messages[] = "❌ <span style='color: red;'>In privacy mode disabled Your files will be still safe but will not be displayed at all.</span><br>";
+                                    $messages[] = '❌ <span style="color: red;">' . __('In privacy mode disabled your files will still be safe but will not be displayed at all.') . '</span><br>';
                                 }
                                 $mediaDirUnderRoot = false;
                             }
@@ -311,33 +309,35 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                             // create test file
                             if (@file_put_contents($testFileJpgPath, $jpgContent) === false) {
-                                throw new Exception("❌ Couldn't create '$testFileJpg' in directory: '$testDir'.  You will be unable to upload files. Check if directory has write permissions.<br>");
+                                $exception = '❌ ' . sprintf(__('Couldn\'t create "%s" in this directory. You will be unable to upload files. Check if directory has write permissions.'), $testFileJpg) . '<br>';
+
+                                throw new Exception($exception);
                             } else {
-                                $messages[] = "✅ Created '$testFileJpg' in directory: '$testDir'. Upload to directory is possible.<br>";
+                                $messages[] = '✅ ' . sprintf(__('Created "%s" in this directory. Upload to directory is possible.'), $testFileJpg) . '<br>';
                             }
 
                             if ($mediaDirUnderRoot && $htaccess_support) {
                                 $htaccessContent = "Deny from all\n";
-                                $messages[] = "<b>Checking if we can use .htaccess on Apache compatible servers:</b><br>";
+                                $messages[] = '<br><b>' . __('Checking if we can use .htaccess on Apache compatible servers:') . '</b><br>';
                                 if (@file_put_contents($htaccessFilePath, $htaccessContent) === false) {
-                                    throw new Exception("❌ Couldn't create .htaccess in directory: '$testDir'. Check if directory has write permissions.<br>");
+                                    $exception = '❌ ' . __('Couldn\'t create .htaccess in this directory. Check if directory has write permissions.') . '<br>';
+                                    throw new Exception($exception);
                                 } else {
-                                    $messages[] = "✅ Created .htaccess in directory: '$testDir'.<br>";
+                                    $messages[] = '✅ ' . __('Created .htaccess in this directory.') . '<br>';
                                 }
 
                                 $response = @file_get_contents($testUrlJpg);
                                 if ($response == $jpgContent) {
-                                    $messages[] = ("❌ I could read '$testFileJpgPath' ('$testUrlJpg') which is wrong. Despite creating a .htaccess file that forbids reading the file, I can access it. You probably don't have
-                                    a misconfigured <a href='https://httpd.apache.org/docs/2.4/mod/core.html#allowoverride' target='_new'>AllowOverride directive </a>in your Apache configuration files. In privacy mode media will be served and visible but anyone with link can display it.<br>");
+                                    $messages[] = ("❌ I could read '$testFileJpgPath' ('$testUrlJpg') which is wrong. Despite creating a .htaccess file that forbids reading the file, I can access it. You probably don't have a misconfigured <a href='https://httpd.apache.org/docs/2.4/mod/core.html#allowoverride' target='_new'>AllowOverride directive </a>in your Apache configuration files. In privacy mode media will be served and visible but anyone with link can display it.<br>");
                                 } else {
-                                    $messages[] = "✅ Couldn't read '$testFileJpgPath' ('$testUrlJpg') which means test .htaccess protects files in '$testDir'.<br>";
+                                    $messages[] = '✅ ' . sprintf(__('Couldn\'t read %s which means test .htaccess protects files in this directory.'), $testFileJpgPath . ' (' . $testUrlJpg . ')') . '<br>';
                                     $htaccess_ok = true;
                                 }
 
                                 if (@unlink($htaccessFilePath)) {
-                                    $messages[] = "✅ Test .htaccess file deleted.<br>";
+                                    $messages[] = '✅ ' . __('Test .htaccess file deleted.') . '<br>';
                                 } else {
-                                    $messages[] = "❌ Couldn't delete htaccess test file.<br>";
+                                    $messages[] = '❌ ' . __('Couldn\'t delete htaccess test file.') . '<br>';
                                 }
 
                                 // if htaccess works
@@ -347,7 +347,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                         // .htaccess content with directive to not allow to get file by static link - file will be possible to get only by query url
                                         $htaccessContent = "Deny from all\n";
                                         if (@file_put_contents($filePath, $htaccessContent) !== false) {
-                                            $messages[] = "✅ <span style='color: green;''>File .htaccess permanently modified in '$testDir' protecting Your files.</span><br>";
+                                            $messages[] = '✅ <span style="color: green;">' . __('File .htaccess permanently modified in this directory protecting your files.') . '</span><br>';
                                         } else {
                                             throw new Exception("❌ Check permissions. I couldn't modify .htaccess in '$testDir'.<br>");
                                         }
@@ -366,13 +366,13 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 if ($response == $jpgContent) {
                                     $messages[] = ("❌ <span style='color: red;'>I could read '$testFileJpgPath' ('$testUrlJpg'). In privacy mode media will be served and visible but anyone with link can display it.</span><br>");
                                 } else {
-                                    $messages[] = "✅ Couldn't read '$testFileJpgPath' ('$testUrlJpg') which means '$testDir' is protected from direct access.<br>";
+                                    $messages[] = '✅ ' . sprintf(__('Couldn\'t read %s which means this directory is protected from direct access.'), $testFileJpgPath . ' (' . $testUrlJpg . ')') . '<br>';
                                     $htaccess_ok = true;
                                 }
                             }
                             //not needed anymore so we can delete
                             if (@unlink($testFileJpgPath)) {
-                                $messages[] = "✅ Test file ($testFileJpg) deleted.<br>";
+                                $messages[] = '✅ ' . sprintf(__('Test file "%s" deleted.'), $testFileJpg) . '<br>';
                             } else {
                                 $messages[] = "❌ Couldn't delete test file ($testFileJpg).<br>";
                             }
@@ -380,7 +380,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             $headers = get_headers($testUrlDirIndex, 1);
                             // Check if the response is 200 OK or a directory listing
                             if (strpos($headers[0], '200 OK') !== false) {
-                                $msg = "❌ <span style='color: red;'>Directory index for '$testUrlDirIndex' is publicly accessible! Everyone can get the media files list and display them! ";
+                                $msg = "❌ <span style='color: red;'>Directory index for '$testUrlDirIndex' is publicly accessible! Everyone can get the media files list and display them!";
                                 $msg .= "You can disable acces to directory index by: ";
                                 if ($htaccess_ok) {
                                     $msg .= "enabling privacy mode on or ";
@@ -392,7 +392,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 $msg .= "</span><br>";
                                 $messages[] = $msg;
                             } else {
-                                $messages[] = "✅ <span style='color: green;'>Directory index for '$testUrlDirIndex' is not publicly accessible or indexing is disabled.</span><br>";
+                                $messages[] = '✅ <span style="color: green;">' . sprintf(__('Directory index for "%s" is not publicly accessible or indexing is disabled.'), $testUrlDirIndex) . '</span><br>';
                             }
                             $messagesArr['status'] = true;
                         } catch (Exception $e) {
@@ -409,14 +409,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     //text which will be concatenated and use as info at the end
                     $text = '';
                     //first we will check what server soft user uses
-                    $text .= "Checking server:<br> ";
+                    $text .= __('Checking server:').'<br>';
                     $serverName = $_SERVER['SERVER_SOFTWARE'];
                     //for simulating other options - delete after
                     // $serverName = 'Nginx';
                     if (strpos($serverName, 'Apache') !== false) {
                         $server_soft = 'Apache';
                         $htaccess_support = true;
-                        $text .= "✅ Apache. Media privacy mode is fully compatible with Apache. It can operate both modes.<br> ";
+                        $text .= '✅ ' . __('Apache. Media privacy mode is fully compatible with Apache. It can operate both modes.') . '<br>';
                     } elseif (strpos($serverName, 'LiteSpeed') !== false) {
                         $server_soft = 'LiteSpeed';
                         $htaccess_support = true;
@@ -461,25 +461,27 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     // prepare arr databases for displaying
                     foreach ($treepaths as $key => $path) {
                         $testDirectory = realpath(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $path);
+                        $text .= '<h5>';
                         if ($testDirectory) {
-                            $text .= "<h5>Checking media path: '$testDirectory' for";
+                            $text .= __('Check media path:') . ' <b>' . $testDirectory . '</b>';
                         } else {
                             //this else is only to give output when path not exists
-                            $text .= "<h5>Checking media path: '$path' for";
+                            $text .= __('Check media path:') . ' <b>' . $path . '</b>';
                         }
+                        $text .= '</h5>';
+
+                        $text .= __('In use for family trees:') . '<br>';
                         // we are giving trees names for paths too - if the same path is used in many trees names are agregated for path
                         foreach ($tree_names as $key2 => $value2) {
                             if ($key2 === $path) {
-                                $text .= " trees: <b>";
-                                $text .= implode(", ", array_slice($tree_names[$key2], 0, -1)); // Łączymy wszystkie oprócz ostatniego
+                                $text .= implode(", ", array_slice($tree_names[$key2], 0, -1));
                                 if (count($tree_names[$key2]) > 1) {
-                                    $text .= " </b>and <b>" . end($tree_names[$key2]); // Dodajemy "i" oraz ostatni element
-                                    $text .= "</b>:</h5><br>"; // Na końcu kropka
-                                } else {
-                                    $text .= end($tree_names[$key2]) . "</b>:</h5><br>"; // Jeśli tylko jeden element, dodajemy kropkę
+                                    $text .= ', ';
                                 }
+                                $text .= end($tree_names[$key2]) . '<br>';
                             }
                         }
+                        $text .= '<br>';
 
                         // Get the realpath of the directory and the document root
                         $realDirectory = realpath($testDirectory);
@@ -511,7 +513,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <div class="alert <?= $htaccess_support ? 'alert-success' : 'alert-danger'; ?>" role="alert">
                         <?= $text; ?>
                         <!-- TODO: make function for automatic checks when directories are changed in tree options -->
-                        <p class='alert alert-danger'>ℹ️ Warning. If You create or change media path for any of your trees You must reenable, redisable this option.</p>
+                        <p class='alert alert-danger'>ℹ️ <?= __('If You create or change media path for any of your trees You must reenable, redisable this option.'); ?></p>
                     </div>
                 <?php } ?>
 
