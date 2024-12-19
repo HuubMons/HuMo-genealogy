@@ -538,7 +538,7 @@ class CalculateDates
                 $age = ' (' . sprintf(__('married %s'), $age) . ')';
 
                 /*
-                // TEST: must be checked for type of relation. $age is filtered in marriage_cls.php line 574.
+                // TEST: must be checked for type of relation. $age is filtered in marriageCls.php line 574.
                 global $relation_check;
                 if ($relation_check==true){
                     $age=' ('.sprintf(__('relation %s'), $age).')';

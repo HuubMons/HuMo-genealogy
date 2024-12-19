@@ -301,7 +301,7 @@ if (isset($_POST['mark_all'])) {
             $personDb = $person->fetch();
 
             /*	// using class slows down considerably: 10,000 persons without class 15 sec, with class for name: over 4 minutes...
-            $persclass = new Person_cls($personDb);
+            $persclass = new PersonCls($personDb);
             $name=$persclass->person_name($personDb); 
             */
             $name = $personDb['pers_lastname'] . ", " . $personDb['pers_firstname'] . ' ' . str_replace("_", " ", $personDb['pers_prefix']);
@@ -815,7 +815,6 @@ if (isset($_POST['mark_all'])) {
 function compare_seq($first_date, $second_date)
 {
     // checks sequence of 2 dates (which is the earlier date)
-    include_once(__DIR__ . '/../../include/calculateDates.php');
     $process_date = new CalculateDates;
 
     // take care of combined julian/gregorian dates (1678/9)
@@ -874,7 +873,6 @@ function compare_seq($first_date, $second_date)
 function compare_month_gap($first_date, $second_date, $monthgap)
 {
     // checks gap in months between two dates (to check for birth less than X months after wedding)
-    include_once(__DIR__ . '/../../include/calculateDates.php');
     $process_date = new CalculateDates;
 
     // take care of combined julian/gregorian dates (1678/9)
@@ -919,7 +917,6 @@ function compare_month_gap($first_date, $second_date, $monthgap)
 function compare_gap($first_date, $second_date)
 {
     // finds gap between 2 years. No need for months or days, since we look for gaps of several years
-    include_once(__DIR__ . '/../../include/calculateDates.php');
     $process_date = new CalculateDates;
 
     // take care of combined julian/gregorian dates (1678/9)

@@ -1,5 +1,5 @@
 <?php
-class update_cls
+class UpdateCls
 {
 
     public function update_v3_1(): void

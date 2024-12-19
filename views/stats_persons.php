@@ -85,7 +85,7 @@ function show_person($row, $date = 'EMPTY')
     //global $db_functions;
     //$row = $db_functions->get_person($row->pers_gedcomnumber);
 
-    $person_cls = new Person_cls($row);
+    $person_cls = new PersonCls($row);
     $privacy = $person_cls->privacy;
     $name = $person_cls->person_name($row);
 

@@ -183,14 +183,14 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
         // *** Privacy filter man and woman ***
         @$person_manDb = $db_functions->get_person($familyDb->fam_man);
-        $man_cls = new Person_cls($person_manDb);
+        $man_cls = new PersonCls($person_manDb);
         $privacy_man = $man_cls->privacy;
 
         @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-        $woman_cls = new Person_cls($person_womanDb);
+        $woman_cls = new PersonCls($person_womanDb);
         $privacy_woman = $woman_cls->privacy;
 
-        $marriage_cls = new Marriage_cls($familyDb, $privacy_man, $privacy_woman);
+        $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
         $family_privacy = $marriage_cls->privacy;
 
         // *************************************************************
@@ -266,7 +266,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         }
 
         // TODO improve this script and use $parent1Db and $parent2Db.
-        // Needed for marriage_cls.php. Workaround to solve bug.
+        // Needed for marriageCls.php. Workaround to solve bug.
         global $parent1Db, $parent2Db;
         if ($swap_parent1_parent2) {
             $parent1Db = $person_womanDb;
@@ -347,7 +347,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     continue;
                 }
 
-                $child_cls = new Person_cls($childDb);
+                $child_cls = new PersonCls($childDb);
                 $child_privacy = $child_cls->privacy;
 
                 // *** Build descendant_report ***

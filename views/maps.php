@@ -430,7 +430,7 @@ if (isset($_POST['descmap'])) {
                             $countmarr = 1;
                             $selected = '';
                             //if($desc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
-                            $man_cls = new Person_cls($desc_searchDb);
+                            $man_cls = new PersonCls($desc_searchDb);
                             $privacy_man = $man_cls->privacy;
                             $date = '';
                             if (!$privacy_man) {
@@ -561,7 +561,7 @@ if (isset($_POST['ancmap'])) {
                             $countmarr = 1;
                             $selected = '';
                             //if($anc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
-                            $man_cls = new Person_cls($anc_searchDb);
+                            $man_cls = new PersonCls($anc_searchDb);
                             $privacy_man = $man_cls->privacy;
                             $date = '';
                             if (!$privacy_man) { // don't show dates if privacy is set for this person

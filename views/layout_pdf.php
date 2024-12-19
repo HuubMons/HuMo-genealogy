@@ -46,8 +46,8 @@ include_once(__DIR__ . "/../include/settings_user.php"); // User variables
 include_once(__DIR__ . "/../include/get_visitor_ip.php");
 $visitor_ip = visitorIP();
 
-include_once(__DIR__ . '/../include/person_cls.php');
-include_once(__DIR__ . '/../include/marriage_cls.php');
+include_once(__DIR__ . '/../include/personCls.php');
+include_once(__DIR__ . '/../include/marriageCls.php');
 include_once(__DIR__ . '/../include/calculateDates.php');
 
 
@@ -76,7 +76,7 @@ $bot_visit = preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['
 //$bot_visit=true;
 
 // *** Language processing after header("..") lines. *** 
-include_once(__DIR__ . "/../languages/language.php"); //Taal
+include_once(__DIR__ . "/../languages/language.php");
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = "&#x200E;";  //ltr marker

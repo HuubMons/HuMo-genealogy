@@ -6,7 +6,7 @@ if (!defined('ADMIN_PAGE')) {
 
 // *** Use a class to process person data ***
 global $person_cls, $statistics;
-$person_cls = new Person_cls;
+$person_cls = new PersonCls;
 ?>
 
 <h1 class="center"><?= __('Statistics'); ?></h1>

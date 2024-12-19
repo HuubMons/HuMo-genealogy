@@ -126,7 +126,7 @@ if (!isset($data["sourceDb"]->source_id)) {
     <tr>
         <td>
             <?php
-            $person_cls = new Person_cls;
+            $person_cls = new PersonCls;
 
             // *** Sources in connect table ***
             foreach ($data["source_connections"] as $connectDb) {

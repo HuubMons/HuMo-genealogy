@@ -11,12 +11,12 @@ include_once(__DIR__ . "/include/safe.php"); //Variabelen
 // *** Needed for privacy filter ***
 include_once(__DIR__ . "/include/settings_global.php"); //Variables
 include_once(__DIR__ . "/include/settings_user.php"); // USER variables
-include_once(__DIR__ . "/include/person_cls.php");
+include_once(__DIR__ . "/include/personCls.php");
 
 include_once(__DIR__ . "/include/dbFunctions.php");
 $db_functions = new DbFunctions($dbh);
 
-$person_cls = new Person_cls;
+$person_cls = new PersonCls;
 
 // *** Example, see: http://www.sitemaps.org/protocol.html ***
 /*
@@ -54,7 +54,7 @@ foreach ($datasql as $dataDb) {
             WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
         while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
-            //$person_cls = new Person_cls($personDb);
+            //$person_cls = new PersonCls($personDb);
             //$privacy=$person_cls->privacy;
 
             // *** Completely filter person ***
@@ -93,7 +93,7 @@ foreach ($datasql as $dataDb) {
             WHERE pers_tree_id='" . $dataDb->tree_id . "' AND pers_famc='' AND pers_fams=''");
         while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
-            //$person_cls = new Person_cls($personDb);
+            //$person_cls = new PersonCls($personDb);
             //$privacy=$person_cls->privacy;
 
             // *** Completely filter person ***

@@ -5,7 +5,7 @@ include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . "/../include/safe.php");
 include_once(__DIR__ . "/../include/settings_global.php"); //Variables
 include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
-include_once(__DIR__ . "/../include/person_cls.php"); // for privacy
+include_once(__DIR__ . "/../include/personCls.php"); // for privacy
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
 include_once(__DIR__ . '/../include/processLinks.php');
@@ -17,29 +17,8 @@ include_once(__DIR__ . "/../include/dbFunctions.php");
 $db_functions = new DbFunctions($dbh);
 $db_functions->set_tree_id($tree_id);
 
-$language_folder = opendir('../languages/');
-while (false !== ($file = readdir($language_folder))) {
-    if (strlen($file) < 5 and $file != '.' and $file != '..') {
-        $language_file[] = $file;
-
-        // *** Save choice of language ***
-        $language_choice = '';
-        if (isset($_GET["language"])) {
-            $language_choice = $_GET["language"];
-        }
-
-        if ($language_choice != '') {
-            // Check if file exists (IMPORTANT DO NOT REMOVE THESE LINES)
-            // ONLY save an existing language file.
-            if ($language_choice == $file) {
-                $_SESSION['language'] = $file;
-            }
-        }
-    }
-}
-closedir($language_folder);
 // *** Language processing after header("..") lines. ***
-include_once(__DIR__ . "/../languages/language.php"); //Taal
+include_once(__DIR__ . "/../languages/language.php");
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = "&#x200E;";  //ltr marker
@@ -118,13 +97,17 @@ function mapbirthplace($place)
     if ($place != "NONFOUND") {
         if ($_SESSION['type_birth'] == 1) {
             if (isset($_GET['all'])) { // the 'All birth locations' button
-                echo '<b><u>' . __('All persons born here: ') . '</u></b><br>';
+?>
+                <b><u><?= __('All persons born here: '); ?></u></b><br>
+            <?php
                 $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename
                     FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                     AND " . $idstring . $namestring . " (pers_birth_place = '" . $place . "' OR (pers_birth_place = '' AND pers_bapt_place = '" . $place . "')) ORDER BY wholename";
                 $maplist = $dbh->query($sql);
             } else { // *** Slider is used ***
-                echo '<b><u>' . __('Persons born here until ') . $map_max . ':</u></b><br>';
+            ?>
+                <b><u><?= __('Persons born here until ') . $map_max; ?>:</u></b><br>
+        <?php
                 $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
                     WHERE pers_tree_id='" . $tree_id . "'
                     AND " . $idstring . $namestring . " (pers_birth_place = '" . $place . "' OR (pers_birth_place = '' AND pers_bapt_place = '" . $place . "'))
@@ -157,12 +140,12 @@ function mapbirthplace($place)
             }
         }
         //echo 'TEST: '.$sql;
-?>
+        ?>
 
         <div style="direction:ltr">
             <?php
             while (@$maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
-                $man_cls = new Person_cls($maplistDb);
+                $man_cls = new PersonCls($maplistDb);
                 $privacy_man = $man_cls->privacy;
                 $name = $man_cls->person_name($maplistDb);
                 if ($name["show_name"] == true) {

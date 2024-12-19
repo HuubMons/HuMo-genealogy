@@ -283,7 +283,7 @@ for ($w = 0; $w < count($genarray); $w++) {
     // *** Start person class and calculate privacy ***
     if (isset($genarray[$w]["gednr"]) && $genarray[$w]["gednr"]) {
         $man = $db_functions->get_person($genarray[$w]["gednr"]);
-        $man_cls = new Person_cls($man);
+        $man_cls = new PersonCls($man);
         $man_privacy = $man_cls->privacy;
     }
 
@@ -416,7 +416,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                 $woman_cls = ''; // prevent use of $woman_cls from previous wife if another wife is NN
                 if (isset($genarray[$w]["spgednr"]) && $genarray[$w]["spgednr"]) {
                     @$woman = $db_functions->get_person($genarray[$w]["spgednr"]);
-                    $woman_cls = new Person_cls($woman);
+                    $woman_cls = new PersonCls($woman);
                     $woman_privacy = $woman_cls->privacy;
                 }
 

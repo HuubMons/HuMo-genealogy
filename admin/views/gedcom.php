@@ -882,8 +882,7 @@ elseif ($trees['step'] == '3') {
         $new_gednum["N"] = $largest_text_ged;
     }
 
-    include_once(__DIR__ . '/../include/gedcom_cls.php');
-    $gedcom_cls = new gedcom_cls;
+    $gedcom_cls = new GedcomCls;
 
     require(__DIR__ . "/../include/prefixes.php");
     $loop2 = count($pers_prefix);

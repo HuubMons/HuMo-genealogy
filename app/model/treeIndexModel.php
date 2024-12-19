@@ -678,7 +678,7 @@ class TreeIndexModel
 
                 if ($pic_conn_kind == 'person') {
                     @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
-                    $man_cls = new Person_cls($personmnDb);
+                    $man_cls = new PersonCls($personmnDb);
                     if ($man_cls->privacy == '') {
                         $is_privacy = false;
 
@@ -693,10 +693,10 @@ class TreeIndexModel
                     $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
 
                     @$personmnDb2 = $db_functions->get_person($picqryDb2->fam_man);
-                    $man_cls = new Person_cls($personmnDb2);
+                    $man_cls = new PersonCls($personmnDb2);
 
                     @$personmnDb3 = $db_functions->get_person($picqryDb2->fam_woman);
-                    $woman_cls = new Person_cls($personmnDb3);
+                    $woman_cls = new PersonCls($personmnDb3);
 
                     // *** Only use this picture if both man and woman have disabled privacy options ***
                     if ($man_cls->privacy == '' && $woman_cls->privacy == '') {
@@ -779,8 +779,8 @@ class TreeIndexModel
             $person = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_own_code NOT LIKE ''");
             while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($personDb->pers_own_code, $pers_own_code)) {
-                    $person_cls = new Person_cls;
-                    //$person_cls = new Person_cls($personDb);
+                    $person_cls = new PersonCls;
+                    //$person_cls = new PersonCls($personDb);
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $path_tmp = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
@@ -944,7 +944,7 @@ class TreeIndexModel
 
         // *** Save results in an array, so it's possible to order the results by date ***
         while ($record = $birth_qry->fetch(PDO::FETCH_OBJ)) {
-            $person_cls = new Person_cls($record);
+            $person_cls = new PersonCls($record);
             $name = $person_cls->person_name($record);
             if (!$person_cls->privacy) {
                 if (trim(substr($record->pers_birth_date, 0, 6)) === $today || substr($record->pers_birth_date, 0, 6) === $today2) {

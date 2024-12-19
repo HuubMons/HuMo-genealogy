@@ -3,7 +3,7 @@
 HuMo-genealogy database update script by Huub Mons.
 
 15-08-2011 Completely rewritten this script, and update for version 4.7.
-26-05-2019 Improved this script. Used update_cls.php, improved use of flush and commit for version 5.2.5.
+26-05-2019 Improved this script. Used updateCls.php, improved use of flush and commit for version 5.2.5.
 */
 
 @set_time_limit(4000);
@@ -16,8 +16,7 @@ if (!isset($_GET['proceed'])) {
     echo '<p><a href="index.php?page=update&proceed=1">START UPDATE PROCEDURE</a>';
 } else {
     // *** Use class for multiple update scripts ***
-    include_once(__DIR__ . '/update_cls.php');
-    $update_cls = new update_cls;
+    $update_cls = new UpdateCls;
 
     // *** UPDATE PROCEDURES ****************************************************************
     $humo_update = 0;

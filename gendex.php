@@ -11,7 +11,7 @@ include_once(__DIR__ . "/include/safe.php"); //Variabelen
 // *** Needed for privacy filter ***
 include_once(__DIR__ . "/include/settings_global.php"); //Variables
 include_once(__DIR__ . "/include/settings_user.php"); // USER variables
-include_once(__DIR__ . "/include/person_cls.php");
+include_once(__DIR__ . "/include/personCls.php");
 
 include_once(__DIR__ . "/include/DbFunctions.php");
 $db_functions = new DbFunctions($dbh);
@@ -29,7 +29,7 @@ foreach ($datasql as $dataDb) {
         //Birthdate|Birthplace|Deathdate|Deathplace|
         while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
-            $person_cls = new Person_cls($personDb);
+            $person_cls = new PersonCls($personDb);
             $privacy = $person_cls->privacy;
 
             // *** Completely filter person ***

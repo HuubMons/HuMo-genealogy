@@ -56,24 +56,23 @@ function admin_custom_autoload($class_name)
 {
     // Examples of autoload files:
     // include/editor_cls.php
+    // include/gedcomCls.php
+    // include/updateCls.php
 
     // models/groupsmodel.php
 
     // ../include/dbFunctions.php
     // ../include/processLinks.php
-    // ../include/person_cls.php
+    // ../include/personCls.php
+    // ../include/calculateDates.php
 
-    // ../languages/language_cls.php
-
-    // TODO include/calculateDates.php
-    // TODO include/gedcom_cls.php
-    // TODO include/update_cls.php
+    // ../languages/languageCls.php
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array(
-        'Language_cls',
-        'DbFunctions', 'ProcessLinks', 'Person_cls',
-        'Editor_cls', 'EditorEvent'
+        'LanguageCls',
+        'DbFunctions', 'ProcessLinks', 'PersonCls',
+        'Editor_cls', 'EditorEvent', 'CalculateDates', 'GedcomCls', 'UpdateCls'
     );
     // If all classes are autoloading, array check of classes will be removed.
     if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
@@ -205,7 +204,7 @@ timezone();
 //echo date("Y-m-d H:i");
 
 // *** Get ordered list of languages ***
-$language_cls = new Language_cls;
+$language_cls = new LanguageCls;
 $language_file = $language_cls->get_languages();
 
 // *** Select admin language ***

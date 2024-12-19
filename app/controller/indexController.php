@@ -9,7 +9,7 @@ class IndexController
 
         $index['visitor_ip'] = visitorIP();
 
-        $index['person_cls'] = new Person_cls;
+        $index['person_cls'] = new PersonCls;
 
         // *** Debug HuMo-genealogy front pages ***
         if ($humo_option["debug_front_pages"] == 'y') {
@@ -33,11 +33,11 @@ class IndexController
         //$index['bot_visit'] = true;
 
         // *** Get ordered list of languages ***
-        $language_cls = new Language_cls;
+        $language_cls = new LanguageCls;
         $index['language_file'] = $language_cls->get_languages();
 
         // *** Language processing after header("..") lines. *** 
-        include_once(__DIR__ . "/../../languages/language.php"); //Taal
+        include_once(__DIR__ . "/../../languages/language.php");
         $index['language'] = $language; // $language = array.
         $index['selected_language'] = $selected_language;
 

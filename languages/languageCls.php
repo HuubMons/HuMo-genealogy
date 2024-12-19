@@ -1,6 +1,6 @@
 <?php
 // *** Jan. 2024. Added class for processing language selection ***
-class Language_cls
+class LanguageCls
 {
     public function get_languages()
     {
@@ -36,33 +36,23 @@ class Language_cls
                 elseif ($file == 'sv') $language_order[] = 'Swedish';
                 elseif ($file == 'tr') $language_order[] = 'Turkish';
                 else $language_order[] = $file;
-
-                // *** Save choice of language ***
-                $language_choice = '';
-                if (isset($_GET["language"])) {
-                    $language_choice = $_GET["language"];
-                }
-
-                if ($language_choice != '') {
-                    // Check if file exists (IMPORTANT DO NOT REMOVE THESE LINES)
-                    // ONLY save an existing language file.
-                    if ($language_choice == $file) {
-                        $_SESSION["language_humo"] = $file;
-                    }
-                }
-
-                // *** ADMIN page: save language choice ***
-                if (isset($_GET["language_choice"])) {
-                    // *** Check if language file really exists ***
-                    if ($_GET["language_choice"] == $file) {
-                        $_SESSION['save_language_admin'] = $file;
-                    }
-                }
             }
         }
         closedir($language_folder);
         // *** Order language array by name of language ***
         array_multisort($language_order, $language_file);
+
+
+        // *** Save choice of language, check if file exists, ONLY save an existing language file ***
+        if (isset($_GET["language"]) && in_array($_GET["language"], $language_file)) {
+            $_SESSION["language_humo"] = $_GET["language"];
+        }
+
+        // *** Save choice of language, check if file exists, ONLY save an existing language file ***
+        if (isset($_GET["language_choice"]) && in_array($_GET["language_choice"], $language_file)) {
+            $_SESSION["save_language_admin"] = $_GET["language_choice"];
+        }
+
 
         return $language_file;
     }

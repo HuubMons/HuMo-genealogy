@@ -5,7 +5,7 @@
  * Class for HuMo-genealogy program
  */
 
-class Marriage_cls
+class MarriageCls
 {
     public $cls_marriage_Db = null;  // Database relation record
     public $privacy = false;  // Relation privacy filter
@@ -652,7 +652,7 @@ class Marriage_cls
         global $dbh, $db_functions, $tree_prefix_quoted, $dataDb, $uri_path, $humo_option;
         global $language, $user, $screen_mode;
         global $parent1Db, $parent2Db;
-        global $relation_check; // Global still needed to show a proper marriage or relation text when age is calculated in person_cls.php.
+        global $relation_check; // Global still needed to show a proper marriage or relation text when age is calculated in personCls.php.
 
         // TODO check globals in new functions.
         global $temp;
@@ -666,14 +666,14 @@ class Marriage_cls
         }
 
         // *** Open a person class for witnesses ***
-        $person_cls = new Person_cls;
+        $person_cls = new PersonCls;
 
         $text = '';
 
         $this->addition = __(' to: '); // Default addition.
         $this->check_relation_type($marriageDb->fam_kind);
 
-        // This variable is also used to show a proper marriage or relation text when age is calculated in person_cls.php.
+        // This variable is also used to show a proper marriage or relation text when age is calculated in personCls.php.
         // Variable is global now.
         $relation_check = $this->relation_check;
 
@@ -851,7 +851,7 @@ class Marriage_cls
         // **********************************
 
         // Process english 1st, 2nd, 3rd and 4th marriage.
-        // TODO Check code. 1st, 2nd is only show by children. Script also in person_cls.php.
+        // TODO Check code. 1st, 2nd is only show by children. Script also in personCls.php.
         // Used for descendant report.
         $relation_number = '';
         if ($presentation == 'short' || $presentation == 'shorter') {

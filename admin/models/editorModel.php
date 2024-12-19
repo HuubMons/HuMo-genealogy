@@ -1897,7 +1897,7 @@ class EditorModel
             // *** Name of selected person in family tree ***
             @$persDb = $this->db_functions->get_person($this->pers_gedcomnumber);
             // *** Use class to process person ***
-            $pers_cls = new Person_cls($persDb);
+            $pers_cls = new PersonCls($persDb);
             $name = $pers_cls->person_name($persDb);
             $note_names = safe_text_db($name["standard_name"]);
 

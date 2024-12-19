@@ -67,7 +67,7 @@ class LatestChangesModel
                 $pers_sexe = '<img src="images/unknown.gif" alt="unknown">';
             }
 
-            $person_cls = new Person_cls($person);
+            $person_cls = new PersonCls($person);
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
             $url = $person_cls->person_url2($person->pers_tree_id, $person->pers_famc, $person->pers_fams, $person->pers_gedcomnumber);
             $name = $person_cls->person_name($person);

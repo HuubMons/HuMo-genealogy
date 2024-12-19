@@ -61,7 +61,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'serve_file' && isset($_GET['media_
     if ($media_qryDb && $media_qryDb->event_connect_kind === 'person') {
         // echo 'person';
         @$personmnDb = $db_functions->get_person($media_qryDb->event_connect_id);
-        $man_cls = new Person_cls($personmnDb);
+        $man_cls = new PersonCls($personmnDb);
         if (is_object($man_cls->personDb) && !$man_cls->privacy) {
             $file_allowed = true;
         } else {
@@ -74,10 +74,10 @@ if (isset($_GET['page']) && $_GET['page'] == 'serve_file' && isset($_GET['media_
         $family_qryDb2 = $family_qry->fetch(PDO::FETCH_OBJ);
 
         @$personmnDb2 = $db_functions->get_person($family_qryDb2->fam_man);
-        $man_cls2 = new Person_cls($personmnDb2);
+        $man_cls2 = new PersonCls($personmnDb2);
 
         @$personmnDb3 = $db_functions->get_person($family_qryDb2->fam_woman);
-        $woman_cls = new Person_cls($personmnDb3);
+        $woman_cls = new PersonCls($personmnDb3);
 
         // *** Only use this picture if both man and woman have disabled privacy options ***
         if ($man_cls2->privacy == '' && $woman_cls->privacy == '') {
@@ -537,9 +537,9 @@ $menu_top = getActiveTopMenu($page);
                                                     // *** Proces man using a class ***
                                                     $test_favorite = $db_functions->get_person($favorite_array2['2']);
                                                     if ($test_favorite) {
-                                                        //$name_cls = new Person_cls($favorite_array2['3']);
-                                                        //$name_cls = new Person_cls($favorite_array2['2']);
-                                                        $name_cls = new Person_cls($test_favorite);
+                                                        //$name_cls = new PersonCls($favorite_array2['3']);
+                                                        //$name_cls = new PersonCls($favorite_array2['2']);
+                                                        $name_cls = new PersonCls($test_favorite);
                                                         $name = $name_cls->person_name($test_favorite);
                                                         echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['2'] . '">' . $name['name'] . ' [' . $favorite_array2['2'] . ']</option>';
                                                     }

@@ -50,7 +50,7 @@ class AddressModel
     public function getAddressConnectedPersons($id)
     {
         $text = '';
-        $person_cls = new Person_cls;
+        $person_cls = new PersonCls;
         // *** Search address in connections table ***
         //$event_qry = $db_functions->get_connections('person_address', $_GET['gedcomnumber']);
         $event_qry = $this->db_functions->get_connections('person_address', $_GET['id']);

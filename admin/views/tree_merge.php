@@ -440,7 +440,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
     <?php
     // ===== BEGIN SEARCH BOX SYSTEM
 
-    $pers_cls = new Person_cls;
+    $pers_cls = new PersonCls;
 
     if (!isset($_POST["search1"]) && !isset($_POST["search2"]) && !isset($_POST["manual_compare"]) && !isset($_POST["switch"])) {
         // no button pressed: this is a fresh entry from frontpage link: start clean search form
@@ -1065,7 +1065,7 @@ function show_pair($left_id, $right_id, $mode)
 
             $spouse_ged = $famDb->fam_man == $leftDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
-            $name_cls = new Person_cls;
+            $name_cls = new PersonCls;
             $name = $name_cls->person_name($spouseDb);
             $spouses1 .= $name["standard_name"] . '<br>';
 
@@ -1073,7 +1073,7 @@ function show_pair($left_id, $right_id, $mode)
                 $child = explode(';', $famDb->fam_children);
                 foreach ($child as $ch_value) {
                     $childDb = $db_functions->get_person($ch_value);
-                    $name_cls = new Person_cls;
+                    $name_cls = new PersonCls;
                     $name = $name_cls->person_name($childDb);
                     $children1 .= $name["standard_name"] . '<br>';
                 }
@@ -1091,12 +1091,12 @@ function show_pair($left_id, $right_id, $mode)
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
         $fatherDb = $db_functions->get_person($parentsDb->fam_man);
-        $name_cls = new Person_cls;
+        $name_cls = new PersonCls;
         $name = $name_cls->person_name($fatherDb);
         $father1 .= $name["standard_name"] . '<br>';
 
         $motherDb = $db_functions->get_person($parentsDb->fam_woman);
-        $name_cls = new Person_cls;
+        $name_cls = new PersonCls;
         $name = $name_cls->person_name($motherDb);
         $mother1 .= $name["standard_name"] . '<br>';
     }
@@ -1112,7 +1112,7 @@ function show_pair($left_id, $right_id, $mode)
             $famDb = $db_functions->get_family($value);
             $spouse_ged = $famDb->fam_man == $rightDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
-            $name_cls = new Person_cls;
+            $name_cls = new PersonCls;
             $name = $name_cls->person_name($spouseDb);
             $spouses2 .= $name["standard_name"] . '<br>';
 
@@ -1120,7 +1120,7 @@ function show_pair($left_id, $right_id, $mode)
                 $child = explode(';', $famDb->fam_children);
                 foreach ($child as $ch_value) {
                     $childDb = $db_functions->get_person($ch_value);
-                    $name_cls = new Person_cls;
+                    $name_cls = new PersonCls;
                     $name = $name_cls->person_name($childDb);
                     $children2 .= $name["standard_name"] . '<br>';
                 }
@@ -1138,12 +1138,12 @@ function show_pair($left_id, $right_id, $mode)
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
         $fatherDb = $db_functions->get_person($parentsDb->fam_man);
-        $name_cls = new Person_cls;
+        $name_cls = new PersonCls;
         $name = $name_cls->person_name($fatherDb);
         $father2 .= $name["standard_name"] . '<br>';
 
         $motherDb = $db_functions->get_person($parentsDb->fam_woman);
-        $name_cls = new Person_cls;
+        $name_cls = new PersonCls;
         $name = $name_cls->person_name($motherDb);
         $mother2 .= $name["standard_name"] . '<br>';
     }

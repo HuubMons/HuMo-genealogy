@@ -54,7 +54,7 @@ function fillarray($nr, $famid)
     if ($famid) {
         @$personmnDb = $db_functions->get_person($famid);
 
-        $man_cls = new Person_cls($personmnDb);
+        $man_cls = new PersonCls($personmnDb);
         $man_privacy = $man_cls->privacy;
 
         $name = $man_cls->person_name($personmnDb);
@@ -462,7 +462,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                 $imagemap .= "$tx, $ty";
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $person_cls = new Person_cls;
+                $person_cls = new PersonCls;
                 $url = $person_cls->person_url2($tree_id, $data["fanchart_item"][$sosa][6], $data["fanchart_item"][$sosa][2], $data["fanchart_item"][$sosa][3]);
                 $imagemap .= "\" href=\"" . $url . "\"";
                 //}
@@ -477,7 +477,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                     $spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
                     $spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
 
-                    $spouse_cls = new Person_cls($spouse2Db);
+                    $spouse_cls = new PersonCls($spouse2Db);
                     $spname = $spouse_cls->person_name($spouse2Db);
                     $spouse_lan = $data["fanchart_item"][1][5] == "F" ? "SPOUSE_MALE" : "SPOUSE_FEMALE";
                     if ($spname != "") {

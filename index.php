@@ -54,18 +54,20 @@ function custom_autoload($class_name)
 
     // include/dbFunctions.php
     // include/marriage_cls
-    // include/person_cls.php
+    // include/personCls.php
     // include/calculateDates.php
     // include/processLinks.php
     // include/validateDate.php
 
+    // languages/languageCls.php
+
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array(
-        'CalculateDates', 'DbFunctions', 'Marriage_cls', 'Person_cls', 'ProcessLinks', 'ValidateDate'
+        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'LanguageCls'
     );
     // If all classes are autoloading, array check of classes will be removed.
     if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
-        $dirs = array('app/controller', 'app/model', 'include');
+        $dirs = array('app/controller', 'app/model', 'include', 'languages');
         foreach ($dirs as $dir) {
             $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
             if (file_exists($file)) {
@@ -78,7 +80,7 @@ function custom_autoload($class_name)
 spl_autoload_register('custom_autoload');
 
 
-// TODO move to model script.
+// TODO move to model script (should be processed before setttings_user. Probably first build a general settings class).
 if (isset($_GET['log_off'])) {
     unset($_SESSION['user_name']);
     unset($_SESSION['user_id']);
@@ -96,7 +98,7 @@ include_once(__DIR__ . "/include/settings_user.php"); // User variables
 include_once(__DIR__ . "/include/get_visitor_ip.php"); // Statistics and option to block certain IP addresses.
 
 include_once(__DIR__ . "/include/timezone.php");
-include(__DIR__ . "/languages/language_cls.php");
+//include(__DIR__ . "/languages/languageCls.php");
 
 include_once(__DIR__ . '/app/routing/router.php'); // Page routing.
 

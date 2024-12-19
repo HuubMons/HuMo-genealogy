@@ -7,7 +7,7 @@
  * - report_descendant (included with minor changes in the file)
  * - family script (included with minor changes in the file)
  * Other additions and alterations:
- * - hourglass item added to popup menu in /include/person_cls.php
+ * - hourglass item added to popup menu in /include/personCls.php
  * - icon added: /images/hourglass.gif
  * - class added to gedcom.css and silverline.css for graph lines
  * 

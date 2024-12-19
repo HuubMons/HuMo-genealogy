@@ -6,7 +6,7 @@
  * $templ_person is used for PDF reports
  */
 
-class Person_cls
+class PersonCls
 {
     public $personDb = null;  // Database record
     public $privacy = false;  // Person privacy
@@ -1203,7 +1203,7 @@ class Person_cls
                     }
                 }
 
-                // *** Added in jan. 2021 (also see: marriage_cls.php) ***
+                // *** Added in jan. 2021 (also see: marriageCls.php) ***
                 if ($fam_partnerDb->fam_kind == 'living together') {
                     $relation_short = __('Living together');
                 }
@@ -1245,7 +1245,7 @@ class Person_cls
 
                 if ($partner_id != '0' && $partner_id != '') {
                     $partnerDb = $db_functions->get_person($partner_id);
-                    $partner_cls = new Person_cls;
+                    $partner_cls = new PersonCls;
                     $name = $partner_cls->person_name($partnerDb);
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -1991,7 +1991,7 @@ $own_code=0;
 
                     $templ_person["born_source"] = $source_array['text'];
                     $temp = "born_source";
-                    // *** Not necessary to do this in person_cls.php, this is processed in family script.
+                    // *** Not necessary to do this in personCls.php, this is processed in family script.
                     //elseif($screen_mode=='RTF') {
                     //	$templ_person["born_source"]=$source_array['text'];
                     //	$rtf_text=strip_tags($templ_person["born_source"],"<b><i>");
@@ -2764,7 +2764,7 @@ $own_code=0;
                         $parent2_famDb = $db_functions->get_family($marriage_array[$i]);
                         // *** Use a class for marriage ***
                         // Construct for marriage privacy filter is missing? Probably not needed here because no dates are shown.
-                        $parent2_marr_cls = new Marriage_cls;
+                        $parent2_marr_cls = new MarriageCls;
 
                         // *** Show standard marriage text ***
                         if ($screen_mode != "PDF") {

@@ -170,7 +170,7 @@ class DescendantModel extends FamilyModel
     public function getBasePerson($db_functions, $main_person)
     {
         @$dnaDb = $db_functions->get_person($main_person);
-        $dnapers_cls = new Person_cls;
+        $dnapers_cls = new PersonCls;
         $dnaname = $dnapers_cls->person_name($dnaDb);
         $base_person["name"] =  $dnaname["standard_name"];    // need these 4 in report_descendant
         $base_person["sexe"] = $dnaDb->pers_sexe;
@@ -210,7 +210,7 @@ class DescendantModel extends FamilyModel
 
         @$dnaDb = $db_functions->get_person($data["main_person"]);
         /*
-        $dnapers_cls = new Person_cls;
+        $dnapers_cls = new PersonCls;
         $dnaname = $dnapers_cls->person_name($dnaDb);
         $base_person_name =  $dnaname["standard_name"];    // need these 4 in report_descendant
         $base_person_sexe = $dnaDb->pers_sexe;
@@ -349,14 +349,14 @@ class DescendantModel extends FamilyModel
                         }
                         @$parent1Db = $db_functions->get_person($parent1);
                         // *** Proces parent1 using a class ***
-                        $parent1_cls = new Person_cls($parent1Db);
+                        $parent1_cls = new PersonCls($parent1Db);
 
                         @$parent2Db = $db_functions->get_person($parent2);
                         // *** Proces parent2 using a class ***
-                        $parent2_cls = new Person_cls($parent2Db);
+                        $parent2_cls = new PersonCls($parent2Db);
 
                         // *** Proces marriage using a class ***
-                        $marriage_cls = new Marriage_cls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
+                        $marriage_cls = new MarriageCls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
                         $family_privacy = $marriage_cls->privacy;
 
 
@@ -481,7 +481,7 @@ class DescendantModel extends FamilyModel
                             foreach ($child_array as $i => $value) {
                                 @$childDb = $db_functions->get_person($child_array[$i]);
                                 // *** Use person class ***
-                                $child_cls = new Person_cls($childDb);
+                                $child_cls = new PersonCls($childDb);
 
                                 $chdn_in_gen = $nrchldingen + $childnr;
                                 $place = $lst_in_array + $chdn_in_gen;

@@ -1,5 +1,5 @@
 <?php
-class gedcom_cls
+class GedcomCls
 {
     /**
      * Process persons
@@ -2979,11 +2979,11 @@ class gedcom_cls
 
                 // *** Same couple: second marriage in BK program (in 1 @FAM part) ***
                 $search_marr = rtrim(substr($buffer, 2, 5));
-                //if($search_marr=="MARR" OR $search_marr=="MARB" OR $search_marr=="MARL") {
                 if ($gen_program == 'BROSKEEP' && ($search_marr === "MARR" || $search_marr === "MARB" || $search_marr === "MARL")) {
                     if ($marr_flag == 1 && $family["fam_div"] == true) {
                         // this is a second MARR in this @FAM after a divorce so second marriage of these people
-                        //TODO check $skipfrom
+                        $skipfrom = $z; // Added dec. 2024 to prevent error.
+                        //function process_family($family_array, $first_marr, $second_marr): void
                         $this->process_family($family_array, $skipfrom, $z); // calls itself with parameters what to skip
                         break;
                     } elseif ($second_marr == 0) {
