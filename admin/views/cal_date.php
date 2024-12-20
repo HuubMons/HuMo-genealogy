@@ -8,21 +8,36 @@ $tree_result = $db_functions->get_trees();
 
 $db_functions->set_tree_id($tree_id);
 
+function calculate_year($date)
+{
+    if (strlen($date) > 4) {
+        return substr($date, -4);
+    }
+    return $date;
+}
+
 function calculate_person($db_functions, $gedcomnumber)
 {
     $pers_cal_date = '';
-    $person2_db = $db_functions->get_person($gedcomnumber);
-    if ($person2_db) {
-        if ($person2_db->pers_cal_date) {
-            $pers_cal_date = $person2_db->pers_cal_date;
-        } elseif ($person2_db->pers_birth_date) {
-            $pers_cal_date = $person2_db->pers_birth_date;
-        } elseif ($person2_db->pers_bapt_date) {
-            $pers_cal_date = $person2_db->pers_bapt_date;
+    $person = $db_functions->get_person($gedcomnumber);
+    if ($person) {
+        if ($person->pers_cal_date) {
+            $pers_cal_date = calculate_year($person->pers_cal_date);
+        } elseif ($person->pers_birth_date) {
+            $pers_cal_date = calculate_year($person->pers_birth_date);
+        } elseif ($person->pers_bapt_date) {
+            $pers_cal_date = calculate_year($person->pers_bapt_date);
         }
-        $pers_cal_date = substr($pers_cal_date, -4);
     }
     return $pers_cal_date;
+}
+
+function calculate_correction($date, $correction)
+{
+    if (is_numeric($date) && $correction != 0) {
+        $date += $correction;
+    }
+    return $date;
 }
 ?>
 
@@ -50,6 +65,15 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
         </div>
 
         <div class="col-auto">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="recalculate" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    <?= __('Recalculate all persons'); ?>
+                </label>
+            </div>
+        </div>
+
+        <div class="col-auto">
             <input type="submit" name="submit_button" class="btn btn-sm btn-success" value="<?= __('Select'); ?>">
         </div>
     </div>
@@ -62,13 +86,22 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
                 <?php
                 // *** Process estimates/ calculated date for privacy filter ***
                 $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND (pers_cal_date='' OR pers_cal_date IS NULL)";
+
+                if (isset($_POST['recalculate'])) {
+                    $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                }
+
                 $person_result = $dbh->query($person_qry);
                 while ($person_db = $person_result->fetch(PDO::FETCH_OBJ)) {
                     $pers_cal_date = '';
+                    $used_item = '';
+
                     if ($person_db->pers_birth_date) {
                         $pers_cal_date = $person_db->pers_birth_date;
+                        $used_item = 'own birth date';
                     } elseif ($person_db->pers_bapt_date) {
                         $pers_cal_date = $person_db->pers_bapt_date;
+                        $used_item = 'own baptise date';
                     }
 
                     // *** Check first marriage of person ***
@@ -77,30 +110,36 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
                         $fam_db = $db_functions->get_family($marriage_array[0]);
                         if ($fam_db->fam_marr_date) {
                             $pers_cal_date = $fam_db->fam_marr_date;
-                        }
-                        if ($fam_db->fam_marr_church_date) {
+                            $pers_cal_date = calculate_year($pers_cal_date);
+                            $used_item = 'own marriage date ' . $pers_cal_date;
+                            $pers_cal_date = calculate_correction($pers_cal_date, -25);
+                        } elseif ($fam_db->fam_marr_church_date) {
                             $pers_cal_date = $fam_db->fam_marr_church_date;
-                        }
-                        if ($pers_cal_date) {
-                            $pers_cal_date = substr($pers_cal_date, -4);
-                            if ($pers_cal_date !== '' && $pers_cal_date !== '0') {
-                                $pers_cal_date -= 25;
-                            }
+                            $pers_cal_date = calculate_year($pers_cal_date);
+                            $used_item = 'own marriage religion date ' . $pers_cal_date;
+                            $pers_cal_date = calculate_correction($pers_cal_date, -25);
                         }
 
                         // *** Check date of man/ wife ***
-                        $gedcomnumber = $fam_db->fam_man;
-                        if ($person_db->pers_gedcomnumber == $fam_db->fam_man) {
-                            $gedcomnumber = $fam_db->fam_woman;
+                        if ($pers_cal_date == '') {
+                            $gedcomnumber = $fam_db->fam_man;
+                            if ($person_db->pers_gedcomnumber == $fam_db->fam_man) {
+                                $gedcomnumber = $fam_db->fam_woman;
+                            }
+                            $pers_cal_date = calculate_person($db_functions, $gedcomnumber);
+                            $used_item = 'birth/ baptise date of man';
+                            if ($person_db->pers_gedcomnumber == $fam_db->fam_man) {
+                                $used_item = 'birth/ baptise date of wife';
+                            }
                         }
-                        $pers_cal_date = calculate_person($db_functions, $gedcomnumber);
 
                         // *** Check date of children ***
                         if ($pers_cal_date == '' && $fam_db->fam_children) {
                             $children_array = explode(";", $fam_db->fam_children);
                             $pers_cal_date = calculate_person($db_functions, $children_array[0]);
                             if ($pers_cal_date) {
-                                $pers_cal_date -= 25;
+                                $used_item = 'birth/ baptise date of child: ' . $pers_cal_date;
+                                $pers_cal_date = calculate_correction($pers_cal_date, -25);
                             }
                         }
                     }
@@ -113,43 +152,47 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
                         $fam_db = $fam_result->fetch(PDO::FETCH_OBJ);
                         if ($fam_db->fam_marr_date) {
                             $pers_cal_date = $fam_db->fam_marr_date;
+                            $pers_cal_date = calculate_year($pers_cal_date);
+                            $used_item = 'marriage date of parents ' . $pers_cal_date;
+                            $pers_cal_date = calculate_correction($pers_cal_date, +1);
                         }
                         if ($fam_db->fam_marr_church_date) {
                             $pers_cal_date = $fam_db->fam_marr_church_date;
-                        }
-                        if ($pers_cal_date) {
-                            $pers_cal_date = substr($pers_cal_date, -4);
-                            if ($pers_cal_date !== '' && $pers_cal_date !== '0') {
-                                $pers_cal_date += 1;
-                            }
+                            $pers_cal_date = calculate_year($pers_cal_date);
+                            $used_item = 'marriage religious date of parents ' . $pers_cal_date;
+                            $pers_cal_date = calculate_correction($pers_cal_date, +1);
                         }
 
                         // *** Check date of father ***
                         if ($pers_cal_date == '' && $fam_db->fam_man) {
                             $pers_cal_date = calculate_person($db_functions, $fam_db->fam_man);
                             if ($pers_cal_date) {
-                                $pers_cal_date += 25;
+                                $used_item = 'birt or baptise date of father ' . $pers_cal_date;
+                                $pers_cal_date = calculate_correction($pers_cal_date, +25);
                             }
                         }
                         // *** Check date of mother ***
                         if ($pers_cal_date == '' && $fam_db->fam_woman) {
                             $pers_cal_date = calculate_person($db_functions, $fam_db->fam_woman);
                             if ($pers_cal_date) {
-                                $pers_cal_date += 25;
+                                $used_item = 'birt or baptise date of mother ' . $pers_cal_date;
+                                $pers_cal_date = calculate_correction($pers_cal_date, +25);
                             }
                         }
                     }
 
                     if ($pers_cal_date == '' && $person_db->pers_death_date) {
-                        $pers_cal_date = substr($person_db->pers_death_date, -4);
+                        $pers_cal_date = substr($person_db->pers_death_date, -4, -60);
                         if ($pers_cal_date !== '' && $pers_cal_date !== '0') {
-                            $pers_cal_date -= 60;
+                            $used_item = 'death date of person ' . $pers_cal_date;
+                            $pers_cal_date = calculate_correction($pers_cal_date, -60);
                         }
                     }
                 ?>
 
                     <span style="width:80px; display:inline-block;"><?= $person_db->pers_gedcomnumber; ?></span>
                     <?= $person_db->pers_firstname; ?> <?= strtolower(str_replace("_", " ", $person_db->pers_prefix)); ?><?= $person_db->pers_lastname; ?> <?= $pers_cal_date; ?>
+                    <?= $used_item ? ' (<i>found ' . $used_item . '</i>) ' : ''; ?>
                     <?= $pers_cal_date == '' ? '<b>' . __('No dates') . '</b>' : ''; ?><br>
                 <?php
                     $dbh->query("UPDATE humo_persons SET pers_cal_date='" . $pers_cal_date . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $person_db->pers_id . "'");

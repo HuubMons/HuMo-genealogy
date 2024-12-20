@@ -44,17 +44,18 @@ class PersonCls
                 if ($user["group_alive_date_act"] == "j") {
                     if ($personDb->pers_birth_date) {
                         if (substr($personDb->pers_birth_date, -2) === "BC") {
+                            // born before year 0
                             $privacy_person = false;
-                        }  // born before year 0
-                        elseif (substr($personDb->pers_birth_date, -2, 1) === " " || substr($personDb->pers_birth_date, -3, 1) === " ") {
+                        } elseif (substr($personDb->pers_birth_date, -2, 1) === " " || substr($personDb->pers_birth_date, -3, 1) === " ") {
+                            // born between year 0 and 99
                             $privacy_person = false;
-                        }  // born between year 0 and 99
-                        elseif (substr($personDb->pers_birth_date, -4) < $user["group_alive_date"]) {
+                        } elseif (substr($personDb->pers_birth_date, -4) < $user["group_alive_date"]) {
+                            // born from year 100 onwards but before $user["group_alive_date"]
                             $privacy_person = false;
-                        }  // born from year 100 onwards but before $user["group_alive_date"]
-                        else {
+                        } else {
+                            // *** overwrite pers_alive status ***
                             $privacy_person = true;
-                        } // *** overwrite pers_alive status ***
+                        }
                     }
                     if ($personDb->pers_bapt_date) {
                         if (substr($personDb->pers_bapt_date, -2) === "BC") {
