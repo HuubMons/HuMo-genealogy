@@ -16,7 +16,7 @@ $path_reset_password = $link_cls->get_link($uri_path, 'reset_password');
 <h1 class="my-4"><?= __('Login'); ?></h1>
 
 <div class="container">
-    <?php if ($fault == true) { ?>
+    <?php if ($index['fault'] == true) { ?>
         <div class="alert alert-warning">
             <strong><?= __('No valid username or password.'); ?></strong>
         </div>

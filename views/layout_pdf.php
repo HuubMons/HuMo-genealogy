@@ -3,10 +3,41 @@ session_start();
 
 // *** Seperate file for PDF scripts. Copy of layout.php ***
 
+
+
+/** Dec. 2024: Added autoload.
+ *    Name of class = SomethingClass.
+ *    Name of script: SomethingClass.php ***
+ */
+/*
+function custom_autoload($class_name)
+{
+    // Examples of autoload files:
+    // app/model/adresModel.php
+
+    // *** At this moment only a few classes are autoloaded. Under construction ***
+    //$classes = array('xxxxx');
+    // If all classes are autoloading, array check of classes will be removed.
+    //if (in_array($class_name, $classes) || substr($class_name, -5) == 'Model') {
+    // First start autoload using model scripts.
+    if (substr($class_name, -5) == 'Model') {
+        $dirs = array('../app/model', 'test');
+        foreach ($dirs as $dir) {
+            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
+            if (file_exists($file)) {
+                require $file;
+                break;
+            }
+        }
+    }
+}
+spl_autoload_register('custom_autoload');
+*/
+
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . '/../include/show_tree_text.php');
-include_once(__DIR__ . "/../include/db_functions_cls.php");
-$db_functions = new db_functions($dbh);
+include_once(__DIR__ . "/../include/dbFunctions.php");
+$db_functions = new Dbfunctions($dbh);
 
 include_once(__DIR__ . "/../include/safe.php");
 include_once(__DIR__ . "/../include/settings_global.php"); // System variables
@@ -14,6 +45,12 @@ include_once(__DIR__ . "/../include/settings_user.php"); // User variables
 
 include_once(__DIR__ . "/../include/get_visitor_ip.php");
 $visitor_ip = visitorIP();
+
+include_once(__DIR__ . '/../include/personCls.php');
+include_once(__DIR__ . '/../include/marriageCls.php');
+include_once(__DIR__ . '/../include/calculateDates.php');
+
+
 
 // *** Debug HuMo-genealogy front pages ***
 if ($humo_option["debug_front_pages"] == 'y') {
@@ -39,7 +76,7 @@ $bot_visit = preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['
 //$bot_visit=true;
 
 // *** Language processing after header("..") lines. *** 
-include_once(__DIR__ . "/../languages/language.php"); //Taal
+include_once(__DIR__ . "/../languages/language.php");
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = "&#x200E;";  //ltr marker
@@ -60,7 +97,7 @@ if (isset($screen_mode) && $screen_mode == "PDF") {
 
 // *** Default values
 $page = 'index';
-$head_text = $humo_option["database_name"];
+$index['main_admin'] = $humo_option["database_name"]; // TODO check variable. Not used here?
 $tmp_path = '';
 
 
@@ -86,8 +123,8 @@ if ($humo_option["url_rewrite"] == "j" && $tmp_path) {
 }
 
 // *** To be used to show links in several pages ***
-include_once(__DIR__ . '/../include/links.php');
-$link_cls = new Link_cls($uri_path);
+include_once(__DIR__ . '/../include/processLinks.php');
+$link_cls = new ProcessLinks($uri_path);
 
 // *** For PDF reports: remove html tags en decode ' characters ***
 function pdf_convert($text)

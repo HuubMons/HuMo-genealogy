@@ -134,9 +134,9 @@ if ($hourglass === false) {
 
                 <div class="col-md-auto">
                     <form method="POST" name="desc_form" action="<?= $path . 'chosensize=' . $data["size"]; ?>" style="display : inline;">
-                        <input type="hidden" name="chosengen" value="<?= $data["chosengen"]; ?>">
+                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                        <input type="hidden" name="database" value="<?= $database; ?>">
+                        <input type="hidden" name="chosengen" value="<?= $data["chosengen"]; ?>">
                         <?php if ($data["dna"] != "none") { ?>
                             <input type="hidden" name="dnachart" value="<?= $data["dna"]; ?>">
                             <input type="hidden" name="bf" value="<?= $data["base_person_famc"]; ?>">
@@ -170,10 +170,12 @@ if ($hourglass === false) {
                                 if ($data["dna"] != "ydna") {
                                     $selected = "";
                                 }
-                                echo '<option value="' . $path . 'main_person=' .
-                                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "ydna" . '&amp;chosensize=' .
-                                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('Y-DNA Carriers only') . '</option>';
+                            ?>
+                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=ydna&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $selected; ?>>
+                                    <?= __('Y-DNA Carriers only'); ?>
+                                </option>
 
+                            <?php
                                 $selected = "";
                                 if ($data["dna"] == "ydnamark") {
                                     $selected = "selected";
@@ -192,6 +194,7 @@ if ($hourglass === false) {
                                 echo '<option value="' . $path . 'main_person=' .
                                     $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdna" . '&amp;chosensize=' .
                                     $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Carriers only') . '</option>';
+
                                 if ($data["base_person_sexe"]  == "F") {
                                     $selected = "selected";
                                     if ($data["dna"] != "mtdnamark") {
@@ -218,22 +221,16 @@ if ($hourglass === false) {
 
                 <div class="col-md-auto">
                     <select name="chosengen" onChange="window.location=this.value" class="form-select form-select-sm">
-                        <?php
-                        for ($i = 2; $i <= 15; $i++) {
-                            echo '<option value="' . $path . 'main_person=' . $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . $data["dna"] .
-                                '&amp;chosensize=' . $data["size"] . '&amp;chosengen=' . $i . '" ';
-                            if ($i == $data["chosengen"]) {
-                                echo "selected=\"selected\" ";
-                            }
-                            echo ">" . $i . '</option>' . "\n";
-                        }
+                        <?php for ($i = 2; $i <= 15; $i++) { ?>
+                            <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=<?= $data["dna"]; ?>&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $i; ?>" <?= $i == $data["chosengen"] ? 'selected' : ''; ?>>
+                                <?= $i; ?>
+                            </option>
+                        <?php } ?>
 
-                        // *** Option "All" for all generations ***
-                        echo '<option value="' . $path . 'main_person=' . $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;database=' . $database .
-                            '&amp;dnachart=' . $data["dna"] . '&amp;chosensize=' .  $data["size"] . '&amp;chosengen=All" ';
-                        if ($data["chosengen"] == "All") echo "selected=\"selected\" ";
-                        echo ">" . "All" . "</option>";
-                        ?>
+                        <!-- Option "All" for all generations -->
+                        <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=<?= $data["dna"]; ?>&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=All" <?= $data["chosengen"] == "All" ? 'selected' : ''; ?>>
+                            <?= __('All'); ?>
+                        </option>
                     </select>
                 </div>
 
@@ -249,12 +246,16 @@ if ($hourglass === false) {
             </div>
         </div>
 
+        <!-- TODO check div. It's too wide (is set in doublescroll script). Doublescroll isn't in use anymore. -->
+        <style type="text/css">
+            #doublescroll {
+                position: relative;
+                width: auto;
+                height: <?= $the_height; ?>px;
+                z-index: 10;
+            }
+        </style>
     <?php
-    // TODO check div. It's too wide (is set in doublescroll script). Doublescroll doesn't work.
-    echo '<style type="text/css">';
-    //echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; overflow: auto; overflow-y: hidden;z-index:10; }';
-    echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; z-index:10; }';
-    echo '</style>';
     echo '<div id="doublescroll" class="wrapper" style="direction:' . $rtlmarker . ';">';
 
     // Test bootstrap container
@@ -282,7 +283,7 @@ for ($w = 0; $w < count($genarray); $w++) {
     // *** Start person class and calculate privacy ***
     if (isset($genarray[$w]["gednr"]) && $genarray[$w]["gednr"]) {
         $man = $db_functions->get_person($genarray[$w]["gednr"]);
-        $man_cls = new person_cls($man);
+        $man_cls = new PersonCls($man);
         $man_privacy = $man_cls->privacy;
     }
 
@@ -321,12 +322,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                             // *** Only show 1st picture ***
                             if (isset($picture_qry[0])) {
                                 $pictureDb = $picture_qry[0];
-                                $picture = show_picture($tree_pict_path, $pictureDb->event_event, 60, 65);
-                                //$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" height="65px">';
-                                //$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'"';
-                                $replacement_text .= '<img src="' . $picture['path'] . $picture['thumb'] . $picture['picture'] . '" style="float:left; margin:5px;" alt="' . $pictureDb->event_text . '" width="' . $picture['width'] . '"';
-                                //if (isset($picture['height'])) $replacement_text.=' height="'.$picture['height'].'"';
-                                $replacement_text .= '>';
+                                $replacement_text .= print_thumbnail($tree_pict_path, $pictureDb->event_event, 60, 65, 'float:left; margin:5px;');
                             }
                         }
 
@@ -420,7 +416,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                 $woman_cls = ''; // prevent use of $woman_cls from previous wife if another wife is NN
                 if (isset($genarray[$w]["spgednr"]) && $genarray[$w]["spgednr"]) {
                     @$woman = $db_functions->get_person($genarray[$w]["spgednr"]);
-                    $woman_cls = new person_cls($woman);
+                    $woman_cls = new PersonCls($woman);
                     $woman_privacy = $woman_cls->privacy;
                 }
 

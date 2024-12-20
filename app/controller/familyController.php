@@ -1,16 +1,6 @@
 <?php
-require_once  __DIR__ . "/../model/family.php";
-
 class FamilyController
 {
-    //private $db_functions, $user;
-
-    //public function __construct($db_functions, $user)
-    //{
-    //    $this->db_functions = $db_functions;
-    //    $this->user = $user;
-    //}
-
     public function getFamily($dbh, $tree_id)
     {
         $familyModel = new FamilyModel($dbh);
@@ -25,9 +15,6 @@ class FamilyController
         $number_generation = $familyModel->getNumberGeneration();
         $descendant_report = $familyModel->getDescendantReport();
         $descendant_header = $familyModel->getDescendantHeader('Descendant report', $tree_id, $family_id, $main_person);
-
-        //TEST
-        //$familyModel->sayHello();
 
         $data = array(
             "family_id" => $family_id,

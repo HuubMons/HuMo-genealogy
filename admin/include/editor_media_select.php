@@ -4,6 +4,8 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
+include_once(__DIR__ . "/../include/media_inc.php");
+
 echo '<h1 class="center">' . __('Select media') . '</h1>';
 
 $place_item = '';
@@ -91,11 +93,14 @@ if (file_exists($array_picture_folder[0])) {
         echo '<h3>' . $selected_picture_folder . '</h3>';
 
         $dh = opendir($selected_picture_folder);
-        $gd = gd_info(); // certain versions of GD don't handle gifs
         while (false !== ($filename = readdir($dh))) {
             if (is_dir($selected_picture_folder . $filename)) {
                 //
-            } elseif (!in_array($filename, $ignore) && substr($filename, 0, 6) !== 'thumb_') {
+            } elseif (
+                !in_array($filename, $ignore) &&
+                substr($filename, 0, 6) !== 'thumb_' &&
+                substr($filename, 0, 1) !== '.'
+            ) {   // skip hidden files (unix style)
                 // *** stripos = case-insensitive search ***
                 if ($search_quicksearch == '' || $search_quicksearch != '' && stripos($filename, $search_quicksearch) !== false) {
                     $sub_dir = substr($selected_picture_folder, $dirname_start);
@@ -111,13 +116,8 @@ if (file_exists($array_picture_folder[0])) {
         if (isset($list_filename)) {
             array_multisort($list_filename_order, $list_filename);
             foreach ($list_filename as $selected_filename) {
-                $thumb = '';
-                if (is_file($selected_picture_folder . 'thumb_' . $selected_filename)) {
-                    $thumb = 'thumb_';
-                }
-
                 echo '<div class="photobook">';
-                echo '<img src="' . $selected_picture_folder . $thumb . $selected_filename . '">';
+                echo  print_thumbnail($selected_picture_folder, $selected_filename);
                 // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
                 echo '<br><a href="" onClick=\'return select_item("' . $sub_dir . str_replace("'", "&prime;", $selected_filename) . '")\'>' . $sub_dir . $selected_filename . '</a><br>';
                 echo '</div>';

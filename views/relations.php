@@ -73,7 +73,7 @@ $special_spouseX = '';
 $special_spouseY = '';
 $relation_type = '';
 
-$pers_cls = new person_cls;
+$pers_cls = new PersonCls;
 
 $limit = 500; // *** Limit results ***
 
@@ -161,7 +161,7 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
                                         if ($searchDb->pers_birth_date) {
                                             $birth = ' ' . __('*') . ' ' . date_place($searchDb->pers_birth_date, '');
                                         }
-                                        $search1_cls = new person_cls($searchDb);
+                                        $search1_cls = new PersonCls($searchDb);
                                         if ($search1_cls->privacy) {
                                             $birth = '';
                                         }
@@ -275,7 +275,7 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
                                         if ($searchDb2->pers_birth_date) {
                                             $birth = ' ' . __('*') . ' ' . date_place($searchDb2->pers_birth_date, '');
                                         }
-                                        $search2_cls = new person_cls($searchDb2);
+                                        $search2_cls = new PersonCls($searchDb2);
                                         if ($search2_cls->privacy) {
                                             $birth = '';
                                         }
@@ -824,18 +824,18 @@ function create_rel_array($db_functions, $gedcomnumber)
             if ($ancestor_id[$i] != '0') {
                 $person_manDb = $db_functions->get_person($ancestor_id[$i]);
                 /*
-                $man_cls = New person_cls($person_manDb);
+                $man_cls = new PersonCls($person_manDb);
                 $man_privacy=$man_cls->privacy;
                 if (strtolower($person_manDb->pers_sexe)=='m' && $ancestor_number[$i]>1){
                     @$familyDb=$db_functions->get_family($marriage_number[$i]);
 
                     // *** Use privacy filter of woman ***
                     $person_womanDb=$db_functions->get_person($familyDb->fam_woman);
-                    $woman_cls = New person_cls($person_womanDb);
+                    $woman_cls = new PersonCls($person_womanDb);
                     $woman_privacy=$woman_cls->privacy;
 
                     // *** Use class for marriage ***
-                    $marriage_cls = New marriage_cls($familyDb, $man_privacy, $woman_privacy);
+                    $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
                     $family_privacy=$marriage_cls->privacy;
                 }
                 */
@@ -3665,7 +3665,7 @@ function search_marital()
     global $db_functions, $relation, $famspouseX, $famspouseY, $rel_arrayX, $rel_arrayY;
     global $spousenameX, $spousenameY, $rel_arrayspouseX, $rel_arrayspouseY, $data_found;
 
-    $pers_cls = new person_cls;
+    $pers_cls = new PersonCls;
 
     if ($relation['fams1'] != '') {
         $marrcount = count($relation['fams1_array']);
@@ -4229,7 +4229,7 @@ function display_result($result)
                                 $border = "border:2px solid #666666;";
                             }
 
-                            $pers_cls = new person_cls;
+                            $pers_cls = new PersonCls;
                             $name = $pers_cls->person_name($ancDb);
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                             $url = $pers_cls->person_url2($ancDb->pers_tree_id, $ancDb->pers_famc, $ancDb->pers_fams, $ancDb->pers_gedcomnumber);
@@ -4297,7 +4297,7 @@ function display_table()
     global $data_found;
 
     // *** Use person class to show names ***
-    $pers_cls = new person_cls;
+    $pers_cls = new PersonCls;
 
     $vars['pers_family'] = $famspouseX;
     $linkSpouseX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);

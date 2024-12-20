@@ -35,18 +35,23 @@ closedir($folder);
 
 <ul class="nav nav-tabs">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($settings['menu_tab'] == 'settings') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('Settings'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $settings['menu_tab'] == 'settings' ? 'active' : ''; ?>" href="index.php?page=settings">
+            <?= __('Settings'); ?>
+        </a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($settings['menu_tab'] == 'settings_homepage') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=settings_homepage"><?= __('Homepage'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $settings['menu_tab'] == 'settings_homepage' ? 'active' : ''; ?>" href="index.php?page=settings&amp;menu_admin=settings_homepage">
+            <?= __('Homepage'); ?>
+        </a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($settings['menu_tab'] == 'settings_special') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=settings_special"><?= __('Special settings'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $settings['menu_tab'] == 'settings_special' ? 'active' : ''; ?>" href="index.php?page=settings&amp;menu_admin=settings_special">
+            <?= __('Special settings'); ?>
+        </a>
     </li>
 </ul>
 
-<!-- Align content to the left -->
-<div style="float: left; background-color:white; height:500px; padding:10px;">
+<div style="background-color:white;">
     <?php
     // *** Show settings ***
     if ($settings['menu_tab'] == 'settings') {

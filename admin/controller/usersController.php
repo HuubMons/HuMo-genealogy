@@ -1,17 +1,6 @@
 <?php
-require_once __DIR__ . "/../models/users.php";
-
 class UsersController
 {
-    /*
-    private $editor_cls;
-
-    public function __construct()
-    {
-        $this->editor_cls = new editor_cls;
-    }
-    */
-
     public function detail($dbh)
     {
         $usersModel = new UsersModel($dbh);

@@ -102,7 +102,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                     while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
                         $calendar_day = $record->birth_day;
                         $birth_day = $record->birth_day . ' ' . $data["month"];
-                        $person_cls = new person_cls($record);
+                        $person_cls = new PersonCls($record);
                         $name = $person_cls->person_name($record);
 
                         if (!$person_cls->privacy) {
@@ -251,7 +251,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                             // get husband
                             @$manDb = $db_functions->get_person($value['man']);
                             // *** Use class to process person ***
-                            $man_cls = new person_cls($manDb);
+                            $man_cls = new PersonCls($manDb);
                             if (!$value['man']) {
                                 $man_name = 'N.N.';
                             } else {
@@ -266,7 +266,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                             // get wife
                             @$womanDb = $db_functions->get_person($value['woman']);
                             // *** Use class to process person ***
-                            $woman_cls = new person_cls($womanDb);
+                            $woman_cls = new PersonCls($womanDb);
                             if (!$value['woman']) {
                                 $woman_name = 'N.N.';
                             } else {

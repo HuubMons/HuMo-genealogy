@@ -10,227 +10,92 @@ if (!defined('ADMIN_PAGE')) {
 <?= __('Installation of the standard tables. Or create tables from a scratch, they will be filled in with standard data.'); ?><br><br>
 
 <?php
-// *** Check if tables exists ***
-$table['settings'] = '';
-$table['trees'] = '';
-$table['stat_date'] = '';
-$table['users'] = '';
-$table['groups'] = '';
-$table['cms_menu'] = '';
-$table['cms_pages'] = '';
-$table['user_notes'] = '';
-$table['user_log'] = '';
-$table['stat_country'] = '';
-
-$query = $dbh->query("SHOW TABLES");
-while ($row = $query->fetch()) {
-    if ($row[0] == 'humo_settings') {
-        $table['settings'] = "1";
-    }
-    if ($row[0] == 'humo_trees') {
-        $table['trees'] = "1";
-    }
-    if ($row[0] == 'humo_stat_date') {
-        $table['stat_date'] = "1";
-    }
-    if ($row[0] == 'humo_users') {
-        $table['users'] = "1";
-    }
-    if ($row[0] == 'humo_groups') {
-        $table['groups'] = "1";
-    }
-    if ($row[0] == 'humo_cms_menu') {
-        $table['cms_menu'] = "1";
-    }
-    if ($row[0] == 'humo_cms_pages') {
-        $table['cms_pages'] = "1";
-    }
-    if ($row[0] == 'humo_user_notes') {
-        $table['user_notes'] = "1";
-    }
-    if ($row[0] == 'humo_user_log') {
-        $table['user_log'] = "1";
-    }
-
-    if ($row[0] == 'humo_stat_country') {
-        $table['stat_country'] = "1";
-    }
-}
-
 if (!isset($_POST['install_tables2'])) {
-
-    if (isset($_POST['install_tables'])) {
-        $check_settings = '';
-        if (isset($_POST["table_settings"])) {
-            $check_settings = ' checked';
-        }
-        $check_trees = '';
-        if (isset($_POST["table_trees"])) {
-            $check_trees = ' checked';
-        }
-        $check_stat = '';
-        if (isset($_POST["table_stat_date"])) {
-            $check_stat = ' checked';
-        }
-        $check_users = '';
-        if (isset($_POST["table_users"])) {
-            $check_users = ' checked';
-        }
-        $check_groups = '';
-        if (isset($_POST["table_groups"])) {
-            $check_groups = ' checked';
-        }
-        $check_cms_menu = '';
-        if (isset($_POST["table_cms_menu"])) {
-            $check_cms_menu = ' checked';
-        }
-        $check_cms_pages = '';
-        if (isset($_POST["table_cms_pages"])) {
-            $check_cms_pages = ' checked';
-        }
-        $check_user_notes = '';
-        if (isset($_POST["table_user_notes"])) {
-            $check_user_notes = ' checked';
-        }
-        $check_log = '';
-        if (isset($_POST["table_user_log"])) {
-            $check_log = ' checked';
-        }
-        $check_stat_country = '';
-        if (isset($_POST["table_stat_country"])) {
-            $check_stat_country = ' checked';
-        }
-        //$check_tags=''; if (isset($_POST["table_tags"])){ $check_tags=' checked'; }
-
-        if (!$table['settings']) {
-            $check_settings = " checked disabled";
-        }
-        if (!$table['trees']) {
-            $check_trees = " checked disabled";
-        }
-        if (!$table['stat_date']) {
-            $check_stat = " checked disabled";
-        }
-        if (!$table['users']) {
-            $check_users = " checked disabled";
-        }
-        if (!$table['groups']) {
-            $check_groups = " checked disabled";
-        }
-        if (!$table['cms_menu']) {
-            $check_cms_menu = " checked disabled";
-        }
-        if (!$table['cms_pages']) {
-            $check_cms_pages = " checked disabled";
-        }
-        if (!$table['user_notes']) {
-            $check_user_notes = " checked disabled";
-        }
-        if (!$table['user_log']) {
-            $check_log = " checked disabled";
-        }
-        if (!$table['stat_country']) {
-            $check_stat_country = " checked disabled";
-        }
-
-        $username_admin = 'admin';
-        if (isset($_POST["username_admin"])) {
-            $username_admin = $_POST["username_admin"];
-        }
-        $password_admin = 'humogen';
-        if (isset($_POST["password_admin"])) {
-            $password_admin = $_POST["password_admin"];
-        }
-        $username_family = 'family';
-        if (isset($_POST["username_family"])) {
-            $username_family = $_POST["username_family"];
-        }
-        $password_family = 'admin';
-        if (isset($_POST["password_family"])) {
-            $password_family = $_POST["password_family"];
-        }
-    } else {
-        $check_settings = ' checked disabled';
-        $check_trees = ' checked disabled';
-        $check_stat = ' checked disabled';
-        $check_users = ' checked disabled';
-        $check_groups = ' checked disabled';
-        $check_cms_menu = ' checked disabled';
-        $check_cms_pages = ' checked disabled';
-        $check_user_notes = ' checked disabled';
-        $check_log = ' checked disabled';
-        $check_stat_country = ' checked disabled';
-        //$check_tags=' checked';
-
-        /*
-        // *** If table exists, then disable checkbox ***
-        $query = $dbh->query("SHOW TABLES");
-        while($row = $query->fetch()){
-            if ($row[0]=='humo_settings'){ $check_settings=""; }
-            if ($row[0]=='humo_trees'){ $check_trees=""; }
-            if ($row[0]=='humo_stat_date'){ $check_stat=""; }
-            if ($row[0]=='humo_users'){ $check_users=""; }
-            if ($row[0]=='humo_groups'){ $check_groups=""; }
-            if ($row[0]=='humo_cms_menu'){ $check_cms_menu=""; }
-            if ($row[0]=='humo_cms_pages'){ $check_cms_pages=""; }
-            if ($row[0]=='humo_user_notes'){ $check_user_notes=""; }
-            if ($row[0]=='humo_user_log'){ $check_log=""; }
-        }
-        */
-
-        if ($table['settings']) {
-            $check_settings = "";
-        }
-        if ($table['trees']) {
-            $check_trees = "";
-        }
-        if ($table['stat_date']) {
-            $check_stat = "";
-        }
-        if ($table['users']) {
-            $check_users = "";
-        }
-        if ($table['groups']) {
-            $check_groups = "";
-        }
-        if ($table['cms_menu']) {
-            $check_cms_menu = "";
-        }
-        if ($table['cms_pages']) {
-            $check_cms_pages = "";
-        }
-        if ($table['user_notes']) {
-            $check_user_notes = "";
-        }
-        if ($table['user_log']) {
-            $check_log = "";
-        }
-        if ($table['stat_country']) {
-            $check_stat_country = "";
-        }
-
-        $username_admin = 'admin';
-        $password_admin = 'humogen';
-        $username_family = 'family';
-        $password_family = 'humogen';
+    $check_settings = '';
+    if (isset($_POST["table_settings"]) || !$install['table_settings']) {
+        $check_settings = ' checked';
     }
 
-?>
-    <form method="post" action="index.php" style="display : inline;">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    $check_trees = '';
+    if (isset($_POST["table_trees"]) || !$install['table_trees']) {
+        $check_trees = ' checked';
+    }
 
+    $check_stat = '';
+    if (isset($_POST["table_stat_date"]) || !$install['table_stat_date']) {
+        $check_stat = ' checked';
+    }
+
+    $check_users = '';
+    if (isset($_POST["table_users"]) || !$install['table_users']) {
+        $check_users = ' checked';
+    }
+
+    $check_groups = '';
+    if (isset($_POST["table_groups"]) || !$install['table_groups']) {
+        $check_groups = ' checked';
+    }
+
+    $check_cms_menu = '';
+    if (isset($_POST["table_cms_menu"]) || !$install['table_cms_menu']) {
+        $check_cms_menu = ' checked';
+    }
+
+    $check_cms_pages = '';
+    if (isset($_POST["table_cms_pages"]) || !$install['table_cms_pages']) {
+        $check_cms_pages = ' checked';
+    }
+
+    $check_user_notes = '';
+    if (isset($_POST["table_user_notes"]) || !$install['table_user_notes']) {
+        $check_user_notes = ' checked';
+    }
+
+    $check_log = '';
+    if (isset($_POST["table_user_log"]) || !$install['table_user_log']) {
+        $check_log = ' checked';
+    }
+
+    $check_stat_country = '';
+    if (isset($_POST["table_stat_country"]) || !$install['table_stat_country']) {
+        $check_stat_country = ' checked';
+    }
+
+    $check_location = '';
+    if (isset($_POST["table_location"]) || !$install['table_location']) {
+        $check_location = ' checked';
+    }
+
+    $username_admin = 'admin';
+    if (isset($_POST["username_admin"])) {
+        $username_admin = $_POST["username_admin"];
+    }
+    $password_admin = 'humogen';
+    if (isset($_POST["password_admin"])) {
+        $password_admin = $_POST["password_admin"];
+    }
+    $username_family = 'family';
+    if (isset($_POST["username_family"])) {
+        $username_family = $_POST["username_family"];
+    }
+    $password_family = 'admin';
+    if (isset($_POST["password_family"])) {
+        $password_family = $_POST["password_family"];
+    }
+?>
+    <form method="post" action="index.php?page=install" style="display : inline;">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_settings" <?= $check_settings; ?>>
+            <input class="form-check-input" type="checkbox" name="table_settings" <?= $check_settings; ?> <?= !$install['table_settings'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re)create settings table.'); ?></label>
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_stat_date" <?= $check_stat; ?>>
+            <input class="form-check-input" type="checkbox" name="table_stat_date" <?= $check_stat; ?> <?= !$install['table_stat_date'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re) create statistics tree table. <b>EXISTING STATISTICS TREES WILL BE REMOVED!</b>'); ?></label>
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_users" <?= $check_users; ?>>
+            <input class="form-check-input" type="checkbox" name="table_users" <?= $check_users; ?> <?= !$install['table_users'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re) create user table. <b>The user table will be filled with new users. Please add passwords:</b>'); ?></label>
         </div>
 
@@ -263,39 +128,44 @@ if (!isset($_POST['install_tables2'])) {
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_groups" <?= $check_groups; ?>>
+            <input class="form-check-input" type="checkbox" name="table_groups" <?= $check_groups; ?> <?= !$install['table_groups'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re) create user group table.'); ?></label>
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_cms_menu" <?= $check_cms_menu; ?>>
+            <input class="form-check-input" type="checkbox" name="table_cms_menu" <?= $check_cms_menu; ?> <?= !$install['table_cms_menu'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re) create CMS menu table, used for menu system of own pages.'); ?></label>
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_cms_pages" <?= $check_cms_pages; ?>>
+            <input class="form-check-input" type="checkbox" name="table_cms_pages" <?= $check_cms_pages; ?> <?= !$install['table_cms_pages'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re) create CMS pages table, used for own pages.'); ?></label>
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_user_notes" <?= $check_user_notes; ?>>
+            <input class="form-check-input" type="checkbox" name="table_user_notes" <?= $check_user_notes; ?> <?= !$install['table_user_notes'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re) create user notes table.'); ?></label>
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_user_log" <?= $check_log; ?>>
+            <input class="form-check-input" type="checkbox" name="table_user_log" <?= $check_log; ?> <?= !$install['table_user_log'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('Empty log table.'); ?></label>
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_stat_country" <?= $check_stat_country; ?>>
+            <input class="form-check-input" type="checkbox" name="table_stat_country" <?= $check_stat_country; ?> <?= !$install['table_stat_country'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('Empty statistics country table.'); ?></label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="table_location" <?= $check_location; ?> <?= !$install['table_location'] ? 'disabled' : ''; ?>>
+            <label class="form-check-label"><?= __('(Re) create location table. <b>This will remove all locations used for World map.</b>'); ?></label>
         </div><br>
 
         <p><b><?= __('Family tree tables'); ?></b></p>
 
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="table_trees" <?= $check_trees; ?>>
+            <input class="form-check-input" type="checkbox" name="table_trees" <?= $check_trees; ?> <?= !$install['table_trees'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re) create all family tree tables. <b>*** ALL EXISTING FAMILY TREES WILL BE REMOVED! ***</b>'); ?></label>
         </div>
 
@@ -311,97 +181,21 @@ if (!isset($_POST['install_tables2'])) {
 <?php
 }
 
-
+// *** Create tables ***
 if (isset($_POST['install_tables2'])) {
-    // *** Check tables, table wil be created if $value="" ***
-    $table_settings = "";
-    $table_trees = "";
-    $table_stat_date = "";
-    $table_users = "";
-    $table_user_log = "";
-    $table_cms_menu = "";
-    $table_cms_pages = "";
-    $table_user_notes = "";
-    $table_groups = "";
-    $table_stat_country = "";
-    //$table_tags="";
+?>
+    <br><b><?= __('Creating tables:'); ?></b><br>
 
-    if ($table['settings']) {
-        $table_settings = "1";
-    }
-    if ($table['trees']) {
-        $table_trees = "1";
-    }
-    if ($table['stat_date']) {
-        $table_stat_date = "1";
-    }
-    if ($table['users']) {
-        $table_users = "1";
-    }
-    if ($table['groups']) {
-        $table_groups = "1";
-    }
-    if ($table['cms_menu']) {
-        $table_cms_menu = "1";
-    }
-    if ($table['cms_pages']) {
-        $table_cms_pages = "1";
-    }
-    if ($table['user_notes']) {
-        $table_user_notes = "1";
-    }
-    if ($table['user_log']) {
-        $table_user_log = "1";
-    }
-    if ($table['stat_country']) {
-        $table_stat_country = "1";
-    }
-
-    if (isset($_POST["table_settings"])) {
-        $table_settings = '';
-    }
-    if (isset($_POST["table_trees"])) {
-        $table_trees = '';
-    }
-    if (isset($_POST["table_stat_date"])) {
-        $table_stat_date = '';
-    }
-    if (isset($_POST["table_users"])) {
-        $table_users = '';
-    }
-    if (isset($_POST["table_groups"])) {
-        $table_groups = '';
-    }
-    if (isset($_POST["table_cms_menu"])) {
-        $table_cms_menu = '';
-    }
-    if (isset($_POST["table_cms_pages"])) {
-        $table_cms_pages = '';
-    }
-    if (isset($_POST["table_user_notes"])) {
-        $table_user_notes = '';
-    }
-    if (isset($_POST["table_user_log"])) {
-        $table_user_log = '';
-    }
-    if (isset($_POST["table_stat_country"])) {
-        $table_stat_country = '';
-    }
-    //if (isset($_POST["table_tags"])) $table_tags='';
-
-    //*********************************************************************
-    echo '<p><b>' . __('Creating tables:') . '</b><br>';
-
-    if (!$table_settings) {
+    <?php
+    if (!$install['table_settings'] || isset($_POST["table_settings"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_settings"); // Remove table.
+            $dbh->query("DROP TABLE humo_settings"); // Remove table.
         } catch (Exception $e) {
             //
         }
-        //echo __('creating humo_settings...').'<br>';
         printf(__('create table: %s.'), 'humo_settings');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_settings (
+        $dbh->query("CREATE TABLE humo_settings (
             setting_id int(10) unsigned NOT NULL auto_increment,
             setting_variable varchar(50) CHARACTER SET utf8,
             setting_value text CHARACTER SET utf8,
@@ -410,32 +204,30 @@ if (isset($_POST['install_tables2'])) {
             PRIMARY KEY (`setting_id`)
             ) DEFAULT CHARSET=utf8");
 
-        //echo __('fill humo_settings... <font color=red>Standard settings are saved in database!</font>').'<br>';
         printf(__('filling table: %s.'), 'humo_settings');
         echo '<br>';
 
-        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('database_name','Web Site')");
-        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage','https://humo-gen.com')");
-        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage_description','Website')");
-        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('searchengine','n')");
-        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')");
+        $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('database_name','Web Site')");
+        $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage','https://humo-gen.com')");
+        $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage_description','Website')");
+        $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('searchengine','n')");
+        $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')");
 
         // *** Other settings are saved in the table in file: settings_global.php ***
 
         // *** Update status number. Number must be: update_status+1! ***
-        $db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','17')");
+        $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','19')");
     }
 
-    if (!$table_stat_date) {
+    if (!$install['table_stat_date'] || isset($_POST["table_stat_date"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_stat_date");
+            $dbh->query("DROP TABLE humo_stat_date");
         } catch (Exception $e) {
             //
         }
-        //echo __('Install statistics table...').'<br>';
         printf(__('create table: %s.'), 'humo_stat_date');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_stat_date (
+        $dbh->query("CREATE TABLE humo_stat_date (
             stat_id int(10) NOT NULL auto_increment,
             stat_easy_id varchar(100) CHARACTER SET utf8,
             stat_ip_address varchar(40) CHARACTER SET utf8,
@@ -450,16 +242,15 @@ if (isset($_POST['install_tables2'])) {
         ) DEFAULT CHARSET=utf8");
     }
 
-    if (!$table_groups) {
+    if (!$install['table_groups'] || isset($_POST["table_groups"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_groups");
+            $dbh->query("DROP TABLE humo_groups");
         } catch (Exception $e) {
             //
         }
-        //echo __('creating humo_groups...').'<br>';
         printf(__('create table: %s.'), 'humo_groups');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_groups (
+        $dbh->query("CREATE TABLE humo_groups (
             group_id smallint(5) unsigned NOT NULL auto_increment,
             group_name varchar(25) CHARACTER SET utf8,
             group_privacy varchar(1) CHARACTER SET utf8,
@@ -528,7 +319,6 @@ if (isset($_POST['install_tables2'])) {
         ) DEFAULT CHARSET=utf8");
         //group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 
-        //echo __('filling humo_groups...').'<br>';
         printf(__('filling table: %s.'), 'humo_groups');
         echo '<br>';
 
@@ -539,7 +329,7 @@ if (isset($_POST['install_tables2'])) {
         group_alive_date='1920', group_death_date_act='n',
         group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
         group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-        $db_update = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "INSERT INTO humo_groups SET group_name='family', group_privacy='n', group_menu_places='n', group_admin='n',
         group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='j', group_places='j', group_religion='n',
@@ -548,7 +338,7 @@ if (isset($_POST['install_tables2'])) {
         group_alive_date='1920', group_death_date_act='n',
         group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
         group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-        $db_update = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "INSERT INTO humo_groups SET group_name='guest', group_privacy='n', group_menu_places='n', group_admin='n',
         group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
@@ -557,7 +347,7 @@ if (isset($_POST['install_tables2'])) {
         group_alive_date='1920', group_death_date_act='n',
         group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
         group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-        $db_update = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "INSERT INTO humo_groups SET group_name='group 4', group_privacy='n', group_menu_places='n', group_admin='n',
         group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
@@ -566,7 +356,7 @@ if (isset($_POST['install_tables2'])) {
         group_alive_date='1920', group_death_date_act='n',
         group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
         group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-        $db_update = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "INSERT INTO humo_groups SET group_name='group 5', group_privacy='j', group_menu_places='n', group_admin='n',
         group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
@@ -575,7 +365,7 @@ if (isset($_POST['install_tables2'])) {
         group_alive_date='1920', group_death_date_act='n',
         group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
         group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-        $db_update = $dbh->query($sql);
+        $dbh->query($sql);
 
         $sql = "INSERT INTO humo_groups SET group_name='group 6', group_privacy='n', group_menu_places='n', group_admin='n',
         group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
@@ -584,19 +374,18 @@ if (isset($_POST['install_tables2'])) {
         group_alive_date='1920', group_death_date_act='n',
         group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
         group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-        $db_update = $dbh->query($sql);
+        $dbh->query($sql);
     }
 
-    if (!$table_users) {
+    if (!$install['table_users'] || isset($_POST["table_users"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_users");
+            $dbh->query("DROP TABLE humo_users");
         } catch (Exception $e) {
             //
         }
-        //echo __('creating humo_users...').'<br>';
         printf(__('create table: %s.'), 'humo_users');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_users (
+        $dbh->query("CREATE TABLE humo_users (
             user_id smallint(5) unsigned NOT NULL auto_increment,
             user_name varchar(25) CHARACTER SET utf8,
             user_mail varchar(100) CHARACTER SET utf8,
@@ -616,32 +405,28 @@ if (isset($_POST['install_tables2'])) {
             PRIMARY KEY  (`user_id`)
             ) DEFAULT CHARSET=utf8");
 
-        //echo __('filling humo_users...').'<br>';
         printf(__('filling table: %s.'), 'humo_users');
         echo '<br>';
 
         $hashToStoreInDb = password_hash($_POST['password_admin'], PASSWORD_DEFAULT);
-        $db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id)
-            values ('" . $_POST['username_admin'] . "','" . $hashToStoreInDb . "','1')");
+        $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id) values ('" . $_POST['username_admin'] . "','" . $hashToStoreInDb . "','1')");
 
         $hashToStoreInDb = password_hash($_POST['password_family'], PASSWORD_DEFAULT);
-        $db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id)
-            values ('" . $_POST['username_family'] . "','" . $hashToStoreInDb . "','2')");
+        $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id) values ('" . $_POST['username_family'] . "','" . $hashToStoreInDb . "','2')");
 
         $hashToStoreInDb = password_hash('guest', PASSWORD_DEFAULT);
-        $db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id)
-            values ('guest','" . $hashToStoreInDb . "','3')");
+        $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id) values ('guest','" . $hashToStoreInDb . "','3')");
     }
 
-    if (!$table_cms_menu) {
+    if (!$install['table_cms_menu'] || isset($_POST["table_cms_menu"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_cms_menu");
+            $dbh->query("DROP TABLE humo_cms_menu");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_cms_menu');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_cms_menu (
+        $dbh->query("CREATE TABLE humo_cms_menu (
             menu_id int(10) NOT NULL AUTO_INCREMENT,
             menu_parent_id int(10) NOT NULL DEFAULT '0',
             menu_order int(5) NOT NULL DEFAULT '0',
@@ -650,16 +435,15 @@ if (isset($_POST['install_tables2'])) {
             ) DEFAULT CHARSET=utf8");
     }
 
-    if (!$table_cms_pages) {
+    if (!$install['table_cms_pages'] || isset($_POST["table_cms_pages"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_cms_pages");
+            $dbh->query("DROP TABLE humo_cms_pages");
         } catch (Exception $e) {
             //
         }
-        //echo __('creating humo_cms_pages...').'<br>';
         printf(__('create table: %s.'), 'humo_cms_pages');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_cms_pages (
+        $dbh->query("CREATE TABLE humo_cms_pages (
             page_id int(10) NOT NULL AUTO_INCREMENT,
             page_status varchar(1) CHARACTER SET utf8 DEFAULT '',
             page_menu_id int(10) NOT NULL DEFAULT '0',
@@ -673,16 +457,15 @@ if (isset($_POST['install_tables2'])) {
             ) DEFAULT CHARSET=utf8");
     }
 
-    if (!$table_user_log) {
+    if (!$install['table_user_log'] || isset($_POST["table_user_log"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_user_log");
+            $dbh->query("DROP TABLE humo_user_log");
         } catch (Exception $e) {
             //
         }
-        //echo __('creating humo_log...').'<br>';
         printf(__('create table: %s.'), 'humo_log');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_user_log (
+        $dbh->query("CREATE TABLE humo_user_log (
             log_id mediumint(6) unsigned NOT NULL auto_increment,
             log_username varchar(25) CHARACTER SET utf8,
             log_date varchar(20) CHARACTER SET utf8,
@@ -693,15 +476,15 @@ if (isset($_POST['install_tables2'])) {
             ) DEFAULT CHARSET=utf8");
     }
 
-    if (!$table_user_notes) {
+    if (!$install['table_user_notes'] || isset($_POST["table_user_notes"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_user_notes");
+            $dbh->query("DROP TABLE humo_user_notes");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_user_notes');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_user_notes (
+        $dbh->query("CREATE TABLE humo_user_notes (
             note_id smallint(5) unsigned NOT NULL auto_increment,
             note_order smallint(5),
             note_new_datetime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -722,9 +505,26 @@ if (isset($_POST['install_tables2'])) {
             ) DEFAULT CHARSET=utf8");
     }
 
-    if (!$table_stat_country) {
+    if (!$install['table_location'] || isset($_POST["table_location"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_stat_country");
+            $dbh->query("DROP TABLE humo_location");
+        } catch (Exception $e) {
+            //
+        }
+        printf(__('create table: %s.'), 'humo_location');
+        echo '<br>';
+        $dbh->query("CREATE TABLE humo_location (
+                location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                location_location VARCHAR(120) CHARACTER SET utf8,
+                location_lat FLOAT(10,6),
+                location_lng FLOAT(10,6),
+                location_status TEXT
+            ) DEFAULT CHARSET=utf8");
+    }
+
+    if (!$install['table_stat_country'] || isset($_POST["table_stat_country"])) {
+        try {
+            $dbh->query("DROP TABLE humo_stat_country");
         } catch (Exception $e) {
             //
         }
@@ -740,15 +540,15 @@ if (isset($_POST['install_tables2'])) {
     }
 
     // *** Family tree tables ***
-    if (!$table_trees) {
+    if (!$install['table_trees'] || isset($_POST["table_trees"])) {
         try {
-            $db_update = $dbh->query("DROP TABLE humo_trees");
+            $dbh->query("DROP TABLE humo_trees");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_trees');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_trees (
+        $dbh->query("CREATE TABLE humo_trees (
             tree_id smallint(5) unsigned NOT NULL auto_increment,
             tree_order smallint(5),
             tree_prefix varchar(10) CHARACTER SET utf8,
@@ -765,28 +565,26 @@ if (isset($_POST['install_tables2'])) {
             ) DEFAULT CHARSET=utf8");
 
         $gedcom_date = date("Y-m-d H:i");
-        $sql = "INSERT INTO humo_trees
-        SET
-        tree_order='1',
-        tree_prefix='humo_',
-        tree_date='" . $gedcom_date . "',
-        tree_persons='0',
-        tree_families='0',
-        tree_email='',
-        tree_owner='',
-        tree_pict_path='|../pictures/',
-        tree_privacy=''
-        ";
-        $db_update = $dbh->query($sql);
+        $sql = "INSERT INTO humo_trees SET
+            tree_order='1',
+            tree_prefix='humo_',
+            tree_date='" . $gedcom_date . "',
+            tree_persons='0',
+            tree_families='0',
+            tree_email='',
+            tree_owner='',
+            tree_pict_path='|../pictures/',
+            tree_privacy=''";
+        $dbh->query($sql);
 
         try {
-            $db_update = $dbh->query("DROP TABLE humo_tree_texts");
+            $dbh->query("DROP TABLE humo_tree_texts");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_tree_texts');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_tree_texts (
+        $dbh->query("CREATE TABLE humo_tree_texts (
             treetext_id smallint(5) unsigned NOT NULL auto_increment,
             treetext_tree_id smallint(5),
             treetext_language varchar(100) CHARACTER SET utf8,
@@ -809,13 +607,13 @@ if (isset($_POST['install_tables2'])) {
 
         // *** Persons ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_persons");
+            $dbh->query("DROP TABLE humo_persons");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_persons');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_persons (
+        $dbh->query("CREATE TABLE humo_persons (
             pers_id INT(10) unsigned NOT NULL auto_increment,
             pers_gedcomnumber varchar(25) CHARACTER SET utf8,
             pers_tree_id mediumint(7),
@@ -868,13 +666,13 @@ if (isset($_POST['install_tables2'])) {
 
         // *** Families ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_families");
+            $dbh->query("DROP TABLE humo_families");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_families');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_families (
+        $dbh->query("CREATE TABLE humo_families (
             fam_id INT(10) unsigned NOT NULL auto_increment,
             fam_tree_id mediumint(7),
             fam_gedcomnumber varchar(25) CHARACTER SET utf8,
@@ -922,16 +720,15 @@ if (isset($_POST['install_tables2'])) {
             KEY (fam_woman)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
-
         // *** Unprocessed tags ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_unprocessed_tags");
+            $dbh->query("DROP TABLE humo_unprocessed_tags");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_unprocessed_tags');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_unprocessed_tags (
+        $dbh->query("CREATE TABLE humo_unprocessed_tags (
             tag_id INT(10) unsigned NOT NULL auto_increment,
             tag_pers_id INT(10),
             tag_rel_id INT(10),
@@ -959,13 +756,13 @@ if (isset($_POST['install_tables2'])) {
 
         // *** Repositories ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_repositories");
+            $dbh->query("DROP TABLE humo_repositories");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_repositories');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_repositories (
+        $dbh->query("CREATE TABLE humo_repositories (
             repo_id INT(10) unsigned NOT NULL auto_increment,
             repo_tree_id smallint(5),
             repo_gedcomnr varchar(25) CHARACTER SET utf8,
@@ -989,13 +786,13 @@ if (isset($_POST['install_tables2'])) {
 
         // *** Sources ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_sources");
+            $dbh->query("DROP TABLE humo_sources");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_sources');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_sources (
+        $dbh->query("CREATE TABLE humo_sources (
             source_id INT(10) unsigned NOT NULL auto_increment,
             source_tree_id smallint(5),
             source_status varchar(10) CHARACTER SET utf8,
@@ -1028,13 +825,13 @@ if (isset($_POST['install_tables2'])) {
 
         // *** Texts ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_texts");
+            $dbh->query("DROP TABLE humo_texts");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_texts');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_texts (
+        $dbh->query("CREATE TABLE humo_texts (
             text_id INT(10) unsigned NOT NULL auto_increment,
             text_tree_id smallint(5),
             text_gedcomnr varchar(25) CHARACTER SET utf8,
@@ -1051,13 +848,13 @@ if (isset($_POST['install_tables2'])) {
 
         // *** Connections ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_connections");
+            $dbh->query("DROP TABLE humo_connections");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_connections');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_connections (
+        $dbh->query("CREATE TABLE humo_connections (
             connect_id INT(10) unsigned NOT NULL auto_increment,
             connect_tree_id smallint(5),
             connect_order mediumint(6),
@@ -1085,13 +882,13 @@ if (isset($_POST['install_tables2'])) {
 
         // *** Addresses ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_addresses");
+            $dbh->query("DROP TABLE humo_addresses");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_addresses');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_addresses (
+        $dbh->query("CREATE TABLE humo_addresses (
             address_id INT(10) unsigned NOT NULL auto_increment,
             address_tree_id smallint(5),
             address_gedcomnr varchar(25) CHARACTER SET utf8,
@@ -1118,13 +915,13 @@ if (isset($_POST['install_tables2'])) {
 
         // *** Events ***
         try {
-            $db_update = $dbh->query("DROP TABLE humo_events");
+            $dbh->query("DROP TABLE humo_events");
         } catch (Exception $e) {
             //
         }
         printf(__('create table: %s.'), 'humo_events');
         echo '<br>';
-        $db_update = $dbh->query("CREATE TABLE humo_events (
+        $dbh->query("CREATE TABLE humo_events (
             event_id INT(10) unsigned NOT NULL auto_increment,
             event_tree_id smallint(5),
             event_gedcomnr varchar(25) CHARACTER SET utf8,
@@ -1153,8 +950,10 @@ if (isset($_POST['install_tables2'])) {
             KEY (event_kind)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
     } // *** End of family tree tables ***
+    ?><br>
 
-    echo '<b>' . __('No errors above? This means that the database has been processed!') . '</b><br>';
-    echo __('All updates completed, click at "Mainmenu"') . '.';
-    echo ' <a href="index.php">' . __('Main menu') . '</a>';
+    <b><?= __('No errors above? This means that the database has been processed!'); ?></b><br>
+    <?php printf(__('All updates completed, go to: %s'), '<a href="index.php">' . __('Main menu') . '</a>'); ?>
+
+<?php
 }

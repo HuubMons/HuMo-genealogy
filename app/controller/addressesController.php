@@ -1,6 +1,4 @@
 <?php
-require_once  __DIR__ . "/../model/addresses.php";
-
 class AddressesController
 {
     private $dbh, $user, $tree_id;

@@ -9,29 +9,29 @@
 //**************************************************************************************
 //******  tree_merge is the function that navigates all merge screens and options  *****
 //**************************************************************************************
-$db_functions->set_tree_id($data2Db->tree_id);
+$db_functions->set_tree_id($trees['tree_id']);
 
 // the following creates the pages that cycle through all duplicates that are stored in the dupl_arr array
 // the pages themselves are presented with the "show_pair function"
 if (isset($_POST['duplicate_compare'])) {
     if (!isset($_POST['no_increase'])) {  // no increase is used if "switch left and right" was chosen
-        $nr = ++$_SESSION['present_compare_' . $data2Db->tree_id]; // present_compare is the pair that has to be shown next - saved to session
+        $nr = ++$_SESSION['present_compare_' . $trees['tree_id']]; // present_compare is the pair that has to be shown next - saved to session
     } else {
-        $nr = $_SESSION['present_compare_' . $data2Db->tree_id];
+        $nr = $_SESSION['present_compare_' . $trees['tree_id']];
     }
     if (isset($_POST['choice_nr'])) {  // choice number is the number from the "skip to" pulldown - saved to a session
         $nr = $_POST['choice_nr'];
-        $_SESSION['present_compare_' . $data2Db->tree_id] = $_POST['choice_nr'];
+        $_SESSION['present_compare_' . $trees['tree_id']] = $_POST['choice_nr'];
     }
 
     // make sure the persons in the array are still there (in case in the mean time someone was merged)
     // after all, one person may be compared to more than one other person!
-    while ($_SESSION['present_compare_' . $data2Db->tree_id] < count($_SESSION['dupl_arr_' . $data2Db->tree_id])) {
-        $comp_set = explode(';', $_SESSION['dupl_arr_' . $data2Db->tree_id][$nr]);
+    while ($_SESSION['present_compare_' . $trees['tree_id']] < count($_SESSION['dupl_arr_' . $trees['tree_id']])) {
+        $comp_set = explode(';', $_SESSION['dupl_arr_' . $trees['tree_id']][$nr]);
         $res = $db_functions->get_person_with_id($comp_set[0]);
         $res2 = $db_functions->get_person_with_id($comp_set[1]);
         if (!$res || !$res2) { // one or 2 persons are missing - continue with next pair
-            $nr = ++$_SESSION['present_compare_' . $data2Db->tree_id];
+            $nr = ++$_SESSION['present_compare_' . $trees['tree_id']];
             continue; // look for next pair in array
         } else {
             // we have got a valid pa
@@ -81,8 +81,8 @@ if (isset($_POST['duplicate_compare'])) {
                 <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
                 <select style="max-width:60px" name="choice_nr">
-                    <?php for ($x = 0; $x < count($_SESSION['dupl_arr_' . $data2Db->tree_id]); $x++) { ?>
-                        <option value="<?= $x; ?>" <?= $x == $_SESSION['present_compare_' . $data2Db->tree_id] ? 'selected' : ''; ?>><?= ($x + 1); ?></option>
+                    <?php for ($x = 0; $x < count($_SESSION['dupl_arr_' . $trees['tree_id']]); $x++) { ?>
+                        <option value="<?= $x; ?>" <?= $x == $_SESSION['present_compare_' . $trees['tree_id']] ? 'selected' : ''; ?>><?= ($x + 1); ?></option>
                     <?php } ?>
                 </select>
                 <input type="submit" name="duplicate_compare" value="<?= __('Go!'); ?>" class="btn btn-sm btn-secondary">
@@ -105,8 +105,8 @@ if (isset($_POST['duplicate_compare'])) {
         }
     }
 
-    if ($_SESSION['present_compare_' . $data2Db->tree_id] >= count($_SESSION['dupl_arr_' . $data2Db->tree_id])) {
-        unset($_SESSION['present_compare_' . $data2Db->tree_id]);
+    if ($_SESSION['present_compare_' . $trees['tree_id']] >= count($_SESSION['dupl_arr_' . $trees['tree_id']])) {
+        unset($_SESSION['present_compare_' . $trees['tree_id']]);
         ?>
         <br><br><?= __('No more duplicates found'); ?><br><br>
         <form method="post" action="index.php" style="display : inline;">
@@ -199,11 +199,11 @@ elseif (isset($_POST['relatives'])) {
     // if skip - delete pair from database string
     if (isset($_POST['skip_rel'])) {
         // remove first entry (that the admin decided not to merge) from string
-        $relcomp = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'rel_merge_" . $data2Db->tree_id . "'");
+        $relcomp = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'rel_merge_" . $trees['tree_id'] . "'");
         $relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);        // database row: I23@I300;I54@I304;I34@I430;
         $firstsemi = strpos($relcompDb->setting_value, ';') + 1;
         $string = substr($relcompDb->setting_value, $firstsemi);
-        $result = $db_functions->update_settings('rel_merge_' . $data2Db->tree_id, $string);
+        $result = $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $string);
         $trees['relatives_merge'] = $string;
     }
 
@@ -214,7 +214,7 @@ elseif (isset($_POST['relatives'])) {
         merge_them($left, $right, "relatives");
     }
 
-    $relcomp = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'rel_merge_" . $data2Db->tree_id . "'");
+    $relcomp = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'rel_merge_" . $trees['tree_id'] . "'");
     $relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);        // database row: I23@I300;I54@I304;I34@I430;
 
     if ($relcompDb->setting_value != '') {
@@ -298,8 +298,8 @@ elseif (isset($_POST['merge'])) { // do merge and allow to continue with compari
         $right = $_POST['right'];
         merge_them($left, $right, "man_dupl"); // merge_them is called in manual/duplicate mode
     } elseif (isset($_POST['dupl'])) { // duplicate merging
-        $nr = $_SESSION['present_compare_' . $data2Db->tree_id];
-        $comp_set = explode(';', $_SESSION['dupl_arr_' . $data2Db->tree_id][$nr]);
+        $nr = $_SESSION['present_compare_' . $trees['tree_id']];
+        $comp_set = explode(';', $_SESSION['dupl_arr_' . $trees['tree_id']][$nr]);
         $left = $comp_set[0];
         $right = $comp_set[1];
         merge_them($left, $right, "man_dupl"); // merge_them is called in manual/duplicate mode
@@ -327,7 +327,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 <b>Please note that generating the duplicates may take some time, depending on the size of the tree.</b>');
 
     echo '<br><br>';
-    if (isset($_SESSION['dupl_arr_' . $data2Db->tree_id])) {
+    if (isset($_SESSION['dupl_arr_' . $trees['tree_id']])) {
     ?>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <form method="post" action="index.php" style="display : inline;">
@@ -403,8 +403,8 @@ elseif (isset($_POST['duplicate'])) {
         }
     }
     if (isset($dupl_arr)) {
-        $_SESSION['dupl_arr_' . $data2Db->tree_id] = $dupl_arr;
-        $_SESSION['present_compare_' . $data2Db->tree_id] = -1;
+        $_SESSION['dupl_arr_' . $trees['tree_id']] = $dupl_arr;
+        $_SESSION['present_compare_' . $trees['tree_id']] = -1;
     ?>
         <!-- possible duplicates found -->
         <br><?= __('Possible duplicates found: ') . count($dupl_arr); ?><br><br>
@@ -440,8 +440,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
     <?php
     // ===== BEGIN SEARCH BOX SYSTEM
 
-    include_once(__DIR__ . "/../../include/person_cls.php");
-    $pers_cls = new person_cls;
+    $pers_cls = new PersonCls;
 
     if (!isset($_POST["search1"]) && !isset($_POST["search2"]) && !isset($_POST["manual_compare"]) && !isset($_POST["switch"])) {
         // no button pressed: this is a fresh entry from frontpage link: start clean search form
@@ -1066,7 +1065,7 @@ function show_pair($left_id, $right_id, $mode)
 
             $spouse_ged = $famDb->fam_man == $leftDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
-            $name_cls = new person_cls;
+            $name_cls = new PersonCls;
             $name = $name_cls->person_name($spouseDb);
             $spouses1 .= $name["standard_name"] . '<br>';
 
@@ -1074,7 +1073,7 @@ function show_pair($left_id, $right_id, $mode)
                 $child = explode(';', $famDb->fam_children);
                 foreach ($child as $ch_value) {
                     $childDb = $db_functions->get_person($ch_value);
-                    $name_cls = new person_cls;
+                    $name_cls = new PersonCls;
                     $name = $name_cls->person_name($childDb);
                     $children1 .= $name["standard_name"] . '<br>';
                 }
@@ -1092,12 +1091,12 @@ function show_pair($left_id, $right_id, $mode)
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
         $fatherDb = $db_functions->get_person($parentsDb->fam_man);
-        $name_cls = new person_cls;
+        $name_cls = new PersonCls;
         $name = $name_cls->person_name($fatherDb);
         $father1 .= $name["standard_name"] . '<br>';
 
         $motherDb = $db_functions->get_person($parentsDb->fam_woman);
-        $name_cls = new person_cls;
+        $name_cls = new PersonCls;
         $name = $name_cls->person_name($motherDb);
         $mother1 .= $name["standard_name"] . '<br>';
     }
@@ -1113,7 +1112,7 @@ function show_pair($left_id, $right_id, $mode)
             $famDb = $db_functions->get_family($value);
             $spouse_ged = $famDb->fam_man == $rightDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
-            $name_cls = new person_cls;
+            $name_cls = new PersonCls;
             $name = $name_cls->person_name($spouseDb);
             $spouses2 .= $name["standard_name"] . '<br>';
 
@@ -1121,7 +1120,7 @@ function show_pair($left_id, $right_id, $mode)
                 $child = explode(';', $famDb->fam_children);
                 foreach ($child as $ch_value) {
                     $childDb = $db_functions->get_person($ch_value);
-                    $name_cls = new person_cls;
+                    $name_cls = new PersonCls;
                     $name = $name_cls->person_name($childDb);
                     $children2 .= $name["standard_name"] . '<br>';
                 }
@@ -1139,12 +1138,12 @@ function show_pair($left_id, $right_id, $mode)
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
         $fatherDb = $db_functions->get_person($parentsDb->fam_man);
-        $name_cls = new person_cls;
+        $name_cls = new PersonCls;
         $name = $name_cls->person_name($fatherDb);
         $father2 .= $name["standard_name"] . '<br>';
 
         $motherDb = $db_functions->get_person($parentsDb->fam_woman);
-        $name_cls = new person_cls;
+        $name_cls = new PersonCls;
         $name = $name_cls->person_name($motherDb);
         $mother2 .= $name["standard_name"] . '<br>';
     }
@@ -1167,8 +1166,8 @@ function show_pair($left_id, $right_id, $mode)
             <th style="width:150px;border-bottom:2px solid #a4a4a4;text-align:left">
                 <?php
                 if ($mode == 'duplicate') {
-                    $num = $_SESSION['present_compare_' . $data2Db->tree_id] + 1;
-                    echo __('Nr. ') . $num . __(' of ') . count($_SESSION['dupl_arr_' . $data2Db->tree_id]);
+                    $num = $_SESSION['present_compare_' . $trees['tree_id']] + 1;
+                    echo __('Nr. ') . $num . __(' of ') . count($_SESSION['dupl_arr_' . $trees['tree_id']]);
                 } elseif ($mode = 'relatives') {
                     $rl = explode(';', $trees['relatives_merge']);
                     $rls = count($rl) - 1;
@@ -1494,7 +1493,7 @@ function show_events($left_ged, $right_ged)
 //*********************************************************************************************
 function put_event($this_event, $name_event, $l_ev, $r_ev)
 {
-    global $color, $dbh, $data2Db, $language;
+    global $color, $dbh, $trees, $language;
 
     if ($r_ev != '') {
         // if right has no event all stays as it is
@@ -1508,13 +1507,14 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
                     foreach ($l_ev as $key => $value) {
                         if (substr($value, 0, 2) === '@I') {  // this is a person GEDCOM number, not plain text -> show the name
                             $value = str_replace('@', '', $value);
-                            $result = $dbh->query("SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $data2Db->tree_id . "' AND pers_gedcomnumber = '" . $value . "'");
+                            $result = $dbh->query("SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber = '" . $value . "'");
                             $resultDb = $result->fetch(PDO::FETCH_OBJ);
                             $value = $resultDb->pers_firstname . ' ' . $resultDb->pers_lastname;
                         }
                         if ($this_event == 'picture') { // show link to pic
-                            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $data2Db->tree_id . "'");
+                            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $trees['tree_id'] . "'");
                             $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+                            // TODO check if this works using a default picture path.
                             $tree_pict_path = $dataDb->tree_pict_path;
                             $dir = '../' . $tree_pict_path;
                             $value = $value . ' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;' . $dir . $value . '&quot;>\',\'150px\');" href="#">[' . __('Show') . ']</a>';
@@ -1536,12 +1536,12 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
                     foreach ($r_ev as $key => $value) {
                         if (substr($value, 0, 2) === '@I') {  // this is a person gedcom number, not plain text
                             $value = str_replace('@', '', $value);
-                            $result = $dbh->query("SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $data2Db->tree_id . "' AND pers_gedcomnumber = '" . $value . "'");
+                            $result = $dbh->query("SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber = '" . $value . "'");
                             $resultDb = $result->fetch(PDO::FETCH_OBJ);
                             $value = $resultDb->pers_firstname . ' ' . $resultDb->pers_lastname;
                         }
                         if ($this_event == 'picture') {
-                            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $data2Db->tree_id . "'");
+                            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $trees['tree_id'] . "'");
                             $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
                             $tree_pict_path = $dataDb->tree_pict_path;
                             $dir = '../' . $tree_pict_path;
@@ -1835,7 +1835,7 @@ function merge_them($left, $right, $mode)
                                             if (strstr($trees['relatives_merge'], $string1) === false && strstr($trees['relatives_merge'], $string2) === false) {
                                                 $trees['relatives_merge'] .= $string1;
                                             }
-                                            $db_functions->update_settings('rel_merge_' . $data2Db->tree_id, $trees['relatives_merge']);
+                                            $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $trees['relatives_merge']);
                                         }
                                     }
                                 }
@@ -2110,7 +2110,7 @@ function merge_them($left, $right, $mode)
                                     if (strstr($trees['relatives_merge'], $string1) === false && strstr($trees['relatives_merge'], $string2) === false) {
                                         $trees['relatives_merge'] .= $string1;
                                     }
-                                    $db_functions->update_settings('rel_merge_' . $data2Db->tree_id, $trees['relatives_merge']);
+                                    $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $trees['relatives_merge']);
                                 }
                             }
                         }
@@ -2179,7 +2179,7 @@ function merge_them($left, $right, $mode)
                                 if (strstr($trees['relatives_merge'], $string1) === false && strstr($trees['relatives_merge'], $string2) === false) {
                                     $trees['relatives_merge'] .= $string1;
                                 }
-                                $db_functions->update_settings('rel_merge_' . $data2Db->tree_id, $trees['relatives_merge']);
+                                $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $trees['relatives_merge']);
                             }
                         }
                     }
@@ -2248,7 +2248,7 @@ function merge_them($left, $right, $mode)
                     $dbh->query("UPDATE humo_families SET fam_woman = '" . $par2Db->fam_woman . "'
                         WHERE fam_tree_id='" . $trees['tree_id'] . "' AND fam_gedcomnumber ='" . $result1Db->pers_famc . "'");
                 }
-                $db_functions->update_settings('rel_merge_' . $data2Db->tree_id, $trees['relatives_merge']);
+                $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $trees['relatives_merge']);
             }
             if (!$result1Db->pers_famc) {
                 // give left the famc of right
@@ -2545,16 +2545,16 @@ function merge_them($left, $right, $mode)
             }
         }
         $trees['relatives_merge'] = substr($new_rel_string, 0, -1); // take off last ;
-        $db_functions->update_settings('rel_merge_' . $data2Db->tree_id, $trees['relatives_merge']);
+        $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $trees['relatives_merge']);
     }
 
-    if (isset($_SESSION['dupl_arr_' . $data2Db->tree_id])) { //remove this pair from the dupl_arr array
+    if (isset($_SESSION['dupl_arr_' . $trees['tree_id']])) { //remove this pair from the dupl_arr array
         $found1 = $result1Db->pers_id . ';' . $result2Db->pers_id;
         $found2 = $result2Db->pers_id . ';' . $result1Db->pers_id;
-        for ($z = 0; $z < count($_SESSION['dupl_arr_' . $data2Db->tree_id]); $z++) {
-            if ($_SESSION['dupl_arr_' . $data2Db->tree_id][$z] == $found1 or $_SESSION['dupl_arr_' . $data2Db->tree_id][$z] == $found2) {
+        for ($z = 0; $z < count($_SESSION['dupl_arr_' . $trees['tree_id']]); $z++) {
+            if ($_SESSION['dupl_arr_' . $trees['tree_id']][$z] == $found1 or $_SESSION['dupl_arr_' . $trees['tree_id']][$z] == $found2) {
                 //unset($_SESSION['dupl_arr'][$z]) ;
-                array_splice($_SESSION['dupl_arr_' . $data2Db->tree_id], $z, 1);
+                array_splice($_SESSION['dupl_arr_' . $trees['tree_id']], $z, 1);
             }
         }
     }

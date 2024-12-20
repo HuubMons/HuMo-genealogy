@@ -3,7 +3,7 @@
 
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"] = '6.7.9a';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"] = '6.8';  // Version line, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Beta (not stable enough for production, but it's functional ***
@@ -12,7 +12,7 @@ $humo_option["version"] = '6.7.9a';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"] = '2024-11-12';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"] = '2024-12-20';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Test lines for update procedure ***
@@ -481,4 +481,14 @@ if (!isset($humo_option["merge_dates"])) {
 if (!isset($humo_option["merge_parentsdate"])) {
     $humo_option["merge_parentsdate"] = 'YES';
     $dbh->query("INSERT INTO humo_settings SET setting_variable='merge_parentsdate', setting_value='YES'");
+}
+
+if (!isset($humo_option["thumbnail_auto_create"])) {
+    $humo_option["thumbnail_auto_create"] = 'n';
+    $dbh->query("INSERT INTO humo_settings SET setting_variable='thumbnail_auto_create', setting_value='n'");
+}
+
+if (!isset($humo_option["media_privacy_mode"])) {
+    $humo_option["media_privacy_mode"] = 'n';
+    $dbh->query("INSERT INTO humo_settings SET setting_variable='media_privacy_mode', setting_value='n'");
 }

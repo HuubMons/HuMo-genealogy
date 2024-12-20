@@ -37,13 +37,16 @@ if ($humo_option["url_rewrite"] == "j") {
             </tr>
         </thead>
 
-        <?php foreach ($data["listchanges"] as $changeDb) { ?>
+        <?php $i = 0; ?>
+        <?php while ($i < count($data['show_person'])) { ?>
             <tr>
-                <td class="text-nowrap"><?= $changeDb->show_person ?></td>
-                <td class="text-nowrap"><?= $changeDb->changed_date; ?></td>
-                <td class="text-nowrap"><?= $changeDb->new_date; ?></td>
+                <td class="text-nowrap"><?= $data["show_person"][$i] ?></td>
+                <td class="text-nowrap"><?= $data["changed_date"][$i]; ?></td>
+                <td class="text-nowrap"><?= $data["new_date"][$i]; ?></td>
             </tr>
+            <?php $i++;; ?>
         <?php } ?>
+
     </table>
 </div>
 <br>

@@ -23,11 +23,10 @@ if (isset($_POST['remove2']) && is_numeric($_POST['stat_month']) && is_numeric($
 
 <?= __('Statistics will be removed PERMANENTLY. Make a backup first to save the statistics data'); ?><br>
 
-<form method="POST" action="">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+<form method="POST" action="index.php?page=statistics&amp;tab=remove">
     <?= __('Remove ALL statistics BEFORE this date:'); ?>
     <input type="text" name="stat_day" value="1" size="1">
     <input type="text" name="stat_month" value="<?= $month; ?>" size="1">
     <input type="text" name="stat_year" value="<?= $year; ?>" size="2"> <?= __('d-m-yyyy'); ?><br>
-    <input type="submit" name="remove2" value="<?= __('REMOVE statistic data'); ?>">
+    <input type="submit" name="remove2" value="<?= __('REMOVE statistic data'); ?>" class="btn btn-sm btn-secondary">
 </form>

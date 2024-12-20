@@ -11,8 +11,7 @@ if (!defined('ADMIN_PAGE')) {
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-include(__DIR__ . '/../include/editor_event_cls.php');
-$event_cls = new editor_event_cls;
+$EditorEvent = new EditorEvent;
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {
@@ -28,8 +27,7 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
 <?php if (isset($_POST['address_remove'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to remove this address and ALL address references?'); ?></strong>
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $page; ?>">
+        <form method="post" action="index.php?page=edit_addresses" style="display : inline;">
             <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
             <input type="hidden" name="address_gedcomnr" value="<?= $_POST['address_gedcomnr']; ?>">
             <input type="submit" name="address_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
@@ -44,8 +42,7 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
     </div>
 <?php }; ?>
 
-<form method="POST" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+<form method="POST" action="index.php?page=edit_addresses" style="display : inline;">
     <div class="p-3 my-md-2 genealogy_search container-md">
         <div class="row">
             <div class="col-md-3">
@@ -127,8 +124,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
     }
 ?>
 
-    <form method="POST" action="index.php">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" action="index.php?page=edit_addresses">
         <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
         <input type="hidden" name="address_gedcomnr" value="<?= $address_gedcomnr; ?>">
         <div class="p-2 my-md-2 genealogy_search container-md">

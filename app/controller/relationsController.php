@@ -1,22 +1,6 @@
 <?php
-require_once  __DIR__ . "/../model/relations.php";
-
-include_once(__DIR__ . "/../../include/marriage_cls.php");
-include_once(__DIR__ . "/../../include/language_date.php");
-include_once(__DIR__ . "/../../include/date_place.php");
-
 class RelationsController
 {
-    //private $db_functions, $user;
-
-    /*
-    public function __construct($db_functions, $user)
-    {
-        $this->db_functions = $db_functions;
-        $this->user = $user;
-    }
-    */
-
     public function getRelations($db_functions, $person_cls)
     {
         $RelationsModel = new RelationsModel();

@@ -1,17 +1,6 @@
 <?php
-require_once __DIR__ . "/../models/maps.php";
-
 class MapsController
 {
-    /*
-    private $editor_cls;
-
-    public function __construct()
-    {
-        $this->editor_cls = new editor_cls;
-    }
-    */
-
     public function detail($dbh, $db_functions)
     {
         $mapsModel = new MapsModel();

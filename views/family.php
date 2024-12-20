@@ -19,7 +19,7 @@ function topline($data)
     global $dataDb, $dbh, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker;
     global $alignmarker, $language, $uri_path;
     global $user, $tree_id, $humo_option, $link_cls;
-    global $database, $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
+    global $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
 
     $treetext = show_tree_text($dataDb->tree_id, $selected_language);
 ?>
@@ -123,7 +123,6 @@ function topline($data)
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                         <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                         <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                        <input type="hidden" name="database" value="<?= $database; ?>">
                         <?php
                         if ($data["descendant_report"] == true) { ?>
                             <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
@@ -142,9 +141,9 @@ function topline($data)
                         echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'index.php?page=family_rtf" style="display:inline-block; vertical-align:middle;">';
                     }
                 ?>
+                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                     <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                    <input type="hidden" name="database" value="<?= $database; ?>">
                     <input type="hidden" name="screen_mode" value="RTF">
                     <?php if ($data["descendant_report"] == true) { ?>
                         <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
@@ -227,7 +226,7 @@ if (!$data["family_id"]) {
     // *** Privacy filter ***
     @$parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
-    $parent1_cls = new person_cls($parent1Db);
+    $parent1_cls = new PersonCls($parent1Db);
 
     // *** Add tip in person screen ***
     if (!$bot_visit) {
@@ -354,10 +353,17 @@ else {
                     // *** Extended statistics ***
                     if ($data["descendant_report"] == false && $user['group_statistics'] == 'j') {
                         $stat_easy_id = $familyDb->fam_tree_id . '-' . $familyDb->fam_gedcomnumber . '-' . $familyDb->fam_man . '-' . $familyDb->fam_woman;
+
+                        // *** Only 255 characters allowed for stat_user_agent ***
+                        $stat_user_agent = $_SERVER['HTTP_USER_AGENT'];
+                        if (strlen($_SERVER['HTTP_USER_AGENT']) > 255) {
+                            $stat_user_agent = substr($stat_user_agent, 0, 255);
+                        }
+
                         $update_sql = "INSERT INTO humo_stat_date SET
                             stat_easy_id='" . $stat_easy_id . "',
                             stat_ip_address='" . $visitor_ip . "',
-                            stat_user_agent='" . $_SERVER['HTTP_USER_AGENT'] . "',
+                            stat_user_agent='" . $stat_user_agent . "',
                             stat_tree_id='" . $familyDb->fam_tree_id . "',
                             stat_gedcom_fam='" . $familyDb->fam_gedcomnumber . "',
                             stat_gedcom_man='" . $familyDb->fam_man . "',
@@ -411,14 +417,14 @@ else {
                 }
                 @$parent1Db = $db_functions->get_person($parent1);
                 // *** Proces parent1 using a class ***
-                $parent1_cls = new person_cls($parent1Db);
+                $parent1_cls = new PersonCls($parent1Db);
 
                 @$parent2Db = $db_functions->get_person($parent2);
                 // *** Proces parent2 using a class ***
-                $parent2_cls = new person_cls($parent2Db);
+                $parent2_cls = new PersonCls($parent2Db);
 
                 // *** Proces marriage using a class ***
-                $marriage_cls = new marriage_cls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
+                $marriage_cls = new MarriageCls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
                 $family_privacy = $marriage_cls->privacy;
 
 
@@ -443,7 +449,7 @@ else {
                 <?php } ?>
 
                 <table class="humo standard">
-                <!-- <table class="table"> -->
+                    <!-- <table class="table"> -->
                     <?php
                     // *** Show family top line (family top text, settings, favourite) ***
                     topline($data);
@@ -593,7 +599,7 @@ else {
                         foreach ($child_array as $i => $value) {
                             @$childDb = $db_functions->get_person($child_array[$i]);
                             // *** Use person class ***
-                            $child_cls = new person_cls($childDb);
+                            $child_cls = new PersonCls($childDb);
 
                             // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                             // *** Person must be totally hidden ***
@@ -654,7 +660,7 @@ else {
                     foreach ($famc_adoptive_qry_prep as $famc_adoptiveDb) {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                        $child_cls = new PersonCls($childDb);
                         ?>
                         <tr>
                             <td colspan="4">
@@ -673,7 +679,7 @@ else {
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                        $child_cls = new PersonCls($childDb);
                     ?>
                         <tr>
                             <td colspan="4">
@@ -702,7 +708,7 @@ else {
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
                         @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                        $child_cls = new PersonCls($childDb);
                     ?>
                         <tr>
                             <td colspan="4">
@@ -891,7 +897,7 @@ else {
                         @$childDb = $db_functions->get_person($child_array[$i]);
                         if ($childDb !== false) {  // no error in query
                             // *** Use person class ***
-                            $person_cls = new person_cls($childDb);
+                            $person_cls = new PersonCls($childDb);
                             if (!$person_cls->privacy) {
 
                                 // *** Child birth ***

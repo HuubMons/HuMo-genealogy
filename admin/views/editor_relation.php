@@ -37,22 +37,26 @@
                                 <input type="hidden" name="marriage_nr" value="<?= $familyDb->fam_gedcomnumber; ?>">
                                 <input type="submit" name="dummy3" value="<?= __('Family') . ' ' . ($i + 1); ?>" class="btn btn-sm <?= $button_selected; ?>">
                             </form>
-                        <?php
-                        } else {
-                            echo __('Family');
-                        }
-                        ?>
+                        <?php } else { ?>
+                            <?= __('Family'); ?>
+                        <?php } ?>
                     </div>
 
                     <div class="col-1">
+                        <?php if ($i < ($fam_count - 1)) { ?>
+                            <a href="index.php?page=<?= $page; ?>&amp;person_id=<?= $person->pers_id; ?>&amp;fam_down=<?= $i; ?>&amp;fam_array=<?= $person->pers_fams; ?>">
+                                <img src="images/arrow_down.gif" border="0" alt="fam_down">
+                            </a>
+                        <?php } else { ?>
+                            &nbsp;&nbsp;&nbsp;
                         <?php
-                        if ($i < ($fam_count - 1)) {
-                            echo ' <a href="index.php?page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_down=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="images/arrow_down.gif" border="0" alt="fam_down"></a> ';
-                        } else {
-                            echo '&nbsp;&nbsp;&nbsp;';
                         }
                         if ($i > 0) {
-                            echo ' <a href="index.php?page=' . $page . '&amp;person_id=' . $person->pers_id . '&amp;fam_up=' . $i . '&amp;fam_array=' . $person->pers_fams . '"><img src="images/arrow_up.gif" border="0" alt="fam_up"></a> ';
+                        ?>
+                            <a href="index.php?page=<?= $page; ?>&amp;person_id=<?= $person->pers_id; ?>&amp;fam_up=<?= $i; ?>&amp;fam_array=<?= $person->pers_fams; ?>">
+                                <img src="images/arrow_up.gif" border="0" alt="fam_up">
+                            </a>
+                        <?php
                         } else {
                             //echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                         }
@@ -630,7 +634,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             <?php
             // *** Marriage Witness ***
-            echo $event_cls->show_event('MARR', $marriage, 'ASSO');
+            echo $EditorEvent->show_event('MARR', $marriage, 'ASSO');
 
             // *** Religious marriage notice ***
             // *** Use hideshow to show and hide the editor lines ***
@@ -784,7 +788,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             <?php
             // *** Marriage Witness (church) ***
-            echo $event_cls->show_event('MARR_REL', $marriage, 'ASSO');
+            echo $EditorEvent->show_event('MARR_REL', $marriage, 'ASSO');
             ?>
 
             <!-- Religion -->
@@ -963,10 +967,10 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             }
 
             // *** Picture ***
-            echo $event_cls->show_event('family', $marriage, 'marriage_picture');
+            echo $EditorEvent->show_event('family', $marriage, 'marriage_picture');
 
             // *** Family event editor ***
-            echo $event_cls->show_event('family', $marriage, 'family');
+            echo $EditorEvent->show_event('family', $marriage, 'family');
 
             // *** Show and edit addresses by family ***
             edit_addresses('family', 'family_address', $marriage);
@@ -1149,20 +1153,23 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
         }
 
         // *** Show children ***
-        $family = $dbh->query("SELECT * FROM humo_families
-                WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $marriage . "'");
+        $family = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $marriage . "'");
         $familyDb = $family->fetch(PDO::FETCH_OBJ);
         if ($familyDb->fam_children) {
-            echo '<a name="children"></a>';
-            echo __('Use this icon to order children (drag and drop)') . ': <img src="images/drag-icon.gif" border="0">';
-            echo '<br>' . __('Or automatically order children:') . ' <a href="index.php?page=' . $page . '&amp;menu_tab=marriage&amp;marriage_nr=' . $marriage . '&amp;order_children=1#children">' . __('Automatic order children') . '</a>';
-            if (isset($_GET['order_children'])) {
-                echo ' <b>' . __('Children are re-ordered.') . '</b>';
+    ?>
+            <a name="children"></a>
+            <?= __('Use this icon to order children (drag and drop)'); ?>: <img src="images/drag-icon.gif" border="0"><br>
+            <?= __('Or automatically order children:'); ?> <a href="index.php?page=<?= $page; ?>&amp;menu_tab=marriage&amp;marriage_nr=<?= $marriage; ?>&amp;order_children=1#children">
+                <?= __('Automatic order children'); ?>
+            </a>
+            <?php if (isset($_GET['order_children'])) { ?>
+                <b><?= __('Children are re-ordered.'); ?></b>
+            <?php
             }
 
             //echo __('Children').':<br>';
             $fam_children_array = explode(";", $familyDb->fam_children);
-    ?>
+            ?>
             <ul id="sortable<?= $i; ?>" class="sortable">
                 <?php
                 foreach ($fam_children_array as $j => $value) {
@@ -1174,15 +1181,30 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         }
                     }
                     $fam_children = substr($fam_children, 0, -1); // *** strip last ; character ***
-
-                    echo '<li><span style="cursor:move;" id="' . $fam_children_array[$j] . '" class="handle' . $i . '" ><img src="images/drag-icon.gif" border="0" title="' . __('Drag to change order (saves automatically)') . '" alt="' . __('Drag to change order') . '"></span>&nbsp;&nbsp;';
-
-                    echo '<a href="index.php?page=' . $page . '&amp;family_id=' . $familyDb->fam_id . '&amp;child_disconnect=' . $fam_children .
-                        '&amp;child_disconnect_gedcom=' . $fam_children_array[$j] . '">
-                        <img src="images/person_disconnect.gif" border="0" title="' . __('Disconnect child') . '" alt="' . __('Disconnect child') . '"></a>';
-                    echo '&nbsp;&nbsp;<span id="chldnum' . $fam_children_array[$j] . '">' . ($j + 1) . '</span>. ' . show_person($fam_children_array[$j], true) . '</li>';
-                }
                 ?>
+
+                    <li>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <span style="cursor:move;" id="<?= $fam_children_array[$j]; ?>" class="handle<?= $i; ?>">
+                                    <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
+                                </span>
+                            </div>
+
+                            <div class="col-md-1">
+                                <a href="index.php?page=<?= $page; ?>&amp;family_id=<?= $familyDb->fam_id; ?>&amp;child_disconnect=<?= $fam_children; ?>&amp;child_disconnect_gedcom=<?= $fam_children_array[$j]; ?>">
+                                    <img src="images/person_disconnect.gif" border="0" title="<?= __('Disconnect child'); ?>" alt="<?= __('Disconnect child'); ?>">
+                                </a>
+                            </div>
+
+                            <div class="col-md-10">
+                                <span id="chldnum<?= $fam_children_array[$j]; ?>">
+                                    <?= ($j + 1); ?>
+                                </span>
+                                <?= show_person($fam_children_array[$j], true); ?>
+                            </div>
+                    </li>
+                <?php } ?>
             </ul>
         <?php } ?>
 

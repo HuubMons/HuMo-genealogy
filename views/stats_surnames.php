@@ -59,12 +59,14 @@ function last_names($max)
 {
     global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols;
     // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-    $personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
-        FROM humo_persons
+    $personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names FROM humo_persons
         WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname NOT LIKE ''
         GROUP BY pers_prefix,pers_lastname ORDER BY count_last_names DESC LIMIT 0," . $max;
     $person = $dbh->query($personqry);
-    while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
+    $freq_last_names = [];
+    $freq_pers_prefix = [];
+    $freq_count_last_names = [];
+    while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
         $freq_last_names[] = $personDb->pers_lastname;
         $freq_pers_prefix[] = $personDb->pers_prefix;
         $freq_count_last_names[] = $personDb->count_last_names;

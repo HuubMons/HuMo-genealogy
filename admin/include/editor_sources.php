@@ -4,8 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once(__DIR__ . "/editor_cls.php");
-$editor_cls = new editor_cls;
+$editor_cls = new Editor_cls;
 
 if (isset($_SESSION['admin_pers_gedcomnumber'])) {
     $pers_gedcomnumber = $_SESSION['admin_pers_gedcomnumber'];
@@ -245,12 +244,14 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="submit" name="submit" title="submit" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
 
+        <?php if (isset($_POST['event_person']) || isset($_GET['event_person'])) { ?>
+            <input type="hidden" name="event_person" value="1">
         <?php
-        if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
-            echo '<input type="hidden" name="event_person" value="1">';
         }
         if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
-            echo '<input type="hidden" name="event_family" value="1">';
+        ?>
+            <input type="hidden" name="event_family" value="1">
+        <?php
         }
 
         // *** Search for all connected sources ***
@@ -514,13 +515,11 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                     ?>
                         #addresses"><?= __('add new source'); ?></a>
 
-                    <?php
-                        echo '<input type="hidden" name="connect_role[' . $connectDb->connect_id . ']" value="">';
-                        echo '<input type="hidden" name="connect_page[' . $connectDb->connect_id . ']" value="">';
-                        echo '<input type="hidden" name="connect_quality[' . $connectDb->connect_id . ']" value="">';
-                        echo '<input type="hidden" name="connect_text[' . $connectDb->connect_id . ']" value="">';
-                    }
-                    ?>
+                        <input type="hidden" name="connect_role[<?= $connectDb->connect_id; ?>]" value="">
+                        <input type="hidden" name="connect_page[<?= $connectDb->connect_id; ?>]" value="">
+                        <input type="hidden" name="connect_quality[<?= $connectDb->connect_id; ?>]" value="">
+                        <input type="hidden" name="connect_text[<?= $connectDb->connect_id; ?>]" value="">
+                    <?php } ?>
                 </li>
             <?php } ?>
         </ul>
@@ -558,26 +557,28 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
         <h3><?= __('Add'); ?></h3>
         <form method="POST" action="<?= $phpself2; ?>">
             <input type="hidden" name="page" value="<?= $page; ?>">
+            <?php if (isset($_POST['event_person']) || isset($_GET['event_person'])) { ?>
+                <input type="hidden" name="event_person" value="1">
             <?php
-            if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
-                echo '<input type="hidden" name="event_person" value="1">';
             }
             if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
-                echo '<input type="hidden" name="event_family" value="1">';
-            }
-            echo '<input type="hidden" name="connect_kind" value="' . $connect_kind . '">';
-            echo '<input type="hidden" name="connect_sub_kind" value="' . $connect_sub_kind . '">';
-            echo '<input type="hidden" name="connect_connect_id" value="' . $connect_connect_id . '">';
-            if (isset($marriage)) {
-                echo '<input type="hidden" name="marriage_nr" value="' . $marriage . '">';
+            ?>
+                <input type="hidden" name="event_family" value="1">
+            <?php } ?>
+            <input type="hidden" name="connect_kind" value="<?= $connect_kind; ?>">
+            <input type="hidden" name="connect_sub_kind" value="<?= $connect_sub_kind; ?>">
+            <input type="hidden" name="connect_connect_id" value="<?= $connect_connect_id; ?>">
+            <?php if (isset($marriage)) { ?>
+                <input type="hidden" name="marriage_nr" value="<?= $marriage; ?>">
+            <?php
             }
 
             if ($nr_sources > 0) {
-                echo ' <input type="submit" name="connect_add" value="' . __('Add another source') . '" class="btn btn-sm btn-secondary">';
-            } else {
-                echo ' <input type="submit" name="connect_add" value="' . __('Add source') . '" class="btn btn-sm btn-secondary">';
-            }
             ?>
+                <input type="submit" name="connect_add" value="<?= __('Add another source'); ?>" class="btn btn-sm btn-secondary">
+            <?php } else { ?>
+                <input type="submit" name="connect_add" value="<?= __('Add source'); ?>" class="btn btn-sm btn-secondary">
+            <?php } ?>
         </form>
 <?php
     }

@@ -326,8 +326,7 @@
             $error_color = '';
             $show_message = '&nbsp;';
             if (($person->pers_bapt_date || $person->pers_birth_date) && $person->pers_death_date) {
-                include_once(__DIR__ . "/../../include/calculate_age_cls.php");
-                $process_age = new calculate_year_cls;
+                $process_age = new CalculateDates;
                 $age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
                 if ($age && ($age < 0 || $age > 120)) {
                     $error_color = 'background-color:#FFAA80;';
@@ -522,27 +521,27 @@
         <?php
         if ($editor['add_person'] == false) {
             // *** Event name (also show ADD line for prefix, suffix, title etc. ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'name');
+            echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'name');
 
             //TEST if editing is done in table, Ajax could be used.
             //echo '<tr><td></td><td colspan="2"><table class="humo">';
-            //echo $event_cls->show_event('person', $pers_gedcomnumber, 'name');
+            //echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'name');
             //echo '</table></td></tr>';
 
             // *** NPFX Name prefix like: Lt. Cmndr. ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'NPFX');
+            echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'NPFX');
 
             // *** NSFX Name suffix like: jr. ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'NSFX');
+            echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'NSFX');
 
             // *** Title of Nobility ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'nobility');
+            echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'nobility');
 
             // *** Title ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'title');
+            echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'title');
 
             // *** Lordship ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'lordship');
+            echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'lordship');
         }
 
         // *** Alive ***
@@ -817,7 +816,7 @@
         // *** Birth declaration ***
         if ($editor['add_person'] == false) {
             //show_event($event_connect_kind, $event_connect_id, $event_kind)
-            echo $event_cls->show_event('birth_declaration', $pers_gedcomnumber, 'witness');
+            echo $EditorEvent->show_event('birth_declaration', $pers_gedcomnumber, 'witness');
         }
 
 
@@ -1089,7 +1088,7 @@
         <?php
         // *** Baptism Witness ***
         if ($editor['add_person'] == false) {
-            echo $event_cls->show_event('CHR', $pers_gedcomnumber, 'ASSO');
+            echo $EditorEvent->show_event('CHR', $pers_gedcomnumber, 'ASSO');
         }
 
 
@@ -1364,7 +1363,7 @@
         <?php
         // *** Death declaration ***
         if ($editor['add_person'] == false) {
-            echo $event_cls->show_event('death_declaration', $pers_gedcomnumber, 'ASSO');
+            echo $EditorEvent->show_event('death_declaration', $pers_gedcomnumber, 'ASSO');
         }
 
 
@@ -1389,7 +1388,7 @@
                 ?>
                 <?= hideshow_editor($hideshow, $hideshow_text, $pers_buried_text); ?>
 
-                <input type="submit" name="add_burial_witness" value="<?= __('witness').' - '.__('clergy'); ?>" class="btn btn-sm btn-outline-primary ms-4">
+                <input type="submit" name="add_burial_witness" value="<?= __('witness') . ' - ' . __('clergy'); ?>" class="btn btn-sm btn-outline-primary ms-4">
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;display:none;">
                     <div class="row mb-2">
@@ -1456,7 +1455,7 @@
         <?php
         // *** Burial Witness ***
         if ($editor['add_person'] == false) {
-            echo $event_cls->show_event('BURI', $pers_gedcomnumber, 'ASSO');
+            echo $EditorEvent->show_event('BURI', $pers_gedcomnumber, 'ASSO');
         }
 
 
@@ -1541,10 +1540,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
         <?php
 
         // *** Profession(s) ***
-        echo $event_cls->show_event('person', $pers_gedcomnumber, 'profession');
+        echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'profession');
 
         // *** Religion ***
-        echo $event_cls->show_event('person', $pers_gedcomnumber, 'religion');
+        echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'religion');
 
         if (!isset($_GET['add_person'])) {
             // *** Show and edit places by person ***
@@ -1553,10 +1552,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
         if (!isset($_GET['add_person'])) {
             // *** Person event editor ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'person');
+            echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'person');
 
             // *** Picture ***
-            echo $event_cls->show_event('person', $pers_gedcomnumber, 'picture');
+            echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'picture');
 
             // *** Quality ***
             // Disabled quality by person. Quality officially belongs to a source...

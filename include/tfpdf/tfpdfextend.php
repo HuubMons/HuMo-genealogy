@@ -9,7 +9,7 @@ class PDF extends tFPDF
     //************************************************************************************************
 
     //**********************************************************************************************
-    // function pdfdisplay() to display details of person from array returned by person_cls.php
+    // function pdfdisplay() to display details of person from array returned by personCls.php
     //
     // it parses the values and places them as needed, including pictures and their text,  links to parents
     // it also places  "Born:"  "Died:" etc before their text (even though in the array they come after the text)
@@ -477,7 +477,7 @@ class PDF extends tFPDF
     }  // end function display details
 
     // ***********************************************************************************
-    //  function displayrel()  to display wedding/relation details from marriage_cls.php
+    //  function displayrel()  to display wedding/relation details from marriageCls.php
     // ***********************************************************************************
     function displayrel($templ_relation, $ancestor_report): void
     {

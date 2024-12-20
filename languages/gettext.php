@@ -641,7 +641,7 @@ function load_default_textdomain()
         $locale = 'en';
         // *** Extra check if language exists ***
         if (isset($_SESSION["language_selected"]) and file_exists(__DIR__ . '/' . $_SESSION["language_selected"] . '/' . $_SESSION["language_selected"] . '.mo')) {
-                $locale = $_SESSION["language_selected"];
+            $locale = $_SESSION["language_selected"];
         }
     }
 

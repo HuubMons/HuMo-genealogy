@@ -14,7 +14,7 @@ include_once(__DIR__ . '/layout_pdf.php');
 
 
 // TODO create seperate controller script.
-require_once __DIR__ . "/../app/model/family.php";
+require_once __DIR__ . "/../app/model/familyModel.php";
 $get_family = new FamilyModel($dbh);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
@@ -60,7 +60,7 @@ $pdf = new PDF();
 // *** Generate title of PDF file ***
 @$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use class to process person ***
-$pers_cls = new person_cls($persDb);
+$pers_cls = new PersonCls($persDb);
 $name = $pers_cls->person_name($persDb);
 if (!$data["descendant_report"] == false) {
     $title = pdf_convert(__('Descendant report') . __(' of ') . $name["standard_name"]);
@@ -88,7 +88,7 @@ if (!$data["family_id"]) {
     // *** Privacy filter ***
     @$parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
-    $parent1_cls = new person_cls($parent1Db);
+    $parent1_cls = new PersonCls($parent1Db);
 
     // *** Show familysheet name: user's choice or default ***
     $pdf->Cell(0, 2, " ", 0, 1);
@@ -234,14 +234,14 @@ else {
                 }
                 @$parent1Db = $db_functions->get_person($parent1);
                 // *** Proces parent1 using a class ***
-                $parent1_cls = new person_cls($parent1Db);
+                $parent1_cls = new PersonCls($parent1Db);
 
                 @$parent2Db = $db_functions->get_person($parent2);
                 // *** Proces parent2 using a class ***
-                $parent2_cls = new person_cls($parent2Db);
+                $parent2_cls = new PersonCls($parent2Db);
 
                 // *** Proces marriage using a class ***
-                $marriage_cls = new marriage_cls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
+                $marriage_cls = new MarriageCls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
                 $family_privacy = $marriage_cls->privacy;
 
 
@@ -468,7 +468,7 @@ else {
                     foreach ($child_array as $i => $value) {
                         @$childDb = $db_functions->get_person($child_array[$i]);
                         // *** Use person class ***
-                        $child_cls = new person_cls($childDb);
+                        $child_cls = new PersonCls($childDb);
 
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***

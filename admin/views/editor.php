@@ -43,13 +43,10 @@ if (!defined('ADMIN_PAGE')) {
 </script>
 
 <?php
-//$phpself = 'index.php';
-//$sourcestring = '../source.php?';
-//$addresstring = '../address.php?';
 $path_prefix = '../';
 
-$editor_cls = new editor_cls; // TODO editor_cls is also added in controller.
-$event_cls = new editor_event_cls;
+$editor_cls = new Editor_cls; // TODO editor_cls is also added in controller.
+$EditorEvent = new EditorEvent;
 
 // *** Temp variables ***
 $pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***
@@ -710,7 +707,7 @@ if ($check_person) {
             if ($person) {
                 // Onderstaande person_url2 werkt niet altijd goed!
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                //$popup_cls = New person_cls;
+                //$popup_cls = new PersonCls;
                 //$url=$popup_cls->person_url2($person->pers_tree_id,$person->pers_famc,$person->pers_fams,$person->pers_gedcomnumber);
                 //echo " <a href=\"#\" onClick=\"window.open('".$url."', '','width=800,height=500')\"><b>[".__('Preview').']</b></a>';
 

@@ -45,8 +45,8 @@ if (isset($_SESSION['admin_tree_id'])) {
     $tree_id = $_POST['tree_id1'];
     $gedcomnumber = $_POST['pers_gedcomnumber1'];
 
-    include_once(__DIR__."/../../include/db_functions_cls.php");
-    $db_functions = new db_functions();
+    include_once(__DIR__."/../../include/dbFunctions.php");
+    $db_functions = new DbFunctions();
     $db_functions->set_tree_id($tree_id);
 
     if ($gedcomnumber) {

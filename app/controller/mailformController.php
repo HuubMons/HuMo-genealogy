@@ -1,6 +1,4 @@
 <?php
-require_once  __DIR__ . "/../model/mailform.php";
-
 class MailformController
 {
     private $db_functions;

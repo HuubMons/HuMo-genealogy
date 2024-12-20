@@ -627,12 +627,8 @@ If possible, try to filter with that'); ?></i>
         ?>
             <tr>
                 <td><?= $data3Db->tree_id; ?> <?= $treetext_name; ?></td>
-                <?php
-                // *** Show/ hide tree for user ***
-                $check = ' checked';
-                if (in_array($data3Db->tree_id, $hide_tree_array)) $check = '';
-                ?>
-                <td><input type="checkbox" name="show_tree_<?= $data3Db->tree_id; ?>" <?= $check; ?>></td>
+                <!-- Show/ hide tree for user -->
+                <td><input type="checkbox" name="show_tree_<?= $data3Db->tree_id; ?>" <?= !in_array($data3Db->tree_id, $hide_tree_array) ? 'checked' : ''; ?>></td>
 
                 <td>
                     <?php

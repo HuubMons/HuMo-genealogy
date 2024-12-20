@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . "/../models/thumbs.php";
-
 class ThumbsController
 {
     public function detail($dbh, $tree_id)

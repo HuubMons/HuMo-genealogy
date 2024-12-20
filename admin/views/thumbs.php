@@ -5,8 +5,12 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 include_once(__DIR__ . "/../include/select_tree.php");
+include_once(__DIR__ . "/../include/media_inc.php");
 
 $prefx = '../'; // to get out of the admin map
+
+$data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
+$data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
 ?>
 
 <ul class="nav nav-tabs mt-1">
@@ -151,8 +155,384 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         </div>
 
         <?php if ($thumbs['menu_tab'] == 'picture_settings') { ?>
-            - <?= __('To show pictures, also check the user-group settings: '); ?>
-            <a href="index.php?page=groups"><?= __('User groups'); ?></a>
+            <?php
+            // TODO refactor
+            $is_thumblib = false;
+            $no_windows = (strtolower(substr(PHP_OS, 0, 3)) !== 'win');
+            if ($no_windows || extension_loaded('gd')) {
+                $is_thumblib = true;
+            }
+
+            // Auto create thumbnails
+            if (isset($_POST["thumbnail_auto_create"]) && ($_POST["thumbnail_auto_create"] == 'y' || $_POST["thumbnail_auto_create"] == 'n')) {
+                $db_functions->update_settings('thumbnail_auto_create', $_POST["thumbnail_auto_create"]);
+                $humo_option["thumbnail_auto_create"] = $_POST["thumbnail_auto_create"];
+            }
+            ?>
+
+            <div class="p-3 m-2 genealogy_search">
+                <h4><?= __('General picture settings'); ?></h4>
+
+                <?= __('To show pictures, also check the user-group settings: '); ?> <a href="index.php?page=groups"><?= __('User groups'); ?></a><br><br>
+
+                <div class="row mb-2">
+                    <div class="col-md-7">
+                        <?= __('Imagick (images)'); ?>
+                    </div>
+                    <div class="col-md-auto">
+                        <b><?= extension_loaded('imagick') ? strtolower(__('Yes')) : strtolower(__('No')); ?></b>
+                    </div>
+                </div>
+
+                <?php if (extension_loaded('imagick') && $no_windows) { ?>
+                    <div class="row mb-2">
+                        <div class="col-md-7">
+                            <?= __('Ghostscript (PDF support)'); ?>
+                        </div>
+                        <div class="col-md-auto">
+                            <b><?= (trim(shell_exec('type -P gs'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')); ?></b>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-7">
+                            <?= __('ffmpeg (movie support)'); ?>
+                        </div>
+                        <div class="col-md-auto">
+                            <b><?= (trim(shell_exec('type -P ffmpeg'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')); ?></b>
+                        </div>
+                    </div>
+                <?php } ?>
+
+                <div class="row mb-2">
+                    <div class="col-md-7">
+                        <?= __('GD (images)'); ?>
+                    </div>
+                    <div class="col-md-auto">
+                        <b><?= extension_loaded('gd') ? strtolower(__('Yes')) : strtolower(__('No')); ?></b>
+                    </div>
+                </div>
+
+                <?php if (!$is_thumblib) { ?>
+                    <?= __('No Thumbnail library available'); ?><br>
+                <?php } ?>
+
+                <!-- Automatically create thumbnails -->
+                <form method="POST" action="index.php?page=thumbs">
+                    <div class="row mb-2">
+                        <div class="col-md-7">
+                            <?= __('Automatically create thumbnails?'); ?>
+                        </div>
+                        <div class="col-md-auto">
+                            <select size="1" name="thumbnail_auto_create" onChange="this.form.submit();" class="form-select form-select-sm">
+                                <option value="n"><?= __('No'); ?></option>
+                                <option value="y" <?= $humo_option["thumbnail_auto_create"] == 'y' ? 'selected' : ''; ?>><?= __('Yes'); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Media privacy mode -->
+                <!-- TODO Refactor -->
+                <!-- TODO add translations using sprintf('Some text %s etc.',$variable); -->
+                <?php if (isset($_POST["media_privacy_mode"]) && ($_POST["media_privacy_mode"] == 'y' || $_POST["media_privacy_mode"] == 'n')) {
+                    //I'm putting the code related to the "media privacy mode" option here because I don't see a better place. If I'm wrong, this should be moved.
+                    //when media privacy mode is enabled/disabled and media dir is under root dir and this is apache we must update .htaccess content. Below we make validation and give detailed info to user
+
+                    //function takes absolute directory path and relative path - we can change this variables names to be more clear
+                    function checkMediaPrivacySupport($testDir, $path)
+                    {
+                        global $htaccess_support;
+                        //some log arrays
+                        $messages = [];
+                        $errors = [];
+
+                        $htaccessFilePath = $testDir . DIRECTORY_SEPARATOR . '.htaccess';
+                        $testFileJpg = 'HuMo_genealogy_test_file.jpg';
+                        $testFileJpgPath = $testDir . DIRECTORY_SEPARATOR . $testFileJpg;
+                        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+                        $host = $_SERVER['HTTP_HOST'];
+                        $serverAddress = $protocol . $host;
+                        $testUrlJpg = $serverAddress . DIRECTORY_SEPARATOR . $path . $testFileJpg;
+                        $testUrlDirIndex = $serverAddress . DIRECTORY_SEPARATOR . $path;
+                        $htaccess_ok = false;
+                        $mediaDirUnderRoot = null;
+
+                        try {
+                            if ($testDir) {
+                                $messages[] = '✅ ' . __('This media directory exists.') . '<br>';
+                            } else {
+                                //if there is no dir we don't check more
+                                $exception = '❌ ' . __('I can\'t find this directory. Check if it\'s created.') . '<br>';
+                                throw new Exception($exception);
+                            }
+
+                            $realDirectory = realpath($testDir);
+                            $documentRoot = realpath($_SERVER['DOCUMENT_ROOT']);
+
+                            // Check if the directory is under the document root
+                            if ($realDirectory && $documentRoot && strpos($realDirectory, $documentRoot) === 0) {
+                                $msg = '✅ ' . __('This directory is under the document root.');
+                                $mediaDirUnderRoot = true;
+                                if ($htaccess_support) {
+                                    $msg .= ' ' . __('On Apache we can operate both modes (media privacy on and off).');
+                                }
+                                $messages[] = $msg . '<br>';
+                            } else {
+                                $messages[] = 'ℹ️ ' . __('This directory is outside the document root so media privacy mode is only one working for this directory.') . '<br>';
+                                if ($_POST["media_privacy_mode"] === 'y') {
+                                    $messages[] = '✅ ' . __('In privacy mode your files will be safe and will be displayed.') . '<br>';
+                                }
+                                if ($_POST["media_privacy_mode"] === 'n') {
+                                    $messages[] = '❌ <span style="color: red;">' . __('In privacy mode disabled your files will still be safe but will not be displayed at all.') . '</span><br>';
+                                }
+                                $mediaDirUnderRoot = false;
+                            }
+                            //we create jpg file with one pixel for server testing purpouse
+                            $jpegHexString = 'FFD8FFE000104A46494600010101000100010000'
+                                . 'FFDB004300100B0C0E0C0A100E0D0E1211101318'
+                                . '281A181616183123251D283A333D3C3933383740'
+                                . '485C4E404457453738506D51575F626768673E4D'
+                                . '71797064785C656763'
+                                . 'FFC00011080001000103011100021101031101'
+                                . 'FFC4001F000001050101010101010000000000'
+                                . '00000102030405060708090A0B'
+                                . 'FFC400B5100002010303020403050504040000'
+                                . '017D0102030004110512213106411351610722'
+                                . '7114328191A1082342B1C11552D1F024336272'
+                                . '2A347835A445456476768798A2A3A4A5A6A7A8A9'
+                                . 'AAB2B3B4B5B6B7B8B9BAC2C3C4C5C6C7C8C9CA'
+                                . 'D2D3D4D5D6D7D8D9DAE1E2E3E4E5E6E7E8E9EA'
+                                . 'F1F2F3F4F5F6F7F8F9FA'
+                                . 'FFDA000C03010002110311003F00FDFCF8FFD9';
+                            $jpgContent = hex2bin($jpegHexString);
+
+                            // create test file
+                            if (@file_put_contents($testFileJpgPath, $jpgContent) === false) {
+                                $exception = '❌ ' . sprintf(__('Couldn\'t create "%s" in this directory. You will be unable to upload files. Check if directory has write permissions.'), $testFileJpg) . '<br>';
+
+                                throw new Exception($exception);
+                            } else {
+                                $messages[] = '✅ ' . sprintf(__('Created "%s" in this directory. Upload to directory is possible.'), $testFileJpg) . '<br>';
+                            }
+
+                            if ($mediaDirUnderRoot && $htaccess_support) {
+                                $htaccessContent = "Deny from all\n";
+                                $messages[] = '<br><b>' . __('Checking if we can use .htaccess on Apache compatible servers:') . '</b><br>';
+                                if (@file_put_contents($htaccessFilePath, $htaccessContent) === false) {
+                                    $exception = '❌ ' . __('Couldn\'t create .htaccess in this directory. Check if directory has write permissions.') . '<br>';
+                                    throw new Exception($exception);
+                                } else {
+                                    $messages[] = '✅ ' . __('Created .htaccess in this directory.') . '<br>';
+                                }
+
+                                $response = @file_get_contents($testUrlJpg);
+                                if ($response == $jpgContent) {
+                                    $messages[] = ("❌ I could read '$testFileJpgPath' ('$testUrlJpg') which is wrong. Despite creating a .htaccess file that forbids reading the file, I can access it. You probably don't have a misconfigured <a href='https://httpd.apache.org/docs/2.4/mod/core.html#allowoverride' target='_new'>AllowOverride directive </a>in your Apache configuration files. In privacy mode media will be served and visible but anyone with link can display it.<br>");
+                                } else {
+                                    $messages[] = '✅ ' . sprintf(__('Couldn\'t read %s which means test .htaccess protects files in this directory.'), $testFileJpgPath . ' (' . $testUrlJpg . ')') . '<br>';
+                                    $htaccess_ok = true;
+                                }
+
+                                if (@unlink($htaccessFilePath)) {
+                                    $messages[] = '✅ ' . __('Test .htaccess file deleted.') . '<br>';
+                                } else {
+                                    $messages[] = '❌ ' . __('Couldn\'t delete htaccess test file.') . '<br>';
+                                }
+
+                                // if htaccess works
+                                if ($htaccess_ok) {
+                                    $filePath = $testDir . '/.htaccess';
+                                    if ($_POST["media_privacy_mode"] === 'y') {
+                                        // .htaccess content with directive to not allow to get file by static link - file will be possible to get only by query url
+                                        $htaccessContent = "Deny from all\n";
+                                        if (@file_put_contents($filePath, $htaccessContent) !== false) {
+                                            $messages[] = '✅ <span style="color: green;">' . __('File .htaccess permanently modified in this directory protecting your files.') . '</span><br>';
+                                        } else {
+                                            throw new Exception("❌ Check permissions. I couldn't modify .htaccess in '$testDir'.<br>");
+                                        }
+                                    } elseif ($_POST["media_privacy_mode"] === 'n') {
+                                        $htaccessContent = '';
+                                        if (@file_put_contents($filePath, $htaccessContent) !== false) {
+                                            $messages[] = "❌ <span style='color: red;'>File .htaccess permanently modified in '$testDir' allowing direct access to files for anyone.</span><br>";
+                                        } else {
+                                            throw new Exception("❌ Check permissions. I couldn't modify .htaccess in '$testDir'.<br>");
+                                        }
+                                    }
+                                }
+                            } else {
+                                //for non under root and no htacces support we also check if we can get testfile
+                                $response = @file_get_contents($testUrlJpg);
+                                if ($response == $jpgContent) {
+                                    $messages[] = ("❌ <span style='color: red;'>I could read '$testFileJpgPath' ('$testUrlJpg'). In privacy mode media will be served and visible but anyone with link can display it.</span><br>");
+                                } else {
+                                    $messages[] = '✅ ' . sprintf(__('Couldn\'t read %s which means this directory is protected from direct access.'), $testFileJpgPath . ' (' . $testUrlJpg . ')') . '<br>';
+                                    $htaccess_ok = true;
+                                }
+                            }
+                            //not needed anymore so we can delete
+                            if (@unlink($testFileJpgPath)) {
+                                $messages[] = '✅ ' . sprintf(__('Test file "%s" deleted.'), $testFileJpg) . '<br>';
+                            } else {
+                                $messages[] = "❌ Couldn't delete test file ($testFileJpg).<br>";
+                            }
+                            // we also check if directory index is visible making the most threat to files
+                            $headers = get_headers($testUrlDirIndex, 1);
+                            // Check if the response is 200 OK or a directory listing
+                            if (strpos($headers[0], '200 OK') !== false) {
+                                $msg = "❌ <span style='color: red;'>Directory index for '$testUrlDirIndex' is publicly accessible! Everyone can get the media files list and display them!";
+                                $msg .= "You can disable acces to directory index by: ";
+                                if ($htaccess_ok) {
+                                    $msg .= "enabling privacy mode on or ";
+                                }
+                                $msg .= "changing Your server configuration.";
+                                if ($htaccess_support) {
+                                    $msg .= "For Apache servers You can add <a href='https://httpd.apache.org/docs/2.4/mod/core.html#options'>Options -Indexes</a> for directory.";
+                                }
+                                $msg .= "</span><br>";
+                                $messages[] = $msg;
+                            } else {
+                                $messages[] = '✅ <span style="color: green;">' . sprintf(__('Directory index for "%s" is not publicly accessible or indexing is disabled.'), $testUrlDirIndex) . '</span><br>';
+                            }
+                            $messagesArr['status'] = true;
+                        } catch (Exception $e) {
+                            // delete files on exceptions
+                            $errors[] = $e->getMessage();
+                            $messagesArr['status'] = false;
+                        } finally {
+                            $messagesArr['messages'] = $messages;
+                            $messagesArr['errors'] = $errors;
+                            return $messagesArr;
+                        }
+                    }
+                    $htaccess_support = false;
+                    //text which will be concatenated and use as info at the end
+                    $text = '';
+                    //first we will check what server soft user uses
+                    $text .= __('Checking server:').'<br>';
+                    $serverName = $_SERVER['SERVER_SOFTWARE'];
+                    //for simulating other options - delete after
+                    // $serverName = 'Nginx';
+                    if (strpos($serverName, 'Apache') !== false) {
+                        $server_soft = 'Apache';
+                        $htaccess_support = true;
+                        $text .= '✅ ' . __('Apache. Media privacy mode is fully compatible with Apache. It can operate both modes.') . '<br>';
+                    } elseif (strpos($serverName, 'LiteSpeed') !== false) {
+                        $server_soft = 'LiteSpeed';
+                        $htaccess_support = true;
+                        $text .= "✅ LiteSpeed. It's Apache compatible server. Media privacy mode should be fully compatible with LiteSpeed. It can operate both modes.<br> ";
+                    } elseif (strpos($serverName, 'Nginx') !== false) {
+                        $server_soft = 'Nginx';
+                        $text .= "❌ Nginx. Media privacy mode is not yet fully compatible with Nginx. You can achieve it by manually configuring your server or placing media directory outside root directory (but then normal mode will not work).<br>";
+                    } else {
+                        $server_soft = '❌ Unknown. We don&apos;t know if we can secure media directory.You can achieve it by manually configuring your server or placing media directory outside root directory (but then normal mode will not work).<br>';
+                    }
+                    $text .= "<hr>";
+
+
+                    //we take tree paths and tree names to combine them
+                    $tree_qry = "SELECT 
+                    t.tree_id,
+                    t.tree_pict_path,
+                    tt.treetext_tree_id,
+                    tt.treetext_name
+                     FROM 
+                    humo_trees t
+                     JOIN 
+                    humo_tree_texts tt
+                     ON 
+                    t.tree_id = tt.treetext_tree_id
+                      WHERE 
+                    t.tree_pict_path != 'EMPTY'";
+                    $datasql = $dbh->query($tree_qry);
+                    $rowCount = $datasql->rowCount();
+                    $treepaths = [];
+                    $tree_names = [];
+                    for ($i = 0; $i < $rowCount; $i++) {
+                        $tree_db = $datasql->fetch(PDO::FETCH_OBJ);
+                        $tree_pict_path = $tree_db->tree_pict_path;
+                        $tree_name = $tree_db->treetext_name;
+                        if (substr($tree_pict_path, 0, 1) === '|') {
+                            $tree_pict_path = 'media/';
+                        }
+                        if (!in_array($tree_pict_path, $treepaths)) $treepaths[] = $tree_pict_path;
+                        $tree_names[$tree_pict_path][] = $tree_name;
+                    }
+                    // prepare arr databases for displaying
+                    foreach ($treepaths as $key => $path) {
+                        $testDirectory = realpath(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $path);
+                        $text .= '<h5>';
+                        if ($testDirectory) {
+                            $text .= __('Check media path:') . ' <b>' . $testDirectory . '</b>';
+                        } else {
+                            //this else is only to give output when path not exists
+                            $text .= __('Check media path:') . ' <b>' . $path . '</b>';
+                        }
+                        $text .= '</h5>';
+
+                        $text .= __('In use for family trees:') . '<br>';
+                        // we are giving trees names for paths too - if the same path is used in many trees names are agregated for path
+                        foreach ($tree_names as $key2 => $value2) {
+                            if ($key2 === $path) {
+                                $text .= implode(", ", array_slice($tree_names[$key2], 0, -1));
+                                if (count($tree_names[$key2]) > 1) {
+                                    $text .= ', ';
+                                }
+                                $text .= end($tree_names[$key2]) . '<br>';
+                            }
+                        }
+                        $text .= '<br>';
+
+                        // Get the realpath of the directory and the document root
+                        $realDirectory = realpath($testDirectory);
+                        $documentRoot = realpath($_SERVER['DOCUMENT_ROOT']);
+                        try {
+                            $check = checkMediaPrivacySupport($testDirectory, $path);
+                            foreach ($check['messages'] as $message) {
+                                $text .= "$message\n";
+                            }
+                            foreach ($check['errors'] as $error) {
+                                $text .= "$error\n";
+                            }
+                            //imho not needed anymore - comment for a while than delete if no problems - all ported to function itself
+                            if ($check['status'] === true) {
+                                $htaccess_ok = true;
+                            }
+                        } catch (Exception $e) {
+                            $text .= $e->getMessage();
+                            //imho not needed anymore - comment for a while than delete if no problems - all ported to function itself
+                            $htaccess_ok = false;
+                        }
+                        $text .= '<hr>';
+                    }
+
+                    $db_functions->update_settings('media_privacy_mode', $_POST["media_privacy_mode"]);
+                    $humo_option["media_privacy_mode"] = $_POST["media_privacy_mode"];
+                ?>
+
+                    <div class="alert <?= $htaccess_support ? 'alert-success' : 'alert-danger'; ?>" role="alert">
+                        <?= $text; ?>
+                        <!-- TODO: make function for automatic checks when directories are changed in tree options -->
+                        <p class='alert alert-danger'>ℹ️ <?= __('If You create or change media path for any of your trees You must reenable, redisable this option.'); ?></p>
+                    </div>
+                <?php } ?>
+
+                <form method="POST" action="index.php?page=thumbs">
+                    <div class="row mb-2">
+                        <div class="col-md-7">
+                            <?= __('Secure media folder for direct access?'); ?>
+                        </div>
+                        <div class="col-md-auto">
+                            <select size="1" name="media_privacy_mode" onChange="this.form.submit();" class="form-select form-select-sm">
+                                <option value="n"><?= __('No'); ?></option>
+                                <option value="y" <?= $humo_option["media_privacy_mode"] == 'y' ? 'selected' : ''; ?>><?= __('Yes'); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
         <?php
         }
 
@@ -284,8 +664,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         }
         ?>
 
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="thumbs">
+        <form method="post" action="index.php?page=thumbs" style="display : inline;">
             <input type="hidden" name="menu_tab" value="picture_categories">
             <input type="hidden" name="language_tree" value="<?= $language_tree; ?>">
 
@@ -477,15 +856,21 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 $picture_path_new = substr($picture_path_new, 0, -3);  // move from subfolder to main folder
             }
         }
-
+        // remove thumb old naming system
+        if (file_exists($picture_path_old . 'thumb_' . $_POST['filename_old'])) {
+            unlink($picture_path_old . 'thumb_' . $_POST['filename_old']);
+        }
+        // remove old thumb new system
+        if (file_exists($picture_path_old . 'thumb_' . $_POST['filename_old'] . '.jpg')) {
+            unlink($picture_path_old . 'thumb_' . $_POST['filename_old'] . '.jpg');
+        }
+        // rename and create new thumbnail       
         if (file_exists($picture_path_old . $_POST['filename_old'])) {
             rename($picture_path_old . $_POST['filename_old'], $picture_path_new . $_POST['filename']);
-            echo '<b>' . __('Changed filename:') . '</b> ' . $picture_path_old . $_POST['filename_old'] . ' <b>' . __('into filename:') . '</b> ' . $picture_path_new . $_POST['filename'] . '<br>';
-        }
-
-        if (file_exists($picture_path_old . 'thumb_' . $_POST['filename_old'])) {
-            rename($picture_path_old . 'thumb_' . $_POST['filename_old'], $picture_path_new . 'thumb_' . $_POST['filename']);
-            echo '<b>' . __('Changed filename:') . ' </b>' . $picture_path_old . 'thumb_' . $_POST['filename_old'] . ' <b>' . __('into filename:') . '</b> ' . $picture_path_new . 'thumb_' . $_POST['filename'] . '<br>';
+            echo '<b>' . __('Changed filename:') . ' </b>' . $picture_path_old .  $_POST['filename_old'] . ' <b>' . __('into filename:') . '</b> ' . $picture_path_new .  $_POST['filename'] . '<br>';
+            if (check_media_type($picture_path_new, $_POST['filename']) && create_thumbnail($picture_path_new, $_POST['filename'])) {
+                echo '<b>' . __('Changed filename:') . ' ' . __('into filename:') . '</b> ' . $picture_path_new . 'thumb_' . $_POST['filename'] . '.jpg<br>';
+            }
         }
 
         $sql = "UPDATE humo_events SET
@@ -529,110 +914,73 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 echo '<br style="clear: both">';
                 echo '<h3>' . $selected_picture_folder . '</h3>';
 
-                $dh = opendir($selected_picture_folder);
-                $gd = gd_info(); // certain versions of GD don't handle gifs
-                while (false !== ($filename = readdir($dh))) {
-                    $imgtype = strtolower(substr($filename, -3));
+                $files = preg_grep('/^([^.])/', scandir($selected_picture_folder));
+                foreach ($files as $filename) {
+
                     if (
-                        $imgtype === "jpg" || $imgtype === "png" || $imgtype === "gif" && $gd["GIF Read Support"] == TRUE && $gd["GIF Create Support"] == TRUE
+                        substr($filename, 0, 5) !== 'thumb' &&
+                        isset($_POST["thumbnail"]) &&
+                        !is_dir($selected_picture_folder . $filename)  &&
+                        check_media_type($selected_picture_folder, $filename)
                     ) {
-                        //$pict_path_original=$prefx.$pict_path."/".$filename;    //ORIGINEEL
-                        //$pict_path_thumb=$prefx.$pict_path."/thumb_".$filename; //THUMB
 
-                        $pict_path_original = $selected_picture_folder . $filename;        //ORIGINEEL
-                        $pict_path_thumb = $selected_picture_folder . 'thumb_' . $filename; //THUMB
-
-                        // test: maybe create only new thumbnails.
-                        //if (substr($filename, 0, 5) != 'thumb'){ 
-                        //	if (file_exists($pict_path_thumb)) echo 'EXISTS<br>'; else echo 'NEW '.$pict_path_thumb.'<br>';
-                        //}
-
-                        //*** Create a thumbnail ***
-                        if (substr($filename, 0, 5) !== 'thumb' && !isset($_POST['change_filename'])) {
-                            // *** Get size of original picture ***
-                            list($width, $height) = getimagesize($pict_path_original);
-
-                            // *** Calculate format ***
-                            $factor = $height / $thumb_height;
-                            $newheight = round($thumb_height);
-                            $newwidth = round($width / $factor);
-
-                            // *** Picture folder must be writable!!!
-                            // Sometimes it's necessary to remove ; in php.ini before this line:
-                            // extension=php.gd2.dll
-
-                            // $thumb = imagecreate($newwidth, $newheight);
-                            $thumb = imagecreatetruecolor($newwidth, $newheight);
-                            if ($imgtype === "jpg") {
-                                $source = imagecreatefromjpeg($pict_path_original);
-                            } elseif ($imgtype === "png") {
-                                $source = imagecreatefrompng($pict_path_original);
-                            } else {
-                                $source = imagecreatefromgif($pict_path_original);
-                            }
-
-                            // *** Resize ***
-                            imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-                            if ($imgtype === "jpg") {
-                                @imagejpeg($thumb, $pict_path_thumb);
-                            } elseif ($imgtype === "png") {
-                                @imagepng($thumb, $pict_path_thumb);
-                            } else {
-                                @imagegif($thumb, $pict_path_thumb);
-                            }
-                        }
-
-                        // *** Show thumbnails ***
-                        if (substr($filename, 0, 5) !== 'thumb') {
-        ?>
-                            <div class="photobook">
-                                <img src="<?= $pict_path_thumb; ?>" title="<?= $pict_path_thumb; ?>">
-                                <?php
-                                // *** Show name of connected persons ***
-                                include_once(__DIR__ . '/../../include/person_cls.php');
-                                $picture_text = '';
-                                $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "'
-                                    AND event_connect_kind='person' AND event_kind='picture'
-                                    AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
-                                $afbqry = $dbh->query($sql);
-                                $picture_privacy = false;
-                                while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                                    $person_cls = new person_cls;
-                                    $db_functions->set_tree_id($tree_id);
-                                    $personDb = $db_functions->get_person($afbDb->event_connect_id);
-                                    $name = $person_cls->person_name($personDb);
-
-                                    // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                    $uri_path = '../'; // *** Needed if url_rewrite is enabled ***
-                                    $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
-                                    $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
-                                }
-                                echo $picture_text;
-
-                                if (isset($_POST['change_filename'])) {
-                                ?>
-                                    <form method="POST" action="index.php">
-                                        <input type="hidden" name="page" value="thumbs">
-                                        <input type="hidden" name="menu_tab" value="picture_show">
-                                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                                        <input type="hidden" name="picture_path" value="<?= $selected_picture_folder; ?>">
-                                        <input type="hidden" name="filename_old" value="<?= $filename; ?>">
-                                        <input type="text" name="filename" value="<?= $filename; ?>" size="20">
-                                        <input type="submit" name="change_filename" value="<?= __('Change filename'); ?>">
-                                    </form>
-                                <?php } else { ?>
-                                    <div class="photobooktext"><?= $filename; ?></div>
-                                <?php } ?>
-                            </div>
-    <?php
+                        if (
+                            !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') && // don't create thumb on corrupt file
+                            empty(thumbnail_exists($selected_picture_folder, $filename))
+                        ) {    // don't create thumb if one exists
+                            create_thumbnail($selected_picture_folder, $filename); // in media_inc.php script 
                         }
                     }
+
+                    // *** Show thumbnails ***
+                    if (
+                        substr($filename, 0, 5) !== 'thumb' &&
+                        check_media_type($selected_picture_folder, $filename) &&
+                        !is_dir($selected_picture_folder . $filename)
+                    ) {
+        ?>
+                        <div class="photobook">
+                            <?php
+                            echo print_thumbnail($selected_picture_folder, $filename);
+                            // *** Show name of connected persons ***
+                            $picture_text = '';
+                            $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "'
+                                AND event_connect_kind='person' AND event_kind='picture'
+                                AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
+                            $afbqry = $dbh->query($sql);
+                            $picture_privacy = false;
+                            while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
+                                $person_cls = new PersonCls;
+                                $db_functions->set_tree_id($tree_id);
+                                $personDb = $db_functions->get_person($afbDb->event_connect_id);
+                                $name = $person_cls->person_name($personDb);
+
+                                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                                $uri_path = '../'; // *** Needed if url_rewrite is enabled ***
+                                $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                                $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
+                            }
+                            echo $picture_text;
+
+                            if (isset($_POST['change_filename'])) {
+                            ?>
+                                <form method="POST" action="index.php">
+                                    <input type="hidden" name="page" value="thumbs">
+                                    <input type="hidden" name="menu_tab" value="picture_show">
+                                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                                    <input type="hidden" name="picture_path" value="<?= $selected_picture_folder; ?>">
+                                    <input type="hidden" name="filename_old" value="<?= $filename; ?>">
+                                    <input type="text" name="filename" value="<?= $filename; ?>" size="20">
+                                    <input type="submit" name="change_filename" value="<?= __('Change filename'); ?>">
+                                </form>
+                            <?php } else { ?>
+                                <div class="photobooktext"><?= $filename; ?></div>
+                            <?php } ?>
+                        </div>
+    <?php
+                    }
                 }
-                closedir($dh);
             }
-        } else {
-            // *** Normally this is not used ***
-            echo '<b>' . __('This folder does not exists!') . '</b>';
         }
     }
     ?>

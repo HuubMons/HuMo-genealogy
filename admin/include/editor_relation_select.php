@@ -20,8 +20,7 @@ if ($adoption_id) {
     $form = 'form1';
 }
 
-include(__DIR__ . '/editor_cls.php');
-$editor_cls = new editor_cls;
+$editor_cls = new Editor_cls;
 
 echo '
     <script>
@@ -38,23 +37,26 @@ $link = 'index.php?page=editor_relation_select';
 if ($adoption_id) {
     $link .= '&amp;adoption_id=' . $adoption_id;
 }
-echo '<form method="POST" action="' . $link . '" style="display : inline;">';
-$search_quicksearch_parent = '';
-if (isset($_POST['search_quicksearch_parent'])) {
-    $search_quicksearch_parent = safe_text_db($_POST['search_quicksearch_parent']);
-}
-echo '<input type="text" name="search_quicksearch_parent" placeholder="' . __('Name') . '" value="' . $search_quicksearch_parent . '" size="15">';
+?>
+<form method="POST" action="<?= $link; ?>" style="display : inline;">
+    <?php
+    $search_quicksearch_parent = '';
+    if (isset($_POST['search_quicksearch_parent'])) {
+        $search_quicksearch_parent = safe_text_db($_POST['search_quicksearch_parent']);
+    }
+    echo '<input type="text" name="search_quicksearch_parent" placeholder="' . __('Name') . '" value="' . $search_quicksearch_parent . '" size="15">';
 
-$search_person_id = '';
-if (isset($_POST['search_person_id'])) {
-    $search_person_id = safe_text_db($_POST['search_person_id']);
-}
-echo ' ' . __('or ID:') . ' <input type="text" name="search_person_id" value="' . $search_person_id . '" size="5">';
+    $search_person_id = '';
+    if (isset($_POST['search_person_id'])) {
+        $search_person_id = safe_text_db($_POST['search_person_id']);
+    }
+    echo ' ' . __('or ID:') . ' <input type="text" name="search_person_id" value="' . $search_person_id . '" size="5">';
 
-echo ' <input type="submit" value="' . __('Search') . '">';
-echo '</form><br>';
+    echo ' <input type="submit" value="' . __('Search') . '">';
+    ?>
+</form><br>
 
-
+<?php
 if ($search_quicksearch_parent != '') {
     // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
     $search_quicksearch_parent = str_replace(' ', '%', $search_quicksearch_parent);
@@ -103,7 +105,7 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $db_functions->set_tree_id($tree_id);
     $persDb = $db_functions->get_person($parentsDb->fam_man);
 
-    $pers_cls = new person_cls($persDb);
+    $pers_cls = new PersonCls($persDb);
     $name = $pers_cls->person_name($persDb);
     $parent2_text .= $name["standard_name"];
 
@@ -114,7 +116,7 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $db_functions->set_tree_id($tree_id);
     $persDb = $db_functions->get_person($parentsDb->fam_woman);
 
-    $pers_cls = new person_cls($persDb);
+    $pers_cls = new PersonCls($persDb);
     $name = $pers_cls->person_name($persDb);
     $parent2_text .= $name["standard_name"];
 

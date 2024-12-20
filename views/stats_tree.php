@@ -15,12 +15,12 @@ while (@$record = $res->fetch(PDO::FETCH_OBJ)) {
 
 if ($test_number != "0") {
     @$record = $db_functions->get_person($man_gedcomnumber);
-    $person_cls = new person_cls($record);
+    $person_cls = new PersonCls($record);
     $name = $person_cls->person_name($record);
     $man = $name["standard_name"];
 
     @$record = $db_functions->get_person($woman_gedcomnumber);
-    $person_cls = new person_cls($record);
+    $person_cls = new PersonCls($record);
     $name = $person_cls->person_name($record);
     $woman = $name["standard_name"];
 

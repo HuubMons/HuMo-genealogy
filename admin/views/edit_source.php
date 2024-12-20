@@ -9,7 +9,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
+$path_prefix = '../';
 
 // *** These items are needed for adding and changing picture ***
 $phpself = 'index.php';
@@ -32,11 +32,8 @@ $tree_pict_path = $dataDb->tree_pict_path;
 if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
 }
-$path_prefix = '../';
 
-
-include(__DIR__ . '/../include/editor_event_cls.php');
-$event_cls = new editor_event_cls;
+$EditorEvent = new EditorEvent;
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {
@@ -249,7 +246,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
 
     $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
 ?>
-    <form method="POST" action="index.php" name="form3" id="form3">
+    <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form3" id="form3">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
         <input type="hidden" name="source_gedcomnr" value="<?= $source_gedcomnr; ?>">
@@ -386,7 +383,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <!-- Picture by source -->
                 <?php
                 if (!isset($_POST['add_source'])) {
-                    echo $event_cls->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
+                    echo $EditorEvent->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
                 } ?>
             </table>
 

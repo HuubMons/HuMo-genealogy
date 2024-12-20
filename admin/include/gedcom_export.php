@@ -1766,16 +1766,18 @@ function process_date($gedcom_version, $text)
     if ($gedcom_version == '551') {
         //
     } else {
-        // *** Remove extra 0 for GEDCOM 7 export ***
-        $text = str_replace('01 ', '1 ', $text);
-        $text = str_replace('02 ', '2 ', $text);
-        $text = str_replace('03 ', '3 ', $text);
-        $text = str_replace('04 ', '4 ', $text);
-        $text = str_replace('05 ', '5 ', $text);
-        $text = str_replace('06 ', '6 ', $text);
-        $text = str_replace('07 ', '7 ', $text);
-        $text = str_replace('08 ', '8 ', $text);
-        $text = str_replace('09 ', '9 ', $text);
+        if ($text) {
+            // *** Remove extra 0 for GEDCOM 7 export ***
+            $text = str_replace('01 ', '1 ', $text);
+            $text = str_replace('02 ', '2 ', $text);
+            $text = str_replace('03 ', '3 ', $text);
+            $text = str_replace('04 ', '4 ', $text);
+            $text = str_replace('05 ', '5 ', $text);
+            $text = str_replace('06 ', '6 ', $text);
+            $text = str_replace('07 ', '7 ', $text);
+            $text = str_replace('08 ', '8 ', $text);
+            $text = str_replace('09 ', '9 ', $text);
+        }
     }
     return $text;
 }

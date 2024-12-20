@@ -207,8 +207,8 @@ $found = false; // if this stays false, displays message that no problems where 
 function invalid($date, $gednr, $table)
 {  // checks validity with validate_cls.php and displays invalid dates and their details
     global $dbh, $db_functions, $tree_id, $dirmark1, $dirmark2;
-    include_once(__DIR__ . '/../../include/validate_date_cls.php');
-    $process_date = new validate_date_cls;
+    include_once(__DIR__ . '/../../include/validateDate.php');
+    $process_date = new validateDate;
     $compare_date = $date;
     if (strpos($date, '/') > 0) { // check for combined julian/gregorian date entries like 1654/5 and check the first part
         $temp = explode('/', $date);
