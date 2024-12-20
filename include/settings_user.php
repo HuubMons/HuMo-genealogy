@@ -47,18 +47,13 @@ $user['group_menu_places'] = $groupDb->group_menu_places;
 
 $user['group_menu_login'] = isset($groupDb->group_menu_login) ? $groupDb->group_menu_login : 'j';
 
-if (!isset($groupDb->group_menu_change_password)) {
-    $user['group_menu_change_password'] = 'y';
-} else {
-    $user['group_menu_change_password'] = $groupDb->group_menu_change_password;
-}
+$user['group_menu_change_password'] = isset($groupDb->group_menu_change_password) ? $groupDb->group_menu_change_password : 'y';
 
 $user["group_privacy"] = $groupDb->group_privacy;
 
 $user['group_admin'] = $groupDb->group_admin;
 
-//if (!isset($groupDb->group_editor)){ $user['group_editor']='n'; }
-//	else{ $user['group_editor']=$groupDb->group_editor; }
+//$user['group_editor'] = isset($groupDb->group_editor) ? $groupDb->group_editor : 'n';
 
 $user['group_pictures'] = $groupDb->group_pictures;
 
@@ -66,29 +61,13 @@ $user['group_photobook'] = isset($groupDb->group_photobook) ? $groupDb->group_ph
 
 $user['group_sources'] = $groupDb->group_sources;
 
-if (!isset($groupDb->group_show_restricted_source)) {
-    $user['group_show_restricted_source'] = 'y';
-} else {
-    $user['group_show_restricted_source'] = $groupDb->group_show_restricted_source;
-}
+$user['group_show_restricted_source'] = isset($groupDb->group_show_restricted_source) ? $groupDb->group_show_restricted_source : 'y';
 
-if (!isset($groupDb->group_source_presentation)) {
-    $user['group_source_presentation'] = 'title';
-} else {
-    $user['group_source_presentation'] = $groupDb->group_source_presentation;
-}
+$user['group_source_presentation'] = isset($groupDb->group_source_presentation) ? $groupDb->group_source_presentation : 'title';
 
-if (!isset($groupDb->group_text_presentation)) {
-    $user['group_text_presentation'] = 'show';
-} else {
-    $user['group_text_presentation'] = $groupDb->group_text_presentation;
-}
+$user['group_text_presentation'] = isset($groupDb->group_text_presentation) ? $groupDb->group_text_presentation : 'show';
 
-if (!isset($groupDb->group_citation_generation)) {
-    $user['group_citation_generation'] = 'n';
-} else {
-    $user['group_citation_generation'] = $groupDb->group_citation_generation;
-}
+$user['group_citation_generation'] = isset($groupDb->group_citation_generation) ? $groupDb->group_citation_generation : 'n';
 
 // *** User can add notes/ remarks by a person in the family tree ***
 $user['group_user_notes'] = isset($groupDb->group_user_notes) ? $groupDb->group_user_notes : 'n';
@@ -105,26 +84,15 @@ $user['group_event'] = $groupDb->group_event; // Show events
 $user['group_addresses'] = $groupDb->group_addresses; // Show addresses IN MENU
 $user['group_own_code'] = $groupDb->group_own_code; // Show Own code
 
-if (!isset($groupDb->group_show_age_living_person)) {
-    $user['group_show_age_living_person'] = 'y';
-} else {
-    $user['group_show_age_living_person'] = $groupDb->group_show_age_living_person;
-}
+$user['group_show_age_living_person'] = isset($groupDb->group_show_age_living_person) ? $groupDb->group_show_age_living_person : 'y';
 
 $user['group_pdf_button'] = isset($groupDb->group_pdf_button) ? $groupDb->group_pdf_button : 'y';
 
 $user['group_rtf_button'] = isset($groupDb->group_rtf_button) ? $groupDb->group_rtf_button : 'n';
 
-if (!isset($groupDb->group_family_presentation)) {
-    $user['group_family_presentation'] = 'compact';
-} else {
-    $user['group_family_presentation'] = $groupDb->group_family_presentation;
-}
-if (!isset($groupDb->group_maps_presentation)) {
-    $user['group_maps_presentation'] = 'hide';
-} else {
-    $user['group_maps_presentation'] = $groupDb->group_maps_presentation;
-}
+$user['group_family_presentation'] = isset($groupDb->group_family_presentation) ? $groupDb->group_family_presentation : 'compact';
+
+$user['group_maps_presentation'] = isset($groupDb->group_maps_presentation) ? $groupDb->group_maps_presentation : 'hide';
 
 $user['group_work_text'] = $groupDb->group_work_text; // Show (Haza-data) worktexts
 $user['group_texts'] = $groupDb->group_texts; // Show (marriage?) text
@@ -153,11 +121,7 @@ $user['group_filter_pers_show'] = $groupDb->group_filter_pers_show; // Person fi
 $user['group_filter_pers_hide_act'] = $groupDb->group_filter_pers_hide_act; // Activate next line
 $user['group_filter_pers_hide'] = $groupDb->group_filter_pers_hide; // Person filter
 
-if (!isset($groupDb->group_pers_hide_totally_act)) {
-    $user['group_pers_hide_totally_act'] = 'n';
-} else {
-    $user['group_pers_hide_totally_act'] = $groupDb->group_pers_hide_totally_act;
-}
+$user['group_pers_hide_totally_act'] = isset($groupDb->group_pers_hide_totally_act) ? $groupDb->group_pers_hide_totally_act : 'n';
 
 $user['group_pers_hide_totally'] = isset($groupDb->group_pers_hide_totally) ? $groupDb->group_pers_hide_totally : 'X';
 

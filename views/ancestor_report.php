@@ -197,15 +197,13 @@ $listed_array = array();
                     <td>
                         <!-- Show data man -->
                         <div class="parent1">
-                            <?php
-                            // ***  Use "child", to show a link for own family. ***
-                            echo $man_cls->name_extended("child");
-                            if ($listednr == '') {
-                                echo $man_cls->person_data("standard", $ancestor_array[$i]);
-                            } else { // person was already listed
-                                echo ' <strong> (' . __('Already listed above as number ') . $listednr . ') </strong>';
-                            }
-                            ?>
+                            <!-- Use "child", to show a link for own family. -->
+                            <?= $man_cls->name_extended("child"); ?>
+                            <?php if ($listednr == '') { ?>
+                                <?= $man_cls->person_data("standard", $ancestor_array[$i]); ?>
+                            <?php } else { ?>
+                                <strong> (<?= __('Already listed above as number ') . $listednr; ?>) </strong>
+                            <?php } ?>
                         </div>
                     </td>
                 </tr>

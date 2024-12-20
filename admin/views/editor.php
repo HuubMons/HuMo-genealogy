@@ -1725,38 +1725,29 @@ if ($check_person) {
                     <?= __('Address'); ?>
                     <select size="1" name="connect_item_id[<?= $key; ?>]" style="width: 300px">
                         <option value=""><?= __('Select address'); ?></option>
-                        <?php
-                            while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) {
-                                // *** Only shared addresses (at this moment) ***
-                                $selected = '';
-                                if ($addressDb->connect_item_id == $address2Db->address_gedcomnr) {
-                                    $selected = ' selected';
-                                }
-                                echo '<option value="' . $address2Db->address_gedcomnr . '"' . $selected . '>' . $address2Db->address_place . ', ' . $address2Db->address_address;
+                        <!-- Only shared addresses (at this moment) -->
+                        <?php while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) { ?>
+                            <option value="<?= $address2Db->address_gedcomnr; ?>" <?= $addressDb->connect_item_id == $address2Db->address_gedcomnr ? 'selected' : ''; ?>>
+                                <?= $address2Db->address_place; ?>, <?= $address2Db->address_address; ?>
+                                <?php
                                 if ($address2Db->address_text) {
                                     echo ' ' . substr($address2Db->address_text, 0, 40);
                                     if (strlen($address2Db->address_text) > 40) {
                                         echo '...';
                                     }
                                 }
-                                echo ' [' . $address2Db->address_gedcomnr . ']</option>';
-                            }
-                        ?>
+                                ?>
+                                [<?= $address2Db->address_gedcomnr; ?>]
+                            </option>
+                        <?php } ?>
                     </select>
 
                     <?= __('Or: add new address'); ?>
+                    <a href="index.php?page=<?= $page; ?><?= $connect_kind == 'person' ? '&amp;person_place_address=1' : '&amp;family_place_address=1'; ?>&amp;address_add2=1&amp;connect_id=<?= $addressDb->connect_id; ?>&amp;connect_kind=<?= $addressDb->connect_kind; ?>&amp;connect_sub_kind=<?= $addressDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $addressDb->connect_connect_id; ?>#addresses">
+                        [<?= __('Add'); ?>]
+                    </a>
                 <?php
-                            echo ' <a href="index.php?page=' . $page;
-                            if ($connect_kind == 'person') {
-                                echo '&amp;person_place_address=1';
-                            } else {
-                                echo '&amp;family_place_address=1';
-                            }
-                            echo '&amp;address_add2=1&amp;connect_id=' . $addressDb->connect_id . '
-                            &amp;connect_kind=' . $addressDb->connect_kind . '&amp;connect_sub_kind=' . $addressDb->connect_sub_kind . '
-                            &amp;connect_connect_id=' . $addressDb->connect_connect_id . '#addresses">[' . __('Add') . ']</a> ';
                         }
-
                         //echo '</div>';
                 ?>
                 </td>

@@ -95,11 +95,9 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         <thead class="table-primary">
             <tr>
                 <th><?= __('Group'); ?>
-                    <?php
-                    if ($groupDb->group_id > '3') {
-                        echo ' <input type="submit" name="group_remove" value="' . __('REMOVE GROUP') . '" class="btn btn-sm btn-secondary">';
-                    }
-                    ?>
+                    <?php if ($groupDb->group_id > '3') { ?>
+                        <input type="submit" name="group_remove" value="<?= __('REMOVE GROUP'); ?>" class="btn btn-sm btn-secondary">
+                    <?php } ?>
                 </th>
                 <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
             </tr>
@@ -112,19 +110,8 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <tr>
             <td><?= __('Administrator'); ?></td>
-            <?php
-            $check = '';
-            if ($groupDb->group_admin != 'n') {
-                $check = ' checked';
-            }
-            // *** Administrator group: don't change admin rights for administrator ***
-            $disabled = '';
-            if ($groupDb->group_id == '1') {
-                $disabled = ' disabled';
-                echo '<input type="hidden" name="group_admin" value="' . $groupDb->group_admin . '">';
-            }
-            ?>
-            <td><input type="checkbox" name="group_admin" <?= $check . $disabled; ?>></td>
+            <!-- Administrator group: don't change admin rights for administrator -->
+            <td><input type="checkbox" name="group_admin" <?= $groupDb->group_admin != 'n' ? 'checked' : ''; ?> <?= $groupDb->group_id == '1' ? 'disabled' : ''; ?>></td>
         </tr>
 
         <tr>
@@ -204,15 +191,8 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <tr>
             <td><?= __('Show "Login" link (can be changed in group "guest" only)'); ?></td>
-            <?php
-            // *** Only change this item for guest group ***
-            $disabled = '';
-            if ($groupDb->group_id != '3') {
-                $disabled = ' disabled';
-                echo '<input type="hidden" name="group_menu_login" value="' . $groupDb->group_menu_login . '">';
-            }
-            ?>
-            <td><input type="checkbox" name="group_menu_login" <?= $groupDb->group_menu_login != 'n' ? 'checked' : ''; ?> <?= $disabled; ?>></td>
+            <!-- Only change this item for guest group -->
+            <td><input type="checkbox" name="group_menu_login" <?= $groupDb->group_menu_login != 'n' ? 'checked' : ''; ?> <?= $groupDb->group_id != '3' ? 'disabled' : ''; ?>></td>
         </tr>
 
         <tr>
@@ -332,22 +312,13 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <tr>
             <td><?= __('User is allowed to add notes/ remarks by a person in the family tree') . '. ' . __('Disabled in group "Guest"'); ?></td>
-            <?php
-            $disabled = '';
-            // *** Disable this option in "Guest" group.
-            if ($groupDb->group_id == '3') {
-                $disabled = ' disabled';
-            }
-            ?>
-            <td><input type="checkbox" name="group_user_notes" <?= $groupDb->group_user_notes != 'n' ? 'checked' : ''; ?> <?= $disabled; ?>></td>
+            <!-- Disable this option in "Guest" group -->
+            <td><input type="checkbox" name="group_user_notes" <?= $groupDb->group_user_notes != 'n' ? 'checked' : ''; ?> <?= $groupDb->group_id == '3' ? 'disabled' : ''; ?>></td>
         </tr>
 
         <tr>
             <td><?= __('User can see notes/ remarks added by other users in the family tree'); ?></td>
-            <?php
-            $disabled = ''; //if ($groupDb->group_id=='3'){ $disabled=' disabled';} // *** Disable this option in "Guest" group.
-            ?>
-            <td><input type="checkbox" name="group_user_notes_show" <?= $groupDb->group_user_notes_show != 'n' ? 'checked' : ''; ?> <?= $disabled; ?>></td>
+            <td><input type="checkbox" name="group_user_notes_show" <?= $groupDb->group_user_notes_show != 'n' ? 'checked' : ''; ?>></td>
         </tr>
 
         <!-- Sources -->
@@ -410,13 +381,14 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <tr>
             <td>
+                <!-- SPARE ITEM -->
+                <input type="hidden" name="group_texts" value="j">
                 <?php
-                // *** SPARE ITEM ***
-                echo '<input type="hidden" name="group_texts" value="j">';
-                //echo '<tr><td>'.__('Show text at wedding [NOT YET IN USE]').'</td>';
-                //echo '<td><select size="1" name="group_texts"><option value="j">'.__('Yes').'</option>';
-                //$selected=''; if ($groupDb->group_texts=='n'){ $selected=' selected'; }
-                //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
+                /*
+                <tr><td><?= __('Show text at wedding [NOT YET IN USE]');?></td>
+                <td><select size="1" name="group_texts"><option value="j"><?= __('Yes');?></option>
+                <option value="n" <?= $groupDb->group_texts=='n' ? 'selected':'';?>><?= __('No');?></option></select></td></tr>
+                */
                 ?>
                 <?= __('Show text with person'); ?>
             </td>
@@ -539,32 +511,34 @@ If possible, try to filter with that'); ?></i>
         <tr>
             <td><?= __('Genealogical copy protection<br>
 <i>family browsing disabled, no family trees</i>'); ?></td>
-            <?php
-            $check = '';
-            if ($groupDb->group_gen_protection != 'n') $check = ' checked';
-            ?>
-            <td><input type="checkbox" name="group_gen_protection" <?= $check; ?>></td>
+            <td><input type="checkbox" name="group_gen_protection" <?= $groupDb->group_gen_protection != 'n' ? 'checked' : ''; ?>></td>
         </tr>
 
         <tr class="table-primary">
             <th>
+                <!-- SPARE ITEM -->
+                <input type="hidden" name="group_filter_fam" value="n">
                 <?php
-                // *** SPARE ITEM ***
-                echo '<input type="hidden" name="group_filter_fam" value="n">';
-                //echo '<tr><td>'.__('Filter family').'</td>';
-                //echo '<td><select size="1" name="group_filter_fam"><option value="j">'.__('Yes').'</option>';
-                //$selected=''; if ($groupDb->group_filter_fam=='n'){ $selected=' selected'; }
-                //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
-
-                // *** SPARE ITEM ***
-                echo '<input type="hidden" name="group_filter_total" value="n">';
-                //echo '<tr><td>'.__('Filter totally').'</td>';
-                //echo '<td><select size="1" name="group_filter_total"><option value="j">'.__('Yes').'</option>';
-                //$selected=''; if ($groupDb->group_filter_total=='n'){ $selected=' selected'; }
-                //echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
+                /*
+                <tr><td><?= __('Filter family');?></td>
+                <td><select size="1" name="group_filter_fam"><option value="j"><?= __('Yes');?></option>
+                <option value="n" <?= $groupDb->group_filter_fam=='n' ? 'selected': '';?>><?= __('No');?></option></select></td></tr>
+                */
                 ?>
 
-                <?= __('Save all changes'); ?></th>
+                <!-- SPARE ITEM -->
+                <input type="hidden" name="group_filter_total" value="n">
+
+                <?php
+                /*
+                <tr><td><?= __('Filter totally');?></td>
+                <td><select size="1" name="group_filter_total"><option value="j"><?= __('Yes');?></option>
+                <option value="n" <?= $groupDb->group_filter_total=='n' ? 'selected':''><?= __('No');?></option></select></td></tr>
+                */
+                ?>
+
+                <?= __('Save all changes'); ?>
+            </th>
             <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
     </table>
@@ -724,6 +698,7 @@ If possible, try to filter with that'); ?></i>
             }
             */
 
+            // *** Show/ hide photo categories for user ***
             // *** Can't do GROUP BY because we need multiple fields and MySQL 5.7 doesn't like that ***
             $data3sql = $dbh->query("SELECT * FROM humo_photocat ORDER BY photocat_order");
             $photocat_prefix_array[] = '';
@@ -731,11 +706,12 @@ If possible, try to filter with that'); ?></i>
                 // *** Only use first found prefix ***
                 if (!in_array($data3Db->photocat_prefix, $photocat_prefix_array)) {
                     $photocat_prefix_array[] = $data3Db->photocat_prefix;
-                    // *** Show/ hide photo categories for user ***
-                    $check = ' checked';
-                    if (in_array($data3Db->photocat_id, $hide_photocat_array)) $check = '';
-                    echo '<tr><td>' . $data3Db->photocat_prefix . '</td>';
-                    echo '<td><input type="checkbox" name="show_photocat_' . $data3Db->photocat_id . '"' . $check . '></td></tr>';
+        ?>
+                    <tr>
+                        <td><?= $data3Db->photocat_prefix; ?></td>
+                        <td><input type="checkbox" name="show_photocat_<?= $data3Db->photocat_id; ?>" <?= in_array($data3Db->photocat_id, $hide_photocat_array) ? '' : 'checked'; ?>></td>
+                    </tr>
+        <?php
                 }
             }
         } else

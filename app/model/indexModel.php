@@ -106,6 +106,9 @@ class IndexModel
 
             if (isset($matchedRoute['select_tree_id'])) {
                 $index['select_tree_id'] = $matchedRoute['select_tree_id'];
+
+                // TODO improve processing of variable. Processed in this class: get_family_tree
+                $_GET["tree_id"] = $index['select_tree_id'];
             }
 
             // *** Used for list_names ***

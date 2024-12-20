@@ -115,8 +115,8 @@ $path = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, fals
                         <?php
                         $selected_language2 = 'default_timelines';
                         for ($i = 0; $i < count($filenames); $i++) {
-                            $selected = '';
                             // *** A timeline is selected ***
+                            $selected = '';
                             if (isset($_POST['tml']) && $_POST['tml'] == $filenames[$i][1]) {
                                 $selected = "selected";
                             }

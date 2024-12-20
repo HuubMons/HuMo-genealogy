@@ -208,18 +208,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     ?>
 
                     <select size="1" name="person" class="form-select form-select-sm">
-                        <?php
-                        while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                            $selected = '';
-                            if (isset($pers_gedcomnumber)) {
-                                if ($person->pers_gedcomnumber == $pers_gedcomnumber) {
-                                    $selected = ' selected';
-                                }
-                            }
-                            $prefix2 = " " . strtolower(str_replace("_", " ", $person->pers_prefix));
-                        ?>
-                            <option value="<?= $person->pers_gedcomnumber; ?>" <?= $selected; ?>>
-                                <?= $person->pers_lastname; ?>, <?= $person->pers_firstname . $prefix2; ?> [<?= $person->pers_gedcomnumber; ?>]
+                        <?php while ($person = $person_result->fetch(PDO::FETCH_OBJ)) { ?>
+                            <option value="<?= $person->pers_gedcomnumber; ?>" <?= (isset($pers_gedcomnumber) && $person->pers_gedcomnumber == $pers_gedcomnumber) ? 'selected' : ''; ?>>
+                                <?= $person->pers_lastname; ?>, <?= $person->pers_firstname . ' ' . strtolower(str_replace("_", " ", $person->pers_prefix)); ?> [<?= $person->pers_gedcomnumber; ?>]
                             </option>
                         <?php } ?>
                     </select>
@@ -232,14 +223,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <div class="col-md-4">
                     <select size="1" name="nr_generations" class="form-select form-select-sm">
                         <option value="50"><?= __('All'); ?></option>
-                        <?php
-                        for ($i = 1; $i < 20; $i++) {
-                            $selected = '';
-                            if (isset($_POST['nr_generations']) and $_POST['nr_generations'] == $i) {
-                                $selected = " selected ";
-                            }
-                        ?>
-                            <option value="<?= $i; ?>" <?= $selected; ?>><?= ($i + 1); ?></option>
+                        <?php for ($i = 1; $i < 20; $i++) { ?>
+                            <option value="<?= $i; ?>" <?= isset($_POST['nr_generations']) and $_POST['nr_generations'] == $i ? 'selected' : ''; ?>><?= ($i + 1); ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -249,41 +234,17 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <!-- PMB - start of check buttons for options -->
                 <div class="col-md-4"><?= __('Choose type of export'); ?></div>
                 <div class="col-md-8">
-                    <?php
-                    $checked = ' checked ';
-                    if (isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") $checked = '';
-                    ?>
-                    <input type="radio" value="descendant" name="kind_tree" <?= $checked; ?> class="form-check-input"> <?= __('Descendants'); ?><br>
+                    <input type="radio" value="descendant" name="kind_tree" <?= (isset($_POST['kind_tree']) && $_POST['kind_tree'] == "ancestor") ? '' : 'checked'; ?> class="form-check-input"> <?= __('Descendants'); ?><br>
 
-                    <?php
-                    $checked = ' checked ';
-                    if (isset($_POST['kind_tree']) and !isset($_POST['desc_spouses'])) $checked = '';
-                    ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_spouses" value="1" <?= $checked; ?> class="form-check-input"> <?= __('Include spouses of descendants'); ?><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_spouses" value="1" <?= isset($_POST['kind_tree']) and !isset($_POST['desc_spouses']) ? '' : 'checked'; ?> class="form-check-input"> <?= __('Include spouses of descendants'); ?><br>
 
-                    <?php
-                    $checked = '';
-                    if (isset($_POST['desc_sp_parents'])) $checked = ' checked ';
-                    ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_sp_parents" value="1" <?= $checked; ?> class="form-check-input"> <?= __('Include parents of spouses'); ?><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_sp_parents" value="1" <?= isset($_POST['desc_sp_parents']) ? 'checked' : ''; ?> class="form-check-input"> <?= __('Include parents of spouses'); ?><br>
 
-                    <?php
-                    $checked = '';
-                    if (isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor") $checked = ' checked ';
-                    ?>
-                    <input type="radio" value="ancestor" name="kind_tree" <?= $checked; ?> class="form-check-input"> <?= __('Ancestors'); ?><br>
+                    <input type="radio" value="ancestor" name="kind_tree" <?= isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor" ? 'checked' : ''; ?> class="form-check-input"> <?= __('Ancestors'); ?><br>
 
-                    <?php
-                    $checked = ' checked ';
-                    if (isset($_POST['kind_tree']) and !isset($_POST['ances_spouses'])) $checked = '';
-                    ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_spouses" value="1" <?= $checked; ?> class="form-check-input"> <?= __('Include spouse(s) of base person'); ?><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_spouses" value="1" <?= isset($_POST['kind_tree']) and !isset($_POST['ances_spouses']) ? '' : 'checked'; ?> class="form-check-input"> <?= __('Include spouse(s) of base person'); ?><br>
 
-                    <?php
-                    $checked = '';
-                    if (isset($_POST['ances_sibbl'])) $checked = ' checked ';
-                    ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_sibbl" value="1" <?= $checked; ?> class="form-check-input"> <?= __('Include sibblings of ancestors and base person'); ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_sibbl" value="1" <?= isset($_POST['ances_sibbl']) ? 'checked' : ''; ?> class="form-check-input"> <?= __('Include sibblings of ancestors and base person'); ?>
                 </div>
             </div>
         <?php } ?>
@@ -365,15 +326,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             <div class="col-md-4"><?= __('GEDCOM version'); ?></div>
 
             <div class="col-md-4">
-                <?php
-                $selected = '';
-                if (isset($_POST['gedcom_version']) && $_POST['gedcom_version'] == '551') {
-                    $selected = 'selected';
-                }
-                ?>
                 <select size="1" name="gedcom_version" class="form-select form-select-sm">
                     <option value="70"><?= __('GEDCOM 7.0'); ?></option>
-                    <option value="551" <?= $selected; ?>><?= __('GEDCOM 5.5.1'); ?></option>
+                    <option value="551" <?= isset($_POST['gedcom_version']) && $_POST['gedcom_version'] == '551' ? 'selected' : ''; ?>><?= __('GEDCOM 5.5.1'); ?></option>
                 </select>
             </div>
         </div>
@@ -395,21 +350,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     ?>
                     <option value="UTF-8" <?= $selected; ?>><?= __('UTF-8 (recommended character set)'); ?></option>
 
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ANSI') {
-                        $selected = ' selected';
-                    }
-                    ?>
-                    <option value="ANSI" <?= $selected; ?>>ANSI</option>
+                    <option value="ANSI" <?= isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ANSI' ? 'selected' : ''; ?>>ANSI</option>
 
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ASCII') {
-                        $selected = ' selected';
-                    }
-                    ?>
-                    <option value="ASCII" <?= $selected; ?>>ASCII</option>
+                    <option value="ASCII" <?= isset($_POST['gedcom_char_set']) and $_POST['gedcom_char_set'] == 'ASCII' ? 'selected' : ''; ?>>ASCII</option>
                 </select>
             </div>
             <div class="col-md-4">
@@ -425,16 +368,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 // this uses the same style as the 'All' or 'Individual' selector
                 // 'normal' will show the dropdowns for 'text' and 'sources'
                 // 'minimal' will be used in the export to 'turn off' extra info being included
-                $checked = ' checked ';
-                if (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") $checked = '';
                 ?>
-                <input type="radio" onClick="javascript:this.form.submit();" value="normal" name="export_type" <?= $checked; ?> class="form-check-input"> <?= __('Normal'); ?><br>
-
-                <?php
-                $checked = '';
-                if (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") $checked = ' checked ';
-                ?>
-                <input type="radio" onClick="javascript:this.form.submit();" value="minimal" name="export_type" <?= $checked; ?> class="form-check-input"> <?= __('Minimal'); ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="normal" name="export_type" <?= isset($_POST['export_type']) and $_POST['export_type'] == "minimal" ? '' : 'checked'; ?> class="form-check-input"> <?= __('Normal'); ?><br>
+                <input type="radio" onClick="javascript:this.form.submit();" value="minimal" name="export_type" <?= (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") ? 'checked' : ''; ?> class="form-check-input"> <?= __('Minimal'); ?>
             </div>
         </div>
 
@@ -452,15 +388,9 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             <div class="row mb-2">
                 <div class="col-md-4"><?= __('Export texts'); ?></div>
                 <div class="col-md-4">
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_texts']) and $_POST['gedcom_texts'] == 'no') {
-                        $selected = ' selected';
-                    }
-                    ?>
                     <select size="1" name="gedcom_texts" class="form-select form-select-sm">
                         <option value="yes"><?= __('Yes'); ?></option>
-                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
+                        <option value="no" <?= isset($_POST['gedcom_texts']) and $_POST['gedcom_texts'] == 'no' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                     </select>
                 </div>
             </div>
@@ -468,32 +398,20 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             <div class="row mb-2">
                 <div class="col-md-4"><?= __('Export sources'); ?></div>
                 <div class="col-md-4">
-                    <?php
-                    $selected = '';
-                    if (isset($_POST['gedcom_sources']) and $_POST['gedcom_sources'] == 'no') {
-                        $selected = ' selected';
-                    }
-                    ?>
                     <select size="1" name="gedcom_sources" class="form-select form-select-sm">
                         <option value="yes"><?= __('Yes'); ?></option>
-                        <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
+                        <option value="no" <?= isset($_POST['gedcom_sources']) and $_POST['gedcom_sources'] == 'no' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                     </select>
                 </div>
             </div>
         <?php } ?>
 
-        <?php
-        $selected = '';
-        if (isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'no') {
-            $selected = ' selected';
-        }
-        ?>
         <div class="row mb-2">
             <div class="col-md-4"><?= __('Export longitude & latitude by places'); ?></div>
             <div class="col-md-4">
                 <select size="1" name="gedcom_geocode" class="form-select form-select-sm">
                     <option value="yes"><?= __('Yes'); ?></option>
-                    <option value="no" <?= $selected; ?>><?= __('No'); ?></option>
+                    <option value="no" <?= isset($_POST['gedcom_geocode']) and $_POST['gedcom_geocode'] == 'no' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                 </select>
             </div>
         </div>
@@ -529,15 +447,9 @@ Other programs: convert shared addresses. The "shared address" option will be lo
         <div class="row mb-2">
             <div class="col-md-4"><?= __('Show export status'); ?></div>
             <div class="col-md-4">
-                <?php
-                $selected = '';
-                if (isset($_POST['gedcom_status']) and $_POST['gedcom_status'] == 'yes') {
-                    $selected = ' selected';
-                }
-                ?>
                 <select size="1" name="gedcom_status" class="form-select form-select-sm">
                     <option value="no"><?= __('No'); ?></option>
-                    <option value="yes" <?= $selected; ?>><?= __('Yes'); ?></option>
+                    <option value="yes" <?= isset($_POST['gedcom_status']) and $_POST['gedcom_status'] == 'yes' ? 'selected' : ''; ?>><?= __('Yes'); ?></option>
                 </select>
             </div>
         </div>

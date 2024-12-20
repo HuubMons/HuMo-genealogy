@@ -434,6 +434,7 @@
                     // *** Person text by name ***
                     $text = $editor_cls->text_show($pers_name_text);
                     // *** Check if there are multiple lines in text ***
+                    // TODO check all these fields.
                     $field_text_selected = $field_text;
                     if ($text && preg_match('/\R/', $text)) {
                         $field_text_selected = $field_text_medium;
@@ -595,19 +596,6 @@
             $colour = ' bgcolor="#FFAA80"';
         }
 
-        $selected_m = '';
-        if ($pers_sexe == 'M') {
-            $selected_m = ' checked';
-        }
-        $selected_f = '';
-        if ($pers_sexe == 'F') {
-            $selected_f = ' checked';
-        }
-        $selected_u = '';
-        if ($pers_sexe == '') {
-            $selected_u = ' checked';
-        }
-
         $check_sources_text = '';
         if ($pers_gedcomnumber) {
             $check_sources_text = check_sources('person', 'pers_sexe_source', $pers_gedcomnumber);
@@ -616,9 +604,9 @@
         <tr>
             <td><a name="sex"></a><?= __('Sex'); ?></td>
             <td <?= $colour; ?> colspan="2">
-                <input type="radio" name="pers_sexe" value="M" <?= $selected_m; ?> class="form-check-input"> <?= __('male'); ?>
-                <input type="radio" name="pers_sexe" value="F" <?= $selected_f; ?> class="form-check-input"> <?= __('female'); ?>
-                <input type="radio" name="pers_sexe" value="" <?= $selected_u; ?> class="form-check-input"> ?
+                <input type="radio" name="pers_sexe" value="M" <?= $pers_sexe == 'M' ? 'checked' : '' ?> class="form-check-input"> <?= __('male'); ?>
+                <input type="radio" name="pers_sexe" value="F" <?= $pers_sexe == 'F' ? 'checked' : ''; ?> class="form-check-input"> <?= __('female'); ?>
+                <input type="radio" name="pers_sexe" value="" <?= $pers_sexe == '' ? 'checked' : ''; ?> class="form-check-input"> ?
 
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?php

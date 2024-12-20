@@ -83,7 +83,6 @@ if ($hourglass === false) {
     });
     </script>';
 
-
     // the width and length of following div are set with $divlen en $divhi in java function "showimg" 
     // (at bottom of this file) used to print chart.
 ?>
@@ -164,53 +163,28 @@ if ($hourglass === false) {
 
                     <div class="col-md-auto">
                         <select name="dnachart" onChange="window.location=this.value" class="form-select form-select-sm">
-                            <?php
-                            if ($data["base_person_sexe"] == "M") {        // only show Y-DNA option if base person is male
-                                $selected = "selected";
-                                if ($data["dna"] != "ydna") {
-                                    $selected = "";
-                                }
-                            ?>
-                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=ydna&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $selected; ?>>
+                            <?php if ($data["base_person_sexe"] == "M") { ?>
+                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=ydna&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $data["dna"] == "ydna" ? 'selected' : ''; ?>>
                                     <?= __('Y-DNA Carriers only'); ?>
                                 </option>
 
+                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=ydnamark&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $data["dna"] == "ydnamark" ? 'selected' : ''; ?>>
+                                    <?= __('Y-DNA Mark carriers'); ?>
+                                </option>
                             <?php
-                                $selected = "";
-                                if ($data["dna"] == "ydnamark") {
-                                    $selected = "selected";
-                                }
-                                echo '<option value="' . $path . 'main_person=' .
-                                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "ydnamark" . '&amp;chosensize=' .
-                                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('Y-DNA Mark carriers') . '</option>';
                             }
 
+                            // if base person is male, only show mtDNA if there are ancestors since he can't have mtDNA descendants...
                             if ($data["base_person_sexe"] == "F" or ($data["base_person_sexe"] == "M" and isset($data["base_person_famc"]) and $data["base_person_famc"] != "")) {
-                                // if base person is male, only show mtDNA if there are ancestors since he can't have mtDNA descendants...
-                                $selected = "";
-                                if ($data["dna"] == "mtdna") {
-                                    $selected = "selected";
-                                }
-                                echo '<option value="' . $path . 'main_person=' .
-                                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdna" . '&amp;chosensize=' .
-                                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Carriers only') . '</option>';
-
-                                if ($data["base_person_sexe"]  == "F") {
-                                    $selected = "selected";
-                                    if ($data["dna"] != "mtdnamark") {
-                                        $selected = "";
-                                    }
-                                } else {
-                                    $selected = "";
-                                    if ($data["dna"] == "mtdnamark") {
-                                        $selected = "selected";
-                                    }
-                                }
-                                echo '<option value="' . $path . 'main_person=' .
-                                    $data["main_person"] . '&amp;direction=' . $data["direction"] . '&amp;dnachart=' . "mtdnamark" . '&amp;chosensize=' .
-                                    $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '" ' . $selected . '>' . __('mtDNA Mark carriers') . '</option>';
-                            }
                             ?>
+                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=mtdna&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $data["dna"] == "mtdna" ? 'selected' : ''; ?>>
+                                    <?= __('mtDNA Carriers only'); ?>
+                                </option>
+
+                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=mtdnamark&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $data["dna"] == "mtdnamark" ? 'selected' : ''; ?>>
+                                    <?= __('mtDNA Mark carriers'); ?>
+                                </option>
+                            <?php } ?>
                         </select>
                     </div>
                 <?php } ?>
