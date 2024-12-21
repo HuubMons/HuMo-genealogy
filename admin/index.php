@@ -141,10 +141,13 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
     }
 
     if ($check_tables) {
-        include_once(__DIR__ . "/../include/settings_global.php");
+        include_once(__DIR__ . "/../include/generalSettings.php");
+        $GeneralSettings = new GeneralSettings();
+        $user = $GeneralSettings->get_user_settings($dbh);
+        $humo_option = $GeneralSettings->get_humo_option($dbh);
 
         // *** Added may 2020, needed for some user settings in admin section ***
-        include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
+        include_once(__DIR__ . "/../include/generalSettings.php"); // USER variables
 
         // **** Temporary update scripts ***
         //

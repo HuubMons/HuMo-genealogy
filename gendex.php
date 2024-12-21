@@ -9,8 +9,11 @@ include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . "/include/safe.php"); //Variabelen
 
 // *** Needed for privacy filter ***
-include_once(__DIR__ . "/include/settings_global.php"); //Variables
-include_once(__DIR__ . "/include/settings_user.php"); // USER variables
+include_once(__DIR__ . "/include/generalSettings.php");
+$GeneralSettings = new GeneralSettings();
+$user = $GeneralSettings->get_user_settings($dbh);
+$humo_option = $GeneralSettings->get_humo_option($dbh);
+
 include_once(__DIR__ . "/include/personCls.php");
 
 include_once(__DIR__ . "/include/DbFunctions.php");

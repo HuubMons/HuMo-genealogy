@@ -50,7 +50,7 @@ class GroupsModel
             }
 
             $group_admin = 'n';
-            if (isset($_POST["group_admin"])) {
+            if (isset($_POST["group_admin"]) || $this->group_id == 1) {
                 $group_admin = 'j';
             }
             //$group_editor='n'; if (isset($_POST["group_editor"])){ $group_editor='j'; }
@@ -117,7 +117,7 @@ class GroupsModel
                 $group_latestchanges = 'j';
             }
             $group_menu_login = 'n';
-            if (isset($_POST["group_menu_login"])) {
+            if (isset($_POST["group_menu_login"]) || $this->group_id != 3) {
                 $group_menu_login = 'j';
             }
             $group_menu_change_password = 'n';
@@ -167,7 +167,7 @@ class GroupsModel
 
             //if (!isset($_POST["group_user_notes"])){ $_POST["group_user_notes"]='n'; }
             $group_user_notes = 'n';
-            if (isset($_POST["group_user_notes"])) {
+            if (isset($_POST["group_user_notes"]) && $this->group_id != 3) {
                 $group_user_notes = 'y';
             }
             $group_user_notes_show = 'n';

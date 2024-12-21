@@ -15,7 +15,11 @@ if (!isset($_SESSION["user_name_admin"])) {
 // *** Get path to pictures ***
 //TODO use __DIR__
 include_once('../../../include/db_login.php'); // *** Database login ***
-include_once('../../../include/settings_global.php');
+
+include_once(__DIR__ . "../../../include/generalSettings.php");
+$GeneralSettings = new GeneralSettings();
+//$user = $GeneralSettings->get_user_settings($dbh);
+$humo_option = $GeneralSettings->get_humo_option($dbh);
 
 /*********************************************
  * Change this line to set the upload folder *

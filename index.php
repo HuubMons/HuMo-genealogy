@@ -93,8 +93,12 @@ if (isset($_GET['log_off'])) {
 include_once(__DIR__ . "/include/db_login.php"); // Connect to database
 include_once(__DIR__ . "/include/show_tree_text.php");
 include_once(__DIR__ . "/include/safe.php");
-include_once(__DIR__ . "/include/settings_global.php"); // System variables
-include_once(__DIR__ . "/include/settings_user.php"); // User variables
+
+include_once(__DIR__ . "/include/generalSettings.php");
+$GeneralSettings = new GeneralSettings();
+$user = $GeneralSettings->get_user_settings($dbh);
+$humo_option = $GeneralSettings->get_humo_option($dbh);
+
 include_once(__DIR__ . "/include/get_visitor_ip.php"); // Statistics and option to block certain IP addresses.
 
 include_once(__DIR__ . "/include/timezone.php");

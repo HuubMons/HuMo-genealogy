@@ -44,8 +44,7 @@ if (isset($_POST['group_remove'])) {
             <strong><?= __('It\'s not possible to delete this group: there is/ are'); ?> <?= $nr_users; ?> <?= __('user(s) connected to this group!'); ?></strong>
         <?php } else { ?>
             <strong><?= __('Are you sure you want to remove the group:'); ?> "<?= $_POST['group_name']; ?>"?</strong>
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
+            <form method="post" action="index.php?page=groups" style="display : inline;">
                 <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
                 <input type="submit" name="group_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
                 <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
@@ -68,16 +67,14 @@ $groupresult = $dbh->query($groupsql);
 <br>
 <b><?= __('Choose a user group: '); ?></b>
 <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
-    <form method="POST" action="index.php" style="display : inline;">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" action="index.php?page=groups" style="display : inline;">
         <input type="hidden" name="group_id" value="<?= $groupDb->group_id; ?>">
         <input type="submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
     </form>
 <?php } ?>
 
 <!-- Add group -->
-<form method="POST" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+<form method="POST" action="index.php?page=groups" style="display : inline;">
     <input type="submit" name="group_add" value="<?= __('ADD GROUP'); ?>" class="btn btn-sm btn-secondary">
 </form><br><br>
 
@@ -88,8 +85,7 @@ $groupresult = $dbh->query($groupsql);
 $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 ?>
 
-<form method="POST" action="index.php">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+<form method="POST" action="index.php?page=groups">
     <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
     <table class="table">
         <thead class="table-primary">
@@ -236,7 +232,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         <tr>
             <td><?= __('Show date and place (i.e. with birth, bapt., death, cemetery.)'); ?></td>
             <td>
-                <select size="1" name="group_place_date">
+                <select size="1" name="group_place_date" class="form-select">
                     <option value="j">Alkmaar 18 feb 1965</option>
                     <option value="n" <?= $groupDb->group_place_date == 'n' ? 'selected' : ''; ?>>18 feb 1965 Alkmaar</option>
                 </select>
@@ -246,7 +242,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         <tr>
             <td><?= __('Show name in indexes'); ?></td>
             <td>
-                <select size="1" name="group_kindindex">
+                <select size="1" name="group_kindindex" class="form-select">
                     <option value='j'>van Mons, Henk</option>
                     <option value="n" <?= $groupDb->group_kindindex == 'n' ? 'selected' : ''; ?>>Mons, Henk van</option>
                 </select>
@@ -267,7 +263,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         <tr>
             <td><?= __('Default presentation of family page'); ?></td>
             <td>
-                <select size="1" name="group_family_presentation">
+                <select size="1" name="group_family_presentation" class="form-select">
                     <option value="compact" <?= $groupDb->group_family_presentation == 'compact' ? 'selected' : ''; ?>><?= __('Compact view'); ?></option>
                     <option value="expanded1" <?= $groupDb->group_family_presentation == 'expanded1' ? 'selected' : ''; ?>><?= __('Expanded view'); ?> 1</option>
                     <option value="expanded2" <?= $groupDb->group_family_presentation == 'expanded2' ? 'selected' : ''; ?>><?= __('Expanded view'); ?> 2</option>
@@ -279,7 +275,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         <tr>
             <td><?= __('Default presentation of Google maps in family page'); ?></td>
             <td>
-                <select size="1" name="group_maps_presentation">
+                <select size="1" name="group_maps_presentation" class="form-select">
                     <option value="show" <?= $groupDb->group_maps_presentation == 'show' ? 'selected' : ''; ?>><?= __('Show Google maps'); ?></option>
                     <option value="hide" <?= $groupDb->group_maps_presentation == 'hide' ? 'selected' : ''; ?>><?= __('Hide Google maps'); ?></option>
                 </select>
@@ -344,7 +340,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         <tr>
             <td><?= __('Default presentation of source'); ?></td>
             <td>
-                <select size="1" name="group_source_presentation">
+                <select size="1" name="group_source_presentation" class="form-select">
                     <option value="title" <?= $groupDb->group_source_presentation == 'title' ? 'selected' : ''; ?>><?= __('Show source'); ?></option>
                     <option value="footnote" <?= $groupDb->group_source_presentation == 'footnote' ? 'selected' : ''; ?>><?= __('Show source as footnote'); ?></option>
                     <option value="hide" <?= $groupDb->group_source_presentation == 'hide' ? 'selected' : ''; ?>><?= __('Hide sources'); ?></option>
@@ -366,7 +362,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         <tr>
             <td><?= __('Default presentation of text'); ?></td>
             <td>
-                <select size="1" name="group_text_presentation">
+                <select size="1" name="group_text_presentation" class="form-select">
                     <option value="show" <?= $groupDb->group_text_presentation == 'show' ? 'selected' : ''; ?>><?= __('Show texts'); ?></option>
                     <option value="popup" <?= $groupDb->group_text_presentation == 'popup' ? 'selected' : ''; ?>><?= __('Show texts in popup screen'); ?></option>
                     <option value="hide" <?= $groupDb->group_text_presentation == 'hide' ? 'selected' : ''; ?>><?= __('Hide texts'); ?></option>
@@ -386,7 +382,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
                 <?php
                 /*
                 <tr><td><?= __('Show text at wedding [NOT YET IN USE]');?></td>
-                <td><select size="1" name="group_texts"><option value="j"><?= __('Yes');?></option>
+                <td><select size="1" name="group_texts" class="form-select"><option value="j"><?= __('Yes');?></option>
                 <option value="n" <?= $groupDb->group_texts=='n' ? 'selected':'';?>><?= __('No');?></option></select></td></tr>
                 */
                 ?>
@@ -410,6 +406,48 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
             <th><input type="submit" name="group_change" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
         </tr>
 
+        <!-- New dec 2024: use privacy profile -->
+        <tr>
+            <th><?= __('Use privacy profile'); ?></th>
+            <th>
+                <select id="privacy_profile" onchange="myFunction()" class="form-select">
+                    <option value=""><?= __('Set a default privacy profile'); ?></option>
+                    <option value="high" <?= ($groupDb->group_privacy == 'n' && $groupDb->group_alive != 'n' && $groupDb->group_filter_name == 'n') ? 'selected' : ''; ?>>
+                        <?= __('Privacy profile: high (don\'t show names, hide data)'); ?>
+                    </option>
+                    <option value="medium" <?= ($groupDb->group_privacy == 'n' && $groupDb->group_alive != 'n' && $groupDb->group_filter_name == 'i') ? 'selected' : ''; ?>>
+                        <?= __('Privacy profile: medium (partly show names, hide data)'); ?>
+                    </option>
+                </select><br>
+                <?php printf(__('Also use %s to calculate privacy filter birthdates'), '<a href="index.php?page=cal_date">' . __('Calculated birth date') . '</a>'); ?>
+            </th>
+
+            <script>
+                function myFunction() {
+                    var x = document.getElementById("privacy_profile").value;
+                    // Remark: use ID's so items could be changed!
+                    if (x == "high") {
+                        document.getElementById("group_privacy").checked = true;
+                        document.getElementById("group_alive").checked = true;
+
+                        document.getElementById("group_alive_date_act").checked = true;
+                        document.getElementById("group_death_date_act").checked = true;
+
+                        document.getElementById("group_filter_name").value = "n";
+                    }
+                    if (x == "medium") {
+                        document.getElementById("group_privacy").checked = true;
+                        document.getElementById("group_alive").checked = true;
+
+                        document.getElementById("group_alive_date_act").checked = true;
+                        document.getElementById("group_death_date_act").checked = true;
+
+                        document.getElementById("group_filter_name").value = "i";
+                    }
+                }
+            </script>
+        </tr>
+
         <tr>
             <th><?= __('Activate privacy filter'); ?></th>
             <td></td>
@@ -421,7 +459,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 If possible, try to filter with that'); ?></i>
             </td>
             <!-- BE AWARE: REVERSED CHECK OF VARIABLE! -->
-            <td><input type="checkbox" name="group_privacy" <?= $groupDb->group_privacy == 'n' ? 'checked' : ''; ?>></td>
+            <td><input type="checkbox" id="group_privacy" name="group_privacy" <?= $groupDb->group_privacy == 'n' ? 'checked' : ''; ?>></td>
         </tr>
 
         <tr>
@@ -433,13 +471,13 @@ If possible, try to filter with that'); ?></i>
             <td>1)
                 <?php printf(__('%s (alive or deceased), Aldfaer (death sign), Haza-data (filter living persons)'), 'HuMo-genealogy'); ?>
             </td>
-            <td><input type="checkbox" name="group_alive" <?= $groupDb->group_alive != 'n' ? 'checked' : ''; ?>></td>
+            <td><input type="checkbox" id="group_alive" name="group_alive" <?= $groupDb->group_alive != 'n' ? 'checked' : ''; ?>></td>
         </tr>
 
         <tr>
             <td>2) <?= __('Privacy filter, filter persons born in or after this year'); ?></td>
             <td>
-                <input type="checkbox" name="group_alive_date_act" <?= $groupDb->group_alive_date_act != 'n' ? 'checked' : ''; ?>>
+                <input type="checkbox" id="group_alive_date_act" name="group_alive_date_act" <?= $groupDb->group_alive_date_act != 'n' ? 'checked' : ''; ?>>
                 <?= __('Year'); ?>: <input type="text" name="group_alive_date" value="<?= $groupDb->group_alive_date; ?>" size="4">
             </td>
         </tr>
@@ -447,7 +485,7 @@ If possible, try to filter with that'); ?></i>
         <tr>
             <td>3) <?= __('Privacy filter, filter persons deceased in or after this year'); ?></td>
             <td>
-                <input type="checkbox" name="group_death_date_act" <?= $groupDb->group_death_date_act != 'n' ? 'checked' : ''; ?>>
+                <input type="checkbox" id="group_death_date_act"name="group_death_date_act" <?= $groupDb->group_death_date_act != 'n' ? 'checked' : ''; ?>>
                 <?= __('Year'); ?>: <input type="text" name="group_death_date" value="<?= $groupDb->group_death_date; ?>" size="4">
             </td>
         </tr>
@@ -500,7 +538,7 @@ If possible, try to filter with that'); ?></i>
         <tr>
             <td><?= __('With privacy show names'); ?></td>
             <td>
-                <select size="1" name="group_filter_name">
+                <select size="1" id="group_filter_name" name="group_filter_name" class="form-select">
                     <option value="j"><?= __('Yes'); ?></option>
                     <option value="n" <?= $groupDb->group_filter_name == 'n' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                     <option value="i" <?= $groupDb->group_filter_name == 'i' ? 'selected' : ''; ?>><?= __('Show initials: D. E. Duck'); ?></option>
@@ -521,7 +559,7 @@ If possible, try to filter with that'); ?></i>
                 <?php
                 /*
                 <tr><td><?= __('Filter family');?></td>
-                <td><select size="1" name="group_filter_fam"><option value="j"><?= __('Yes');?></option>
+                <td><select size="1" name="group_filter_fam" class="form-select"><option value="j"><?= __('Yes');?></option>
                 <option value="n" <?= $groupDb->group_filter_fam=='n' ? 'selected': '';?>><?= __('No');?></option></select></td></tr>
                 */
                 ?>
@@ -532,7 +570,7 @@ If possible, try to filter with that'); ?></i>
                 <?php
                 /*
                 <tr><td><?= __('Filter totally');?></td>
-                <td><select size="1" name="group_filter_total"><option value="j"><?= __('Yes');?></option>
+                <td><select size="1" name="group_filter_total" class="form-select"><option value="j"><?= __('Yes');?></option>
                 <option value="n" <?= $groupDb->group_filter_total=='n' ? 'selected':''><?= __('No');?></option></select></td></tr>
                 */
                 ?>
