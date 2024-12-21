@@ -52,34 +52,6 @@ class SettingsHomepageModel
             $sql = "INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='" . safe_text_db($setting_value) . "', setting_order='" . $_POST['module_order'] . "'";
             $dbh->query($sql);
         }
-
-        if (isset($_GET['mod_up']) && is_numeric($_GET['module_order']) && is_numeric($_GET['id'])) {
-            // *** Search previous module ***
-            $item = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' AND setting_order=" . ($_GET['module_order'] - 1));
-            $itemDb = $item->fetch(PDO::FETCH_OBJ);
-
-            // *** Raise previous module ***
-            $sql = "UPDATE humo_settings SET setting_order='" . $_GET['module_order'] . "' WHERE setting_id='" . $itemDb->setting_id . "'";
-            $dbh->query($sql);
-
-            // *** Lower module order ***
-            $sql = "UPDATE humo_settings SET setting_order='" . ($_GET['module_order'] - 1) . "' WHERE setting_id=" . $_GET['id'];
-            $dbh->query($sql);
-        }
-
-        if (isset($_GET['mod_down']) && is_numeric($_GET['module_order']) && is_numeric($_GET['id'])) {
-            // *** Search next link ***
-            $item = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' AND setting_order=" . ($_GET['module_order'] + 1));
-            $itemDb = $item->fetch(PDO::FETCH_OBJ);
-
-            // *** Lower previous link ***
-            $sql = "UPDATE humo_settings SET setting_order='" . $_GET['module_order'] . "' WHERE setting_id='" . $itemDb->setting_id . "'";
-            $dbh->query($sql);
-
-            // *** Raise link order ***
-            $sql = "UPDATE humo_settings SET setting_order='" . ($_GET['module_order'] + 1) . "' WHERE setting_id=" . $_GET['id'];
-            $dbh->query($sql);
-        }
     }
 
     public function order_modules($dbh)
@@ -142,6 +114,40 @@ class SettingsHomepageModel
                 }
             }
         }
+    }
+
+    public function get_modules($dbh)
+    {
+        $settings['modules_left'] = 0;
+        $settings['modules_center'] = 0;
+        $settings['modules_right'] = 0;
+
+        $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
+        while (@$data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
+            $data2Db->setting_value .= '|'; // In some cases the last | is missing. TODO: improve saving of settings.
+            $item = explode("|", $data2Db->setting_value);
+
+            $settings['module_setting_id'][] = $data2Db->setting_id;
+            $settings['module_setting_order'][] = $data2Db->setting_order;
+
+            $settings['module_active'][] = $item[0];
+            $settings['module_position'][] = $item[1];
+            $settings['module_item'][] = $item[2];
+
+            $settings['module_option_1'][] = isset($item[3]) ? $item[3] : '';
+            $settings['module_option_2'][] = isset($item[4]) ? $item[4] : '';
+
+            // *** Count modules left, center, right ***
+            if ($item[1] == 'left') {
+                $settings['modules_left']++;
+            } elseif ($item[1] == 'center') {
+                $settings['modules_center']++;
+            } elseif ($item[1] == 'right') {
+                $settings['modules_right']++;
+            }
+        }
+        $settings['nr_modules'] = count($settings['module_active']) - 1;
+        return $settings;
     }
 
     public function save_settings_favorites($dbh)

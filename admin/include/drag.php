@@ -52,4 +52,15 @@ if (isset($_SESSION['admin_tree_id'])) {
             }
         }
     }
+
+    if ($drag_kind == "homepage_modules") {
+        $mediastring = safe_text_db($_GET['order']);
+        $media_arr = explode(";", $mediastring);
+        $counter = count($media_arr);
+        for ($x = 0; $x < $counter; $x++) {
+            if (is_numeric($media_arr[$x])) {
+                $result = $dbh->query("UPDATE humo_settings SET setting_order='" . ($x + 1) . "' WHERE setting_id='" . $media_arr[$x] . "'");
+            }
+        }
+    }
 }
