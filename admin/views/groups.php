@@ -412,11 +412,17 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
             <th>
                 <select id="privacy_profile" onchange="myFunction()" class="form-select">
                     <option value=""><?= __('Set a default privacy profile'); ?></option>
+
                     <option value="high" <?= ($groupDb->group_privacy == 'n' && $groupDb->group_alive != 'n' && $groupDb->group_filter_name == 'n') ? 'selected' : ''; ?>>
                         <?= __('Privacy profile: high (don\'t show names, hide data)'); ?>
                     </option>
+
                     <option value="medium" <?= ($groupDb->group_privacy == 'n' && $groupDb->group_alive != 'n' && $groupDb->group_filter_name == 'i') ? 'selected' : ''; ?>>
                         <?= __('Privacy profile: medium (partly show names, hide data)'); ?>
+                    </option>
+
+                    <option value="low" <?= ($groupDb->group_privacy == 'n' && $groupDb->group_alive != 'n' && $groupDb->group_filter_name == 'j') ? 'selected' : ''; ?>>
+                        <?= __('Privacy profile: low (show names, hide data)'); ?>
                     </option>
                 </select><br>
                 <?php printf(__('Also use %s to calculate privacy filter birthdates'), '<a href="index.php?page=cal_date">' . __('Calculated birth date') . '</a>'); ?>
@@ -443,6 +449,15 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
                         document.getElementById("group_death_date_act").checked = true;
 
                         document.getElementById("group_filter_name").value = "i";
+                    }
+                    if (x == "low") {
+                        document.getElementById("group_privacy").checked = true;
+                        document.getElementById("group_alive").checked = true;
+
+                        document.getElementById("group_alive_date_act").checked = true;
+                        document.getElementById("group_death_date_act").checked = true;
+
+                        document.getElementById("group_filter_name").value = "j";
                     }
                 }
             </script>
