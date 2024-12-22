@@ -107,7 +107,6 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
             </div>
 
             <div class="col-md-3">
-                <?= __('Pick a name from search results'); ?>
                 <?php
                 if (isset($_SESSION["button_search_name1"]) && $_SESSION["button_search_name1"] == 1) {
                     $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
@@ -149,6 +148,9 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
                         $number_results = $search_result->rowCount();
                         if ($number_results > 0) {
                 ?>
+
+                            <?= __('Pick a name from search results'); ?>
+
                             <select size="1" name="person1" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
@@ -176,28 +178,23 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
                                         <option value="<?= $searchDb->pers_gedcomnumber; ?>" <?= $selected; ?>>
                                             <?= $name["index_name"] . $birth; ?> [<?= $searchDb->pers_gedcomnumber; ?>]
                                         </option>
-                                <?php
+                                    <?php
                                     }
                                 }
                                 // *** Simple test only, if number of results = limit then show message ***
                                 if ($number_results == $limit) {
-                                    echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
-                                }
-                                ?>
+                                    ?>
+                                    <option value=""><?= __('Results are limited, use search to find more persons.'); ?></option>
+                                <?php } ?>
                             </select>
                         <?php } else { ?>
                             <select size="1" name="notfound" value="1" class="form-select form-select-sm">
                                 <option><?= __('Person not found'); ?></option>
                             </select>
-                    <?php
+                <?php
                         }
                     }
-                } else {
-                    ?>
-                    <select size="1" name="person" class="form-select form-select-sm">
-                        <option></option>
-                    </select>
-                <?php } ?>
+                } ?>
             </div>
         </div>
 
@@ -221,7 +218,6 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
             </div>
 
             <div class="col-md-3">
-                <?= __('Pick a name from search results'); ?>
                 <?php
                 if (isset($_SESSION["button_search_name2"]) && $_SESSION["button_search_name2"] == 1) {
                     $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
@@ -263,6 +259,9 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
                         $number_results = $search_result2->rowCount();
                         if ($number_results > 0) {
                 ?>
+
+                            <?= __('Pick a name from search results'); ?>
+
                             <select size="1" name="person2" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
@@ -281,37 +280,30 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
                                         }
 
                                         $selected = '';
-                                        if (isset($relation["person2"])) {
-                                            if ($searchDb2->pers_gedcomnumber == $relation["person2"] && !(isset($_POST["button_search_name2"]) && $relation["search_name2"] == '' && $relation["search_gednr2"] == '')) {
-                                                $selected = 'selected';
-                                            }
+                                        if (isset($relation["person2"]) && $searchDb2->pers_gedcomnumber == $relation["person2"] && !(isset($_POST["button_search_name2"]) && $relation["search_name2"] == '' && $relation["search_gednr2"] == '')) {
+                                            $selected = 'selected';
                                         }
                                 ?>
                                         <option value="<?= $searchDb2->pers_gedcomnumber; ?>" <?= $selected; ?>>
                                             <?= $name["index_name"] . $birth; ?> [<?= $searchDb2->pers_gedcomnumber; ?>]
                                         </option>
-                                <?php
+                                    <?php
                                     }
                                 }
                                 // *** Simple test only, if number of results = limit then show message ***
                                 if ($number_results == $limit) {
-                                    echo '<option value="">' . __('Results are limited, use search to find more persons.') . '</option>';
-                                }
-                                ?>
+                                    ?>
+                                    <option value=""><?= __('Results are limited, use search to find more persons.'); ?></option>
+                                <?php } ?>
                             </select>
                         <?php } else { ?>
                             <select size="1" name="notfound" value="1" class="form-select form-select-sm">
                                 <option><?= __('Person not found'); ?></option>
                             </select>
-                    <?php
+                <?php
                         }
                     }
-                } else {
-                    ?>
-                    <select size="1" name="person2" class="form-select form-select-sm">
-                        <option></option>
-                    </select>
-                <?php } ?>
+                } ?>
             </div>
         </div>
 
@@ -319,9 +311,6 @@ global $dutchtext, $reltext_nor, $doublespouse, $reltext_nor2;
             <div class="col-md-1"></div>
 
             <div class="col-md-auto">
-                <?php
-                /* <input type="submit" alt="<?= __('Switch persons'); ?>" title="<?= __('Switch persons'); ?>" value=" " name="switch" style="background: #fff url('images/turn_around.gif') top no-repeat;width:25px;height:25px"> */
-                ?>
                 <input type="submit" name="switch" value="<?= __('Switch persons'); ?>" class="btn btn-sm btn-secondary">
             </div>
 
@@ -415,7 +404,7 @@ Directions for use:<br>
     <?php
     }
 
-    // calculate or switch button is pressed
+    // *** Calculate or switch button is pressed ***
     if (isset($_POST["calculator"]) || isset($_POST["switch"])) {
     ?>
         <!-- "calculate" or "switch" button pressed with one or two names not selected: write warning to first choose two names -->
@@ -449,10 +438,6 @@ Directions for use:<br>
             $bloodreltext = '';
 
             // *** Calculate bloodrelation ***
-            //global $rel_arrayX, $rel_arrayY, $person;
-            //global $db_functions;
-            //global $relation, $data_found;
-
             unset_vars();
             $rel_arrayX = create_rel_array($db_functions, $relation["person1"]); // === GEDCOM nr of person X ===
             $rel_arrayY = create_rel_array($db_functions, $relation["person2"]); // === GEDCOM nr of person Y ===
@@ -481,27 +466,24 @@ Directions for use:<br>
                             // don't display text if relation can't be phrased  
                         } else {
                             if ($selected_language == "fi") {
-                                echo 'Kuka: ';
-                            }   // who
                         ?>
+                                <!-- who -->
+                                Kuka:
+                            <?php } ?>
                             &nbsp;&nbsp;<a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $relation['name1']; ?></a>
-                            <?php
-                            if ($selected_language == "fi") {
-                                echo '&nbsp;&nbsp;Kenelle: ';
-                            }  // to whom
-                            else {
-                                echo $language_is . $reltext;
-                            }
-                            ?>
+                            <?php if ($selected_language == "fi") { ?>
+                                <!-- to whom -->
+                                &nbsp;&nbsp;Kenelle:
+                            <?php } else { ?>
+                                <?= $language_is . $reltext; ?>
+                            <?php } ?>
                             <a class="relsearch" href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
                                 <?= $relation['name2']; ?>
                             </a><?= $reltext_nor; ?><br>
                             <?= $dutchtext; ?>
-                            <?php
-                            if ($selected_language == "fi") {
-                                echo 'Sukulaisuus tai muu suhde: <b>' . $reltext . '</b>';
-                            }
-                            ?>
+                            <?php if ($selected_language == "fi") { ?>
+                                Sukulaisuus tai muu suhde: <b><?= $reltext; ?></b>
+                            <?php } ?>
                             <hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;">
                         <?php
                         }
@@ -583,13 +565,11 @@ Directions for use:<br>
                                     <a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $relation['name1']; ?></a>
                                     <?= __('and'); ?>:
                                     <a class='relsearch' href='<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>'><?= $relation['name2']; ?></a>
-                                    <?php
-                                    if ($relation['sexe1'] == "M") {
-                                        echo ' ' . __('are both husbands of') . ' ';
-                                    } else {
-                                        echo ' ' . __('are both wifes of') . ' ';
-                                    }
-                                    ?>
+                                    <?php if ($relation['sexe1'] == "M") { ?>
+                                        <?= __('are both husbands of'); ?>
+                                    <?php } else { ?>
+                                        <?= __('are both wifes of'); ?>
+                                    <?php } ?>
                                     <a href='<?= $relation['link2']; ?>main_person=<?= $rel_arrayspouseX[$data_found["foundX_match"]][0]; ?>'><?= $spousename; ?></a>
                                 </span><br>
 
@@ -668,8 +648,9 @@ Directions for use:<br>
                                     Sukulaisuus tai muu suhde:
                                     <?php
                                     if (!$special_spouseX && !$special_spouseY && $relation_type != 7) {
-                                        if ($spousetext2 != '' && $spousetext1 == '') { // X is relative of spouse of Y
+                                        if ($spousetext2 != '' && $spousetext1 == '') {
                                     ?>
+                                            <!-- X is relative of spouse of Y -->
                                             (<a href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>">
                                                 <?= $relation['name1']; ?>
                                             </a>
@@ -678,13 +659,12 @@ Directions for use:<br>
                                             <a href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
                                                 <?= $relation['name2']; ?>
                                             </a>
-                                    <?php
-                                        } elseif ($spousetext1 !== '' && $spousetext2 === '') { // X is spouse of relative of Y
-                                            echo '(' . $spousenameX . ' - ';
-                                            echo "<a href='" . $relation['link2'] . "main_person=" . $rel_arrayY[0][0] . "'>" . $relation['name2'] . "</a>";
-                                            echo '):&nbsp;&nbsp;' . $reltext . '<br>';
-                                            echo $spousenameX . ', ' . $finnish_spouse1 . ' ';
-                                            echo "<a href='" . $relation['link1'] . "main_person=" . $rel_arrayX[0][0] . "'>" . $relation['name1'] . "</a>";
+                                        <?php } elseif ($spousetext1 !== '' && $spousetext2 === '') { ?>
+                                            <!-- X is spouse of relative of Y -->
+                                            (<?= $spousenameX; ?> - <a href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>"><?= $relation['name2']; ?></a>):&nbsp;&nbsp;<?= $reltext; ?><br>
+                                            <?= $spousenameX; ?>, <?= $finnish_spouse1; ?>
+                                            <a href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $relation['name1']; ?></a>
+                                        <?php
                                         } else {   // X is spouse of relative of spouse of Y
                                             echo '(' . $spousenameX . ' - ' . $spousenameY . '):&nbsp;&nbsp;' . $reltext . '<br>';
                                             echo $spousenameX . ', ' . $finnish_spouse1 . ' ';
@@ -692,8 +672,11 @@ Directions for use:<br>
                                             echo $spousenameY . ', ' . $finnish_spouse2 . ' ';
                                             echo "<a href='" . $relation['link2'] . "main_person=" . $rel_arrayY[0][0] . "'>" . $relation['name2'] . "</a>";
                                         }
-                                    } elseif ($special_spouseX || $special_spouseY) { // brother-in-law/sister-in-law/father-in-law/mother-in-law
-                                        echo '<b>' . $reltext . '</b><br>';
+                                    } elseif ($special_spouseX || $special_spouseY) {
+                                        ?>
+                                        <!-- brother-in-law/sister-in-law/father-in-law/mother-in-law -->
+                                        <b><?= $reltext; ?></b><br>
+                                    <?php
                                     } elseif ($relation_type == 7) {
                                         if ($relmarriedX == 0 || $relmarriedY == 0) {
                                             echo '<b>' . __('partner') . '</b><br>';
@@ -767,6 +750,7 @@ Directions for use:<br>
                                 <?= __('MARITAL RELATIONSHIP: '); ?><br><br>
                                 <div style="font-weight:bold;margin-bottom:10px;"><?= __('No direct marital relation found'); ?></div>
                             <?php } ?>
+
 
                             <hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;">
 
@@ -1135,83 +1119,83 @@ function calculate_rel($data_found)
 }
 
 
-function spanish_degrees($pers, $text)
+function spanish_degrees($pers)
 {
     $spantext = '';
-    if ($pers == 2) {
-        $spantext = $text;
-    }
+    //if ($pers == 2) {
+    //
+    //}
     if ($pers == 3) {
-        $spantext = 'bis' . $text;
+        $spantext = 'bis';
     }
     if ($pers == 4) {
-        $spantext = 'tris' . $text;
+        $spantext = 'tris';
     }
     if ($pers == 5) {
-        $spantext = 'tetra' . $text;
+        $spantext = 'tetra';
     }
     if ($pers == 6) {
-        $spantext = 'penta' . $text;
+        $spantext = 'penta';
     }
     if ($pers == 7) {
-        $spantext = 'hexa' . $text;
+        $spantext = 'hexa';
     }
     if ($pers == 8) {
-        $spantext = 'hepta' . $text;
+        $spantext = 'hepta';
     }
     if ($pers == 9) {
-        $spantext = 'octa' . $text;
+        $spantext = 'octa';
     }
     if ($pers == 10) {
-        $spantext = 'nona' . $text;
+        $spantext = 'nona';
     }
     if ($pers == 11) {
-        $spantext = 'deca' . $text;
+        $spantext = 'deca';
     }
     if ($pers == 12) {
-        $spantext = 'undeca' . $text;
+        $spantext = 'undeca';
     }
     if ($pers == 13) {
-        $spantext = 'dodeca' . $text;
+        $spantext = 'dodeca';
     }
     if ($pers == 14) {
-        $spantext = 'trideca' . $text;
+        $spantext = 'trideca';
     }
     if ($pers == 15) {
-        $spantext = 'tetradeca' . $text;
+        $spantext = 'tetradeca';
     }
     if ($pers == 16) {
-        $spantext = 'pentadeca' . $text;
+        $spantext = 'pentadeca';
     }
     if ($pers == 17) {
-        $spantext = 'hexadeca' . $text;
+        $spantext = 'hexadeca';
     }
     if ($pers == 18) {
-        $spantext = 'heptadeca' . $text;
+        $spantext = 'heptadeca';
     }
     if ($pers == 19) {
-        $spantext = 'octadeca' . $text;
+        $spantext = 'octadeca';
     }
     if ($pers == 20) {
-        $spantext = 'nonadeca' . $text;
+        $spantext = 'nonadeca';
     }
     if ($pers == 21) {
-        $spantext = 'icosa' . $text;
+        $spantext = 'icosa';
     }
     if ($pers == 22) {
-        $spantext = 'unicosa' . $text;
+        $spantext = 'unicosa';
     }
     if ($pers == 23) {
-        $spantext = 'doicosa' . $text;
+        $spantext = 'doicosa';
     }
     if ($pers == 24) {
-        $spantext = 'tricosa' . $text;
+        $spantext = 'tricosa';
     }
     if ($pers == 25) {
-        $spantext = 'tetricosa' . $text;
+        $spantext = 'tetricosa';
     }
     if ($pers == 26) {
-        $spantext = 'penticosa' . $text;
+        $spantext = 'penticosa';
     }
     return $spantext;
 }
@@ -1395,8 +1379,7 @@ function calculate_ancestor($pers)
             if ($pers == 2) {
                 $reltext = $grparent . __(' of ');
             } elseif ($pers > 2 && $pers < 27) {
-                $spantext = spanish_degrees($pers, $grparent); // sets spanish "bis", "tris" etc prefix
-                $reltext = $spantext . " (" . $degree . ")" . __(' of ');
+                $reltext = spanish_degrees($pers) . $grparent . " (" . $degree . ")" . __(' of ');
             } else {
                 $reltext = $degree . __(' of ');
             }
@@ -1501,7 +1484,7 @@ function calculate_ancestor($pers)
             if ($pers > 1) {
                 // grandfather
                 $arrnum = 0;
-                reset($ancsarr);
+                //reset($ancsarr);
                 $count = $data_found["foundY_nr"];
                 while ($count != 0) {
                     $parnumber = $count;
@@ -1842,8 +1825,7 @@ function calculate_descendant($pers)
         if ($pers == 2) {
             $reltext = $grchild . __(' of ');
         } elseif ($pers > 2 && $pers < 27) {
-            $spantext = spanish_degrees($pers, $grchild); // sets spanish "bis", "tris" etc prefix
-            $reltext = $spantext . " (" . $degree . ")" . __(' of ');
+            $reltext = spanish_degrees($pers) . $grchild . " (" . $degree . ")" . __(' of ');
         } else {
             $reltext = $degree . __(' of ');
         }
@@ -1949,7 +1931,7 @@ function calculate_descendant($pers)
         if ($pers > 1) {
             // grandchild
             $arrnum = 0;
-            reset($ancsarr);
+            //reset($ancsarr);
             $count = $data_found["foundX_nr"];
             while ($count != 0) {
                 $parnumber = $count;
@@ -2182,8 +2164,7 @@ function calculate_nephews($generX)
         if ($gendiff == 1) {
             $reltext = $neph . __(' of ');
         } elseif ($gendiff > 1 && $gendiff < 27) {
-            $spantext = spanish_degrees($gendiff, $grson);
-            $reltext = $neph . " " . $spantext . __(' of ');
+            $reltext = $neph . " " . spanish_degrees($gendiff) . $grson . __(' of ');
         } else {
             $reltext = $neph . " " . $degree;
         }
@@ -2309,7 +2290,7 @@ function calculate_nephews($generX)
         if ($generX > 1) {
             // niece/nephew
             $arrnum = 0;
-            reset($ancsarr);
+            //reset($ancsarr);
             $count = $data_found["foundX_nr"];
             while ($count != 0) {
                 $parnumber = $count;
@@ -2362,7 +2343,9 @@ function calculate_nephews($generX)
             $relarrX = $rel_arrayX;
         }
         $arrnumX = 0;
-        if (isset($ancsarrX)) reset($ancsarrX);
+        if (isset($ancsarrX)) {
+            reset($ancsarrX);
+        }
         $count = $data_found["foundX_nr"];
         while ($count != 0) {
             $parnumberX = $count;
@@ -2468,7 +2451,9 @@ function calculate_uncles($generY)
                 $relarrY = $rel_arrayY;
             }
             $arrnumY = 0;
-            if (isset($ancsarrY)) reset($ancsarrY);
+            if (isset($ancsarrY)) {
+                reset($ancsarrY);
+            }
             $count = $data_found["foundY_nr"];
             while ($count != 0) {
                 $parnumberY = $count;
@@ -2524,7 +2509,7 @@ function calculate_uncles($generY)
             $se_sibling = "bror"; // used for gr_gr_granduncle and more "4:e gen anas bror"
             // uncle
             $arrnum = 0;
-            reset($ancsarr);
+            //reset($ancsarr);
             $count = $data_found["foundY_nr"];
             while ($count != 0) {
                 $parnumber = $count;
@@ -2599,7 +2584,7 @@ function calculate_uncles($generY)
             $se_sibling = "syster"; // used for gr_gr_grandaunt and more "4:e gen anas syster"
             // aunt
             $arrnum = 0;
-            reset($ancsarr);
+            //reset($ancsarr);
             $count = $data_found["foundY_nr"];
             while ($count != 0) {
                 $parnumber = $count;
@@ -2740,8 +2725,7 @@ function calculate_uncles($generY)
         if ($gendiff == 1) {
             $reltext = $uncle . __(' of ');
         } elseif ($gendiff > 1 && $gendiff < 27) {
-            $spantext = spanish_degrees($gendiff, $gran);
-            $reltext = $uncle . " " . $spantext . __(' of ');
+            $reltext = $uncle . " " . spanish_degrees($gendiff) . $gran . __(' of ');
         } else {
             $reltext = $uncle . " " . $degree;
         }
@@ -2942,8 +2926,7 @@ function calculate_cousins($generX, $generY)
             if ($gendiff == 1) {
                 $relname = $uncle;
             } elseif ($gendiff > 1 && $gendiff < 27) {
-                $spantext = spanish_degrees($gendiff, $gran);
-                $relname = $uncle . " " . $spantext;
+                $relname = $uncle . " " . spanish_degrees($gendiff) . $gran;
             } else {
             }
             $reltext = $relname . " " . $generX . $span_postfix . __(' of ');
@@ -2961,8 +2944,7 @@ function calculate_cousins($generX, $generY)
             if ($gendiff == 1) {
                 $relname = $nephew;
             } else {
-                $spantext = spanish_degrees($gendiff, $grson);
-                $relname = $nephew . " " . $spantext;
+                $relname = $nephew . " " . spanish_degrees($gendiff) . $grson;
             }
             $reltext = $relname . " " . $generY . $span_postfix . __(' of ');
         }
@@ -3425,7 +3407,9 @@ function calculate_cousins($generX, $generY)
                 $relarrX = $rel_arrayX;
             }
             $arrnumX = 0;
-            if (isset($ancsarrX)) reset($ancsarrX);
+            if (isset($ancsarrX)) {
+                reset($ancsarrX);
+            }
             $count = $data_found["foundX_nr"];
             while ($count != 0) {
                 $parnumberX = $count;
@@ -3449,7 +3433,9 @@ function calculate_cousins($generX, $generY)
                     $relarrY = $rel_arrayY;
                 }
                 $arrnumY = 0;
-                if (isset($ancsarrY)) reset($ancsarrY);
+                if (isset($ancsarrY)) {
+                    reset($ancsarrY);
+                }
                 $count = $data_found["foundY_nr"];
                 while ($count != 0) {
                     $parnumberY = $count;
@@ -3933,7 +3919,9 @@ function map_tree($pers_array, $pers_array2)
 
         $persDb = $db_functions->get_person($persged);
         if ($persDb == false) {
-            echo "NO SUCH PERSON:" . "ref=" . $refer . "persged=" . $persged . "callged=" . $callged . "$$";
+?>
+            NO SUCH PERSON:ref=<?= $refer; ?>persged=<?= $persged; ?>callged=<?= $callged; ?>$$
+        <?php
             return (false);
         }
 
@@ -4070,567 +4058,331 @@ function map_tree($pers_array, $pers_array2)
         // no common person was found but both A and B still have a wider circle to expand -> call this function again
         map_tree($work_array, $work_array2);
     } elseif (!isset($_SESSION['next_path'])) {
-        echo "<br><span style='font-weight:bold;font-size:120%'>&nbsp;&nbsp;" . __("These persons are not related in any way.") . "&nbsp;&nbsp;<br><br>";
-    } else {
-        echo "<br><span style='font-weight:bold;font-size:120%'>&nbsp;&nbsp;" . __("No further paths found.") . "&nbsp;&nbsp;<br><br>";
-    }
-}
-
-function join_path($workarr, $path2, $pers2, $ref)
-{
-    // we have two trails. one from person A to the common person and one from person B to the common person (A ---> common <---- B)
-    // we have to create one trail from A to B
-    // since the second trail is reverse (from B to the common person) it first has to be turned around, including changing the relation to previous and next person
-
-    // $workarr is the array with all trails from person A 
-    // we have to find the trail that contains the common person ($pers2)
-    foreach ($workarr as $value) {
-        if (strpos($value . ";", $pers2 . ";") === false) {
-            continue;
+        ?>
+        <br><span style='font-weight:bold;font-size:120%'>&nbsp;&nbsp;<?= __("These persons are not related in any way."); ?>&nbsp;&nbsp;<br><br>
+        <?php } else { ?>
+            <br><span style='font-weight:bold;font-size:120%'>&nbsp;&nbsp;<?= __("No further paths found."); ?>&nbsp;&nbsp;<br><br>
+            <?php
         }
-        $path1 = substr($value, strrpos($value, "@") + 1);  // found the right trail
     }
-    $fstcommon = substr($path1, strpos($path1 . ";", $pers2 . ";") - 3, 3); // find the common person as appears in the trail from person A ("parI3120")
 
-    // now turn around the second trail and adjust par, chd, spo values accordingly
-    $secpath = explode(";", $path2);
-    $new_path2 = "";
-    $changepath = array();
-    $commonpers = ";" . $fstcommon . $pers2;
-    if ($ref == "par" && $fstcommon == "par") {
-        // the common person is a child of both sides - discard child and make right person spouse of left!
-        $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
-        $commonpers = "";
-        $_SESSION['next_path'] .= substr($secpath[count($secpath) - 1], 3) . "@"; // add parent from side B to ignore string for next path
-        $par1str = substr($path1, 0, strrpos($path1, ";"));  // first take off last (=common) person
-        $_SESSION['next_path'] .= substr($par1str, strrpos($par1str, ";") + 4) . "@";     // add parent from side A to ignore string for next path
-    } elseif ($ref == "par") {
-        $changepath[count($secpath) - 1] = "chd" . substr($secpath[count($secpath) - 1], 3);
-    } elseif ($ref == "chd") {
-        $changepath[count($secpath) - 1] = "par" . substr($secpath[count($secpath) - 1], 3);
-    } else {
-        $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
-    }
-    for ($w = count($secpath) - 1; $w > 0; $w--) {
-        if (substr($secpath[$w], 0, 3) === "par") {
-            $changepath[$w - 1] = "chd" . substr($secpath[$w - 1], 3);
-        } elseif (substr($secpath[$w], 0, 3) === "chd") {
-            $changepath[$w - 1] = "par" . substr($secpath[$w - 1], 3);
+    function join_path($workarr, $path2, $pers2, $ref)
+    {
+        // we have two trails. one from person A to the common person and one from person B to the common person (A ---> common <---- B)
+        // we have to create one trail from A to B
+        // since the second trail is reverse (from B to the common person) it first has to be turned around, including changing the relation to previous and next person
+
+        // $workarr is the array with all trails from person A 
+        // we have to find the trail that contains the common person ($pers2)
+        foreach ($workarr as $value) {
+            if (strpos($value . ";", $pers2 . ";") === false) {
+                continue;
+            }
+            $path1 = substr($value, strrpos($value, "@") + 1);  // found the right trail
+        }
+        $fstcommon = substr($path1, strpos($path1 . ";", $pers2 . ";") - 3, 3); // find the common person as appears in the trail from person A ("parI3120")
+
+        // now turn around the second trail and adjust par, chd, spo values accordingly
+        $secpath = explode(";", $path2);
+        $new_path2 = "";
+        $changepath = array();
+        $commonpers = ";" . $fstcommon . $pers2;
+        if ($ref == "par" && $fstcommon == "par") {
+            // the common person is a child of both sides - discard child and make right person spouse of left!
+            $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
+            $commonpers = "";
+            $_SESSION['next_path'] .= substr($secpath[count($secpath) - 1], 3) . "@"; // add parent from side B to ignore string for next path
+            $par1str = substr($path1, 0, strrpos($path1, ";"));  // first take off last (=common) person
+            $_SESSION['next_path'] .= substr($par1str, strrpos($par1str, ";") + 4) . "@";     // add parent from side A to ignore string for next path
+        } elseif ($ref == "par") {
+            $changepath[count($secpath) - 1] = "chd" . substr($secpath[count($secpath) - 1], 3);
+        } elseif ($ref == "chd") {
+            $changepath[count($secpath) - 1] = "par" . substr($secpath[count($secpath) - 1], 3);
         } else {
-            $changepath[$w - 1] = "spo" . substr($secpath[$w - 1], 3);
+            $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
         }
-    }
-    for ($w = count($changepath) - 1; $w >= 0; $w--) {
-        $new_path2 .= ";" . $changepath[$w];
-    }  // the entire trail from person A to B
-    return (substr($path1, 0, strpos($path1, $pers2) - 4) . $commonpers . $new_path2);
-}
-
-
-/* displays result of extended marital calculator */
-function display_result($result)
-{
-    // $result holds the entire track of persons from person 1 to person 2
-    // this string is made up of items sperated by ";"
-    // each items starts with "par" (parent), "chd" (child) or "spo" (spouse), followed by the gedcomnumber of the person
-    // example: parI232;parI65;chdI2304;spoI212;parI304
-    // the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
-
-    global $db_functions, $relation;
-
-    $map = array();    // array that will hold all data needed for the graphical display
-    $tracks = explode(";", $result); // $tracks is array with each person in the trail
-
-    /* initialize  */
-    for ($x = 0; $x < count($tracks); $x++) {
-        $map[$x][0] = "1"; /* x value in graphical display */
-        $map[$x][1] = "1"; /* y value in graphical display */
-        $map[$x][2] = "1"; /* colspan value (usually 1, turns 2 for two column parent) */
-        $map[$x][3] = substr($tracks[$x], 0, 3); /* call value (oar, chd, spo) */
-        $map[$x][4] = substr($tracks[$x], 3); /* gedcomnumber value */
+        for ($w = count($secpath) - 1; $w > 0; $w--) {
+            if (substr($secpath[$w], 0, 3) === "par") {
+                $changepath[$w - 1] = "chd" . substr($secpath[$w - 1], 3);
+            } elseif (substr($secpath[$w], 0, 3) === "chd") {
+                $changepath[$w - 1] = "par" . substr($secpath[$w - 1], 3);
+            } else {
+                $changepath[$w - 1] = "spo" . substr($secpath[$w - 1], 3);
+            }
+        }
+        for ($w = count($changepath) - 1; $w >= 0; $w--) {
+            $new_path2 .= ";" . $changepath[$w];
+        }  // the entire trail from person A to B
+        return (substr($path1, 0, strpos($path1, $pers2) - 4) . $commonpers . $new_path2);
     }
 
-    $xval = 1;
-    $yval = 1;
-    $miny = 1;
-    $maxy = 1;
-    $marrsign = array();
 
-    // fill map array
-    for ($x = 0; $x < count($tracks); $x++) {
-        //$ged = substr($tracks[$x], 3);    // gedcomnumber
-        $cal = substr($tracks[$x], 0, 3);  // par, chd, spo
-        if ($cal === "fst") {
-            continue;
+    /* displays result of extended marital calculator */
+    function display_result($result)
+    {
+        // $result holds the entire track of persons from person 1 to person 2
+        // this string is made up of items sperated by ";"
+        // each items starts with "par" (parent), "chd" (child) or "spo" (spouse), followed by the gedcomnumber of the person
+        // example: parI232;parI65;chdI2304;spoI212;parI304
+        // the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
+
+        global $db_functions, $relation;
+
+        $map = array();    // array that will hold all data needed for the graphical display
+        $tracks = explode(";", $result); // $tracks is array with each person in the trail
+
+        /* initialize  */
+        for ($x = 0; $x < count($tracks); $x++) {
+            $map[$x][0] = "1"; /* x value in graphical display */
+            $map[$x][1] = "1"; /* y value in graphical display */
+            $map[$x][2] = "1"; /* colspan value (usually 1, turns 2 for two column parent) */
+            $map[$x][3] = substr($tracks[$x], 0, 3); /* call value (oar, chd, spo) */
+            $map[$x][4] = substr($tracks[$x], 3); /* gedcomnumber value */
         }
-        if ($cal === "spo") {
-            $marrsign[$xval + 1] = $yval;
-            $xval += 2;
-            $map[$x][0] = $xval;
-            $map[$x][1] = $yval;
-        }
-        if ($cal === "chd") {
-            $yval--;
-            if ($yval < $miny) {
-                $miny = $yval;
+
+        $xval = 1;
+        $yval = 1;
+        $miny = 1;
+        $maxy = 1;
+        $marrsign = array();
+
+        // fill map array
+        for ($x = 0; $x < count($tracks); $x++) {
+            //$ged = substr($tracks[$x], 3);    // gedcomnumber
+            $cal = substr($tracks[$x], 0, 3);  // par, chd, spo
+            if ($cal === "fst") {
+                continue;
             }
-            $map[$x][0] = $xval;
-            $map[$x][1] = $yval;
-            if (isset($map[$x + 1]) && $map[$x + 1][3] === "par") {
-                $map[$x][2] = 2;
+            if ($cal === "spo") {
+                $marrsign[$xval + 1] = $yval;
+                $xval += 2;
+                $map[$x][0] = $xval;
+                $map[$x][1] = $yval;
+            }
+            if ($cal === "chd") {
+                $yval--;
+                if ($yval < $miny) {
+                    $miny = $yval;
+                }
+                $map[$x][0] = $xval;
+                $map[$x][1] = $yval;
+                if (isset($map[$x + 1]) && $map[$x + 1][3] === "par") {
+                    $map[$x][2] = 2;
+                }
+            }
+            if ($cal === "par") {
+                $yval++;
+                if ($yval > $maxy) {
+                    $maxy = $yval;
+                }
+                if ($map[$x - 1][3] === "chd") {
+                    $xval++;
+                }
+                $map[$x][0] = $xval;
+                $map[$x][1] = $yval;
             }
         }
-        if ($cal === "par") {
-            $yval++;
-            if ($yval > $maxy) {
-                $maxy = $yval;
+        if ($miny < 1) {
+            for ($x = 0; $x < count($map); $x++) {
+                $map[$x][1] += (1 + abs($miny));
+                if ($map[$x][1] > $maxy)    $maxy = $map[$x][1];
             }
-            if ($map[$x - 1][3] === "chd") {
-                $xval++;
-            }
-            $map[$x][0] = $xval;
-            $map[$x][1] = $yval;
-        }
-    }
-    if ($miny < 1) {
-        for ($x = 0; $x < count($map); $x++) {
-            $map[$x][1] += (1 + abs($miny));
-            if ($map[$x][1] > $maxy)    $maxy = $map[$x][1];
-        }
-        if (isset($marrsign)) {
-            foreach ($marrsign as $key => $value) {
-                $marrsign[$key] += (1 + abs($miny));
+            if (isset($marrsign)) {
+                foreach ($marrsign as $key => $value) {
+                    $marrsign[$key] += (1 + abs($miny));
+                }
             }
         }
-    }
-?>
+            ?>
 
-    <div class="d-print-none" style="padding:3px;width:auto;background-color:#eeeeee">
-        <input type="submit" name="next_path" value="<?= __('Try to find another path'); ?>" class="btn btn-sm btn-success">
-        &nbsp;&nbsp;<?= __('(With each consecutive search the path may get longer and computing time may increase!)'); ?>
-    </div>
+            <div class="d-print-none" style="padding:3px;width:auto;background-color:#eeeeee">
+                <input type="submit" name="next_path" value="<?= __('Try to find another path'); ?>" class="btn btn-sm btn-success">
+                &nbsp;&nbsp;<?= __('(With each consecutive search the path may get longer and computing time may increase!)'); ?>
+            </div>
 
-    <!-- the following code displays the graphical view of the found trail -->
-    <br>
-    <table style="border:0px;border-collapse:separate;border-spacing:30px 1px;">
-        <?php for ($a = 1; $a <= $maxy; $a++) { ?>
-            <tr>
-                <?php
-                $next_line = [];
-                for ($b = 1; $b <= $xval; $b++) {
-                    $colsp = false;
-                    for ($x = 0; $x < count($map); $x++) {
-                        if ($map[$x][0] == $b && $map[$x][1] == $a) {
-                            $ancDb = $db_functions->get_person($map[$x][4]);
-
-                            $border = "border:1px solid #777777;";
-                            // person A and B (first and last) get thicker border
-                            if ($map[$x][4] == $relation["person1"] || $map[$x][4] == $relation["person2"]) {
-                                $border = "border:2px solid #666666;";
-                            }
-
-                            $pers_cls = new PersonCls;
-                            $name = $pers_cls->person_name($ancDb);
-                            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $pers_cls->person_url2($ancDb->pers_tree_id, $ancDb->pers_famc, $ancDb->pers_fams, $ancDb->pers_gedcomnumber);
-                            $colsp = true;
-
-                            if ($map[$x][2] == 2) {
-                                $b++;
-                                $next_line[] = "&#8593;";   // up arrows under two column parent
-                                $next_line[] = "&#8595;";   // down arrows under two column parent
-                            } elseif (isset($map[$x + 1][3]) && $map[$x + 1][3] === "par") {
-                                $next_line[] = "&#8595;";  // arrow down
-                            } elseif (isset($map[$x][3]) && $map[$x][3] === "chd") {
-                                $next_line[] = "&#8593;"; // arrow up
-                            } else {
-                                $next_line[] = "&nbsp;";  // empty box
-                            }
-                ?>
-
-                            <td class="<?= $ancDb->pers_sexe ==  'M' ? 'extended_man' : 'extended_woman'; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>" <?= $map[$x][2] == 2 ? 'colspan=2' : ''; ?>>
-                                <a href="<?= $url; ?>"><?= $name["name"]; ?></a>
-                            </td>
+            <!-- the following code displays the graphical view of the found trail -->
+            <br>
+            <table style="border:0px;border-collapse:separate;border-spacing:30px 1px;">
+                <?php for ($a = 1; $a <= $maxy; $a++) { ?>
+                    <tr>
                         <?php
-                        }
-                    }
+                        $next_line = [];
+                        for ($b = 1; $b <= $xval; $b++) {
+                            $colsp = false;
+                            for ($x = 0; $x < count($map); $x++) {
+                                if ($map[$x][0] == $b && $map[$x][1] == $a) {
+                                    $ancDb = $db_functions->get_person($map[$x][4]);
 
-                    // display the X sign between two married people
-                    if ($colsp == false) {
-                        $next_line[] = "&nbsp;";
+                                    $border = "border:1px solid #777777;";
+                                    // person A and B (first and last) get thicker border
+                                    if ($map[$x][4] == $relation["person1"] || $map[$x][4] == $relation["person2"]) {
+                                        $border = "border:2px solid #666666;";
+                                    }
+
+                                    $pers_cls = new PersonCls;
+                                    $name = $pers_cls->person_name($ancDb);
+                                    // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                                    $url = $pers_cls->person_url2($ancDb->pers_tree_id, $ancDb->pers_famc, $ancDb->pers_fams, $ancDb->pers_gedcomnumber);
+                                    $colsp = true;
+
+                                    if ($map[$x][2] == 2) {
+                                        $b++;
+                                        $next_line[] = "&#8593;";   // up arrows under two column parent
+                                        $next_line[] = "&#8595;";   // down arrows under two column parent
+                                    } elseif (isset($map[$x + 1][3]) && $map[$x + 1][3] === "par") {
+                                        $next_line[] = "&#8595;";  // arrow down
+                                    } elseif (isset($map[$x][3]) && $map[$x][3] === "chd") {
+                                        $next_line[] = "&#8593;"; // arrow up
+                                    } else {
+                                        $next_line[] = "&nbsp;";  // empty box
+                                    }
                         ?>
-                        <td style="font-weight:bold;font-size:130%;width:10px;text-align:center;border:0px;padding:0px">
-                            <?php if (isset($marrsign[$b]) && $marrsign[$b] == $a) { ?>
-                                X
+
+                                    <td class="<?= $ancDb->pers_sexe ==  'M' ? 'extended_man' : 'extended_woman'; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>" <?= $map[$x][2] == 2 ? 'colspan=2' : ''; ?>>
+                                        <a href="<?= $url; ?>"><?= $name["name"]; ?></a>
+                                    </td>
+                                <?php
+                                }
+                            }
+
+                            // display the X sign between two married people
+                            if ($colsp == false) {
+                                $next_line[] = "&nbsp;";
+                                ?>
+                                <td style="font-weight:bold;font-size:130%;width:10px;text-align:center;border:0px;padding:0px">
+                                    <?php if (isset($marrsign[$b]) && $marrsign[$b] == $a) { ?>
+                                        X
+                                    <?php } ?>
+                                </td>
+                        <?php
+                            }
+                        }
+                        ?>
+                    </tr>
+
+                    <!-- The following code places a row with arrows (or blanks) under a row with name boxes -->
+                    <?php if ($a != $maxy) { ?>
+                        <tr>
+                            <?php foreach ($next_line as $value) { ?>
+                                <td style='padding:2px;color:black;width:10px;font-weight:bold;font-size:140%;text-align:center;'>
+                                    <?= $value; ?>
+                                </td>
                             <?php } ?>
-                        </td>
+                        </tr>
                 <?php
                     }
                 }
                 ?>
-            </tr>
-
-            <!-- The following code places a row with arrows (or blanks) under a row with name boxes -->
-            <?php if ($a != $maxy) { ?>
-                <tr>
-                    <?php foreach ($next_line as $value) { ?>
-                        <td style='padding:2px;color:black;width:10px;font-weight:bold;font-size:140%;text-align:center;'>
-                            <?= $value; ?>
-                        </td>
-                    <?php } ?>
-                </tr>
-        <?php
-            }
-        }
-        ?>
-    </table>
-    <?php
-}
-
-
-// Function is called twice. TODO: rebuild into MVC, but function is also needed in view to show results twice.
-function display_table()
-{
-    global $db_functions;
-    global $relation, $relation_type, $relation, $rel_arrayX, $rel_arrayY, $spouse, $rel_arrayspouseX, $rel_arrayspouseY, $famspouseX, $famspouseY;
-    global $fampath, $tree_id, $link_cls, $uri_path;
-    global $data_found;
-
-    // *** Use person class to show names ***
-    $pers_cls = new PersonCls;
-
-    $vars['pers_family'] = $famspouseX;
-    $linkSpouseX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-    $vars['pers_family'] = $famspouseY;
-    $linkSpouseY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-    //$border="border:1px solid #777777;";
-    $border = "";
-
-    if ($relation_type == 1 || $relation_type == 2) {
-        if ($relation_type == 1 && $data_found["foundY_gen"] == 1 && $spouse == '') {
-            // father-son - no need for table
-        } elseif ($relation_type == 2 && $data_found["foundX_gen"] == 1 && $spouse == '') {
-            // son-father - no need for table
-        } else {
-            if ($spouse == 1) {
-                $rel_arrayX = $rel_arrayspouseX;
-            }
-            if ($spouse == 2) {
-                $rel_arrayY = $rel_arrayspouseY;
-            }
-            if ($spouse == 3) {
-                $rel_arrayX = $rel_arrayspouseX;
-                $rel_arrayY = $rel_arrayspouseY;
-            }
-
-            if ($relation_type == 2) {
-                $tempfound = $data_found["foundY_nr"];
-                $data_found["foundY_nr"] = $data_found["foundX_nr"];
-                $data_found["foundX_nr"] = $tempfound;
-                $temprel = $rel_arrayY;
-                $rel_arrayY = $rel_arrayX;
-                $rel_arrayX = $temprel;
-                $tempname = $relation['name1'];
-                $relation['name1'] = $relation['name2'];
-                $relation['name2'] = $tempname;
-                $tempfam = $famspouseX;
-                $famspouseX = $famspouseY;
-                $famspouseY = $tempfam;
-
-                $tempfamily = $relation['family_id1'];
-                $relation['family_id1'] = $relation['family_id2'];
-                $relation['family_id2'] = $tempfamily;
-
-                $tempged = $relation['gednr2'];
-                $relation['gednr2'] = $relation['gednr1'];
-                $relation['gednr1'] = $tempged;
-            }
-    ?>
-
-            <br>
-            <table class="newrel" style="border:0px;border-collapse:separate;border-spacing:3px 1px;">
-                <?php
-                $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
-                $name = $pers_cls->person_name($persidDb);
-                if (($spouse == 1 && $relation_type == 1) || ($spouse == 2 && $relation_type == 2) || $spouse == 3) {
-                ?>
-                    <tr>
-                        <td class="<?= $persidDb->pers_sexe == "M" ?  "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a href="<?= $linkSpouseX; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $name["name"]; ?></a>
-                        </td>
-
-                        <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
-
-                        <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>"><?= $relation['name1']; ?></a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:0px;">&#8593;</td> <!-- arrow up -->
-                        <td style="border:0px;">&nbsp;</td>
-                        <td style="border:0px;">&nbsp;</td>
-                    </tr>
-                <?php } else { ?>
-                    <tr>
-                        <td class="<?= $persidDb->pers_sexe == "M" ?  "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $name["name"]; ?></a>
-                        </td>
-                        <?php if (($spouse == 1 && $relation_type == 2) || ($spouse == 2 && $relation_type == 1)) { ?>
-                            <td style="border:0px;">&nbsp;</td>
-                            <td style="border:0px;">&nbsp;</td>
-                        <?php } ?>
-                    </tr>
-
-                    <tr>
-                        <td style="border:0px;">&#8595;</td> <!-- arrow down -->
-                    </tr>
-                <?php } ?>
-
-                <?php
-                $count = $data_found["foundY_nr"];
-                while ($count != 0) {
-                    $persidDb = $db_functions->get_person($rel_arrayY[$count][0]);
-                    $name = $pers_cls->person_name($persidDb);
-
-                    if ($persidDb->pers_fams) {
-                        $fams = $persidDb->pers_fams;
-                        $tempfam = explode(";", $fams);
-                        $fam = $tempfam[0];
-                    } else {
-                        $fam = $persidDb->pers_famc;
-                    }
-                    $vars['pers_family'] = $fam;
-                    $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-
-                    $count = $rel_arrayY[$count][2];
-                ?>
-                    <tr>
-                        <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
-                        </td>
-
-                        <?php if ($spouse == 1 || $spouse == 2 || $spouse == 3) { ?>
-                            <td style="border:0px;">&nbsp;</td>
-                        <?php } ?>
-                    </tr>
-
-                    <tr>
-                        <td style="border:0px;">&#8593;</td> <!-- arrow up -->
-                    <?php } ?>
-                    <!-- TODO check this code -->
-                    </tr>
-
-                    <tr>
-                        <?php
-                        $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
-                        $name = $pers_cls->person_name($persidDb);
-                        if ($spouse == 1 && $relation_type == 2 || $spouse == 2 && $relation_type == 1 || $spouse == 3) {
-                        ?>
-                            <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                                <a href="<?= $linkSpouseY; ?>main_person=<?= $rel_arrayY[0][0]; ?>"><?= $name["name"]; ?></a>
-                            </td>
-
-                            <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
-
-                            <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
-                                    <?= $relation['name2']; ?>
-                                </a>
-                            </td>
-                        <?php } else { ?>
-                            <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
-                                    <!-- TODO check this, should be $name["name"]? -->
-                                    <?= $relation['name2']; ?>
-                                </a>
-                            </td>
-                            <?php if ($spouse == 1 && $relation_type == 1 || $spouse == 2 && $relation_type == 2) { ?>
-                                <td style="border:0px;">&nbsp;</td>
-                                <td style="border:0px;">&nbsp;</td>
-                        <?php
-                            }
-                        }
-                        ?>
-                    </tr>
             </table>
-        <?php
-        }
-    }
-
-    if ($relation_type == 3 || $relation_type == 4 || $relation_type == 5 || $relation_type == 6) {
-        $rowcount = max($data_found["foundX_gen"], $data_found["foundY_gen"]);
-        $countX = $data_found["foundX_nr"];
-        $countY = $data_found["foundY_nr"];
-        $name1_done = 0;
-        $name2_done = 0;
-
-        $colspan = 3;
-        if ($spouse == 1) {
-            $rel_arrayX = $rel_arrayspouseX;
-        }
-        if ($spouse == 2) {
-            $rel_arrayY = $rel_arrayspouseY;
-        }
-        if ($spouse == 3) {
-            $rel_arrayX = $rel_arrayspouseX;
-            $rel_arrayY = $rel_arrayspouseY;
+            <?php
         }
 
-        $persidDb = $db_functions->get_person($rel_arrayX[$data_found["foundX_match"]][0]);
-        $name = $pers_cls->person_name($persidDb);
 
-        if ($persidDb->pers_fams) {
-            $fams = $persidDb->pers_fams;
-            $tempfam = explode(";", $fams);
-            $fam = $tempfam[0];
-        } else {
-            $fam = $persidDb->pers_famc;
-        }
-        $vars['pers_family'] = $fam;
-        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-        ?>
+        // Function is called twice. TODO: rebuild into MVC, but function is also needed in view to show results twice.
+        function display_table()
+        {
+            global $db_functions;
+            global $relation, $relation_type, $relation, $rel_arrayX, $rel_arrayY, $spouse, $rel_arrayspouseX, $rel_arrayspouseY, $famspouseX, $famspouseY;
+            global $fampath, $tree_id, $link_cls, $uri_path;
+            global $data_found;
 
-        <br>
-        <table class="newrel" style="border-collapse:separate;border-spacing:3px 1px;">
-            <tr>
-                <?php if ($spouse == 1 || $spouse == 3) { ?>
-                    <td style="border:0px;">&nbsp;</td>
-                    <td style="border:0px;">&nbsp;</td>
-                <?php } ?>
+            // *** Use person class to show names ***
+            $pers_cls = new PersonCls;
 
-                <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>" colspan="<?= $colspan; ?>">
-                    <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
-                </td>
+            $vars['pers_family'] = $famspouseX;
+            $linkSpouseX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
 
-                <?php if ($spouse == 2 || $spouse == 3) { ?>
-                    <td style="border:0px;">&nbsp;</td>
-                    <td style="border:0px;">&nbsp;</td>
-                <?php } ?>
-            </tr>
+            $vars['pers_family'] = $famspouseY;
+            $linkSpouseY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
 
-            <tr>
-                <?php if ($spouse == 1 || $spouse == 3) { ?>
-                    <td style="border:0px;">&nbsp;</td>
-                    <td style="border:0px;">&nbsp;</td>
-                <?php } ?>
-                <td style="border:0px;">&#8593;</td> <!-- arrow up -->
-                <td style="border:0px;">&nbsp;</td>
-                <td style="border:0px;">&#8595;</td> <!-- arrow down -->
-                <?php if ($spouse == 2 || $spouse == 3) { ?>
-                    <td style="border:0px;">&nbsp;</td>
-                    <td style="border:0px;">&nbsp;</td>
-                <?php } ?>
-            </tr>
+            //$border="border:1px solid #777777;";
+            $border = "";
 
-            <?php for ($e = 1; $e <= $rowcount; $e++) { ?>
-                <tr>
-                    <?php
-                    if ($countX != 0) {
-                        $persidDb = $db_functions->get_person($rel_arrayX[$countX][0]);
-                        $name = $pers_cls->person_name($persidDb);
-
-                        if ($spouse == 1 || $spouse == 3) {
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                        }
-                        if ($persidDb->pers_fams) {
-                            $fams = $persidDb->pers_fams;
-                            $tempfam = explode(";", $fams);
-                            $fam = $tempfam[0];
-                        } else {
-                            $fam = $persidDb->pers_famc;
-                        }
-                        $vars['pers_family'] = $fam;
-                        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-                    ?>
-                        <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
-                                <?= $name["name"]; ?>
-                            </a>
-                        </td>
-
-                        <?php
-                        $countX = $rel_arrayX[$countX][2];
-                    } elseif ($name1_done == 0) {
-                        if ($spouse == 1 || $spouse == 3) {
-                            $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
-                            $name = $pers_cls->person_name($persidDb);
-
-                            if ($persidDb->pers_fams) {
-                                $fams = $persidDb->pers_fams;
-                                $tempfam = explode(";", $fams);
-                                $fam = $tempfam[0];
-                            } else {
-                                $fam = $persidDb->pers_famc;
-                            }
-
-                        ?>
-                            <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
-                                <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>">
-                                    <?= $relation['name1']; ?>
-                                </a>
-                            </td>
-
-                            <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
-
-                            <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
-                                <a href="<?= $fampath . $fam; ?>&amp;main_person=<?= $persidDb->pers_gedcomnumber; ?>">
-                                    <?= $name["name"]; ?>
-                                </a>
-                            </td>
-
-                        <?php } else { ?>
-
-                            <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
-                                <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>">
-                                    <?= $relation['name1']; ?>
-                                </a>
-                            </td>
-                        <?php
-                        }
-                        $name1_done = 1;
-                    } else {
-                        if ($spouse == 1 || $spouse == 3) {
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                        }
-                        echo '<td style="border:0px;">&nbsp;</td>';
+            if ($relation_type == 1 || $relation_type == 2) {
+                if ($relation_type == 1 && $data_found["foundY_gen"] == 1 && $spouse == '') {
+                    // father-son - no need for table
+                } elseif ($relation_type == 2 && $data_found["foundX_gen"] == 1 && $spouse == '') {
+                    // son-father - no need for table
+                } else {
+                    if ($spouse == 1) {
+                        $rel_arrayX = $rel_arrayspouseX;
+                    }
+                    if ($spouse == 2) {
+                        $rel_arrayY = $rel_arrayspouseY;
+                    }
+                    if ($spouse == 3) {
+                        $rel_arrayX = $rel_arrayspouseX;
+                        $rel_arrayY = $rel_arrayspouseY;
                     }
 
-                    if ($countY != 0) {
-                        $persidDb = $db_functions->get_person($rel_arrayY[$countY][0]);
+                    if ($relation_type == 2) {
+                        $tempfound = $data_found["foundY_nr"];
+                        $data_found["foundY_nr"] = $data_found["foundX_nr"];
+                        $data_found["foundX_nr"] = $tempfound;
+                        $temprel = $rel_arrayY;
+                        $rel_arrayY = $rel_arrayX;
+                        $rel_arrayX = $temprel;
+                        $tempname = $relation['name1'];
+                        $relation['name1'] = $relation['name2'];
+                        $relation['name2'] = $tempname;
+                        $tempfam = $famspouseX;
+                        $famspouseX = $famspouseY;
+                        $famspouseY = $tempfam;
+
+                        $tempfamily = $relation['family_id1'];
+                        $relation['family_id1'] = $relation['family_id2'];
+                        $relation['family_id2'] = $tempfamily;
+
+                        $tempged = $relation['gednr2'];
+                        $relation['gednr2'] = $relation['gednr1'];
+                        $relation['gednr1'] = $tempged;
+                    }
+            ?>
+
+                    <br>
+                    <table class="newrel" style="border:0px;border-collapse:separate;border-spacing:3px 1px;">
+                        <?php
+                        $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
                         $name = $pers_cls->person_name($persidDb);
-
-                        if ($persidDb->pers_fams) {
-                            $fams = $persidDb->pers_fams;
-                            $tempfam = explode(";", $fams);
-                            $fam = $tempfam[0];
-                        } else {
-                            $fam = $persidDb->pers_famc;
-                        }
-                        $vars['pers_family'] = $fam;
-                        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                        if (($spouse == 1 && $relation_type == 1) || ($spouse == 2 && $relation_type == 2) || $spouse == 3) {
                         ?>
-                        <td style="border:0px;width:70px">&nbsp;</td>
+                            <tr>
+                                <td class="<?= $persidDb->pers_sexe == "M" ?  "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                    <a href="<?= $linkSpouseX; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $name["name"]; ?></a>
+                                </td>
 
-                        <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
-                                <?= $name["name"]; ?>
-                            </a>
-                        </td>
+                                <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+
+                                <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                    <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>"><?= $relation['name1']; ?></a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border:0px;">&#8593;</td> <!-- arrow up -->
+                                <td style="border:0px;">&nbsp;</td>
+                                <td style="border:0px;">&nbsp;</td>
+                            </tr>
+                        <?php } else { ?>
+                            <tr>
+                                <td class="<?= $persidDb->pers_sexe == "M" ?  "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                    <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $rel_arrayX[0][0]; ?>"><?= $name["name"]; ?></a>
+                                </td>
+                                <?php if (($spouse == 1 && $relation_type == 2) || ($spouse == 2 && $relation_type == 1)) { ?>
+                                    <td style="border:0px;">&nbsp;</td>
+                                    <td style="border:0px;">&nbsp;</td>
+                                <?php } ?>
+                            </tr>
+
+                            <tr>
+                                <td style="border:0px;">&#8595;</td> <!-- arrow down -->
+                            </tr>
+                        <?php } ?>
 
                         <?php
-                        if ($spouse == 2 || $spouse == 3) {
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                        }
-                        $countY = $rel_arrayY[$countY][2];
-                    } elseif ($name2_done == 0) {
-                        if ($spouse == 2 || $spouse == 3) {
-                            $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
+                        $count = $data_found["foundY_nr"];
+                        while ($count != 0) {
+                            $persidDb = $db_functions->get_person($rel_arrayY[$count][0]);
                             $name = $pers_cls->person_name($persidDb);
 
                             if ($persidDb->pers_fams) {
@@ -4642,79 +4394,320 @@ function display_table()
                             }
                             $vars['pers_family'] = $fam;
                             $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+
+                            $count = $rel_arrayY[$count][2];
                         ?>
-                            <td style="border:0px;width:70px">&nbsp;</td>
+                            <tr>
+                                <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                    <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                                </td>
 
-                            <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
-                                <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
-                                    <?= $name["name"]; ?>
-                                </a>
-                            </td>
+                                <?php if ($spouse == 1 || $spouse == 2 || $spouse == 3) { ?>
+                                    <td style="border:0px;">&nbsp;</td>
+                                <?php } ?>
+                            </tr>
 
-                            <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+                            <tr>
+                                <td style="border:0px;">&#8593;</td> <!-- arrow up -->
+                            <?php } ?>
+                            <!-- TODO check this code -->
+                            </tr>
 
-                            <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
-                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
-                                    <?= $relation['name2']; ?>
-                                </a>
-                            </td>
+                            <tr>
+                                <?php
+                                $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
+                                $name = $pers_cls->person_name($persidDb);
+                                if ($spouse == 1 && $relation_type == 2 || $spouse == 2 && $relation_type == 1 || $spouse == 3) {
+                                ?>
+                                    <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                        <a href="<?= $linkSpouseY; ?>main_person=<?= $rel_arrayY[0][0]; ?>"><?= $name["name"]; ?></a>
+                                    </td>
 
-                        <?php } else { ?>
+                                    <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
 
-                            <td style="border:0px;width:70px">&nbsp;</td>
+                                    <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                        <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
+                                            <?= $relation['name2']; ?>
+                                        </a>
+                                    </td>
+                                <?php } else { ?>
+                                    <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                        <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $rel_arrayY[0][0]; ?>">
+                                            <!-- TODO check this, should be $name["name"]? -->
+                                            <?= $relation['name2']; ?>
+                                        </a>
+                                    </td>
+                                    <?php if ($spouse == 1 && $relation_type == 1 || $spouse == 2 && $relation_type == 2) { ?>
+                                        <td style="border:0px;">&nbsp;</td>
+                                        <td style="border:0px;">&nbsp;</td>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </tr>
+                    </table>
+                <?php
+                }
+            }
 
-                            <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
-                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
-                                    <?= $relation['name2']; ?>
-                                </a>
-                            </td>
-                    <?php
-                        }
-                        $name2_done = 1;
-                    } else {
-                        echo '<td style="border:0px;width:70px;">&nbsp;</td>';
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        if ($spouse == 2 || $spouse == 3) {
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                            echo '<td style="border:0px;">&nbsp;</td>';
-                        }
-                    }
-                    ?>
-                </tr>
+            if ($relation_type == 3 || $relation_type == 4 || $relation_type == 5 || $relation_type == 6) {
+                $rowcount = max($data_found["foundX_gen"], $data_found["foundY_gen"]);
+                $countX = $data_found["foundX_nr"];
+                $countY = $data_found["foundY_nr"];
+                $name1_done = 0;
+                $name2_done = 0;
 
-                <tr>
-                    <?php
-                    if ($spouse == 1 || $spouse == 3) {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                        echo '<td style="width=50px;border:0px;">&nbsp;</td>';
-                    }
+                $colspan = 3;
+                if ($spouse == 1) {
+                    $rel_arrayX = $rel_arrayspouseX;
+                }
+                if ($spouse == 2) {
+                    $rel_arrayY = $rel_arrayspouseY;
+                }
+                if ($spouse == 3) {
+                    $rel_arrayX = $rel_arrayspouseX;
+                    $rel_arrayY = $rel_arrayspouseY;
+                }
 
-                    if ($name1_done == 0) {
-                    ?>
+                $persidDb = $db_functions->get_person($rel_arrayX[$data_found["foundX_match"]][0]);
+                $name = $pers_cls->person_name($persidDb);
+
+                if ($persidDb->pers_fams) {
+                    $fams = $persidDb->pers_fams;
+                    $tempfam = explode(";", $fams);
+                    $fam = $tempfam[0];
+                } else {
+                    $fam = $persidDb->pers_famc;
+                }
+                $vars['pers_family'] = $fam;
+                $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                ?>
+
+                <br>
+                <table class="newrel" style="border-collapse:separate;border-spacing:3px 1px;">
+                    <tr>
+                        <?php if ($spouse == 1 || $spouse == 3) { ?>
+                            <td style="border:0px;">&nbsp;</td>
+                            <td style="border:0px;">&nbsp;</td>
+                        <?php } ?>
+
+                        <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>" colspan="<?= $colspan; ?>">
+                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                        </td>
+
+                        <?php if ($spouse == 2 || $spouse == 3) { ?>
+                            <td style="border:0px;">&nbsp;</td>
+                            <td style="border:0px;">&nbsp;</td>
+                        <?php } ?>
+                    </tr>
+
+                    <tr>
+                        <?php if ($spouse == 1 || $spouse == 3) { ?>
+                            <td style="border:0px;">&nbsp;</td>
+                            <td style="border:0px;">&nbsp;</td>
+                        <?php } ?>
                         <td style="border:0px;">&#8593;</td> <!-- arrow up -->
-                    <?php
-                    } else {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
-
-                    echo '<td style="border:0px;">&nbsp;</td>';
-
-                    if ($name2_done == 0) {
-                    ?>
+                        <td style="border:0px;">&nbsp;</td>
                         <td style="border:0px;">&#8595;</td> <!-- arrow down -->
-                    <?php
-                    } else {
-                        echo '<td style="border:0px;">&nbsp;</td>';
-                    }
+                        <?php if ($spouse == 2 || $spouse == 3) { ?>
+                            <td style="border:0px;">&nbsp;</td>
+                            <td style="border:0px;">&nbsp;</td>
+                        <?php } ?>
+                    </tr>
 
-                    if ($spouse == 2 || $spouse == 3) {
-                    ?>
-                        <td style="border:0px;">&nbsp;</td>
-                        <td style="border:0px;">&nbsp;</td>
+                    <?php for ($e = 1; $e <= $rowcount; $e++) { ?>
+                        <tr>
+                            <?php
+                            if ($countX != 0) {
+                                $persidDb = $db_functions->get_person($rel_arrayX[$countX][0]);
+                                $name = $pers_cls->person_name($persidDb);
+
+                                if ($spouse == 1 || $spouse == 3) {
+                            ?>
+                                    <td style="border:0px;">&nbsp;</td>
+                                    <td style="border:0px;">&nbsp;</td>
+                                <?php
+                                }
+                                if ($persidDb->pers_fams) {
+                                    $fams = $persidDb->pers_fams;
+                                    $tempfam = explode(";", $fams);
+                                    $fam = $tempfam[0];
+                                } else {
+                                    $fam = $persidDb->pers_famc;
+                                }
+                                $vars['pers_family'] = $fam;
+                                $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                                ?>
+                                <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                    <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
+                                        <?= $name["name"]; ?>
+                                    </a>
+                                </td>
+
+                                <?php
+                                $countX = $rel_arrayX[$countX][2];
+                            } elseif ($name1_done == 0) {
+                                if ($spouse == 1 || $spouse == 3) {
+                                    $persidDb = $db_functions->get_person($rel_arrayX[0][0]);
+                                    $name = $pers_cls->person_name($persidDb);
+
+                                    if ($persidDb->pers_fams) {
+                                        $fams = $persidDb->pers_fams;
+                                        $tempfam = explode(";", $fams);
+                                        $fam = $tempfam[0];
+                                    } else {
+                                        $fam = $persidDb->pers_famc;
+                                    }
+
+                                ?>
+                                    <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
+                                        <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>">
+                                            <?= $relation['name1']; ?>
+                                        </a>
+                                    </td>
+
+                                    <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+
+                                    <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
+                                        <a href="<?= $fampath . $fam; ?>&amp;main_person=<?= $persidDb->pers_gedcomnumber; ?>">
+                                            <?= $name["name"]; ?>
+                                        </a>
+                                    </td>
+
+                                <?php } else { ?>
+
+                                    <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
+                                        <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>">
+                                            <?= $relation['name1']; ?>
+                                        </a>
+                                    </td>
+                                <?php
+                                }
+                                $name1_done = 1;
+                            } else {
+                                if ($spouse == 1 || $spouse == 3) {
+                                ?>
+                                    <td style="border:0px;">&nbsp;</td>
+                                    <td style="border:0px;">&nbsp;</td>
+                                <?php } ?>
+                                <td style="border:0px;">&nbsp;</td>
+                            <?php
+                            }
+
+                            if ($countY != 0) {
+                                $persidDb = $db_functions->get_person($rel_arrayY[$countY][0]);
+                                $name = $pers_cls->person_name($persidDb);
+
+                                if ($persidDb->pers_fams) {
+                                    $fams = $persidDb->pers_fams;
+                                    $tempfam = explode(";", $fams);
+                                    $fam = $tempfam[0];
+                                } else {
+                                    $fam = $persidDb->pers_famc;
+                                }
+                                $vars['pers_family'] = $fam;
+                                $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                            ?>
+                                <td style="border:0px;width:70px">&nbsp;</td>
+
+                                <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
+                                    <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
+                                        <?= $name["name"]; ?>
+                                    </a>
+                                </td>
+
+                                <?php if ($spouse == 2 || $spouse == 3) { ?>
+                                    <td style="border:0px;">&nbsp;</td>
+                                    <td style="border:0px;">&nbsp;</td>
+                                <?php
+                                }
+                                $countY = $rel_arrayY[$countY][2];
+                            } elseif ($name2_done == 0) {
+                                if ($spouse == 2 || $spouse == 3) {
+                                    $persidDb = $db_functions->get_person($rel_arrayY[0][0]);
+                                    $name = $pers_cls->person_name($persidDb);
+
+                                    if ($persidDb->pers_fams) {
+                                        $fams = $persidDb->pers_fams;
+                                        $tempfam = explode(";", $fams);
+                                        $fam = $tempfam[0];
+                                    } else {
+                                        $fam = $persidDb->pers_famc;
+                                    }
+                                    $vars['pers_family'] = $fam;
+                                    $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                                ?>
+                                    <td style="border:0px;width:70px">&nbsp;</td>
+
+                                    <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
+                                        <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>">
+                                            <?= $name["name"]; ?>
+                                        </a>
+                                    </td>
+
+                                    <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+
+                                    <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
+                                        <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
+                                            <?= $relation['name2']; ?>
+                                        </a>
+                                    </td>
+
+                                <?php } else { ?>
+                                    <td style="border:0px;width:70px">&nbsp;</td>
+
+                                    <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
+                                        <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
+                                            <?= $relation['name2']; ?>
+                                        </a>
+                                    </td>
+                                <?php
+                                }
+                                $name2_done = 1;
+                            } else {
+                                ?>
+                                <td style="border:0px;width:70px;">&nbsp;</td>
+                                <td style="border:0px;">&nbsp;</td>
+                                <?php if ($spouse == 2 || $spouse == 3) { ?>
+                                    <td style="border:0px;">&nbsp;</td>
+                                    <td style="border:0px;">&nbsp;</td>
+                            <?php
+                                }
+                            }
+                            ?>
+                        </tr>
+
+                        <tr>
+                            <?php if ($spouse == 1 || $spouse == 3) { ?>
+                                <td style="border:0px;">&nbsp;</td>
+                                <td style="width:50px;border:0px;">&nbsp;</td>
+                            <?php
+                            }
+
+                            if ($name1_done == 0) {
+                            ?>
+                                <td style="border:0px;">&#8593;</td> <!-- arrow up -->
+                            <?php } else { ?>
+                                <td style="border:0px;">&nbsp;</td>
+                            <?php } ?>
+
+                            <td style="border:0px;">&nbsp;</td>
+
+                            <?php if ($name2_done == 0) { ?>
+                                <td style="border:0px;">&#8595;</td> <!-- arrow down -->
+                            <?php } else { ?>
+                                <td style="border:0px;">&nbsp;</td>
+                            <?php
+                            }
+
+                            if ($spouse == 2 || $spouse == 3) {
+                            ?>
+                                <td style="border:0px;">&nbsp;</td>
+                                <td style="border:0px;">&nbsp;</td>
+                            <?php } ?>
+                        </tr>
                     <?php } ?>
-                </tr>
-            <?php } ?>
-        </table>
-<?php
-    }
-}
+                </table>
+        <?php
+            }
+        }
