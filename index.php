@@ -129,9 +129,7 @@ $alignmarker = $index['alignmarker'];
 
 // *** New routing script sept. 2023. Search route, return match or not found ***
 $page = $index['page'];
-if (isset($index['last_name'])) {
-    $last_name = $index['last_name'];
-}
+
 if (isset($index['id'])) {
     $id = $index['id'];
 }
@@ -264,7 +262,11 @@ if ($page == 'address') {
     $data = $controllerObj->list_places_names($tree_id);
 } elseif ($page == 'list_names') {
     $controllerObj = new ListNamesController();
-    $data = $controllerObj->list_names($dbh, $tree_id, $user);
+    $last_name = '';
+    if (isset($index['last_name'])) {
+        $last_name = $index['last_name'];
+    }
+    $list_names = $controllerObj->list_names($dbh, $tree_id, $user, $last_name);
 } elseif ($page == 'login') {
     //
 } elseif ($page == 'mailform') {
