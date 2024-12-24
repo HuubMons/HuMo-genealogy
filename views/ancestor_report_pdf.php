@@ -18,7 +18,8 @@ include_once(__DIR__ . "/layout_pdf.php");
 
 
 // TODO create seperate controller script.
-require_once  __DIR__ . "/../app/model/ancestor.php";
+require_once  __DIR__ . "/../app/model/familyModel.php";
+require_once  __DIR__ . "/../app/model/ancestorModel.php";
 $get_ancestor = new AncestorModel($dbh);
 $data["main_person"] = $get_ancestor->getMainPerson();
 $rom_nr = $get_ancestor->getNumberRoman();
