@@ -856,9 +856,6 @@ if ($popup == false) {
             $maps = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/maps.php");
         } elseif ($page === 'statistics') {
-            // TODO refactor
-            require_once(__DIR__ . "/statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
-
             $controllerObj = new AdminStatisticsController();
             $statistics = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/admin_statistics.php");
