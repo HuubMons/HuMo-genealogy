@@ -71,7 +71,7 @@ if (isset($photoalbum['media_files'])) {
 } else {
     // *** Search is used, but there were no results, to prevent empty screen show search bar ***
     $photoalbum['media_files'][] = '';
-    show_media_files("none");  // show all
+    $showMedia->show_media_files("none");  // show all
 }
 
 // *** $pref = category ***

@@ -34,7 +34,7 @@ $data["picture_presentation"] =  $get_ancestor->getPicturePresentation();
 
 // TODO improve this code. $tree_id allready processed in header.
 // 2024: at this moment this can't be removed yet...
-//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in show_picture.php!!!
+//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in showMedia.php!!!
 // *** Set variable for queries ***
 $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 if (isset($_SESSION['tree_prefix'])) {

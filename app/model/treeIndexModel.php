@@ -727,7 +727,6 @@ class TreeIndexModel
                     if ($picqryDb->event_date || $picqryDb->event_place) {
                         $date_place = date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
                     }
-                    // i decided tu put give_media_path() in new file in include dir
                     include_once('./include/give_media_path.php');
                     $picture_path = give_media_path($tree_pict_path, $picname);
 

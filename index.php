@@ -191,7 +191,7 @@ $link_cls = new ProcessLinks($uri_path);
 if ($page == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/show_sources.php");
-    include_once(__DIR__ . "/include/show_picture.php");
+    include_once(__DIR__ . "/include/showMedia.php");
 
     $controllerObj = new AddressController($db_functions, $user);
     $data = $controllerObj->detail();
@@ -284,7 +284,7 @@ if ($page == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
-    include_once(__DIR__ . "/include/show_picture.php");
+    include_once(__DIR__ . "/include/showMedia.php");
 
     $controllerObj = new PhotoalbumController();
     $photoalbum = $controllerObj->detail($dbh, $tree_id, $db_functions);
@@ -329,7 +329,7 @@ if ($page == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/date_place.php");
     include_once(__DIR__ . "/include/process_text.php");
-    include_once(__DIR__ . "/include/show_picture.php");
+    include_once(__DIR__ . "/include/showMedia.php");
     //include_once(__DIR__ . "/include/show_sources.php");
     include_once(__DIR__ . "/include/language_date.php");
 

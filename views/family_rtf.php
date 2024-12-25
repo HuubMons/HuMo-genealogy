@@ -502,7 +502,8 @@ function show_rtf_media($media_kind, $gedcomnumber)
     // *** Show RTF media ***
     global $sect;
 
-    $result = show_media($media_kind, $gedcomnumber);
+    $showMedia = new ShowMedia;
+    $result = $showMedia->show_media($media_kind, $gedcomnumber);
     if (isset($result[1]) && count($result[1]) > 0) {
         $break = 0;
         $textarr = array();

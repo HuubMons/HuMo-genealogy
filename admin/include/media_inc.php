@@ -112,6 +112,7 @@ function resize_picture_IM($folder, $file, $maxheight = 1080, $maxwidth = 1920)
     }
     return ($success);
 }
+
 //search for a thumbnail or mime type placeholder and returns the image tag
 function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $attrib = '')
 {
@@ -132,15 +133,13 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
     }
 
     if (!$file || !$folder) {
-        // echo 'thumb missing';
         return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' missing path/filename">';
+        //return '<img src="../../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' missing path/filename">';
     }
 
     $thumb_url =  thumbnail_exists($folder, $file);
-    // echo '<br>sprawdzenie thumb_url: ' . $thumb_url;
     if (!empty($thumb_url)) {
-        // echo '<br>!empty(thumb_url)';
-        // there are problems with these relative paths - when called from lvl +1 (show_picture.php) its ok, when called from lvl +2 (editorEvent.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
+        // there are problems with these relative paths - when called from lvl +1 (showMedia.php) its ok, when called from lvl +2 (editorEvent.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
         $backtrace = debug_backtrace();
         if (isset($backtrace[0]['file']) && isset($backtrace[0]['line'])) {
             $calling_file = basename($backtrace[0]['file']);
@@ -176,8 +175,8 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
         $folder .= substr($file, 0, 2) . '/';
     } // photobook categories
     if (!file_exists($folder . $file)) {
-        // echo '<br>nie istnieje plik1:' . $folder . $file;
         return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' not found">';
+        //return '<img src="../../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' not found">';
     }
     // check for mime type and no_thumb file
     if (
@@ -240,8 +239,16 @@ function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $att
         case 'bmp':
             return '<img src="../' . $src_path . '"' . $img_style . '>';
     }
-    return '<img src="../images/thumb_missing-image.jpg"' . $img_style . '>';
+    //return '<img src="../images/thumb_missing-image.jpg"' . $img_style . '>';
+    //return '<img src="../../images/thumb_missing-image.jpg"' . $img_style . '>';
+
+
+    // No thumbnail found, return the original file.
+    include_once(__DIR__ . '/../../include/give_media_path.php');
+    $src_path = give_media_path($folder, $file);
+    return '<img src="' . $src_path . '"' . $img_style . '>';
 }
+
 // returns false if mime type of file is not listed here
 function check_media_type($folder, $file)
 {

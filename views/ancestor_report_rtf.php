@@ -223,7 +223,8 @@ while (isset($ancestor_array2[0])) {
             }
             $cell->writeText($rtf_text, $arial12, $parNames);
 
-            $result = show_media('person', $person_manDb->pers_gedcomnumber);
+            $showMedia = new ShowMedia;
+            $result = $showMedia->show_media('person', $person_manDb->pers_gedcomnumber);
             if (isset($result[1]) && count($result[1]) > 0) {
                 $break = 1;
                 $textarr = array();

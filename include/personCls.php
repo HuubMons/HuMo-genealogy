@@ -2842,7 +2842,8 @@ $own_code=0;
                 //
             } else {
                 // *** Show media/ pictures ***
-                $result = show_media('person', $personDb->pers_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
+                $showMedia = new ShowMedia;
+                $result = $showMedia->show_media('person', $personDb->pers_gedcomnumber); // *** This function can be found in file: showMedia.php! ***
                 $process_text .= $result[0];
                 if (isset($templ_person)) {
                     $templ_person = array_merge((array)$templ_person, (array)$result[1]);
