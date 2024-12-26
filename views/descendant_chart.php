@@ -296,7 +296,8 @@ for ($w = 0; $w < count($genarray); $w++) {
                             // *** Only show 1st picture ***
                             if (isset($picture_qry[0])) {
                                 $pictureDb = $picture_qry[0];
-                                $replacement_text .= print_thumbnail($tree_pict_path, $pictureDb->event_event, 60, 65, 'float:left; margin:5px;');
+                                $showMedia = new ShowMedia();
+                                $replacement_text .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 60, 65, 'float:left; margin:5px;');
                             }
                         }
 

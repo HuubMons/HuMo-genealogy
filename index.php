@@ -285,6 +285,8 @@ if ($page == 'address') {
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
     include_once(__DIR__ . "/include/showMedia.php");
+    //include_once(__DIR__ . "/admin/include/media_inc.php");
+
 
     $controllerObj = new PhotoalbumController();
     $photoalbum = $controllerObj->detail($dbh, $tree_id, $db_functions);

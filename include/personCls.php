@@ -1113,7 +1113,8 @@ class PersonCls
                     // *** Only show 1st picture ***
                     if (isset($picture_qry[0])) {
                         $pictureDb = $picture_qry[0];
-                        $text .= print_thumbnail($tree_pict_path, $pictureDb->event_event, 0, 120, 'margin-left:10px; margin-top:5px;') . '<br>';
+                        $showMedia = new ShowMedia;
+                        $text .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 0, 120, 'margin-left:10px; margin-top:5px;') . '<br>';
 
                         //$picture = show_picture($tree_pict_path, $pictureDb->event_event, '', 120);
                         //$text .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';

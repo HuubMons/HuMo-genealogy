@@ -238,10 +238,10 @@ if (isset($_POST['marriage_event_add'])) {
 
 // *** Upload images ***
 if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
-
     include_once(__DIR__ . "/../include/media_inc.php");
-    global $pcat_dirs;
-    
+    include_once(__DIR__ . "/../include/showMedia.php");
+    $showMedia = new showMedia();
+
     // *** get path of pictures folder 
     $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
     $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
@@ -250,13 +250,15 @@ if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
         $tree_pict_path = 'media/';
     }
     $dir = $path_prefix . $tree_pict_path;
-    
+
     $safepath = '';
     $selected_subdir = preg_replace("/[\/\\\\]/", '',  $_POST['select_media_folder']); // remove all / and \ 
-    if (array_key_exists(substr($_FILES['photo_upload']['name'], 0, 3), $pcat_dirs)) { // old suffix style categories
+    if (array_key_exists(substr($_FILES['photo_upload']['name'], 0, 3), $showMedia->pcat_dirs)) { // old suffix style categories
         $dir .= substr($_FILES['photo_upload']['name'], 0, 2) . '/';
-    } elseif (!empty($selected_subdir) &&                                              // new user selected dirs/cats
-              is_dir($dir . $selected_subdir) ) {
+    } elseif (
+         // new user selected dirs/cats
+        !empty($selected_subdir) && is_dir($dir . $selected_subdir)
+    ) {
         $dir .= $selected_subdir . '/';
         $safepath = $selected_subdir . '/';
     }
@@ -1259,7 +1261,7 @@ if (isset($_POST['source_change'])) {
     $save_source_data = true;
 }
 // *** Also save source data if media is added ***
- if (isset($_POST['source_add_media'])) {
+if (isset($_POST['source_add_media'])) {
     $save_source_data = true;
 }
 if ($save_source_data) {

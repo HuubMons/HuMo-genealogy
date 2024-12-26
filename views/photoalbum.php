@@ -5,6 +5,8 @@ if ($user['group_pictures'] != 'j' || $user['group_photobook'] != 'j') {
     exit();
 }
 
+$showMedia = new ShowMedia;
+
 // *** Show categories ***
 if ($photoalbum['show_categories']) {
     $photoalbum['category_enabled']['none'] = true; // *** Always show main category ***
@@ -71,16 +73,16 @@ if (isset($photoalbum['media_files'])) {
 } else {
     // *** Search is used, but there were no results, to prevent empty screen show search bar ***
     $photoalbum['media_files'][] = '';
-    $showMedia->show_media_files("none");  // show all
+    show_media_files("none");  // show all
 }
 
 // *** $pref = category ***
 function show_media_files($pref)
 {
     global $dataDb, $dbh, $photoalbum, $uri_path, $tree_id, $db_functions, $humo_option, $link_cls;
+    global $showMedia;
 
     include_once(__DIR__ . "/../admin/include/media_inc.php");
-    global $pcat_dirs;
 
     $tree_pict_path = $dataDb->tree_pict_path;
     if (substr($tree_pict_path, 0, 1) === '|') {
@@ -275,8 +277,8 @@ function show_media_files($pref)
                     }
                 }
                 $tmp_dir = $dir;
-                $picture = print_thumbnail($dir, $filename, 175, 120);
-                if (array_key_exists(substr($filename, 0, 3), $pcat_dirs)) {
+                $picture = $showMedia->print_thumbnail($dir, $filename, 175, 120);
+                if (array_key_exists(substr($filename, 0, 3), $showMedia->get_pcat_dirs())) {
                     $tmp_dir .= substr($filename, 0, 2) . '/';
                 }
                 if (in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'tif'))) {

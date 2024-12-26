@@ -112,7 +112,9 @@ class EditorEvent
         global $db_functions;
 
         include_once(__DIR__ . "/../include/media_inc.php");
-        global $pcat_dirs;
+        include_once(__DIR__ . '/../../include/give_media_path.php');
+        include_once(__DIR__ . "/../../include/showMedia.php");
+        $showMedia = new showMedia();
 
         $text = '';
 
@@ -1031,12 +1033,10 @@ class EditorEvent
                                     }
                                 }
 
-                                include_once(__DIR__ . '/../../include/give_media_path.php');
-
                                 // echo '<a href="../' . give_media_path($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
                                 //     print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                 echo '<a href="../' . give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
-                                    print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
+                                    $showMedia->print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                 ?>
                             </div>
 
@@ -1620,22 +1620,21 @@ class EditorEvent
 
                         <div class="col-md-auto">
                             <select size="1" name="select_media_folder" class="form-select form-select-sm">
-                                <!-- For new source in new database... -->
                                 <option value=""><?= __('Main media folder'); ?></option>
                                 <?php
-                                $optcat = '';
-                                $optdir = '';
+                                $pcat_dirs = $showMedia->get_pcat_dirs();
                                 foreach ($subfolders as $folder) {
                                     $bfolder = pathinfo($folder, PATHINFO_BASENAME);
                                     if (in_array($bfolder, $ignore)) {
                                         // do nothing
                                     } elseif (array_key_exists($bfolder .  '_', $pcat_dirs)) {
-                                        $optcat .= '<option value="' . $bfolder . '">' . __('Category') . ': ' . $pcat_dirs[$bfolder . '_'] . '</option>';
-                                    } else {
-                                        $optdir .= '<option value="' . $bfolder . '">' . __('Directory') . ': ' . $bfolder . '</option>';
+                                ?>
+                                        <option value="<?= $bfolder; ?>"><?= __('Category'); ?>: <?= $pcat_dirs[$bfolder . '_']; ?></option>
+                                    <?php } else { ?>
+                                        <option value="<?= $bfolder; ?>"><?= __('Directory'); ?>: <?= $bfolder; ?></option>
+                                <?php
                                     }
                                 }
-                                echo $optcat . $optdir;
                                 ?>
                             </select>
                         </div>

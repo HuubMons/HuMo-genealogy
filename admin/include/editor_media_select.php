@@ -5,6 +5,8 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 include_once(__DIR__ . "/../include/media_inc.php");
+include_once(__DIR__ . "/../../include/showMedia.php");
+$showMedia = new showMedia();
 
 echo '<h1 class="center">' . __('Select media') . '</h1>';
 
@@ -117,7 +119,7 @@ if (file_exists($array_picture_folder[0])) {
             array_multisort($list_filename_order, $list_filename);
             foreach ($list_filename as $selected_filename) {
                 echo '<div class="photobook">';
-                echo  print_thumbnail($selected_picture_folder, $selected_filename);
+                echo  $showMedia->print_thumbnail($selected_picture_folder, $selected_filename);
                 // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
                 echo '<br><a href="" onClick=\'return select_item("' . $sub_dir . str_replace("'", "&prime;", $selected_filename) . '")\'>' . $sub_dir . $selected_filename . '</a><br>';
                 echo '</div>';
