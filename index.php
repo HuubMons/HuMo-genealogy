@@ -63,7 +63,7 @@ function custom_autoload($class_name)
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array(
-        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'LanguageCls'
+        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'LanguageCls', 'Config'
     );
     // If all classes are autoloading, array check of classes will be removed.
     if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
@@ -185,8 +185,8 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 // *** To be used to show links in several pages ***
 $link_cls = new ProcessLinks($uri_path);
 
-// *** Base controller (at this moment only in use with sourcecontroller (using extend) ***
-//$controllerObj = new BaseController($dbh, $db_functions);
+// Dec. 2024: general config class. Usage: $controllerObj = new AddressController($config);
+$config = new Config($dbh, $db_functions, $tree_id, $user, $humo_option);
 
 if ($page == 'address') {
     // TODO refactor
@@ -287,9 +287,8 @@ if ($page == 'address') {
     include_once(__DIR__ . "/include/showMedia.php");
     //include_once(__DIR__ . "/admin/include/media_inc.php");
 
-
-    $controllerObj = new PhotoalbumController();
-    $photoalbum = $controllerObj->detail($dbh, $tree_id, $db_functions);
+    $controllerObj = new PhotoalbumController($config);
+    $photoalbum = $controllerObj->detail($selected_language, $uri_path, $link_cls);
 } elseif ($page == 'register') {
     $controllerObj = new RegisterController($db_functions);
     $register = $controllerObj->get_register_data($dbh, $dataDb, $humo_option);
@@ -335,7 +334,8 @@ if ($page == 'address') {
     //include_once(__DIR__ . "/include/show_sources.php");
     include_once(__DIR__ . "/include/language_date.php");
 
-    $controllerObj = new SourceController($dbh, $db_functions, $tree_id); // Using Controller.
+    $controllerObj = new SourceController($config);
+
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
         $id = $_GET["id"];

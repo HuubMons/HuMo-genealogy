@@ -7,9 +7,11 @@ if (!defined('ADMIN_PAGE')) {
 include_once(__DIR__ . "/../include/media_inc.php");
 include_once(__DIR__ . "/../../include/showMedia.php");
 $showMedia = new showMedia();
+?>
 
-echo '<h1 class="center">' . __('Select media') . '</h1>';
+<h1 class="center"><?= __('Select media'); ?></h1>
 
+<?php
 $place_item = '';
 $form = '';
 if (isset($_GET['form'])) {
@@ -85,7 +87,7 @@ if (file_exists($array_picture_folder[0])) {
         <input type="submit" name="submit" value="<?= __('Search'); ?>">
     </form><br>
 
-<?php
+    <?php
     // *** List of media files ***
     $ignore = array('.', '..', 'cms', 'readme.txt', 'slideshow', 'thumbs');
     $dirname_start = strlen($prefx . $pict_path);
@@ -118,11 +120,13 @@ if (file_exists($array_picture_folder[0])) {
         if (isset($list_filename)) {
             array_multisort($list_filename_order, $list_filename);
             foreach ($list_filename as $selected_filename) {
-                echo '<div class="photobook">';
-                echo  $showMedia->print_thumbnail($selected_picture_folder, $selected_filename);
-                // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
-                echo '<br><a href="" onClick=\'return select_item("' . $sub_dir . str_replace("'", "&prime;", $selected_filename) . '")\'>' . $sub_dir . $selected_filename . '</a><br>';
-                echo '</div>';
+    ?>
+                <div class="photobook">
+                    <?= $showMedia->print_thumbnail($selected_picture_folder, $selected_filename); ?><br>
+                    <!-- Replace ' by &prime; otherwise a place including a ' character can't be selected -->
+                    <a href="" onClick='return select_item("<?= $sub_dir . str_replace("'", "&prime;", $selected_filename); ?>")'><?= $sub_dir . $selected_filename; ?></a><br>
+                </div>
+<?php
             }
             unset($list_filename);
             unset($list_filename_order);

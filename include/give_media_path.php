@@ -14,7 +14,7 @@ function give_media_path($media_dir, $media_filename)
     if ($humo_option["media_privacy_mode"] == 'n') {
         $final_media_path = $media_dir . $media_filename;
     } else {
-        // this second option gives us dynamic media link based on query strings which are parsed throug function give_media_file() which is put at beggining of layout.php
+        // this second option gives us dynamic media link based on query strings which are parsed throug function give_media_file().
 
         // TODO does this work if url_rewrite is enabled? Should be something like this if url_rewrite is enabled:
         // serve_file?media_dir=" . $media_dir . "&media_filename=" . $media_filename;

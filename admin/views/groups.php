@@ -500,7 +500,7 @@ If possible, try to filter with that'); ?></i>
         <tr>
             <td>3) <?= __('Privacy filter, filter persons deceased in or after this year'); ?></td>
             <td>
-                <input type="checkbox" id="group_death_date_act"name="group_death_date_act" <?= $groupDb->group_death_date_act != 'n' ? 'checked' : ''; ?>>
+                <input type="checkbox" id="group_death_date_act" name="group_death_date_act" <?= $groupDb->group_death_date_act != 'n' ? 'checked' : ''; ?>>
                 <?= __('Year'); ?>: <input type="text" name="group_death_date" value="<?= $groupDb->group_death_date; ?>" size="4">
             </td>
         </tr>
@@ -684,7 +684,7 @@ If possible, try to filter with that'); ?></i>
 
     // *** Update photocat settings ***
     $table_exists = $dbh->query("SHOW TABLES LIKE 'humo_photocat'")->rowCount() > 0;
-    if ($table_exists and isset($_POST['change_photocat']) and is_numeric($_POST["id"])) {
+    if ($table_exists and isset($_POST['change_photocat']) and is_numeric($_POST["group_id"])) {
         /*
         $group_hide_photocat='';
         $data3sql = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
@@ -719,8 +719,7 @@ If possible, try to filter with that'); ?></i>
         }
         // *** Remove array, so it can be re-used ***
         unset($photocat_prefix_array);
-
-        $sql = "UPDATE humo_groups SET group_hide_photocat='" . $group_hide_photocat . "'  WHERE group_id=" . $_POST["id"];
+        $sql = "UPDATE humo_groups SET group_hide_photocat='" . $group_hide_photocat . "'  WHERE group_id=" . $_POST["group_id"];
         $result = $dbh->query($sql);
 
         $hide_photocat_array = explode(";", $group_hide_photocat);
@@ -768,7 +767,9 @@ If possible, try to filter with that'); ?></i>
                 }
             }
         } else
-            echo '<tr><td colspan="2">' . __('No photo categories available.') . '</td></tr>';
         ?>
+        <tr>
+            <td colspan="2"><?= __('No photo categories available.'); ?></td>
+        </tr>
     </table>
 </form>
