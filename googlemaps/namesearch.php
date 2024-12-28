@@ -148,7 +148,7 @@ function mapbirthplace($place)
 
         <div style="direction:ltr">
             <?php
-            while (@$maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
+            while ($maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
                 $man_cls = new PersonCls($maplistDb);
                 $privacy_man = $man_cls->privacy;
                 $name = $man_cls->person_name($maplistDb);

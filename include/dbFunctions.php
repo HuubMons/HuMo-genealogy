@@ -99,7 +99,7 @@ class DbFunctions
                 ]);
                 $result_array = $stmt->fetchAll(PDO::FETCH_OBJ);
                 foreach ($result_array as $data2Db) {
-                    if (@$data2Db->log_status == 'failed') {
+                    if ($data2Db->log_status == 'failed') {
                         $check_fails++;
                     }
                 }

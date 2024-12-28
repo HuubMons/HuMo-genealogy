@@ -62,7 +62,7 @@ $count = 0;
                             $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
                             $count++;
                     ?>
-                            <option value="<?= $tree_searchDb->tree_id; ?>" <?= $selected; ?>><?= @$treetext['name']; ?></option>
+                            <option value="<?= $tree_searchDb->tree_id; ?>" <?= $selected; ?>><?= $treetext['name']; ?></option>
                     <?php
                         }
                     }

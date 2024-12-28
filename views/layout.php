@@ -60,7 +60,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'serve_file' && isset($_GET['media_
 
     if ($media_qryDb && $media_qryDb->event_connect_kind === 'person') {
         // echo 'person';
-        @$personmnDb = $db_functions->get_person($media_qryDb->event_connect_id);
+        $personmnDb = $db_functions->get_person($media_qryDb->event_connect_id);
         $man_cls = new PersonCls($personmnDb);
         if (is_object($man_cls->personDb) && !$man_cls->privacy) {
             $file_allowed = true;
@@ -73,10 +73,10 @@ if (isset($_GET['page']) && $_GET['page'] == 'serve_file' && isset($_GET['media_
         $family_qry = $dbh->query($qry2);
         $family_qryDb2 = $family_qry->fetch(PDO::FETCH_OBJ);
 
-        @$personmnDb2 = $db_functions->get_person($family_qryDb2->fam_man);
+        $personmnDb2 = $db_functions->get_person($family_qryDb2->fam_man);
         $man_cls2 = new PersonCls($personmnDb2);
 
-        @$personmnDb3 = $db_functions->get_person($family_qryDb2->fam_woman);
+        $personmnDb3 = $db_functions->get_person($family_qryDb2->fam_woman);
         $woman_cls = new PersonCls($personmnDb3);
 
         // *** Only use this picture if both man and woman have disabled privacy options ***
@@ -87,7 +87,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'serve_file' && isset($_GET['media_
         }
     } elseif (isset($_SESSION['group_id_admin'])) {
         $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $_SESSION['group_id_admin'] . "'");
-        @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
+        $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
         if ($groepDb->group_admin === 'j') {
             $file_allowed = true;
         } else {
@@ -442,7 +442,7 @@ $menu_top = getActiveTopMenu($page);
                                                     $selected = ' selected';
                                                 }
                                                 $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
-                                                echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . @$treetext['name'] . '</option>';
+                                                echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . $treetext['name'] . '</option>';
                                                 $count++;
                                             }
                                         }
@@ -673,7 +673,7 @@ $menu_top = getActiveTopMenu($page);
                                     // *** Check if there are sources in the database ***
                                     //$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'AND source_shared='1'");
                                     $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
-                                    @$sourceDb = $source_qry->rowCount();
+                                    $sourceDb = $source_qry->rowCount();
                                     if ($sourceDb > 0) {
                                 ?>
                                         <li><a class="dropdown-item <?php if ($page == 'sources') echo 'active'; ?>" href="<?= $menu_path_sources; ?>"><?= __('Sources'); ?></a></li>
@@ -686,7 +686,7 @@ $menu_top = getActiveTopMenu($page);
                                 if ($user['group_addresses'] == 'j' && $tree_prefix_quoted != '' && $tree_prefix_quoted != 'EMPTY') {
                                     // *** Check for addresses in the database ***
                                     $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'");
-                                    @$addressDb = $address_qry->rowCount();
+                                    $addressDb = $address_qry->rowCount();
                                     if ($addressDb > 0) {
                                 ?>
                                         <li><a class="dropdown-item <?php if ($page == 'addresses') echo 'active'; ?>" href="<?= $menu_path_addresses; ?>"><?= __('Addresses'); ?></a></li>
@@ -737,7 +737,7 @@ $menu_top = getActiveTopMenu($page);
 
                                     <!-- Show link to contact form -->
                                     <?php if ($user["group_contact"] == 'j') {; ?>
-                                        <?php if (@$dataDb->tree_owner) { ?>
+                                        <?php if ($dataDb->tree_owner) { ?>
                                             <li><a class="dropdown-item <?php if ($page == 'mailform') echo 'active'; ?>" href="<?= $menu_path_contact; ?>"><?= __('Contact'); ?></a></li>
                                         <?php } ?>
                                     <?php } ?>

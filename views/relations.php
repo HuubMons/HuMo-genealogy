@@ -506,7 +506,7 @@ Directions for use:<br>
                             $relmarriedX = 0;
                             if (isset($famspouseX)) {
                                 $kindrel = $dbh->query("SELECT fam_kind FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famspouseX . "'");
-                                @$kindrelDb = $kindrel->fetch(PDO::FETCH_OBJ);
+                                $kindrelDb = $kindrel->fetch(PDO::FETCH_OBJ);
                                 if (
                                     $kindrelDb->fam_kind != 'living together' and
                                     $kindrelDb->fam_kind != 'engaged' and
@@ -525,7 +525,7 @@ Directions for use:<br>
                             $relmarriedY = 0;
                             if (isset($famspouseY)) {
                                 $kindrel2 = $dbh->query("SELECT fam_kind FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $famspouseY . "'");
-                                @$kindrel2Db = $kindrel2->fetch(PDO::FETCH_OBJ);
+                                $kindrel2Db = $kindrel2->fetch(PDO::FETCH_OBJ);
                                 if (
                                     $kindrel2Db->fam_kind != 'living together' and
                                     $kindrel2Db->fam_kind != 'engaged' and
@@ -811,7 +811,7 @@ function create_rel_array($db_functions, $gedcomnumber)
                 $man_cls = new PersonCls($person_manDb);
                 $man_privacy=$man_cls->privacy;
                 if (strtolower($person_manDb->pers_sexe)=='m' && $ancestor_number[$i]>1){
-                    @$familyDb=$db_functions->get_family($marriage_number[$i]);
+                    $familyDb=$db_functions->get_family($marriage_number[$i]);
 
                     // *** Use privacy filter of woman ***
                     $person_womanDb=$db_functions->get_person($familyDb->fam_woman);
@@ -833,7 +833,7 @@ function create_rel_array($db_functions, $gedcomnumber)
                 if ($person_manDb->pers_famc && !in_array($person_manDb->pers_famc, $trackfamc)) {
                     $trackfamc[] = $person_manDb->pers_famc;
 
-                    @$familyDb = $db_functions->get_family($person_manDb->pers_famc);
+                    $familyDb = $db_functions->get_family($person_manDb->pers_famc);
                     if ($familyDb->fam_man) {
                         $ancestor_id2[] = $familyDb->fam_man;
                         $ancestor_number2[] = (2 * $ancestor_number[$i]);
@@ -3656,7 +3656,7 @@ function search_marital()
     if ($relation['fams1'] != '') {
         $marrcount = count($relation['fams1_array']);
         for ($x = 0; $x < $marrcount; $x++) {
-            @$familyDb = $db_functions->get_family($relation['fams1_array'][$x], 'man-woman');
+            $familyDb = $db_functions->get_family($relation['fams1_array'][$x], 'man-woman');
             $thespouse = $relation['sexe1'] == 'F' ? $familyDb->fam_man : $familyDb->fam_woman;
 
             $rel_arrayspouseX = create_rel_array($db_functions, $thespouse);
@@ -3683,7 +3683,7 @@ function search_marital()
     if ($data_found["foundX_match"] === '' && $relation['fams2'] != '') {  // no match found between "spouse of X" && "Y", let's try "X" with "spouse of "Y"
         $ymarrcount = count($relation['fams2_array']);
         for ($x = 0; $x < $ymarrcount; $x++) {
-            @$familyDb = $db_functions->get_family($relation['fams2_array'][$x], 'man-woman');
+            $familyDb = $db_functions->get_family($relation['fams2_array'][$x], 'man-woman');
             $thespouse2 = $relation['sexe2'] == 'F' ? $familyDb->fam_man : $familyDb->fam_woman;
 
             $rel_arrayspouseY = create_rel_array($db_functions, $thespouse2);
@@ -3707,11 +3707,11 @@ function search_marital()
         $ymarrcount = count($relation['fams2_array']);
         for ($x = 0; $x < $xmarrcount; $x++) {
             for ($y = 0; $y < $ymarrcount; $y++) {
-                @$familyDb = $db_functions->get_family($relation['fams1_array'][$x], 'man-woman');
+                $familyDb = $db_functions->get_family($relation['fams1_array'][$x], 'man-woman');
                 $thespouse = $relation['sexe1'] == 'F' ? $familyDb->fam_man : $familyDb->fam_woman;
 
                 $rel_arrayspouseX = create_rel_array($db_functions, $thespouse);
-                @$familyDb = $db_functions->get_family($relation['fams2_array'][$y], 'man-woman');
+                $familyDb = $db_functions->get_family($relation['fams2_array'][$y], 'man-woman');
                 $thespouse2 = $relation['sexe2'] == 'F' ? $familyDb->fam_man : $familyDb->fam_woman;
 
                 $rel_arrayspouseY = create_rel_array($db_functions, $thespouse2);

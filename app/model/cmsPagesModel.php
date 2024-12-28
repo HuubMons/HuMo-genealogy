@@ -74,7 +74,7 @@ class CmsPagesModel
         }
         // TODO improve code. Check if value is in array.
         for ($i = 0; $i <= count($session_counter) - 1; $i++) {
-            if (@$cms_pagesDb->page_id == $session_counter[$i]) {
+            if ($cms_pagesDb->page_id == $session_counter[$i]) {
                 $visited = 1;
                 break;
             }

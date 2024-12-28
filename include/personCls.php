@@ -1017,7 +1017,7 @@ class PersonCls
                 $check_children = false;
                 $check_family = explode(";", $personDb->pers_fams);
                 foreach ($check_family as $i => $value) {
-                    @$check_childrenDb = $db_functions->get_family($check_family[$i]);
+                    $check_childrenDb = $db_functions->get_family($check_family[$i]);
                     if ($check_childrenDb->fam_children) {
                         $check_children = true;
                     }

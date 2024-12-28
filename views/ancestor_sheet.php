@@ -36,7 +36,7 @@ function ancestor_chart_person($id, $box_appearance)
     $popup = '';
 
     if ($data["gedcomnumber"][$id]) {
-        @$personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
+        $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $person_cls = new PersonCls($personDb);
         $pers_privacy = $person_cls->privacy;
         $name = $person_cls->person_name($personDb);

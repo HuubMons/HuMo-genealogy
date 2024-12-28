@@ -19,7 +19,7 @@ if (isset($_POST['enable_update_check_change'])) {
 }
 
 // *** Check if installation is completed, before checking for an update ***
-$check_update = @$dbh->query("SELECT * FROM humo_settings");
+$check_update = $dbh->query("SELECT * FROM humo_settings");
 if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
     $debug_update = 'Start. ';
 

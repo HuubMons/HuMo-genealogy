@@ -169,7 +169,7 @@ class DescendantModel extends FamilyModel
 
     public function getBasePerson($db_functions, $main_person)
     {
-        @$dnaDb = $db_functions->get_person($main_person);
+        $dnaDb = $db_functions->get_person($main_person);
         $dnapers_cls = new PersonCls;
         $dnaname = $dnapers_cls->person_name($dnaDb);
         $base_person["name"] =  $dnaname["standard_name"];    // need these 4 in report_descendant
@@ -208,7 +208,7 @@ class DescendantModel extends FamilyModel
         // DNA chart -> change base person to earliest father-line (Y-DNA) or mother-line (Mt-DNA) ancestor
         $max_generation = 100;
 
-        @$dnaDb = $db_functions->get_person($data["main_person"]);
+        $dnaDb = $db_functions->get_person($data["main_person"]);
         /*
         $dnapers_cls = new PersonCls;
         $dnaname = $dnapers_cls->person_name($dnaDb);
@@ -337,7 +337,7 @@ class DescendantModel extends FamilyModel
                     // *** Loop multiple marriages of main_person ***
                     for ($parent1_marr = 0; $parent1_marr <= $count_marr; $parent1_marr++) {
                         $id = $marriage_array[$parent1_marr];
-                        @$familyDb = $db_functions->get_family($id);
+                        $familyDb = $db_functions->get_family($id);
 
                         // Oct. 2021 New method:
                         if ($swap_parent1_parent2 == true) {
@@ -347,11 +347,11 @@ class DescendantModel extends FamilyModel
                             $parent1 = $familyDb->fam_man;
                             $parent2 = $familyDb->fam_woman;
                         }
-                        @$parent1Db = $db_functions->get_person($parent1);
+                        $parent1Db = $db_functions->get_person($parent1);
                         // *** Proces parent1 using a class ***
                         $parent1_cls = new PersonCls($parent1Db);
 
-                        @$parent2Db = $db_functions->get_person($parent2);
+                        $parent2Db = $db_functions->get_person($parent2);
                         // *** Proces parent2 using a class ***
                         $parent2_cls = new PersonCls($parent2Db);
 
@@ -470,7 +470,7 @@ class DescendantModel extends FamilyModel
                             if ($dna == "ydna" || $dna == "mtdna") {
                                 $countdna = 0;
                                 foreach ($child_array as $i => $value) {
-                                    @$childDb = $db_functions->get_person($child_array[$i]);
+                                    $childDb = $db_functions->get_person($child_array[$i]);
                                     if ($dna == "ydna" and $childDb->pers_sexe == "M" and $genarray[$arraynr]["sex"] == "m" and $genarray[$arraynr]["dna"] == 1) $countdna++;
                                     elseif ($dna == "mtdna" and $genarray[$arraynr]["sex"] == "v" and $genarray[$arraynr]["dna"] == 1) $countdna++;
                                 }
@@ -479,7 +479,7 @@ class DescendantModel extends FamilyModel
 
                             $show_privacy_text = false;
                             foreach ($child_array as $i => $value) {
-                                @$childDb = $db_functions->get_person($child_array[$i]);
+                                $childDb = $db_functions->get_person($child_array[$i]);
                                 // *** Use person class ***
                                 $child_cls = new PersonCls($childDb);
 

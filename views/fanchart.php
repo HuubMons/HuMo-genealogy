@@ -52,7 +52,7 @@ function fillarray($nr, $famid)
         return;
     }
     if ($famid) {
-        @$personmnDb = $db_functions->get_person($famid);
+        $personmnDb = $db_functions->get_person($famid);
 
         $man_cls = new PersonCls($personmnDb);
         $man_privacy = $man_cls->privacy;
@@ -87,7 +87,7 @@ function fillarray($nr, $famid)
         $data["fanchart_item"][$nr][5] = $personmnDb->pers_sexe;
 
         if ($personmnDb->pers_famc) {
-            @$record_family = $db_functions->get_family($personmnDb->pers_famc);
+            $record_family = $db_functions->get_family($personmnDb->pers_famc);
             if ($record_family->fam_man) {
                 fillarray($nr * 2, $record_family->fam_man);
             }

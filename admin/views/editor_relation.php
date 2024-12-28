@@ -301,7 +301,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_man_age"]);
                         $sql = "UPDATE humo_persons SET pers_birth_date='" . safe_text_db($pers_birth_date) . "'
                             WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($man_gedcomnumber) . "'";
-                        $result = $dbh->query($sql);
+                        $dbh->query($sql);
                     }
 
                     ?>
@@ -320,7 +320,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_woman_age"]);
                         $sql = "UPDATE humo_persons SET pers_birth_date='" . safe_text_db($pers_birth_date) . "'
                             WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($woman_gedcomnumber) . "'";
-                        $result = $dbh->query($sql);
+                        $dbh->query($sql);
                     }
                     ?>
                     <b><?= $editor_cls->show_selected_person($person2); ?></b>
@@ -1123,7 +1123,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             if ($nr_children > 1) {
                 unset($children_array);
                 for ($i = 0; $i < $nr_children; $i++) {
-                    @$childDb = $db_functions->get_person($child_array[$i]);
+                    $childDb = $db_functions->get_person($child_array[$i]);
 
                     $child_array_nr = $child_array[$i];
                     if ($childDb->pers_birth_date) {

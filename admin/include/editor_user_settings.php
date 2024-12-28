@@ -35,7 +35,7 @@ if (isset($_POST['user_change']) && isset($_POST["id"]) && is_numeric($_POST["id
         }
     }
     $sql = "UPDATE humo_users SET user_hide_trees='" . $user_hide_trees . "',  user_edit_trees='" . $user_edit_trees . "'  WHERE user_id=" . $_POST["id"];
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 ?>
 

@@ -165,7 +165,7 @@ if ($humo_option["url_rewrite"] == "j") {
                     AND connect_sub_kind='pers_object' AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
                 while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                     $person_cls = new PersonCls;
-                    @$personDb = $db_functions->get_person($connectDb->connect_connect_id);
+                    $personDb = $db_functions->get_person($connectDb->connect_connect_id);
                     $name = $person_cls->person_name($personDb);
                     $privacy = $person_cls->set_privacy($personDb);
                     if (!$privacy) {

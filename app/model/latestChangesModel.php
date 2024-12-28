@@ -58,7 +58,7 @@ class LatestChangesModel
         $person_result = $dbh->query($person_qry);
         $i = 0;
         $changes = [];
-        while (@$person = $person_result->fetch(PDO::FETCH_OBJ)) {
+        while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
             if ($person->pers_sexe == "M") {
                 $pers_sexe = '<img src="images/man.gif" alt="man">';
             } elseif ($person->pers_sexe == "F") {
@@ -83,7 +83,7 @@ class LatestChangesModel
         if (!isset($changes['show_person'])){
             $changes['show_person'][]='';
             $changes['changed_date'][]='';
-            $changes['new_date']='';
+            $changes['new_date'][]='';
         }
 
         return $changes;

@@ -132,7 +132,7 @@ $main_admin = $controllerObj->detail();
 $main_admin['show_menu'] = false;
 $popup = false;
 
-if (isset($database_check) && @$database_check) {  // otherwise we can't make $dbh statements
+if (isset($database_check) && $database_check) {  // otherwise we can't make $dbh statements
     $check_tables = false;
     try {
         $check_tables = $dbh->query("SELECT * FROM humo_settings");
@@ -174,10 +174,10 @@ if (isset($_POST['install_tables2'])) {
     $main_admin['show_menu'] = true;
 }
 
-if (isset($database_check) && @$database_check) {  // otherwise we can't make $dbh statements
+if (isset($database_check) && $database_check) {  // otherwise we can't make $dbh statements
     // *** Update to version 4.6, in older version there is a dutch-named table: humo_instellingen ***
     try {
-        $check_update = @$dbh->query("SELECT * FROM humo_instellingen");
+        $check_update = $dbh->query("SELECT * FROM humo_instellingen");
         if ($check_update) {
             $page = 'update';
             $main_admin['show_menu'] = false;
@@ -259,7 +259,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         // *** FIRST CHECK IF USER IS ADMIN OR EDITOR ***
         // *** Edit family trees [GROUP SETTING] ***
         $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $resultDb->user_group_id . "'");
-        @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
+        $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
         if (isset($groepDb->group_edit_trees)) {
             $group_edit_trees = $groepDb->group_edit_trees;
         }
@@ -307,7 +307,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                 log_ip_address='" . $visitor_ip . "',
                 log_user_admin='admin',
                 log_status='success'";
-            @$dbh->query($sql);
+            $dbh->query($sql);
         }
     } else {
         // *** No valid user or password ***
@@ -337,12 +337,12 @@ if (isset($database_check) && $database_check) {
         $group_edit_trees = '';
 
         // *** If .htaccess is used, check usergroup for admin rights ***
-        @$query = "SELECT * FROM humo_users LEFT JOIN humo_groups
+        $query = "SELECT * FROM humo_users LEFT JOIN humo_groups
             ON humo_users.user_group_id=humo_groups.group_id
             WHERE humo_users.user_name='" . $_SERVER["PHP_AUTH_USER"] . "'";
-        @$result = $dbh->query($query);
-        if (@$result->rowCount() > 0) {
-            @$resultDb = $result->fetch(PDO::FETCH_OBJ);
+        $result = $dbh->query($query);
+        if ($result->rowCount() > 0) {
+            $resultDb = $result->fetch(PDO::FETCH_OBJ);
             $group_administrator = $resultDb->group_admin;
 
             // *** Check if user is a editor, GROUP SETTINGS ***
@@ -365,8 +365,8 @@ if (isset($database_check) && $database_check) {
         // *** Logged in using PHP-MySQL ***
         $result = false;
         try {
-            @$query = "SELECT * FROM humo_users";
-            @$result = $dbh->query($query);
+            $query = "SELECT * FROM humo_users";
+            $result = $dbh->query($query);
         } catch (Exception $e) {
             //
         }
@@ -378,7 +378,7 @@ if (isset($database_check) && $database_check) {
 
                     // *** Read group settings ***
                     $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $_SESSION["group_id_admin"] . "'");
-                    @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
+                    $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
 
                     // *** Check if user is an administrator ***
                     $group_administrator = $groepDb->group_admin;
@@ -572,7 +572,7 @@ if ($popup == false) {
                 //
             }
             if ($check_tree_sql) {
-                @$check_treeDb = $check_tree_sql->fetch(PDO::FETCH_OBJ);
+                $check_treeDb = $check_tree_sql->fetch(PDO::FETCH_OBJ);
                 $check_tree_id = $check_treeDb->tree_id;
             }
         }

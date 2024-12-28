@@ -9,10 +9,10 @@ if (isset($_POST['freqfirstnames'])) {
 $m_first_names = array();
 $f_first_names = array();
 
-// men
+// Man
 $personqry = "SELECT pers_firstname FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_sexe='M' AND pers_firstname NOT LIKE ''";
 $person = $dbh->query($personqry);
-while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
+while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
     $fstname_arr = explode(" ", $personDb->pers_firstname);
     for ($s = 0; $s < count($fstname_arr); $s++) {
         $fstname_arr[$s] = str_replace(array("'", "\"", "(", ")", "[", "]", ".", ",", "\\"), array("", "", "", "", "", "", "", "", ""), $fstname_arr[$s]);
@@ -36,10 +36,10 @@ uksort(
     }
 );
 
-//women
+// Woman
 $personqry = "SELECT pers_firstname FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_sexe='F' AND pers_firstname NOT LIKE ''";
 $person = $dbh->query($personqry);
-while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
+while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
     $fstname_arr = explode(" ", $personDb->pers_firstname);
     for ($s = 0; $s < count($fstname_arr); $s++) {
         $fstname_arr[$s] = str_replace(array("'", "\"", "(", ")", "[", "]", ".", ",", "\\"), array("", "", "", "", "", "", "", "", ""), $fstname_arr[$s]);
@@ -98,8 +98,7 @@ $f_keys = array_keys($f_first_names);
     </form>
 </div>
 
-<!-- <table style="width:90%;" class="humo nametbl" align="center"> -->
-<table class="table nametbl mt-4">
+<table class="table nametbl my-4">
     <thead class="table-primary">
         <tr style="height:25px">
             <th style="border-right-width:6px;width:50%" colspan="4"><span style="font-size:135%"><?= __('Male'); ?></span></th>
@@ -124,20 +123,16 @@ $f_keys = array_keys($f_first_names);
         <tr>
             <!-- male 1st name -->
             <td class="m_namelst">
-                <?php
-                if (isset($m_keys[$i]) && isset($m_first_names[$m_keys[$i]])) {
-                    echo '<a href="' . $path_tmp . 'sexe=M&amp;pers_firstname=' . $m_keys[$i] . '&amp;part_firstname=contains">' . $m_keys[$i] . "</a>";
-                }
-                ?>
+                <?php if (isset($m_keys[$i]) && isset($m_first_names[$m_keys[$i]])) { ?>
+                    <a href="<?= $path_tmp; ?>sexe=M&amp;pers_firstname=<?= $m_keys[$i]; ?>&amp;part_firstname=contains"><?= $m_keys[$i]; ?></a>
+                <?php } ?>
             </td>
 
             <!-- male 1st nr -->
             <td class="m_namenr" style="text-align:center;border-right-width:3px">
-                <?php
-                if (isset($m_keys[$i]) && isset($m_first_names[$m_keys[$i]])) {
-                    echo $m_first_names[$m_keys[$i]];
-                }
-                ?>
+                <?php if (isset($m_keys[$i]) && isset($m_first_names[$m_keys[$i]])) { ?>
+                    <?= $m_first_names[$m_keys[$i]]; ?>
+                <?php } ?>
             </td>
 
             <!-- male 2nd name -->
@@ -149,86 +144,76 @@ $f_keys = array_keys($f_first_names);
 
             <!-- male 2nd nr -->
             <td class="m_namenr" style="text-align:center;border-right-width:6px">
-                <?php
-                if (isset($m_keys[$i + $row]) && isset($m_first_names[$m_keys[$i + $row]])) {
-                    echo $m_first_names[$m_keys[$i + $row]];
-                }
-                ?>
+                <?php if (isset($m_keys[$i + $row]) && isset($m_first_names[$m_keys[$i + $row]])) { ?>
+                    <?= $m_first_names[$m_keys[$i + $row]]; ?>
+                <?php } ?>
             </td>
 
             <!-- female 1st name -->
             <td class="f_namelst">
-                <?php
-                if (isset($f_keys[$i]) && isset($f_first_names[$f_keys[$i]])) {
-                    echo '<a href="' . $path_tmp . 'sexe=F&amp;pers_firstname=' . $f_keys[$i] . '&amp;part_firstname=contains">' . $f_keys[$i] . "</a>";
-                }
-                ?>
+                <?php if (isset($f_keys[$i]) && isset($f_first_names[$f_keys[$i]])) { ?>
+                    <a href="<?= $path_tmp; ?>sexe=F&amp;pers_firstname=<?= $f_keys[$i]; ?>&amp;part_firstname=contains"><?= $f_keys[$i]; ?></a>
+                <?php } ?>
             </td>
 
             <!-- female 1st nr -->
             <td class="f_namenr" style="text-align:center;border-right-width:3px">
-                <?php
-                if (isset($f_keys[$i]) && isset($f_first_names[$f_keys[$i]])) {
-                    echo $f_first_names[$f_keys[$i]];
-                }
-                ?>
+                <?php if (isset($f_keys[$i]) && isset($f_first_names[$f_keys[$i]])) { ?>
+                    <?= $f_first_names[$f_keys[$i]]; ?>
+                <?php } ?>
             </td>
 
             <!-- female 2nd name -->
             <td class="f_namelst">
-                <?php
-                if (isset($f_keys[$i + $row]) && isset($f_first_names[$f_keys[$i + $row]])) {
-                    echo '<a href="' . $path_tmp . 'sexe=F&amp;pers_firstname=' . $f_keys[$i + $row] . '&amp;part_firstname=contains">' . $f_keys[$i + $row] . "</a>";
-                }
-                ?>
+                <?php if (isset($f_keys[$i + $row]) && isset($f_first_names[$f_keys[$i + $row]])) { ?>
+                    <a href="<?= $path_tmp; ?>sexe=F&amp;pers_firstname=<?= $f_keys[$i + $row]; ?>&amp;part_firstname=contains"><?= $f_keys[$i + $row]; ?></a>
+                <?php } ?>
             </td>
 
             <!-- female 2nd nr -->
             <td class="f_namenr" style="text-align:center;border-right-width:1px">
-                <?php
-                if (isset($f_keys[$i + $row]) && isset($f_first_names[$f_keys[$i + $row]])) {
-                    echo $f_first_names[$f_keys[$i + $row]];
-                }
-                ?>
+                <?php if (isset($f_keys[$i + $row]) && isset($f_first_names[$f_keys[$i + $row]])) { ?>
+                    <?= $f_first_names[$f_keys[$i + $row]]; ?>
+                <?php } ?>
             </td>
         </tr>
     <?php } ?>
-
-</table><br>
+</table>
 
 <?php
 // *** Show lightgray bars ***
 $m_baseperc = reset($m_first_names);
 $f_baseperc = reset($f_first_names);
-
-echo '
+?>
 <script>
-var tbl = document.getElementsByClassName("nametbl")[0];
-var rws = tbl.rows; var m_baseperc = ' . $m_baseperc . '; var f_baseperc = ' . $f_baseperc . ';
-for(var i = 0; i < rws.length; i ++) {
-    var m_tbs =  rws[i].getElementsByClassName("m_namenr");
-    var m_nms = rws[i].getElementsByClassName("m_namelst");
-    var f_tbs =  rws[i].getElementsByClassName("f_namenr");
-    var f_nms = rws[i].getElementsByClassName("f_namelst");
-    for(var x = 0; x < m_tbs.length; x ++) {
-        if(parseInt(m_tbs[x].innerHTML, 10) != NaN && parseInt(m_tbs[x].innerHTML, 10) > 0) {
-            var percentage = parseInt(m_tbs[x].innerHTML, 10);
-            percentage = (percentage * 100)/m_baseperc;
-            m_nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
-            m_nms[x].style.backgroundSize = percentage + "%" + " 100%";
-            m_nms[x].style.backgroundRepeat = "no-repeat";
-            m_nms[x].style.color = "rgb(0, 140, 200)";
+    var tbl = document.getElementsByClassName("nametbl")[0];
+    var rws = tbl.rows;
+    var m_baseperc = <?= $m_baseperc; ?>;
+    var f_baseperc = <?= $f_baseperc; ?>;
+    for (var i = 0; i < rws.length; i++) {
+        var m_tbs = rws[i].getElementsByClassName("m_namenr");
+        var m_nms = rws[i].getElementsByClassName("m_namelst");
+        var f_tbs = rws[i].getElementsByClassName("f_namenr");
+        var f_nms = rws[i].getElementsByClassName("f_namelst");
+        for (var x = 0; x < m_tbs.length; x++) {
+            if (parseInt(m_tbs[x].innerHTML, 10) != NaN && parseInt(m_tbs[x].innerHTML, 10) > 0) {
+                var percentage = parseInt(m_tbs[x].innerHTML, 10);
+                percentage = (percentage * 100) / m_baseperc;
+                m_nms[x].style.backgroundImage = "url(images/lightgray.png)";
+                m_nms[x].style.backgroundSize = percentage + "%" + " 100%";
+                m_nms[x].style.backgroundRepeat = "no-repeat";
+                m_nms[x].style.color = "rgb(0, 140, 200)";
+            }
+        }
+        for (var x = 0; x < f_tbs.length; x++) {
+            if (parseInt(m_tbs[x].innerHTML, 10) != NaN && parseInt(m_tbs[x].innerHTML, 10) > 0) {
+                var percentage = parseInt(f_tbs[x].innerHTML, 10);
+                percentage = (percentage * 100) / f_baseperc;
+                f_nms[x].style.backgroundImage = "url(images/lightgray.png)";
+                f_nms[x].style.backgroundSize = percentage + "%" + " 100%";
+                f_nms[x].style.backgroundRepeat = "no-repeat";
+                f_nms[x].style.color = "rgb(0, 140, 200)";
+            }
         }
     }
-    for(var x = 0; x < f_tbs.length; x ++) {
-        if(parseInt(m_tbs[x].innerHTML, 10) != NaN && parseInt(m_tbs[x].innerHTML, 10) > 0) {
-            var percentage = parseInt(f_tbs[x].innerHTML, 10);
-            percentage = (percentage * 100)/f_baseperc;
-            f_nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
-            f_nms[x].style.backgroundSize = percentage + "%" + " 100%";
-            f_nms[x].style.backgroundRepeat = "no-repeat";
-            f_nms[x].style.color = "rgb(0, 140, 200)";
-        }
-    }
-}
-</script>';
+</script>

@@ -203,7 +203,7 @@ elseif (isset($_POST['relatives'])) {
         $relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);        // database row: I23@I300;I54@I304;I34@I430;
         $firstsemi = strpos($relcompDb->setting_value, ';') + 1;
         $string = substr($relcompDb->setting_value, $firstsemi);
-        $result = $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $string);
+        $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $string);
         $trees['relatives_merge'] = $string;
     }
 

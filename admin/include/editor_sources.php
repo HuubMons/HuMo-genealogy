@@ -480,7 +480,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                                         if ($connectDb->connect_source_id != '' && $sourceDb->source_gedcomnr == $connectDb->connect_source_id) {
                                             $selected = ' selected';
                                         }
-                                        echo '<option value="' . @$sourceDb->source_gedcomnr . '"' . $selected . '>';
+                                        echo '<option value="' . $sourceDb->source_gedcomnr . '"' . $selected . '>';
                                         if ($sourceDb->source_title) {
                                             echo $sourceDb->source_title;
                                         } else {
@@ -489,7 +489,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
                                                 echo '...';
                                             }
                                         }
-                                        echo ' [' . @$sourceDb->source_gedcomnr . ']</option>' . "\n";
+                                        echo ' [' . $sourceDb->source_gedcomnr . ']</option>' . "\n";
                                     }
                                     ?>
                                     <option value="">*** <?= __('Results are limited, use search to find more sources.'); ?> ***</option>

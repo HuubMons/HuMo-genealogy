@@ -43,7 +43,7 @@ class TimelineModel
 
         /*
         $data["bornyear"] = '';
-        if (@$personDb->pers_birth_date) {
+        if ($personDb->pers_birth_date) {
             $borndate = $this->julgreg($personDb->pers_birth_date);
             $temp = substr($borndate, -4);
             if ($temp > 0 and $temp < 2200) {
@@ -54,7 +54,7 @@ class TimelineModel
         }
         */
         $data["bornyear"] = '';
-        if (@$personDb->pers_birth_date) {
+        if ($personDb->pers_birth_date) {
             $get_date = $this->julgreg($personDb->pers_birth_date, true);
             if ($get_date["year"]) {
                 $data["bornyear"] = $get_date["year"];
@@ -65,7 +65,7 @@ class TimelineModel
 
         /*
         $data["baptyear"] = '';
-        if (@$personDb->pers_bapt_date) {
+        if ($personDb->pers_bapt_date) {
             $baptdate = $this->julgreg($personDb->pers_bapt_date);
             $temp = substr($baptdate, -4);
             if ($temp > 0 and $temp < 2200) {
@@ -76,7 +76,7 @@ class TimelineModel
         }
         */
         $data["baptyear"] = '';
-        if (@$personDb->pers_bapt_date) {
+        if ($personDb->pers_bapt_date) {
             $get_date = $this->julgreg($personDb->pers_bapt_date, true);
             if ($get_date["year"]) {
                 $data["baptyear"] = $get_date["year"];
@@ -86,7 +86,7 @@ class TimelineModel
         }
 
         $data["deathyear"] = '';
-        if (@$personDb->pers_death_date) {
+        if ($personDb->pers_death_date) {
             $deathdate = $this->julgreg($personDb->pers_death_date);
             $temp = substr($deathdate, -4);
             if ($temp > 0 && $temp < 2200) {
@@ -101,7 +101,7 @@ class TimelineModel
         }
 
         $data["burryear"] = '';
-        if (@$personDb->pers_buried_date) {
+        if ($personDb->pers_buried_date) {
             $burrdate = $this->julgreg($personDb->pers_buried_date);
             $temp = substr($burrdate, -4);
             if ($temp > 0 && $temp < 2200) {

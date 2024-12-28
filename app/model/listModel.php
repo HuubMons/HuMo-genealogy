@@ -1347,8 +1347,8 @@ class ListModel
             if ($count_qry) {
                 // *** Use MySQL COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
                 $result = $dbh->query($count_qry);
-                @$resultDb = $result->fetch(PDO::FETCH_OBJ);
-                $count_persons = @$resultDb->teller;
+                $resultDb = $result->fetch(PDO::FETCH_OBJ);
+                $count_persons = $resultDb->teller;
             } else {
                 // *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
                 $result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");

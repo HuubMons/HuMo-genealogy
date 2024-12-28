@@ -107,7 +107,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                     while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
                         $treetext = show_tree_text($treeDb->tree_id, $selected_language);
                     ?>
-                        <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= @$treetext['name']; ?></option>
+                        <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= $treetext['name']; ?></option>
                     <?php } ?>
                 </select>
             </div>

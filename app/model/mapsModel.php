@@ -228,7 +228,7 @@ class MapsModel
                 ON humo_location.location_location = humo_persons.pers_death_place
                 WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "' " . $namesearch_string . " ORDER BY location_location");
         }
-        while (@$personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
+        while ($personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
             if ($maps['display_birth']) {
                 $place = $personDb->pers_birth_place;
                 $date = $personDb->pers_birth_date;
@@ -293,7 +293,7 @@ class MapsModel
         // Allready done for openstreetmap.
         $locarray = [];
         $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL ORDER BY location_location");
-        while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
+        while ($locationDb = $location->fetch(PDO::FETCH_OBJ)) {
             $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
             $locarray[$locationDb->location_location][1] = $locationDb->location_lat;
             $locarray[$locationDb->location_location][2] = $locationDb->location_lng;
@@ -334,13 +334,13 @@ class MapsModel
                     //WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
 
 
-                    @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
+                    $personDb = $persoon->fetch(PDO::FETCH_OBJ);
                 } elseif ($_SESSION['type_death'] == 1) {
                     $persoon = $dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
                         FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                         AND pers_gedcomnumber ='" . $value . "'
                         AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
-                    @$personDb = $persoon->fetch(PDO::FETCH_OBJ);
+                    $personDb = $persoon->fetch(PDO::FETCH_OBJ);
                 }
                 if ($personDb) {
                     if ($_SESSION['type_birth'] == 1) {
@@ -425,7 +425,7 @@ class MapsModel
                     FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                     AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) " . $namesearch_string);
             }
-            while (@$personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
+            while ($personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
 
                 if ($_SESSION['type_birth'] == 1) {
                     $place = $personDb->pers_birth_place;

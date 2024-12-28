@@ -2611,7 +2611,7 @@ class GedcomCls
         //		tag_source_id='".$source_id."',
         //		tag_tree_id='".$tree_id."',
         //		tag_tag='".$this->text_process($source["source_unprocessed_tags"])."'";
-        //	$result=$dbh->query($sql);
+        //	$dbh->query($sql);
         //}
 
 

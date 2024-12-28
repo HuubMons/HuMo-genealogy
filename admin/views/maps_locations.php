@@ -20,7 +20,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
 // *** Empty entire geolocation table ***
 if (isset($_POST['deletedatabase2'])) {
     $dbh->query("TRUNCATE TABLE humo_location");
-    $result = $db_functions->update_settings('geo_trees', '');
+    $db_functions->update_settings('geo_trees', '');
 }
 
 if (isset($_POST['check_new'])) {
@@ -46,7 +46,7 @@ if (isset($_POST['check_new'])) {
     // make array of all existing locations in database	
     $exist_locs = array();
     $location = $dbh->query("SELECT location_location FROM humo_location WHERE location_lat IS NOT NULL");
-    while (@$locationDb = $location->fetch(PDO::FETCH_OBJ)) {
+    while ($locationDb = $location->fetch(PDO::FETCH_OBJ)) {
         $exist_locs[] = $locationDb->location_location;
     }
 
@@ -60,7 +60,7 @@ if (isset($_POST['check_new'])) {
 
     $thistree_non_exist = array();
 
-    while (@$personDb = $map_person->fetch(PDO::FETCH_OBJ)) {
+    while ($personDb = $map_person->fetch(PDO::FETCH_OBJ)) {
         // for each location we check:
         // 1. if it has already been indexed (if so, skip it)
         // 2. if in the past it couldn't be found by google api (if so, skip it)
@@ -151,7 +151,7 @@ if (isset($_POST['check_new'])) {
                         $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
                     ?>
                         <option value="<?= $tree_searchDb->tree_id; ?>" <?= $tree_searchDb->tree_id == $maps['geo_tree_id'] ? 'selected' : ''; ?>>
-                            <?= @$treetext['name']; ?>
+                            <?= $treetext['name']; ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -185,7 +185,7 @@ if (isset($_POST['check_new'])) {
                 $tree_search_result2 = $dbh->query($tree_search_sql2);
                 $tree_searchDb2 = $tree_search_result2->fetch(PDO::FETCH_OBJ);
                 $treetext2 = show_tree_text($tree_searchDb2->tree_id, $selected_language);
-                $one_tree = "<b>" . __('Family tree') . " " . @$treetext2['name'] . ": </b>";
+                $one_tree = "<b>" . __('Family tree') . " " . $treetext2['name'] . ": </b>";
             }
         ?>
             <div class="alert alert-warning" role="alert">
@@ -241,7 +241,7 @@ if (isset($_POST['check_new'])) {
         // so we can update correctly with the "REFRESH BIRTH/DEATH STATUS" option further on.
         if ($maps['geo_tree_id'] != '') {
             if (strpos($humo_option['geo_trees'], "@" . $maps['geo_tree_id'] . ";") === false) { // this tree_id does not appear already
-                $result = $db_functions->update_settings('geo_trees', $humo_option['geo_trees'] . "@" . $maps['geo_tree_id']);
+                $db_functions->update_settings('geo_trees', $humo_option['geo_trees'] . "@" . $maps['geo_tree_id']);
                 // add tree_prefix if not already present
                 $humo_option['geo_trees'] .= "@" . $maps['geo_tree_id'] . ';'; // humo_option is used further on before page is refreshed so we have to update it manually
             }
@@ -252,7 +252,7 @@ if (isset($_POST['check_new'])) {
             while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
                 $str .= "@" . $tree_searchDb->tree_id . ";";
             }
-            $result = $db_functions->update_settings('geo_trees', $str);
+            $db_functions->update_settings('geo_trees', $str);
             $humo_option['geo_trees'] = $str; // humo_option is used further on before page is refreshed so we have to update it manually
         }
 
@@ -641,7 +641,7 @@ if (isset($_POST['check_new'])) {
 
                     // *** Add or change location ***
                     if (isset($_POST['loc_add'])) {
-                        @$result = $dbh->query("SELECT location_location FROM humo_location WHERE location_location = '" . safe_text_db($_POST['add_name']) . "'");
+                        $result = $dbh->query("SELECT location_location FROM humo_location WHERE location_location = '" . safe_text_db($_POST['add_name']) . "'");
                         if ($result->rowCount() == 0) {
                             // doesn't exist yet
                             $dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('" . safe_text_db($_POST['add_name']) . "','" . floatval($_POST['location_lat']) . "','" . floatval($_POST['location_lng']) . "') ");

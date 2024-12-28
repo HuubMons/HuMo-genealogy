@@ -8,9 +8,9 @@ class UserSettingsModel
             $qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
                 ON humo_users.user_group_id=humo_groups.group_id
                 WHERE humo_users.user_id='" . $_SESSION['user_id'] . "'";
-            @$result = $dbh->query($qry);
+            $result = $dbh->query($qry);
             if ($result->rowCount() > 0) {
-                @$userDb = $result->fetch(PDO::FETCH_OBJ);
+                $userDb = $result->fetch(PDO::FETCH_OBJ);
             }
         }
         return $userDb;

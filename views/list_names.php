@@ -49,7 +49,7 @@ if ($list_names["max_names"] != '999') {
     $personqry .= " LIMIT " . $list_names["item"] . "," . $list_names["max_names"];
 }
 $person = $dbh->query($personqry);
-while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
+while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
     if ($personDb->pers_lastname == '') {
         $personDb->pers_lastname = '...';
     }
@@ -84,7 +84,7 @@ if ($humo_option["url_rewrite"] == "j") {
 //*** Show number of persons and pages ***
 $show_line_pages = false;
 // *** Check for search results ***
-if (@$person->rowCount() > 0) {
+if ($person->rowCount() > 0) {
     if ($humo_option["url_rewrite"] == "j") {
         $uri_path_string = $uri_path . 'list_names/' . $tree_id . '/' . $list_names["last_name"] . '?';
     } else {

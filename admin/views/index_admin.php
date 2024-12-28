@@ -272,61 +272,61 @@ if (!defined('ADMIN_PAGE')) {
                     echo __('Optimize table...') . ' humo_persons<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_persons");
+                    $dbh->query("OPTIMIZE TABLE humo_persons");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_families<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_families");
+                    $dbh->query("OPTIMIZE TABLE humo_families");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_unprocessed_tags<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_unprocessed_tags");
+                    $dbh->query("OPTIMIZE TABLE humo_unprocessed_tags");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_settings<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_settings");
+                    $dbh->query("OPTIMIZE TABLE humo_settings");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_repositories<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_repositories");
+                    $dbh->query("OPTIMIZE TABLE humo_repositories");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_sources<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_sources");
+                    $dbh->query("OPTIMIZE TABLE humo_sources");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_texts<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_texts");
+                    $dbh->query("OPTIMIZE TABLE humo_texts");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_connections<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_connections");
+                    $dbh->query("OPTIMIZE TABLE humo_connections");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_addresses<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_addresses");
+                    $dbh->query("OPTIMIZE TABLE humo_addresses");
 
                     //ob_start();
                     echo __('Optimize table...') . ' humo_events<br>';
                     //ob_flush();
                     flush();
-                    @$result = $dbh->query("OPTIMIZE TABLE humo_events");
+                    $dbh->query("OPTIMIZE TABLE humo_events");
                 }
                 ?>
                 <?= $mbytes; ?> MB <a href="index.php?optimize=1"><?= __('Optimize database.'); ?></a>

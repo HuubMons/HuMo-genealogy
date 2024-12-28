@@ -2062,7 +2062,7 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
 
     $family = $dbh->query("SELECT fam_man, fam_woman FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $family_id . "'");
     try {
-        @$familyDb = $family->fetch(PDO::FETCH_OBJ);
+        $familyDb = $family->fetch(PDO::FETCH_OBJ);
     } catch (PDOException $e) {
         echo __('No valid family number.');
     }
@@ -2158,8 +2158,8 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {
                 $child = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $child_array[$i] . "'");
-                @$childDb = $child->fetch(PDO::FETCH_OBJ);
-                //@$childDb = $db_functions->get_person($child_array[$i]);
+                $childDb = $child->fetch(PDO::FETCH_OBJ);
+                //$childDb = $db_functions->get_person($child_array[$i]);
                 if ($child->rowCount() > 0) {
                     // *** Build descendant_report ***
                     if ($childDb->pers_fams) {

@@ -10,14 +10,14 @@ class UpdateCls
         global $dbh;
         $update_check = false;
         try {
-            $update_check = @$dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
+            $update_check = $dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
         } catch (Exception $e) {
             //
         }
 
         $update_check2 = false;
         try {
-            $update_check2 = @$dbh->query("SELECT * FROM humo_stambomen_tekst LIMIT 0,1");
+            $update_check2 = $dbh->query("SELECT * FROM humo_stambomen_tekst LIMIT 0,1");
         } catch (Exception $e) {
             //
         }
@@ -2058,7 +2058,7 @@ class UpdateCls
         // *** Get tree_id of tree_prefix humo_ ***
         $sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='humo_'");
         $resultDb = $sql->fetch(PDO::FETCH_OBJ);
-        @$humo_tree_id = $resultDb->tree_id;
+        $humo_tree_id = $resultDb->tree_id;
 
         // *** Check if table exists already if not create it ***
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_repositories'");

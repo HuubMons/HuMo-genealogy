@@ -177,7 +177,7 @@ class AdminCmsPagesModel
 
         if (isset($_POST['menu_remove2']) && is_numeric($_POST['menu_id'])) {
             $sql = "DELETE FROM humo_cms_menu WHERE menu_id='" . $_POST['menu_id'] . "'";
-            @$dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Re-order menu's ***
             $repair_order = 1;

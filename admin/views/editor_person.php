@@ -11,7 +11,7 @@
     if ($editor['add_person'] == false) {
         // *** Update settings ***
         if (isset($_POST['admin_online_search']) && ($_POST['admin_online_search'] == 'y' || $_POST['admin_online_search'] == 'n')) {
-            $result = $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
+            $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
             $humo_option["admin_online_search"] = $_POST['admin_online_search'];
         }
     ?>

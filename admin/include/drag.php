@@ -17,7 +17,7 @@ if (isset($_SESSION['admin_tree_id'])) {
 
     if ($drag_kind == "children" && is_numeric($_GET["family_id"])) {
         $chldstring = safe_text_db($_GET['chldstring']);
-        $result = $dbh->query("UPDATE humo_families SET fam_children='" . $chldstring . "' WHERE fam_id='" . $_GET["family_id"] . "'");
+        $dbh->query("UPDATE humo_families SET fam_children='" . $chldstring . "' WHERE fam_id='" . $_GET["family_id"] . "'");
     }
 
     if ($drag_kind == "media") {
@@ -26,7 +26,7 @@ if (isset($_SESSION['admin_tree_id'])) {
         $counter = count($media_arr);
         for ($x = 0; $x < $counter; $x++) {
             if (is_numeric($media_arr[$x])) {
-                $result = $dbh->query("UPDATE humo_events SET event_order='" . ($x + 1) . "' WHERE event_id='" . $media_arr[$x] . "'");
+                $dbh->query("UPDATE humo_events SET event_order='" . ($x + 1) . "' WHERE event_id='" . $media_arr[$x] . "'");
             }
         }
     }
@@ -37,7 +37,7 @@ if (isset($_SESSION['admin_tree_id'])) {
         $counter = count($media_arr);
         for ($x = 0; $x < $counter; $x++) {
             if (is_numeric($media_arr[$x])) {
-                $result = $dbh->query("UPDATE humo_connections SET connect_order='" . ($x + 1) . "' WHERE connect_id='" . $media_arr[$x] . "'");
+                $dbh->query("UPDATE humo_connections SET connect_order='" . ($x + 1) . "' WHERE connect_id='" . $media_arr[$x] . "'");
             }
         }
     }
@@ -48,7 +48,7 @@ if (isset($_SESSION['admin_tree_id'])) {
         $counter = count($media_arr);
         for ($x = 0; $x < $counter; $x++) {
             if (is_numeric($media_arr[$x])) {
-                $result = $dbh->query("UPDATE humo_trees SET tree_order='" . ($x + 1) . "' WHERE tree_id='" . $media_arr[$x] . "'");
+                $dbh->query("UPDATE humo_trees SET tree_order='" . ($x + 1) . "' WHERE tree_id='" . $media_arr[$x] . "'");
             }
         }
     }
@@ -59,7 +59,7 @@ if (isset($_SESSION['admin_tree_id'])) {
         $counter = count($media_arr);
         for ($x = 0; $x < $counter; $x++) {
             if (is_numeric($media_arr[$x])) {
-                $result = $dbh->query("UPDATE humo_settings SET setting_order='" . ($x + 1) . "' WHERE setting_id='" . $media_arr[$x] . "'");
+                $dbh->query("UPDATE humo_settings SET setting_order='" . ($x + 1) . "' WHERE setting_id='" . $media_arr[$x] . "'");
             }
         }
     }

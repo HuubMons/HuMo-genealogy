@@ -34,7 +34,7 @@ if (!isset($_SESSION['image_data'])) {
 } else {
     // read image_data from SESSION variable
     if (isset($_SESSION['image_data'])) {
-        $image_data = @$_SESSION['image_data'];
+        $image_data = $_SESSION['image_data'];
         $image_data = @unserialize($image_data);
         unset($_SESSION['image_data']);
     }

@@ -56,7 +56,7 @@ if (!isset($_GET['proceed'])) {
             // *** Start to save database status in humo_settings table ***
             $humo_option["update_status"] = '0';
             $sql = "INSERT INTO humo_settings SET setting_variable='update_status', setting_value='0'";
-            @$dbh->query($sql);
+            $dbh->query($sql);
 
             // ***************************************************************
             // *** Update procedure version 4.7 and update_status set to 1 ***

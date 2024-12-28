@@ -154,12 +154,12 @@ class EditorModel
                 AND pers_tree_id='" . safe_text_db($this->tree_id) . "' LIMIT 0,1";
             $new_nr_result = $this->dbh->query($new_nr_qry);
             if ($new_nr_result && $new_nr_result->rowCount()) {
-                @$new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
+                $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
                 $this->pers_gedcomnumber = $new_nr->setting_value;
             } else {
                 $new_nr_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . safe_text_db($this->tree_id) . "' LIMIT 0,1";
                 $new_nr_result = $this->dbh->query($new_nr_qry);
-                @$new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
+                $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
                 if (isset($new_nr->pers_gedcomnumber)) {
                     $this->pers_gedcomnumber = $new_nr->pers_gedcomnumber;
                 }
@@ -450,7 +450,7 @@ class EditorModel
             //$new_nr_qry = "SELECT * FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='" . $this->tree_id . "' LIMIT 0,1";
             //$new_nr_result = $this->dbh->query($new_nr_qry);
             //if ($new_nr_result and $new_nr_result->rowCount()) {
-            //    @$new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
+            //    $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
             //    $this->pers_gedcomnumber = $new_nr->setting_value;
             //    $_SESSION['admin_pers_gedcomnumber'] = $this->pers_gedcomnumber;
             //} else {
@@ -536,7 +536,7 @@ class EditorModel
 
         if ($save_person_data) {
             // *** Manual alive setting ***
-            @$pers_alive = safe_text_db($_POST["pers_alive"]);
+            $pers_alive = safe_text_db($_POST["pers_alive"]);
             // *** Only change alive setting if birth or bapise date is changed ***
             if ($_POST["pers_birth_date_previous"] != $_POST["pers_birth_date"] && is_numeric(substr($_POST["pers_birth_date"], -4))) {
                 if (date("Y") - substr($_POST["pers_birth_date"], -4) > 120) {
@@ -798,7 +798,7 @@ class EditorModel
             $new_gedcomnumber = 'I' . $this->db_functions->generate_gedcomnr($this->tree_id, 'person');
 
             // *** If person is deceased, set alive setting ***
-            @$pers_alive = safe_text_db($_POST["pers_alive"]);
+            $pers_alive = safe_text_db($_POST["pers_alive"]);
             if ($_POST["pers_death_date"] || $_POST["pers_death_place"] || $_POST["pers_buried_date"] || $_POST["pers_buried_place"]) {
                 $pers_alive = 'deceased';
             }
@@ -1783,7 +1783,7 @@ class EditorModel
         global $dbh, $db_functions;
         // *** Add marriage to person records ***
         $person_db = $db_functions->get_person($personnr);
-        if (@$person_db->pers_gedcomnumber) {
+        if ($person_db->pers_gedcomnumber) {
             $fams = $person_db->pers_fams;
             if ($fams) {
                 $fams .= ';' . $familynr;
@@ -1802,7 +1802,7 @@ class EditorModel
     {
         global $dbh, $db_functions;
         $person_db = $db_functions->get_person($personnr);
-        if (@$person_db->pers_gedcomnumber) {
+        if ($person_db->pers_gedcomnumber) {
             $fams = explode(";", $person_db->pers_fams);
             foreach ($fams as $key => $value) {
                 if ($fams[$key] != $familynr) {
@@ -1891,7 +1891,7 @@ class EditorModel
             }
 
             // *** Name of selected person in family tree ***
-            @$persDb = $this->db_functions->get_person($this->pers_gedcomnumber);
+            $persDb = $this->db_functions->get_person($this->pers_gedcomnumber);
             // *** Use class to process person ***
             $pers_cls = new PersonCls($persDb);
             $name = $pers_cls->person_name($persDb);

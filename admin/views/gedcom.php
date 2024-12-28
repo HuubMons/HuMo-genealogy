@@ -381,34 +381,34 @@ elseif ($trees['step'] == '2') {
     if (isset($_POST["add_source"])) {
         $setting_value = 'y';
     }
-    $result = $db_functions->update_settings('gedcom_read_add_source', $setting_value);
+    $db_functions->update_settings('gedcom_read_add_source', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["reassign_gedcomnumbers"])) {
         $setting_value = 'y';
     }
-    $result = $db_functions->update_settings('gedcom_read_reassign_gedcomnumbers', $setting_value);
+    $db_functions->update_settings('gedcom_read_reassign_gedcomnumbers', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["order_by_date"])) {
         $setting_value = 'y';
     }
-    $result = $db_functions->update_settings('gedcom_read_order_by_date', $setting_value);
+    $db_functions->update_settings('gedcom_read_order_by_date', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["order_by_fams"])) {
         $setting_value = 'y';
     }
-    $result = $db_functions->update_settings('gedcom_read_order_by_fams', $setting_value);
+    $db_functions->update_settings('gedcom_read_order_by_fams', $setting_value);
 
     $setting_value = 'n';
     if (isset($_POST["process_geo_location"])) {
         $setting_value = 'y';
     }
-    $result = $db_functions->update_settings('gedcom_read_process_geo_location', $setting_value);
+    $db_functions->update_settings('gedcom_read_process_geo_location', $setting_value);
 
     if (isset($_POST['gedcom_process_pict_path'])) {
-        $result = $db_functions->update_settings('gedcom_process_pict_path', $_POST['gedcom_process_pict_path']);
+        $db_functions->update_settings('gedcom_process_pict_path', $_POST['gedcom_process_pict_path']);
     }
 
     $humo_option["gedcom_read_save_pictures"] = 'n';
@@ -417,14 +417,14 @@ elseif ($trees['step'] == '2') {
         $setting_value = 'y';
         $humo_option["gedcom_read_save_pictures"] = 'y';    // *** Because variable is needed directly ***
     }
-    $result = $db_functions->update_settings('gedcom_read_save_pictures', $setting_value);
+    $db_functions->update_settings('gedcom_read_save_pictures', $setting_value);
 
     if (isset($_POST['commit_records'])) {
-        $result = $db_functions->update_settings('gedcom_read_commit_records', $_POST['commit_records']);
+        $db_functions->update_settings('gedcom_read_commit_records', $_POST['commit_records']);
     }
 
     if (isset($_POST['time_out'])) {
-        $result = $db_functions->update_settings('gedcom_read_time_out', $_POST['time_out']);
+        $db_functions->update_settings('gedcom_read_time_out', $_POST['time_out']);
     }
 
     if (!isset($_POST['add_tree']) || isset($_POST['add_tree']) && $_POST['add_tree'] == 'no') {
@@ -478,17 +478,17 @@ elseif ($trees['step'] == '2') {
         if ($nr_records > 0) {
             $loop = $nr_records / $limit;
             for ($i = 0; $i <= $loop; $i++) {
-                @$result = $dbh->query("DELETE FROM humo_persons WHERE pers_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+                $dbh->query("DELETE FROM humo_persons WHERE pers_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
                 echo '*';
                 ob_flush();
                 flush();
             }
-            @$result = $dbh->query("DELETE FROM humo_persons WHERE pers_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+            $dbh->query("DELETE FROM humo_persons WHERE pers_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
             echo ' ' . __('Optimize table...');
             ob_flush();
             flush();
-            @$result = $dbh->query("OPTIMIZE TABLE humo_persons");
+            $dbh->query("OPTIMIZE TABLE humo_persons");
         }
         echo '<br>';
 
@@ -501,17 +501,17 @@ elseif ($trees['step'] == '2') {
         if ($nr_records > 0) {
             $loop = $nr_records / $limit;
             for ($i = 0; $i <= $loop; $i++) {
-                @$result = $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+                $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
                 echo '*';
                 ob_flush();
                 flush();
             }
-            @$result = $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+            $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
             echo ' ' . __('Optimize table...') . ' ';
             ob_flush();
             flush();
-            @$result = $dbh->query("OPTIMIZE TABLE humo_families");
+            $dbh->query("OPTIMIZE TABLE humo_families");
         }
         echo '<br>';
 
@@ -526,17 +526,17 @@ elseif ($trees['step'] == '2') {
         if ($nr_records > 0) {
             $loop = $nr_records / $limit;
             for ($i = 0; $i <= $loop; $i++) {
-                @$result = $dbh->query("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+                $dbh->query("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
                 echo '*';
                 ob_flush();
                 flush();
             }
-            @$result = $dbh->query("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+            $dbh->query("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
             echo ' ' . __('Optimize table...');
             ob_flush();
             flush();
-            @$result = $dbh->query("OPTIMIZE TABLE humo_unprocessed_tags");
+            $dbh->query("OPTIMIZE TABLE humo_unprocessed_tags");
         }
         echo '<br>';
 
@@ -545,24 +545,24 @@ elseif ($trees['step'] == '2') {
         printf(__('Remove old family tree items from %s table...'), 'humo_settings');
         ob_flush();
         flush();
-        @$result = $dbh->query("DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+        $dbh->query("DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
         echo ' ' . __('Optimize table...');
         ob_flush();
         flush();
-        @$result = $dbh->query("OPTIMIZE TABLE humo_settings");
+        $dbh->query("OPTIMIZE TABLE humo_settings");
         echo '<br>';
 
         // *** Remove repositories ***
         printf(__('Remove old family tree items from %s table...'), 'humo_repositories');
         ob_flush();
         flush();
-        @$result = $dbh->query("DELETE FROM humo_repositories WHERE repo_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+        $dbh->query("DELETE FROM humo_repositories WHERE repo_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
         echo ' ' . __('Optimize table...');
         ob_flush();
         flush();
-        @$result = $dbh->query("OPTIMIZE TABLE humo_repositories");
+        $dbh->query("OPTIMIZE TABLE humo_repositories");
         echo '<br>';
 
         // *** Remove records in chunks because of InnoDb database... ***
@@ -576,17 +576,17 @@ elseif ($trees['step'] == '2') {
         if ($nr_records > 0) {
             $loop = $nr_records / $limit;
             for ($i = 0; $i <= $loop; $i++) {
-                @$result = $dbh->query("DELETE FROM humo_sources WHERE source_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+                $dbh->query("DELETE FROM humo_sources WHERE source_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
                 echo '*';
                 ob_flush();
                 flush();
             }
-            @$result = $dbh->query("DELETE FROM humo_sources WHERE source_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+            $dbh->query("DELETE FROM humo_sources WHERE source_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
             echo ' ' . __('Optimize table...');
             ob_flush();
             flush();
-            @$result = $dbh->query("OPTIMIZE TABLE humo_sources");
+            $dbh->query("OPTIMIZE TABLE humo_sources");
         }
         echo '<br>';
 
@@ -602,15 +602,15 @@ elseif ($trees['step'] == '2') {
         if ($nr_records > 0) {
             $loop = $nr_records / $limit;
             for ($i = 0; $i <= $loop; $i++) {
-                @$result = $dbh->query("DELETE FROM humo_texts WHERE text_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+                $dbh->query("DELETE FROM humo_texts WHERE text_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
                 echo '*';
                 ob_flush();
                 flush();
             }
-            @$result = $dbh->query("DELETE FROM humo_texts WHERE text_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+            $dbh->query("DELETE FROM humo_texts WHERE text_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
             echo ' ' . __('Optimize table...');
-            @$result = $dbh->query("OPTIMIZE TABLE humo_texts");
+            $dbh->query("OPTIMIZE TABLE humo_texts");
         }
         echo '<br>';
 
@@ -626,17 +626,17 @@ elseif ($trees['step'] == '2') {
         if ($nr_records > 0) {
             $loop = $nr_records / $limit;
             for ($i = 0; $i <= $loop; $i++) {
-                @$result = $dbh->query("DELETE FROM humo_connections WHERE connect_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+                $dbh->query("DELETE FROM humo_connections WHERE connect_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
                 echo '*';
                 ob_flush();
                 flush();
             }
-            @$result = $dbh->query("DELETE FROM humo_connections WHERE connect_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+            $dbh->query("DELETE FROM humo_connections WHERE connect_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
             echo ' ' . __('Optimize table...');
             ob_flush();
             flush();
-            @$result = $dbh->query("OPTIMIZE TABLE humo_connections");
+            $dbh->query("OPTIMIZE TABLE humo_connections");
         }
         echo '<br>';
 
@@ -652,17 +652,17 @@ elseif ($trees['step'] == '2') {
         if ($nr_records > 0) {
             $loop = $nr_records / $limit;
             for ($i = 0; $i <= $loop; $i++) {
-                @$result = $dbh->query("DELETE FROM humo_addresses WHERE address_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+                $dbh->query("DELETE FROM humo_addresses WHERE address_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
                 echo '*';
                 ob_flush();
                 flush();
             }
-            @$result = $dbh->query("DELETE FROM humo_addresses WHERE address_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+            $dbh->query("DELETE FROM humo_addresses WHERE address_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
             echo ' ' . __('Optimize table...');
             ob_flush();
             flush();
-            @$result = $dbh->query("OPTIMIZE TABLE humo_addresses");
+            $dbh->query("OPTIMIZE TABLE humo_addresses");
         }
         echo '<br>';
 
@@ -683,7 +683,7 @@ elseif ($trees['step'] == '2') {
                     $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit;
                 }
 
-                @$result = $dbh->query($sql);
+                $dbh->query($sql);
                 echo '*';
                 ob_flush();
                 flush();
@@ -693,12 +693,12 @@ elseif ($trees['step'] == '2') {
             } else {
                 $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "'";
             }
-            @$result = $dbh->query($sql);
+            $dbh->query($sql);
 
             echo ' ' . __('Optimize table...');
             ob_flush();
             flush();
-            @$result = $dbh->query("OPTIMIZE TABLE humo_events");
+            $dbh->query("OPTIMIZE TABLE humo_events");
         }
         echo '<br>';
 
@@ -844,7 +844,7 @@ elseif ($trees['step'] == '3') {
 
     // for merging when we read in a new tree we have to make sure that the relevant rel_merge row in the Db is removed.
     $qry = "DELETE FROM humo_settings WHERE setting_variable ='rel_merge_" . $trees['tree_id'] . "'";
-    $result = $dbh->query($qry);
+    $dbh->query($qry);
     // we have to make sure that the dupl_arr session is unset if it exists.
     if (isset($_SESSION['dupl_arr_' . $tree_prefix])) {
         unset($_SESSION['dupl_arr_' . $tree_prefix]);
@@ -1092,17 +1092,17 @@ elseif ($trees['step'] == '3') {
     *  Must be done because table can be empty when reloading GEDCOM file...
     *  Even in an empty table, latest id can be a high number...
     */
-    $result = $dbh->query("INSERT INTO humo_events SET event_tree_id='" . $trees['tree_id'] . "'");
+    $dbh->query("INSERT INTO humo_events SET event_tree_id='" . $trees['tree_id'] . "'");
     $calculated_event_id = $dbh->lastInsertId();
-    $result = $dbh->query("DELETE FROM humo_events WHERE event_id='" . $calculated_event_id . "'");
+    $dbh->query("DELETE FROM humo_events WHERE event_id='" . $calculated_event_id . "'");
 
-    $result = $dbh->query("INSERT INTO humo_addresses SET address_tree_id='" . $trees['tree_id'] . "'");
+    $dbh->query("INSERT INTO humo_addresses SET address_tree_id='" . $trees['tree_id'] . "'");
     $calculated_address_id = $dbh->lastInsertId();
-    $result = $dbh->query("DELETE FROM humo_addresses WHERE address_id='" . $calculated_address_id . "'");
+    $dbh->query("DELETE FROM humo_addresses WHERE address_id='" . $calculated_address_id . "'");
 
-    $result = $dbh->query("INSERT INTO humo_connections SET connect_tree_id='" . $trees['tree_id'] . "'");
+    $dbh->query("INSERT INTO humo_connections SET connect_tree_id='" . $trees['tree_id'] . "'");
     $calculated_connect_id = $dbh->lastInsertId();
-    $result = $dbh->query("DELETE FROM humo_connections WHERE connect_id='" . $calculated_connect_id . "'");
+    $dbh->query("DELETE FROM humo_connections WHERE connect_id='" . $calculated_connect_id . "'");
 
     // *****************
     // *** Read file ***
@@ -1430,13 +1430,13 @@ elseif ($trees['step'] == '3') {
             source_repo_page='',
             source_repo_gedcomnr='',
             source_text='" . __('Persons added by GEDCOM import.') . "'";
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         // *** Replace temporary source number by all persons by a final source number ***
         $gebeurtsql = "UPDATE humo_connections SET
             connect_source_id='" . $new_gedcomnumber . "'
             WHERE connect_tree_id='" . $trees['tree_id'] . "' AND connect_source_id='Stemporary'";
-        $result = $dbh->query($gebeurtsql);
+        $dbh->query($gebeurtsql);
     }
 
 
@@ -1673,7 +1673,7 @@ elseif ($trees['step'] == '4') {
                             connect_connect_id='" . safe_text_db($personDb->pers_gedcomnumber) . "',
                             connect_source_id='" . safe_text_db($connectDb->connect_source_id) . "'
                             ";
-                        $result = $dbh->query($gebeurtsql);
+                        $dbh->query($gebeurtsql);
                     }
                 }
             }
@@ -1890,7 +1890,7 @@ elseif ($trees['step'] == '4') {
                             connect_connect_id='" . safe_text_db($famDb->fam_gedcomnumber) . "',
                             connect_source_id='" . safe_text_db($connectDb->connect_source_id) . "'
                             ";
-                        $result = $dbh->query($gebeurtsql);
+                        $dbh->query($gebeurtsql);
                     }
                 }
             }
@@ -2121,9 +2121,7 @@ elseif ($trees['step'] == '4') {
         $tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
         $tree_pref_result = $dbh->query($tree_pref_sql);
         while ($tree_prefDb = $tree_pref_result->fetch(PDO::FETCH_OBJ)) {
-
             $result = $dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "'");
-
             while ($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
                 if (isset($loca_array[$resultDb->pers_birth_place]) && strpos($loca_array[$resultDb->pers_birth_place], $tree_prefDb->tree_prefix . "birth ") === false) {
                     $loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix . "birth ";
@@ -2184,7 +2182,7 @@ elseif ($trees['step'] == '4') {
             unset($children_array);
             for ($i = 0; $i < $nr_children; $i++) {
                 $child = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $child_array[$i] . "'");
-                @$childDb = $child->fetch(PDO::FETCH_OBJ);
+                $childDb = $child->fetch(PDO::FETCH_OBJ);
 
                 $child_array_nr = $child_array[$i];
                 if ($childDb->pers_birth_date) {
@@ -2291,7 +2289,7 @@ elseif ($trees['step'] == '4') {
             $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $personnr . "'";
             $person_result = $dbh->query($person_qry);
             $person_db = $person_result->fetch(PDO::FETCH_OBJ);
-            if (@$person_db->pers_gedcomnumber) {
+            if ($person_db->pers_gedcomnumber) {
                 $fams = explode(";", $person_db->pers_fams);
                 foreach ($fams as $key => $value) {
                     if ($fams[$key] != $familynr) {
@@ -2302,7 +2300,7 @@ elseif ($trees['step'] == '4') {
                 if (isset($fams2[0])) {
                     $fams3 = implode(";", $fams2);
                 }
-                $result = $dbh->query("UPDATE humo_persons SET pers_fams='" . $fams3 . "' WHERE pers_id='" . $person_db->pers_id . "'");
+                $dbh->query("UPDATE humo_persons SET pers_fams='" . $fams3 . "' WHERE pers_id='" . $person_db->pers_id . "'");
             }
         }
 
@@ -2325,7 +2323,7 @@ elseif ($trees['step'] == '4') {
                 fams_remove($new_nr->fam_woman, $fam);
             }
 
-            $result = $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . $trees['tree_id'] . "' AND fam_gedcomnumber='" . $fam . "'");
+            $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . $trees['tree_id'] . "' AND fam_gedcomnumber='" . $fam . "'");
         }
     }
 
@@ -2355,7 +2353,7 @@ elseif ($trees['step'] == '4') {
                         $event_sql = "UPDATE humo_events SET
                             event_connect_id='" . $connectDb->connect_connect_id . "'
                             WHERE event_id='" . substr($media_items_array[$i], 5) . "'";
-                        $result = $dbh->query($event_sql);
+                        $dbh->query($event_sql);
                     }
                 }
             }
@@ -2380,7 +2378,7 @@ elseif ($trees['step'] == '4') {
     $dbh->query($sql);
 
     // *** Remove cache ***
-    $result = $dbh->query("DELETE FROM humo_settings WHERE setting_variable LIKE 'cache%' AND setting_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $dbh->query("DELETE FROM humo_settings WHERE setting_variable LIKE 'cache%' AND setting_tree_id='" . safe_text_db($trees['tree_id']) . "'");
 
     // Show process time:
     $end_time = time();

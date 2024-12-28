@@ -51,7 +51,7 @@ $rowspan = $tree_search_result->rowCount() + 1;
                             $slider_choiceDb = $result->fetch(PDO::FETCH_OBJ);
                             ${"slider_choice" . $tree_searchDb->tree_prefix} = $slider_choiceDb->setting_value;
                             if (isset($_POST[$offset])) {
-                                $result = $db_functions->update_settings('gslider_' . $tree_searchDb->tree_prefix, $_POST[$offset]);
+                                $db_functions->update_settings('gslider_' . $tree_searchDb->tree_prefix, $_POST[$offset]);
                                 ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
                             }
                         } elseif (isset($_POST[$offset])) {

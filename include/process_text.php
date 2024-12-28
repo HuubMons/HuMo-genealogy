@@ -31,7 +31,7 @@ function process_text($text_process, $text_sort = 'standard')
                 if ($text_result) {
                     $text_result .= '<br>';
                 }
-                $text_result .= @$search_textDb->text_text;
+                $text_result .= $search_textDb->text_text;
             } else {
                 if ($text_result) {
                     $text_result .= '<br>';

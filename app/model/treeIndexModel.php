@@ -49,7 +49,7 @@ class TreeIndexModel
         // *** Standard family tree template page ***
         else {
             $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
-            while (@$data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
+            while ($data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
                 $item = explode("|", $data2Db->setting_value);
                 if ($item[0] === 'active') {
                     $module_column[] = $item[1];
@@ -98,7 +98,7 @@ class TreeIndexModel
                 }
 
                 // *** Just for sure, probably not necessary here: re-get selected family tree data ***
-                @$dataDb = $db_functions->get_tree($tree_prefix_quoted);
+                $dataDb = $db_functions->get_tree($tree_prefix_quoted);
                 //*** Today in history ***
                 if ($module_item[$i] == 'history') {
                     $header = __('Today in history');
@@ -239,7 +239,7 @@ class TreeIndexModel
     {
         global $dbh, $humo_option, $uri_path, $user, $language, $selected_language, $link_cls;
         $text = '';
-        while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+        while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
             // *** Check is family tree is shown or hidden for user group ***
             $hide_tree_array = explode(";", $user['group_hide_trees']);
             if (!in_array($dataDb->tree_id, $hide_tree_array)) {
@@ -413,7 +413,7 @@ class TreeIndexModel
                         GROUP BY pers_lastname, pers_prefix ORDER BY count_last_names DESC LIMIT 0," . $max;
                     $person = $dbh->query($personqry);
 
-                    while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
+                    while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
                         // *** Cache: only use cache if there are > 5.000 persons in database ***
                         if (isset($dataDb->tree_persons) && $dataDb->tree_persons > 5000) {
                             $personDb->time = time(); // *** Add linux time to array ***
@@ -677,7 +677,7 @@ class TreeIndexModel
                 $is_privacy = true;
 
                 if ($pic_conn_kind == 'person') {
-                    @$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
+                    $personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
                     $man_cls = new PersonCls($personmnDb);
                     if ($man_cls->privacy == '') {
                         $is_privacy = false;
@@ -692,10 +692,10 @@ class TreeIndexModel
                     $picqry2 = $dbh->query($qry2);
                     $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
 
-                    @$personmnDb2 = $db_functions->get_person($picqryDb2->fam_man);
+                    $personmnDb2 = $db_functions->get_person($picqryDb2->fam_man);
                     $man_cls = new PersonCls($personmnDb2);
 
-                    @$personmnDb3 = $db_functions->get_person($picqryDb2->fam_woman);
+                    $personmnDb3 = $db_functions->get_person($picqryDb2->fam_woman);
                     $woman_cls = new PersonCls($personmnDb3);
 
                     // *** Only use this picture if both man and woman have disabled privacy options ***
@@ -767,9 +767,9 @@ class TreeIndexModel
 
         // *** Check if there are extra links ***
         $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
-        @$num_rows = $datasql->rowCount();
+        $num_rows = $datasql->rowCount();
         if ($num_rows > 0) {
-            while (@$data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
+            while ($data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
                 $item = explode("|", $data2Db->setting_value);
                 $pers_own_code[] = $item[0];
                 $link_text[] = $item[1];
@@ -847,9 +847,9 @@ class TreeIndexModel
                     GROUP BY first_character ORDER BY first_character";
             }
 
-            @$person = $dbh->query($personqry);
+            $person = $dbh->query($personqry);
             $count_first_character = $person->rowCount();
-            while (@$personDb = $person->fetch(PDO::FETCH_OBJ)) {
+            while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
                 // *** Cache: only use cache if there are > 5.000 persons in database ***
                 if (isset($dataDb->tree_persons) && $dataDb->tree_persons > 5000) {
                     $personDb->time = time(); // *** Add linux time to array ***
@@ -897,7 +897,7 @@ class TreeIndexModel
         }
 
         $person = "SELECT pers_patronym FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
-        @$personDb = $dbh->query($person);
+        $personDb = $dbh->query($person);
         if ($personDb->rowCount() > 0) {
             $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
             $path_tmp .= 'index_list=patronym';

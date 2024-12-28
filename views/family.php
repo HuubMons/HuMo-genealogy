@@ -224,7 +224,7 @@ $max_generation = ($humo_option["descendant_generations"] - 1);
 // **************************
 if (!$data["family_id"]) {
     // *** Privacy filter ***
-    @$parent1Db = $db_functions->get_person($data["main_person"]);
+    $parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
     $parent1_cls = new PersonCls($parent1Db);
 
@@ -340,7 +340,7 @@ else {
             // *** Loop multiple marriages of main_person ***
             for ($parent1_marr = 0; $parent1_marr <= $count_marr; $parent1_marr++) {
                 $id = $marriage_array[$parent1_marr];
-                @$familyDb = $db_functions->get_family($id);
+                $familyDb = $db_functions->get_family($id);
 
                 // *** Don't count search bots, crawlers etc. ***
                 if (!$bot_visit) {
@@ -370,7 +370,7 @@ else {
                             stat_gedcom_woman='" . $familyDb->fam_woman . "',
                             stat_date_stat='" . date("Y-m-d H:i") . "',
                             stat_date_linux='" . time() . "'";
-                        $result = $dbh->query($update_sql);
+                        $dbh->query($update_sql);
 
                         // *** June 2023: get country code for statistics ***
                         // *** Check if country code is known for this IP address ***
@@ -415,11 +415,11 @@ else {
                     $parent1 = $familyDb->fam_man;
                     $parent2 = $familyDb->fam_woman;
                 }
-                @$parent1Db = $db_functions->get_person($parent1);
+                $parent1Db = $db_functions->get_person($parent1);
                 // *** Proces parent1 using a class ***
                 $parent1_cls = new PersonCls($parent1Db);
 
-                @$parent2Db = $db_functions->get_person($parent2);
+                $parent2Db = $db_functions->get_person($parent2);
                 // *** Proces parent2 using a class ***
                 $parent2_cls = new PersonCls($parent2Db);
 
@@ -597,7 +597,7 @@ else {
 
                         <?php
                         foreach ($child_array as $i => $value) {
-                            @$childDb = $db_functions->get_person($child_array[$i]);
+                            $childDb = $db_functions->get_person($child_array[$i]);
                             // *** Use person class ***
                             $child_cls = new PersonCls($childDb);
 
@@ -658,7 +658,7 @@ else {
                     // *********************************************************************************************
                     $famc_adoptive_qry_prep = $db_functions->get_events_kind($familyDb->fam_gedcomnumber, 'adoption');
                     foreach ($famc_adoptive_qry_prep as $famc_adoptiveDb) {
-                        @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
                         $child_cls = new PersonCls($childDb);
                         ?>
@@ -677,7 +677,7 @@ else {
                     // *************************************************************
                     $famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_man, 'adoption_by_person');
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
-                        @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
                         $child_cls = new PersonCls($childDb);
                     ?>
@@ -706,7 +706,7 @@ else {
                     // *************************************************************
                     $famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_woman, 'adoption_by_person');
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
-                        @$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
                         // *** Use person class ***
                         $child_cls = new PersonCls($childDb);
                     ?>
@@ -894,7 +894,7 @@ else {
 
                     $child_array = explode(";", $familyDb->fam_children);
                     for ($i = 0; $i <= substr_count($familyDb->fam_children, ";"); $i++) {
-                        @$childDb = $db_functions->get_person($child_array[$i]);
+                        $childDb = $db_functions->get_person($child_array[$i]);
                         if ($childDb !== false) {  // no error in query
                             // *** Use person class ***
                             $person_cls = new PersonCls($childDb);
@@ -1235,7 +1235,7 @@ if ($data["descendant_report"] == false) {
                 note_connect_id='" . safe_text_db($data["main_person"]) . "',
                 note_tree_id='" . $tree_id . "',
                 note_names='" . safe_text_db($name["standard_name"]) . "';";
-            $result = $dbh->query($sql);
+            $dbh->query($sql);
 
             // *** Mail new user note to the administrator ***
             $register_address = $dataDb->tree_email;

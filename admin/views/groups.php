@@ -14,19 +14,19 @@ while ($columnDb = $column_qry->fetch()) {
 }
 if (!isset($field['group_citation_generation'])) {
     $sql = "ALTER TABLE humo_groups ADD group_citation_generation VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n' AFTER group_own_code;";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 if (!isset($field['group_menu_change_password'])) {
     $sql = "ALTER TABLE humo_groups ADD group_menu_change_password VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 if (!isset($field['group_menu_cms'])) {
     $sql = "ALTER TABLE humo_groups ADD group_menu_cms VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 if (!isset($field['group_show_age_living_person'])) {
     $sql = "ALTER TABLE humo_groups ADD group_show_age_living_person VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_maps_presentation;";
-    $result = $dbh->query($sql);
+    $dbh->query($sql);
 }
 ?>
 
@@ -627,7 +627,7 @@ If possible, try to filter with that'); ?></i>
             }
         }
         $sql = "UPDATE humo_groups SET group_hide_trees='" . $group_hide_trees . "',  group_edit_trees='" . $group_edit_trees . "' WHERE group_id=" . $_POST["group_id"];
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $hide_tree_array = explode(";", $group_hide_trees);
         $edit_tree_array = explode(";", $group_edit_trees);
@@ -720,7 +720,7 @@ If possible, try to filter with that'); ?></i>
         // *** Remove array, so it can be re-used ***
         unset($photocat_prefix_array);
         $sql = "UPDATE humo_groups SET group_hide_photocat='" . $group_hide_photocat . "'  WHERE group_id=" . $_POST["group_id"];
-        $result = $dbh->query($sql);
+        $dbh->query($sql);
 
         $hide_photocat_array = explode(";", $group_hide_photocat);
     }

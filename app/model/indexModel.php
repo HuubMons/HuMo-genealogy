@@ -35,7 +35,7 @@ class IndexModel
                     // *** August 2023: Also login for admin pages ***
                     // *** Edit family trees [GROUP SETTING] ***
                     $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $resultDb->user_group_id . "'");
-                    @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
+                    $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
                     if (isset($groepDb->group_edit_trees)) {
                         $group_edit_trees = $groepDb->group_edit_trees;
                     }
@@ -200,7 +200,7 @@ class IndexModel
 
             // *** Find first family tree that's not blocked for this usergroup ***
             $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-            while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                 // *** Check is family tree is showed or hidden for user group ***
                 $hide_tree_array = explode(";", $user['group_hide_trees']);
                 if (!in_array($dataDb->tree_id, $hide_tree_array)) {
@@ -211,9 +211,9 @@ class IndexModel
         }
 
         // *** Check if selected tree is allowed for visitor and Google etc. ***
-        @$dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+        $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
         $hide_tree_array = explode(";", $user['group_hide_trees']);
-        if (in_array(@$dataDb->tree_id, $hide_tree_array)) {
+        if (in_array($dataDb->tree_id, $hide_tree_array)) {
             // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
             $_SESSION['tree_prefix'] = '';
             $_SESSION['tree_id'] = 0;
@@ -221,7 +221,7 @@ class IndexModel
 
             // *** Find first family tree that's not blocked for this usergroup ***
             $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-            while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                 // *** Check is family tree is showed or hidden for user group ***
                 $hide_tree_array = explode(";", $user['group_hide_trees']);
                 if (!in_array($dataDb->tree_id, $hide_tree_array)) {

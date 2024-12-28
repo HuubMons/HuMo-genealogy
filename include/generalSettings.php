@@ -70,8 +70,8 @@ class GeneralSettings
 
 
         // *** Read settings from database ***
-        @$result = $dbh->query("SELECT * FROM humo_settings");
-        while (@$row = $result->fetch(PDO::FETCH_NUM)) {
+        $result = $dbh->query("SELECT * FROM humo_settings");
+        while ($row = $result->fetch(PDO::FETCH_NUM)) {
             $humo_option[$row[1]] = $row[2];
         }
 
@@ -533,7 +533,7 @@ class GeneralSettings
 
         $groupsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $userDb->user_group_id . "'");
         try {
-            @$groupDb = $groupsql->fetch(PDO::FETCH_OBJ);
+            $groupDb = $groupsql->fetch(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
             echo "No valid usergroup / Geen geldige gebruikersgroup.";
         }

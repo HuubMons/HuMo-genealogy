@@ -17,7 +17,7 @@ function show_tree_text($tree_id, $selected_language)
         ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
         AND treetext_language='default' WHERE tree_id='" . safe_text_db($tree_id) . "'";
     $datasql = $dbh->query($sql);
-    @$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+    $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
     if (isset($dataDb->treetext_name)) {
         $treetext_array['id'] = $dataDb->treetext_id;
         $treetext_array['name'] = $dataDb->treetext_name;
@@ -34,7 +34,7 @@ function show_tree_text($tree_id, $selected_language)
         ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
         AND treetext_language='" . safe_text_db($selected_language) . "' WHERE tree_id='" . safe_text_db($tree_id) . "'";
     $datasql = $dbh->query($sql);
-    @$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+    $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
     if (isset($dataDb->treetext_name)) {
         $treetext_array['id'] = $dataDb->treetext_id;
         $treetext_array['name'] = $dataDb->treetext_name;
@@ -52,8 +52,8 @@ function show_tree_text($tree_id, $selected_language)
             ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
             AND treetext_name LIKE '_%'
             WHERE tree_id='" . safe_text_db($tree_id) . "'";
-        @$datasql = $dbh->query($sql);
-        @$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+        $datasql = $dbh->query($sql);
+        $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
         if (isset($dataDb->treetext_name)) {
             $treetext_array['id'] = $dataDb->treetext_id;
             $treetext_array['name'] = $dataDb->treetext_name;

@@ -123,7 +123,7 @@ class SettingsHomepageModel
         $settings['modules_right'] = 0;
 
         $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
-        while (@$data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
+        while ($data2Db = $datasql->fetch(PDO::FETCH_OBJ)) {
             $data2Db->setting_value .= '|'; // In some cases the last | is missing. TODO: improve saving of settings.
             $item = explode("|", $data2Db->setting_value);
 

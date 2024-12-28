@@ -131,7 +131,7 @@ if ($temp->rowCount()) {
                     </tr>
                 </thead>
                 <?php
-                while (@$statDb = $stat->fetch(PDO::FETCH_OBJ)) {
+                while ($statDb = $stat->fetch(PDO::FETCH_OBJ)) {
                     $country_code = $statDb->stat_country_code;
                     $flag = "images/flags/" . $country_code . ".gif";
                     if (!file_exists($flag)) {

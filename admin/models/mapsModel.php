@@ -120,7 +120,7 @@ class MapsModel
         $result = $dbh->query($query);
         if (isset($_GET['maptype_default']) && ($_GET['maptype_default'] == 'ROADMAP' || $_GET['maptype_default'] == 'HYBRID')) {
             if ($result->rowCount() > 0) {
-                $result = $db_functions->update_settings('google_map_type', $_GET['maptype_default']);
+                $db_functions->update_settings('google_map_type', $_GET['maptype_default']);
                 $maptype_def = $_GET['maptype_default'];
             } else {
                 $sql = "INSERT INTO humo_settings SET setting_variable='google_map_type', setting_value='" . $_GET['maptype_default'] . "'";

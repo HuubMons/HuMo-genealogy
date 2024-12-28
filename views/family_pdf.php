@@ -58,7 +58,7 @@ $pdf_marriage = array();
 $pdf = new PDF();
 
 // *** Generate title of PDF file ***
-@$persDb = $db_functions->get_person($data["main_person"]);
+$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use class to process person ***
 $pers_cls = new PersonCls($persDb);
 $name = $pers_cls->person_name($persDb);
@@ -86,7 +86,7 @@ $pdf->SetFont($pdf_font, '', 12);
 // **************************
 if (!$data["family_id"]) {
     // *** Privacy filter ***
-    @$parent1Db = $db_functions->get_person($data["main_person"]);
+    $parent1Db = $db_functions->get_person($data["main_person"]);
     // *** Use class to show person ***
     $parent1_cls = new PersonCls($parent1Db);
 
@@ -222,7 +222,7 @@ else {
             // *** Loop multiple marriages of main_person ***
             for ($parent1_marr = 0; $parent1_marr <= $count_marr; $parent1_marr++) {
                 $id = $marriage_array[$parent1_marr];
-                @$familyDb = $db_functions->get_family($id);
+                $familyDb = $db_functions->get_family($id);
 
                 // Oct. 2021 New method:
                 if ($swap_parent1_parent2 == true) {
@@ -232,11 +232,11 @@ else {
                     $parent1 = $familyDb->fam_man;
                     $parent2 = $familyDb->fam_woman;
                 }
-                @$parent1Db = $db_functions->get_person($parent1);
+                $parent1Db = $db_functions->get_person($parent1);
                 // *** Proces parent1 using a class ***
                 $parent1_cls = new PersonCls($parent1Db);
 
-                @$parent2Db = $db_functions->get_person($parent2);
+                $parent2Db = $db_functions->get_person($parent2);
                 // *** Proces parent2 using a class ***
                 $parent2_cls = new PersonCls($parent2Db);
 
@@ -466,7 +466,7 @@ else {
                     */
 
                     foreach ($child_array as $i => $value) {
-                        @$childDb = $db_functions->get_person($child_array[$i]);
+                        $childDb = $db_functions->get_person($child_array[$i]);
                         // *** Use person class ***
                         $child_cls = new PersonCls($childDb);
 

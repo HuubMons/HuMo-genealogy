@@ -30,7 +30,7 @@ foreach ($datasql as $dataDb) {
         //GENDEX:
         //person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
         //Birthdate|Birthplace|Deathdate|Deathplace|
-        while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
+        while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
             $person_cls = new PersonCls($personDb);
             $privacy = $person_cls->privacy;
