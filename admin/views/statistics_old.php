@@ -3,6 +3,8 @@
 // *** OLD statistics ***
 // **********************
 
+include_once(__DIR__ . "/../../include/show_tree_date.php");
+
 // *** Select database ***
 @$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix != 'EMPTY' ORDER BY tree_order");
 $num_rows = $datasql->rowCount();
@@ -13,52 +15,9 @@ if ($num_rows > 1) {
     <b><?= __('Select family tree'); ?></b><br>
     <?php
     while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-        // *** Update date ***
-        $date = $dataDb->tree_date;
-        if (!isset($date)) {
-            $date = '';
-        }
-        $month = ''; //voor lege datums
-        // TODO translate months.
-        if (substr($date, 5, 2) === '01') {
-            $month = ' jan ';
-        }
-        if (substr($date, 5, 2) === '02') {
-            $month = ' feb ';
-        }
-        if (substr($date, 5, 2) === '03') {
-            $month = ' mrt ';
-        }
-        if (substr($date, 5, 2) === '04') {
-            $month = ' apr ';
-        }
-        if (substr($date, 5, 2) === '05') {
-            $month = ' mei ';
-        }
-        if (substr($date, 5, 2) === '06') {
-            $month = ' jun ';
-        }
-        if (substr($date, 5, 2) === '07') {
-            $month = ' jul ';
-        }
-        if (substr($date, 5, 2) === '08') {
-            $month = ' aug ';
-        }
-        if (substr($date, 5, 2) === '09') {
-            $month = ' sep ';
-        }
-        if (substr($date, 5, 2) === '10') {
-            $month = ' okt ';
-        }
-        if (substr($date, 5, 2) === '11') {
-            $month = ' nov ';
-        }
-        if (substr($date, 5, 2) === '12') {
-            $month = ' dec ';
-        }
-        $date = substr($date, 8, 2) . $month . substr($date, 0, 4);
-
+        $tree_date = show_tree_date($dataDb->tree_date);
         $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+
         if ($dataDb->tree_id == $tree_id) {
     ?>
             <b><?= $treetext['name']; ?></b>
@@ -66,7 +25,7 @@ if ($num_rows > 1) {
             <a href="index.php?page=statistics&amp;&amp;tab=statistics_old&amp;tree_id=<?= $dataDb->tree_id; ?>"><?= $treetext['name']; ?></a>
         <?php } ?>
         <font size=-1>
-            (<?= $date; ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?>)
+            (<?= $tree_date; ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?>)
         </font><br>
 <?php
     }

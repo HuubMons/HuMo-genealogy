@@ -79,6 +79,13 @@ class LatestChangesModel
             $i++;
         }
 
+        // *** In some cases there are no results (probably when GEDCOM is imported long time ago without editing) ***
+        if (!isset($changes['show_person'])){
+            $changes['show_person'][]='';
+            $changes['changed_date'][]='';
+            $changes['new_date']='';
+        }
+
         return $changes;
     }
 }

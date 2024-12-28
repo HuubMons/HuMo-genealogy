@@ -142,7 +142,7 @@ if ($temp->rowCount()) {
                         <td>
                             <img src="<?= $flag; ?>" width="30" height="15">&nbsp;
                             <?php
-                            if ($country_code != __('Unknown') && $country_code) {
+                            if ($country_code != __('Unknown') && $country_code && isset($countries[$country_code][1])) {
                                 echo $countries[$country_code][1] . '&nbsp;(' . $country_code . ')';
                             } else {
                                 echo $country_code;

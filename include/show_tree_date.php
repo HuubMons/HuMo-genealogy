@@ -43,6 +43,7 @@ function show_tree_date($tree_date, $show_time = false)
     if (substr($tree_date, 5, 2) === '12') {
         $month = ' ' . __('dec') . ' ';
     }
+
     $tree_date2 = substr($tree_date, 8, 2) . $month . substr($tree_date, 0, 4);
     if ($show_time) {
         $tree_date2 .= ' ' . substr($tree_date, 11, 5);
