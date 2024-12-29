@@ -298,6 +298,18 @@ class PhotoalbumModel
         } else {
             $data["next_status"] = 'disabled';
         }
+
+        // Only needed for empty page to prevent fault message.
+        if (!isset($data["page_nr"])) {
+            $data["page_nr"][] = 1;
+        }
+        if (!isset($data["page_link"])) {
+            $data["page_link"][] = 1;
+        }
+        if (!isset($data["page_status"])) {
+            $data["page_status"][] = 1;
+        }
+
         return $data;
     }
 }

@@ -1647,7 +1647,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'";
                     $user_result = $dbh->query($user_qry);
                     $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
+                    if ($userDb) {
+                        $user_name = $userDb->user_name;
+                    }
                 }
             ?>
                 <tr class="table_header_large">
@@ -1664,7 +1666,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'";
                     $user_result = $dbh->query($user_qry);
                     $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
+                    if ($userDb) {
+                        $user_name = $userDb->user_name;
+                    }
                 }
             ?>
                 <tr class="table_header_large">

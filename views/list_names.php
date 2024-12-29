@@ -202,54 +202,56 @@ if ($person->rowCount() > 0) {
         </tr>
     </thead>
 
-    <?php for ($i = 0; $i < $row; $i++) { ?>
-        <tr>
-            <?php
-            // *** Show names in columns and rows ***
-            for ($n = 0; $n < $list_names["max_cols"]; $n++) {
-                $nr = $i + ($row * $n);
-                $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+    <?php if (isset($row)) { ?>
+        <?php for ($i = 0; $i < $row; $i++) { ?>
+            <tr>
+                <?php
+                // *** Show names in columns and rows ***
+                for ($n = 0; $n < $list_names["max_cols"]; $n++) {
+                    $nr = $i + ($row * $n);
+                    $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
 
-                if (isset($freq_last_names[$nr])) {
-                    $top_pers_lastname = '';
-                    if ($freq_pers_prefix[$nr]) {
-                        $top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
-                    }
-                    $top_pers_lastname .= $freq_last_names[$nr];
-
-                    $pers_prefix = '';
-                    if ($user['group_kindindex'] == "j") {
-                        $pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
-                    } else {
-                        $top_pers_lastname = $freq_last_names[$nr];
+                    if (isset($freq_last_names[$nr])) {
+                        $top_pers_lastname = '';
                         if ($freq_pers_prefix[$nr]) {
-                            $top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
+                            $top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
                         }
-                        $pers_lastname = str_replace("&", "|", $freq_last_names[$nr]);
+                        $top_pers_lastname .= $freq_last_names[$nr];
 
-                        if ($freq_pers_prefix[$nr]) {
-                            $pers_prefix = '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
+                        $pers_prefix = '';
+                        if ($user['group_kindindex'] == "j") {
+                            $pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
                         } else {
-                            $pers_prefix = '&amp;pers_prefix=EMPTY';
+                            $top_pers_lastname = $freq_last_names[$nr];
+                            if ($freq_pers_prefix[$nr]) {
+                                $top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
+                            }
+                            $pers_lastname = str_replace("&", "|", $freq_last_names[$nr]);
+
+                            if ($freq_pers_prefix[$nr]) {
+                                $pers_prefix = '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
+                            } else {
+                                $pers_prefix = '&amp;pers_prefix=EMPTY';
+                            }
                         }
                     }
-                }
-            ?>
-                <td class="namelst">
-                    <?php if (isset($freq_last_names[$nr])) { ?>
-                        <a href="<?= $path_tmp; ?>pers_lastname=<?= $pers_lastname; ?><? $pers_prefix; ?>&amp;part_lastname=equals">
-                            <?= $top_pers_lastname; ?>
-                        </a>
-                    <?php } else { ?>
-                        -
-                    <?php } ?>
-                </td>
+                ?>
+                    <td class="namelst">
+                        <?php if (isset($freq_last_names[$nr])) { ?>
+                            <a href="<?= $path_tmp; ?>pers_lastname=<?= $pers_lastname; ?><? $pers_prefix; ?>&amp;part_lastname=equals">
+                                <?= $top_pers_lastname; ?>
+                            </a>
+                        <?php } else { ?>
+                            -
+                        <?php } ?>
+                    </td>
 
-                <td class="namenr" style="text-align:center">
-                    <?= isset($freq_last_names[$nr]) ? $freq_count_last_names[$nr] : '-'; ?>
-                </td>
-            <?php } ?>
-        </tr>
+                    <td class="namenr" style="text-align:center">
+                        <?= isset($freq_last_names[$nr]) ? $freq_count_last_names[$nr] : '-'; ?>
+                    </td>
+                <?php } ?>
+            </tr>
+        <?php } ?>
     <?php } ?>
 </table>
 

@@ -969,7 +969,7 @@ function show_person($personDb)
                     $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
                     //if ($selected_place==$personDb->pers_place_index)
-                    if ($resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                    if ($resultDb && $resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
                         echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
                     } else {
                         echo '<span class="place_index">&nbsp;</span>';
@@ -1001,7 +1001,7 @@ function show_person($personDb)
                     $result = $dbh->query($query);
                     $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
-                    if ($resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                    if ($resultDb && $resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
                         echo '<span class="place_index place_index_selected">' . substr(__('Events'), 0, 1) . '</span>';
                     } else {
                         echo '<span class="place_index">&nbsp;</span>';

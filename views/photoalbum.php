@@ -106,11 +106,7 @@ if ($humo_option["url_rewrite"] == "j") {
     </form>
 
     <div style="padding:5px" class="center">
-        <?php
-        if (isset($data["page_nr"])) {
-            include __DIR__ . '/partial/pagination.php';
-        }
-        ?>
+        <?php include __DIR__ . '/partial/pagination.php'; ?>
     </div>
 
     <?php
@@ -231,8 +227,4 @@ if ($humo_option["url_rewrite"] == "j") {
 </div>
 <br clear="all"><br>
 
-<?php
-if (isset($data["page_nr"])) {
-    include __DIR__ . '/partial/pagination.php';
-}
-?>
+<?php include __DIR__ . '/partial/pagination.php'; ?>

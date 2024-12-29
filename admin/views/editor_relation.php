@@ -253,11 +253,11 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
         <?php
         }
 
-        // *** Show delete message ***
         if ($confirm_relation) {
-            echo $confirm_relation;
-        }
         ?>
+            <!-- Show delete message -->
+            <?= $confirm_relation; ?>
+        <?php } ?>
 
         <table class="table table-light">
             <!-- Empty line in table -->
@@ -303,8 +303,8 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                             WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($man_gedcomnumber) . "'";
                         $dbh->query($sql);
                     }
-
                     ?>
+
                     <b><?= $editor_cls->show_selected_person($person1); ?></b><br>
                     <?= __('and'); ?><br>
 
@@ -1017,7 +1017,9 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $familyDb->fam_new_user_id . "'";
                     $user_result = $dbh->query($user_qry);
                     $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
+                    if ($userDb) {
+                        $user_name = $userDb->user_name;
+                    }
                 }
 
             ?>
@@ -1035,7 +1037,9 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $familyDb->fam_changed_user_id . "'";
                     $user_result = $dbh->query($user_qry);
                     $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
+                    if ($userDb) {
+                        $user_name = $userDb->user_name;
+                    }
                 }
             ?>
                 <tr class="table_header_large">
