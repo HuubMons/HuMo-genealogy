@@ -71,7 +71,7 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
     }
     // *** Import GEDCOM file ***
     elseif ($trees['menu_tab'] == 'tree_gedcom') {
-        include(__DIR__ . '/gedcom.php');
+        include(__DIR__ . '/gedcom_import.php');
     }
     // *** Show tree data ***
     elseif ($trees['menu_tab'] == 'tree_data') {

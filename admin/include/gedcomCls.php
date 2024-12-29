@@ -286,7 +286,7 @@ class GedcomCls
                     $event['connect_kind2'][$event_nr] = '';
                     $event['connect_id2'][$event_nr] = '';
                     $event['kind'][$event_nr] = 'adoption_by_person';
-                    // *** BE AWARE: in gedcom.php step 4 further processing is done, famc is converted into a person number!!! ***
+                    // *** BE AWARE: in gedcom_import.php step 4 further processing is done, famc is converted into a person number!!! ***
                     $event['event'][$event_nr] = $pers_famc2;
                     $event['event_extra'][$event_nr] = '';
                     $event['gedcom'][$event_nr] = substr($buffer, 7); // *** adopted, steph, legal or foster. ***

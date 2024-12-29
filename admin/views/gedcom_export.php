@@ -360,31 +360,29 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             </div>
         </div>
 
-        <div class="row mb-2">
-            <div class="col-md-4"><?= __('Export type'); ?></div>
-            <div class="col-md-8">
-                <?php
-                // PMB - select whether 'normal' or 'minimal' export
-                // this uses the same style as the 'All' or 'Individual' selector
-                // 'normal' will show the dropdowns for 'text' and 'sources'
-                // 'minimal' will be used in the export to 'turn off' extra info being included
-                ?>
-                <input type="radio" onClick="javascript:this.form.submit();" value="normal" name="export_type" <?= isset($_POST['export_type']) and $_POST['export_type'] == "minimal" ? '' : 'checked'; ?> class="form-check-input"> <?= __('Normal'); ?><br>
-                <input type="radio" onClick="javascript:this.form.submit();" value="minimal" name="export_type" <?= (isset($_POST['export_type']) and $_POST['export_type'] == "minimal") ? 'checked' : ''; ?> class="form-check-input"> <?= __('Minimal'); ?>
-            </div>
-        </div>
-
         <?php
         // PMB - Start of dropdowns for 'Normal' export options
         // We need to set the default though for the opening form or the dropdowns don't appear...
-        if (isset($_POST['export_type'])) {
+        if (isset($_POST['export_type']) && ($_POST['export_type']=='normal' || $_POST['export_type']=='minimal')) {
             $export_type = $_POST['export_type'];
         } else {
             $export_type = 'normal';
         }
-
-        if ($export_type == 'normal') {
         ?>
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Export type'); ?></div>
+            <div class="col-md-8">
+                <?php
+                // PMB - select whether 'normal' or 'minimal' export, this uses the same style as the 'All' or 'Individual' selector
+                // 'normal' will show the dropdowns for 'text' and 'sources'
+                // 'minimal' will be used in the export to 'turn off' extra info being included
+                ?>
+                <input type="radio" onClick="javascript:this.form.submit();" value="normal" name="export_type" <?= $export_type == "normal" ? 'checked' : ''; ?> class="form-check-input"> <?= __('Normal'); ?><br>
+                <input type="radio" onClick="javascript:this.form.submit();" value="minimal" name="export_type" <?= $export_type == "minimal" ? 'checked' : ''; ?> class="form-check-input"> <?= __('Minimal'); ?>
+            </div>
+        </div>
+
+        <?php if ($export_type == 'normal') { ?>
             <div class="row mb-2">
                 <div class="col-md-4"><?= __('Export texts'); ?></div>
                 <div class="col-md-4">

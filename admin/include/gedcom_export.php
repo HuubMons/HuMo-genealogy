@@ -232,11 +232,12 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             </script>
     <?php
 
-            // TODO These items doesn't work properly. Probably because of the for loops.
+            // TODO These items don't work properly. Probably because of the for loops.
             // This is for the buffer achieve the minimum size in order to flush data
             //echo str_repeat(' ', 1024 * 64);
             //ob_flush();
-            //flush();
+
+            flush();
         }
         return $perc;
     }
@@ -955,23 +956,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
 
         // *** Update processed lines ***
-        //echo '<script>';
-        //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-        //$line_nr++;
-        //echo '</script>';
-
         $record_nr++;
         $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-        // This is for the buffer achieve the minimum size in order to flush data
-        //echo str_repeat(' ',1024*64);
-        // Send output to browser immediately
-        //ob_flush();
-        flush();
-        //}
-        //else{
-        //	$line_counter--; $line_nr++;
-        //}
+        //flush();
 
 
         // *** Show person data on screen ***
@@ -1342,19 +1329,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         fwrite($fh, $buffer);
 
         // *** Update processed lines ***
-        //echo '<script>';
-        //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-        //$line_nr++;
-        //echo '</script>';
-
         $record_nr++;
         $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-        // This is for the buffer achieve the minimum size in order to flush data
-        //echo str_repeat(' ',1024*64);
-        // Send output to browser immediately
-        //ob_flush();
-        flush();
+        //flush();
 
         // *** Show family data on screen ***
         //$buffer = str_replace("\r\n", "<br>", $buffer);
@@ -1556,19 +1533,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 fwrite($fh, $buffer);
 
                 // *** Update processed lines ***
-                //echo '<script>';
-                //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-                //$line_nr++;
-                //echo '</script>';
-
                 $record_nr++;
                 $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-                // This is for the buffer achieve the minimum size in order to flush data
-                //echo str_repeat(' ',1024*64);
-                // Send output to browser immediately
-                //ob_flush();
-                flush();
+                //flush();
 
                 // *** Show source data on screen ***
                 //$buffer = str_replace("\n", "<br>", $buffer);
@@ -1623,19 +1590,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 fwrite($fh, $buffer);
 
                 // *** Update processed lines ***
-                //echo '<script>';
-                //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-                //$line_nr++;
-                //echo '</script>';
-
                 $record_nr++;
                 $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-                // This is for the buffer achieve the minimum size in order to flush data
-                //echo str_repeat(' ',1024*64);
-                // Send output to browser immediately
-                //ob_flush();
-                flush();
+                //flush();
             }
         }
 
@@ -1723,19 +1680,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             fwrite($fh, $buffer);
 
             // *** Update processed lines ***
-            //echo '<script>';
-            //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-            //$line_nr++;
-            //echo '</script>';
-
             $record_nr++;
             $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-            // This is for the buffer achieve the minimum size in order to flush data
-            //echo str_repeat(' ',1024*64);
-            // Send output to browser immediately
-            //ob_flush();
-            flush();
+            //flush();
         }
     }
 
@@ -1798,8 +1745,8 @@ function process_text($level, $text, $extractnoteids = true)
     $text = str_replace("\r", "", $text);
 
     // *** Export referenced texts ***
-    if ($extractnoteids == true) {
-        if (substr($text, 0, 1) == '@') $noteids[] = $text;
+    if ($extractnoteids && substr($text, 0, 1) == '@') {
+        $noteids[] = $text;
     }
 
     $regel = explode("\n", $text);
@@ -1839,9 +1786,11 @@ function process_text($level, $text, $extractnoteids = true)
 
         // *** First line is x NOTE, use CONT at other lines ***
         if ($j > 0) {
-            //$text= $level.' CONT '.$text;
-            if (rtrim($text) != '') $text = $level . ' CONT ' . $text;
-            else $text = "2 CONT\r\n";
+            if (rtrim($text) != '') {
+                $text = $level . ' CONT ' . $text;
+            } else {
+                $text = "2 CONT\r\n";
+            }
         }
         $text_processed .= $text;
     }

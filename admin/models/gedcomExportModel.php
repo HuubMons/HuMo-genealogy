@@ -27,10 +27,10 @@ class GedcomExportModel
     {
         $path = 'gedcom_files/';
         // *** FOR TESTING PURPOSES ONLY ***
-        if (@file_exists("../../gedcom-bestanden")) {
+        if (file_exists("../../gedcom-bestanden")) {
             $path = '../../gedcom-bestanden/';
         }
-        if (@file_exists("../../../gedcom-bestanden")) {
+        if (file_exists("../../../gedcom-bestanden")) {
             $path = '../../../gedcom-bestanden/';
         }
         return $path;

@@ -55,9 +55,7 @@ if (!defined('ADMIN_PAGE')) {
                 <?php } ?>
 
                 <!-- Upload form -->
-                <form name='uploadform' enctype='multipart/form-data' action="index.php" method="post">
-                    <input type="hidden" name="page" value="tree">
-                    <input type="hidden" name="menu_admin" value="tree_gedcom">
+                <form name='uploadform' enctype='multipart/form-data' action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
                     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                     <input type="hidden" name="upload" value="Upload">
                     <div class="row mt-2">
@@ -80,9 +78,7 @@ if (!defined('ADMIN_PAGE')) {
                 <!-- Form to remove GEDCOM files -->
                 <?php if (isset($_POST['remove_gedcom_files'])) { ?>
                     <?= __('Are you sure to remove GEDCOM files?'); ?>
-                    <form name="remove_gedcomfiles" action="index.php" method="post">
-                        <input type="hidden" name="page" value="tree">
-                        <input type="hidden" name="menu_admin" value="tree_gedcom">
+                    <form name="remove_gedcomfiles" action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
                         <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                         <input type="hidden" name="remove_gedcom_files2" value="<?= $_POST['remove_gedcom_files']; ?>">
                         <input type="submit" name="remove_confirm" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
@@ -124,9 +120,7 @@ if (!defined('ADMIN_PAGE')) {
                 } else {
                 ?>
                     <?= __('If needed remove GEDCOM files (except test GEDCOM file):'); ?>
-                    <form name="remove_gedcomfiles" action="index.php" method="post">
-                        <input type="hidden" name="page" value="tree">
-                        <input type="hidden" name="menu_admin" value="tree_gedcom">
+                    <form name="remove_gedcomfiles" action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
                         <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                         <div class="row mt-2">
                             <div class="col-md-8">
@@ -168,9 +162,7 @@ if (!defined('ADMIN_PAGE')) {
     $result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
     $treegedDb = $result->fetch();
     ?>
-    <form method="post" action="index.php" style="display : inline">
-        <input type="hidden" name="page" value="tree">
-        <input type="hidden" name="menu_admin" value="tree_gedcom">
+    <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom" style="display : inline">
         <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
 
         <div class="p-3 mt-3 me-sm-2 genealogy_search">
@@ -415,7 +407,7 @@ elseif ($trees['step'] == '2') {
     $setting_value = 'n';
     if (isset($_POST["save_pictures"])) {
         $setting_value = 'y';
-        $humo_option["gedcom_read_save_pictures"] = 'y';    // *** Because variable is needed directly ***
+        $humo_option["gedcom_read_save_pictures"] = 'y'; // *** Because variable is needed directly ***
     }
     $db_functions->update_settings('gedcom_read_save_pictures', $setting_value);
 
@@ -427,21 +419,18 @@ elseif ($trees['step'] == '2') {
         $db_functions->update_settings('gedcom_read_time_out', $_POST['time_out']);
     }
 
+
     if (!isset($_POST['add_tree']) || isset($_POST['add_tree']) && $_POST['add_tree'] == 'no') {
         $_SESSION['add_tree'] = false;
         $limit = 2500;
-        $rootpathinclude = '';
-
     ?>
         <b><?= __('STEP 2) Remove old family tree:'); ?></b><br>
 
         <!-- Time out button -->
         <br>
-        <form method="post" action="index.php">
-            <input type="hidden" name="page" value="tree">
-            <input type="hidden" name="menu_admin" value="tree_gedcom">
+        <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-            <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>'">
+            <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
             <?php
             if (isset($_POST['check_processed'])) {
                 echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
@@ -455,260 +444,53 @@ elseif ($trees['step'] == '2') {
             if (isset($_POST['time_out'])) {
                 echo '<input type="hidden" name="time_out" value="' . $_POST['time_out'] . '">';
             }
-            // TODO check value. Should be yes/ no?
-            if (isset($_POST['add_tree'])) {
-                echo '<input type="hidden" name="add_tree" value="1">';
-            }
+            echo '<input type="hidden" name="add_tree" value="no">';
             ?>
             <?= __('ONLY use in case of a time-out, to continue click:'); ?>
             <input type="hidden" name="step" value="2">
             <input type="submit" name="submit" value="<?= __('Step'); ?> 2" class="btn btn-sm btn-secondary">
         </form><br>
+    <?php } ?>
 
-    <?php
-        // *** Remove records in chunks because of InnoDb database... ***
-        ob_start();
-        printf(__('Remove old family tree items from %s table...'), 'humo_persons');
-        echo ' ';
-        ob_flush();
-        flush();
-        $total = $dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "'");
-        $total = $total->fetch();
-        $nr_records = $total[0];
-        if ($nr_records > 0) {
-            $loop = $nr_records / $limit;
-            for ($i = 0; $i <= $loop; $i++) {
-                $dbh->query("DELETE FROM humo_persons WHERE pers_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
-                echo '*';
-                ob_flush();
-                flush();
-            }
-            $dbh->query("DELETE FROM humo_persons WHERE pers_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    <?php if (!isset($_POST['add_tree']) || isset($_POST['add_tree']) && $_POST['add_tree'] == 'no') { ?>
+        <!-- Use Ajax asynchronous loading -->
+        <div class="spinner-border" id="loading_step2" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <script>
+            <?php /*
+            // Send $_POST to file.
+            var data = new FormData();
 
-            echo ' ' . __('Optimize table...');
-            ob_flush();
-            flush();
-            $dbh->query("OPTIMIZE TABLE humo_persons");
-        }
-        echo '<br>';
+            var add_source = "<?= isset($_POST['add_source']) ? htmlspecialchars($_POST['add_source'], ENT_QUOTES, 'UTF-8') : ''; ?>";
+            data.append('add_source', add_source);
 
-        // *** Remove records in chunks because of InnoDb database... ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_families');
-        echo ' ';
-        $total = $dbh->query("SELECT COUNT(*) FROM humo_families WHERE fam_tree_id='" . $trees['tree_id'] . "'");
-        $total = $total->fetch();
-        $nr_records = $total[0];
-        if ($nr_records > 0) {
-            $loop = $nr_records / $limit;
-            for ($i = 0; $i <= $loop; $i++) {
-                $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
-                echo '*';
-                ob_flush();
-                flush();
-            }
-            $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+            var gedcom_file = "<?= isset($_POST['gedcom_file']) ? htmlspecialchars($_POST['gedcom_file'], ENT_QUOTES, 'UTF-8') : ''; ?>";
+            data.append('gedcom_file', gedcom_file);
+            */ ?>
 
-            echo ' ' . __('Optimize table...') . ' ';
-            ob_flush();
-            flush();
-            $dbh->query("OPTIMIZE TABLE humo_families");
-        }
-        echo '<br>';
-
-        // *** Remove records in chunks because of InnoDb database... ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_unprocessed_tags');
-        echo ' ';
-        ob_flush();
-        flush();
-        $total = $dbh->query("SELECT COUNT(*) FROM humo_unprocessed_tags WHERE tag_tree_id='" . $trees['tree_id'] . "'");
-        $total = $total->fetch();
-        $nr_records = $total[0];
-        if ($nr_records > 0) {
-            $loop = $nr_records / $limit;
-            for ($i = 0; $i <= $loop; $i++) {
-                $dbh->query("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
-                echo '*';
-                ob_flush();
-                flush();
-            }
-            $dbh->query("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='" . safe_text_db($trees['tree_id']) . "'");
-
-            echo ' ' . __('Optimize table...');
-            ob_flush();
-            flush();
-            $dbh->query("OPTIMIZE TABLE humo_unprocessed_tags");
-        }
-        echo '<br>';
-
-
-        // *** Remove admin favourites ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_settings');
-        ob_flush();
-        flush();
-        $dbh->query("DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($trees['tree_id']) . "'");
-
-        echo ' ' . __('Optimize table...');
-        ob_flush();
-        flush();
-        $dbh->query("OPTIMIZE TABLE humo_settings");
-        echo '<br>';
-
-        // *** Remove repositories ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_repositories');
-        ob_flush();
-        flush();
-        $dbh->query("DELETE FROM humo_repositories WHERE repo_tree_id='" . safe_text_db($trees['tree_id']) . "'");
-
-        echo ' ' . __('Optimize table...');
-        ob_flush();
-        flush();
-        $dbh->query("OPTIMIZE TABLE humo_repositories");
-        echo '<br>';
-
-        // *** Remove records in chunks because of InnoDb database... ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_sources');
-        echo ' ';
-        ob_flush();
-        flush();
-        $total = $dbh->query("SELECT COUNT(*) FROM humo_sources WHERE source_tree_id='" . $trees['tree_id'] . "'");
-        $total = $total->fetch();
-        $nr_records = $total[0];
-        if ($nr_records > 0) {
-            $loop = $nr_records / $limit;
-            for ($i = 0; $i <= $loop; $i++) {
-                $dbh->query("DELETE FROM humo_sources WHERE source_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
-                echo '*';
-                ob_flush();
-                flush();
-            }
-            $dbh->query("DELETE FROM humo_sources WHERE source_tree_id='" . safe_text_db($trees['tree_id']) . "'");
-
-            echo ' ' . __('Optimize table...');
-            ob_flush();
-            flush();
-            $dbh->query("OPTIMIZE TABLE humo_sources");
-        }
-        echo '<br>';
-
-
-        // *** Remove records in chunks because of InnoDb database... ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_texts');
-        echo ' ';
-        ob_flush();
-        flush();
-        $total = $dbh->query("SELECT COUNT(*) FROM humo_texts WHERE text_tree_id='" . $trees['tree_id'] . "'");
-        $total = $total->fetch();
-        $nr_records = $total[0];
-        if ($nr_records > 0) {
-            $loop = $nr_records / $limit;
-            for ($i = 0; $i <= $loop; $i++) {
-                $dbh->query("DELETE FROM humo_texts WHERE text_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
-                echo '*';
-                ob_flush();
-                flush();
-            }
-            $dbh->query("DELETE FROM humo_texts WHERE text_tree_id='" . safe_text_db($trees['tree_id']) . "'");
-
-            echo ' ' . __('Optimize table...');
-            $dbh->query("OPTIMIZE TABLE humo_texts");
-        }
-        echo '<br>';
-
-
-        // *** Remove records in chunks because of InnoDb database... ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_connections');
-        echo ' ';
-        ob_flush();
-        flush();
-        $total = $dbh->query("SELECT COUNT(*) FROM humo_connections WHERE connect_tree_id='" . $trees['tree_id'] . "'");
-        $total = $total->fetch();
-        $nr_records = $total[0];
-        if ($nr_records > 0) {
-            $loop = $nr_records / $limit;
-            for ($i = 0; $i <= $loop; $i++) {
-                $dbh->query("DELETE FROM humo_connections WHERE connect_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
-                echo '*';
-                ob_flush();
-                flush();
-            }
-            $dbh->query("DELETE FROM humo_connections WHERE connect_tree_id='" . safe_text_db($trees['tree_id']) . "'");
-
-            echo ' ' . __('Optimize table...');
-            ob_flush();
-            flush();
-            $dbh->query("OPTIMIZE TABLE humo_connections");
-        }
-        echo '<br>';
-
-
-        // *** Remove records in chunks because of InnoDb database... ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_addresses');
-        echo ' ';
-        ob_flush();
-        flush();
-        $total = $dbh->query("SELECT COUNT(*) FROM humo_addresses WHERE address_tree_id='" . $trees['tree_id'] . "'");
-        $total = $total->fetch();
-        $nr_records = $total[0];
-        if ($nr_records > 0) {
-            $loop = $nr_records / $limit;
-            for ($i = 0; $i <= $loop; $i++) {
-                $dbh->query("DELETE FROM humo_addresses WHERE address_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
-                echo '*';
-                ob_flush();
-                flush();
-            }
-            $dbh->query("DELETE FROM humo_addresses WHERE address_tree_id='" . safe_text_db($trees['tree_id']) . "'");
-
-            echo ' ' . __('Optimize table...');
-            ob_flush();
-            flush();
-            $dbh->query("OPTIMIZE TABLE humo_addresses");
-        }
-        echo '<br>';
-
-        // *** Remove records in chunks because of InnoDb database... ***
-        printf(__('Remove old family tree items from %s table...'), 'humo_events');
-        echo ' ';
-        ob_flush();
-        flush();
-        $total = $dbh->query("SELECT COUNT(*) FROM humo_events WHERE event_tree_id='" . $trees['tree_id'] . "'");
-        $total = $total->fetch();
-        $nr_records = $total[0];
-        if ($nr_records > 0) {
-            $loop = $nr_records / $limit;
-            for ($i = 0; $i <= $loop; $i++) {
-                if ($humo_option["gedcom_read_save_pictures"] === 'y') {
-                    $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "' AND event_kind!='picture' LIMIT " . $limit;
-                } else {
-                    $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'index.php?page=gedcom_import2', true);
+            //xhr.open('POST', 'index.php?page=gedcom_import2', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById('loading_step2').style.display = 'none'; // Hide spinning image
+                    document.getElementById('button_step3').removeAttribute("disabled"); // Enable button 3
+                    document.getElementById('content_step2').innerHTML = xhr.responseText; // Show reults
                 }
-
-                $dbh->query($sql);
-                echo '*';
-                ob_flush();
-                flush();
-            }
-            if ($humo_option["gedcom_read_save_pictures"] === 'y') {
-                $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "' AND event_kind!='picture'";
-            } else {
-                $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "'";
-            }
-            $dbh->query($sql);
-
-            echo ' ' . __('Optimize table...');
-            ob_flush();
-            flush();
-            $dbh->query("OPTIMIZE TABLE humo_events");
-        }
-        echo '<br>';
-
-
-        if (isset($show_gedcom_status)) {
-            echo '<b>' . __('No error messages above? In that case the tables have been created!') . '</b><br>';
-        }
+            };
+            xhr.send();
+            //xhr.send(data);
+        </script>
+        <div id="content_step2"></div>
+    <?php
     } else {
         $_SESSION['add_tree'] = true;
-        echo __('The data in this GEDCOM will be appended to the existing data in this tree!') . '<br>';
+    ?>
+        <div class="alert alert-warning mt-4" role="alert">
+            <?= __('The data in this GEDCOM will be appended to the existing data in this tree!'); ?>
+        </div>
+    <?php
     }
 
     //$progress_counter=0;
@@ -743,9 +525,7 @@ elseif ($trees['step'] == '2') {
     $_SESSION['save_gen_program_version'] = $gen_program_version;
     ?>
     <br><br>
-    <form method="post" action="index.php">
-        <input type="hidden" name="page" value="tree">
-        <input type="hidden" name="menu_admin" value="tree_gedcom">
+    <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
         <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
         <input type="hidden" name="gedcom_accent" value="<?= $accent; ?>">
         <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
@@ -767,27 +547,26 @@ elseif ($trees['step'] == '2') {
             // *** Reset nr of persons and families ***
             $sql = $dbh->query("UPDATE humo_trees SET tree_persons='', tree_families='' WHERE tree_prefix='" . $tree_prefix . "'");
         }
-        // TODO check values. Should be yes/ no?
-        if (isset($_POST['add_tree'])) {
-            echo '<input type="hidden" name="add_tree" value="1">';
-        } else {
-            echo '<input type="hidden" name="add_tree" value="">';
-        }
+
+        if (isset($_POST['add_tree']) && $_POST['add_tree'] == 'yes') {
         ?>
+            <input type="hidden" name="add_tree" value="yes">
+        <?php } else { ?>
+            <input type="hidden" name="add_tree" value="no">
+        <?php } ?>
         <input type="hidden" name="step" value="3">
-        <input type="submit" name="submit" value="<?= __('Step'); ?> 3" class="btn btn-sm btn-success">
+        <input type="submit" id="button_step3" name="submit" value="<?= __('Step'); ?> 3" class="btn btn-sm btn-success" <?= (!isset($_POST['add_tree']) || isset($_POST['add_tree']) && $_POST['add_tree'] == 'no') ? 'disabled' : ''; ?>>
     </form>
 
     <?php if (isset($_POST['add_tree']) && $_POST['add_tree'] == 'yes') { ?>
         <br><br>
-        <form method="post" style="display:inline" action="index.php">
-            <input type="hidden" name="page" value="tree">
-            <input type="hidden" name="menu_admin" value="tree_gedcom">
+        <form method="post" style="display:inline" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-            <input type="submit" name="back" value="<?= __('Cancel'); ?>">
+            <input type="submit" name="back" value="<?= __('Cancel'); ?>" class="btn btn-sm btn-secondary">
         </form>
+    <?php } ?>
+
     <?php
-    }
 }
 
 // ************************************************************************************************
@@ -900,9 +679,7 @@ elseif ($trees['step'] == '3') {
     // *** some providers use a timeout of 30 seconden, continue button needed. ***
     if ($_POST['time_out'] == '0') {
     ?>
-        <form method="post" action="index.php" style="display : inline">
-            <input type="hidden" name="page" value="tree">
-            <input type="hidden" name="menu_admin" value="tree_gedcom">
+        <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom" style="display : inline">
             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
             <input type="hidden" name="timeout_restart" value="1">
             <input type="hidden" name="gedcom_accent" value="<?= $_POST['gedcom_accent']; ?>">
@@ -993,10 +770,12 @@ elseif ($trees['step'] == '3') {
         $percent = $perc . "%";
         if ($perc == 0) {
             $percent = "0.5%";
-        } // show at least some green 
-        echo '<script>';
-        echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $total . ' ' . __('lines processed') . ' (' . $perc . '%).";';
-        echo '</script>';
+        } // show at least some green
+        ?>
+        <script>
+            document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $total; ?> <?= __('lines processed'); ?> (<?= $perc; ?>%);?>";
+        </script>
+        <?php
         // This is for the buffer achieve the minimum size in order to flush data
         echo str_repeat(' ', 1024 * 64);
         // Send output to browser immediately
@@ -1329,20 +1108,22 @@ elseif ($trees['step'] == '3') {
                 $_SESSION['save_perc'] = $perc;
                 $percent = $perc . "%";
 
-                // Javascript for updating the progress bar and information
-                echo '<script>';
-                //echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $total . ' ' . __('lines processed') . ' (' . $percent . ')";';
-                echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $total . ' ' . __('lines processed') . '";';
-                echo '</script>';
 
-                // *** Apr. 2024 New bootstrap bar ***
-                echo '<script>
+                ob_start();
+        ?>
+                <script>
+                    document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $total; ?> <?= __('lines processed'); ?>";
+                </script>
+
+                <!-- Apr. 2024 New bootstrap bar -->
+                <script>
                     var bar = document.querySelector(".progress-bar");
-                    bar.style.width = ' . $perc . ' + "%";
-                    bar.innerText = ' . $perc . ' + "%";
-                </script>';
+                    bar.style.width = <?= $perc; ?> + "%";
+                    bar.innerText = <?= $perc; ?> + "%";
+                </script>
 
-                // TODO These items doesn't work properly. Probably because of the for loops.
+            <?php
+                // TODO These items don't work properly. Probably because of the for loops.
                 // This is for the buffer achieve the minimum size in order to flush data
                 echo str_repeat(' ', 1024 * 64);
                 // Send output to browser immediately
@@ -1371,10 +1152,8 @@ elseif ($trees['step'] == '3') {
                 $_SESSION['save_start_timeout'] = time();
 
                 // *** Restart after controlled time-out. ***
-        ?>
-                <form method="post" action="index.php" style="display : inline">
-                    <input type="hidden" name="page" value="tree">
-                    <input type="hidden" name="menu_admin" value="tree_gedcom">
+            ?>
+                <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom" style="display : inline">
                     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                     <input type="hidden" name="gedcom_accent" value="<?= $_POST['gedcom_accent']; ?>">
                     <?php
@@ -1391,15 +1170,17 @@ elseif ($trees['step'] == '3') {
                     <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
                     <input type="hidden" name="time_out" value="<?= $time_out; ?>">
                     <input type="hidden" name="step" value="3">
-                    <?php
-                    echo '<b>' . __('Controlled time-out to continue reading of GEDCOM file, click:') . '</b> <input type="submit" name="submit" value="' . __('Step') . ' 3" class="btn btn-sm btn-success"><br>';
-                    printf(' <b>' . __('Or wait %s seconds for automatic continuation. Some browsers will give a reload message...') . '</b>', '5');
-                    ?>
+                    <b><?= __('Controlled time-out to continue reading of GEDCOM file, click:'); ?></b> <input type="submit" name="submit" value="<?= __('Step'); ?> 3" class="btn btn-sm btn-success"><br>
+                    <?php printf(' <b>' . __('Or wait %s seconds for automatic continuation. Some browsers will give a reload message...') . '</b>', '5'); ?>
                 </form><br><br>
 
+                <!-- Automatic reload after 5 seconds -->
+                <script>
+                    setTimeout(function() {
+                        location.reload(true);
+                    }, 5000);
+                </script>
         <?php
-                // *** Automatic reload after 5 seconds ***
-                echo '<script>setTimeout(function () { location.reload(true); }, 5000);</script>';
                 exit();
             }
         }
@@ -1491,26 +1272,25 @@ elseif ($trees['step'] == '3') {
     <?php
     }
     if (!isset($_POST['show_gedcomnumbers'])) {
-        echo '<script>';
-        //echo 'document.getElementById("information").innerHTML="' . $total . ' / ' . $total . ' ' . __('lines processed') . ' (100%).";';
-        echo 'document.getElementById("information").innerHTML="' . $total . ' / ' . $total . ' ' . __('lines processed') . '";';
-        echo '</script>';
+    ?>
+        <script>
+            document.getElementById("information").innerHTML = "<?= $total; ?> / <?= $total; ?> <?= __('lines processed'); ?>";
+        </script>
 
-        // *** Apr. 2024 New bootstrap bar ***
-        echo '<script>
+        <!-- Apr. 2024 New bootstrap bar -->
+        <script>
             var bar = document.querySelector(".progress-bar");
             bar.style.width = 100 + "%";
             bar.innerText = 100 + "%";
-        </script>';
+        </script>
 
+    <?php
         ob_flush();
         flush();
     }
     ?>
     <br>
-    <form method="post" action="index.php">
-        <input type="hidden" name="page" value="tree">
-        <input type="hidden" name="menu_admin" value="tree_gedcom">
+    <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
         <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
         <input type="hidden" name="gen_program" value="<?= $gen_program; ?>">
         <input type="hidden" name="gen_program_version" value="<?= $gen_program_version; ?>">
@@ -1530,9 +1310,7 @@ elseif ($trees['step'] == '4') {
     <b><?= __('STEP 4) Final database processing:'); ?></b><br>
 
     <!-- To proceed if a (30 seconds) timeout has occured -->
-    <form method="post" action="index.php">
-        <input type="hidden" name="page" value="tree">
-        <input type="hidden" name="menu_admin" value="tree_gedcom">
+    <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
         <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
         <input type="hidden" name="gen_program" value="<?= $_POST['gen_program']; ?>">
         <input type="hidden" name="gen_program_version" value="<?= $_POST['gen_program_version']; ?>">
@@ -1540,10 +1318,7 @@ elseif ($trees['step'] == '4') {
         <br><?= __('ONLY use in case of a time-out, to continue click:'); ?> <input type="submit" name="submit" value="<?= __('Step'); ?> 4" class="btn btn-sm btn-secondary">
     </form><br>
 
-    <?php
-    // *** Show progress ***
-    //echo '<div id="progress" style="width:500px;border:1px solid #ccc;"></div>';
-    ?>
+    <!-- Show progress -->
     <div class="progress" style="height:20px">
         <div class="progress-bar"></div>
     </div>
@@ -1551,7 +1326,7 @@ elseif ($trees['step'] == '4') {
     <!-- Progress information -->
     <div id="information"></div>
 
-<?php
+    <?php
     $total = 1;
     $i = 0;
 
@@ -1787,17 +1562,19 @@ elseif ($trees['step'] == '4') {
                     $percent = $perc . "%";
 
                     // Javascript for updating the progress bar and information
-                    echo '<script>';
-                    echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' ' . __('persons') . '";';
-                    echo '</script>';
+    ?>
+                    <script>
+                        document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $nr_records; ?> <?= __('lines processed'); ?> <?= __('persons'); ?>";
+                    </script>
 
-                    // *** Apr. 2024 New bootstrap bar ***
-                    echo '<script>
+                    <!-- Apr. 2024 New bootstrap bar -->
+                    <script>
                         var bar = document.querySelector(".progress-bar");
-                        bar.style.width = ' . $perc . ' + "%";
-                        bar.innerText = ' . $perc . ' + "%";
-                    </script>';
+                        bar.style.width = <?= $perc; ?> + "%";
+                        bar.innerText = <?= $perc; ?> + "%";
+                    </script>
 
+        <?php
                     // This is for the buffer achieve the minimum size in order to flush data
                     echo str_repeat(' ', 1024 * 64);
 
@@ -2048,32 +1825,25 @@ elseif ($trees['step'] == '4') {
             // *** Save data in database ***
             $dbh->commit();
         }
+        ?>
 
-        echo '<script>';
-        //echo 'document.getElementById("progress").innerHTML="<div style=\"width:100%;background-color:#00CC00;\">&nbsp;</div>";';
-        //echo 'document.getElementById("information").innerHTML="' . $nr_records . ' / ' . $nr_records . ' ' . __('lines processed') . ' (100%).";';
-        echo 'document.getElementById("information").innerHTML="' . $nr_records . ' / ' . $nr_records . ' ' . __('lines processed') . '";';
-        echo '</script>';
-
-        // *** Apr. 2024 New bootstrap bar ***
-        echo '<script>
-            var bar = document.querySelector(".progress-bar");
-            bar.style.width = 100 + "%";
-            bar.innerText = 100 + "%";
-        </script>';
-
+        <script>
+            document.getElementById("information").innerHTML = "<?= $nr_records; ?> / <?= $nr_records; ?> <?= __('lines processed'); ?>";
+        </script>
+    <?php
         ob_flush();
         flush();
-    } else {
-        // *** Apr. 2024 New bootstrap bar ***
-        echo '<script>
-            var bar = document.querySelector(".progress-bar");
-            bar.style.width = 100 + "%";
-            bar.innerText = 100 + "%";
-        </script>';
     }
+    ?>
 
+    <!-- Apr. 2024 New bootstrap bar -->
+    <script>
+        var bar = document.querySelector(".progress-bar");
+        bar.style.width = 100 + "%";
+        bar.innerText = 100 + "%";
+    </script>
 
+<?php
     // *** Process text by name etc. ***
     echo '<br>&gt;&gt;&gt; ' . __('Processing texts IN names...');
     $person_qry = $dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname

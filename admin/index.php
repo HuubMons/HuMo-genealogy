@@ -88,8 +88,6 @@ function admin_custom_autoload($class_name)
 }
 spl_autoload_register('admin_custom_autoload');
 
-
-
 // TODO refactor/ move to model
 // *** Only logoff admin ***
 if (isset($_GET['log_off'])) {
@@ -119,8 +117,9 @@ $visitor_ip = visitorIP();
 
 
 // *** Added dec. 2024 ***
-$controllerObj = new Main_adminController();
-$main_admin = $controllerObj->detail();
+// Files are prepared, not used yet.
+//$controllerObj = new Main_adminController();
+//$main_admin = $controllerObj->detail();
 
 //$check_tables = $main_admin['check_table'];
 //$page = $main_admin['page'];
@@ -193,7 +192,7 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
     }
 
     if (
-        isset($_GET['page']) && ($_GET['page'] == 'editor_sources' || $_GET['page'] == 'editor_place_select' || $_GET['page'] == 'editor_person_select' || $_GET['page'] == 'editor_relation_select' || $_GET['page'] == 'editor_media_select' || $_GET['page'] == 'editor_user_settings')
+        isset($_GET['page']) && ($_GET['page'] == 'editor_sources' || $_GET['page'] == 'editor_place_select' || $_GET['page'] == 'editor_person_select' || $_GET['page'] == 'editor_relation_select' || $_GET['page'] == 'editor_media_select' || $_GET['page'] == 'editor_user_settings' || $_GET['page'] == 'gedcom_import2')
     ) {
         $main_admin['show_menu'] = false;
         $popup = true;
@@ -800,7 +799,7 @@ if ($popup == false) {
         } elseif ($page === 'latest_changes') {
             include_once(__DIR__ . "/views/tree_check.php");
             //} elseif ($page === 'gedcom') {
-            //    include_once(__DIR__ . "/views/gedcom.php");
+            //    include_once(__DIR__ . "/views/gedcom_import.php");
         } elseif ($page === 'settings') {
             $controllerObj = new AdminSettingsController();
             $settings = $controllerObj->detail($dbh, $db_functions, $humo_option);
@@ -863,6 +862,10 @@ if ($popup == false) {
             include_once(__DIR__ . "/update/install_update.php");
         } elseif ($page === 'update') {
             include_once(__DIR__ . "/include/update.php");
+        } elseif ($page === 'gedcom_import2') {
+            $controllerObj = new TreesController();
+            $trees = $controllerObj->detail($dbh, $tree_id, $db_functions, $selected_language);
+            include_once(__DIR__ . "/views/gedcom_import2.php");
         }
         //elseif ($page=='photoalbum'){ include_once (__DIR__ . "/include/photoalbum_categories.php"); }
 
