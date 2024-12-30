@@ -68,6 +68,8 @@ function admin_custom_autoload($class_name)
 
     // ../languages/languageCls.php
 
+    /*
+    // file_exists is slow!
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array(
         'LanguageCls',
@@ -84,6 +86,27 @@ function admin_custom_autoload($class_name)
                 break;
             }
         }
+    }
+    */
+
+    // *** At this moment only a few classes are autoloaded. Under construction ***
+    $include = array(
+        'DbFunctions', 'ProcessLinks',  'PersonCls', 'CalculateDates'
+    );
+    $admin_include = array(
+        'Editor_cls', 'EditorEvent', 'GedcomCls', 'UpdateCls'
+    );
+
+    if ($class_name == 'LanguageCls') {
+        require __DIR__ . '/../languages/languageCls.php';
+    } elseif (substr($class_name, -10) == 'Controller') {
+        require __DIR__ . '/controller/' . lcfirst($class_name) . '.php';
+    } elseif (substr($class_name, -5) == 'Model') {
+        require __DIR__ . '/models/' . lcfirst($class_name) . '.php';
+    } elseif (in_array($class_name, $include)) {
+        require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
+    } elseif (in_array($class_name, $admin_include)) {
+        require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
     }
 }
 spl_autoload_register('admin_custom_autoload');

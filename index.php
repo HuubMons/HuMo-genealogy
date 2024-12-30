@@ -61,6 +61,8 @@ function custom_autoload($class_name)
 
     // languages/languageCls.php
 
+    /*
+    // file_exists is slow if file isn't found!
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $classes = array(
         'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'LanguageCls', 'Config'
@@ -75,6 +77,21 @@ function custom_autoload($class_name)
                 break;
             }
         }
+    }
+    */
+
+    $include = array(
+        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'Config'
+    );
+
+    if ($class_name == 'LanguageCls') {
+        require __DIR__ . '/languages/languageCls.php';
+    } elseif (substr($class_name, -10) == 'Controller') {
+        require __DIR__ . '/app/controller/' . lcfirst($class_name) . '.php';
+    } elseif (substr($class_name, -5) == 'Model') {
+        require __DIR__ . '/app/model/' . lcfirst($class_name) . '.php';
+    } elseif (in_array($class_name, $include)) {
+        require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
     }
 }
 spl_autoload_register('custom_autoload');
@@ -120,6 +137,10 @@ $bot_visit = $index['bot_visit'];
 $language_file = $index['language_file']; // Array including all languages files.
 $language = $index['language']; // $language = array.
 $selected_language = $index['selected_language'];
+
+if (isset($_SESSION['tree_prefix'])) {
+    $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+}
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = $index['dirmark1'];  //ltr marker
