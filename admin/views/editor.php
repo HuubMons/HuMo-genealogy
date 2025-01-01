@@ -10,7 +10,7 @@
  *
  * https://humo-gen.com
  *
- * Copyright (C) 2008-2024 Huub Mons,
+ * Copyright (C) 2008-2025 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * René Janssen, Yossi Beck
  * and others.
@@ -1132,7 +1132,7 @@ if ($check_person) {
         <div class="row mb-2">
             <div class="col-md-3"><?= __('Privacy filter'); ?></div>
             <div class="col-md-7">
-                <input type="radio" name="<?= $name; ?>" value="alive" class="form-check-input" id="<?= $name; ?>">
+                <input type="radio" name="<?= $name; ?>" value="alive" <?= $value ? 'checked':''?> class="form-check-input" id="<?= $name; ?>">
                 <label class="form-check-label" for="<?= $name; ?>"><?= __('alive'); ?></label>
 
                 <input type="radio" name="<?= $name; ?>" value="deceased" class="form-check-input" id="<?= $name; ?>">
@@ -1235,7 +1235,7 @@ if ($check_person) {
         <?= edit_lastname('pers_lastname', $pers_lastname); ?>
         <?= edit_patronymic('pers_patronym', ''); ?>
         <?= edit_event_name('event_gedcom_new', 'event_event_name_new', ''); ?>
-        <?= edit_privacyfilter('pers_alive', ''); ?>
+        <?= edit_privacyfilter('pers_alive', 'alive'); ?>
         <?= edit_sexe('pers_sexe', $pers_sexe); ?>
 
         <!-- Birth -->

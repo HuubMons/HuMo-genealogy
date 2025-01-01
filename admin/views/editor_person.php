@@ -566,6 +566,7 @@
             <td colspan="2">
                 <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?> class="form-check-input"> <?= __('alive'); ?>
                 <input type="radio" name="pers_alive" value="deceased" <?= $selected_deceased . $disabled; ?> class="form-check-input"> <?= __('deceased'); ?>
+                <?= $disabled ? '<input type="hidden" name="pers_alive" value="deceased">' : ''; ?>
 
                 <!-- Estimated/ calculated (birth) date, can be used for privacy filter -->
                 <?php if (!$pers_cal_date) {

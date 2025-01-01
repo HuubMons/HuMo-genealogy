@@ -10,7 +10,7 @@
  *
  * https://humo-gen.com
  *
- * Copyright (C) 2008-2024 Huub Mons,
+ * Copyright (C) 2008-2025 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * René Janssen, Yossi Beck
  * and others.

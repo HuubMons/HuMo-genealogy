@@ -211,9 +211,6 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
         //	@copy($source, $update_file);
         //}
 
-
-        //if ($f = @fopen($update_file, 'r')){
-        //if (is_file($update_file) AND $f = @fopen($update_file, 'r')){
         if (isset($content_array) && $content_array) {
             // *** Used for automatic update procedure ***
             $update['up_to_date'] = 'no';
@@ -229,8 +226,8 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
             $update['beta_version'] = '';
             $update['beta_version_date'] = '';
             $update['beta_version_auto_download'] = '';
+            $update['beta_version_auto_download_github'] = '';
 
-            //while(!feof($f)) { 
             foreach ($content_array as $content_line) {
                 //$update_data = fgets( $f, 4096 );
                 $update_array = explode("=", $content_line);
@@ -248,7 +245,7 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
                 if ($update_array[0] === 'version_auto_download') {
                     $update['version_auto_download'] = trim($update_array[1]);
                 }
-                if ($update_array[0] === 'version_auto_download_github') {
+                if ($update_array[0] === 'new_version_auto_download_github') {
                     $update['version_auto_download_github'] = trim($update_array[1]);
                 }
 
@@ -265,8 +262,10 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
                 if ($update_array[0] === 'beta_version_auto_download') {
                     $update['beta_version_auto_download'] = trim($update_array[1]);
                 }
+                if ($update_array[0] === 'beta_version_auto_download_github') {
+                    $update['beta_version_auto_download_github'] = trim($update_array[1]);
+                }
             }
-            //fclose($f);
 
             //$humo_option["version"]='0'; // *** Test line ***
             // *** 1) Standard status ***
@@ -274,7 +273,6 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
             $update_text = ' ' . __('Update check failed.');
             $update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
 
-            //NEW
             if ($humo_option["version"] == $update['version']) {
                 $update['up_to_date'] = 'yes';
                 $update_text = ' ' . __('is up-to-date!');

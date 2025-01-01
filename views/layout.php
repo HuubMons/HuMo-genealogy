@@ -737,7 +737,7 @@ $menu_top = getActiveTopMenu($page);
 
                                     <!-- Show link to contact form -->
                                     <?php if ($user["group_contact"] == 'j') {; ?>
-                                        <?php if ($dataDb->tree_owner && $dataDb->tree_email) { ?>
+                                        <?php if (isset($dataDb->tree_email) && $dataDb->tree_owner && $dataDb->tree_email) { ?>
                                             <li><a class="dropdown-item <?php if ($page == 'mailform') echo 'active'; ?>" href="<?= $menu_path_contact; ?>"><?= __('Contact'); ?></a></li>
                                         <?php } ?>
                                     <?php } ?>

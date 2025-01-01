@@ -178,6 +178,7 @@ class DbFunctions
      */
     public function get_tree($tree_prefix)
     {
+        $tree='';
         // *** Detection of tree_prefix/ tree_id ***
         if (substr($tree_prefix, 0, 4) === 'humo') {
             // *** Found tree_prefix humox_ ***

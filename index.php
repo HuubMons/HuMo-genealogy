@@ -10,7 +10,7 @@
  *
  * https://humo-gen.com
  *
- * Copyright (C) 2008-2024 Huub Mons,
+ * Copyright (C) 2008-2025 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * Reni Janssen, Yossi Beck
  * and others.
@@ -138,6 +138,7 @@ $language_file = $index['language_file']; // Array including all languages files
 $language = $index['language']; // $language = array.
 $selected_language = $index['selected_language'];
 
+// Needed for mail script.
 if (isset($_SESSION['tree_prefix'])) {
     $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
 }

@@ -83,6 +83,28 @@ class AdminAddressModel
                 }
             }
 
+            // *** Delete connections to address, and re-order remaining address connections ***
+            $connect_sql = "SELECT * FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
+                AND connect_sub_kind='family_address' AND connect_item_id='" . safe_text_db($_POST["address_gedcomnr"]) . "'";
+            $connect_qry = $dbh->query($connect_sql);
+            while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
+                // *** Delete source connections ***
+                $sql = "DELETE FROM humo_connections WHERE connect_id='" . $connectDb->connect_id . "'";
+                $dbh->query($sql);
+
+                // *** Re-order remaining source connections ***
+                $event_order = 1;
+                $event_sql = "SELECT * FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
+                    AND connect_kind='" . $connectDb->connect_kind . "' AND connect_sub_kind='" . $connectDb->connect_sub_kind . "'
+                    AND connect_connect_id='" . $connectDb->connect_connect_id . "' ORDER BY connect_order";
+                $event_qry = $dbh->query($event_sql);
+                while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
+                    $sql = "UPDATE humo_connections SET connect_order='" . $event_order . "' WHERE connect_id='" . $eventDb->connect_id . "'";
+                    $dbh->query($sql);
+                    $event_order++;
+                }
+            }
+
             // *** Delete address ***
             $sql = "DELETE FROM humo_addresses WHERE address_id='" . $this->address_id . "'";
             $dbh->query($sql);

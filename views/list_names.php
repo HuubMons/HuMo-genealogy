@@ -238,7 +238,7 @@ if ($person->rowCount() > 0) {
                 ?>
                     <td class="namelst">
                         <?php if (isset($freq_last_names[$nr])) { ?>
-                            <a href="<?= $path_tmp; ?>pers_lastname=<?= $pers_lastname; ?><? $pers_prefix; ?>&amp;part_lastname=equals">
+                            <a href="<?= $path_tmp; ?>pers_lastname=<?= $pers_lastname; ?><?= $pers_prefix; ?>&amp;part_lastname=equals">
                                 <?= $top_pers_lastname; ?>
                             </a>
                         <?php } else { ?>

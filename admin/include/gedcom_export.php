@@ -1853,7 +1853,6 @@ function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
         $export_addresses = false;
         if ($addressDb->address_shared == '1') $export_addresses = true;
         if (isset($_POST['gedcom_shared_addresses']) && $_POST['gedcom_shared_addresses'] == 'standard') $export_addresses = false;
-        //if ($addressDb->address_shared=='1'){
         if ($export_addresses) {
             // *** Shared address ***
             // 1 RESI @R210@
