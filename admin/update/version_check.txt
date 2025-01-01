@@ -6,8 +6,9 @@ version_download=http://sourceforge.net/projects/humo-gen
 version_auto_download=http://humo-gen.com/update/humo-gen_update.zip
 new_version_auto_download_github=https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip
 
-// Beta version
-beta_version=2019-11-28
-beta_version_date=2019-11-28
+// Beta version. If Github beta branch is used, create a branch: beta_version. Use old date 2019-11-28 here if branch is removed.
+beta_version=2025-01-01
+beta_version_date=2025-01-01
 beta_version_download=http://sourceforge.net/projects/humo-gen
 beta_version_auto_download=http://humo-gen.com/update/humo-gen_beta_update.zip
+beta_version_auto_download_github=https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/beta_version.zip
