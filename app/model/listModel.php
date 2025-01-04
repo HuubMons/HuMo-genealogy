@@ -159,6 +159,11 @@ class ListModel
         if (isset($_GET['adv_search']) && $_GET['adv_search'] == '1') {
             $selection['use_pers_prefix'] = 'USED';
         }
+        // *** Page is called from names list. Option should be disabled then ***
+        if (isset($_GET['pers_prefix']) && $_GET['pers_prefix'] == 'EMPTY') {
+            $selection['pers_prefix'] = 'EMPTY';
+            $selection['use_pers_prefix'] = 'EMPTY';
+        }
 
         // *** Lastname ***
         $selection['pers_lastname'] = '';

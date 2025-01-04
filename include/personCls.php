@@ -306,97 +306,13 @@ class PersonCls
 
         $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'title');
         foreach ($name_qry as $nameDb) {
-            $title_position = 'after';
-            if ($nameDb->event_event == 'Prof.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Dr.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Dr.h.c.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Dr.h.c.mult.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Ir.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Mr.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Drs.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Lic.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Kand.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Bacc.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Ing.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Bc.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'em.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Ds.') {
-                $title_position = 'before';
-            }
+            $titles_before = ['Ir.', 'Mr.', 'Drs.', 'Lic.', 'Kand.', 'Bacc.', 'Ing.', 'Bc.', 'em.', 'Ds.'];
+            $titles_between = ['prins', 'prinses', 'hertog', 'hertogin', 'markies', 'markiezin', 'markgraaf', 'markgravin', 'graaf', 'gravin', 'burggraaf', 'burggravin', 'baron', 'barones', 'ridder'];
 
-            if ($nameDb->event_event == 'prins') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'prinses') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'hertog') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'hertogin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'markies') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'markiezin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'markgraaf') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'markgravin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'graaf') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'gravin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'burggraaf') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'burggravin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'baron') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'barones') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'ridder') {
-                $title_position = 'between';
-            }
-
-            if ($title_position == 'before') {
+            // Two exceptions at request of users, so it's possible to process multiple titles in one name field.
+            // Dr., Dr.h.c., Dr.h.c.mult. And other titles starting with "Dr.".
+            // Multiple titles starting with "Prof.".
+            if (in_array($nameDb->event_event, $titles_before) || substr($nameDb->event_event, 0, 3) == 'Dr.' || substr($nameDb->event_event, 0, 5) == 'Prof.') {
                 if ($title['before']) $title['before'] .= ' ';
                 $title['before'] .= $nameDb->event_event;
 
@@ -404,8 +320,7 @@ class PersonCls
                     if ($title['before']) $title['before'] .= ' ';
                     $title['before'] .= process_text($nameDb->event_text);
                 }
-            }
-            if ($title_position == 'between') {
+            } elseif (in_array($nameDb->event_event, $titles_between)) {
                 if ($title['between']) $title['between'] .= ' ';
                 $title['between'] .= $nameDb->event_event;
 
@@ -413,8 +328,7 @@ class PersonCls
                     if ($title['between']) $title['between'] .= ' ';
                     $title['between'] .= process_text($nameDb->event_text);
                 }
-            }
-            if ($title_position == 'after') {
+            } else {
                 if ($title['after']) $title['after'] .= ' ';
                 $title['after'] .= $nameDb->event_event;
 

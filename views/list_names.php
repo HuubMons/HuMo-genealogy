@@ -1,140 +1,3 @@
-<?php
-// *** Get names from database ***
-$number_high = 0;
-
-// Mons, van or: van Mons
-if ($user['group_kindindex'] == "j") {
-    // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-    $personqry = "SELECT pers_prefix, pers_lastname, count(pers_lastname) as count_last_names
-        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(pers_prefix,pers_lastname) LIKE '" . $list_names["last_name"] . "%'
-        GROUP BY pers_prefix, pers_lastname ORDER BY CONCAT(pers_prefix, pers_lastname)";
-
-    // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-    $count_qry = "SELECT pers_lastname, pers_prefix
-        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(pers_prefix,pers_lastname) LIKE '" . $list_names["last_name"] . "%'
-        GROUP BY pers_prefix, pers_lastname";
-
-    if ($list_names["last_name"] == 'all') {
-        // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-        $personqry = "SELECT pers_prefix, pers_lastname, count(pers_lastname) as count_last_names
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_prefix, pers_lastname ORDER BY CONCAT(pers_prefix, pers_lastname)";
-
-        // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-        $count_qry = "SELECT pers_prefix, pers_lastname FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_prefix, pers_lastname";
-    }
-} else {
-    // *** Select alphabet first_character ***
-    // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-    $personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
-        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname LIKE '" . $list_names["last_name"] . "%'
-        GROUP BY pers_lastname, pers_prefix";
-
-    // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-    $count_qry = "SELECT pers_lastname, pers_prefix
-        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname LIKE '" . $list_names["last_name"] . "%'
-        GROUP BY pers_lastname, pers_prefix";
-
-    if ($list_names["last_name"] == 'all') {
-        // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-        $personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
-            FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_lastname, pers_prefix";
-
-        // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-        $count_qry = "SELECT pers_lastname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_lastname, pers_prefix";
-    }
-}
-
-// *** Add limit to query (results per page) ***
-if ($list_names["max_names"] != '999') {
-    $personqry .= " LIMIT " . $list_names["item"] . "," . $list_names["max_names"];
-}
-$person = $dbh->query($personqry);
-while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
-    if ($personDb->pers_lastname == '') {
-        $personDb->pers_lastname = '...';
-    }
-    $freq_last_names[] = $personDb->pers_lastname;
-    $freq_pers_prefix[] = $personDb->pers_prefix;
-    $freq_count_last_names[] = $personDb->count_last_names;
-    if ($personDb->count_last_names > $number_high) {
-        $number_high = $personDb->count_last_names;
-    }
-}
-if (isset($freq_last_names)) {
-    $row = ceil(count($freq_last_names) / $list_names["max_cols"]);
-}
-
-// *** Total number of persons for multiple pages ***
-$result = $dbh->query($count_qry);
-$count_persons = $result->rowCount();
-
-// *** If number of displayed surnames is "ALL" change value into number of surnames ***
-$nr_persons = $list_names["max_names"];
-if ($nr_persons == 'ALL') {
-    $nr_persons = $count_persons;
-}
-
-if ($humo_option["url_rewrite"] == "j") {
-    $url = $uri_path . 'list_names/' . $tree_id . '/' . $list_names["last_name"];
-} else {
-    $url = 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $list_names["last_name"];
-}
-
-
-//*** Show number of persons and pages ***
-$show_line_pages = false;
-// *** Check for search results ***
-if ($person->rowCount() > 0) {
-    if ($humo_option["url_rewrite"] == "j") {
-        $uri_path_string = $uri_path . 'list_names/' . $tree_id . '/' . $list_names["last_name"] . '?';
-    } else {
-        $uri_path_string = 'index.php?page=list_names&amp;last_name=' . $list_names["last_name"] . '&amp;';
-    }
-
-    // "<="
-    $list_names["previous_link"] = '';
-    $list_names["previous_status"] = '';
-    if ($list_names["start"] > 1) {
-        $show_line_pages = true;
-        $calculated = ($list_names["start"] - 2) * $nr_persons;
-        $list_names["previous_link"] = $uri_path_string . "start=" . ($list_names["start"] - 20) . "&amp;item=" . $calculated;
-    }
-    if ($list_names["start"] <= 0) {
-        $list_names["start"] = 1;
-    }
-    if ($list_names["start"] == '1') {
-        $list_names["previous_status"] = 'disabled';
-    }
-
-    // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
-    for ($i = $list_names["start"]; $i <= $list_names["start"] + 19; $i++) {
-        $calculated = ($i - 1) * $nr_persons;
-        if ($calculated < $count_persons) {
-            $list_names["page_nr"][] = $i;
-            if ($list_names["item"] == $calculated) {
-                $list_names["page_link"][$i] = '';
-                $list_names["page_status"][$i] = 'active';
-            } else {
-                $show_line_pages = true;
-                $list_names["page_link"][$i] = $uri_path_string . "start=" . $list_names["start"] . "&amp;item=" . $calculated;
-                $list_names["page_status"][$i] = '';
-            }
-        }
-    }
-
-    // "=>"
-    $list_names["next_link"] = '';
-    $list_names["next_status"] = '';
-    $calculated = ($i - 1) * $nr_persons;
-    if ($calculated < $count_persons) {
-        $show_line_pages = true;
-        $list_names["next_link"] = $uri_path_string . "start=" . $i . "&amp;item=" . $calculated;
-    } else {
-        $list_names["next_status"] = 'disabled';
-    }
-}
-?>
-
 <!-- <h1 class="standard_header"><?= __('Frequency of Surnames'); ?></h1> -->
 
 <!-- Show line of first character last names -->
@@ -155,6 +18,13 @@ if ($person->rowCount() > 0) {
 </div>
 
 <!-- Show options line -->
+<?php
+if ($humo_option["url_rewrite"] == "j") {
+    $url = $uri_path . 'list_names/' . $tree_id . '/' . $list_names["last_name"];
+} else {
+    $url = 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $list_names["last_name"];
+}
+?>
 <form method="POST" action="<?= $url; ?>" style="display:inline;" id="frqnames">
     <div class="row mb-3 me-1 mt-3">
         <div class="col-sm-3"></div>
@@ -182,14 +52,17 @@ if ($person->rowCount() > 0) {
     </div>
 </form>
 
-<?php if ($show_line_pages) { ?>
+<?php if ($list_names['show_pagination']) { ?>
     <div style="text-align:center">
         <?php $data = $list_names; ?>
         <?php include __DIR__ . '/partial/pagination.php'; ?>
     </div>
 <?php } ?>
 
-<?php $col_width = ((round(100 / $list_names["max_cols"])) - 6) . "%"; ?>
+<?php
+$col_width = ((round(100 / $list_names["max_cols"])) - 6) . "%";
+$path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+?>
 <table class="table table-sm nametbl">
     <thead class="table-primary">
         <tr>
@@ -202,44 +75,18 @@ if ($person->rowCount() > 0) {
         </tr>
     </thead>
 
-    <?php if (isset($row)) { ?>
-        <?php for ($i = 0; $i < $row; $i++) { ?>
+    <?php if (isset($list_names['row'])) { ?>
+        <?php for ($i = 0; $i < $list_names['row']; $i++) { ?>
             <tr>
                 <?php
                 // *** Show names in columns and rows ***
                 for ($n = 0; $n < $list_names["max_cols"]; $n++) {
-                    $nr = $i + ($row * $n);
-                    $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
-
-                    if (isset($freq_last_names[$nr])) {
-                        $top_pers_lastname = '';
-                        if ($freq_pers_prefix[$nr]) {
-                            $top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
-                        }
-                        $top_pers_lastname .= $freq_last_names[$nr];
-
-                        $pers_prefix = '';
-                        if ($user['group_kindindex'] == "j") {
-                            $pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
-                        } else {
-                            $top_pers_lastname = $freq_last_names[$nr];
-                            if ($freq_pers_prefix[$nr]) {
-                                $top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
-                            }
-                            $pers_lastname = str_replace("&", "|", $freq_last_names[$nr]);
-
-                            if ($freq_pers_prefix[$nr]) {
-                                $pers_prefix = '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
-                            } else {
-                                $pers_prefix = '&amp;pers_prefix=EMPTY';
-                            }
-                        }
-                    }
+                    $nr = $i + ($list_names['row'] * $n);
                 ?>
                     <td class="namelst">
-                        <?php if (isset($freq_last_names[$nr])) { ?>
-                            <a href="<?= $path_tmp; ?>pers_lastname=<?= $pers_lastname; ?><?= $pers_prefix; ?>&amp;part_lastname=equals">
-                                <?= $top_pers_lastname; ?>
+                        <?php if (isset($list_names['link_name'][$nr])) { ?>
+                            <a href="<?= $path_tmp; ?>pers_lastname=<?= $list_names['link_name'][$nr]; ?>&amp;part_lastname=equals">
+                                <?= $list_names['show_name'][$nr]; ?>
                             </a>
                         <?php } else { ?>
                             -
@@ -247,7 +94,7 @@ if ($person->rowCount() > 0) {
                     </td>
 
                     <td class="namenr" style="text-align:center">
-                        <?= isset($freq_last_names[$nr]) ? $freq_count_last_names[$nr] : '-'; ?>
+                        <?= isset($list_names['show_name'][$nr]) ? $list_names['freq_count_last_names'][$nr] : '-'; ?>
                     </td>
                 <?php } ?>
             </tr>
@@ -259,7 +106,7 @@ if ($person->rowCount() > 0) {
 <script>
     var tbl = document.getElementsByClassName("nametbl")[0];
     var rws = tbl.rows;
-    var baseperc = <?= $number_high; ?>;
+    var baseperc = <?= $list_names['number_high']; ?>;
     for (var i = 0; i < rws.length; i++) {
         var tbs = rws[i].getElementsByClassName("namenr");
         var nms = rws[i].getElementsByClassName("namelst");

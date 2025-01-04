@@ -51,6 +51,7 @@ class ShowMedia
             }
 
             // *** Standard connected media by person and family ***
+            // TODO: show these items seperately: picture_birth, picture_death, picture_marriage, picture_burial etc.
             $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
                 AND event_connect_kind='" . safe_text_db($event_connect_kind) . "'
                 AND event_connect_id='" . safe_text_db($event_connect_id) . "'

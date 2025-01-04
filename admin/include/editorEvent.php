@@ -117,7 +117,6 @@ class EditorEvent
         $showMedia = new showMedia();
 
         $text = '';
-
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
             $picture_array = array();
             // *** Picture list for selecting pictures ***

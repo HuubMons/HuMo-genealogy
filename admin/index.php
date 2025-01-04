@@ -68,33 +68,18 @@ function admin_custom_autoload($class_name)
 
     // ../languages/languageCls.php
 
-    /*
-    // file_exists is slow!
-    // *** At this moment only a few classes are autoloaded. Under construction ***
-    $classes = array(
-        'LanguageCls',
-        'DbFunctions', 'ProcessLinks', 'PersonCls',
-        'Editor_cls', 'EditorEvent', 'CalculateDates', 'GedcomCls', 'UpdateCls'
-    );
-    // If all classes are autoloading, array check of classes will be removed.
-    if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
-        $dirs = array('controller', 'models', 'include', '../include', '../languages');
-        foreach ($dirs as $dir) {
-            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
-            if (file_exists($file)) {
-                require $file;
-                break;
-            }
-        }
-    }
-    */
-
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $include = array(
-        'DbFunctions', 'ProcessLinks',  'PersonCls', 'CalculateDates'
+        'DbFunctions',
+        'ProcessLinks',
+        'PersonCls',
+        'CalculateDates'
     );
     $admin_include = array(
-        'Editor_cls', 'EditorEvent', 'GedcomCls', 'UpdateCls'
+        'Editor_cls',
+        'EditorEvent',
+        'GedcomCls',
+        'UpdateCls'
     );
 
     if ($class_name == 'LanguageCls') {

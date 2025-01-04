@@ -9,11 +9,11 @@ function asciihtml($text){
     $text = str_replace('&&', '&amp;', $text); //&
     $text = str_replace(chr(4), '<p>', $text); //[Ctrl]-[Enter]
     $text = str_replace(chr(39),'&#039;', $text); //'
-    $text = str_replace(chr(128),'&Ccedil;', $text); //�
-    $text = str_replace(chr(129),'&uuml;', $text); //�
-    $text = str_replace(chr(130),'&eacute;', $text); //�
-    $text = str_replace(chr(131),'&acirc;', $text); //�
-    $text = str_replace(chr(132),'&auml;', $text); //�
+    $text = str_replace(chr(128),'&Ccedil;', $text); //Ç
+    $text = str_replace(chr(129),'&uuml;', $text); //ü
+    $text = str_replace(chr(130),'&eacute;', $text); //é
+    $text = str_replace(chr(131),'&acirc;', $text); //â
+    $text = str_replace(chr(132),'&auml;', $text); //ä
     $text = str_replace(chr(133),'&agrave;', $text); //à
     $text = str_replace(chr(134),'&aring;', $text); //�
     $text = str_replace(chr(135),'&ccedil;', $text); //�

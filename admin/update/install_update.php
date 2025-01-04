@@ -264,6 +264,11 @@ if (isset($_GET['re_install'])) {
                         rename('update/humo-gen_update', 'update/humo-gen_update_temp');
                         rename('update/humo-gen_update_temp/HuMo-genealogy-master', 'update/humo-gen_update');
                         rmdir('update/humo-gen_update_temp');
+                    } elseif (is_dir('update/humo-gen_update/HuMo-genealogy-beta_version')) {
+                        // *** Jan. 2025: Beta version from Github ***
+                        rename('update/humo-gen_update', 'update/humo-gen_update_temp');
+                        rename('update/humo-gen_update_temp/HuMo-genealogy-beta_version', 'update/humo-gen_update');
+                        rmdir('update/humo-gen_update_temp');
                     }
 
                     echo '<br>' . __('Step 2)') . ' <a href="index.php?page=install_update&auto=1&step=2&update_check=1';

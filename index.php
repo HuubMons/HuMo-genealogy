@@ -61,27 +61,14 @@ function custom_autoload($class_name)
 
     // languages/languageCls.php
 
-    /*
-    // file_exists is slow if file isn't found!
-    // *** At this moment only a few classes are autoloaded. Under construction ***
-    $classes = array(
-        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'LanguageCls', 'Config'
-    );
-    // If all classes are autoloading, array check of classes will be removed.
-    if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
-        $dirs = array('app/controller', 'app/model', 'include', 'languages');
-        foreach ($dirs as $dir) {
-            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
-            if (file_exists($file)) {
-                require $file;
-                break;
-            }
-        }
-    }
-    */
-
     $include = array(
-        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'Config'
+        'CalculateDates',
+        'DbFunctions',
+        'MarriageCls',
+        'PersonCls',
+        'ProcessLinks',
+        'ValidateDate',
+        'Config'
     );
 
     if ($class_name == 'LanguageCls') {
@@ -207,8 +194,25 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 // *** To be used to show links in several pages ***
 $link_cls = new ProcessLinks($uri_path);
 
-// Dec. 2024: general config class. Usage: $controllerObj = new AddressController($config);
-$config = new Config($dbh, $db_functions, $tree_id, $user, $humo_option);
+/**
+ * General config array.
+ * In function: use $this->config['dbh'], $this->config['db_functions'], etc, or use:
+ * $dbh = $this->config['dbh'];
+ * $db_functions = $this->config['db_functions'];
+ * $tree_id = $this->config['tree_id'];
+ * $user = $this->config['user'];
+ * $humo_option = $this->config['humo_option'];
+ */
+$config = array(
+    "dbh" => $dbh,
+    "db_functions" => $db_functions,
+    "tree_id" => $tree_id,
+    "user" => $user,
+    "humo_option" => $humo_option
+);
+// *** General config class. Usage: $controllerObj = new AddressController($config); ***
+// *** Allready tested in sourceController.php & photoalbumController.php ***
+//$config = new Config($dbh, $db_functions, $tree_id, $user, $humo_option);
 
 if ($page == 'address') {
     // TODO refactor
@@ -283,12 +287,12 @@ if ($page == 'address') {
     $controllerObj = new ListPlacesFamiliesController();
     $data = $controllerObj->list_places_names($tree_id);
 } elseif ($page == 'list_names') {
-    $controllerObj = new ListNamesController();
+    $controllerObj = new ListNamesController($config);
     $last_name = '';
     if (isset($index['last_name'])) {
         $last_name = $index['last_name'];
     }
-    $list_names = $controllerObj->list_names($dbh, $tree_id, $user, $last_name);
+    $list_names = $controllerObj->list_names($last_name, $uri_path);
 } elseif ($page == 'login') {
     //
 } elseif ($page == 'mailform') {

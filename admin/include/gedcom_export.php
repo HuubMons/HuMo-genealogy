@@ -4,7 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
 // Needed to process witnesses etc.
 if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
