@@ -213,8 +213,8 @@ class MapsModel
                 WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
             */
             // See problems with death / burial. Also change this birth/ baptise query.
-            $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
-                ON humo_location.location_location = humo_persons.pers_birth_place
+            $persoon = $dbh->query("SELECT * FROM humo_location
+                LEFT JOIN humo_persons ON humo_location.location_location = humo_persons.pers_birth_place
                 WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "' " . $namesearch_string . " ORDER BY location_location");
         } elseif ($maps['display_death']) {
             /*
@@ -224,8 +224,8 @@ class MapsModel
                 WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
             */
 
-            $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
-                ON humo_location.location_location = humo_persons.pers_death_place
+            $persoon = $dbh->query("SELECT * FROM humo_location
+                LEFT JOIN humo_persons ON humo_location.location_location = humo_persons.pers_death_place
                 WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "' " . $namesearch_string . " ORDER BY location_location");
         }
         while ($personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
@@ -263,7 +263,7 @@ class MapsModel
             $person_cls = new PersonCls($personDb);
             $name = $person_cls->person_name($personDb);
 
-            $key = array_search($place, $maps['location']);
+            $key = array_search(htmlspecialchars($place), $maps['location']);
             if (isset($key) && $key > 0) {
                 // *** Check the number of lines of the text_array ***
                 $maps['location_text_count'][$key]++;

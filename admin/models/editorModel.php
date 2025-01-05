@@ -1780,9 +1780,8 @@ class EditorModel
     // *** Some functions to add and remove a fams number from a person (if marriage is changed) ***
     function fams_add($personnr, $familynr): void
     {
-        global $dbh, $db_functions;
         // *** Add marriage to person records ***
-        $person_db = $db_functions->get_person($personnr);
+        $person_db = $this->db_functions->get_person($personnr);
         if ($person_db->pers_gedcomnumber) {
             $fams = $person_db->pers_fams;
             if ($fams) {
@@ -1794,14 +1793,13 @@ class EditorModel
                 pers_fams='" . $fams . "',
                 pers_changed_user_id='" . $this->userid . "'
                 WHERE pers_id='" . $person_db->pers_id . "'";
-            $dbh->query($sql);
+            $this->dbh->query($sql);
         }
     }
 
     function fams_remove($personnr, $familynr): void
     {
-        global $dbh, $db_functions;
-        $person_db = $db_functions->get_person($personnr);
+        $person_db = $this->db_functions->get_person($personnr);
         if ($person_db->pers_gedcomnumber) {
             $fams = explode(";", $person_db->pers_fams);
             foreach ($fams as $key => $value) {
@@ -1818,7 +1816,7 @@ class EditorModel
                 pers_fams='" . $fams3 . "',
                 pers_changed_user_id='" . $this->userid . "'
                 WHERE pers_id='" . $person_db->pers_id . "'";
-            $dbh->query($sql);
+            $this->dbh->query($sql);
         }
     }
 
@@ -1966,12 +1964,12 @@ class EditorModel
 
     private function cache_latest_changes($force_update = false)
     {
-        global $dbh, $tree_id, $pers_id;
+        global $tree_id, $pers_id;
         $cache = '';
         $cache_count = 0;
         $cache_exists = false;
         $cache_check = false; // *** Use cache for large family trees ***
-        $cacheqry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='cache_latest_changes' AND setting_tree_id='" . $tree_id . "'");
+        $cacheqry = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='cache_latest_changes' AND setting_tree_id='" . $tree_id . "'");
         $cacheDb = $cacheqry->fetch(PDO::FETCH_OBJ);
         if ($cacheDb) {
             $cache_exists = true;
@@ -2010,7 +2008,7 @@ class EditorModel
                 UNION (SELECT pers_id, pers_new_datetime AS changed_datetime
                 FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL)
                 ORDER BY changed_datetime DESC LIMIT 0,15";
-            $person_result = $dbh->query($person_qry);
+            $person_result = $this->dbh->query($person_qry);
             $count_latest_changes = $person_result->rowCount();
             while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
                 // *** Cache: only use cache if there are > 5.000 persons in database ***
@@ -2032,15 +2030,15 @@ class EditorModel
 
                     // Because of bug found in jan. 2024, remove value from database and insert again.
                     $sql = "DELETE FROM humo_settings WHERE setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_variable='cache_latest_changes'";
-                    $dbh->query($sql);
+                    $this->dbh->query($sql);
 
                     $sql = "INSERT INTO humo_settings SET
                         setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $dbh->query($sql);
+                    $this->dbh->query($sql);
                 } else {
                     $sql = "INSERT INTO humo_settings SET
                     setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $dbh->query($sql);
+                    $this->dbh->query($sql);
                 }
             }
         }

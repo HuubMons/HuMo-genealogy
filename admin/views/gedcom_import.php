@@ -77,48 +77,20 @@ if (!defined('ADMIN_PAGE')) {
             <div class="col-md-auto">
                 <!-- Form to remove GEDCOM files -->
                 <?php if (isset($_POST['remove_gedcom_files'])) { ?>
-                    <?= __('Are you sure to remove GEDCOM files?'); ?>
-                    <form name="remove_gedcomfiles" action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
-                        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-                        <input type="hidden" name="remove_gedcom_files2" value="<?= $_POST['remove_gedcom_files']; ?>">
-                        <input type="submit" name="remove_confirm" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                        <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
-                    </form>
-                <?php
-                } elseif (isset($_POST['remove_gedcom_files2']) && isset($_POST['remove_confirm'])) {
-                    // *** Remove old GEDCOM files ***
-                    $dh  = opendir($trees['gedcom_directory']);
-                    while (false !== ($filename = readdir($dh))) {
-                        if (strtolower(substr($filename, -3)) === "ged") {
-                            if ($_POST['remove_gedcom_files2'] == 'gedcom_files_all') {
-                                $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
-                            } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_month') {
-                                if (time() - filemtime($trees['gedcom_directory'] . '/' . $filename) >= 60 * 60 * 24 * 30) { // 30 days
-                                    $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
-                                }
-                            } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_year') {
-                                if (time() - filemtime($trees['gedcom_directory'] . '/' . $filename) >= 60 * 60 * 24 * 365) { // 365 days
-                                    $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
-                                }
-                            }
-                        }
-                    }
-                    // *** Order GEDCOM files by alfabet ***
-                    if (isset($filenames)) {
-                        usort($filenames, 'strnatcasecmp');
-                    }
-                    echo '<br>';
-                    $counter = count($filenames);
-                    for ($i = 0; $i < $counter; $i++) {
-                        if (strpos($filenames[$i], 'HuMo-genealogy test gedcomfile.ged') > 1) {
-                            echo '<b>' . $filenames[$i] . '</b><br>';
-                        } else {
-                            echo $filenames[$i] . ' ' . _('GEDCOM file is REMOVED.') . '<br>';
-                            unlink($filenames[$i]);
-                        }
-                    }
-                } else {
-                ?>
+                    <div class="alert alert-warning" role="alert">
+                        <?= __('Are you sure to remove GEDCOM files?'); ?>
+                        <form name="remove_gedcomfiles" action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
+                            <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+                            <input type="hidden" name="remove_gedcom_files2" value="<?= $_POST['remove_gedcom_files']; ?>">
+                            <input type="submit" name="remove_confirm" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
+                            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                        </form>
+                    </div>
+                <?php } elseif (isset($_POST['remove_gedcom_files2']) && isset($_POST['remove_confirm'])) { ?>
+                    <?php for ($i = 0; $i < count($trees['removed_filenames']); $i++) { ?>
+                        <?= $trees['removed_filenames'][$i]; ?> <?= __('GEDCOM file is REMOVED.'); ?><br>
+                    <?php } ?>
+                <?php } else { ?>
                     <?= __('If needed remove GEDCOM files (except test GEDCOM file):'); ?>
                     <form name="remove_gedcomfiles" action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
                         <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
@@ -146,8 +118,6 @@ if (!defined('ADMIN_PAGE')) {
     </div>
 
     <?php
-    $_SESSION['debug_person'] = 1;
-
     $dh  = opendir($trees['gedcom_directory']);
     while (false !== ($filename = readdir($dh))) {
         if (strtolower(substr($filename, -3)) === "ged") {
@@ -159,7 +129,8 @@ if (!defined('ADMIN_PAGE')) {
         usort($filenames, 'strnatcasecmp');
     }
 
-    $result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
+    // *** Find last GEDCOM file that was used for this tree ***
+    $result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_id='" . $trees['tree_id'] . "'");
     $treegedDb = $result->fetch();
     ?>
     <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom" style="display : inline">
@@ -661,7 +632,7 @@ elseif ($trees['step'] == '3') {
         $new_gednum["N"] = $largest_text_ged;
     }
 
-    $gedcom_cls = new GedcomCls;
+    $gedcom_cls = new GedcomCls($dbh, $tree_id, $tree_prefix, $humo_option);
 
     require(__DIR__ . "/../include/prefixes.php");
     $loop2 = count($pers_prefix);
@@ -758,7 +729,7 @@ elseif ($trees['step'] == '3') {
                     //echo 'SOURCE: '.$source_gedcomnr.'!'.$source_high.' '.$_SESSION['new_source_gedcomnr'].'<br>';
                 }
 
-                $total++;
+                $total++; // Counts total number of lines.
             }
             $_SESSION['save_total'] = $total;
             fclose($handle);
@@ -769,12 +740,23 @@ elseif ($trees['step'] == '3') {
         // Javascript for initial display of the progress bar and information (or after timeout)
         $percent = $perc . "%";
         if ($perc == 0) {
-            $percent = "0.5%";
-        } // show at least some green
+            $percent = "0.5%"; // show at least some green
+        }
         ?>
         <script>
-            document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $total; ?> <?= __('lines processed'); ?> (<?= $perc; ?>%);?>";
+            //document.getElementById("progress").innerHTML="<div style=\"width:<?= $percent; ?>;background-color:#00CC00;\">&nbsp;</div>";
+            document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $total; ?> <?= __('lines processed'); ?> (<?= $perc; ?>%)";
         </script>
+
+        <!-- Apr. 2024 New bootstrap bar -->
+        <!-- $('.progress').css('width', count + "%"); -->
+        <script>
+            var bar = document.querySelector(".progress-bar");
+            bar.style.width = <?= $perc; ?> + "%";
+            //bar.style.width = `${perc}%`;
+            bar.innerText = <?= $perc; ?> + "%";
+        </script>
+
         <?php
         // This is for the buffer achieve the minimum size in order to flush data
         echo str_repeat(' ', 1024 * 64);
@@ -865,23 +847,6 @@ elseif ($trees['step'] == '3') {
     if ($commit_records > 1) {
         $dbh->beginTransaction();
     }
-
-
-    /* Insert a temporary line into database to get latest id.
-    *  Must be done because table can be empty when reloading GEDCOM file...
-    *  Even in an empty table, latest id can be a high number...
-    */
-    $dbh->query("INSERT INTO humo_events SET event_tree_id='" . $trees['tree_id'] . "'");
-    $calculated_event_id = $dbh->lastInsertId();
-    $dbh->query("DELETE FROM humo_events WHERE event_id='" . $calculated_event_id . "'");
-
-    $dbh->query("INSERT INTO humo_addresses SET address_tree_id='" . $trees['tree_id'] . "'");
-    $calculated_address_id = $dbh->lastInsertId();
-    $dbh->query("DELETE FROM humo_addresses WHERE address_id='" . $calculated_address_id . "'");
-
-    $dbh->query("INSERT INTO humo_connections SET connect_tree_id='" . $trees['tree_id'] . "'");
-    $calculated_connect_id = $dbh->lastInsertId();
-    $dbh->query("DELETE FROM humo_connections WHERE connect_id='" . $calculated_connect_id . "'");
 
     // *****************
     // *** Read file ***
@@ -1108,10 +1073,10 @@ elseif ($trees['step'] == '3') {
                 $_SESSION['save_perc'] = $perc;
                 $percent = $perc . "%";
 
-
                 ob_start();
         ?>
                 <script>
+                    //document.getElementById("progress").innerHTML = "<div style=\"width:<?= $percent; ?>;background-color:#00CC00;\">&nbsp;</div>";
                     document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $total; ?> <?= __('lines processed'); ?>";
                 </script>
 
@@ -1250,6 +1215,7 @@ elseif ($trees['step'] == '3') {
                     <th><?= __('text'); ?></th>
                 </tr>
                 <?php
+                $not_processed = $gedcom_cls->get_not_processed();
                 if (isset($not_processed)) {
                     $counter = count($not_processed);
                     for ($i = 0; $i < $counter; $i++) {
@@ -1272,6 +1238,7 @@ elseif ($trees['step'] == '3') {
     <?php
     }
     if (!isset($_POST['show_gedcomnumbers'])) {
+        ob_start();
     ?>
         <script>
             document.getElementById("information").innerHTML = "<?= $total; ?> / <?= $total; ?> <?= __('lines processed'); ?>";
@@ -1367,15 +1334,26 @@ elseif ($trees['step'] == '4') {
         $perc = 0;
         if ($nr_records > 0) {
             ob_start();
+
             // Javascript for initial display of the progress bar and information (or after timeout)
             $percent = $perc . "%";
             if ($perc == 0) {
-                $percent = "0.5%";
-            } // show at least some green 
+                $percent = "0.5%"; // show at least some green
+            }
             echo '<script>';
             //echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
             echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $perc . '%).";';
             echo '</script>';
+
+    ?>
+            <!-- Apr. 2024 New bootstrap bar -->
+            <script>
+                var bar = document.querySelector(".progress-bar");
+                bar.style.width = <?= $perc; ?> + "%";
+                bar.innerText = <?= $perc; ?> + "%";
+            </script>
+            <?php
+
             // This is for the buffer achieve the minimum size in order to flush data
             echo str_repeat(' ', 1024 * 64);
             // Send output to browser immediately
@@ -1562,8 +1540,10 @@ elseif ($trees['step'] == '4') {
                     $percent = $perc . "%";
 
                     // Javascript for updating the progress bar and information
-    ?>
+                    ob_start();
+            ?>
                     <script>
+                        //document.getElementById("progress").innerHTML = "<div style=\"width:<?= $percent; ?>;background-color:#00CC00;\">&nbsp;</div>"; 
                         document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $nr_records; ?> <?= __('lines processed'); ?> <?= __('persons'); ?>";
                     </script>
 
@@ -1574,7 +1554,7 @@ elseif ($trees['step'] == '4') {
                         bar.innerText = <?= $perc; ?> + "%";
                     </script>
 
-        <?php
+                <?php
                     // This is for the buffer achieve the minimum size in order to flush data
                     echo str_repeat(' ', 1024 * 64);
 
@@ -1792,10 +1772,21 @@ elseif ($trees['step'] == '4') {
                     $percent = $perc . "%";
 
                     // Javascript for updating the progress bar and information
+                    ob_start();
+
                     echo '<script>';
-                    echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
+                    //echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
                     echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $percent . ')' . ' ' . __('families') . '";';
                     echo '</script>';
+
+                    ?>
+                    <!-- Apr. 2024 New bootstrap bar -->
+                    <script>
+                        var bar = document.querySelector(".progress-bar");
+                        bar.style.width = <?= $perc; ?> + "%";
+                        bar.innerText = <?= $perc; ?> + "%";
+                    </script>
+        <?php
 
                     // This is for the buffer achieve the minimum size in order to flush data
                     echo str_repeat(' ', 1024 * 64);
@@ -1825,8 +1816,8 @@ elseif ($trees['step'] == '4') {
             // *** Save data in database ***
             $dbh->commit();
         }
+        ob_start();
         ?>
-
         <script>
             document.getElementById("information").innerHTML = "<?= $nr_records; ?> / <?= $nr_records; ?> <?= __('lines processed'); ?>";
         </script>
@@ -2053,27 +2044,6 @@ elseif ($trees['step'] == '4') {
 
     // *** Process Aldfaer adoption children: remove uneccessary added relations ***
     if ($gen_program == 'ALDFAER') {
-        function fams_remove($personnr, $familynr)
-        {
-            global $dbh, $trees;
-            $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $personnr . "'";
-            $person_result = $dbh->query($person_qry);
-            $person_db = $person_result->fetch(PDO::FETCH_OBJ);
-            if ($person_db->pers_gedcomnumber) {
-                $fams = explode(";", $person_db->pers_fams);
-                foreach ($fams as $key => $value) {
-                    if ($fams[$key] != $familynr) {
-                        $fams2[] = $fams[$key];
-                    }
-                }
-                $fams3 = '';
-                if (isset($fams2[0])) {
-                    $fams3 = implode(";", $fams2);
-                }
-                $dbh->query("UPDATE humo_persons SET pers_fams='" . $fams3 . "' WHERE pers_id='" . $person_db->pers_id . "'");
-            }
-        }
-
         $famc_adoptive_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $trees['tree_id'] . "' AND event_kind='adoption_by_person'");
         while ($famc_adoptiveDb = $famc_adoptive_qry->fetch(PDO::FETCH_OBJ)) {
             $fam = $famc_adoptiveDb->event_event;
@@ -2085,12 +2055,29 @@ elseif ($trees['step'] == '4') {
 
             if ($new_nr->fam_man) {
                 $dbh->query("UPDATE humo_events SET event_event='" . $new_nr->fam_man . "' WHERE event_id='" . $famc_adoptiveDb->event_id . "'");
-                fams_remove($new_nr->fam_man, $fam);
             }
             unset($fams2);
             if ($new_nr->fam_woman) {
                 $dbh->query("UPDATE humo_events SET event_event='" . $new_nr->fam_woman . "' WHERE event_id='" . $famc_adoptiveDb->event_id . "'");
-                fams_remove($new_nr->fam_woman, $fam);
+            }
+
+            if ($new_nr->fam_man || $new_nr->fam_woman) {
+                $person_qry = "SELECT pers_id, pers_gedcomnumber, pers_fams FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $personnr . "'";
+                $person_result = $dbh->query($person_qry);
+                $person_db = $person_result->fetch(PDO::FETCH_OBJ);
+                if ($person_db->pers_gedcomnumber) {
+                    $fams = explode(";", $person_db->pers_fams);
+                    foreach ($fams as $key => $value) {
+                        if ($fams[$key] != $familynr) {
+                            $fams2[] = $fams[$key];
+                        }
+                    }
+                    $fams3 = '';
+                    if (isset($fams2[0])) {
+                        $fams3 = implode(";", $fams2);
+                    }
+                    $dbh->query("UPDATE humo_persons SET pers_fams='" . $fams3 . "' WHERE pers_id='" . $person_db->pers_id . "'");
+                }
             }
 
             $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . $trees['tree_id'] . "' AND fam_gedcomnumber='" . $fam . "'");
@@ -2140,11 +2127,7 @@ elseif ($trees['step'] == '4') {
     $families = $family_qry->rowCount();
 
     $tree_date = date("Y-m-d H:i");
-    $sql = "UPDATE humo_trees SET
-        tree_persons='" . $persons . "',
-        tree_families='" . $families . "',
-        tree_date='" . $tree_date . "'
-        WHERE tree_prefix='" . $tree_prefix . "'";
+    $sql = "UPDATE humo_trees SET tree_persons='" . $persons . "', tree_families='" . $families . "', tree_date='" . $tree_date . "' WHERE tree_prefix='" . $tree_prefix . "'";
     $dbh->query($sql);
 
     // *** Remove cache ***
@@ -2161,4 +2144,4 @@ elseif ($trees['step'] == '4') {
     // *** Reset selected person in editor ***
     unset($_SESSION['admin_pers_gedcomnumber']);
     unset($_SESSION['admin_fam_gedcomnumber']);
-} // end of read GEDCOM (step 4)
+}

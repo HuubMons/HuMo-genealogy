@@ -64,7 +64,6 @@ class EditorEvent
     function hide_show_start($data_listDb, $alternative_text = '')
     {
         // *** Use hideshow to show and hide the editor lines ***
-        $text = '';
         $hideshow = '9000' . $data_listDb->event_id;
         $display = ' display:none;';
         $event_event = $data_listDb->event_event;
@@ -84,22 +83,23 @@ class EditorEvent
         }
 
         if ($event_event || $data_listDb->event_text || $data_listDb->event_kind == 'picture') {
-            echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $event_event;
-            if ($data_listDb->event_text) {
-                echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-            }
-            echo '</span>';
+?>
+            <span class="hideshowlink" onclick="hideShow(<?= $hideshow; ?>);"><?= $event_event; ?>
+                <?php if ($data_listDb->event_text) { ?>
+                    <img src="images/text.png" height="16" alt="<?= __('text'); ?>">
+                <?php } ?>
+            </span>
 
-            // *** Could be used to connect a picture in a text field (Geneanet doesnt have constant GEDCOM numbers or an own text field) ***
-            if ($data_listDb->event_kind == 'picture') {
-                echo '&nbsp;<span style="font-size:smaller;">' . __('ID') . ': ' . $data_listDb->event_id . '</span>';
+            <!-- Could be used to connect a picture in a text field (Geneanet doesnt have constant GEDCOM numbers or an own text field) -->
+            <?php if ($data_listDb->event_kind == 'picture') { ?>
+                &nbsp;<span style="font-size:smaller;"><?= __('ID'); ?>: <?= $data_listDb->event_id; ?></span>
+            <?php
             }
 
             echo '<br>';
         }
 
         echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
-        return $text;
     }
 
     // *** Show events ***
@@ -268,7 +268,7 @@ class EditorEvent
         if ($event_kind == 'person') {
             //$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
             $link = 'event_person_link';
-?>
+            ?>
             <tr class="table_header_large" id="event_person_link">
                 <td><?= __('Events'); ?></td>
                 <td colspan="2">
