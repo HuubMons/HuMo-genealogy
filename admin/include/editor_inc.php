@@ -239,7 +239,7 @@ if (isset($_POST['marriage_event_add'])) {
 // *** Upload images ***
 if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
     include_once(__DIR__ . "/../include/media_inc.php");
-    include_once(__DIR__ . "/../include/showMedia.php");
+    include_once(__DIR__ . "/../../include/showMedia.php");
     $showMedia = new showMedia();
 
     // *** get path of pictures folder 
