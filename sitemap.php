@@ -53,8 +53,8 @@ foreach ($datasql as $dataDb) {
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($dataDb->tree_id, $hide_tree_array)) {
         // *** Get all family pages ***
-        $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families
-            WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
+        $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families 
+        WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
             //$person_cls = new PersonCls($personDb);
@@ -82,6 +82,7 @@ foreach ($datasql as $dataDb) {
             }
 
             if ($humo_option["url_rewrite"] == "j") {
+                //$person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
                 $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
             } else {
                 $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
@@ -121,6 +122,7 @@ foreach ($datasql as $dataDb) {
                     $uri_path = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['PHP_SELF'], 0, $position);
                 }
 
+                // TODO check these variables. A single person doesn't have a famc or fams.
                 $pers_family = '';
                 if ($personDb->pers_famc) {
                     $pers_family = $personDb->pers_famc;

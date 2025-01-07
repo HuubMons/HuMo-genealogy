@@ -61,7 +61,7 @@ class AdminSourceModel
             $this->source_id = $dbh->lastInsertId();
         }
 
-        // Remark: source_change in editor_inc.php (used to change sources in familyscreen).
+        // Remark: source_change in editorModel.php (used to change sources in familyscreen).
         if (isset($_POST['source_change2'])) {
             $sql = "UPDATE humo_sources SET
             source_status='" . $editor_cls->text_process($_POST['source_status']) . "',

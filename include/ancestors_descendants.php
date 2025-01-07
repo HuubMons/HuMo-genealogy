@@ -1,15 +1,7 @@
 <?php
 
 /*
- * Functions get_ancestors and get_descendants.
- * April 2015 Huub Mons: created a general ancestors - descendants functions script.
- * 
- * Jan. 2024: at this moment these scripts are only used in editor_inc.php to add a colour for ancestors/ descendants.
- * Sept. 2024: also used in maps script.
- * TODO: use these functions for multiple descendant/ ascendant scripts.
- */
-
-/* Function get_descendants
+/* Functions get_ancestors and get_descendants.
  * First version made by Yossi Beck.
  * $generation_number = generation number to process.
  * $nr_generations = maximum number of generations.
@@ -22,7 +14,13 @@
  *  children of child1:
  *  child1                  descendant[4]
  *  child2                  descendant[5]
+ *
+ * April 2015 Huub Mons: created a general ancestors - descendants functions script.
+ * Jan. 2024: at this moment these scripts are only used in editorModel.php to add a colour for ancestors/ descendants.
+ * Sept. 2024: also used in maps script.
+ * TODO: use these functions for multiple descendant/ ascendant scripts.
  */
+
 $generation_number = 0;
 $descendant_id = 0;
 function get_descendants($family_id, $main_person, $generation_number, $nr_generations)

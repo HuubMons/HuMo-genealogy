@@ -14,16 +14,20 @@ $path_prefix = '../';
 // *** These items are needed for adding and changing picture ***
 $phpself = 'index.php';
 $editor_cls = $editSource['editor_cls'];
+
 // *** Process queries (needed for picture ordering and delete) ***
-include_once(__DIR__ . "/../include/editor_inc.php");
+$editor_cls = new Editor_cls;
+$editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
+$editor['confirm'] = $editorModel->update_editor2();
+
 // TODO this picture remove confirm box is shown above the header.
-echo $confirm; // Confirm message to remove picture from source.
+$editor['confirm']; // Confirm message to remove picture from source.
 
 
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-// TODO check if code could be improved. Also in editor_inc.php line 233.
+// TODO check if code could be improved. Also in editorModel.php.
 // *** Show picture ***
 // *** get path of pictures folder 
 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");

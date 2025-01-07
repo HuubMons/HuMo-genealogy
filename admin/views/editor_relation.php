@@ -250,13 +250,6 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                 <input type="submit" name="fam_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
                 <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
             </div>
-        <?php
-        }
-
-        if ($confirm_relation) {
-        ?>
-            <!-- Show delete message -->
-            <?= $confirm_relation; ?>
         <?php } ?>
 
         <table class="table table-light">
@@ -1282,6 +1275,186 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                 });
             });
         </script>
-<?php
+    <?php
     }
+}
+
+// *** New function aug. 2021: Add partner or child ***
+function add_person($person_kind, $pers_sexe)
+{
+    global $page, $editor_cls, $field_place, $field_date;
+    global $familyDb, $marriage, $db_functions, $field_popup;
+
+    $pers_prefix = '';
+    $pers_lastname = '';
+
+    if ($person_kind == 'partner') {
+        $form = 5;
+        $form_name = 'form5';
+    } else {
+        // *** Add child to family ***
+        $form = 6;
+        $form_name = 'form6';
+
+        // *** Get default prefix and lastname ***
+        if ($familyDb->fam_man) {
+            $personDb = $db_functions->get_person($familyDb->fam_man);
+            $pers_prefix = $personDb->pers_prefix;
+            $pers_lastname = $personDb->pers_lastname;
+        }
+    }
+    ?>
+
+    <form method="POST" style="display: inline;" action="#marriage" name="<?= $form_name; ?>" id="<?= $form_name; ?>">
+        <?php if ($person_kind != 'partner') { ?>
+            <input type="hidden" name="child_connect" value="1">
+            <?php if (isset($familyDb->fam_children)) { ?>
+                <input type="hidden" name="children" value="<?= $familyDb->fam_children; ?>">
+            <?php } ?>
+            <!-- TODO check code. Both variables show the same value -->
+            <input type="hidden" name="family_id" value="<?= $familyDb->fam_gedcomnumber; ?>">
+            <input type="hidden" name="marriage_nr" value="<?= $marriage; ?>">
+        <?php } ?>
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <input type="hidden" name="pers_name_text" value="">
+        <input type="hidden" name="pers_birth_text" value="">
+        <input type="hidden" name="pers_bapt_text" value="">
+        <input type="hidden" name="pers_religion" value="">
+        <input type="hidden" name="pers_death_cause" value="">
+        <input type="hidden" name="pers_death_time" value="">
+        <input type="hidden" name="pers_death_age" value="">
+        <input type="hidden" name="pers_death_text" value="">
+        <input type="hidden" name="pers_buried_text" value="">
+        <input type="hidden" name="pers_cremation" value="">
+        <input type="hidden" name="person_text" value="">
+        <input type="hidden" name="pers_own_code" value="">
+
+        <div class="row m-2">
+            <div class="col-md-3"></div>
+            <div class="col-md-7">
+                <h2>
+                    <?= $person_kind == 'partner' ? __('Add relation') : __('Add child'); ?>
+                </h2>
+            </div>
+        </div>
+
+        <?= edit_firstname('pers_firstname', ''); ?>
+        <?= edit_prefix('pers_prefix', $pers_prefix); ?>
+        <?= edit_lastname('pers_lastname', $pers_lastname); ?>
+        <?= edit_patronymic('pers_patronym', ''); ?>
+        <?= edit_event_name('event_gedcom_new', 'event_event_name_new', ''); ?>
+        <?= edit_privacyfilter('pers_alive', 'alive'); ?>
+        <?= edit_sexe('pers_sexe', $pers_sexe); ?>
+
+        <!-- Birth -->
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-3"><?= ucfirst(__('born')); ?></div>
+        </div>
+        <div class="row mb-2">
+            <label for="pers_birth_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <div class="col-md-7">
+                <?php $editor_cls->date_show('', 'pers_birth_date', '', '', 'pers_birth_date_hebnight'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for="pers_birth_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <input type="text" name="pers_birth_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+        </div>
+        <!-- Birth time and stillborn option -->
+        <?php if ($person_kind == 'child') { ?>
+            <div class="row mb-2">
+                <label for="pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
+                <div class="col-md-2">
+                    <input type="text" name="pers_birth_time" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-5">
+                    <input type="checkbox" name="pers_stillborn" class="form-check-input"> <?= __('stillborn child'); ?>
+                </div>
+            </div>
+        <?php } else { ?>
+            <input type="hidden" name="pers_birth_time" value="">
+        <?php } ?>
+
+        <!-- Baptise -->
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-3"><?= ucfirst(__('baptised')); ?></div>
+        </div>
+        <div class="row mb-2">
+            <label for="pers_bapt_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <div class="col-md-7">
+                <?php $editor_cls->date_show('', 'pers_bapt_date', '', '', 'pers_bapt_date_hebnight'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for="pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <input type="text" name="pers_bapt_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Died -->
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-3"><?= ucfirst(__('died')); ?></div>
+        </div>
+        <div class="row mb-2">
+            <label for="pers_death_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <div class="col-md-7">
+                <?php $editor_cls->date_show('', 'pers_death_date', '', '', 'pers_death_date_hebnight'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for="pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <input type="text" name="pers_death_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buried -->
+        <div class="row mb-1 p-2 bg-primary-subtle">
+            <div class="col-md-3"><?= ucfirst(__('buried')); ?></div>
+        </div>
+        <div class="row mb-2">
+            <label for="pers_buried_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
+            <div class="col-md-7">
+                <?php $editor_cls->date_show('', 'pers_buried_date', '', '', 'pers_buried_date_hebnight'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for="pers_buried_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <input type="text" name="pers_buried_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profession -->
+        <input type="hidden" name="event_date_profession_prefix" value=''>
+        <input type="hidden" name="event_date_profession" value=''>
+        <?= edit_profession('event_profession', ''); ?>
+
+        <div class="row mb-2">
+            <div class="col-md-3"></div>
+            <div class="col-md-7">
+                <?php if ($person_kind == 'partner') { ?>
+                    <input type="submit" name="relation_add" value="<?= __('Add relation'); ?>" class="btn btn-sm btn-success">
+                <?php } else { ?>
+                    <input type="submit" name="person_add" value="<?= __('Add child'); ?>" class="btn btn-sm btn-success">
+                <?php } ?>
+            </div>
+        </div>
+    </form>
+<?php
 }

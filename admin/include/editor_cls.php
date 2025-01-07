@@ -327,4 +327,4 @@ class Editor_cls
         }
         return ($text);
     }
-} // *** End of editor class ***
+}

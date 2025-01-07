@@ -759,7 +759,9 @@ if ($popup == false) {
             $editor = $controllerObj->detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option);
             include_once(__DIR__ . "/views/editor.php");
         } elseif ($page === 'editor_sources') {
-            include_once(__DIR__ . "/include/editor_sources.php");
+            $controllerObj = new AdminSourcesController();
+            $editSources = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            include_once(__DIR__ . "/views/editor_sources.php");
         } elseif ($page === 'edit_sources') {
             // TODO refactor
             include_once(__DIR__ . "/include/select_tree.php");

@@ -1541,12 +1541,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 //echo $buffer;
             }
 
-            /*
-            repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
-            repo_date='".process_date($gedcom_version,'repo_date')."',
-            repo_mail='".safe_text_db($_POST['repo_mail'])."',
-            repo_url='".safe_text_db($_POST['repo_url'])."',
-            */
             // *** Repository data ***
             $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
             while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) {
