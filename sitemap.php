@@ -83,7 +83,7 @@ foreach ($datasql as $dataDb) {
 
             if ($humo_option["url_rewrite"] == "j") {
                 //$person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
-                $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
+                $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber;
             } else {
                 $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
             }
