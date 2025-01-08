@@ -2955,6 +2955,7 @@ class GedcomCls
         $loop = count($line2) - 2;
 
         $marr_flag = 0;
+        $count_civil_religion = 0;
 
         for ($z = 1; $z <= $loop; $z++) {
 
@@ -3242,7 +3243,9 @@ class GedcomCls
                 }
                 if ($buffer6 === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_marr_notice_date"])    $family["fam_marr_notice_date"] = trim(substr($buffer, 7));
+                    if (!$family["fam_marr_notice_date"]) {
+                        $family["fam_marr_notice_date"] = trim(substr($buffer, 7));
+                    }
                 }
                 if ($buffer7 === '2 _HNIT') {
                     $heb_flag = 1;
@@ -3310,9 +3313,9 @@ class GedcomCls
             if ($this->level[1] == 'MARR') {
                 // *** fam_religion ***
                 // Haza-data
-                //1 MARR
-                //2 TYPE religious
-                //2 RELI Hervormd
+                // 1 MARR
+                // 2 TYPE religious
+                // 2 RELI Hervormd
                 if ($buffer6 === '2 RELI') {
                     $this->processed = true;
                     $family["fam_religion"] = substr($buffer, 7);
@@ -3330,6 +3333,12 @@ class GedcomCls
                 if ($buffer6 === '2 TYPE') {
                     $this->processed = true;
                     $temp_kind = strtolower(substr($buffer, 7));
+
+                    // Ahnenblatt uses "2 TYPE RELI". Other programs: "2 TYPE religious"
+                    if ($temp_kind == 'reli') {
+                        $temp_kind = 'religious';
+                    }
+
                     // *** Save marriage type in database, to show proper text if there is no further data.
                     //     Otherwise it will be "relation". ***
                     if ($family["fam_kind"] === '') {
@@ -3431,6 +3440,12 @@ class GedcomCls
                 }
             }
 
+            // Quick & dirty method to solve 2 TYPE problem in Ahnenblatt GEDCOM.
+            // 2 TYPE isn't used directly after 1 MARR. So just assume 2nd MARR = religious.
+            if ($buffer6 === '1 MARR' && $gen_program == 'AHN' && $count_civil_religion > 0) {
+                $temp_kind = 'religious'; // Just assume second MARR is religious.
+            }
+
             if ($this->level[1] == 'MARR' && $temp_kind === 'religious') {
                 if ($buffer6 === '1 MARR') {
                     $this->processed = true;
@@ -3479,6 +3494,8 @@ class GedcomCls
 
                 if ($buffer6 === '1 MARR') {
                     $this->processed = true;
+
+                    $count_civil_religion++; // Needed for Ahnenblatt.
                 }
                 if ($buffer6 === '2 DATE') {
                     $this->processed = true;
@@ -4068,8 +4085,11 @@ class GedcomCls
         }
 
         // *** Process estimates/ calculated date for privacy filter ***
-        if ($family["fam_marr_date"]) $family["fam_cal_date"] = $family["fam_marr_date"];
-        elseif ($family["fam_marr_church_date"]) $family["fam_cal_date"] = $family["fam_marr_church_date"];
+        if ($family["fam_marr_date"]) {
+            $family["fam_cal_date"] = $family["fam_marr_date"];
+        } elseif ($family["fam_marr_church_date"]) {
+            $family["fam_cal_date"] = $family["fam_marr_church_date"];
+        }
 
         // for Jewish dates after nightfall
         $heb_qry = '';
