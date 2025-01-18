@@ -1,147 +1,186 @@
 <?php
 // *** Original script made by Yossi ***
 // *** feb. 2023: Rebuild this script by Huub. Multiple backups will be stored on server. ***
+// *** Jan. 2025: added tab's ***
 
 //@ini_set('memory_limit', '-1');
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+
+// *** Get list of backup files ***
+$dh  = opendir('./backup_files');
+while (false !== ($filename = readdir($dh))) {
+    if (substr($filename, -4) === ".sql" || substr($filename, -8) === ".sql.zip") {
+        $backup_files[] = $filename;
+    }
+}
+$backup_count = 0;
+if (isset($backup_files)) {
+    $backup_count = count($backup_files);
+    rsort($backup_files); // *** Most recent backup file will be shown first ***
+}
 ?>
 
 <h1 class="center"><?php printf(__('%s backup'), 'HuMo-genealogy'); ?></h1>
 
-<?php if ($backup['upload_status'] == 'upload failed') { ?>
-    <div class="alert alert-danger" role="alert">
-        <?= __('Upload has failed. You may wish to try again or choose to place the file in the admin/backup_files folder yourself with an ftp program or the control panel of your webhost'); ?>
-    </div>
-<?php } ?>
+<ul class="nav nav-tabs mt-1">
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($backup['menu_tab'] == 'database_backup') echo 'active'; ?>" href="index.php?page=backup"><?= __('Database backup'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($backup['menu_tab'] == 'create_backup') echo 'active'; ?>" href="index.php?page=backup&amp;menu_tab=create_backup"><?= __('Create backup file'); ?></a>
+    </li>
+    <li class="nav-item me-1">
+        <a class="nav-link genealogy_nav-link <?php if ($backup['menu_tab'] == 'restore_backup') echo 'active'; ?>" href="index.php?page=backup&amp;menu_tab=restore_backup"><?= __('Restore database'); ?></a>
+    </li>
+</ul>
 
-<?php if ($backup['upload_status'] == 'wrong extension') { ?>
-    <div class="alert alert-danger" role="alert">
-        <?= __('Invalid backup file: has to be file with extension ".sql" or ".sql.zip"'); ?>
-    </div>
-<?php } ?>
-
-<h2><?= __('Create backup file'); ?></h2>
-<table class="table">
-    <tr>
-        <td>
-            <?php
-            if (isset($_POST['create_backup'])) {
-                backup_tables();
-            } else {
-                printf(__('If you use %s to edit in the family tree, then create multiple backups. Recommended backups:<br>
+<!-- Align content to the left -->
+<div style="float: left; background-color:white; height:500px; padding:10px;">
+    <?php if ($backup['menu_tab'] == 'database_backup') { ?>
+        <div class="p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3">
+            <?php printf(__('If you use %s to edit in the family tree, then create multiple backups. Recommended backups:<br>
 <b>1) Best option: use PhpMyAdmin. Export all tables from the %s database (TIP: use the zip option for a compressed file).</b><br>
 2) Just for sure: export a GEDCOM file. This is not a full family tree backup! But it will contain all basic genealogical data.<br>
-3) Use the %s backup page.'), 'HuMo-genealogy', 'HuMo-genealogy', 'HuMo-genealogy');
-                echo '<br>';
-            ?>
-                <h3><?= __('Create backup file'); ?></h3>
+3) Use the %s backup page.'), 'HuMo-genealogy', 'HuMo-genealogy', 'HuMo-genealogy'); ?>
+        </div>
+    <?php } ?>
 
-                <form action="index.php?page=backup" method="post">
-                    &nbsp;&nbsp;<input type="submit" value="<?= __('Create backup file'); ?>" name="create_backup" class="btn btn-sm btn-success">
-                </form>
-            <?php
-            }
+    <?php if ($backup['menu_tab'] == 'create_backup') { ?>
+        <h2><?= __('Create backup file'); ?></h2>
+        <table class="table">
+            <tr>
+                <td>
+                    <?php
+                    if (isset($_POST['create_backup'])) {
+                        backup_tables($dbh);
 
-            // *** Get list of backup files ***
-            $dh  = opendir('./backup_files');
-            while (false !== ($filename = readdir($dh))) {
-                if (substr($filename, -4) === ".sql" || substr($filename, -8) === ".sql.zip") {
-                    $backup_files[] = $filename;
-                }
-            }
-            $backup_count = 0;
-            if (isset($backup_files)) {
-                $backup_count = count($backup_files);
-                rsort($backup_files); // *** Most recent backup file will be shown first ***
-            }
-            ?>
+                        // TODO refactor, this part is used 2 times in this script.
+                        // *** Get list of backup files ***
+                        $dh  = opendir('./backup_files');
+                        while (false !== ($filename = readdir($dh))) {
+                            if (substr($filename, -4) === ".sql" || substr($filename, -8) === ".sql.zip") {
+                                $backup_files[] = $filename;
+                            }
+                        }
+                        $backup_count = 0;
+                        if (isset($backup_files)) {
+                            $backup_count = count($backup_files);
+                            rsort($backup_files); // *** Most recent backup file will be shown first ***
+                        }
+                    } else {
+                    ?>
+                        <form action="index.php?page=backup&amp;menu_tab=create_backup" method="post">
+                            &nbsp;&nbsp;<input type="submit" value="<?= __('Create backup file'); ?>" name="create_backup" class="btn btn-sm btn-success">
+                        </form>
+                    <?php } ?>
 
-            <!-- Download most recent backup file -->
-            <h3><?= __('Download backup file'); ?></h3>
-            <?= __('We recommend downloading the most recent backup file in case the data on your server (including the backup file) might get deleted or corrupted.'); ?><br>
-            <?php
-            if (isset($backup_files[0])) {
-                echo '<a href="backup_files/' . $backup_files[0] . '">' . $backup_files[0] . '</a><br>';
-            }
-            ?>
-        </td>
-    </tr>
-</table>
-
-<h2><?= __('Restore database from backup file'); ?></h2>
-<table class="table">
-    <tr>
-        <td>
-            <?php
-            printf(__('Here you can restore your entire database from a backup made with %s (if available) or from a .sql or .sql.zip backup file on your computer.'), 'HuMo-genealogy');
-            echo '<br>';
-
-            // *** Upload backup file ***
-            if (!isset($_POST['restore_server'])) {
-            ?>
-                <h3><?= __('Optional: upload a database backup file'); ?></h3>
-
-                <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="file" id="upload_file" name="upload_file" class="form-control">
+                    <?php if ($backup_count > 0) { ?>
+                        <div class="my-3 p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3">
+                            <!-- Download most recent backup file -->
+                            <h3><?= __('Download backup file'); ?></h3>
+                            <?= __('We recommend downloading the most recent backup file in case the data on your server (including the backup file) might get deleted or corrupted.'); ?><br>
+                            <?php if (isset($backup_files[0])) { ?>
+                                <a href="backup_files/<?= $backup_files[0]; ?>"><?= $backup_files[0]; ?></a><br>
+                            <?php } ?>
                         </div>
-                        <div class="col-md-2">
-                            <input type="submit" style="margin-top:4px" name="upload_the_file" value="<?= __('Upload'); ?>" class="btn btn-sm btn-secondary"><br>
-                        </div>
-                    </div>
-                </form>
-                <?php
-            }
+                    <?php } ?>
+                </td>
+            </tr>
+        </table>
+    <?php } ?>
 
-            if ($backup_count > 0) {
-                if (isset($_POST['restore_server'])) {
-                    $restore_file = 'backup_files/' . $_POST['select_file'];
-                    if (is_file($restore_file)) {
-                        // *** restore from backup on server made by HuMo-genealogy backup ***
-                ?>
-                        <br><span style="color:red"><?= __('Starting to restore database. This may take some time. Please wait...'); ?></span><br>
-                <?php
-                        restore_tables($restore_file);
+    <?php if ($backup['menu_tab'] == 'restore_backup') { ?>
+        <h2><?= __('Restore database from backup file'); ?></h2>
+
+        <?php if ($backup['upload_status'] == 'upload failed') { ?>
+            <div class="alert alert-danger" role="alert">
+                <?= __('Upload has failed. You may wish to try again or choose to place the file in the admin/backup_files folder yourself with an ftp program or the control panel of your webhost'); ?>
+            </div>
+        <?php } ?>
+
+        <?php if ($backup['upload_status'] == 'wrong extension') { ?>
+            <div class="alert alert-danger" role="alert">
+                <?= __('Invalid backup file: has to be file with extension ".sql" or ".sql.zip"'); ?>
+            </div>
+        <?php } ?>
+
+        <table class="table">
+            <tr>
+                <td>
+                    <?php
+                    printf(__('Here you can restore your entire database from a backup made with %s (if available) or from a .sql or .sql.zip backup file on your computer.'), 'HuMo-genealogy');
+                    echo '<br>';
+
+                    // *** Upload backup file ***
+                    if (!isset($_POST['restore_server'])) {
+                    ?>
+                        <div class="my-3 p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3">
+                            <h3><?= __('Optional: upload a database backup file'); ?></h3>
+
+                            <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup&amp;menu_tab=restore_backup" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="file" id="upload_file" name="upload_file" class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="submit" style="margin-top:4px" name="upload_the_file" value="<?= __('Upload'); ?>" class="btn btn-sm btn-secondary"><br>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <?php
                     }
-                }
 
-                ?>
-                <h3><?= __('Restore database from backup file'); ?></h3>
+                    if ($backup_count > 0) {
+                        if (isset($_POST['restore_server'])) {
+                            $restore_file = 'backup_files/' . $_POST['select_file'];
+                            if (is_file($restore_file)) {
+                                // *** restore from backup on server made by HuMo-genealogy backup ***
+                        ?>
+                                <br><span style="color:red"><?= __('Starting to restore database. This may take some time. Please wait...'); ?></span><br>
+                        <?php
+                                restore_tables($restore_file, $dbh);
+                            }
+                        }
 
-                <!-- List of backup files -->
-                <form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <select size="1" style="margin-top:4px;" name="select_file" class="form-select form-select-sm">
-                                <?php for ($i = 0; $i < $backup_count; $i++) { ?>
-                                    <option value="<?= $backup_files[$i]; ?>"><?= $backup_files[$i]; ?>
-                                        <?= $i == 0 ? ' * ' . __('Most recent backup!') . ' *' : ''; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="submit" style="font-size:14px" name="restore_server" value="<?= __('Restore database'); ?>" class="btn btn-sm btn-secondary">
-                        </div>
-                    </div>
-                </form>
-            <?php } else { ?>
-                <b>&nbsp;&nbsp;&nbsp;<?= __('No backup file found!'); ?></b>
-            <?php } ?>
-            <br><br>
-        </td>
-    </tr>
-</table>
+                        ?>
+                        <h3><?= __('Restore database from backup file'); ?></h3>
+
+                        <!-- List of backup files -->
+                        <form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup&amp;menu_tab=restore_backup" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select size="1" style="margin-top:4px;" name="select_file" class="form-select form-select-sm">
+                                        <?php for ($i = 0; $i < $backup_count; $i++) { ?>
+                                            <option value="<?= $backup_files[$i]; ?>"><?= $backup_files[$i]; ?>
+                                                <?= $i == 0 ? ' * ' . __('Most recent backup!') . ' *' : ''; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="submit" style="font-size:14px" name="restore_server" value="<?= __('Restore database'); ?>" class="btn btn-sm btn-secondary">
+                                </div>
+                            </div>
+                        </form>
+                    <?php } else { ?>
+                        <b>&nbsp;&nbsp;&nbsp;<?= __('No backup file found!'); ?></b>
+                    <?php } ?>
+                    <br><br>
+                </td>
+            </tr>
+        </table>
+    <?php } ?>
+</div>
 
 <?php
 // *** Backup function ***
-function backup_tables()
+function backup_tables($dbh)
 {
-    global $dbh, $backup_files;
+    global $backup_files;
 
     ob_start();
 
@@ -282,9 +321,8 @@ function backup_tables()
 }
 
 // *** Restore function ***
-function restore_tables($filename)
+function restore_tables($filename, $dbh)
 {
-    global $dbh;
     $original_name = $filename;
     // Temporary variable, used to store current query
     $templine = '';
