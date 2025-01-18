@@ -467,7 +467,7 @@ class RelationsModel
         } elseif ($this->relation['foundX_match'] == 0 && $this->relation['foundY_match'] > 0) {
             // x is ancestor of y
             $this->relation['relation_type'] = 1;
-            calculate_ancestor($this->relation['foundY_gen']);
+            $this->calculate_ancestor($this->relation['foundY_gen']);
         } elseif ($this->relation['foundY_match'] == 0 && $this->relation['foundX_match'] > 0) {
             // x is descendant of y
             $this->relation['relation_type'] = 2;
