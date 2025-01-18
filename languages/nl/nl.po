@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-17 20:11+0100\n"
-"PO-Revision-Date: 2025-01-17 20:13+0100\n"
+"POT-Creation-Date: 2025-01-18 10:02+0100\n"
+"PO-Revision-Date: 2025-01-18 10:02+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -10991,15 +10991,3 @@ msgstr "Selecteer een thema"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Standaard-kleuren"
-
-#~ msgid "BLOOD RELATIONSHIP: "
-#~ msgstr "BLOED VERWANTSCHAP: "
-
-#~ msgid "MARITAL RELATIONSHIP: "
-#~ msgstr "HUWELIJKS VERWANTSCHAP: "
-
-#~ msgid "Name source"
-#~ msgstr "Bron bij naam"
-
-#~ msgid "Visited families in the past 12 months"
-#~ msgstr "Aantal bezochte gezinnen in de vorige 12 maanden"

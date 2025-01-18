@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-17 20:15+0100\n"
-"PO-Revision-Date: 2025-01-17 20:15+0100\n"
+"POT-Creation-Date: 2025-01-18 10:03+0100\n"
+"PO-Revision-Date: 2025-01-18 10:03+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: English (http://www.transifex.com/projects/p/humo-gen/"
 "language/en/)\n"
@@ -10458,7 +10458,6 @@ msgstr ""
 "result pulldown"
 
 #: views/relations.php:386
-#| msgid "relationship with"
 msgid "Blood relationship"
 msgstr "Blood relationship"
 
@@ -10467,7 +10466,6 @@ msgid "Use Extended Calculator"
 msgstr "Use Extended Calculator"
 
 #: views/relations.php:493 views/relations.php:686
-#| msgid "Calculate relationships"
 msgid "Marital relationship"
 msgstr "Marital relationship"
 
@@ -10533,9 +10531,6 @@ msgid "Try to find another path"
 msgstr "Try to find another path"
 
 #: views/relations.php:3712
-#| msgid ""
-#| "(With each consecutive search the path may get longer and computing time "
-#| "may increase!)"
 msgid ""
 "With each consecutive search the path may get longer and computing time may "
 "increase!"
@@ -10886,15 +10881,3 @@ msgstr "Select a theme"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Standard-colours"
-
-#~ msgid "BLOOD RELATIONSHIP: "
-#~ msgstr "BLOOD RELATIONSHIP: "
-
-#~ msgid "MARITAL RELATIONSHIP: "
-#~ msgstr "MARITAL RELATIONSHIP: "
-
-#~ msgid "Name source"
-#~ msgstr "Name source"
-
-#~ msgid "Visited families in the past 12 months"
-#~ msgstr "Visited families in the past 12 months"
