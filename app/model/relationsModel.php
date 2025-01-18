@@ -67,12 +67,11 @@ class RelationsModel
     public function resetValues(): void
     {
         // *** Reset values ***
-        if (
-            !isset($_POST["search1"]) && !isset($_POST["search2"]) && !isset($_POST["calculator"]) && !isset($_POST["switch"]) && !isset($_POST["extended"]) && !isset($_POST["next_path"]) && !isset($_GET['pers_id']) && !isset($_POST["search_id1"]) && !isset($_POST["search_id2"])
-        ) {
+        //if ( !isset($_POST["search1"]) && !isset($_POST["search2"]) && !isset($_POST["calculator"]) && !isset($_POST["switch"]) && !isset($_POST["extended"]) && !isset($_POST["next_path"]) && !isset($_GET['pers_id']) && !isset($_POST["search_id1"]) && !isset($_POST["search_id2"])) {
+        if (!isset($_POST["calculator"]) && !isset($_POST["switch"]) && !isset($_POST["extended"]) && !isset($_POST["next_path"]) && !isset($_GET['pers_id']) && !isset($_POST["search_id1"]) && !isset($_POST["search_id2"])) {
             // No button pressed: this is a fresh entry from frontpage link: start clean search form
-            $_SESSION["search1"] = '';
-            $_SESSION["search2"] = '';
+            //$_SESSION["search1"] = '';
+            //$_SESSION["search2"] = '';
             $_SESSION['rel_search_name'] = '';
             $_SESSION['rel_search_name2'] = '';
             $_SESSION['rel_search_gednr'] = '';
@@ -117,7 +116,8 @@ class RelationsModel
 
     public function set_control_variables()
     {
-        $this->start_calculation = isset($_POST["calculator"]) || isset($_POST["switch"]);
+        //$this->start_calculation = isset($_POST["calculator"]) || isset($_POST["switch"]);
+        $this->start_calculation = isset($_POST["calculator"]);
         $this->search_results = $this->relation["person1"] == '' || $this->relation["person2"] == '' ? false : true;
     }
 
@@ -264,26 +264,11 @@ class RelationsModel
             $this->relation["person1"] = $this->relation["person2"];
             $this->relation["person2"] = $temp;
 
-            // TODO: check code.
-            /*
-            if (isset($button_search_name1)) {
-                $temp = $button_search_name1;
-                $button_search_name1 = $button_search_name2;
-                $_SESSION['button_search_name1'] = $button_search_name1;
-                $button_search_name2 = $temp;
-                $_SESSION['button_search_name2'] = $button_search_name2;
-            }
-            */
-
             // *** Link from person pop-up menu ***
-            if (isset($_SESSION["search_pers_id"])) {
+            if (isset($_SESSION["search_pers_id"]) && isset($_SESSION["search_pers_id2"])) {
+                $temp = $_SESSION["search_pers_id2"];
                 $_SESSION["search_pers_id2"] = $_SESSION["search_pers_id"];
-                unset($_SESSION["search_pers_id"]);
-            }
-            // *** Link from person pop-up menu ***
-            elseif (isset($_SESSION["search_pers_id2"])) {
-                $_SESSION["search_pers_id"] = $_SESSION["search_pers_id2"];
-                unset($_SESSION["search_pers_id2"]);
+                $_SESSION["search_pers_id"] = $temp;
             }
         }
     }
@@ -1174,31 +1159,31 @@ class RelationsModel
             if ($gennr > 256) {
                 $ancestortext = "hoog-";
                 $gennr -= 256;
-                dutch_ancestors($gennr);
+                $this->dutch_ancestors($gennr);
             } elseif ($gennr > 128) {
                 $ancestortext = "opper-";
                 $gennr -= 128;
-                dutch_ancestors($gennr);
+                $this->dutch_ancestors($gennr);
             } elseif ($gennr > 64) {
                 $ancestortext = "aarts-";
                 $gennr -= 64;
-                dutch_ancestors($gennr);
+                $this->dutch_ancestors($gennr);
             } elseif ($gennr > 32) {
                 $ancestortext = "voor-";
                 $gennr -= 32;
-                dutch_ancestors($gennr);
+                $this->dutch_ancestors($gennr);
             } elseif ($gennr > 16) {
                 $ancestortext = "edel-";
                 $gennr -= 16;
-                dutch_ancestors($gennr);
+                $this->dutch_ancestors($gennr);
             } elseif ($gennr > 8) {
                 $ancestortext = "stam-";
                 $gennr -= 8;
-                dutch_ancestors($gennr);
+                $this->dutch_ancestors($gennr);
             } elseif ($gennr > 4) {
                 $ancestortext = "oud";
                 $gennr -= 4;
-                dutch_ancestors($gennr);
+                $this->dutch_ancestors($gennr);
             } else {
                 if ($gennr == 4) {
                     $rest = 'betovergroot';
@@ -2210,7 +2195,7 @@ class RelationsModel
         }
 
         if ($this->selected_language == "nl") {
-            $ancestortext = dutch_ancestors($generY - 1);
+            $ancestortext = $this->dutch_ancestors($generY - 1);
             $this->relation['rel_text'] = $ancestortext . $uncleaunt . __(' of ');
             if ($generY > 4) {
                 $gennr = $generY - 3;

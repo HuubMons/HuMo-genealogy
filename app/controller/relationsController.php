@@ -29,7 +29,6 @@ class RelationsController
             $RelationsModel->process_extended_calculation();
         }
 
-
         $relation = $RelationsModel->get_variables();
 
         // http://localhost/HuMo-genealogy/family/3/F116?main_person=I202
