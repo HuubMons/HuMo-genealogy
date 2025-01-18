@@ -641,9 +641,7 @@ $menu_top = getActiveTopMenu($page);
                             <?php // TODO add active if dropdown item is selected ;
                             ?>
 
-                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'tree_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
-                                <?= __('Family tree'); ?>
-                            </a>
+                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'tree_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown"><?= __('Family tree'); ?></a>
 
                             <ul class="dropdown-menu genealogy_menu">
                                 <li><a class="dropdown-item <?php if ($page == 'tree_index') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>"><?= __('Family tree index'); ?></a></li>
@@ -712,9 +710,7 @@ $menu_top = getActiveTopMenu($page);
                     ?>
 
                             <li class="nav-item dropdown <?php if ($menu_top == 'tool_menu') echo 'genealogy_active'; ?>">
-                                <a class="nav-link dropdown-toggle <?php if ($menu_top == 'tool_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
-                                    <?= __('Tools'); ?>
-                                </a>
+                                <a class="nav-link dropdown-toggle <?php if ($menu_top == 'tool_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown"><?= __('Tools'); ?></a>
 
                                 <ul class="dropdown-menu genealogy_menu">
                                     <?php if ($user["group_birthday_list"] == 'j') {; ?>
@@ -753,9 +749,7 @@ $menu_top = getActiveTopMenu($page);
                     <!-- Only show login/ register if user isn't logged in -->
                     <?php if ($user['group_menu_login'] == 'j' and !$user["user_name"]) { ?>
                         <li class="nav-item dropdown <?php if ($menu_top == 'user_menu') echo 'genealogy_active'; ?>">
-                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'user_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
-                                <?= __('Login'); ?>
-                            </a>
+                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'user_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown"><?= __('Login'); ?></a>
                             <ul class="dropdown-menu genealogy_menu">
                                 <li><a class="dropdown-item <?php if ($page == 'login') echo 'active'; ?>" href="<?= $menu_path_login; ?>"><?= __('Login'); ?></a></li>
 
@@ -770,9 +764,7 @@ $menu_top = getActiveTopMenu($page);
                     <!-- Menu: Control menu -->
                     <?php if (!$bot_visit) { ?>
                         <li class="nav-item dropdown <?php if ($menu_top == 'setting_menu') echo 'genealogy_active'; ?>">
-                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'setting_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown">
-                                <?= __('Control'); ?>
-                            </a>
+                            <a class="nav-link dropdown-toggle <?php if ($menu_top == 'setting_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown"><?= __('Control'); ?></a>
                             <ul class="dropdown-menu genealogy_menu">
                                 <li><a class="dropdown-item <?php if ($page == 'settings') echo 'active'; ?>" href="<?= $menu_path_user_settings; ?>"><?= __('User settings'); ?></a></li>
 

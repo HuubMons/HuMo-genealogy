@@ -73,7 +73,6 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
         if ($familyDb->fam_children) {
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {
-                //$childDb = $db_functions->get_person($child_array[$i]);
                 $childDb = $db_functions->get_person($child_array[$i], 'famc-fams');
                 if ($childDb->pers_fams) {
                     // *** 1st family of child ***
@@ -117,7 +116,6 @@ function get_ancestors($db_functions, $main_person)
         $ancestor_array[2] = $parentDb->fam_man;
         $ancestor_array[3] = $parentDb->fam_woman;
     }
-    // end of person 1
 
     // Loop to find person data
     $count_max = 4; // *** Start with value 4, can be raised in loop ***

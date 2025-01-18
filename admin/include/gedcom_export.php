@@ -1648,11 +1648,18 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         if ($gedcom_texts == 'yes') {
             $buffer = '';
             natsort($noteids);
-            foreach ($noteids as $s) {
-                $text_query = "SELECT * FROM humo_texts WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($s, 1, -1) . "'";
-                $text_sql = $dbh->query($text_query);
-                while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
-                    $buffer .= "0 " . $s . " NOTE\r\n";
+            foreach ($noteids as $note_text) {
+                //$text_query = "SELECT * FROM humo_texts WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($note_text, 1, -1) . "'";
+                //$text_sql = $dbh->query($text_query);
+                //while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
+
+                $stmt = $dbh->prepare("SELECT * FROM humo_texts WHERE text_tree_id=:text_tree_id AND text_gedcomnr=:text_gedcomnr");
+                $stmt->execute([
+                    ':text_tree_id' => $tree_id,
+                    ':text_gedcomnr' => substr($note_text, 1, -1)
+                ]);
+                while ($textDb = $stmt->fetch(PDO::FETCH_OBJ)){
+                    $buffer .= "0 " . $note_text . " NOTE\r\n";
                     $buffer .= '1 CONC ' . process_text(1, $textDb->text_text);
 
                     // *** Datetime new in database ***

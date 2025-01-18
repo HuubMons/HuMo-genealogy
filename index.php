@@ -324,7 +324,7 @@ if ($page == 'address') {
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new RelationsController($dbh);
-    $relation = $controllerObj->getRelations($db_functions, $person_cls);
+    $relation = $controllerObj->getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language);
 } elseif ($page == 'reset_password') {
     $controllerObj = new ResetpasswordController();
     $resetpassword = $controllerObj->detail($dbh, $humo_option);
