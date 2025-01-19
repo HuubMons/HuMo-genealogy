@@ -53,19 +53,18 @@
  * $relation["person1"], $relation["person2"] - GEDCOM nr of the searched persons X and Y
  * 
  * 
- * REFACTOR: There are 2 or 3 relation calculation methods:
+ * REFACTOR: There are multiple relation calculation methods:
  * 
  * Standard relation calculation:
- *   display_table()
+ *   display_table($relation)
  * 
- * Marriage relation calculation (is this extended search?):
- *   display_table() ==>> called second time. So $relation variables must be changed in model script?
+ * Marriage relation calculation:
+ *   display_table($relation) ==>> called second time.
  * 
  * Extended relation calculation:
  *   extended_calculator($firstcall1, $firstcall2);
  *   ext_calc_join_path($workarr, $path2, $pers2, $ref);
  *   ext_calc_display_result($totalpath, $db_functions, $relation);
- * 
  */
 
 // TODO create function to show person.
@@ -364,6 +363,13 @@ Directions for use:<br>
     }
 
     if ($relation['start_calculation'] && !$relation['search_results']) {
+
+
+        // TEST TODO refactor.
+        //$relation_marital = $relation; // Stores original $relation array.
+        //$relation = $relation['standard_extended'];
+
+
     ?>
         <div class="alert alert-warning mt-3" role="alert">
             <?= __('You have to search and than choose Person 1 and Person 2 from the search result pulldown'); ?>
@@ -412,11 +418,13 @@ Directions for use:<br>
                     }
                     $relation['bloodreltext'] = $relation['rel_text'];
 
-                    display_table();
+                    display_table($relation);
                 }
 
                 /*
-                * This part show for example this relationship: Uncle <-> Wife of nephew.
+                * Marital relationship
+                *
+                * This part shows for example this relationship: Uncle <-> Wife of nephew.
                 * Relation types
                 * 3 = uncle - nephew
                 * 4 = nephew - uncle
@@ -424,7 +432,6 @@ Directions for use:<br>
                 * 6 = siblings
                 */
                 if ($relation['relation_type'] != 1 && $relation['relation_type'] != 2 && $relation['relation_type'] != 7) {
-                    // Probably need seperate variables for this calculation? So it's posible to move the code to model script.
                     $relation['foundX_nr'] = '';
                     $relation['foundY_nr'] = '';
                     $relation['foundX_gen'] = '';
@@ -670,7 +677,7 @@ Directions for use:<br>
                         <hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;">
 
                     <?php
-                        display_table();
+                        display_table($relation);
                     }
                 }
 
@@ -3791,9 +3798,9 @@ function ext_calc_display_result($result, $db_functions, $relation)
 
 
 // *** Show calculated relation ***
-function display_table()
+function display_table($relation)
 {
-    global $db_functions, $relation, $tree_id, $link_cls, $uri_path;
+    global $db_functions, $tree_id, $link_cls, $uri_path;
 
     // *** Use person class to show names ***
     $pers_cls = new PersonCls;

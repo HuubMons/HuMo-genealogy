@@ -2,14 +2,14 @@
 # Translators:
 # Gianni Salza <salzagi@gmail.com>, 2019
 # Vittorino Lepore <vlepore47@libero.it>, 2022-2024
-# Vittorino Lepore <vlepore47@libero.it>, 2019-2022,2024
+# Vittorino Lepore <vlepore47@libero.it>, 2019-2022,2024-2025
 msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-18 09:57+0100\n"
-"PO-Revision-Date: 2025-01-18 09:57+0100\n"
-"Last-Translator: Vittorino Lepore <vlepore47@libero.it>, 2019-2022,2024\n"
+"POT-Creation-Date: 2025-01-19 14:14+0100\n"
+"PO-Revision-Date: 2025-01-19 14:14+0100\n"
+"Last-Translator: Vittorino Lepore <vlepore47@libero.it>, 2019-2022,2024-2025\n"
 "Language-Team: Italian (http://app.transifex.com/humo-gen/humo-gen/language/"
 "it/)\n"
 "Language: it\n"
@@ -94,8 +94,8 @@ msgstr "testimone"
 #: views/family.php:1246 views/family.php:1314 views/layout.php:490
 #: views/list.php:147 views/list.php:653 views/list_names.php:70
 #: views/list_names.php:73 views/mailform.php:48 views/mailform.php:50
-#: views/register.php:58 views/relations.php:86 views/relations.php:88
-#: views/relations.php:198
+#: views/register.php:58 views/relations.php:85 views/relations.php:87
+#: views/relations.php:197
 msgid "Name"
 msgstr "Nome"
 
@@ -260,8 +260,8 @@ msgstr "Numero GEDCOM (ID)"
 #: views/addresses.php:30 views/latest_changes.php:23 views/layout.php:491
 #: views/list.php:100 views/list.php:163 views/list.php:468
 #: views/list_places_families.php:95 views/photoalbum.php:103
-#: views/relations.php:89 views/relations.php:97 views/relations.php:196
-#: views/relations.php:199 views/relations.php:207 views/sources.php:26
+#: views/relations.php:88 views/relations.php:96 views/relations.php:195
+#: views/relations.php:198 views/relations.php:206 views/sources.php:26
 msgid "Search"
 msgstr "Cerca"
 
@@ -325,7 +325,7 @@ msgstr "N.N."
 #: include/language_date.php:110 include/language_date.php:125
 #: include/personCls.php:1423 include/personCls.php:1424
 #: include/personCls.php:1492 include/personCls.php:1493
-#: include/personCls.php:1579 include/personCls.php:1580 views/relations.php:505
+#: include/personCls.php:1579 include/personCls.php:1580 views/relations.php:512
 msgid "and"
 msgstr "e"
 
@@ -570,7 +570,7 @@ msgid "Directory"
 msgstr "Cartella"
 
 #: admin/include/editorEvent.php:1650 admin/update/install_update.php:572
-#: admin/views/backup.php:93 admin/views/gedcom_import.php:65
+#: admin/views/backup.php:129 admin/views/gedcom_import.php:65
 #: admin/views/settings.php:99 admin/views/settings.php:652
 msgid "Upload"
 msgstr "Carica"
@@ -842,7 +842,7 @@ msgstr "Dicembre"
 #: views/ancestor_sheet.php:296 views/ancestor_sheet_pdf.php:119
 #: views/ancestor_sheet_pdf.php:374 views/descendant_chart.php:313
 #: views/list.php:34 views/list.php:947 views/list.php:1133 views/list.php:1148
-#: views/relations.php:155 views/relations.php:265
+#: views/relations.php:154 views/relations.php:264
 msgid "*"
 msgstr "*"
 
@@ -850,8 +850,8 @@ msgstr "*"
 #: admin/include/editor_cls.php:316 include/personCls.php:1045
 #: views/ancestor_chart.php:181 views/ancestor_sheet.php:84
 #: views/descendant_chart.php:318 views/list.php:44 views/list.php:955
-#: views/list.php:1130 views/list.php:1145 views/relations.php:152
-#: views/relations.php:262
+#: views/list.php:1130 views/list.php:1145 views/relations.php:151
+#: views/relations.php:261
 msgid "~"
 msgstr "~"
 
@@ -1305,7 +1305,7 @@ msgstr "Filtro della privacy"
 msgid "Gedcom export"
 msgstr "Esporta Gedcom"
 
-#: admin/index.php:683 admin/views/index_admin.php:365
+#: admin/index.php:683 admin/views/backup.php:30 admin/views/index_admin.php:365
 #: admin/views/index_admin.php:369 admin/views/menu.php:88
 msgid "Database backup"
 msgstr "Salvataggio Database"
@@ -1934,33 +1934,20 @@ msgstr "Domenica"
 msgid "Families"
 msgstr "Famiglie"
 
-#: admin/views/backup.php:12
+#: admin/views/backup.php:26
 #, php-format
 msgid "%s backup"
 msgstr "Backup %s"
 
-#: admin/views/backup.php:16
-msgid ""
-"Upload has failed. You may wish to try again or choose to place the file in "
-"the admin/backup_files folder yourself with an ftp program or the control "
-"panel of your webhost"
-msgstr ""
-"Il caricamento non è riuscito. Potresti provare di nuovo o scegliere di "
-"posizionare il file nella cartella admin/backup_files tu stesso con un "
-"programma ftp o con il pannello di controllo del tuo webhost"
-
-#: admin/views/backup.php:22
-msgid ""
-"Invalid backup file: has to be file with extension \".sql\" or \".sql.zip\""
-msgstr ""
-"File di backup non valido: deve essere file con estensione \".sql\" o \".sql."
-"zip\""
-
-#: admin/views/backup.php:26 admin/views/backup.php:40 admin/views/backup.php:43
+#: admin/views/backup.php:33 admin/views/backup.php:52 admin/views/backup.php:76
 msgid "Create backup file"
 msgstr "Crea file di salvataggio"
 
-#: admin/views/backup.php:34
+#: admin/views/backup.php:36 admin/views/backup.php:165
+msgid "Restore database"
+msgstr "Ripristino del database"
+
+#: admin/views/backup.php:44
 #, php-format
 msgid ""
 "If you use %s to edit in the family tree, then create multiple backups. "
@@ -1980,11 +1967,11 @@ msgstr ""
 "dell'albero genealogico! Ma conterrà tutti i dati genealogici di base. <br>\n"
 "3) Utilizzare la pagina di backup di %s."
 
-#: admin/views/backup.php:63
+#: admin/views/backup.php:83
 msgid "Download backup file"
 msgstr "Scaricare file di backup"
 
-#: admin/views/backup.php:64
+#: admin/views/backup.php:84
 msgid ""
 "We recommend downloading the most recent backup file in case the data on your "
 "server (including the backup file) might get deleted or corrupted."
@@ -1993,11 +1980,28 @@ msgstr ""
 "dati sul tuo server (incluso il file di backup) vengano cancellati o "
 "danneggiati."
 
-#: admin/views/backup.php:74 admin/views/backup.php:113
+#: admin/views/backup.php:96 admin/views/backup.php:150
 msgid "Restore database from backup file"
 msgstr "Ripristinare il database dal file di backup"
 
-#: admin/views/backup.php:79
+#: admin/views/backup.php:100
+msgid ""
+"Upload has failed. You may wish to try again or choose to place the file in "
+"the admin/backup_files folder yourself with an ftp program or the control "
+"panel of your webhost"
+msgstr ""
+"Il caricamento non è riuscito. Potresti provare di nuovo o scegliere di "
+"posizionare il file nella cartella admin/backup_files tu stesso con un "
+"programma ftp o con il pannello di controllo del tuo webhost"
+
+#: admin/views/backup.php:106
+msgid ""
+"Invalid backup file: has to be file with extension \".sql\" or \".sql.zip\""
+msgstr ""
+"File di backup non valido: deve essere file con estensione \".sql\" o \".sql."
+"zip\""
+
+#: admin/views/backup.php:114
 #, php-format
 msgid ""
 "Here you can restore your entire database from a backup made with %s (if "
@@ -2006,39 +2010,35 @@ msgstr ""
 "Qui puoi ripristinare l'intero database da un backup effettuato con %s (se "
 "disponibile) o da un file di backup .sql o .sql.zip sul tuo computer."
 
-#: admin/views/backup.php:85
+#: admin/views/backup.php:121
 msgid "Optional: upload a database backup file"
 msgstr "Facoltativo: caricare un file di backup del database"
 
-#: admin/views/backup.php:106
+#: admin/views/backup.php:143
 msgid "Starting to restore database. This may take some time. Please wait..."
 msgstr ""
 "Inizio del ripristino del database. Questo potrebbe richiedere del tempo. Si "
 "prega di attendere..."
 
-#: admin/views/backup.php:122
+#: admin/views/backup.php:159
 msgid "Most recent backup!"
 msgstr "Backup più recente!"
 
-#: admin/views/backup.php:128
-msgid "Restore database"
-msgstr "Ripristino del database"
-
-#: admin/views/backup.php:133 admin/views/index_admin.php:368
+#: admin/views/backup.php:170 admin/views/index_admin.php:368
 msgid "No backup file found!"
 msgstr "Non è stato trovato il file di backup!"
 
-#: admin/views/backup.php:171
+#: admin/views/backup.php:210
 msgid "Creating backup file. This may take some time. Please wait..."
 msgstr ""
 "Creazione di file di backup. Questo potrebbe richiedere del tempo. Si prega di "
 "attendere ..."
 
-#: admin/views/backup.php:199
+#: admin/views/backup.php:238
 msgid "Skipped backup of table:"
 msgstr "Backup della tabella non effettuato:"
 
-#: admin/views/backup.php:280
+#: admin/views/backup.php:319
 msgid ""
 "A backup file was saved to the server. We strongly suggest you download a copy "
 "to your computer in case you might need it later."
@@ -2047,11 +2047,11 @@ msgstr ""
 "scaricare una copia sul vostro computer nel caso in cui potrebbe essere "
 "necessario in seguito."
 
-#: admin/views/backup.php:317
+#: admin/views/backup.php:355
 msgid "Processed lines..."
 msgstr "Linee elaborate ..."
 
-#: admin/views/backup.php:370
+#: admin/views/backup.php:408
 msgid "Database has been restored successfully!"
 msgstr "Il database è stato ripristinato correttamente!"
 
@@ -2076,10 +2076,8 @@ msgid "Choose family tree"
 msgstr "Scegli l'albero genealogico"
 
 #: admin/views/cal_date.php:71
-#, fuzzy
-#| msgid "Select person"
 msgid "Recalculate all persons"
-msgstr "Seleziona la persona"
+msgstr "Ricalcola tutte le persone"
 
 #: admin/views/cal_date.php:77 admin/views/edit_rename_place.php:53
 #: admin/views/editor_person.php:309 admin/views/editor_sources.php:274
@@ -2491,8 +2489,8 @@ msgstr "Modificato da"
 #: admin/views/editor.php:137 admin/views/editor.php:416
 #: admin/views/tree_check_changes.php:49
 #: admin/views/tree_check_consistency.php:286 admin/views/tree_merge.php:562
-#: admin/views/tree_merge.php:633 views/family.php:1309 views/relations.php:84
-#: views/relations.php:194
+#: admin/views/tree_merge.php:633 views/family.php:1309 views/relations.php:83
+#: views/relations.php:193
 msgid "Person"
 msgstr "Persona"
 
@@ -2503,7 +2501,7 @@ msgid "Results"
 msgstr "Risultati"
 
 #: admin/views/editor.php:309 admin/views/tree_merge.php:610
-#: admin/views/tree_merge.php:680 views/relations.php:183 views/relations.php:291
+#: admin/views/tree_merge.php:680 views/relations.php:182 views/relations.php:290
 msgid "Person not found"
 msgstr "Persona non trovata"
 
@@ -2584,7 +2582,7 @@ msgid "Add person"
 msgstr "Aggiungi persona"
 
 #: admin/views/editor.php:727 views/layout.php:952 views/list.php:493
-#: views/maps.php:31 views/relations.php:333 views/timeline.php:178
+#: views/maps.php:31 views/relations.php:332 views/timeline.php:178
 msgid "Help"
 msgstr "Aiuto"
 
@@ -4136,33 +4134,29 @@ msgid "Show text with pre-nuptial etc."
 msgstr "Mostra testo prematrimoniale ecc."
 
 #: admin/views/groups.php:411
-#, fuzzy
-#| msgid "Activate privacy filter"
 msgid "Use privacy profile"
-msgstr "Attiva filtro della privacy"
+msgstr "Usa il profilo privacy"
 
 #: admin/views/groups.php:414
-#, fuzzy
-#| msgid "Activate privacy filter"
 msgid "Set a default privacy profile"
-msgstr "Attiva filtro della privacy"
+msgstr "Imposta un profilo di privacy predefinito"
 
 #: admin/views/groups.php:417
 msgid "Privacy profile: high (don't show names, hide data)"
-msgstr ""
+msgstr "Profilo privacy: alto (non mostrare nomi, nascondere dati)"
 
 #: admin/views/groups.php:421
 msgid "Privacy profile: medium (partly show names, hide data)"
-msgstr ""
+msgstr "Profilo privacy: medio (mostrare parzialmente nomi, nascondere dati)"
 
 #: admin/views/groups.php:425
 msgid "Privacy profile: low (show names, hide data)"
-msgstr ""
+msgstr "Profilo privacy: basso (mostrare nomi, nascondere dati)"
 
 #: admin/views/groups.php:428
 #, php-format
 msgid "Also use %s to calculate privacy filter birthdates"
-msgstr ""
+msgstr "Usa anche %s le date di nascita per calcolare il filtro privacy"
 
 #: admin/views/groups.php:467 admin/views/groups.php:472
 msgid "Activate privacy filter"
@@ -6656,8 +6650,8 @@ msgstr "matrimonio"
 #: admin/views/tree_check_consistency.php:570
 #: admin/views/tree_check_consistency.php:588
 #: admin/views/tree_check_consistency.php:712
-#: admin/views/tree_check_consistency.php:726 app/model/relationsModel.php:791
-#: views/relations.php:1146
+#: admin/views/tree_check_consistency.php:726 app/model/relationsModel.php:854
+#: views/relations.php:1153
 msgid "mother"
 msgstr "madre"
 
@@ -6666,11 +6660,11 @@ msgstr "madre"
 #: admin/views/tree_check_consistency.php:579
 #: admin/views/tree_check_consistency.php:597
 #: admin/views/tree_check_consistency.php:718
-#: admin/views/tree_check_consistency.php:732 app/model/relationsModel.php:791
-#: app/model/relationsModel.php:827 app/model/relationsModel.php:879
-#: app/model/relationsModel.php:904 app/model/relationsModel.php:922
-#: views/relations.php:1146 views/relations.php:1180 views/relations.php:1232
-#: views/relations.php:1257 views/relations.php:1275
+#: admin/views/tree_check_consistency.php:732 app/model/relationsModel.php:854
+#: app/model/relationsModel.php:890 app/model/relationsModel.php:942
+#: app/model/relationsModel.php:967 app/model/relationsModel.php:985
+#: views/relations.php:1153 views/relations.php:1187 views/relations.php:1239
+#: views/relations.php:1264 views/relations.php:1282
 msgid "father"
 msgstr "padre"
 
@@ -7134,7 +7128,7 @@ msgstr "Cognome"
 msgid "GEDCOM no. (\"I43\")"
 msgstr "Nr. GEDCOM (\"I43\")"
 
-#: admin/views/tree_merge.php:556 views/relations.php:143 views/relations.php:253
+#: admin/views/tree_merge.php:556 views/relations.php:142 views/relations.php:252
 msgid "Pick a name from search results"
 msgstr "Scegliete un nome dai risultati di ricerca"
 
@@ -7142,7 +7136,7 @@ msgstr "Scegliete un nome dai risultati di ricerca"
 msgid "Show details"
 msgstr "Mostra tutti i dettagli"
 
-#: admin/views/tree_merge.php:623 views/relations.php:304
+#: admin/views/tree_merge.php:623 views/relations.php:303
 msgid "Switch persons"
 msgstr "Seleziona persone"
 
@@ -7430,94 +7424,94 @@ msgstr "Controlla Familiari circostanti"
 msgid "Nr. "
 msgstr "Nr. "
 
-#: admin/views/tree_merge.php:1173 app/model/relationsModel.php:860
-#: app/model/relationsModel.php:871 app/model/relationsModel.php:914
-#: app/model/relationsModel.php:916 app/model/relationsModel.php:918
-#: app/model/relationsModel.php:931 app/model/relationsModel.php:938
-#: app/model/relationsModel.php:942 app/model/relationsModel.php:946
-#: app/model/relationsModel.php:950 app/model/relationsModel.php:953
-#: app/model/relationsModel.php:956 app/model/relationsModel.php:959
-#: app/model/relationsModel.php:963 app/model/relationsModel.php:1079
-#: app/model/relationsModel.php:1082 app/model/relationsModel.php:1085
-#: app/model/relationsModel.php:1089 app/model/relationsModel.php:1126
-#: app/model/relationsModel.php:1129 app/model/relationsModel.php:1132
-#: app/model/relationsModel.php:1135 app/model/relationsModel.php:1138
-#: app/model/relationsModel.php:1142 app/model/relationsModel.php:1147
-#: app/model/relationsModel.php:1150 app/model/relationsModel.php:1153
-#: app/model/relationsModel.php:1156 app/model/relationsModel.php:1160
-#: app/model/relationsModel.php:1305 app/model/relationsModel.php:1366
-#: app/model/relationsModel.php:1368 app/model/relationsModel.php:1370
-#: app/model/relationsModel.php:1382 app/model/relationsModel.php:1388
-#: app/model/relationsModel.php:1392 app/model/relationsModel.php:1396
-#: app/model/relationsModel.php:1402 app/model/relationsModel.php:1406
-#: app/model/relationsModel.php:1410 app/model/relationsModel.php:1414
-#: app/model/relationsModel.php:1418 app/model/relationsModel.php:1442
-#: app/model/relationsModel.php:1444 app/model/relationsModel.php:1450
-#: app/model/relationsModel.php:1454 app/model/relationsModel.php:1458
-#: app/model/relationsModel.php:1462 app/model/relationsModel.php:1466
-#: app/model/relationsModel.php:1540 app/model/relationsModel.php:1543
-#: app/model/relationsModel.php:1546 app/model/relationsModel.php:1550
-#: app/model/relationsModel.php:1591 app/model/relationsModel.php:1594
-#: app/model/relationsModel.php:1597 app/model/relationsModel.php:1600
-#: app/model/relationsModel.php:1604 app/model/relationsModel.php:1608
-#: app/model/relationsModel.php:1611 app/model/relationsModel.php:1614
-#: app/model/relationsModel.php:1617 app/model/relationsModel.php:1621
-#: app/model/relationsModel.php:1710 app/model/relationsModel.php:1712
-#: app/model/relationsModel.php:1720 app/model/relationsModel.php:1723
-#: app/model/relationsModel.php:1728 app/model/relationsModel.php:1731
-#: app/model/relationsModel.php:1735 app/model/relationsModel.php:1745
-#: app/model/relationsModel.php:1748 app/model/relationsModel.php:1751
-#: app/model/relationsModel.php:1754 app/model/relationsModel.php:1757
-#: app/model/relationsModel.php:1760 app/model/relationsModel.php:1764
-#: app/model/relationsModel.php:1772 app/model/relationsModel.php:1775
-#: app/model/relationsModel.php:1778 app/model/relationsModel.php:1781
-#: app/model/relationsModel.php:1784 app/model/relationsModel.php:1787
-#: app/model/relationsModel.php:1790 app/model/relationsModel.php:1794
-#: app/model/relationsModel.php:1800 app/model/relationsModel.php:1803
-#: app/model/relationsModel.php:1806 app/model/relationsModel.php:1809
-#: app/model/relationsModel.php:1812 app/model/relationsModel.php:1816
-#: app/model/relationsModel.php:1865 app/model/relationsModel.php:1868
-#: app/model/relationsModel.php:1879 app/model/relationsModel.php:1940
-#: app/model/relationsModel.php:1943 app/model/relationsModel.php:1946
-#: app/model/relationsModel.php:1949 app/model/relationsModel.php:1952
-#: app/model/relationsModel.php:1956 app/model/relationsModel.php:1961
-#: app/model/relationsModel.php:1964 app/model/relationsModel.php:1967
-#: app/model/relationsModel.php:1970 app/model/relationsModel.php:1973
-#: app/model/relationsModel.php:1977 app/model/relationsModel.php:2214
-#: app/model/relationsModel.php:2297 app/model/relationsModel.php:2299
-#: app/model/relationsModel.php:2306 app/model/relationsModel.php:2309
-#: app/model/relationsModel.php:2313 app/model/relationsModel.php:2316
-#: app/model/relationsModel.php:2320 app/model/relationsModel.php:2324
-#: app/model/relationsModel.php:2327 app/model/relationsModel.php:2330
-#: app/model/relationsModel.php:2334 app/model/relationsModel.php:2341
-#: app/model/relationsModel.php:2344 app/model/relationsModel.php:2368
-#: app/model/relationsModel.php:2416 app/model/relationsModel.php:2419
-#: app/model/relationsModel.php:2422 app/model/relationsModel.php:2425
-#: app/model/relationsModel.php:2428 app/model/relationsModel.php:2431
-#: app/model/relationsModel.php:2435 app/model/relationsModel.php:2439
-#: app/model/relationsModel.php:2442 app/model/relationsModel.php:2445
-#: app/model/relationsModel.php:2448 app/model/relationsModel.php:2451
-#: app/model/relationsModel.php:2455 app/model/relationsModel.php:2476
-#: app/model/relationsModel.php:2479 app/model/relationsModel.php:2498
-#: app/model/relationsModel.php:2515 app/model/relationsModel.php:2706
-#: app/model/relationsModel.php:2726 app/model/relationsModel.php:2736
-#: app/model/relationsModel.php:2740 app/model/relationsModel.php:2744
-#: app/model/relationsModel.php:2747 app/model/relationsModel.php:2750
-#: app/model/relationsModel.php:2754 app/model/relationsModel.php:2757
-#: app/model/relationsModel.php:2778 app/model/relationsModel.php:2780
-#: app/model/relationsModel.php:2888 app/model/relationsModel.php:2892
-#: app/model/relationsModel.php:2894 app/model/relationsModel.php:2897
-#: app/model/relationsModel.php:2901 app/model/relationsModel.php:2941
-#: app/model/relationsModel.php:2944 app/model/relationsModel.php:2948
-#: app/model/relationsModel.php:3048 app/model/relationsModel.php:3051
-#: app/model/relationsModel.php:3053 app/model/relationsModel.php:3057
-#: app/model/relationsModel.php:3059 app/model/relationsModel.php:3063
-#: app/model/relationsModel.php:3074 app/model/relationsModel.php:3078
-#: app/model/relationsModel.php:3081 app/model/relationsModel.php:3084
-#: app/model/relationsModel.php:3087 app/model/relationsModel.php:3090
-#: app/model/relationsModel.php:3094 app/model/relationsModel.php:3097
-#: app/model/relationsModel.php:3174 app/model/relationsModel.php:3211
-#: app/model/relationsModel.php:3213 views/ancestor_report_pdf.php:68
+#: admin/views/tree_merge.php:1173 app/model/relationsModel.php:923
+#: app/model/relationsModel.php:934 app/model/relationsModel.php:977
+#: app/model/relationsModel.php:979 app/model/relationsModel.php:981
+#: app/model/relationsModel.php:994 app/model/relationsModel.php:1001
+#: app/model/relationsModel.php:1005 app/model/relationsModel.php:1009
+#: app/model/relationsModel.php:1013 app/model/relationsModel.php:1016
+#: app/model/relationsModel.php:1019 app/model/relationsModel.php:1022
+#: app/model/relationsModel.php:1026 app/model/relationsModel.php:1142
+#: app/model/relationsModel.php:1145 app/model/relationsModel.php:1148
+#: app/model/relationsModel.php:1152 app/model/relationsModel.php:1189
+#: app/model/relationsModel.php:1192 app/model/relationsModel.php:1195
+#: app/model/relationsModel.php:1198 app/model/relationsModel.php:1201
+#: app/model/relationsModel.php:1205 app/model/relationsModel.php:1210
+#: app/model/relationsModel.php:1213 app/model/relationsModel.php:1216
+#: app/model/relationsModel.php:1219 app/model/relationsModel.php:1223
+#: app/model/relationsModel.php:1368 app/model/relationsModel.php:1429
+#: app/model/relationsModel.php:1431 app/model/relationsModel.php:1433
+#: app/model/relationsModel.php:1445 app/model/relationsModel.php:1451
+#: app/model/relationsModel.php:1455 app/model/relationsModel.php:1459
+#: app/model/relationsModel.php:1465 app/model/relationsModel.php:1469
+#: app/model/relationsModel.php:1473 app/model/relationsModel.php:1477
+#: app/model/relationsModel.php:1481 app/model/relationsModel.php:1505
+#: app/model/relationsModel.php:1507 app/model/relationsModel.php:1513
+#: app/model/relationsModel.php:1517 app/model/relationsModel.php:1521
+#: app/model/relationsModel.php:1525 app/model/relationsModel.php:1529
+#: app/model/relationsModel.php:1603 app/model/relationsModel.php:1606
+#: app/model/relationsModel.php:1609 app/model/relationsModel.php:1613
+#: app/model/relationsModel.php:1654 app/model/relationsModel.php:1657
+#: app/model/relationsModel.php:1660 app/model/relationsModel.php:1663
+#: app/model/relationsModel.php:1667 app/model/relationsModel.php:1671
+#: app/model/relationsModel.php:1674 app/model/relationsModel.php:1677
+#: app/model/relationsModel.php:1680 app/model/relationsModel.php:1684
+#: app/model/relationsModel.php:1773 app/model/relationsModel.php:1775
+#: app/model/relationsModel.php:1783 app/model/relationsModel.php:1786
+#: app/model/relationsModel.php:1791 app/model/relationsModel.php:1794
+#: app/model/relationsModel.php:1798 app/model/relationsModel.php:1808
+#: app/model/relationsModel.php:1811 app/model/relationsModel.php:1814
+#: app/model/relationsModel.php:1817 app/model/relationsModel.php:1820
+#: app/model/relationsModel.php:1823 app/model/relationsModel.php:1827
+#: app/model/relationsModel.php:1835 app/model/relationsModel.php:1838
+#: app/model/relationsModel.php:1841 app/model/relationsModel.php:1844
+#: app/model/relationsModel.php:1847 app/model/relationsModel.php:1850
+#: app/model/relationsModel.php:1853 app/model/relationsModel.php:1857
+#: app/model/relationsModel.php:1863 app/model/relationsModel.php:1866
+#: app/model/relationsModel.php:1869 app/model/relationsModel.php:1872
+#: app/model/relationsModel.php:1875 app/model/relationsModel.php:1879
+#: app/model/relationsModel.php:1928 app/model/relationsModel.php:1931
+#: app/model/relationsModel.php:1942 app/model/relationsModel.php:2003
+#: app/model/relationsModel.php:2006 app/model/relationsModel.php:2009
+#: app/model/relationsModel.php:2012 app/model/relationsModel.php:2015
+#: app/model/relationsModel.php:2019 app/model/relationsModel.php:2024
+#: app/model/relationsModel.php:2027 app/model/relationsModel.php:2030
+#: app/model/relationsModel.php:2033 app/model/relationsModel.php:2036
+#: app/model/relationsModel.php:2040 app/model/relationsModel.php:2277
+#: app/model/relationsModel.php:2360 app/model/relationsModel.php:2362
+#: app/model/relationsModel.php:2369 app/model/relationsModel.php:2372
+#: app/model/relationsModel.php:2376 app/model/relationsModel.php:2379
+#: app/model/relationsModel.php:2383 app/model/relationsModel.php:2387
+#: app/model/relationsModel.php:2390 app/model/relationsModel.php:2393
+#: app/model/relationsModel.php:2397 app/model/relationsModel.php:2404
+#: app/model/relationsModel.php:2407 app/model/relationsModel.php:2431
+#: app/model/relationsModel.php:2479 app/model/relationsModel.php:2482
+#: app/model/relationsModel.php:2485 app/model/relationsModel.php:2488
+#: app/model/relationsModel.php:2491 app/model/relationsModel.php:2494
+#: app/model/relationsModel.php:2498 app/model/relationsModel.php:2502
+#: app/model/relationsModel.php:2505 app/model/relationsModel.php:2508
+#: app/model/relationsModel.php:2511 app/model/relationsModel.php:2514
+#: app/model/relationsModel.php:2518 app/model/relationsModel.php:2539
+#: app/model/relationsModel.php:2542 app/model/relationsModel.php:2561
+#: app/model/relationsModel.php:2578 app/model/relationsModel.php:2769
+#: app/model/relationsModel.php:2789 app/model/relationsModel.php:2799
+#: app/model/relationsModel.php:2803 app/model/relationsModel.php:2807
+#: app/model/relationsModel.php:2810 app/model/relationsModel.php:2813
+#: app/model/relationsModel.php:2817 app/model/relationsModel.php:2820
+#: app/model/relationsModel.php:2841 app/model/relationsModel.php:2843
+#: app/model/relationsModel.php:2951 app/model/relationsModel.php:2955
+#: app/model/relationsModel.php:2957 app/model/relationsModel.php:2960
+#: app/model/relationsModel.php:2964 app/model/relationsModel.php:3004
+#: app/model/relationsModel.php:3007 app/model/relationsModel.php:3011
+#: app/model/relationsModel.php:3111 app/model/relationsModel.php:3114
+#: app/model/relationsModel.php:3116 app/model/relationsModel.php:3120
+#: app/model/relationsModel.php:3122 app/model/relationsModel.php:3126
+#: app/model/relationsModel.php:3137 app/model/relationsModel.php:3141
+#: app/model/relationsModel.php:3144 app/model/relationsModel.php:3147
+#: app/model/relationsModel.php:3150 app/model/relationsModel.php:3153
+#: app/model/relationsModel.php:3157 app/model/relationsModel.php:3160
+#: app/model/relationsModel.php:3237 app/model/relationsModel.php:3274
+#: app/model/relationsModel.php:3276 views/ancestor_report_pdf.php:68
 #: views/ancestor_report_pdf.php:83 views/ancestor_report_rtf.php:62
 #: views/ancestor_sheet.php:251 views/ancestor_sheet_pdf.php:296
 #: views/ancestor_sheet_pdf.php:317 views/descendant_chart.php:121
@@ -7525,65 +7519,65 @@ msgstr "Nr. "
 #: views/family_pdf.php:139 views/family_pdf.php:325 views/family_rtf.php:98
 #: views/family_rtf.php:100 views/hourglass.php:134
 #: views/outline_report_pdf.php:76 views/outline_report_pdf.php:94
-#: views/relations.php:524 views/relations.php:550 views/relations.php:1212
-#: views/relations.php:1223 views/relations.php:1267 views/relations.php:1269
-#: views/relations.php:1271 views/relations.php:1284 views/relations.php:1291
-#: views/relations.php:1295 views/relations.php:1299 views/relations.php:1303
-#: views/relations.php:1306 views/relations.php:1309 views/relations.php:1312
-#: views/relations.php:1316 views/relations.php:1431 views/relations.php:1434
-#: views/relations.php:1437 views/relations.php:1441 views/relations.php:1475
-#: views/relations.php:1478 views/relations.php:1481 views/relations.php:1484
-#: views/relations.php:1487 views/relations.php:1491 views/relations.php:1495
-#: views/relations.php:1498 views/relations.php:1501 views/relations.php:1504
-#: views/relations.php:1508 views/relations.php:1655 views/relations.php:1716
-#: views/relations.php:1718 views/relations.php:1720 views/relations.php:1732
-#: views/relations.php:1738 views/relations.php:1742 views/relations.php:1746
-#: views/relations.php:1751 views/relations.php:1754 views/relations.php:1757
-#: views/relations.php:1760 views/relations.php:1764 views/relations.php:1788
-#: views/relations.php:1790 views/relations.php:1795 views/relations.php:1798
-#: views/relations.php:1801 views/relations.php:1804 views/relations.php:1808
-#: views/relations.php:1882 views/relations.php:1885 views/relations.php:1888
-#: views/relations.php:1892 views/relations.php:1931 views/relations.php:1934
-#: views/relations.php:1937 views/relations.php:1940 views/relations.php:1944
-#: views/relations.php:1948 views/relations.php:1951 views/relations.php:1954
-#: views/relations.php:1957 views/relations.php:1961 views/relations.php:2053
-#: views/relations.php:2055 views/relations.php:2063 views/relations.php:2066
-#: views/relations.php:2071 views/relations.php:2074 views/relations.php:2078
-#: views/relations.php:2088 views/relations.php:2091 views/relations.php:2094
-#: views/relations.php:2097 views/relations.php:2100 views/relations.php:2103
-#: views/relations.php:2107 views/relations.php:2117 views/relations.php:2120
-#: views/relations.php:2123 views/relations.php:2126 views/relations.php:2129
-#: views/relations.php:2132 views/relations.php:2135 views/relations.php:2139
-#: views/relations.php:2145 views/relations.php:2148 views/relations.php:2151
-#: views/relations.php:2154 views/relations.php:2157 views/relations.php:2161
-#: views/relations.php:2210 views/relations.php:2213 views/relations.php:2224
-#: views/relations.php:2282 views/relations.php:2285 views/relations.php:2288
-#: views/relations.php:2291 views/relations.php:2294 views/relations.php:2298
-#: views/relations.php:2303 views/relations.php:2306 views/relations.php:2309
-#: views/relations.php:2312 views/relations.php:2315 views/relations.php:2319
-#: views/relations.php:2529 views/relations.php:2612 views/relations.php:2614
-#: views/relations.php:2621 views/relations.php:2624 views/relations.php:2628
-#: views/relations.php:2631 views/relations.php:2635 views/relations.php:2639
-#: views/relations.php:2642 views/relations.php:2645 views/relations.php:2649
-#: views/relations.php:2656 views/relations.php:2659 views/relations.php:2683
-#: views/relations.php:2731 views/relations.php:2734 views/relations.php:2737
-#: views/relations.php:2740 views/relations.php:2743 views/relations.php:2746
-#: views/relations.php:2750 views/relations.php:2754 views/relations.php:2757
-#: views/relations.php:2760 views/relations.php:2763 views/relations.php:2766
-#: views/relations.php:2770 views/relations.php:2794 views/relations.php:2797
-#: views/relations.php:2816 views/relations.php:2833 views/relations.php:3024
-#: views/relations.php:3044 views/relations.php:3053 views/relations.php:3057
-#: views/relations.php:3060 views/relations.php:3063 views/relations.php:3066
-#: views/relations.php:3070 views/relations.php:3073 views/relations.php:3094
-#: views/relations.php:3096 views/relations.php:3204 views/relations.php:3208
-#: views/relations.php:3210 views/relations.php:3213 views/relations.php:3217
-#: views/relations.php:3257 views/relations.php:3260 views/relations.php:3264
-#: views/relations.php:3363 views/relations.php:3367 views/relations.php:3369
-#: views/relations.php:3373 views/relations.php:3375 views/relations.php:3378
-#: views/relations.php:3389 views/relations.php:3392 views/relations.php:3395
-#: views/relations.php:3398 views/relations.php:3401 views/relations.php:3404
-#: views/relations.php:3408 views/relations.php:3411 views/relations.php:3487
-#: views/relations.php:3524 views/relations.php:3526
+#: views/relations.php:531 views/relations.php:557 views/relations.php:1219
+#: views/relations.php:1230 views/relations.php:1274 views/relations.php:1276
+#: views/relations.php:1278 views/relations.php:1291 views/relations.php:1298
+#: views/relations.php:1302 views/relations.php:1306 views/relations.php:1310
+#: views/relations.php:1313 views/relations.php:1316 views/relations.php:1319
+#: views/relations.php:1323 views/relations.php:1438 views/relations.php:1441
+#: views/relations.php:1444 views/relations.php:1448 views/relations.php:1482
+#: views/relations.php:1485 views/relations.php:1488 views/relations.php:1491
+#: views/relations.php:1494 views/relations.php:1498 views/relations.php:1502
+#: views/relations.php:1505 views/relations.php:1508 views/relations.php:1511
+#: views/relations.php:1515 views/relations.php:1662 views/relations.php:1723
+#: views/relations.php:1725 views/relations.php:1727 views/relations.php:1739
+#: views/relations.php:1745 views/relations.php:1749 views/relations.php:1753
+#: views/relations.php:1758 views/relations.php:1761 views/relations.php:1764
+#: views/relations.php:1767 views/relations.php:1771 views/relations.php:1795
+#: views/relations.php:1797 views/relations.php:1802 views/relations.php:1805
+#: views/relations.php:1808 views/relations.php:1811 views/relations.php:1815
+#: views/relations.php:1889 views/relations.php:1892 views/relations.php:1895
+#: views/relations.php:1899 views/relations.php:1938 views/relations.php:1941
+#: views/relations.php:1944 views/relations.php:1947 views/relations.php:1951
+#: views/relations.php:1955 views/relations.php:1958 views/relations.php:1961
+#: views/relations.php:1964 views/relations.php:1968 views/relations.php:2060
+#: views/relations.php:2062 views/relations.php:2070 views/relations.php:2073
+#: views/relations.php:2078 views/relations.php:2081 views/relations.php:2085
+#: views/relations.php:2095 views/relations.php:2098 views/relations.php:2101
+#: views/relations.php:2104 views/relations.php:2107 views/relations.php:2110
+#: views/relations.php:2114 views/relations.php:2124 views/relations.php:2127
+#: views/relations.php:2130 views/relations.php:2133 views/relations.php:2136
+#: views/relations.php:2139 views/relations.php:2142 views/relations.php:2146
+#: views/relations.php:2152 views/relations.php:2155 views/relations.php:2158
+#: views/relations.php:2161 views/relations.php:2164 views/relations.php:2168
+#: views/relations.php:2217 views/relations.php:2220 views/relations.php:2231
+#: views/relations.php:2289 views/relations.php:2292 views/relations.php:2295
+#: views/relations.php:2298 views/relations.php:2301 views/relations.php:2305
+#: views/relations.php:2310 views/relations.php:2313 views/relations.php:2316
+#: views/relations.php:2319 views/relations.php:2322 views/relations.php:2326
+#: views/relations.php:2536 views/relations.php:2619 views/relations.php:2621
+#: views/relations.php:2628 views/relations.php:2631 views/relations.php:2635
+#: views/relations.php:2638 views/relations.php:2642 views/relations.php:2646
+#: views/relations.php:2649 views/relations.php:2652 views/relations.php:2656
+#: views/relations.php:2663 views/relations.php:2666 views/relations.php:2690
+#: views/relations.php:2738 views/relations.php:2741 views/relations.php:2744
+#: views/relations.php:2747 views/relations.php:2750 views/relations.php:2753
+#: views/relations.php:2757 views/relations.php:2761 views/relations.php:2764
+#: views/relations.php:2767 views/relations.php:2770 views/relations.php:2773
+#: views/relations.php:2777 views/relations.php:2801 views/relations.php:2804
+#: views/relations.php:2823 views/relations.php:2840 views/relations.php:3031
+#: views/relations.php:3051 views/relations.php:3060 views/relations.php:3064
+#: views/relations.php:3067 views/relations.php:3070 views/relations.php:3073
+#: views/relations.php:3077 views/relations.php:3080 views/relations.php:3101
+#: views/relations.php:3103 views/relations.php:3211 views/relations.php:3215
+#: views/relations.php:3217 views/relations.php:3220 views/relations.php:3224
+#: views/relations.php:3264 views/relations.php:3267 views/relations.php:3271
+#: views/relations.php:3370 views/relations.php:3374 views/relations.php:3376
+#: views/relations.php:3380 views/relations.php:3382 views/relations.php:3385
+#: views/relations.php:3396 views/relations.php:3399 views/relations.php:3402
+#: views/relations.php:3405 views/relations.php:3408 views/relations.php:3411
+#: views/relations.php:3415 views/relations.php:3418 views/relations.php:3494
+#: views/relations.php:3531 views/relations.php:3533
 msgid " of "
 msgstr " di "
 
@@ -7920,274 +7914,270 @@ msgstr "ERRORE: la password deve contenere almeno 6 caratteri"
 msgid "New registered user"
 msgstr "Nuovo utente registrato"
 
-#: app/model/relationsModel.php:301
+#: app/model/relationsModel.php:335
 msgid "is"
 msgstr "è"
 
-#: app/model/relationsModel.php:473 views/relations.php:837
+#: app/model/relationsModel.php:536 views/relations.php:844
 msgid " identical to "
 msgstr " identico a "
 
-#: app/model/relationsModel.php:500 app/model/relationsModel.php:2348
-#: app/model/relationsModel.php:2382 views/relations.php:862
-#: views/relations.php:2663 views/relations.php:2697
+#: app/model/relationsModel.php:563 app/model/relationsModel.php:2411
+#: app/model/relationsModel.php:2445 views/relations.php:869
+#: views/relations.php:2670 views/relations.php:2704
 msgid "brother of "
 msgstr "fratello di "
 
-#: app/model/relationsModel.php:538 app/model/relationsModel.php:657
-#: views/relations.php:899 views/relations.php:1013
+#: app/model/relationsModel.php:601 app/model/relationsModel.php:720
+#: views/relations.php:906 views/relations.php:1020
 msgid "sister-in-law of "
 msgstr "cognata di "
 
-#: app/model/relationsModel.php:564 app/model/relationsModel.php:633
-#: views/relations.php:924 views/relations.php:990
+#: app/model/relationsModel.php:627 app/model/relationsModel.php:696
+#: views/relations.php:931 views/relations.php:997
 msgid "brother-in-law of "
 msgstr "cognato di "
 
-#: app/model/relationsModel.php:611 app/model/relationsModel.php:2350
-#: app/model/relationsModel.php:2384 views/relations.php:969
-#: views/relations.php:2665 views/relations.php:2699
+#: app/model/relationsModel.php:674 app/model/relationsModel.php:2413
+#: app/model/relationsModel.php:2447 views/relations.php:976
+#: views/relations.php:2672 views/relations.php:2706
 msgid "sister of "
 msgstr "sorella di "
 
-#: app/model/relationsModel.php:827 views/relations.php:1180
+#: app/model/relationsModel.php:890 views/relations.php:1187
 msgid "father-in-law"
 msgstr "suocero"
 
-#: app/model/relationsModel.php:827 views/relations.php:1180
+#: app/model/relationsModel.php:890 views/relations.php:1187
 msgid "mother-in-law"
 msgstr "suocera"
 
-#: app/model/relationsModel.php:874 app/model/relationsModel.php:1160
-#: app/model/relationsModel.php:1621 app/model/relationsModel.php:2217
-#: app/model/relationsModel.php:2320 app/model/relationsModel.php:2455
-#: app/model/relationsModel.php:3202 app/model/relationsModel.php:3205
+#: app/model/relationsModel.php:937 app/model/relationsModel.php:1223
+#: app/model/relationsModel.php:1684 app/model/relationsModel.php:2280
+#: app/model/relationsModel.php:2383 app/model/relationsModel.php:2518
+#: app/model/relationsModel.php:3265 app/model/relationsModel.php:3268
 #: include/marriageCls.php:868 include/personCls.php:1187 views/list.php:1117
-#: views/list_places_families.php:401 views/relations.php:1226
-#: views/relations.php:1508 views/relations.php:1961 views/relations.php:2532
-#: views/relations.php:2635 views/relations.php:2770 views/relations.php:3515
-#: views/relations.php:3518
+#: views/list_places_families.php:401 views/relations.php:1233
+#: views/relations.php:1515 views/relations.php:1968 views/relations.php:2539
+#: views/relations.php:2642 views/relations.php:2777 views/relations.php:3522
+#: views/relations.php:3525
 msgid "th"
 msgstr "°"
 
-#: app/model/relationsModel.php:874 app/model/relationsModel.php:924
-#: app/model/relationsModel.php:927 app/model/relationsModel.php:953
-#: app/model/relationsModel.php:1150 app/model/relationsModel.php:1153
-#: app/model/relationsModel.php:1156 app/model/relationsModel.php:1160
-#: app/model/relationsModel.php:1406 app/model/relationsModel.php:1611
-#: app/model/relationsModel.php:1614 app/model/relationsModel.php:1617
-#: app/model/relationsModel.php:1621 app/model/relationsModel.php:1754
-#: app/model/relationsModel.php:1967 app/model/relationsModel.php:1970
-#: app/model/relationsModel.php:1973 app/model/relationsModel.php:1977
-#: app/model/relationsModel.php:2217 app/model/relationsModel.php:2445
-#: app/model/relationsModel.php:2448 app/model/relationsModel.php:2451
-#: app/model/relationsModel.php:2455 app/model/relationsModel.php:2744
-#: app/model/relationsModel.php:2766 views/relations.php:1226
-#: views/relations.php:1277 views/relations.php:1280 views/relations.php:1306
-#: views/relations.php:1498 views/relations.php:1501 views/relations.php:1504
-#: views/relations.php:1508 views/relations.php:1754 views/relations.php:1951
-#: views/relations.php:1954 views/relations.php:1957 views/relations.php:1961
-#: views/relations.php:2097 views/relations.php:2309 views/relations.php:2312
-#: views/relations.php:2315 views/relations.php:2319 views/relations.php:2532
-#: views/relations.php:2760 views/relations.php:2763 views/relations.php:2766
-#: views/relations.php:2770 views/relations.php:3060 views/relations.php:3082
+#: app/model/relationsModel.php:937 app/model/relationsModel.php:987
+#: app/model/relationsModel.php:990 app/model/relationsModel.php:1016
+#: app/model/relationsModel.php:1213 app/model/relationsModel.php:1216
+#: app/model/relationsModel.php:1219 app/model/relationsModel.php:1223
+#: app/model/relationsModel.php:1469 app/model/relationsModel.php:1674
+#: app/model/relationsModel.php:1677 app/model/relationsModel.php:1680
+#: app/model/relationsModel.php:1684 app/model/relationsModel.php:1817
+#: app/model/relationsModel.php:2030 app/model/relationsModel.php:2033
+#: app/model/relationsModel.php:2036 app/model/relationsModel.php:2040
+#: app/model/relationsModel.php:2280 app/model/relationsModel.php:2508
+#: app/model/relationsModel.php:2511 app/model/relationsModel.php:2514
+#: app/model/relationsModel.php:2518 app/model/relationsModel.php:2807
+#: app/model/relationsModel.php:2829 views/relations.php:1233
+#: views/relations.php:1284 views/relations.php:1287 views/relations.php:1313
+#: views/relations.php:1505 views/relations.php:1508 views/relations.php:1511
+#: views/relations.php:1515 views/relations.php:1761 views/relations.php:1958
+#: views/relations.php:1961 views/relations.php:1964 views/relations.php:1968
+#: views/relations.php:2104 views/relations.php:2316 views/relations.php:2319
+#: views/relations.php:2322 views/relations.php:2326 views/relations.php:2539
+#: views/relations.php:2767 views/relations.php:2770 views/relations.php:2773
+#: views/relations.php:2777 views/relations.php:3067 views/relations.php:3089
 msgid "great-grand"
 msgstr "bis"
 
-#: app/model/relationsModel.php:923 app/model/relationsModel.php:926
-#: app/model/relationsModel.php:942 app/model/relationsModel.php:946
-#: app/model/relationsModel.php:950 app/model/relationsModel.php:1147
-#: app/model/relationsModel.php:1608 app/model/relationsModel.php:1731
-#: app/model/relationsModel.php:1735 app/model/relationsModel.php:1964
-#: app/model/relationsModel.php:2316 app/model/relationsModel.php:2320
-#: app/model/relationsModel.php:2442 app/model/relationsModel.php:2763
-#: views/relations.php:1276 views/relations.php:1279 views/relations.php:1295
-#: views/relations.php:1299 views/relations.php:1303 views/relations.php:1495
-#: views/relations.php:1948 views/relations.php:2074 views/relations.php:2078
-#: views/relations.php:2306 views/relations.php:2631 views/relations.php:2635
-#: views/relations.php:2757 views/relations.php:3079
+#: app/model/relationsModel.php:986 app/model/relationsModel.php:989
+#: app/model/relationsModel.php:1005 app/model/relationsModel.php:1009
+#: app/model/relationsModel.php:1013 app/model/relationsModel.php:1210
+#: app/model/relationsModel.php:1671 app/model/relationsModel.php:1794
+#: app/model/relationsModel.php:1798 app/model/relationsModel.php:2027
+#: app/model/relationsModel.php:2379 app/model/relationsModel.php:2383
+#: app/model/relationsModel.php:2505 app/model/relationsModel.php:2826
+#: views/relations.php:1283 views/relations.php:1286 views/relations.php:1302
+#: views/relations.php:1306 views/relations.php:1310 views/relations.php:1502
+#: views/relations.php:1955 views/relations.php:2081 views/relations.php:2085
+#: views/relations.php:2313 views/relations.php:2638 views/relations.php:2642
+#: views/relations.php:2764 views/relations.php:3086
 msgid "grand"
 msgstr "nonno"
 
-#: app/model/relationsModel.php:1153 app/model/relationsModel.php:1614
-#: app/model/relationsModel.php:1809 app/model/relationsModel.php:1970
-#: app/model/relationsModel.php:2448 include/marriageCls.php:862
+#: app/model/relationsModel.php:1216 app/model/relationsModel.php:1677
+#: app/model/relationsModel.php:1872 app/model/relationsModel.php:2033
+#: app/model/relationsModel.php:2511 include/marriageCls.php:862
 #: include/personCls.php:1183 views/list.php:1113
-#: views/list_places_families.php:397 views/relations.php:1501
-#: views/relations.php:1954 views/relations.php:2154 views/relations.php:2312
-#: views/relations.php:2763
+#: views/list_places_families.php:397 views/relations.php:1508
+#: views/relations.php:1961 views/relations.php:2161 views/relations.php:2319
+#: views/relations.php:2770
 msgid "2nd"
 msgstr "secondo"
 
-#: app/model/relationsModel.php:1156 app/model/relationsModel.php:1617
-#: app/model/relationsModel.php:1812 app/model/relationsModel.php:1973
-#: app/model/relationsModel.php:2451 include/marriageCls.php:865
+#: app/model/relationsModel.php:1219 app/model/relationsModel.php:1680
+#: app/model/relationsModel.php:1875 app/model/relationsModel.php:2036
+#: app/model/relationsModel.php:2514 include/marriageCls.php:865
 #: include/personCls.php:1185 views/list.php:1115
-#: views/list_places_families.php:399 views/relations.php:1504
-#: views/relations.php:1957 views/relations.php:2157 views/relations.php:2315
-#: views/relations.php:2766
+#: views/list_places_families.php:399 views/relations.php:1511
+#: views/relations.php:1964 views/relations.php:2164 views/relations.php:2322
+#: views/relations.php:2773
 msgid "3rd"
 msgstr "terzo"
 
-#: app/model/relationsModel.php:1222 app/model/relationsModel.php:1258
-#: app/model/relationsModel.php:1313 app/model/relationsModel.php:1356
-#: app/model/relationsModel.php:1373 app/model/relationsModel.php:2730
-#: app/model/relationsModel.php:3068 app/model/timelineModel.php:253
-#: views/relations.php:1574 views/relations.php:1610 views/relations.php:1663
-#: views/relations.php:1706 views/relations.php:1723 views/relations.php:3047
-#: views/relations.php:3383
+#: app/model/relationsModel.php:1285 app/model/relationsModel.php:1321
+#: app/model/relationsModel.php:1376 app/model/relationsModel.php:1419
+#: app/model/relationsModel.php:1436 app/model/relationsModel.php:2793
+#: app/model/relationsModel.php:3131 app/model/timelineModel.php:253
+#: views/relations.php:1581 views/relations.php:1617 views/relations.php:1670
+#: views/relations.php:1713 views/relations.php:1730 views/relations.php:3054
+#: views/relations.php:3390
 msgid "son"
 msgstr "figlio"
 
-#: app/model/relationsModel.php:1222 app/model/relationsModel.php:2732
-#: app/model/relationsModel.php:3070 app/model/timelineModel.php:255
-#: views/relations.php:1574 views/relations.php:3050 views/relations.php:3386
+#: app/model/relationsModel.php:1285 app/model/relationsModel.php:2795
+#: app/model/relationsModel.php:3133 app/model/timelineModel.php:255
+#: views/relations.php:1581 views/relations.php:3057 views/relations.php:3393
 msgid "daughter"
 msgstr "figlia"
 
-#: app/model/relationsModel.php:1258 views/relations.php:1610
+#: app/model/relationsModel.php:1321 views/relations.php:1617
 msgid "daughter-in-law"
 msgstr "nuora"
 
-#: app/model/relationsModel.php:1258 views/relations.php:1610
+#: app/model/relationsModel.php:1321 views/relations.php:1617
 msgid "son-in-law"
 msgstr "genero"
 
-#: app/model/relationsModel.php:1392 app/model/relationsModel.php:1396
-#: app/model/timelineModel.php:377 views/relations.php:1742
-#: views/relations.php:1746
+#: app/model/relationsModel.php:1455 app/model/relationsModel.php:1459
+#: app/model/timelineModel.php:377 views/relations.php:1749
+#: views/relations.php:1753
 msgid "grandchild"
 msgstr "nipote"
 
-#: app/model/relationsModel.php:1698 app/model/relationsModel.php:1717
-#: app/model/relationsModel.php:1726 app/model/relationsModel.php:1738
-#: app/model/relationsModel.php:1767 app/model/relationsModel.php:1797
-#: app/model/relationsModel.php:1933 app/model/relationsModel.php:1959
-#: app/model/relationsModel.php:2501 views/relations.php:2041
-#: views/relations.php:2060 views/relations.php:2069 views/relations.php:2081
-#: views/relations.php:2110 views/relations.php:2142 views/relations.php:2275
-#: views/relations.php:2301 views/relations.php:2819
+#: app/model/relationsModel.php:1761 app/model/relationsModel.php:1780
+#: app/model/relationsModel.php:1789 app/model/relationsModel.php:1801
+#: app/model/relationsModel.php:1830 app/model/relationsModel.php:1860
+#: app/model/relationsModel.php:1996 app/model/relationsModel.php:2022
+#: app/model/relationsModel.php:2564 views/relations.php:2048
+#: views/relations.php:2067 views/relations.php:2076 views/relations.php:2088
+#: views/relations.php:2117 views/relations.php:2149 views/relations.php:2282
+#: views/relations.php:2308 views/relations.php:2826
 msgid "nephew"
 msgstr "nipote"
 
-#: app/model/relationsModel.php:1702 app/model/relationsModel.php:1717
-#: app/model/relationsModel.php:1726 app/model/relationsModel.php:1738
-#: app/model/relationsModel.php:1767 app/model/relationsModel.php:1797
-#: app/model/relationsModel.php:1936 app/model/relationsModel.php:1959
-#: app/model/relationsModel.php:2505 views/relations.php:2045
-#: views/relations.php:2060 views/relations.php:2069 views/relations.php:2081
-#: views/relations.php:2110 views/relations.php:2142 views/relations.php:2278
-#: views/relations.php:2301 views/relations.php:2823
+#: app/model/relationsModel.php:1765 app/model/relationsModel.php:1780
+#: app/model/relationsModel.php:1789 app/model/relationsModel.php:1801
+#: app/model/relationsModel.php:1830 app/model/relationsModel.php:1860
+#: app/model/relationsModel.php:1999 app/model/relationsModel.php:2022
+#: app/model/relationsModel.php:2568 views/relations.php:2052
+#: views/relations.php:2067 views/relations.php:2076 views/relations.php:2088
+#: views/relations.php:2117 views/relations.php:2149 views/relations.php:2285
+#: views/relations.php:2308 views/relations.php:2830
 msgid "niece"
 msgstr "nipote"
 
-#: app/model/relationsModel.php:1803 app/model/relationsModel.php:2714
-#: app/model/relationsModel.php:3192 app/model/relationsModel.php:3205
-#: views/relations.php:2148 views/relations.php:3032 views/relations.php:3505
-#: views/relations.php:3518
+#: app/model/relationsModel.php:1866 app/model/relationsModel.php:2777
+#: app/model/relationsModel.php:3255 app/model/relationsModel.php:3268
+#: views/relations.php:2155 views/relations.php:3039 views/relations.php:3512
+#: views/relations.php:3525
 msgid "2nd [COUSIN]"
 msgstr "cugino di 2[°] grado"
 
-#: app/model/relationsModel.php:1806 app/model/relationsModel.php:1809
-#: app/model/relationsModel.php:1812 app/model/relationsModel.php:1816
-#: app/model/relationsModel.php:2716 app/model/relationsModel.php:3195
-#: views/relations.php:2151 views/relations.php:2154 views/relations.php:2157
-#: views/relations.php:2161 views/relations.php:3034 views/relations.php:3508
+#: app/model/relationsModel.php:1869 app/model/relationsModel.php:1872
+#: app/model/relationsModel.php:1875 app/model/relationsModel.php:1879
+#: app/model/relationsModel.php:2779 app/model/relationsModel.php:3258
+#: views/relations.php:2158 views/relations.php:2161 views/relations.php:2164
+#: views/relations.php:2168 views/relations.php:3041 views/relations.php:3515
 msgid "3rd [COUSIN]"
 msgstr "cugino di 3[°] grado"
 
-#: app/model/relationsModel.php:1816 app/model/relationsModel.php:1977
-#: views/relations.php:2161 views/relations.php:2319
+#: app/model/relationsModel.php:1879 app/model/relationsModel.php:2040
+#: views/relations.php:2168 views/relations.php:2326
 msgid "th "
 msgstr "esimo "
 
-#: app/model/relationsModel.php:1986 app/model/relationsModel.php:2285
-#: app/model/relationsModel.php:2347 app/model/relationsModel.php:2381
-#: app/model/relationsModel.php:2483 app/model/relationsModel.php:2565
-#: views/relations.php:2330 views/relations.php:2600 views/relations.php:2662
-#: views/relations.php:2696 views/relations.php:2801 views/relations.php:2883
+#: app/model/relationsModel.php:2049 app/model/relationsModel.php:2348
+#: app/model/relationsModel.php:2410 app/model/relationsModel.php:2444
+#: app/model/relationsModel.php:2546 app/model/relationsModel.php:2628
+#: views/relations.php:2337 views/relations.php:2607 views/relations.php:2669
+#: views/relations.php:2703 views/relations.php:2808 views/relations.php:2890
 msgid "uncle"
 msgstr "zio"
 
-#: app/model/relationsModel.php:2117 app/model/relationsModel.php:2289
-#: app/model/relationsModel.php:2487 app/model/relationsModel.php:2569
-#: views/relations.php:2451 views/relations.php:2604 views/relations.php:2805
-#: views/relations.php:2887
+#: app/model/relationsModel.php:2180 app/model/relationsModel.php:2352
+#: app/model/relationsModel.php:2550 app/model/relationsModel.php:2632
+#: views/relations.php:2458 views/relations.php:2611 views/relations.php:2812
+#: views/relations.php:2894
 msgid "aunt"
 msgstr "zia"
 
 # Only translate: cousin
-#: app/model/relationsModel.php:2467 app/model/relationsModel.php:2525
-#: app/model/relationsModel.php:3128 app/model/relationsModel.php:3198
-#: views/relations.php:2785 views/relations.php:2843 views/relations.php:3441
-#: views/relations.php:3511
+#: app/model/relationsModel.php:2530 app/model/relationsModel.php:2588
+#: app/model/relationsModel.php:3191 app/model/relationsModel.php:3261
+#: views/relations.php:2792 views/relations.php:2850 views/relations.php:3448
+#: views/relations.php:3518
 msgid "cousin.male"
 msgstr "cugino"
 
-#: app/model/relationsModel.php:2469 app/model/relationsModel.php:2527
-#: app/model/relationsModel.php:2531 app/model/relationsModel.php:2712
-#: app/model/relationsModel.php:3189 views/relations.php:2787
-#: views/relations.php:2845 views/relations.php:2849 views/relations.php:3030
-#: views/relations.php:3502
+#: app/model/relationsModel.php:2532 app/model/relationsModel.php:2590
+#: app/model/relationsModel.php:2594 app/model/relationsModel.php:2775
+#: app/model/relationsModel.php:3252 views/relations.php:2794
+#: views/relations.php:2852 views/relations.php:2856 views/relations.php:3037
+#: views/relations.php:3509
 msgid "1st [COUSIN]"
 msgstr "cugino di 1[°] grado"
 
 # Only translate: cousin
-#: app/model/relationsModel.php:2471 app/model/relationsModel.php:2529
-#: app/model/relationsModel.php:3131 app/model/relationsModel.php:3198
-#: views/relations.php:2789 views/relations.php:2847 views/relations.php:3444
-#: views/relations.php:3511
+#: app/model/relationsModel.php:2534 app/model/relationsModel.php:2592
+#: app/model/relationsModel.php:3194 app/model/relationsModel.php:3261
+#: views/relations.php:2796 views/relations.php:2854 views/relations.php:3451
+#: views/relations.php:3518
 msgid "cousin.female"
 msgstr "cugina"
 
 # Enter the text for cousin male here. There is no seperate text for male/
 # female cousin in english.
-#: app/model/relationsModel.php:2689 app/model/relationsModel.php:3048
-#: views/relations.php:3007 views/relations.php:3363
+#: app/model/relationsModel.php:2752 app/model/relationsModel.php:3111
+#: views/relations.php:3014 views/relations.php:3370
 msgid "COUSIN_MALE"
 msgstr "Cugino"
 
 # Enter the text for cousin male here. There is no seperate text for male/
 # female cousin in english.
-#: app/model/relationsModel.php:2691 views/relations.php:3009
+#: app/model/relationsModel.php:2754 views/relations.php:3016
 msgid "COUSIN_FEMALE"
 msgstr "Cugina"
 
-#: app/model/relationsModel.php:2697 app/model/relationsModel.php:3180
-#: views/relations.php:3015 views/relations.php:3493
+#: app/model/relationsModel.php:2760 app/model/relationsModel.php:3243
+#: views/relations.php:3022 views/relations.php:3500
 msgid "once removed"
 msgstr "distante una generazione"
 
-#: app/model/relationsModel.php:2699 app/model/relationsModel.php:3184
-#: views/relations.php:3017 views/relations.php:3497
+#: app/model/relationsModel.php:2762 app/model/relationsModel.php:3247
+#: views/relations.php:3024 views/relations.php:3504
 msgid "times removed"
 msgstr "generazioni distante"
 
-#: app/model/relationsModel.php:2718 views/relations.php:3036
+#: app/model/relationsModel.php:2781 views/relations.php:3043
 msgid "4th [COUSIN]"
 msgstr "cugino di 4[°] grado"
 
-#: app/model/relationsModel.php:3182 views/relations.php:3495
+#: app/model/relationsModel.php:3245 views/relations.php:3502
 msgid "twice removed"
 msgstr "distante due generazioni"
 
-#: app/model/relationsModel.php:3350 app/model/relationsModel.php:3472
-#, fuzzy
-#| msgid "No. of persons"
+#: app/model/relationsModel.php:3413 app/model/relationsModel.php:3535
 msgid "No such person"
-msgstr "N. di persone"
+msgstr "Nessuna persona simile"
 
-#: app/model/relationsModel.php:3362 app/model/relationsModel.php:3484
-#, fuzzy
-#| msgid "Source for family"
+#: app/model/relationsModel.php:3425 app/model/relationsModel.php:3547
 msgid "No such family"
-msgstr "Fonte per la famiglia"
+msgstr "Nessuna famiglia simile"
 
-#: app/model/relationsModel.php:3615
+#: app/model/relationsModel.php:3678
 msgid "These persons are not related in any way."
 msgstr "Queste persone non sono collegate in alcun modo."
 
-#: app/model/relationsModel.php:3617
+#: app/model/relationsModel.php:3680
 msgid "No further paths found."
 msgstr "Non sono stati trovati altri percorsi."
 
@@ -8964,7 +8954,7 @@ msgstr "pagina"
 #: include/tfpdf/tfpdfextend.php:1081
 #, php-format
 msgid "PDF Created with %s on"
-msgstr "PDF Creato con%s su"
+msgstr "PDF Creato con%s il"
 
 #: include/witness.php:175 include/witness.php:178
 msgid "This person was witness at:"
@@ -9306,7 +9296,7 @@ msgstr "sposato/a"
 #: views/ancestor_sheet.php:297
 #, php-format
 msgid "Generated with %s on %s"
-msgstr "Creato con %s su %s"
+msgstr "Creato con %s il %s"
 
 #: views/anniversary.php:47
 msgid "Birthdays"
@@ -10509,15 +10499,15 @@ msgstr "Minimo 6 caratteri"
 msgid "Repeat password"
 msgstr "Ripeti la password"
 
-#: views/relations.php:94 views/relations.php:204
+#: views/relations.php:93 views/relations.php:203
 msgid "or: ID"
 msgstr "oppure: ID"
 
-#: views/relations.php:178 views/relations.php:286
+#: views/relations.php:177 views/relations.php:285
 msgid "Results are limited, use search to find more persons."
 msgstr "I risultati sono limitati, usa la ricerca per trovare altre persone."
 
-#: views/relations.php:319
+#: views/relations.php:318
 msgid ""
 "This calculator will find the following relationships:<br>\n"
 "<ul><li>Any blood relationship between X and Y (\"X is great-grandfather of "
@@ -10560,11 +10550,11 @@ msgstr ""
 "<u>e</u> del nome vuoto, si otterrà una lista con tutte le persone presenti "
 "nel database (potrebbero essere necessari alcuni secondi).</b></li></ul>"
 
-#: views/relations.php:338
+#: views/relations.php:337
 msgid "Calculate relationships"
 msgstr "Calcola parentela"
 
-#: views/relations.php:369
+#: views/relations.php:375
 msgid ""
 "You have to search and than choose Person 1 and Person 2 from the search "
 "result pulldown"
@@ -10572,52 +10562,48 @@ msgstr ""
 "Devi cercare di scegliere Persona 1 Persona 2 dal menu a discesa tra i "
 "risultati di ricerca"
 
-#: views/relations.php:386
-#, fuzzy
-#| msgid "relationship with"
+#: views/relations.php:392
 msgid "Blood relationship"
-msgstr "relazione con"
+msgstr "Legame di sangue"
 
-#: views/relations.php:490
+#: views/relations.php:497
 msgid "Use Extended Calculator"
 msgstr "Usa la calcolatrice estesa"
 
-#: views/relations.php:493 views/relations.php:686
-#, fuzzy
-#| msgid "Calculate relationships"
+#: views/relations.php:500 views/relations.php:693
 msgid "Marital relationship"
-msgstr "Calcola parentela"
+msgstr "Legame coniugale"
 
-#: views/relations.php:508
+#: views/relations.php:515
 msgid "are both husbands of"
 msgstr "sono entrambi mariti di"
 
-#: views/relations.php:510
+#: views/relations.php:517
 msgid "are both wifes of"
 msgstr "sono entrambe mogli di"
 
-#: views/relations.php:524 views/relations.php:525 views/relations.php:550
-#: views/relations.php:551 views/relations.php:622
+#: views/relations.php:531 views/relations.php:532 views/relations.php:557
+#: views/relations.php:558 views/relations.php:629
 msgid "partner"
 msgstr "partner"
 
-#: views/relations.php:528 views/relations.php:564
+#: views/relations.php:535 views/relations.php:571
 msgid "husband of"
 msgstr "marito di"
 
-#: views/relations.php:537 views/relations.php:554
+#: views/relations.php:544 views/relations.php:561
 msgid "wife of"
 msgstr "moglie di"
 
-#: views/relations.php:683
+#: views/relations.php:690
 msgid "No blood relation or direct marital relation found"
 msgstr "Non trovata alcuna relazione diretta di sangue o di rapporto coniugale"
 
-#: views/relations.php:687
+#: views/relations.php:694
 msgid "No direct marital relation found"
 msgstr "Non è stata trovata alcuna relazione coniugale diretta"
 
-#: views/relations.php:692
+#: views/relations.php:699
 msgid ""
 "You may wish to try finding a connection with the <span style='font-weight:"
 "bold'>Extended Marital Calculator</span> below.<br>\n"
@@ -10641,25 +10627,21 @@ msgstr ""
 " In un albero di 75.000 persone le persone più distanti possono impiegare fino "
 "a 8 secondi per trovarle."
 
-#: views/relations.php:697
+#: views/relations.php:704
 msgid "Perform extended marital calculation"
 msgstr "Prova il Calcolo Parentale Esteso"
 
-#: views/relations.php:3711
+#: views/relations.php:3718
 msgid "Try to find another path"
 msgstr "Prova a trovare un altro percorso"
 
-#: views/relations.php:3712
-#, fuzzy
-#| msgid ""
-#| "(With each consecutive search the path may get longer and computing time "
-#| "may increase!)"
+#: views/relations.php:3719
 msgid ""
 "With each consecutive search the path may get longer and computing time may "
 "increase!"
 msgstr ""
-"(Con ogni ricerca consecutiva il percorso potrebbe allungarsi e il tempo di "
-"calcolo potrebbe aumentare!)"
+"Ad ogni ricerca consecutiva il percorso potrebbe allungarsi e il tempo di "
+"elaborazione potrebbe aumentare!"
 
 #: views/reset_password.php:30
 msgid "Your new password has been stored successfully"
@@ -11012,15 +10994,3 @@ msgstr "Selezionare un tema"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Colori standard"
-
-#~ msgid "Name source"
-#~ msgstr "Nome fonte"
-
-#~ msgid "Visited families in the past 12 months"
-#~ msgstr "Famiglie visitate negli ultimi 12 mesi"
-
-#~ msgid "BLOOD RELATIONSHIP: "
-#~ msgstr "PARENTELA DI SANGUE: "
-
-#~ msgid "MARITAL RELATIONSHIP: "
-#~ msgstr "PARENTELA MARITALE: "

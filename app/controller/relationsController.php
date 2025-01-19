@@ -25,11 +25,21 @@ class RelationsController
         // *** Process standard calculation ***
         $RelationsModel->process_standard_calculation($tree_id, $link_cls, $uri_path);
 
+        // *** Process extended calculation ***
         if (isset($_POST["extended"]) || isset($_POST["next_path"])) {
             $RelationsModel->process_extended_calculation();
         }
 
-        $relation = $RelationsModel->get_variables();
+        // TODO if refactor is finished, this could probably be improved.
+        // Second array needed for marriage relationship. Some variables were used for processing marriage relationship.
+        // $standard_extend is first array needed for standard and extended calculation.
+        $standard_extended = $RelationsModel->get_variables_standard_extended();
+
+        // *** Process marriage relationship. This function will use same variables ***
+        $RelationsModel->process_marriage_relationship();
+
+        $variables = $RelationsModel->get_variables();
+        $relation = array_merge($standard_extended, $variables);
 
         // http://localhost/HuMo-genealogy/family/3/F116?main_person=I202
         $relation['fam_path'] = $link_cls->get_link($uri_path, 'family', $tree_id, true);

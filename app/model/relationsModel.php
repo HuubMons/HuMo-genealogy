@@ -54,7 +54,6 @@ class RelationsModel
         'relation_type' => '',
         'special_spouseX' => '',
         'special_spouseY' => '',
-        'relation_type' => '',
         'dutch_text' => ''
     ];
 
@@ -114,9 +113,59 @@ class RelationsModel
         return $relation;
     }
 
+    // *** Several variables used double. For standard and marital relationship calculator. ***
+    public function get_variables_standard_extended()
+    {
+        // TEST
+        $relation['standard_extended']['relation_type'] = $this->relation['relation_type'];
+
+        // $relation['famspouseX'], $relation['famspouseY']
+        // $relation['relation_type']
+        // $relation['foundX_gen'], $relation['foundY_gen']
+        // $relation['spouse']
+        // $relation['rel_arrayspouseX'], $relation['rel_arrayspouseY']
+        // $relation['foundX_nr'], $relation['foundY_nr']
+        // $relation['name1'], $relation['name2']
+        // $relation['family_id1'], $relation['family_id2']
+        // $relation['gednr1'], $relation['gednr2']
+
+        // TODO jan. 2025 for now just add all variables to "standard_extended" array. Must be refactored.
+        /*
+        $relation['standard_extended'] = $this->relation;
+
+        $relation['standard_extended']['search_name1'] = $this->search_name1;
+        $relation['standard_extended']['search_name2'] = $this->search_name2;
+
+        $relation['standard_extended']["search_gednr1"] = $this->search_gednr1;
+        $relation['standard_extended']["search_gednr2"] = $this->search_gednr2;
+
+        $relation['standard_extended']['start_calculation'] = $this->start_calculation;
+        $relation['standard_extended']['search_results'] = $this->search_results;
+
+        $relation['standard_extended']['link1'] = $this->link1;
+        $relation['standard_extended']['link2'] = $this->link2;
+        $relation['standard_extended']['language_is'] = $this->language_is;
+        $relation['standard_extended']['bloodrel'] = $this->bloodrel;
+        $relation['standard_extended']['bloodreltext'] = $this->bloodreltext;
+        $relation['standard_extended']['rel_arrayX'] = $this->rel_arrayX;
+        $relation['standard_extended']['rel_arrayY'] = $this->rel_arrayY;
+
+        $relation['standard_extended']['fams1_array'] = $this->fams1_array;
+        $relation['standard_extended']['fams2_array'] = $this->fams2_array;
+
+        // *** Extended search ***
+        $relation['standard_extended']['globaltrack'] = $this->globaltrack;
+        $relation['standard_extended']['globaltrack2'] = $this->globaltrack2;
+        $relation['standard_extended']['totalpath'] = $this->totalpath;
+        $relation['standard_extended']['show_extended_message'] = $this->show_extended_message;
+        */
+
+        return $relation;
+    }
+
     public function set_control_variables()
     {
-        //$this->start_calculation = isset($_POST["calculator"]) || isset($_POST["switch"]);
+        //$this->start_calculation = isset($_POST["calculator"]) || isset($_POST["switch"]); // Jan. 2025: doesn't work properly.
         $this->start_calculation = isset($_POST["calculator"]);
         $this->search_results = $this->relation["person1"] == '' || $this->relation["person2"] == '' ? false : true;
     }
@@ -333,6 +382,35 @@ class RelationsModel
         //$relation['global_array'] = array();
 
         $this->extended_calculator($firstcall1, $firstcall2);
+    }
+
+    public function process_marriage_relationship()
+    {
+        /**
+         * Marital relationship
+         *
+         * This part shows for example this relationship: Uncle <-> Wife of nephew.
+         * Relation types
+         * 3 = uncle - nephew
+         * 4 = nephew - uncle
+         * 5 = cousin
+         * 6 = siblings
+         */
+        if ($this->start_calculation && $this->search_results && $this->relation['relation_type'] != 1 && $this->relation['relation_type'] != 2 && $this->relation['relation_type'] != 7) {
+            /*
+            $this->relation['foundX_nr'] = '';
+            $this->relation['foundY_nr'] = '';
+            $this->relation['foundX_gen'] = '';
+            $this->relation['foundY_gen'] = '';
+            $this->relation['foundX_match'] = '';
+            $this->relation['foundY_match'] = '';
+            $this->relation['relation_type'] = '';
+            $this->relation['rel_text'] = '';
+            $this->relation['spouse'] = '';
+            */
+
+            //$this->search_marital(); // Will return a new $relation['rel_text'].
+        }
     }
 
     // TODO: use general ancestor script. Or: check query, get_person will get all items of person. Not needed here.
@@ -3214,7 +3292,7 @@ class RelationsModel
                 $this->rel_arrayspouseX = $this->create_rel_array($thespouse);
 
                 if (isset($this->rel_arrayspouseX)) {
-                    compare_rel_array($this->rel_arrayspouseX, $this->rel_arrayY, 1); // "1" flags comparison with "spouse of X"
+                    $this->compare_rel_array($this->rel_arrayspouseX, $this->rel_arrayY, 1); // "1" flags comparison with "spouse of X"
                 }
 
                 if ($this->relation['foundX_match'] !== '') {
@@ -3241,7 +3319,7 @@ class RelationsModel
                 $this->rel_arrayspouseY = $this->create_rel_array($thespouse2);
 
                 if (isset($this->rel_arrayspouseY)) {
-                    compare_rel_array($this->rel_arrayX, $this->rel_arrayspouseY, 2); // "2" flags comparison with "spouse of Y"
+                    $this->compare_rel_array($this->rel_arrayX, $this->rel_arrayspouseY, 2); // "2" flags comparison with "spouse of Y"
                 }
                 if ($this->relation['foundX_match'] !== '') {
                     $this->relation['famspouseY'] = $this->fams2_array[$x];
@@ -3269,7 +3347,7 @@ class RelationsModel
                     $this->rel_arrayspouseY = $this->create_rel_array($thespouse2);
 
                     if (isset($this->rel_arrayspouseX) && isset($this->rel_arrayspouseY)) {
-                        compare_rel_array($this->rel_arrayspouseX, $this->rel_arrayspouseY, 3); //"3" flags comparison "spouse of X" with "spouse of Y"
+                        $this->compare_rel_array($this->rel_arrayspouseX, $this->rel_arrayspouseY, 3); //"3" flags comparison "spouse of X" with "spouse of Y"
                     }
                     if ($this->relation['foundX_match'] !== '') {
                         // we have to switch sex since the spouse is the relative!
