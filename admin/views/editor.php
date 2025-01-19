@@ -10,7 +10,7 @@
  *
  * https://humo-gen.com
  *
- * Copyright (C) 2008-2024 Huub Mons,
+ * Copyright (C) 2008-2025 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * René Janssen, Yossi Beck
  * and others.
@@ -51,13 +51,6 @@ $EditorEvent = new EditorEvent;
 // *** Temp variables ***
 $pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***
 $marriage = $editor['marriage']; // *** Temp variable ***
-
-//TEST
-//include (__DIR__.'/../include/editor_sources.php');
-
-// TODO move items from editor_inc.php to model and view scripts.
-// *** Process queries ***
-include_once(__DIR__ . "/../include/editor_inc.php");
 
 $person_found = true;
 ?>
@@ -359,10 +352,6 @@ if (isset($_GET['child_disconnect'])) {
 
 if ($editor['confirm']) {
     echo $editor['confirm'];
-}
-// *** For events ***
-if ($confirm) {
-    echo $confirm;
 }
 if ($editor['confirm_note']) {
     echo $editor['confirm_note'];
@@ -749,8 +738,8 @@ if ($check_person) {
         </div>
     </ul>
 
+    <!-- </div> is missing? -->
     <div style="background-color:white; height:500px; padding:10px;">
-
         <?php
         // *****************
         // *** Show data ***
@@ -958,960 +947,774 @@ if ($check_person) {
         if ($menu_tab == 'marriage') {
             include(__DIR__ . '/editor_relation.php');
         }
-    } // End person check
-
-
-
-    // *****************
-    // *** FUNCTIONS ***
-    // *****************
-
-    // *** Show event options ***
-    function event_option($event_gedcom, $event)
-    {
-        global $language;
-        $selected = '';
-        if ($event_gedcom == $event) {
-            $selected = ' selected';
-        }
-        return '<option value="' . $event . '"' . $selected . '>' . language_event($event) . '</option>';
-    }
-
-    // *** New function mar. 2024 ***
-    // *** Show number of sources and show indication if source is connected ***
-    function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
-    {
-        global $tree_id, $dbh, $db_functions;
-
-        $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
-            WHERE connect_tree_id='" . $tree_id . "'
-            AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
-        $connect_sql = $dbh->query($connect_qry);
-        $source_count = $connect_sql->rowCount();
-        $source_error = 0;
-        while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
-            if (!$connectDb->connect_source_id) {
-                $source_error = 1;
-            } else {
-                // *** Check if source is empty ***
-                $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-                if (!$sourceDb->source_title && !$sourceDb->source_text && !$sourceDb->source_date && !$sourceDb->source_place && !$sourceDb->source_refn) {
-                    $source_error = 2;
-                }
-            }
-        }
-
-        $style = '';
-        if ($source_error == '1') {
-            $style = ' style="background-color:#FFAA80"';
-        } // *** No source connected, colour = orange ***
-        if ($source_error == '2') {
-            $style = ' style="background-color:#FFFF00"';
-        } // *** Source is empty, colour = yellow ***
-
-        if ($source_count) {
-            //return '<span ' . $style . '>[' . $source_count . ']</span>';
-            return ' <span ' . $style . '>#' . $source_count . '</span>';
-        } else {
-            return;
-        }
-    }
-
-    // *** Show link to sources (mar. 2024 version 3) ***
-    function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id)
-    {
-        // TODO improve this unique_id.
-        $unique_id = $connect_kind . $connect_sub_kind . $connect_connect_id;
         ?>
-        <!-- Button trigger modal for sources -->
-        <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal<?= $unique_id; ?>">
-            <?= __('Source'); ?>
-        </button>
+    </div>
+<?php
+} // End person check
 
-        <!-- same code is used in edit_address.php -->
-        <div class="modal fade" id="sourceModal<?= $unique_id; ?>" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="sourceModalLabel"><?= __('Source'); ?></h1>
-                        <button type="button" class="btn-close" id="source<?= $unique_id; ?>" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <?php
-                        $url = 'index.php?page=editor_sources';
-                        if ($connect_kind) {
-                            $url .= '&connect_kind=' . $connect_kind;
-                        }
-                        $url .= '&connect_sub_kind=' . $connect_sub_kind;
-                        if ($connect_connect_id) {
-                            $url .= '&connect_connect_id=' . $connect_connect_id;
-                        }
-                        ?>
-                        <!-- TODO only load iframe if there are sources? Otherwise add link to add sources? -->
-                        <!-- Mar. 2024: added lazy loading (only load iframe if iframe is opened) -->
-                        <iframe id="source_iframe" style="width:800px;height:800px;" title="source_iframe" src="<?= $url; ?>" loading="lazy"></iframe>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button>
-                        <!-- <button type="button" class="btn btn-sm btn-primary">Save changes</button> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php
+
+
+// *****************
+// *** FUNCTIONS ***
+// *****************
+
+// *** Show event options ***
+function event_option($event_gedcom, $event)
+{
+    global $language;
+    $selected = '';
+    if ($event_gedcom == $event) {
+        $selected = ' selected';
     }
+    return '<option value="' . $event . '"' . $selected . '>' . language_event($event) . '</option>';
+}
 
-    // *** Person edit lines (in use for adding person/ parents/ children) ***
-    function edit_firstname($name, $value)
-    {
-    ?>
-        <div class="row mb-2">
-            <div class="col-md-3"><b><?= ucfirst(__('firstname')); ?></b></div>
-            <div class="col-md-7"><input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm"></div>
-        </div>
-    <?php
-    }
+// *** New function mar. 2024 ***
+// *** Show number of sources and show indication if source is connected ***
+function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
+{
+    global $tree_id, $dbh, $db_functions;
 
-    function edit_prefix($name, $value)
-    {
-    ?>
-        <div class="row mb-2">
-            <div class="col-md-3"><?= ucfirst(__('prefix')); ?></div>
-            <div class="col-md-7">
-                <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="10" class="form-control form-control-sm">
-                <span style="font-size: 13px;"><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></span>
-            </div>
-        </div>
-    <?php
-    }
-
-    function edit_lastname($name, $value)
-    {
-    ?>
-        <div class="row mb-2">
-            <div class="col-md-3"><b><?= ucfirst(__('lastname')); ?></b></div>
-            <div class="col-md-7">
-                <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
-            </div>
-        </div>
-    <?php
-    }
-
-    function edit_patronymic($name, $value)
-    {
-    ?>
-        <div class="row mb-2">
-            <div class="col-md-3"><?= ucfirst(__('patronymic')); ?></div>
-            <div class="col-md-7">
-                <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
-            </div>
-        </div>
-    <?php
-    }
-
-    function edit_event_name($name_select, $name_text, $value)
-    {
-    ?>
-        <div class="row mb-2">
-            <div class="col-md-3">
-                <select size="1" name="<?= $name_select; ?>" class="form-select form-select-sm">
-                    <!-- Nickname, alias, adopted name, hebrew name, etc. -->
-                    <?php event_selection(''); ?>
-                </select>
-            </div>
-            <div class="col-md-7">
-                <input type="text" name="<?= $name_text; ?>" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
-            </div>
-        </div>
-    <?php
-    }
-
-    function edit_privacyfilter($name, $value)
-    {
-    ?>
-        <div class="row mb-2">
-            <div class="col-md-3"><?= __('Privacy filter'); ?></div>
-            <div class="col-md-7">
-                <input type="radio" name="<?= $name; ?>" value="alive" class="form-check-input" id="<?= $name; ?>">
-                <label class="form-check-label" for="<?= $name; ?>"><?= __('alive'); ?></label>
-
-                <input type="radio" name="<?= $name; ?>" value="deceased" class="form-check-input" id="<?= $name; ?>">
-                <label class="form-check-label" for="<?= $name; ?>"><?= __('deceased'); ?></label>
-            </div>
-        </div>
-    <?php
-    }
-
-    function edit_sexe($name, $checked)
-    {
-    ?>
-        <div class="row mb-2">
-            <div class="col-md-3"><?= __('Sex'); ?></div>
-            <div class="col-md-7">
-                <input type="radio" name="<?= $name; ?>" value="M" class="form-check-input" id="<?= $name; ?>" <?= $checked == 'M' ? 'checked' : ''; ?>>
-                <label class="form-check-label" for="<?= $name; ?>"><?= __('male'); ?></label>
-
-                <input type="radio" name="<?= $name; ?>" value="F" class="form-check-input" id="<?= $name; ?>" <?= $checked == 'F' ? 'checked' : ''; ?>>
-                <label class="form-check-label" for="<?= $name; ?>"><?= __('female'); ?></label>
-
-                <input type="radio" name="<?= $name; ?>" value="" class="form-check-input" id="<?= $name; ?>" <?= $checked == '' ? 'checked' : ''; ?>>
-                <label class="form-check-label" for="<?= $name; ?>">?</label>
-            </div>
-        </div>
-    <?php
-    }
-
-    function edit_profession($name, $value)
-    {
-    ?>
-        <div class="row mb-2">
-            <div class="col-md-3"><?= __('Profession'); ?></div>
-            <div class="col-md-7">
-                <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
-            </div>
-        </div>
-    <?php
-    }
-
-    // *** New function aug. 2021: Add partner or child ***
-    function add_person($person_kind, $pers_sexe)
-    {
-        global $phpself, $page, $rtlmarker, $editor_cls, $field_place, $field_date;
-        global $familyDb, $marriage, $db_functions, $field_popup;
-
-        $pers_prefix = '';
-        $pers_lastname = '';
-
-        if ($person_kind == 'partner') {
-            $form = 5;
-            echo ' <form method="POST" style="display: inline;" action="' . $phpself . '#marriage" name="form5" id="form5">';
+    $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
+        WHERE connect_tree_id='" . $tree_id . "'
+        AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
+    $connect_sql = $dbh->query($connect_qry);
+    $source_count = $connect_sql->rowCount();
+    $source_error = 0;
+    while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
+        if (!$connectDb->connect_source_id) {
+            $source_error = 1;
         } else {
-            // *** Add child to family ***
-            $form = 6;
-            echo ' <form method="POST" style="display: inline;" action="' . $phpself . '#marriage" name="form6" id="form6">';
-
-            echo '<input type="hidden" name="child_connect" value="1">';
-            if (isset($familyDb->fam_children)) {
-                echo '<input type="hidden" name="children" value="' . $familyDb->fam_children . '">';
-            }
-
-            // TODO check code. Both variables show the same value.
-            echo '<input type="hidden" name="family_id" value="' . $familyDb->fam_gedcomnumber . '">';
-            echo '<input type="hidden" name="marriage_nr" value="' . $marriage . '">';
-
-            // *** Get default prefix and lastname ***
-            if ($familyDb->fam_man) {
-                $personDb = $db_functions->get_person($familyDb->fam_man);
-                $pers_prefix = $personDb->pers_prefix;
-                $pers_lastname = $personDb->pers_lastname;
+            // *** Check if source is empty ***
+            $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+            if (!$sourceDb->source_title && !$sourceDb->source_text && !$sourceDb->source_date && !$sourceDb->source_place && !$sourceDb->source_refn) {
+                $source_error = 2;
             }
         }
-    ?>
-        <input type="hidden" name="page" value="<?= $page; ?>">
-        <input type="hidden" name="pers_name_text" value="">
-        <input type="hidden" name="pers_birth_text" value="">
-        <input type="hidden" name="pers_bapt_text" value="">
-        <input type="hidden" name="pers_religion" value="">
-        <input type="hidden" name="pers_death_cause" value="">
-        <input type="hidden" name="pers_death_time" value="">
-        <input type="hidden" name="pers_death_age" value="">
-        <input type="hidden" name="pers_death_text" value="">
-        <input type="hidden" name="pers_buried_text" value="">
-        <input type="hidden" name="pers_cremation" value="">
-        <input type="hidden" name="person_text" value="">
-        <input type="hidden" name="pers_own_code" value="">
-
-        <div class="row m-2">
-            <div class="col-md-3"></div>
-            <div class="col-md-7">
-                <h2>
-                    <?= $person_kind == 'partner' ? __('Add relation') : __('Add child'); ?>
-                </h2>
-            </div>
-        </div>
-
-        <?= edit_firstname('pers_firstname', ''); ?>
-        <?= edit_prefix('pers_prefix', $pers_prefix); ?>
-        <?= edit_lastname('pers_lastname', $pers_lastname); ?>
-        <?= edit_patronymic('pers_patronym', ''); ?>
-        <?= edit_event_name('event_gedcom_new', 'event_event_name_new', ''); ?>
-        <?= edit_privacyfilter('pers_alive', ''); ?>
-        <?= edit_sexe('pers_sexe', $pers_sexe); ?>
-
-        <!-- Birth -->
-        <div class="row mb-1 p-2 bg-primary-subtle">
-            <div class="col-md-3"><?= ucfirst(__('born')); ?></div>
-        </div>
-        <div class="row mb-2">
-            <label for="pers_birth_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-            <div class="col-md-7">
-                <?php $editor_cls->date_show('', 'pers_birth_date', '', '', 'pers_birth_date_hebnight'); ?>
-            </div>
-        </div>
-        <div class="row mb-2">
-            <label for="pers_birth_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
-            <div class="col-md-7">
-                <div class="input-group">
-                    <input type="text" name="pers_birth_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                </div>
-            </div>
-        </div>
-        <!-- Birth time and stillborn option -->
-        <?php if ($person_kind == 'child') { ?>
-            <div class="row mb-2">
-                <label for="pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
-                <div class="col-md-2">
-                    <input type="text" name="pers_birth_time" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
-                </div>
-                <div class="col-md-5">
-                    <input type="checkbox" name="pers_stillborn" class="form-check-input"> <?= __('stillborn child'); ?>
-                </div>
-            </div>
-        <?php } else { ?>
-            <input type="hidden" name="pers_birth_time" value="">
-        <?php } ?>
-
-        <!-- Baptise -->
-        <div class="row mb-1 p-2 bg-primary-subtle">
-            <div class="col-md-3"><?= ucfirst(__('baptised')); ?></div>
-        </div>
-        <div class="row mb-2">
-            <label for="pers_bapt_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-            <div class="col-md-7">
-                <?php $editor_cls->date_show('', 'pers_bapt_date', '', '', 'pers_bapt_date_hebnight'); ?>
-            </div>
-        </div>
-        <div class="row mb-2">
-            <label for="pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
-            <div class="col-md-7">
-                <div class="input-group">
-                    <input type="text" name="pers_bapt_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Died -->
-        <div class="row mb-1 p-2 bg-primary-subtle">
-            <div class="col-md-3"><?= ucfirst(__('died')); ?></div>
-        </div>
-        <div class="row mb-2">
-            <label for="pers_death_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-            <div class="col-md-7">
-                <?php $editor_cls->date_show('', 'pers_death_date', '', '', 'pers_death_date_hebnight'); ?>
-            </div>
-        </div>
-        <div class="row mb-2">
-            <label for="pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
-            <div class="col-md-7">
-                <div class="input-group">
-                    <input type="text" name="pers_death_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Buried -->
-        <div class="row mb-1 p-2 bg-primary-subtle">
-            <div class="col-md-3"><?= ucfirst(__('buried')); ?></div>
-        </div>
-        <div class="row mb-2">
-            <label for="pers_buried_date" class="col-sm-3 col-form-label"><?= __('Date'); ?></label>
-            <div class="col-md-7">
-                <?php $editor_cls->date_show('', 'pers_buried_date', '', '', 'pers_buried_date_hebnight'); ?>
-            </div>
-        </div>
-        <div class="row mb-2">
-            <label for="pers_buried_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
-            <div class="col-md-7">
-                <div class="input-group">
-                    <input type="text" name="pers_buried_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Profession -->
-        <input type="hidden" name="event_date_profession_prefix" value=''>
-        <input type="hidden" name="event_date_profession" value=''>
-        <?= edit_profession('event_profession', ''); ?>
-
-        <div class="row mb-2">
-            <div class="col-md-3"></div>
-            <div class="col-md-7">
-                <?php if ($person_kind == 'partner') { ?>
-                    <input type="submit" name="relation_add" value="<?= __('Add relation'); ?>" class="btn btn-sm btn-success">
-                <?php } else { ?>
-                    <input type="submit" name="person_add" value="<?= __('Add child'); ?>" class="btn btn-sm btn-success">
-                <?php } ?>
-            </div>
-        </div>
-
-    <?php
-        echo '</form>';
     }
 
+    $style = '';
+    if ($source_error == '1') {
+        $style = ' style="background-color:#FFAA80"';
+    } // *** No source connected, colour = orange ***
+    if ($source_error == '2') {
+        $style = ' style="background-color:#FFFF00"';
+    } // *** Source is empty, colour = yellow ***
 
-    function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
-    {
-        global $dbh, $db_functions, $page;
-        if ($gedcomnumber) {
-            $personDb = $db_functions->get_person($gedcomnumber);
-
-            $name = '';
-            $name .= $personDb->pers_firstname . ' ';
-            if ($personDb->pers_patronym) {
-                $name .= $personDb->pers_patronym . ' ';
-            }
-            $name .= strtolower(str_replace("_", " ", $personDb->pers_prefix)) . $personDb->pers_lastname;
-            if (trim($name) === '') {
-                $name = '[' . __('NO NAME') . ']';
-            }
-
-            if ($show_link == true) {
-                $text = '<a href="index.php?page=' . $page . '&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id .
-                    '&amp;person=' . $personDb->pers_gedcomnumber . '">' . $name . '</a>' . "\n";
-            } else {
-                $text = $name . "\n";
-            }
-        } else {
-            $text = __('N.N.');
-        }
-
-        if ($gedcom_date == true) {
-            if ($personDb->pers_birth_date) {
-                $text .= ' * ' . date_place($personDb->pers_birth_date, '');
-            } elseif ($personDb->pers_bapt_date) {
-                $text .= ' ~ ' . date_place($personDb->pers_bapt_date, '');
-            } elseif ($personDb->pers_death_date) {
-                $text .= ' &#134; ' . date_place($personDb->pers_death_date, '');
-                //$text.=' &dagger; '.date_place($personDb->pers_death_date,'');
-            } elseif ($personDb->pers_buried_date) {
-                $text .= ' [] ' . date_place($personDb->pers_buried_date, '');
-            }
-        }
-        return $text;
+    if ($source_count) {
+        //return '<span ' . $style . '>[' . $source_count . ']</span>';
+        return ' <span ' . $style . '>#' . $source_count . '</span>';
+    } else {
+        return;
     }
+}
 
-    // ***NEW FUNCTION jan. 2021 ***
-    function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
-    {
-        global $dbh, $tree_id, $page, $editor_cls, $field_place, $field_text;
-        global $rtlmarker, $field_popup;
+// *** Show link to sources (mar. 2024 version 3) ***
+function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id)
+{
+    // TODO improve this unique_id.
+    $unique_id = $connect_kind . $connect_sub_kind . $connect_connect_id;
+?>
+    <!-- Button trigger modal for sources -->
+    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal<?= $unique_id; ?>">
+        <?= __('Source'); ?>
+    </button>
 
-        $rtlmarker = "ltr";
-
-        // ****************************************************
-        // *** Show and edit addresses/residences by person ***
-        // ****************************************************
-    ?>
-        <tr class="table_header_large" id="addresses">
-            <td style="border-right:0px;"><b><?= __('Addresses'); ?></b></td>
-            <td colspan="2">
-                <?php
-                if ($connect_kind == 'person') {
-                    echo ' <input type="submit" name="person_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
-                } else {
-                    echo ' <input type="submit" name="relation_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
-                }
-
-                // *** HELP POPUP for address ***
-                ?>
-                &nbsp;
-                <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_shared',0,0)" onmouseout="mclosetime()">
-                        <img src="../images/help.png" height="16" width="16">
-                    </a>
-                    <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                        <b><?= __('A shared address can be connected to multiple persons or relations.'); ?></b><br>
-                        <b><?= __('A shared address is only supported by the Haza-data and HuMo-genealogy programs.'); ?></b><br>
-                    </div>
+    <!-- same code is used in edit_address.php -->
+    <div class="modal fade" id="sourceModal<?= $unique_id; ?>" tabindex="-1" aria-labelledby="sourceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="sourceModalLabel"><?= __('Source'); ?></h1>
+                    <button type="button" class="btn-close" id="source<?= $unique_id; ?>" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </td>
-        </tr>
-
-        <?php
-        $connect_qry = $dbh->query("SELECT * FROM humo_connections
-            WHERE connect_tree_id='" . $tree_id . "'
-            AND connect_sub_kind='" . $connect_sub_kind . "'
-            AND connect_connect_id='" . safe_text_db($connect_connect_id) . "'
-            ORDER BY connect_order");
-        $count = $connect_qry->rowCount();
-        $address_nr = 0;
-        //TODO replace $addressDb with something like $connectDb
-        while ($addressDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
-            $address_nr++;
-            $key = $addressDb->connect_id;
-
-            // *** Check order number, restore if number is wrong (because of problems in earlier versions) ***
-            if ($addressDb->connect_order != $address_nr) {
-                $addressDb->connect_order = $address_nr;
-                $sql = "UPDATE humo_connections SET connect_order='" . $address_nr . "' WHERE connect_id='" . $addressDb->connect_id . "'";
-                $dbh->query($sql);
-            }
-        ?>
-
-            <!-- <tr style="display:none;" class="row55"> -->
-            <tr class="humo_color">
-                <td style="border-right:0px;">
-                    <input type="hidden" name="connect_change[<?= $key; ?>]" value="<?= $addressDb->connect_id; ?>">
-                    <input type="hidden" name="connect_connect_id[<?= $key; ?>]" value="<?= $addressDb->connect_connect_id; ?>">
-                    <input type="hidden" name="connect_kind[<?= $key; ?>]" value="<?= $connect_kind; ?>">
-                    <input type="hidden" name="connect_sub_kind[<?= $key; ?>]" value="<?= $connect_sub_kind; ?>">
-                    <input type="hidden" name="connect_page[<?= $key; ?>]" value="">
-                    <input type="hidden" name="connect_place[<?= $key; ?>]" value="">
-
-                    <!-- Send old values, so changes of values can be detected -->
-                    <input type="hidden" name="connect_date_old[<?= $addressDb->connect_id; ?>]" value="<?= $addressDb->connect_date; ?>">
-                    <input type="hidden" name="connect_role_old[<?= $addressDb->connect_id; ?>]" value="<?= $addressDb->connect_role; ?>">
-                    <input type="hidden" name="connect_text_old[<?= $addressDb->connect_id; ?>]" value="<?= $addressDb->connect_text; ?>">
-
+                <div class="modal-body">
                     <?php
-                    // *** Remove address ***
-                    echo '<a href="index.php?page=' . $page . '&amp;person_place_address=1&amp;connect_drop=' . $addressDb->connect_id . '">
+                    $url = 'index.php?page=editor_sources';
+                    if ($connect_kind) {
+                        $url .= '&connect_kind=' . $connect_kind;
+                    }
+                    $url .= '&connect_sub_kind=' . $connect_sub_kind;
+                    if ($connect_connect_id) {
+                        $url .= '&connect_connect_id=' . $connect_connect_id;
+                    }
+                    ?>
+                    <!-- TODO only load iframe if there are sources? Otherwise add link to add sources? -->
+                    <!-- Mar. 2024: added lazy loading (only load iframe if iframe is opened) -->
+                    <iframe id="source_iframe" style="width:800px;height:800px;" title="source_iframe" src="<?= $url; ?>" loading="lazy"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button>
+                    <!-- <button type="button" class="btn btn-sm btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+}
+
+// *** Person edit lines (in use for adding person/ parents/ children) ***
+function edit_firstname($name, $value)
+{
+?>
+    <div class="row mb-2">
+        <div class="col-md-3"><b><?= ucfirst(__('firstname')); ?></b></div>
+        <div class="col-md-7"><input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm"></div>
+    </div>
+<?php
+}
+
+function edit_prefix($name, $value)
+{
+?>
+    <div class="row mb-2">
+        <div class="col-md-3"><?= ucfirst(__('prefix')); ?></div>
+        <div class="col-md-7">
+            <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="10" class="form-control form-control-sm">
+            <span style="font-size: 13px;"><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></span>
+        </div>
+    </div>
+<?php
+}
+
+function edit_lastname($name, $value)
+{
+?>
+    <div class="row mb-2">
+        <div class="col-md-3"><b><?= ucfirst(__('lastname')); ?></b></div>
+        <div class="col-md-7">
+            <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+        </div>
+    </div>
+<?php
+}
+
+function edit_patronymic($name, $value)
+{
+?>
+    <div class="row mb-2">
+        <div class="col-md-3"><?= ucfirst(__('patronymic')); ?></div>
+        <div class="col-md-7">
+            <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+        </div>
+    </div>
+<?php
+}
+
+function edit_event_name($name_select, $name_text, $value)
+{
+?>
+    <div class="row mb-2">
+        <div class="col-md-3">
+            <select size="1" name="<?= $name_select; ?>" class="form-select form-select-sm">
+                <!-- Nickname, alias, adopted name, hebrew name, etc. -->
+                <?php event_selection(''); ?>
+            </select>
+        </div>
+        <div class="col-md-7">
+            <input type="text" name="<?= $name_text; ?>" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+        </div>
+    </div>
+<?php
+}
+
+function edit_privacyfilter($name, $value)
+{
+?>
+    <div class="row mb-2">
+        <div class="col-md-3"><?= __('Privacy filter'); ?></div>
+        <div class="col-md-7">
+            <input type="radio" name="<?= $name; ?>" value="alive" <?= $value ? 'checked' : '' ?> class="form-check-input" id="<?= $name; ?>">
+            <label class="form-check-label" for="<?= $name; ?>"><?= __('alive'); ?></label>
+
+            <input type="radio" name="<?= $name; ?>" value="deceased" class="form-check-input" id="<?= $name; ?>">
+            <label class="form-check-label" for="<?= $name; ?>"><?= __('deceased'); ?></label>
+        </div>
+    </div>
+<?php
+}
+
+function edit_sexe($name, $checked)
+{
+?>
+    <div class="row mb-2">
+        <div class="col-md-3"><?= __('Sex'); ?></div>
+        <div class="col-md-7">
+            <input type="radio" name="<?= $name; ?>" value="M" class="form-check-input" id="<?= $name; ?>" <?= $checked == 'M' ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="<?= $name; ?>"><?= __('male'); ?></label>
+
+            <input type="radio" name="<?= $name; ?>" value="F" class="form-check-input" id="<?= $name; ?>" <?= $checked == 'F' ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="<?= $name; ?>"><?= __('female'); ?></label>
+
+            <input type="radio" name="<?= $name; ?>" value="" class="form-check-input" id="<?= $name; ?>" <?= $checked == '' ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="<?= $name; ?>">?</label>
+        </div>
+    </div>
+<?php
+}
+
+function edit_profession($name, $value)
+{
+?>
+    <div class="row mb-2">
+        <div class="col-md-3"><?= __('Profession'); ?></div>
+        <div class="col-md-7">
+            <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+        </div>
+    </div>
+<?php
+}
+
+function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
+{
+    global $dbh, $db_functions, $page;
+    if ($gedcomnumber) {
+        $personDb = $db_functions->get_person($gedcomnumber);
+
+        $name = '';
+        $name .= $personDb->pers_firstname . ' ';
+        if ($personDb->pers_patronym) {
+            $name .= $personDb->pers_patronym . ' ';
+        }
+        $name .= strtolower(str_replace("_", " ", $personDb->pers_prefix)) . $personDb->pers_lastname;
+        if (trim($name) === '') {
+            $name = '[' . __('NO NAME') . ']';
+        }
+
+        if ($show_link == true) {
+            $text = '<a href="index.php?page=' . $page . '&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id .
+                '&amp;person=' . $personDb->pers_gedcomnumber . '">' . $name . '</a>' . "\n";
+        } else {
+            $text = $name . "\n";
+        }
+    } else {
+        $text = __('N.N.');
+    }
+
+    if ($gedcom_date == true) {
+        if ($personDb->pers_birth_date) {
+            $text .= ' * ' . date_place($personDb->pers_birth_date, '');
+        } elseif ($personDb->pers_bapt_date) {
+            $text .= ' ~ ' . date_place($personDb->pers_bapt_date, '');
+        } elseif ($personDb->pers_death_date) {
+            $text .= ' &#134; ' . date_place($personDb->pers_death_date, '');
+            //$text.=' &dagger; '.date_place($personDb->pers_death_date,'');
+        } elseif ($personDb->pers_buried_date) {
+            $text .= ' [] ' . date_place($personDb->pers_buried_date, '');
+        }
+    }
+    return $text;
+}
+
+// ***NEW FUNCTION jan. 2021 ***
+function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
+{
+    global $dbh, $tree_id, $page, $editor_cls, $field_place, $field_text;
+    global $rtlmarker, $field_popup;
+
+    $rtlmarker = "ltr";
+
+    // ****************************************************
+    // *** Show and edit addresses/residences by person ***
+    // ****************************************************
+?>
+    <tr class="table_header_large" id="addresses">
+        <td style="border-right:0px;"><b><?= __('Addresses'); ?></b></td>
+        <td colspan="2">
+            <?php
+            if ($connect_kind == 'person') {
+                echo ' <input type="submit" name="person_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
+            } else {
+                echo ' <input type="submit" name="relation_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
+            }
+
+            // *** HELP POPUP for address ***
+            ?>
+            &nbsp;
+            <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
+                <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_shared',0,0)" onmouseout="mclosetime()">
+                    <img src="../images/help.png" height="16" width="16">
+                </a>
+                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                    <b><?= __('A shared address can be connected to multiple persons or relations.'); ?></b><br>
+                    <b><?= __('A shared address is only supported by the Haza-data and HuMo-genealogy programs.'); ?></b><br>
+                </div>
+            </div>
+        </td>
+    </tr>
+
+    <?php
+    $connect_qry = $dbh->query("SELECT * FROM humo_connections
+        WHERE connect_tree_id='" . $tree_id . "'
+        AND connect_sub_kind='" . $connect_sub_kind . "'
+        AND connect_connect_id='" . safe_text_db($connect_connect_id) . "'
+        ORDER BY connect_order");
+    $count = $connect_qry->rowCount();
+    $address_nr = 0;
+    //TODO replace $addressDb with something like $connectDb
+    while ($addressDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
+        $address_nr++;
+        $key = $addressDb->connect_id;
+
+        // *** Check order number, restore if number is wrong (because of problems in earlier versions) ***
+        if ($addressDb->connect_order != $address_nr) {
+            $addressDb->connect_order = $address_nr;
+            $sql = "UPDATE humo_connections SET connect_order='" . $address_nr . "' WHERE connect_id='" . $addressDb->connect_id . "'";
+            $dbh->query($sql);
+        }
+    ?>
+
+        <!-- <tr style="display:none;" class="row55"> -->
+        <tr class="humo_color">
+            <td style="border-right:0px;">
+                <input type="hidden" name="connect_change[<?= $key; ?>]" value="<?= $addressDb->connect_id; ?>">
+                <input type="hidden" name="connect_connect_id[<?= $key; ?>]" value="<?= $addressDb->connect_connect_id; ?>">
+                <input type="hidden" name="connect_kind[<?= $key; ?>]" value="<?= $connect_kind; ?>">
+                <input type="hidden" name="connect_sub_kind[<?= $key; ?>]" value="<?= $connect_sub_kind; ?>">
+                <input type="hidden" name="connect_page[<?= $key; ?>]" value="">
+                <input type="hidden" name="connect_place[<?= $key; ?>]" value="">
+
+                <!-- Send old values, so changes of values can be detected -->
+                <input type="hidden" name="connect_date_old[<?= $addressDb->connect_id; ?>]" value="<?= $addressDb->connect_date; ?>">
+                <input type="hidden" name="connect_role_old[<?= $addressDb->connect_id; ?>]" value="<?= $addressDb->connect_role; ?>">
+                <input type="hidden" name="connect_text_old[<?= $addressDb->connect_id; ?>]" value="<?= $addressDb->connect_text; ?>">
+
+                <?php
+                // *** Remove address ***
+                echo '<a href="index.php?page=' . $page . '&amp;person_place_address=1&amp;connect_drop=' . $addressDb->connect_id . '">
                 <img src="images/button_drop.png" border="0" alt="drop"></a>';
 
-                    // *** Order addresses ***
-                    if ($addressDb->connect_order < $count) {
-                        echo ' <a href="index.php?page=' . $page .
-                            '&amp;person_place_address=1&amp;connect_down=' . $addressDb->connect_id .
-                            '&amp;connect_kind=' . $addressDb->connect_kind .
-                            '&amp;connect_sub_kind=' . $addressDb->connect_sub_kind .
-                            '&amp;connect_connect_id=' . $addressDb->connect_connect_id .
-                            '&amp;connect_order=' . $addressDb->connect_order;
-                        echo '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
-                    } else {
-                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    }
-
-                    if ($addressDb->connect_order > 1) {
-                        echo ' <a href="index.php?page=' . $page .
-                            '&amp;person_place_address=1&amp;connect_up=' . $addressDb->connect_id .
-                            '&amp;connect_kind=' . $addressDb->connect_kind .
-                            '&amp;connect_sub_kind=' . $addressDb->connect_sub_kind .
-                            '&amp;connect_connect_id=' . $addressDb->connect_connect_id .
-                            '&amp;connect_order=' . $addressDb->connect_order;
-                        echo '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
-                    } else {
-                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    }
-                    ?>
-                </td>
-                <?php
-                // *** Show addresses by person or relation ***
-                $address3_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_gedcomnr='" . $addressDb->connect_item_id . "'");
-                $address3Db = $address3_qry->fetch(PDO::FETCH_OBJ);
-
-                if ($address3Db) {
-                    // *** Use hideshow to show and hide the editor lines ***
-                    $hideshow = '8000' . $address3Db->address_id;
-                    // *** If address AND place are missing show all editor fields ***
-                    $display = ' display:none;';
-                    if ($address3Db->address_address == '' && $address3Db->address_place == '') {
-                        $display = '';
-                    }
-                }
-                ?>
-
-                <td colspan="2">
-                    <?php
-                    //echo '<div style="border: 2px solid red">';
-                    if ($address3Db) {
-                        $address = $address3Db->address_address . ' ' . $address3Db->address_place;
-                        if ($address3Db->address_address == '' && $address3Db->address_place == '') {
-                            $address = __('EMPTY LINE');
-                        }
-
-                        // *** Also show date and place ***
-                        //if ($addressDb->connect_date) $address.=', '.date_place($addressDb->connect_date,'');
-                        if ($addressDb->connect_date) {
-                            $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
-                        }
-                    ?>
-
-                        <span class="hideshowlink" onclick="hideShow(<?= $hideshow; ?>);"><?= $address; ?>
-                            <?php
-                            if ($address3Db->address_text || $addressDb->connect_text) {
-                                echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-                            }
-
-                            if ($addressDb->connect_id) {
-                                if ($connect_kind == 'person') {
-                                    $connect_kind = 'person';
-                                    $connect_sub_kind_source = 'pers_address_connect_source';
-                                } else {
-                                    $connect_kind = 'family';
-                                    $connect_sub_kind_source = 'fam_address_connect_source';
-                                }
-
-                                $check_sources_text = check_sources($connect_kind, $connect_sub_kind_source, $addressDb->connect_id);
-                                echo $check_sources_text;
-                            }
-                            ?>
-                        </span>
-
-                        <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>"><br>
-
-                            <input type="hidden" name="change_address_id[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_id; ?>">
-
-                            <!-- Send old values, so changes of values can be detected -->
-                            <input type="hidden" name="address_shared_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_shared; ?>">
-                            <input type="hidden" name="address_address_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_address; ?>">
-                            <input type="hidden" name="address_place_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_place; ?>">
-                            <input type="hidden" name="address_text_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_text; ?>">
-                            <input type="hidden" name="address_phone_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_phone; ?>">
-                            <input type="hidden" name="address_zip_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_zip; ?>">
-
-                            <input type="hidden" name="connect_item_id_old[<?= $address3Db->address_id; ?>]" value="<?= $addressDb->connect_item_id; ?>">
-
-                            <?= __('Address GEDCOM number:'); ?> <?= $address3Db->address_gedcomnr; ?>&nbsp;&nbsp;&nbsp;&nbsp;
-
-                            <!-- Shared address, to connect address to multiple persons or relations -->
-                            <input type="checkbox" name="address_shared_<?= $address3Db->address_id; ?>" value="no_data" <?= $address3Db->address_shared ? 'checked' : ''; ?>> <?= __('Shared address'); ?><br>
-
-                            <?php
-                            // *** Don't use date here. Date of connection table will be used ***
-                            //echo $editor_cls->date_show($address3Db->address_date,'address_date',"[$address3Db->address_id]").' ';
-
-                            if ($connect_kind == 'person') {
-                                $form = 1;
-                                //$place_item='place_person';
-                            } else {
-                                $form = 2;
-                                //$place_item='place_relation';
-                            }
-
-                            // *** Save latest place in table humo_persons as person_place_index (in use for place index) ***
-                            if ($connect_kind == 'person') {
-                                global $pers_gedcomnumber;
-                                if ($addressDb->connect_order == $count) {
-                                    $sql = "UPDATE humo_persons SET
-                                    pers_place_index='" . safe_text_db($address3Db->address_place) . "'
-                                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($pers_gedcomnumber) . "'";
-                                    $dbh->query($sql);
-                                }
-                            }
-                            ?>
-
-                            <div class="row mb-2">
-                                <label for="address_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
-                                <div class="col-md-7">
-                                    <div class="input-group">
-                                        <input type="text" name="address_place_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                        <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=address_place&amp;address_id=<?= $address3Db->address_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <?php
-                            /*
-                            *** DISABLED. It's possible to add a source by address, in address editor ***
-                            // *** Source by address (now shown in red box, so it's clear it belongs to the address) ***
-                            // *** New code, not tested yet ***
-                            <?php if ($address3Db) { ?>
-                            <div class="row mb-2">
-                            <label for="address_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
-                            <div class="col-md-7">
-                                <?php
-                                source_link3('person', 'address_source', $address3Db->address_gedcomnr);
-                                echo $check_sources_text;
-                                ?>
-                            </div>
-                            </div>
-                            <?php } ?>
-                            */
-                            ?>
-
-                            <!-- Edit address -->
-                            <div class="row mb-2">
-                                <label for="address_address" class="col-md-3 col-form-label"><?= __('Street'); ?></label>
-                                <div class="col-md-7">
-                                    <input type="text" name="address_address_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_address; ?>" class="form-control form-control-sm">
-                                </div>
-                            </div>
-
-                            <!-- Edit Zip code -->
-                            <div class="row mb-2">
-                                <label for="address_zip" class="col-md-3 col-form-label"><?= __('Zip code'); ?></label>
-                                <div class="col-md-3">
-                                    <input type="text" name="address_zip_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_zip; ?>" class="form-control form-control-sm">
-                                </div>
-                            </div>
-
-                            <!-- Edit phone -->
-                            <div class="row mb-2">
-                                <label for="address_phone" class="col-md-3 col-form-label"><?= __('Phone'); ?></label>
-                                <div class="col-md-3">
-                                    <input type="text" name="address_phone_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_phone; ?>" class="form-control form-control-sm">
-                                </div>
-                            </div>
-
-                            <!-- Edit text -->
-                            <div class="row mb-2">
-                                <label for="address_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
-                                <div class="col-md-7">
-                                    <textarea rows="1" name="address_text_<?= $address3Db->address_id; ?>" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address3Db->address_text); ?></textarea>
-                                </div>
-                            </div>
-
-                            <div class="row mb-2">
-                                <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
-                                <div class="col-md-7">
-                                    <?= $editor_cls->date_show($addressDb->connect_date, 'connect_date', "[$addressDb->connect_id]"); ?>
-                                </div>
-                            </div>
-
-                            <?php
-                            $connect_role = '';
-                            if (isset($addressDb->connect_role)) {
-                                $connect_role = htmlspecialchars($addressDb->connect_role);
-                            }
-                            ?>
-                            <div class="row mb-2">
-                                <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Addressrole'); ?></label>
-                                <div class="col-md-3">
-                                    <input type="text" name="connect_role[<?= $key; ?>]" value="<?= $connect_role; ?>" size="6" class="form-control form-control-sm">
-                                </div>
-                            </div>
-
-                            <!-- Extra text by address -->
-                            <div class="row mb-2">
-                                <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Extra text by address'); ?></label>
-                                <div class="col-md-7">
-                                    <textarea name="connect_text[<?= $addressDb->connect_id; ?>]" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($addressDb->connect_text); ?></textarea>
-                                </div>
-                            </div>
-
-                            <?php if ($address3Db) { ?>
-                                <?php
-                                if ($connect_kind == 'person') {
-                                    $connect_kind = 'person';
-                                    $connect_sub_kind_source = 'pers_address_connect_source';
-                                } else {
-                                    $connect_kind = 'family';
-                                    $connect_sub_kind_source = 'fam_address_connect_source';
-                                }
-                                ?>
-                                <div class="row mb-2">
-                                    <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
-                                    <div class="col-md-7">
-                                        <?php
-                                        source_link3($connect_kind, $connect_sub_kind_source, $addressDb->connect_id);
-                                        echo $check_sources_text;
-                                        ?>
-                                    </div>
-                                </div>
-                            <?php
-                            }
-
-                            // *** Use hideshow to show and hide the editor lines ***
-                            if (isset($hideshow) && substr($hideshow, 0, 4) === '8000') {
-                            ?>
-                        </span>
-                    <?php
-                            }
-                        } else {
-                            // *** Add new address ***
-                            $addressqry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1' ORDER BY address_place, address_address");
-                    ?>
-                    <input type="hidden" name="connect_date[<?= $key; ?>]" value="">
-                    <input type="hidden" name="connect_date_prefix[<?= $key; ?>]" value="">
-                    <input type="hidden" name="connect_role[<?= $key; ?>]" value="">
-
-                    <!-- Added april 2024 -->
-                    <input type="hidden" name="connect_text[<?= $key; ?>]" value="">
-
-                    <?= __('Address'); ?>
-                    <select size="1" name="connect_item_id[<?= $key; ?>]" style="width: 300px">
-                        <option value=""><?= __('Select address'); ?></option>
-                        <?php
-                            while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) {
-                                // *** Only shared addresses (at this moment) ***
-                                $selected = '';
-                                if ($addressDb->connect_item_id == $address2Db->address_gedcomnr) {
-                                    $selected = ' selected';
-                                }
-                                echo '<option value="' . $address2Db->address_gedcomnr . '"' . $selected . '>' . $address2Db->address_place . ', ' . $address2Db->address_address;
-                                if ($address2Db->address_text) {
-                                    echo ' ' . substr($address2Db->address_text, 0, 40);
-                                    if (strlen($address2Db->address_text) > 40) {
-                                        echo '...';
-                                    }
-                                }
-                                echo ' [' . $address2Db->address_gedcomnr . ']</option>';
-                            }
-                        ?>
-                    </select>
-
-                    <?= __('Or: add new address'); ?>
-                <?php
-                            echo ' <a href="index.php?page=' . $page;
-                            if ($connect_kind == 'person') {
-                                echo '&amp;person_place_address=1';
-                            } else {
-                                echo '&amp;family_place_address=1';
-                            }
-                            echo '&amp;address_add2=1&amp;connect_id=' . $addressDb->connect_id . '
-                            &amp;connect_kind=' . $addressDb->connect_kind . '&amp;connect_sub_kind=' . $addressDb->connect_sub_kind . '
-                            &amp;connect_connect_id=' . $addressDb->connect_connect_id . '#addresses">[' . __('Add') . ']</a> ';
-                        }
-
-                        //echo '</div>';
-                ?>
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** Show places or addresses if save or arrow links are used ***
-        if (isset($_GET['person_place_address']) || isset($_GET['family_place_address'])) {
-            // *** Script voor expand and collapse of items ***
-            //if (isset($_GET['pers_place'])) $link_id='54';
-            if (isset($_GET['person_place_address']) || isset($_GET['family_place_address'])) {
-                $link_id = '55';
-            }
-            echo '
-            <script>
-            function Show(el_id){
-                // *** Hide or show item ***
-                var arr = document.getElementsByClassName(\'row\'+el_id);
-                for (i=0; i<arr.length; i++){
-                    arr[i].style.display="";
-                }
-                // *** Change [+] into [-] ***
-                document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
-            }
-            </script>';
-
-            echo '<script>
-            Show("' . $link_id . '");
-        </script>';
-        }
-    }
-
-    // *** Show editor notes. $note_connect_kind=person/family ***
-    function show_editor_notes($note_connect_kind)
-    {
-        global $dbh, $tree_id, $pers_gedcomnumber, $field_text_large, $editor_cls, $marriage;
-
-        // *** $note_connect_id = I123 or F123 ***
-        $note_connect_id = $pers_gedcomnumber;
-        if ($note_connect_kind == 'family') {
-            $note_connect_id = $marriage;
-        }
-
-        $note_qry = "SELECT * FROM humo_user_notes
-            WHERE note_tree_id='" . $tree_id . "'
-            AND note_kind='editor' AND note_connect_kind='" . $note_connect_kind . "'
-            AND note_connect_id='" . $note_connect_id . "'";
-        $note_result = $dbh->query($note_qry);
-        $num_rows = $note_result->rowCount();
-
-        // *** Otherwise link won't work second time because of added anchor ***
-        $anchor = '#editor_notes';
-        if (isset($_GET['note_add'])) {
-            $anchor = '';
-        }
-        ?>
-        <tr class="table_header_large">
-            <td><a name="editor_notes"></a><?= __('Editor notes'); ?></td>
-            <td colspan="2">
-                <a href="index.php?page=editor&amp;note_add=<?= $note_connect_kind . $anchor; ?>">[<?= __('Add'); ?>]</a>
-                <?php
-                if ($num_rows) {
-                    printf(__('There are %d editor notes.'), $num_rows);
+                // *** Order addresses ***
+                if ($addressDb->connect_order < $count) {
+                    echo ' <a href="index.php?page=' . $page .
+                        '&amp;person_place_address=1&amp;connect_down=' . $addressDb->connect_id .
+                        '&amp;connect_kind=' . $addressDb->connect_kind .
+                        '&amp;connect_sub_kind=' . $addressDb->connect_sub_kind .
+                        '&amp;connect_connect_id=' . $addressDb->connect_connect_id .
+                        '&amp;connect_order=' . $addressDb->connect_order;
+                    echo '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
                 } else {
-                    printf(__('There are %d editor notes.'), 0);
+                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                }
+
+                if ($addressDb->connect_order > 1) {
+                    echo ' <a href="index.php?page=' . $page .
+                        '&amp;person_place_address=1&amp;connect_up=' . $addressDb->connect_id .
+                        '&amp;connect_kind=' . $addressDb->connect_kind .
+                        '&amp;connect_sub_kind=' . $addressDb->connect_sub_kind .
+                        '&amp;connect_connect_id=' . $addressDb->connect_connect_id .
+                        '&amp;connect_order=' . $addressDb->connect_order;
+                    echo '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
+                } else {
+                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                 }
                 ?>
             </td>
-        </tr>
-        <?php while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) { ?>
-            <tr>
-                <td>
-                    <!-- Link to remove note -->
-                    <a href="index.php?page=editor&amp;note_drop=<?= $noteDb->note_id; ?>">
-                        <img src="images/button_drop.png" border="0" alt="down">
-                    </a>
-                </td>
-                <td colspan="2">
-                    <input type="hidden" name="note_id[<?= $noteDb->note_id; ?>]" value="<?= $noteDb->note_id; ?>">
-                    <input type="hidden" name="note_connect_kind[<?= $noteDb->note_id; ?>]" value="<?= $note_connect_kind; ?>">
+            <?php
+            // *** Show addresses by person or relation ***
+            $address3_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_gedcomnr='" . $addressDb->connect_item_id . "'");
+            $address3Db = $address3_qry->fetch(PDO::FETCH_OBJ);
 
-                    <?php
-                    $user_name = '';
-                    if ($noteDb->note_new_user_id) {
-                        $user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'");
-                        $user_addedDb = $user_result->fetch(PDO::FETCH_OBJ);
-                        $user_name = $user_addedDb->user_name;
+            if ($address3Db) {
+                // *** Use hideshow to show and hide the editor lines ***
+                $hideshow = '8000' . $address3Db->address_id;
+                // *** If address AND place are missing show all editor fields ***
+                $display = ' display:none;';
+                if ($address3Db->address_address == '' && $address3Db->address_place == '') {
+                    $display = '';
+                }
+            }
+            ?>
+
+            <td colspan="2">
+                <?php
+                //echo '<div style="border: 2px solid red">';
+                if ($address3Db) {
+                    $address = $address3Db->address_address . ' ' . $address3Db->address_place;
+                    if ($address3Db->address_address == '' && $address3Db->address_place == '') {
+                        $address = __('EMPTY LINE');
                     }
-                    ?>
-                    <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_new_datetime); ?>)<br>
 
-                    <?php
-                    if ($noteDb->note_changed_user_id) {
-                        //TODO combine queries
-                        $user_name = '';
-                        if ($noteDb->note_changed_user_id) {
-                            $user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_changed_user_id . "'");
-                            $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                            $user_name = $userDb->user_name;
+                    // *** Also show date and place ***
+                    //if ($addressDb->connect_date) $address.=', '.date_place($addressDb->connect_date,'');
+                    if ($addressDb->connect_date) {
+                        $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
+                    }
+                ?>
+
+                    <span class="hideshowlink" onclick="hideShow(<?= $hideshow; ?>);"><?= $address; ?>
+                        <?php
+                        if ($address3Db->address_text || $addressDb->connect_text) {
+                            echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
                         }
 
-                        echo __('Changed by') . ' <b>' . $user_name . '</b> (' . show_datetime($noteDb->note_changed_datetime) . ')<br>';
+                        if ($addressDb->connect_id) {
+                            if ($connect_kind == 'person') {
+                                $connect_kind = 'person';
+                                $connect_sub_kind_source = 'pers_address_connect_source';
+                            } else {
+                                $connect_kind = 'family';
+                                $connect_sub_kind_source = 'fam_address_connect_source';
+                            }
+
+                            $check_sources_text = check_sources($connect_kind, $connect_sub_kind_source, $addressDb->connect_id);
+                            echo $check_sources_text;
+                        }
+                        ?>
+                    </span>
+
+                    <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>"><br>
+
+                        <input type="hidden" name="change_address_id[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_id; ?>">
+
+                        <!-- Send old values, so changes of values can be detected -->
+                        <input type="hidden" name="address_shared_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_shared; ?>">
+                        <input type="hidden" name="address_address_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_address; ?>">
+                        <input type="hidden" name="address_place_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_place; ?>">
+                        <input type="hidden" name="address_text_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_text; ?>">
+                        <input type="hidden" name="address_phone_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_phone; ?>">
+                        <input type="hidden" name="address_zip_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_zip; ?>">
+
+                        <input type="hidden" name="connect_item_id_old[<?= $address3Db->address_id; ?>]" value="<?= $addressDb->connect_item_id; ?>">
+
+                        <?= __('Address GEDCOM number:'); ?> <?= $address3Db->address_gedcomnr; ?>&nbsp;&nbsp;&nbsp;&nbsp;
+
+                        <!-- Shared address, to connect address to multiple persons or relations -->
+                        <input type="checkbox" name="address_shared_<?= $address3Db->address_id; ?>" value="no_data" <?= $address3Db->address_shared ? 'checked' : ''; ?>> <?= __('Shared address'); ?><br>
+
+                        <?php
+                        // *** Don't use date here. Date of connection table will be used ***
+                        //echo $editor_cls->date_show($address3Db->address_date,'address_date',"[$address3Db->address_id]").' ';
+
+                        if ($connect_kind == 'person') {
+                            $form = 1;
+                            //$place_item='place_person';
+                        } else {
+                            $form = 2;
+                            //$place_item='place_relation';
+                        }
+
+                        // *** Save latest place in table humo_persons as person_place_index (in use for place index) ***
+                        if ($connect_kind == 'person') {
+                            global $pers_gedcomnumber;
+                            if ($addressDb->connect_order == $count) {
+                                $sql = "UPDATE humo_persons SET
+                                    pers_place_index='" . safe_text_db($address3Db->address_place) . "'
+                                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($pers_gedcomnumber) . "'";
+                                $dbh->query($sql);
+                            }
+                        }
+                        ?>
+
+                        <div class="row mb-2">
+                            <label for="address_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                            <div class="col-md-7">
+                                <div class="input-group">
+                                    <input type="text" name="address_place_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=address_place&amp;address_id=<?= $address3Db->address_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php
+                        /*
+                        *** DISABLED. It's possible to add a source by address, in address editor ***
+                        // *** Source by address (now shown in red box, so it's clear it belongs to the address) ***
+                        // *** New code, not tested yet ***
+                        <?php if ($address3Db) { ?>
+                        <div class="row mb-2">
+                        <label for="address_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                        <div class="col-md-7">
+                            <?php
+                            source_link3('person', 'address_source', $address3Db->address_gedcomnr);
+                            echo $check_sources_text;
+                            ?>
+                        </div>
+                        </div>
+                        <?php } ?>
+                        */
+                        ?>
+
+                        <!-- Edit address -->
+                        <div class="row mb-2">
+                            <label for="address_address" class="col-md-3 col-form-label"><?= __('Street'); ?></label>
+                            <div class="col-md-7">
+                                <input type="text" name="address_address_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_address; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <!-- Edit Zip code -->
+                        <div class="row mb-2">
+                            <label for="address_zip" class="col-md-3 col-form-label"><?= __('Zip code'); ?></label>
+                            <div class="col-md-3">
+                                <input type="text" name="address_zip_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_zip; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <!-- Edit phone -->
+                        <div class="row mb-2">
+                            <label for="address_phone" class="col-md-3 col-form-label"><?= __('Phone'); ?></label>
+                            <div class="col-md-3">
+                                <input type="text" name="address_phone_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_phone; ?>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <!-- Edit text -->
+                        <div class="row mb-2">
+                            <label for="address_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                            <div class="col-md-7">
+                                <textarea rows="1" name="address_text_<?= $address3Db->address_id; ?>" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address3Db->address_text); ?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                            <div class="col-md-7">
+                                <?= $editor_cls->date_show($addressDb->connect_date, 'connect_date', "[$addressDb->connect_id]"); ?>
+                            </div>
+                        </div>
+
+                        <?php
+                        $connect_role = '';
+                        if (isset($addressDb->connect_role)) {
+                            $connect_role = htmlspecialchars($addressDb->connect_role);
+                        }
+                        ?>
+                        <div class="row mb-2">
+                            <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Addressrole'); ?></label>
+                            <div class="col-md-3">
+                                <input type="text" name="connect_role[<?= $key; ?>]" value="<?= $connect_role; ?>" size="6" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <!-- Extra text by address -->
+                        <div class="row mb-2">
+                            <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Extra text by address'); ?></label>
+                            <div class="col-md-7">
+                                <textarea name="connect_text[<?= $addressDb->connect_id; ?>]" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($addressDb->connect_text); ?></textarea>
+                            </div>
+                        </div>
+
+                        <?php if ($address3Db) { ?>
+                            <?php
+                            if ($connect_kind == 'person') {
+                                $connect_kind = 'person';
+                                $connect_sub_kind_source = 'pers_address_connect_source';
+                            } else {
+                                $connect_kind = 'family';
+                                $connect_sub_kind_source = 'fam_address_connect_source';
+                            }
+                            ?>
+                            <div class="row mb-2">
+                                <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                <div class="col-md-7">
+                                    <?php
+                                    source_link3($connect_kind, $connect_sub_kind_source, $addressDb->connect_id);
+                                    echo $check_sources_text;
+                                    ?>
+                                </div>
+                            </div>
+                        <?php
+                        }
+
+                        // *** Use hideshow to show and hide the editor lines ***
+                        if (isset($hideshow) && substr($hideshow, 0, 4) === '8000') {
+                        ?>
+                    </span>
+                <?php
+                        }
+                    } else {
+                        // *** Add new address ***
+                        $addressqry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1' ORDER BY address_place, address_address");
+                ?>
+                <input type="hidden" name="connect_date[<?= $key; ?>]" value="">
+                <input type="hidden" name="connect_date_prefix[<?= $key; ?>]" value="">
+                <input type="hidden" name="connect_role[<?= $key; ?>]" value="">
+
+                <!-- Added april 2024 -->
+                <input type="hidden" name="connect_text[<?= $key; ?>]" value="">
+
+                <?= __('Address'); ?>
+                <select size="1" name="connect_item_id[<?= $key; ?>]" style="width: 300px">
+                    <option value=""><?= __('Select address'); ?></option>
+                    <!-- Only shared addresses (at this moment) -->
+                    <?php while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) { ?>
+                        <option value="<?= $address2Db->address_gedcomnr; ?>" <?= $addressDb->connect_item_id == $address2Db->address_gedcomnr ? 'selected' : ''; ?>>
+                            <?= $address2Db->address_place; ?>, <?= $address2Db->address_address; ?>
+                            <?php
+                            if ($address2Db->address_text) {
+                                echo ' ' . substr($address2Db->address_text, 0, 40);
+                                if (strlen($address2Db->address_text) > 40) {
+                                    echo '...';
+                                }
+                            }
+                            ?>
+                            [<?= $address2Db->address_gedcomnr; ?>]
+                        </option>
+                    <?php } ?>
+                </select>
+
+                <?= __('Or: add new address'); ?>
+                <a href="index.php?page=<?= $page; ?><?= $connect_kind == 'person' ? '&amp;person_place_address=1' : '&amp;family_place_address=1'; ?>&amp;address_add2=1&amp;connect_id=<?= $addressDb->connect_id; ?>&amp;connect_kind=<?= $addressDb->connect_kind; ?>&amp;connect_sub_kind=<?= $addressDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $addressDb->connect_connect_id; ?>#addresses">
+                    [<?= __('Add'); ?>]
+                </a>
+            <?php
                     }
-                    ?>
-
-                    <b><?= $noteDb->note_names; ?></b><br>
-
-                    <textarea rows="1" name="note_note[<?= $noteDb->note_id; ?>]" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea><br>
-
-                    <?= __('Priority'); ?>
-                    <select size="1" name="note_priority[<?= $noteDb->note_id; ?>]">
-                        <option value="Low"><?= __('Low'); ?></option>
-                        <option value="Normal" <?= $noteDb->note_priority == 'Normal' ? ' selected' : ''; ?>><?= __('Normal'); ?></option>
-                        <option value="High" <?= $noteDb->note_priority == 'High' ? ' selected' : ''; ?>><?= __('High'); ?></option>
-                    </select>
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;<?= __('Status'); ?>
-                    <select size="1" name="note_status[<?= $noteDb->note_id; ?>]">
-                        <option value="Not started"><?= __('Not started'); ?></option>
-                        <option value="In progress" <?php if ($noteDb->note_status == 'In progress') echo ' selected'; ?>><?= __('In progress'); ?></option>
-                        <option value="Completed" <?php if ($noteDb->note_status == 'Completed') echo ' selected'; ?>><?= __('Completed'); ?></option>
-                        <option value="Postponed" <?php if ($noteDb->note_status == 'Postponed') echo ' selected'; ?>><?= __('Postponed'); ?></option>
-                        <option value="Cancelled" <?php if ($noteDb->note_status == 'Cancelled') echo ' selected'; ?>><?= __('Cancelled'); ?></option>
-                    </select>
-                </td>
-            </tr>
+                    //echo '</div>';
+            ?>
+            </td>
+        </tr>
     <?php
-        }
     }
 
-    function hideshow_date_place($hideshow_date, $hideshow_place)
-    {
-        // *** If date ends with ! then date isn't valid. Show red line ***
-        $check_date = false;
-        if (isset($hideshow_date) && substr($hideshow_date, -1) === '!') {
-            $check_date = true;
-            $hideshow_date = substr($hideshow_date, 0, -1);
+    // *** Show places or addresses if save or arrow links are used ***
+    if (isset($_GET['person_place_address']) || isset($_GET['family_place_address'])) {
+        // *** Script voor expand and collapse of items ***
+        //if (isset($_GET['pers_place'])) $link_id='54';
+        if (isset($_GET['person_place_address']) || isset($_GET['family_place_address'])) {
+            $link_id = '55';
         }
-        $text = date_place($hideshow_date, $hideshow_place);
-        if ($check_date) {
-            $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
+        echo '
+        <script>
+        function Show(el_id){
+            // *** Hide or show item ***
+            var arr = document.getElementsByClassName(\'row\'+el_id);
+            for (i=0; i<arr.length; i++){
+                arr[i].style.display="";
+            }
+            // *** Change [+] into [-] ***
+            document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
         }
-        return $text;
+        </script>';
+
+        echo '<script>
+            Show("' . $link_id . '");
+        </script>';
+    }
+}
+
+// *** Show editor notes. $note_connect_kind=person/family ***
+function show_editor_notes($note_connect_kind)
+{
+    global $dbh, $tree_id, $pers_gedcomnumber, $field_text_large, $editor_cls, $marriage;
+
+    // *** $note_connect_id = I123 or F123 ***
+    $note_connect_id = $pers_gedcomnumber;
+    if ($note_connect_kind == 'family') {
+        $note_connect_id = $marriage;
     }
 
-    function hideshow_editor($hideshow, $text, $check_text)
-    {
-        if (!$text) {
-            $text = '[' . __('Add') . ']';
-        }
+    $note_qry = "SELECT * FROM humo_user_notes
+        WHERE note_tree_id='" . $tree_id . "'
+        AND note_kind='editor' AND note_connect_kind='" . $note_connect_kind . "'
+        AND note_connect_id='" . $note_connect_id . "'";
+    $note_result = $dbh->query($note_qry);
+    $num_rows = $note_result->rowCount();
 
-        $return_text = '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
-        if ($check_text) $return_text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-        $return_text .= '</span>';
-
-        return $return_text;
+    // *** Otherwise link won't work second time because of added anchor ***
+    $anchor = '#editor_notes';
+    if (isset($_GET['note_add'])) {
+        $anchor = '';
     }
+    ?>
+    <tr class="table_header_large">
+        <td><a name="editor_notes"></a><?= __('Editor notes'); ?></td>
+        <td colspan="2">
+            <a href="index.php?page=editor&amp;note_add=<?= $note_connect_kind . $anchor; ?>">[<?= __('Add'); ?>]</a>
+            <?php
+            if ($num_rows) {
+                printf(__('There are %d editor notes.'), $num_rows);
+            } else {
+                printf(__('There are %d editor notes.'), 0);
+            }
+            ?>
+        </td>
+    </tr>
+    <?php while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) { ?>
+        <tr>
+            <td>
+                <!-- Link to remove note -->
+                <a href="index.php?page=editor&amp;note_drop=<?= $noteDb->note_id; ?>">
+                    <img src="images/button_drop.png" border="0" alt="down">
+                </a>
+            </td>
+            <td colspan="2">
+                <input type="hidden" name="note_id[<?= $noteDb->note_id; ?>]" value="<?= $noteDb->note_id; ?>">
+                <input type="hidden" name="note_connect_kind[<?= $noteDb->note_id; ?>]" value="<?= $note_connect_kind; ?>">
+
+                <?php
+                $user_name = '';
+                if ($noteDb->note_new_user_id) {
+                    $user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'");
+                    $user_addedDb = $user_result->fetch(PDO::FETCH_OBJ);
+                    $user_name = $user_addedDb->user_name;
+                }
+                ?>
+                <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_new_datetime); ?>)<br>
+
+                <?php
+                if ($noteDb->note_changed_user_id) {
+                    //TODO combine queries
+                    $user_name = '';
+                    if ($noteDb->note_changed_user_id) {
+                        $user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_changed_user_id . "'");
+                        $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+                        $user_name = $userDb->user_name;
+                    }
+
+                    echo __('Changed by') . ' <b>' . $user_name . '</b> (' . show_datetime($noteDb->note_changed_datetime) . ')<br>';
+                }
+                ?>
+
+                <b><?= $noteDb->note_names; ?></b><br>
+
+                <textarea rows="1" name="note_note[<?= $noteDb->note_id; ?>]" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea><br>
+
+                <?= __('Priority'); ?>
+                <select size="1" name="note_priority[<?= $noteDb->note_id; ?>]">
+                    <option value="Low"><?= __('Low'); ?></option>
+                    <option value="Normal" <?= $noteDb->note_priority == 'Normal' ? ' selected' : ''; ?>><?= __('Normal'); ?></option>
+                    <option value="High" <?= $noteDb->note_priority == 'High' ? ' selected' : ''; ?>><?= __('High'); ?></option>
+                </select>
+
+                &nbsp;&nbsp;&nbsp;&nbsp;<?= __('Status'); ?>
+                <select size="1" name="note_status[<?= $noteDb->note_id; ?>]">
+                    <option value="Not started"><?= __('Not started'); ?></option>
+                    <option value="In progress" <?php if ($noteDb->note_status == 'In progress') echo ' selected'; ?>><?= __('In progress'); ?></option>
+                    <option value="Completed" <?php if ($noteDb->note_status == 'Completed') echo ' selected'; ?>><?= __('Completed'); ?></option>
+                    <option value="Postponed" <?php if ($noteDb->note_status == 'Postponed') echo ' selected'; ?>><?= __('Postponed'); ?></option>
+                    <option value="Cancelled" <?php if ($noteDb->note_status == 'Cancelled') echo ' selected'; ?>><?= __('Cancelled'); ?></option>
+                </select>
+            </td>
+        </tr>
+<?php
+    }
+}
+
+function hideshow_date_place($hideshow_date, $hideshow_place)
+{
+    // *** If date ends with ! then date isn't valid. Show red line ***
+    $check_date = false;
+    if (isset($hideshow_date) && substr($hideshow_date, -1) === '!') {
+        $check_date = true;
+        $hideshow_date = substr($hideshow_date, 0, -1);
+    }
+    $text = date_place($hideshow_date, $hideshow_place);
+    if ($check_date) {
+        $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
+    }
+    return $text;
+}
+
+function hideshow_editor($hideshow, $text, $check_text)
+{
+    if (!$text) {
+        $text = '[' . __('Add') . ']';
+    }
+
+    $return_text = '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
+    if ($check_text) $return_text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
+    $return_text .= '</span>';
+
+    return $return_text;
+}

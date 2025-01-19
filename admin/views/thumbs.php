@@ -6,6 +6,8 @@ if (!defined('ADMIN_PAGE')) {
 
 include_once(__DIR__ . "/../include/select_tree.php");
 include_once(__DIR__ . "/../include/media_inc.php");
+include_once(__DIR__ . "/../../include/showMedia.php");
+$showMedia = new ShowMedia;
 
 $prefx = '../'; // to get out of the admin map
 
@@ -409,7 +411,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     //text which will be concatenated and use as info at the end
                     $text = '';
                     //first we will check what server soft user uses
-                    $text .= __('Checking server:').'<br>';
+                    $text .= __('Checking server:') . '<br>';
                     $serverName = $_SERVER['SERVER_SOFTWARE'];
                     //for simulating other options - delete after
                     // $serverName = 'Nginx';
@@ -926,7 +928,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                         if (
                             !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') && // don't create thumb on corrupt file
-                            empty(thumbnail_exists($selected_picture_folder, $filename))
+                            empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))
                         ) {    // don't create thumb if one exists
                             create_thumbnail($selected_picture_folder, $filename); // in media_inc.php script 
                         }
@@ -940,8 +942,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     ) {
         ?>
                         <div class="photobook">
+                            <?= $showMedia->print_thumbnail($selected_picture_folder, $filename); ?>
                             <?php
-                            echo print_thumbnail($selected_picture_folder, $filename);
                             // *** Show name of connected persons ***
                             $picture_text = '';
                             $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "'

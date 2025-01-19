@@ -9,8 +9,11 @@ include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . "/include/safe.php"); //Variabelen
 
 // *** Needed for privacy filter ***
-include_once(__DIR__ . "/include/settings_global.php"); //Variables
-include_once(__DIR__ . "/include/settings_user.php"); // USER variables
+include_once(__DIR__ . "/include/generalSettings.php");
+$GeneralSettings = new GeneralSettings();
+$user = $GeneralSettings->get_user_settings($dbh);
+$humo_option = $GeneralSettings->get_humo_option($dbh);
+
 include_once(__DIR__ . "/include/personCls.php");
 
 include_once(__DIR__ . "/include/dbFunctions.php");
@@ -44,15 +47,15 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\r\n"
     . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\r\n";
 
 // *** Family trees ***
-@$datasql = $db_functions->get_trees();
+$datasql = $db_functions->get_trees();
 foreach ($datasql as $dataDb) {
     // *** Check is family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($dataDb->tree_id, $hide_tree_array)) {
         // *** Get all family pages ***
-        $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families
-            WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
-        while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
+        $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families 
+        WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
+        while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
             //$person_cls = new PersonCls($personDb);
             //$privacy=$person_cls->privacy;
@@ -79,7 +82,8 @@ foreach ($datasql as $dataDb) {
             }
 
             if ($humo_option["url_rewrite"] == "j") {
-                $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
+                //$person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
+                $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber;
             } else {
                 $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
             }
@@ -91,7 +95,7 @@ foreach ($datasql as $dataDb) {
         // *** Get all single persons ***
         $person_qry = $dbh->query("SELECT pers_tree_id, pers_famc, pers_fams, pers_gedcomnumber, pers_own_code FROM humo_persons
             WHERE pers_tree_id='" . $dataDb->tree_id . "' AND pers_famc='' AND pers_fams=''");
-        while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
+        while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
             //$person_cls = new PersonCls($personDb);
             //$privacy=$person_cls->privacy;
@@ -118,6 +122,7 @@ foreach ($datasql as $dataDb) {
                     $uri_path = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['PHP_SELF'], 0, $position);
                 }
 
+                // TODO check these variables. A single person doesn't have a famc or fams.
                 $pers_family = '';
                 if ($personDb->pers_famc) {
                     $pers_family = $personDb->pers_famc;

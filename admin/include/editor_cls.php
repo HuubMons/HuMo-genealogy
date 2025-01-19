@@ -282,8 +282,11 @@ class Editor_cls
             if (substr($find_text, 0, 1) === '@') {
                 $search_text = $dbh->query("SELECT * FROM humo_texts
                     WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($find_text, 1, -1) . "'");
-                @$search_textDb = $search_text->fetch(PDO::FETCH_OBJ);
-                @$text = $search_textDb->text_text;
+                $search_textDb = $search_text->fetch(PDO::FETCH_OBJ);
+
+                if (isset($search_textDb->text_text)) {
+                    $text = $search_textDb->text_text;
+                }
                 $text = str_replace("<br>", "<br>\n", $text);
             }
             return str_replace("<br>", "", $text);
@@ -327,4 +330,4 @@ class Editor_cls
         }
         return ($text);
     }
-} // *** End of editor class ***
+}

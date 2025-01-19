@@ -11,7 +11,7 @@
     if ($editor['add_person'] == false) {
         // *** Update settings ***
         if (isset($_POST['admin_online_search']) && ($_POST['admin_online_search'] == 'y' || $_POST['admin_online_search'] == 'n')) {
-            $result = $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
+            $db_functions->update_settings('admin_online_search', $_POST["admin_online_search"]);
             $humo_option["admin_online_search"] = $_POST['admin_online_search'];
         }
     ?>
@@ -434,6 +434,7 @@
                     // *** Person text by name ***
                     $text = $editor_cls->text_show($pers_name_text);
                     // *** Check if there are multiple lines in text ***
+                    // TODO check all these fields.
                     $field_text_selected = $field_text;
                     if ($text && preg_match('/\R/', $text)) {
                         $field_text_selected = $field_text_medium;
@@ -565,6 +566,7 @@
             <td colspan="2">
                 <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?> class="form-check-input"> <?= __('alive'); ?>
                 <input type="radio" name="pers_alive" value="deceased" <?= $selected_deceased . $disabled; ?> class="form-check-input"> <?= __('deceased'); ?>
+                <?= $disabled ? '<input type="hidden" name="pers_alive" value="deceased">' : ''; ?>
 
                 <!-- Estimated/ calculated (birth) date, can be used for privacy filter -->
                 <?php if (!$pers_cal_date) {
@@ -595,19 +597,6 @@
             $colour = ' bgcolor="#FFAA80"';
         }
 
-        $selected_m = '';
-        if ($pers_sexe == 'M') {
-            $selected_m = ' checked';
-        }
-        $selected_f = '';
-        if ($pers_sexe == 'F') {
-            $selected_f = ' checked';
-        }
-        $selected_u = '';
-        if ($pers_sexe == '') {
-            $selected_u = ' checked';
-        }
-
         $check_sources_text = '';
         if ($pers_gedcomnumber) {
             $check_sources_text = check_sources('person', 'pers_sexe_source', $pers_gedcomnumber);
@@ -616,9 +605,9 @@
         <tr>
             <td><a name="sex"></a><?= __('Sex'); ?></td>
             <td <?= $colour; ?> colspan="2">
-                <input type="radio" name="pers_sexe" value="M" <?= $selected_m; ?> class="form-check-input"> <?= __('male'); ?>
-                <input type="radio" name="pers_sexe" value="F" <?= $selected_f; ?> class="form-check-input"> <?= __('female'); ?>
-                <input type="radio" name="pers_sexe" value="" <?= $selected_u; ?> class="form-check-input"> ?
+                <input type="radio" name="pers_sexe" value="M" <?= $pers_sexe == 'M' ? 'checked' : '' ?> class="form-check-input"> <?= __('male'); ?>
+                <input type="radio" name="pers_sexe" value="F" <?= $pers_sexe == 'F' ? 'checked' : ''; ?> class="form-check-input"> <?= __('female'); ?>
+                <input type="radio" name="pers_sexe" value="" <?= $pers_sexe == '' ? 'checked' : ''; ?> class="form-check-input"> ?
 
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?php
@@ -1659,7 +1648,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'";
                     $user_result = $dbh->query($user_qry);
                     $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
+                    if ($userDb) {
+                        $user_name = $userDb->user_name;
+                    }
                 }
             ?>
                 <tr class="table_header_large">
@@ -1676,7 +1667,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                     $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'";
                     $user_result = $dbh->query($user_qry);
                     $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
+                    if ($userDb) {
+                        $user_name = $userDb->user_name;
+                    }
                 }
             ?>
                 <tr class="table_header_large">

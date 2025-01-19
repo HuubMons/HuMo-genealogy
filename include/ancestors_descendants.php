@@ -1,15 +1,7 @@
 <?php
 
 /*
- * Functions get_ancestors and get_descendants.
- * April 2015 Huub Mons: created a general ancestors - descendants functions script.
- * 
- * Jan. 2024: at this moment these scripts are only used in editor_inc.php to add a colour for ancestors/ descendants.
- * Sept. 2024: also used in maps script.
- * TODO: use these functions for multiple descendant/ ascendant scripts.
- */
-
-/* Function get_descendants
+/* Functions get_ancestors and get_descendants.
  * First version made by Yossi Beck.
  * $generation_number = generation number to process.
  * $nr_generations = maximum number of generations.
@@ -22,7 +14,13 @@
  *  children of child1:
  *  child1                  descendant[4]
  *  child2                  descendant[5]
+ *
+ * April 2015 Huub Mons: created a general ancestors - descendants functions script.
+ * Jan. 2024: at this moment these scripts are only used in editorModel.php to add a colour for ancestors/ descendants.
+ * Sept. 2024: also used in maps script.
+ * TODO: use these functions for multiple descendant/ ascendant scripts.
  */
+
 $generation_number = 0;
 $descendant_id = 0;
 function get_descendants($family_id, $main_person, $generation_number, $nr_generations)
@@ -40,7 +38,7 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
     // TODO check this function. Could be improved.
 
     // *** Count marriages of main person (man) ***
-    @$familyDb = $db_functions->get_family($family_id, 'man-woman');
+    $familyDb = $db_functions->get_family($family_id, 'man-woman');
     $parent1 = '';
     //$parent2 = '';
     //$swap_parent1_parent2 = false;
@@ -58,14 +56,14 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
     $nr_families = 0;
     if ($parent1) {
         // *** Save family of person in array ***
-        @$personDb = $db_functions->get_person($parent1, 'famc-fams');
+        $personDb = $db_functions->get_person($parent1, 'famc-fams');
         $marriage_array = explode(";", $personDb->pers_fams);
         $nr_families = substr_count($personDb->pers_fams, ";");
     }
 
     // *** Loop multiple marriages of main_person ***
     for ($parent1_marr = 0; $parent1_marr <= $nr_families; $parent1_marr++) {
-        @$familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
+        $familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
         // *** Progen: onecht kind, vrouw zonder man ***
         //if ($familyDb->fam_kind!='PRO-GEN') $family_nr++;
 
@@ -75,8 +73,7 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
         if ($familyDb->fam_children) {
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {
-                //@$childDb = $db_functions->get_person($child_array[$i]);
-                @$childDb = $db_functions->get_person($child_array[$i], 'famc-fams');
+                $childDb = $db_functions->get_person($child_array[$i], 'famc-fams');
                 if ($childDb->pers_fams) {
                     // *** 1st family of child ***
                     $child_family = explode(";", $childDb->pers_fams);
@@ -119,7 +116,6 @@ function get_ancestors($db_functions, $main_person)
         $ancestor_array[2] = $parentDb->fam_man;
         $ancestor_array[3] = $parentDb->fam_woman;
     }
-    // end of person 1
 
     // Loop to find person data
     $count_max = 4; // *** Start with value 4, can be raised in loop ***

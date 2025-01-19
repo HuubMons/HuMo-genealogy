@@ -15,6 +15,9 @@ class adminSettingsController
             $settings_homepageModel -> save_settings_modules($dbh);
             $settings_homepageModel -> order_modules($dbh);
 
+            $modules = $settings_homepageModel -> get_modules($dbh);
+            $settings = array_merge($settings, $modules);
+
             $settings_homepageModel -> save_settings_favorites($dbh);
         }
 

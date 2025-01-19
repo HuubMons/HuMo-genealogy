@@ -1,8 +1,8 @@
 <?php
 // *** Most children in family ***
 $test_number = 0; // *** minimum of 0 children ***
-$res = @$dbh->query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_children != ''");
-while (@$record = $res->fetch(PDO::FETCH_OBJ)) {
+$res = $dbh->query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_children != ''");
+while ($record = $res->fetch(PDO::FETCH_OBJ)) {
     $count_children = substr_count($record->fam_children, ';');
     $count_children += 1;
     if ($count_children > $test_number) {
@@ -14,12 +14,12 @@ while (@$record = $res->fetch(PDO::FETCH_OBJ)) {
 }
 
 if ($test_number != "0") {
-    @$record = $db_functions->get_person($man_gedcomnumber);
+    $record = $db_functions->get_person($man_gedcomnumber);
     $person_cls = new PersonCls($record);
     $name = $person_cls->person_name($record);
     $man = $name["standard_name"];
 
-    @$record = $db_functions->get_person($woman_gedcomnumber);
+    $record = $db_functions->get_person($woman_gedcomnumber);
     $person_cls = new PersonCls($record);
     $name = $person_cls->person_name($record);
     $woman = $name["standard_name"];

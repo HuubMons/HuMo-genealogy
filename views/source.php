@@ -83,7 +83,8 @@ if (!isset($data["sourceDb"]->source_id)) {
     // *** Pictures by source ***
     $source_media = '';
     $data["picture_presentation"] = 'show'; // Show pictures in source page.
-    $result = show_media('source', $data["sourceDb"]->source_gedcomnr); // *** This function can be found in file: show_picture.php! ***
+    $showMedia = new ShowMedia;
+    $result = $showMedia->show_media('source', $data["sourceDb"]->source_gedcomnr); // *** This function can be found in file: showMedia.php! ***
     if ($result[0]) {
         $source_media = $result[0];
     }

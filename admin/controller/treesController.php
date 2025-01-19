@@ -36,6 +36,8 @@ class TreesController
             // Because of processing very large GEDCOM files.
             @set_time_limit(4000);
 
+            $_SESSION['debug_person'] = 1;
+
             $gedcomModel = new GedcomModel($dbh);
             $trees['step'] = $gedcomModel->get_step();
 
@@ -45,6 +47,11 @@ class TreesController
 
                 $trees['gedcom_directory'] = $gedcomModel->get_gedcom_directory();
             }
+            $trees['removed_filenames'] = $gedcomModel->remove_gedcon_files($trees);
+
+            //if ($trees['step'] == '2') {
+            //
+            //}
         } elseif ($trees['menu_tab'] == 'tree_data') {
             $trees['tree_pict_path'] = $treesModel->get_tree_pict_path($dbh, $tree_id);
 

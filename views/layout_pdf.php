@@ -40,8 +40,11 @@ include_once(__DIR__ . "/../include/dbFunctions.php");
 $db_functions = new Dbfunctions($dbh);
 
 include_once(__DIR__ . "/../include/safe.php");
-include_once(__DIR__ . "/../include/settings_global.php"); // System variables
-include_once(__DIR__ . "/../include/settings_user.php"); // User variables
+
+include_once(__DIR__ . "/../include/generalSettings.php");
+$GeneralSettings = new GeneralSettings();
+$user = $GeneralSettings->get_user_settings($dbh);
+$humo_option = $GeneralSettings->get_humo_option($dbh);
 
 include_once(__DIR__ . "/../include/get_visitor_ip.php");
 $visitor_ip = visitorIP();

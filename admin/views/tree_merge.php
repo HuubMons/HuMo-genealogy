@@ -203,7 +203,7 @@ elseif (isset($_POST['relatives'])) {
         $relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);        // database row: I23@I300;I54@I304;I34@I430;
         $firstsemi = strpos($relcompDb->setting_value, ';') + 1;
         $string = substr($relcompDb->setting_value, $firstsemi);
-        $result = $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $string);
+        $db_functions->update_settings('rel_merge_' . $trees['tree_id'], $string);
         $trees['relatives_merge'] = $string;
     }
 
@@ -853,8 +853,11 @@ elseif (isset($_POST['auto_merge'])) {
 elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
     // *** Re-read variables after changing them ***
     // *** Don't use include_once! Otherwise the old value will be shown ***
-    include(__DIR__ . "/../../include/settings_global.php"); //variables
-    ?>
+    include_once(__DIR__ . "/../../include/generalSettings.php");
+    $GeneralSettings = new GeneralSettings();
+    //$user = $GeneralSettings->get_user_settings($dbh);
+    $humo_option = $GeneralSettings->get_humo_option($dbh);
+?>
 
     <form method="post" action="index.php" class="my-2">
         <input type="hidden" name="page" value="tree">

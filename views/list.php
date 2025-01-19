@@ -770,8 +770,8 @@ function name_qry($search_name, $search_part)
     }
     */
 
-    while (@$personDb = $list["person_result"]->fetch(PDO::FETCH_OBJ)) {
-        //while (@$person1Db = $list["person_result"]->fetch(PDO::FETCH_OBJ)) {
+    while ($personDb = $list["person_result"]->fetch(PDO::FETCH_OBJ)) {
+        //while ($person1Db = $list["person_result"]->fetch(PDO::FETCH_OBJ)) {
 
         // *** Preparation for second query. Needed to solve GROUP BY problems ***
         //$personDb = $db_functions->get_person_with_id($person1Db->pers_id);
@@ -966,10 +966,10 @@ function show_person($personDb)
                         AND connect_item_id=address_gedcomnr
                         AND address_place='" . safe_text_db($personDb->place_order) . "'";
                     $result = $dbh->query($query);
-                    @$resultDb = $result->fetch(PDO::FETCH_OBJ);
+                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
                     //if ($selected_place==$personDb->pers_place_index)
-                    if (@$resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                    if ($resultDb && $resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
                         echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
                     } else {
                         echo '<span class="place_index">&nbsp;</span>';
@@ -999,9 +999,9 @@ function show_person($personDb)
                         WHERE event_tree_id='" . $personDb->pers_tree_id . "' AND event_connect_id='" . $personDb->pers_gedcomnumber . "'
                         AND event_place='" . safe_text_db($personDb->place_order) . "'";
                     $result = $dbh->query($query);
-                    @$resultDb = $result->fetch(PDO::FETCH_OBJ);
+                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
-                    if (@$resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                    if ($resultDb && $resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
                         echo '<span class="place_index place_index_selected">' . substr(__('Events'), 0, 1) . '</span>';
                     } else {
                         echo '<span class="place_index">&nbsp;</span>';

@@ -14,16 +14,20 @@ $path_prefix = '../';
 // *** These items are needed for adding and changing picture ***
 $phpself = 'index.php';
 $editor_cls = $editSource['editor_cls'];
+
 // *** Process queries (needed for picture ordering and delete) ***
-include_once(__DIR__ . "/../include/editor_inc.php");
+$editor_cls = new Editor_cls;
+$editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
+$editor['confirm'] = $editorModel->update_editor2();
+
 // TODO this picture remove confirm box is shown above the header.
-echo $confirm; // Confirm message to remove picture from source.
+$editor['confirm']; // Confirm message to remove picture from source.
 
 
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-// TODO check if code could be improved. Also in editor_inc.php line 233.
+// TODO check if code could be improved. Also in editorModel.php.
 // *** Show picture ***
 // *** get path of pictures folder 
 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
@@ -177,11 +181,11 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
                             }
                         }
                         $restricted = '';
-                        if (@$sourceDb->source_status == 'restricted') {
+                        if ($sourceDb->source_status == 'restricted') {
                             $restricted = ' *' . __('restricted') . '*';
                         }
                     ?>
-                        <option value="<?= $sourceDb->source_id; ?>" <?= $selected; ?>><?= $show_text; ?> [<?= @$sourceDb->source_gedcomnr . $restricted; ?>]</option>
+                        <option value="<?= $sourceDb->source_id; ?>" <?= $selected; ?>><?= $show_text; ?> [<?= $sourceDb->source_gedcomnr . $restricted; ?>]</option>
                     <?php } ?>
                 </select>
             </form>
@@ -217,12 +221,12 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
         $source_repo_page = '';
         $source_repo_gedcomnr = '';
     } else {
-        @$source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "' AND source_id='" . $editSource['source_id'] . "'");
+        $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "' AND source_id='" . $editSource['source_id'] . "'");
         //$sourceDb=$db_functions->get_source ($sourcenum);
 
         $die_message = __('No valid source number.');
         try {
-            @$sourceDb = $source_qry->fetch(PDO::FETCH_OBJ);
+            $sourceDb = $source_qry->fetch(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
             echo $die_message;
         }

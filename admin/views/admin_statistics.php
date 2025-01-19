@@ -34,17 +34,13 @@ $person_cls = new PersonCls;
     <?php
     if ($statistics['tab'] == 'remove') {
         include(__DIR__ . '/statistics_remove.php');
-    }
-    elseif ($statistics['tab'] == 'date_statistics') {
+    } elseif ($statistics['tab'] == 'date_statistics') {
         include(__DIR__ . '/statistics_date.php');
-    }
-    elseif ($statistics['tab'] == 'visitors') {
+    } elseif ($statistics['tab'] == 'visitors') {
         include(__DIR__ . '/statistics_visitors.php');
-    }
-    elseif ($statistics['tab'] == 'statistics_old') {
+    } elseif ($statistics['tab'] == 'statistics_old') {
         include(__DIR__ . '/statistics_old.php');
-    }
-    else{
+    } else {
         // *** Default page ***
         include(__DIR__ . '/statistics_general.php');
     }
@@ -148,6 +144,8 @@ function calender($month, $year, $thismonth)
             $yesterday = strtotime($date);
             $today = $yesterday + 86400;
 
+            $graph_labels[] = $i;
+
             if ($statistics['tab'] == 'visitors') {
                 // *** Show visitors ***
                 $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today . ' GROUP BY stat_ip_address');
@@ -183,6 +181,8 @@ function calender($month, $year, $thismonth)
 
             // *** Array for graphical statistics ***
             $data[$day - 1] = $nr_statistics;
+
+            $graph_data[] = $nr_statistics;
         }
 
         // Add end month spacers
@@ -200,12 +200,45 @@ function calender($month, $year, $thismonth)
         <?php } ?>
     </table><br>
 
-<?php
+    <?php
     // *** Show graphical month statistics ***
-    //$this_month=$thismonth;
-    $mc = new maxChart($data);
-    //$mc->displayChart($calender_head."&nbsp;".$year,1,700,200,false,$this_month);
-    $mc->displayChart($calender_head . "&nbsp;" . $year, 1, 700, 200, false, $thismonth);
+    if ($statistics['tab'] == 'visitors') {
+        $graph_label = __('Visitors');
+    } else {
+        $graph_label = __('Families');
+    }
+    ?>
+
+    <div>
+        <canvas id="myChartVisitors"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx1 = document.getElementById('myChartVisitors');
+        var label = <?php echo json_encode($graph_label); ?>;
+        var labels = <?php echo json_encode($graph_labels); ?>;
+        var graph_data = <?php echo json_encode($graph_data); ?>;
+
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: graph_data,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+<?php
 }
 
 // *** Function to show year statistics ***
@@ -223,23 +256,23 @@ function year_graphics($month, $year)
             $start_month = 1;
             $start_year++;
         }
-
-        $date = $start_year . '-' . $start_month . '-' . "1";
+        $date = $start_year . '-' . $start_month . '-1';
         $first_day = strtotime($date);
         $Days_In_Month = cal_days_in_month(CAL_GREGORIAN, $start_month, $start_year);
         $latest_day = $first_day + (86400 * $Days_In_Month);
-
         if ($statistics['tab'] == 'visitors') {
             // *** Show visitors ***
-            $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date
-                WHERE stat_date_linux > " . $first_day . " AND stat_date_linux < " . $latest_day . " GROUP BY stat_ip_address");
+            $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date WHERE stat_date_linux > " . $first_day . " AND stat_date_linux < " . $latest_day . " GROUP BY stat_ip_address");
         } else {
             // *** Show visited families ***
             $datasql = $dbh->query("SELECT * FROM humo_stat_date WHERE stat_date_linux > " . $first_day . " AND stat_date_linux < " . $latest_day);
+
+            //SELECT * FROM your_table WHERE your_date_column >= DATE_SUB('2024-12-01', INTERVAL 1 MONTH);
+            //$datasql = $dbh->query(" SELECT * FROM humo_stat_date WHERE stat_date_linux>= DATE_SUB('" . $start_year . "-" . $start_month . "-01', INTERVAL 1 MONTH)");
         }
 
         if ($datasql) {
-            $nr_statistics = $datasql->rowCount();
+            $graph_data[] = $datasql->rowCount();
         }
 
         if ($start_month == '1') {
@@ -278,17 +311,55 @@ function year_graphics($month, $year)
         if ($start_month == '12') {
             $month_name = __('dec');
         }
-        $short_year = substr($start_year, 2);
-        $twelve_months[$month_name . "&nbsp;" . $short_year] = $nr_statistics;
         $start_month++;
+
+        $graph_labels[] = $month_name . ' ' . substr($start_year, 2);
     }
-    $mc = new maxChart($twelve_months);
-    $this_month = date("n");
+    //$this_month = date("n");
+
+    // *** Calculate the last 12 months ***
+    /*
+    for ($i = 1; $i <= 12; $i++) {
+        //$graph_labels[] = date("Y-m%", strtotime(date('Y-' . $month . '-01') . " -$i months"));
+        $month_number = date("n", strtotime(date('Y-' . $month . '-01') . " -$i months"));
+    }
+    */
 
     if ($statistics['tab'] == 'visitors') {
-        $mc->displayChart(__('Visitors'), 1, 700, 200, false, $this_month);
+        $graph_label = __('Visitors');
     } else {
-        $mc->displayChart(__('Visited families in the past 12 months'), 1, 700, 200, false, $this_month);
+        $graph_label = __('Families');
     }
-}
 ?>
+
+    <div>
+        <canvas id="myChartFamilies"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx2 = document.getElementById('myChartFamilies');
+        var label = <?php echo json_encode($graph_label); ?>;
+        var labels = <?php echo json_encode($graph_labels); ?>;
+        var graph_data = <?php echo json_encode($graph_data); ?>;
+
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: graph_data,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+<?php
+}

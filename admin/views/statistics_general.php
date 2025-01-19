@@ -131,7 +131,7 @@ if ($temp->rowCount()) {
                     </tr>
                 </thead>
                 <?php
-                while (@$statDb = $stat->fetch(PDO::FETCH_OBJ)) {
+                while ($statDb = $stat->fetch(PDO::FETCH_OBJ)) {
                     $country_code = $statDb->stat_country_code;
                     $flag = "images/flags/" . $country_code . ".gif";
                     if (!file_exists($flag)) {
@@ -142,7 +142,7 @@ if ($temp->rowCount()) {
                         <td>
                             <img src="<?= $flag; ?>" width="30" height="15">&nbsp;
                             <?php
-                            if ($country_code != __('Unknown') && $country_code) {
+                            if ($country_code != __('Unknown') && $country_code && isset($countries[$country_code][1])) {
                                 echo $countries[$country_code][1] . '&nbsp;(' . $country_code . ')';
                             } else {
                                 echo $country_code;

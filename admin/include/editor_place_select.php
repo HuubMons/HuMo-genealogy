@@ -104,7 +104,7 @@ $query .= " UNION (SELECT pers_buried_place as place_order FROM humo_persons
 $query .= ' ORDER BY place_order';
 $result = $dbh->query($query);
 
-while (@$resultDb = $result->fetch(PDO::FETCH_OBJ)) {
+while ($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
     //echo '<a href="" onClick=\'return select_item("'.$resultDb->place_order.'")\'>'.$resultDb->place_order.'</a><br>';
     // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
     echo '<a href="" onClick=\'return select_item("' . str_replace("'", "&prime;", $resultDb->place_order) . '")\'>' . $resultDb->place_order . '</a><br>';

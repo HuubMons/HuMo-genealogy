@@ -57,14 +57,8 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
             <div class="col-md-3">
                 <select size="1" name="address_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select address'); ?></option>
-                    <?php
-                    while ($addressDb = $address_qry->fetch(PDO::FETCH_OBJ)) {
-                        $selected = '';
-                        if ($editAddress['address_id'] == $addressDb->address_id) {
-                            $selected = ' selected';
-                        }
-                    ?>
-                        <option value="<?= $addressDb->address_id; ?>" <?= $selected; ?>>
+                    <?php while ($addressDb = $address_qry->fetch(PDO::FETCH_OBJ)) { ?>
+                        <option value="<?= $addressDb->address_id; ?>" <?= $editAddress['address_id'] == $addressDb->address_id ? 'selected':''; ?>>
                             <?= $addressDb->address_place; ?>, <?= $addressDb->address_address; ?>
                             <?php
                             if ($addressDb->address_text) {

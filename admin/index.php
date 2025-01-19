@@ -12,7 +12,7 @@
  *
  * ----------
  *
- * Copyright (C) 2008-2024 Huub Mons,
+ * Copyright (C) 2008-2025 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * René Janssen, Yossi Beck
  * and others.
@@ -69,26 +69,32 @@ function admin_custom_autoload($class_name)
     // ../languages/languageCls.php
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
-    $classes = array(
-        'LanguageCls',
-        'DbFunctions', 'ProcessLinks', 'PersonCls',
-        'Editor_cls', 'EditorEvent', 'CalculateDates', 'GedcomCls', 'UpdateCls'
+    $include = array(
+        'DbFunctions',
+        'ProcessLinks',
+        'PersonCls',
+        'CalculateDates'
     );
-    // If all classes are autoloading, array check of classes will be removed.
-    if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
-        $dirs = array('controller', 'models', 'include', '../include', '../languages');
-        foreach ($dirs as $dir) {
-            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
-            if (file_exists($file)) {
-                require $file;
-                break;
-            }
-        }
+    $admin_include = array(
+        'Editor_cls',
+        'EditorEvent',
+        'GedcomCls',
+        'UpdateCls'
+    );
+
+    if ($class_name == 'LanguageCls') {
+        require __DIR__ . '/../languages/languageCls.php';
+    } elseif (substr($class_name, -10) == 'Controller') {
+        require __DIR__ . '/controller/' . lcfirst($class_name) . '.php';
+    } elseif (substr($class_name, -5) == 'Model') {
+        require __DIR__ . '/models/' . lcfirst($class_name) . '.php';
+    } elseif (in_array($class_name, $include)) {
+        require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
+    } elseif (in_array($class_name, $admin_include)) {
+        require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
     }
 }
 spl_autoload_register('admin_custom_autoload');
-
-
 
 // TODO refactor/ move to model
 // *** Only logoff admin ***
@@ -119,8 +125,9 @@ $visitor_ip = visitorIP();
 
 
 // *** Added dec. 2024 ***
-$controllerObj = new Main_adminController();
-$main_admin = $controllerObj->detail();
+// Files are prepared, not used yet.
+//$controllerObj = new Main_adminController();
+//$main_admin = $controllerObj->detail();
 
 //$check_tables = $main_admin['check_table'];
 //$page = $main_admin['page'];
@@ -132,7 +139,7 @@ $main_admin = $controllerObj->detail();
 $main_admin['show_menu'] = false;
 $popup = false;
 
-if (isset($database_check) && @$database_check) {  // otherwise we can't make $dbh statements
+if (isset($database_check) && $database_check) {  // otherwise we can't make $dbh statements
     $check_tables = false;
     try {
         $check_tables = $dbh->query("SELECT * FROM humo_settings");
@@ -141,10 +148,13 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
     }
 
     if ($check_tables) {
-        include_once(__DIR__ . "/../include/settings_global.php");
+        include_once(__DIR__ . "/../include/generalSettings.php");
+        $GeneralSettings = new GeneralSettings();
+        $user = $GeneralSettings->get_user_settings($dbh);
+        $humo_option = $GeneralSettings->get_humo_option($dbh);
 
         // *** Added may 2020, needed for some user settings in admin section ***
-        include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
+        include_once(__DIR__ . "/../include/generalSettings.php"); // USER variables
 
         // **** Temporary update scripts ***
         //
@@ -171,10 +181,10 @@ if (isset($_POST['install_tables2'])) {
     $main_admin['show_menu'] = true;
 }
 
-if (isset($database_check) && @$database_check) {  // otherwise we can't make $dbh statements
+if (isset($database_check) && $database_check) {  // otherwise we can't make $dbh statements
     // *** Update to version 4.6, in older version there is a dutch-named table: humo_instellingen ***
     try {
-        $check_update = @$dbh->query("SELECT * FROM humo_instellingen");
+        $check_update = $dbh->query("SELECT * FROM humo_instellingen");
         if ($check_update) {
             $page = 'update';
             $main_admin['show_menu'] = false;
@@ -190,7 +200,7 @@ if (isset($database_check) && @$database_check) {  // otherwise we can't make $d
     }
 
     if (
-        isset($_GET['page']) && ($_GET['page'] == 'editor_sources' || $_GET['page'] == 'editor_place_select' || $_GET['page'] == 'editor_person_select' || $_GET['page'] == 'editor_relation_select' || $_GET['page'] == 'editor_media_select' || $_GET['page'] == 'editor_user_settings')
+        isset($_GET['page']) && ($_GET['page'] == 'editor_sources' || $_GET['page'] == 'editor_place_select' || $_GET['page'] == 'editor_person_select' || $_GET['page'] == 'editor_relation_select' || $_GET['page'] == 'editor_media_select' || $_GET['page'] == 'editor_user_settings' || $_GET['page'] == 'gedcom_import2')
     ) {
         $main_admin['show_menu'] = false;
         $popup = true;
@@ -256,7 +266,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         // *** FIRST CHECK IF USER IS ADMIN OR EDITOR ***
         // *** Edit family trees [GROUP SETTING] ***
         $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $resultDb->user_group_id . "'");
-        @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
+        $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
         if (isset($groepDb->group_edit_trees)) {
             $group_edit_trees = $groepDb->group_edit_trees;
         }
@@ -304,7 +314,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                 log_ip_address='" . $visitor_ip . "',
                 log_user_admin='admin',
                 log_status='success'";
-            @$dbh->query($sql);
+            $dbh->query($sql);
         }
     } else {
         // *** No valid user or password ***
@@ -334,12 +344,12 @@ if (isset($database_check) && $database_check) {
         $group_edit_trees = '';
 
         // *** If .htaccess is used, check usergroup for admin rights ***
-        @$query = "SELECT * FROM humo_users LEFT JOIN humo_groups
+        $query = "SELECT * FROM humo_users LEFT JOIN humo_groups
             ON humo_users.user_group_id=humo_groups.group_id
             WHERE humo_users.user_name='" . $_SERVER["PHP_AUTH_USER"] . "'";
-        @$result = $dbh->query($query);
-        if (@$result->rowCount() > 0) {
-            @$resultDb = $result->fetch(PDO::FETCH_OBJ);
+        $result = $dbh->query($query);
+        if ($result->rowCount() > 0) {
+            $resultDb = $result->fetch(PDO::FETCH_OBJ);
             $group_administrator = $resultDb->group_admin;
 
             // *** Check if user is a editor, GROUP SETTINGS ***
@@ -362,8 +372,8 @@ if (isset($database_check) && $database_check) {
         // *** Logged in using PHP-MySQL ***
         $result = false;
         try {
-            @$query = "SELECT * FROM humo_users";
-            @$result = $dbh->query($query);
+            $query = "SELECT * FROM humo_users";
+            $result = $dbh->query($query);
         } catch (Exception $e) {
             //
         }
@@ -375,7 +385,7 @@ if (isset($database_check) && $database_check) {
 
                     // *** Read group settings ***
                     $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $_SESSION["group_id_admin"] . "'");
-                    @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
+                    $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
 
                     // *** Check if user is an administrator ***
                     $group_administrator = $groepDb->group_admin;
@@ -569,7 +579,7 @@ if ($popup == false) {
                 //
             }
             if ($check_tree_sql) {
-                @$check_treeDb = $check_tree_sql->fetch(PDO::FETCH_OBJ);
+                $check_treeDb = $check_tree_sql->fetch(PDO::FETCH_OBJ);
                 $check_tree_id = $check_treeDb->tree_id;
             }
         }
@@ -749,7 +759,9 @@ if ($popup == false) {
             $editor = $controllerObj->detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option);
             include_once(__DIR__ . "/views/editor.php");
         } elseif ($page === 'editor_sources') {
-            include_once(__DIR__ . "/include/editor_sources.php");
+            $controllerObj = new AdminSourcesController();
+            $editSources = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            include_once(__DIR__ . "/views/editor_sources.php");
         } elseif ($page === 'edit_sources') {
             // TODO refactor
             include_once(__DIR__ . "/include/select_tree.php");
@@ -797,7 +809,7 @@ if ($popup == false) {
         } elseif ($page === 'latest_changes') {
             include_once(__DIR__ . "/views/tree_check.php");
             //} elseif ($page === 'gedcom') {
-            //    include_once(__DIR__ . "/views/gedcom.php");
+            //    include_once(__DIR__ . "/views/gedcom_import.php");
         } elseif ($page === 'settings') {
             $controllerObj = new AdminSettingsController();
             $settings = $controllerObj->detail($dbh, $db_functions, $humo_option);
@@ -853,9 +865,6 @@ if ($popup == false) {
             $maps = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/maps.php");
         } elseif ($page === 'statistics') {
-            // TODO refactor
-            require_once(__DIR__ . "/statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
-
             $controllerObj = new AdminStatisticsController();
             $statistics = $controllerObj->detail($dbh, $db_functions);
             include_once(__DIR__ . "/views/admin_statistics.php");
@@ -863,6 +872,10 @@ if ($popup == false) {
             include_once(__DIR__ . "/update/install_update.php");
         } elseif ($page === 'update') {
             include_once(__DIR__ . "/include/update.php");
+        } elseif ($page === 'gedcom_import2') {
+            $controllerObj = new TreesController();
+            $trees = $controllerObj->detail($dbh, $tree_id, $db_functions, $selected_language);
+            include_once(__DIR__ . "/views/gedcom_import2.php");
         }
         //elseif ($page=='photoalbum'){ include_once (__DIR__ . "/include/photoalbum_categories.php"); }
 

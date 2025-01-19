@@ -4,7 +4,6 @@ class PhotoalbumModel
     public function get_show_pictures()
     {
         $show_pictures = 8; // *** Default value ***
-
         // Remark: setcookie is done in header.
         if (isset($_COOKIE["humogenphotos"]) && is_numeric($_COOKIE["humogenphotos"])) {
             $show_pictures = $_COOKIE["humogenphotos"];
@@ -40,8 +39,11 @@ class PhotoalbumModel
         return $search_media;
     }
 
-    public function get_categories($dbh)
+    public function get_categories($dbh, $user, $selected_language)
     {
+        // *** Check if user has permission to view categories ***
+        $hide_photocat_array = explode(";", $user['group_hide_photocat']);
+
         $photoalbum['category'] = [];
         $photoalbum['category_id'] = [];
         $photoalbum['category_enabled'] = [];
@@ -56,9 +58,28 @@ class PhotoalbumModel
                 $result = $dbh->query($qry);
                 $result_arr = $result->fetchAll();
                 foreach ($result_arr as $row) {
-                    $photoalbum['category'][] = $row['photocat_prefix'];
-                    $photoalbum['category_id'][$row['photocat_prefix']] = $row['photocat_id'];
-                    $photoalbum['category_enabled'][$row['photocat_prefix']] = false;
+                    if (!in_array($row['photocat_id'], $hide_photocat_array)) {
+                        $photoalbum['category'][] = $row['photocat_prefix'];
+                        $photoalbum['category_id'][$row['photocat_prefix']] = $row['photocat_id'];
+                        $photoalbum['category_enabled'][$row['photocat_prefix']] = false;
+
+                        $photoalbum['category_name'][$row['photocat_prefix']] = __('NO NAME');
+                        // check if name for this category exists for this language
+                        $qry2 = "SELECT * FROM humo_photocat WHERE photocat_prefix ='" . $row['photocat_prefix'] . "' AND photocat_language ='" . $selected_language . "'";
+                        $result2 = $dbh->query($qry2);
+                        if ($result2->rowCount() != 0) {
+                            $catnameDb = $result2->fetch(PDO::FETCH_OBJ);
+                            $photoalbum['category_name'][$row['photocat_prefix']] = $catnameDb->photocat_name;
+                        } else {
+                            // check if default name exists for this category
+                            $qry3 = "SELECT * FROM humo_photocat WHERE photocat_prefix ='" . $row['photocat_prefix'] . "' AND photocat_language ='default'";
+                            $result3 = $dbh->query($qry3);
+                            if ($result3->rowCount() != 0) {
+                                $catnameDb = $result3->fetch(PDO::FETCH_OBJ);
+                                $photoalbum['category_name'][$row['photocat_prefix']] = $catnameDb->photocat_name;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -216,5 +237,79 @@ class PhotoalbumModel
             }
         }
         return $photoalbum;
+    }
+
+    public function calculate_pages($photoalbum, $tree_id, $uri_path, $link_cls)
+    {
+        // *** Calculate pages ***
+        $nr_pictures = count($photoalbum['media_files']);
+
+        $albumpath = $link_cls->get_link($uri_path, 'photoalbum', $tree_id, true);
+
+        $item = 0;
+        if (isset($_GET['item'])) {
+            $item = $_GET['item'];
+        }
+        $start = 0;
+        if (isset($_GET["start"])) {
+            $start = $_GET["start"];
+        }
+
+        // At this moment this line is only used to prevent VS code error.
+        $photoalbum['show_pictures'] = $photoalbum['show_pictures'] ? $photoalbum['show_pictures'] : 20;
+
+        // "<="
+        $data["previous_link"] = '';
+        $data["previous_status"] = '';
+        if ($start > 1) {
+            $start2 = $start - 20;
+            $calculated = ($start - 2) * $photoalbum['show_pictures'];
+            $data["previous_link"] = $albumpath . "start=" . $start2 . "&amp;item=" . $calculated;
+        }
+        if ($start <= 0) {
+            $start = 1;
+        }
+        if ($start == '1') {
+            $data["previous_status"] = 'disabled';
+        }
+
+        // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+        for ($i = $start; $i <= $start + 19; $i++) {
+            $calculated = ($i - 1) * $photoalbum['show_pictures'];
+            if ($calculated < $nr_pictures) {
+                $data["page_nr"][] = $i;
+                if ($item == $calculated) {
+                    $data["page_link"][$i] = '';
+                    $data["page_status"][$i] = 'active';
+                } else {
+                    $data["page_link"][$i] = $albumpath . "start=" . $start . "&amp;item=" . $calculated;
+                    $data["page_status"][$i] = '';
+                }
+            }
+        }
+
+        // "=>"
+        $data["next_link"] = '';
+        $data["next_status"] = '';
+        $calculated = ($i - 1) * $photoalbum['show_pictures'];
+        if ($calculated < $nr_pictures) {
+            $data["page_nr"][] = $i;
+            $data["next_link"] = $albumpath . "start=" . $i . "&amp;item=" . $calculated;
+        } else {
+            $data["next_status"] = 'disabled';
+        }
+
+        // Only needed for empty page to prevent fault message.
+        if (!isset($data["page_nr"])) {
+            $data["page_nr"][] = 1;
+        }
+        if (!isset($data["page_link"])) {
+            $data["page_link"][] = 1;
+        }
+        if (!isset($data["page_status"])) {
+            $data["page_status"][] = 1;
+        }
+
+        return $data;
     }
 }

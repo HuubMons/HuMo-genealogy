@@ -145,7 +145,7 @@ function ancestor_chart_person($id, $box_appearance)
     $popup = '';
 
     if ($data["gedcomnumber"][$id]) {
-        @$personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
+        $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $person_cls = new PersonCls($personDb);
         $pers_privacy = $person_cls->privacy;
         $name = $person_cls->person_name($personDb);
@@ -269,7 +269,8 @@ function ancestor_chart_person($id, $box_appearance)
                 // *** Only show 1st picture ***
                 if (isset($picture_qry[0])) {
                     $pictureDb = $picture_qry[0];
-                    $text .= print_thumbnail($tree_pict_path, $pictureDb->event_event, 80, 70, 'float:left; margin:5px;');
+                    $showMedia = new ShowMedia();
+                    $text .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 80, 70, 'float:left; margin:5px;');
                 }
             }
         }

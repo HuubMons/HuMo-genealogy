@@ -4,7 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
 // Needed to process witnesses etc.
 if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
@@ -232,11 +231,12 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             </script>
     <?php
 
-            // TODO These items doesn't work properly. Probably because of the for loops.
+            // TODO These items don't work properly. Probably because of the for loops.
             // This is for the buffer achieve the minimum size in order to flush data
             //echo str_repeat(' ', 1024 * 64);
             //ob_flush();
-            //flush();
+
+            flush();
         }
         return $perc;
     }
@@ -955,23 +955,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
 
         // *** Update processed lines ***
-        //echo '<script>';
-        //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-        //$line_nr++;
-        //echo '</script>';
-
         $record_nr++;
         $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-        // This is for the buffer achieve the minimum size in order to flush data
-        //echo str_repeat(' ',1024*64);
-        // Send output to browser immediately
-        //ob_flush();
-        flush();
-        //}
-        //else{
-        //	$line_counter--; $line_nr++;
-        //}
+        //flush();
 
 
         // *** Show person data on screen ***
@@ -1342,19 +1328,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         fwrite($fh, $buffer);
 
         // *** Update processed lines ***
-        //echo '<script>';
-        //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-        //$line_nr++;
-        //echo '</script>';
-
         $record_nr++;
         $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-        // This is for the buffer achieve the minimum size in order to flush data
-        //echo str_repeat(' ',1024*64);
-        // Send output to browser immediately
-        //ob_flush();
-        flush();
+        //flush();
 
         // *** Show family data on screen ***
         //$buffer = str_replace("\r\n", "<br>", $buffer);
@@ -1556,31 +1532,15 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 fwrite($fh, $buffer);
 
                 // *** Update processed lines ***
-                //echo '<script>';
-                //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-                //$line_nr++;
-                //echo '</script>';
-
                 $record_nr++;
                 $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-                // This is for the buffer achieve the minimum size in order to flush data
-                //echo str_repeat(' ',1024*64);
-                // Send output to browser immediately
-                //ob_flush();
-                flush();
+                //flush();
 
                 // *** Show source data on screen ***
                 //$buffer = str_replace("\n", "<br>", $buffer);
                 //echo $buffer;
             }
 
-            /*
-            repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
-            repo_date='".process_date($gedcom_version,'repo_date')."',
-            repo_mail='".safe_text_db($_POST['repo_mail'])."',
-            repo_url='".safe_text_db($_POST['repo_url'])."',
-            */
             // *** Repository data ***
             $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
             while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) {
@@ -1623,19 +1583,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 fwrite($fh, $buffer);
 
                 // *** Update processed lines ***
-                //echo '<script>';
-                //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-                //$line_nr++;
-                //echo '</script>';
-
                 $record_nr++;
                 $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-                // This is for the buffer achieve the minimum size in order to flush data
-                //echo str_repeat(' ',1024*64);
-                // Send output to browser immediately
-                //ob_flush();
-                flush();
+                //flush();
             }
         }
 
@@ -1698,11 +1648,18 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         if ($gedcom_texts == 'yes') {
             $buffer = '';
             natsort($noteids);
-            foreach ($noteids as $s) {
-                $text_query = "SELECT * FROM humo_texts WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($s, 1, -1) . "'";
-                $text_sql = $dbh->query($text_query);
-                while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
-                    $buffer .= "0 " . $s . " NOTE\r\n";
+            foreach ($noteids as $note_text) {
+                //$text_query = "SELECT * FROM humo_texts WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($note_text, 1, -1) . "'";
+                //$text_sql = $dbh->query($text_query);
+                //while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
+
+                $stmt = $dbh->prepare("SELECT * FROM humo_texts WHERE text_tree_id=:text_tree_id AND text_gedcomnr=:text_gedcomnr");
+                $stmt->execute([
+                    ':text_tree_id' => $tree_id,
+                    ':text_gedcomnr' => substr($note_text, 1, -1)
+                ]);
+                while ($textDb = $stmt->fetch(PDO::FETCH_OBJ)){
+                    $buffer .= "0 " . $note_text . " NOTE\r\n";
                     $buffer .= '1 CONC ' . process_text(1, $textDb->text_text);
 
                     // *** Datetime new in database ***
@@ -1723,19 +1680,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             fwrite($fh, $buffer);
 
             // *** Update processed lines ***
-            //echo '<script>';
-            //echo 'document.getElementById("information").innerHTML="' . $line_nr . ' ' . __('Processed lines...') . '";';
-            //$line_nr++;
-            //echo '</script>';
-
             $record_nr++;
             $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
-
-            // This is for the buffer achieve the minimum size in order to flush data
-            //echo str_repeat(' ',1024*64);
-            // Send output to browser immediately
-            //ob_flush();
-            flush();
+            //flush();
         }
     }
 
@@ -1798,8 +1745,8 @@ function process_text($level, $text, $extractnoteids = true)
     $text = str_replace("\r", "", $text);
 
     // *** Export referenced texts ***
-    if ($extractnoteids == true) {
-        if (substr($text, 0, 1) == '@') $noteids[] = $text;
+    if ($extractnoteids && substr($text, 0, 1) == '@') {
+        $noteids[] = $text;
     }
 
     $regel = explode("\n", $text);
@@ -1839,9 +1786,11 @@ function process_text($level, $text, $extractnoteids = true)
 
         // *** First line is x NOTE, use CONT at other lines ***
         if ($j > 0) {
-            //$text= $level.' CONT '.$text;
-            if (rtrim($text) != '') $text = $level . ' CONT ' . $text;
-            else $text = "2 CONT\r\n";
+            if (rtrim($text) != '') {
+                $text = $level . ' CONT ' . $text;
+            } else {
+                $text = "2 CONT\r\n";
+            }
         }
         $text_processed .= $text;
     }
@@ -1904,7 +1853,6 @@ function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
         $export_addresses = false;
         if ($addressDb->address_shared == '1') $export_addresses = true;
         if (isset($_POST['gedcom_shared_addresses']) && $_POST['gedcom_shared_addresses'] == 'standard') $export_addresses = false;
-        //if ($addressDb->address_shared=='1'){
         if ($export_addresses) {
             // *** Shared address ***
             // 1 RESI @R210@
@@ -2062,7 +2010,7 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
 
     $family = $dbh->query("SELECT fam_man, fam_woman FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $family_id . "'");
     try {
-        @$familyDb = $family->fetch(PDO::FETCH_OBJ);
+        $familyDb = $family->fetch(PDO::FETCH_OBJ);
     } catch (PDOException $e) {
         echo __('No valid family number.');
     }
@@ -2158,8 +2106,8 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {
                 $child = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $child_array[$i] . "'");
-                @$childDb = $child->fetch(PDO::FETCH_OBJ);
-                //@$childDb = $db_functions->get_person($child_array[$i]);
+                $childDb = $child->fetch(PDO::FETCH_OBJ);
+                //$childDb = $db_functions->get_person($child_array[$i]);
                 if ($child->rowCount() > 0) {
                     // *** Build descendant_report ***
                     if ($childDb->pers_fams) {

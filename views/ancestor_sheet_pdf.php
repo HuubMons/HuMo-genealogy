@@ -18,7 +18,8 @@ include_once(__DIR__ . '/layout_pdf.php');
 
 
 // TODO create seperate controller script.
-require_once  __DIR__ . "/../app/model/ancestor.php";
+require_once  __DIR__ . "/../app/model/familyModel.php";
+require_once  __DIR__ . "/../app/model/ancestorModel.php";
 $get_ancestor = new AncestorModel($dbh);
 $data["main_person"] = $get_ancestor->getMainPerson();
 $rom_nr = $get_ancestor->getNumberRoman();
@@ -87,7 +88,7 @@ function data_array($id, $width, $height)
     global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $data, $dsign;
 
     if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
-        @$personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
+        $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $person_cls = new PersonCls($personDb);
         $pers_privacy = $person_cls->privacy;
         // get length of original name, birth, death strings
@@ -237,14 +238,14 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
                 $space = ' ';
             }
             if ($data["gedcomnumber"][$m] != '') {
-                @$personDb = $db_functions->get_person($data["gedcomnumber"][$m]);
+                $personDb = $db_functions->get_person($data["gedcomnumber"][$m]);
                 $person_cls = new PersonCls($personDb);
                 $pers_privacy = $person_cls->privacy;
             } else {
                 $pers_privacy = false;
             }
             if ($data["gedcomnumber"][$m + 1] != '') {
-                @$womanDb = $db_functions->get_person($data["gedcomnumber"][$m + 1]);
+                $womanDb = $db_functions->get_person($data["gedcomnumber"][$m + 1]);
                 $woman_cls = new PersonCls($womanDb);
                 $woman_privacy = $person_cls->privacy;
             } else {
@@ -288,7 +289,7 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
 }
 
 //initialize pdf generation
-@$persDb = $db_functions->get_person($data["main_person"]);
+$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use person class ***
 $pers_cls = new PersonCls($persDb);
 $name = $pers_cls->person_name($persDb);

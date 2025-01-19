@@ -3,8 +3,12 @@ session_start();
 
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . "/../include/safe.php");
-include_once(__DIR__ . "/../include/settings_global.php"); //Variables
-include_once(__DIR__ . "/../include/settings_user.php"); // USER variables
+
+include_once(__DIR__ . "/../include/generalSettings.php");
+$GeneralSettings = new GeneralSettings();
+$user = $GeneralSettings->get_user_settings($dbh);
+$humo_option = $GeneralSettings->get_humo_option($dbh);
+
 include_once(__DIR__ . "/../include/personCls.php"); // for privacy
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
@@ -144,7 +148,7 @@ function mapbirthplace($place)
 
         <div style="direction:ltr">
             <?php
-            while (@$maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
+            while ($maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
                 $man_cls = new PersonCls($maplistDb);
                 $privacy_man = $man_cls->privacy;
                 $name = $man_cls->person_name($maplistDb);

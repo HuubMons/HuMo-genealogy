@@ -57,7 +57,7 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
                     <option value=""><?= __('Select repository'); ?></option>
                     <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
                         <option value="<?= $repoDb->repo_id; ?>" <?= $editRepository['repo_id'] == $repoDb->repo_id ? 'selected' : ''; ?>>
-                            <?= @$repoDb->repo_gedcomnr; ?>, <?= $repoDb->repo_name; ?> <?= $repoDb->repo_place; ?>
+                            <?= $repoDb->repo_gedcomnr; ?>, <?= $repoDb->repo_name; ?> <?= $repoDb->repo_place; ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -91,10 +91,10 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
         $repo_changed_user_id = '';
         $repo_changed_datetime = '';
     } else {
-        @$repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_id='" . $editRepository['repo_id'] . "'");
+        $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_id='" . $editRepository['repo_id'] . "'");
         $die_message = __('No valid repository number.');
         try {
-            @$repoDb = $repo_qry->fetch(PDO::FETCH_OBJ);
+            $repoDb = $repo_qry->fetch(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
             echo $die_message;
         }

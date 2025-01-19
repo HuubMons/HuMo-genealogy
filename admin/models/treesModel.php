@@ -119,8 +119,8 @@ class TreesModel
 
         if (isset($_POST['remove_tree2']) && is_numeric($_POST['tree_id'])) {
             $removeqry = 'SELECT * FROM humo_trees WHERE tree_id="' . $_POST['tree_id'] . '"';
-            @$removesql = $dbh->query($removeqry);
-            @$removeDb = $removesql->fetch(PDO::FETCH_OBJ);
+            $removesql = $dbh->query($removeqry);
+            $removeDb = $removesql->fetch(PDO::FETCH_OBJ);
             $remove = $removeDb->tree_prefix;
 
             // *** Re-order family trees ***
@@ -214,7 +214,7 @@ class TreesModel
 
             // *** Now select another family tree ***
             $check_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order LIMIT 0,1");
-            @$check_treeDb = $check_tree_sql->fetch(PDO::FETCH_OBJ);
+            $check_treeDb = $check_tree_sql->fetch(PDO::FETCH_OBJ);
             $check_tree_id = $check_treeDb->tree_id;
 
             // *** Double check tree_id and save tree id in session ***

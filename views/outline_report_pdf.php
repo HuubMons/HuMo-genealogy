@@ -69,7 +69,7 @@ if ($screen_mode == 'PDF') {
     //initialize pdf generation
     $pdfdetails = array();
     $pdf_marriage = array();
-    @$persDb = $db_functions->get_person($data["main_person"]);
+    $persDb = $db_functions->get_person($data["main_person"]);
     // *** Use person class ***
     $pers_cls = new PersonCls($persDb);
     $name = $pers_cls->person_name($persDb);
@@ -121,7 +121,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
     // *** Count marriages of man ***
     // *** YB: if needed show woman as main_person ***
-    @$familyDb = $db_functions->get_family($outline_family_id, 'man-woman');
+    $familyDb = $db_functions->get_family($outline_family_id, 'man-woman');
     $parent1 = '';
     $parent2 = '';
     $swap_parent1_parent2 = false;
@@ -139,7 +139,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
     // *** Check family with parent1: N.N. ***
     if ($parent1) {
         // *** Save man's families in array ***
-        @$personDb = $db_functions->get_person($parent1, 'famc-fams');
+        $personDb = $db_functions->get_person($parent1, 'famc-fams');
         $marriage_array = explode(";", $personDb->pers_fams);
         $nr_families = substr_count($personDb->pers_fams, ";");
     } else {
@@ -149,14 +149,14 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
     // *** Loop multiple marriages of main_person ***
     for ($parent1_marr = 0; $parent1_marr <= $nr_families; $parent1_marr++) {
-        @$familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
+        $familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
 
         // *** Privacy filter man and woman ***
-        @$person_manDb = $db_functions->get_person($familyDb->fam_man);
+        $person_manDb = $db_functions->get_person($familyDb->fam_man);
         $man_cls = new PersonCls($person_manDb);
         $privacy_man = $man_cls->privacy;
 
-        @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
+        $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
         $woman_cls = new PersonCls($person_womanDb);
         $privacy_woman = $woman_cls->privacy;
 
@@ -272,7 +272,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
             $childnr = 1;
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {
-                @$childDb = $db_functions->get_person($child_array[$i]);
+                $childDb = $db_functions->get_person($child_array[$i]);
 
                 // *** Totally hide children if setting is active ***
                 if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {

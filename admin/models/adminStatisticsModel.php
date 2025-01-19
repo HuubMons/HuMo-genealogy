@@ -18,6 +18,7 @@ class AdminStatisticsModel
         // *** Search oldest record in database***
         $datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
         $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+        $statistics['first_year'] = '';
         if (isset($dataDb->stat_date_linux)) {
             $statistics['first_year'] = date("Y", $dataDb->stat_date_linux);
         }

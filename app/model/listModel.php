@@ -159,6 +159,11 @@ class ListModel
         if (isset($_GET['adv_search']) && $_GET['adv_search'] == '1') {
             $selection['use_pers_prefix'] = 'USED';
         }
+        // *** Page is called from names list. Option should be disabled then ***
+        if (isset($_GET['pers_prefix']) && $_GET['pers_prefix'] == 'EMPTY') {
+            $selection['pers_prefix'] = 'EMPTY';
+            $selection['use_pers_prefix'] = 'EMPTY';
+        }
 
         // *** Lastname ***
         $selection['pers_lastname'] = '';
@@ -1347,8 +1352,10 @@ class ListModel
             if ($count_qry) {
                 // *** Use MySQL COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
                 $result = $dbh->query($count_qry);
-                @$resultDb = $result->fetch(PDO::FETCH_OBJ);
-                $count_persons = @$resultDb->teller;
+                $resultDb = $result->fetch(PDO::FETCH_OBJ);
+                if ($resultDb) {
+                    $count_persons = $resultDb->teller;
+                }
             } else {
                 // *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
                 $result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");

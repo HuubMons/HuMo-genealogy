@@ -35,7 +35,7 @@ class IndexModel
                     // *** August 2023: Also login for admin pages ***
                     // *** Edit family trees [GROUP SETTING] ***
                     $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $resultDb->user_group_id . "'");
-                    @$groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
+                    $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
                     if (isset($groepDb->group_edit_trees)) {
                         $group_edit_trees = $groepDb->group_edit_trees;
                     }
@@ -106,6 +106,9 @@ class IndexModel
 
             if (isset($matchedRoute['select_tree_id'])) {
                 $index['select_tree_id'] = $matchedRoute['select_tree_id'];
+
+                // TODO improve processing of variable. Processed in this class: get_family_tree
+                $_GET["tree_id"] = $index['select_tree_id'];
             }
 
             // *** Used for list_names ***
@@ -167,12 +170,15 @@ class IndexModel
             $database = $_POST["database"];
         }
 
+        $tree_prefix = '';
+
         // *** For example: database=humo2_ (backwards compatible, now we use tree_id) ***
         if (isset($database) && is_string($database) && $database) {
             // *** Check if family tree really exists ***
             $dataDb = $db_functions->get_tree($database);
             if ($dataDb && $database == $dataDb->tree_prefix) {
                 $_SESSION['tree_prefix'] = $database;
+                $tree_prefix = $database;
             }
         }
 
@@ -188,50 +194,57 @@ class IndexModel
             $dataDb = $db_functions->get_tree($index['select_tree_id']);
             if ($dataDb && $index['select_tree_id'] == $dataDb->tree_id) {
                 $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+                $tree_prefix = $dataDb->tree_prefix;
             }
         }
 
         // *** No family tree selected yet ***
         if (!isset($_SESSION["tree_prefix"]) || $_SESSION['tree_prefix'] == '') {
             $_SESSION['tree_prefix'] = ''; // *** If all trees are blocked then session is empty ***
+            $tree_prefix = '';
 
             // *** Find first family tree that's not blocked for this usergroup ***
             $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-            while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                 // *** Check is family tree is showed or hidden for user group ***
                 $hide_tree_array = explode(";", $user['group_hide_trees']);
                 if (!in_array($dataDb->tree_id, $hide_tree_array)) {
                     $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+                    $tree_prefix = $dataDb->tree_prefix;
                     break;
                 }
             }
         }
 
         // *** Check if selected tree is allowed for visitor and Google etc. ***
-        @$dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
-        $hide_tree_array = explode(";", $user['group_hide_trees']);
-        if (in_array(@$dataDb->tree_id, $hide_tree_array)) {
-            // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
-            $_SESSION['tree_prefix'] = '';
-            $_SESSION['tree_id'] = 0;
-            $index['tree_id'] = 0;
+        //if ($tree_prefix != '') {
+        $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+        if ($dataDb) {
+            $hide_tree_array = explode(";", $user['group_hide_trees']);
+            if (in_array($dataDb->tree_id, $hide_tree_array)) {
+                // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
+                $_SESSION['tree_prefix'] = '';
+                $_SESSION['tree_id'] = 0;
+                $index['tree_id'] = 0;
 
-            // *** Find first family tree that's not blocked for this usergroup ***
-            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-            while (@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                // *** Check is family tree is showed or hidden for user group ***
-                $hide_tree_array = explode(";", $user['group_hide_trees']);
-                if (!in_array($dataDb->tree_id, $hide_tree_array)) {
-                    $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
-                    $_SESSION['tree_id'] = $dataDb->tree_id;
-                    $index['tree_id'] = $dataDb->tree_id;
-                    break;
+                // *** Find first family tree that's not blocked for this usergroup ***
+                $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+                while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                    // *** Check is family tree is showed or hidden for user group ***
+                    $hide_tree_array = explode(";", $user['group_hide_trees']);
+                    if (!in_array($dataDb->tree_id, $hide_tree_array)) {
+                        $_SESSION['tree_prefix'] = $dataDb->tree_prefix;
+                        $_SESSION['tree_id'] = $dataDb->tree_id;
+                        $index['tree_id'] = $dataDb->tree_id;
+                        break;
+                    }
                 }
+            } elseif (isset($dataDb->tree_id)) {
+                $_SESSION['tree_id'] = $dataDb->tree_id;
+                $index['tree_id'] = $dataDb->tree_id;
             }
-        } elseif (isset($dataDb->tree_id)) {
-            $_SESSION['tree_id'] = $dataDb->tree_id;
-            $index['tree_id'] = $dataDb->tree_id;
         }
+        //}
 
         // *** Guest or user has no permission to see any family tree ***
         if (!isset($index['tree_id'])) {

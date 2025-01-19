@@ -10,7 +10,7 @@
  *
  * https://humo-gen.com
  *
- * Copyright (C) 2008-2024 Huub Mons,
+ * Copyright (C) 2008-2025 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * Reni Janssen, Yossi Beck
  * and others.
@@ -61,20 +61,24 @@ function custom_autoload($class_name)
 
     // languages/languageCls.php
 
-    // *** At this moment only a few classes are autoloaded. Under construction ***
-    $classes = array(
-        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'LanguageCls'
+    $include = array(
+        'CalculateDates',
+        'DbFunctions',
+        'MarriageCls',
+        'PersonCls',
+        'ProcessLinks',
+        'ValidateDate',
+        'Config'
     );
-    // If all classes are autoloading, array check of classes will be removed.
-    if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
-        $dirs = array('app/controller', 'app/model', 'include', 'languages');
-        foreach ($dirs as $dir) {
-            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
-            if (file_exists($file)) {
-                require $file;
-                break;
-            }
-        }
+
+    if ($class_name == 'LanguageCls') {
+        require __DIR__ . '/languages/languageCls.php';
+    } elseif (substr($class_name, -10) == 'Controller') {
+        require __DIR__ . '/app/controller/' . lcfirst($class_name) . '.php';
+    } elseif (substr($class_name, -5) == 'Model') {
+        require __DIR__ . '/app/model/' . lcfirst($class_name) . '.php';
+    } elseif (in_array($class_name, $include)) {
+        require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
     }
 }
 spl_autoload_register('custom_autoload');
@@ -93,8 +97,12 @@ if (isset($_GET['log_off'])) {
 include_once(__DIR__ . "/include/db_login.php"); // Connect to database
 include_once(__DIR__ . "/include/show_tree_text.php");
 include_once(__DIR__ . "/include/safe.php");
-include_once(__DIR__ . "/include/settings_global.php"); // System variables
-include_once(__DIR__ . "/include/settings_user.php"); // User variables
+
+include_once(__DIR__ . "/include/generalSettings.php");
+$GeneralSettings = new GeneralSettings();
+$user = $GeneralSettings->get_user_settings($dbh);
+$humo_option = $GeneralSettings->get_humo_option($dbh);
+
 include_once(__DIR__ . "/include/get_visitor_ip.php"); // Statistics and option to block certain IP addresses.
 
 include_once(__DIR__ . "/include/timezone.php");
@@ -117,6 +125,11 @@ $language_file = $index['language_file']; // Array including all languages files
 $language = $index['language']; // $language = array.
 $selected_language = $index['selected_language'];
 
+// Needed for mail script.
+if (isset($_SESSION['tree_prefix'])) {
+    $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+}
+
 // *** Process LTR and RTL variables ***
 $dirmark1 = $index['dirmark1'];  //ltr marker
 $dirmark2 = $index['dirmark2'];  //rtl marker
@@ -125,9 +138,7 @@ $alignmarker = $index['alignmarker'];
 
 // *** New routing script sept. 2023. Search route, return match or not found ***
 $page = $index['page'];
-if (isset($index['last_name'])) {
-    $last_name = $index['last_name'];
-}
+
 if (isset($index['id'])) {
     $id = $index['id'];
 }
@@ -183,13 +194,30 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 // *** To be used to show links in several pages ***
 $link_cls = new ProcessLinks($uri_path);
 
-// *** Base controller (at this moment only in use with sourcecontroller (using extend) ***
-//$controllerObj = new BaseController($dbh, $db_functions);
+/**
+ * General config array.
+ * In function: use $this->config['dbh'], $this->config['db_functions'], etc, or use:
+ * $dbh = $this->config['dbh'];
+ * $db_functions = $this->config['db_functions'];
+ * $tree_id = $this->config['tree_id'];
+ * $user = $this->config['user'];
+ * $humo_option = $this->config['humo_option'];
+ */
+$config = array(
+    "dbh" => $dbh,
+    "db_functions" => $db_functions,
+    "tree_id" => $tree_id,
+    "user" => $user,
+    "humo_option" => $humo_option
+);
+// *** General config class. Usage: $controllerObj = new AddressController($config); ***
+// *** Allready tested in sourceController.php & photoalbumController.php ***
+//$config = new Config($dbh, $db_functions, $tree_id, $user, $humo_option);
 
 if ($page == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/show_sources.php");
-    include_once(__DIR__ . "/include/show_picture.php");
+    include_once(__DIR__ . "/include/showMedia.php");
 
     $controllerObj = new AddressController($db_functions, $user);
     $data = $controllerObj->detail();
@@ -259,8 +287,12 @@ if ($page == 'address') {
     $controllerObj = new ListPlacesFamiliesController();
     $data = $controllerObj->list_places_names($tree_id);
 } elseif ($page == 'list_names') {
-    $controllerObj = new ListNamesController();
-    $data = $controllerObj->list_names($dbh, $tree_id, $user);
+    $controllerObj = new ListNamesController($config);
+    $last_name = '';
+    if (isset($index['last_name'])) {
+        $last_name = $index['last_name'];
+    }
+    $list_names = $controllerObj->list_names($last_name, $uri_path);
 } elseif ($page == 'login') {
     //
 } elseif ($page == 'mailform') {
@@ -278,10 +310,11 @@ if ($page == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
-    include_once(__DIR__ . "/include/show_picture.php");
+    include_once(__DIR__ . "/include/showMedia.php");
+    //include_once(__DIR__ . "/admin/include/media_inc.php");
 
-    $controllerObj = new PhotoalbumController();
-    $photoalbum = $controllerObj->detail($dbh, $tree_id, $db_functions);
+    $controllerObj = new PhotoalbumController($config);
+    $photoalbum = $controllerObj->detail($selected_language, $uri_path, $link_cls);
 } elseif ($page == 'register') {
     $controllerObj = new RegisterController($db_functions);
     $register = $controllerObj->get_register_data($dbh, $dataDb, $humo_option);
@@ -291,7 +324,7 @@ if ($page == 'address') {
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new RelationsController($dbh);
-    $relation = $controllerObj->getRelations($db_functions, $person_cls);
+    $relation = $controllerObj->getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language);
 } elseif ($page == 'reset_password') {
     $controllerObj = new ResetpasswordController();
     $resetpassword = $controllerObj->detail($dbh, $humo_option);
@@ -323,11 +356,12 @@ if ($page == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/date_place.php");
     include_once(__DIR__ . "/include/process_text.php");
-    include_once(__DIR__ . "/include/show_picture.php");
+    include_once(__DIR__ . "/include/showMedia.php");
     //include_once(__DIR__ . "/include/show_sources.php");
     include_once(__DIR__ . "/include/language_date.php");
 
-    $controllerObj = new SourceController($dbh, $db_functions, $tree_id); // Using Controller.
+    $controllerObj = new SourceController($config);
+
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
         $id = $_GET["id"];

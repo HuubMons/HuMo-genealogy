@@ -9,11 +9,14 @@ include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . "/include/safe.php"); //Variabelen
 
 // *** Needed for privacy filter ***
-include_once(__DIR__ . "/include/settings_global.php"); //Variables
-include_once(__DIR__ . "/include/settings_user.php"); // USER variables
+include_once(__DIR__ . "/include/generalSettings.php");
+$GeneralSettings = new GeneralSettings();
+$user = $GeneralSettings->get_user_settings($dbh);
+$humo_option = $GeneralSettings->get_humo_option($dbh);
+
 include_once(__DIR__ . "/include/personCls.php");
 
-include_once(__DIR__ . "/include/DbFunctions.php");
+include_once(__DIR__ . "/include/dbFunctions.php");
 $db_functions = new DbFunctions($dbh);
 
 // *** Database ***
@@ -23,11 +26,11 @@ foreach ($datasql as $dataDb) {
     // *** Check is family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($dataDb->tree_id, $hide_tree_array)) {
-            $person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $dataDb->tree_id . "' ORDER BY pers_lastname");
+        $person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $dataDb->tree_id . "' ORDER BY pers_lastname");
         //GENDEX:
         //person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
         //Birthdate|Birthplace|Deathdate|Deathplace|
-        while (@$personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
+        while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
             $person_cls = new PersonCls($personDb);
             $privacy = $person_cls->privacy;

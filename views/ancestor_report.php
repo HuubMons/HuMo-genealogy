@@ -18,7 +18,7 @@ echo $data["ancestor_header"];
 $ancestor_array2[] = $data["main_person"];
 $ancestor_number2[] = 1;
 $marriage_gedcomnumber2[] = 0;
-$generation = 1;
+$generation = 0;
 
 $language["gen1"] = '';
 if (__('PROBANT') != 'PROBANT') {
@@ -75,35 +75,32 @@ $language["gen49"] = __('46th Great-Grandparents');
 $language["gen50"] = __('47th Great-Grandparents');
 
 $listed_array = array();
+
+// *** Loop for ancestor report ***
+while (isset($ancestor_array2[0])) {
+    $generation++;
+
+    unset($ancestor_array);
+    $ancestor_array = $ancestor_array2;
+    unset($ancestor_array2);
+
+    unset($ancestor_number);
+    $ancestor_number = $ancestor_number2;
+    unset($ancestor_number2);
+
+    unset($marriage_gedcomnumber);
+    $marriage_gedcomnumber = $marriage_gedcomnumber2;
+    unset($marriage_gedcomnumber2);
 ?>
-
-<table style="border-style:none" align="center">
-    <tr>
-        <td></td>
-    </tr>
-
-    <?php
-    // *** Loop for ancestor report ***
-    while (isset($ancestor_array2[0])) {
-        unset($ancestor_array);
-        $ancestor_array = $ancestor_array2;
-        unset($ancestor_array2);
-
-        unset($ancestor_number);
-        $ancestor_number = $ancestor_number2;
-        unset($ancestor_number2);
-
-        unset($marriage_gedcomnumber);
-        $marriage_gedcomnumber = $marriage_gedcomnumber2;
-        unset($marriage_gedcomnumber2);
-
-        echo '</table>';
-
-        if (isset($data["rom_nr"][$generation])) {
-            echo '<h2 class="standard_header">' . __('generation ') . $data["rom_nr"][$generation];
+    <h2 class="standard_header">
+        <?php if (isset($data["rom_nr"][$generation])) { ?>
+            <?= __('generation ') . $data["rom_nr"][$generation]; ?>
+        <?php
         }
         if (isset($language["gen" . $generation]) && $language["gen" . $generation]) {
-            echo ' (' . $language["gen" . $generation] . ')';
+        ?>
+            (<?= $language["gen" . $generation]; ?>)
+            <?php
         }
 
         if ($generation == 1) {
@@ -115,7 +112,7 @@ $listed_array = array();
                 //$link .= 'screen_mode=ancestor_chart&amp;show_sources=1';
 
                 $link = $uri_path . 'views/ancestor_report_pdf.php';
-    ?>
+            ?>
                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
@@ -145,14 +142,14 @@ $listed_array = array();
 
                     <input type="submit" class="btn btn-sm btn-info" value="<?= __('RTF'); ?>" name="submit">
                 </form>
-            <?php
+        <?php
             }
         }
+        ?>
+    </h2><br>
 
-        echo '</h2><br>';
-
-        echo '<table class="humo standard" align="center">';
-
+    <table class="humo standard" align="center">
+        <?php
         // *** Loop per generation ***
         $counter = count($ancestor_array);
 
@@ -174,15 +171,15 @@ $listed_array = array();
             }
 
             if ($ancestor_array[$i] != '0') {
-                @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
+                $person_manDb = $db_functions->get_person($ancestor_array[$i]);
                 $man_cls = new PersonCls($person_manDb);
                 $privacy_man = $man_cls->privacy;
 
                 if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
-                    @$familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
+                    $familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
                     // *** Use privacy filter of woman ***
-                    @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
+                    $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
                     $woman_cls = new PersonCls($person_womanDb);
                     $privacy_woman = $woman_cls->privacy;
 
@@ -190,22 +187,20 @@ $listed_array = array();
                     $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
                     $family_privacy = $marriage_cls->privacy;
                 }
-            ?>
+        ?>
 
                 <tr>
                     <td valign="top" width="80" nowrap><b><?= $ancestor_number[$i]; ?></b> (<?= floor($ancestor_number[$i] / 2); ?>)</td>
                     <td>
                         <!-- Show data man -->
                         <div class="parent1">
-                            <?php
-                            // ***  Use "child", to show a link for own family. ***
-                            echo $man_cls->name_extended("child");
-                            if ($listednr == '') {
-                                echo $man_cls->person_data("standard", $ancestor_array[$i]);
-                            } else { // person was already listed
-                                echo ' <strong> (' . __('Already listed above as number ') . $listednr . ') </strong>';
-                            }
-                            ?>
+                            <!-- Use "child", to show a link for own family. -->
+                            <?= $man_cls->name_extended("child"); ?>
+                            <?php if ($listednr == '') { ?>
+                                <?= $man_cls->person_data("standard", $ancestor_array[$i]); ?>
+                            <?php } else { ?>
+                                <strong> (<?= __('Already listed above as number ') . $listednr; ?>) </strong>
+                            <?php } ?>
                         </div>
                     </td>
                 </tr>
@@ -243,7 +238,7 @@ $listed_array = array();
 
                 // ==	Check for parents
                 if ($person_manDb->pers_famc && $listednr == '') {
-                    @$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
+                    $family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
                     if ($family_parentsDb->fam_man) {
                         $ancestor_array2[] = $family_parentsDb->fam_man;
                         $ancestor_number2[] = (2 * $ancestor_number[$i]);
@@ -264,7 +259,7 @@ $listed_array = array();
             } else {
 
                 // *** Show N.N. person ***
-                @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
+                $person_manDb = $db_functions->get_person($ancestor_array[$i]);
                 $man_cls = new PersonCls($person_manDb);
                 $privacy_man = $man_cls->privacy;
                 ?>
@@ -282,20 +277,16 @@ $listed_array = array();
                         </div>
                     </td>
                 </tr>
-    <?php
+        <?php
             }
         }    // loop per generation
-        $generation++;
-    }    // loop ancestor report
-    ?>
-</table>
+        ?>
+    </table>
 
-<?php
-// *** If source footnotes are selected, show them here ***
-if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
-    echo show_sources_footnotes();
-}
+<?php } ?>
 
-// Finishing code for ancestor chart and ancestor report
-?>
+<!-- If source footnotes are selected, show them here -->
+<?php if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') { ?>
+    <?= show_sources_footnotes(); ?>
+<?php } ?>
 <br><br>

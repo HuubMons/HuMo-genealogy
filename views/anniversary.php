@@ -249,7 +249,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 
                         foreach ($wed as $key => $value) {
                             // get husband
-                            @$manDb = $db_functions->get_person($value['man']);
+                            $manDb = $db_functions->get_person($value['man']);
                             // *** Use class to process person ***
                             $man_cls = new PersonCls($manDb);
                             if (!$value['man']) {
@@ -264,7 +264,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                             }
 
                             // get wife
-                            @$womanDb = $db_functions->get_person($value['woman']);
+                            $womanDb = $db_functions->get_person($value['woman']);
                             // *** Use class to process person ***
                             $woman_cls = new PersonCls($womanDb);
                             if (!$value['woman']) {

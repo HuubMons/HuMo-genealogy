@@ -64,7 +64,6 @@ class EditorEvent
     function hide_show_start($data_listDb, $alternative_text = '')
     {
         // *** Use hideshow to show and hide the editor lines ***
-        $text = '';
         $hideshow = '9000' . $data_listDb->event_id;
         $display = ' display:none;';
         $event_event = $data_listDb->event_event;
@@ -84,26 +83,27 @@ class EditorEvent
         }
 
         if ($event_event || $data_listDb->event_text || $data_listDb->event_kind == 'picture') {
-            echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $event_event;
-            if ($data_listDb->event_text) {
-                echo ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
-            }
-            echo '</span>';
+?>
+            <span class="hideshowlink" onclick="hideShow(<?= $hideshow; ?>);"><?= $event_event; ?>
+                <?php if ($data_listDb->event_text) { ?>
+                    <img src="images/text.png" height="16" alt="<?= __('text'); ?>">
+                <?php } ?>
+            </span>
 
-            // *** Could be used to connect a picture in a text field (Geneanet doesnt have constant GEDCOM numbers or an own text field) ***
-            if ($data_listDb->event_kind == 'picture') {
-                echo '&nbsp;<span style="font-size:smaller;">' . __('ID') . ': ' . $data_listDb->event_id . '</span>';
+            <!-- Could be used to connect a picture in a text field (Geneanet doesnt have constant GEDCOM numbers or an own text field) -->
+            <?php if ($data_listDb->event_kind == 'picture') { ?>
+                &nbsp;<span style="font-size:smaller;"><?= __('ID'); ?>: <?= $data_listDb->event_id; ?></span>
+            <?php
             }
 
             echo '<br>';
         }
 
         echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
-        return $text;
     }
 
     // *** Show events ***
-    // *** REMARK: queries can be found in editor_inc.php! ***
+    // *** REMARK: queries can be found in editorModel.php! ***
     // *** REMARK: also used in source editor to add a photo ***
     function show_event($event_connect_kind, $event_connect_id, $event_kind)
     {
@@ -112,10 +112,11 @@ class EditorEvent
         global $db_functions;
 
         include_once(__DIR__ . "/../include/media_inc.php");
-        global $pcat_dirs;
+        include_once(__DIR__ . '/../../include/give_media_path.php');
+        include_once(__DIR__ . "/../../include/showMedia.php");
+        $showMedia = new showMedia();
 
         $text = '';
-
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
             $picture_array = array();
             // *** Picture list for selecting pictures ***
@@ -267,7 +268,7 @@ class EditorEvent
         if ($event_kind == 'person') {
             //$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
             $link = 'event_person_link';
-?>
+            ?>
             <tr class="table_header_large" id="event_person_link">
                 <td><?= __('Events'); ?></td>
                 <td colspan="2">
@@ -349,7 +350,7 @@ class EditorEvent
         // *** Show name by person ***
         if ($event_kind == 'name') {
             // *** Nickname, alias, adopted name, hebrew name, etc. ***
-            // *** Remark: in editor_inc.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
+            // *** Remark: in editorModel.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
             $link = 'name';
         ?>
             <tr class="table_header_large">
@@ -434,7 +435,7 @@ class EditorEvent
                 <td colspan="2">
                     <?php
                     // *** Skip for newly added person ***
-                    // *** Remark: in editor_inc.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
+                    // *** Remark: in editorModel.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
                     if (!isset($_GET['add_person'])) {
                     ?>
                         <div class="row">
@@ -461,7 +462,7 @@ class EditorEvent
                     <?php
                     // *** Skip for newly added person ***
                     if (!isset($_GET['add_person'])) {
-                        // *** Remark: in editor_inc.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
+                        // *** Remark: in editorModel.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
                     ?>
                         <div class="row">
                             <div class="col-md-4">
@@ -1031,12 +1032,10 @@ class EditorEvent
                                     }
                                 }
 
-                                include_once(__DIR__ . '/../../include/give_media_path.php');
-
                                 // echo '<a href="../' . give_media_path($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
                                 //     print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                 echo '<a href="../' . give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
-                                    print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
+                                    $showMedia->print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                 ?>
                             </div>
 
@@ -1620,22 +1619,21 @@ class EditorEvent
 
                         <div class="col-md-auto">
                             <select size="1" name="select_media_folder" class="form-select form-select-sm">
-                                <!-- For new source in new database... -->
                                 <option value=""><?= __('Main media folder'); ?></option>
                                 <?php
-                                $optcat = '';
-                                $optdir = '';
+                                $pcat_dirs = $showMedia->get_pcat_dirs();
                                 foreach ($subfolders as $folder) {
                                     $bfolder = pathinfo($folder, PATHINFO_BASENAME);
                                     if (in_array($bfolder, $ignore)) {
                                         // do nothing
                                     } elseif (array_key_exists($bfolder .  '_', $pcat_dirs)) {
-                                        $optcat .= '<option value="' . $bfolder . '">' . __('Category') . ': ' . $pcat_dirs[$bfolder . '_'] . '</option>';
-                                    } else {
-                                        $optdir .= '<option value="' . $bfolder . '">' . __('Directory') . ': ' . $bfolder . '</option>';
+                                ?>
+                                        <option value="<?= $bfolder; ?>"><?= __('Category'); ?>: <?= $pcat_dirs[$bfolder . '_']; ?></option>
+                                    <?php } else { ?>
+                                        <option value="<?= $bfolder; ?>"><?= __('Directory'); ?>: <?= $bfolder; ?></option>
+                                <?php
                                     }
                                 }
-                                echo $optcat . $optdir;
                                 ?>
                             </select>
                         </div>
@@ -1654,7 +1652,7 @@ class EditorEvent
                     </div>
                 </td>
             </tr>
-        <?php
+    <?php
         }
 
         // *** Show events if save or arrow links are used ***
@@ -1733,26 +1731,20 @@ class EditorEvent
 function event_selection($event_gedcom)
 {
     global $humo_option;
-
-    if (!$event_gedcom) {
-        ?>
-        <optgroup label="<?= __('Nickname'); ?>">
-        <?php } ?>
+    ?>
+    <optgroup label="<?= __('Nickname'); ?>">
         <option value="NICK" <?= $event_gedcom == 'NICK' ? 'selected' : ''; ?>>NICK <?= __('Nickname'); ?></option>
-        <?php if (!$event_gedcom) { ?>
-        </optgroup>
+    </optgroup>
 
-        <optgroup label="<?= __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>">
-            <option value="NPFX"><?= __('Prefix') . ': ' . __('e.g. Lt. Cmndr.'); ?></option>
-            <option value="NSFX" <?= $event_gedcom == 'NSFX' ? 'selected' : ''; ?>><?= __('Suffix'); ?>: <?= __('e.g. Jr.'); ?></option>
-            <option value="nobility" <?= $event_gedcom == 'nobility' ? 'selected' : ''; ?>><?= __('Title of Nobility') . ': ' . __('e.g. Jhr., Jkvr.'); ?></option>
-            <option value="title" <?= $event_gedcom == 'title' ? 'selected' : ''; ?>><?= __('Title') . ': ' . __('e.g. Prof., Dr.'); ?></option>
-            <option value="lordship" <?= $event_gedcom == 'lordship' ? 'selected' : ''; ?>><?= __('Title of Lordship') . ': ' . __('e.g. Lord of Amsterdam'); ?></option>
-        </optgroup>
+    <optgroup label="<?= __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>">
+        <option value="NPFX"><?= __('Prefix') . ': ' . __('e.g. Lt. Cmndr.'); ?></option>
+        <option value="NSFX" <?= $event_gedcom == 'NSFX' ? 'selected' : ''; ?>><?= __('Suffix'); ?>: <?= __('e.g. Jr.'); ?></option>
+        <option value="nobility" <?= $event_gedcom == 'nobility' ? 'selected' : ''; ?>><?= __('Title of Nobility') . ': ' . __('e.g. Jhr., Jkvr.'); ?></option>
+        <option value="title" <?= $event_gedcom == 'title' ? 'selected' : ''; ?>><?= __('Title') . ': ' . __('e.g. Prof., Dr.'); ?></option>
+        <option value="lordship" <?= $event_gedcom == 'lordship' ? 'selected' : ''; ?>><?= __('Title of Lordship') . ': ' . __('e.g. Lord of Amsterdam'); ?></option>
+    </optgroup>
 
-        <optgroup label="<?= __('Name'); ?>">
-        <?php } ?>
-
+    <optgroup label="<?= __('Name'); ?>">
         <option value="_AKAN" <?= $event_gedcom == '_AKAN' ? 'selected' : ''; ?>><?= '_AKAN ' . __('Also known as'); ?></option>
         <option value="_ALIA" <?= $event_gedcom == '_ALIA' ? 'selected' : ''; ?>><?= '_ALIA ' . __('alias name'); ?></option>
         <option value="_SHON" <?= $event_gedcom == '_SHON' ? 'selected' : ''; ?>>_SHON <?= __('Short name (for reports)'); ?></option>
@@ -1776,16 +1768,13 @@ function event_selection($event_gedcom)
         <option value="_OTHN" <?= $event_gedcom == '_OTHN' ? 'selected' : ''; ?>>_OTHN <?= __('Other name'); ?></option>
         <option value="_FRKA" <?= $event_gedcom == '_FRKA' ? 'selected' : ''; ?>>_FRKA <?= __('Formerly known as'); ?></option>
         <option value="_RUFN" <?= $event_gedcom == '_RUFN' ? 'selected' : ''; ?>>_RUFN <?= __('German Rufname'); ?></option>
-
-        <?php if (!$event_gedcom) { ?>
-        </optgroup>
+    </optgroup>
 <?php
-        }
-    }
+}
 
-    // *** Javascript for "search by file name of picture" feature ***
-    // March 2022: no longer in use
-    /*
+// *** Javascript for "search by file name of picture" feature ***
+// March 2022: no longer in use
+/*
 echo '<script>
     function Search_pic(idnum, picnr, picarr){
         var searchval = document.getElementById("inp_text_event" + idnum).value;
@@ -1804,54 +1793,54 @@ echo '<script>
     </script>';
 */
 
-    // *** If profession is added, jump to profession part of screen ***
-    if (isset($_POST['event_event_profession']) && $_POST['event_event_profession'] != '') {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#profession";</script>';
-    }
+// *** If profession is added, jump to profession part of screen ***
+if (isset($_POST['event_event_profession']) && $_POST['event_event_profession'] != '') {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#profession";</script>';
+}
 
-    // *** If religion is added, jump to religion part of screen ***
-    if (isset($_POST['event_event_religion']) && $_POST['event_event_religion'] != '') {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#religion";</script>';
-    }
+// *** If religion is added, jump to religion part of screen ***
+if (isset($_POST['event_event_religion']) && $_POST['event_event_religion'] != '') {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#religion";</script>';
+}
 
-    // *** If witness is added, jump to witness part of screen ***
-    if (isset($_POST['add_birth_declaration'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#birth_decl_witness";</script>';
-    }
-    if (isset($_POST['add_baptism_witness'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#baptism_witness";</script>';
-    }
-    if (isset($_POST['add_death_declaration'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#death_decl_witness";</script>';
-    }
-    if (isset($_POST['add_burial_witness'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#burial_witness";</script>';
-    }
-    if (isset($_POST['add_marriage_witness'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#marriage_witness";</script>';
-    }
-    if (isset($_POST['add_marriage_witness_rel'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#marriage_witness_rel";</script>';
-    }
+// *** If witness is added, jump to witness part of screen ***
+if (isset($_POST['add_birth_declaration'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#birth_decl_witness";</script>';
+}
+if (isset($_POST['add_baptism_witness'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#baptism_witness";</script>';
+}
+if (isset($_POST['add_death_declaration'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#death_decl_witness";</script>';
+}
+if (isset($_POST['add_burial_witness'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#burial_witness";</script>';
+}
+if (isset($_POST['add_marriage_witness'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#marriage_witness";</script>';
+}
+if (isset($_POST['add_marriage_witness_rel'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#marriage_witness_rel";</script>';
+}
 
-    // *** If address is added, jump to witness part of screen ***
-    if (isset($_POST['person_add_address'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#addresses";</script>';
-    }
-    if (isset($_POST['relation_add_address'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#addresses";</script>';
-    }
+// *** If address is added, jump to witness part of screen ***
+if (isset($_POST['person_add_address'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#addresses";</script>';
+}
+if (isset($_POST['relation_add_address'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#addresses";</script>';
+}
 
-    // *** If media is added, jump to media part of screen ***
-    if (isset($_POST['add_picture']) or isset($_POST['add_marriage_picture']) or isset($_POST['add_source_picture'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#picture";</script>';
-    }
+// *** If media is added, jump to media part of screen ***
+if (isset($_POST['add_picture']) or isset($_POST['add_marriage_picture']) or isset($_POST['add_source_picture'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#picture";</script>';
+}
 
-    // *** If event is added, jump to event part of screen ***
-    if (isset($_POST['person_event_add'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#event_person_link";</script>';
-    }
-    // *** If event is added, jump to event part of screen ***
-    if (isset($_POST['marriage_event_add'])) {
-        echo '<script>window.location = window.location.origin + window.location.pathname + "#event_family_link";</script>';
-    }
+// *** If event is added, jump to event part of screen ***
+if (isset($_POST['person_event_add'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#event_person_link";</script>';
+}
+// *** If event is added, jump to event part of screen ***
+if (isset($_POST['marriage_event_add'])) {
+    echo '<script>window.location = window.location.origin + window.location.pathname + "#event_family_link";</script>';
+}

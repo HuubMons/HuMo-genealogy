@@ -78,4 +78,40 @@ class GedcomModel
         }
         return $trees;
     }
+
+    public function remove_gedcon_files($trees)
+    {
+        $removed_filenames = [];
+        if (isset($_POST['remove_gedcom_files2']) && isset($_POST['remove_confirm'])) {
+            // *** Remove old GEDCOM files ***
+            $dh  = opendir($trees['gedcom_directory']);
+            while (false !== ($filename = readdir($dh))) {
+                if (strtolower(substr($filename, -3)) === "ged") {
+                    if ($_POST['remove_gedcom_files2'] == 'gedcom_files_all') {
+                        $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
+                    } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_month') {
+                        if (time() - filemtime($trees['gedcom_directory'] . '/' . $filename) >= 60 * 60 * 24 * 30) { // 30 days
+                            $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
+                        }
+                    } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_year') {
+                        if (time() - filemtime($trees['gedcom_directory'] . '/' . $filename) >= 60 * 60 * 24 * 365) { // 365 days
+                            $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
+                        }
+                    }
+                }
+            }
+
+            // *** Order GEDCOM files by alfabet ***
+            if (isset($filenames)) {
+                usort($filenames, 'strnatcasecmp');
+            }
+
+            $counter = count($filenames);
+            for ($i = 0; $i < $counter; $i++) {
+                $removed_filenames[] = $filenames[$i];
+                unlink($filenames[$i]);
+            }
+        }
+        return $removed_filenames;
+    }
 }

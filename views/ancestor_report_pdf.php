@@ -18,7 +18,8 @@ include_once(__DIR__ . "/layout_pdf.php");
 
 
 // TODO create seperate controller script.
-require_once  __DIR__ . "/../app/model/ancestor.php";
+require_once  __DIR__ . "/../app/model/familyModel.php";
+require_once  __DIR__ . "/../app/model/ancestorModel.php";
 $get_ancestor = new AncestorModel($dbh);
 $data["main_person"] = $get_ancestor->getMainPerson();
 $rom_nr = $get_ancestor->getNumberRoman();
@@ -33,7 +34,7 @@ $data["picture_presentation"] =  $get_ancestor->getPicturePresentation();
 
 // TODO improve this code. $tree_id allready processed in header.
 // 2024: at this moment this can't be removed yet...
-//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in show_picture.php!!!
+//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in showMedia.php!!!
 // *** Set variable for queries ***
 $tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 if (isset($_SESSION['tree_prefix'])) {
@@ -41,8 +42,8 @@ if (isset($_SESSION['tree_prefix'])) {
         ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
         AND humo_tree_texts.treetext_language='" . $selected_language . "'
         WHERE tree_prefix='" . $tree_prefix_quoted . "'";
-    @$datasql = $dbh->query($dataqry);
-    @$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
+    $datasql = $dbh->query($dataqry);
+    $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 }
 //$tree_prefix = $dataDb->tree_prefix;
 //$tree_id = $dataDb->tree_id;
@@ -57,7 +58,7 @@ $pdfdetails = array();
 $pdf_marriage = array();
 
 $pdf = new PDF();
-@$persDb = $db_functions->get_person($data["main_person"]);
+$persDb = $db_functions->get_person($data["main_person"]);
 // *** Use person class ***
 $pers_cls = new PersonCls($persDb);
 $name = $pers_cls->person_name($persDb);
@@ -193,15 +194,15 @@ while (isset($ancestor_array2[0])) {
         }
 
         if ($ancestor_array[$i] != '0') {
-            @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
+            $person_manDb = $db_functions->get_person($ancestor_array[$i]);
             $man_cls = new PersonCls($person_manDb);
             $privacy_man = $man_cls->privacy;
 
             if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
-                @$familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
+                $familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
                 // *** Use privacy filter of woman ***
-                @$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
+                $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
                 $woman_cls = new PersonCls($person_womanDb);
                 $privacy_woman = $woman_cls->privacy;
 
@@ -303,7 +304,7 @@ while (isset($ancestor_array2[0])) {
 
             // ==	Check for parents
             if ($person_manDb->pers_famc && $listednr == '') {
-                @$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
+                $family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
                 if ($family_parentsDb->fam_man) {
                     $ancestor_array2[] = $family_parentsDb->fam_man;
                     $ancestor_number2[] = (2 * $ancestor_number[$i]);
@@ -324,7 +325,7 @@ while (isset($ancestor_array2[0])) {
         } else {
 
             // *** Show N.N. person ***
-            @$person_manDb = $db_functions->get_person($ancestor_array[$i]);
+            $person_manDb = $db_functions->get_person($ancestor_array[$i]);
             $man_cls = new PersonCls($person_manDb);
             $privacy_man = $man_cls->privacy;
 

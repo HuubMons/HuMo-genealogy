@@ -213,7 +213,7 @@ if (isset($_POST['install_tables2'])) {
         $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('searchengine','n')");
         $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')");
 
-        // *** Other settings are saved in the table in file: settings_global.php ***
+        // *** Other settings are saved in the table in file: settingsGlobal.php ***
 
         // *** Update status number. Number must be: update_status+1! ***
         $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','19')");

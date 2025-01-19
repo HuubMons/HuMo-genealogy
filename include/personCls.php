@@ -44,17 +44,18 @@ class PersonCls
                 if ($user["group_alive_date_act"] == "j") {
                     if ($personDb->pers_birth_date) {
                         if (substr($personDb->pers_birth_date, -2) === "BC") {
+                            // born before year 0
                             $privacy_person = false;
-                        }  // born before year 0
-                        elseif (substr($personDb->pers_birth_date, -2, 1) === " " || substr($personDb->pers_birth_date, -3, 1) === " ") {
+                        } elseif (substr($personDb->pers_birth_date, -2, 1) === " " || substr($personDb->pers_birth_date, -3, 1) === " ") {
+                            // born between year 0 and 99
                             $privacy_person = false;
-                        }  // born between year 0 and 99
-                        elseif (substr($personDb->pers_birth_date, -4) < $user["group_alive_date"]) {
+                        } elseif (substr($personDb->pers_birth_date, -4) < $user["group_alive_date"]) {
+                            // born from year 100 onwards but before $user["group_alive_date"]
                             $privacy_person = false;
-                        }  // born from year 100 onwards but before $user["group_alive_date"]
-                        else {
+                        } else {
+                            // *** overwrite pers_alive status ***
                             $privacy_person = true;
-                        } // *** overwrite pers_alive status ***
+                        }
                     }
                     if ($personDb->pers_bapt_date) {
                         if (substr($personDb->pers_bapt_date, -2) === "BC") {
@@ -305,97 +306,13 @@ class PersonCls
 
         $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'title');
         foreach ($name_qry as $nameDb) {
-            $title_position = 'after';
-            if ($nameDb->event_event == 'Prof.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Dr.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Dr.h.c.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Dr.h.c.mult.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Ir.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Mr.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Drs.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Lic.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Kand.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Bacc.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Ing.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Bc.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'em.') {
-                $title_position = 'before';
-            }
-            if ($nameDb->event_event == 'Ds.') {
-                $title_position = 'before';
-            }
+            $titles_before = ['Ir.', 'Mr.', 'Drs.', 'Lic.', 'Kand.', 'Bacc.', 'Ing.', 'Bc.', 'em.', 'Ds.'];
+            $titles_between = ['prins', 'prinses', 'hertog', 'hertogin', 'markies', 'markiezin', 'markgraaf', 'markgravin', 'graaf', 'gravin', 'burggraaf', 'burggravin', 'baron', 'barones', 'ridder'];
 
-            if ($nameDb->event_event == 'prins') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'prinses') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'hertog') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'hertogin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'markies') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'markiezin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'markgraaf') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'markgravin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'graaf') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'gravin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'burggraaf') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'burggravin') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'baron') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'barones') {
-                $title_position = 'between';
-            }
-            if ($nameDb->event_event == 'ridder') {
-                $title_position = 'between';
-            }
-
-            if ($title_position == 'before') {
+            // Two exceptions at request of users, so it's possible to process multiple titles in one name field.
+            // Dr., Dr.h.c., Dr.h.c.mult. And other titles starting with "Dr.".
+            // Multiple titles starting with "Prof.".
+            if (in_array($nameDb->event_event, $titles_before) || substr($nameDb->event_event, 0, 3) == 'Dr.' || substr($nameDb->event_event, 0, 5) == 'Prof.') {
                 if ($title['before']) $title['before'] .= ' ';
                 $title['before'] .= $nameDb->event_event;
 
@@ -403,8 +320,7 @@ class PersonCls
                     if ($title['before']) $title['before'] .= ' ';
                     $title['before'] .= process_text($nameDb->event_text);
                 }
-            }
-            if ($title_position == 'between') {
+            } elseif (in_array($nameDb->event_event, $titles_between)) {
                 if ($title['between']) $title['between'] .= ' ';
                 $title['between'] .= $nameDb->event_event;
 
@@ -412,8 +328,7 @@ class PersonCls
                     if ($title['between']) $title['between'] .= ' ';
                     $title['between'] .= process_text($nameDb->event_text);
                 }
-            }
-            if ($title_position == 'after') {
+            } else {
                 if ($title['after']) $title['after'] .= ' ';
                 $title['after'] .= $nameDb->event_event;
 
@@ -1016,7 +931,7 @@ class PersonCls
                 $check_children = false;
                 $check_family = explode(";", $personDb->pers_fams);
                 foreach ($check_family as $i => $value) {
-                    @$check_childrenDb = $db_functions->get_family($check_family[$i]);
+                    $check_childrenDb = $db_functions->get_family($check_family[$i]);
                     if ($check_childrenDb->fam_children) {
                         $check_children = true;
                     }
@@ -1112,7 +1027,8 @@ class PersonCls
                     // *** Only show 1st picture ***
                     if (isset($picture_qry[0])) {
                         $pictureDb = $picture_qry[0];
-                        $text .= print_thumbnail($tree_pict_path, $pictureDb->event_event, 0, 120, 'margin-left:10px; margin-top:5px;') . '<br>';
+                        $showMedia = new ShowMedia;
+                        $text .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 0, 120, 'margin-left:10px; margin-top:5px;') . '<br>';
 
                         //$picture = show_picture($tree_pict_path, $pictureDb->event_event, '', 120);
                         //$text .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
@@ -2841,7 +2757,8 @@ $own_code=0;
                 //
             } else {
                 // *** Show media/ pictures ***
-                $result = show_media('person', $personDb->pers_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
+                $showMedia = new ShowMedia;
+                $result = $showMedia->show_media('person', $personDb->pers_gedcomnumber); // *** This function can be found in file: showMedia.php! ***
                 $process_text .= $result[0];
                 if (isset($templ_person)) {
                     $templ_person = array_merge((array)$templ_person, (array)$result[1]);

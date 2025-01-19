@@ -209,3 +209,8 @@ footer {
     background-color: transparent;
     color: #ff9900;
 }
+
+.table>:not(caption)>*>* {
+    background-color: #101010;
+    color: #b0b0b0;
+}

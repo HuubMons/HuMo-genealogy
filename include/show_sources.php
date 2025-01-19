@@ -320,7 +320,8 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
                 }
 
                 // *** Show picture by source ***
-                $result = show_media('connect', $connectDb->connect_id); // *** This function can be found in file: show_picture.php! ***
+                $showMedia = new ShowMedia;
+                $result = $showMedia->show_media('connect', $connectDb->connect_id); // *** This function can be found in file: showMedia.php! ***
                 $source_array['text'] .= $result[0];
             }
         } // *** Loop multiple source ***
@@ -431,7 +432,8 @@ function show_sources_footnotes()
             }
 
             // *** Show picture by source ***
-            $result = show_media('connect', $connectDb->connect_id); // *** This function can be found in file: show_picture.php! ***
+            $showMedia = new ShowMedia;
+            $result = $showMedia->show_media('connect', $connectDb->connect_id); // *** This function can be found in file: showMedia.php! ***
             $text .= $result[0];
 
             $text .= "<br>\n";

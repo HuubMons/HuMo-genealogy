@@ -24,8 +24,8 @@ $person_result = $dbh->query($data["query"] . " LIMIT " . $item . "," . $nr_pers
 //if ($count_qry) {
 //    // *** Use COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
 //    $result = $dbh->query($count_qry);
-//    @$resultDb = $result->fetch(PDO::FETCH_OBJ);
-//    $count_persons = @$resultDb->teller;
+//    $resultDb = $result->fetch(PDO::FETCH_OBJ);
+//    $count_persons = $resultDb->teller;
 //} else {
 // *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
 $result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
@@ -102,7 +102,7 @@ $link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
 $uri_path_string = $link_cls->get_link($uri_path, 'list_places_families', $tree_id, true);
 
 // *** Check for search results ***
-if (@$person_result->rowCount() == 0) {
+if ($person_result->rowCount() == 0) {
     //
 } else {
     // "<="
@@ -216,7 +216,7 @@ $selected_place = "";
     </thead>
 
     <?php
-    while (@$familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
+    while ($familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
         // *** Man privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_man);
         // *** Person class used for name and person pop-up data ***
@@ -384,7 +384,7 @@ function show_person($familyDb)
                     if ($nr_marriages > 1) {
                         echo ',';
                     }
-                    if (@$partnerDb->pers_gedcomnumber != $familyDb->fam_woman) {
+                    if ($partnerDb->pers_gedcomnumber != $familyDb->fam_woman) {
                         // *** Show actual relation/ marriage in special font ***
                         echo ' <span class="index_partner" style="font-size:10px;">';
                     } else {
@@ -402,7 +402,7 @@ function show_person($familyDb)
                         }
                     }
                     echo ' ' . $relation_short . ' ' . rtrim($name["standard_name"]);
-                    if (@$partnerDb->pers_gedcomnumber != $familyDb->fam_woman) {
+                    if ($partnerDb->pers_gedcomnumber != $familyDb->fam_woman) {
                         echo '</span>';
                     }
                 }
