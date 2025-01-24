@@ -2056,7 +2056,9 @@ class GedcomCls
             if ($buffer6 === '1 MILI') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             //RELI Religion
             if ($buffer6 === '1 EDUC') {
@@ -2255,6 +2257,16 @@ class GedcomCls
                     $pers_alive = 'deceased';
                     $event_status = "";
                     $this->level[1] = "";
+                }
+
+                // *** Rootsmagic ***
+                // 1 EVEN Truck driver
+                // 2 TYPE Militairy service
+                // 2 DATE BET 15 FEB 1988 AND 15 AUG 1989
+                // 2 PLAC Amsterdam
+                // 2 ADDR Damrak 1
+                if (substr($buffer, 0, 24) === '2 TYPE Militairy service') {
+                    $this->event['gedcom'][$this->event_nr] = 'MILI';
                 }
             }
 
