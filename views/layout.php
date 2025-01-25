@@ -49,8 +49,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'serve_file' && isset($_GET['media_
         $original_media_filename = $media_filename;
     }
 
-    $qry = "SELECT * FROM humo_events
-    WHERE event_tree_id='" . $tree_id . "' AND (event_connect_kind='person' OR event_connect_kind='family') AND event_connect_id NOT LIKE '' AND event_event='" . $original_media_filename . "'";
+    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND (event_connect_kind='person' OR event_connect_kind='family') AND event_connect_id NOT LIKE '' AND event_event='" . $original_media_filename . "'";
     $media_qry = $dbh->query($qry);
     $media_qryDb = $media_qry->fetch(PDO::FETCH_OBJ);
 
@@ -312,10 +311,10 @@ $menu_top = getActiveTopMenu($page);
     // *****************************************************************
     // Use these lines to show a background picture for EACH FAMILY TREE
     // *****************************************************************
-    print '<style type="text/css">';
+    echo '<style type="text/css">';
     $picture= "pictures/".$_SESSION['tree_prefix'].".jpg";
-    print " body { background-image: url($picture);}";
-    print "</style>";
+    echo " body { background-image: url($picture);}";
+    echo '</style>';
     */
 
     // if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
@@ -323,13 +322,14 @@ $menu_top = getActiveTopMenu($page);
     if (
         strpos($_SERVER['REQUEST_URI'], "maps") !== false || strpos($_SERVER['REQUEST_URI'], "descendant") !== false || strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
     ) {
-        echo '<script src="assets/jquery/jquery.min.js"></script> ';
-        echo '<link rel="stylesheet" href="assets/jqueryui/jquery-ui.min.css"> ';
-        echo '<script src="assets/jqueryui/jquery-ui.min.js"></script>';
-    }
+    ?>
+        <script src="assets/jquery/jquery.min.js"></script>
+        <link rel="stylesheet" href="assets/jqueryui/jquery-ui.min.css">
+        <script src="assets/jqueryui/jquery-ui.min.js"></script>
+    <?php } ?>
 
-    // *** Cookie for theme selection ***
-    echo '<script>
+    <!-- Cookie for theme selection -->
+    <script>
         function getCookie(NameOfCookie) {
             if (document.cookie.length > 0) {
                 begin = document.cookie.indexOf(NameOfCookie + "=");
@@ -344,32 +344,73 @@ $menu_top = getActiveTopMenu($page);
             }
             return null;
         }
-        </script>';
+    </script>
 
+    <?php
     // *** Style sheet select ***
     include_once(__DIR__ . "/../styles/sss1.php");
 
     // *** Pop-up menu ***
     // TODO No longer needed for main menu. But still in use for popups at this moment.
-    echo '<script src="include/popup_menu/popup_menu.js"></script>';
-    echo '<link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">';
+    ?>
+    <script src="include/popup_menu/popup_menu.js"></script>
+    <link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">
 
+    <?php
     // TODO replace with bootstrap carousel.
     // *** Always load script, because of "Random photo" at homepage (also used in other pages showing pictures) ***
     // *** Photo lightbox effect using GLightbox ***
-    echo '<link rel="stylesheet" href="include/glightbox/css/glightbox.css">';
-    echo '<script src="include/glightbox/js/glightbox.min.js"></script>';
+    ?>
+    <link rel="stylesheet" href="include/glightbox/css/glightbox.css">
+    <script src="include/glightbox/js/glightbox.min.js"></script>
+    <?php
     // TODO: could be done here using "defer". But bootstrap will be tried first.
     // *** Remark: there is also a script in footer script, otherwise GLightbox doesn't work ***
 
     // *** CSS changes for mobile devices ***
-    echo '<link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">';
-
-    // *** Extra items in header added by admin ***
-    if ($humo_option["text_header"]) {
-        echo "\n" . $humo_option["text_header"];
-    }
     ?>
+    <link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">
+
+    <?php
+    /**
+     * Canonical link, to prevent indexing of all seperate links.
+     * 
+     * Link in sitemap: 
+     * http://127.0.0.1/humo-genealogy/index.php?page=family&tree_id=3&id=F1
+     *
+     * Standard familypage, man is main person (not needed to index):
+     * http://127.0.0.1/humo-genealogy/index.php?page=family&tree_id=3&id=F1&main_person=I1
+     *
+     * Standard familypage, woman is main person (not needed to index):
+     * http://127.0.0.1/humo-genealogy/index.php?page=family&tree_id=3&id=F1&main_person=I2
+     *
+     * Canonical link is the same link as generated in sitemap (this link should be indexed):
+     * http://127.0.0.1/humo-genealogy/index.php?page=family&tree_id=3&id=F1
+     */
+    ?>
+    <?php if ($page == 'family') { ?>
+        <?php if ($humo_option["url_rewrite"] == "j") { ?>
+            <link rel="canonical" href="<?= $base_href . 'family/' . $tree_id . '/' . $data["family_id"]; ?>">
+        <?php } else { ?>
+            <?php
+            // TODO refactor. Same code as in sitemap.php
+            // *** First part of url (strip sitemap.php from path) ***
+            $position = strrpos($_SERVER['PHP_SELF'], '/');
+            // *** April 2022: Using full path: http://localhost/humo-genealogy/sitemap.php ***
+            if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+                $canonical_path = 'https://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['PHP_SELF'], 0, $position);
+            } else {
+                $canonical_path = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['PHP_SELF'], 0, $position);
+            }
+            ?>
+            <link rel="canonical" href="<?= $canonical_path . '/index.php?page=family&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"]; ?>">
+        <?php } ?>
+    <?php } ?>
+
+    <!-- Extra items in header added by admin -->
+    <?php if ($humo_option["text_header"]) { ?>
+        <?= $humo_option["text_header"]; ?>
+    <?php } ?>
 </head>
 
 <body>
