@@ -2,10 +2,16 @@
 class AdminCmsPagesModel
 {
     private $select_page;
+    private $page_menu_id = 0;
 
     public function __construct()
     {
         $this->select_page = 0;
+    }
+
+    public function get_page_menu_id()
+    {
+        return $this->page_menu_id;
     }
 
     public function menu_tab()
@@ -41,7 +47,15 @@ class AdminCmsPagesModel
             if (isset($_POST['page_status']) && !empty($_POST['page_status'])) {
                 $page_status = '1';
             }
-            $page_menu_id = $_POST['page_menu_id'];
+
+            //$page_menu_id = '0';
+            //if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
+            //    $page_menu_id = $_POST['page_menu_id'];
+            //}
+            //$page_menu_id = '0';
+            if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
+                $this->page_menu_id = $_POST['page_menu_id'];
+            }
 
             // *** Generate new order numer, needed for new page or moved page ***
             $page_order = '1';
@@ -58,18 +72,24 @@ class AdminCmsPagesModel
                 $sql = "UPDATE humo_cms_pages SET ";
 
                 // *** If menu/ category is changed, use new page_order. Ordering for old category is restored later in script ***
-                $page_menu_id = '0';
+                //$page_menu_id = '0';
+                //if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
+                //    $page_menu_id = $_POST['page_menu_id'];
+                //}
+
+                // TODO check code. Double?
                 if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
-                    $page_menu_id = $_POST['page_menu_id'];
+                    $this->page_menu_id = $_POST['page_menu_id'];
                 }
-                if ($page_menu_id != $_POST['page_menu_id_old']) {
+
+                if ($this->page_menu_id != $_POST['page_menu_id_old']) {
                     // *** Page is moved to another category, use new page_order ***
                     $sql .= "page_order='" . $page_order . "',";
                 }
             }
 
             $sql .= "page_status='" . $page_status . "',
-                page_menu_id='" . safe_text_db($page_menu_id) . "',
+                page_menu_id='" . $this->page_menu_id . "',
                 page_title='" . safe_text_db($_POST['page_title']) . "',
                 page_text='" . safe_text_db($_POST['page_text']) . "'";
 

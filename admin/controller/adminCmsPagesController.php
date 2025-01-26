@@ -9,6 +9,8 @@ class AdminCmsPagesController
 
         $CMS_pagesModel->add_change_page($dbh);
 
+        $edit_cms_pages['page_menu_id'] = $CMS_pagesModel->get_page_menu_id();
+
         $edit_cms_pages['select_page'] = $CMS_pagesModel->get_select_page();
 
         $CMS_pagesModel->update_pages($dbh);
