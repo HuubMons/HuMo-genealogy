@@ -477,9 +477,12 @@ else {
                                 // *** Change page title ***
                                 if ($descendant_loop == 0 && $descendant_loop2 == 0) {
                                     $name = $parent1_cls->person_name($parent1Db);
-                                    echo '<script>';
-                                    echo 'document.title = "' . __('Family Page') . ': ' . $name["index_name"] . '";';
-                                    echo '</script>';
+                                    $name["index_name"] = html_entity_decode($name["index_name"]);
+                                ?>
+                                    <script>
+                                        document.title = '<?= __("Family Page"); ?>: <?= $name["index_name"]; ?>';
+                                    </script>
+                                <?php
                                 }
                                 ?>
                             </div>
@@ -692,7 +695,7 @@ else {
                                         <?php } elseif ($famc_adoptiveDb->event_gedcom == 'foster') { ?>
                                             <?= __('Foster child'); ?>:
                                         <?php } else { ?>
-                                            <?= __('Adopted child:'); ?>:
+                                            <?= __('Adopted child:'); ?>
                                         <?php } ?>
                                     </b>
                                     <?= $child_cls->name_extended("child"); ?>
@@ -721,7 +724,7 @@ else {
                                         <?php    } elseif ($famc_adoptiveDb->event_gedcom == 'foster') { ?>
                                             <?= __('Foster child'); ?>:
                                         <?php } else { ?>
-                                            <?= __('Adopted child:'); ?>:
+                                            <?= __('Adopted child:'); ?>
                                         <?php } ?>
                                     </b>
                                     <?= $child_cls->name_extended("child"); ?>
