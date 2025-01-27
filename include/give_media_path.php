@@ -19,7 +19,7 @@ function give_media_path($media_dir, $media_filename)
         // TODO does this work if url_rewrite is enabled? Should be something like this if url_rewrite is enabled:
         // serve_file?media_dir=" . $media_dir . "&media_filename=" . $media_filename;
         // ill check it after i reinspect code for normal usecases (without url_rewrite)
-        $final_media_path = "index.php?page=serve_file&media_dir=" . $media_dir . "&media_filename=" . $media_filename;
+        $final_media_path = "index.php?page=show_media_file&media_dir=" . $media_dir . "&media_filename=" . $media_filename;
     }
     return $final_media_path;
 }

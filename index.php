@@ -338,6 +338,11 @@ if ($page == 'address') {
 
     $controllerObj = new UserSettingsController();
     $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
+} elseif ($page == 'show_media_file') {
+    // *** Show media file using secured folder ***
+    // *** Skip layout.php ***
+    include_once(__DIR__ . "/views/show_media_file.php");
+    exit;
 } elseif ($page == 'statistics') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
