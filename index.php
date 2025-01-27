@@ -84,7 +84,7 @@ function custom_autoload($class_name)
 spl_autoload_register('custom_autoload');
 
 
-// TODO move to model script (should be processed before setttings_user. Probably first build a general settings class).
+// TODO move to model script (should be processed before setttings_user).
 if (isset($_GET['log_off'])) {
     unset($_SESSION['user_name']);
     unset($_SESSION['user_id']);
@@ -326,7 +326,7 @@ if ($page == 'address') {
     $controllerObj = new RelationsController($dbh);
     $relation = $controllerObj->getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language);
 } elseif ($page == 'reset_password') {
-    $controllerObj = new ResetpasswordController();
+    $controllerObj = new ResetPasswordController();
     $resetpassword = $controllerObj->detail($dbh, $humo_option);
 } elseif ($page == 'outline_report') {
     $controllerObj = new OutlineReportController();
