@@ -830,6 +830,12 @@ $menu_top = getActiveTopMenu($page);
             const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
         </script>
 
+        <!-- Jan 2025: Bootstrap tooltip -->
+        <script>
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script>
+
         <!-- TODO improve code for tab menu in ascendants and descendants -->
         <!-- End of tab menu, if used -->
         <?php if (

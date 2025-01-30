@@ -170,12 +170,10 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
             <!-- Advanced search box -->
             <?php if ($list["adv_search"] == true) { ?>
-                <div class="row">
-
-                    <div class="col-sm-1"></div>
-
-                    <div class="col-sm-2">
+                <div class="row ms-md-1">
+                    <div class="col-sm-3">
                         <?= __('First name'); ?>:
+
                         <div class="input-group mb-3">
                             <select size="1" name="part_firstname" class="form-select form-select-sm">
                                 <option value="contains"><?= __('Contains'); ?></option>
@@ -183,6 +181,8 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="starts_with" <?php if ($selection['part_firstname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
                             <input type="text" class="form-control form-control-sm" name="pers_firstname" value="<?= safe_text_show($selection['pers_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
+
+                            <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="<?= __('Also searches for special names like nickname, alias, birth name, soldier name, etc.'); ?>">?</button>
                         </div>
                     </div>
 
@@ -242,10 +242,8 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-sm-1"></div>
-
-                    <div class="col-sm-2">
+                <div class="row ms-md-1">
+                    <div class="col-sm-3">
                         <?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?>:
                         <div class="input-group mb-3">
                             <input type="text" class="form-control form-control-sm" name="birth_year" value="<?= safe_text_show($selection['birth_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
@@ -284,10 +282,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                             <input type="text" class="form-control form-control-sm" name="death_place" value="<?= safe_text_show($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
-
                 </div>
-
-
 
                 <!--
                 <div class="accordion mx-4 mb-2" id="accordionExample">
@@ -301,12 +296,9 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                             <div class="accordion-body genealogy_search">
                     -->
 
-
-                <div class="row">
-                    <div class="col-sm-1"></div>
-
+                <div class="row ms-md-1">
                     <!-- Research status -->
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <?= __('Research status:'); ?>
                         <select name="parent_status" class="form-select form-select-sm">
                             <option value="noparents" <?php if ($selection['parent_status'] == "noparents") echo 'selected'; ?>><?= __('parents unknown'); ?></option>
@@ -354,13 +346,10 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                             <input type="text" class="form-control form-control-sm" name="own_code" value="<?= safe_text_show($selection['own_code']); ?>" size="15" placeholder="<?= __('Own code'); ?>">
                         </div>
                     </div>
-
                 </div>
 
-                <div class="row">
-                    <div class="col-sm-1"></div>
-
-                    <div class="col-sm-2">
+                <div class="row ms-md-1">
+                    <div class="col-sm-3">
                         <?= __('Choose sex:'); ?>
                         <select size="1" name="sexe" class="form-select form-select-sm">
                             <option value="both"><?= __('All'); ?></option>
@@ -398,11 +387,9 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
                 </div>
 
-                <div class="row">
-                    <div class="col-sm-1"></div>
-
+                <div class="row ms-md-1">
                     <!-- Witness -->
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <?= ucfirst(__('witness')); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_witness" class="form-select form-select-sm">
@@ -440,7 +427,6 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
                 </div>
 
-
                 <!--
                             </div>
                         </div>
@@ -449,11 +435,9 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     -->
 
 
-                <div class="row mb-3">
-                    <div class="col-sm-1"></div>
-
+                <div class="row mb-3 ms-md-1">
                     <?php if ($num_rows2 > 1 && $humo_option['one_name_study'] == 'n') { ?>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <!-- <?= __('Family tree'); ?> -->
                             <select name="select_trees" class="form-select form-select-sm">
                                 <option value="tree_selected" <?php if ($select_trees == "tree_selected") echo 'selected'; ?>><?= __('Selected family tree'); ?></option>
