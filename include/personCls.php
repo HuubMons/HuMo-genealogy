@@ -669,11 +669,10 @@ class PersonCls
                 }
 
                 // *** Callname shown as "Huub" ***
-                //if ($personDb->pers_callname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
                 if ($nickname and (!$privacy or ($privacy and $user['group_filter_name'] == 'j'))) {
                     if ($name_array["index_name"]) $name_array["index_name"] .= ' ';
-                    //$name_array["index_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
-                    $name_array["index_name"] .= '&quot;' . $nickname . '&quot;';
+                    //$name_array["index_name"] .= '&quot;' . $nickname . '&quot;';
+                    $name_array["index_name"] .= '"' . $nickname . '"';
                 }
                 $name_array["index_name"] .= $prefix2;
 

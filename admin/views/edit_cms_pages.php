@@ -69,10 +69,12 @@ Please disconnect the pages from this menu first.'); ?>
     if ($edit_cms_pages['menu_tab'] === 'pages') {
         $qry = $dbh->query("SELECT * FROM humo_cms_pages ORDER BY page_menu_id, page_order");
         $page_nr = 0;
-        $edit_cms_pages['page_menu_id'] = 0;
+        //$edit_cms_pages['page_menu_id'] = 0;
+        $list_menu_id = 0;
     ?>
 
         <div class="row">
+
             <div class="col-md-3">
                 <!--  List of pages -->
                 <table>
@@ -86,7 +88,8 @@ Please disconnect the pages from this menu first.'); ?>
                             </tr>
                         <?php
                             $page_nr = 0;
-                        } elseif ($cms_pagesDb->page_menu_id > 0 && $edit_cms_pages['page_menu_id'] != $cms_pagesDb->page_menu_id) {
+                            //} elseif ($cms_pagesDb->page_menu_id > 0 && $edit_cms_pages['page_menu_id'] != $cms_pagesDb->page_menu_id) {
+                        } elseif ($cms_pagesDb->page_menu_id > 0 && $list_menu_id != $cms_pagesDb->page_menu_id) {
                             $qry_menu = $dbh->query("SELECT * FROM humo_cms_menu WHERE menu_id='" . $cms_pagesDb->page_menu_id . "'");
                             $cmsDb = $qry_menu->fetch(PDO::FETCH_OBJ);
                         ?>
@@ -95,7 +98,8 @@ Please disconnect the pages from this menu first.'); ?>
                             </tr>
                         <?php
                             $page_nr = 0;
-                            $edit_cms_pages['page_menu_id'] = $cms_pagesDb->page_menu_id;
+                            //$edit_cms_pages['page_menu_id'] = $cms_pagesDb->page_menu_id;
+                            $list_menu_id = $cms_pagesDb->page_menu_id;
                         }
 
                         $page_nr++;

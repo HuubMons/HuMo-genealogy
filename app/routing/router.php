@@ -44,6 +44,7 @@ class Router
         ['path' => 'relations', 'title' => 'Relationship calculator', 'page' => 'relations'],
         ['path' => 'reset_password', 'title' => 'Reset password', 'page' => 'reset_password'],
         // *** Must be before source ***
+        ['path' => 'show_media_file', 'title' => 'Show media file', 'page' => 'show_media_file'],
         ['path' => 'sources', 'title' => 'Sources', 'page' => 'sources', 'vars' => 'select_tree_id'],
         ['path' => 'source', 'title' => 'Source', 'page' => 'source', 'vars' => 'select_tree_id,id'],
         ['path' => 'statistics', 'title' => 'Statistics', 'page' => 'statistics'],

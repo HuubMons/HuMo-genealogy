@@ -349,7 +349,7 @@ class PDF extends tFPDF
                                     $pictext_indent += $maxw + 5;
                                 }
                             }
-                            $pdf->SetXY($keepX, $keepY + $tallestpic - 7);
+                            $pdf->SetXY($keepX, $keepY + $tallestpic - 3);
                         }
                     }
                     // source link with child
@@ -404,7 +404,7 @@ class PDF extends tFPDF
                                     $pictext_indent += $maxw + 5;
                                 }
                             }
-                            $pdf->SetXY($keepX, $keepY + $tallestpic - 7);
+                            $pdf->SetXY($keepX, $keepY + $tallestpic - 3);
                         }
                     }
                     // source link with ancestor
@@ -456,7 +456,7 @@ class PDF extends tFPDF
                                 $pictext_indent += $maxw + 5;
                             }
                         }
-                        $pdf->SetXY($keepX, $keepY + $tallestpic - 7);
+                        $pdf->SetXY($keepX, $keepY + $tallestpic - 3);
                     }
                 } elseif (strpos($key, "source") !== false and $value != '') {   // make source link to end of document
                     //$pdf->SetFont('Times','',$font_size);
@@ -667,7 +667,7 @@ class PDF extends tFPDF
                             $pictext_indent += $maxw + 5;
                         }
                     }
-                    $pdf->SetXY($keepX, $keepY + $tallestpic - 7);
+                    $pdf->SetXY($keepX, $keepY + $tallestpic - 3);
                 }
             } else {
                 $pdf->Write(6, $value);
@@ -1080,7 +1080,9 @@ class PDF extends tFPDF
 
         $text = sprintf(__('PDF Created with %s on'), 'HuMo-genealogy') . ' ';
         $date_part1 = language_date(date("j M Y")); // *** Translate first part of date (05 JUL 2022) using HuMo-genealogy language_date script ***
-        $this->Cell(0, 10, $text . $date_part1 . ' ' . date("g:i a") . '. ' . __('Page') . ' ' . $this->PageNo(), 0, 0, 'C');
+        //$this->Cell(0, 10, $text . $date_part1 . ' ' . date("g:i a") . '. ' . __('Page') . ' ' . $this->PageNo(), 0, 0, 'C');
+        $this->AliasNbPages();
+        $this->Cell(0, 10, $text . $date_part1 . ' ' . date("g:i a") . '. ' . __('Page') . ' ' . $this->PageNo() . '/{nb}', 0, 0, 'C');
     }
 
     // function to make super- or subscript

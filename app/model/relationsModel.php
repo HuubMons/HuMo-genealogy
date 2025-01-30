@@ -110,27 +110,16 @@ class RelationsModel
         $relation['totalpath'] = $this->totalpath;
         $relation['show_extended_message'] = $this->show_extended_message;
 
+        $relation['rel_arrayspouseX'] = $this->rel_arrayspouseX;
+        $relation['rel_arrayspouseY'] = $this->rel_arrayspouseY;
+
         return $relation;
     }
 
     // *** Several variables used double. For standard and marital relationship calculator. ***
     public function get_variables_standard_extended()
     {
-        // TEST
-        $relation['standard_extended']['relation_type'] = $this->relation['relation_type'];
-
-        // $relation['famspouseX'], $relation['famspouseY']
-        // $relation['relation_type']
-        // $relation['foundX_gen'], $relation['foundY_gen']
-        // $relation['spouse']
-        // $relation['rel_arrayspouseX'], $relation['rel_arrayspouseY']
-        // $relation['foundX_nr'], $relation['foundY_nr']
-        // $relation['name1'], $relation['name2']
-        // $relation['family_id1'], $relation['family_id2']
-        // $relation['gednr1'], $relation['gednr2']
-
         // TODO jan. 2025 for now just add all variables to "standard_extended" array. Must be refactored.
-        /*
         $relation['standard_extended'] = $this->relation;
 
         $relation['standard_extended']['search_name1'] = $this->search_name1;
@@ -158,7 +147,9 @@ class RelationsModel
         $relation['standard_extended']['globaltrack2'] = $this->globaltrack2;
         $relation['standard_extended']['totalpath'] = $this->totalpath;
         $relation['standard_extended']['show_extended_message'] = $this->show_extended_message;
-        */
+
+        $relation['standard_extended']['rel_arrayspouseX'] = $this->rel_arrayspouseX;
+        $relation['standard_extended']['rel_arrayspouseY'] = $this->rel_arrayspouseY;
 
         return $relation;
     }
@@ -397,7 +388,6 @@ class RelationsModel
          * 6 = siblings
          */
         if ($this->start_calculation && $this->search_results && $this->relation['relation_type'] != 1 && $this->relation['relation_type'] != 2 && $this->relation['relation_type'] != 7) {
-            /*
             $this->relation['foundX_nr'] = '';
             $this->relation['foundY_nr'] = '';
             $this->relation['foundX_gen'] = '';
@@ -407,9 +397,8 @@ class RelationsModel
             $this->relation['relation_type'] = '';
             $this->relation['rel_text'] = '';
             $this->relation['spouse'] = '';
-            */
 
-            //$this->search_marital(); // Will return a new $relation['rel_text'].
+            $this->search_marital(); // Will return a new $relation['rel_text'].
         }
     }
 
@@ -934,7 +923,7 @@ class RelationsModel
                 $this->relation['rel_text'] = $ancestortext . $parent . __(' of ');
                 if ($pers > 4) {
                     $gennr = $pers - 2;
-                    $relation['dutch_text'] =  "(" . $ancestortext . $parent . " = " . $gennr . __('th') . ' ' . __('great-grand') . $parent . ")";
+                    $this->relation['dutch_text'] =  "(" . $ancestortext . $parent . " = " . $gennr . __('th') . ' ' . __('great-grand') . $parent . ")";
                 }
                 // *** Greek***
                 // *** Ελληνικά παππούς γιαγιά***
@@ -1428,7 +1417,7 @@ class RelationsModel
             if ($pers == 2) {
                 $this->relation['rel_text'] = $grchild . __(' of ');
             } elseif ($pers > 2 && $pers < 27) {
-                $this->relation['rel_text'] = spanish_degrees($pers) . $grchild . " (" . $degree . ")" . __(' of ');
+                $this->relation['rel_text'] = $this->spanish_degrees($pers) . $grchild . " (" . $degree . ")" . __(' of ');
             } else {
                 $this->relation['rel_text'] = $degree . __(' of ');
             }
@@ -1568,11 +1557,17 @@ class RelationsModel
                 $parsexe2 = $persidDb2->pers_sexe;
 
                 if ($parsexe2 == "M") {
-                    if ($parsexe == "M") $se_gr_grandch = 'sonsons ' . $child;
-                    else $se_gr_grandch = 'dottersons ' . $child;
+                    if ($parsexe == "M") {
+                        $se_gr_grandch = 'sonsons ' . $child;
+                    } else {
+                        $se_gr_grandch = 'dottersons ' . $child;
+                    }
                 } else {
-                    if ($parsexe == "M") $se_gr_grandch = 'sondotters ' . $child;
-                    else $se_gr_grandch = 'dotterdotters ' . $child;
+                    if ($parsexe == "M") {
+                        $se_gr_grandch = 'sondotters ' . $child;
+                    } else {
+                        $se_gr_grandch = 'dotterdotters ' . $child;
+                    }
                 }
             }
 
@@ -1582,19 +1577,31 @@ class RelationsModel
                 $parsexe3 = $persidDb3->pers_sexe;
                 if ($parsexe3 == "M") {
                     if ($parsexe2 == "M") {
-                        if ($parsexe == "M") $se_2ndgr_grandch = 'sonsons son' . $child;
-                        else $se_2ndgr_grandch = 'dottersons son' . $child;
+                        if ($parsexe == "M") {
+                            $se_2ndgr_grandch = 'sonsons son' . $child;
+                        } else {
+                            $se_2ndgr_grandch = 'dottersons son' . $child;
+                        }
                     } else {
-                        if ($parsexe == "M") $se_2ndgr_grandch = 'sondotters son' . $child;
-                        else $se_2ndgr_grandch = 'dotterdotters son' . $child;
+                        if ($parsexe == "M") {
+                            $se_2ndgr_grandch = 'sondotters son' . $child;
+                        } else {
+                            $se_2ndgr_grandch = 'dotterdotters son' . $child;
+                        }
                     }
                 } else {
                     if ($parsexe2 == "M") {
-                        if ($parsexe == "M") $se_2ndgr_grandch = 'sonsons dotter' . $child;
-                        else $se_2ndgr_grandch = 'dottersons dotter' . $child;
+                        if ($parsexe == "M") {
+                            $se_2ndgr_grandch = 'sonsons dotter' . $child;
+                        } else {
+                            $se_2ndgr_grandch = 'dottersons dotter' . $child;
+                        }
                     } else {
-                        if ($parsexe == "M") $se_2ndgr_grandch = 'sondotters dotter' . $child;
-                        else $se_2ndgr_grandch = 'dotterdotters dotter' . $child;
+                        if ($parsexe == "M") {
+                            $se_2ndgr_grandch = 'sondotters dotter' . $child;
+                        } else {
+                            $se_2ndgr_grandch = 'dotterdotters dotter' . $child;
+                        }
                     }
                 }
             }
@@ -1772,7 +1779,7 @@ class RelationsModel
             if ($gendiff == 1) {
                 $this->relation['rel_text'] = $neph . __(' of ');
             } elseif ($gendiff > 1 && $gendiff < 27) {
-                $this->relation['rel_text'] = $neph . " " . spanish_degrees($gendiff) . $grson . __(' of ');
+                $this->relation['rel_text'] = $neph . " " . $this->spanish_degrees($gendiff) . $grson . __(' of ');
             } else {
                 $this->relation['rel_text'] = $neph . " " . $degree;
             }
@@ -1799,12 +1806,12 @@ class RelationsModel
             }
         } elseif ($this->selected_language == "no") {
             $nephniece = $this->relation['sexe1'] == 'M' ? __('nephew') : __('niece');
-            $relation['rel_text_nor_dan'] = '';
-            $relation['rel_text_nor_dan2'] = '';
+            $this->relation['rel_text_nor_dan'] = '';
+            $this->relation['rel_text_nor_dan2'] = '';
             if ($generX > 3) {
-                $relation['rel_text_nor_dan'] = "s " . substr('søskenet', 0, -2);  // for: A er oldebarnet av Bs søsken
+                $this->relation['rel_text_nor_dan'] = "s " . substr('søskenet', 0, -2);  // for: A er oldebarnet av Bs søsken
 
-                $relation['rel_text_nor_dan2'] = 'søskenet' .
+                $this->relation['rel_text_nor_dan2'] = 'søskenet' .
                     __(' of '); // for: A er oldebarnet av søskenet av mannen til B
             }
             if ($generX == 2) {
@@ -1828,11 +1835,11 @@ class RelationsModel
             }
         } elseif ($this->selected_language == "da") {
             $nephniece = $this->relation['sexe1'] == 'M' ? __('nephew') : __('niece');
-            $relation['rel_text_nor_dan'] = '';
-            $relation['rel_text_nor_dan2'] = '';
+            $this->relation['rel_text_nor_dan'] = '';
+            $this->relation['rel_text_nor_dan2'] = '';
             if ($generX > 3) {
-                $relation['rel_text_nor_dan'] = "s søskende";  // for: A er oldebarn af Bs søskende
-                $relation['rel_text_nor_dan2'] = 'søskende' . __(' of '); // for: A er oldebarn af søskende af ..... til B
+                $this->relation['rel_text_nor_dan'] = "s søskende";  // for: A er oldebarn af Bs søskende
+                $this->relation['rel_text_nor_dan2'] = 'søskende' . __(' of '); // for: A er oldebarn af søskende af ..... til B
             }
             if ($generX == 2) {
                 $this->relation['rel_text'] = $nephniece . __(' of ');
@@ -1917,11 +1924,17 @@ class RelationsModel
                 $persidDb2 = $this->db_functions->get_person($relarr[$ancsarr[$arrnum - 2]][0]);
                 $parsexe2 = $persidDb2->pers_sexe;
                 if ($parsexe2 == "M") {
-                    if ($parsexe == "M") $se_gr_nephniece = 'brors son' . $nephniece;
-                    else $se_gr_nephniece = 'brors dotter' . $nephniece;
+                    if ($parsexe == "M") {
+                        $se_gr_nephniece = 'brors son' . $nephniece;
+                    } else {
+                        $se_gr_nephniece = 'brors dotter' . $nephniece;
+                    }
                 } else {
-                    if ($parsexe == "M") $se_gr_nephniece = 'systers son' . $nephniece;
-                    else $se_gr_nephniece = 'systers dotter' . $nephniece;
+                    if ($parsexe == "M") {
+                        $se_gr_nephniece = 'systers son' . $nephniece;
+                    } else {
+                        $se_gr_nephniece = 'systers dotter' . $nephniece;
+                    }
                 }
             }
             if ($generX == 2) {
@@ -2145,11 +2158,17 @@ class RelationsModel
                     $persidDb2 = $this->db_functions->get_person($relarr[$ancsarr[$arrnum - 2]][0]);
                     $parsexe2 = $persidDb2->pers_sexe;
                     if ($parsexe2 == "M") {
-                        if ($parsexe == "M") $se_granduncleaunt = 'fars farbror';
-                        else $se_granduncleaunt = 'mors farbror';
+                        if ($parsexe == "M") {
+                            $se_granduncleaunt = 'fars farbror';
+                        } else {
+                            $se_granduncleaunt = 'mors farbror';
+                        }
                     } else {
-                        if ($parsexe == "M") $se_granduncleaunt = 'fars morbror';
-                        else $se_granduncleaunt = 'mors morbror';
+                        if ($parsexe == "M") {
+                            $se_granduncleaunt = 'fars morbror';
+                        } else {
+                            $se_granduncleaunt = 'mors morbror';
+                        }
                     }
                 }
 
@@ -2159,19 +2178,31 @@ class RelationsModel
                     $parsexe3 = $persidDb3->pers_sexe;
                     if ($parsexe3 == "M") {
                         if ($parsexe2 == "M") {
-                            if ($parsexe == "M") $se_gr_granduncleaunt = 'farfars farbror';
-                            else $se_gr_granduncleaunt = 'morfars farbror';
+                            if ($parsexe == "M") {
+                                $se_gr_granduncleaunt = 'farfars farbror';
+                            } else {
+                                $se_gr_granduncleaunt = 'morfars farbror';
+                            }
                         } else {
-                            if ($parsexe == "M") $se_gr_granduncleaunt = 'farmors farbror';
-                            else $se_gr_granduncleaunt = 'mormors farbror';
+                            if ($parsexe == "M") {
+                                $se_gr_granduncleaunt = 'farmors farbror';
+                            } else {
+                                $se_gr_granduncleaunt = 'mormors farbror';
+                            }
                         }
                     } else {
                         if ($parsexe2 == "M") {
-                            if ($parsexe == "M") $se_gr_granduncleaunt = 'farfars morbror';
-                            else $se_gr_granduncleaunt = 'morfars morbror';
+                            if ($parsexe == "M") {
+                                $se_gr_granduncleaunt = 'farfars morbror';
+                            } else {
+                                $se_gr_granduncleaunt = 'morfars morbror';
+                            }
                         } else {
-                            if ($parsexe == "M") $se_gr_granduncleaunt = 'farmors morbror';
-                            else $se_gr_granduncleaunt = 'mormors morbror';
+                            if ($parsexe == "M") {
+                                $se_gr_granduncleaunt = 'farmors morbror';
+                            } else {
+                                $se_gr_granduncleaunt = 'mormors morbror';
+                            }
                         }
                     }
                 }
@@ -2277,7 +2308,7 @@ class RelationsModel
             $this->relation['rel_text'] = $ancestortext . $uncleaunt . __(' of ');
             if ($generY > 4) {
                 $gennr = $generY - 3;
-                $relation['dutch_text'] =  "(" . $ancestortext . $uncleaunt . " = " . $gennr . __('th') . ' ' . __('great-grand') . $uncleaunt . ")";
+                $this->relation['dutch_text'] =  "(" . $ancestortext . $uncleaunt . " = " . $gennr . __('th') . ' ' . __('great-grand') . $uncleaunt . ")";
             }
             // *** Greek***
             // *** Ελληνικά θείος***
@@ -2359,7 +2390,7 @@ class RelationsModel
             if ($gendiff == 1) {
                 $this->relation['rel_text'] = $uncle . __(' of ');
             } elseif ($gendiff > 1 && $gendiff < 27) {
-                $this->relation['rel_text'] = $uncle . " " . spanish_degrees($gendiff) . $gran . __(' of ');
+                $this->relation['rel_text'] = $uncle . " " . $this->spanish_degrees($gendiff) . $gran . __(' of ');
             } else {
                 $this->relation['rel_text'] = $uncle . " " . $degree;
             }
@@ -2398,8 +2429,8 @@ class RelationsModel
             }
         } elseif ($this->selected_language == "no") {
             $temptext = '';
-            $relation['rel_text_nor_dan'] = '';
-            $relation['rel_text_nor_dan2'] = '';
+            $this->relation['rel_text_nor_dan'] = '';
+            $this->relation['rel_text_nor_dan2'] = '';
             if ($generY == 2) {
                 $this->relation['rel_text'] = $uncleaunt . __(' of ');
             }
@@ -2427,13 +2458,13 @@ class RelationsModel
                 $temptext = $gennr . 'x tippoldeforelderen';
             }
             if ($temptext !== '') {
-                $relation['rel_text_nor_dan'] = "s " . substr($temptext, 0, -2);
-                $relation['rel_text_nor_dan2'] = $temptext . __(' of ');
+                $this->relation['rel_text_nor_dan'] = "s " . substr($temptext, 0, -2);
+                $this->relation['rel_text_nor_dan2'] = $temptext . __(' of ');
             }
         } elseif ($this->selected_language == "da") {
             $temptext = '';
-            $relation['rel_text_nor_dan'] = '';
-            $relation['rel_text_nor_dan2'] = '';
+            $this->relation['rel_text_nor_dan'] = '';
+            $this->relation['rel_text_nor_dan2'] = '';
             if ($generY == 2) {
                 $this->relation['rel_text'] = $uncleaunt . ' til ';
             }
@@ -2464,8 +2495,8 @@ class RelationsModel
                 $temptext = $gennr . ' gange tip oldeforældre';
             }
             if ($temptext !== '') {
-                $relation['rel_text_nor_dan'] = "s " . $temptext;
-                $relation['rel_text_nor_dan2'] = $temptext . ' til ';
+                $this->relation['rel_text_nor_dan'] = "s " . $temptext;
+                $this->relation['rel_text_nor_dan2'] = $temptext . ' til ';
             }
         } elseif ($this->selected_language == "cn") {
             if ($generY == 2) {
@@ -2555,7 +2586,7 @@ class RelationsModel
                 if ($gendiff == 1) {
                     $relname = $uncle;
                 } elseif ($gendiff > 1 && $gendiff < 27) {
-                    $relname = $uncle . " " . spanish_degrees($gendiff) . $gran;
+                    $relname = $uncle . " " . $this->spanish_degrees($gendiff) . $gran;
                 } else {
                 }
                 $this->relation['rel_text'] = $relname . " " . $generX . $span_postfix . __(' of ');
@@ -2573,7 +2604,7 @@ class RelationsModel
                 if ($gendiff == 1) {
                     $relname = $nephew;
                 } else {
-                    $relname = $nephew . " " . spanish_degrees($gendiff) . $grson;
+                    $relname = $nephew . " " . $this->spanish_degrees($gendiff) . $grson;
                 }
                 $this->relation['rel_text'] = $relname . " " . $generY . $span_postfix . __(' of ');
             }
@@ -2768,8 +2799,8 @@ class RelationsModel
             }
             $this->relation['rel_text'] = $cousin . $degree . $removenr . __(' of ');
         } elseif ($this->selected_language == "no") {
-            $relation['rel_text_nor_dan'] = '';
-            $relation['rel_text_nor_dan2'] = '';
+            $this->relation['rel_text_nor_dan'] = '';
+            $this->relation['rel_text_nor_dan2'] = '';
             $degreediff = min($generX, $generY);
             if ($degreediff == 2) {
                 $nor_cousin = __('1st [COUSIN]'); // 1st cousin
@@ -2816,8 +2847,8 @@ class RelationsModel
                 if ($gendiff >  5) {
                     $this->relation['rel_text'] = $gennr . 'x tippolde barnet' . __(' of ');
                 }
-                $relation['rel_text_nor_dan'] = "s " . substr($nor_cousin, 0, -2);
-                $relation['rel_text_nor_dan2'] = $nor_cousin . __(' of ');
+                $this->relation['rel_text_nor_dan'] = "s " . substr($nor_cousin, 0, -2);
+                $this->relation['rel_text_nor_dan2'] = $nor_cousin . __(' of ');
             } elseif ($generX < $generY) {  // A is the "older" cousin (A er timenning av Bs tipp-tippoldefar)
                 if ($gendiff == 1) {
                     $temptext = 'forelderen';
@@ -2839,8 +2870,8 @@ class RelationsModel
                     $temptext = $gennr . 'x tippoldeforelderen';
                 }
                 $this->relation['rel_text'] = $nor_cousin . __(' of ');
-                $relation['rel_text_nor_dan'] = "s " . substr($temptext, 0, -2);
-                $relation['rel_text_nor_dan2'] = $temptext . __(' of ');
+                $this->relation['rel_text_nor_dan'] = "s " . substr($temptext, 0, -2);
+                $this->relation['rel_text_nor_dan2'] = $temptext . __(' of ');
 
                 /* following is the alternative way of notation for cousins when X is the older one
                 // (A er barnebarn av Bs tipp-tippolefars sosken)
@@ -2878,8 +2909,8 @@ class RelationsModel
                     $Y_removed = $gennr.'x tippolde'."barn";
                 }
                 $this->relation['rel_text'] = $X_removed.__(' of ');
-                $relation['rel_text_nor_dan'] = "s ".$Y_removed."s ".'søskenet';
-                $relation['rel_text_nor_dan2'] = $Y_removed.__(' of ');
+                $this->relation['rel_text_nor_dan'] = "s ".$Y_removed."s ".'søskenet';
+                $this->relation['rel_text_nor_dan2'] = $Y_removed.__(' of ');
                 */
             }
         } elseif ($this->selected_language == "sv") {
@@ -3156,8 +3187,8 @@ class RelationsModel
                 if ($gendiff >  6) {
                     $this->relation['rel_text'] = $gennr . ' gange tip oldebarn' . __(' of ');
                 }
-                $relation['rel_text_nor_dan'] = "s " . $nor_cousin;
-                $relation['rel_text_nor_dan2'] = $nor_cousin . __(' of ');
+                $this->relation['rel_text_nor_dan'] = "s " . $nor_cousin;
+                $this->relation['rel_text_nor_dan2'] = $nor_cousin . __(' of ');
             } elseif ($generX < $generY) {
                 // A is the "older" cousin (A er timenning af Bs tiptipoldeforældre)
                 if ($gendiff == 1) {
@@ -3183,8 +3214,8 @@ class RelationsModel
                     $temptext = $gennr . ' gange tip oldeforældre';
                 }
                 $this->relation['rel_text'] = $nor_cousin . ' til ';
-                $relation['rel_text_nor_dan'] = "s " . $temptext;
-                $relation['rel_text_nor_dan2'] = $temptext . ' til ';
+                $this->relation['rel_text_nor_dan'] = "s " . $temptext;
+                $this->relation['rel_text_nor_dan2'] = $temptext . ' til ';
             }
         } elseif ($this->selected_language == "fr") {  // french
             if ($this->relation['sexe1'] == 'M') {

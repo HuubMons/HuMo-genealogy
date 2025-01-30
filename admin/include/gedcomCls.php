@@ -554,6 +554,7 @@ class GedcomCls
                 if ($buffer6 === '2 SPFX') {
                     $this->processed = true;
                     $person["pers_prefix"] = substr($buffer, 7) . '_';
+                    $person["pers_prefix"] = str_replace(" ", "_", $person["pers_prefix"]);
                 }
 
                 // *** Title in GEDCOM 5.5: 2 NPFX Prof. ***
@@ -1900,147 +1901,205 @@ class GedcomCls
             if ($buffer6 === '1 ADOP') { // Adopted
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer7 === '1 _ADPF') { // Adopted by father
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
+                if (substr($buffer, 8)) {
+                    $event_temp = substr($buffer, 8);
+                }
             }
             if ($buffer7 === '1 _ADPM') { // Adopted by mother
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
+                if (substr($buffer, 8)) {
+                    $event_temp = substr($buffer, 8);
+                }
             }
             if ($buffer6 === '1 BAPL') { // LDS baptised
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 BARM') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 BASM') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 BLES') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 CENS') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 CHRA') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 CONF') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 CONL') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 EMIG') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 ENDL') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 FCOM') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer7 === '1 _FNRL') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
+                if (substr($buffer, 8)) {
+                    $event_temp = substr($buffer, 8);
+                }
             }
             if ($buffer6 === '1 GRAD') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 IMMI') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 NATU') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 ORDN') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 PROB') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 RETI') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 SLGC') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 WILL') { // Will
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer7 === '1 _YART') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
+                if (substr($buffer, 8)) {
+                    $event_temp = substr($buffer, 8);
+                }
             }
             if ($buffer7 === '1 _INTE') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
+                if (substr($buffer, 8)) {
+                    $event_temp = substr($buffer, 8);
+                }
             }
             if ($buffer7 === '1 _BRTM') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
+                if (substr($buffer, 8)) {
+                    $event_temp = substr($buffer, 8);
+                }
             }
             if ($buffer7 === '1 _NLIV') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
+                if (substr($buffer, 8)) {
+                    $event_temp = substr($buffer, 8);
+                }
             }
             if ($buffer7 === '1 _NMAR') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 8)) $event_temp = substr($buffer, 8);
+                if (substr($buffer, 8)) {
+                    $event_temp = substr($buffer, 8);
+                }
             }
             if ($buffer6 === '1 NCHI') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             // BK
             //1 _MILT militaire dienst  Location: Amsterdam
@@ -2056,23 +2115,31 @@ class GedcomCls
             if ($buffer6 === '1 MILI') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             //RELI Religion
             if ($buffer6 === '1 EDUC') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 NATI') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 CAST') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             //REFN Ref. nr.  (oown code)
             if ($buffer5 === '1 AFN') {
@@ -2099,7 +2166,9 @@ class GedcomCls
             if ($buffer6 === '1 IDNO') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer7 === '1 _HEIG') {
                 $this->processed = true;
@@ -2132,7 +2201,9 @@ class GedcomCls
             if ($buffer6 === '1 DSCR') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer7 === '1 _MEDC') {
                 $this->processed = true;
@@ -2144,67 +2215,91 @@ class GedcomCls
             if ($buffer6 === '1 NCHI') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 ANCI') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 DESI') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 PROP') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
 
             // *** Other events (no BK?) ***
             if ($buffer6 === '1 ARVL') { // arrived
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 BAPM') { // baptised as child
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 DIVF') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 DPRT') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
 
             if ($buffer6 === '1 LEGI') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 SLGL') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
             if ($buffer6 === '1 TXPY') {
                 $this->processed = true;
                 $event_status = "1";
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
 
             // *** Aldfaer, title by name: 1 TITL Ir. ***
             if ($buffer6 === '1 TITL') {
                 $this->processed = true;
                 $event_status = '1';
-                if (substr($buffer, 7)) $event_temp = substr($buffer, 7);
+                if (substr($buffer, 7)) {
+                    $event_temp = substr($buffer, 7);
+                }
             }
 
             // *** Aldfaer ***
@@ -2255,6 +2350,16 @@ class GedcomCls
                     $pers_alive = 'deceased';
                     $event_status = "";
                     $this->level[1] = "";
+                }
+
+                // *** Rootsmagic ***
+                // 1 EVEN Truck driver
+                // 2 TYPE Militairy service
+                // 2 DATE BET 15 FEB 1988 AND 15 AUG 1989
+                // 2 PLAC Amsterdam
+                // 2 ADDR Damrak 1
+                if (substr($buffer, 0, 24) === '2 TYPE Militairy service') {
+                    $this->event['gedcom'][$this->event_nr] = 'MILI';
                 }
             }
 

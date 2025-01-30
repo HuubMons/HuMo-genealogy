@@ -2,11 +2,13 @@
 header('Content-type: text/plain; charset=UTF-8');
 
 /**
- * Sitemap
+ * Show sitemap
+ * 
+ * If number of records > 50.000: multiple sitemap files are created, and sitemap index is used.
  */
 
-include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
-include_once(__DIR__ . "/include/safe.php"); //Variabelen
+include_once(__DIR__ . "/include/db_login.php");
+include_once(__DIR__ . "/include/safe.php");
 
 // *** Needed for privacy filter ***
 include_once(__DIR__ . "/include/generalSettings.php");
@@ -43,9 +45,10 @@ $person_cls = new PersonCls;
 </urlset>
 */
 
-echo '<?xml version="1.0" encoding="UTF-8"?>' . "\r\n"
-    . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\r\n";
-
+$max_loc = 49999;
+//$max_loc = 600; // Test line
+$loc = array();
+$filenumber = 0;
 // *** Family trees ***
 $datasql = $db_functions->get_trees();
 foreach ($datasql as $dataDb) {
@@ -53,8 +56,7 @@ foreach ($datasql as $dataDb) {
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($dataDb->tree_id, $hide_tree_array)) {
         // *** Get all family pages ***
-        $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families 
-        WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
+        $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
             //$person_cls = new PersonCls($personDb);
@@ -88,7 +90,15 @@ foreach ($datasql as $dataDb) {
                 $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
             }
 
-            echo "<url>\r\n<loc>" . $person_url . "</loc>\r\n</url>\r\n";
+            $loc[] = $person_url;
+
+            // *** Save to file ***
+            if (count($loc) > $max_loc) {
+                $filenumber++;
+                generateSitemap($loc, 'sitemap' . $filenumber . '.xml');
+                unset($loc);
+            }
+
             //}
         }
 
@@ -122,15 +132,15 @@ foreach ($datasql as $dataDb) {
                     $uri_path = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['PHP_SELF'], 0, $position);
                 }
 
-                // TODO check these variables. A single person doesn't have a famc or fams.
+                // A single person doesn't have a famc or fams.
                 $pers_family = '';
-                if ($personDb->pers_famc) {
-                    $pers_family = $personDb->pers_famc;
-                }
-                if ($personDb->pers_fams) {
-                    $pers_fams = explode(';', $personDb->pers_fams);
-                    $pers_family = $pers_fams[0];
-                }
+                //if ($personDb->pers_famc) {
+                //    $pers_family = $personDb->pers_famc;
+                //}
+                //if ($personDb->pers_fams) {
+                //    $pers_fams = explode(';', $personDb->pers_fams);
+                //    $pers_family = $pers_fams[0];
+                //}
 
                 if ($humo_option["url_rewrite"] == "j") {
                     $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber;
@@ -138,11 +148,62 @@ foreach ($datasql as $dataDb) {
                     $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
                 }
 
-                echo "<url>\r\n<loc>" . $person_url . "</loc>\r\n</url>\r\n";
+                $loc[] = $person_url;
+
+                // *** Save to file ***
+                if (count($loc) > $max_loc) {
+                    $filenumber++;
+                    generateSitemap($loc, 'sitemap' . $filenumber . '.xml');
+                    unset($loc);
+                }
             }
         }
     } // *** End of hidden family tree ***
 } // *** End of multiple family trees ***
 unset($datasql);
 
-echo '</urlset>';
+// *** Save last records to file ***
+if ($filenumber > 0 && isset($loc) && count($loc) > 1) {
+    $filenumber++;
+    generateSitemap($loc, 'sitemap' . $filenumber . '.xml');
+    unset($loc);
+}
+
+function generateSitemap($urls, $filename)
+{
+    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset></urlset>');
+    $xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+
+    foreach ($urls as $url) {
+        $urlElement = $xml->addChild('url');
+        $urlElement->addChild('loc', htmlspecialchars($url));
+        //$urlElement->addChild('lastmod', date('Y-m-d'));
+        //$urlElement->addChild('changefreq', 'weekly');
+        //$urlElement->addChild('priority', '0.8');
+    }
+
+    $xml->asXML($filename);
+}
+
+// *** If number of records > 50.000: multiple sitemaps were created, use sitemap index ***
+// *** REMARK: don't refactor this code, layout is better using echo ***
+// TODO check link of sitemap index
+if ($filenumber > 0) {
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\r\n";
+    echo "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n";
+    for ($i = 1; $i <= $filenumber; $i++) {
+        echo "  <sitemap>\r\n";
+        echo '      <loc>' . $uri_path . '/sitemap' . $i . ".xml</loc>\r\n";
+        echo "  </sitemap>\r\n";
+    }
+    echo '</sitemapindex>';
+} else {
+    echo '<?xml version="1.0" encoding="UTF-8"?>'. "\r\n";
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'. "\r\n";
+    foreach ($loc as $loc_value) {
+        echo "  <url>\r\n";
+        echo '      <loc>' . $loc_value . "</loc>\r\n";
+        echo "  </url>\r\n";
+    }
+    echo '</urlset>';
+}

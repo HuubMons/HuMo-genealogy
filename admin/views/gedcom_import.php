@@ -1779,7 +1779,7 @@ elseif ($trees['step'] == '4') {
                     echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $percent . ')' . ' ' . __('families') . '";';
                     echo '</script>';
 
-                    ?>
+                ?>
                     <!-- Apr. 2024 New bootstrap bar -->
                     <script>
                         var bar = document.querySelector(".progress-bar");
@@ -2042,7 +2042,8 @@ elseif ($trees['step'] == '4') {
     }
 
 
-    // *** Process Aldfaer adoption children: remove uneccessary added relations ***
+    // *** Process Aldfaer adoption children: remove unnecessary added relations ***
+    // *** Aldfaer uses a fictive family number for adoption. The family number is removed, a person number is used ***
     if ($gen_program == 'ALDFAER') {
         $famc_adoptive_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $trees['tree_id'] . "' AND event_kind='adoption_by_person'");
         while ($famc_adoptiveDb = $famc_adoptive_qry->fetch(PDO::FETCH_OBJ)) {
@@ -2053,12 +2054,14 @@ elseif ($trees['step'] == '4') {
             $new_nr_result = $dbh->query($new_nr_qry);
             $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
 
+            // *** Replace familynumber with person number ***
             if ($new_nr->fam_man) {
                 $dbh->query("UPDATE humo_events SET event_event='" . $new_nr->fam_man . "' WHERE event_id='" . $famc_adoptiveDb->event_id . "'");
+                $personnr = $new_nr->fam_man;
             }
-            unset($fams2);
             if ($new_nr->fam_woman) {
                 $dbh->query("UPDATE humo_events SET event_event='" . $new_nr->fam_woman . "' WHERE event_id='" . $famc_adoptiveDb->event_id . "'");
+                $personnr = $new_nr->fam_woman;
             }
 
             if ($new_nr->fam_man || $new_nr->fam_woman) {
@@ -2066,9 +2069,10 @@ elseif ($trees['step'] == '4') {
                 $person_result = $dbh->query($person_qry);
                 $person_db = $person_result->fetch(PDO::FETCH_OBJ);
                 if ($person_db->pers_gedcomnumber) {
+                    unset($fams2);
                     $fams = explode(";", $person_db->pers_fams);
                     foreach ($fams as $key => $value) {
-                        if ($fams[$key] != $familynr) {
+                        if ($fams[$key] != $fam) {
                             $fams2[] = $fams[$key];
                         }
                     }
@@ -2076,6 +2080,7 @@ elseif ($trees['step'] == '4') {
                     if (isset($fams2[0])) {
                         $fams3 = implode(";", $fams2);
                     }
+
                     $dbh->query("UPDATE humo_persons SET pers_fams='" . $fams3 . "' WHERE pers_id='" . $person_db->pers_id . "'");
                 }
             }

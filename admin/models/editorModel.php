@@ -2012,13 +2012,15 @@ class EditorModel
             $showMedia = new showMedia();
 
             // *** get path of pictures folder 
-            $datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
+            //$datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
+            $datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $this->tree_prefix . "'");
             $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
             $tree_pict_path = $dataDb->tree_pict_path;
             if (substr($tree_pict_path, 0, 1) === '|') {
                 $tree_pict_path = 'media/';
             }
-            $dir = $path_prefix . $tree_pict_path;
+            //$dir = $path_prefix . $tree_pict_path;
+            $dir = '../' . $tree_pict_path;
 
             $safepath = '';
             $selected_subdir = preg_replace("/[\/\\\\]/", '',  $_POST['select_media_folder']); // remove all / and \ 

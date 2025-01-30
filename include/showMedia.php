@@ -267,6 +267,7 @@ class ShowMedia
         }
 
         $thumb_url =  $this->thumbnail_exists($folder, $file);
+        // *** found thumbnail ***
         if (!empty($thumb_url)) {
             // there are problems with these relative paths - when called from lvl +1 (showMedia.php) its ok, when called from lvl +2 (editorEvent.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
             $backtrace = debug_backtrace();
@@ -288,7 +289,7 @@ class ShowMedia
 
             $src_path = give_media_path($folder_for_give_media_path, $fileName);
             return '<img src="' . $prefix . $src_path . '"' . $img_style . '>';
-        } // found thumbnail
+        }
 
         // no thumbnail found, create a new one, first check if/where org_file exist
         if (array_key_exists(substr($file, 0, 3), $this->pcat_dirs)) {
@@ -319,6 +320,7 @@ class ShowMedia
         $extensions_check = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         $src_path = give_media_path($folder, $file);
         switch ($extensions_check) {
+                /*
             case 'pdf':
                 return '<img src="../images/pdf.jpg" alt="PDF">';
             case 'docx':
@@ -361,6 +363,50 @@ class ShowMedia
                 return '<img src="../' . $src_path . '"' . $img_style . '>';
             case 'bmp':
                 return '<img src="../' . $src_path . '"' . $img_style . '>';
+            */
+
+            case 'pdf':
+                return '<img src="images/pdf.jpg" alt="PDF">';
+            case 'docx':
+                return '<img src="images/msdoc.gif" alt="DOCX">';
+            case 'doc':
+                return '<img src="images/msdoc.gif" alt="DOC">';
+            case 'wmv':
+                return '<img src="images/video-file.png" alt="WMV">';
+            case 'avi':
+                return '<img src="images/video-file.png" alt="AVI">';
+            case 'mp4':
+                return '<img src="images/video-file.png" alt="MP4">';
+            case 'mpg':
+                return '<img src="images/video-file.png" alt="MPG">';
+            case 'mov':
+                return '<img src="images/video-file.png" alt="MOV">';
+            case 'wma':
+                return '<img src="images/video-file.png" alt="WMA">';
+            case 'wav':
+                return '<img src="images/audio.gif" alt="WAV">';
+            case 'mp3':
+                return '<img src="images/audio.gif" alt="MP3">';
+            case 'mid':
+                return '<img src="images/audio.gif" alt="MID">';
+            case 'ram':
+                return '<img src="images/audio.gif" alt="RAM">';
+            case 'ra':
+                return '<img src="images/audio.gif" alt="RA">';
+            case 'jpg':
+                return '<img src="' . $src_path . '"' . $img_style . '>';
+            case 'jpeg':
+                return '<img src="' . $src_path . '"' . $img_style . '>';
+            case 'png':
+                return '<img src="' . $src_path . '"' . $img_style . '>';
+            case 'gif':
+                return '<img src="' . $src_path . '"' . $img_style . '>';
+            case 'tif':
+                return '<img src="' . $src_path . '"' . $img_style . '>';
+            case 'tiff':
+                return '<img src="' . $src_path . '"' . $img_style . '>';
+            case 'bmp':
+                return '<img src="' . $src_path . '"' . $img_style . '>';
         }
         //return '<img src="../images/thumb_missing-image.jpg"' . $img_style . '>';
         //return '<img src="../../images/thumb_missing-image.jpg"' . $img_style . '>';

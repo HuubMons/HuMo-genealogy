@@ -11,7 +11,6 @@ class RelationsController
         $RelationsModel->getNames();
         $RelationsModel->getGEDCOMnumbers();
         $RelationsModel->switchPersons();
-
         $RelationsModel->set_control_variables();
 
         // *** Extended search ***
@@ -30,7 +29,7 @@ class RelationsController
             $RelationsModel->process_extended_calculation();
         }
 
-        // TODO if refactor is finished, this could probably be improved.
+        // TODO this could probably be improved.
         // Second array needed for marriage relationship. Some variables were used for processing marriage relationship.
         // $standard_extend is first array needed for standard and extended calculation.
         $standard_extended = $RelationsModel->get_variables_standard_extended();
@@ -38,8 +37,8 @@ class RelationsController
         // *** Process marriage relationship. This function will use same variables ***
         $RelationsModel->process_marriage_relationship();
 
-        $variables = $RelationsModel->get_variables();
-        $relation = array_merge($standard_extended, $variables);
+        $relation = $RelationsModel->get_variables();
+        $relation = array_merge($standard_extended, $relation);
 
         // http://localhost/HuMo-genealogy/family/3/F116?main_person=I202
         $relation['fam_path'] = $link_cls->get_link($uri_path, 'family', $tree_id, true);
