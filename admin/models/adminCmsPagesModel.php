@@ -210,21 +210,13 @@ class AdminCmsPagesModel
         }
     }
 
-    public function get_pages_in_category($dbh)
+    // *** Restore order numbering (if page is moved to another category) ***
+    public function check_pages_in_category($dbh)
     {
-        // *** Count number of pages in categories (so correct down arrows can be shown) ***
-        // *** Also restore order numbering (if page is moved to another category) ***
         $page_nr = 0;
         $page_menu_id = 0;
-        $pages_in_category = [];
         $qry = $dbh->query("SELECT page_id,page_menu_id,page_order FROM humo_cms_pages ORDER BY page_menu_id, page_order");
         while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            if (!isset($pages_in_category[$cms_pagesDb->page_menu_id])) {
-                $pages_in_category[$cms_pagesDb->page_menu_id] = '1';
-            } else {
-                $pages_in_category[$cms_pagesDb->page_menu_id]++;
-            }
-
             if ($cms_pagesDb->page_menu_id > 0 && $page_menu_id != $cms_pagesDb->page_menu_id) {
                 $page_nr = 0;
                 $page_menu_id = $cms_pagesDb->page_menu_id;
@@ -237,6 +229,76 @@ class AdminCmsPagesModel
                 $dbh->query($sql);
             }
         }
-        return $pages_in_category;
+    }
+
+    public function get_categories($dbh)
+    {
+        // *** Get menu names ***
+        $qry_menu = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+        while ($menuItem = $qry_menu->fetch(PDO::FETCH_OBJ)) {
+            // *** Get pages ***
+            $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id = " . $menuItem->menu_id . " ORDER BY page_order");
+            $count_pages = $qry->rowCount();
+            while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                $edit_cms_pages['menu_page_id'][$menuItem->menu_id][] = $cms_pagesDb->page_id;
+
+                if ($cms_pagesDb->page_title) {
+                    $page_title = $cms_pagesDb->page_title;
+                } else {
+                    $page_title = '[' . __('No page title') . ']';
+                }
+                $edit_cms_pages['menu_page_title'][$menuItem->menu_id][$cms_pagesDb->page_id] = $page_title;
+            }
+
+            // *** Only add category in array if there are pages ***
+            if ($count_pages > 0) {
+                $edit_cms_pages['menu_id'][] = $menuItem->menu_id;
+                $edit_cms_pages['menu_name'][$menuItem->menu_id] = $menuItem->menu_name;
+                $edit_cms_pages['menu_nr_pages'][$menuItem->menu_id] = $count_pages;
+            }
+        }
+
+        // *** Also get pages without menu ***
+        $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id = 0 ORDER BY page_order");
+        $count_pages = $qry->rowCount();
+        while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
+            $edit_cms_pages['menu_page_id'][0][] = $cms_pagesDb->page_id;
+
+            if ($cms_pagesDb->page_title) {
+                $page_title = $cms_pagesDb->page_title;
+            } else {
+                $page_title = '[' . __('No page title') . ']';
+            }
+            $edit_cms_pages['menu_page_title'][0][$cms_pagesDb->page_id] = $page_title;
+        }
+
+        // *** Only add category in array if there are pages ***
+        if ($count_pages > 0) {
+            $edit_cms_pages['menu_id'][] = 0;
+            $edit_cms_pages['menu_name'][0] = '* ' . __('No menu selected') . ' *';
+            $edit_cms_pages['menu_nr_pages'][0] = $count_pages;
+        }
+
+        // *** Also get pages using 9999 menu ***
+        $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id = 9999 ORDER BY page_order");
+        $count_pages = $qry->rowCount();
+        while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
+            $edit_cms_pages['menu_page_id'][9999][] = $cms_pagesDb->page_id;
+
+            if ($cms_pagesDb->page_title) {
+                $page_title = $cms_pagesDb->page_title;
+            } else {
+                $page_title = '[' . __('No page title') . ']';
+            }
+            $edit_cms_pages['menu_page_title'][9999][$cms_pagesDb->page_id] = $page_title;
+        }
+
+        // *** Only add category in array if there are pages ***
+        if ($count_pages > 0) {
+            $edit_cms_pages['menu_id'][] = 9999;
+            $edit_cms_pages['menu_name'][9999] = '* ' . __('Hide page in menu') . ' *';
+            $edit_cms_pages['menu_nr_pages'][9999] = $count_pages;
+        }
+        return $edit_cms_pages;
     }
 }

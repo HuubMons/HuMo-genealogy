@@ -63,4 +63,26 @@ if (isset($_SESSION['admin_tree_id'])) {
             }
         }
     }
+
+    if ($drag_kind == "cms_pages") {
+        $mediastring = safe_text_db($_GET['order']);
+        $media_arr = explode(";", $mediastring);
+        $counter = count($media_arr);
+        for ($x = 0; $x < $counter; $x++) {
+            if (is_numeric($media_arr[$x])) {
+                $dbh->query("UPDATE humo_cms_pages SET page_order='" . ($x + 1) . "' WHERE page_id='" . $media_arr[$x] . "'");
+            }
+        }
+    }
+
+    if ($drag_kind == "cms_categories") {
+        $mediastring = safe_text_db($_GET['order']);
+        $media_arr = explode(";", $mediastring);
+        $counter = count($media_arr);
+        for ($x = 0; $x < $counter; $x++) {
+            if (is_numeric($media_arr[$x])) {
+                $dbh->query("UPDATE humo_cms_menu SET menu_order='" . ($x + 1) . "' WHERE menu_id='" . $media_arr[$x] . "'");
+            }
+        }
+    }
 }
