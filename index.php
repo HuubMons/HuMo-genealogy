@@ -349,7 +349,7 @@ if ($page == 'address') {
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new StatisticsController();
-    $statistics = $controllerObj->detail($dbh, $tree_id);
+    $statistics = $controllerObj->detail($dbh, $db_functions, $tree_id);
 } elseif ($page == 'sources') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");

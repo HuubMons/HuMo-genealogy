@@ -95,7 +95,7 @@ if (isset($_POST['freqsurnames'])) {
 }
 ?>
 
-<form method="POST" action="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>" style="display:inline;" id="frqnames">
+<form method="POST" action="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>" id="frqnames" class="my-3">
     <div class="mb-2 row me-1">
         <div class="col-md-1"></div>
 
