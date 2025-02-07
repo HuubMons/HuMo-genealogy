@@ -156,7 +156,9 @@ class SourcesModel
             if ($calculated < $this->all_sources->rowCount()) {
                 $data["page_nr"][] = $i;
                 if ($this->item == $calculated) {
-                    $data["page_link"][$i] =  " <b>$i</b>";
+                    $path2 = $link_cls->get_link($uri_path, 'sources', $tree_id, false);
+                    $data["page_link"][$i] =  $path2;
+
                     $data["page_status"][$i] = 'active';
                 } else {
                     $data["page_link"][$i] =  $path . 'start=' . $start . '&amp;item=' . $calculated;
