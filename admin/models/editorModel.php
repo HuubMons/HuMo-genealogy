@@ -1776,7 +1776,7 @@ class EditorModel
     // This update_editor2 part is used for sources (editor_sources.php) and some other pages.
     public function update_editor2()
     {
-        global $page;
+        global $page, $descendant_id, $descendant_array;
 
         // TODO refactor $marriage.
         if (isset($_SESSION['admin_fam_gedcomnumber'])) {
