@@ -514,12 +514,11 @@ if ($list["person_result"]->rowCount() > 0) {
         if ($calculated < $list["count_persons"]) {
             $data["page_nr"][] = $i;
             if ($list["item"] == $calculated) {
-                $data["page_link"][$i] = '';
                 $data["page_status"][$i] = 'active';
             } else {
-                $data["page_link"][$i] = $uri_path_string . "index_list=" . $list["index_list"] . "&amp;start=" . $start . "&amp;item=" . $calculated;
                 $data["page_status"][$i] = '';
             }
+            $data["page_link"][$i] = $uri_path_string . "index_list=" . $list["index_list"] . "&amp;start=" . $start . "&amp;item=" . $calculated;
         }
     }
 

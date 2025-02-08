@@ -8,7 +8,9 @@
 
         <?php if (isset($data["page_nr"])) { ?>
             <?php foreach ($data["page_nr"] as $i) { ?>
-                <li class="page-item <?= $data["page_status"][$i]; ?>"><a class="page-link" href="<?= $data["page_link"][$i]; ?>"><?= $i; ?></a></li>
+                <li class="page-item <?= $data["page_status"][$i]; ?>">
+                    <a class="page-link" href="<?= $data["page_link"][$i]; ?>"><?= $i; ?></a>
+                </li>
             <?php } ?>
         <?php } ?>
 

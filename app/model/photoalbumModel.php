@@ -279,12 +279,11 @@ class PhotoalbumModel
             if ($calculated < $nr_pictures) {
                 $data["page_nr"][] = $i;
                 if ($item == $calculated) {
-                    $data["page_link"][$i] = '';
                     $data["page_status"][$i] = 'active';
                 } else {
-                    $data["page_link"][$i] = $albumpath . "start=" . $start . "&amp;item=" . $calculated;
                     $data["page_status"][$i] = '';
                 }
+                $data["page_link"][$i] = $albumpath . "start=" . $start . "&amp;item=" . $calculated;
             }
         }
 

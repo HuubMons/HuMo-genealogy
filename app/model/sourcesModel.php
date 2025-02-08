@@ -155,20 +155,19 @@ class SourcesModel
             $calculated = ($i - 1) * $this->count_sources;
             if ($calculated < $this->all_sources->rowCount()) {
                 $data["page_nr"][] = $i;
-                if ($this->item == $calculated) {
-                    $path2 = $link_cls->get_link($uri_path, 'sources', $tree_id, false);
-                    $data["page_link"][$i] =  $path2;
 
+                if ($this->item == $calculated) {
                     $data["page_status"][$i] = 'active';
                 } else {
-                    $data["page_link"][$i] =  $path . 'start=' . $start . '&amp;item=' . $calculated;
-                    if (isset($_GET['order_sources'])) {
-                        $data["page_link"][$i] .= '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
-                    }
-                    if ($this->source_search != '') {
-                        $data["page_link"][$i] .=  '&amp;source_search=' . $this->source_search;
-                    }
                     $data["page_status"][$i] = '';
+                }
+
+                $data["page_link"][$i] =  $path . 'start=' . $start . '&amp;item=' . $calculated;
+                if (isset($_GET['order_sources'])) {
+                    $data["page_link"][$i] .= '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
+                }
+                if ($this->source_search != '') {
+                    $data["page_link"][$i] .=  '&amp;source_search=' . $this->source_search;
                 }
             }
         }
