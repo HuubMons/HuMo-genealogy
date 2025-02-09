@@ -105,12 +105,6 @@ div.rtlsddm #mft ul {
     padding: 10px 10px 10px 0px;
 }
 
-#most_frequent_names {
-    width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 /* Mainmenu link and text family tree - Link en tekst bij stamboom in hoofdmenu */
 .tree_link {
     font-weight: bold;
@@ -186,8 +180,7 @@ hr {
 
 /* tables - tabellen */
 table.humo td,
-table.humo th,
-table.reltable td {
+table.humo th {
     border: solid 1px #999999;
 }
 
@@ -227,30 +220,24 @@ table.standard {
 
 /*~~~~~~~~~ prevent double lines (horizontal) ~~~~~~~~~~~~~~~~~~ */
 
-table.humo td,
-table.relmenu td {
+table.humo td {
     border-top: none;
     padding: 4px;
 }
 
-table.humo th,
-table.relmenu th {
+table.humo th {
     padding-left: 5px;
 }
 
 table.humo tr:first-of-type td,
-table.relmenu tr:first-of-type td,
-table.humo tr:first-of-type th,
-table.relmenu tr:first-of-type th {
+table.humo tr:first-of-type th {
     border-top: 1px solid #999999;
 }
 
 /*~~~~~~~~~ prevent double lines (vertical) and set padding ~~~~ */
 
 table.humo td:nth-of-type(1n+2),
-table.relmenu td:nth-of-type(1n+2),
-table.humo th:nth-of-type(1n+2),
-table.relmenu th:nth-of-type(1n+2) {
+table.humo th:nth-of-type(1n+2) {
     border-left: 0px;
     padding-left: 5px;
     padding-right: 5px;
@@ -504,12 +491,6 @@ a:visited {
     font-size: 11px;
 }
 
-/* For lastnames index */
-.index_lastname {
-    margin-left: 100px;
-    margin-right: 100px;
-}
-
 /* For places index */
 .place_index {
     display: block;
@@ -625,13 +606,6 @@ a.nam:hover {
 .chart_line {
     background-color: #AAA;
     border: 0px;
-}
-
-/* center and auto-adjust width of outline table */
-table.outlinetable {
-    /* margin-left: auto; */
-    /* margin-right: auto; */
-    width: auto;
 }
 
 .humo_version {
@@ -779,28 +753,6 @@ table.ancestor_sheet td.ancestor_devider {
     display: none;
 }
 
-/* Fanchart menu */
-.fanmenu1 {
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    width: 125px;
-    text-align: center;
-    border-style: solid;
-    border-color: #FFE4C4;
-}
-
-.fanmenu2 {
-    position: relative;
-}
-
-.fanmenu3 {
-    background-color: #FFE4C4;
-    filter: alpha(opacity=60);
-    opacity: 0.6;
-    min-height: 670px;
-}
-
 /* Relations page/ verwantschap berekenen */
 table.container td {
     /* contains all graphic displays of relationships found by calculator */
@@ -827,73 +779,6 @@ table.container {
     border-collapse: separate;
     background-color: #FFEEFF;
     background-image: none;
-}
-
-table.reltable td {
-    /* contains the actual graphic display of one relationship result */
-    border: none;
-    text-align: center;
-    padding-right: 15px;
-    padding-left: 15px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    font-size: 100%;
-}
-
-table.reltable tr:nth-of-type(1n+1) td {
-    border-top: 0px;
-}
-
-table.reltable {
-    text-align: center;
-    border: 0px;
-    margin-left: auto;
-    margin-right: auto;
-    white-space: nowrap;
-
-    box-shadow: 0px 0px 0px #999;
-    border-radius: 0px 0px 0px 0px;
-}
-
-table.reltable a {
-    /* for names of persons of in-between generations in graphic display */
-    color: blue;
-    font-weight: normal;
-    white-space: nowrap;
-    font-size: 100%;
-}
-
-table.reltable a:visited {
-    color: blue;
-    font-weight: normal;
-    white-space: nowrap;
-}
-
-table.reltable a:hover {
-    color: darkblue;
-    font-weight: normal;
-    background-color: #e6e6e6;
-    white-space: nowrap;
-}
-
-table.reltable a.search {
-    /* for names of persons X and Y in the graphical display */
-    font-size: 120%;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-table.reltable a.search:hover {
-    color: darkblue;
-    background-color: #e6e6e6;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-table.reltable a.search:visited {
-    color: blue;
-    font-weight: bold;
-    white-space: nowrap;
 }
 
 a.relsearch {
@@ -924,21 +809,6 @@ span.relresult {
     /* textual result of relationship found */
     white-space: nowrap;
     text-align: center;
-}
-
-table.relmenu td {
-    /* menu of relationship calculator */
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-table.relmenu {
-    border-collapse: separate;
-    text-align: center;
-    background-image: none;
-    /* background-color:#FFEEFF; */
 }
 
 .pale {

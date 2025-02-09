@@ -81,12 +81,3 @@ td.style_tree_text {
     /* background: url("images_sky_blue/blue.png") repeat left top; */
     background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%);
 }
-
-table.reltable td {
-    border: 0px;
-}
-
-table.reltable {
-    background: none;
-    background-image: none;
-}
