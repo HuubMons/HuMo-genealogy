@@ -385,7 +385,7 @@ if ($page == 'address') {
 } elseif ($page == 'tree_index') {
     //  *** TODO: first improve difference between tree_index and mainindex ***
     //$controllerObj = new TreeIndexController();
-    //$tree_index["items"] = $controllerObj->get_items($dbh);
+    //$tree_index["items"] = $controllerObj->get_items($dbh, $humo_option);
 }
 
 include_once(__DIR__ . "/views/layout.php");
