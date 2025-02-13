@@ -196,13 +196,13 @@ if ($hourglass === false) {
                 <div class="col-md-auto">
                     <select name="chosengen" onChange="window.location=this.value" class="form-select form-select-sm">
                         <?php for ($i = 2; $i <= 15; $i++) { ?>
-                            <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=<?= $data["dna"]; ?>&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $i; ?>" <?= $i == $data["chosengen"] ? 'selected' : ''; ?>>
+                            <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?><?= $data["dna"] != 'none' ? '&amp;dnachart=' . $data["dna"] : ''; ?>&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $i; ?>" <?= $i == $data["chosengen"] ? 'selected' : ''; ?>>
                                 <?= $i; ?>
                             </option>
                         <?php } ?>
 
                         <!-- Option "All" for all generations -->
-                        <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=<?= $data["dna"]; ?>&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=All" <?= $data["chosengen"] == "All" ? 'selected' : ''; ?>>
+                        <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?><?= $data["dna"] != 'none' ? '&amp;dnachart=' . $data["dna"] : ''; ?>&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=All" <?= $data["chosengen"] == "All" ? 'selected' : ''; ?>>
                             <?= __('All'); ?>
                         </option>
                     </select>
