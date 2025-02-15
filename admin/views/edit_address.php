@@ -17,8 +17,6 @@ $EditorEvent = new EditorEvent;
 if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
-
-$address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1' ORDER BY address_place, address_address");
 ?>
 
 <h1 class="center"><?= __('Shared addresses'); ?></h1>
@@ -44,11 +42,23 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
 
 <form method="POST" action="index.php?page=edit_addresses" style="display : inline;">
     <div class="p-3 my-md-2 genealogy_search container-md">
-        <div class="row">
+        <div class="row mb-2">
             <div class="col-md-3">
                 <?= select_tree($dbh, $page, $tree_id); ?>
             </div>
 
+            <div class="col-md-3">
+                <input type="text" name="address_search_gedcomnr" value="<?= $editAddress['search_gedcomnr']; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="address_search" value="<?= $editAddress['search_text']; ?>" size="20" placeholder="<?= __('Address'); ?>" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-2">
+                <input type="submit" name="address_select" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-auto">
                 <label for="address" class="col-form-label">
                     <?= __('Select address'); ?>:
@@ -57,19 +67,20 @@ $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='
             <div class="col-md-3">
                 <select size="1" name="address_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select address'); ?></option>
-                    <?php while ($addressDb = $address_qry->fetch(PDO::FETCH_OBJ)) { ?>
-                        <option value="<?= $addressDb->address_id; ?>" <?= $editAddress['address_id'] == $addressDb->address_id ? 'selected':''; ?>>
-                            <?= $addressDb->address_place; ?>, <?= $addressDb->address_address; ?>
-                            <?php
-                            if ($addressDb->address_text) {
-                                echo ' ' . substr($addressDb->address_text, 0, 40);
-                                if (strlen($addressDb->address_text) > 40) {
-                                    echo '...';
-                                }
-                            }
-                            ?>
-                            [<?= $addressDb->address_gedcomnr; ?>]
-                        </option>
+
+                    <?php if (!isset($editAddress['addresses_id'])) { ?>
+                        <option value=""><?= __('No addresses found.'); ?></option>
+                    <?php } else { ?>
+                        <?php foreach ($editAddress['addresses_id'] as $address_id) { ?>
+                            <option value="<?= $address_id; ?>" <?= $editAddress['address_id'] == $address_id ? 'selected' : ''; ?>>
+                                <?= $editAddress['addresses_place'][$address_id]; ?>, <?= $editAddress['addresses_address'][$address_id] . $editAddress['addresses_text'][$address_id]; ?>
+                                [<?= $editAddress['addresses_gedcomnr'][$address_id]; ?>]
+                            </option>
+                        <?php } ?>
+
+                        <?php if (count($editAddress['addresses_id']) == 200) { ?>
+                            <option value=""><?= __('Results are limited, use search to find more addresses.'); ?></option>
+                        <?php } ?>
                     <?php } ?>
                 </select>
             </div>
@@ -225,11 +236,13 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                         }
                         $style = '';
                         if ($source_error == '1') {
+                            // *** No source connected, colour = orange ***
                             $style = ' style="background-color:#FFAA80"';
-                        } // *** No source connected, colour = orange ***
+                        }
                         if ($source_error == '2') {
+                            // *** Source is empty, colour = yellow ***
                             $style = ' style="background-color:#FFFF00"';
-                        } // *** Source is empty, colour = yellow ***
+                        }
                         ?>
                         <span <?= $style; ?>">[<?= $source_count; ?>]</span>
 

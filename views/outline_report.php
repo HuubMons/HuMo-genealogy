@@ -25,8 +25,8 @@ $path_form = $link_cls->get_link($uri_path, 'outline_report', $tree_id);
 
 //echo '<h1 class="standard_header">' . __('Outline report') . '</h1>';
 echo $data["descendant_header"];
-
 ?>
+
 <div class="pers_name center d-print-none">
     <!-- Button: show full detais -->
     <form method="POST" action="<?= $path_form; ?>" style="display : inline;">
@@ -77,22 +77,15 @@ echo $data["descendant_header"];
     &nbsp;<span class="button">
         <?= __('Choose number of generations to display'); ?>:
 
-        <select size=1 name="selectnr_generations" class="form-select form-select-sm" onChange="window.location=this.value;" style="display:inline; width: 60px;">
+        <select size="1" name="selectnr_generations" class="form-select form-select-sm" onChange="window.location=this.value;" style="display:inline; width: 100px;">
             <?php
             $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
             for ($i = 2; $i < 20; $i++) {
                 $nr_gen = $i - 1;
             ?>
                 <option <?php if ($nr_gen == $nr_generations) echo ' selected'; ?> value="<?= $path_tmp; ?>nr_generations=<?= $nr_gen; ?>&amp;id=<?= $data["family_id"]; ?>&amp;main_person=<?= $data["main_person"]; ?>&amp;show_details=<?= $show_details; ?>&amp;show_date=<?= $show_date; ?>&amp;dates_behind_names=<?= $dates_behind_names; ?>"><?= $i; ?></option>
-            <?php
-            }
-
-            echo '<option';
-            if ($nr_generations == 50) {
-                echo ' selected';
-            }
-            echo ' value="' . $path_tmp . 'nr_generations=50&amp;id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"] . '&amp;show_date=' . $show_date . '&amp;dates_behind_names=' . $dates_behind_names . '"> ALL </option>';
-            ?>
+            <?php } ?>
+            <option <?= ($nr_generations == 50) ? 'selected' : ''; ?> value="<?= $path_tmp; ?>nr_generations=50&amp;id=<?= $data["family_id"]; ?>&amp;main_person=<?= $data["main_person"]; ?>&amp;show_date=<?= $show_date; ?>&amp;dates_behind_names=<?= $dates_behind_names; ?>"><?= __('All'); ?></option>
         </select>
     </span>
 
@@ -132,9 +125,9 @@ echo $data["descendant_header"];
 <?php
 $generation_number = 0;
 
-// *************************************
-// ****** FUNCTION OUTLINE *************  // recursive function
-// *************************************
+// *******************************************
+// ****** Recursive function outline *********
+// *******************************************
 function outline($outline_family_id, $outline_main_person, $generation_number, $nr_generations)
 {
     global $dbh, $db_functions, $show_details, $show_date, $dates_behind_names, $nr_generations;
@@ -239,7 +232,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     }
                     ?>
                 </div>
-<?php
+        <?php
             } else {
             }   // empty: no second show of data of main_person in outline report
             $family_nr++;
@@ -275,60 +268,64 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
             $parent1Db = $person_manDb;
             $parent2Db = $person_womanDb;
         }
+        ?>
 
-        echo '<div class="' . $indent . '" style="font-style:italic">';
-        if (!$show_details) {
-            echo ' x ' . $dirmark1;
-        } else {
-            echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-            if ($parent1_marr == 0) {
-                if ($family_privacy) {
-                    echo $marriage_cls->marriage_data($familyDb, '', 'short') . "<br>";
-                } else {
-                    echo $marriage_cls->marriage_data() . "<br>";
-                    //echo $marriage_cls->marriage_data($familyDb) . "<br>";
-                }
+        <div class="<?= $indent; ?>" style="font-style:italic">
+            <?php
+            if (!$show_details) {
+                echo ' x ' . $dirmark1;
             } else {
-                echo $marriage_cls->marriage_data($familyDb, $parent1_marr + 1, 'shorter') . ' <br>';
-            }
-        }
-
-        if ($show_parent2 && $swap_parent1_parent2) {
-            echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-            echo $man_cls->name_extended("outline");
-            if ($show_details && !$privacy_man) {
-                echo $man_cls->person_data("outline", $familyDb->fam_gedcomnumber);
-            }
-
-            if ($show_date == "1" && !$privacy_man && !$show_details) {
-                echo $dirmark1 . ',';
-                if ($dates_behind_names == false) {
-                    echo '<br>';
+                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                if ($parent1_marr == 0) {
+                    if ($family_privacy) {
+                        echo $marriage_cls->marriage_data($familyDb, '', 'short') . "<br>";
+                    } else {
+                        echo $marriage_cls->marriage_data() . "<br>";
+                        //echo $marriage_cls->marriage_data($familyDb) . "<br>";
+                    }
+                } else {
+                    echo $marriage_cls->marriage_data($familyDb, $parent1_marr + 1, 'shorter') . ' <br>';
                 }
-                echo ' &nbsp; (' . @language_date($person_manDb->pers_birth_date) . ' - ' . @language_date($person_manDb->pers_death_date) . ')';
             }
-        } elseif ($show_parent2) {
-            if ($show_details) {
+
+            if ($show_parent2 && $swap_parent1_parent2) {
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-            }
-            echo $woman_cls->name_extended("outline");
-            if ($show_details && !$privacy_woman) {
-                echo $woman_cls->person_data("outline", $familyDb->fam_gedcomnumber);
-            }
-
-            if ($show_date == "1" && !$privacy_woman && !$show_details) {
-                echo $dirmark1 . ',';
-                if ($dates_behind_names == false) {
-                    echo '<br>';
+                echo $man_cls->name_extended("outline");
+                if ($show_details && !$privacy_man) {
+                    echo $man_cls->person_data("outline", $familyDb->fam_gedcomnumber);
                 }
-                echo ' &nbsp; (' . @language_date($person_womanDb->pers_birth_date) . ' - ' . @language_date($person_womanDb->pers_death_date) . ')';
-            }
-        } elseif ($screen_mode != "PDF") {
-            // *** No permission to show parent2 ***
-            echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
-        }
-        echo '</div>';
 
+                if ($show_date == "1" && !$privacy_man && !$show_details) {
+                    echo $dirmark1 . ',';
+                    if ($dates_behind_names == false) {
+                        echo '<br>';
+                    }
+                    echo ' &nbsp; (' . @language_date($person_manDb->pers_birth_date) . ' - ' . @language_date($person_manDb->pers_death_date) . ')';
+                }
+            } elseif ($show_parent2) {
+                if ($show_details) {
+                    echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
+                echo $woman_cls->name_extended("outline");
+                if ($show_details && !$privacy_woman) {
+                    echo $woman_cls->person_data("outline", $familyDb->fam_gedcomnumber);
+                }
+
+                if ($show_date == "1" && !$privacy_woman && !$show_details) {
+                    echo $dirmark1 . ',';
+                    if ($dates_behind_names == false) {
+                        echo '<br>';
+                    }
+                    echo ' &nbsp; (' . @language_date($person_womanDb->pers_birth_date) . ' - ' . @language_date($person_womanDb->pers_death_date) . ')';
+                }
+            } elseif ($screen_mode != "PDF") {
+                // *** No permission to show parent2 ***
+                echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
+            }
+            ?>
+        </div>
+
+        <?php
         // *************************************************************
         // *** Children                                              ***
         // *************************************************************
@@ -360,21 +357,25 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     if ($nr_generations >= $generation_number) {
                         $childgn = $generation_number + 1;
                         $childindent = $dir . 'sub' . $childgn;
-                        echo '<div class="' . $childindent . '">';
-                        echo '<span style="font-weight:bold;font-size:120%">' . $childgn . ' ' . '</span>';
-                        echo $child_cls->name_extended("outline");
-                        if ($show_details and !$child_privacy) {
-                            echo $child_cls->person_data("outline", "");
-                        }
-
-                        if ($show_date == "1" and !$child_privacy and !$show_details) {
-                            echo $dirmark1 . ',';
-                            if ($dates_behind_names == false) {
-                                echo '<br>';
+        ?>
+                        <div class="<?= $childindent; ?>">
+                            <span style="font-weight:bold;font-size:120%"><?= $childgn; ?></span>
+                            <?php
+                            echo $child_cls->name_extended("outline");
+                            if ($show_details and !$child_privacy) {
+                                echo $child_cls->person_data("outline", "");
                             }
-                            echo ' &nbsp; (' . language_date($childDb->pers_birth_date) . ' - ' . language_date($childDb->pers_death_date) . ')';
-                        }
-                        echo '</div>';
+
+                            if ($show_date == "1" and !$child_privacy and !$show_details) {
+                                echo $dirmark1 . ',';
+                                if ($dates_behind_names == false) {
+                                    echo '<br>';
+                                }
+                                echo ' &nbsp; (' . language_date($childDb->pers_birth_date) . ' - ' . language_date($childDb->pers_death_date) . ')';
+                            }
+                            ?>
+                        </div>
+<?php
                     }
                 }
                 echo "\n";

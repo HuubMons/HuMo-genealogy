@@ -9,6 +9,38 @@ class SourcesModel
         $this->dbh = $dbh;
     }
 
+    // *** Added feb 2025 ***
+    public function process_variables(): void
+    {
+        // *** Search ***
+        $this->source_search = '';
+        if (isset($_POST['source_search'])) {
+            $this->source_search = safe_text_db($_POST['source_search']);
+        }
+        if (isset($_GET['source_search'])) {
+            $this->source_search = safe_text_db($_GET['source_search']);
+        }
+
+        $this->order_sources = 'title';
+        if (isset($_GET['order_sources'])) {
+            if ($_GET['order_sources'] == 'title') {
+                $this->order_sources = 'title';
+            }
+            if ($_GET['order_sources'] == 'date') {
+                $this->order_sources = 'date';
+            }
+            if ($_GET['order_sources'] == 'place') {
+                $this->order_sources = 'place';
+            }
+        }
+
+        // *** Pages ***
+        $this->item = 0;
+        if (isset($_GET['item']) && is_numeric($_GET['item'])) {
+            $this->item = $_GET['item'];
+        }
+    }
+
     public function get_source_search()
     {
         return $this->source_search;
@@ -26,15 +58,6 @@ class SourcesModel
 
     public function listSources($dbh, $tree_id, $user, $humo_option)
     {
-        // *** Search ***
-        $this->source_search = '';
-        if (isset($_POST['source_search'])) {
-            $this->source_search = safe_text_db($_POST['source_search']);
-        }
-        if (isset($_GET['source_search'])) {
-            $this->source_search = safe_text_db($_GET['source_search']);
-        }
-
         $desc_asc = " ASC ";
         $this->sort_desc = 0;
         if (isset($_GET['sort_desc'])) {
@@ -46,18 +69,6 @@ class SourcesModel
             }
         }
 
-        $this->order_sources = 'title';
-        if (isset($_GET['order_sources'])) {
-            if ($_GET['order_sources'] == 'title') {
-                $this->order_sources = 'title';
-            }
-            if ($_GET['order_sources'] == 'date') {
-                $this->order_sources = 'date';
-            }
-            if ($_GET['order_sources'] == 'place') {
-                $this->order_sources = 'place';
-            }
-        }
         if ($this->order_sources === "title") {
             // *** Default querie: order by title ***
             $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
@@ -107,20 +118,28 @@ class SourcesModel
         }
 
         // *** Pages ***
-        $this->item = 0;
-        if (isset($_GET['item']) && is_numeric($_GET['item'])) {
-            $this->item = $_GET['item'];
-        }
         $this->count_sources = $humo_option['show_persons'];    // *** Number of lines to show ***
 
         // *** All sources query ***
         $this->all_sources = $dbh->query($querie);
-        $source = $dbh->query($querie . " LIMIT " . safe_text_db($this->item) . "," . $this->count_sources);
 
+        $source = $dbh->query($querie . " LIMIT " . safe_text_db($this->item) . "," . $this->count_sources);
         return $source->fetchAll(PDO::FETCH_OBJ);
     }
 
-    function line_pages($tree_id, $link_cls, $uri_path)
+    // TODO also used in addressesModel.php
+    private function process_link()
+    {
+        $link = '';
+        if ($this->order_sources != '') {
+            $link .=  '&amp;order_sources=' . $this->order_sources . '&sort_desc=' . $this->sort_desc;
+        }
+        if ($this->source_search != '') {
+            $link .=  '&amp;source_search=' . $this->source_search;
+        }
+        return $link;
+    }
+    public function line_pages($tree_id, $link_cls, $uri_path)
     {
         $path = $link_cls->get_link($uri_path, 'sources', $tree_id, true);
 
@@ -136,12 +155,7 @@ class SourcesModel
             $start2 = $start - 20;
             $calculated = ($start - 2) * $this->count_sources;
             $data["previous_link"] .= $path . 'start=' . $start2 . '&amp;item=' . $calculated;
-            if (isset($_GET['order_sources'])) {
-                $data["previous_link"] .=  '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
-            }
-            if ($this->source_search != '') {
-                $data["previous_link"] .=  '&amp;source_search=' . $this->source_search;
-            }
+            $data["previous_link"] .=  $this->process_link();
         }
         if ($start <= 0) {
             $start = 1;
@@ -161,14 +175,8 @@ class SourcesModel
                 } else {
                     $data["page_status"][$i] = '';
                 }
-
                 $data["page_link"][$i] =  $path . 'start=' . $start . '&amp;item=' . $calculated;
-                if (isset($_GET['order_sources'])) {
-                    $data["page_link"][$i] .= '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
-                }
-                if ($this->source_search != '') {
-                    $data["page_link"][$i] .=  '&amp;source_search=' . $this->source_search;
-                }
+                $data["page_link"][$i] .=  $this->process_link();
             }
         }
 
@@ -178,12 +186,7 @@ class SourcesModel
         $calculated = ($i - 1) * $this->count_sources;
         if ($calculated < $this->all_sources->rowCount()) {
             $data["next_link"] .=  $path . 'start=' . $i . '&amp;item=' . $calculated;
-            if (isset($_GET['order_sources'])) {
-                $data["next_link"] .=  '&amp;order_sources=' . $_GET['order_sources'] . '&sort_desc=' . $this->sort_desc;
-            }
-            if ($this->source_search != '') {
-                $data["next_link"] .=  '&amp;source_search=' . $this->source_search;
-            }
+            $data["next_link"] .=  $this->process_link();
         } else {
             $data["next_status"] = 'disabled';
         }

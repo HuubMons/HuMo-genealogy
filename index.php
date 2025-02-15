@@ -222,7 +222,7 @@ if ($page == 'address') {
     $controllerObj = new AddressController($db_functions, $user);
     $data = $controllerObj->detail();
 } elseif ($page == 'addresses') {
-    $controllerObj = new AddressesController($dbh, $user, $tree_id);
+    $controllerObj = new AddressesController($dbh, $user, $tree_id, $link_cls, $uri_path, $humo_option);
     $data = $controllerObj->list();
 } elseif ($page == 'ancestor_report') {
     $controllerObj = new AncestorReportController($dbh);

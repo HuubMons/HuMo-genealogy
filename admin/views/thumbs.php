@@ -522,7 +522,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 <form method="POST" action="index.php?page=thumbs">
                     <div class="row mb-2">
                         <div class="col-md-7">
-                            <?= __('Secure media folder for direct access?'); ?>
+                            <?= __('Secure media folder for direct access?'); ?><br>
                         </div>
                         <div class="col-md-auto">
                             <select size="1" name="media_privacy_mode" onChange="this.form.submit();" class="form-select form-select-sm">
@@ -531,6 +531,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             </select>
                         </div>
                     </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-auto">
+                            <?= __('If enabled, media files will be served by using an URL, otherwise media files will be served directly.'); ?><br>
+                            <?= __('Only use this option if showing of media is disabled for visitors.'); ?>
+                        </div>
+                    </div>
+
                 </form>
 
             </div>

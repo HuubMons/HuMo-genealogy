@@ -31,6 +31,9 @@ body {
     font-weight: bold;
     font-size: 22px;
 }
+#top_website_name a {
+    color:#A52A2A;
+}
 
 /* Border pop-up menu */
 div.ltrsddm div {
