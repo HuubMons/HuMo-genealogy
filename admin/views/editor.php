@@ -46,7 +46,7 @@ if (!defined('ADMIN_PAGE')) {
 $path_prefix = '../';
 
 $editor_cls = new Editor_cls; // TODO editor_cls is also added in controller.
-$EditorEvent = new EditorEvent;
+$EditorEvent = new EditorEvent($dbh);
 
 // *** Temp variables ***
 $pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***
@@ -1265,7 +1265,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
     ?>
 
         <!-- <tr style="display:none;" class="row55"> -->
-        <tr class="humo_color">
+        <tr>
             <td style="border-right:0px;">
                 <input type="hidden" name="connect_change[<?= $key; ?>]" value="<?= $addressDb->connect_id; ?>">
                 <input type="hidden" name="connect_connect_id[<?= $key; ?>]" value="<?= $addressDb->connect_connect_id; ?>">

@@ -15,13 +15,13 @@ $path_prefix = '../';
 $phpself = 'index.php';
 $editor_cls = $editSource['editor_cls'];
 
-// *** Process queries (needed for picture ordering and delete) ***
+// *** Process queries (needed to order and delete pictures) ***
 $editor_cls = new Editor_cls;
 $editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
 $editor['confirm'] = $editorModel->update_editor2();
 
 // TODO this picture remove confirm box is shown above the header.
-$editor['confirm']; // Confirm message to remove picture from source.
+echo $editor['confirm']; // Confirm message to remove picture from source.
 
 
 
@@ -37,7 +37,7 @@ if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
 }
 
-$EditorEvent = new EditorEvent;
+$EditorEvent = new EditorEvent($dbh);
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {
@@ -329,11 +329,25 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <?php
                 if (!isset($_POST['add_source'])) {
                     echo $EditorEvent->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
-                } ?>
+                ?>
+                    <!-- Expand and collapse source items -->
+                    <script>
+                        function hideShow(el_id) {
+                            // *** Hide or show item ***
+                            var arr = document.getElementsByClassName('row' + el_id);
+                            for (i = 0; i < arr.length; i++) {
+                                if (arr[i].style.display != "none") {
+                                    arr[i].style.display = "none";
+                                } else {
+                                    arr[i].style.display = "";
+                                }
+                            }
+                        }
+                    </script>
+                <?php } ?>
             </table>
 
-            <br>
-            <div class="row mb-2">
+            <div class="row my-2">
                 <div class="col-md-1"></div>
                 <?php if (isset($_POST['add_source'])) { ?>
                     <div class="col-md-2"><?= __('Add'); ?></div>

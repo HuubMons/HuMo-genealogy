@@ -182,7 +182,7 @@ function backup_tables($dbh)
 {
     global $backup_files;
 
-    ob_start();
+    // ob_start(); // Doesn't work. Progress bar will not be shown.
 
     $tables = array();
     $result = $dbh->query('SHOW TABLES');

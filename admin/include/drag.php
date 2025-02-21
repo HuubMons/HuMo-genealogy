@@ -85,4 +85,15 @@ if (isset($_SESSION['admin_tree_id'])) {
             }
         }
     }
+
+    if ($drag_kind == 'events') {
+        $mediastring = safe_text_db($_GET['order']);
+        $media_arr = explode(";", $mediastring);
+        $counter = count($media_arr);
+        for ($x = 0; $x < $counter; $x++) {
+            if (is_numeric($media_arr[$x])) {
+                $dbh->query("UPDATE humo_events SET event_order='" . ($x + 1) . "' WHERE event_id='" . $media_arr[$x]  . "'");
+            }
+        }
+    }
 }

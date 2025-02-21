@@ -403,6 +403,7 @@ elseif ($trees['step'] == '2') {
             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
             <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
             <?php
+            // TODO also check values.
             if (isset($_POST['check_processed'])) {
                 echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
             }
@@ -428,32 +429,118 @@ elseif ($trees['step'] == '2') {
         <div class="spinner-border" id="loading_step2" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
+
+
+
+        <!-- TEST -->
+        <?php /*
+        <?php $_SESSION['save_import_progress'] = 1; ?>
+        <div class="progress" style="height:20px">
+            <div class="progress-bar" role="progressbar"></div>
+        </div>
         <script>
-            <?php /*
+            var bar = document.querySelector(".progress-bar");
+            bar.style.width = "1%";
+            bar.innerText = "1%";
+        </script>
+        */ ?>
+
+
+
+        <script>
             // Send $_POST to file.
-            var data = new FormData();
+            // var data = new FormData();
 
-            var add_source = "<?= isset($_POST['add_source']) ? htmlspecialchars($_POST['add_source'], ENT_QUOTES, 'UTF-8') : ''; ?>";
-            data.append('add_source', add_source);
+            // var add_source = "<?= isset($_POST['add_source']) ? htmlspecialchars($_POST['add_source'], ENT_QUOTES, 'UTF-8') : ''; ?>";
+            // data.append('add_source', add_source);
 
-            var gedcom_file = "<?= isset($_POST['gedcom_file']) ? htmlspecialchars($_POST['gedcom_file'], ENT_QUOTES, 'UTF-8') : ''; ?>";
-            data.append('gedcom_file', gedcom_file);
-            */ ?>
+            // var gedcom_file = "<?= isset($_POST['gedcom_file']) ? htmlspecialchars($_POST['gedcom_file'], ENT_QUOTES, 'UTF-8') : ''; ?>";
+            // data.append('gedcom_file', gedcom_file);
+
+
+            // *** Read progress value every second ***
+            function checkProgress() {
+                /*
+                // TEST 1: progress bar using AJAX
+                var xhrProgress = new XMLHttpRequest();
+                xhrProgress.open('GET', 'views/gedcom_import_progress.php', true);
+                xhrProgress.onreadystatechange = function() {
+                    if (xhrProgress.readyState == 4 && xhrProgress.status == 200) {
+                        var response = JSON.parse(xhrProgress.responseText);
+
+                        //var progressBar = document.getElementById('progress-bar');
+                        //progressBar.style.width = response.percentComplete + '%';
+                        //progressBar.innerText = Math.round(response.percentComplete) + '%';
+
+                        var bar = document.querySelector(".progress-bar");
+                        // response.percentComplete = 40;
+                        bar.style.width = response.percentComplete + "%";
+                        bar.innerText = response.percentComplete + "%";
+
+                        if (response.percentComplete >= 100) {
+                            clearInterval(progressInterval);
+                        }
+
+                        //document.getElementById('content_step2').innerHTML = 'TEST';
+                        //document.getElementById('content_step2').innerHTML = xhr.responseText; // Show results
+                    }
+                };
+                xhrProgress.send();
+                //xhrProgress = null;
+                */
+
+
+                // TEST 2: progress bar without ajax
+                fetch('views/gedcom_import_progress.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        var bar = document.querySelector(".progress-bar");
+                        bar.style.width = data.percentComplete + "%";
+                        bar.innerText = data.percentComplete + "%";
+
+                        if (data.percentComplete >= 100) {
+                            clearInterval(progressInterval);
+                        }
+                    });
+
+
+                // TEST 3: Works, but doesn't show actual progress
+                // var bar = document.querySelector(".progress-bar");
+                // number = parseInt(bar.style.width) + 10;
+                // bar.style.width = number + "%";
+                // bar.innerText = number + "%";
+                // if (number >= 100) {
+                //     clearInterval(progressInterval);
+                // }
+            }
+
+            //var progressInterval = setInterval(checkProgress, 1000); // Check progress every second
 
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'index.php?page=gedcom_import2', true);
             //xhr.open('POST', 'index.php?page=gedcom_import2', true);
+
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     document.getElementById('loading_step2').style.display = 'none'; // Hide spinning image
                     document.getElementById('button_step3').removeAttribute("disabled"); // Enable button 3
-                    document.getElementById('content_step2').innerHTML = xhr.responseText; // Show reults
+                    document.getElementById('content_step2').innerHTML = xhr.responseText; // Show results
+
+
+                    // *** Complete progress bar ***
+                    // clearInterval(progressInterval);
+                    // var bar = document.querySelector(".progress-bar");
+                    // bar.style.width = 100 + "%";
+                    // bar.innerText = 100 + "%";
+
+
                 }
             };
             xhr.send();
             //xhr.send(data);
         </script>
         <div id="content_step2"></div>
+
     <?php
     } else {
         $_SESSION['add_tree'] = true;
@@ -501,6 +588,7 @@ elseif ($trees['step'] == '2') {
         <input type="hidden" name="gedcom_accent" value="<?= $accent; ?>">
         <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
         <?php
+        // TODO check values
         if (isset($_POST['check_processed'])) {
             echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
         }
@@ -656,6 +744,7 @@ elseif ($trees['step'] == '3') {
             <input type="hidden" name="gedcom_accent" value="<?= $_POST['gedcom_accent']; ?>">
 
             <?php
+            // TODO check values
             if (isset($_POST['check_processed'])) {
                 echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
             }
@@ -736,7 +825,7 @@ elseif ($trees['step'] == '3') {
         }
         $total = $_SESSION['save_total'];
 
-        ob_start();
+        //ob_start(); // if used: statusbar doesn't work
         // Javascript for initial display of the progress bar and information (or after timeout)
         $percent = $perc . "%";
         if ($perc == 0) {
@@ -1073,7 +1162,7 @@ elseif ($trees['step'] == '3') {
                 $_SESSION['save_perc'] = $perc;
                 $percent = $perc . "%";
 
-                ob_start();
+                //ob_start(); // if used: statusbar doesn't work
         ?>
                 <script>
                     //document.getElementById("progress").innerHTML = "<div style=\"width:<?= $percent; ?>;background-color:#00CC00;\">&nbsp;</div>";
@@ -1238,7 +1327,7 @@ elseif ($trees['step'] == '3') {
     <?php
     }
     if (!isset($_POST['show_gedcomnumbers'])) {
-        ob_start();
+        //ob_start(); // if used: statusbar doesn't work
     ?>
         <script>
             document.getElementById("information").innerHTML = "<?= $total; ?> / <?= $total; ?> <?= __('lines processed'); ?>";
@@ -1333,7 +1422,7 @@ elseif ($trees['step'] == '4') {
 
         $perc = 0;
         if ($nr_records > 0) {
-            ob_start();
+            //ob_start(); // if used: statusbar doesn't work
 
             // Javascript for initial display of the progress bar and information (or after timeout)
             $percent = $perc . "%";
@@ -1540,7 +1629,7 @@ elseif ($trees['step'] == '4') {
                     $percent = $perc . "%";
 
                     // Javascript for updating the progress bar and information
-                    ob_start();
+                    //ob_start(); // if used: statusbar doesn't work
             ?>
                     <script>
                         //document.getElementById("progress").innerHTML = "<div style=\"width:<?= $percent; ?>;background-color:#00CC00;\">&nbsp;</div>"; 
@@ -1772,7 +1861,7 @@ elseif ($trees['step'] == '4') {
                     $percent = $perc . "%";
 
                     // Javascript for updating the progress bar and information
-                    ob_start();
+                    //ob_start(); // if used: statusbar doesn't work
 
                     echo '<script>';
                     //echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
@@ -1816,7 +1905,7 @@ elseif ($trees['step'] == '4') {
             // *** Save data in database ***
             $dbh->commit();
         }
-        ob_start();
+        //ob_start(); // if used: statusbar doesn't work
         ?>
         <script>
             document.getElementById("information").innerHTML = "<?= $nr_records; ?> / <?= $nr_records; ?> <?= __('lines processed'); ?>";

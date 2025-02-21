@@ -1,7 +1,7 @@
 <?php
 $limit = 2500;
 
-ob_start();
+// ob_start(); // Doesn't work. The statusbar is not updated in the browser.
 printf(__('Remove old family tree items from %s table...'), 'humo_persons');
 echo ' ';
 ob_flush();
@@ -24,6 +24,10 @@ if ($nr_records > 0) {
     flush();
     $dbh->query("OPTIMIZE TABLE humo_persons");
 }
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 10;
+
 echo '<br>';
 
 // *** Remove records in chunks because of InnoDb database... ***
@@ -47,6 +51,10 @@ if ($nr_records > 0) {
     flush();
     $dbh->query("OPTIMIZE TABLE humo_families");
 }
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 20;
+
 echo '<br>';
 
 // *** Remove records in chunks because of InnoDb database... ***
@@ -72,6 +80,10 @@ if ($nr_records > 0) {
     flush();
     $dbh->query("OPTIMIZE TABLE humo_unprocessed_tags");
 }
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 30;
+
 echo '<br>';
 
 
@@ -85,6 +97,10 @@ echo ' ' . __('Optimize table...');
 ob_flush();
 flush();
 $dbh->query("OPTIMIZE TABLE humo_settings");
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 40;
+
 echo '<br>';
 
 // *** Remove repositories ***
@@ -97,6 +113,10 @@ echo ' ' . __('Optimize table...');
 ob_flush();
 flush();
 $dbh->query("OPTIMIZE TABLE humo_repositories");
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 50;
+
 echo '<br>';
 
 // *** Remove records in chunks because of InnoDb database... ***
@@ -122,6 +142,10 @@ if ($nr_records > 0) {
     flush();
     $dbh->query("OPTIMIZE TABLE humo_sources");
 }
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 60;
+
 echo '<br>';
 
 
@@ -146,6 +170,10 @@ if ($nr_records > 0) {
     echo ' ' . __('Optimize table...');
     $dbh->query("OPTIMIZE TABLE humo_texts");
 }
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 70;
+
 echo '<br>';
 
 
@@ -172,6 +200,10 @@ if ($nr_records > 0) {
     flush();
     $dbh->query("OPTIMIZE TABLE humo_connections");
 }
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 80;
+
 echo '<br>';
 
 
@@ -198,6 +230,10 @@ if ($nr_records > 0) {
     flush();
     $dbh->query("OPTIMIZE TABLE humo_addresses");
 }
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 90;
+
 echo '<br>';
 
 // *** Remove records in chunks because of InnoDb database... ***
@@ -234,6 +270,10 @@ if ($nr_records > 0) {
     flush();
     $dbh->query("OPTIMIZE TABLE humo_events");
 }
+
+// *** Update progressbar ***
+$_SESSION['save_import_progress'] = 100;
+
 echo '<br>';
 
 if (isset($show_gedcom_status)) {

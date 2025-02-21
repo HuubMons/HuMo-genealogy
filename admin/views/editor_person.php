@@ -561,7 +561,7 @@
             $selected_deceased = '';
         }
         ?>
-        <tr class="humo_color">
+        <tr>
             <td><?= __('Privacy filter'); ?></td>
             <td colspan="2">
                 <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?> class="form-check-input"> <?= __('alive'); ?>
@@ -633,7 +633,7 @@
         // *** If items are missing show all editor fields ***
         $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
         ?>
-        <tr class="humo_color">
+        <tr>
             <td><a name="born"></a>
                 <b><?= ucfirst(__('born')); ?></b>
             </td>
@@ -1088,7 +1088,7 @@
         $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
         ?>
-        <tr class="humo_color">
+        <tr>
             <td><a name="died"></a>
                 <b><?= ucfirst(__('died')); ?></b>
             </td>
@@ -1450,7 +1450,7 @@
 
         // *** General text by person ***
         ?>
-        <tr class="humo_color">
+        <tr>
             <td><a name="text_person"></a><?= __('Text for person'); ?></td>
             <td colspan="2">
                 <textarea rows="1" name="person_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($person_text); ?></textarea>
@@ -1501,7 +1501,7 @@
 
         // *** Own code ***
         ?>
-        <tr class="humo_color">
+        <tr>
             <td><?= ucfirst(__('own code')); ?></td>
             <td colspan="2">
                 <div class="row mb-2">
@@ -1576,7 +1576,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
                 $tags_array = explode('<br>', $tagDb->tag_tag);
                 $num_rows = count($tags_array);
         ?>
-                <tr class="humo_tags_pers humo_color">
+                <tr class="humo_tags_pers">
                     <td>
                         <a href="#humo_tags_pers" onclick="hideShow(61);"><span id="hideshowlink61">[+]</span></a>
                         <?= __('GEDCOM tags'); ?>
