@@ -388,4 +388,12 @@ if ($page == 'address') {
     //$tree_index["items"] = $controllerObj->get_items($dbh, $humo_option);
 }
 
+if ($index['page403']) {
+    // *** If page isn't valid, show 403 Forbidden page ***
+    header("HTTP/1.1 403 Forbidden");
+    //echo '<h1>' . __('403 Forbidden') . '</h1>';
+    //echo '<p>' . __('No permission to show page') . '</p>';
+    exit();
+}
+
 include_once(__DIR__ . "/views/layout.php");

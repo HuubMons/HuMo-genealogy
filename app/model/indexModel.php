@@ -217,7 +217,6 @@ class IndexModel
         }
 
         // *** Check if selected tree is allowed for visitor and Google etc. ***
-        //if ($tree_prefix != '') {
         $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
         if ($dataDb) {
             $hide_tree_array = explode(";", $user['group_hide_trees']);
@@ -244,7 +243,6 @@ class IndexModel
                 $index['tree_id'] = $dataDb->tree_id;
             }
         }
-        //}
 
         // *** Guest or user has no permission to see any family tree ***
         if (!isset($index['tree_id'])) {
@@ -255,6 +253,12 @@ class IndexModel
 
         // *** Set variable for queries ***
         $index['tree_prefix_quoted'] = safe_text_db($_SESSION['tree_prefix']);
+
+        // *** Check for invalid family tree id: show 403 page ***
+        $index['page403'] = false;
+        if (isset($index['select_tree_id']) && !is_numeric($index['select_tree_id'])){
+            $index['page403'] = true;
+        }
 
         return $index;
     }
