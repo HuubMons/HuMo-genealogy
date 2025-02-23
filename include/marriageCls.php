@@ -649,15 +649,12 @@ class MarriageCls
     // ***************************************************
     public function marriage_data($marriageDb = '', $number = '0', $presentation = 'standard')
     {
-        global $dbh, $db_functions, $tree_prefix_quoted, $dataDb, $uri_path, $humo_option;
-        global $language, $user, $screen_mode;
+        global $dbh, $db_functions, $dataDb, $uri_path, $humo_option, $language, $user, $screen_mode;
         global $parent1Db, $parent2Db;
         global $relation_check; // Global still needed to show a proper marriage or relation text when age is calculated in personCls.php.
 
         // TODO check globals in new functions.
-        global $temp;
-        global $templ_relation;
-        global $text;
+        global $temp, $templ_relation, $text;
 
         $templ_relation = array($marriageDb);  //reset array
 

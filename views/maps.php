@@ -44,20 +44,19 @@ $count = 0;
                         $hide_tree_array = explode(";", $user['group_hide_trees']);
                         if (!in_array($tree_searchDb->tree_id, $hide_tree_array)) {
                             $selected = '';
-                            // TODO check tree_prefix. Replace with tree_id.
-                            if (isset($_SESSION['tree_prefix'])) {
-                                if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
+                            if (isset($_SESSION['tree_id'])) {
+                                if ($tree_searchDb->tree_id == $_SESSION['tree_id']) {
                                     $selected = 'selected';
                                     $tree_id = $tree_searchDb->tree_id;
-                                    $_SESSION['tree_id'] = $tree_id;
                                     $db_functions->set_tree_id($tree_id);
+                                    $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
                                 }
                             } elseif ($count == 0) {
-                                $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
                                 $selected = 'selected';
                                 $tree_id = $tree_searchDb->tree_id;
                                 $_SESSION['tree_id'] = $tree_id;
                                 $db_functions->set_tree_id($tree_id);
+                                $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
                             }
                             $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
                             $count++;

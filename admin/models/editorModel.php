@@ -2813,52 +2813,6 @@ class EditorModel
             }
         }
 
-        // TODO check if up and down links can be improved. Maybe only 1 $_GET needed: connect_down or connect_up (including connect_id nr). Get other items from database.
-        if (isset($_GET['connect_down'])) {
-            $sql = "UPDATE humo_connections SET connect_order='99' WHERE connect_id='" . safe_text_db($_GET['connect_down']) . "'";
-            $this->dbh->query($sql);
-
-            $event_order = safe_text_db($_GET['connect_order']);
-            $sql = "UPDATE humo_connections SET connect_order='" . $event_order . "'
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_GET['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_GET['connect_sub_kind']) . "'
-                AND connect_connect_id='" . safe_text_db($_GET['connect_connect_id']) . "'
-                AND connect_order='" . ($event_order + 1) . "'";
-            $this->dbh->query($sql);
-
-            $sql = "UPDATE humo_connections SET connect_order='" . ($event_order + 1) . "'
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_GET['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_GET['connect_sub_kind']) . "'
-                AND connect_connect_id='" . safe_text_db($_GET['connect_connect_id']) . "'
-                AND connect_order=99";
-            $this->dbh->query($sql);
-        }
-
-        if (isset($_GET['connect_up'])) {
-            $sql = "UPDATE humo_connections SET connect_order='99' WHERE connect_id='" . safe_text_db($_GET['connect_up']) . "'";
-            $this->dbh->query($sql);
-
-            $event_order = safe_text_db($_GET['connect_order']);
-            $sql = "UPDATE humo_connections SET connect_order='" . $event_order . "'
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_GET['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_GET['connect_sub_kind']) . "'
-                AND connect_connect_id='" . safe_text_db($_GET['connect_connect_id']) . "'
-                AND connect_order='" . ($event_order - 1) . "'";
-            $this->dbh->query($sql);
-
-            $sql = "UPDATE humo_connections SET connect_order='" . ($event_order - 1) . "'
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_GET['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_GET['connect_sub_kind']) . "'
-                AND connect_connect_id='" . safe_text_db($_GET['connect_connect_id']) . "'
-                AND connect_order=99";
-            $this->dbh->query($sql);
-        }
-
-
         // *******************
         // *** Save source ***
         // *******************

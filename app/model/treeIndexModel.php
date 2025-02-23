@@ -259,7 +259,7 @@ class TreeIndexModel
                 if ($dataDb->tree_prefix == 'EMPTY') {
                     // *** Show empty line ***
                     $tree_name = '';
-                } elseif (isset($_SESSION['tree_prefix']) && $_SESSION['tree_prefix'] == $dataDb->tree_prefix) {
+                } elseif (isset($_SESSION['tree_id']) && $_SESSION['tree_id'] == $dataDb->tree_id) {
                     $tree_name = '<span class="tree_link">' . $treetext_name . '</span>';
                 } else {
                     $path_tmp = $link_cls->get_link($uri_path, 'tree_index', $dataDb->tree_id);
@@ -529,6 +529,7 @@ class TreeIndexModel
         $text = '';
 
         // *** Reset search field if a new genealogy is selected ***
+        /*
         $reset_search = false;
         if (isset($_SESSION["save_search_tree_prefix"]) && $_SESSION["save_search_tree_prefix"] != $_SESSION['tree_prefix']) {
             $reset_search = true;
@@ -540,6 +541,8 @@ class TreeIndexModel
             unset($_SESSION["save_part_lastname"]);
             unset($_SESSION["save_search_database"]);
         }
+        */
+        /*
         //*** Search screen ***
         $pers_firstname = '';
         if (isset($_SESSION["save_firstname"])) {
@@ -557,6 +560,7 @@ class TreeIndexModel
         if (isset($_SESSION["save_part_lastname"])) {
             $part_lastname = $_SESSION["save_part_lastname"];
         }
+        */
         $search_database = 'tree_selected';
         //if (isset($_SESSION["save_search_database"])) {
         //    $search_database = $_SESSION["save_search_database"];

@@ -126,9 +126,7 @@ $language = $index['language']; // $language = array.
 $selected_language = $index['selected_language'];
 
 // Needed for mail script.
-if (isset($_SESSION['tree_prefix'])) {
-    $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
-}
+$dataDb = $db_functions->get_tree($index['tree_id']);
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = $index['dirmark1'];  //ltr marker
@@ -148,8 +146,7 @@ $tree_prefix_quoted = $index['tree_prefix_quoted'];
 
 
 
-// TODO check variable. Just use $tree_id?
-$db_functions->set_tree_id($_SESSION['tree_id']);
+$db_functions->set_tree_id($index['tree_id']);
 
 // *** If an HuMo-gen upgrade is done, automatically update language files ***
 if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply

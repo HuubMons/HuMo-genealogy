@@ -5,9 +5,6 @@ if ($list["index_list"] != 'search' && $list["index_list"] != 'quicksearch') {
     unset($_SESSION["save_select_trees"]);
 }
 
-// *** Save selected "search" family tree (can be used to erase search values if tree is changed) ***
-$_SESSION["save_search_tree_prefix"] = safe_text_db($_SESSION['tree_prefix']);
-
 $order = $list["order"];
 // *** Search in 1 or more family trees ***
 $select_trees = $list["select_trees"];
