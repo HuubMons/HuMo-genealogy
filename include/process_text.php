@@ -24,14 +24,15 @@ function process_text($text_process, $text_sort = 'standard')
             // *** Search for Aldfaer texts ***
             if (substr($text_pieces[$i], 0, 1) === '@') {
                 $text_check = substr($text_pieces[$i], 1, -1);
-                $qry = "SELECT * FROM humo_texts
-                    WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . safe_text_db($text_check) . "'";
+                $qry = "SELECT * FROM humo_texts WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . safe_text_db($text_check) . "'";
                 $search_text = $dbh->query($qry);
                 $search_textDb = $search_text->fetch(PDO::FETCH_OBJ);
                 if ($text_result) {
                     $text_result .= '<br>';
                 }
-                $text_result .= $search_textDb->text_text;
+                if (isset($search_textDb->text_text)) {
+                    $text_result .= $search_textDb->text_text;
+                }
             } else {
                 if ($text_result) {
                     $text_result .= '<br>';

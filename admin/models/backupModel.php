@@ -1,6 +1,19 @@
 <?php
 class BackupModel
 {
+    function get_menu_tab()
+    {
+        $menu_tab = 'database_backup';
+        if (isset($_POST['menu_tab'])) {
+            $menu_tab = $_POST['menu_tab'];
+        }
+        if (isset($_GET['menu_tab'])) {
+            $menu_tab = $_GET['menu_tab'];
+        }
+
+        return $menu_tab;
+    }
+
     public function process_old_files()
     {
         // *** Rename and remove files from previous backup procedure ***

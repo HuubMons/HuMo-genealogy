@@ -74,8 +74,8 @@ $m_keys = array_keys($m_first_names);
 $f_keys = array_keys($f_first_names);
 ?>
 
-<div style="text-align:center">
-    <form method="POST" action="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?> " style="display:inline;" id="frqfirnames">
+<div style="text-align:center" class="my-3">
+    <form method="POST" action="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?> " id="frqfirnames">
         <div class="mb-2 row me-1">
             <div class="col-sm-2"></div>
 

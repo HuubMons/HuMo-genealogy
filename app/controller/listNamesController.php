@@ -1,32 +1,35 @@
 <?php
 class ListNamesController
 {
-    public function list_names($dbh, $tree_id, $user, $last_name)
+    protected $config;
+
+    public function __construct($config)
     {
+        $this->config = $config;
+    }
+
+    public function list_names($last_name, $uri_path)
+    {
+        $dbh = $this->config['dbh'];
+        //$db_functions = $this->config['db_functions'];
+        $tree_id = $this->config['tree_id'];
+        $user = $this->config['user'];
+        $humo_option = $this->config['humo_option'];
+       
         $list_namesModel = new listNamesModel();
 
         $list_names['alphabet_array'] = $list_namesModel->getAlphabetArray($dbh, $tree_id, $user);
         $list_names['max_cols'] = $list_namesModel->getMaxCols();
         $list_names['max_names'] = $list_namesModel->getMaxNames();
+        $list_names['last_name'] = $list_namesModel->get_last_name($last_name);
+        $list_names["item"] = $list_namesModel->get_item();
+        $list_names['start'] = $list_namesModel->get_start();
 
-        // TODO move to model.
-        if (!isset($last_name)) {
-            $last_name = 'a'; // *** Default first_character ***
-        }
-        if (isset($_GET['last_name']) && $_GET['last_name'] && is_string($_GET['last_name'])) {
-            $last_name = safe_text_db($_GET['last_name']);
-        }
-        $list_names['last_name'] = $last_name;
+        $get_names = $list_namesModel->get_names($dbh, $tree_id, $user, $list_names);
+        $list_names = array_merge($list_names, $get_names);
 
-        $list_names["item"] = 0;
-        if (isset($_GET['item'])) {
-            $list_names["item"] = $_GET['item'];
-        }
-
-        $list_names["start"] = 0;
-        if (isset($_GET["start"])) {
-            $list_names["start"] = $_GET["start"];
-        }
+        $get_pagination = $list_namesModel->get_pagination($tree_id, $humo_option, $uri_path, $list_names);
+        $list_names = array_merge($list_names, $get_pagination);
 
         return $list_names;
     }

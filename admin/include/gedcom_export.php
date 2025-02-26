@@ -4,7 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-
 // Needed to process witnesses etc.
 if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
@@ -1542,12 +1541,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 //echo $buffer;
             }
 
-            /*
-            repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
-            repo_date='".process_date($gedcom_version,'repo_date')."',
-            repo_mail='".safe_text_db($_POST['repo_mail'])."',
-            repo_url='".safe_text_db($_POST['repo_url'])."',
-            */
             // *** Repository data ***
             $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
             while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) {
@@ -1655,11 +1648,18 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         if ($gedcom_texts == 'yes') {
             $buffer = '';
             natsort($noteids);
-            foreach ($noteids as $s) {
-                $text_query = "SELECT * FROM humo_texts WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($s, 1, -1) . "'";
-                $text_sql = $dbh->query($text_query);
-                while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
-                    $buffer .= "0 " . $s . " NOTE\r\n";
+            foreach ($noteids as $note_text) {
+                //$text_query = "SELECT * FROM humo_texts WHERE text_tree_id='" . $tree_id . "' AND text_gedcomnr='" . substr($note_text, 1, -1) . "'";
+                //$text_sql = $dbh->query($text_query);
+                //while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
+
+                $stmt = $dbh->prepare("SELECT * FROM humo_texts WHERE text_tree_id=:text_tree_id AND text_gedcomnr=:text_gedcomnr");
+                $stmt->execute([
+                    ':text_tree_id' => $tree_id,
+                    ':text_gedcomnr' => substr($note_text, 1, -1)
+                ]);
+                while ($textDb = $stmt->fetch(PDO::FETCH_OBJ)){
+                    $buffer .= "0 " . $note_text . " NOTE\r\n";
                     $buffer .= '1 CONC ' . process_text(1, $textDb->text_text);
 
                     // *** Datetime new in database ***

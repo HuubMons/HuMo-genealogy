@@ -12,7 +12,6 @@ $path = $link_cls->get_link($uri_path, 'addresses', $tree_id, true);
 <h1 style="text-align:center;"><?= __('Addresses'); ?></h1>
 
 <div>
-    <!-- *** Search form *** -->
     <form method="POST" action="<?= $path_form; ?>">
         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
         <div class="container">
@@ -20,11 +19,11 @@ $path = $link_cls->get_link($uri_path, 'addresses', $tree_id, true);
                 <div class="col-sm-3"></div>
 
                 <div class="col-sm-2">
-                    <input type="text" class="form-control form-control-sm" name="adr_place" size="15" placeholder="<?= __('City'); ?>">
+                    <input type="text" class="form-control form-control-sm" name="adr_place" size="15" placeholder="<?= __('City'); ?>" value="<?= $data["adr_place"]; ?>">
                 </div>
 
                 <div class="col-sm-2">
-                    <input type="text" class="form-control form-control-sm" name="adr_address" size="15" placeholder="<?= __('Street'); ?>">
+                    <input type="text" class="form-control form-control-sm" name="adr_address" size="15" placeholder="<?= __('Street'); ?>" value="<?= $data["adr_address"]; ?>">
                 </div>
 
                 <input type="submit" class="col-sm-2 btn btn-sm btn-success" value="<?= __('Search'); ?>" name="search_addresses">
@@ -34,7 +33,8 @@ $path = $link_cls->get_link($uri_path, 'addresses', $tree_id, true);
         </div>
     </form><br>
 
-    <!-- *** Show results *** -->
+    <?php include __DIR__ . '/partial/pagination.php'; ?>
+
     <table class="table">
         <thead class="table-primary">
             <tr>
@@ -70,4 +70,6 @@ $path = $link_cls->get_link($uri_path, 'addresses', $tree_id, true);
             </tr>
         <?php } ?>
     </table>
+
+    <?php include __DIR__ . '/partial/pagination.php'; ?>
 </div>

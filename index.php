@@ -61,27 +61,14 @@ function custom_autoload($class_name)
 
     // languages/languageCls.php
 
-    /*
-    // file_exists is slow if file isn't found!
-    // *** At this moment only a few classes are autoloaded. Under construction ***
-    $classes = array(
-        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'LanguageCls', 'Config'
-    );
-    // If all classes are autoloading, array check of classes will be removed.
-    if (in_array($class_name, $classes) || substr($class_name, -10) == 'Controller' || substr($class_name, -5) == 'Model') {
-        $dirs = array('app/controller', 'app/model', 'include', 'languages');
-        foreach ($dirs as $dir) {
-            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
-            if (file_exists($file)) {
-                require $file;
-                break;
-            }
-        }
-    }
-    */
-
     $include = array(
-        'CalculateDates', 'DbFunctions', 'MarriageCls', 'PersonCls', 'ProcessLinks', 'ValidateDate', 'Config'
+        'CalculateDates',
+        'DbFunctions',
+        'MarriageCls',
+        'PersonCls',
+        'ProcessLinks',
+        'ValidateDate',
+        'Config'
     );
 
     if ($class_name == 'LanguageCls') {
@@ -97,7 +84,7 @@ function custom_autoload($class_name)
 spl_autoload_register('custom_autoload');
 
 
-// TODO move to model script (should be processed before setttings_user. Probably first build a general settings class).
+// TODO move to model script (should be processed before setttings_user).
 if (isset($_GET['log_off'])) {
     unset($_SESSION['user_name']);
     unset($_SESSION['user_id']);
@@ -139,9 +126,7 @@ $language = $index['language']; // $language = array.
 $selected_language = $index['selected_language'];
 
 // Needed for mail script.
-if (isset($_SESSION['tree_prefix'])) {
-    $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
-}
+$dataDb = $db_functions->get_tree($index['tree_id']);
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = $index['dirmark1'];  //ltr marker
@@ -161,8 +146,7 @@ $tree_prefix_quoted = $index['tree_prefix_quoted'];
 
 
 
-// TODO check variable. Just use $tree_id?
-$db_functions->set_tree_id($_SESSION['tree_id']);
+$db_functions->set_tree_id($index['tree_id']);
 
 // *** If an HuMo-gen upgrade is done, automatically update language files ***
 if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
@@ -207,8 +191,25 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 // *** To be used to show links in several pages ***
 $link_cls = new ProcessLinks($uri_path);
 
-// Dec. 2024: general config class. Usage: $controllerObj = new AddressController($config);
-$config = new Config($dbh, $db_functions, $tree_id, $user, $humo_option);
+/**
+ * General config array.
+ * In function: use $this->config['dbh'], $this->config['db_functions'], etc, or use:
+ * $dbh = $this->config['dbh'];
+ * $db_functions = $this->config['db_functions'];
+ * $tree_id = $this->config['tree_id'];
+ * $user = $this->config['user'];
+ * $humo_option = $this->config['humo_option'];
+ */
+$config = array(
+    "dbh" => $dbh,
+    "db_functions" => $db_functions,
+    "tree_id" => $tree_id,
+    "user" => $user,
+    "humo_option" => $humo_option
+);
+// *** General config class. Usage: $controllerObj = new AddressController($config); ***
+// *** Allready tested in sourceController.php & photoalbumController.php ***
+//$config = new Config($dbh, $db_functions, $tree_id, $user, $humo_option);
 
 if ($page == 'address') {
     // TODO refactor
@@ -218,7 +219,7 @@ if ($page == 'address') {
     $controllerObj = new AddressController($db_functions, $user);
     $data = $controllerObj->detail();
 } elseif ($page == 'addresses') {
-    $controllerObj = new AddressesController($dbh, $user, $tree_id);
+    $controllerObj = new AddressesController($dbh, $user, $tree_id, $link_cls, $uri_path, $humo_option);
     $data = $controllerObj->list();
 } elseif ($page == 'ancestor_report') {
     $controllerObj = new AncestorReportController($dbh);
@@ -283,12 +284,12 @@ if ($page == 'address') {
     $controllerObj = new ListPlacesFamiliesController();
     $data = $controllerObj->list_places_names($tree_id);
 } elseif ($page == 'list_names') {
-    $controllerObj = new ListNamesController();
+    $controllerObj = new ListNamesController($config);
     $last_name = '';
     if (isset($index['last_name'])) {
         $last_name = $index['last_name'];
     }
-    $list_names = $controllerObj->list_names($dbh, $tree_id, $user, $last_name);
+    $list_names = $controllerObj->list_names($last_name, $uri_path);
 } elseif ($page == 'login') {
     //
 } elseif ($page == 'mailform') {
@@ -320,9 +321,9 @@ if ($page == 'address') {
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new RelationsController($dbh);
-    $relation = $controllerObj->getRelations($db_functions, $person_cls);
+    $relation = $controllerObj->getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language);
 } elseif ($page == 'reset_password') {
-    $controllerObj = new ResetpasswordController();
+    $controllerObj = new ResetPasswordController();
     $resetpassword = $controllerObj->detail($dbh, $humo_option);
 } elseif ($page == 'outline_report') {
     $controllerObj = new OutlineReportController();
@@ -334,13 +335,18 @@ if ($page == 'address') {
 
     $controllerObj = new UserSettingsController();
     $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
+} elseif ($page == 'show_media_file') {
+    // *** Show media file using secured folder ***
+    // *** Skip layout.php ***
+    include_once(__DIR__ . "/views/show_media_file.php");
+    exit;
 } elseif ($page == 'statistics') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new StatisticsController();
-    $statistics = $controllerObj->detail($dbh, $tree_id);
+    $statistics = $controllerObj->detail($dbh, $db_functions, $tree_id);
 } elseif ($page == 'sources') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
@@ -376,7 +382,60 @@ if ($page == 'address') {
 } elseif ($page == 'tree_index') {
     //  *** TODO: first improve difference between tree_index and mainindex ***
     //$controllerObj = new TreeIndexController();
-    //$tree_index["items"] = $controllerObj->get_items($dbh);
+    //$tree_index["items"] = $controllerObj->get_items($dbh, $humo_option);
 }
+
+/*
+400 Bad Request
+403 Forbidden
+404 Not Found
+410 Gone
+429 Too Many Requests (RFC 6585)
+*/
+
+// *** If page isn't valid, show 403 Forbidden page ***
+/*
+if ($index['page403']) {
+    header("HTTP/1.1 403 Forbidden");
+?>
+    <h1><?= __('403 Forbidden'); ?></h1>
+    <p><?= __('No permission to show page'); ?></p>
+<?php
+    exit();
+}
+*/
+
+// *** If page isn't valid, show 404 Not Found page ***
+if ($index['page404']) {
+    header("HTTP/1.1 404 Not Found");
+?>
+    <h1><?= __('404 Not Found'); ?></h1>
+    <p><?= __('Page not found'); ?></p>
+<?php
+    exit();
+}
+
+/*
+if ($index['page410']) {
+    header("HTTP/1.1 410 Gone");
+?>
+    <h1><?= __('410 Gone'); ?></h1>
+    <p><?= __('Page is gone'); ?></p>
+<?php
+    exit();
+}
+*/
+
+//header("HTTP/1.1 429 Too Many Requests");
+/*
+if ($index['page429']) {
+    header("HTTP/1.1 429 Too Many Requests");
+?>
+    <h1><?= __('429 Too Many Requests'); ?></h1>
+    <p><?= __('Too many requests'); ?></p>
+<?php
+    exit();
+}
+*/
 
 include_once(__DIR__ . "/views/layout.php");

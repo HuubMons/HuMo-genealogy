@@ -8,9 +8,7 @@ function show_country_flags($selected_language, $path, $variable, $language_path
 {
     global $humo_option, $language, $language_file;
 ?>
-    <a class="nav-link dropdown-toggle" href="index.php?option=com_humo-gen" data-bs-toggle="dropdown">
-        <img src="<?= $path . 'languages/' . $selected_language; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>">
-    </a>
+    <a class="nav-link dropdown-toggle" href="index.php?option=com_humo-gen" data-bs-toggle="dropdown"><img src="<?= $path . 'languages/' . $selected_language; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>"></a>
 
     <ul class="dropdown-menu genealogy_menu">
         <?php

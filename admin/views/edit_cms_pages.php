@@ -30,8 +30,7 @@ if (!defined('ADMIN_PAGE')) {
                 <?= __('This page is selected as homepage!'); ?>
             <?php } else { ?>
                 <?= __('Are you sure you want to remove this page?'); ?>
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
+                <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="edit_cms_pages" value="cms_page">
                     <input type="hidden" name="page_id" value="<?= $_GET['page_remove']; ?>">
                     <input type="submit" name="page_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
@@ -53,8 +52,7 @@ if (!defined('ADMIN_PAGE')) {
 Please disconnect the pages from this menu first.'); ?>
             <?php } else { ?>
                 <?= __('Are you sure you want to remove this menu?'); ?>
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
+                <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="cms_tab" value="menu">
                     <input type="hidden" name="menu_id" value="<?= $_GET['menu_remove']; ?>">
                     <input type="submit" name="menu_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
@@ -62,70 +60,67 @@ Please disconnect the pages from this menu first.'); ?>
                 </form>
             <?php } ?>
         </div>
-    <?php
-    }
+    <?php } ?>
 
-    // *** Show and edit pages ***
-    if ($edit_cms_pages['menu_tab'] === 'pages') {
-        $qry = $dbh->query("SELECT * FROM humo_cms_pages ORDER BY page_menu_id, page_order");
-        $page_nr = 0;
-        $edit_cms_pages['page_menu_id'] = 0;
-    ?>
-
+    <?php if ($edit_cms_pages['menu_tab'] === 'pages') { ?>
         <div class="row">
             <div class="col-md-3">
-                <!--  List of pages -->
-                <table>
-                    <?php
-                    while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                        // ** Show name of menu/ category ***
-                        if ($cms_pagesDb->page_menu_id == '9999') {
-                    ?>
-                            <tr>
-                                <td colspan="2"><b>* <?= __('Hide page in menu'); ?> *</b></td>
-                            </tr>
-                        <?php
-                            $page_nr = 0;
-                        } elseif ($cms_pagesDb->page_menu_id > 0 && $edit_cms_pages['page_menu_id'] != $cms_pagesDb->page_menu_id) {
-                            $qry_menu = $dbh->query("SELECT * FROM humo_cms_menu WHERE menu_id='" . $cms_pagesDb->page_menu_id . "'");
-                            $cmsDb = $qry_menu->fetch(PDO::FETCH_OBJ);
-                        ?>
-                            <tr>
-                                <td colspan="2"><b><?= $cmsDb->menu_name; ?></b></td>
-                            </tr>
-                        <?php
-                            $page_nr = 0;
-                            $edit_cms_pages['page_menu_id'] = $cms_pagesDb->page_menu_id;
-                        }
+                <?php foreach ($edit_cms_pages['menu_id'] as $menu_id) { ?>
+                    <b><?= $edit_cms_pages['menu_name'][$menu_id]; ?></b><br>
 
-                        $page_nr++;
-                        ?>
-                        <tr>
-                            <td style="width:60px;">
-                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $cms_pagesDb->page_id; ?>&amp;page_remove=<?= $cms_pagesDb->page_id; ?>">
+                    <!-- Show pages -->
+                    <ul id="sortable_pages<?= $menu_id; ?>" class="sortable_pages<?= $menu_id; ?> list-group">
+                        <?php foreach ($edit_cms_pages['menu_page_id'][$menu_id] as $page_id) { ?>
+                            <li class="list-group-item">
+                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $page_id; ?>&amp;page_remove=<?= $page_id; ?>" class="me-2">
                                     <img src="images/button_drop.png" alt="<?= __('Remove page'); ?>" border="0">
                                 </a>
-                                <?php if ($page_nr != '1') { ?>
-                                    <a href="index.php?page=edit_cms_pages&amp;page_up=<?= $previous_page; ?>&amp;select_page=<?= $cms_pagesDb->page_id; ?>"><img src="images/arrow_up.gif" border="0" alt="up"></a>
-                                <?php
-                                }
-                                if ($page_nr != $edit_cms_pages['pages_in_category'][$cms_pagesDb->page_menu_id]) {
-                                ?>
-                                    <a href="index.php?page=edit_cms_pages&amp;page_down=<?= $cms_pagesDb->page_order; ?>&amp;select_page=<?= $cms_pagesDb->page_id; ?>&amp;menu_id=<?= $cms_pagesDb->page_menu_id; ?>"><img src="images/arrow_down.gif" border="0" alt="down"></a>
+
+                                <?php if ($edit_cms_pages['menu_nr_pages'][$menu_id] > 1) { ?>
+                                    <span style="cursor:move;" id="<?= $page_id; ?>" class="handle me-2">
+                                        <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
+                                    </span>
+                                <?php } else { ?>
+                                    <span class="me-2">&nbsp;&nbsp;&nbsp;</span>
                                 <?php } ?>
-                            </td>
-                            <td>
-                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $cms_pagesDb->page_id; ?>">
-                                    <?= $cms_pagesDb->page_title ? $cms_pagesDb->page_title : '[' . __('No page title') . ']'; ?>
+
+                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $page_id; ?>">
+                                    <?= $edit_cms_pages['menu_page_title'][$menu_id][$page_id]; ?><br>
                                 </a>
-                            </td>
-                        </tr>
-                    <?php
-                        $previous_page = $cms_pagesDb->page_id;
-                    }
-                    ?>
-                </table><br>
-                <a href="index.php?page=edit_cms_pages"><?= __('Add page'); ?></a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+
+                    <!-- Order items using drag and drop using jquery and jqueryui -->
+                    <?php if ($edit_cms_pages['menu_nr_pages'][$menu_id] > 1) { ?>
+                        <script>
+                            $('#sortable_pages<?= $menu_id; ?>').sortable({
+                                handle: '.handle'
+                            }).bind('sortupdate', function() {
+                                var orderstring = "";
+                                var order_arr = document.getElementsByClassName("handle");
+                                for (var z = 0; z < order_arr.length; z++) {
+                                    orderstring = orderstring + order_arr[z].id + ";";
+                                    //document.getElementById('ordernum' + order_arr[z].id).innerHTML = (z + 1);
+                                }
+
+                                orderstring = orderstring.substring(0, orderstring.length - 1);
+                                $.ajax({
+                                    url: "include/drag.php?drag_kind=cms_pages&order=" + orderstring,
+                                    success: function(data) {},
+                                    error: function(xhr, ajaxOptions, thrownError) {
+                                        alert(xhr.status);
+                                        alert(thrownError);
+                                    }
+                                });
+                            });
+                        </script>
+                    <?php } ?>
+                <?php } ?>
+
+                <div class="mt-2">
+                    <a href="index.php?page=edit_cms_pages"><?= __('Add page'); ?></a>
+                </div>
             </div>
 
             <div class="col-md-9">
@@ -149,8 +144,7 @@ Please disconnect the pages from this menu first.'); ?>
                 }
                 ?>
 
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
+                <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="cms_pages" value="cms_page">
                     <input type="hidden" name="page_id" value="<?= $edit_cms_pages['page_id']; ?>">
                     <input type="hidden" name="page_menu_id_old" value="<?= $edit_cms_pages['page_menu_id']; ?>">
@@ -159,6 +153,7 @@ Please disconnect the pages from this menu first.'); ?>
                         <option value='0'>* <?= __('No menu selected'); ?> *</option>
                         <option value="9999" <?php if ($edit_cms_pages['page_menu_id'] == '9999') echo ' selected'; ?>>* <?= __('Hide page in menu'); ?> *</option>
                         <?php
+                        // TODO use $edit_cms_pages['menu_name'] instead of $menuItem->menu_name
                         $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
                         while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
                         ?>
@@ -195,56 +190,86 @@ Please disconnect the pages from this menu first.'); ?>
     ?>
         <!-- List of categories -->
         <?= __('Add and edit menu/ category items:'); ?>
-        <table class="table">
-            <thead class="table-primary">
-                <tr>
-                    <th><?= __('Order'); ?></th>
-                    <th><?= __('Menu item/ category'); ?></th>
-                    <th><?= __('Save'); ?></th>
-                </tr>
-            </thead>
-            <?php while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) { ?>
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
-                    <input type="hidden" name="cms_tab" value="menu">
-                    <input type="hidden" name="menu_id" value="<?= $cms_pagesDb->menu_id; ?>">
-                    <tr>
-                        <td>
-                            <a href="index.php?page=<?= $page; ?>&amp;select_menu=<?= $cms_pagesDb->menu_id; ?>&amp;menu_remove=<?= $cms_pagesDb->menu_id; ?>">
-                                <img src="images/button_drop.png" alt="<?= __('Remove menu'); ?>" border="0">
-                            </a>
-                            <?php if ($cms_pagesDb->menu_order != '1') { ?>
-                                <a href="index.php?page=<?= $page; ?>&amp;select_menu=<?= $cms_pagesDb->menu_id; ?>&amp;menu_up=<?= $cms_pagesDb->menu_order; ?>">
-                                    <img src="images/arrow_up.gif" border="0" alt="up">
-                                </a>
-                            <?php
-                            }
-                            if ($cms_pagesDb->menu_order != $count_menu) {
-                            ?>
-                                <a href="index.php?page=<?= $page; ?>&amp;select_menu=<?= $cms_pagesDb->menu_id; ?>&amp;menu_down=<?= $cms_pagesDb->menu_order; ?>">
-                                    <img src="images/arrow_down.gif" border="0" alt="down">
-                                </a>
-                            <?php } ?>
-                        </td>
-                        <td><input type="text" name="menu_name" value="<?= $cms_pagesDb->menu_name; ?>" size=50></td>
-                        <td><input type="submit" name="change_menu" value="<?= __('Save'); ?>" class="btn btn-sm btn-success"></td>
-                    </tr>
-                </form>
-            <?php } ?>
 
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
-                <input type="hidden" name="cms_tab" value="menu">
-                <tr bgcolor="green">
-                    <td><br></td>
-                    <td><input type="text" name="menu_name" value="" size=50></td>
-                    <td><input type="submit" name="add_menu" value="<?= __('Add'); ?>" class="btn btn-sm btn-primary"></td>
-                </tr>
-            </form>
-        </table>
+        <div class="row mt-2">
+            <div class="col-2"><b><?= __('Order'); ?></b></div>
+            <div class="col-4"><b><?= __('Menu item/ category'); ?></b></div>
+        </div>
+
+        <?php $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order"); ?>
+        <ul id="sortable_categories" class="sortable_categories list-group">
+            <?php while ($cms_pagesDb = $qry->fetch(PDO::FETCH_OBJ)) { ?>
+                <li class="list-group-item">
+                    <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
+                        <input type="hidden" name="cms_tab" value="menu">
+                        <input type="hidden" name="menu_id" value="<?= $cms_pagesDb->menu_id; ?>">
+
+                        <div class="row">
+                            <div class="col-auto">
+                                <a href="index.php?page=<?= $page; ?>&amp;select_menu=<?= $cms_pagesDb->menu_id; ?>&amp;menu_remove=<?= $cms_pagesDb->menu_id; ?>" class="me-2">
+                                    <img src="images/button_drop.png" alt="<?= __('Remove menu'); ?>" border="0">
+                                </a>
+                            </div>
+
+                            <div class="col-auto">
+                                <span style="cursor:move;" id="<?= $cms_pagesDb->menu_id; ?>" class="handle me-2">
+                                    <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
+                                </span>
+                            </div>
+
+                            <div class="col-auto">
+                                <input type="text" name="menu_name" value="<?= $cms_pagesDb->menu_name; ?>" size="50" class="form-control form-control-sm">
+                            </div>
+
+                            <div class="col-auto">
+                                <input type="submit" name="change_menu" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                            </div>
+                        </div>
+                    </form>
+                </li>
+            <?php } ?>
+        </ul>
+
+        <script>
+            $('#sortable_categories').sortable({
+                handle: '.handle'
+            }).bind('sortupdate', function() {
+                var orderstring = "";
+                var order_arr = document.getElementsByClassName("handle");
+                for (var z = 0; z < order_arr.length; z++) {
+                    orderstring = orderstring + order_arr[z].id + ";";
+                    //document.getElementById('ordernum' + order_arr[z].id).innerHTML = (z + 1);
+                }
+
+                orderstring = orderstring.substring(0, orderstring.length - 1);
+                $.ajax({
+                    url: "include/drag.php?drag_kind=cms_categories&order=" + orderstring,
+                    success: function(data) {},
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+            });
+        </script>
+
+        <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
+            <input type="hidden" name="cms_tab" value="menu">
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <input type="text" name="menu_name" value="" size="50" class="form-control form-control-sm">
+                </div>
+                <div class="col-auto">
+                    <input type="submit" name="add_menu" value="<?= __('Add'); ?>" class="btn btn-sm btn-primary">
+                </div>
+            </div>
+        </form>
+
     <?php
     }
 
+    // TODO refactor
     if ($edit_cms_pages['menu_tab'] === 'settings') {
         // *** Automatic installation or update ***
         if (!isset($humo_option["cms_images_path"])) {
@@ -311,8 +336,7 @@ Please disconnect the pages from this menu first.'); ?>
     ?>
 
         <p>
-        <form method="post" name="cms_setting_form" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $page; ?>">
+        <form method="post" name="cms_setting_form" action="index.php?page=edit_cms_pages" style="display : inline;">
             <input type="hidden" name="cms_settings" value="1"> <!-- if Save button is not pressed but checkboxes changed! -->
             <table class="table">
                 <thead class="table-primary">

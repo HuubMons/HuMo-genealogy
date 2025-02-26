@@ -85,7 +85,7 @@ if (__('&#134;') == '&#134;' or __('&#134;') == "†") {
 
 function data_array($id, $width, $height)
 {
-    global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $data, $dsign;
+    global $dbh, $db_functions, $data_array, $data, $dsign;
 
     if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
@@ -214,7 +214,7 @@ function data_array($id, $width, $height)
 
 function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellwidth)
 {
-    global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $data_array, $posy, $posx, $data;
+    global $dbh, $db_functions, $pdf, $pdf_font, $data_array, $posy, $posx, $data;
 
     $pdf->SetLeftMargin(16);
     $marg = 16;

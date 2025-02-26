@@ -477,9 +477,12 @@ else {
                                 // *** Change page title ***
                                 if ($descendant_loop == 0 && $descendant_loop2 == 0) {
                                     $name = $parent1_cls->person_name($parent1Db);
-                                    echo '<script>';
-                                    echo 'document.title = "' . __('Family Page') . ': ' . $name["index_name"] . '";';
-                                    echo '</script>';
+                                    $name["index_name"] = html_entity_decode($name["index_name"]);
+                                ?>
+                                    <script>
+                                        document.title = '<?= __("Family Page"); ?>: <?= $name["index_name"]; ?>';
+                                    </script>
+                                <?php
                                 }
                                 ?>
                             </div>
@@ -684,17 +687,17 @@ else {
                         <tr>
                             <td colspan="4">
                                 <div class="children">
-                                    <?php
-                                    if ($famc_adoptiveDb->event_gedcom == 'steph') {
-                                        echo '<b>' . __('Stepchild') . ':</b>';
-                                    } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
-                                        echo '<b>' . __('Legal child') . ':</b>';
-                                    } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
-                                        echo '<b>' . __('Foster child') . ':</b>';
-                                    } else {
-                                        echo '<b>' . __('Adopted child:') . '</b>';
-                                    }
-                                    ?>
+                                    <b>
+                                        <?php if ($famc_adoptiveDb->event_gedcom == 'steph') { ?>
+                                            <?= __('Stepchild'); ?>:
+                                        <?php } elseif ($famc_adoptiveDb->event_gedcom == 'legal') { ?>
+                                            <?= __('Legal child'); ?>:
+                                        <?php } elseif ($famc_adoptiveDb->event_gedcom == 'foster') { ?>
+                                            <?= __('Foster child'); ?>:
+                                        <?php } else { ?>
+                                            <?= __('Adopted child:'); ?>
+                                        <?php } ?>
+                                    </b>
                                     <?= $child_cls->name_extended("child"); ?>
                                 </div>
                             </td>
@@ -713,19 +716,18 @@ else {
                         <tr>
                             <td colspan="4">
                                 <div class="children">
-                                    <?php
-                                    if ($famc_adoptiveDb->event_gedcom == 'steph') {
-                                        echo '<b>' . __('Stepchild') . ':</b>';
-                                    } elseif ($famc_adoptiveDb->event_gedcom == 'legal') {
-                                        echo '<b>' . __('Legal child') . ':</b>';
-                                    } elseif ($famc_adoptiveDb->event_gedcom == 'foster') {
-                                        echo '<b>' . __('Foster child') . ':</b>';
-                                    } else {
-                                        echo '<b>' . __('Adopted child:') . '</b>';
-                                    }
-
-                                    echo ' ' . $child_cls->name_extended("child");
-                                    ?>
+                                    <b>
+                                        <?php if ($famc_adoptiveDb->event_gedcom == 'steph') { ?>
+                                            <?= __('Stepchild'); ?>:
+                                        <?php } elseif ($famc_adoptiveDb->event_gedcom == 'legal') { ?>
+                                            <?= __('Legal child'); ?>:
+                                        <?php    } elseif ($famc_adoptiveDb->event_gedcom == 'foster') { ?>
+                                            <?= __('Foster child'); ?>:
+                                        <?php } else { ?>
+                                            <?= __('Adopted child:'); ?>
+                                        <?php } ?>
+                                    </b>
+                                    <?= $child_cls->name_extended("child"); ?>
                                 </div>
                             </td>
                         </tr>
@@ -1117,14 +1119,11 @@ if ($user['group_citation_generation'] == 'y') {
     <br><b><?= __('Citation for:') . ' ' . __('Family Page'); ?></b><br>
 
     <span class="citation">
-        <?php
-        // *** Name of citation ***
-        echo '"' . __('Family Page') . ': ' . $name1['name'];
-        if (isset($name2['name']) && $name2['name']) {
-            echo ' &amp; ' . $name2['name'] . '."';
-        }
+        <!-- Names -->
+        "<?= __('Family Page'); ?>: <?= $name1['name']; ?> <?= (isset($name2['name']) && $name2['name']) ? '&amp; ' . $name2['name'] : ''; ?>"
 
-        // *** Link to family page ***
+        <!-- Link to family page -->
+        <?php
         echo ' HuMo-genealogy - ' . $humo_option["database_name"] . ' (';
 
         $vars['pers_family'] = $data["family_id"];

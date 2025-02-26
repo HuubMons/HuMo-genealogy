@@ -5,10 +5,9 @@ class IndexController
     {
         $indexModel = new IndexModel();
 
+        // TODO check if these variables can be used in multiple scripts. Only use in index page?
         $index['db_functions'] = new DbFunctions($dbh);
-
         $index['visitor_ip'] = visitorIP();
-
         $index['person_cls'] = new PersonCls;
 
         // *** Debug HuMo-genealogy front pages ***
@@ -47,11 +46,13 @@ class IndexController
         $ltr_rtl = $indexModel->process_ltr_rtl($index['language']);
         $index = array_merge($index, $ltr_rtl);
 
-        $route = $indexModel->get_route($humo_option);
+        $route = $indexModel->get_model_route($humo_option);
         $index = array_merge($index, $route);
 
         $family_tree = $indexModel->get_family_tree($dbh, $index['db_functions'], $user); // Get tree_id, tree_prefix.
         $index = array_merge($index, $family_tree);
+
+        $index['page404'] = $indexModel->get_page404();
 
         return $index;
     }

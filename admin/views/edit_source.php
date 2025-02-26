@@ -14,16 +14,20 @@ $path_prefix = '../';
 // *** These items are needed for adding and changing picture ***
 $phpself = 'index.php';
 $editor_cls = $editSource['editor_cls'];
-// *** Process queries (needed for picture ordering and delete) ***
-include_once(__DIR__ . "/../include/editor_inc.php");
+
+// *** Process queries (needed to order and delete pictures) ***
+$editor_cls = new Editor_cls;
+$editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
+$editor['confirm'] = $editorModel->update_editor2();
+
 // TODO this picture remove confirm box is shown above the header.
-echo $confirm; // Confirm message to remove picture from source.
+echo $editor['confirm']; // Confirm message to remove picture from source.
 
 
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-// TODO check if code could be improved. Also in editor_inc.php line 233.
+// TODO check if code could be improved. Also in editorModel.php.
 // *** Show picture ***
 // *** get path of pictures folder 
 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
@@ -33,50 +37,12 @@ if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
 }
 
-$EditorEvent = new EditorEvent;
+$EditorEvent = new EditorEvent($dbh);
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
-
-$source_search_gedcomnr = '';
-if (isset($_POST['source_search_gedcomnr'])) {
-    $source_search_gedcomnr = safe_text_db($_POST['source_search_gedcomnr']);
-}
-$source_search = '';
-if (isset($_POST['source_search'])) {
-    $source_search = safe_text_db($_POST['source_search']);
-}
-
-//$source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "' ORDER BY IF (source_title!='',source_title,source_text)");
-$qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
-if (isset($_POST['source_search_gedcomnr'])) {
-    $qry .= " AND source_gedcomnr LIKE '%" . safe_text_db($_POST['source_search_gedcomnr']) . "%'";
-}
-if (isset($_POST['source_search'])) {
-    $qry .= " AND ( source_title LIKE '%" . safe_text_db($_POST['source_search']) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($source_search) . "%') )";
-}
-$qry .= " ORDER BY IF (source_title!='',source_title,source_text)";
-$source_qry = $dbh->query($qry);
-
-
-// TODO move JS to other script.
-// *** Script to expand and collapse source items ***
-echo '
-    <script>
-    function hideShow(el_id){
-        // *** Hide or show item ***
-        var arr = document.getElementsByClassName(\'row\'+el_id);
-        for (i=0; i<arr.length; i++){
-            if(arr[i].style.display!="none"){
-                arr[i].style.display="none";
-            }else{
-                arr[i].style.display="";
-            }
-        }
-    }
-    </script>';
 
 // TODO: this is a temporary copy of script in views/editor.php.
 include_once(__DIR__ . "/../../include/language_date.php");
@@ -111,8 +77,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
 <?php if (isset($_POST['source_remove'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to remove this source and ALL source references?'); ?></strong>
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $page; ?>">
+        <form method="post" action="index.php?page=edit_sources" style="display : inline;">
             <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
             <input type="hidden" name="source_gedcomnr" value="<?= $_POST['source_gedcomnr']; ?>">
             <input type="submit" name="source_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
@@ -122,18 +87,17 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
 <?php }; ?>
 
 <div class="p-3 my-md-2 genealogy_search container-md">
-    <form method="POST" action="index.php" style="display : inline;">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" action="index.php?page=edit_sources" style="display : inline;">
         <div class="row mb-2">
             <div class="col-md-3">
                 <?= select_tree($dbh, $page, $tree_id); ?>
             </div>
 
             <div class="col-md-3">
-                <input type="text" name="source_search_gedcomnr" value="<?= $source_search_gedcomnr; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
+                <input type="text" name="source_search_gedcomnr" value="<?= $editSource['search_gedcomnr']; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
             </div>
             <div class="col-md-4">
-                <input type="text" name="source_search" value="<?= $source_search; ?>" size="20" placeholder="<?= __('text'); ?>" class="form-control form-control-sm">
+                <input type="text" name="source_search" value="<?= $editSource['search_text']; ?>" size="20" placeholder="<?= __('Source'); ?>" class="form-control form-control-sm">
             </div>
             <div class="col-md-2">
                 <input type="submit" name="source_select" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
@@ -150,47 +114,29 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
         </div>
 
         <div class="col-md-4">
-            <form method="POST" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
-
+            <form method="POST" action="index.php?page=edit_sources" style="display : inline;">
                 <select size="1" name="source_id" class="form-select form-select-sm" onChange="this.form.submit();">
-                    <!-- For new source in new database... -->
                     <option value=""><?= __('Select source'); ?></option>
-                    <?php
-                    while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
-                        $selected = '';
-                        if ($editSource['source_id'] == $sourceDb->source_id) {
-                            $selected = ' selected';
-                        }
 
-                        //if ($check_source_gedcomnr == $sourceDb->source_gedcomnr) {
-                        //    $selected = ' selected';
-                        //    $source_id = $sourceDb->source_id;
-                        //}
+                    <?php if (!isset($editSource['sources_id'])) { ?>
+                        <option value=""><?= __('No sources found.'); ?></option>
+                    <?php } else { ?>
+                        <?php foreach ($editSource['sources_id'] as $source_id) { ?>
+                            <option value="<?= $source_id; ?>" <?= $editSource['source_id'] == $source_id ? 'selected' : ''; ?>><?= $editSource['sources_text'][$source_id]; ?> [<?= $editSource['sources_gedcomnr'][$source_id] . $editSource['sources_restricted'][$source_id]; ?>]</option>
+                        <?php } ?>
 
-                        if ($sourceDb->source_title) {
-                            $show_text = $sourceDb->source_title;
-                        } else {
-                            $show_text = substr($sourceDb->source_text, 0, 40);
-                            if (strlen($sourceDb->source_text) > 40) {
-                                $show_text .= '...';
-                            }
-                        }
-                        $restricted = '';
-                        if ($sourceDb->source_status == 'restricted') {
-                            $restricted = ' *' . __('restricted') . '*';
-                        }
-                    ?>
-                        <option value="<?= $sourceDb->source_id; ?>" <?= $selected; ?>><?= $show_text; ?> [<?= $sourceDb->source_gedcomnr . $restricted; ?>]</option>
+                        <?php if (count($editSource['sources_id']) == 200) { ?>
+                            <option value=""><?= __('Results are limited, use search to find more sources.'); ?></option>
+                        <?php } ?>
                     <?php } ?>
+
                 </select>
             </form>
         </div>
 
         <div class="col-auto">
             <?= __('or'); ?>:
-            <form method="POST" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
+            <form method="POST" action="index.php?page=edit_sources" style="display : inline;">
                 <input type="submit" name="add_source" value="<?= __('Add source'); ?>" class="btn btn-sm btn-secondary">
             </form>
         </div>
@@ -246,8 +192,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
 
     $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
 ?>
-    <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form3" id="form3">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" action="index.php?page=edit_sources" style="display : inline;" enctype="multipart/form-data" name="form3" id="form3">
         <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
         <input type="hidden" name="source_gedcomnr" value="<?= $source_gedcomnr; ?>">
 
@@ -384,11 +329,25 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <?php
                 if (!isset($_POST['add_source'])) {
                     echo $EditorEvent->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
-                } ?>
+                ?>
+                    <!-- Expand and collapse source items -->
+                    <script>
+                        function hideShow(el_id) {
+                            // *** Hide or show item ***
+                            var arr = document.getElementsByClassName('row' + el_id);
+                            for (i = 0; i < arr.length; i++) {
+                                if (arr[i].style.display != "none") {
+                                    arr[i].style.display = "none";
+                                } else {
+                                    arr[i].style.display = "";
+                                }
+                            }
+                        }
+                    </script>
+                <?php } ?>
             </table>
 
-            <br>
-            <div class="row mb-2">
+            <div class="row my-2">
                 <div class="col-md-1"></div>
                 <?php if (isset($_POST['add_source'])) { ?>
                     <div class="col-md-2"><?= __('Add'); ?></div>

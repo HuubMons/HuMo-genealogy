@@ -2,17 +2,26 @@
 class PhotoalbumController
 {
     protected $config;
-    public function __construct(Config $config)
+
+    //public function __construct(Config $config)
+    public function __construct($config)
     {
         $this->config = $config;
     }
 
     public function detail($selected_language, $uri_path, $link_cls)
     {
+        /*
         $dbh = $this->config->dbh;
         $tree_id = $this->config->tree_id;
         $db_functions = $this->config->db_functions;
         $user = $this->config->user;
+        */
+
+        $dbh = $this->config['dbh'];
+        $tree_id = $this->config['tree_id'];
+        $db_functions = $this->config['db_functions'];
+        $user = $this->config['user'];
 
         $photoalbumModel = new PhotoalbumModel($dbh);
         $photoalbum['show_pictures'] = $photoalbumModel->get_show_pictures();

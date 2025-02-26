@@ -107,7 +107,7 @@ $generation_number = 0;
 
 function outline($outline_family_id, $outline_main_person, $generation_number, $nr_generations)
 {
-    global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $show_details, $show_date, $dates_behind_names, $nr_generations;
+    global $dbh, $db_functions, $pdf, $pdf_font, $show_details, $show_date, $dates_behind_names, $nr_generations;
     global $language, $dirmark1, $dirmark1, $screen_mode, $user;
 
     $family_nr = 1; //*** Process multiple families ***

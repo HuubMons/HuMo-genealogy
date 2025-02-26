@@ -185,9 +185,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
  */
 function print_fan_chart($data, $fanw = 840, $fandeg = 270)
 {
-    global $dbh, $tree_id, $db_functions, $language, $selected_language, $tree_prefix_quoted, $china_message;
-
-    //$data["fanchart_item"] = $fanchart_item;
+    global $dbh, $tree_id, $db_functions, $language, $selected_language, $china_message;
 
     // check for GD 2.x library
     /*
@@ -367,10 +365,10 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
                     } else {  // full dates
                         if ($birthyr) {
-                            $text2 .= "b." . language_date($birthyr) . "\n";
+                            $text2 .= __('b.') . language_date($birthyr) . "\n";
                         }
                         if ($deathyr) {
-                            $text2 .= "d." . language_date($deathyr);
+                            $text2 .= __('d.') . language_date($deathyr);
                         }
                     }
                 }
@@ -499,7 +497,8 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
 
     echo $imagemap;
 
-    $image_title = preg_replace("~<.*>~", "", $name) . "   - " . __('RELOAD FANCHART WITH \'VIEW\' BUTTON ON THE LEFT');
+    $name = str_replace('"', '', $name);
+    $image_title = preg_replace('~<.*>~', '', $name) . ' - ' . __('Reload fanchart with \'View\' button');
     echo "<p align=\"center\" >";
 
     ob_start();
@@ -667,7 +666,7 @@ if ($showdesc == "1") {
     if ($data["fan_style"] == 2) $top_pos = $fan_w / 2 + 165;
     elseif ($data["fan_style"] == 3) $top_pos = 0.856 * $fan_w;
     elseif ($data["fan_style"] == 4) $top_pos = $fan_w;
-    echo '<iframe src="descendant/' . safe_text_db($_SESSION['tree_prefix']) . '/' . $indexnr . '?main_person=' . $data["main_person"] . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" ></iframe';
+    echo '<iframe src="descendant/' . $tree_prefix . '/' . $indexnr . '?main_person=' . $data["main_person"] . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" ></iframe';
 }
 */
 ?>

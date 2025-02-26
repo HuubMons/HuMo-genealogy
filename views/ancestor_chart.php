@@ -131,7 +131,7 @@ if (!isset($hourglass)) {
 // box_appearance (large, medium, small, and some other boxes...)
 function ancestor_chart_person($id, $box_appearance)
 {
-    global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
+    global $dbh, $db_functions, $humo_option, $user;
     global $data, $language, $dirmark1, $dirmark2;
 
     include_once(__DIR__ . "/../admin/include/media_inc.php");

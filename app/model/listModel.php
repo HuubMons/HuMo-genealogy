@@ -159,6 +159,11 @@ class ListModel
         if (isset($_GET['adv_search']) && $_GET['adv_search'] == '1') {
             $selection['use_pers_prefix'] = 'USED';
         }
+        // *** Page is called from names list. Option should be disabled then ***
+        if (isset($_GET['pers_prefix']) && $_GET['pers_prefix'] == 'EMPTY') {
+            $selection['pers_prefix'] = 'EMPTY';
+            $selection['use_pers_prefix'] = 'EMPTY';
+        }
 
         // *** Lastname ***
         $selection['pers_lastname'] = '';
@@ -940,7 +945,7 @@ class ListModel
                 $counter = 0;
                 $multi_tree = '';
                 foreach ($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $datapdo) {
-                    if ($select_trees == "all_but_this" && $datapdo['tree_prefix'] == safe_text_db($_SESSION['tree_prefix'])) {
+                    if ($select_trees == "all_but_this" && $datapdo['tree_id'] == $tree_id) {
                         continue;
                     }
 
@@ -1047,7 +1052,7 @@ class ListModel
                 $counter = 0;
                 $multi_tree = '';
                 foreach ($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
-                    if ($select_trees == "all_but_this" && $pdoresult['tree_prefix'] == safe_text_db($_SESSION['tree_prefix'])) {
+                    if ($select_trees == "all_but_this" && $pdoresult['tree_id'] == $tree_id) {
                         continue;
                     }
                     // *** Check if family tree is shown or hidden for user group ***

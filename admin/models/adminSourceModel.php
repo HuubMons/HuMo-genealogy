@@ -9,22 +9,69 @@ class AdminSourceModel
             $this->source_id = $_POST['source_id'];
         }
 
-        // *** Link to order and remove pictures, is using gedcomnr in $_GET['source_id'] ***
+        // *** Link to select is using gedcomnr in $_GET['source_id'] ***
         if (isset($_GET['source_id'])) {
-            $source_gedcomnr = $_GET['source_id'];
             $sql = "SELECT source_id FROM humo_sources WHERE source_tree_id=:source_tree_id AND source_gedcomnr=:source_gedcomnr";
             $stmt = $dbh->prepare($sql);
             $stmt->execute([
                 ':source_tree_id' => $tree_id,
-                ':source_gedcomnr' => $source_gedcomnr
+                ':source_gedcomnr' => $_GET['source_id']
             ]);
             $source = $stmt->fetch(PDO::FETCH_OBJ);
             $this->source_id = $source->source_id;
         }
     }
+
     public function get_source_id()
     {
         return $this->source_id;
+    }
+
+    public function get_sources($dbh, $tree_id)
+    {
+        $editSource['search_gedcomnr'] = '';
+        if (isset($_POST['source_search_gedcomnr'])) {
+            $editSource['search_gedcomnr'] = safe_text_db($_POST['source_search_gedcomnr']);
+        }
+        $editSource['search_text'] = '';
+        if (isset($_POST['source_search'])) {
+            $editSource['search_text'] = safe_text_db($_POST['source_search']);
+        }
+
+        $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
+        if ($editSource['search_gedcomnr']) {
+            $qry .= " AND source_gedcomnr LIKE '%" . safe_text_db($editSource['search_gedcomnr']) . "%'";
+        }
+        if ($editSource['search_text']) {
+            $qry .= " AND ( source_title LIKE '%" . safe_text_db($editSource['search_text']) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($editSource['search_text']) . "%') )";
+        }
+        $qry .= " ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,200";
+
+        $source_qry = $dbh->query($qry);
+
+        // Build array result here. Max. results 200.
+        while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
+            $editSource['sources_id'][] = $sourceDb->source_id;
+
+            $editSource['sources_gedcomnr'][$sourceDb->source_id] = $sourceDb->source_gedcomnr;
+
+            if ($sourceDb->source_title) {
+                $editSource['sources_text'][$sourceDb->source_id] = $sourceDb->source_title;
+            } else {
+                $show_text = substr($sourceDb->source_text, 0, 40);
+                if (strlen($sourceDb->source_text) > 40) {
+                    $show_text .= '...';
+                }
+                $editSource['sources_text'][$sourceDb->source_id] = $show_text;
+            }
+
+            if ($sourceDb->source_status == 'restricted') {
+                $editSource['sources_restricted'][$sourceDb->source_id] = ' *' . __('restricted') . '*';
+            } else {
+                $editSource['sources_restricted'][$sourceDb->source_id] = '';
+            }
+        }
+        return $editSource;
     }
 
     public function update_source($dbh, $tree_id, $db_functions, $editor_cls): void
@@ -61,7 +108,7 @@ class AdminSourceModel
             $this->source_id = $dbh->lastInsertId();
         }
 
-        // Remark: source_change in editor_inc.php (used to change sources in familyscreen).
+        // Remark: source_change in editorModel.php (used to change sources in familyscreen).
         if (isset($_POST['source_change2'])) {
             $sql = "UPDATE humo_sources SET
             source_status='" . $editor_cls->text_process($_POST['source_status']) . "',

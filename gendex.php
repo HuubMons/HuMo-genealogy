@@ -16,7 +16,7 @@ $humo_option = $GeneralSettings->get_humo_option($dbh);
 
 include_once(__DIR__ . "/include/personCls.php");
 
-include_once(__DIR__ . "/include/DbFunctions.php");
+include_once(__DIR__ . "/include/dbFunctions.php");
 $db_functions = new DbFunctions($dbh);
 
 // *** Database ***
@@ -26,7 +26,7 @@ foreach ($datasql as $dataDb) {
     // *** Check is family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($dataDb->tree_id, $hide_tree_array)) {
-            $person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $dataDb->tree_id . "' ORDER BY pers_lastname");
+        $person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $dataDb->tree_id . "' ORDER BY pers_lastname");
         //GENDEX:
         //person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
         //Birthdate|Birthplace|Deathdate|Deathplace|

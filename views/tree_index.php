@@ -9,7 +9,7 @@
 
 // TODO create seperate controller script.
 // Allready prepared controller. But can't use it yet because of tree_index and mainindex.
-$mainindex = new TreeIndexModel($dbh);
+$mainindex = new TreeIndexModel($dbh, $humo_option);
 $tree_index["items"] = $mainindex->show_tree_index();
 
 

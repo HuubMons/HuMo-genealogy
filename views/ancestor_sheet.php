@@ -22,7 +22,7 @@ $db_functions->check_person($data["main_person"]);
 // box_appearance (large, medium, small, and some other boxes...)
 function ancestor_chart_person($id, $box_appearance)
 {
-    global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
+    global $dbh, $db_functions, $humo_option, $user;
     global $data, $language, $screen_mode, $dirmark1, $dirmark2;
 
     include_once(__DIR__ . "/../admin/include/media_inc.php");
@@ -255,7 +255,6 @@ function check_gen($start, $end)
                 &nbsp;&nbsp; <form method="POST" action="<?= $uri_path; ?>views/ancestor_sheet_pdf.php?show_sources=1" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
-                    <input type="hidden" name="database" value="<?= $_SESSION['tree_prefix']; ?>">
                     <input type="hidden" name="screen_mode" value="ASPDF">
                     <input type="submit" class="btn btn-sm btn-info" value="<?= __('PDF'); ?>" name="submit">
                 </form>

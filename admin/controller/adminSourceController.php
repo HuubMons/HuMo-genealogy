@@ -17,6 +17,9 @@ class AdminSourceController
 
         $editSource['editor_cls'] = $this->editor_cls;
 
+        $sources = $editSourceModel->get_sources($dbh, $tree_id);
+        $editSource = array_merge($editSource, $sources);
+
         return $editSource;
     }
 }
