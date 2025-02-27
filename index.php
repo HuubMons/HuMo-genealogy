@@ -385,12 +385,16 @@ if ($page == 'address') {
     //$tree_index["items"] = $controllerObj->get_items($dbh, $humo_option);
 }
 
+// *** If page isn't valid, show 400 Bad Request page ***
 /*
-400 Bad Request
-403 Forbidden
-404 Not Found
-410 Gone
-429 Too Many Requests (RFC 6585)
+if ($index['page400']) {
+    header("HTTP/1.1 400 Bad Request");
+?>
+    <h1><?= __('400 Bad Request'); ?></h1>
+    <p><?= __('Bad request'); ?></p>
+<?php
+    exit();
+}
 */
 
 // *** If page isn't valid, show 403 Forbidden page ***
@@ -405,12 +409,55 @@ if ($index['page403']) {
 }
 */
 
+
+/*
+if (@$_SESSION['last_request'] > time() - 1) {
+?>
+    <div class="centered"><strong>TOO MANY REQUESTS</strong>
+        <hr>
+        <p><em>You are allowed 1 request every second.</em></p>
+    </div>
+<?php
+    exit;
+}
+$_SESSION['last_request'] = time();
+*/
+
 // *** If page isn't valid, show 404 Not Found page ***
 if ($index['page404']) {
     header("HTTP/1.1 404 Not Found");
+    //http_response_code(404);
 ?>
-    <h1><?= __('404 Not Found'); ?></h1>
-    <p><?= __('Page not found'); ?></p>
+
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <!-- Bootstrap: rescale pages for mobile devices -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <title><?= __('404 Not Found'); ?></title>
+    </head>
+
+    <body>
+
+        <div class="row mt-5"></div>
+
+        <div class="row mt-5">
+            <div class="col-md-3"></div>
+            <div class="col bg-primary-subtle border border-primary-subtle rounded-3 p-4">
+                <h1 class="text-center"><?= __('404 Not Found'); ?></h1>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+
+    </body>
+
+    </html>
+
 <?php
     exit();
 }

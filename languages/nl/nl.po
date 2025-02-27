@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-24 12:16+0100\n"
-"PO-Revision-Date: 2025-02-24 12:16+0100\n"
+"POT-Creation-Date: 2025-02-26 20:00+0100\n"
+"PO-Revision-Date: 2025-02-26 20:00+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -1683,7 +1683,7 @@ msgstr "Soms is er een beta versie beschikbaar."
 #: admin/update/install_update.php:69
 #, php-format
 msgid "%s beta version available"
-msgstr "%s geen beta versie beschikbaar"
+msgstr "%s beta versie beschikbaar"
 
 #: admin/update/install_update.php:72
 msgid "No beta version available."
@@ -8916,6 +8916,14 @@ msgstr "huwelijksgetuige"
 #: include/witness.php:222
 msgid "marriage witness (religious)"
 msgstr "huwelijksgetuige (religieus)"
+
+#: index.php:412
+msgid "404 Not Found"
+msgstr "404 Niet gevonden"
+
+#: index.php:413
+msgid "Page not found"
+msgstr "Pagina niet gevonden"
 
 #: views/addresses.php:22 views/addresses.php:41
 msgid "City"

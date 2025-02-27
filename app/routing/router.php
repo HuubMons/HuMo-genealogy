@@ -150,7 +150,6 @@ class Router
 
         // *** Block links like: humo-gen/%3Cb%3E37%3C/languages/cs/flag.gif ***
         // *** %3Cb%3E = <b> ***
-        //if (strpos($request_uri, '%3Cb%3E37%3C') > 0) {
         if (strpos($request_uri, '%3Cb%3E') > 0) {
             $result_array['page404'] = true;
         }
