@@ -70,7 +70,8 @@ class Router
         //TODO remove global
         global $humo_option;
         $result_array = [];
-        $result_array['page404'] = false;
+        //$result_array['page404'] = false;
+        $result_array['page301'] = false;
 
         // *** Option url_rewrite disabled ***
         // http://127.0.0.1/HuMo-genealogy/index.php?page=ancestor_sheet&tree_id=3&id=I1180
@@ -143,15 +144,14 @@ class Router
             }
         }
 
-        // TEST
         //if (!isset($result_array['page'])){
         //    $result_array['wrong_page'] = true;
         //}
 
-        // *** Block links like: humo-gen/%3Cb%3E37%3C/languages/cs/flag.gif ***
+        // *** Reroute links like: humo-gen/%3Cb%3E37%3C/languages/cs/flag.gif ***
         // *** %3Cb%3E = <b> ***
-        if (strpos($request_uri, '%3Cb%3E') > 0) {
-            $result_array['page404'] = true;
+        if (strpos($_SERVER['REQUEST_URI'], '%3Cb%3E') > 0) {
+            $result_array['page301'] = str_replace('%3Cb%3E', '', $_SERVER['REQUEST_URI']);
         }
 
         return $result_array;

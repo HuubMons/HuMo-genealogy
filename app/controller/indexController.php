@@ -53,6 +53,7 @@ class IndexController
         $index = array_merge($index, $family_tree);
 
         $index['page404'] = $indexModel->get_page404();
+        $index['page301'] = $indexModel->get_page301();
 
         return $index;
     }

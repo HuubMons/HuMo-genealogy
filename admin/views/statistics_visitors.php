@@ -33,30 +33,54 @@
 </div><br>
 
 <?php
-// Graphic of present month
+// *** Show graphic of present month ***
 if ($statistics['month'] == $statistics['present_month'] && $statistics['year'] == $statistics['present_year']) {
     calender($statistics['month'], $statistics['year'], true);
 } else {
     calender($statistics['month'], $statistics['year'], false);
 }
 
-// year graphic
+// *** Show year graphic ***
 echo '<br>';
 year_graphics($statistics['month'], $statistics['year']);
 ?>
 
 <br><b><?= __('User agent information'); ?></b><br>
-<?php
-// *** Show user agent info (50 most used user agents) ***
-$datasql = $dbh->query("SELECT stat_user_agent, count(humo_stat_date.stat_user_agent) as count_lines
-    FROM humo_stat_date WHERE stat_user_agent LIKE '_%' GROUP BY humo_stat_date.stat_user_agent ORDER BY count_lines desc LIMIT 0,50");
+<div class="container">
+    <?php
+    // *** Show user agent info (50 most used user agents) ***
+    $datasql = $dbh->query("SELECT stat_ip_address, stat_user_agent, count(humo_stat_date.stat_user_agent) as count_lines
+        FROM humo_stat_date WHERE stat_user_agent LIKE '_%' GROUP BY humo_stat_date.stat_user_agent ORDER BY count_lines desc LIMIT 0,50");
 
-while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-    $stat_user_agent = $dataDb->stat_user_agent;
-    if (count_chars($stat_user_agent) > 150) {
-        $stat_user_agent = substr($stat_user_agent, 0, 150) . '...';
-    }
-?>
-    <b><?= $dataDb->count_lines; ?></b> <?= $stat_user_agent; ?><br>
-<?php
-}
+    while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+    ?>
+        <div class="row mt-2">
+            <div class="col-1">
+                <b><?= $dataDb->count_lines; ?></b>
+            </div>
+            <div class="col-11">
+                <?= $dataDb->stat_user_agent; ?>
+            </div>
+        </div>
+    <?php } ?>
+</div>
+
+<br><b><?= __('Visitor IP addresses'); ?></b><br>
+<div class="container">
+    <?php
+    // *** Show user agent info (50 most used user agents) ***
+    $datasql = $dbh->query("SELECT stat_ip_address, count(humo_stat_date.stat_ip_address) as count_lines
+        FROM humo_stat_date WHERE stat_ip_address LIKE '_%' GROUP BY humo_stat_date.stat_ip_address ORDER BY count_lines desc LIMIT 0,50");
+
+    while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+    ?>
+        <div class="row mt-2">
+            <div class="col-1">
+                <b><?= $dataDb->count_lines; ?></b>
+            </div>
+            <div class="col-11">
+                <?= $dataDb->stat_ip_address; ?>
+            </div>
+        </div>
+    <?php } ?>
+</div>

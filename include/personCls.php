@@ -11,7 +11,6 @@ class PersonCls
     public $personDb = null;  // Database record
     public $privacy = false;  // Person privacy
 
-    // *** Jul 2023: new constructor ***
     public function __construct($personDb = null)
     {
         $this->personDb = $personDb;    // Database record        

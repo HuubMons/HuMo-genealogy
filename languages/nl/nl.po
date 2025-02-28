@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 20:00+0100\n"
-"PO-Revision-Date: 2025-02-26 20:00+0100\n"
+"POT-Creation-Date: 2025-02-27 16:12+0100\n"
+"PO-Revision-Date: 2025-02-27 16:12+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -6000,6 +6000,10 @@ msgstr "VERWIJDER statistiek gegevens"
 msgid "User agent information"
 msgstr "User agent informatie"
 
+#: admin/views/statistics_visitors.php:68
+msgid "Visitor IP addresses"
+msgstr "IP-adressen van bezoekers"
+
 #: admin/views/thumbs.php:26 admin/views/thumbs.php:143
 #: admin/views/thumbs.php:150
 msgid "Show thumbnails"
@@ -8917,13 +8921,9 @@ msgstr "huwelijksgetuige"
 msgid "marriage witness (religious)"
 msgstr "huwelijksgetuige (religieus)"
 
-#: index.php:412
+#: index.php:442 index.php:452
 msgid "404 Not Found"
 msgstr "404 Niet gevonden"
-
-#: index.php:413
-msgid "Page not found"
-msgstr "Pagina niet gevonden"
 
 #: views/addresses.php:22 views/addresses.php:41
 msgid "City"
@@ -10963,6 +10963,9 @@ msgstr "Selecteer een thema"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Standaard-kleuren"
+
+#~ msgid "Page not found"
+#~ msgstr "Pagina niet gevonden"
 
 #~ msgid ""
 #~ "Multiple updates will be done. It is recommended to do a database backup!"
