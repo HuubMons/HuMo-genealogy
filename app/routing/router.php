@@ -152,6 +152,7 @@ class Router
         // *** %3Cb%3E = <b> ***
         if (strpos($_SERVER['REQUEST_URI'], '%3Cb%3E') > 0) {
             $result_array['page301'] = str_replace('%3Cb%3E', '', $_SERVER['REQUEST_URI']);
+            $result_array['page301'] = str_replace('%3C', '', $result_array['page301']);
         }
 
         return $result_array;
