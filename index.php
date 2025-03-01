@@ -400,10 +400,10 @@ $_SESSION['last_request'] = time();
 */
 
 // *** 301 code: generate 301 redirect ***
-if ($index['page301'] != '') {
-    header("HTTP/1.1 301 Moved Permanently");
-    header("Location: " . $index['page301']);
-}
+//if ($index['page301'] != '') {
+//    header("HTTP/1.1 301 Moved Permanently");
+//    header("Location: " . $index['page301']);
+//}
 
 $error_page = '';
 //if ($index['page403']) {

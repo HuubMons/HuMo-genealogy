@@ -1,6 +1,7 @@
 # Enable these lines when website is slow because of search engine indexation 
 BrowserMatchNoCase "claudebot" bad_bot
 BrowserMatchNoCase "facebookexternalhit/1.1" bad_bot
+BrowserMatchNoCase "meta-externalagent/1.1" bad_bot
 BrowserMatchNoCase "Python/3.10 aiohttp/3.9.3" bad_bot
 Order Deny,Allow
 Deny from env=bad_bot

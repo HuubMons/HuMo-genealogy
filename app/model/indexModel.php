@@ -144,12 +144,12 @@ class IndexModel
             }
         }
 
-        //if ($matchedRoute['page404']) {
-        //    $this->page404 = true;
-        //}
-        if ($matchedRoute['page301']) {
-            $this->page301 = $matchedRoute['page301'];
+        if ($matchedRoute['page404']) {
+            $this->page404 = true;
         }
+        //if ($matchedRoute['page301']) {
+        //    $this->page301 = $matchedRoute['page301'];
+        //}
 
         return $index;
     }
@@ -286,7 +286,8 @@ class IndexModel
 
         // *** Check for invalid family tree id: show 404 page ***
         // TODO for some reason $database doesn't work here. So skip this check for now.
-        if ($this->page301 == '' && !is_numeric($check_tree_id) && !$database) {
+        //if ($this->page301 == '' && !is_numeric($check_tree_id) && !$database) {
+        if (!is_numeric($check_tree_id) && !$database) {
             $this->page404 = true;
         }
 
