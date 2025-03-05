@@ -7,13 +7,21 @@ HuMo-genealogy database update script by Huub Mons.
 */
 
 @set_time_limit(4000);
+?>
 
-echo '<h2>UPDATE PROCEDURE</h2>';
+<h2><?= __('Update procedure'); ?></h2>
 
-echo __('Multiple updates will be done. It is recommended to do a database backup!<br><b>NEVER INTERRUPT THE UPDATE PROCEDURE!</b><br><b>Please wait until the notice that the update has been completed!</b>');
+<?= __('Multiple updates will be done. It is recommended to do a database backup!'); ?><br>
 
-if (!isset($_GET['proceed'])) {
-    echo '<p><a href="index.php?page=update&proceed=1">START UPDATE PROCEDURE</a>';
+<div class="alert alert-danger my-2" role="alert">
+    <b><?= __('NEVER INTERRUPT THE UPDATE PROCEDURE!'); ?></b>
+</div>
+
+<b><?= __('Please wait until the notice that the update has been completed!'); ?></b>
+
+<?php if (!isset($_GET['proceed'])) { ?>
+    <div class="mt-2"><a href="index.php?page=update&proceed=1"><?= __('Start update procedure'); ?></a></div>
+<?php
 } else {
     // *** Use class for multiple update scripts ***
     $update_cls = new UpdateCls;

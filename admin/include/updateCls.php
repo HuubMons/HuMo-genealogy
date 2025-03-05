@@ -1893,7 +1893,7 @@ class UpdateCls
         // *** Update "update_status" to number 7 ***
         $dbh->query("UPDATE humo_settings SET setting_value='7' WHERE setting_variable='update_status'");
 
-        echo ' Database updated!';
+        echo ' ' . __('Database updated!');
         echo '</td></tr>';
     }
 
@@ -2830,7 +2830,7 @@ class UpdateCls
         // *** Update "update_status" to number 8 ***
         $dbh->query("UPDATE humo_settings SET setting_value='8' WHERE setting_variable='update_status'");
 
-        echo ' Database updated!';
+        echo ' ' . __('Database updated!');
         echo '</td></tr>';
     }
 
@@ -2902,7 +2902,7 @@ class UpdateCls
         // *** Update "update_status" to number 9 ***
         $dbh->query("UPDATE humo_settings SET setting_value='9' WHERE setting_variable='update_status'");
 
-        echo ' Database updated!';
+        echo ' ' . __('Database updated!');
         echo '</td></tr>';
     }
 
@@ -3039,7 +3039,7 @@ class UpdateCls
         // *** Update "update_status" to number 10 ***
         $dbh->query("UPDATE humo_settings SET setting_value='10' WHERE setting_variable='update_status'");
 
-        echo ' Database updated!';
+        echo ' ' . __('Database updated!');
         echo '</td></tr>';
     }
 
@@ -3220,7 +3220,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v5_2_5").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v5_2_5").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }
@@ -3357,7 +3357,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v5_6_1").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v5_6_1").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }
@@ -3500,7 +3500,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v5_7").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v5_7").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }
@@ -3579,7 +3579,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v5_9").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v5_9").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }
@@ -3670,7 +3670,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v6_0_1").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v6_0_1").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }
@@ -3860,7 +3860,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v6_4_1").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v6_4_1").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }
@@ -3998,7 +3998,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v6_7_2").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v6_7_2").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }
@@ -4130,7 +4130,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v6_7_9").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v6_7_9").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }
@@ -4206,7 +4206,7 @@ class UpdateCls
 
         // *** Show status of database update ***
         //ob_start();
-        echo '<script>document.getElementById("information v6_7_9a").innerHTML="Database updated!";</script>';
+        echo '<script>document.getElementById("information v6_7_9a").innerHTML="' . __('Database updated!') . '";</script>';
         //ob_flush();
         flush();
     }

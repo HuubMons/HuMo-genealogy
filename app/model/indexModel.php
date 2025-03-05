@@ -1,11 +1,16 @@
 <?php
 class IndexModel
 {
-    private $page403 = false;
+    private $page404 = false;
+    private $page301 = '';
 
-    public function get_page403()
+    public function get_page404()
     {
-        return $this->page403;
+        return $this->page404;
+    }
+    public function get_page301()
+    {
+        return $this->page301;
     }
 
     public function login($dbh, $db_functions, $visitor_ip)
@@ -139,9 +144,12 @@ class IndexModel
             }
         }
 
-        if ($matchedRoute['wrong_page']) {
-            $this->page403 = true;
+        if ($matchedRoute['page404']) {
+            $this->page404 = true;
         }
+        //if ($matchedRoute['page301']) {
+        //    $this->page301 = $matchedRoute['page301'];
+        //}
 
         return $index;
     }
@@ -273,13 +281,14 @@ class IndexModel
         }
 
         // *** Set variable for queries ***
-        // TODO: remove these variables
+        // TODO: remove this variable
         $index['tree_prefix_quoted'] = $index['tree_prefix'];
 
-        // *** Check for invalid family tree id: show 403 page ***
+        // *** Check for invalid family tree id: show 404 page ***
         // TODO for some reason $database doesn't work here. So skip this check for now.
+        //if ($this->page301 == '' && !is_numeric($check_tree_id) && !$database) {
         if (!is_numeric($check_tree_id) && !$database) {
-            $this->page403 = true;
+            $this->page404 = true;
         }
 
         return $index;

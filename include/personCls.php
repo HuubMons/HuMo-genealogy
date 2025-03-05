@@ -11,7 +11,6 @@ class PersonCls
     public $personDb = null;  // Database record
     public $privacy = false;  // Person privacy
 
-    // *** Jul 2023: new constructor ***
     public function __construct($personDb = null)
     {
         $this->personDb = $personDb;    // Database record        
@@ -939,8 +938,8 @@ class PersonCls
                     $vars['pers_family'] = $pers_family;
                     $path_tmp = $link_cls->get_link($uri_path, 'family', $personDb->pers_tree_id, true, $vars);
                     $path_tmp .= "main_person=" . $personDb->pers_gedcomnumber . '&amp;descendant_report=1';
-                    $text .= '<a href="' . $path_tmp . '"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a>';
-                    $popover_content .= '<li><a href="' . $path_tmp . '"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a></li>';
+                    $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a>';
+                    $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a></li>';
                 }
             }
 
@@ -948,8 +947,8 @@ class PersonCls
                 // == Ancestor report: link & icons by Klaas de Winkel ==
                 $vars['id'] = $personDb->pers_gedcomnumber;
                 $path_tmp = $link_cls->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, false, $vars);
-                $text .= '<a href="' . $path_tmp . '"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a>';
-                $popover_content .= '<li><a href="' . $path_tmp . '"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a></li>';
+                $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a>';
+                $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a></li>';
             }
 
             // check for timeline folder and tml files
@@ -963,15 +962,15 @@ class PersonCls
                 if ($user['group_gen_protection'] == 'n' && $tmldates == 1) {
                     $vars['pers_gedcomnumber'] = $personDb->pers_gedcomnumber;
                     $path_tmp = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
-                    $text .= '<a href="' . $path_tmp . '"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a>';
-                    $popover_content .= '<li><a href="' . $path_tmp . '"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a></li>';
+                    $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a>';
+                    $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a></li>';
                 }
             }
 
             if ($user["group_relcalc"] == 'j') {
                 $relpath = $link_cls->get_link($uri_path, 'relations', $personDb->pers_tree_id, true);
-                $text .= '<a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a>';
-                $popover_content .= '<li><a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a></li>';
+                $text .= '<a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '" rel="nofollow"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a>';
+                $popover_content .= '<li><a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '" rel="nofollow"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a></li>';
             }
 
             // DNA charts
@@ -983,8 +982,8 @@ class PersonCls
                 } else {
                     $path_tmp = 'index.php?page=descendant_chart&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;dnachart=' . $charttype;
                 }
-                $text .= '<a href="' . $path_tmp . '"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a>';
-                $popover_content .= '<li><a href="' . $path_tmp . '"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a></li>';
+                $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a>';
+                $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a></li>';
             }
 
             if ($user['group_gen_protection'] == 'n' && $personDb->pers_famc != '' && $personDb->pers_fams != '' && $check_children) {
@@ -992,8 +991,8 @@ class PersonCls
                 $vars['pers_family'] = $pers_family;
                 $path_tmp = $link_cls->get_link($uri_path, 'hourglass', $personDb->pers_tree_id, true, $vars);
                 $path_tmp .= "main_person=" . $personDb->pers_gedcomnumber . '&amp;screen_mode=HOUR';
-                $text .= '<a href="' . $path_tmp . '"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a>';
-                $popover_content .= '<li><a href="' . $path_tmp . '"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a></li>';
+                $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a>';
+                $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a></li>';
             }
 
             // *** Editor link ***
@@ -1006,7 +1005,7 @@ class PersonCls
                     $popover_content .= '<li><b>' . __('Admin') . ':</b></li>';
 
                     $text .= '<a href="' . $path_tmp . '" target="_blank"><img src="images/person_edit.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Editor') . '</a>';
-                    $popover_content .= '<li><a href="' . $path_tmp . '" target="_blank"><img src="images/person_edit.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Editor') . '</a></li>';
+                    $popover_content .= '<li><a href="' . $path_tmp . '" target="_blank" rel="nofollow"><img src="images/person_edit.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Editor') . '</a></li>';
                 }
             }
 
@@ -1038,19 +1037,15 @@ class PersonCls
                 // *** Pop-up tekst ***
                 if (!$privacy) {
                     if ($personDb->pers_birth_date || $personDb->pers_birth_place) {
-                        $text .= __('*') . $dirmark1 . ' ' .
-                            date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
+                        $text .= __('*') . $dirmark1 . ' ' . date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
                     } elseif ($personDb->pers_bapt_date || $personDb->pers_bapt_place) {
-                        $text .= __('~') . $dirmark1 . ' ' .
-                            date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
+                        $text .= __('~') . $dirmark1 . ' ' . date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
                     }
 
                     if ($personDb->pers_death_date || $personDb->pers_death_place) {
-                        $text .= '<br>' . __('&#134;') . $dirmark1 . ' ' .
-                            date_place($personDb->pers_death_date, $personDb->pers_death_place);
+                        $text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . date_place($personDb->pers_death_date, $personDb->pers_death_place);
                     } elseif ($personDb->pers_buried_date || $personDb->pers_buried_place) {
-                        $text .= '<br>' . __('[]') . $dirmark1 . ' ' .
-                            date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
+                        $text .= '<br>' . __('[]') . $dirmark1 . ' ' . date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
                     }
 
                     // *** If needed add extra text in the pop-up box ***

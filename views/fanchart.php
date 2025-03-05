@@ -365,10 +365,10 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
                     } else {  // full dates
                         if ($birthyr) {
-                            $text2 .= "b." . language_date($birthyr) . "\n";
+                            $text2 .= __('b.') . language_date($birthyr) . "\n";
                         }
                         if ($deathyr) {
-                            $text2 .= "d." . language_date($deathyr);
+                            $text2 .= __('d.') . language_date($deathyr);
                         }
                     }
                 }
@@ -497,7 +497,8 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
 
     echo $imagemap;
 
-    $image_title = preg_replace("~<.*>~", "", $name) . "   - " . __('RELOAD FANCHART WITH \'VIEW\' BUTTON ON THE LEFT');
+    $name = str_replace('"', '', $name);
+    $image_title = preg_replace('~<.*>~', '', $name) . ' - ' . __('Reload fanchart with \'View\' button');
     echo "<p align=\"center\" >";
 
     ob_start();
@@ -561,8 +562,10 @@ if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {  // if someone c
     $menu_fan = "auto";
 }
 
-$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
-$path_tmp .= 'id=' . $data["main_person"];
+//$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
+//$path_tmp .= 'id=' . $data["main_person"];
+$vars['id'] = $data['main_person'];
+$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
 ?>
 
 <!-- Menu -->

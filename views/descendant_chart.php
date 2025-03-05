@@ -75,8 +75,8 @@ if ($hourglass === false) {
             endPos = ui.value;
             if (startPos != endPos) {
                 window.location.href = "' . $path2 . 'main_person=' . $data["main_person"] .
-        '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
-        '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
+                '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
+                '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
                 }
             startPos = endPos;
         });

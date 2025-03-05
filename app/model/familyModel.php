@@ -208,6 +208,7 @@ class FamilyModel
 
         if ($humo_option["url_rewrite"] == 'j') {
             $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person;
+            //$link = 'descendant_chart/' . $tree_id . '/' . $family_id . '/' . $main_person;
         } else {
             $link = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person;
         }
@@ -237,16 +238,16 @@ class FamilyModel
         <h1>' . __('Descendants') . '</h1>
         <ul class="nav nav-tabs d-print-none" id="nav-tab">
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][0] . '" href="' . $data['header_link'][0] . '">' . $data['header_text'][0] . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][0] . '" href="' . $data['header_link'][0] . '" rel="nofollow">' . $data['header_text'][0] . '</a>
             </li>
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][1] . '" href="' . $data['header_link'][1] . '">' . $data['header_text'][1] . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][1] . '" href="' . $data['header_link'][1] . '" rel="nofollow">' . $data['header_text'][1] . '</a>
             </li>
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][2] . '" href="' . $data['header_link'][2] . '">' . $data['header_text'][2] . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][2] . '" href="' . $data['header_link'][2] . '" rel="nofollow">' . $data['header_text'][2] . '</a>
             </li>
             <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][3] . '" href="' . $data['header_link'][3] . '">' . $data['header_text'][3] . '</a>
+                <a class="nav-link genealogy_nav-link ' . $data['header_active'][3] . '" href="' . $data['header_link'][3] . '" rel="nofollow">' . $data['header_text'][3] . '</a>
             </li>
         </ul>
         <!-- Align content to the left -->
