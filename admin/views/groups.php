@@ -408,7 +408,12 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <!-- New dec 2024: use privacy profile -->
         <tr>
-            <th><?= __('Use privacy profile'); ?></th>
+            <td>
+                <b><?= __('Use privacy profile'); ?></b><br><br>
+                <?php printf(__('Use %s to calculate privacy filter birthdates.'), '<a href="index.php?page=cal_date">' . __('Calculated birth date') . '</a>'); ?><br>
+                <?php printf(__('If needed use: %s per family tree.'), '<a href="index.php??page=tree&menu_admin=tree_data">' . __('Tree privacy') . '</a>'); ?>
+            </td>
+
             <th>
                 <select id="privacy_profile" onchange="myFunction()" class="form-select">
                     <option value=""><?= __('Set a default privacy profile'); ?></option>
@@ -424,8 +429,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
                     <option value="low" <?= ($groupDb->group_privacy == 'n' && $groupDb->group_alive != 'n' && $groupDb->group_filter_name == 'j') ? 'selected' : ''; ?>>
                         <?= __('Privacy profile: low (show names, hide data)'); ?>
                     </option>
-                </select><br>
-                <?php printf(__('Also use %s to calculate privacy filter birthdates'), '<a href="index.php?page=cal_date">' . __('Calculated birth date') . '</a>'); ?>
+                </select>
             </th>
 
             <script>
@@ -672,9 +676,7 @@ If possible, try to filter with that'); ?></i>
                     <input type="checkbox" name="edit_tree_<?= $data3Db->tree_id; ?>" <?= $check . $disabled; ?>>
                 </td>
             </tr>
-        <?php
-        }
-        ?>
+        <?php } ?>
     </table>
 
     <?php
