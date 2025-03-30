@@ -819,4 +819,108 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </div>
         </div>
     </div>
+
+    <div class="genealogy_search p-2 my-2" id="country_statistics">
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <h4><?= __('Settings for country statistics'); ?></h4>
+            </div>
+            <div class="col-md-8">
+                <input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success">
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <b><?= __('These are external services. It\'s recommended to check reliability of the services before use.'); ?></b>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('Disable collection of country statistics.'); ?></div>
+            <div class="col-md-8">
+                <div class="form-check">
+                    <input type="radio" value="ip_api_collection" name="ip_api" id="ip_api_collection" class="form-check-input" <?= $humo_option['ip_api_collection'] != '' ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="ip_api_enabled"><?= __('Disable collection of country statistics.'); ?></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('GeoPlugin: without license.'); ?></div>
+            <div class="col-md-8">
+                <div class="form-check">
+                    <input type="radio" value="ip_api_geoplugin_old" name="ip_api" id="ip_api_geoplugin_old" class="form-check-input" <?= $humo_option['ip_api_geoplugin_old'] == 'ena' ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="ip_api_geoplugin_old"><?= __('Use geoplugin.com.'); ?> <?= __('Default plugin in 2025, but will probably stop working in the future.'); ?></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('GeoPlugin: free license = max. 10 requests a day allowed.'); ?></div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input type="radio" value="ip_api_geoplugin" name="ip_api" id="ip_api_geoplugin" class="form-check-input" <?= $humo_option['geoplugin_checked'] == 'ena' ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="ip_api_geoplugin"><?= __('Use geoplugin.com.'); ?></label>
+                        </div>
+                        <label for="geoplugin">&nbsp;</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text"><?= __('API key'); ?></span>
+                            <input type="text" name="geoplugin_key" id="geoplugin_key" value="<?= $humo_option['geoplugin_key']; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('ip-api: free license = max. 45 requests an hour allowed.'); ?></div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input type="radio" value="ip_api_ip_api" name="ip_api" id="ip_api_ip_api" class="form-check-input" <?= $humo_option['ip_api_checked'] == 'ena' ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="ip_api_ip_api"><?= __('Use ip-api.com.'); ?></label>
+                        </div>
+                        <label for="ip_api_ip_api">&nbsp;</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text"><?= __('API key'); ?></span>
+                            <input type="text" name="ip_api_key" id="ip_api_key" value="" class="form-control form-control-sm" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- freeipapi.com -->
+        <div class="row mb-2">
+            <div class="col-md-4"><?= __('FreeIPAPI: free license = max. 60 requests a minute allowed.'); ?></div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input type="radio" value="ip_api_freeipapi" name="ip_api" id="ip_api_freeipapi" class="form-check-input" <?= $humo_option['freeipapi_checked'] == 'ena' ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="ip_api_freeipapi"><?= __('Use FreeIPAPI.com.'); ?></label>
+                        </div>
+                        <label for="freeipapi">&nbsp;</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text"><?= __('API key'); ?></span>
+                            <input type="text" name="freeipapi_key" id="freeipapi_key" value="<?= $humo_option['freeipapi_key']; ?>" class="form-control form-control-sm" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </form>

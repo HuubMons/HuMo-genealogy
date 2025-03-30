@@ -120,7 +120,7 @@ if ($temp->rowCount()) {
     $stat = $dbh->query($statqry);
 
 ?>
-    <div class="row mb-2">
+    <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
             <table class="table" border="1" cellspacing="0">
@@ -155,10 +155,16 @@ if ($temp->rowCount()) {
             </table>
         </div>
     </div>
+<?php } ?>
+<div class="row mb-2">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <?= $humo_option['ip_api_collection'] != '' ? '<b>' . __('Collection of country statistics is disabled!') . '</b><br>' : ''; ?>
+        <a href="index.php?page=settings#country_statistics"><?= __('Settings for country statistics'); ?></a>
+    </div>
+</div>
+
 <?php
-}
-
-
 $nr_lines = 15; // *** Nr. of statistics lines ***
 
 //$family_qry=$dbh->query("SELECT *, count(humo_stat_date.stat_easy_id) as count_lines

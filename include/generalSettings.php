@@ -16,7 +16,7 @@ class GeneralSettings
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
         // *** Beta (not stable enough for production, but it's functional ***
-        $humo_option["version"]='BETA version 26 feb. 2025';  // Version line, DO NOT CHANGE THIS LINE
+        $humo_option["version"] = 'BETA version 26 feb. 2025';  // Version line, DO NOT CHANGE THIS LINE
         //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
         // *** Version date, needed for update check ***
@@ -500,6 +500,62 @@ class GeneralSettings
         if (!isset($humo_option["media_privacy_mode"])) {
             $humo_option["media_privacy_mode"] = 'n';
             $dbh->query("INSERT INTO humo_settings SET setting_variable='media_privacy_mode', setting_value='n'");
+        }
+
+        // *** IP API used for country statistics ***
+        if (!isset($humo_option["ip_api_collection"])) {
+            $humo_option["ip_api_collection"] = '';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_collection', setting_value=''");
+        }
+
+        if (!isset($humo_option["ip_api_geoplugin_old"])) {
+            // *** Default option in 2025 ***
+            $humo_option["ip_api_geoplugin_old"] = 'ena';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_geoplugin_old', setting_value='ena'");
+        }
+
+        if (!isset($humo_option["ip_api_geoplugin"])) {
+            $humo_option["ip_api_geoplugin"] = '';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_geoplugin', setting_value=''");
+        }
+        $plugin = explode('|', $humo_option['ip_api_geoplugin']);
+        $humo_option['geoplugin_checked'] = 'dis';
+        if ($plugin[0] == 'ena' || $plugin[0] == 'dis') {
+            $humo_option['geoplugin_checked'] = $plugin[0];
+        }
+        $humo_option['geoplugin_key'] = '';
+        if (isset($plugin[1])) {
+            $humo_option['geoplugin_key'] = $plugin[1];
+        }
+
+        // ip-api.com
+        if (!isset($humo_option["ip_api_ip_api"])) {
+            $humo_option["ip_api_ip_api"] = '';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_ip_api', setting_value=''");
+        }
+        $plugin = explode('|', $humo_option['ip_api_ip_api']);
+        $humo_option['ip_api_checked'] = 'dis';
+        if ($plugin[0] == 'ena' || $plugin[0] == 'dis') {
+            $humo_option['ip_api_checked'] = $plugin[0];
+        }
+        $humo_option['ip_api_key'] = '';
+        if (isset($plugin[1])) {
+            $humo_option['ip_api_key'] = $plugin[1];
+        }
+
+        // freeipapi.com
+        if (!isset($humo_option["ip_api_freeipapi"])) {
+            $humo_option["ip_api_freeipapi"] = '';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_freeipapi', setting_value=''");
+        }
+        $plugin = explode('|', $humo_option['ip_api_freeipapi']);
+        $humo_option['freeipapi_checked'] = 'dis';
+        if ($plugin[0] == 'ena' || $plugin[0] == 'dis') {
+            $humo_option['freeipapi_checked'] = $plugin[0];
+        }
+        $humo_option['freeipapi_key'] = '';
+        if (isset($plugin[1])) {
+            $humo_option['freeipapi_key'] = $plugin[1];
         }
 
         return $humo_option;

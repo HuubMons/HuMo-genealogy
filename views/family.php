@@ -382,26 +382,83 @@ else {
                         } catch (PDOException $e) {
                             //echo $e->getMessage() . '<br>';
                         }
-
                         $record = $qry->fetch(PDO::FETCH_OBJ);
+
+                        // *** Get country code ***
                         if (!isset($record->stat_country_ip_address)) {
                             if (strlen($visitor_ip) > 6) {
-                                $sql = "INSERT INTO humo_stat_country
-                                    SET stat_country_ip_address = :stat_country_ip_address,
-                                    stat_country_code =:stat_country_code";
+                                $stat_country_code = '';
 
-                                // *** Get country code ***
-                                include_once(__DIR__ . '/../include/geoplugin/geoplugin.class.php');
-                                $geoplugin = new geoPlugin();
-                                $geoplugin->locate();
+                                // *** Test only ***
+                                //$visitor_ip = '8.8.8.8';
 
-                                try {
-                                    $qry = $dbh->prepare($sql);
-                                    $qry->bindValue(':stat_country_ip_address', $visitor_ip, PDO::PARAM_STR);
-                                    $qry->bindValue(':stat_country_code', $geoplugin->countryCode, PDO::PARAM_STR);
-                                    $qry->execute();
-                                } catch (PDOException $e) {
-                                    //echo $e->getMessage() . '<br>';
+                                // *** Geoplugin without key (old method in 2025) ***
+                                if ($humo_option['ip_api_geoplugin_old'] == 'ena') {
+                                    include_once(__DIR__ . '/../include/geoplugin/geoplugin.class.php');
+                                    $geoplugin = new geoPlugin();
+                                    $geoplugin->locate();
+                                    $stat_country_code = $geoplugin->countryCode;
+                                }
+
+                                // *** GeoPlugin using key ***
+                                if ($humo_option['geoplugin_checked'] == 'ena') {
+                                    $url = "https://api.geoplugin.com?ip=" . $visitor_ip . "&auth=" . $humo_option['geoplugin_key'];
+                                    $response = file_get_contents($url);
+                                    $ip_data = json_decode($response);
+                                    $stat_country_code = $ip_data->geoplugin_countryCode;
+                                }
+
+                                // *** IP-API ***
+                                $url = "http://ip-api.com/json/$visitor_ip";
+                                $response = file_get_contents($url);
+                                $ip_data = json_decode($response, true);
+                                if (isset($ip_data['countryCode'])) {
+                                    $stat_country_code = $ip_data['countryCode'];
+                                }
+
+                                // *** FreeIPAPI ***
+                                if ($humo_option['freeipapi_checked'] == 'ena') {
+                                    // *** FreeIPAPI without key ***
+                                    $url = "https://freeipapi.com/api/json/$visitor_ip";
+                                    $response = file_get_contents($url);
+                                    $ip_data = json_decode($response, true);
+                                    if (isset($ip_data->countryCode)) {
+                                        $stat_country_code = $ip_data['countryCode'];
+                                    }
+                                    //print_r($ip_data);
+                                    //echo '<br>'.$ip_data['ipAddress'].'<br>';
+
+                                    /*
+                                    // *** FreeIPAPI could use a key using a bearer token. Example from internet: ***
+                                    $apiUrl = "https://freeipapi.com/api/json/$visitor_ip";
+
+                                    // Initialize cURL session
+                                    $ch = curl_init($apiUrl);
+                                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                                        'Authorization: Bearer ' . $humo_option['freeipapi_key'],
+                                        'Content-Type: application/json'
+                                    ]);
+                                    $response = curl_exec($ch);
+                                    if (curl_errno($ch)) {
+                                        //echo 'Error:' . curl_error($ch);
+                                    } else {
+                                        // Decode the JSON response
+                                        $ip_data = json_decode($response, true);
+                                        //print_r($ip_data);
+                                    }
+                                    */
+                                }
+
+                                if ($stat_country_code) {
+                                    try {
+                                        $qry = $dbh->prepare("INSERT INTO humo_stat_country SET stat_country_ip_address = :stat_country_ip_address, stat_country_code =:stat_country_code");
+                                        $qry->bindValue(':stat_country_ip_address', $visitor_ip, PDO::PARAM_STR);
+                                        $qry->bindValue(':stat_country_code', $stat_country_code, PDO::PARAM_STR);
+                                        $qry->execute();
+                                    } catch (PDOException $e) {
+                                        //echo $e->getMessage() . '<br>';
+                                    }
                                 }
                             }
                         }
