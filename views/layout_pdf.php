@@ -3,8 +3,6 @@ session_start();
 
 // *** Seperate file for PDF scripts. Copy of layout.php ***
 
-
-
 /** Dec. 2024: Added autoload.
  *    Name of class = SomethingClass.
  *    Name of script: SomethingClass.php ***
@@ -143,9 +141,6 @@ $pdf_font = 'DejaVu';
 //define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
 require(__DIR__ . '/../include/tfpdf/tfpdf.php');
 require(__DIR__ . '/../include/tfpdf/tfpdfextend.php');
-
-// *** TODO check if this is still needed. Set variabele for queries ***
-//$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 
 // *** Added in nov 2023 (used in outline_report_pdf.php) ***
 $tree_id = 0;

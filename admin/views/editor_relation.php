@@ -328,7 +328,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
             ?>
 
-            <tr class="humo_color">
+            <tr>
                 <td><a name="relation"></a>
                     <!-- <a href="#marriage" onclick="hideShow(6);"><span id="hideshowlink6">[+]</span></a> -->
                     <?= __('Living together'); ?>
@@ -481,7 +481,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
             ?>
 
-            <tr class="humo_color">
+            <tr>
                 <td><a name="marriage_relation"></a>
                     <!-- <a href="#marriage" onclick="hideShow(8);"><span id="hideshowlink8">[+]</span></a> -->
                     <!-- <?= __('Marriage'); ?></td> -->
@@ -711,7 +711,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
             ?>
 
-            <tr class="humo_color">
+            <tr>
                 <td><a name="marr_church"></a>
                     <?= __('Religious Marriage'); ?>
                 </td>
@@ -785,7 +785,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             ?>
 
             <!-- Religion -->
-            <tr class="humo_color">
+            <tr>
                 <td rowspan="1"><?= __('Religion'); ?></td>
                 <td colspan="2">
                     <div class="row mb-2">
@@ -906,7 +906,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             </tr>
 
             <!-- General text by relation -->
-            <tr class="humo_color">
+            <tr>
                 <td><a name="fam_text"></a><?= __('Text by relation'); ?></td>
                 <td style="border-left:0px;">
                     <div class="row mb-2">

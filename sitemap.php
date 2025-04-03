@@ -1,5 +1,5 @@
 <?php
-header('Content-type: text/plain; charset=UTF-8');
+header('Content-type: application/xml; charset=UTF-8');
 
 /**
  * Show sitemap

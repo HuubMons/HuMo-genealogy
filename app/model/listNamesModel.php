@@ -218,13 +218,12 @@ class listNamesModel
                 if ($calculated < $list_names['count_persons']) {
                     $list_names["page_nr"][] = $i;
                     if ($list_names["item"] == $calculated) {
-                        $list_names["page_link"][$i] = '';
                         $list_names["page_status"][$i] = 'active';
                     } else {
                         $list_names['show_pagination'] = true;
-                        $list_names["page_link"][$i] = $uri_path_string . "start=" . $list_names["start"] . "&amp;item=" . $calculated;
                         $list_names["page_status"][$i] = '';
                     }
+                    $list_names["page_link"][$i] = $uri_path_string . "start=" . $list_names["start"] . "&amp;item=" . $calculated;
                 }
             }
 

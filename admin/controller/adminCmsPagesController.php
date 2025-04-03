@@ -16,10 +16,13 @@ class AdminCmsPagesController
         $CMS_pagesModel->update_pages($dbh);
 
         if ($edit_cms_pages['menu_tab'] === 'pages') {
-            $edit_cms_pages['pages_in_category'] = $CMS_pagesModel->get_pages_in_category($dbh);
+            $CMS_pagesModel->check_pages_in_category($dbh);
 
             $get_page = $CMS_pagesModel->get_page($dbh);
             $edit_cms_pages = array_merge($edit_cms_pages, $get_page);
+
+            $get_categories = $CMS_pagesModel->get_categories($dbh);
+            $edit_cms_pages = array_merge($edit_cms_pages, $get_categories);
         }
 
         return $edit_cms_pages;

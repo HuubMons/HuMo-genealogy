@@ -945,7 +945,7 @@ class ListModel
                 $counter = 0;
                 $multi_tree = '';
                 foreach ($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $datapdo) {
-                    if ($select_trees == "all_but_this" && $datapdo['tree_prefix'] == safe_text_db($_SESSION['tree_prefix'])) {
+                    if ($select_trees == "all_but_this" && $datapdo['tree_id'] == $tree_id) {
                         continue;
                     }
 
@@ -1052,7 +1052,7 @@ class ListModel
                 $counter = 0;
                 $multi_tree = '';
                 foreach ($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
-                    if ($select_trees == "all_but_this" && $pdoresult['tree_prefix'] == safe_text_db($_SESSION['tree_prefix'])) {
+                    if ($select_trees == "all_but_this" && $pdoresult['tree_id'] == $tree_id) {
                         continue;
                     }
                     // *** Check if family tree is shown or hidden for user group ***

@@ -116,7 +116,6 @@ while (isset($ancestor_array2[0])) {
                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
-                    <input type="hidden" name="database" value="<?= $_SESSION['tree_prefix']; ?>">
                     <input type="hidden" name="screen_mode" value="PDF">
 
                     <!-- needed to check PDF M/F/? icons -->

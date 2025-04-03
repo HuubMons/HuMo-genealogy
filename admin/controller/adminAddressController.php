@@ -17,6 +17,9 @@ class AdminAddressController
 
         $editAddress['editor_cls'] = $this->editor_cls;
 
+        $get_addresses = $editAddressModel->get_addresses($dbh, $tree_id);
+        $editAddress = array_merge($editAddress, $get_addresses);
+
         return $editAddress;
     }
 }

@@ -126,12 +126,11 @@ if ($person_result->rowCount() == 0) {
         if ($calculated < $count_persons) {
             $data["page_nr"][] = $i;
             if ($item == $calculated) {
-                $data["page_link"][$i] = '';
                 $data["page_status"][$i] = 'active';
             } else {
-                $data["page_link"][$i] = $uri_path_string . "start=" . $start . "&amp;item=" . $calculated;
                 $data["page_status"][$i] = '';
             }
+            $data["page_link"][$i] = $uri_path_string . "start=" . $start . "&amp;item=" . $calculated;
         }
     }
 

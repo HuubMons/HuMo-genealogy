@@ -95,6 +95,28 @@ class AdminSettingsModel
             $db_functions->update_settings('one_name_study', $_POST["one_name_study"]);
             $db_functions->update_settings('one_name_thename', $_POST["one_name_thename"]);
 
+            // *** IP API used for country statistics ***
+            if ($_POST['ip_api']) {
+                // *** Reset settings ***
+                $dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_collection'");
+                $dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_geoplugin_old'");
+                $dbh->query("UPDATE humo_settings SET setting_value='dis|" . substr($humo_option['ip_api_geoplugin'], 4) . "' WHERE setting_variable='ip_api_geoplugin'");
+                $dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_ip_api'");
+                $dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_freeipapi'");
+            }
+            if ($_POST['ip_api'] == 'ip_api_collection') {
+                // *** This option disables the ip_api setting ***
+                $dbh->query("UPDATE humo_settings SET setting_value='dis' WHERE setting_variable='ip_api_collection'");
+            } elseif ($_POST['ip_api'] == 'ip_api_geoplugin_old') {
+                $dbh->query("UPDATE humo_settings SET setting_value='ena' WHERE setting_variable='ip_api_geoplugin_old'");
+            } elseif ($_POST['ip_api'] == 'ip_api_geoplugin') {
+                $dbh->query("UPDATE humo_settings SET setting_value='ena|" . $_POST['geoplugin_key'] . "' WHERE setting_variable='ip_api_geoplugin'");
+            } elseif ($_POST['ip_api'] == 'ip_api_ip_api') {
+                $dbh->query("UPDATE humo_settings SET setting_value='ena' WHERE setting_variable='ip_api_ip_api'");
+            } elseif ($_POST['ip_api'] == 'ip_api_freeipapi') {
+                $dbh->query("UPDATE humo_settings SET setting_value='ena' WHERE setting_variable='ip_api_freeipapi'");
+            }
+
             if (strpos($humo_option['default_timeline'], $settings['time_lang'] . "!") === false) {
                 // no entry for this language yet - append it
                 $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'" . safe_text_db($_POST["default_timeline"]) . "') WHERE setting_variable='default_timeline'");

@@ -9,9 +9,51 @@ class AdminAddressModel
             $this->address_id = $_POST['address_id'];
         }
     }
+
     public function get_address_id()
     {
         return $this->address_id;
+    }
+
+    public function get_addresses($dbh, $tree_id)
+    {
+        $editAddress['search_gedcomnr'] = '';
+        if (isset($_POST['address_search_gedcomnr'])) {
+            $editAddress['search_gedcomnr'] = safe_text_db($_POST['address_search_gedcomnr']);
+        }
+        $editAddress['search_text'] = '';
+        if (isset($_POST['address_search'])) {
+            $editAddress['search_text'] = safe_text_db($_POST['address_search']);
+        }
+
+        $qry = "SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'";
+        if ($editAddress['search_gedcomnr']) {
+            $qry .= " AND address_gedcomnr LIKE '%" . safe_text_db($editAddress['search_gedcomnr']) . "%'";
+        }
+        if ($editAddress['search_text']) {
+            $qry .= " AND ( address_address LIKE '%" . safe_text_db($editAddress['search_text']) . "%' OR address_place LIKE '%" . safe_text_db($editAddress['search_text']) . "%')";
+        }
+        $qry .= " ORDER BY address_place, address_address LIMIT 0,200";
+
+        $address_qry = $dbh->query($qry);
+        while ($addressDb = $address_qry->fetch(PDO::FETCH_OBJ)) {
+            $editAddress['addresses_id'][] = $addressDb->address_id;
+
+            $editAddress['addresses_gedcomnr'][$addressDb->address_id] = $addressDb->address_gedcomnr;
+            $editAddress['addresses_place'][$addressDb->address_id] = $addressDb->address_place;
+            $editAddress['addresses_address'][$addressDb->address_id] = $addressDb->address_address;
+
+            if ($addressDb->address_text) {
+                $address_text = ' ' . substr($addressDb->address_text, 0, 40);
+                if (strlen($addressDb->address_text) > 40) {
+                    $address_text .= '...';
+                }
+                $editAddress['addresses_text'][$addressDb->address_id] = $address_text;
+            } else {
+                $editAddress['addresses_text'][$addressDb->address_id] = '';
+            }
+        }
+        return $editAddress;
     }
 
     public function update_address($dbh, $tree_id, $db_functions, $editor_cls): void

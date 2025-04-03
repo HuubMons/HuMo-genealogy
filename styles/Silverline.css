@@ -155,12 +155,3 @@ div.hour_ancestor_split {
 .table_headline {
     background: url("images_silverline/menuhover.jpg") repeat left top;
 }
-
-table.reltable td {
-    border: 0px;
-}
-
-table.reltable {
-    background: none;
-    background-image: none;
-}

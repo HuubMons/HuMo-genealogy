@@ -307,9 +307,8 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             $_SESSION['group_id_admin'] = $resultDb->user_group_id;
 
             // *** Add login in logbook ***
-            $log_date = date("Y-m-d H:i");
             $sql = "INSERT INTO humo_user_log SET
-                log_date='$log_date',
+                log_date='" . date("Y-m-d H:i") . "',
                 log_username='" . $resultDb->user_name . "',
                 log_ip_address='" . $visitor_ip . "',
                 log_user_admin='admin',
@@ -318,7 +317,6 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         }
     } else {
         // *** No valid user or password ***
-        //$fault='<p align="center"><font color="red">'.__('Please enter a valid username or password. ').'</font>';
         $fault = true;
 
         // *** Save log! ***
@@ -457,8 +455,6 @@ if (file_exists('../media/favicon.ico')) {
 
     <!-- Don't load all scripts for source editor (improves speed of page) -->
     <?php if ($popup == false) { ?>
-        <!-- Statistics style sheet -->
-        <link href="statistics/style.css" rel="stylesheet" type="text/css">
         <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
         <script src="include/popup_merge.js"></script>
     <?php } ?>
@@ -480,27 +476,27 @@ if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
         //if ($_GET['connect_sub_kind']=='pers_address_source') $page_link='edit_addresses';
         //if ($_GET['connect_sub_kind']=='fam_address_source') $page_link='edit_addresses';
         if ($_GET['connect_sub_kind'] == 'pers_event_source') {
-            $page_link = 'editor&event_person=1';
-        } // Don't use &amp;
+            $page_link = 'editor&event_person=1'; // Don't use &amp;
+        }
         if ($_GET['connect_sub_kind'] == 'fam_event_source') {
-            $page_link = 'editor&event_family=1';
-        } // Don't use &amp;
+            $page_link = 'editor&event_family=1'; // Don't use &amp;
+        }
     }
 
     // *** Added May 2021: For multiple marriages ***
     if (substr($_GET['connect_sub_kind'], 0, 3) === 'fam') {
-        $page_link .= '&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber'];
-    } // Don't use &amp;
+        $page_link .= '&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber']; // Don't use &amp;
+    }
 
     if (isset($_GET['event_person']) && $_GET['event_person'] == '1') {
-        $page_link = 'editor&event_person=1#event_person_link';
-    } // Don't use &amp;
+        $page_link = 'editor&event_person=1#event_person_link'; // Don't use &amp;
+    }
     //if (isset($_GET['event_family']) AND $_GET['event_family']=='1')
     //	$page_link='editor&event_family=1#event_family_link'; // Don't use &amp;
     // *** Added May 2021: For multiple marriages ***
     if (isset($_GET['event_family']) && $_GET['event_family'] == '1') {
-        $page_link = 'editor&event_family=1&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber'] . '#event_family_link';
-    } // Don't use &amp;
+        $page_link = 'editor&event_family=1&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber'] . '#event_family_link'; // Don't use &amp;
+    }
 
     echo '<script>';
     echo 'function redirect_to(where, closewin){
@@ -534,7 +530,7 @@ if ($popup == false) {
         <div id="humo_top" <?= $top_dir; ?>>
 
             <span id="top_website_name">
-                &nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy</a>
+                &nbsp;<a href="index.php">HuMo-genealogy</a>
             </span>
         <?php
     }

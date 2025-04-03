@@ -9,8 +9,8 @@ class Router
         ['path' => 'address', 'title' => 'Address', 'page' => 'address', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_report_rtf', 'title' => 'Ancestor report', 'page' => 'ancestor_report_rtf', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_report', 'title' => 'Ancestor report', 'page' => 'ancestor_report', 'vars' => 'select_tree_id,id'],
-        ['path' => 'ancestor_chart', 'title' => 'Ancestor chart', 'page' => 'ancestor_chart'],
-        ['path' => 'ancestor_sheet', 'title' => 'Ancestor sheet', 'page' => 'ancestor_sheet'],
+        ['path' => 'ancestor_chart', 'title' => 'Ancestor chart', 'page' => 'ancestor_chart', 'vars' => 'select_tree_id,id'],
+        ['path' => 'ancestor_sheet', 'title' => 'Ancestor sheet', 'page' => 'ancestor_sheet', 'vars' => 'select_tree_id,id'],
         ['path' => 'anniversary', 'title' => 'Birthday calendar', 'page' => 'anniversary'],
         ['path' => 'cms_pages', 'title' => 'Information', 'page' => 'cms_pages', 'vars' => 'id'],
         ['path' => 'cookies', 'title' => 'Cookie information', 'page' => 'cookies'],
@@ -19,7 +19,7 @@ class Router
         // *** Must be before family ***
         ['path' => 'family_rtf', 'title' => 'Family Page', 'page' => 'family_rtf'],
         ['path' => 'family', 'title' => 'Family Page', 'page' => 'family', 'vars' => 'select_tree_id,id'],
-        ['path' => 'fanchart', 'title' => 'Fanchart', 'page' => 'fanchart'],
+        ['path' => 'fanchart', 'title' => 'Fanchart', 'page' => 'fanchart', 'vars' => 'select_tree_id,id'],
         ['path' => 'help', 'title' => 'Help', 'page' => 'help'],
         ['path' => 'hourglass', 'title' => 'Hourglass', 'page' => 'hourglass', 'vars' => 'select_tree_id,id'],
         // *** Must be before index ***
@@ -70,6 +70,8 @@ class Router
         //TODO remove global
         global $humo_option;
         $result_array = [];
+        $result_array['page404'] = false;
+        //$result_array['page301'] = false;
 
         // *** Option url_rewrite disabled ***
         // http://127.0.0.1/HuMo-genealogy/index.php?page=ancestor_sheet&tree_id=3&id=I1180
@@ -100,26 +102,35 @@ class Router
                 $url_position = strpos($request_uri, $route_array['path']);
                 $result_array['tmp_path'] = substr($request_uri, 0, $url_position);
 
+                // *** Check if link to website is valid. Remove last part of url: /photoalbum/2 and check if folder exists. ***
+                // *** To prevent wrong links like: /humo-gen/list_places_families/fanchart/relations/11?pers_id=52211 ***
+                if ($url_position !== false) {
+                    $check_route = substr($request_uri, 0, $url_position);
+                    if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . $check_route)) {
+                        $result_array['page404'] = true;
+                    }
+                }
+
                 // *** Get url_rewrite variables ***
                 if ($humo_option["url_rewrite"] == "j" && isset($route_array['vars'])) {
                     $vars = explode(',', $route_array['vars']);
-                    //foreach ($vars as $check_var) {
-                    //    //
-                    //}
-
                     $nr_vars = count($vars);
+
+                    //$vars_processed = false;
 
                     // *** Only 1 variable in url_rewrite, $vars='select_tree_id' ***
                     // Example: http://127.0.0.1/humo-genealogy/index/3
                     if ($nr_vars == 1 && $vars[0] === 'select_tree_id') {
                         // *** Get last item of array ***
                         $result_array['select_tree_id']  = end($url_array);
+                        //$vars_processed = true;
                     }
 
                     // Example, cms page: http://127.0.0.1/humo-genealogy/cms_pages/4
                     if ($nr_vars == 1 && $vars[0] === 'id') {
                         // *** Get last item of array ***
                         $result_array['id']  = end($url_array);
+                        //$vars_processed = true;
                     }
 
                     // *** 2 variables, 1st variable = family tree ***
@@ -129,17 +140,36 @@ class Router
                         $result_array[$vars[1]] = end($url_array);
                         // *** Get previous item of array ***
                         $result_array['select_tree_id']  = prev($url_array);
+                        //$vars_processed = true;
                     }
-                }
-                //else{
-                //    $result_array['select_tree_id']  = '';
-                //}
 
+                    // TEST
+                    //if ($nr_vars > 0 && !$vars_processed) {
+                    //    $result_array['page404'] = true;
+                    //}
+
+                }
                 break;
-            } else {
-                //default router to index.php
             }
         }
+
+        // *** No valid page found. Check if link is the homepage.  ***
+        /*
+        if (!isset($result_array['page'])) {
+            // *** Check if the URI links to the correct server folder ***
+            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . $request_uri)) {
+                $result_array['page404'] = true;
+            }
+        }
+        */
+
+        // *** Reroute links like: humo-gen/%3Cb%3E37%3C/languages/cs/flag.gif ***
+        // *** %3Cb%3E = <b> ***
+        //if (strpos($_SERVER['REQUEST_URI'], '%3Cb%3E') > 0) {
+        //  $result_array['page301'] = str_replace('%3Cb%3E', '', $_SERVER['REQUEST_URI']);
+        //  $result_array['page301'] = str_replace('%3C', '', $result_array['page301']);
+        //}
+
         return $result_array;
     }
 }

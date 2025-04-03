@@ -126,9 +126,7 @@ $language = $index['language']; // $language = array.
 $selected_language = $index['selected_language'];
 
 // Needed for mail script.
-if (isset($_SESSION['tree_prefix'])) {
-    $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
-}
+$dataDb = $db_functions->get_tree($index['tree_id']);
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = $index['dirmark1'];  //ltr marker
@@ -148,8 +146,7 @@ $tree_prefix_quoted = $index['tree_prefix_quoted'];
 
 
 
-// TODO check variable. Just use $tree_id?
-$db_functions->set_tree_id($_SESSION['tree_id']);
+$db_functions->set_tree_id($index['tree_id']);
 
 // *** If an HuMo-gen upgrade is done, automatically update language files ***
 if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
@@ -214,91 +211,91 @@ $config = array(
 // *** Allready tested in sourceController.php & photoalbumController.php ***
 //$config = new Config($dbh, $db_functions, $tree_id, $user, $humo_option);
 
-if ($page == 'address') {
+if ($index['page'] == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/show_sources.php");
     include_once(__DIR__ . "/include/showMedia.php");
 
     $controllerObj = new AddressController($db_functions, $user);
     $data = $controllerObj->detail();
-} elseif ($page == 'addresses') {
-    $controllerObj = new AddressesController($dbh, $user, $tree_id);
+} elseif ($index['page'] == 'addresses') {
+    $controllerObj = new AddressesController($dbh, $user, $tree_id, $link_cls, $uri_path, $humo_option);
     $data = $controllerObj->list();
-} elseif ($page == 'ancestor_report') {
+} elseif ($index['page'] == 'ancestor_report') {
     $controllerObj = new AncestorReportController($dbh);
     $data = $controllerObj->list($tree_id);
-} elseif ($page == 'ancestor_report_rtf') {
+} elseif ($index['page'] == 'ancestor_report_rtf') {
     $controllerObj = new AncestorReportController($dbh);
     $data = $controllerObj->list($tree_id);
-} elseif ($page == 'ancestor_chart') {
+} elseif ($index['page'] == 'ancestor_chart') {
     $controllerObj = new AncestorChartController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
-} elseif ($page == 'ancestor_sheet') {
+} elseif ($index['page'] == 'ancestor_sheet') {
     $controllerObj = new AncestorSheetController($dbh, $db_functions);
     $data = $controllerObj->list($tree_id);
-} elseif ($page == 'anniversary') {
+} elseif ($index['page'] == 'anniversary') {
     //TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
 
     $controllerObj = new AnniversaryController();
     $data = $controllerObj->anniversary();
-} elseif ($page == 'cms_pages') {
+} elseif ($index['page'] == 'cms_pages') {
     $controllerObj = new CmsPagesController($dbh, $user);
     $data = $controllerObj->list();
-} elseif ($page == 'cookies') {
+} elseif ($index['page'] == 'cookies') {
     //
-} elseif ($page == 'descendant_chart') {
+} elseif ($index['page'] == 'descendant_chart') {
     $controllerObj = new DescendantChartController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
-} elseif ($page == 'family_rtf') {
+} elseif ($index['page'] == 'family_rtf') {
     //
-} elseif ($page == 'family') {
+} elseif ($index['page'] == 'family') {
     $controllerObj = new FamilyController();
     $data = $controllerObj->getFamily($dbh, $tree_id);
-} elseif ($page == 'fanchart') {
+} elseif ($index['page'] == 'fanchart') {
     // TODO refactor
     require_once(__DIR__ . "/include/fanchart/persian_log2vis.php");
 
     $controllerObj = new FanchartController();
     $data = $controllerObj->detail($dbh, $tree_id);
-} elseif ($page == 'help') {
+} elseif ($index['page'] == 'help') {
     //
-} elseif ($page == 'hourglass') {
+} elseif ($index['page'] == 'hourglass') {
     $controllerObj = new HourglassController();
     $data = $controllerObj->getHourglass($dbh, $tree_id);
-} elseif ($page == 'latest_changes') {
+} elseif ($index['page'] == 'latest_changes') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
 
     $controllerObj = new LatestChangesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id);
-} elseif ($page == 'list') {
+} elseif ($index['page'] == 'list') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new ListController();
     $list = $controllerObj->list_names($dbh, $tree_id, $user, $humo_option);
-} elseif ($page == 'list_places_families') {
+} elseif ($index['page'] == 'list_places_families') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new ListPlacesFamiliesController();
     $data = $controllerObj->list_places_names($tree_id);
-} elseif ($page == 'list_names') {
+} elseif ($index['page'] == 'list_names') {
     $controllerObj = new ListNamesController($config);
     $last_name = '';
     if (isset($index['last_name'])) {
         $last_name = $index['last_name'];
     }
     $list_names = $controllerObj->list_names($last_name, $uri_path);
-} elseif ($page == 'login') {
+} elseif ($index['page'] == 'login') {
     //
-} elseif ($page == 'mailform') {
+} elseif ($index['page'] == 'mailform') {
     $controllerObj = new MailformController($db_functions);
     $mail_data = $controllerObj->get_mail_data($humo_option, $dataDb, $selected_language);
-} elseif ($page == 'maps') {
+} elseif ($index['page'] == 'maps') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
@@ -306,7 +303,7 @@ if ($page == 'address') {
 
     $controllerObj = new MapsController($db_functions);
     $maps = $controllerObj->detail($humo_option, $dbh, $tree_id, $tree_prefix_quoted);
-} elseif ($page == 'photoalbum') {
+} elseif ($index['page'] == 'photoalbum') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
@@ -315,49 +312,49 @@ if ($page == 'address') {
 
     $controllerObj = new PhotoalbumController($config);
     $photoalbum = $controllerObj->detail($selected_language, $uri_path, $link_cls);
-} elseif ($page == 'register') {
+} elseif ($index['page'] == 'register') {
     $controllerObj = new RegisterController($db_functions);
     $register = $controllerObj->get_register_data($dbh, $dataDb, $humo_option);
-} elseif ($page == 'relations') {
+} elseif ($index['page'] == 'relations') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new RelationsController($dbh);
     $relation = $controllerObj->getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language);
-} elseif ($page == 'reset_password') {
+} elseif ($index['page'] == 'reset_password') {
     $controllerObj = new ResetPasswordController();
     $resetpassword = $controllerObj->detail($dbh, $humo_option);
-} elseif ($page == 'outline_report') {
+} elseif ($index['page'] == 'outline_report') {
     $controllerObj = new OutlineReportController();
     $data = $controllerObj->getOutlineReport($dbh, $tree_id, $humo_option);
-} elseif ($page == 'user_settings') {
+} elseif ($index['page'] == 'user_settings') {
     // TODO refactor
     include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
     //if (isset($_POST['update_settings'])) include_once(__DIR__ . '/include/mail.php');
 
     $controllerObj = new UserSettingsController();
     $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
-} elseif ($page == 'show_media_file') {
+} elseif ($index['page'] == 'show_media_file') {
     // *** Show media file using secured folder ***
     // *** Skip layout.php ***
     include_once(__DIR__ . "/views/show_media_file.php");
     exit;
-} elseif ($page == 'statistics') {
+} elseif ($index['page'] == 'statistics') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new StatisticsController();
-    $statistics = $controllerObj->detail($dbh, $tree_id);
-} elseif ($page == 'sources') {
+    $statistics = $controllerObj->detail($dbh, $db_functions, $tree_id);
+} elseif ($index['page'] == 'sources') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new SourcesController($dbh);
     $data = $controllerObj->list($dbh, $tree_id, $user, $humo_option, $link_cls, $uri_path);
-} elseif ($page == 'source') {
+} elseif ($index['page'] == 'source') {
     // TODO refactor
     include_once(__DIR__ . "/include/date_place.php");
     include_once(__DIR__ . "/include/process_text.php");
@@ -372,7 +369,7 @@ if ($page == 'address') {
         $id = $_GET["id"];
     }
     $data = $controllerObj->source($id);
-} elseif ($page == 'timeline') {
+} elseif ($index['page'] == 'timeline') {
     // TODO refactor
     require_once(__DIR__ . "/include/language_date.php");
 
@@ -382,10 +379,93 @@ if ($page == 'address') {
         $id = $_GET["id"];
     }
     $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
-} elseif ($page == 'tree_index') {
+} elseif ($index['page'] == 'tree_index') {
     //  *** TODO: first improve difference between tree_index and mainindex ***
     //$controllerObj = new TreeIndexController();
-    //$tree_index["items"] = $controllerObj->get_items($dbh);
+    //$tree_index["items"] = $controllerObj->get_items($dbh, $humo_option);
+}
+
+/*
+// Script to prevent too many requests.
+if (@$_SESSION['last_request'] > time() - 1) {
+?>
+    <div class="centered"><strong>TOO MANY REQUESTS</strong>
+        <hr>
+        <p><em>You are allowed 1 request every second.</em></p>
+    </div>
+<?php
+    exit;
+}
+$_SESSION['last_request'] = time();
+*/
+
+// *** 301 code: generate 301 redirect ***
+//if ($index['page301'] != '') {
+//    header("HTTP/1.1 301 Moved Permanently");
+//    header("Location: " . $index['page301']);
+//}
+
+$error_page = '';
+//if ($index['page403']) {
+//    $error_page = __('403 Forbidden');
+//}
+if ($index['page404']) {
+    $error_page = __('404 Not Found');
+}
+//else {
+//    $error_page = __('410 Gone');
+//}
+//if ($index['page429']) {
+//    $error_page = __('429 Too Many Requests');
+//}
+
+// *** If page isn't valid, show 404 Not Found page ***
+if ($error_page) {
+    //if ($index['page403']) {
+    //    header("HTTP/1.1 403 Forbidden");
+    //}
+    if ($index['page404']) {
+        header("HTTP/1.1 404 Not Found");
+    }
+    //else{
+    //    header("HTTP/1.1 410 Gone");
+    //}
+    //else {
+    //    header("HTTP/1.1 429 Too Many Requests");
+    //}
+?>
+
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <!-- Bootstrap: rescale pages for mobile devices -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <title><?= $error_page; ?></title>
+    </head>
+
+    <body>
+
+        <div class="row mt-5"></div>
+
+        <div class="row mt-5">
+            <div class="col-md-3"></div>
+            <div class="col bg-primary-subtle border border-primary-subtle rounded-3 p-4">
+                <h1 class="text-center"><?= $error_page; ?></h1>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+
+    </body>
+
+    </html>
+
+<?php
+    exit();
 }
 
 include_once(__DIR__ . "/views/layout.php");

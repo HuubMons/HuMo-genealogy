@@ -14,7 +14,7 @@ class ListController
         }
 
         if (isset($_POST['pers_firstname']) || isset($_GET['pers_lastname']) || isset($_GET['pers_firstname']) || isset($_GET['reset']) || isset($_POST['quicksearch'])) {
-            unset($_SESSION["save_search_tree_prefix"]);
+            //unset($_SESSION["save_search_tree_prefix"]);
             unset($_SESSION["save_select_trees"]);
             unset($_SESSION["save_adv_search"]);
 

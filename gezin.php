@@ -9,7 +9,7 @@
     -->
 
     <?php
-    $database = ''; // *** standard: show first family ***
+    $database = ''; // *** standard: show first family tree ***
     if (isset($_GET["database"])) {
         $database = $_GET["database"];
     }

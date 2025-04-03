@@ -100,6 +100,10 @@ class ProcessLinks
                         $link .= '/' . $vars['pers_family'];
                     }
 
+                    if ($page == 'fanchart' && $vars) {
+                        $link .= '/' . $vars['id'];
+                    }
+
                     if ($page == 'hourglass' && $vars) {
                         $link .= '/' . $vars['pers_family'];
                     }
@@ -140,6 +144,10 @@ class ProcessLinks
 
                     if ($page == 'family' and $vars) {
                         $link .= '&amp;id=' . $vars['pers_family'];
+                    }
+
+                    if ($page == 'fanchart' and $vars) {
+                        $link .= '&amp;id=' . $vars['id'];
                     }
 
                     if ($page == 'hourglass' and $vars) {

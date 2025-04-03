@@ -11,6 +11,7 @@ class SourcesController
     public function list($dbh, $tree_id, $user, $humo_option, $link_cls, $uri_path)
     {
         $sourceModel = new SourcesModel($dbh);
+        $sourceModel->process_variables();
         $listsources = $sourceModel->listSources($dbh, $tree_id, $user, $humo_option);
         $line_pages = $sourceModel->line_pages($tree_id, $link_cls, $uri_path);
         $source_search = $sourceModel->get_source_search();

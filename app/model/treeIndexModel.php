@@ -5,6 +5,15 @@ include_once(__DIR__ . "/../../include/show_tree_date.php");
 
 class TreeIndexModel
 {
+    // Can't be used in all functions yet. Refactor is needed.
+    private $dbh, $humo_option;
+
+    public function __construct($dbh, $humo_option)
+    {
+        $this->dbh = $dbh;
+        $this->humo_option = $humo_option;
+    }
+
     public function show_tree_index()
     {
         global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
@@ -250,7 +259,7 @@ class TreeIndexModel
                 if ($dataDb->tree_prefix == 'EMPTY') {
                     // *** Show empty line ***
                     $tree_name = '';
-                } elseif (isset($_SESSION['tree_prefix']) && $_SESSION['tree_prefix'] == $dataDb->tree_prefix) {
+                } elseif (isset($_SESSION['tree_id']) && $_SESSION['tree_id'] == $dataDb->tree_id) {
                     $tree_name = '<span class="tree_link">' . $treetext_name . '</span>';
                 } else {
                     $path_tmp = $link_cls->get_link($uri_path, 'tree_index', $dataDb->tree_id);
@@ -520,6 +529,7 @@ class TreeIndexModel
         $text = '';
 
         // *** Reset search field if a new genealogy is selected ***
+        /*
         $reset_search = false;
         if (isset($_SESSION["save_search_tree_prefix"]) && $_SESSION["save_search_tree_prefix"] != $_SESSION['tree_prefix']) {
             $reset_search = true;
@@ -531,6 +541,8 @@ class TreeIndexModel
             unset($_SESSION["save_part_lastname"]);
             unset($_SESSION["save_search_database"]);
         }
+        */
+        /*
         //*** Search screen ***
         $pers_firstname = '';
         if (isset($_SESSION["save_firstname"])) {
@@ -548,6 +560,7 @@ class TreeIndexModel
         if (isset($_SESSION["save_part_lastname"])) {
             $part_lastname = $_SESSION["save_part_lastname"];
         }
+        */
         $search_database = 'tree_selected';
         //if (isset($_SESSION["save_search_database"])) {
         //    $search_database = $_SESSION["save_search_database"];
@@ -1045,172 +1058,48 @@ class TreeIndexModel
         return $text . '</div>';
     }
 
-    // *** Show slideshow ***
+    // *** Show bootstrap slideshow ***
     public function show_slideshow(): void
     {
-        global $humo_option;
 ?>
 
-        <!-- Used inline CSS, so it will be possible to use other CSS style (can be used for future slideshow options) -->
-        <style>
-            /* CSS3 slider for mainmenu */
-            /* @import url(http://fonts.googleapis.com/css?family=Istok+Web); */
-            @keyframes slidy {
-                0% {
-                    left: 0%;
-                }
+        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" style="margin-top: -10px;">
+            <div class="carousel-inner">
+                <?php
+                for ($i = 1; $i <= 4; $i++) {
+                    $slideshow = explode('|', $this->humo_option["slideshow_0" . $i]);
+                    if ($slideshow[0] && file_exists($slideshow[0])) {
+                ?>
+                        <div class="carousel-item <?= $i == 1 ? 'active' : ''; ?>">
+                            <img src="<?= $slideshow[0]; ?>" class="d-block w-100" alt="<?= $slideshow[1]; ?>">
 
-                20% {
-                    left: 0%;
-                }
+                            <div class="carousel-caption d-none d-md-block pb-0">
+                                <h5 style="background: rgba(0, 0, 0, 0.4); color: #fff;"><?= $slideshow[1]; ?></h5>
+                            </div>
+                        </div>
+                    <?php } else { ?>
+                        <div class="carousel-item <?= $i == 1 ? 'active' : ''; ?>">
+                            <img src="images/missing-image_large.jpg" height="174" width="946" class="d-block w-100" alt="<?= 'Missing image ' . $i; ?>">
 
-                25% {
-                    left: -100%;
-                }
-
-                45% {
-                    left: -100%;
-                }
-
-                50% {
-                    left: -200%;
-                }
-
-                70% {
-                    left: -200%;
-                }
-
-                75% {
-                    left: -300%;
-                }
-
-                95% {
-                    left: -300%;
-                }
-
-                100% {
-                    left: -400%;
-                }
-            }
-
-            /* body, figure { */
-            figure {
-                margin: 0;
-                /*	font-family: Istok Web, sans-serif; */
-                font-weight: 100;
-
-                /* height:250px; */
-            }
-
-            div#captioned-gallery {
-                width: 100%;
-                overflow: hidden;
-                margin-top: -17px;
-            }
-
-            figure.slider {
-                position: relative;
-                width: 500%;
-                font-size: 0;
-                animation: 30s slidy infinite;
-            }
-
-            figure.slider figure {
-                width: 20%;
-                height: auto;
-                display: inline-block;
-                position: inherit;
-            }
-
-            figure.slider img {
-                width: 100%;
-                height: auto;
-            }
-
-            figure.slider figure figcaption {
-                position: absolute;
-                bottom: 10px;
-                background: rgba(0, 0, 0, 0.4);
-                color: #fff;
-                width: 100%;
-                font-size: 1.2rem;
-                padding: .6rem;
-                text-shadow: 2px 2px 4px #000000;
-            }
-
-            /* end of CSS3 slider */
-        </style>
-
-        <div id="captioned-gallery">
-            <figure class="slider">
-                <figure>
-                    <?php
-                    $slideshow_01 = explode('|', $humo_option["slideshow_01"]);
-                    if ($slideshow_01[0] && file_exists($slideshow_01[0])) {
-                        echo '<img src="' . $slideshow_01[0] . '" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">' . $slideshow_01[1] . '</figcaption>';
-                    } else {
-                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">Missing image 01</figcaption>';
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5 style="background: rgba(0, 0, 0, 0.4); color: #fff;"><?= 'Missing image ' . $i; ?></h5>
+                            </div>
+                        </div>
+                <?php
                     }
-                    ?>
-                </figure>
-
-                <figure>
-                    <?php
-                    $slideshow_02 = explode('|', $humo_option["slideshow_02"]);
-                    if ($slideshow_02[0] && file_exists($slideshow_02[0])) {
-                        echo '<img src="' . $slideshow_02[0] . '" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">' . $slideshow_02[1] . '</figcaption>';
-                    } else {
-                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">Missing image 02</figcaption>';
-                    }
-                    ?>
-                </figure>
-
-                <figure>
-                    <?php
-                    $slideshow_03 = explode('|', $humo_option["slideshow_03"]);
-                    if ($slideshow_03[0] && file_exists($slideshow_03[0])) {
-                        echo '<img src="' . $slideshow_03[0] . '" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">' . $slideshow_03[1] . '</figcaption>';
-                    } else {
-                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">Missing image 03</figcaption>';
-                    }
-                    ?>
-                </figure>
-
-                <figure>
-                    <?php
-                    $slideshow_04 = explode('|', $humo_option["slideshow_04"]);
-                    if ($slideshow_04[0] && file_exists($slideshow_04[0])) {
-                        echo '<img src="' . $slideshow_04[0] . '" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">' . $slideshow_04[1] . '</figcaption>';
-                    } else {
-                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">Missing image 04</figcaption>';
-                    }
-                    ?>
-                </figure>
-
-                <!-- 5th picture must be the same as 1st picture -->
-                <figure>
-                    <?php
-                    $slideshow_01 = explode('|', $humo_option["slideshow_01"]);
-                    if ($slideshow_01[0] && file_exists($slideshow_01[0])) {
-                        echo '<img src="' . $slideshow_01[0] . '" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">' . $slideshow_01[1] . '</figcaption>';
-                    } else {
-                        echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-                        echo '<figcaption class="d-none d-md-block">Missing image 01</figcaption>';
-                    }
-                    ?>
-                </figure>
-
-            </figure>
+                }
+                ?>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
+
 <?php
     }
 }

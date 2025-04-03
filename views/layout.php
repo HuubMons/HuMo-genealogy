@@ -191,7 +191,7 @@ $menu_top = getActiveTopMenu($page);
     // Use these lines to show a background picture for EACH FAMILY TREE
     // *****************************************************************
     echo '<style type="text/css">';
-    $picture= "pictures/".$_SESSION['tree_prefix'].".jpg";
+    $picture= "pictures/" . $tree_id . ".jpg";
     echo " body { background-image: url($picture);}";
     echo '</style>';
     */
@@ -353,8 +353,8 @@ $menu_top = getActiveTopMenu($page);
                                             $hide_tree_array2 = explode(";", $user['group_hide_trees']);
                                             if (!in_array($tree_searchDb->tree_id, $hide_tree_array2)) {
                                                 $selected = '';
-                                                if (isset($_SESSION['tree_prefix'])) {
-                                                    if ($tree_searchDb->tree_prefix == $_SESSION['tree_prefix']) {
+                                                if (isset($_SESSION['tree_id'])) {
+                                                    if ($tree_searchDb->tree_id == $_SESSION['tree_id']) {
                                                         $selected = ' selected';
                                                     }
                                                 } elseif ($count == 0) {
@@ -377,8 +377,8 @@ $menu_top = getActiveTopMenu($page);
 
                     <?php
                     // *** This code is used to restore $dataDb reading. Used for picture etc. ***
-                    if (is_string($_SESSION['tree_prefix']) && $_SESSION['tree_prefix']) {
-                        $dataDb = $db_functions->get_tree($_SESSION['tree_prefix']);
+                    if ($tree_id) {
+                        $dataDb = $db_functions->get_tree($tree_id);
                     }
 
                     // *** Show quicksearch field ***
@@ -589,7 +589,6 @@ $menu_top = getActiveTopMenu($page);
                                 <?php
                                 if ($user['group_sources'] == 'j' && $tree_prefix_quoted != '' && $tree_prefix_quoted != 'EMPTY') {
                                     // *** Check if there are sources in the database ***
-                                    //$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'AND source_shared='1'");
                                     $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
                                     $sourceDb = $source_qry->rowCount();
                                     if ($sourceDb > 0) {
@@ -828,6 +827,12 @@ $menu_top = getActiveTopMenu($page);
         <script>
             const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
             const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+        </script>
+
+        <!-- Jan 2025: Bootstrap tooltip -->
+        <script>
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         </script>
 
         <!-- TODO improve code for tab menu in ascendants and descendants -->

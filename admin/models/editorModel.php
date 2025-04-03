@@ -1776,7 +1776,7 @@ class EditorModel
     // This update_editor2 part is used for sources (editor_sources.php) and some other pages.
     public function update_editor2()
     {
-        global $page;
+        global $page, $descendant_id, $descendant_array;
 
         // TODO refactor $marriage.
         if (isset($_SESSION['admin_fam_gedcomnumber'])) {
@@ -2511,129 +2511,6 @@ class EditorModel
             }
         }
 
-        if (isset($_GET['event_down'])) {
-            $event_kind = safe_text_db($_GET['event_kind']);
-            $event_order = safe_text_db($_GET["event_down"]);
-            $event_connect_id = $this->pers_gedcomnumber;
-
-            $event_connect_kind = safe_text_db($_GET['event_connect_kind']);
-            if ($event_connect_kind == 'person') {
-                $event_connect_id = $this->pers_gedcomnumber;
-            } elseif ($event_connect_kind == 'person') {
-                $event_connect_id = $marriage;
-            } elseif ($event_connect_kind == 'source') {
-                $event_connect_id = $_GET['source_id'];
-            } elseif ($event_connect_kind == 'MARR') {
-                $event_connect_kind = 'MARR';
-                $event_connect_id = $marriage;
-            } elseif ($event_connect_kind == 'MARR_REL') {
-                $event_connect_kind = 'MARR_REL';
-                $event_connect_id = $marriage;
-            } elseif ($event_connect_kind == 'family') {
-                $event_connect_id = $marriage;
-            }
-
-            $sql = "UPDATE humo_events SET event_order='99' WHERE event_tree_id='" . $this->tree_id . "'
-                AND event_connect_kind='" . $event_connect_kind . "' AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind='" . $event_kind . "'
-                AND event_order='" . $event_order . "'";
-            $this->dbh->query($sql);
-
-            $sql = "UPDATE humo_events SET event_order='" . $event_order . "' WHERE event_tree_id='" . $this->tree_id . "'
-                AND event_connect_kind='" . $event_connect_kind . "' AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind='" . $event_kind . "'
-                AND event_order='" . ($event_order + 1) . "'";
-            $this->dbh->query($sql);
-
-            $sql = "UPDATE humo_events SET event_order='" . ($event_order + 1) . "' WHERE event_tree_id='" . $this->tree_id . "'
-                AND event_connect_kind='" . $event_connect_kind . "' AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind='" . $event_kind . "'
-                AND event_order=99";
-            $this->dbh->query($sql);
-        }
-
-        if (isset($_GET['event_up'])) {
-            $event_kind = safe_text_db($_GET['event_kind']);
-            $event_order = safe_text_db($_GET['event_up']);
-
-            /*
-            if (isset($_GET['event_person'])) {
-                $event_connect_kind = 'person';
-                $event_connect_id = $this->pers_gedcomnumber;
-            }
-            if (isset($_GET['event_family'])) {
-                $event_connect_kind = 'family';
-                $event_connect_id = $marriage;
-            }
-
-            // *** Move picture by source in seperate source page ***
-            if (isset($_GET['event_source'])) {
-                $event_connect_kind = 'source';
-                $event_connect_id = $_GET['source_id'];
-            }
-            */
-            $event_connect_id = $this->pers_gedcomnumber;
-
-            $event_connect_kind = safe_text_db($_GET['event_connect_kind']);
-            if ($event_connect_kind == 'person') {
-                $event_connect_id = $this->pers_gedcomnumber;
-            } elseif ($event_connect_kind == 'person') {
-                $event_connect_id = $marriage;
-            } elseif ($event_connect_kind == 'source') {
-                $event_connect_id = $_GET['source_id'];
-            } elseif ($event_connect_kind == 'MARR') {
-                $event_connect_kind = 'MARR';
-                $event_connect_id = $marriage;
-            } elseif ($event_connect_kind == 'MARR_REL') {
-                $event_connect_kind = 'MARR_REL';
-                $event_connect_id = $marriage;
-            } elseif ($event_connect_kind == 'family') {
-                $event_connect_id = $marriage;
-            }
-
-            // TEST
-            /*
-            $check_connect_kind = array("birth_declaration", "CHR", "death_declaration", 'BURI');
-            if (isset($_GET['event_connect_kind']) && in_array($_GET['event_connect_kind'], $check_connect_kind)) {
-                $event_connect_kind = $_GET['event_connect_kind'];
-                $event_connect_id = $this->pers_gedcomnumber;
-            }
-            if (isset($_GET['event_connect_kind']) && $_GET['event_connect_kind']=='MARR') {
-                $event_connect_kind = 'MARR';
-                $event_connect_id = $marriage;
-            }
-            if (isset($_GET['event_connect_kind']) && $_GET['event_connect_kind']=='MARR_REL') {
-                $event_connect_kind = 'MARR_REL';
-                $event_connect_id = $marriage;
-            }
-            */
-
-
-            $sql = "UPDATE humo_events SET event_order='99'
-                WHERE event_tree_id='" . $this->tree_id . "'
-                AND event_connect_kind='" . $event_connect_kind . "' AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind='" . $event_kind . "'
-                AND event_order='" . $event_order . "'";
-            $this->dbh->query($sql);
-
-            $sql = "UPDATE humo_events SET
-                event_order='" . $event_order . "'
-                WHERE event_tree_id='" . $this->tree_id . "'
-                AND event_connect_kind='" . $event_connect_kind . "' AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind='" . $event_kind . "'
-                AND event_order='" . ($event_order - 1) . "'";
-            $this->dbh->query($sql);
-
-            $sql = "UPDATE humo_events SET
-                event_order='" . ($event_order - 1) . "'
-                WHERE event_tree_id='" . $this->tree_id . "'
-                AND event_connect_kind='" . $event_connect_kind . "' AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind='" . $event_kind . "'
-                AND event_order=99";
-            $this->dbh->query($sql);
-        }
-
-
         // ************************
         // *** Save connections ***
         // ************************
@@ -2935,52 +2812,6 @@ class EditorModel
                 $event_order++;
             }
         }
-
-        // TODO check if up and down links can be improved. Maybe only 1 $_GET needed: connect_down or connect_up (including connect_id nr). Get other items from database.
-        if (isset($_GET['connect_down'])) {
-            $sql = "UPDATE humo_connections SET connect_order='99' WHERE connect_id='" . safe_text_db($_GET['connect_down']) . "'";
-            $this->dbh->query($sql);
-
-            $event_order = safe_text_db($_GET['connect_order']);
-            $sql = "UPDATE humo_connections SET connect_order='" . $event_order . "'
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_GET['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_GET['connect_sub_kind']) . "'
-                AND connect_connect_id='" . safe_text_db($_GET['connect_connect_id']) . "'
-                AND connect_order='" . ($event_order + 1) . "'";
-            $this->dbh->query($sql);
-
-            $sql = "UPDATE humo_connections SET connect_order='" . ($event_order + 1) . "'
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_GET['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_GET['connect_sub_kind']) . "'
-                AND connect_connect_id='" . safe_text_db($_GET['connect_connect_id']) . "'
-                AND connect_order=99";
-            $this->dbh->query($sql);
-        }
-
-        if (isset($_GET['connect_up'])) {
-            $sql = "UPDATE humo_connections SET connect_order='99' WHERE connect_id='" . safe_text_db($_GET['connect_up']) . "'";
-            $this->dbh->query($sql);
-
-            $event_order = safe_text_db($_GET['connect_order']);
-            $sql = "UPDATE humo_connections SET connect_order='" . $event_order . "'
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_GET['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_GET['connect_sub_kind']) . "'
-                AND connect_connect_id='" . safe_text_db($_GET['connect_connect_id']) . "'
-                AND connect_order='" . ($event_order - 1) . "'";
-            $this->dbh->query($sql);
-
-            $sql = "UPDATE humo_connections SET connect_order='" . ($event_order - 1) . "'
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_GET['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_GET['connect_sub_kind']) . "'
-                AND connect_connect_id='" . safe_text_db($_GET['connect_connect_id']) . "'
-                AND connect_order=99";
-            $this->dbh->query($sql);
-        }
-
 
         // *******************
         // *** Save source ***
