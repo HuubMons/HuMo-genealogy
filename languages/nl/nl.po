@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-29 14:58+0100\n"
-"PO-Revision-Date: 2025-03-29 14:58+0100\n"
+"POT-Creation-Date: 2025-03-30 17:12+0200\n"
+"PO-Revision-Date: 2025-03-30 17:12+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -533,8 +533,8 @@ msgstr "Plaats"
 #: admin/views/editor_relation.php:605 admin/views/editor_relation.php:683
 #: admin/views/editor_relation.php:759 admin/views/editor_relation.php:873
 #: admin/views/editor_relation.php:913 admin/views/editor_sources.php:149
-#: admin/views/groups.php:525 admin/views/groups.php:533
-#: admin/views/groups.php:541 admin/views/settings_homepage.php:92
+#: admin/views/groups.php:526 admin/views/groups.php:534
+#: admin/views/groups.php:542 admin/views/settings_homepage.php:92
 #: admin/views/settings_homepage.php:132 admin/views/settings_homepage.php:205
 #: include/process_text.php:121 include/process_text.php:123
 #: views/addresses.php:43 views/family.php:1392 views/list.php:310
@@ -930,7 +930,7 @@ msgstr ""
 "Dit zijn instellingen PER GEBRUIKER, het is ook mogelijk deze instellingen "
 "PER GEBRUIKERSGROEP in te stellen."
 
-#: admin/include/editor_user_settings.php:72 admin/views/groups.php:647
+#: admin/include/editor_user_settings.php:72 admin/views/groups.php:648
 #: admin/views/maps_locations.php:188 admin/views/notes.php:22
 #: admin/views/trees.php:38 views/help.php:68 views/help.php:72
 #: views/help.php:76 views/help.php:81 views/layout.php:347
@@ -939,11 +939,11 @@ msgstr ""
 msgid "Family tree"
 msgstr "Stamboom"
 
-#: admin/include/editor_user_settings.php:73 admin/views/groups.php:648
+#: admin/include/editor_user_settings.php:73 admin/views/groups.php:649
 msgid "Show tree?"
 msgstr "Stamboom weergeven?"
 
-#: admin/include/editor_user_settings.php:74 admin/views/groups.php:649
+#: admin/include/editor_user_settings.php:74 admin/views/groups.php:650
 msgid "Edit tree?"
 msgstr "Stamboom muteren?"
 
@@ -952,8 +952,8 @@ msgstr "Stamboom muteren?"
 #: admin/views/groups.php:98 admin/views/groups.php:120
 #: admin/views/groups.php:201 admin/views/groups.php:323
 #: admin/views/groups.php:358 admin/views/groups.php:406
-#: admin/views/groups.php:598 admin/views/groups.php:649
-#: admin/views/groups.php:735 admin/views/log.php:98
+#: admin/views/groups.php:599 admin/views/groups.php:650
+#: admin/views/groups.php:736 admin/views/log.php:98
 #: admin/views/maps_settings.php:41 admin/views/settings.php:33
 #: admin/views/settings.php:178 admin/views/settings.php:240
 #: admin/views/settings.php:361 admin/views/settings.php:502
@@ -981,7 +981,7 @@ msgstr "Gebruik gebruikers-groep instelling"
 #: admin/views/editor_relation.php:250 admin/views/gedcom_export.php:390
 #: admin/views/gedcom_export.php:400 admin/views/gedcom_export.php:411
 #: admin/views/gedcom_export.php:450 admin/views/gedcom_import.php:85
-#: admin/views/groups.php:49 admin/views/groups.php:560
+#: admin/views/groups.php:49 admin/views/groups.php:561
 #: admin/views/index_admin.php:381 admin/views/index_admin.php:382
 #: admin/views/install.php:174 admin/views/maps_locations.php:98
 #: admin/views/maps_locations.php:120 admin/views/maps_locations.php:199
@@ -1010,7 +1010,7 @@ msgstr "Ja"
 #: admin/views/editor_relation.php:251 admin/views/gedcom_export.php:391
 #: admin/views/gedcom_export.php:401 admin/views/gedcom_export.php:412
 #: admin/views/gedcom_export.php:449 admin/views/gedcom_import.php:86
-#: admin/views/groups.php:50 admin/views/groups.php:561
+#: admin/views/groups.php:50 admin/views/groups.php:562
 #: admin/views/index_admin.php:381 admin/views/index_admin.php:382
 #: admin/views/install.php:175 admin/views/maps_locations.php:99
 #: admin/views/maps_locations.php:121 admin/views/maps_locations.php:200
@@ -1323,7 +1323,7 @@ msgid "View latest changes"
 msgstr "Laatste wijzigingen"
 
 #: admin/index.php:673 admin/views/cal_date.php:44
-#: admin/views/editor_person.php:576 admin/views/groups.php:428
+#: admin/views/editor_person.php:576 admin/views/groups.php:413
 #: admin/views/menu.php:86
 msgid "Calculated birth date"
 msgstr "Berekende geboortedatum"
@@ -4168,45 +4168,45 @@ msgstr "Tekst bij doop, geb., ovl., begr. weergeven"
 msgid "Show text with pre-nuptial etc."
 msgstr "Tekst bij ondertr., tr., etc. weergeven."
 
-#: admin/views/groups.php:411
+#: admin/views/groups.php:412
 msgid "Use privacy profile"
 msgstr "Privacyprofiel gebruiken"
 
-#: admin/views/groups.php:414
-msgid "Set a default privacy profile"
-msgstr "Een standaard privacyprofiel instellen"
-
-#: admin/views/groups.php:417
-msgid "Privacy profile: high (don't show names, hide data)"
-msgstr "Privacyprofiel: hoog (geen namen tonen, verberg gegevens)"
-
-#: admin/views/groups.php:421
-msgid "Privacy profile: medium (partly show names, hide data)"
-msgstr "Privacyprofiel: gemiddeld (namen gedeeltelijk tonen, verberg gegevens)"
-
-#: admin/views/groups.php:425
-msgid "Privacy profile: low (show names, hide data)"
-msgstr "Privacyprofiel: laag (toon namen, verberg gegevens)"
-
-#: admin/views/groups.php:428
+#: admin/views/groups.php:413
 #, php-format
 msgid "Use %s to calculate privacy filter birthdates."
 msgstr "Gebruik %s om privacyfilters geboortedatum te berekenen."
 
-#: admin/views/groups.php:431
+#: admin/views/groups.php:414
 #, php-format
 msgid "If needed use: %s per family tree."
 msgstr "Gebruik indien nodig: %s per stamboom."
 
-#: admin/views/groups.php:431 admin/views/tree_data.php:46
+#: admin/views/groups.php:414 admin/views/tree_data.php:46
 msgid "Tree privacy"
 msgstr "Stamboomprivacy"
 
-#: admin/views/groups.php:470 admin/views/groups.php:475
+#: admin/views/groups.php:419
+msgid "Set a default privacy profile"
+msgstr "Een standaard privacyprofiel instellen"
+
+#: admin/views/groups.php:422
+msgid "Privacy profile: high (don't show names, hide data)"
+msgstr "Privacyprofiel: hoog (geen namen tonen, verberg gegevens)"
+
+#: admin/views/groups.php:426
+msgid "Privacy profile: medium (partly show names, hide data)"
+msgstr "Privacyprofiel: gemiddeld (namen gedeeltelijk tonen, verberg gegevens)"
+
+#: admin/views/groups.php:430
+msgid "Privacy profile: low (show names, hide data)"
+msgstr "Privacyprofiel: laag (toon namen, verberg gegevens)"
+
+#: admin/views/groups.php:471 admin/views/groups.php:476
 msgid "Activate privacy filter"
 msgstr "Privacyfilter activeren"
 
-#: admin/views/groups.php:476
+#: admin/views/groups.php:477
 msgid ""
 "TIP: the best privacy filter is your genealogy program<br>\n"
 "If possible, try to filter with that"
@@ -4214,11 +4214,11 @@ msgstr ""
 "TIP: het beste privacy filter is je genealogische programma<br>\n"
 "Probeer indien mogelijk daarmee al te filteren"
 
-#: admin/views/groups.php:484
+#: admin/views/groups.php:485
 msgid "Privacy filter settings"
 msgstr "Privacyfilter-instellingen"
 
-#: admin/views/groups.php:490
+#: admin/views/groups.php:491
 #, php-format
 msgid ""
 "%s (alive or deceased), Aldfaer (death sign), Haza-data (filter living "
@@ -4227,47 +4227,47 @@ msgstr ""
 "%s (levend of overleden), Aldfaer (vinkje ovl.) of Haza-data (levende "
 "personen filteren)"
 
-#: admin/views/groups.php:496
+#: admin/views/groups.php:497
 msgid "Privacy filter, filter persons born in or after this year"
 msgstr "Privacyfilter, filter personen geboren in of na dit jaar"
 
-#: admin/views/groups.php:499 admin/views/groups.php:507 views/timeline.php:230
+#: admin/views/groups.php:500 admin/views/groups.php:508 views/timeline.php:230
 msgid "Year"
 msgstr "Jaar"
 
-#: admin/views/groups.php:504
+#: admin/views/groups.php:505
 msgid "Privacy filter, filter persons deceased in or after this year"
 msgstr "Privacyfilter, filter personen overleden in of na dit jaar"
 
-#: admin/views/groups.php:512
+#: admin/views/groups.php:513
 msgid "Also filter data of deceased persons (for filter 2)"
 msgstr "Ook gegevens van overleden personen filteren (voor filter 2)"
 
-#: admin/views/groups.php:517
+#: admin/views/groups.php:518
 msgid "Privacy filter exceptions"
 msgstr "Privacyfilter-uitzonderingen"
 
-#: admin/views/groups.php:522
+#: admin/views/groups.php:523
 msgid "DO show privacy data of persons (with the following text in own code)"
 msgstr ""
 "Privacygegevens van personen WEL weergeven (met de volgende tekst in "
 "eigencode)"
 
-#: admin/views/groups.php:530
+#: admin/views/groups.php:531
 msgid "HIDE privacy data of persons (with the following text in own code)"
 msgstr ""
 "Privacygegevens van personen NIET weergeven (met de volgende tekst in "
 "eigencode)"
 
-#: admin/views/groups.php:538
+#: admin/views/groups.php:539
 msgid "TOTALLY filter persons (with the following text in own code)"
 msgstr "Personen TOTAAL filteren (met de volgende tekst in eigencode)"
 
-#: admin/views/groups.php:546
+#: admin/views/groups.php:547
 msgid "Extra privacy filter option"
 msgstr "Extra privacy filter opties"
 
-#: admin/views/groups.php:551
+#: admin/views/groups.php:552
 msgid ""
 "Show persons with no date information<br>\n"
 "<i>with these persons the privacy filter cannot calculate if they are alive</"
@@ -4277,15 +4277,15 @@ msgstr ""
 "<i>Het privacy filter kan bij deze personen niet berekenen of ze levend "
 "zijn</i>"
 
-#: admin/views/groups.php:557
+#: admin/views/groups.php:558
 msgid "With privacy show names"
 msgstr "Bij privacy namen weergeven"
 
-#: admin/views/groups.php:562
+#: admin/views/groups.php:563
 msgid "Show initials: D. E. Duck"
 msgstr "Toon voorletters: D. E. Duck"
 
-#: admin/views/groups.php:568
+#: admin/views/groups.php:569
 msgid ""
 "Genealogical copy protection<br>\n"
 "<i>family browsing disabled, no family trees</i>"
@@ -4294,43 +4294,43 @@ msgstr ""
 "<i>bladeren door gezinnen wordt uitgeschakeld, geen parenteel of "
 "kwartierstaat</i>"
 
-#: admin/views/groups.php:596
+#: admin/views/groups.php:597
 msgid "Save all changes"
 msgstr "Alle wijzigingen opslaan"
 
-#: admin/views/groups.php:640
+#: admin/views/groups.php:641
 msgid "Hide or show family trees per user group."
 msgstr "Weergave van stambomen per gebruikersgroep."
 
-#: admin/views/groups.php:641 admin/views/index_admin.php:618
+#: admin/views/groups.php:642 admin/views/index_admin.php:618
 #: admin/views/menu.php:96 include/personCls.php:1007
 #: include/personCls.php:1008
 msgid "Editor"
 msgstr "Muteren"
 
-#: admin/views/groups.php:641
+#: admin/views/groups.php:642
 msgid "If an .htpasswd file is used: add username in .htpasswd file."
 msgstr ""
 "Als een .htpasswd is gebruikt: voeg die gebruikersnaam toe aan het .htpasswd "
 "bestand."
 
-#: admin/views/groups.php:642
+#: admin/views/groups.php:643
 msgid "These settings can also be set per user!"
 msgstr "Deze instellingen kunnen ook per gebruiker worden ingesteld!"
 
-#: admin/views/groups.php:730
+#: admin/views/groups.php:731
 msgid "Hide or show photo categories per user group."
 msgstr "Weergave van fotocategorieën per gebruikersgroep."
 
-#: admin/views/groups.php:734 admin/views/thumbs.php:699
+#: admin/views/groups.php:735 admin/views/thumbs.php:699
 msgid "Category prefix"
 msgstr "Categorievoorvoegsel"
 
-#: admin/views/groups.php:735
+#: admin/views/groups.php:736
 msgid "Show category?"
 msgstr "Toon categorie?"
 
-#: admin/views/groups.php:773
+#: admin/views/groups.php:774
 msgid "No photo categories available."
 msgstr "Geen fotocategorieën beschikbaar."
 
