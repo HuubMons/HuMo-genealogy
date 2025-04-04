@@ -1658,7 +1658,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                     ':text_tree_id' => $tree_id,
                     ':text_gedcomnr' => substr($note_text, 1, -1)
                 ]);
-                while ($textDb = $stmt->fetch(PDO::FETCH_OBJ)){
+                while ($textDb = $stmt->fetch(PDO::FETCH_OBJ)) {
                     $buffer .= "0 " . $note_text . " NOTE\r\n";
                     $buffer .= '1 CONC ' . process_text(1, $textDb->text_text);
 
@@ -1975,6 +1975,7 @@ function sources_export($connect_kind, $connect_sub_kind, $connect_connect_id, $
 
         // *** Extra text by source ***
         if ($connectDb->connect_text) {
+            //if ($connectDb->connect_text || $connectDb->connect_date) {
             // 3 DATA
             // 4 TEXT text .....
             // 5 CONT ..........
@@ -1982,11 +1983,12 @@ function sources_export($connect_kind, $connect_sub_kind, $connect_connect_id, $
             $buffer .= ($start_number + 2) . ' TEXT ' . process_text($start_number + 3, $connectDb->connect_text);
         }
 
-        if ($connectDb->source_date) {
+        if ($connectDb->connect_date) {
             $buffer .= ($start_number + 1) . ' DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
         }
-        if ($connectDb->source_place) {
-            $buffer .= ($start_number + 1) . ' PLAC ' . $connectDb->connect_place . "\r\n";
+
+        if ($connectDb->connect_place) {
+                $buffer .= ($start_number + 1) . ' PLAC ' . $connectDb->connect_place . "\r\n";
         }
     }
 }

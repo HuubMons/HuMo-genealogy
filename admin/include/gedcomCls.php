@@ -4833,19 +4833,7 @@ class GedcomCls
             }
 
             if (substr($buffer, 2, 4) === 'DATE') {
-                // *** New date/ time ***
-                //1 _NEW
-                //2 DATE 04 AUG 2004
-                if ($this->level[1] === '_NEW') {
-                    // processed later in file
-                }
-
-                // *** Changed date/ time ***
-                //1 CHAN
-                //2 DATE 04 AUG 2004
-                elseif ($this->level[1] === 'CHAN') {
-                    // processed later in file
-                } else {
+                if ($this->level[1] != '_NEW' && $this->level[1] != 'CHAN') {
                     $this->processed = true;
                     $source["source_date"] = substr($buffer, 7);
                 }
@@ -6765,6 +6753,7 @@ class GedcomCls
             if ($buffer6 === ($number + 1) . ' DATA') {
                 $this->processed = true; //$this->connect['text'][$this->connect_nr]=substr($buffer, 7);
             }
+
             if ($buffer6 === ($number + 2) . ' TEXT') {
                 if ($this->connect['text'][$this->connect_nr]) {
                     $this->connect['text'][$this->connect_nr] .= '<br>';
@@ -6829,13 +6818,11 @@ class GedcomCls
         if ($buffer6 === ($number + 1) . ' DATE') {
             $this->processed = true;
             $this->connect['date'][$this->connect_nr] = substr($buffer, 7);
-            //$this->processed = true; $this->source["source_date"][$this->nrsource]=substr($buffer, 7);
         }
         // *** Source place ***
         if ($buffer6 === ($number + 1) . ' PLAC') {
             $this->processed = true;
             $this->connect['place'][$this->connect_nr] = substr($buffer, 7);
-            //$this->processed = true; $this->source["source_place"][$this->nrsource]=substr($buffer, 7);
         }
 
         // *** Aldfaer time ***
