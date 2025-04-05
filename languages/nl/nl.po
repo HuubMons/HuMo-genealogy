@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-30 17:12+0200\n"
-"PO-Revision-Date: 2025-03-30 17:12+0200\n"
+"POT-Creation-Date: 2025-04-04 12:15+0200\n"
+"PO-Revision-Date: 2025-04-05 08:02+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -112,7 +112,7 @@ msgstr "Predikaat"
 #: admin/include/editorEvent.php:51 admin/include/editorEvent.php:370
 #: admin/include/editorEvent.php:1624 admin/include/editorEvent.php:1628
 #: admin/views/edit_repository.php:123 admin/views/edit_source.php:215
-#: admin/views/editor.php:1114 admin/views/editor_sources.php:121
+#: admin/views/editor.php:1114 admin/views/editor_sources.php:127
 #: admin/views/tree_merge.php:1483 include/show_source_pdf.php:43
 #: views/source.php:33 views/source.php:110 views/sources.php:52
 msgid "Title"
@@ -147,7 +147,7 @@ msgstr "Religie"
 
 #: admin/include/editorEvent.php:96 admin/models/adminSourcesModel.php:140
 #: admin/views/editor.php:1339 admin/views/editor.php:1737
-#: admin/views/editor_sources.php:244 admin/views/gedcom_import.php:1304
+#: admin/views/editor_sources.php:256 admin/views/gedcom_import.php:1304
 #: admin/views/notes.php:243
 msgid "text"
 msgstr "tekst"
@@ -207,7 +207,7 @@ msgstr "Roepnaam"
 #: admin/views/editor.php:1225 admin/views/editor.php:1227
 #: admin/views/editor.php:1549 admin/views/editor.php:1644
 #: admin/views/editor.php:1733 admin/views/editor_person.php:371
-#: admin/views/editor_person.php:1698 admin/views/editor_sources.php:306
+#: admin/views/editor_person.php:1698 admin/views/editor_sources.php:318
 #: admin/views/log.php:112 admin/views/settings_homepage.php:215
 #: admin/views/settings_homepage.php:317 admin/views/users.php:180
 msgid "Add"
@@ -257,7 +257,7 @@ msgstr "GEDCOM-nummer (ID)"
 #: admin/views/editor_relation.php:844 admin/views/editor_relation.php:1245
 #: admin/views/editor_relation.php:1364 admin/views/editor_relation.php:1398
 #: admin/views/editor_relation.php:1418 admin/views/editor_relation.php:1438
-#: admin/views/editor_sources.php:247 admin/views/gedcom_export.php:164
+#: admin/views/editor_sources.php:259 admin/views/gedcom_export.php:164
 #: admin/views/language_editor.php:250 admin/views/maps_locations.php:753
 #: admin/views/settings_homepage.php:86 admin/views/settings_homepage.php:199
 #: admin/views/tree_merge.php:555 admin/views/tree_merge.php:573
@@ -494,7 +494,7 @@ msgstr "bijv. Lord of Amsterdam"
 #: admin/views/editor_relation.php:735 admin/views/editor_relation.php:833
 #: admin/views/editor_relation.php:1354 admin/views/editor_relation.php:1388
 #: admin/views/editor_relation.php:1408 admin/views/editor_relation.php:1428
-#: admin/views/editor_sources.php:128 admin/views/editor_sources.php:190
+#: admin/views/editor_sources.php:134 admin/views/editor_sources.php:202
 #: app/model/treeIndexModel.php:1012 include/show_source_pdf.php:49
 #: views/list.php:246 views/list.php:266 views/list.php:696 views/list.php:722
 #: views/source.php:37 views/source.php:116 views/sources.php:69
@@ -513,8 +513,8 @@ msgstr "Datum"
 #: admin/views/editor_relation.php:666 admin/views/editor_relation.php:742
 #: admin/views/editor_relation.php:840 admin/views/editor_relation.php:1360
 #: admin/views/editor_relation.php:1394 admin/views/editor_relation.php:1414
-#: admin/views/editor_relation.php:1434 admin/views/editor_sources.php:135
-#: admin/views/editor_sources.php:197 include/show_source_pdf.php:84
+#: admin/views/editor_relation.php:1434 admin/views/editor_sources.php:141
+#: admin/views/editor_sources.php:209 include/show_source_pdf.php:84
 #: views/address.php:25 views/list.php:259 views/list.php:279
 #: views/list.php:361 views/list.php:368 views/list.php:709 views/list.php:735
 #: views/source.php:50 views/source.php:120 views/sources.php:86
@@ -532,7 +532,7 @@ msgstr "Plaats"
 #: admin/views/editor_relation.php:386 admin/views/editor_relation.php:455
 #: admin/views/editor_relation.php:605 admin/views/editor_relation.php:683
 #: admin/views/editor_relation.php:759 admin/views/editor_relation.php:873
-#: admin/views/editor_relation.php:913 admin/views/editor_sources.php:149
+#: admin/views/editor_relation.php:913 admin/views/editor_sources.php:155
 #: admin/views/groups.php:526 admin/views/groups.php:534
 #: admin/views/groups.php:542 admin/views/settings_homepage.php:92
 #: admin/views/settings_homepage.php:132 admin/views/settings_homepage.php:205
@@ -556,8 +556,9 @@ msgstr "Tekst"
 #: admin/views/editor_relation.php:691 admin/views/editor_relation.php:767
 #: admin/views/editor_relation.php:881 admin/views/editor_relation.php:921
 #: admin/views/editor_relation.php:944 admin/views/editor_sources.php:32
-#: admin/views/editor_sources.php:93 app/controller/sourceController.php:23
-#: views/address.php:49 views/source.php:15
+#: admin/views/editor_sources.php:93 admin/views/editor_sources.php:119
+#: app/controller/sourceController.php:23 views/address.php:49
+#: views/source.php:15
 msgid "Source"
 msgstr "Bron"
 
@@ -1030,7 +1031,7 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nee"
 
-#: admin/include/gedcom_export.php:2015
+#: admin/include/gedcom_export.php:2026
 msgid "No valid family number."
 msgstr "Geen geldig gezinsnummer."
 
@@ -2126,7 +2127,7 @@ msgid "Recalculate all persons"
 msgstr "Alle personen herberekenen"
 
 #: admin/views/cal_date.php:77 admin/views/edit_rename_place.php:53
-#: admin/views/editor_person.php:309 admin/views/editor_sources.php:274
+#: admin/views/editor_person.php:309 admin/views/editor_sources.php:286
 #: admin/views/notes.php:78 admin/views/notes.php:208
 #: admin/views/statistics_date.php:25 admin/views/statistics_visitors.php:30
 #: admin/views/tree_check_changes.php:250
@@ -2163,7 +2164,7 @@ msgid "Address has been removed!"
 msgstr "Adres is verwijderd!"
 
 #: admin/views/edit_address.php:51 admin/views/edit_source.php:97
-#: admin/views/editor_sources.php:241 views/list.php:230 views/list.php:237
+#: admin/views/editor_sources.php:253 views/list.php:230 views/list.php:237
 msgid "gedcomnumber (ID)"
 msgstr "GEDCOM-nummer (ID)"
 
@@ -2436,12 +2437,12 @@ msgstr "Selecteer bron"
 msgid "No sources found."
 msgstr "Geen bronnen gevonden."
 
-#: admin/views/edit_source.php:129 admin/views/editor_sources.php:270
+#: admin/views/edit_source.php:129 admin/views/editor_sources.php:282
 msgid "Results are limited, use search to find more sources."
 msgstr ""
 "Resultaten zijn beperkt, gebruik de zoek optie om meer bronnen te vinden."
 
-#: admin/views/edit_source.php:140 admin/views/editor_sources.php:325
+#: admin/views/edit_source.php:140 admin/views/editor_sources.php:337
 msgid "Add source"
 msgstr "Bron toevoegen"
 
@@ -2486,7 +2487,7 @@ msgstr "Publicatie"
 msgid "will be shown as a link."
 msgstr "wordt als een link weergegeven."
 
-#: admin/views/edit_source.php:272 admin/views/editor_sources.php:142
+#: admin/views/edit_source.php:272 admin/views/editor_sources.php:148
 #: admin/views/settings_homepage.php:259 include/personCls.php:1841
 #: include/personCls.php:1842 include/personCls.php:1844
 #: include/personCls.php:1845 include/show_source_pdf.php:90 views/list.php:336
@@ -2509,7 +2510,7 @@ msgstr "Soort"
 msgid "Archive"
 msgstr "Archief"
 
-#: admin/views/edit_source.php:312 admin/views/editor_sources.php:168
+#: admin/views/edit_source.php:312 admin/views/editor_sources.php:180
 #: include/show_source_pdf.php:126 include/tfpdf/tfpdfextend.php:1085
 #: views/source.php:71
 msgid "Page"
@@ -3239,63 +3240,67 @@ msgstr "Of voeg een bestaand persoon toe als kind:"
 msgid "Select child"
 msgstr "Selecteer kind"
 
-#: admin/views/editor_sources.php:160
+#: admin/views/editor_sources.php:166
+msgid "Source citation"
+msgstr "Bronvermelding"
+
+#: admin/views/editor_sources.php:172
 msgid "Sourcerole"
 msgstr "Bronrol"
 
-#: admin/views/editor_sources.php:163
+#: admin/views/editor_sources.php:175
 msgid "e.g. Writer, Brother, Sister, Father."
 msgstr "bijv. Schrijver, Broer, Zuster, Vader."
 
-#: admin/views/editor_sources.php:171
+#: admin/views/editor_sources.php:183
 msgid "Page in source."
 msgstr "Bladzijde in bron."
 
-#: admin/views/editor_sources.php:177
+#: admin/views/editor_sources.php:189
 msgid "Quality"
 msgstr "Kwaliteit"
 
-#: admin/views/editor_sources.php:180
+#: admin/views/editor_sources.php:192
 msgid "quality: default"
 msgstr "kwaliteit: standaard"
 
-#: admin/views/editor_sources.php:181 include/show_quality.php:7
+#: admin/views/editor_sources.php:193 include/show_quality.php:7
 msgid "quality: unreliable evidence or estimated data"
 msgstr "kwaliteit: onbetrouwbaar bewijs of geschatte gegevens"
 
-#: admin/views/editor_sources.php:182 include/show_quality.php:10
+#: admin/views/editor_sources.php:194 include/show_quality.php:10
 msgid "quality: questionable reliability of evidence"
 msgstr "kwaliteit: twijfelachtige betrouwbaarheid van gegevens"
 
-#: admin/views/editor_sources.php:183 include/show_quality.php:13
+#: admin/views/editor_sources.php:195 include/show_quality.php:13
 msgid "quality: data from secondary evidence"
 msgstr "kwaliteit: gegevens uit secundaire bron"
 
-#: admin/views/editor_sources.php:184 include/show_quality.php:16
+#: admin/views/editor_sources.php:196 include/show_quality.php:16
 msgid "quality: data from direct source"
 msgstr "kwaliteit: gegevens uit directe bron"
 
-#: admin/views/editor_sources.php:205
+#: admin/views/editor_sources.php:217
 msgid "Extra text"
 msgstr "Extra tekst"
 
-#: admin/views/editor_sources.php:237
+#: admin/views/editor_sources.php:249
 msgid "Search existing source"
 msgstr "Zoek bestaande bron"
 
-#: admin/views/editor_sources.php:254
+#: admin/views/editor_sources.php:266
 msgid "Select existing source"
 msgstr "Selecteer bestaande bron"
 
-#: admin/views/editor_sources.php:279
+#: admin/views/editor_sources.php:291
 msgid "Or:"
 msgstr "Of:"
 
-#: admin/views/editor_sources.php:291
+#: admin/views/editor_sources.php:303
 msgid "add new source"
 msgstr "voeg nieuwe bron toe"
 
-#: admin/views/editor_sources.php:323
+#: admin/views/editor_sources.php:335
 msgid "Add another source"
 msgstr "Nog een bron toevoegen"
 

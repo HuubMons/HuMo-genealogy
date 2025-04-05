@@ -1973,22 +1973,26 @@ function sources_export($connect_kind, $connect_sub_kind, $connect_connect_id, $
             $buffer .= ($start_number + 1) . ' QUAY ' . $connectDb->connect_quality . "\r\n";
         }
 
-        // *** Extra text by source ***
-        if ($connectDb->connect_text) {
-            //if ($connectDb->connect_text || $connectDb->connect_date) {
-            // 3 DATA
-            // 4 TEXT text .....
-            // 5 CONT ..........
+        // *** Source citation (extra text by source) ***
+        // 3 DATA
+        // 4 DATE ......
+        // 4 PLAC ....... (not in GEDOM specifications).
+        // 4 TEXT text .....
+        // 5 CONT ..........
+        if ($connectDb->connect_text || $connectDb->connect_date || $connectDb->connect_place) {
             $buffer .= ($start_number + 1) . " DATA\r\n";
-            $buffer .= ($start_number + 2) . ' TEXT ' . process_text($start_number + 3, $connectDb->connect_text);
-        }
 
-        if ($connectDb->connect_date) {
-            $buffer .= ($start_number + 1) . ' DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
-        }
+            if ($connectDb->connect_date) {
+                $buffer .= ($start_number + 2) . ' DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
+            }
 
-        if ($connectDb->connect_place) {
-                $buffer .= ($start_number + 1) . ' PLAC ' . $connectDb->connect_place . "\r\n";
+            if ($connectDb->connect_place) {
+                $buffer .= ($start_number + 2) . ' PLAC ' . $connectDb->connect_place . "\r\n";
+            }
+
+            if ($connectDb->connect_text) {
+                $buffer .= ($start_number + 2) . ' TEXT ' . process_text($start_number + 3, $connectDb->connect_text);
+            }
         }
     }
 }

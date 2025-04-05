@@ -4711,30 +4711,31 @@ class GedcomCls
         $buffer = $line2[0];
 
         unset($source);  //Reset array
-        $source["source_status"] = "";
-        $source["source_title"] = "";
-        $source["source_abbr"] = "";
-        $source["source_date"] = "";
-        $source["source_publ"] = "";
-        $source["source_place"] = "";
-        $source["source_refn"] = "";
-        $source["source_auth"] = "";
-        $source["source_subj"] = "";
-        $source["source_item"] = "";
-        $source["source_kind"] = "";
-        $source["source_text"] = "";
-        $source["source_repo_name"] = "";
-        $source["source_repo_caln"] = "";
-        $source["source_repo_page"] = "";
-        $source["source_repo_gedcomnr"] = "";
-        $source["source_unprocessed_tags"] = "";
-        $source["new_date"] = '1970-01-01';
-        $source["new_time"] = '00:00:01';
-        $source["new_user_id"] = "";
-        $source["changed_date"] = '';
-        $source["changed_time"] = '';
-        $source["changed_user_id"] = "";
-        //$source["source_shared"]="1";
+        $source = [
+            "source_status" => "",
+            "source_title" => "",
+            "source_abbr" => "",
+            "source_date" => "",
+            "source_publ" => "",
+            "source_place" => "",
+            "source_refn" => "",
+            "source_auth" => "",
+            "source_subj" => "",
+            "source_item" => "",
+            "source_kind" => "",
+            "source_text" => "",
+            "source_repo_name" => "",
+            "source_repo_caln" => "",
+            "source_repo_page" => "",
+            "source_repo_gedcomnr" => "",
+            "source_unprocessed_tags" => "",
+            "new_date" => '1970-01-01',
+            "new_time" => '00:00:01',
+            "new_user_id" => "",
+            "changed_date" => '',
+            "changed_time" => '',
+            "changed_user_id" => ""
+        ];
 
         //0 @S1@ SOUR
         $source["id"] = substr($buffer, 3, -6);
@@ -6749,9 +6750,22 @@ class GedcomCls
                 $this->source["source_text"][$this->nrsource] .= $this->conc(substr($buffer, 7));
             }
         }
+
+        // *** Source citation ***
         if (isset($this->level[$number + 1]) && $this->level[$number + 1] == 'DATA') {
             if ($buffer6 === ($number + 1) . ' DATA') {
                 $this->processed = true; //$this->connect['text'][$this->connect_nr]=substr($buffer, 7);
+            }
+
+            // *** Source date ***
+            if ($buffer6 === ($number + 2) . ' DATE') {
+                $this->processed = true;
+                $this->connect['date'][$this->connect_nr] = substr($buffer, 7);
+            }
+            // *** Source place ***
+            if ($buffer6 === ($number + 2) . ' PLAC') {
+                $this->processed = true;
+                $this->connect['place'][$this->connect_nr] = substr($buffer, 7);
             }
 
             if ($buffer6 === ($number + 2) . ' TEXT') {
@@ -6812,17 +6826,6 @@ class GedcomCls
         if ($buffer6 === ($number + 1) . ' ROLE') {
             $this->processed = true;
             $this->connect['role'][$this->connect_nr] = substr($buffer, 7);
-        }
-
-        // *** Source date ***
-        if ($buffer6 === ($number + 1) . ' DATE') {
-            $this->processed = true;
-            $this->connect['date'][$this->connect_nr] = substr($buffer, 7);
-        }
-        // *** Source place ***
-        if ($buffer6 === ($number + 1) . ' PLAC') {
-            $this->processed = true;
-            $this->connect['place'][$this->connect_nr] = substr($buffer, 7);
         }
 
         // *** Aldfaer time ***

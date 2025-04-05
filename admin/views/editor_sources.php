@@ -114,6 +114,12 @@ $nr_sources = count($connect_sql);
                 ?>
                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
                         <div style="border: 2px solid red">
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <h2><?= __('Source'); ?></h2>
+                                </div>
+                            </div>
+
                             <input type="hidden" name="connect_source_id[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_source_id; ?>">
                             <input type="hidden" name="source_id[<?= $connectDb->connect_id; ?>]" value="<?= $sourceDb->source_id; ?>">
 
@@ -153,6 +159,14 @@ $nr_sources = count($connect_sql);
                             </div>
 
                             <!-- TODO Picture by source -->
+
+                            <!-- TODO Show new date and changed date -->
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <h2><?= __('Source citation'); ?></h2>
+                            </div>
                         </div>
 
                         <!-- Source connection items -->
