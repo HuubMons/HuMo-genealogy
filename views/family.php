@@ -1245,13 +1245,7 @@ if ($data["descendant_report"] == false) {
 
             <?php
             while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
-                $user_name = '';
-                if ($noteDb->note_new_user_id) {
-                    $user_qry = "SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
-                }
+                $user_name = $db_functions->get_user_name($noteDb->note_new_user_id);
             ?>
                 <tr>
                     <td valign="top">

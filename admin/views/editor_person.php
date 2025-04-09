@@ -1536,8 +1536,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
         if (!isset($_GET['add_person'])) {
             // *** Show and edit places by person ***
-            edit_addresses('person', 'person_address', $pers_gedcomnumber);
-        } // *** End of check for new person ***
+            $connect_kind= 'person';
+            $connect_sub_kind = 'person_address';
+            $connect_connect_id = $pers_gedcomnumber;
+            include_once __DIR__ . '/partial/editor_addresses.php';
+        }
 
         if (!isset($_GET['add_person'])) {
             // *** Person event editor ***
@@ -1601,34 +1604,35 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             }
 
             // *** Show editor notes ***
-            show_editor_notes('person');
+            $note_connect_kind = 'person';
+            include_once __DIR__ . '/partial/editor_notes.php';
 
             // *** Show user added notes ***
             $note_qry = "SELECT * FROM humo_user_notes WHERE note_tree_id='" . $tree_id . "'
                 AND note_kind='user' AND note_connect_kind='person' AND note_connect_id='" . $pers_gedcomnumber . "'";
             $note_result = $dbh->query($note_qry);
             $num_rows = $note_result->rowCount();
+            ?>
 
-            echo '<tr class="table_header_large"><td>';
-            if ($num_rows) {
-                echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a> ';
-            }
-            echo __('User notes') . '</td><td colspan="2">';
-            if ($num_rows) {
-                printf(__('There are %d user added notes.'), $num_rows);
-            } else {
-                printf(__('There are %d user added notes.'), 0);
-            }
-            echo '</td></tr>';
+            <tr class="table_header_large">
+                <td>
+                    <?php
+                    if ($num_rows) {
+                        echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a> ';
+                    }
+                    echo __('User notes') . '</td><td colspan="2">';
+                    if ($num_rows) {
+                        printf(__('There are %d user added notes.'), $num_rows);
+                    } else {
+                        printf(__('There are %d user added notes.'), 0);
+                    }
+                    ?>
+                </td>
+            </tr>
 
+            <?php
             while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
-                $user_name = '';
-                if ($noteDb->note_new_user_id) {
-                    $user_qry = "SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
-                }
+                $user_name = $db_functions->get_user_name($noteDb->note_new_user_id);
             ?>
                 <tr class="row62" style="display:none;">
                     <td></td>
@@ -1643,39 +1647,23 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
             // *** Person added by user ***
             if ($person->pers_new_user_id || $person->pers_new_datetime) {
-                $user_name = '';
-                if ($person->pers_new_user_id) {
-                    $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    if ($userDb) {
-                        $user_name = $userDb->user_name;
-                    }
-                }
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Added by'); ?></td>
-                    <td colspan="2"><?= show_datetime($person->pers_new_datetime) . ' ' . $user_name; ?></td>
+                    <td colspan="2">
+                        <?= show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
+                    </td>
                 </tr>
             <?php
             }
 
             // *** Person changed by user ***
             if ($person->pers_changed_user_id || $person->pers_changed_datetime) {
-                $user_name = '';
-                if ($person->pers_changed_user_id) {
-                    $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    if ($userDb) {
-                        $user_name = $userDb->user_name;
-                    }
-                }
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Changed by'); ?></td>
                     <td colspan="2">
-                        <?= show_datetime($person->pers_changed_datetime) . ' ' . $user_name; ?>
+                        <?= show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
                     </td>
                 </tr>
         <?php
@@ -1687,17 +1675,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
         <tr class="table_header_large">
             <td></td>
             <td colspan="2">
-                <?php
-                if ($editor['add_person'] == false) {
-                ?>
+                <?php if ($editor['add_person'] == false) { ?>
                     <input type="submit" name="person_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                     <?= __('or'); ?>
                     <input type="submit" name="person_remove" value="<?= __('Delete person'); ?>" class="btn btn-sm btn-secondary">
-                <?php
-                } else {
-                    echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
-                }
-                ?>
+                <?php } else { ?>
+                    <input type="submit" name="person_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                <?php } ?>
             </td>
         </tr>
 

@@ -56,16 +56,9 @@ if ($show_persons) {
 
         $result_array[$row][1] = $text;
 
-        //$text = '<nobr>' . language_date($person->pers_changed_date) . ' ' . $person->pers_changed_time . ' ' . $person->pers_changed_user . '</nobr>';
         $text = '';
         if ($person->pers_changed_datetime) {
-            $user_name = '';
-            if ($person->pers_changed_user_id) {
-                $editor_name = $dbh->query("SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'");
-                $editorDb = $editor_name->fetch(PDO::FETCH_OBJ);
-                $user_name = $editorDb->user_name;
-            }
-
+            $user_name = $db_functions->get_user_name($person->pers_changed_user_id);
             $text .= show_datetime($person->pers_changed_datetime) . ' ' . $user_name;
         }
         $result_array[$row][2] = $text;
@@ -74,19 +67,12 @@ if ($show_persons) {
         $text = '';
         // TODO check if this could be added in query.
         if ($person->pers_new_datetime != '1970-01-01 00:00:01') {
-            $user_name = '';
-            if ($person->pers_new_user_id) {
-                $editor_name = $dbh->query("SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'");
-                $editorDb = $editor_name->fetch(PDO::FETCH_OBJ);
-                $user_name = $editorDb->user_name;
-            }
-
+            $user_name = $db_functions->get_user_name($person->pers_new_user_id);
             $text .= show_datetime($person->pers_new_datetime) . ' ' . $user_name;
         }
         $result_array[$row][3] = $text;
 
         // *** Used for ordering by date - time ***
-        //$result_array[$row][4] = $person->changed_date . ' ' . $person->changed_time;
         $result_array[$row][4] = $person->changed_datetime;
         $row++;
     }
@@ -129,38 +115,21 @@ if ($show_families) {
             $text = '<a href="' . $url . '">' . $person2->pers_firstname . ' ' . $person2->pers_prefix . $person2->pers_lastname . '</a>';
             $result_array[$row][1] = $text;
 
-            //$text='<nobr>'.strtolower($person->fam_changed_date).' '.$person->fam_changed_time.' '.$person->fam_changed_user.'</nobr>';
-            //$text = language_date($person->fam_changed_date) . ' ' . $person->fam_changed_time . ' ' . $person->fam_changed_user;
             $text = '';
             if ($person->fam_changed_datetime) {
-                $user_name = '';
-                if ($person->fam_changed_user_id) {
-                    $editor_name = $dbh->query("SELECT user_name FROM humo_users WHERE user_id='" . $person->fam_changed_user_id . "'");
-                    $editorDb = $editor_name->fetch(PDO::FETCH_OBJ);
-                    $user_name = $editorDb->user_name;
-                }
-
+                $user_name = $db_functions->get_user_name($person->fam_changed_user_id);
                 $text .= show_datetime($person->fam_changed_datetime) . ' ' . $user_name;
             }
             $result_array[$row][2] = $text;
 
-            //$text='<nobr>'.strtolower($person->fam_new_date).' '.$person->fam_new_time.' '.$person->fam_new_user.'</nobr>';
-            //$text = language_date($person->fam_new_date) . ' ' . $person->fam_new_time . ' ' . $person->fam_new_user;
             $text = '';
             if ($person->fam_new_datetime != '1970-01-01 00:00:01') {
-                $user_name = '';
-                if ($person->fam_new_user_id) {
-                    $editor_name = $dbh->query("SELECT user_name FROM humo_users WHERE user_id='" . $person->fam_new_user_id . "'");
-                    $editorDb = $editor_name->fetch(PDO::FETCH_OBJ);
-                    $user_name = $editorDb->user_name;
-                }
-
+                $user_name = $db_functions->get_user_name($person->fam_new_user_id);
                 $text .= show_datetime($person->fam_new_datetime) . ' ' . $user_name;
             }
             $result_array[$row][3] = $text;
 
             // *** Used for ordering by date - time ***
-            //$result_array[$row][4] = $person->changed_date . ' ' . $person->changed_time;
             $result_array[$row][4] = $person->changed_datetime;
             $row++;
         }

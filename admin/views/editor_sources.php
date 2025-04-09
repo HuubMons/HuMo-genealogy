@@ -160,7 +160,30 @@ $nr_sources = count($connect_sql);
 
                             <!-- TODO Picture by source -->
 
-                            <!-- TODO Show new date and changed date -->
+                            <?php
+                            // *** Source added by user ***
+                            if ($sourceDb->source_new_user_id || $sourceDb->source_new_datetime) {
+                            ?>
+                                <div class="row mb-2">
+                                    <div class="col-md-3"><?= __('Added by'); ?></div>
+                                    <div class="col-md-7">
+                                        <?= show_datetime($sourceDb->source_new_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_new_user_id); ?>
+                                    </div>
+                                </div>
+                            <?php
+                            }
+
+                            // *** Source changed by user ***
+                            if ($sourceDb->source_changed_user_id || $sourceDb->source_changed_datetime) {
+                            ?>
+                                <div class="row mb-2">
+                                    <div class="col-md-3"><?= __('Changed by'); ?></div>
+                                    <div class="col-md-7">
+                                        <?= show_datetime($sourceDb->source_changed_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_changed_user_id); ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
                         </div>
 
                         <div class="row mb-2">

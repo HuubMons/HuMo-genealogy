@@ -966,7 +966,10 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             echo $EditorEvent->show_event('family', $marriage, 'family');
 
             // *** Show and edit addresses by family ***
-            edit_addresses('family', 'family_address', $marriage);
+            $connect_kind= 'family';
+            $connect_sub_kind = 'family_address';
+            $connect_connect_id = $marriage;
+            include_once __DIR__ . '/partial/editor_addresses.php';
 
             // *** Show unprocessed GEDCOM tags ***
             $tag_qry = "SELECT * FROM humo_unprocessed_tags WHERE tag_tree_id='" . $tree_id . "' AND tag_rel_id='" . $familyDb->fam_id . "'";
@@ -1000,44 +1003,26 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             }
 
             // *** Show editor notes ***
-            show_editor_notes('family');
+            $note_connect_kind = 'family';
+            include_once __DIR__ . '/partial/editor_notes.php';
 
             // *** Relation added by user ***
             // TODO check for 1970-01-01 00:00:01
             if ($familyDb->fam_new_user_id || $familyDb->fam_new_datetime) {
-                $user_name = '';
-                if ($familyDb->fam_new_user_id) {
-                    $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $familyDb->fam_new_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    if ($userDb) {
-                        $user_name = $userDb->user_name;
-                    }
-                }
-
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Added by'); ?></td>
-                    <td colspan="2"><?= show_datetime($familyDb->fam_new_datetime) . ' ' . $user_name; ?></td>
+                    <td colspan="2"><?= show_datetime($familyDb->fam_new_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_new_user_id); ?></td>
                 </tr>
             <?php
             }
 
             // *** Relation changed by user ***
             if ($familyDb->fam_changed_user_id || $familyDb->fam_changed_datetime) {
-                $user_name = '';
-                if ($familyDb->fam_changed_user_id) {
-                    $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $familyDb->fam_changed_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    if ($userDb) {
-                        $user_name = $userDb->user_name;
-                    }
-                }
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Changed by'); ?></td>
-                    <td colspan="2"><?= show_datetime($familyDb->fam_changed_datetime) . ' ' . $user_name; ?></td>
+                    <td colspan="2"><?= show_datetime($familyDb->fam_changed_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_changed_user_id); ?></td>
                 </tr>
             <?php
             }

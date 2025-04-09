@@ -3215,7 +3215,7 @@ class GedcomCls
                 }
                 if ($second_marr > 0) {
                     $this->dbh->query("UPDATE humo_persons SET pers_fams = CONCAT(pers_fams,';','" . $gedcomnumber . "')
-                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $fam_man . "'");
+                        WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $fam_man . "'");
                 }
             }
 
@@ -3228,7 +3228,7 @@ class GedcomCls
                 }
                 if ($second_marr > 0) {
                     $this->dbh->query("UPDATE humo_persons SET pers_fams = CONCAT(pers_fams,';','" . $gedcomnumber . "')
-                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $fam_woman . "'");
+                        WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $fam_woman . "'");
                 }
             }
             // *** Gedcomnumbers children ***
@@ -4333,6 +4333,7 @@ class GedcomCls
                 //echo $gebeurtsql.'<br>';
                 $this->dbh->query($gebeurtsql);
             }
+            unset($this->address_array);
         }
         // Unprocessed items???
 
@@ -4441,7 +4442,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -4679,7 +4680,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5165,7 +5166,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5784,7 +5785,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }

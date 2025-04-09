@@ -1757,7 +1757,7 @@ $own_code=0;
                         }
 
                         // *** December 2021: Nickname is allready shown as "Nickname".
-                        //		Nickname is allready shown in function person_name, extra items like date, place, text and source will be shown here ***
+                        //      Nickname is allready shown in function person_name, extra items like date, place, text and source will be shown here ***
                         if ($nameDb->event_gedcom == 'NICK') {
                             // *** To check if there is a source ***
                             $source_array = show_sources2("person", "pers_event_source", $nameDb->event_id);

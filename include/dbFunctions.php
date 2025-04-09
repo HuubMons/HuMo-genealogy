@@ -171,6 +171,25 @@ class DbFunctions
     }
 
     /**
+     * FUNCTION     : Get user name from database.
+     * QUERY        : SELECT user_name FROM humo_users WHERE user_id=:user_id
+     * RETURNS      : user name.
+     */
+    public function get_user_name($user_id)
+    {
+        $user_name = '';
+        if ($user_id && is_numeric($user_id)) {
+            $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $user_id . "'";
+            $user_result = $this->dbh->query($user_qry);
+            $userDb = $user_result->fetch(PDO::FETCH_OBJ);
+            if ($userDb) {
+                $user_name = $userDb->user_name;
+            }
+        }
+        return $user_name;
+    }
+
+    /**
      * FUNCTION     : Get family tree data from database.
      * QUERY 1      : SELECT * FROM humo_trees WHERE tree_prefix=:tree_prefix
      * QUERY 2      : SELECT * FROM humo_trees WHERE tree_id=:tree_id
@@ -178,7 +197,7 @@ class DbFunctions
      */
     public function get_tree($tree_prefix)
     {
-        $tree='';
+        $tree = '';
         // *** Detection of tree_prefix/ tree_id ***
         if (substr($tree_prefix, 0, 4) === 'humo') {
             // *** Found tree_prefix humox_ ***
